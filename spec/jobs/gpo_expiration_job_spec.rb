@@ -86,6 +86,67 @@ RSpec.describe GpoExpirationJob do
         )
       end
     end
+
+    context 'when a letter is mailed to a contiguous US state' do
+      let(:usps_confirmation_max_days_contiguous_states) { 21 }
+      let(:contiguous_expired_timestamp) do
+        Time.zone.now.round - usps_confirmation_max_days_contiguous_states.days - 1.hour
+      end
+      let(:contiguous_not_expired_timestamp) do
+        Time.zone.now.round - (usps_confirmation_max_days_contiguous_states / 2).days
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:usps_confirmation_max_days_contiguous_states)
+          .and_return(usps_confirmation_max_days_contiguous_states)
+        # Isolate the state-aware code-expiration check by making sure profile age never
+        # blocks expiration on its own.
+        allow(IdentityConfig.store).to receive(:gpo_max_profile_age_to_send_letter_in_days)
+          .and_return(0)
+      end
+
+      it 'returns a profile that expired within the contiguous state time frame' do
+        user_with_contiguous_state = create(
+          :user,
+          :with_pending_gpo_profile,
+          created_at: contiguous_expired_timestamp,
+        )
+        user_with_contiguous_state.gpo_verification_pending_profile.gpo_confirmation_codes.first
+          .update(state: 'VA')
+
+        profiles = job.gpo_profiles_that_should_be_expired(as_of: Time.zone.now)
+
+        expect(profiles.map(&:user)).to include(user_with_contiguous_state)
+      end
+
+      it 'does not expire a contiguous-state profile still within the contiguous time frame' do
+        user_with_contiguous_state = create(
+          :user,
+          :with_pending_gpo_profile,
+          created_at: contiguous_not_expired_timestamp,
+        )
+        user_with_contiguous_state.gpo_verification_pending_profile.gpo_confirmation_codes.first
+          .update(state: 'VA')
+
+        profiles = job.gpo_profiles_that_should_be_expired(as_of: Time.zone.now)
+
+        expect(profiles.map(&:user)).not_to include(user_with_contiguous_state)
+      end
+
+      it 'does not expire a non-contiguous-state profile whithin the same time frame' do
+        user_with_non_contiguous_state = create(
+          :user,
+          :with_pending_gpo_profile,
+          created_at: contiguous_expired_timestamp,
+        )
+        user_with_non_contiguous_state.gpo_verification_pending_profile
+          .gpo_confirmation_codes.first.update(state: 'PR')
+
+        profiles = job.gpo_profiles_that_should_be_expired(as_of: Time.zone.now)
+
+        expect(profiles.map(&:user)).not_to include(user_with_non_contiguous_state)
+      end
+    end
   end
 
   describe '#perform' do

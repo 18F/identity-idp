@@ -167,26 +167,6 @@ RSpec.describe IdTokenBuilder do
       expect(decoded_payload[:nbf]).to eq(now.to_i)
     end
 
-    context 'when auth_time attribute is enabled' do
-      before do
-        allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(true)
-      end
-
-      it 'sets auth_time to the authentication timestamp' do
-        expect(decoded_payload[:auth_time]).to eq(last_authenticated_at.to_i)
-      end
-    end
-
-    context 'when auth_time attribute is disabled' do
-      before do
-        allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(false)
-      end
-
-      it 'does not include auth_time' do
-        expect(decoded_payload).to_not have_key(:auth_time)
-      end
-    end
-
     it 'sets the access token hash correctly' do
       # this is a known value from an example developer guide
       # https://developer.pingidentity.com/en/resources/openid-connect-developers-guide.html

@@ -91,6 +91,52 @@ RSpec.describe 'Proofing agent activation', :js do
     end
   end
 
+  context 'when idv_sp_required is enabled' do
+    # staging/prod require an sp to request proofing, but the binding email is
+    # a plain sign in link so agent proofed users arrive with no sp session
+    before do
+      allow(IdentityConfig.store).to receive(:idv_sp_required).and_return(true)
+    end
+
+    scenario 'user lands on the binding page after sign in' do
+      sign_in_live_with_2fa(user)
+
+      expect(page).to have_current_path idv_enter_dob_ssn_path
+    end
+
+    scenario 'user completes binding through personal key' do
+      sign_in_live_with_2fa(user)
+      expect(page).to have_current_path idv_enter_dob_ssn_path
+
+      complete_idv_enter_dob_ssn_step
+      expect(page).to have_current_path idv_enter_password_path
+
+      complete_enter_password_step(user)
+      acknowledge_and_confirm_personal_key
+      expect(page).to have_current_path account_path
+    end
+  end
+
+  context 'when device profiling is collect_only' do
+    # collect_only runs the tmx job but never stores a DeviceProfilingResult,
+    # so the enter password step has no stored result to read
+    before do
+      allow(IdentityConfig.store).to receive(:proofing_agent_device_profiling)
+        .and_return(:collect_only)
+    end
+
+    scenario 'enter password renders with no stored result' do
+      sign_in_live_with_2fa(user)
+      complete_idv_enter_dob_ssn_step
+
+      expect(page).to have_current_path idv_enter_password_path
+
+      complete_enter_password_step(user)
+      acknowledge_and_confirm_personal_key
+      expect(page).to have_current_path account_path
+    end
+  end
+
   context 'when the proofing agent session has expired' do
     before do
       document_capture_session.update!(result_id: nil)

@@ -132,6 +132,10 @@ class FeatureManagement
       IdentityConfig.store.recaptcha_enterprise_project_id.present?
   end
 
+  def self.recaptcha_enterprise_additional_context_enabled?
+    IdentityConfig.store.recaptcha_enterprise_additional_context_enabled
+  end
+
   # Whether we collect device profiling as part of the account creation process
   def self.account_creation_device_profiling_collecting_enabled?
     case IdentityConfig.store.account_creation_device_profiling
@@ -197,6 +201,10 @@ class FeatureManagement
     IdentityConfig.store.feature_idv_force_gpo_verification_enabled ||
       outage_status.any_phone_vendor_outage? ||
       outage_status.phone_finder_outage?
+  end
+
+  def self.idv_failure_to_proof_oidc_state_enabled?
+    IdentityConfig.store.idv_failure_to_proof_oidc_state_enabled
   end
 
   def self.doc_escrow_enabled?(service_provider)

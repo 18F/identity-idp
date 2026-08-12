@@ -19,7 +19,7 @@ RSpec.describe Idv::StateIdForm do
     ).permit(:year, :month, :day)
   end
   let(:valid_exp) do
-    valid_d = Time.zone.today + 2.days
+    valid_d = Time.zone.today + 7.days
     ActionController::Parameters.new(
       year: valid_d.year,
       month: valid_d.month,
@@ -34,7 +34,15 @@ RSpec.describe Idv::StateIdForm do
       day: dob.mday,
     ).permit(:year, :month, :day)
   end
-  let(:same_address_as_id) { 'true' }
+  let(:ipp_current_address_matches_id) { 'true' }
+  let(:expiring_soon_exp) do
+    exp_d = Time.zone.today + 2.days
+    ActionController::Parameters.new(
+      year: exp_d.year,
+      month: exp_d.month,
+      day: exp_d.mday,
+    ).permit(:year, :month, :day)
+  end
   let(:first_name) { Faker::Name.first_name }
   let(:dob) { valid_dob }
   let(:id_expiration) { valid_exp }
@@ -49,7 +57,7 @@ RSpec.describe Idv::StateIdForm do
       identity_doc_city: Faker::Address.city,
       identity_doc_zipcode: Faker::Address.zip_code,
       identity_doc_address_state: Faker::Address.state_abbr,
-      same_address_as_id:,
+      ipp_current_address_matches_id:,
       state_id_jurisdiction: 'AL',
       state_id_number: Faker::IdNumber.valid,
       id_expiration:,
@@ -128,6 +136,7 @@ RSpec.describe Idv::StateIdForm do
             I18n.t(
               'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
               app_name: APP_NAME,
+              min_age: IdentityConfig.store.idv_min_age_years,
             ),
           ]
         end
@@ -150,14 +159,29 @@ RSpec.describe Idv::StateIdForm do
       end
     end
 
-    context 'when the same_address_as_id field is missing' do
-      let(:same_address_as_id) { nil }
+    context 'when the ID expires within 7 days' do
+      let(:id_expiration) { expiring_soon_exp }
+
+      it 'returns the expiring soon error' do
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(subject.errors.empty?).to be(false)
+        expect(subject.errors[:id_expiration]).to eq [
+          I18n.t(
+            'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon',
+          ),
+        ]
+      end
+    end
+
+    context 'when the ipp_current_address_matches_id field is missing' do
+      let(:ipp_current_address_matches_id) { nil }
 
       it 'returns an error' do
         expect(result.success?).to eq(false)
         expect(subject.errors.empty?).to be(false)
-        expect(subject.errors[:same_address_as_id]).to eq [
-          I18n.t('errors.messages.missing_field'),
+        expect(subject.errors[:ipp_current_address_matches_id]).to eq [
+          I18n.t('errors.messages.inclusion'),
         ]
       end
     end
@@ -171,6 +195,64 @@ RSpec.describe Idv::StateIdForm do
         expect(subject.errors[:asserted_id_type]).to eq [
           I18n.t('errors.messages.missing_field'),
         ]
+      end
+    end
+
+    # LG-16085 50/50 deploy safety: a form rendered by an old instance submits the
+    # legacy `same_address_as_id` param (string) instead of the new
+    # `ipp_current_address_matches_id`. The new form must accept it and coerce it
+    # to the boolean rather than reject the submission.
+    context 'when the legacy same_address_as_id param is submitted (50/50 window)' do
+      let(:params) do
+        {
+          first_name:,
+          last_name: Faker::Name.last_name,
+          dob:,
+          identity_doc_address1: Faker::Address.street_address,
+          identity_doc_address2: Faker::Address.secondary_address,
+          identity_doc_city: Faker::Address.city,
+          identity_doc_zipcode: Faker::Address.zip_code,
+          identity_doc_address_state: Faker::Address.state_abbr,
+          same_address_as_id: 'true',
+          state_id_jurisdiction: 'AL',
+          state_id_number: Faker::IdNumber.valid,
+          id_expiration:,
+          asserted_id_type:,
+        }
+      end
+
+      it 'accepts the submission without raising' do
+        expect { result }.to_not raise_error
+      end
+
+      it 'is valid and coerces the legacy value to the boolean attribute' do
+        expect(result.success?).to eq(true)
+        expect(subject.ipp_current_address_matches_id).to eq(true)
+      end
+
+      context "when the legacy value is 'false'" do
+        let(:params) do
+          {
+            first_name:,
+            last_name: Faker::Name.last_name,
+            dob:,
+            identity_doc_address1: Faker::Address.street_address,
+            identity_doc_address2: Faker::Address.secondary_address,
+            identity_doc_city: Faker::Address.city,
+            identity_doc_zipcode: Faker::Address.zip_code,
+            identity_doc_address_state: Faker::Address.state_abbr,
+            same_address_as_id: 'false',
+            state_id_jurisdiction: 'AL',
+            state_id_number: Faker::IdNumber.valid,
+            id_expiration:,
+            asserted_id_type:,
+          }
+        end
+
+        it 'coerces to false' do
+          expect(result.success?).to eq(true)
+          expect(subject.ipp_current_address_matches_id).to eq(false)
+        end
       end
     end
   end

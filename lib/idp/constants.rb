@@ -34,10 +34,10 @@ module Idp
       MDL = 'mobile_drivers_license'
 
       PASSPORT_CARD_RESPONSES = ['Passport Card', 'PassportCard'].freeze
-      SUPPORTED_PASSPORT_TYPES = [PASSPORT].freeze
+      SUPPORTED_PASSPORT_TYPES = [PASSPORT, PASSPORT_CARD].freeze
       SUPPORTED_STATE_ID_TYPES = [DRIVERS_LICENSE, STATE_ID_CARD, IDENTIFICATION_CARD].freeze
       SUPPORTED_ID_TYPES = [*SUPPORTED_PASSPORT_TYPES, *SUPPORTED_STATE_ID_TYPES].freeze
-      PASSPORT_TYPES = [*SUPPORTED_PASSPORT_TYPES, PASSPORT_CARD].freeze
+      PASSPORT_TYPES = SUPPORTED_PASSPORT_TYPES
     end
 
     SUPPORTED_PASSPORT_ISSUING_COUNTRY_CODES = %w[US USA].freeze
@@ -103,6 +103,58 @@ module Idp
       MP
       PR
       VI
+    ].to_set.freeze
+
+    CONTIGUOUS_US_STATE_CODES = %w[
+      AL
+      AZ
+      AR
+      CA
+      CO
+      CT
+      DE
+      DC
+      FL
+      GA
+      ID
+      IL
+      IN
+      IA
+      KS
+      KY
+      LA
+      ME
+      MD
+      MA
+      MI
+      MN
+      MS
+      MO
+      MT
+      NE
+      NV
+      NH
+      NJ
+      NM
+      NY
+      NC
+      ND
+      OH
+      OK
+      OR
+      PA
+      RI
+      SC
+      SD
+      TN
+      TX
+      UT
+      VT
+      VA
+      WA
+      WV
+      WI
+      WY
     ].to_set.freeze
 
     DEFAULT_IAL = 1
@@ -184,7 +236,7 @@ module Idp
       identity_doc_address_state: 'VA',
       state_id_number: '1111111111111',
       state_id_expiration: '2099-12-31',
-      same_address_as_id: 'true',
+      ipp_current_address_matches_id: true,
     }.freeze
 
     MOCK_IPP_PASSPORT_APPLICANT = {
@@ -230,14 +282,14 @@ module Idp
       issuing_country_code: 'USA',
       passport_issued: (DateTime.new.utc - 1.year).to_s,
       nationality_code: 'USA',
-      document_number: nil,
+      document_number: '000000',
     ).freeze
     def self.mock_idv_applicant_with_passport
       MOCK_IDV_APPLICANT_WITH_PASSPORT.dup
     end
 
     MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE = MOCK_IPP_APPLICANT.merge(
-      same_address_as_id: 'false',
+      ipp_current_address_matches_id: false,
     ).freeze
 
     MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(
@@ -254,7 +306,7 @@ module Idp
       identity_doc_city: 'Best City',
       identity_doc_zipcode: '12345-4321',
       identity_doc_address_state: 'VA',
-      same_address_as_id: 'false',
+      ipp_current_address_matches_id: false,
     ).freeze
     def self.mock_idv_applicant_state_id_address
       MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.dup
@@ -267,7 +319,7 @@ module Idp
       identity_doc_city: MOCK_IDV_APPLICANT_WITH_SSN[:city],
       identity_doc_zipcode: MOCK_IDV_APPLICANT_WITH_SSN[:zipcode],
       identity_doc_address_state: MOCK_IDV_APPLICANT_WITH_SSN[:state],
-      same_address_as_id: 'true',
+      ipp_current_address_matches_id: true,
     ).freeze
 
     MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_NO_SSN = MOCK_IDV_APPLICANT.merge(
@@ -276,7 +328,7 @@ module Idp
       identity_doc_city: MOCK_IDV_APPLICANT[:city],
       identity_doc_zipcode: MOCK_IDV_APPLICANT[:zipcode],
       identity_doc_address_state: MOCK_IDV_APPLICANT[:state],
-      same_address_as_id: 'true',
+      ipp_current_address_matches_id: true,
     ).freeze
 
     MOCK_IDV_APPLICANT_WITH_PHONE = MOCK_IDV_APPLICANT_WITH_SSN.merge(phone: '12025551212').freeze

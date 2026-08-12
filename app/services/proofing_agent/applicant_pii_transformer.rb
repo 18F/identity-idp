@@ -11,7 +11,7 @@ module ProofingAgent
       flat.merge!(residential_address_fields)
       flat.merge!(state_id_fields)
       flat.merge!(passport_fields)
-      flat[:same_address_as_id] = same_address_as_id
+      flat[:ipp_current_address_matches_id] = current_address_matches_id
       flat
     end
 
@@ -74,8 +74,8 @@ module ProofingAgent
       }
     end
 
-    def same_address_as_id
-      pii[:residential_address].present? ? 'false' : 'true'
+    def current_address_matches_id
+      pii[:residential_address].blank?
     end
   end
 end

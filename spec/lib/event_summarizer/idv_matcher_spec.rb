@@ -169,6 +169,164 @@ RSpec.describe EventSummarizer::IdvMatcher do
       end
     end
 
+    context "On 'IdV: doc auth verify proofing results' event (failed resolution)" do
+      before do
+        allow(matcher).to receive(:current_idv_attempt).and_return(
+          EventSummarizer::IdvMatcher::IdvAttempt.new(
+            started_at: Time.zone.now,
+          ),
+        )
+        matcher.handle_cloudwatch_event(event)
+      end
+
+      subject(:significant_events) { matcher.current_idv_attempt.significant_events }
+
+      context 'when the resolution vendor is the post-cutover DDP Instant Verify key' do
+        let(:event) do
+          {
+            'name' => 'IdV: doc auth verify proofing results',
+            '@message' => {
+              'properties' => {
+                'event_properties' => {
+                  'success' => false,
+                  'proofing_results' => {
+                    'context' => {
+                      'stages' => {
+                        'resolution' => {
+                          'success' => false,
+                          'vendor_name' => 'lexisnexis:instant_verify_ddp',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          }
+        end
+
+        it 'uses the Instant Verify evaluator instead of reporting Unknown vendor' do
+          expect(significant_events).to include(
+            have_attributes(
+              type: :instant_verify_error,
+              description: a_string_starting_with('Instant Verify request failed'),
+            ),
+          )
+          expect(significant_events).not_to include(
+            have_attributes(description: a_string_including('Unknown vendor')),
+          )
+        end
+      end
+
+      context 'when the phone vendor is the post-cutover DDP Phone Finder key' do
+        let(:event) do
+          {
+            'name' => 'IdV: doc auth verify proofing results',
+            '@message' => {
+              'properties' => {
+                'event_properties' => {
+                  'success' => false,
+                  'proofing_results' => {
+                    'context' => {
+                      'stages' => {
+                        'resolution' => {
+                          'success' => false,
+                          'vendor_name' => 'lexisnexis:phone_finder_ddp',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          }
+        end
+
+        it 'uses the Phone Finder evaluator instead of reporting Unknown vendor' do
+          expect(significant_events).to include(
+            have_attributes(
+              type: :phone_finder_error,
+              description: a_string_starting_with('Phone Finder check failed'),
+            ),
+          )
+          expect(significant_events).not_to include(
+            have_attributes(description: a_string_including('Unknown vendor')),
+          )
+        end
+      end
+
+      context 'when a stage carries a resolution sentinel (not a real vendor call)' do
+        let(:event) do
+          {
+            'name' => 'IdV: doc auth verify proofing results',
+            '@message' => {
+              'properties' => {
+                'event_properties' => {
+                  'success' => false,
+                  'proofing_results' => {
+                    'context' => {
+                      'stages' => {
+                        'resolution' => {
+                          'success' => false,
+                          'vendor_name' => 'ResolutionCannotPass',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          }
+        end
+
+        it 'explains the skip rather than reporting a failed vendor request' do
+          expect(significant_events).to include(
+            have_attributes(
+              type: :resolution_cannot_pass_skipped,
+              description: 'Phone check was skipped because identity resolution could not pass',
+            ),
+          )
+          expect(significant_events).not_to include(
+            have_attributes(description: a_string_including('failed.')),
+          )
+        end
+      end
+
+      context 'when the vendor key is genuinely unrecognized' do
+        let(:event) do
+          {
+            'name' => 'IdV: doc auth verify proofing results',
+            '@message' => {
+              'properties' => {
+                'event_properties' => {
+                  'success' => false,
+                  'proofing_results' => {
+                    'context' => {
+                      'stages' => {
+                        'resolution' => {
+                          'success' => false,
+                          'vendor_name' => 'brand:new_vendor',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          }
+        end
+
+        it 'names the raw vendor key rather than the opaque Unknown vendor' do
+          expect(significant_events).to include(
+            have_attributes(
+              type: :unknown_request_failed,
+              description: 'Request to an unrecognized vendor (brand:new_vendor) failed.',
+            ),
+          )
+        end
+      end
+    end
+
     context "On 'IdV: use different phone number' (Phone Verification Step) event" do
       let(:event) do
         {

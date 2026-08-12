@@ -559,7 +559,7 @@ RSpec.describe DocumentCaptureSession do
     end
   end
 
-  describe '#request_passport!' do
+  describe '#request_passport_book!' do
     it 'sets the correct attributes for a requested passport' do
       record = build(
         :document_capture_session,
@@ -567,7 +567,7 @@ RSpec.describe DocumentCaptureSession do
         socure_docv_transaction_token: 'world',
       )
 
-      record.request_passport!
+      record.request_passport_book!
 
       expect(record).to have_attributes(
         passport_status: nil,
@@ -579,28 +579,8 @@ RSpec.describe DocumentCaptureSession do
       )
 
       expect(record.passport_requested?).to eq(true)
-      expect(record.state_id_requested?).to eq(false)
-    end
-
-    it 'sets the correct attributes for a requested passport with passport card supported' do
-      record = build(
-        :document_capture_session,
-        socure_docv_capture_app_url: 'hello',
-        socure_docv_transaction_token: 'world',
-      )
-
-      record.request_passport!(passport_cards_supported: true)
-
-      expect(record).to have_attributes(
-        passport_status: nil,
-        document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
-        doc_auth_vendor: nil,
-        socure_docv_capture_app_url: nil,
-        socure_docv_transaction_token: nil,
-        passport_cards_supported: true,
-      )
-
-      expect(record.passport_requested?).to eq(true)
+      expect(record.passport_book_requested?).to eq(true)
+      expect(record.passport_card_requested?).to eq(false)
       expect(record.state_id_requested?).to eq(false)
       expect(record.mdl_requested?).to eq(false)
     end
@@ -615,7 +595,29 @@ RSpec.describe DocumentCaptureSession do
           socure_docv_transaction_token: '12345',
         )
 
-        record.request_passport!
+        record.request_passport_book!
+
+        expect(record).to have_attributes(
+          passport_status: nil,
+          document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
+          doc_auth_vendor: 'a vendor',
+          socure_docv_capture_app_url: 'some-url',
+          socure_docv_transaction_token: '12345',
+        )
+      end
+    end
+
+    context 'when passport card was requested before' do
+      it 'clears the socure attributes' do
+        record = build(
+          :document_capture_session,
+          document_type_requested: Idp::Constants::DocumentTypes::PASSPORT_CARD,
+          doc_auth_vendor: 'a vendor',
+          socure_docv_capture_app_url: 'some-url',
+          socure_docv_transaction_token: '12345',
+        )
+
+        record.request_passport_book!
 
         expect(record).to have_attributes(
           passport_status: nil,
@@ -637,11 +639,104 @@ RSpec.describe DocumentCaptureSession do
           socure_docv_transaction_token: '12345',
         )
 
-        record.request_passport!
+        record.request_passport_book!
 
         expect(record).to have_attributes(
           passport_status: nil,
           document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
+          doc_auth_vendor: nil,
+          socure_docv_capture_app_url: nil,
+          socure_docv_transaction_token: nil,
+        )
+      end
+    end
+  end
+
+  describe '#request_passport_card!' do
+    it 'sets the correct attributes for a requested passport' do
+      record = build(
+        :document_capture_session,
+        socure_docv_capture_app_url: 'hello',
+        socure_docv_transaction_token: 'world',
+      )
+
+      record.request_passport_card!
+
+      expect(record).to have_attributes(
+        passport_status: nil,
+        document_type_requested: Idp::Constants::DocumentTypes::PASSPORT_CARD,
+        doc_auth_vendor: nil,
+        socure_docv_capture_app_url: nil,
+        socure_docv_transaction_token: nil,
+        passport_cards_supported: false,
+      )
+
+      expect(record.passport_requested?).to eq(true)
+      expect(record.passport_book_requested?).to eq(false)
+      expect(record.passport_card_requested?).to eq(true)
+      expect(record.state_id_requested?).to eq(false)
+      expect(record.mdl_requested?).to eq(false)
+    end
+
+    context 'when passport was requested before' do
+      it 'clears the socure attributes' do
+        record = build(
+          :document_capture_session,
+          document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
+          doc_auth_vendor: 'a vendor',
+          socure_docv_capture_app_url: 'some-url',
+          socure_docv_transaction_token: '12345',
+        )
+
+        record.request_passport_card!
+
+        expect(record).to have_attributes(
+          passport_status: nil,
+          document_type_requested: Idp::Constants::DocumentTypes::PASSPORT_CARD,
+          doc_auth_vendor: 'a vendor',
+          socure_docv_capture_app_url: 'some-url',
+          socure_docv_transaction_token: '12345',
+        )
+      end
+    end
+
+    context 'when passport card was requested before' do
+      it 'clears the socure attributes' do
+        record = build(
+          :document_capture_session,
+          document_type_requested: Idp::Constants::DocumentTypes::PASSPORT_CARD,
+          doc_auth_vendor: 'a vendor',
+          socure_docv_capture_app_url: 'some-url',
+          socure_docv_transaction_token: '12345',
+        )
+
+        record.request_passport_card!
+
+        expect(record).to have_attributes(
+          passport_status: nil,
+          document_type_requested: Idp::Constants::DocumentTypes::PASSPORT_CARD,
+          doc_auth_vendor: 'a vendor',
+          socure_docv_capture_app_url: 'some-url',
+          socure_docv_transaction_token: '12345',
+        )
+      end
+    end
+
+    context 'when state_id was requested before' do
+      it 'clears the socure attributes' do
+        record = build(
+          :document_capture_session,
+          document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
+          doc_auth_vendor: 'a vendor',
+          socure_docv_capture_app_url: 'some-url',
+          socure_docv_transaction_token: '12345',
+        )
+
+        record.request_passport_card!
+
+        expect(record).to have_attributes(
+          passport_status: nil,
+          document_type_requested: Idp::Constants::DocumentTypes::PASSPORT_CARD,
           doc_auth_vendor: nil,
           socure_docv_capture_app_url: nil,
           socure_docv_transaction_token: nil,

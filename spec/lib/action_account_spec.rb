@@ -254,6 +254,7 @@ RSpec.describe ActionAccount do
       it 'Pass a user that has a pending review', aggregate_failures: true do
         expect(UserAlerts::AlertUserAboutAccountVerified).to receive(:call).with(
           profile: user.pending_profile,
+          phone: MfaContext.new(user).phone_configuration&.phone,
         )
         expect(attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: false)
 

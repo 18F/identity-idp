@@ -84,6 +84,16 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
     context 'when user is going through Idv' do
       context 'when the response is a success' do
         let(:response_body) { LexisNexisFixtures.ddp_phone_finder_success_response_json }
+        let(:expected_phone_metadata) do
+          {
+            phone_type: 'POSSIBLE WIRELESS',
+            account_telephone_type: 'UNKNOWN',
+            risk_indicator_status: 'PASS',
+            risk_count_high: '0',
+            risk_count_med: '1',
+            risk_count_low: '4',
+          }
+        end
 
         it 'is a successful result' do
           result = proofer.proof(proofing_applicant)
@@ -93,6 +103,45 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
           expect(result.transaction_id).to eq('super-cool-test-session-id')
           expect(result.vendor_name).to eq('lexisnexis:phone_finder_ddp')
           expect(result.dual_vendor_check_eligible).to be(false)
+        end
+
+        it 'surfaces phone metadata in result' do
+          result = proofer.proof(proofing_applicant)
+
+          expect(result.result).to eq(expected_phone_metadata)
+        end
+
+        context 'when the phone metadata fields are absent' do
+          let(:response_body) do
+            {
+              'integration_hub_results' => {
+                'test_org_id:test-policy' => {
+                  'Phone Finder' => {
+                    'tps_vendor_raw_response' => {
+                      'Products' => [],
+                      'Status' => {
+                        'ConversationId' => 'super-cool-test-session-id',
+                        'TransactionStatus' => 'passed',
+                      },
+                    },
+                  },
+                },
+              },
+            }.to_json
+          end
+
+          it 'returns a result with nil metadata values' do
+            result = proofer.proof(proofing_applicant)
+
+            expect(result.result).to eq(
+              phone_type: nil,
+              account_telephone_type: nil,
+              risk_indicator_status: nil,
+              risk_count_high: nil,
+              risk_count_med: nil,
+              risk_count_low: nil,
+            )
+          end
         end
       end
 

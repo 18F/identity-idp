@@ -138,7 +138,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:passport_card_type) { Idp::Constants::DocumentTypes::PASSPORT_CARD }
   let(:first_name) { 'FirstName' }
   let(:last_name) { 'LastName' }
-  let(:dob) { (Time.zone.today - 14.years).strftime('%Y-%m-%d') }
+  let(:dob) do
+    (Time.zone.today - (IdentityConfig.store.idv_min_age_years + 1).years).strftime('%Y-%m-%d')
+  end
   let(:document_number) { '123' }
   let(:jurisdiction) { 'MD' }
   let(:address1) { '123 Main' }

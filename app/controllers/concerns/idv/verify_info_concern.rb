@@ -369,7 +369,7 @@ module Idv
         extra: extra.merge(
           proofing_results: {
             **result.except(:errors, :success),
-            biographical_info: result[:biographical_info]&.except(:same_address_as_id),
+            biographical_info: result[:biographical_info]&.except(:ipp_current_address_matches_id),
           },
         ),
       )

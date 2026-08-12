@@ -40,7 +40,7 @@ RSpec.describe 'state id controller enabled', :js do
 
     it 'allows user to submit valid inputs on form', allow_browser_log: true do
       complete_steps_before_state_id_controller
-      fill_out_state_id_form_ok(same_address_as_id: true)
+      fill_out_state_id_form_ok(current_address_matches_id: true)
       click_idv_continue
 
       expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
@@ -63,7 +63,7 @@ RSpec.describe 'state id controller enabled', :js do
     it 'validates zip code input', allow_browser_log: true do
       complete_steps_before_state_id_controller
 
-      fill_out_state_id_form_ok(same_address_as_id: true)
+      fill_out_state_id_form_ok(current_address_matches_id: true)
       fill_in t('in_person_proofing.form.state_id.zipcode'), with: ''
       fill_in t('in_person_proofing.form.state_id.zipcode'), with: 'invalid input'
       expect(page).to have_field(t('in_person_proofing.form.state_id.zipcode'), with: '')
@@ -91,11 +91,13 @@ RSpec.describe 'state id controller enabled', :js do
 
       buffer_to_avoid_test_flakiness = 2.days
 
-      less_than_13_years_ago = Time.zone.now - (13.years - buffer_to_avoid_test_flakiness)
+      less_than_min_age_years_ago = Time.zone.now - (
+        IdentityConfig.store.idv_min_age_years.years - buffer_to_avoid_test_flakiness
+      )
       dob = [
-        less_than_13_years_ago.year,
-        less_than_13_years_ago.month,
-        less_than_13_years_ago.day,
+        less_than_min_age_years_ago.year,
+        less_than_min_age_years_ago.month,
+        less_than_min_age_years_ago.day,
       ].join('-')
 
       fill_in_memorable_date('identity_doc[dob]', dob)
@@ -105,14 +107,17 @@ RSpec.describe 'state id controller enabled', :js do
         t(
           'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
           app_name: APP_NAME,
+          min_age: IdentityConfig.store.idv_min_age_years,
         ),
       )
 
-      thirteenish_years_ago = Time.zone.now - (13.years + buffer_to_avoid_test_flakiness)
+      older_than_min_age_years_ago = Time.zone.now - (
+        IdentityConfig.store.idv_min_age_years.years + buffer_to_avoid_test_flakiness
+      )
       dob = [
-        thirteenish_years_ago.year,
-        thirteenish_years_ago.month,
-        thirteenish_years_ago.day,
+        older_than_min_age_years_ago.year,
+        older_than_min_age_years_ago.month,
+        older_than_min_age_years_ago.day,
       ].join('-')
 
       fill_in_memorable_date('identity_doc[dob]', dob)
@@ -122,12 +127,14 @@ RSpec.describe 'state id controller enabled', :js do
         t(
           'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
           app_name: APP_NAME,
+          min_age: IdentityConfig.store.idv_min_age_years,
         ),
       )
     end
 
     it 'shows error for an expired ID', allow_browser_log: true do
       complete_steps_before_state_id_controller
+      fill_out_state_id_form_ok(current_address_matches_id: true)
 
       yesterday = Time.zone.now - 1.day
       exp = [
@@ -157,11 +164,28 @@ RSpec.describe 'state id controller enabled', :js do
       fill_in_memorable_date('identity_doc[id_expiration]', exp)
 
       click_idv_continue
+      expect(page).to have_content(
+        t('in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon'),
+      )
+
+      eight_days_from_today = Time.zone.now + 8.days
+      exp = [
+        eight_days_from_today.year,
+        eight_days_from_today.month,
+        eight_days_from_today.day,
+      ].join('-')
+
+      fill_in_memorable_date('identity_doc[id_expiration]', exp)
+
+      click_idv_continue
       expect(page).not_to have_content(
         t(
           'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
           app_name: APP_NAME,
         ),
+      )
+      expect(page).not_to have_content(
+        t('in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon'),
       )
     end
   end
@@ -243,7 +267,7 @@ RSpec.describe 'state id controller enabled', :js do
       expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
 
       # change state selection
-      fill_out_state_id_form_ok(same_address_as_id: true)
+      fill_out_state_id_form_ok(current_address_matches_id: true)
       expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
       expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
 

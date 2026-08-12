@@ -487,6 +487,27 @@ RSpec.describe 'FeatureManagement' do
     end
   end
 
+  describe '.recaptcha_enterprise_additional_context_enabled?' do
+    let(:recaptcha_enterprise_additional_context_enabled) { false }
+
+    subject(:recaptcha_enterprise_additional_context_enabled?) do
+      FeatureManagement.recaptcha_enterprise_additional_context_enabled?
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_additional_context_enabled)
+        .and_return(recaptcha_enterprise_additional_context_enabled)
+    end
+
+    it { is_expected.to eq(false) }
+
+    context 'when enabled in config' do
+      let(:recaptcha_enterprise_additional_context_enabled) { true }
+
+      it { is_expected.to eq(true) }
+    end
+  end
+
   describe '#idv_available?' do
     let(:idv_available) { true }
     let(:vendor_status_lexisnexis_instant_verify) { :operational }
@@ -604,6 +625,31 @@ RSpec.describe 'FeatureManagement' do
 
       it 'disables the feature' do
         expect(FeatureManagement.doc_escrow_enabled?(nil)).to eq(false)
+      end
+    end
+  end
+
+  describe '#idv_failure_to_proof_oidc_state_enabled?' do
+    let(:enabled) { nil }
+
+    before do
+      allow(IdentityConfig.store).to receive(:idv_failure_to_proof_oidc_state_enabled)
+        .and_return(enabled)
+    end
+
+    context 'when idv_failure_to_proof_oidc_state_enabled is true' do
+      let(:enabled) { true }
+
+      it 'returns true' do
+        expect(FeatureManagement.idv_failure_to_proof_oidc_state_enabled?).to be(true)
+      end
+    end
+
+    context 'when idv_failure_to_proof_oidc_state_enabled is false' do
+      let(:enabled) { false }
+
+      it 'returns false' do
+        expect(FeatureManagement.idv_failure_to_proof_oidc_state_enabled?).to be(false)
       end
     end
   end

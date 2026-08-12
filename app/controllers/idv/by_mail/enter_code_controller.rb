@@ -119,6 +119,7 @@ module Idv
 
           UserAlerts::AlertUserAboutAccountVerified.call(
             profile: current_user.active_profile,
+            phone: nil,
           )
           flash[:success] = t('account.index.verification.success')
         end

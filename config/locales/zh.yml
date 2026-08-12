@@ -597,7 +597,7 @@ doc_auth.errors.sharpness.top_msg: 我们无法读取你的身份证件。你的
 doc_auth.errors.sharpness.top_msg_plural: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
 doc_auth.errors.state_id_verification: 您的身份证件上的信息无法通过您所在州的验证。您可能需要亲自验证身份证件，或者您可以尝试使用其他身份证件。
 doc_auth.errors.unaccepted_id_type: 我们不接受护照、军人身份证件、纸质身份证件或临时身份证件。你只能使用驾驶执照或美国州或领地颁发的身份证件。
-doc_auth.errors.underage: 你必须年满 13 岁才能使用 %{app_name}。如果你年满 13 岁，请重试并确保你的出生日期对焦。
+doc_auth.errors.underage: 你必须年满 %{min_age} 岁才能使用 %{app_name}。如果你年满 %{min_age} 岁，请重试并确保你的出生日期对焦。
 doc_auth.errors.unreadable_id: 请在光线充足而且没有阴影或眩光的地方拍照。确保你身份证件上的所有内容都清晰对焦，并且身份卡填满画面。
 doc_auth.errors.upload_error: 抱歉，我们这边出错了。
 doc_auth.errors.verify_drivers_license_heading: 我们无法验证你的驾照或州 ID。
@@ -611,6 +611,7 @@ doc_auth.forms.doc_success: 我们验证了你的信息
 doc_auth.forms.id_type_preference.drivers_license: 美国驾照或州身份证件
 doc_auth.forms.id_type_preference.mdl: 移动驾驶证 （mDL）
 doc_auth.forms.id_type_preference.passport: 美国护照本
+doc_auth.forms.id_type_preference.passport_card: 美国护照卡
 doc_auth.forms.selected_file: 被选文件
 doc_auth.headers.expired_id: 你的身份证件可能已过期
 doc_auth.headers.general.network_error: 我们目前遇到技术困难
@@ -726,13 +727,15 @@ doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话号码和其他个人信息并通过与公共记录核对来验证你的身份。
 doc_auth.info.verify_online_description: 你可以使用美国护照本、美国驾照或州身份证件。
 doc_auth.info.verify_online_description_mdl: 您可以使用美国护照、驾驶执照、移动驾驶执照或州身份证。
-doc_auth.info.verify_online_instruction: 拍你 ID的照片。
+doc_auth.info.verify_online_description_passport_card: 您可以使用的证件包括：美国护照（护照本或护照卡）、美国驾驶执照或州身份证。
+doc_auth.info.verify_online_instruction: 您需要拍摄身份证件照片，以便全程在线完成身份验证。
 doc_auth.info.verify_online_instruction_selfie: 拍一张自拍照，并拍摄你 ID的照片。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.welcome_sp_reproof_alert: 为了您的安全，%{sp_name} 要求您再次验证您的身份。
 doc_auth.info.you_entered: 你输入了：
 doc_auth.instructions.bullet1: 拥有美国护照本、美国驾照或州身份证件
 doc_auth.instructions.bullet1_mdl: 持有美国护照本、驾驶执照、移动驾驶执照 （mDL） 或州身份证
+doc_auth.instructions.bullet1_passport_card: 持有美国护照（护照本或护照卡）、美国驾驶执照或州身份证
 doc_auth.instructions.bullet2: 输入你的社会保障号码
 doc_auth.instructions.bullet3: 与你电话号码匹配
 doc_auth.instructions.bullet4: 重新输入你 %{app_name} 密码
@@ -764,7 +767,7 @@ doc_auth.tips.document_capture_selfie_text3: 保持中性表情
 doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
 duplicate_profiles_detected.accounts_list.heading: 以下账户具有相同的已验证信息
 duplicate_profiles_detected.cant_access: '我无法访问某个帐户'
-duplicate_profiles_detected.connected_acct_html: '<strong> 关联机构: </strong> %{count}'
+duplicate_profiles_detected.connected_acct_html: '<strong> 互联服务: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> 创建: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: 请登录您打算删除的账户：<a href="https://secure.login.gov">https://secure.login.gov/zh</a>。以下是%{link_html}。
 duplicate_profiles_detected.delete_duplicates.details2_html: 如果您愿意，可以在%{link_html}，将该电子邮件地址添加到您保留的账户中。
@@ -775,7 +778,7 @@ duplicate_profiles_detected.dont_recognize_account: 我不认识上边的一个�
 duplicate_profiles_detected.duplicate: 重复
 duplicate_profiles_detected.get_help: 获取帮助
 duplicate_profiles_detected.heading: 我们发现了其他可能属于你的帐户
-duplicate_profiles_detected.intro_html: '%{sp_name} 要求您仅持有一个已验证身份的 %{app_name} 账户。在登录 %{sp_name} 之前，您需要%{link_html}。具体操作如下：'
+duplicate_profiles_detected.intro_html: '某些服务要求您仅拥有一个已验证身份的 %{app_name} 账户。在登录 %{sp_name} 之前，您需要%{link_html}。具体操作如下：'
 duplicate_profiles_detected.intro.link: 删除重复账户
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> 上次登录: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: 从未登录过
@@ -1375,8 +1378,8 @@ in_person_proofing.body.prepare.verify_step_about: 完成以下步骤来生成�
 in_person_proofing.body.prepare.verify_step_enter_phone: 输入你的主要电话号码或者你最常使用的号码。
 in_person_proofing.body.prepare.verify_step_enter_pii: 输入你的姓名、生日、州政府颁发的身份证件号、地址以及社会保障号码。
 in_person_proofing.body.prepare.verify_step_post_office: 找到你附件的参与邮局。
-in_person_proofing.body.state_id.alert_message: 你需要驾照或州身份证件。
-in_person_proofing.body.state_id.alert_text: 亲身验证时不能用护照。你的驾照或州身份证件不得过期。
+in_person_proofing.body.state_id.alert_message: 美国驾驶执照、州身份证，或护照本/卡
+in_person_proofing.body.state_id.alert_text: '目前暂不接受使用护照进行现场身份验证。如果您未看到使用护照验证身份的选项，请改用驾驶执照或州身份证，或者稍后重试身份验证。'
 in_person_proofing.body.state_id.info_html: 输入 <strong> 与州政府颁发的身份证件上完全一致的信息</strong>我们将使用该信息来确认与你亲身出现所持身份证件上信息的一致性。
 in_person_proofing.form.address.errors.unsupported_chars: 我们的系统无法读取以下字符： %{char_list}. 请替换那些字符后再试一次。
 in_person_proofing.form.address.state_prompt: '- 选择 -'
@@ -1396,6 +1399,9 @@ in_person_proofing.form.state_id.address1_hint: 举例： 150 Calle A Apt 3
 in_person_proofing.form.state_id.address2: 地址第 2 行
 in_person_proofing.form.state_id.address2_hint: 举例： URB Las Gladiolas or COND Miraflor
 in_person_proofing.form.state_id.city: 城市
+in_person_proofing.form.state_id.current_address_matches_id: 你目前所住地址是州政府颁发的身份证件上所列地址吗？
+in_person_proofing.form.state_id.current_address_matches_id_no: 不是，我住在一个不同的地址。
+in_person_proofing.form.state_id.current_address_matches_id_yes: 是的，我住在州政府颁发的身份证件上所列地址。
 in_person_proofing.form.state_id.date_hint.day: 举例：28
 in_person_proofing.form.state_id.date_hint.month: 举例：4
 in_person_proofing.form.state_id.date_hint.year: 举例：1986
@@ -1412,12 +1418,10 @@ in_person_proofing.form.state_id.identity_doc_address_state: 州
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- 选择 -'
 in_person_proofing.form.state_id.last_name: 姓
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year: 输入生日
-in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: 你年龄必须超过 13 岁才能使用 %{app_name}
+in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: 你年龄必须超过 %{min_age} 岁才能使用 %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: 输入过去的一个日期
 in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: 你不能使用过期 ID。
-in_person_proofing.form.state_id.same_address_as_id: 你目前所住地址是州政府颁发的身份证件上所列地址吗？
-in_person_proofing.form.state_id.same_address_as_id_no: 不是，我住在一个不同的地址。
-in_person_proofing.form.state_id.same_address_as_id_yes: 是的，我住在州政府颁发的身份证件上所列地址。
+in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon: 您不能使用7天内过期的身份证件。
 in_person_proofing.form.state_id.state_id_jurisdiction: 颁发州
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: 这是颁发你身份证件的州
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- 选择 -'
@@ -1797,10 +1801,10 @@ titles.revoke_consent: 撤销同意
 titles.rules_of_use: 使用规则
 titles.select_email: 选择你想用的电邮
 titles.sign_in: 登录
-titles.sign_up.completion_consent_expired_ial1: 从你上次授权我们分享你的信息已经一年了。
-titles.sign_up.completion_consent_expired_ial2: 从你上次授权我们分享你验证过的身份已经一年了。
+titles.sign_up.completion_consent_expired_auth_only: 从你上次授权我们分享你的信息已经一年了。
+titles.sign_up.completion_consent_expired_idv: 从你上次授权我们分享你验证过的身份已经一年了。
 titles.sign_up.completion_first_sign_in: 继续到 %{sp}
-titles.sign_up.completion_ial2: 连接你验证过的信息到 %{sp}
+titles.sign_up.completion_idv: 连接你验证过的信息到 %{sp}
 titles.sign_up.completion_new_attributes: '%{sp} 在要求新信息'
 titles.sign_up.completion_new_sp: 你现在正在首次登入
 titles.sign_up.completion_reverified_consent: 与 %{sp}分享你更新后的信息
@@ -2110,9 +2114,9 @@ user_mailer.in_person_ready_to_verify_reminder.subject.other: 过%{count} 天去
 user_mailer.in_person_ready_to_verify.subject: 你可以在 %{app_name} 亲身验证身份了
 user_mailer.in_person_verified.greeting: 你好，
 user_mailer.in_person_verified.intro: 你于 %{date}在 %{location} 邮局成功地验证了身份。
-user_mailer.in_person_verified.next_sign_in.with_sp.with_cta: 接下来请点击按钮或复制下面的连接来访问 %{sp_name} 并登录。
-user_mailer.in_person_verified.next_sign_in.with_sp.without_cta: 你现在可以从 %{sp_name} 的网站登录。
-user_mailer.in_person_verified.next_sign_in.without_sp: 接下来请点击按钮或复制下面的连接来登录 %{app_name}。
+user_mailer.in_person_verified.next_sign_in.with_sp.with_cta: 登录并将你的已验证信息与 %{sp_name} 关联。
+user_mailer.in_person_verified.next_sign_in.with_sp.without_cta: 从 %{sp_name} 的网站登录，以关联你的已验证信息。
+user_mailer.in_person_verified.next_sign_in.without_sp: 登录 %{app_name}。
 user_mailer.in_person_verified.sign_in: 登录
 user_mailer.in_person_verified.subject: 你在 %{app_name} 成功地验证了身份
 user_mailer.in_person_verified.warning_contact_us_html: 如果你没有试图亲身验证身份，请登入 <a href="%{reset_password_url}"> 重设密码</a>。要报告这件事，<a href="%{contact_us_url}">联系 %{app_name} 支持 %{app_name}</a>。

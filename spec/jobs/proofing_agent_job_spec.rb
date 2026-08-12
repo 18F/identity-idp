@@ -212,7 +212,7 @@ RSpec.describe ProofingAgentJob, type: :job do
                 identity_doc_address_state: 'MT',
                 state_id_jurisdiction: 'ND',
                 state_id_number: '#############',
-                same_address_as_id: 'true',
+                ipp_current_address_matches_id: true,
                 phone:
                 { area_code: '202',
                   country_code: 'US',
@@ -489,6 +489,7 @@ RSpec.describe ProofingAgentJob, type: :job do
           remaining_submit_attempts: 2,
           document_type_requested: 'passport',
           correlation_id_sent: correlation_id,
+          category: :book,
           proofing_agent: {
             agent_id: proofing_agent_id,
             location_id: proofing_location_id,

@@ -33,6 +33,7 @@ class GpoConfirmationMaker
     GpoConfirmationCode.create!(
       profile_id: profile&.id || profile_id,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
+      state: pii[:state],
     )
 
     update_proofing_cost

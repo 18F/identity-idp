@@ -13,7 +13,10 @@ RSpec.describe SocureDocvResultsJob do
   let(:socure_user_id) { 'socure_user_id' }
   let(:socure_reference_id) { SecureRandom.uuid }
   let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
-  let(:document_capture_session) { create(:document_capture_session, document_type_requested:) }
+  let(:passport_cards_supported) { false }
+  let(:document_capture_session) do
+    create(:document_capture_session, document_type_requested:, passport_cards_supported:)
+  end
   let(:user) { document_capture_session.user }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:socure_idplus_base_url) { 'https://example.com' }
@@ -813,7 +816,8 @@ RSpec.describe SocureDocvResultsJob do
                     submit_attempts: 1,
                     remaining_submit_attempts: 3,
                     user_id: document_capture_session.user.uuid,
-                    document_type_requested: 'Passport',
+                    document_type_requested: 'passport',
+                    category: :book,
                     response: 'YES',
                     correlation_id_sent: an_instance_of(String),
                     errors: {},
@@ -899,7 +903,8 @@ RSpec.describe SocureDocvResultsJob do
                       submit_attempts: 1,
                       remaining_submit_attempts: 3,
                       user_id: document_capture_session.user.uuid,
-                      document_type_requested: 'Passport',
+                      document_type_requested: 'passport',
+                      category: :book,
                       response: 'NO',
                       correlation_id_sent: an_instance_of(String),
                       errors: { passport: 'Please add a new image' },
@@ -991,16 +996,78 @@ RSpec.describe SocureDocvResultsJob do
                   end
 
                   context 'when passport cards are supported' do
-                    before do
-                      document_capture_session.update(passport_cards_supported: true)
-                    end
+                    let(:passport_cards_supported) { true }
 
                     it 'doc auth succeeds' do
                       perform
 
                       document_capture_session.reload
                       document_capture_session_result = document_capture_session.load_result
-                      expect(document_capture_session_result.success).to eq(false)
+                      expect(document_capture_session_result.success).to eq(true)
+                    end
+
+                    context 'when a passport card was requested' do
+                      let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT_CARD }
+
+                      context 'when a passport card was submitted' do
+                        let(:document_metadata_type) { 'Passport Card' }
+
+                        it 'result succeeds' do
+                          perform
+
+                          document_capture_session.reload
+                          document_capture_session_result = document_capture_session.load_result
+                          expect(document_capture_session_result.success).to eq(true)
+                          expect(document_capture_session_result.pii[:mrz]).to eq(mrz)
+                          expect(document_capture_session_result.doc_auth_success).to eq(true)
+                          expect(document_capture_session_result.selfie_status)
+                            .to eq(:not_processed)
+                          expect(document_capture_session_result.attention_with_barcode)
+                            .to eq(false)
+                          expect(document_capture_session_result.mrz_status).to eq(:pass)
+                          expect(document_capture_session_result.aamva_status).to eq(:not_processed)
+                        end
+
+                        it 'logs idv_dos_passport_verification event for successful MRZ check' do
+                          perform
+
+                          expect(@analytics).to have_logged_event(
+                            :idv_dos_passport_verification,
+                            success: true,
+                            submit_attempts: 1,
+                            remaining_submit_attempts: 3,
+                            user_id: document_capture_session.user.uuid,
+                            document_type_requested: 'passport_card',
+                            category: :card,
+                            response: 'YES',
+                            correlation_id_sent: an_instance_of(String),
+                            errors: {},
+                          )
+                        end
+
+                        it 'tracks the attempt with mrz data' do
+                          expect(attempts_api_tracker).to receive(:idv_document_upload_submitted)
+                            .with(
+                              success: true,
+                              document_state: address_data[:state],
+                              document_number: pii_from_doc[:documentNumber],
+                              # Socure does not send back a document issue date for passports
+                              document_issued: nil,
+                              document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+                              first_name: pii_from_doc[:firstName],
+                              last_name: pii_from_doc[:surName],
+                              date_of_birth: Date.parse(pii_from_doc[:dob]),
+                              address1: address_data[:physicalAddress],
+                              address2: address_data[:physicalAddress2],
+                              city: address_data[:city],
+                              state: address_data[:state],
+                              zip: address_data[:zip],
+                              failure_reason: nil,
+                            )
+
+                          perform
+                        end
+                      end
                     end
                   end
                 end

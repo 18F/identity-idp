@@ -102,6 +102,26 @@ RSpec.describe Redirect::ReturnToSpController do
           redirect_url: 'https://sp.gov/failure_to_proof',
         )
       end
+
+      it 'redirects to the SP with OIDC state from the request url' do
+        current_sp.failure_to_proof_url = 'https://sp.gov/failure_to_proof'
+        redirect_uri = 'https://sp.gov/result'
+        state = '123abc'
+        sp_request_url = UriService.add_params(
+          'https://example.gov/authorize', state: state, redirect_uri: redirect_uri
+        )
+        session[:sp] = { request_url: sp_request_url }
+        allow(FeatureManagement).to receive(:idv_failure_to_proof_oidc_state_enabled?)
+          .and_return(true)
+
+        get 'failure_to_proof'
+
+        expect(response).to redirect_to('https://sp.gov/failure_to_proof?state=123abc')
+        expect(@analytics).to have_logged_event(
+          'Return to SP: Failed to proof',
+          redirect_url: 'https://sp.gov/failure_to_proof?state=123abc',
+        )
+      end
     end
 
     context 'with step or location parameters' do

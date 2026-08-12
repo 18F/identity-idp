@@ -164,10 +164,11 @@ module SamlAuthHelper
   ##################################################################################################
 
   # generates a SAML response and returns a parsed Nokogiri XML document
-  def generate_saml_response(user, settings = saml_settings, link: true)
+  def generate_saml_response(user, settings = saml_settings, link: true, auth_events: nil)
     # user needs to be signed in in order to generate an assertion
     link_user_to_identity(user, link, settings)
     sign_in(user)
+    set_saml_auth_events(auth_events) if auth_events
     saml_get_auth(settings)
   end
 
@@ -192,6 +193,14 @@ module SamlAuthHelper
   end
 
   private
+
+  def set_saml_auth_events(auth_events)
+    request.env['warden'].session(:user)[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
+    request.env['warden'].session(:user)[:auth_events] = auth_events
+    session['warden.user.user.session'] ||= {}.with_indifferent_access
+    session['warden.user.user.session'][TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
+    session['warden.user.user.session'][:auth_events] = auth_events
+  end
 
   def link_user_to_identity(user, link, settings)
     return unless link

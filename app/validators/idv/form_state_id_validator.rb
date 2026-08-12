@@ -14,9 +14,13 @@ module Idv
                 :state_id_jurisdiction,
                 :state_id_number,
                 :id_expiration,
-                :same_address_as_id,
                 :asserted_id_type,
                 presence: true
+
+      # A boolean; `presence: true` would reject a legitimate `false`, so validate
+      # that an explicit answer (true or false) was provided.
+      validates :ipp_current_address_matches_id,
+                inclusion: { in: [true, false] }
 
       validates_with UspsInPersonProofing::TransliterableValidator,
                      fields: [:first_name, :last_name, :identity_doc_city],
@@ -46,19 +50,26 @@ module Idv
                        I18n.t(
                          'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
                          app_name: APP_NAME,
+                         min_age: IdentityConfig.store.idv_min_age_years,
                        )
                      end
       # rubocop:enable Layout/LineLength
       # rubocop:disable Layout/LineLength
       validates_with UspsInPersonProofing::DateValidator,
                      attributes: [:id_expiration], greater_than_or_equal_to: ->(_rec) {
-                       Time.zone.today + 2.days
+                       Time.zone.today + 7.days
                      },
-                     message: ->(_, _) do
-                       I18n.t(
-                         'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
-                         app_name: APP_NAME,
-                       )
+                     message: ->(_, data) do
+                       if data[:value].is_a?(Date) && data[:value] > Time.zone.today
+                         I18n.t(
+                           'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon',
+                         )
+                       else
+                         I18n.t(
+                           'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
+                           app_name: APP_NAME,
+                         )
+                       end
                      end
       # rubocop:enable Layout/LineLength
     end

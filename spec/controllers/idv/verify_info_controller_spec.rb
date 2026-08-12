@@ -860,7 +860,7 @@ RSpec.describe Idv::VerifyInfoController do
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
           resolution_result: Proofing::Resolution::Result.new(success: true),
-          same_address_as_id: true,
+          ipp_current_address_matches_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
           precheck_phone_number: subject.idv_session.precheck_phone[:phone],
         ).adjudicated_result
@@ -916,7 +916,7 @@ RSpec.describe Idv::VerifyInfoController do
             vendor_name: vendor_name,
             attributes_requiring_additional_verification: error_attributes,
           ),
-          same_address_as_id: nil,
+          ipp_current_address_matches_id: nil,
           applicant_pii:,
           precheck_phone_number: subject.idv_session.precheck_phone[:phone],
         ).adjudicated_result
@@ -1077,7 +1077,7 @@ RSpec.describe Idv::VerifyInfoController do
               ],
             },
           ),
-          same_address_as_id: true,
+          ipp_current_address_matches_id: true,
           applicant_pii:,
           precheck_phone_number: subject.idv_session.precheck_phone[:phone],
         ).adjudicated_result
@@ -1193,7 +1193,7 @@ RSpec.describe Idv::VerifyInfoController do
             success: true,
             vendor_name: resolution_vendor_name,
           ),
-          same_address_as_id: true,
+          ipp_current_address_matches_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
           precheck_phone_number: subject.idv_session.precheck_phone[:phone],
         ).adjudicated_result

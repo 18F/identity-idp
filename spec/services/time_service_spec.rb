@@ -1,6 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe TimeService do
+  describe '.duration_ms' do
+    it 'returns the duration in whole milliseconds between two times' do
+      start = Time.zone.at(1_590_609_718.1231)
+      finish = Time.zone.at(1_590_609_719.999)
+
+      expect(TimeService.duration_ms(start:, finish:)).to eq(1875)
+    end
+  end
+
   describe '.round_time' do
     it 'returns a Time instance rounded to the nearest interval' do
       time = Time.zone.at(0)

@@ -79,6 +79,20 @@ module Telephony
       response
     end
 
+    def send_proofing_completion_confirmation(to:, country_code:, sp_or_app_name:)
+      proof_date = I18n.l(Time.current, format: :sms_date)
+      message = I18n.t(
+        'telephony.proofing_completion_confirmation.sms',
+        app_name: APP_NAME,
+        proof_date: proof_date,
+        sp_or_app_name: sp_or_app_name,
+        contact_url: MarketingSite.contact_url,
+      )
+      response = adapter.deliver(message: message, to: to, country_code: country_code)
+      log_response(response, context: __method__.to_s.gsub(/^send_/, ''))
+      response
+    end
+
     def send_raw_message(to:, message:, country_code:)
       response = adapter.deliver(message: message, to: to, country_code: country_code)
       log_response(response, context: __method__.to_s.gsub(/^send_/, ''))

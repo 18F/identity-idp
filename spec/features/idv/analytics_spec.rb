@@ -1337,7 +1337,7 @@ RSpec.feature 'Analytics Regression', :js do
       start_idv_from_sp(:saml)
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
-      complete_all_in_person_proofing_steps(user, same_address_as_id: false)
+      complete_all_in_person_proofing_steps(user, current_address_matches_id: false)
       complete_phone_step(user)
       complete_enter_password_step(user)
       acknowledge_and_confirm_personal_key

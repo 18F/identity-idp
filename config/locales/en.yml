@@ -58,7 +58,7 @@ account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文（简体）
 account.email_language.updated: Your email language preference has been updated.
-account.emails.confirmed_html: You have confirmed your email address. Go to <a href="%{url}">your connected services</a> to update the email you share with connected agencies.
+account.emails.confirmed_html: You have confirmed your email address. Go to <a href="%{url}">your connected services</a> to update the email you share with connected services.
 account.forget_all_browsers.longer_description: Once you choose to ‘forget all browsers,’ we’ll need additional information to know that it’s actually you signing in to your account. We’ll ask for a multi-factor authentication method (such as text/SMS code or a security key) each time you want to access your account.
 account.index.auth_app_add: Add app
 account.index.auth_app_disabled: not enabled
@@ -586,7 +586,7 @@ doc_auth.errors.sharpness.top_msg: We couldn’t read your ID. Your photo may be
 doc_auth.errors.sharpness.top_msg_plural: We couldn’t read your ID. Your photos may be too blurry or dark. Try taking new pictures in a bright area.
 doc_auth.errors.state_id_verification: The information on your ID could not be verified with your state. You may need to verify your ID in person, or you can try again with a different ID.
 doc_auth.errors.unaccepted_id_type: We do not accept passports, military IDs, paper IDs or temporary IDs. You may only use a driver’s license or an ID issued by a U.S. state or territory.
-doc_auth.errors.underage: You must be at least 13 years old to use %{app_name}. If you are 13 or older, try again and make sure your date of birth is in focus.
+doc_auth.errors.underage: You must be at least %{min_age} years old to use %{app_name}. If you are %{min_age} or older, try again and make sure your date of birth is in focus.
 doc_auth.errors.unreadable_id: Take your photos in a well-lit area without shadows or glare. Make sure that everything on your ID is in focus and that the card fills the frame.
 doc_auth.errors.upload_error: Sorry, something went wrong on our end.
 doc_auth.errors.verify_drivers_license_heading: We couldn’t verify your driver’s license or state ID
@@ -600,6 +600,7 @@ doc_auth.forms.doc_success: We verified your information
 doc_auth.forms.id_type_preference.drivers_license: U.S. driver’s license or state ID
 doc_auth.forms.id_type_preference.mdl: Mobile driver’s license (mDL)
 doc_auth.forms.id_type_preference.passport: U.S. passport book
+doc_auth.forms.id_type_preference.passport_card: U.S. passport card
 doc_auth.forms.selected_file: Selected file
 doc_auth.headers.expired_id: Your ID may have expired
 doc_auth.headers.general.network_error: We are having technical difficulties
@@ -715,6 +716,7 @@ doc_auth.info.verify_at_post_office_link_text: Learn more about verifying in per
 doc_auth.info.verify_identity: We’ll ask for your ID, phone number, and other personal information to verify your identity against public records.
 doc_auth.info.verify_online_description: You can use a U.S. passport book, U.S. driver’s license or state ID.
 doc_auth.info.verify_online_description_mdl: You can use a U.S. passport book, U.S. driver’s license, mobile driver’s license (mDL) or state ID.
+doc_auth.info.verify_online_description_passport_card: You can use a U.S. passport book or card, U.S. driver’s license or state ID.
 doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online.
 doc_auth.info.verify_online_instruction_selfie: You’ll take a selfie and photos of your ID to verify your identity fully online.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
@@ -722,6 +724,7 @@ doc_auth.info.welcome_sp_reproof_alert: For your security, %{sp_name} requires y
 doc_auth.info.you_entered: 'You entered:'
 doc_auth.instructions.bullet1: Have a U.S. passport book, U.S. driver’s license or state ID
 doc_auth.instructions.bullet1_mdl: Have a U.S. passport book, U.S. driver’s license, mobile driver’s license (mDL) or state ID card
+doc_auth.instructions.bullet1_passport_card: Have a U.S. passport book or card, U.S. driver’s license or state ID card
 doc_auth.instructions.bullet2: Enter your Social Security number
 doc_auth.instructions.bullet3: Match to your phone number
 doc_auth.instructions.bullet4: Re-enter your %{app_name} password
@@ -753,7 +756,7 @@ doc_auth.tips.document_capture_selfie_text3: Keep your expression neutral
 doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle
 duplicate_profiles_detected.accounts_list.heading: Accounts with the same verified information
 duplicate_profiles_detected.cant_access: 'I can’t access an account'
-duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: </strong> %{count}'
+duplicate_profiles_detected.connected_acct_html: '<strong> Connected services: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: Sign into the account you are going to delete at <a href="https://secure.login.gov">https://secure.login.gov</a>. Here’s %{link_html}
 duplicate_profiles_detected.delete_duplicates.details2_html: If you want, you may %{link_html} to the account you’re keeping after deleting the duplicate account.
@@ -764,11 +767,11 @@ duplicate_profiles_detected.dont_recognize_account: I don’t recognize an accou
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: Get Help
 duplicate_profiles_detected.heading: We found other accounts that may be yours
-duplicate_profiles_detected.intro_html: 'The %{sp_name} requires that you only have one %{app_name} account with a verified identity. You need to delete %{link_html} before signing into %{sp_name}. Here’s what to do:'
+duplicate_profiles_detected.intro_html: 'Some services require that you only have one %{app_name} account with a verified identity. You need to delete %{link_html} before signing into %{sp_name}. Here’s what to do:'
 duplicate_profiles_detected.intro.link: duplicate accounts
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Never logged in to
-duplicate_profiles_detected.select_an_account.details_html: 'Keep the account that’s connected to the most services. Go to %{link_html} page to view connected agencies by selecting “Your connected services” in the left menu.'
+duplicate_profiles_detected.select_an_account.details_html: 'Keep the account that’s connected to the most services. Go to %{link_html} page to view connected services by selecting “Your connected services” in the left menu.'
 duplicate_profiles_detected.select_an_account.details.link: Your account
 duplicate_profiles_detected.select_an_account.heading: Choose an account to keep
 duplicate_profiles_detected.sign_back_in.details: Go back to the %{app_name} website and sign in using the one %{app_name} account you kept.
@@ -1362,8 +1365,8 @@ in_person_proofing.body.prepare.verify_step_about: 'Complete the steps below to 
 in_person_proofing.body.prepare.verify_step_enter_phone: Enter your primary phone number or the number that you use most often.
 in_person_proofing.body.prepare.verify_step_enter_pii: Enter your name, date of birth, state‑issued ID number, address and Social Security number.
 in_person_proofing.body.prepare.verify_step_post_office: Find a participating Post Office near you.
-in_person_proofing.body.state_id.alert_message: You need a driver’s license or state ID
-in_person_proofing.body.state_id.alert_text: Passports are not accepted in person. Your driver’s license or state ID must not be expired.
+in_person_proofing.body.state_id.alert_message: U.S. Driver’s license, state ID, or passport book/card
+in_person_proofing.body.state_id.alert_text: 'Passports are not yet accepted for verifying in person. If you don’t see the option to verify your identity with a passport, use a driver’s license or state ID, or try to verify your identity again later.'
 in_person_proofing.body.state_id.info_html: Enter information <strong>exactly as it appears on your state-issued ID.</strong> We will use this information to confirm it matches your ID in person.
 in_person_proofing.form.address.errors.unsupported_chars: 'Our system cannot read the following characters: %{char_list}. Please try again using substitutes for those characters.'
 in_person_proofing.form.address.state_prompt: '- Select -'
@@ -1383,6 +1386,9 @@ in_person_proofing.form.state_id.address1_hint: 'Example: 150 Calle A Apt 3'
 in_person_proofing.form.state_id.address2: Address line 2
 in_person_proofing.form.state_id.address2_hint: 'Example: URB Las Gladiolas or COND Miraflor'
 in_person_proofing.form.state_id.city: City
+in_person_proofing.form.state_id.current_address_matches_id: Do you currently live at the address listed on your state‑issued ID?
+in_person_proofing.form.state_id.current_address_matches_id_no: No, I live at a different address
+in_person_proofing.form.state_id.current_address_matches_id_yes: Yes, I live at the address on my state‑issued ID
 in_person_proofing.form.state_id.date_hint.day: 'Example: 28'
 in_person_proofing.form.state_id.date_hint.month: 'Example: 4'
 in_person_proofing.form.state_id.date_hint.year: 'Example: 1986'
@@ -1399,12 +1405,10 @@ in_person_proofing.form.state_id.identity_doc_address_state: State
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Select -'
 in_person_proofing.form.state_id.last_name: Last name
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year: Enter a date of birth
-in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: You must be over 13 years of age to use %{app_name}
+in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: You must be over %{min_age} years of age to use %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: Enter a date that is in the past
 in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: You cannot use an expired ID.
-in_person_proofing.form.state_id.same_address_as_id: Do you currently live at the address listed on your state‑issued ID?
-in_person_proofing.form.state_id.same_address_as_id_no: No, I live at a different address
-in_person_proofing.form.state_id.same_address_as_id_yes: Yes, I live at the address on my state‑issued ID
+in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon: You cannot use an ID that expires within 7 days.
 in_person_proofing.form.state_id.state_id_jurisdiction: Issuing state
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: This is the state that issued your ID
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- Select -'
@@ -1784,10 +1788,10 @@ titles.revoke_consent: Revoke Consent
 titles.rules_of_use: Rules of Use
 titles.select_email: Select your preferred email
 titles.sign_in: Sign in
-titles.sign_up.completion_consent_expired_ial1: It’s been a year since you gave us consent to share your information
-titles.sign_up.completion_consent_expired_ial2: It’s been a year since you gave us consent to share your verified identity
+titles.sign_up.completion_consent_expired_auth_only: It’s been a year since you gave us consent to share your information
+titles.sign_up.completion_consent_expired_idv: It’s been a year since you gave us consent to share your verified identity
 titles.sign_up.completion_first_sign_in: Continue to %{sp}
-titles.sign_up.completion_ial2: Connect your verified information to %{sp}
+titles.sign_up.completion_idv: Connect your verified information to %{sp}
 titles.sign_up.completion_new_attributes: '%{sp} is requesting new information'
 titles.sign_up.completion_new_sp: You are now signing in for the first time
 titles.sign_up.completion_reverified_consent: Share your updated information with %{sp}
@@ -2097,9 +2101,9 @@ user_mailer.in_person_ready_to_verify_reminder.subject.other: Verify your identi
 user_mailer.in_person_ready_to_verify.subject: You’re ready to verify your identity with %{app_name} in person
 user_mailer.in_person_verified.greeting: Hello,
 user_mailer.in_person_verified.intro: You successfully verified your identity at the %{location} Post Office on %{date}.
-user_mailer.in_person_verified.next_sign_in.with_sp.with_cta: Next, click the button or copy the link below to access %{sp_name} and sign in.
-user_mailer.in_person_verified.next_sign_in.with_sp.without_cta: You can now sign in from %{sp_name}’s website.
-user_mailer.in_person_verified.next_sign_in.without_sp: Next, click the button or copy the link below to sign in to %{app_name}.
+user_mailer.in_person_verified.next_sign_in.with_sp.with_cta: Sign in and connect your verified information with %{sp_name}.
+user_mailer.in_person_verified.next_sign_in.with_sp.without_cta: Sign in from %{sp_name}’s website to connect your verified information.
+user_mailer.in_person_verified.next_sign_in.without_sp: Sign in to %{app_name}.
 user_mailer.in_person_verified.sign_in: Sign in
 user_mailer.in_person_verified.subject: You successfully verified your identity with %{app_name}
 user_mailer.in_person_verified.warning_contact_us_html: If you did not attempt to verify your identity in person, please sign in to <a href="%{reset_password_url}">reset your password</a>. To report this, <a href="%{contact_us_url}">contact %{app_name} support</a>.

@@ -13,7 +13,7 @@ RSpec.describe Pii::UspsApplicant do
         'identity_doc_zipcode' => Faker::Address.zip_code,
         'state_id_number' => Faker::Number.number(digits: 9),
         'state_id_expiration' => Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d'),
-        'same_address_as_id' => false,
+        'ipp_current_address_matches_id' => false,
         'asserted_id_type' => Idp::Constants::DocumentTypes::DRIVERS_LICENSE,
       }
     end
@@ -29,7 +29,7 @@ RSpec.describe Pii::UspsApplicant do
         zipcode: idv_applicant['identity_doc_zipcode'],
         id_number: idv_applicant['state_id_number'],
         id_expiration: idv_applicant['state_id_expiration'],
-        current_address_same_as_id: idv_applicant['same_address_as_id'],
+        current_address_same_as_id: idv_applicant['ipp_current_address_matches_id'],
         document_type: idv_applicant['asserted_id_type'],
       )
     end

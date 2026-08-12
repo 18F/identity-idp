@@ -10,8 +10,9 @@ module Proofing
           private
 
           def build_result_from_response(verification_response)
+            response_body = verification_response.response_body
             parsed_response =
-              Proofing::LexisNexis::Ddp::ParsedResponse.new(raw_response(verification_response))
+              Proofing::LexisNexis::Ddp::ParsedResponse.new(raw_response(response_body))
 
             AddressResult.new(
               success: parsed_response.verification_status == 'passed',
@@ -20,6 +21,7 @@ module Proofing
               vendor_name: 'lexisnexis:phone_finder_ddp',
               transaction_id: parsed_response.conversation_id,
               dual_vendor_check_eligible: dual_vendor_check_eligible?(parsed_response),
+              result: phone_metadata(response_body),
             )
           end
 
@@ -44,12 +46,24 @@ module Proofing
             errors
           end
 
-          def raw_response(verification_response)
-            service_block = phone_finder_service_block(verification_response.response_body)
+          def raw_response(response_body)
+            service_block = phone_finder_service_block(response_body)
             raw = service_block.dig('tps_vendor_raw_response')
             return raw if raw
 
             raise_missing_raw_response_error(service_block)
+          end
+
+          def phone_metadata(response_body)
+            {
+              phone_type: response_body['phonefinder.primary_phone.phone_type'],
+              account_telephone_type: response_body['account_telephone_type'],
+              risk_indicator_status:
+                response_body['phonefinder.primary_phone.risk_indicator_status'],
+              risk_count_high: response_body['phonefinder.primary_phone.risk_count_high'],
+              risk_count_med: response_body['phonefinder.primary_phone.risk_count_med'],
+              risk_count_low: response_body['phonefinder.primary_phone.risk_count_low'],
+            }
           end
 
           def phone_finder_service_block(body)

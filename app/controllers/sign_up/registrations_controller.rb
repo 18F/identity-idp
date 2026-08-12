@@ -2,11 +2,11 @@
 
 module SignUp
   class RegistrationsController < ApplicationController
-    include ApplicationHelper # for ial2_requested?
+    include ApplicationHelper # for idv_requested?
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
     before_action :require_no_authentication
-    before_action :redirect_if_ial2_and_idv_unavailable
+    before_action :redirect_if_idv_requested_and_unavailable
 
     CREATE_ACCOUNT = 'create_account'
 
@@ -66,8 +66,8 @@ module SignUp
       sp_session[:request_id]
     end
 
-    def redirect_if_ial2_and_idv_unavailable
-      if ial2_requested? && !FeatureManagement.idv_available?
+    def redirect_if_idv_requested_and_unavailable
+      if idv_requested? && !FeatureManagement.idv_available?
         redirect_to idv_unavailable_path(from: CREATE_ACCOUNT)
       end
     end

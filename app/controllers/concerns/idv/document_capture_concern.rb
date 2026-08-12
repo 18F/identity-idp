@@ -49,7 +49,7 @@ module Idv
         idv_session.doc_auth_vendor = document_capture_session.doc_auth_vendor
         idv_session.pii_from_doc = stored_result.pii_from_doc
         idv_session.aamva_verified_attributes = stored_result.aamva_verified_attributes
-        idv_session.selfie_check_performed = stored_result.selfie_check_performed?
+        idv_session.selfie_check_performed = stored_result.selfie_check_passed?
         idv_session.source_check_vendor = stored_result.source_check_vendor
       end
 
@@ -64,12 +64,13 @@ module Idv
     def selfie_requirement_met?
       !resolved_authn_context_result.facial_match? ||
         mdl_received? ||
-        stored_result.selfie_check_performed?
+        stored_result.selfie_check_passed?
     end
 
     def mrz_requirement_met?
       return true if !document_capture_session.passport_requested?
-      return false if document_type_received != 'passport'
+      return false unless Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES
+        .include? document_type_received
 
       stored_result.mrz_status == :pass
     end
@@ -126,7 +127,7 @@ module Idv
       )
     end
 
-    def track_document_request_event(document_request:, document_response:, timer:)
+    def track_socure_document_request_event(document_request:, document_response:, timer:)
       document_request_body = JSON.parse(document_request.body, symbolize_names: true)[:config]
       response_hash = document_response.to_h
       log_extras = {
@@ -168,8 +169,9 @@ module Idv
       when Idp::Constants::DocumentTypes::STATE_ID_CARD
         Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
           .include?(document_type_received)
-      when Idp::Constants::DocumentTypes::PASSPORT
-        document_type_received == Idp::Constants::DocumentTypes::PASSPORT
+      when *Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES
+        Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES
+          .include?(document_type_received)
       when Idp::Constants::DocumentTypes::MDL
         mdl_received?
       else

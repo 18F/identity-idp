@@ -52,6 +52,7 @@ RSpec.describe GpoConfirmationMaker do
 
       expect(gpo_confirmation_code.profile).to eq profile
       expect(gpo_confirmation_code.otp_fingerprint).to eq Pii::Fingerprinter.fingerprint(otp)
+      expect(gpo_confirmation_code.state).to eq decrypted_attributes[:state]
     end
   end
 

@@ -10,7 +10,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   let(:applicant_pii) do
     Pii::UspsApplicant.from_idv_applicant(
       Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE
-        .merge(same_address_as_id: current_address_matches_id ? true : false)
+        .merge(ipp_current_address_matches_id: current_address_matches_id ? true : false)
         .transform_keys(&:to_s),
     )
   end

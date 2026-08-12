@@ -58,7 +58,7 @@ account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文（简体）
 account.email_language.updated: Votre langue de préférence pour les e-mails a été mise à jour.
-account.emails.confirmed_html: Vous avez confirmé votre adresse e-mail. Rendez-vous sur <a href="%{url}">vos services connectés</a> pour actualiser l’adresse e-mail que vous communiquez aux organismes connectés.
+account.emails.confirmed_html: Vous avez confirmé votre adresse e-mail. Rendez-vous sur <a href="%{url}">vos services connectés</a> pour actualiser l’adresse e-mail que vous communiquez aux services connectés.
 account.forget_all_browsers.longer_description: Une fois que vous aurez choisi d’« oublier tous les navigateurs », nous aurons besoin d’informations supplémentaires pour savoir que c’est bien vous qui vous connectez à votre compte. Nous vous demanderons une méthode d’authentification multi-facteurs (comme un code SMS/texto ou une clé de sécurité) chaque fois que vous souhaiterez accéder à votre compte.
 account.index.auth_app_add: Ajouter une appli
 account.index.auth_app_disabled: non activé
@@ -124,7 +124,7 @@ account.navigation.add_phone_number: Ajouter un numéro de téléphone
 account.navigation.add_platform_authenticator: Ajouter le déverrouillage facial ou tactile
 account.navigation.add_security_key: Ajouter une clé de sécurité
 account.navigation.close: Fermer
-account.navigation.connected_services: Vos comptes connectés
+account.navigation.connected_services: Vos services connectés
 account.navigation.customer_support: Service client
 account.navigation.delete_account: Supprimer le compte
 account.navigation.edit_password: Modifier le mot de passe
@@ -586,7 +586,7 @@ doc_auth.errors.sharpness.top_msg: Nous n’avons pas pu lire votre pièce d’i
 doc_auth.errors.sharpness.top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que vos photos soient trop floues ou trop sombres. Essayez de prendre de nouvelles photos dans un endroit bien éclairé.
 doc_auth.errors.state_id_verification: Les informations figurant sur votre pièce d’identité n’ont pas pu être vérifiées auprès de votre État. Vous devrez peut-être faire vérifier votre pièce d’identité en personne, ou vous pouvez réessayer avec une autre pièce d’identité.
 doc_auth.errors.unaccepted_id_type: Nous n’acceptons pas de passeports, de cartes d’identité militaires, de pièces d’identité papier ou provisoires. Vous pouvez uniquement utiliser un permis de conduire ou une pièce d’identité délivré par un État ou un territoire des États-Unis.
-doc_auth.errors.underage: Vous devez être âgé de 13 ans au moins pour utiliser %{app_name}. Si vous avez 13 ans ou plus, réessayez et assurez-vous que votre date de naissance est bien visible.
+doc_auth.errors.underage: Vous devez être âgé de %{min_age} ans au moins pour utiliser %{app_name}. Si vous avez %{min_age} ans ou plus, réessayez et assurez-vous que votre date de naissance est bien visible.
 doc_auth.errors.unreadable_id: Prenez vos photos dans un endroit bien éclairé sans ombre ou reflet. Veillez à ce que tous les renseignements figurant sur votre pièce d’identité soient nets et que l’ensemble de la pièce soit visible à l’intérieur du cadre.
 doc_auth.errors.upload_error: Désolé, il y a eu un problème de notre côté.
 doc_auth.errors.verify_drivers_license_heading: Nous n’avons pas pu vérifier votre permis de conduire ou carte d’identité d’un État
@@ -600,6 +600,7 @@ doc_auth.forms.doc_success: Nous avons vérifié vos informations
 doc_auth.forms.id_type_preference.drivers_license: Permis de conduire ou carte d’identité d’un État
 doc_auth.forms.id_type_preference.mdl: Permis de conduire mobile (mDL)
 doc_auth.forms.id_type_preference.passport: Passeport américain
+doc_auth.forms.id_type_preference.passport_card: Carte de passeport américain
 doc_auth.forms.selected_file: Fichier sélectionné
 doc_auth.headers.expired_id: Votre pièce d’identité est peut-être périmée
 doc_auth.headers.general.network_error: Nous rencontrons des difficultés techniques
@@ -715,13 +716,15 @@ doc_auth.info.verify_at_post_office_link_text: En savoir plus sur la vérificati
 doc_auth.info.verify_identity: Nous vous demanderons votre pièce d’identité, numéro de téléphone et d’autres renseignements personnels afin de confirmer votre identité par rapport aux registres publics.
 doc_auth.info.verify_online_description: Vous pouvez utiliser un passeport, un permis de conduire une carte d’identité d’un État des États-Unis.
 doc_auth.info.verify_online_description_mdl: Vous pouvez utiliser un passeport américain (livret), un permis de conduire, un permis de conduire mobile ou une carte d’identité délivrée par un État.
-doc_auth.info.verify_online_instruction: Prenez des photos de votre pièce d’identité.
+doc_auth.info.verify_online_description_passport_card: Vous pouvez utiliser un passeport américain (livret ou carte), un permis de conduire américain ou une carte d’identité délivrée par un État.
+doc_auth.info.verify_online_instruction: Vous prendrez des photos de votre pièce d’identité afin de vérifier votre identité entièrement en ligne.
 doc_auth.info.verify_online_instruction_selfie: Prenez un selfie et des photos de votre pièce d’identité.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
 doc_auth.info.welcome_sp_reproof_alert: Pour votre sécurité, %{sp_name} exige que vous vérifiiez à nouveau votre identité.
 doc_auth.info.you_entered: 'Vous avez saisi :'
 doc_auth.instructions.bullet1: Munissez-vous d’un passeport, d’un permis de conduire ou d’une carte d’identité d’un État des États-Unis
 doc_auth.instructions.bullet1_mdl: Posséder un passeport américain, un permis de conduire, un permis de conduire mobile ou une carte d’identité délivrée par un État.
+doc_auth.instructions.bullet1_passport_card: Posséder un passeport américain (livret ou carte), un permis de conduire américain ou une carte d’identité délivrée par un État.
 doc_auth.instructions.bullet2: Saisir votre numéro de sécurité sociale
 doc_auth.instructions.bullet3: Vérifier la correspondance avec votre numéro de téléphone
 doc_auth.instructions.bullet4: Saisir à nouveau votre mot de passe %{app_name}
@@ -753,7 +756,7 @@ doc_auth.tips.document_capture_selfie_text3: Gardez une expression neutre
 doc_auth.tips.document_capture_selfie_text4: Assurez-vous que l’ensemble de votre visage est visible dans le cercle vert
 duplicate_profiles_detected.accounts_list.heading: Comptes ayant les mêmes informations vérifiées
 duplicate_profiles_detected.cant_access: 'Je ne peux pas accéder à un compte'
-duplicate_profiles_detected.connected_acct_html: '<strong> Agences connectées: </strong> %{count}'
+duplicate_profiles_detected.connected_acct_html: '<strong> Services connectés: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Créé: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: Connectez-vous au compte que vous souhaitez supprimer sur <a href="https://secure.login.gov">https://secure.login.gov</a> . Voici %{link_html}
 duplicate_profiles_detected.delete_duplicates.details2_html: 'Si vous le souhaitez, vous pouvez ajouter %{link_html} au compte que vous conservez après avoir supprimé le compte en double.'
@@ -764,11 +767,11 @@ duplicate_profiles_detected.dont_recognize_account: Je ne reconnais pas l’un d
 duplicate_profiles_detected.duplicate: En double
 duplicate_profiles_detected.get_help: Obtenir de l’aide
 duplicate_profiles_detected.heading: Nous avons trouvé d’autres comptes susceptibles de vous appartenir
-duplicate_profiles_detected.intro_html: 'L’%{sp_name} exige que vous ne disposiez que d’un seul et unique compte %{app_name} avec une identité vérifiée. Vous devez supprimer les %{link_html} avant de vous connecter à l’%{sp_name}. Voici la marche à suivre :'
+duplicate_profiles_detected.intro_html: 'Certaines services exigent que vous ne disposiez que d’un seul compte %{app_name} avec une identité vérifiée. Vous devez supprimer les %{link_html} avant de vous connecter à l’%{sp_name}. Voici la marche à suivre :'
 duplicate_profiles_detected.intro.link: comptes en double
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Dernière connexion : </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: 'Jamais connecté à'
-duplicate_profiles_detected.select_an_account.details_html: 'Conservez le compte connecté au plus grand nombre de services. Rendez-vous sur la page %{link_html} pour consulter les agences connectées en sélectionnant «Vos services connectés» dans le menu de gauche.'
+duplicate_profiles_detected.select_an_account.details_html: 'Conservez le compte connecté au plus grand nombre de services. Rendez-vous sur la page %{link_html} pour consulter les services connectées en sélectionnant «Vos services connectés» dans le menu de gauche.'
 duplicate_profiles_detected.select_an_account.details.link: '«Votre compte»'
 duplicate_profiles_detected.select_an_account.heading: Choisir le compte que vous voulez conserver
 duplicate_profiles_detected.sign_back_in.details: Retournez sur le site web de %{app_name} et connectez-vous à l’aide du compte %{app_name} que vous avez conservé.
@@ -1362,8 +1365,8 @@ in_person_proofing.body.prepare.verify_step_about: 'Suivez les étapes ci-dessou
 in_person_proofing.body.prepare.verify_step_enter_phone: Saisissez votre numéro de téléphone principal ou celui que vous utilisez le plus souvent.
 in_person_proofing.body.prepare.verify_step_enter_pii: Saisissez votre nom, votre date de naissance, le numéro de votre pièce d’identité délivrée par l’État, votre adresse et votre numéro de sécurité sociale.
 in_person_proofing.body.prepare.verify_step_post_office: Trouver un bureau de poste participant près de chez vous.
-in_person_proofing.body.state_id.alert_message: Vous avez besoin d’un permis de conduire ou d’une carte d’identité délivrée par un État.
-in_person_proofing.body.state_id.alert_text: Les passeports ne sont pas acceptés pour la vérification d’identité en personne. Votre permis de conduire ou carte d’identité délivrée par un État doit être en cours de validité.
+in_person_proofing.body.state_id.alert_message: Permis de conduire américain, carte d’identité delivrée par un État ou passeport américain (livret ou carte)
+in_person_proofing.body.state_id.alert_text: 'Les passeports ne sont pas encore acceptés pour la vérification en personne. Si l’option de vérifier votre identité à l’aide d’un passeport ne s’affiche pas, veuillez utiliser un permis de conduire ou une carte d’identité délivrée par un État, ou réessayez de vérifier votre identité ultérieurement.'
 in_person_proofing.body.state_id.info_html: Saisissez les informations <strong>exactement comme elles figurent sur votre pièce d’identité</strong>. Nous utiliserons ces informations pour confirmer qu’elles correspondent à votre pièce d’identité en personne.
 in_person_proofing.form.address.errors.unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants : %{char_list}. Veuillez réessayer en utilisant d’autres caractères.'
 in_person_proofing.form.address.state_prompt: '- Sélectionnez -'
@@ -1383,6 +1386,9 @@ in_person_proofing.form.state_id.address1_hint: 'Exemple : 150 Calle A Apt 3'
 in_person_proofing.form.state_id.address2: Adresse ligne 2
 in_person_proofing.form.state_id.address2_hint: 'Exemple : URB Las Gladiolas ou COND Miraflor'
 in_person_proofing.form.state_id.city: Ville
+in_person_proofing.form.state_id.current_address_matches_id: Vivez-vous actuellement à l’adresse indiquée sur votre pièce d’identité émise par l’État ?
+in_person_proofing.form.state_id.current_address_matches_id_no: Non, j’habite à une adresse différente
+in_person_proofing.form.state_id.current_address_matches_id_yes: Oui, j’habite à l’adresse indiquée sur ma pièce d’identité émise par l’État
 in_person_proofing.form.state_id.date_hint.day: 'Exemple : 28'
 in_person_proofing.form.state_id.date_hint.month: 'Exemple : 4'
 in_person_proofing.form.state_id.date_hint.year: 'Exemple : 1986'
@@ -1399,12 +1405,10 @@ in_person_proofing.form.state_id.identity_doc_address_state: État
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Sélectionnez -'
 in_person_proofing.form.state_id.last_name: Nom de famille
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year: Saisissez une date de naissance
-in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: Vous devez avoir plus de 13 ans pour utiliser %{app_name}
+in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: Vous devez avoir plus de %{min_age} ans pour utiliser %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: Saisissez une date dans le passé
 in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: Vous ne pouvez pas utiliser une pièce d’identité expirée.
-in_person_proofing.form.state_id.same_address_as_id: Vivez-vous actuellement à l’adresse indiquée sur votre pièce d’identité émise par l’État ?
-in_person_proofing.form.state_id.same_address_as_id_no: Non, j’habite à une adresse différente
-in_person_proofing.form.state_id.same_address_as_id_yes: Oui, j’habite à l’adresse indiquée sur ma pièce d’identité émise par l’État
+in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon: Vous ne pouvez pas utiliser une ID qui expire dans les 7 jours.
 in_person_proofing.form.state_id.state_id_jurisdiction: État d’émission
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: Il s’agit de l’État qui a émis votre pièce d’identité
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- Sélectionnez -'
@@ -1785,10 +1789,10 @@ titles.revoke_consent: Révoquer le consentement
 titles.rules_of_use: Règles d’utilisation
 titles.select_email: Sélectionner l’adresse e-mail de votre choix
 titles.sign_in: Se connecter
-titles.sign_up.completion_consent_expired_ial1: Cela fait un an que vous nous avez donné votre consentement pour partager vos informations
-titles.sign_up.completion_consent_expired_ial2: Cela fait un an que vous nous avez donné votre consentement pour partager votre identité vérifiée
+titles.sign_up.completion_consent_expired_auth_only: Cela fait un an que vous nous avez donné votre consentement pour partager vos informations
+titles.sign_up.completion_consent_expired_idv: Cela fait un an que vous nous avez donné votre consentement pour partager votre identité vérifiée
 titles.sign_up.completion_first_sign_in: Continuer vers %{sp}
-titles.sign_up.completion_ial2: Connecter vos informations vérifiées à %{sp}
+titles.sign_up.completion_idv: Connecter vos informations vérifiées à %{sp}
 titles.sign_up.completion_new_attributes: '%{sp} demande de nouvelles informations'
 titles.sign_up.completion_new_sp: Vous vous connectez pour la première fois
 titles.sign_up.completion_reverified_consent: Partager vos informations mises à jour avec %{sp}
@@ -2098,9 +2102,9 @@ user_mailer.in_person_ready_to_verify_reminder.subject.other: Vérifiez votre id
 user_mailer.in_person_ready_to_verify.subject: Vous êtes prêt à vérifier votre identité avec %{app_name} en personne
 user_mailer.in_person_verified.greeting: Bonjour,
 user_mailer.in_person_verified.intro: Vous avez réussi à vérifier votre identité au bureau de poste de %{location} le %{date}.
-user_mailer.in_person_verified.next_sign_in.with_sp.with_cta: Maintenant, cliquez sur le bouton ou copiez le lien ci-dessous pour accéder à %{sp_name} et vous connecter.
-user_mailer.in_person_verified.next_sign_in.with_sp.without_cta: Vous pouvez désormais vous connecter depuis le site Web de %{sp_name}.
-user_mailer.in_person_verified.next_sign_in.without_sp: Maintenant, cliquez sur le bouton ou copiez le lien ci-dessous pour vous connecter à %{app_name}.
+user_mailer.in_person_verified.next_sign_in.with_sp.with_cta: Connectez-vous et associez vos informations vérifiées à %{sp_name}.
+user_mailer.in_person_verified.next_sign_in.with_sp.without_cta: Connectez-vous depuis le site Web de %{sp_name} pour associer vos informations vérifiées.
+user_mailer.in_person_verified.next_sign_in.without_sp: Connectez-vous à %{app_name}.
 user_mailer.in_person_verified.sign_in: Se connecter
 user_mailer.in_person_verified.subject: Vous avez réussi à vérifier votre identité avec %{app_name}
 user_mailer.in_person_verified.warning_contact_us_html: Si vous n’avez pas essayé de confirmer votre identité en personne, veuillez vous connecter pour <a href="%{reset_password_url}">réinitialiser votre mot de passe</a>. Pour signaler ce problème, <a href="%{contact_us_url}">contactez l’assistance de %{app_name}</a>.

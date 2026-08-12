@@ -10,5 +10,6 @@ class UserSmsTextMailerPreview < ActionMailer::Preview
            :duplicate_profile_sign_in_attempted,
            :personal_key_regeneration_notice,
            :personal_key_sign_in_notice,
+           :proofing_completion_confirmation,
            to: UserSmsTextMailer
 end

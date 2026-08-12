@@ -14,7 +14,11 @@ class GpoConfirmationCode < ApplicationRecord
     end
   end
 
-  def expired?
-    code_sent_at < IdentityConfig.store.usps_confirmation_max_days.days.ago
+  def max_days
+    GpoConfirmationMaxDaysCalculator.max_days_for_state(state)
+  end
+
+  def expired?(as_of: Time.zone.now)
+    code_sent_at < as_of - max_days.days
   end
 end

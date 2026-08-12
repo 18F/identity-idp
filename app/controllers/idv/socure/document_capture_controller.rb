@@ -52,7 +52,7 @@ module Idv
 
         @url = document_response.dig(:data, :url)
 
-        track_document_request_event(document_request:, document_response:, timer:)
+        track_socure_document_request_event(document_request:, document_response:, timer:)
         socure_docv_transaction_token = document_response.dig(
           :data,
           :docvTransactionToken,

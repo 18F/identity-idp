@@ -18,8 +18,11 @@ module Idv
       def update
         # don't clear the ssn when updating address, clear after SsnController
         clear_future_steps_from!(controller: Idv::InPerson::SsnController)
-        attrs = Idv::InPerson::AddressForm::ATTRIBUTES.difference([:same_address_as_id])
-        pii_from_user[:same_address_as_id] = 'false' if updating_address?
+        attrs = Idv::InPerson::AddressForm::ATTRIBUTES.difference([:ipp_current_address_matches_id])
+        if updating_address?
+          # Editing the residential address means it no longer matches the ID.
+          pii_from_user[:ipp_current_address_matches_id] = false
+        end
         form_result = form.submit(flow_params)
 
         analytics.idv_in_person_proofing_residential_address_submitted(

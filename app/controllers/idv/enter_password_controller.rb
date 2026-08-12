@@ -156,6 +156,7 @@ module Idv
         create_user_event(:account_verified)
         UserAlerts::AlertUserAboutAccountVerified.call(
           profile: idv_session.profile,
+          phone: proofing_completion_phone_number,
         )
         attempts_api_tracker.idv_enrollment_complete(reproof:)
         fraud_ops_tracker.idv_enrollment_complete(reproof:)
@@ -172,6 +173,16 @@ module Idv
 
     def password
       params.fetch(:user, {})[:password].presence
+    end
+
+    def proofing_completion_phone_number
+      if idv_session.address_verification_mechanism == 'phone'
+        idv_session.user_phone_confirmation_session&.phone
+      elsif idv_session.phone_for_mobile_flow.present?
+        idv_session.phone_for_mobile_flow
+      else
+        current_user.default_phone_configuration&.formatted_phone
+      end
     end
 
     def confirm_no_profile_yet
@@ -216,6 +227,7 @@ module Idv
 
     def record_user_proofing_events
       return unless historical_events_enabled?
+      return unless idv_requested?
 
       current_user.active_profile.create_user_proofing_event(
         attempt_events:,
@@ -223,6 +235,8 @@ module Idv
         personal_key: idv_session.personal_key,
         sent_to_sp: attempts_api_enabled_for_session?,
       )
+
+      analytics.historic_event_data_saved(profile_id: current_user.active_profile.id)
 
       AttemptsApi::Cacher.new(current_user, user_session).save(password:)
 

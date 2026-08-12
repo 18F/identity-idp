@@ -166,7 +166,7 @@ RSpec.describe Idv::LinkSentController do
         allow(load_result).to receive(:attention_with_barcode?).and_return(false)
 
         allow(load_result).to receive(:success?).and_return(load_result_success)
-        allow(load_result).to receive(:selfie_check_performed?).and_return(false)
+        allow(load_result).to receive(:selfie_check_passed?).and_return(false)
         allow(load_result).to receive(:errors).and_return({ message: 'an error message' })
         allow(load_result).to receive(:aamva_verified_attributes)
           .and_return(aamva_verified_attributes)

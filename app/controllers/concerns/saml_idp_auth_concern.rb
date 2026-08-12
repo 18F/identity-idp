@@ -210,7 +210,7 @@ module SamlIdpAuthConcern
   end
 
   def saml_authn_instant
-    active_identity&.happened_at || Time.zone.now
+    auth_methods_session.last_authentication_event_at || Time.zone.now
   end
 
   def encryption_opts
