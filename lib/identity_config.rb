@@ -396,6 +396,7 @@ module IdentityConfig
     config.add(:outbound_connection_check_timeout, type: :integer)
     config.add(:outbound_connection_check_url)
     config.add(:participate_in_dap, type: :boolean)
+    config.add(:passkey_auth_ab_test_percentage, type: :integer)
     config.add(:password_max_attempts, type: :integer)
     config.add(:password_pepper, type: :string)
     config.add(:personal_key_as_mfa_active, type: :boolean)

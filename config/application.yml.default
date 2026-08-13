@@ -381,6 +381,7 @@ outbound_connection_check_retry_count: 2
 outbound_connection_check_timeout: 5
 outbound_connection_check_url: 'https://checkip.amazonaws.com'
 participate_in_dap: false
+passkey_auth_ab_test_percentage: 0
 password_max_attempts: 3
 password_pepper:
 personal_key_as_mfa_active: true
