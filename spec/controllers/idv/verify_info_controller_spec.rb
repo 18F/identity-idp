@@ -889,6 +889,49 @@ RSpec.describe Idv::VerifyInfoController do
       end
     end
 
+    context 'when the phone precheck passes' do
+      let(:document_capture_session) { create(:document_capture_session, user:) }
+
+      let(:adjudicated_result) do
+        Proofing::Resolution::ResultAdjudicator.new(
+          phone_result: Proofing::AddressResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: 'test-phone-vendor',
+          ).to_h,
+          device_profiling_result: Proofing::DdpResult.new(success: true),
+          hybrid_mobile_device_profiling_result: Proofing::DdpResult.new(success: true),
+          ipp_enrollment_in_progress: false,
+          residential_resolution_result: Proofing::Resolution::Result.new(success: true),
+          resolution_result: Proofing::Resolution::Result.new(success: true),
+          ipp_current_address_matches_id: true,
+          applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
+          precheck_phone_number: subject.idv_session.precheck_phone[:phone],
+        ).adjudicated_result
+      end
+
+      before do
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
+        document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(adjudicated_result.to_h)
+        allow(controller).to receive(:load_async_state)
+          .and_return(document_capture_session.load_proofing_result)
+      end
+
+      # Idv::EnterPasswordController#proofing_completion_phone_number reads this exact session
+      # shape to pick the phone for the account verified SMS. See LG-17798.
+      it 'completes the phone step without a phone confirmation session' do
+        get :show
+
+        expect(subject.idv_session.phone_precheck_successful).to eq(true)
+        expect(subject.idv_session.precheck_phone[:phone]).to eq('+1 703-555-5555')
+        expect(subject.idv_session.address_verification_mechanism).to eq('phone')
+        expect(subject.idv_session.phone_confirmed?).to eq(true)
+        expect(subject.idv_session.user_phone_confirmation_session).to be_nil
+      end
+    end
+
     context 'when instant verify address proofing results in an exception' do
       let(:document_capture_session) { create(:document_capture_session, user:) }
       let(:success) { false }
