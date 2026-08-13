@@ -68,6 +68,10 @@ module DocAuth
               passport_check_result,
             ].any?(&:present?)
 
+            if passport_card_received? && !passport_cards_supported
+              return { passport_card: I18n.t('doc_auth.errors.doc.doc_type_check') }
+            end
+
             if id_type.present? && !expected_document_type_received?
               return { unexpected_id_type: true, expected_id_type: expected_id_type }
             end
@@ -130,6 +134,7 @@ module DocAuth
       end
 
       def doc_auth_success?
+        return false if passport_card_received? && !passport_cards_supported
         return false unless id_type_supported?
         return false unless expected_document_type_received?
         return false if transaction_status_from_uploaded_file ==
@@ -176,7 +181,7 @@ module DocAuth
         document = parsed_data_from_uploaded_file['document'].symbolize_keys
         doc_type = document[:document_type_received]
 
-        if doc_type == 'passport'
+        if Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(doc_type)
           Pii::Passport.new(
             **Idp::Constants::MOCK_IDV_APPLICANT.merge(document).slice(*Pii::Passport.members),
           )
@@ -257,6 +262,10 @@ module DocAuth
 
       def id_type
         parsed_data_from_uploaded_file&.dig('document', 'document_type_received')
+      end
+
+      def passport_card_received?
+        id_type == Idp::Constants::DocumentTypes::PASSPORT_CARD
       end
 
       def expected_id_type
