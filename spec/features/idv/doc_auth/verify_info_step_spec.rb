@@ -474,6 +474,25 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
           expect(page).to have_current_path(idv_enter_password_path)
         end
 
+        # Skipping the phone step means there is no phone confirmation session, which used to
+        # leave the account verified alert without a phone number. See LG-17798.
+        it 'sends the account verified alert with the precheck phone' do
+          allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call).and_call_original
+
+          complete_ssn_step
+          complete_verify_step
+          expect(page).to have_current_path(idv_enter_password_path)
+
+          complete_enter_password_step(user)
+
+          # best_effort_phone falls back to the default phone configuration, which is what the
+          # precheck ran against.
+          expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
+            profile: user.reload.active_profile,
+            phone: user.default_phone_configuration.formatted_phone,
+          )
+        end
+
         context 'when secondary vendor is enabled' do
           let(:user) do
             create(:user, :fully_registered, with: { phone: '703-555-5555' })
