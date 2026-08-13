@@ -74,15 +74,6 @@ class GpoVerifyForm
     pending_profile.gpo_confirmation_codes.first_with_otp(otp)
   end
 
-  def schedule_in_person_enrollment_and_deactivate_profile(is_enhanced_ipp)
-    UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
-      user:,
-      pii:,
-      is_enhanced_ipp:,
-    )
-    pending_profile&.deactivate_for_in_person_verification
-  end
-
   def which_letter
     return if !valid_otp?
     pending_profile.gpo_confirmation_codes

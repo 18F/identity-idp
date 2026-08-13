@@ -195,7 +195,10 @@ RSpec.describe Idv::Session do
 
         context 'when the USPS enrollment is successful' do
           before do
-            allow(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment)
+            allow(UspsInPersonProofing::EnrollmentHelper)
+              .to receive(:schedule_in_person_enrollment) do
+                user.establishing_in_person_enrollment.update!(status: :pending)
+              end
           end
 
           it 'creates an USPS enrollment' do
@@ -241,19 +244,7 @@ RSpec.describe Idv::Session do
               user.password, is_enhanced_ipp:, proofing_components:
             )
             expect(enrollment.reload.profile_id).to eq(profile.id)
-          end
-
-          context 'when the in person enrollment is pending' do
-            before do
-              user.establishing_in_person_enrollment.update(status: 'pending')
-            end
-
-            it 'associates the in person enrollment with the created profile' do
-              subject.create_profile_from_applicant_with_password(
-                user.password, is_enhanced_ipp:, proofing_components:
-              )
-              expect(enrollment.reload.profile_id).to eq(profile.id)
-            end
+            expect(enrollment.reload.status).to eq('pending')
           end
         end
 
@@ -270,6 +261,28 @@ RSpec.describe Idv::Session do
             )
           rescue
             expect(profile).to be_nil
+          end
+        end
+
+        context 'when USPS enrollment scheduling does not move the enrollment to pending' do
+          before do
+            allow(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment)
+          end
+
+          it 'raises an EnrollmentNotEstablishedError and does not create a profile' do
+            expect do
+              subject.create_profile_from_applicant_with_password(
+                user.password, is_enhanced_ipp:, proofing_components:
+              )
+            end.to raise_error(
+              UspsInPersonProofing::Exception::EnrollmentNotEstablishedError,
+            ) do |error|
+              expect(error.enrollment_id).to eq(enrollment.id)
+            end
+
+            expect(profile).to be_nil
+            expect(enrollment.reload.status).to eq('establishing')
+            expect(enrollment.reload.profile_id).to be_nil
           end
         end
       end

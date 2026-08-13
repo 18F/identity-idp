@@ -17,5 +17,16 @@ module UspsInPersonProofing
         super("#{endpoint_name}: responded with an invalid response")
       end
     end
+
+    class EnrollmentNotEstablishedError < StandardError
+      attr_reader :enrollment_id
+
+      def initialize(enrollment_id)
+        @enrollment_id = enrollment_id
+        super(
+          "InPersonEnrollment #{enrollment_id} did not reach pending status after scheduling ",
+        )
+      end
+    end
   end
 end

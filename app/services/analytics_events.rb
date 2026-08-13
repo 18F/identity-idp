@@ -4361,6 +4361,22 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when a USPS in-person proofing enrollment never reached "pending" status after scheduling
+  # @param [String] context
+  # @param [Integer] enrollment_id
+  def idv_in_person_usps_enrollment_not_established(
+    context:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      :idv_in_person_usps_enrollment_not_established,
+      context:,
+      enrollment_id:,
+      **extra,
+    )
+  end
+
   # LexisNexis Instant Verify API was called with the following results
   # @param [Boolean] success Result from LexisNexis Instant Verify API call
   # @param [Hash] errors Result from resolution proofing
