@@ -30,7 +30,7 @@
   "dependencies": {
     "@18f/identity-design-system": "^9.4.0",
     "@babel/core": "^7.20.7",
-    "@babel/preset-env": "^7.15.6",
+    "@babel/preset-env": "^7.28.0",
     "@babel/preset-react": "^7.14.5",
     "@babel/preset-typescript": "^7.16.7",
     "@babel/register": "^7.15.3",
@@ -111,6 +111,8 @@
     "sass-embedded-linux-x64": "^1.88.0"
   },
   "overrides": {
+    "glob": "^13.0.6",
+    "flat-cache": "^4.0.1",
     "@babel/plugin-transform-modules-systemjs": "7.29.4",
     "fast-uri": "3.1.5",
     "fast-xml-builder": "1.1.9",
