@@ -1703,6 +1703,7 @@ sign_up.agree_and_continue: Agree and continue
 sign_up.cancel.success: Your account has been deleted. We did not save your information.
 sign_up.cancel.warning_header: 'If you cancel now:'
 sign_up.completed.smiling_image_alt: A smiling person with a green checkmark indicating success
+sign_up.information_sharing_html: To learn how %{app_name} shares your information, review our %{link_html}.
 sign_up.terms: I read and accept the %{app_name}
 simple_form.error_notification.default_message: 'Please review the problems below:'
 simple_form.no: 'No'
@@ -1791,7 +1792,7 @@ titles.sign_in: Sign in
 titles.sign_up.completion_consent_expired_auth_only: It’s been a year since you gave us consent to share your information
 titles.sign_up.completion_consent_expired_idv: It’s been a year since you gave us consent to share your verified identity
 titles.sign_up.completion_first_sign_in: Continue to %{sp}
-titles.sign_up.completion_idv: Connect your verified information to %{sp}
+titles.sign_up.completion_idv: Connect your information to %{sp}
 titles.sign_up.completion_new_attributes: '%{sp} is requesting new information'
 titles.sign_up.completion_new_sp: You are now signing in for the first time
 titles.sign_up.completion_reverified_consent: Share your updated information with %{sp}
