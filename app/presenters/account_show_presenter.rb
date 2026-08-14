@@ -65,8 +65,7 @@ class AccountShowPresenter
   end
 
   def pending_ipp?
-    !!user.pending_profile&.in_person_verification_pending? &&
-      user.pending_in_person_enrollment.present?
+    !!user.pending_profile&.in_person_verification_pending?
   end
 
   def pending_gpo?
