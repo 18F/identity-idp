@@ -148,11 +148,11 @@ module Idv
       end
 
       active_enrollment = current_user.active_enrollment
-      in_person_verification_needed = current_user.pending_in_person_enrollment.present?
+      user_has_pending_enrollment = current_user.pending_in_person_enrollment.present?
 
       # Enrollment never moves from establishing to pending
-      if active_enrollment.present? && !in_person_verification_needed
-        raise UspsInPersonProofing::Exception::EnrollmentNotEstablishedError.new(
+      if active_enrollment.present? && !user_has_pending_enrollment
+        raise UspsInPersonProofing::Exception::EnrollmentNotPendingError.new(
           active_enrollment.id,
         )
       end
@@ -162,7 +162,7 @@ module Idv
         profile = profile_maker.save_profile(
           fraud_pending_reason: threatmetrix_fraud_pending_reason,
           gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
-          in_person_verification_needed:,
+          in_person_verification_needed: user_has_pending_enrollment,
           selfie_check_performed: session[:selfie_check_performed],
           proofing_components:,
           proofing_agent_requested: agent_proofed,

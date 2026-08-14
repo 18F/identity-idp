@@ -269,13 +269,13 @@ RSpec.describe Idv::Session do
             allow(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment)
           end
 
-          it 'raises an EnrollmentNotEstablishedError and does not create a profile' do
+          it 'raises an EnrollmentNotPendingError and does not create a profile' do
             expect do
               subject.create_profile_from_applicant_with_password(
                 user.password, is_enhanced_ipp:, proofing_components:
               )
             end.to raise_error(
-              UspsInPersonProofing::Exception::EnrollmentNotEstablishedError,
+              UspsInPersonProofing::Exception::EnrollmentNotPendingError,
             ) do |error|
               expect(error.enrollment_id).to eq(enrollment.id)
             end

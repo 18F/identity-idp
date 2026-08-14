@@ -18,7 +18,7 @@ module UspsInPersonProofing
       end
     end
 
-    class EnrollmentNotEstablishedError < StandardError
+    class EnrollmentNotPendingError < StandardError
       attr_reader :enrollment_id
 
       def initialize(enrollment_id)

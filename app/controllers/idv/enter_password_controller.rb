@@ -19,8 +19,8 @@ module Idv
 
     rescue_from UspsInPersonProofing::Exception::RequestEnrollException,
                 with: :handle_request_enroll_exception
-    rescue_from UspsInPersonProofing::Exception::EnrollmentNotEstablishedError,
-                with: :handle_enrollment_not_established_error
+    rescue_from UspsInPersonProofing::Exception::EnrollmentNotPendingError,
+                with: :handle_enrollment_not_pending_error
 
     def new
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
@@ -227,7 +227,7 @@ module Idv
       redirect_to idv_enter_password_url
     end
 
-    def handle_enrollment_not_established_error(err)
+    def handle_enrollment_not_pending_error(err)
       analytics.idv_in_person_usps_enrollment_not_established(
         context: context,
         enrollment_id: err.enrollment_id,
