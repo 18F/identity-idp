@@ -1716,6 +1716,7 @@ sign_up.agree_and_continue: 同意并继续
 sign_up.cancel.success: 你的账户已被删除。我们没有存储你的信息。
 sign_up.cancel.warning_header: 如果你现在取消：
 sign_up.completed.smiling_image_alt: 面带笑容的一个人加上绿勾说明成功了
+sign_up.information_sharing_html: 如需了解 %{app_name} 如何共享您的信息，请查阅我们的《%{link_html}》。
 sign_up.terms: 我已阅读并接受 %{app_name}
 simple_form.error_notification.default_message: 请仔细阅读以下问题：
 simple_form.no: 不
@@ -1804,7 +1805,7 @@ titles.sign_in: 登录
 titles.sign_up.completion_consent_expired_auth_only: 从你上次授权我们分享你的信息已经一年了。
 titles.sign_up.completion_consent_expired_idv: 从你上次授权我们分享你验证过的身份已经一年了。
 titles.sign_up.completion_first_sign_in: 继续到 %{sp}
-titles.sign_up.completion_idv: 连接你验证过的信息到 %{sp}
+titles.sign_up.completion_idv: 将您的信息连接到 %{sp}
 titles.sign_up.completion_new_attributes: '%{sp} 在要求新信息'
 titles.sign_up.completion_new_sp: 你现在正在首次登入
 titles.sign_up.completion_reverified_consent: 与 %{sp}分享你更新后的信息
