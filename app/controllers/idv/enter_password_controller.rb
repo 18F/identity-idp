@@ -228,7 +228,7 @@ module Idv
     end
 
     def handle_enrollment_not_pending_error(err)
-      analytics.idv_in_person_usps_enrollment_not_established(
+      analytics.idv_in_person_usps_enrollment_not_pending(
         context: context,
         enrollment_id: err.enrollment_id,
       )

@@ -943,7 +943,7 @@ RSpec.describe Idv::EnterPasswordController do
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
             expect(@analytics).to have_logged_event(
-              :idv_in_person_usps_enrollment_not_established,
+              :idv_in_person_usps_enrollment_not_pending,
               context: 'authentication',
               enrollment_id: enrollment.id,
             )
