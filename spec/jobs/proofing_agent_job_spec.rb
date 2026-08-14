@@ -399,6 +399,43 @@ RSpec.describe ProofingAgentJob, type: :job do
         result = document_capture_session.reload.load_agent_proofed_user
         expect(result[:pii][:aamva_verified_attributes]).to be_present
       end
+
+      context 'AAMVA address selection matches the resolution state-ID stage' do
+        let(:aamva_plugin) { Proofing::Resolution::Plugins::AamvaPlugin.new }
+
+        before do
+          allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new)
+            .and_return(aamva_plugin)
+        end
+
+        context 'when the user has an in-person enrollment' do
+          before do
+            allow_any_instance_of(User).to receive(:has_in_person_enrollment?).and_return(true)
+          end
+
+          it 'verifies AAMVA with ipp_enrollment_in_progress: true' do
+            expect(aamva_plugin).to receive(:call)
+              .with(hash_including(ipp_enrollment_in_progress: true))
+              .and_call_original
+
+            perform
+          end
+        end
+
+        context 'when the user does not have an in-person enrollment' do
+          before do
+            allow_any_instance_of(User).to receive(:has_in_person_enrollment?).and_return(false)
+          end
+
+          it 'verifies AAMVA with ipp_enrollment_in_progress: false' do
+            expect(aamva_plugin).to receive(:call)
+              .with(hash_including(ipp_enrollment_in_progress: false))
+              .and_call_original
+
+            perform
+          end
+        end
+      end
     end
 
     context 'when the AAMVA check fails' do

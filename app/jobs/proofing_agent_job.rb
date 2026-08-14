@@ -322,7 +322,7 @@ class ProofingAgentJob < ApplicationJob
       applicant_pii:,
       current_sp:,
       state_id_address_resolution_result: nil,
-      ipp_enrollment_in_progress: false,
+      ipp_enrollment_in_progress: user.has_in_person_enrollment?,
       timer:,
       doc_auth_flow: true,
       analytics:,
