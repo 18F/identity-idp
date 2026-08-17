@@ -736,7 +736,7 @@ doc_auth.info.welcome_sp_reproof_alert: 为了您的安全，%{sp_name} 要求�
 doc_auth.info.you_entered: 你输入了：
 doc_auth.instructions.bullet1: 拥有美国护照本、美国驾照或州身份证件
 doc_auth.instructions.bullet1_mdl: 持有美国护照本、驾驶执照、移动驾驶执照 （mDL） 或州身份证
-doc_auth.instructions.bullet1_mdl_and_passport_card: 持有美国护照本或护照卡、驾驶执照、移动驾驶执照 (mDL) 或州身份证
+doc_auth.instructions.bullet1_mdl_and_passport_card: 持有美国护照本或护照卡、驾驶执照、移动驾驶执照 （mDL） 或州身份证
 doc_auth.instructions.bullet1_passport_card: 持有美国护照（护照本或护照卡）、美国驾驶执照或州身份证
 doc_auth.instructions.bullet2: 输入你的社会保障号码
 doc_auth.instructions.bullet3: 与你电话号码匹配
