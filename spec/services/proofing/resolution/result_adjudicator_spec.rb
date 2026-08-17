@@ -116,6 +116,13 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
           expect(result.extra[:context][:resolution_adjudication_reason])
             .to eq(:state_id_covers_failed_resolution)
         end
+
+        it 'logs the address as a verified attribute' do
+          result = subject.adjudicated_result
+
+          expect(result.extra[:biographical_info][:state_id_verified_attributes])
+            .to eq([:address])
+        end
       end
 
       context 'the residential address has been updated' do
@@ -129,11 +136,11 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
             .to eq(:fail_resolution_without_state_id_coverage)
         end
 
-        it 'still reports the attributes AAMVA verified' do
+        it 'logs the verified attributes without the address' do
           result = subject.adjudicated_result
 
           expect(result.extra[:biographical_info][:state_id_verified_attributes])
-            .to eq([:address])
+            .to eq([])
         end
 
         context 'AAMVA also verified attributes unrelated to the address' do
@@ -151,6 +158,13 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
             expect(result.success?).to eq(true)
             expect(result.extra[:context][:resolution_adjudication_reason])
               .to eq(:state_id_covers_failed_resolution)
+          end
+
+          it 'logs the verified attributes without the address' do
+            result = subject.adjudicated_result
+
+            expect(result.extra[:biographical_info][:state_id_verified_attributes])
+              .to eq([:dob])
           end
         end
       end
