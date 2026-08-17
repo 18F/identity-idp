@@ -105,6 +105,12 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
           expect(result.dual_vendor_check_eligible).to be(false)
         end
 
+        it 'surfaces the top-level DDP policy review_status in the result' do
+          result = proofer.proof(proofing_applicant)
+
+          expect(result.review_status).to eq('reject')
+        end
+
         it 'surfaces phone metadata in result' do
           result = proofer.proof(proofing_applicant)
 

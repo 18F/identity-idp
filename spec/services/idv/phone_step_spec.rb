@@ -63,6 +63,7 @@ RSpec.describe Idv::PhoneStep do
         transaction_id: vendor_transaction_id,
         reference: '',
         result: nil,
+        review_status: nil,
       }
     end
 
