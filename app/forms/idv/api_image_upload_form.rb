@@ -467,7 +467,7 @@ module Idv
         user_id: user_uuid,
       )
       attempts_api_tracker.idv_rate_limited(user_id: user_uuid, limiter_type: :idv_doc_auth)
-      fraud_ops_tracker.idv_rate_limited(limiter_type: :idv_doc_auth)
+      fraud_ops_tracker.idv_rate_limited(user_id: user_uuid, limiter_type: :idv_doc_auth)
     end
 
     def document_capture_session_uuid
