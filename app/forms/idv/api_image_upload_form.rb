@@ -84,6 +84,7 @@ module Idv
         attempts_api_tracker.idv_document_upload_submitted(
           **doc_escrow_images,
           success: response.success?,
+          user_id: user_uuid,
           document_state: pii_from_doc[:state],
           document_number: pii_from_doc[:state_id_number],
           document_issued: pii_from_doc[:state_id_issued],
@@ -103,6 +104,7 @@ module Idv
         fraud_ops_tracker.fraud_ops_idv_document_upload_submitted(
           **doc_escrow_images,
           success: response.success?,
+          user_id: user_uuid,
           document_state: pii_from_doc[:state],
           document_number: pii_from_doc[:state_id_number],
           document_issued: pii_from_doc[:state_id_issued],
@@ -179,11 +181,13 @@ module Idv
       attempts_api_tracker.idv_document_uploaded(
         **doc_escrow_images,
         success: response.success?,
+        user_id: user_uuid,
         failure_reason: attempts_api_tracker.parse_failure_reason(response),
       )
       fraud_ops_tracker.idv_document_uploaded(
         **doc_escrow_images,
         success: response.success?,
+        user_id: user_uuid,
         failure_reason: fraud_ops_tracker.parse_failure_reason(response),
       )
     end
@@ -462,7 +466,7 @@ module Idv
         limiter_type: :idv_doc_auth,
         user_id: user_uuid,
       )
-      attempts_api_tracker.idv_rate_limited(limiter_type: :idv_doc_auth)
+      attempts_api_tracker.idv_rate_limited(user_id: user_uuid, limiter_type: :idv_doc_auth)
       fraud_ops_tracker.idv_rate_limited(limiter_type: :idv_doc_auth)
     end
 

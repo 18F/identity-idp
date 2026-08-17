@@ -25,6 +25,7 @@ module AttemptsApi
     end
 
     # @param [Boolean] success True if the images were successfully uploaded
+    # @param [String] user_id The user's uuid (will not be used in Redis event)
     # @param [String] document_back_image_encryption_key Base64-encoded AES key used for back
     # @param [String] document_back_image_file_id Filename in S3 w/encrypted data for back image
     # @param [String] document_front_image_encryption_key Base64-encoded AES key used for front
@@ -37,6 +38,7 @@ module AttemptsApi
     # A user has uploaded documents locally
     def idv_document_uploaded(
         success:,
+        user_id: nil,
         document_back_image_encryption_key: nil,
         document_back_image_file_id: nil,
         document_front_image_encryption_key: nil,
@@ -50,6 +52,7 @@ module AttemptsApi
       track_event(
         'idv-document-uploaded',
         success:,
+        user_id:,
         document_back_image_encryption_key:,
         document_back_image_file_id:,
         document_front_image_encryption_key:,
@@ -63,6 +66,7 @@ module AttemptsApi
     end
 
     # @param [Boolean] success
+    # @param [String] user_id The user's uuid (will not be used in Redis event)
     # @param [String] document_state
     # @param [String] document_number
     # @param [String] document_issued
@@ -89,6 +93,7 @@ module AttemptsApi
     # The document was uploaded during the IDV process
     def idv_document_upload_submitted(
       success:,
+      user_id: nil,
       document_state: nil,
       document_number: nil,
       document_issued: nil,
@@ -116,6 +121,7 @@ module AttemptsApi
       track_event(
         'idv-document-upload-submitted',
         success:,
+        user_id:,
         document_state:,
         document_number:,
         document_issued:,
@@ -353,12 +359,14 @@ module AttemptsApi
     # @param limiter_type [String<'idv_doc_auth', 'idv_resolution', 'proof_ssn', 'proof_address',
     #   'confirmation', 'idv_send_link']
     # @param phone_number [String] The user's the provided phone number IdV phone risk
+    # @param [String] user_id The user's uuid (will not be used in Redis event)
     #  Type of rate limit
-    def idv_rate_limited(limiter_type:, phone_number: nil)
+    def idv_rate_limited(limiter_type:, phone_number: nil, user_id: nil)
       track_event(
         'idv-rate-limited',
         limiter_type:,
         phone_number:,
+        user_id:,
       )
     end
 
