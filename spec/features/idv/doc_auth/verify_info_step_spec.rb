@@ -744,6 +744,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       )
       reload_ab_tests
       stub_aamva_request(AamvaFixtures.verification_response)
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
 
       visit_idp_from_sp_with_ial2(:oidc)
       sign_in_and_2fa_user(user)
@@ -769,6 +770,76 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       it('passes the verify info step') do
         complete_verify_step
         expect(page).to have_current_path(idv_phone_path)
+      end
+    end
+
+    context 'when instant verify fails on the address' do
+      let(:instant_verify_response) do
+        LexisNexisFixtures.instant_verify_address_fail_response_json
+      end
+
+      # Everything AamvaFixtures.verification_response marks as matching.
+      let(:aamva_verified_attributes) do
+        %w[
+          address document_type_received dob eye_color first_name height last_name middle_name
+          name_suffix sex state_id_expiration state_id_issued state_id_number weight
+        ]
+      end
+
+      before do
+        stub_instant_verify_request(instant_verify_response)
+      end
+
+      context 'when the user has not edited their address' do
+        it 'passes the verify info step because AAMVA verified the same address' do
+          complete_verify_step
+
+          expect(page).to have_current_path(idv_phone_path)
+          expect(fake_analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_including(
+              address_edited: false,
+              proofing_results: hash_including(
+                biographical_info: hash_including(
+                  state_id_verified_attributes: match_array(aamva_verified_attributes),
+                ),
+              ),
+            ),
+          )
+        end
+      end
+
+      context 'when the user has edited their address' do
+        before do
+          click_link t('idv.buttons.change_address_label')
+          fill_in 'idv_form_zipcode', with: '12345'
+          click_button t('forms.buttons.submit.update')
+
+          expect(page).to have_current_path(idv_verify_info_path)
+        end
+
+        it 'fails the verify info step because AAMVA never saw the edited address' do
+          complete_verify_step
+
+          expect(page).to have_current_path(idv_session_errors_warning_path)
+        end
+
+        it 'omits the address from the verified attributes it logs' do
+          complete_verify_step
+
+          expect(fake_analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_including(
+              address_edited: true,
+              proofing_results: hash_including(
+                biographical_info: hash_including(
+                  state_id_verified_attributes:
+                    match_array(aamva_verified_attributes - ['address']),
+                ),
+              ),
+            ),
+          )
+        end
       end
     end
 
