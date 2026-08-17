@@ -22,6 +22,7 @@ module Proofing
               transaction_id: parsed_response.conversation_id,
               dual_vendor_check_eligible: dual_vendor_check_eligible?(parsed_response),
               result: phone_metadata(response_body),
+              review_status: response_body['review_status'],
             )
           end
 

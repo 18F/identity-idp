@@ -10,6 +10,7 @@ module Proofing
                 :reference,
                 :vendor_workflow,
                 :result,
+                :review_status,
                 :dual_vendor_check_eligible
 
     def initialize(
@@ -21,6 +22,7 @@ module Proofing
       reference: '',
       vendor_workflow: nil,
       result: nil,
+      review_status: nil,
       dual_vendor_check_eligible: false
     )
       @success = success
@@ -31,6 +33,7 @@ module Proofing
       @reference = reference
       @vendor_workflow = vendor_workflow
       @result = result
+      @review_status = review_status
       @dual_vendor_check_eligible = dual_vendor_check_eligible
     end
 
@@ -52,6 +55,7 @@ module Proofing
         reference:,
         vendor_name:,
         result:,
+        review_status:,
       }
     end
   end
