@@ -605,6 +605,7 @@ RSpec.describe Idv::PhoneController do
                 timed_out: false,
                 transaction_id: 'some-reference-id',
                 vendor_name: 'socure_phonerisk',
+                review_status: nil,
               },
             )
           end
@@ -655,6 +656,7 @@ RSpec.describe Idv::PhoneController do
                   timed_out: false,
                   transaction_id: 'some-reference-id',
                   vendor_name: 'socure_phonerisk',
+                  review_status: nil,
                 },
               )
             end
@@ -726,6 +728,7 @@ RSpec.describe Idv::PhoneController do
                 timed_out: false,
                 transaction_id: 'some-reference-id',
                 vendor_name: 'socure_phonerisk',
+                review_status: nil,
               },
             )
           end
@@ -1002,6 +1005,7 @@ RSpec.describe Idv::PhoneController do
               timed_out: false,
               transaction_id: 'some-reference-id',
               vendor_name: 'socure_phonerisk',
+              review_status: nil,
             },
             alternate_result: {
               errors: { phone: ['The phone number could not be verified.'] },

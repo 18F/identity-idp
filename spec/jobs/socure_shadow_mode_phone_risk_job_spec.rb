@@ -153,6 +153,7 @@ RSpec.describe SocureShadowModePhoneRiskJob do
             transaction_id: reference,
             vendor_name: 'socure_phonerisk',
             timed_out: false,
+            review_status: nil,
           },
         }
       end
