@@ -135,6 +135,7 @@ RSpec.feature 'Analytics Regression', :js do
                             exception: nil,
                             reference: '',
                             result: nil,
+                            review_status: nil,
                             success: true,
                             timed_out: false,
                             transaction_id: 'address-mock-transaction-id-123',
