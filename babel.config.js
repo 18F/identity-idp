@@ -7,7 +7,7 @@ module.exports = (api) => {
   }
 
   return {
-    targets,
+    ...(targets && { targets }),
     presets: [
       ['@babel/preset-env', { targets }],
       ['@babel/typescript', { optimizeConstEnums: true }],
