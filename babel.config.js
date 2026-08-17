@@ -7,6 +7,7 @@ module.exports = (api) => {
   }
 
   return {
+    targets,
     presets: [
       ['@babel/preset-env', { targets }],
       ['@babel/typescript', { optimizeConstEnums: true }],
@@ -22,10 +23,9 @@ module.exports = (api) => {
         'polyfill-corejs3',
         {
           method: 'usage-global',
-          targets,
         },
       ],
-      ['polyfill-regenerator', { method: 'usage-global', targets }],
+      ['polyfill-regenerator', { method: 'usage-global' }],
     ],
     sourceType: 'unambiguous',
   };
