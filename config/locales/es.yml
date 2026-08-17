@@ -727,6 +727,7 @@ doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre l
 doc_auth.info.verify_identity: Le pediremos su identificación, número de teléfono y otros datos personales para verificar su identidad comparándola con los registros públicos.
 doc_auth.info.verify_online_description: Puede usar un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal.
 doc_auth.info.verify_online_description_mdl: Puede utilizar un pasaporte, licencia de conducir, licencia de conducir móvil o tarjeta de identificación estatal de los EE. UU.
+doc_auth.info.verify_online_description_mdl_and_passport_card: Puede usar una libreta or tarjeta de pasaporte estadounidense, una licencia de conducir, una licencia de conducir digital (mDL) o una tarjeta de identificación estatal.
 doc_auth.info.verify_online_description_passport_card: Puede utilizar una libreta o tarjeta de pasaporte, licencia de conducir o una identificación estatal de los EE. UU.
 doc_auth.info.verify_online_instruction: Tomará fotos de su documento de identidad para verificar su identidad de forma totalmente en línea.
 doc_auth.info.verify_online_instruction_selfie: Tómese una selfi y fotos de su identificación.
@@ -735,6 +736,7 @@ doc_auth.info.welcome_sp_reproof_alert: Por su seguridad, %{sp_name} requiere qu
 doc_auth.info.you_entered: 'Usted ingresó:'
 doc_auth.instructions.bullet1: Tener un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal
 doc_auth.instructions.bullet1_mdl: Tener un pasaporte, licencia de conducir, licencia de conducir móvil (mDL) o tarjeta de identificación estatal de los EE. UU.
+doc_auth.instructions.bullet1_mdl_and_passport_card: Debe tener una libreta or tarjeta de pasaporte estadounidense, una licencia de conducir, una licencia de conducir móvil (mDL) o una tarjeta de identificación estatal.
 doc_auth.instructions.bullet1_passport_card: Tener un libreta o tarjeta de pasaporte, licencia de conducir o una tarjeta de identificación estatal de los EE. UU.
 doc_auth.instructions.bullet2: Ingresar su número de Seguro Social
 doc_auth.instructions.bullet3: Hacer coincidir su número de teléfono

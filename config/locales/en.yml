@@ -716,6 +716,7 @@ doc_auth.info.verify_at_post_office_link_text: Learn more about verifying in per
 doc_auth.info.verify_identity: We’ll ask for your ID, phone number, and other personal information to verify your identity against public records.
 doc_auth.info.verify_online_description: You can use a U.S. passport book, U.S. driver’s license or state ID.
 doc_auth.info.verify_online_description_mdl: You can use a U.S. passport book, U.S. driver’s license, mobile driver’s license (mDL) or state ID.
+doc_auth.info.verify_online_description_mdl_and_passport_card: You can use a U.S. passport book or card, driver’s license, mobile driver’s license or state ID card.
 doc_auth.info.verify_online_description_passport_card: You can use a U.S. passport book or card, U.S. driver’s license or state ID.
 doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online.
 doc_auth.info.verify_online_instruction_selfie: You’ll take a selfie and photos of your ID to verify your identity fully online.
@@ -724,6 +725,7 @@ doc_auth.info.welcome_sp_reproof_alert: For your security, %{sp_name} requires y
 doc_auth.info.you_entered: 'You entered:'
 doc_auth.instructions.bullet1: Have a U.S. passport book, U.S. driver’s license or state ID
 doc_auth.instructions.bullet1_mdl: Have a U.S. passport book, U.S. driver’s license, mobile driver’s license (mDL) or state ID card
+doc_auth.instructions.bullet1_mdl_and_passport_card: Have a U.S. passport book or card, driver’s license, mobile driver’s license (mDL) or state ID card
 doc_auth.instructions.bullet1_passport_card: Have a U.S. passport book or card, U.S. driver’s license or state ID card
 doc_auth.instructions.bullet2: Enter your Social Security number
 doc_auth.instructions.bullet3: Match to your phone number
