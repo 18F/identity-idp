@@ -727,7 +727,7 @@ doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话号码和其他个人信息并通过与公共记录核对来验证你的身份。
 doc_auth.info.verify_online_description: 你可以使用美国护照本、美国驾照或州身份证件。
 doc_auth.info.verify_online_description_mdl: 您可以使用美国护照、驾驶执照、移动驾驶执照或州身份证。
-doc_auth.info.verify_online_description_mdl_and_passport_card: 您可以使用美国护照本或护照卡、驾驶执照、手机驾驶执照或州身份证。
+doc_auth.info.verify_online_description_mdl_and_passport_card: 您可以使用美国护照本或护照卡、驾驶执照、移动驾驶执照（mDL）或州身份证。
 doc_auth.info.verify_online_description_passport_card: 您可以使用的证件包括：美国护照（护照本或护照卡）、美国驾驶执照或州身份证。
 doc_auth.info.verify_online_instruction: 您需要拍摄身份证件照片，以便在线完成身份验证。
 doc_auth.info.verify_online_instruction_selfie: 拍一张自拍照，并拍摄你 ID的照片。
