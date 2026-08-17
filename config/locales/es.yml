@@ -1226,9 +1226,8 @@ idv.gpo.return_to_profile: Vuelva a su perfil
 idv.gpo.title: Introduzca su código de verificación
 idv.gpo.will_send_to: 'En un plazo de 5 a 10 días, recibirá por correo una carta de %{app_name} en la dirección que verificamos y asociamos con usted:'
 idv.images.come_back_later: Carta con una marca de verificación
-idv.mdl.alert_html: <strong>¿Aún no tiene una mDL?</strong> Solo está disponible en algunos estados y territorios de EE. UU. Comuníquese con el DMV de su estado para obtener más información.
+idv.mdl.alert_html: <strong>Actualmente disponible con Google Wallet y Samsung Wallet.</strong> Se añadirán otras billeteras a finales de este año.
 idv.mdl.button: Abrir cartera digital
-idv.mdl.learn_more: Más información sobre cómo usar su mDL
 idv.mdl.steps_heading: 'Necesitará:'
 idv.mdl.steps.device.title: Un dispositivo con una cartera digital
 idv.mdl.steps.have_mdl.title: Una licencia de conducir móvil (mDL) activa

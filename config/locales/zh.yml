@@ -1228,9 +1228,8 @@ idv.gpo.return_to_profile: 返回你的用户资料
 idv.gpo.title: 输入你的验证代码
 idv.gpo.will_send_to: 你会在5到10天内在我们验证过的与你相关的地址收到来自%{app_name}寄给你的一封信：
 idv.images.come_back_later: 带有打勾符的信件
-idv.mdl.alert_html: <strong>还没有 mDL？</strong> 目前仅部分美国州和领地提供此服务。请联系您所在州的机动车管理局 （DMV） 了解详情。
+idv.mdl.alert_html: <strong>目前支持 Google Wallet 和 Samsung Wallet。</strong>其他钱包将于今年晚些时候支持。
 idv.mdl.button: 打开数字钱包
-idv.mdl.learn_more: 了解如何使用 mDL
 idv.mdl.steps_heading: '您需要准备：'
 idv.mdl.steps.device.title: 带有数字钱包功能的设备
 idv.mdl.steps.have_mdl.title: 有效的移动驾驶证

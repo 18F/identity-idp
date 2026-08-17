@@ -1215,9 +1215,8 @@ idv.gpo.return_to_profile: Return to your profile
 idv.gpo.title: Enter your verification code
 idv.gpo.will_send_to: 'You’ll get a letter in the mail from %{app_name} in 5 to 10 days at the address we verified and associated with you:'
 idv.images.come_back_later: Letter with a check mark
-idv.mdl.alert_html: <strong>Don’t have an mDL yet?</strong> It is available only for some U.S. states and territories. Please contact your state’s DMV for more information.
+idv.mdl.alert_html: <strong>Currently supported with Google Wallet and Samsung Wallet.</strong> Other wallets will be supported later this year.
 idv.mdl.button: Open digital wallet
-idv.mdl.learn_more: Learn more about how to use mDL
 idv.mdl.steps_heading: 'You’ll need:'
 idv.mdl.steps.device.title: A device with a digital wallet
 idv.mdl.steps.have_mdl.title: An active mobile driver’s license

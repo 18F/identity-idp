@@ -1215,9 +1215,8 @@ idv.gpo.return_to_profile: Retourner à votre profil
 idv.gpo.title: Saisir votre code de vérification
 idv.gpo.will_send_to: 'Vous recevrez un courrier de %{app_name} d’ici 5 à 10 jours à l’adresse que nous avons confirmée qui est associée à votre nom :'
 idv.images.come_back_later: Lettre avec une coche
-idv.mdl.alert_html: <strong>Vous n’avez pas encore de permis de conduire mobile ?</strong> Ce service n’est disponible que dans certains États et territoires des États-Unis. Veuillez contacter le service des immatriculations et des permis (Department of Motor Vehicles) de votre État pour plus d’informations.
+idv.mdl.alert_html: <strong>Actuellement compatible avec Google Wallet et Samsung Wallet.</strong> D’autres portefeuilles seront pris en charge plus tard cette année.
 idv.mdl.button: Ouvrir le portefeuille numérique
-idv.mdl.learn_more: En savoir plus sur l’utilisation du permis de conduire mobile
 idv.mdl.steps_heading: 'Vous aurez besoin de:'
 idv.mdl.steps.device.title: Un appareil doté d’un portefeuille numérique
 idv.mdl.steps.have_mdl.title: Un permis de conduire mobile actif
