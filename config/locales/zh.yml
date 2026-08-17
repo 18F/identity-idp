@@ -729,7 +729,7 @@ doc_auth.info.verify_online_description: 你可以使用美国护照本、美国
 doc_auth.info.verify_online_description_mdl: 您可以使用美国护照、驾驶执照、移动驾驶执照或州身份证。
 doc_auth.info.verify_online_description_mdl_and_passport_card: 您可以使用美国护照本或护照卡、驾驶执照、手机驾驶执照或州身份证。
 doc_auth.info.verify_online_description_passport_card: 您可以使用的证件包括：美国护照（护照本或护照卡）、美国驾驶执照或州身份证。
-doc_auth.info.verify_online_instruction: 您需要拍摄身份证件照片，以便全程在线完成身份验证。
+doc_auth.info.verify_online_instruction: 您需要拍摄身份证件照片，以便在线完成身份验证。
 doc_auth.info.verify_online_instruction_selfie: 拍一张自拍照，并拍摄你 ID的照片。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.welcome_sp_reproof_alert: 为了您的安全，%{sp_name} 要求您再次验证您的身份。
