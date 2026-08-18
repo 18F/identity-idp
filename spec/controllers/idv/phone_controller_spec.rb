@@ -524,7 +524,6 @@ RSpec.describe Idv::PhoneController do
             transaction_id: 'address-mock-transaction-id-123',
             reference: '',
             result: nil,
-            review_status: nil,
           },
         )
       end
@@ -605,7 +604,6 @@ RSpec.describe Idv::PhoneController do
                 timed_out: false,
                 transaction_id: 'some-reference-id',
                 vendor_name: 'socure_phonerisk',
-                review_status: nil,
               },
             )
           end
@@ -656,7 +654,6 @@ RSpec.describe Idv::PhoneController do
                   timed_out: false,
                   transaction_id: 'some-reference-id',
                   vendor_name: 'socure_phonerisk',
-                  review_status: nil,
                 },
               )
             end
@@ -728,7 +725,6 @@ RSpec.describe Idv::PhoneController do
                 timed_out: false,
                 transaction_id: 'some-reference-id',
                 vendor_name: 'socure_phonerisk',
-                review_status: nil,
               },
             )
           end
@@ -875,7 +871,6 @@ RSpec.describe Idv::PhoneController do
             transaction_id: 'address-mock-transaction-id-123',
             reference: '',
             result: nil,
-            review_status: nil,
           },
           manual_review: false,
         )
@@ -1005,7 +1000,6 @@ RSpec.describe Idv::PhoneController do
               timed_out: false,
               transaction_id: 'some-reference-id',
               vendor_name: 'socure_phonerisk',
-              review_status: nil,
             },
             alternate_result: {
               errors: { phone: ['The phone number could not be verified.'] },
@@ -1014,7 +1008,6 @@ RSpec.describe Idv::PhoneController do
                 exception: nil,
                 reference: '',
                 result: nil,
-                review_status: nil,
                 timed_out: false,
                 transaction_id: 'address-mock-transaction-id-123',
                 vendor_name: 'AddressMock',

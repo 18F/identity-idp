@@ -135,7 +135,6 @@ RSpec.feature 'Analytics Regression', :js do
                             exception: nil,
                             reference: '',
                             result: nil,
-                            review_status: nil,
                             success: true,
                             timed_out: false,
                             transaction_id: 'address-mock-transaction-id-123',
@@ -278,7 +277,7 @@ RSpec.feature 'Analytics Regression', :js do
         proofing_components: base_proofing_components
       },
       'IdV: phone confirmation vendor' => {
-        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '', result: nil, review_status: nil }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
+        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '', result: nil }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         proofing_components: address_proofing_components
       },
       'IdV: phone confirmation otp sent' => {
@@ -409,7 +408,7 @@ RSpec.feature 'Analytics Regression', :js do
         proofing_components: base_proofing_components
       },
       'IdV: phone confirmation vendor' => {
-        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '', result: nil, review_status: nil }, new_phone_added: false, hybrid_handoff_phone_used: true, area_code: '202', country_code: 'US', phone_fingerprint: anything,
+        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '', result: nil }, new_phone_added: false, hybrid_handoff_phone_used: true, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         proofing_components: address_proofing_components
       },
       'IdV: phone confirmation otp sent' => {
@@ -661,7 +660,7 @@ RSpec.feature 'Analytics Regression', :js do
         opted_in_to_in_person_proofing: boolean
       },
       'IdV: phone confirmation vendor' => {
-        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '', result: nil, review_status: nil }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
+        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '', result: nil }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         proofing_components: { address_check: 'lexis_nexis_address', document_check: 'usps', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'StateIdMock' },
         opted_in_to_in_person_proofing: boolean
       },
@@ -801,7 +800,7 @@ RSpec.feature 'Analytics Regression', :js do
         proofing_components: base_proofing_components
       },
       'IdV: phone confirmation vendor' => {
-        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '', result: nil, review_status: nil }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
+        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '', result: nil }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         proofing_components: address_proofing_components
       },
       'IdV: phone confirmation otp sent' => {

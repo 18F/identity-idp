@@ -92,6 +92,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
             risk_count_high: '0',
             risk_count_med: '1',
             risk_count_low: '4',
+            review_status: 'reject',
           }
         end
 
@@ -108,7 +109,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
         it 'surfaces the top-level DDP policy review_status in the result' do
           result = proofer.proof(proofing_applicant)
 
-          expect(result.review_status).to eq('reject')
+          expect(result.result[:review_status]).to eq('reject')
         end
 
         it 'surfaces phone metadata in result' do
@@ -146,6 +147,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
               risk_count_high: nil,
               risk_count_med: nil,
               risk_count_low: nil,
+              review_status: nil,
             )
           end
         end

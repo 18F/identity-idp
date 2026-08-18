@@ -205,8 +205,7 @@ RSpec.describe ProofingAgentJob, type: :job do
                     transaction_id: Proofing::Mock::AddressMockClient::TRANSACTION_ID,
                     reference: '',
                     vendor_name: 'AddressMock',
-                    result: nil,
-                    review_status: nil } } },
+                    result: nil } } },
               biographical_info:
               { birth_year: 1938,
                 state: 'MT',

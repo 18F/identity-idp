@@ -20,7 +20,6 @@ RSpec.describe Proofing::Mock::AddressMockClient do
           reference: '',
           vendor_name: 'AddressMock',
           result: nil,
-          review_status: nil,
         )
       end
     end
@@ -40,7 +39,6 @@ RSpec.describe Proofing::Mock::AddressMockClient do
           reference: '',
           vendor_name: 'AddressMock',
           result: nil,
-          review_status: nil,
         )
       end
     end
@@ -60,7 +58,6 @@ RSpec.describe Proofing::Mock::AddressMockClient do
           reference: '',
           vendor_name: 'AddressMock',
           result: nil,
-          review_status: nil,
         )
       end
     end
@@ -80,7 +77,6 @@ RSpec.describe Proofing::Mock::AddressMockClient do
           reference: '',
           vendor_name: 'AddressMock',
           result: nil,
-          review_status: nil,
         )
       end
     end
