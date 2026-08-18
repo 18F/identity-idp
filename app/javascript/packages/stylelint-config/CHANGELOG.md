@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 6.0.0
+
 ### Breaking Changes
 
 - The ruleset now extends [`stylelint-config-standard-scss`](https://github.com/stylelint-scss/stylelint-config-standard-scss) instead of [`stylelint-config-recommended-scss`](https://github.com/stylelint-scss/stylelint-config-recommended-scss). This configures a number of additional rules which may identify existing issues in your code.
