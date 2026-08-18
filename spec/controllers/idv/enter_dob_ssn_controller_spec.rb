@@ -36,7 +36,7 @@ RSpec.describe Idv::EnterDobSsnController do
       acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
     ).parse
   end
-  let(:proofing_agent_device_profiling) { :disabled }
+  let(:idv_proofing_agent_device_profiling) { :disabled }
   let(:tmx_session_id) { nil }
 
   before do
@@ -49,7 +49,7 @@ RSpec.describe Idv::EnterDobSsnController do
     allow(IdentityConfig.store).to receive_messages(
       {
         idv_proofing_agent_enabled:,
-        proofing_agent_device_profiling:,
+        idv_proofing_agent_device_profiling:,
         lexisnexis_threatmetrix_org_id: 'org1',
       },
     )
@@ -136,7 +136,7 @@ RSpec.describe Idv::EnterDobSsnController do
     end
 
     context 'with threatmetrix disabled' do
-      let(:proofing_agent_device_profiling) { :disabled }
+      let(:idv_proofing_agent_device_profiling) { :disabled }
 
       it 'does not override CSPs for ThreatMetrix' do
         expect(controller).not_to receive(:override_csp_for_threat_metrix)
@@ -146,7 +146,7 @@ RSpec.describe Idv::EnterDobSsnController do
     end
 
     context 'with threatmetrix enabled' do
-      let(:proofing_agent_device_profiling) { :enabled }
+      let(:idv_proofing_agent_device_profiling) { :enabled }
       let(:tmx_session_id) { '1234' }
 
       before do
@@ -244,7 +244,7 @@ RSpec.describe Idv::EnterDobSsnController do
 
     context 'when proofing agent threatmetrix is enabled' do
       let(:tmx_session_id) { 'test-tmx-session-id-1234' }
-      let(:proofing_agent_device_profiling) { :enabled }
+      let(:idv_proofing_agent_device_profiling) { :enabled }
 
       it 'saves the threatmetrix result to db' do
         expect { put :create, params: params }.to change { DeviceProfilingResult.count }

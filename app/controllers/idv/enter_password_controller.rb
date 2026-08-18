@@ -249,7 +249,7 @@ module Idv
 
     def save_proofing_agent_threatmetrix_status
       # results are only stored when device profiling is :enabled, not :collect_only
-      return unless IdentityConfig.store.proofing_agent_device_profiling == :enabled
+      return unless IdentityConfig.store.idv_proofing_agent_device_profiling == :enabled
       return if idv_session.threatmetrix_review_status.present?
       return if idv_session.hybrid_mobile_threatmetrix_review_status.present?
 

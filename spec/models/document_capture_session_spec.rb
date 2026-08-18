@@ -237,7 +237,8 @@ RSpec.describe DocumentCaptureSession do
       xit 'returns nil if the previously stored result is expired' do
         record = DocumentCaptureSession.new
         record.store_agent_proofed_user(agent_proofing_result)
-        past_exp = IdentityConfig.store.agent_proofed_user_time_validity_hours.hours.in_seconds
+        past_exp = IdentityConfig.store
+          .idv_proofing_agent_proofed_user_validity_hours.hours.in_seconds
         travel_to((2 * past_exp).seconds.from_now) do
           result = record.load_agent_proofed_user
 
