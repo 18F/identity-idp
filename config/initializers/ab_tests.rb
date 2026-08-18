@@ -235,4 +235,12 @@ module AbTests
   ) do |user:, user_session:, **|
     user&.uuid
   end.freeze
+
+  NDS_LOOK_AND_FEEL = AbTest.new(
+    experiment_name: 'NDS Look and Feel Phase 1',
+    should_log: AbTest::ALL_EVENTS,
+    buckets: { nds: IdentityConfig.store.nds_look_and_feel_percent },
+  ) do |user:, session:, **|
+    user&.uuid || session&.dig(:session_id) || 'anon'
+  end.freeze
 end
