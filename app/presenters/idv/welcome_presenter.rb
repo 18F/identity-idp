@@ -88,6 +88,8 @@ module Idv
     end
 
     def id_type_copy
+      return t('doc_auth.instructions.bullet1_mdl_and_passport_card') if mdl_enabled &&
+                                                                         passport_cards_supported
       return t('doc_auth.instructions.bullet1_mdl') if mdl_enabled
       return t('doc_auth.instructions.bullet1_passport_card') if passport_cards_supported
 

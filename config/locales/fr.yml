@@ -716,14 +716,16 @@ doc_auth.info.verify_at_post_office_link_text: En savoir plus sur la vérificati
 doc_auth.info.verify_identity: Nous vous demanderons votre pièce d’identité, numéro de téléphone et d’autres renseignements personnels afin de confirmer votre identité par rapport aux registres publics.
 doc_auth.info.verify_online_description: Vous pouvez utiliser un passeport, un permis de conduire une carte d’identité d’un État des États-Unis.
 doc_auth.info.verify_online_description_mdl: Vous pouvez utiliser un passeport américain (livret), un permis de conduire, un permis de conduire mobile ou une carte d’identité délivrée par un État.
+doc_auth.info.verify_online_description_mdl_and_passport_card: Vous pouvez utiliser un passeport américain (livret ou carte), un permis de conduire, un permis de conduire mobile (mDL) ou une carte d’identité d’État.
 doc_auth.info.verify_online_description_passport_card: Vous pouvez utiliser un passeport américain (livret ou carte), un permis de conduire américain ou une carte d’identité délivrée par un État.
-doc_auth.info.verify_online_instruction: Vous prendrez des photos de votre pièce d’identité afin de vérifier votre identité entièrement en ligne.
+doc_auth.info.verify_online_instruction: Vous devrez photographier votre pièce d’identité pour vérifier votre identité en ligne.
 doc_auth.info.verify_online_instruction_selfie: Prenez un selfie et des photos de votre pièce d’identité.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
 doc_auth.info.welcome_sp_reproof_alert: Pour votre sécurité, %{sp_name} exige que vous vérifiiez à nouveau votre identité.
 doc_auth.info.you_entered: 'Vous avez saisi :'
 doc_auth.instructions.bullet1: Munissez-vous d’un passeport, d’un permis de conduire ou d’une carte d’identité d’un État des États-Unis
 doc_auth.instructions.bullet1_mdl: Posséder un passeport américain, un permis de conduire, un permis de conduire mobile ou une carte d’identité délivrée par un État.
+doc_auth.instructions.bullet1_mdl_and_passport_card: Posséder un passeport ou une carte d’identité américaine, un permis de conduire, un permis de conduire mobile (mDL) ou une carte d’identité d’État.
 doc_auth.instructions.bullet1_passport_card: Posséder un passeport américain (livret ou carte), un permis de conduire américain ou une carte d’identité délivrée par un État.
 doc_auth.instructions.bullet2: Saisir votre numéro de sécurité sociale
 doc_auth.instructions.bullet3: Vérifier la correspondance avec votre numéro de téléphone
