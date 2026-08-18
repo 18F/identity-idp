@@ -132,6 +132,7 @@ RSpec.describe Idv::ApiImageUploadForm do
     context 'when rate limited from submission' do
       it 'is not valid' do
         expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
+          user_id: document_capture_session.user.uuid,
           limiter_type: :idv_doc_auth,
         )
         RateLimiter.new(
@@ -522,6 +523,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             it 'tracks the event' do
               expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
                 success: true,
+                user_id: document_capture_session.user.uuid,
                 document_back_image_encryption_key: '12345',
                 document_back_image_file_id: 'name',
                 document_front_image_encryption_key: '12345',
@@ -531,6 +533,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
               expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
                 success: true,
+                user_id: document_capture_session.user.uuid,
                 document_back_image_encryption_key: '12345',
                 document_back_image_file_id: 'name',
                 document_front_image_encryption_key: '12345',
@@ -567,11 +570,13 @@ RSpec.describe Idv::ApiImageUploadForm do
             it 'tracks the event' do
               expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
                 success: true,
+                user_id: document_capture_session.user.uuid,
                 failure_reason: nil,
               )
 
               expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
                 success: true,
+                user_id: document_capture_session.user.uuid,
                 document_state: pii_from_doc[:state],
                 document_number: pii_from_doc[:state_id_number],
                 document_issued: pii_from_doc[:state_id_issued],
@@ -747,6 +752,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               it 'tracks the event' do
                 expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
                   success: true,
+                  user_id: document_capture_session.user.uuid,
                   document_back_image_encryption_key: '12345',
                   document_back_image_file_id: 'name',
                   document_front_image_encryption_key: '12345',
@@ -758,6 +764,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
                 expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
                   success: true,
+                  user_id: document_capture_session.user.uuid,
                   document_back_image_encryption_key: '12345',
                   document_back_image_file_id: 'name',
                   document_front_image_encryption_key: '12345',
@@ -794,11 +801,13 @@ RSpec.describe Idv::ApiImageUploadForm do
               it 'tracks the event' do
                 expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
                   success: true,
+                  user_id: document_capture_session.user.uuid,
                   failure_reason: nil,
                 )
 
                 expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
                   success: true,
+                  user_id: document_capture_session.user.uuid,
                   document_state: pii_from_doc[:state],
                   document_number: pii_from_doc[:state_id_number],
                   document_issued: pii_from_doc[:state_id_issued],
@@ -946,6 +955,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           it 'tracks the event' do
             expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
               success: false,
+              user_id: document_capture_session.user.uuid,
               document_back_image_encryption_key: '12345',
               document_back_image_file_id: 'name',
               failure_reason: { front: [:blank] },
@@ -965,6 +975,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           it 'tracks the event' do
             expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
               success: false,
+              user_id: document_capture_session.user.uuid,
               failure_reason: { front: [:blank] },
             )
 
@@ -1027,6 +1038,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           it 'tracks the event (as a success as doc upload succeeded)' do
             expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
               success: true,
+              user_id: document_capture_session.user.uuid,
               document_back_image_encryption_key: '12345',
               document_back_image_file_id: 'name',
               document_front_image_encryption_key: '12345',
@@ -1036,6 +1048,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
             expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
               success: false,
+              user_id: document_capture_session.user.uuid,
               document_back_image_encryption_key: '12345',
               document_back_image_file_id: 'name',
               document_front_image_encryption_key: '12345',
@@ -1069,11 +1082,13 @@ RSpec.describe Idv::ApiImageUploadForm do
           it 'does not write the event' do
             expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
               success: true,
+              user_id: document_capture_session.user.uuid,
               failure_reason: nil,
             )
 
             expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
               success: false,
+              user_id: document_capture_session.user.uuid,
               document_state: nil,
               document_number: nil,
               document_issued: nil,
