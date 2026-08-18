@@ -189,6 +189,12 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
             expect(result.vendor_name).to eq('lexisnexis:phone_finder_ddp')
             expect(result.dual_vendor_check_eligible).to be(true)
           end
+
+          it 'still surfaces the top-level DDP policy review_status in the result' do
+            result = proofer.proof(proofing_applicant)
+
+            expect(result.result[:review_status]).to eq('reject')
+          end
         end
 
         context 'when the failure is "could not be verified to name" with additional errors' do
