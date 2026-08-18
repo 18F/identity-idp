@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
     rescue_from error, with: :render_timeout
   end
 
-  helper_method :decorated_sp_session, :current_sp, :user_fully_authenticated?
+  helper_method :decorated_sp_session, :current_sp, :user_fully_authenticated?, :nds_layout?
 
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :set_session_start_value_if_nil
@@ -40,6 +40,14 @@ class ApplicationController < ActionController::Base
   def set_session_start_value_if_nil
     return if @skip_session_expiration || @skip_session_load
     session[:session_started_at] = Time.zone.now if session[:session_started_at].nil?
+  end
+
+  def nds_layout?
+    unless Rails.env.production?
+      return true if request.headers['X-Force-Nds-Bucket'] == 'nds'
+      return true if params[:nds_bucket] == 'nds'
+    end
+    ab_test_bucket(:NDS_LOOK_AND_FEEL) == :nds
   end
 
   # for lograge
