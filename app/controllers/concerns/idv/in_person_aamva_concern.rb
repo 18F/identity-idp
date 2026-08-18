@@ -17,7 +17,9 @@ module Idv
 
       document_capture_session.create_proofing_session
 
-      pii_for_aamva = idv_session.ipp_aamva_pending_state_id_pii
+      pii_for_aamva = pii_without_edge_case_expiration(
+        idv_session.ipp_aamva_pending_state_id_pii,
+      )
       encrypted_arguments = encrypt_pii_for_job(pii_for_aamva)
 
       enqueue_job(
@@ -58,6 +60,22 @@ module Idv
 
     def aamva_enabled?
       IdentityConfig.store.idv_aamva_at_doc_auth_ipp_enabled
+    end
+
+    # The expiration edge-case values (Military/Indefinite/No-date sentinels and
+    # literal placeholder dates like 9999-99-99) are not real dates. AAMVA sends
+    # state_id_expiration verbatim as DriverLicenseExpirationDate, and because it
+    # is a required-if-present attribute a bogus date would fail the whole
+    # verification. Omit it from the proofing copy; the stored pending PII (which
+    # is committed for USPS on success) keeps the original value.
+    def pii_without_edge_case_expiration(pii)
+      return pii if pii.blank?
+
+      expiration = pii[:state_id_expiration] || pii['state_id_expiration']
+      return pii if expiration.blank?
+      return pii unless Idv::StateIdForm.edge_case_expiration?(expiration)
+
+      pii.except(:state_id_expiration, 'state_id_expiration')
     end
 
     def encrypt_pii_for_job(pii)
