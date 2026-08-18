@@ -44,11 +44,7 @@ module AttemptsApi
     def track_event(event_type, metadata = {})
       return unless should_track?(event_type)
 
-      user_id = metadata.delete(:user_id)
-
-      if user_blank? && user_id.present?
-        @user = User.find_by(uuid: user_id)
-      end
+      overwrite_user_if_applicable(metadata.delete(:user_id))
 
       event = AttemptEvent.new(
         event_type: event_type,
@@ -111,6 +107,10 @@ module AttemptsApi
 
     def session
       @request&.session
+    end
+
+    def overwrite_user_if_applicable(uuid)
+      @user = User.find_by(uuid:) if user_blank? && uuid.present?
     end
 
     def user_blank?

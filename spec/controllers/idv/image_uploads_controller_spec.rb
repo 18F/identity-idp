@@ -116,6 +116,7 @@ RSpec.describe Idv::ImageUploadsController do
           it 'does not upload the images' do
             expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
               success: false,
+              user_id: user.uuid,
               failure_reason: { front: [:blank] },
             )
 
@@ -164,6 +165,7 @@ RSpec.describe Idv::ImageUploadsController do
           it 'tracks the event' do
             expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
               success: false,
+              user_id: user.uuid,
               document_back_image_encryption_key: '12345',
               document_back_image_file_id: 'name',
               document_front_image_encryption_key: nil,
@@ -184,6 +186,7 @@ RSpec.describe Idv::ImageUploadsController do
           it 'does not upload the images' do
             expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
               success: false,
+              user_id: user.uuid,
               failure_reason: { front: [:not_a_file] },
             )
 
@@ -223,6 +226,7 @@ RSpec.describe Idv::ImageUploadsController do
             it 'records the event' do
               expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
                 success: false,
+                user_id: nil,
                 document_back_image_encryption_key: '12345',
                 document_back_image_file_id: 'name',
                 document_front_image_encryption_key: '12345',
@@ -242,6 +246,7 @@ RSpec.describe Idv::ImageUploadsController do
             it 'does not upload the images' do
               expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
                 success: false,
+                user_id: nil,
                 failure_reason: { document_capture_session: [:blank] },
               )
 
@@ -281,6 +286,7 @@ RSpec.describe Idv::ImageUploadsController do
             it 'records the event' do
               expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
                 success: false,
+                user_id: nil,
                 document_back_image_encryption_key: '12345',
                 document_back_image_file_id: 'name',
                 document_front_image_encryption_key: '12345',
@@ -300,6 +306,7 @@ RSpec.describe Idv::ImageUploadsController do
             it 'does not upload the images' do
               expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
                 success: false,
+                user_id: nil,
                 failure_reason: { document_capture_session: [:blank] },
               )
 
@@ -386,6 +393,7 @@ RSpec.describe Idv::ImageUploadsController do
             it 'tracks the event' do
               expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
                 success: false,
+                user_id: user.uuid,
                 document_back_image_encryption_key: '12345',
                 document_back_image_file_id: 'name',
                 document_front_image_encryption_key: '12345',
@@ -407,6 +415,7 @@ RSpec.describe Idv::ImageUploadsController do
             it 'does not upload the images' do
               expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
                 success: false,
+                user_id: user.uuid,
                 failure_reason: { limit: [:rate_limited] },
               )
 
@@ -502,6 +511,7 @@ RSpec.describe Idv::ImageUploadsController do
             # the local upload succeeds
             expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
               success: true,
+              user_id: user.uuid,
               document_back_image_encryption_key: '12345',
               document_back_image_file_id: 'name',
               document_front_image_encryption_key: '12345',
@@ -511,6 +521,7 @@ RSpec.describe Idv::ImageUploadsController do
 
             expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
               success: false,
+              user_id: user.uuid,
               document_expiration: nil,
               document_issued: nil,
               document_number: nil,
@@ -548,11 +559,13 @@ RSpec.describe Idv::ImageUploadsController do
             # the local upload succeeds
             expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
               success: true,
+              user_id: user.uuid,
               failure_reason: nil,
             )
 
             expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
               success: false,
+              user_id: user.uuid,
               document_expiration: nil,
               document_issued: nil,
               document_number: nil,
@@ -652,6 +665,7 @@ RSpec.describe Idv::ImageUploadsController do
             pii = Idp::Constants::MOCK_IDV_APPLICANT
             expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
               success: true,
+              user_id: user.uuid,
               document_expiration: pii[:state_id_expiration],
               document_issued: pii[:state_id_issued],
               document_number: pii[:state_id_number],
@@ -686,6 +700,7 @@ RSpec.describe Idv::ImageUploadsController do
             pii = Idp::Constants::MOCK_IDV_APPLICANT
             expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
               success: true,
+              user_id: user.uuid,
               document_expiration: pii[:state_id_expiration],
               document_issued: pii[:state_id_issued],
               document_number: pii[:state_id_number],
@@ -1017,6 +1032,7 @@ RSpec.describe Idv::ImageUploadsController do
               it 'records attempts api events' do
                 expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
                   success: false,
+                  user_id: user.uuid,
                   document_expiration: state_id_expiration,
                   document_issued: nil,
                   document_number: state_id_number,
@@ -1046,6 +1062,7 @@ RSpec.describe Idv::ImageUploadsController do
               it 'does not upload the images' do
                 expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
                   success: false,
+                  user_id: user.uuid,
                   document_expiration: state_id_expiration,
                   document_issued: nil,
                   document_number: state_id_number,
@@ -1157,6 +1174,7 @@ RSpec.describe Idv::ImageUploadsController do
               it 'records attempts api events' do
                 expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
                   success: false,
+                  user_id: user.uuid,
                   document_expiration: state_id_expiration,
                   document_issued: nil,
                   document_number: state_id_number,
@@ -1190,6 +1208,7 @@ RSpec.describe Idv::ImageUploadsController do
               it 'does not upload the images' do
                 expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
                   success: false,
+                  user_id: user.uuid,
                   document_expiration: state_id_expiration,
                   document_issued: nil,
                   document_number: state_id_number,
