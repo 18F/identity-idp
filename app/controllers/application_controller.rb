@@ -38,7 +38,6 @@ class ApplicationController < ActionController::Base
   after_action :store_web_locale_in_session
 
   layout :resolve_layout
-  around_action :with_nds_view_paths, if: :nds_layout?
 
   def set_session_start_value_if_nil
     return if @skip_session_expiration || @skip_session_load
@@ -46,11 +45,15 @@ class ApplicationController < ActionController::Base
   end
 
   def nds_layout?
-    unless Rails.env.production?
-      return true if request.headers['X-Force-Nds-Bucket'] == 'nds'
-      return true if params[:nds_bucket] == 'nds'
-    end
-    ab_test_bucket(:NDS_LOOK_AND_FEEL) == :nds
+    return @nds_layout if defined?(@nds_layout)
+
+    @nds_layout =
+      if !Rails.env.production? &&
+         (request.headers['X-Force-Nds-Bucket'] == 'nds' || params[:nds_bucket] == 'nds')
+        true
+      else
+        ab_test_bucket(:NDS_LOOK_AND_FEEL, service_provider: nil) == :nds
+      end
   end
 
   # for lograge
@@ -164,18 +167,6 @@ class ApplicationController < ActionController::Base
 
   def resolve_layout
     nds_layout? ? 'nds/application' : 'application'
-  end
-
-  # Prepend app/views/nds for the duration of an NDS-bucket request so NDS
-  # view forks take precedence, then restore the original paths. lookup_context
-  # exposes no public setter to restore view paths, so we snapshot and reassign
-  # the backing ivar directly.
-  def with_nds_view_paths
-    original_view_paths = lookup_context.view_paths
-    lookup_context.prepend_view_paths([Rails.root.join('app/views/nds').to_s])
-    yield
-  ensure
-    lookup_context.instance_variable_set(:@view_paths, original_view_paths)
   end
 
   def attempts_api_enabled_for_session?
