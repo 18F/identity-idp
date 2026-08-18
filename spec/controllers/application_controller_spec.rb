@@ -878,6 +878,68 @@ RSpec.describe ApplicationController do
     end
   end
 
+  describe 'NDS layout resolution' do
+    before { routes.draw { get 'index' => 'anonymous#index' } }
+    after { Rails.application.reload_routes! }
+
+    controller do
+      def index
+        render plain: 'Hello'
+      end
+    end
+
+    context 'default (no nds bucket forced)' do
+      it 'resolves the legacy application layout' do
+        get :index
+        expect(controller.send(:resolve_layout)).to eq('application')
+        expect(controller.nds_layout?).to eq(false)
+      end
+    end
+
+    context 'when forced via the X-Force-Nds-Bucket header' do
+      it 'resolves the nds/application layout' do
+        request.headers['X-Force-Nds-Bucket'] = 'nds'
+        get :index
+        expect(controller.nds_layout?).to eq(true)
+        expect(controller.send(:resolve_layout)).to eq('nds/application')
+      end
+
+      it 'prepends the nds view path only for the duration of the request' do
+        request.headers['X-Force-Nds-Bucket'] = 'nds'
+        get :index
+
+        paths_during_block = []
+        controller.send(:with_nds_view_paths) do
+          paths_during_block = controller.lookup_context.view_paths.map(&:to_s)
+        end
+        paths_after_block = controller.lookup_context.view_paths.map(&:to_s)
+
+        expect(paths_during_block).to include(a_string_ending_with('app/views/nds'))
+        expect(paths_after_block).not_to include(a_string_ending_with('app/views/nds'))
+      end
+    end
+
+    context 'when forced via the nds_bucket param' do
+      it 'resolves the nds/application layout' do
+        get :index, params: { nds_bucket: 'nds' }
+        expect(controller.nds_layout?).to eq(true)
+        expect(controller.send(:resolve_layout)).to eq('nds/application')
+      end
+    end
+
+    context 'in production the dev override is ignored' do
+      before { allow(Rails.env).to receive(:production?).and_return(true) }
+
+      it 'does not honor the header and falls back to the A/B bucket' do
+        request.headers['X-Force-Nds-Bucket'] = 'nds'
+        allow(controller).to receive(:ab_test_bucket).with(:NDS_LOOK_AND_FEEL)
+          .and_return(nil)
+        get :index
+        expect(controller.nds_layout?).to eq(false)
+      end
+    end
+  end
+
   def expect_user_event_to_have_been_created(user, event_type)
     device = Device.first
     expect(device.user_id).to eq(user.id)

@@ -37,6 +37,9 @@ class ApplicationController < ActionController::Base
   before_action :cache_issuer_in_cookie
   after_action :store_web_locale_in_session
 
+  layout :resolve_layout
+  around_action :with_nds_view_paths, if: :nds_layout?
+
   def set_session_start_value_if_nil
     return if @skip_session_expiration || @skip_session_load
     session[:session_started_at] = Time.zone.now if session[:session_started_at].nil?
@@ -158,6 +161,22 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def resolve_layout
+    nds_layout? ? 'nds/application' : 'application'
+  end
+
+  # Prepend app/views/nds for the duration of an NDS-bucket request so NDS
+  # view forks take precedence, then restore the original paths. lookup_context
+  # exposes no public setter to restore view paths, so we snapshot and reassign
+  # the backing ivar directly.
+  def with_nds_view_paths
+    original_view_paths = lookup_context.view_paths
+    lookup_context.prepend_view_paths([Rails.root.join('app/views/nds').to_s])
+    yield
+  ensure
+    lookup_context.instance_variable_set(:@view_paths, original_view_paths)
+  end
 
   def attempts_api_enabled_for_session?
     current_sp&.attempts_api_enabled? && attempts_api_session_id.present?
