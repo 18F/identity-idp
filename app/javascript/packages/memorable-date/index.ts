@@ -25,6 +25,13 @@ export const enum MemorableDateErrorMessage {
 const CUSTOM_INPUT_EVENT_DETAIL_FLAG = 'CustomMemorableDateInputEventDetailFlag';
 
 /**
+ * Literal placeholder dates that appear on some documents (e.g. 99/99/9999,
+ * 00/00/0000). These cannot be parsed as real calendar dates, so when the
+ * element opts into placeholder values they bypass the real-date validation.
+ */
+const PLACEHOLDER_DATES = new Set(['9999-99-99', '0000-00-00']);
+
+/**
  * Type for a range check with a corresponding error message
  */
 interface RangeErrorMessage {
@@ -103,6 +110,15 @@ class MemorableDateElement extends HTMLElement {
     return this.getDateAttribute('max');
   }
 
+  /**
+   * Whether literal placeholder dates (e.g. 99/99/9999, 00/00/0000) are permitted,
+   * based on the "allow-placeholder-values" HTML attribute. When enabled, such
+   * values bypass the real-date and range validation.
+   */
+  get allowPlaceholderValues(): boolean {
+    return this.getAttribute('allow-placeholder-values') === 'true';
+  }
+
   connectedCallback() {
     const { allInputs } = this;
     this.validate();
@@ -175,6 +191,18 @@ class MemorableDateElement extends HTMLElement {
     ).some(this.checkFieldsInvalid(errorMessages));
 
     if (hasInvalidValues) {
+      return;
+    }
+
+    // Literal placeholder dates (e.g. 99/99/9999, 00/00/0000) are valid on some
+    // documents but cannot be parsed as real calendar dates. When permitted,
+    // accept them and skip the real-date and range checks below.
+    const dateString = `${year.value}-${month.value.padStart(2, '0')}-${day.value.padStart(
+      2,
+      '0',
+    )}`;
+    if (this.allowPlaceholderValues && PLACEHOLDER_DATES.has(dateString)) {
+      this.setValidity('', month, day, year);
       return;
     }
 
