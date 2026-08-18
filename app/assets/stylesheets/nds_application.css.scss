@@ -1,7 +1,3 @@
-// NDS bundle entry point. Byte-for-byte identical to application.css.scss
-// EXCEPT line 1 forwards 'nds/uswds-core' (the NDS overlay) instead of the
-// legacy 'uswds-core' override.
-//
 // LOAD-PATH ORDER IS LOAD-BEARING: build:css:nds MUST list
 // --load-path=app/assets/stylesheets/nds BEFORE --load-path=app/assets/stylesheets.
 // The deep USWDS graph (@forward 'uswds' -> uswds-global -> _uswds-elements)

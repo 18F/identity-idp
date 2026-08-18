@@ -25,9 +25,7 @@
     "build": "npm run build:js",
     "build:js": "concurrently 'webpack' 'make browsers.json'",
     "build:css": "npm run build:css:legacy && npm run build:css:nds",
-    "build:css:legacy:README": "Legacy bucket build. Enumerates the *.css.scss entrypoints explicitly (instead of a *.css.scss glob) so that nds_application.css.scss is NOT compiled here; it is built separately by build:css:nds against the packages-nds overlay. Keep this list in sync when adding a legacy entrypoint.",
     "build:css:legacy": "build-sass app/assets/stylesheets/application.css.scss app/assets/stylesheets/document-capture.css.scss app/assets/stylesheets/email.css.scss app/assets/stylesheets/navigation.css.scss app/assets/stylesheets/print.css.scss app/assets/stylesheets/tables-report.css.scss app/assets/stylesheets/utilities.css.scss app/components/*.scss --load-path=app/assets/stylesheets --out-dir=app/assets/builds",
-    "build:css:nds:README": "LOAD-PATH ORDER IS LOAD-BEARING: --load-path=app/assets/stylesheets/nds MUST precede --load-path=app/assets/stylesheets so every uswds-core reference (line 1 and the deep USWDS graph's bare @use 'uswds-core') resolves to nds/_uswds-core.scss as a single module. Reordering reintroduces a double-config of uswds-core/index. See nds_application.css.scss.",
     "build:css:nds": "build-sass app/assets/stylesheets/nds_application.css.scss --load-path=app/assets/stylesheets/nds --load-path=app/assets/stylesheets --load-path=node_modules/@18f/identity-design-system/packages-nds --out-dir=app/assets/builds",
     "build:openapi": "redocly bundle ./docs/attempts-api/openapi.yml -o ./docs/attempts-api/compiled-api --ext yml -d"
   },
