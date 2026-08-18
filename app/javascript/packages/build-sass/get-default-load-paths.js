@@ -8,9 +8,9 @@ const LGDS = '@18f/identity-design-system';
 // one root is returned: listing both would load (and re-configure) the shared
 // `uswds-core` module twice, which Sass rejects.
 const lgdsLoadPath = (pathExists) => {
-  const preferred = `node_modules/${LGDS}/packages-uswds`;
-  const legacy = `node_modules/${LGDS}/packages`;
-  return pathExists(preferred) ? preferred : legacy;
+  const uswdsOverlayPath = `node_modules/${LGDS}/packages-uswds`;
+  const backCompatPath = `node_modules/${LGDS}/packages`;
+  return pathExists(uswdsOverlayPath) ? uswdsOverlayPath : backCompatPath;
 };
 
 /**
