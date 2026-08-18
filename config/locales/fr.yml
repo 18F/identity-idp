@@ -630,7 +630,7 @@ doc_auth.headings.how_to_verify: Choisir la manière dont vous souhaitez confirm
 doc_auth.headings.interstitial: Nous traitons vos informations.
 doc_auth.headings.lets_go: Comment fonctionne la vérification de votre identité
 doc_auth.headings.mailing_address: Saisir votre adresse postale de contact
-doc_auth.headings.mdl_capture: Renseignez les informations de votre permis de conduire mobile
+doc_auth.headings.mdl_capture: Renseignez les informations de votre permis de conduire mobile (mDL)
 doc_auth.headings.no_ssn: Vous n’avez pas de numéro de sécurité sociale ?
 doc_auth.headings.passport: Votre passeport
 doc_auth.headings.passport_capture: Ajouter une photo de votre passeport
@@ -1220,7 +1220,7 @@ idv.mdl.button: Ouvrir le portefeuille numérique
 idv.mdl.steps_heading: 'Vous aurez besoin de:'
 idv.mdl.steps.device.title: Un appareil doté d’un portefeuille numérique
 idv.mdl.steps.have_mdl.title: Un permis de conduire mobile actif
-idv.mdl.subtitle: '%{app_name} vérifiera votre permis de conduire mobile par l’intermédiaire d’un prestataire de services de confiance (Socure).'
+idv.mdl.subtitle: '%{app_name} vérifiera votre permis de conduire mobile (mDL) par l’intermédiaire d’un prestataire de services de confiance (Socure).'
 idv.messages.activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier les informations qui ont été vérifiées, veuillez %{link_html}.
 idv.messages.activated_link: nous contacter
 idv.messages.come_back_later: Une fois ce courrier reçu, reconnectez-vous pour saisir le code de vérification qui y figure.
