@@ -81,6 +81,7 @@ RSpec.feature 'document capture step', :js do
       it 'logs the rate limited analytics event for doc_auth' do
         expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
           limiter_type: :idv_doc_auth,
+          user_id: @user.uuid,
         )
 
         attach_and_submit_images
@@ -462,6 +463,7 @@ RSpec.feature 'document capture step', :js do
       it 'logs the rate limited analytics event for doc_auth' do
         expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
           limiter_type: :idv_doc_auth,
+          user_id: @user.uuid,
         )
         attach_and_submit_images
         expect(fake_analytics).to have_logged_event(
