@@ -22,7 +22,6 @@ module Proofing
               transaction_id: parsed_response.conversation_id,
               dual_vendor_check_eligible: dual_vendor_check_eligible?(parsed_response),
               result: phone_metadata(response_body),
-              review_status: response_body['review_status'],
             )
           end
 
@@ -64,6 +63,7 @@ module Proofing
               risk_count_high: response_body['phonefinder.primary_phone.risk_count_high'],
               risk_count_med: response_body['phonefinder.primary_phone.risk_count_med'],
               risk_count_low: response_body['phonefinder.primary_phone.risk_count_low'],
+              review_status: response_body['review_status'],
             }
           end
 
