@@ -65,7 +65,7 @@ RSpec.describe SamlCompletionController do
     end
 
     context 'with a nil service provider request session' do
-      before { allow(controller).to receive(:sp_from_sp_session).and_return nil }
+      before { expect(controller).to receive(:sp_from_sp_session).and_return nil }
 
       it 'renders 404 not found' do
         get :index, params: { path_year: path_year }

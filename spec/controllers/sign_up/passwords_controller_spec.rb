@@ -127,6 +127,7 @@ RSpec.describe SignUp::PasswordsController do
 
         before do
           allow(controller).to receive(:ab_test_bucket)
+            .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
           allow(controller).to receive(:ab_test_bucket)
             .with(:PASSKEY_UPSELL)
             .and_return(:passkey_setup_prompt_after_password_creation)
@@ -145,6 +146,7 @@ RSpec.describe SignUp::PasswordsController do
 
         before do
           allow(controller).to receive(:ab_test_bucket)
+            .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
           allow(controller).to receive(:ab_test_bucket)
             .with(:PASSKEY_UPSELL)
             .and_return(:auto_passkey_prompt)
@@ -164,6 +166,7 @@ RSpec.describe SignUp::PasswordsController do
 
         before do
           allow(controller).to receive(:ab_test_bucket)
+            .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
           allow(controller).to receive(:ab_test_bucket)
             .with(:PASSKEY_UPSELL)
             .and_return(:auto_passkey_prompt)
