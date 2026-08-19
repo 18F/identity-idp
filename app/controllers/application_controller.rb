@@ -165,22 +165,22 @@ class ApplicationController < ActionController::Base
 
   def resolve_nds_bucket
     unless Rails.env.production?
-      # Dev override: ?nds_bucket=nds|legacy selects the bucket and persists it
-      # in an httponly cookie so it sticks across navigation without re-appending
-      # the param; ?nds_bucket=clear forgets it. This is only an override in
-      # front of the real A/B assignment (it does not change the user's actual
-      # experiment bucket), so it cannot desync experiment traffic.
-      case params[:nds_bucket]
+      # Dev override: ?ui_test_bucket=nds|legacy selects the bucket and persists
+      # it in an httponly cookie so it sticks across navigation without
+      # re-appending the param; ?ui_test_bucket=clear forgets it. This is only an
+      # override in front of the real A/B assignment (it does not change the
+      # user's actual experiment bucket), so it cannot desync experiment traffic.
+      case params[:ui_test_bucket]
       when 'nds', 'legacy'
-        cookies[:nds_bucket] = { value: params[:nds_bucket], httponly: true }
+        cookies[:ui_test_bucket] = { value: params[:ui_test_bucket], httponly: true }
       when 'clear'
-        cookies.delete(:nds_bucket)
+        cookies.delete(:ui_test_bucket)
       end
 
-      return true if params[:nds_bucket] == 'nds'
-      return false if params[:nds_bucket] == 'legacy'
-      return true if cookies[:nds_bucket] == 'nds'
-      return false if cookies[:nds_bucket] == 'legacy'
+      return true if params[:ui_test_bucket] == 'nds'
+      return false if params[:ui_test_bucket] == 'legacy'
+      return true if cookies[:ui_test_bucket] == 'nds'
+      return false if cookies[:ui_test_bucket] == 'legacy'
     end
 
     ab_test_bucket(:NDS_LOOK_AND_FEEL, service_provider: nil) == :nds
