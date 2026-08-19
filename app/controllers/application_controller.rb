@@ -48,8 +48,7 @@ class ApplicationController < ActionController::Base
     return @nds_layout if defined?(@nds_layout)
 
     @nds_layout =
-      if !Rails.env.production? &&
-         (request.headers['X-Force-Nds-Bucket'] == 'nds' || params[:nds_bucket] == 'nds')
+      if !Rails.env.production? && params[:nds_bucket] == 'nds'
         true
       else
         ab_test_bucket(:NDS_LOOK_AND_FEEL, service_provider: nil) == :nds

@@ -896,15 +896,6 @@ RSpec.describe ApplicationController do
       end
     end
 
-    context 'when forced via the X-Force-Nds-Bucket header' do
-      it 'resolves the nds/application layout' do
-        request.headers['X-Force-Nds-Bucket'] = 'nds'
-        get :index
-        expect(controller.nds_layout?).to eq(true)
-        expect(controller.send(:resolve_layout)).to eq('nds/application')
-      end
-    end
-
     context 'when forced via the nds_bucket param' do
       it 'resolves the nds/application layout' do
         get :index, params: { nds_bucket: 'nds' }
@@ -916,12 +907,11 @@ RSpec.describe ApplicationController do
     context 'in production the dev override is ignored' do
       before { allow(Rails.env).to receive(:production?).and_return(true) }
 
-      it 'does not honor the header and falls back to the A/B bucket' do
-        request.headers['X-Force-Nds-Bucket'] = 'nds'
+      it 'does not honor the param and falls back to the A/B bucket' do
         allow(controller).to receive(:ab_test_bucket)
           .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
           .and_return(nil)
-        get :index
+        get :index, params: { nds_bucket: 'nds' }
         expect(controller.nds_layout?).to eq(false)
       end
     end
