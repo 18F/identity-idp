@@ -902,6 +902,63 @@ RSpec.describe ApplicationController do
         expect(controller.nds_layout?).to eq(true)
         expect(controller.send(:resolve_layout)).to eq('nds/application')
       end
+
+      it 'persists the selected bucket in an httponly cookie' do
+        get :index, params: { nds_bucket: 'nds' }
+        controller.nds_layout?
+
+        controller_set_cookies = controller.send(:cookies).instance_variable_get(:@set_cookies)
+        expect(controller_set_cookies['nds_bucket'][:value]).to eq('nds')
+        expect(controller_set_cookies['nds_bucket'][:httponly]).to eq(true)
+      end
+
+      it 'switches back to the legacy layout and persists it, overriding the A/B bucket' do
+        allow(controller).to receive(:ab_test_bucket)
+          .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
+          .and_return(:nds)
+        get :index, params: { nds_bucket: 'legacy' }
+
+        expect(controller.nds_layout?).to eq(false)
+        expect(controller.send(:resolve_layout)).to eq('application')
+        controller_set_cookies = controller.send(:cookies).instance_variable_get(:@set_cookies)
+        expect(controller_set_cookies['nds_bucket'][:value]).to eq('legacy')
+      end
+    end
+
+    context 'when the nds_bucket cookie is set (no param)' do
+      it 'sticks to nds when the cookie is nds, even if the A/B bucket is not nds' do
+        allow(controller).to receive(:ab_test_bucket)
+          .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
+          .and_return(nil)
+        cookies[:nds_bucket] = 'nds'
+        get :index
+        expect(controller.nds_layout?).to eq(true)
+      end
+
+      it 'sticks to legacy when the cookie is legacy, even if the A/B bucket is nds' do
+        allow(controller).to receive(:ab_test_bucket)
+          .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
+          .and_return(:nds)
+        cookies[:nds_bucket] = 'legacy'
+        get :index
+        expect(controller.nds_layout?).to eq(false)
+      end
+    end
+
+    context 'when clearing the nds_bucket cookie' do
+      it 'stops forcing legacy and falls back to the A/B bucket' do
+        allow(controller).to receive(:ab_test_bucket)
+          .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
+          .and_return(:nds)
+        cookies[:nds_bucket] = 'legacy'
+        get :index, params: { nds_bucket: 'clear' }
+
+        # Asserts the override no longer forces a bucket (falls back to A/B). The
+        # raw cookie-delete marker isn't checked here: render plain skips layout,
+        # so this calls nds_layout? directly, and a request-only cookie delete
+        # doesn't round-trip to the integration cookies[] helper.
+        expect(controller.nds_layout?).to eq(true)
+      end
     end
 
     context 'in production the dev override is ignored' do
@@ -912,6 +969,15 @@ RSpec.describe ApplicationController do
           .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
           .and_return(nil)
         get :index, params: { nds_bucket: 'nds' }
+        expect(controller.nds_layout?).to eq(false)
+      end
+
+      it 'does not honor the cookie and falls back to the A/B bucket' do
+        allow(controller).to receive(:ab_test_bucket)
+          .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
+          .and_return(nil)
+        cookies[:nds_bucket] = 'nds'
+        get :index
         expect(controller.nds_layout?).to eq(false)
       end
     end
