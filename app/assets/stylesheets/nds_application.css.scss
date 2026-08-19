@@ -1,0 +1,14 @@
+// LOAD-PATH ORDER IS LOAD-BEARING: build:css:nds MUST list
+// --load-path=app/assets/stylesheets/nds BEFORE --load-path=app/assets/stylesheets.
+// The deep USWDS graph (@forward 'uswds' -> uswds-global -> _uswds-elements)
+// does a bare `@use 'uswds-core'`; with the nds load-path first, that AND the
+// line-1 forward both resolve to nds/_uswds-core.scss (a single module) and
+// dedup. If the ordering is reversed, the bare @use resolves to the legacy
+// app/assets/stylesheets/_uswds-core.scss, producing a second configuration of
+// uswds-core/index ("module already loaded, can't configure using with").
+// See package.json build:css:nds. DO NOT reorder those load-paths.
+@forward 'nds/uswds-core';
+@forward 'uswds-fonts/src/styles';
+@forward 'uswds';
+@forward 'design-system-waiting-room';
+@forward 'components';

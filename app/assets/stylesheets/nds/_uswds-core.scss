@@ -1,7 +1,15 @@
-@forward '@18f/identity-design-system/packages-uswds/uswds-core' with (
+// NDS analog of app/assets/stylesheets/_uswds-core.scss.
+//
+// Mirrors the legacy overlay's mechanism exactly: a thin chained `@forward`
+// of IDS's overlay partial, layering only the idp-specific composition vars
+// on top. The forward target resolves (via the packages-nds load path) to
+// `packages-nds/_uswds-core.scss` — the same module that packages-nds's own
+// component partials (`_uswds-elements.scss`) load via `@use 'uswds-core'`.
+// Sharing that single module is what avoids the "module already loaded, so
+// it can't be configured using with" collision.
+@forward '@18f/identity-design-system/packages-nds/uswds-core' with (
   $theme-body-font-size: 'sm',
   $theme-button-icon-gap: 0.5,
-  $theme-font-path: '',
   $theme-font-weight-light: false,
   $theme-image-path: '',
   $theme-global-border-box-sizing: true,

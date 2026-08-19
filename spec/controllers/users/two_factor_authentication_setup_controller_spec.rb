@@ -165,6 +165,8 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
           .and_return(true)
         controller.user_session[:in_account_creation_flow] = true
+        allow(controller).to receive(:ab_test_bucket)
+          .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
       end
 
       context 'when platform authenticator is available' do
