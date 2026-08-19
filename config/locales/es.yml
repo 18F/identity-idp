@@ -785,7 +785,7 @@ duplicate_profiles_detected.intro.link: las cuentas duplicativas
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Último inicio de sesión: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Nunca he iniciado sesión en
 duplicate_profiles_detected.select_an_account.details_html: 'Conserva la cuenta que esté conectada a la mayor cantidad de servicios. Ve a la página %{link_html} para ver las servicios conectadas seleccionando “Tus servicios conectados” en el menú de la izquierda.'
-duplicate_profiles_detected.select_an_account.details.link: «Su cuenta»
+duplicate_profiles_detected.select_an_account.details.link: Su cuenta
 duplicate_profiles_detected.select_an_account.heading: Elija la cuenta que desea conservar.
 duplicate_profiles_detected.sign_back_in.details: Vuelva al sitio web de %{app_name} e inicie sesión usando la cuenta de %{app_name} que conservó.
 duplicate_profiles_detected.sign_back_in.heading: Vuelva a iniciar sesión en %{app_name} con una cuenta.
