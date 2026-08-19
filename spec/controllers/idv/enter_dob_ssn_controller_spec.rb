@@ -142,6 +142,30 @@ RSpec.describe Idv::EnterDobSsnController do
       end
     end
 
+    context 'user arrived through a live SP authorization request' do
+      let(:live_sp_session) do
+        {
+          issuer: 'urn:gov:gsa:openidconnect:sp:other',
+          acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+          request_url: 'http://www.example.com/openid_connect/authorize?client_id=example',
+          requested_attributes: %w[email],
+        }
+      end
+
+      before do
+        session[:sp] = live_sp_session
+        get :new
+      end
+
+      it 'keeps the SP session for the original authorization request' do
+        expect(session[:sp]).to eq(live_sp_session)
+      end
+
+      it 'still moves agent proofed user pii to idv_session applicant' do
+        expect(subject.idv_session.applicant).to eq(pii.stringify_keys)
+      end
+    end
+
     context 'with threatmetrix disabled' do
       let(:proofing_agent_device_profiling) { :disabled }
 

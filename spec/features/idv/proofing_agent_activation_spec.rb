@@ -112,6 +112,30 @@ RSpec.describe 'Proofing agent activation', :js do
       .to match_array(Idv::EnterDobSsnController::AGENT_PROOFED_REQUESTED_ATTRIBUTES)
   end
 
+  context 'user signs in through the service provider' do
+    scenario 'binding completes the original authorization request' do
+      visit_idp_from_ial2_oidc_sp(client_id: service_provider.issuer)
+      sign_in_live_with_2fa(user)
+
+      # the redirect from sign in to the binding page ships separately; this
+      # covers the sp session surviving the binding step
+      visit idv_enter_dob_ssn_path
+      complete_idv_enter_dob_ssn_step
+      complete_enter_password_step(user)
+      acknowledge_and_confirm_personal_key
+
+      expect(page).to have_current_path(sign_up_completed_path, wait: 10)
+      click_agree_and_continue
+
+      expect(page).to have_current_path(
+        'http://localhost:7654/auth/result',
+        url: true,
+        ignore_query: true,
+        wait: 10,
+      )
+    end
+  end
+
   context 'when the user enters an incorrect SSN' do
     scenario 'stays on the confirmation page and shows a warning' do
       sign_in_live_with_2fa(user)
