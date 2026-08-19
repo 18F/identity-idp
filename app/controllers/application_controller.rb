@@ -37,17 +37,22 @@ class ApplicationController < ActionController::Base
   before_action :cache_issuer_in_cookie
   after_action :store_web_locale_in_session
 
+  layout :resolve_layout
+
   def set_session_start_value_if_nil
     return if @skip_session_expiration || @skip_session_load
     session[:session_started_at] = Time.zone.now if session[:session_started_at].nil?
   end
 
   def nds_layout?
-    unless Rails.env.production?
-      return true if request.headers['X-Force-Nds-Bucket'] == 'nds'
-      return true if params[:nds_bucket] == 'nds'
-    end
-    ab_test_bucket(:NDS_LOOK_AND_FEEL) == :nds
+    return @nds_layout if defined?(@nds_layout)
+
+    @nds_layout =
+      if !Rails.env.production? && params[:nds_bucket] == 'nds'
+        true
+      else
+        ab_test_bucket(:NDS_LOOK_AND_FEEL, service_provider: nil) == :nds
+      end
   end
 
   # for lograge
@@ -158,6 +163,10 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def resolve_layout
+    nds_layout? ? 'nds/application' : 'application'
+  end
 
   def attempts_api_enabled_for_session?
     current_sp&.attempts_api_enabled? && attempts_api_session_id.present?

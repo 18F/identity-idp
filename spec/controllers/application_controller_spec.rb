@@ -878,6 +878,45 @@ RSpec.describe ApplicationController do
     end
   end
 
+  describe 'NDS layout resolution' do
+    before { routes.draw { get 'index' => 'anonymous#index' } }
+    after { Rails.application.reload_routes! }
+
+    controller do
+      def index
+        render plain: 'Hello'
+      end
+    end
+
+    context 'default (no nds bucket forced)' do
+      it 'resolves the legacy application layout' do
+        get :index
+        expect(controller.send(:resolve_layout)).to eq('application')
+        expect(controller.nds_layout?).to eq(false)
+      end
+    end
+
+    context 'when forced via the nds_bucket param' do
+      it 'resolves the nds/application layout' do
+        get :index, params: { nds_bucket: 'nds' }
+        expect(controller.nds_layout?).to eq(true)
+        expect(controller.send(:resolve_layout)).to eq('nds/application')
+      end
+    end
+
+    context 'in production the dev override is ignored' do
+      before { allow(Rails.env).to receive(:production?).and_return(true) }
+
+      it 'does not honor the param and falls back to the A/B bucket' do
+        allow(controller).to receive(:ab_test_bucket)
+          .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
+          .and_return(nil)
+        get :index, params: { nds_bucket: 'nds' }
+        expect(controller.nds_layout?).to eq(false)
+      end
+    end
+  end
+
   def expect_user_event_to_have_been_created(user, event_type)
     device = Device.first
     expect(device.user_id).to eq(user.id)
