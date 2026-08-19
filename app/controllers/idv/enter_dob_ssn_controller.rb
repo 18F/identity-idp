@@ -9,6 +9,20 @@ module Idv
     include Steps::ThreatMetrixStepHelper
     include ThreatMetrixConcern
 
+    # the binding email is a plain sign in link, so there is no SP authorization
+    # request to pull requested attributes from. these are the attributes an
+    # agent proofed profile shares. if the SP's real request asks for less, the
+    # user re-consents with the scope derived list on their next sign in
+    AGENT_PROOFED_REQUESTED_ATTRIBUTES = %w[
+      email
+      given_name
+      family_name
+      birthdate
+      social_security_number
+      address
+      phone
+    ].freeze
+
     before_action :confirm_two_factor_authenticated
     before_action :confirm_verification_needed
     before_action :move_agent_proofed_user_pii_to_idv_session
@@ -64,7 +78,11 @@ module Idv
         session[:sp] = {
           issuer: agent_proofed_user&.issuer,
           acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
-        }
+          request_url: agent_proofed_sp_return_url,
+          # dup because SessionEncryptor#dump mutates session values in place
+          # and raises FrozenError on the frozen constant
+          requested_attributes: AGENT_PROOFED_REQUESTED_ATTRIBUTES.dup,
+        }.compact
         idv_session.applicant = agent_proofed_user&.pii
         idv_session.agent_proofed = true
         # a successful agent proofed user should have phone precheck completed
@@ -82,6 +100,22 @@ module Idv
     def verification_needed?
       IdentityConfig.store.idv_proofing_agent_enabled &&
         current_user.proofing_agent_user_awaiting_binding?
+    end
+
+    def agent_proofed_service_provider
+      return @agent_proofed_service_provider if defined?(@agent_proofed_service_provider)
+
+      @agent_proofed_service_provider = ServiceProvider.find_by(issuer: agent_proofed_user&.issuer)
+    end
+
+    # there is no SP authorization request to return to, so use the SP's post
+    # idv follow up url so the completion screen can hand the user back to the
+    # SP after consent
+    def agent_proofed_sp_return_url
+      return if agent_proofed_service_provider.blank?
+
+      resolver = SpReturnUrlResolver.new(service_provider: agent_proofed_service_provider)
+      resolver.post_idv_follow_up_url || resolver.return_to_sp_url
     end
 
     def tmx_job_attrs
