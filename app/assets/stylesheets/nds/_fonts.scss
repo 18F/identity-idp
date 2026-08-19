@@ -1,0 +1,58 @@
+// idp-local Inter @font-face registration for the nds bundle.
+//
+// Path 4 declares Inter @font-face in IDS's src/scss/nds/_base.scss, but that
+// partial is only forwarded into IDS's OWN standalone bundle (for
+// identity-site) — idp's nds_application.css.scss does NOT consume it. USWDS's
+// uswds-fonts renders @font-face only for typeface tokens that carry a `src`,
+// and Path 4 registered 'inter' WITHOUT a src (deliberately, using _base.scss
+// instead). So without this file idp's nds bundle would reference the
+// "Inter Variable" / "Inter Web" family with no @font-face backing it, the
+// browser would fall through to the system stack, and the InterVariable
+// preload in nds/base.html.erb would be unused.
+//
+// URLs are root-relative to match idp's legacy public-sans @font-face
+// (compiled as url("/public-sans/...")); idp serves app/assets/fonts/ at the
+// asset root, so inter/ resolves at /inter/. Faces mirror Path 4's _base.scss.
+@font-face {
+  font-display: swap;
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-weight: 100 900;
+  src:
+    url('/inter/InterVariable.woff2') format('woff2-variations'),
+    url('/inter/InterVariable.woff2') format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Inter Variable';
+  font-style: italic;
+  font-weight: 100 900;
+  src:
+    url('/inter/InterVariable-Italic.woff2') format('woff2-variations'),
+    url('/inter/InterVariable-Italic.woff2') format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Inter Web';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/inter/Inter-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Inter Web';
+  font-style: normal;
+  font-weight: 600;
+  src: url('/inter/Inter-SemiBold.woff2') format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Inter Web';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/inter/Inter-Bold.woff2') format('woff2');
+}
