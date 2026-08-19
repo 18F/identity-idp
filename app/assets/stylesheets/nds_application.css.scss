@@ -9,6 +9,7 @@
 // See package.json build:css:nds. DO NOT reorder those load-paths.
 @forward 'nds/uswds-core';
 @forward 'uswds-fonts/src/styles';
+@forward 'nds/fonts';
 @forward 'uswds';
 @forward 'design-system-waiting-room';
 @forward 'components';
