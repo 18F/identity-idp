@@ -162,6 +162,41 @@ RSpec.describe Idv::WelcomeController do
       expect(response).to redirect_to(idv_please_call_url)
     end
 
+    context 'when user is awaiting binding from proofing agent' do
+      let(:session) do
+        create(
+          :document_capture_session,
+          user:,
+          pending_agent_proofed_user_at: Time.zone.now,
+          doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
+        )
+      end
+      let(:agent_proofing_result) do
+        {
+          pii: { first_name: 'Testy', last_name: 'Testerson' },
+          proofing_location_id: '123',
+          proofing_agent_id: '456',
+          correlation_id: '789',
+          service_provider_issuer: 'test_issuer',
+          success: true,
+          reason: nil,
+          resolution: nil,
+          mrz: nil,
+          aamva: nil,
+        }
+      end
+      before do
+        allow(IdentityConfig.store).to receive(:idv_proofing_agent_enabled).and_return(true)
+        session.store_agent_proofed_user(agent_proofing_result)
+      end
+
+      it 'redirects to binding step' do
+        get :show
+
+        expect(response).to redirect_to(idv_enter_dob_ssn_url)
+      end
+    end
+
     context 'has pending in-person enrollment' do
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
