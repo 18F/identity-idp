@@ -47,12 +47,7 @@ class ApplicationController < ActionController::Base
   def nds_layout?
     return @nds_layout if defined?(@nds_layout)
 
-    @nds_layout =
-      if !Rails.env.production? && params[:nds_bucket] == 'nds'
-        true
-      else
-        ab_test_bucket(:NDS_LOOK_AND_FEEL, service_provider: nil) == :nds
-      end
+    @nds_layout = resolve_nds_bucket
   end
 
   # for lograge
@@ -166,6 +161,29 @@ class ApplicationController < ActionController::Base
 
   def resolve_layout
     nds_layout? ? 'nds/application' : 'application'
+  end
+
+  def resolve_nds_bucket
+    unless Rails.env.production?
+      # Dev override: ?ui_test_bucket=nds|legacy selects the bucket and persists
+      # it in an httponly cookie so it sticks across navigation without
+      # re-appending the param; ?ui_test_bucket=clear forgets it. This is only an
+      # override in front of the real A/B assignment (it does not change the
+      # user's actual experiment bucket), so it cannot desync experiment traffic.
+      case params[:ui_test_bucket]
+      when 'nds', 'legacy'
+        cookies[:ui_test_bucket] = { value: params[:ui_test_bucket], httponly: true }
+      when 'clear'
+        cookies.delete(:ui_test_bucket)
+      end
+
+      return true if params[:ui_test_bucket] == 'nds'
+      return false if params[:ui_test_bucket] == 'legacy'
+      return true if cookies[:ui_test_bucket] == 'nds'
+      return false if cookies[:ui_test_bucket] == 'legacy'
+    end
+
+    ab_test_bucket(:NDS_LOOK_AND_FEEL, service_provider: nil) == :nds
   end
 
   def attempts_api_enabled_for_session?
