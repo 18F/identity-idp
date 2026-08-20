@@ -21,6 +21,8 @@
 
 <%= render ButtonComponent.new(
       url: webauthn_setup_path(platform: true),
+      variant: :secondary,
+      size: :md,
       icon: :add,
       outline: true,
       class: 'margin-top-2',

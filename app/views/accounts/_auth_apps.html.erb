@@ -22,6 +22,8 @@
 <% if current_user.auth_app_configurations.count < IdentityConfig.store.max_auth_apps_per_account %>
   <%= render ButtonComponent.new(
         url: authenticator_setup_url,
+        variant: :secondary,
+        size: :md,
         icon: :add,
         class: 'usa-button usa-button--outline margin-top-2',
       ).with_content(t('account.index.auth_app_add')) %>
