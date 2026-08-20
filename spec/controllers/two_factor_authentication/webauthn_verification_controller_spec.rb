@@ -33,7 +33,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         .with(:PASSKEY_AUTH)
         .and_return(:default)
       allow(controller).to receive(:ab_test_bucket)
-        .with(:NDS_LOOK_AND_FEEL, {service_provider: nil})
+        .with(:NDS_LOOK_AND_FEEL, { service_provider: nil })
         .and_return(:default)
     end
 
