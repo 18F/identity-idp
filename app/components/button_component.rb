@@ -77,13 +77,15 @@ class ButtonComponent < BaseComponent
   end
 
   # The A/B bucket can only be resolved at render time (helpers are unavailable
-  # in #initialize). Callers always instantiate ButtonComponent; when the render
-  # resolves to the NDS bucket we delegate to NdsButtonComponent, which renders
-  # itself with the variant/size API. The subclass sets this false so it renders
-  # its own (NDS) markup instead of recursing.
+  # in #initialize). Callers always instantiate ButtonComponent (or one of its
+  # subclasses); when the render resolves to the NDS bucket we delegate to
+  # NdsButtonComponent, which renders itself with the variant/size API. The
+  # guard excludes NdsButtonComponent itself so it renders its own (NDS) markup
+  # instead of recursing — every other button (including the Submit/Print/
+  # Download subclasses) flips to NDS in the NDS bucket.
   def before_render
     super
-    @render_as_nds = nds_bucket? && instance_of?(ButtonComponent)
+    @render_as_nds = nds_bucket? && !is_a?(NdsButtonComponent)
   end
 
   private

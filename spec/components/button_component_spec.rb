@@ -235,6 +235,18 @@ RSpec.describe ButtonComponent, type: :component do
           render_inline(ButtonComponent.new(variant: :bogus).with_content('x'))
         end.to raise_error(KeyError)
       end
+
+      it 'flips ButtonComponent subclasses to NDS without recursing' do
+        rendered = render_inline(
+          SubmitButtonComponent.new(variant: :secondary, size: :md).with_content('Go'),
+        )
+        # Delegated to the NDS variant/size markup...
+        expect(rendered).to have_css('.usa-button.usa-button--secondary.usa-button--md')
+        expect(rendered).not_to have_css('.usa-button--big, .usa-button--wide')
+        # ...while preserving the subclass's own wrapper (proves no recursion and
+        # that the subclass render path still runs).
+        expect(rendered).to have_css('lg-submit-button')
+      end
     end
   end
 end
