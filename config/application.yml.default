@@ -281,7 +281,6 @@ in_person_enrollments_ready_job_max_number_of_messages: 10
 in_person_enrollments_ready_job_queue_url: ''
 in_person_enrollments_ready_job_visibility_timeout_seconds: 30
 in_person_enrollments_ready_job_wait_time_seconds: 20
-in_person_expiration_time_offset_hours: 0
 in_person_opt_in_available_completion_survey_url: 'https://handbook.login.gov'
 in_person_outage_emailed_by_date: 'November 1, 2024'
 # in_person_outage_expected_update_date and in_person_outage_emailed_by_date below
@@ -292,6 +291,7 @@ in_person_passports_enabled: false
 in_person_password_reset_expiration_days: 90
 in_person_proofing_enabled: false
 in_person_proofing_enforce_tmx: false
+in_person_proofing_expiration_edge_cases_enabled: false
 in_person_proofing_opt_in_enabled: true
 in_person_results_delay_in_hours: 1
 in_person_send_proofing_notifications_enabled: false
@@ -363,6 +363,7 @@ mfa_report_config: '[]'
 min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
 mx_timeout: 3
+nds_look_and_feel_percent: 0
 new_device_alert_delay_in_minutes: 5
 new_device_alert_window_start_in_minutes: 480
 newrelic_license_key: ''
@@ -424,6 +425,7 @@ rails_mailer_previews_enabled: false
 raise_on_component_validation_error: true
 raise_on_missing_title: false
 reauthn_window: 1200
+recaptcha_enterprise_additional_context_enabled: false
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
 recaptcha_mock_validator: true
@@ -493,7 +495,6 @@ short_term_phone_otp_max_attempts: 2
 show_user_attribute_deprecation_warnings: false
 sign_in_password_compromised_percent_tested: 0
 sign_in_recaptcha_annotation_enabled: false
-sign_in_recaptcha_percent_tested: 0
 sign_in_recaptcha_score_threshold: 0.0
 sign_in_user_id_per_ip_attempt_window_exponential_factor: 1.1
 sign_in_user_id_per_ip_attempt_window_in_minutes: 720
@@ -601,6 +602,7 @@ development:
   in_person_enrollments_immediate_approval_enabled: true
   in_person_proofing_enabled: true
   in_person_proofing_enforce_tmx: true
+  in_person_proofing_expiration_edge_cases_enabled: true
   in_person_send_proofing_notifications_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
@@ -619,7 +621,6 @@ development:
   secret_key_base: development_secret_key_base
   session_encryption_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   sign_in_recaptcha_annotation_enabled: true
-  sign_in_recaptcha_percent_tested: 100
   sign_in_recaptcha_score_threshold: 0.3
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   socure_idplus_base_url: 'https://sandbox.socure.us'

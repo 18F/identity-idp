@@ -2,9 +2,8 @@ require 'rails_helper'
 
 RSpec.describe UspsInPersonProofing::Applicant do
   let(:document_expiration_date) { Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d') }
-  let(:expiration_time_offset_hours) { 0 }
   let(:document_expiration_date_in_epoch) do
-    Time.zone.parse(document_expiration_date).to_i
+    Time.zone.parse(document_expiration_date).end_of_day.to_i
   end
   let(:enrollment_document_type) { InPersonEnrollment::DOCUMENT_TYPE_STATE_ID }
   let(:applicant_document_type) { Idp::Constants::DocumentTypes::DRIVERS_LICENSE }
@@ -31,8 +30,6 @@ RSpec.describe UspsInPersonProofing::Applicant do
   before do
     allow(IdentityConfig.store).to receive(:usps_ipp_enrollment_status_update_email_address)
       .and_return(email)
-    allow(IdentityConfig.store).to receive(:in_person_expiration_time_offset_hours)
-      .and_return(expiration_time_offset_hours)
   end
 
   describe '.from_usps_applicant_and_enrollment' do
@@ -159,36 +156,32 @@ RSpec.describe UspsInPersonProofing::Applicant do
       end
     end
 
-    context 'with an offset to the expiration time', timezone: 'UTC' do
-      context 'with an offset of zero' do
-        it 'shows the previous date if interpreted in US timezone' do
-          exp_date = described_class.from_usps_applicant_and_enrollment(
-            applicant,
-            enrollment,
-          ).document_expiration_date
-          expect(
-            Time.at(
-              exp_date,
-              in: '-07:00',
-            ).strftime('%Y-%m-%d'),
-          ).not_to eq document_expiration_date
+    context 'with a non-standard expiration value (LG-17733)' do
+      ['military', 'indefinite', 'none', '9999-99-99', '0000-00-00'].each do |value|
+        context "when id_expiration is #{value.inspect}" do
+          let(:applicant) { Pii::UspsApplicant.new(**applicant_pii.merge(id_expiration: value)) }
+
+          it 'does not set a document_expiration_date' do
+            expect(
+              described_class.from_usps_applicant_and_enrollment(
+                applicant,
+                enrollment,
+              ).document_expiration_date,
+            ).to be_nil
+          end
         end
       end
 
-      context 'with an offset of 23 hrs' do
-        let(:expiration_time_offset_hours) { 23 }
+      context 'when id_expiration is blank' do
+        let(:applicant) { Pii::UspsApplicant.new(**applicant_pii.merge(id_expiration: nil)) }
 
-        it 'shows the correct date if interpreted in US timezone' do
-          exp_date = described_class.from_usps_applicant_and_enrollment(
-            applicant,
-            enrollment,
-          ).document_expiration_date
+        it 'does not set a document_expiration_date' do
           expect(
-            Time.at(
-              exp_date,
-              in: '-07:00',
-            ).strftime('%Y-%m-%d'),
-          ).to eq document_expiration_date
+            described_class.from_usps_applicant_and_enrollment(
+              applicant,
+              enrollment,
+            ).document_expiration_date,
+          ).to be_nil
         end
       end
     end
@@ -213,6 +206,22 @@ RSpec.describe UspsInPersonProofing::Applicant do
       subject do
         applicant.has_valid_address?
       end
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#has_standard_document_expiration_date?' do
+    subject { applicant.has_standard_document_expiration_date? }
+
+    context 'when a document_expiration_date is present' do
+      let(:applicant) { described_class.new(document_expiration_date: 1_893_456_000) }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when document_expiration_date is nil (edge-case ID)' do
+      let(:applicant) { described_class.new(document_expiration_date: nil) }
 
       it { is_expected.to eq(false) }
     end

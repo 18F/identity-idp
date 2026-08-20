@@ -13,7 +13,6 @@ module Idv
                 :identity_doc_city,
                 :state_id_jurisdiction,
                 :state_id_number,
-                :id_expiration,
                 :asserted_id_type,
                 presence: true
 
@@ -21,6 +20,12 @@ module Idv
       # that an explicit answer (true or false) was provided.
       validates :ipp_current_address_matches_id,
                 inclusion: { in: [true, false] }
+
+      validates :id_expiration, presence: true, unless: :skip_expiration_date_validation?
+
+      validates :id_expiration_option,
+                inclusion: { in: Idv::StateIdForm::EXPIRATION_OPTIONS },
+                if: :expiration_edge_cases_enabled?
 
       validates_with UspsInPersonProofing::TransliterableValidator,
                      fields: [:first_name, :last_name, :identity_doc_city],
@@ -57,16 +62,58 @@ module Idv
       # rubocop:disable Layout/LineLength
       validates_with UspsInPersonProofing::DateValidator,
                      attributes: [:id_expiration], greater_than_or_equal_to: ->(_rec) {
-                       Time.zone.today + 2.days
+                       Time.zone.today + 7.days
                      },
-                     message: ->(_, _) do
-                       I18n.t(
-                         'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
-                         app_name: APP_NAME,
-                       )
+                     unless: :skip_expiration_date_validation?,
+                     message: ->(_, data) do
+                       if data[:value].is_a?(Date) && data[:value] > Time.zone.today
+                         I18n.t(
+                           'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon',
+                         )
+                       else
+                         I18n.t(
+                           'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
+                           app_name: APP_NAME,
+                         )
+                       end
                      end
       # rubocop:enable Layout/LineLength
     end
     # rubocop:enable Metrics/BlockLength
+
+    private
+
+    def expiration_edge_cases_enabled?
+      IdentityConfig.store.in_person_proofing_expiration_edge_cases_enabled
+    end
+
+    # Skip presence/date validation of id_expiration when the user selected a
+    # non-date option (MIL/INDEF/No date) or entered a literal placeholder date.
+    def skip_expiration_date_validation?
+      return false unless expiration_edge_cases_enabled?
+
+      expiration_option_sentinel? || placeholder_expiration?
+    end
+
+    def expiration_option_sentinel?
+      Idv::StateIdForm::EXPIRATION_SENTINELS.include?(id_expiration_option)
+    end
+
+    def placeholder_expiration?
+      Idv::StateIdForm::PLACEHOLDER_EXPIRATION_DATES.include?(normalized_id_expiration)
+    end
+
+    # id_expiration may be a { month:, day:, year: } hash (form input) or a string.
+    # Coerces to a YYYY-MM-DD string for comparison against the literal
+    # placeholders, tolerating both string and integer parts.
+    def normalized_id_expiration
+      return nil if id_expiration.blank?
+      return id_expiration if id_expiration.is_a?(String)
+
+      year = id_expiration[:year].to_s
+      month = id_expiration[:month].to_s.rjust(2, '0')
+      day = id_expiration[:day].to_s.rjust(2, '0')
+      "#{year}-#{month}-#{day}"
+    end
   end
 end

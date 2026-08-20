@@ -529,67 +529,6 @@ RSpec.describe AbTests do
     it_behaves_like 'an A/B test that uses document_capture_session_uuid as a discriminator'
   end
 
-  describe 'RECAPTCHA_SIGN_IN' do
-    let(:user) { nil }
-    let(:user_session) { {} }
-
-    subject(:bucket) do
-      AbTests::RECAPTCHA_SIGN_IN.bucket(
-        request: nil,
-        service_provider: nil,
-        session: nil,
-        user:,
-        user_session:,
-      )
-    end
-
-    context 'when A/B test is disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:sign_in_recaptcha_percent_tested).and_return(0)
-        reload_ab_tests
-      end
-
-      context 'when it would otherwise assign a bucket' do
-        let(:user) { build(:user) }
-
-        it 'does not return a bucket' do
-          expect(bucket).to be_nil
-        end
-      end
-    end
-
-    context 'when A/B test is enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:sign_in_recaptcha_percent_tested).and_return(100)
-        reload_ab_tests
-      end
-
-      context 'with no associated user' do
-        let(:user) { nil }
-
-        it 'returns a bucket' do
-          expect(bucket).not_to be_nil
-        end
-      end
-
-      context 'with an associated user' do
-        let(:user) { build(:user) }
-
-        it 'returns a bucket' do
-          expect(bucket).not_to be_nil
-        end
-
-        context 'with user session indicating recaptcha was not performed at sign-in' do
-          let(:user_session) { { captcha_validation_performed_at_sign_in: false } }
-
-          it 'does not return a bucket' do
-            expect(bucket).to be_nil
-          end
-        end
-      end
-    end
-  end
-
   describe 'PROOFING_VENDOR' do
     let(:ab_test) { :PROOFING_VENDOR }
 
@@ -656,6 +595,50 @@ RSpec.describe AbTests do
     end
 
     it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
+  end
+
+  describe 'NDS_LOOK_AND_FEEL' do
+    it 'is registered in AbTests.all' do
+      expect(AbTests.all[:NDS_LOOK_AND_FEEL]).to be_a(AbTest)
+    end
+
+    context 'when nds_look_and_feel_percent is 0' do
+      before do
+        allow(IdentityConfig.store).to receive(:nds_look_and_feel_percent).and_return(0)
+        reload_ab_tests
+      end
+
+      it 'does not assign the nds bucket' do
+        bucket = AbTests.all[:NDS_LOOK_AND_FEEL].bucket(
+          request: nil, service_provider: nil,
+          session: { session_id: 'sid' }, user: nil, user_session: nil
+        )
+        expect(bucket).to be_nil
+      end
+    end
+
+    context 'when nds_look_and_feel_percent is 100' do
+      before do
+        allow(IdentityConfig.store).to receive(:nds_look_and_feel_percent).and_return(100)
+        reload_ab_tests
+      end
+
+      it 'assigns the nds bucket' do
+        bucket = AbTests.all[:NDS_LOOK_AND_FEEL].bucket(
+          request: nil, service_provider: nil,
+          session: { session_id: 'sid' }, user: nil, user_session: nil
+        )
+        expect(bucket).to eq(:nds)
+      end
+
+      it 'falls back to an anon discriminator when both user and session are nil' do
+        bucket = AbTests.all[:NDS_LOOK_AND_FEEL].bucket(
+          request: nil, service_provider: nil,
+          session: nil, user: nil, user_session: nil
+        )
+        expect(bucket).to eq(:nds)
+      end
+    end
   end
 
   describe 'PASSKEY_AUTH' do

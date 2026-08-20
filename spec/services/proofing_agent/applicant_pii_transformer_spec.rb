@@ -57,7 +57,8 @@ RSpec.describe ProofingAgent::ApplicantPiiTransformer do
           )
         end
 
-        it 'returns an applicant with state id' do
+        it 'returns an applicant with state id and copies the id address to the ' \
+           'residential address fields' do
           expect(subject.transform).to include(
             suspected_fraud: false,
             email: 'janesmith@example.com',
@@ -72,6 +73,11 @@ RSpec.describe ProofingAgent::ApplicantPiiTransformer do
             identity_doc_city: 'Anytown',
             identity_doc_address_state: 'CA',
             identity_doc_zipcode: '12345',
+            address1: '123 Main St',
+            address2: nil,
+            city: 'Anytown',
+            state: 'CA',
+            zipcode: '12345',
             state_id_number: 'A1234567',
             state_id_jurisdiction: 'CA',
             state_id_expiration: '2030-01-01',

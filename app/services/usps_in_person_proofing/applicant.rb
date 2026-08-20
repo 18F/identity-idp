@@ -31,11 +31,12 @@ module UspsInPersonProofing
     STREET_ADDRESS_MAX_LENGTH = 255
 
     def self.from_usps_applicant_and_enrollment(applicant, enrollment)
-      id_expiration = Time.zone.parse(applicant&.id_expiration || '')
+      # Non-standard expiration values (e.g. "military", "9999-99-99") are not
+      # real dates and must not be sent to USPS.
+      id_expiration = safe_parse_expiration(applicant&.id_expiration)
       document_expiration_date =
         if id_expiration.present?
-          offset = IdentityConfig.store.in_person_expiration_time_offset_hours.hours
-          (id_expiration + offset).to_i
+          id_expiration.end_of_day.to_i
         end
 
       street_address = [applicant.address1, applicant.address2].select(&:present?).join(' ')
@@ -61,7 +62,28 @@ module UspsInPersonProofing
       (address =~ /[^A-Za-z0-9\-' .\/#]/).nil?
     end
 
+    # True when the applicant has a standard calendar expiration date to send to
+    # USPS. Edge-case IDs (Military/Indefinite/No-date sentinels and placeholder
+    # dates like 9999-99-99) leave document_expiration_date nil and return false.
+    def has_standard_document_expiration_date?
+      document_expiration_date.present?
+    end
+
     private
+
+    # Parse an expiration date, returning nil for blank or non-date values.
+    # Known edge-case values (Military/Indefinite/No-date sentinels and literal
+    # placeholders like 9999-99-99) are detected explicitly rather than relying
+    # on Time.zone.parse to raise; the rescue is a defensive fallback for any
+    # other unparseable input.
+    def self.safe_parse_expiration(value)
+      return nil if value.blank?
+      return nil if Idv::StateIdForm.edge_case_expiration?(value)
+
+      Time.zone.parse(value)
+    rescue ArgumentError, TypeError
+      nil
+    end
 
     def self.transliterate(value)
       transliterator = Transliterator.new

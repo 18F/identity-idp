@@ -19,7 +19,7 @@ RSpec.describe Idv::StateIdForm do
     ).permit(:year, :month, :day)
   end
   let(:valid_exp) do
-    valid_d = Time.zone.today + 2.days
+    valid_d = Time.zone.today + 7.days
     ActionController::Parameters.new(
       year: valid_d.year,
       month: valid_d.month,
@@ -35,6 +35,14 @@ RSpec.describe Idv::StateIdForm do
     ).permit(:year, :month, :day)
   end
   let(:ipp_current_address_matches_id) { 'true' }
+  let(:expiring_soon_exp) do
+    exp_d = Time.zone.today + 2.days
+    ActionController::Parameters.new(
+      year: exp_d.year,
+      month: exp_d.month,
+      day: exp_d.mday,
+    ).permit(:year, :month, :day)
+  end
   let(:first_name) { Faker::Name.first_name }
   let(:dob) { valid_dob }
   let(:id_expiration) { valid_exp }
@@ -151,6 +159,21 @@ RSpec.describe Idv::StateIdForm do
       end
     end
 
+    context 'when the ID expires within 7 days' do
+      let(:id_expiration) { expiring_soon_exp }
+
+      it 'returns the expiring soon error' do
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(subject.errors.empty?).to be(false)
+        expect(subject.errors[:id_expiration]).to eq [
+          I18n.t(
+            'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon',
+          ),
+        ]
+      end
+    end
+
     context 'when the ipp_current_address_matches_id field is missing' do
       let(:ipp_current_address_matches_id) { nil }
 
@@ -175,60 +198,104 @@ RSpec.describe Idv::StateIdForm do
       end
     end
 
-    # LG-16085 50/50 deploy safety: a form rendered by an old instance submits the
-    # legacy `same_address_as_id` param (string) instead of the new
-    # `ipp_current_address_matches_id`. The new form must accept it and coerce it
-    # to the boolean rather than reject the submission.
-    context 'when the legacy same_address_as_id param is submitted (50/50 window)' do
-      let(:params) do
-        {
-          first_name:,
-          last_name: Faker::Name.last_name,
-          dob:,
-          identity_doc_address1: Faker::Address.street_address,
-          identity_doc_address2: Faker::Address.secondary_address,
-          identity_doc_city: Faker::Address.city,
-          identity_doc_zipcode: Faker::Address.zip_code,
-          identity_doc_address_state: Faker::Address.state_abbr,
-          same_address_as_id: 'true',
-          state_id_jurisdiction: 'AL',
-          state_id_number: Faker::IdNumber.valid,
-          id_expiration:,
-          asserted_id_type:,
-        }
+    context 'expiration edge cases (LG-17733)' do
+      let(:placeholder_9s) do
+        ActionController::Parameters.new(year: '9999', month: '99', day: '99')
+          .permit(:year, :month, :day)
+      end
+      let(:placeholder_0s) do
+        ActionController::Parameters.new(year: '0000', month: '00', day: '00')
+          .permit(:year, :month, :day)
       end
 
-      it 'accepts the submission without raising' do
-        expect { result }.to_not raise_error
-      end
-
-      it 'is valid and coerces the legacy value to the boolean attribute' do
-        expect(result.success?).to eq(true)
-        expect(subject.ipp_current_address_matches_id).to eq(true)
-      end
-
-      context "when the legacy value is 'false'" do
-        let(:params) do
-          {
-            first_name:,
-            last_name: Faker::Name.last_name,
-            dob:,
-            identity_doc_address1: Faker::Address.street_address,
-            identity_doc_address2: Faker::Address.secondary_address,
-            identity_doc_city: Faker::Address.city,
-            identity_doc_zipcode: Faker::Address.zip_code,
-            identity_doc_address_state: Faker::Address.state_abbr,
-            same_address_as_id: 'false',
-            state_id_jurisdiction: 'AL',
-            state_id_number: Faker::IdNumber.valid,
-            id_expiration:,
-            asserted_id_type:,
-          }
+      context 'when the feature flag is enabled' do
+        before do
+          allow(IdentityConfig.store)
+            .to receive(:in_person_proofing_expiration_edge_cases_enabled).and_return(true)
         end
 
-        it 'coerces to false' do
-          expect(result.success?).to eq(true)
-          expect(subject.ipp_current_address_matches_id).to eq(false)
+        context 'when a non-date option is selected' do
+          %w[military indefinite none].each do |option|
+            context "option #{option}" do
+              let(:params) do
+                super().except(:id_expiration).merge(id_expiration_option: option)
+              end
+
+              it 'is valid without an expiration date' do
+                expect(result.success?).to eq(true)
+                expect(subject.errors[:id_expiration]).to be_empty
+              end
+            end
+          end
+        end
+
+        context 'when option is date with a literal placeholder value' do
+          let(:params) do
+            super().merge(id_expiration_option: 'date', id_expiration:)
+          end
+
+          context '99/99/9999' do
+            let(:id_expiration) { placeholder_9s }
+
+            it 'is valid' do
+              expect(result.success?).to eq(true)
+            end
+          end
+
+          context '00/00/0000' do
+            let(:id_expiration) { placeholder_0s }
+
+            it 'is valid' do
+              expect(result.success?).to eq(true)
+            end
+          end
+        end
+
+        context 'when option is date with a real future date' do
+          let(:params) { super().merge(id_expiration_option: 'date', id_expiration: valid_exp) }
+
+          it 'is valid' do
+            expect(result.success?).to eq(true)
+          end
+        end
+
+        context 'when option is date with an expired date' do
+          let(:params) { super().merge(id_expiration_option: 'date', id_expiration: expired_exp) }
+
+          it 'returns the expired error' do
+            expect(result.success?).to eq(false)
+            expect(subject.errors[:id_expiration]).to eq [
+              I18n.t(
+                'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
+                app_name: APP_NAME,
+              ),
+            ]
+          end
+        end
+
+        context 'when an invalid option is selected' do
+          let(:params) { super().except(:id_expiration).merge(id_expiration_option: 'bogus') }
+
+          it 'is invalid' do
+            expect(result.success?).to eq(false)
+            expect(subject.errors[:id_expiration_option]).to be_present
+          end
+        end
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          allow(IdentityConfig.store)
+            .to receive(:in_person_proofing_expiration_edge_cases_enabled).and_return(false)
+        end
+
+        context 'and a literal placeholder date is entered' do
+          let(:params) { super().merge(id_expiration: placeholder_9s) }
+
+          it 'is rejected as an invalid/expired date' do
+            expect(result.success?).to eq(false)
+            expect(subject.errors[:id_expiration]).to be_present
+          end
         end
       end
     end

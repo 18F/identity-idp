@@ -47,6 +47,10 @@ class Idv::HowToVerifyPresenter
   end
 
   def verify_online_description
+    if mdl_enabled && passport_cards_supported
+      return t('doc_auth.info.verify_online_description_mdl_and_passport_card')
+    end
+
     return t('doc_auth.info.verify_online_description_mdl') if mdl_enabled
     return t('doc_auth.info.verify_online_description_passport_card') if passport_cards_supported
 

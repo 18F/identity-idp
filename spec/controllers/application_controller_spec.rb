@@ -878,6 +878,115 @@ RSpec.describe ApplicationController do
     end
   end
 
+  describe 'NDS layout resolution' do
+    before { routes.draw { get 'index' => 'anonymous#index' } }
+    after { Rails.application.reload_routes! }
+
+    controller do
+      def index
+        render plain: 'Hello'
+      end
+    end
+
+    # The underlying A/B assignment, overridden per context. nil means the user
+    # is not in the NDS bucket; :nds means they are.
+    let(:nds_ab_bucket) { nil }
+
+    before do
+      allow(controller).to receive(:ab_test_bucket)
+        .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
+        .and_return(nds_ab_bucket)
+    end
+
+    context 'default (no bucket forced)' do
+      it 'resolves the legacy application layout' do
+        get :index
+        expect(controller.send(:resolve_layout)).to eq('application')
+        expect(controller.nds_layout?).to eq(false)
+      end
+    end
+
+    context 'when forced via the ui_test_bucket param' do
+      it 'resolves the nds/application layout' do
+        get :index, params: { ui_test_bucket: 'nds' }
+        expect(controller.nds_layout?).to eq(true)
+        expect(controller.send(:resolve_layout)).to eq('nds/application')
+      end
+
+      it 'persists the selected bucket in an httponly cookie' do
+        get :index, params: { ui_test_bucket: 'nds' }
+        controller.nds_layout?
+
+        controller_set_cookies = controller.send(:cookies).instance_variable_get(:@set_cookies)
+        expect(controller_set_cookies['ui_test_bucket'][:value]).to eq('nds')
+        expect(controller_set_cookies['ui_test_bucket'][:httponly]).to eq(true)
+      end
+
+      context 'when the A/B bucket is nds' do
+        let(:nds_ab_bucket) { :nds }
+
+        it 'switches back to the legacy layout and persists it, overriding the A/B bucket' do
+          get :index, params: { ui_test_bucket: 'legacy' }
+
+          expect(controller.nds_layout?).to eq(false)
+          expect(controller.send(:resolve_layout)).to eq('application')
+          controller_set_cookies = controller.send(:cookies).instance_variable_get(:@set_cookies)
+          expect(controller_set_cookies['ui_test_bucket'][:value]).to eq('legacy')
+        end
+      end
+    end
+
+    context 'when the ui_test_bucket cookie is set' do
+      context 'when there is no param passed' do
+        it 'sticks to nds when the cookie is nds, even if the A/B bucket is not nds' do
+          cookies[:ui_test_bucket] = 'nds'
+          get :index
+          expect(controller.nds_layout?).to eq(true)
+        end
+
+        context 'when the A/B bucket is nds' do
+          let(:nds_ab_bucket) { :nds }
+
+          it 'sticks to legacy when the cookie is legacy, even if the A/B bucket is nds' do
+            cookies[:ui_test_bucket] = 'legacy'
+            get :index
+            expect(controller.nds_layout?).to eq(false)
+          end
+        end
+      end
+    end
+
+    context 'when clearing the ui_test_bucket cookie' do
+      let(:nds_ab_bucket) { :nds }
+
+      it 'stops forcing legacy and falls back to the A/B bucket' do
+        cookies[:ui_test_bucket] = 'legacy'
+        get :index, params: { ui_test_bucket: 'clear' }
+
+        # Asserts the override no longer forces a bucket (falls back to A/B). The
+        # raw cookie-delete marker isn't checked here: render plain skips layout,
+        # so this calls nds_layout? directly, and a request-only cookie delete
+        # doesn't round-trip to the integration cookies[] helper.
+        expect(controller.nds_layout?).to eq(true)
+      end
+    end
+
+    context 'in production the dev override is ignored' do
+      before { allow(Rails.env).to receive(:production?).and_return(true) }
+
+      it 'does not honor the param and falls back to the A/B bucket' do
+        get :index, params: { ui_test_bucket: 'nds' }
+        expect(controller.nds_layout?).to eq(false)
+      end
+
+      it 'does not honor the cookie and falls back to the A/B bucket' do
+        cookies[:ui_test_bucket] = 'nds'
+        get :index
+        expect(controller.nds_layout?).to eq(false)
+      end
+    end
+  end
+
   def expect_user_event_to_have_been_created(user, event_type)
     device = Device.first
     expect(device.user_id).to eq(user.id)

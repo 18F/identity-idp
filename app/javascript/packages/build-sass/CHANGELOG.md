@@ -1,6 +1,12 @@
 ## Unreleased
 
+## 3.2.0
+
 - Fix typecheck error due to updated arguments in `fileURLToPath` from `node:url`
+- Resolve the Login.gov Design System default Sass load path to its
+  `packages-uswds/` overlay, falling back to the legacy `packages/` alias when
+  `packages-uswds/` is not present. This supports the design system's
+  transitional dual-overlay layout without requiring a specific version.
 
 ## 3.1.0
 

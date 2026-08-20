@@ -290,44 +290,67 @@ RSpec.describe Idv::InPerson::StateIdController do
         expect(subject.idv_session.doc_auth_vendor).to eq(Idp::Constants::Vendors::USPS)
       end
 
-      # LG-16085 50/50 deploy safety: a form rendered by an old instance submits the
-      # legacy `same_address_as_id` param instead of `ipp_current_address_matches_id`.
-      # The permit list + form must accept it and store the coerced boolean rather
-      # than reject the submission and bounce the user back to the State ID page.
-      context 'when the legacy same_address_as_id param is submitted (50/50 window)' do
-        let(:params) do
-          {
-            identity_doc: {
-              first_name:,
-              last_name:,
-              same_address_as_id: 'true',
-              identity_doc_address1:,
-              identity_doc_address2:,
-              identity_doc_city:,
-              state_id_jurisdiction:,
-              id_number:,
-              identity_doc_address_state:,
-              identity_doc_zipcode:,
-              dob:,
-              id_expiration:,
-              asserted_id_type:,
-            },
-          }
-        end
-
-        it 'accepts the submission and stores the coerced boolean in flow session' do
-          put :update, params: params
-
-          expect(response).to_not render_template :show
-          pii_from_user = subject.user_session['idv/in_person'][:pii_from_user]
-          expect(pii_from_user[:ipp_current_address_matches_id]).to eq(true)
-        end
-      end
-
       it 'sets the enrollment document type' do
         put :update, params: params
 
         expect(enrollment.document_type).to eq(InPersonEnrollment::DOCUMENT_TYPE_STATE_ID)
+      end
+    end
+
+    context 'expiration edge cases (LG-17733)' do
+      let(:pii_from_user) { subject.user_session['idv/in_person'][:pii_from_user] }
+
+      before do
+        allow(IdentityConfig.store)
+          .to receive(:in_person_proofing_expiration_edge_cases_enabled).and_return(true)
+      end
+
+      context 'when a non-date option is selected' do
+        let(:params) { super().deep_merge(identity_doc: { id_expiration_option: 'none' }) }
+
+        it 'stores the sentinel and no date' do
+          put :update, params: params
+
+          expect(pii_from_user[:state_id_expiration]).to eq('none')
+          expect(pii_from_user).not_to have_key(:id_expiration)
+          expect(pii_from_user).not_to have_key(:id_expiration_option)
+          expect(response).to be_redirect
+        end
+      end
+
+      context 'when a non-date option supersedes an entered date' do
+        let(:params) { super().deep_merge(identity_doc: { id_expiration_option: 'military' }) }
+
+        it 'stores the sentinel instead of the entered date' do
+          put :update, params: params
+
+          expect(pii_from_user[:state_id_expiration]).to eq('military')
+        end
+      end
+
+      context 'when a literal placeholder date is entered' do
+        let(:id_expiration) { { month: '99', day: '99', year: '9999' } }
+        let(:params) { super().deep_merge(identity_doc: { id_expiration_option: 'date' }) }
+
+        it 'stores the placeholder verbatim' do
+          put :update, params: params
+
+          expect(pii_from_user[:state_id_expiration]).to eq('9999-99-99')
+        end
+
+        context 'and validation errors force a re-render' do
+          let(:params) { super().deep_merge(identity_doc: { first_name: 'S@ndy!' }) }
+
+          it 'preserves the placeholder date parts instead of wiping them' do
+            put :update, params: params
+
+            expect(response).to render_template :show
+            parsed_expiration = subject.extra_view_variables[:parsed_expiration]
+            expect(parsed_expiration.month).to eq('99')
+            expect(parsed_expiration.day).to eq('99')
+            expect(parsed_expiration.year).to eq('9999')
+          end
+        end
       end
     end
 
@@ -492,6 +515,81 @@ RSpec.describe Idv::InPerson::StateIdController do
           asserted_id_type: Idp::Constants::DocumentTypes::DRIVERS_LICENSE,
         },
       }
+    end
+
+    context 'expiration edge cases (LG-17733)' do
+      before do
+        allow(IdentityConfig.store)
+          .to receive(:in_person_proofing_expiration_edge_cases_enabled).and_return(true)
+      end
+
+      def aamva_job_applicant_pii
+        captured = nil
+        allow(IppAamvaProofingJob).to receive(:perform_later) do |args|
+          captured = args
+        end
+
+        put :update, params: params
+
+        JSON.parse(
+          Encryption::Encryptors::BackgroundProofingArgEncryptor.new
+            .decrypt(captured[:encrypted_arguments]),
+          symbolize_names: true,
+        )[:applicant_pii]
+      end
+
+      context 'when a non-date sentinel is selected' do
+        let(:params) do
+          valid_state_id_params.deep_merge(identity_doc: { id_expiration_option: 'none' })
+        end
+
+        it 'omits state_id_expiration from the AAMVA job PII' do
+          expect(aamva_job_applicant_pii).not_to have_key(:state_id_expiration)
+        end
+
+        it 'retains the sentinel in the pending PII committed for USPS on success' do
+          allow(IppAamvaProofingJob).to receive(:perform_later)
+
+          put :update, params: params
+
+          expect(subject.idv_session.ipp_aamva_pending_state_id_pii[:state_id_expiration])
+            .to eq('none')
+        end
+      end
+
+      context 'when a literal placeholder date is entered' do
+        let(:params) do
+          valid_state_id_params.deep_merge(
+            identity_doc: {
+              id_expiration_option: 'date',
+              id_expiration: { month: '99', day: '99', year: '9999' },
+            },
+          )
+        end
+
+        it 'omits state_id_expiration from the AAMVA job PII' do
+          expect(aamva_job_applicant_pii).not_to have_key(:state_id_expiration)
+        end
+
+        it 'retains the placeholder in the pending PII committed for USPS on success' do
+          allow(IppAamvaProofingJob).to receive(:perform_later)
+
+          put :update, params: params
+
+          expect(subject.idv_session.ipp_aamva_pending_state_id_pii[:state_id_expiration])
+            .to eq('9999-99-99')
+        end
+      end
+
+      context 'when a real expiration date is entered' do
+        let(:params) do
+          valid_state_id_params.deep_merge(identity_doc: { id_expiration_option: 'date' })
+        end
+
+        it 'sends state_id_expiration to AAMVA' do
+          expect(aamva_job_applicant_pii[:state_id_expiration]).to eq('2030-12-31')
+        end
+      end
     end
 
     context 'when redirecting to SSN page (ipp_current_address_matches_id is true)' do

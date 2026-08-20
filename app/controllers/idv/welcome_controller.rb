@@ -9,6 +9,7 @@ module Idv
     before_action :confirm_step_allowed
     before_action :confirm_not_rate_limited
     before_action :cancel_previous_in_person_enrollments, only: :show
+    before_action :check_for_pending_agent_proofed_user, only: :show
 
     def show
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
@@ -83,6 +84,10 @@ module Idv
       UspsInPersonProofing::EnrollmentHelper.cancel_establishing_and_in_progress_enrollments(
         current_user,
       )
+    end
+
+    def check_for_pending_agent_proofed_user
+      redirect_to idv_enter_dob_ssn_url if current_user&.proofing_agent_user_awaiting_binding?
     end
 
     def mdl_enabled?

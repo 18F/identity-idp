@@ -95,25 +95,6 @@ module AbTests
     document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
   end.freeze
 
-  RECAPTCHA_SIGN_IN = AbTest.new(
-    experiment_name: 'reCAPTCHA at Sign-In',
-    should_log: [
-      'Email and Password Authentication',
-      'IdV: doc auth verify proofing results',
-      'reCAPTCHA verify result received',
-      :idv_enter_password_submitted,
-    ].to_set,
-    buckets: { sign_in_recaptcha: IdentityConfig.store.sign_in_recaptcha_percent_tested },
-  ) do |user:, user_session:, **|
-    if user_session&.[](:captcha_validation_performed_at_sign_in) == false
-      nil
-    elsif user
-      user.uuid
-    else
-      SecureRandom.alphanumeric(8)
-    end
-  end.freeze
-
   ACCOUNT_CREATION_TMX_PROCESSED = AbTest.new(
     experiment_name: 'Account Creation Threat Metrix Processed',
     should_log: [
@@ -269,5 +250,13 @@ module AbTests
     },
   ) do |user:, user_session:, **|
     user&.uuid
+  end.freeze
+
+  NDS_LOOK_AND_FEEL = AbTest.new(
+    experiment_name: 'NDS Look and Feel Phase 1',
+    should_log: AbTest::ALL_EVENTS,
+    buckets: { nds: IdentityConfig.store.nds_look_and_feel_percent },
+  ) do |user:, session:, **|
+    user&.uuid || session&.dig(:session_id) || 'anon'
   end.freeze
 end
