@@ -26,4 +26,28 @@ RSpec.describe 'accounts/_piv_cac.html.erb' do
   it 'renders a list of piv cac configurations' do
     expect(rendered).to have_selector('[role="list"] [role="listitem"]', count: 2)
   end
+
+  describe 'add-piv/cac button bucket-conditional rendering' do
+    before do
+      # Ensure the add button renders (default max is 2 and the user has 2).
+      allow(IdentityConfig.store).to receive(:max_piv_cac_per_account).and_return(10)
+    end
+
+    context 'legacy bucket' do
+      it 'renders origin/main classes (outline), no nds variant modifiers' do
+        expect(rendered).to have_css('.usa-button.usa-button--outline')
+        expect(rendered).not_to have_css('.usa-button--secondary')
+        expect(rendered).not_to have_css('.usa-button--md')
+      end
+    end
+
+    context 'nds bucket' do
+      before { allow(view).to receive(:nds_layout?).and_return(true) }
+
+      it 'renders variant :secondary + size :md, dropping the legacy outline class' do
+        expect(rendered).to have_css('.usa-button.usa-button--secondary.usa-button--md')
+        expect(rendered).not_to have_css('.usa-button--outline')
+      end
+    end
+  end
 end
