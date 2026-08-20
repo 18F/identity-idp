@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
 class ButtonComponent < BaseComponent
-  # NDS-bucket variant/size API (gsa-staging parity), emitted on standard
-  # USWDS `.usa-button` selectors so Path 4's nds overlay styles them and the
-  # look can backport to USWDS. primary = base `.usa-button` (no modifier);
-  # destructive reuses the existing `--danger` modifier (bucket-differentiated
-  # by CSS: legacy renders today's danger, nds overlay renders NDS destructive).
   VARIANTS = {
     primary: nil,
     secondary: 'usa-button--secondary',

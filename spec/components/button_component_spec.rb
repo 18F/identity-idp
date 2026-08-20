@@ -145,10 +145,6 @@ RSpec.describe ButtonComponent, type: :component do
     end
   end
 
-  # Pattern-setter proof: the component is bucket-conditional. The legacy
-  # bucket honors the boolean API and emits origin/main classes (ignoring
-  # variant:/size:); the NDS bucket honors variant:/size: and emits the
-  # canonical .usa-button--<variant>/--<size> modifiers Path 4 styles.
   describe 'bucket-conditional rendering' do
     describe 'legacy bucket (nds_bucket? false)' do
       before do
