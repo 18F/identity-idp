@@ -23,6 +23,7 @@
 <%= render ButtonComponent.new(
       url: reactivate_account_path,
       method: :put,
+      variant: :secondary,
       unstyled: true,
     ).with_content(t('links.reverify')) %>
 

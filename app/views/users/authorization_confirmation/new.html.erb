@@ -31,6 +31,7 @@
   <%= render ButtonComponent.new(
         url: reset_user_authorization_path,
         method: :delete,
+        variant: :secondary,
         big: true,
         wide: true,
       ).with_content(t('user_authorization_confirmation.sign_in')) %>
