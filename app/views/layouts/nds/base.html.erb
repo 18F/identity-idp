@@ -23,8 +23,8 @@
   <%= yield(:early_head) if content_for?(:early_head) %>
   <%= stylesheet_link_tag 'nds_application', nopush: false %>
   <%= render_stylesheet_once_tags %>
-  <%= stylesheet_link_tag 'utilities', nopush: false %>
-  <%= stylesheet_link_tag 'print', media: :print, preload_links_header: false %>
+  <%= stylesheet_link_tag 'nds_utilities', nopush: false %>
+  <%= stylesheet_link_tag 'nds_print', media: :print, preload_links_header: false %>
   <%= csrf_meta_tags %>
 
   <%= favicon_link_tag(

@@ -1,0 +1,12 @@
+// NDS variant of print.css.scss. print.css.scss has no USWDS/token
+// dependency (plain display:none rules), so this is byte-identical to legacy
+// print.css — created only to mirror main's bundle topology for the nds
+// bucket. If print ever gains token-dependent rules, route it through
+// 'nds/uswds-core' like the other nds bundles.
+nav,
+footer,
+.usa-button,
+.usa-radio__input--bordered,
+.usa-checkbox__input--bordered {
+  display: none;
+}
