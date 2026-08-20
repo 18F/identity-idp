@@ -3,6 +3,7 @@
 <% if @update_password_presenter.required_password_change? %>
   <%= render AlertComponent.new(
         type: :warning,
+        dismissible: false,
         class: 'margin-bottom-4',
       ) do
         t('users.password_compromised.warning', app_name: APP_NAME)
