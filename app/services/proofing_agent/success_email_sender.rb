@@ -2,11 +2,12 @@
 
 module ProofingAgent
   class SuccessEmailSender
-    attr_reader :user, :analytics
+    attr_reader :user, :analytics, :service_provider
 
-    def initialize(user:, analytics:)
+    def initialize(user:, analytics:, service_provider: nil)
       @user = user
       @analytics = analytics
+      @service_provider = service_provider
     end
 
     def call(
@@ -23,7 +24,7 @@ module ProofingAgent
 
       user.confirmed_email_addresses.each do |email_address|
         UserMailer.with(user: user, email_address: email_address)
-          .agent_proofing_succeeded(verified_at: verified_at)
+          .agent_proofing_succeeded(verified_at: verified_at, service_provider:)
           .deliver_now_or_later
       end
 

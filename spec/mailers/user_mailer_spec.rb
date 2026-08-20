@@ -774,6 +774,31 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content('March 20, 2026')
     end
 
+    it 'links the confirmation button to the sign-in screen' do
+      expect(mail.html_part.body).to have_link(
+        t('user_mailer.agent_proofing_succeeded.cta'),
+        href: new_user_session_url,
+      )
+    end
+
+    context 'with a service provider' do
+      let(:service_provider) do
+        create(:service_provider, return_to_sp_url: 'https://partner.example.gov')
+      end
+
+      let(:mail) do
+        UserMailer.with(user: user, email_address: email_address)
+          .agent_proofing_succeeded(verified_at: verified_at, service_provider:)
+      end
+
+      it 'links the confirmation button to the partner' do
+        expect(mail.html_part.body).to have_link(
+          t('user_mailer.agent_proofing_succeeded.cta'),
+          href: 'https://partner.example.gov',
+        )
+      end
+    end
+
     it 'inlines the info icon' do
       icon = mail.attachments['info.png']
       expect(icon).not_to be_nil

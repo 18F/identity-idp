@@ -89,7 +89,10 @@ class ProofingAgentJob < ApplicationJob
     reason = combined_result[:reason]
 
     if success
-      ProofingAgent::SuccessEmailSender.new(user: user, analytics: analytics).call(
+      ProofingAgent::SuccessEmailSender.new(
+        user: user, analytics: analytics,
+        service_provider: current_sp
+      ).call(
         verified_at: document_capture_session.load_agent_proofed_user&.verified_at,
         proofing_agent_id: proofing_agent_id,
         proofing_location_id: proofing_location_id,
