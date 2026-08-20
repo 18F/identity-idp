@@ -640,22 +640,4 @@ RSpec.describe AbTests do
       end
     end
   end
-
-  describe 'PASSKEY_AUTH' do
-    let(:ab_test) { :PASSKEY_AUTH }
-
-    let(:disable_ab_test) do
-      -> {
-        allow(IdentityConfig.store).to receive(:passkey_auth_ab_test_percentage)
-          .and_return(0)
-      }
-    end
-
-    let(:enable_ab_test) do
-      -> {
-        allow(IdentityConfig.store).to receive(:passkey_auth_ab_test_percentage)
-          .and_return(50)
-      }
-    end
-  end
 end
