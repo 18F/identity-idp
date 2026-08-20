@@ -1,4 +1,8 @@
+<%- if render_as_nds? -%>
+<%= render(nds_delegate) { content } %>
+<%- else -%>
 <%= action.call(
       **tag_options,
       class: css_class,
-    ) { safe_join([icon_content, content].compact) } %>
+    ) { safe_join(parts.compact) } %>
+<%- end -%>
