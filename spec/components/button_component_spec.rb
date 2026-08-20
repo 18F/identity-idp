@@ -144,4 +144,101 @@ RSpec.describe ButtonComponent, type: :component do
       end
     end
   end
+
+  # Pattern-setter proof: the component is bucket-conditional. The legacy
+  # bucket honors the boolean API and emits origin/main classes (ignoring
+  # variant:/size:); the NDS bucket honors variant:/size: and emits the
+  # canonical .usa-button--<variant>/--<size> modifiers Path 4 styles.
+  describe 'bucket-conditional rendering' do
+    describe 'legacy bucket (nds_bucket? false)' do
+      before do
+        allow_any_instance_of(ButtonComponent).to receive(:nds_bucket?).and_return(false)
+      end
+
+      it 'ignores variant:/size: and emits only base .usa-button' do
+        rendered = render_inline(
+          ButtonComponent.new(variant: :quaternary, size: :sm).with_content('x'),
+        )
+        expect(rendered).to have_css('button.usa-button')
+        expect(rendered).not_to have_css('.usa-button--quaternary')
+        expect(rendered).not_to have_css('.usa-button--sm')
+      end
+
+      it 'honors the boolean API (origin/main classes)' do
+        rendered = render_inline(
+          ButtonComponent.new(big: true, outline: true, variant: :quaternary)
+            .with_content('x'),
+        )
+        expect(rendered).to have_css('button.usa-button.usa-button--big.usa-button--outline')
+        expect(rendered).not_to have_css('.usa-button--quaternary')
+      end
+    end
+
+    describe 'nds bucket (nds_bucket? true)' do
+      before do
+        allow_any_instance_of(ButtonComponent).to receive(:nds_bucket?).and_return(true)
+      end
+
+      {
+        primary: nil,
+        secondary: 'usa-button--secondary',
+        tertiary: 'usa-button--tertiary',
+        quaternary: 'usa-button--quaternary',
+        ghost: 'usa-button--ghost',
+        destructive: 'usa-button--danger',
+      }.each do |variant, modifier|
+        it "maps variant #{variant} to #{modifier || 'base .usa-button'}" do
+          rendered = render_inline(
+            ButtonComponent.new(variant:, size: :md).with_content('x'),
+          )
+          expect(rendered).to have_css('button.usa-button')
+          expect(rendered).to have_css('.usa-button--md')
+          if modifier
+            expect(rendered).to have_css(".#{modifier}")
+          else
+            expect(rendered).not_to have_css(
+              '.usa-button--secondary, .usa-button--tertiary, ' \
+              '.usa-button--quaternary, .usa-button--ghost',
+            )
+          end
+        end
+      end
+
+      it 'maps sizes lg/md/sm to modifiers' do
+        { lg: 'usa-button--lg', md: 'usa-button--md', sm: 'usa-button--sm' }.each do |s, mod|
+          rendered = render_inline(ButtonComponent.new(size: s).with_content('x'))
+          expect(rendered).to have_css(".#{mod}")
+        end
+      end
+
+      it 'ignores the legacy boolean API in the nds bucket' do
+        rendered = render_inline(
+          ButtonComponent.new(big: true, outline: true, variant: :secondary)
+            .with_content('x'),
+        )
+        expect(rendered).to have_css('.usa-button--secondary')
+        expect(rendered).not_to have_css('.usa-button--big')
+        expect(rendered).not_to have_css('.usa-button--outline')
+      end
+
+      it 'emits icon-position and icon-only classes' do
+        left = render_inline(ButtonComponent.new(icon: :print).with_content('x'))
+        expect(left).to have_css('.usa-button--icon-left')
+
+        right = render_inline(
+          ButtonComponent.new(icon: :print, icon_position: :right).with_content('x'),
+        )
+        expect(right).to have_css('.usa-button--icon-right')
+
+        icon_only = render_inline(ButtonComponent.new(icon: :print))
+        expect(icon_only).to have_css('.usa-button--icon-only')
+      end
+
+      it 'raises on an unknown variant (fetch guards the map)' do
+        expect do
+          render_inline(ButtonComponent.new(variant: :bogus).with_content('x'))
+        end.to raise_error(KeyError)
+      end
+    end
+  end
 end
