@@ -156,7 +156,7 @@ module Idv
             )
           else
             @refresh_interval =
-              IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds.seconds
+              IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
             render 'idv/socure/document_capture/wait'
           end
 
