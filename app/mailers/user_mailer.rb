@@ -526,7 +526,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def agent_proofing_succeeded(verified_at:)
+  def agent_proofing_succeeded(verified_at:, service_provider: nil)
     return if verified_at.blank?
 
     attachments.inline['info.png'] =
@@ -539,6 +539,7 @@ class UserMailer < ActionMailer::Base
       @presenter = Idv::ProofingAgent::AgentProofingSucceededPresenter.new(
         verified_at:,
         url_options:,
+        service_provider:,
       )
       @verified_at_display = I18n.l(@presenter.verified_at, format: :event_date)
       @deadline_display = I18n.l(@presenter.deadline, format: :event_date)

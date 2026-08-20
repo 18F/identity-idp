@@ -7,6 +7,12 @@ class ProofingAgentJob < ApplicationJob
 
   queue_as :high_proofing_agent
 
+  # PA can submit a residential and a document address, so we always verify both (dual
+  # address verification), the same as IPP. AAMVA and resolution must use this same value
+  # so they verify the same (document) address and a verified AAMVA :address cannot cover
+  # a resolution failure for an address it never saw.
+  PA_BEHAVES_LIKE_IPP = true
+
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
   attr_reader :document_capture_session, :proofing_components, :proofing_agent
@@ -83,7 +89,10 @@ class ProofingAgentJob < ApplicationJob
     reason = combined_result[:reason]
 
     if success
-      ProofingAgent::SuccessEmailSender.new(user: user, analytics: analytics).call(
+      ProofingAgent::SuccessEmailSender.new(
+        user: user, analytics: analytics,
+        service_provider: current_sp
+      ).call(
         verified_at: document_capture_session.load_agent_proofed_user&.verified_at,
         proofing_agent_id: proofing_agent_id,
         proofing_location_id: proofing_location_id,
@@ -245,6 +254,8 @@ class ProofingAgentJob < ApplicationJob
             [:proofing_results, :biographical_info, :ipp_current_address_matches_id],
             [:proofing_results, :biographical_info, :phone],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
+            [:proofing_results, :context, :stages, :residential_address, :errors, :zipcode],
+            [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
             [:errors, :zipcode],
             [:errors, :ssn],
           ],
@@ -308,7 +319,7 @@ class ProofingAgentJob < ApplicationJob
         trace_id:,
         user_id:,
         service_provider_issuer:,
-        ipp_enrollment_in_progress: user.has_in_person_enrollment?,
+        ipp_enrollment_in_progress: PA_BEHAVES_LIKE_IPP,
         proofing_vendor:,
         is_proofing_agent: true,
       )
@@ -322,7 +333,7 @@ class ProofingAgentJob < ApplicationJob
       applicant_pii:,
       current_sp:,
       state_id_address_resolution_result: nil,
-      ipp_enrollment_in_progress: false,
+      ipp_enrollment_in_progress: PA_BEHAVES_LIKE_IPP,
       timer:,
       doc_auth_flow: true,
       analytics:,

@@ -63,6 +63,29 @@ RSpec.describe ProofingAgent::SuccessEmailSender do
       )
     end
 
+    context 'with a service provider' do
+      let(:service_provider) do
+        create(:service_provider, return_to_sp_url: 'https://partner.example.gov')
+      end
+
+      subject(:sender) do
+        described_class.new(user: user, analytics: analytics, service_provider: service_provider)
+      end
+
+      it 'delivers an email whose confirmation link routes to the partner' do
+        sender.call(
+          verified_at: verified_at,
+          proofing_agent_id: proofing_agent_id,
+          proofing_location_id: proofing_location_id,
+          correlation_id: correlation_id,
+          transaction_id: transaction_id,
+        )
+
+        mail = ActionMailer::Base.deliveries.last
+        expect(mail.html_part.body.decoded).to include('href="https://partner.example.gov"')
+      end
+    end
+
     context 'when verified_at is blank' do
       it 'does not deliver an email or log the analytics event' do
         expect do

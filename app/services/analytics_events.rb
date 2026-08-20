@@ -8856,7 +8856,6 @@ module AnalyticsEvents
   #   reason for the consent screen being shown
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
-  # @param [String, nil] disposable_email_domain Disposable email domain used for registration
   # @param [String, nil] in_person_proofing_status In person proofing status
   # @param [String, nil] doc_auth_result The doc auth result
   def user_registration_complete(
@@ -8867,7 +8866,6 @@ module AnalyticsEvents
     needs_completion_screen_reason:,
     sp_session_requested_attributes:,
     ialmax: nil,
-    disposable_email_domain: nil,
     in_person_proofing_status: nil,
     doc_auth_result: nil,
     **extra
@@ -8881,7 +8879,6 @@ module AnalyticsEvents
       in_account_creation_flow:,
       needs_completion_screen_reason:,
       sp_session_requested_attributes:,
-      disposable_email_domain:,
       in_person_proofing_status:,
       doc_auth_result:,
       **extra,

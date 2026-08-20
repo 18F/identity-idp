@@ -155,6 +155,36 @@ RSpec.describe UspsInPersonProofing::Applicant do
         expect(address).to eq(('A' * 200) + ' ' + ('B' * 54))
       end
     end
+
+    context 'with a non-standard expiration value (LG-17733)' do
+      ['military', 'indefinite', 'none', '9999-99-99', '0000-00-00'].each do |value|
+        context "when id_expiration is #{value.inspect}" do
+          let(:applicant) { Pii::UspsApplicant.new(**applicant_pii.merge(id_expiration: value)) }
+
+          it 'does not set a document_expiration_date' do
+            expect(
+              described_class.from_usps_applicant_and_enrollment(
+                applicant,
+                enrollment,
+              ).document_expiration_date,
+            ).to be_nil
+          end
+        end
+      end
+
+      context 'when id_expiration is blank' do
+        let(:applicant) { Pii::UspsApplicant.new(**applicant_pii.merge(id_expiration: nil)) }
+
+        it 'does not set a document_expiration_date' do
+          expect(
+            described_class.from_usps_applicant_and_enrollment(
+              applicant,
+              enrollment,
+            ).document_expiration_date,
+          ).to be_nil
+        end
+      end
+    end
   end
 
   describe '#has_valid_address?' do
@@ -176,6 +206,22 @@ RSpec.describe UspsInPersonProofing::Applicant do
       subject do
         applicant.has_valid_address?
       end
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#has_standard_document_expiration_date?' do
+    subject { applicant.has_standard_document_expiration_date? }
+
+    context 'when a document_expiration_date is present' do
+      let(:applicant) { described_class.new(document_expiration_date: 1_893_456_000) }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when document_expiration_date is nil (edge-case ID)' do
+      let(:applicant) { described_class.new(document_expiration_date: nil) }
 
       it { is_expected.to eq(false) }
     end
