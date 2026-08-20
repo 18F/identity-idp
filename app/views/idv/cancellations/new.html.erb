@@ -26,6 +26,7 @@
       <%= render ButtonComponent.new(
             url: idv_session_path(step: params[:step]),
             method: :delete,
+            variant: :destructive,
             big: true,
             wide: true,
             form: { 'aria-label': t('idv.cancel.actions.start_over') },
@@ -35,6 +36,7 @@
         <%= render ButtonComponent.new(
               url: idv_cancel_path(step: params[:step]),
               method: :put,
+              variant: :secondary,
               big: true,
               wide: true,
               outline: true,
