@@ -335,6 +335,33 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String, nil] issuer
+  # @param [String, nil] hourstamp
+  # @param [String, nil] agency_abbreviation
+  # @param [Boolean] success
+  # @param [Integer] status
+  # @param [Symbol, nil] failure_type
+  def users_report_api_requested(
+    issuer:,
+    hourstamp:,
+    agency_abbreviation:,
+    success:,
+    status:,
+    failure_type: nil,
+    **extra
+  )
+    track_event(
+      :users_report_api_requested,
+      issuer:,
+      hourstamp:,
+      agency_abbreviation:,
+      success:,
+      status:,
+      failure_type:,
+      **extra,
+    )
+  end
+
   # @identity.idp.previous_event_name TOTP: User Disabled
   # Tracks when a user deletes their auth app from account
   # @param [Boolean] success
