@@ -90,12 +90,6 @@ module Idv
         current_user.proofing_agent_user_awaiting_binding?
     end
 
-    def agent_proofed_service_provider
-      return @agent_proofed_service_provider if defined?(@agent_proofed_service_provider)
-
-      @agent_proofed_service_provider = ServiceProvider.find_by(issuer: agent_proofed_user&.issuer)
-    end
-
     def tmx_job_attrs
       {
         user_id: current_user.id,
