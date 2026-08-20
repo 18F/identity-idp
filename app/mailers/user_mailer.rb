@@ -526,7 +526,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def agent_proofing_succeeded(verified_at:, service_provider:)
+  def agent_proofing_succeeded(verified_at:, service_provider: nil)
     return if verified_at.blank?
 
     attachments.inline['info.png'] =

@@ -13,7 +13,7 @@ module Idv
         Time.zone.parse(verified_at).in_time_zone('Etc/GMT+5').end_of_day + 2.days
       end
 
-      def initialize(verified_at:, url_options:, service_provider:)
+      def initialize(verified_at:, url_options:, service_provider: nil)
         @verified_at_string = verified_at
         @url_options = url_options
         @service_provider = service_provider

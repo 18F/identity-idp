@@ -4,7 +4,7 @@ module ProofingAgent
   class SuccessEmailSender
     attr_reader :user, :analytics, :service_provider
 
-    def initialize(user:, analytics:, service_provider:)
+    def initialize(user:, analytics:, service_provider: nil)
       @user = user
       @analytics = analytics
       @service_provider = service_provider
