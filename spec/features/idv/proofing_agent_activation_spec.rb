@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Proofing agent activation', :js do
   include IdvStepHelper
+  include OidcAuthHelper
 
   let(:user) { create(:user, :fully_registered) }
   let(:service_provider) do
@@ -66,6 +67,16 @@ RSpec.describe 'Proofing agent activation', :js do
   before do
     allow(IdentityConfig.store).to receive(:idv_proofing_agent_enabled).and_return(true)
     document_capture_session.store_agent_proofed_user(agent_proofing_result)
+  end
+
+  context 'user tries going to welcome page' do
+    scenario 'user is redirected to binding page' do
+      visit_idp_from_ial2_oidc_sp
+      sign_in_live_with_2fa(user)
+      expect(page).to have_current_path idv_enter_dob_ssn_path
+      visit idv_welcome_path
+      expect(page).to have_current_path idv_enter_dob_ssn_path
+    end
   end
 
   scenario 'user activates their profile after being proofed by proofing agent' do
