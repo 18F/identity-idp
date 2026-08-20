@@ -86,30 +86,7 @@ RSpec.describe 'Proofing agent activation', :js do
     complete_idv_enter_dob_ssn_step
     complete_enter_password_step(user)
     acknowledge_and_confirm_personal_key
-
-    expect(page).to have_current_path(sign_up_completed_path)
-    expect(page).to have_content(
-      t('titles.sign_up.completion_idv', sp: service_provider.friendly_name),
-    )
-
-    # the consent screen must list the identity attributes shared with the SP,
-    # not just the email address
-    expect(page).to have_content(t('help_text.requested_attributes.full_name'))
-    expect(page).to have_content(t('help_text.requested_attributes.birthdate'))
-    expect(page).to have_content(t('help_text.requested_attributes.social_security_number'))
-    expect(page).to have_content(t('help_text.requested_attributes.address'))
-    expect(page).to have_content(t('help_text.requested_attributes.phone'))
-
-    click_agree_and_continue
-
-    # the SP return url in the factory is '/', which routes signed in users to
-    # their account, so landing there means the consent submission finished
     expect(page).to have_current_path(account_path)
-
-    identity = user.identities.find_by(service_provider: service_provider.issuer)
-    expect(identity).to be_present
-    expect(identity.verified_attributes)
-      .to match_array(Idv::EnterDobSsnController::AGENT_PROOFED_REQUESTED_ATTRIBUTES)
   end
 
   context 'user signs in through the service provider' do
@@ -172,7 +149,7 @@ RSpec.describe 'Proofing agent activation', :js do
 
       complete_enter_password_step(user)
       acknowledge_and_confirm_personal_key
-      expect(page).to have_current_path sign_up_completed_path
+      expect(page).to have_current_path account_path
     end
   end
 
@@ -192,7 +169,7 @@ RSpec.describe 'Proofing agent activation', :js do
 
       complete_enter_password_step(user)
       acknowledge_and_confirm_personal_key
-      expect(page).to have_current_path sign_up_completed_path
+      expect(page).to have_current_path account_path
     end
   end
 

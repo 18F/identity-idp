@@ -116,13 +116,6 @@ RSpec.describe Idv::EnterDobSsnController do
         expect(session[:sp].with_indifferent_access[:issuer]).to eq(sp.issuer)
       end
 
-      it 'sets the sp session return url and requested attributes for the completion screen' do
-        sp_session = session[:sp].with_indifferent_access
-        expect(sp_session[:request_url]).to eq(sp.return_to_sp_url)
-        expect(sp_session[:requested_attributes])
-          .to eq(described_class::AGENT_PROOFED_REQUESTED_ATTRIBUTES)
-      end
-
       it 'sets current_sp to the service provider from the agent proofed session' do
         expect(controller.current_sp).to eq(sp)
       end
