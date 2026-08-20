@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_28_193823) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_18_211808) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -110,11 +110,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_28_193823) do
     t.integer "user_id", null: false, comment: "sensitive=false"
     t.index ["cookie_uuid"], name: "index_devices_on_cookie_uuid"
     t.index ["user_id", "last_used_at"], name: "index_device_user_id_last_used_at"
-  end
-
-  create_table "disposable_email_domains", force: :cascade do |t|
-    t.citext "name", null: false, comment: "sensitive=false"
-    t.index ["name"], name: "index_disposable_email_domains_on_name", unique: true
   end
 
   create_table "doc_auth_logs", force: :cascade do |t|
