@@ -6,7 +6,7 @@
 # the render resolves to the NDS bucket; not instantiated by call sites
 # directly. Deleting this file + the delegation branch in ButtonComponent tears
 # the experiment down cleanly.
-class NdsButtonComponent < ButtonComponent
+class NDSButtonComponent < ButtonComponent
   VARIANTS = {
     primary: nil,
     secondary: 'usa-button--secondary',

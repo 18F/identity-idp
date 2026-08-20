@@ -46,7 +46,7 @@ class ButtonComponent < BaseComponent
   end
 
   # Legacy/control bucket behavior. Byte-identical to origin/main: variant:/size:
-  # are ignored and the boolean API is honored. NdsButtonComponent overrides
+  # are ignored and the boolean API is honored. NDSButtonComponent overrides
   # css_class/parts for the NDS bucket.
   def css_class
     classes = ['usa-button', *tag_options[:class]]
@@ -79,13 +79,13 @@ class ButtonComponent < BaseComponent
   # The A/B bucket can only be resolved at render time (helpers are unavailable
   # in #initialize). Callers always instantiate ButtonComponent (or one of its
   # subclasses); when the render resolves to the NDS bucket we delegate to
-  # NdsButtonComponent, which renders itself with the variant/size API. The
-  # guard excludes NdsButtonComponent itself so it renders its own (NDS) markup
+  # NDSButtonComponent, which renders itself with the variant/size API. The
+  # guard excludes NDSButtonComponent itself so it renders its own (NDS) markup
   # instead of recursing — every other button (including the Submit/Print/
   # Download subclasses) flips to NDS in the NDS bucket.
   def before_render
     super
-    @render_as_nds = nds_bucket? && !is_a?(NdsButtonComponent)
+    @render_as_nds = nds_bucket? && !is_a?(NDSButtonComponent)
   end
 
   private
@@ -95,7 +95,7 @@ class ButtonComponent < BaseComponent
   end
 
   def nds_delegate
-    NdsButtonComponent.new(
+    NDSButtonComponent.new(
       url:, method:, icon:, icon_position:, size:, variant:,
       big:, wide:, full_width:, outline:, unstyled:, danger:,
       **tag_options
