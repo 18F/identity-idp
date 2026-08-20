@@ -45,16 +45,22 @@ class ButtonComponent < BaseComponent
     @tag_options = tag_options
   end
 
-  # Rendering is delegated to a per-bucket style object (see #style). The
-  # legacy/control style ignores variant:/size: and emits origin/main classes
-  # byte-identically; the NDS style honors the variant:/size:/icon_position:
-  # API. Both implement css_class(component) + parts(component).
+  # Legacy/control bucket behavior. Byte-identical to origin/main: variant:/size:
+  # are ignored and the boolean API is honored. NdsButtonComponent overrides
+  # css_class/parts for the NDS bucket.
   def css_class
-    style.css_class(self)
+    classes = ['usa-button', *tag_options[:class]]
+    classes << 'usa-button--big' if big
+    classes << 'usa-button--wide' if wide
+    classes << 'usa-button--full-width' if full_width
+    classes << 'usa-button--outline' if outline
+    classes << 'usa-button--unstyled' if unstyled
+    classes << 'usa-button--danger' if danger
+    classes
   end
 
   def parts
-    style.parts(self)
+    [icon_content, content]
   end
 
   def icon_content
@@ -65,22 +71,33 @@ class ButtonComponent < BaseComponent
     original_content = super
     return original_content if original_content.blank? || icon.blank?
 
-    # Content templates may include leading whitespace, which interferes with
-    # the layout when an icon is present. This can be solved in CSS using
-    # Flexbox, but doing so for all buttons may have unintended consequences.
     trimmed_content = original_content.lstrip
     trimmed_content = sanitize(trimmed_content) if original_content.html_safe?
     trimmed_content
   end
 
+  # The A/B bucket can only be resolved at render time (helpers are unavailable
+  # in #initialize). Callers always instantiate ButtonComponent; when the render
+  # resolves to the NDS bucket we delegate to NdsButtonComponent, which renders
+  # itself with the variant/size API. The subclass sets this false so it renders
+  # its own (NDS) markup instead of recursing.
+  def before_render
+    super
+    @render_as_nds = nds_bucket? && instance_of?(ButtonComponent)
+  end
+
   private
 
-  # The A/B bucket can only be resolved at render time (helpers/request context
-  # are unavailable in #initialize), so the style is selected lazily here — the
-  # first #css_class/#parts call happens during render. When the experiment ends
-  # this collapses to `LegacyStyle.new` and the NDS style file can be deleted.
-  def style
-    @style ||= nds_bucket? ? NdsStyle.new : LegacyStyle.new
+  def render_as_nds?
+    @render_as_nds
+  end
+
+  def nds_delegate
+    NdsButtonComponent.new(
+      url:, method:, icon:, icon_position:, size:, variant:,
+      big:, wide:, full_width:, outline:, unstyled:, danger:,
+      **tag_options
+    )
   end
 
   # ViewComponent delegates #helpers to the current view context, where
