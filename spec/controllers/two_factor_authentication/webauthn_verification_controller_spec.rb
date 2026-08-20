@@ -29,6 +29,12 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
       stub_attempts_tracker
       sign_in_before_2fa(user)
       allow(FeatureManagement).to receive(:webauthn_verification_auto_prompt?).and_return(false)
+      allow(controller).to receive(:ab_test_bucket)
+        .with(:PASSKEY_AUTH)
+        .and_return(:default)
+      allow(controller).to receive(:ab_test_bucket)
+        .with(:NDS_LOOK_AND_FEEL, { service_provider: nil })
+        .and_return(:default)
     end
 
     describe 'GET show' do
@@ -61,6 +67,9 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             allow(FeatureManagement)
               .to receive(:webauthn_verification_auto_prompt?)
               .and_return(true)
+            allow(controller).to receive(:ab_test_bucket)
+              .with(:PASSKEY_AUTH)
+              .and_return(:passkey_authentication)
           end
 
           it 'auto-prompts once and tracks the visit with trigger metadata' do
