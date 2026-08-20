@@ -15,7 +15,7 @@ class BrowserCache
     return DEFAULT_BROWSER if user_agent.nil?
 
     @cache.getset(user_agent) do
-      Browser.new(user_agent.mb_chars.limit(USER_AGENT_SIZE).to_s)
+      Browser.new(user_agent.truncate_bytes(USER_AGENT_SIZE, omission: ''))
     end
   end
 
