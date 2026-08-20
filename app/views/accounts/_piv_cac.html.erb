@@ -22,6 +22,8 @@
 <% if current_user.piv_cac_configurations.count < IdentityConfig.store.max_piv_cac_per_account %>
   <%= render ButtonComponent.new(
         url: setup_piv_cac_url,
+        variant: :secondary,
+        size: :md,
         icon: :add,
         outline: true,
         class: 'margin-top-2',
