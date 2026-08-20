@@ -25,6 +25,7 @@
     "build": "npm run build:js",
     "build:js": "concurrently 'webpack' 'make browsers.json'",
     "build:css": "npm run build:css:legacy && npm run build:css:nds",
+    "watch:css": "concurrently 'npm run build:css:legacy -- --watch' 'npm run build:css:nds -- --watch'",
     "build:css:legacy": "build-sass app/assets/stylesheets/application.css.scss app/assets/stylesheets/document-capture.css.scss app/assets/stylesheets/email.css.scss app/assets/stylesheets/navigation.css.scss app/assets/stylesheets/print.css.scss app/assets/stylesheets/tables-report.css.scss app/assets/stylesheets/utilities.css.scss app/components/*.scss --load-path=app/assets/stylesheets --out-dir=app/assets/builds",
     "build:css:nds": "build-sass app/assets/stylesheets/nds_application.css.scss --load-path=app/assets/stylesheets/nds --load-path=app/assets/stylesheets --load-path=node_modules/@18f/identity-design-system/packages-nds --out-dir=app/assets/builds",
     "build:openapi": "redocly bundle ./docs/attempts-api/openapi.yml -o ./docs/attempts-api/compiled-api --ext yml -d"
