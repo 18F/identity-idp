@@ -34,6 +34,11 @@
         type: 'image/png',
       ) %>
   <%= favicon_link_tag(
+        asset_path('favicons/favicon.svg'),
+        rel: 'icon',
+        type: 'image/svg+xml',
+      ) %>
+  <%= favicon_link_tag(
         asset_path('favicons/favicon-40.png'),
         rel: 'icon',
         sizes: '40x40',
