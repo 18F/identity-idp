@@ -57,10 +57,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         context: 'authentication',
         multi_factor_auth_method: 'sms',
         confirmation_for_add_phone: false,
-        phone_configuration_id: subject.current_user.default_phone_configuration.id,
         area_code: parsed_phone.area_code,
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        phone_configuration_id: user.default_phone_configuration.id,
         enabled_mfa_methods_count: 1,
         in_account_creation_flow: false,
       )
@@ -653,10 +653,11 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
     context 'phone confirmation' do
       let(:user) { create(:user, :fully_registered) }
+      let(:phone_being_confirmed) { '+1 (703) 555-5555' }
       before do
         sign_in_as_user(user)
         controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
-        controller.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'
+        controller.user_session[:unconfirmed_phone] = phone_being_confirmed
         controller.user_session[:context] = 'confirmation'
 
         @previous_phone_confirmed_at =
@@ -680,13 +681,14 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
       end
 
       context 'user is fully authenticated and has an existing phone number' do
+        let(:parsed_phone) { Phonelib.parse(phone_being_confirmed) }
+
         context 'user enters a valid code' do
           before do
             subject.user_session[:mfa_selections] = ['sms']
             subject.user_session[:in_account_creation_flow] = true
             phone_configuration = MfaContext.new(subject.current_user).phone_configurations.last
             phone_id = phone_configuration.id
-            parsed_phone = Phonelib.parse(phone_configuration.phone)
             phone_configuration_created_at = controller.current_user
               .default_phone_configuration.created_at
 
@@ -713,7 +715,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
               multi_factor_auth_method_created_at: phone_configuration_created_at.strftime('%s%L'),
-              phone_configuration_id: phone_id,
               area_code: parsed_phone.area_code,
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
@@ -778,7 +779,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
-              phone_configuration_id: controller.current_user.default_phone_configuration.id,
               multi_factor_auth_method_created_at: controller.current_user
                 .default_phone_configuration.created_at.strftime('%s%L'),
               area_code: parsed_phone.area_code,
@@ -819,7 +819,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
                 confirmation_for_add_phone: true,
                 context: 'confirmation',
                 multi_factor_auth_method: 'sms',
-                phone_configuration_id: controller.current_user.default_phone_configuration.id,
                 multi_factor_auth_method_created_at: controller.current_user
                   .default_phone_configuration.created_at.strftime('%s%L'),
                 area_code: parsed_phone.area_code,
