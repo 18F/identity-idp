@@ -1,21 +1,6 @@
 # frozen_string_literal: true
 
 class ButtonComponent < BaseComponent
-  VARIANTS = {
-    primary: nil,
-    secondary: 'usa-button--secondary',
-    tertiary: 'usa-button--tertiary',
-    quaternary: 'usa-button--quaternary',
-    ghost: 'usa-button--ghost',
-    destructive: 'usa-button--danger',
-  }.freeze
-
-  SIZES = {
-    lg: 'usa-button--lg',
-    md: 'usa-button--md',
-    sm: 'usa-button--sm',
-  }.freeze
-
   attr_reader :url,
               :method,
               :icon,
@@ -60,11 +45,16 @@ class ButtonComponent < BaseComponent
     @tag_options = tag_options
   end
 
-  # In the NDS bucket, honor the variant:/size: API. In the legacy/control
-  # bucket, ignore variant:/size: and honor the existing boolean API so output
-  # is byte-identical to origin/main.
+  # Rendering is delegated to a per-bucket style object (see #style). The
+  # legacy/control style ignores variant:/size: and emits origin/main classes
+  # byte-identically; the NDS style honors the variant:/size:/icon_position:
+  # API. Both implement css_class(component) + parts(component).
   def css_class
-    nds_bucket? ? nds_css_class : legacy_css_class
+    style.css_class(self)
+  end
+
+  def parts
+    style.parts(self)
   end
 
   def icon_content
@@ -83,16 +73,15 @@ class ButtonComponent < BaseComponent
     trimmed_content
   end
 
-  # Legacy bucket keeps origin/main ordering ([icon_content, content]). NDS
-  # bucket honors icon_position and icon-only rendering (gsa-staging parity).
-  def parts
-    return [icon_content, content] unless nds_bucket?
-    return [icon_content] if icon_only?
-
-    icon_position == :right ? [content, icon_content] : [icon_content, content]
-  end
-
   private
+
+  # The A/B bucket can only be resolved at render time (helpers/request context
+  # are unavailable in #initialize), so the style is selected lazily here — the
+  # first #css_class/#parts call happens during render. When the experiment ends
+  # this collapses to `LegacyStyle.new` and the NDS style file can be deleted.
+  def style
+    @style ||= nds_bucket? ? NdsStyle.new : LegacyStyle.new
+  end
 
   # ViewComponent delegates #helpers to the current view context, where
   # nds_layout? is exposed as a controller helper_method. Guard for view
@@ -106,40 +95,6 @@ class ButtonComponent < BaseComponent
     helpers.nds_layout?
   rescue Devise::MissingWarden
     false
-  end
-
-  def legacy_css_class
-    classes = ['usa-button', *tag_options[:class]]
-    classes << 'usa-button--big' if big
-    classes << 'usa-button--wide' if wide
-    classes << 'usa-button--full-width' if full_width
-    classes << 'usa-button--outline' if outline
-    classes << 'usa-button--unstyled' if unstyled
-    classes << 'usa-button--danger' if danger
-    classes
-  end
-
-  def nds_css_class
-    classes = [
-      'usa-button',
-      VARIANTS.fetch(variant),
-      SIZES.fetch(size),
-      *tag_options[:class],
-    ].compact
-
-    if icon
-      classes << (icon_only? ? 'usa-button--icon-only' : icon_position_class)
-    end
-
-    classes
-  end
-
-  def icon_only?
-    icon.present? && content.blank?
-  end
-
-  def icon_position_class
-    icon_position == :right ? 'usa-button--icon-right' : 'usa-button--icon-left'
   end
 
   def action
