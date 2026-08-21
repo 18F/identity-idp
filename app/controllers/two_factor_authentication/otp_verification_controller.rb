@@ -150,8 +150,8 @@ module TwoFactorAuthentication
     end
 
     def phone
-      phone_configuration&.phone ||
-        user_session[:unconfirmed_phone]
+      return user_session[:unconfirmed_phone] if unconfirmed_phone?
+      phone_configuration&.phone
     end
 
     def phone_configuration
@@ -182,18 +182,21 @@ module TwoFactorAuthentication
     def analytics_properties
       parsed_phone = Phonelib.parse(phone)
 
-      {
+      properties = {
         context: context,
         multi_factor_auth_method: params[:otp_delivery_preference],
         confirmation_for_add_phone: confirmation_for_add_phone?,
         area_code: parsed_phone.area_code,
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
-        phone_configuration_id: phone_configuration&.id,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
         attempts: mfa_attempts_count,
       }
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
+        properties[:phone_configuration_id] = phone_configuration&.id
+      end
+      properties
     end
 
     def presenter_for_two_factor_authentication_method

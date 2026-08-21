@@ -6854,7 +6854,7 @@ module AnalyticsEvents
     context:,
     multi_factor_auth_method:,
     confirmation_for_add_phone:,
-    phone_configuration_id:,
+    phone_configuration_id: nil,
     area_code:,
     country_code:,
     phone_fingerprint:,
