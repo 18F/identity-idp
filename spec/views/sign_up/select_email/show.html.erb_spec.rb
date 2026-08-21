@@ -45,4 +45,23 @@ RSpec.describe 'sign_up/select_email/show.html.erb' do
       )
     end
   end
+
+  describe 'add-email button bucket-conditional rendering' do
+    context 'legacy bucket' do
+      it 'renders origin/main outline classes, no nds variant modifier' do
+        expect(rendered).to have_css('.usa-button--outline.usa-button--big.usa-button--wide')
+        expect(rendered).not_to have_css('.usa-button--quaternary')
+      end
+    end
+
+    context 'nds bucket' do
+      before { allow(view).to receive(:nds_layout?).and_return(true) }
+
+      it 'renders variant :quaternary, dropping legacy size/outline classes' do
+        expect(rendered).to have_css('.usa-button--quaternary')
+        expect(rendered).not_to have_css('.usa-button--outline')
+        expect(rendered).not_to have_css('.usa-button--big')
+      end
+    end
+  end
 end
