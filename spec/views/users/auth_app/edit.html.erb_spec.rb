@@ -39,4 +39,23 @@ RSpec.describe 'users/auth_app/edit.html.erb' do
       auth_app_path(id: configuration.id),
     )
   end
+
+  describe 'delete button bucket-conditional rendering' do
+    context 'legacy bucket' do
+      it 'renders origin/main danger classes, no nds variant modifier' do
+        expect(rendered).to have_css('.usa-button--danger.usa-button--big.usa-button--wide')
+        expect(rendered).not_to have_css('.usa-button--secondary, .usa-button--quaternary')
+      end
+    end
+
+    context 'nds bucket' do
+      before { allow(view).to receive(:nds_layout?).and_return(true) }
+
+      it 'renders destructive as .usa-button--danger, dropping legacy size classes' do
+        expect(rendered).to have_css('.usa-button--danger')
+        expect(rendered).not_to have_css('.usa-button--big')
+        expect(rendered).not_to have_css('.usa-button--wide')
+      end
+    end
+  end
 end
