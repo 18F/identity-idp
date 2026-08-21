@@ -38,7 +38,6 @@
   <% if @verify_by_mail %>
     <%= render AlertComponent.new(
           type: :warning,
-          dismissible: false,
           id: 'by-mail-password-warning',
           class: 'margin-top-4',
         ) do

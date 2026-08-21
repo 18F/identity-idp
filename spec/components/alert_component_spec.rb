@@ -147,12 +147,18 @@ RSpec.describe AlertComponent, type: :component do
         .not_to have_css('.usa-alert__heading')
     end
 
-    it 'renders a dismissible mount wrapper + close button by default' do
-      rendered = render_inline(AlertComponent.new(type: :info, message: 'x'))
+    it 'renders a dismissible mount wrapper + close button when dismissible: true' do
+      rendered = render_inline(AlertComponent.new(type: :info, message: 'x', dismissible: true))
       expect(rendered)
         .to have_css('lg-alert.usa-alert-mount[data-open="false"] > .usa-alert-mount__inner')
       expect(rendered).to have_css('.usa-alert__close')
       expect(rendered).to have_css('.usa-button--quaternary.usa-alert__close')
+    end
+
+    it 'is non-dismissible by default: no mount wrapper or close button' do
+      rendered = render_inline(AlertComponent.new(type: :info, message: 'x'))
+      expect(rendered).not_to have_css('lg-alert')
+      expect(rendered).not_to have_css('.usa-alert__close')
     end
 
     it 'omits the mount wrapper + close button when dismissible: false' do
@@ -164,7 +170,7 @@ RSpec.describe AlertComponent, type: :component do
     it 'renders an action button (tertiary) + --with-action modifier' do
       rendered = render_inline(
         AlertComponent.new(
-          type: :info, message: 'x', dismissible: false,
+          type: :info, message: 'x',
           action: { label: 'Do it', url: '/do' }
         ),
       )

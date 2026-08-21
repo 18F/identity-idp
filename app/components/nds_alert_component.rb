@@ -18,6 +18,8 @@ class NDSAlertComponent < AlertComponent
     emergency: 'usa-alert--emergency',
   }.freeze
 
+  validate :validate_action, unless: -> { action.blank? }
+
   def css_class
     classes = ['usa-alert', NDS_MODIFIERS.fetch(type || :neutral)]
     classes << 'usa-alert--with-action' if action?
@@ -35,5 +37,13 @@ class NDSAlertComponent < AlertComponent
 
   def action_url
     action[:url]
+  end
+
+  private
+
+  def validate_action
+    return if action[:label].present? && action[:url].present?
+
+    errors.add(:action, :incomplete, message: 'must include both label and url')
   end
 end

@@ -9,7 +9,7 @@
 
 <% self.title = t('titles.doc_auth.link_sent') %>
 
-<%= render AlertComponent.new(type: :warning, dismissible: false, class: 'margin-bottom-4') do %>
+<%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
   <strong><%= t('doc_auth.info.keep_window_open') %></strong>
   <% if FeatureManagement.doc_capture_polling_enabled? %>
     <%= t('doc_auth.info.link_sent_complete_polling') %>

@@ -14,7 +14,6 @@
 <% if defined?(error) %>
   <%= render AlertComponent.new(
         type: :error,
-        dismissible: false,
         class: 'margin-bottom-4',
         text_tag: 'div',
       ) do %>

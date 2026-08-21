@@ -7,13 +7,12 @@ class AlertComponent < BaseComponent
   # default used by the NDS look and feel. Both render as a neutral alert.
   validates_inclusion_of :type,
                          in: [nil, :neutral, :info, :success, :warning, :error, :emergency]
-  validate :validate_action
 
   def initialize(
     type: nil,
     title: nil,
     message: nil,
-    dismissible: true,
+    dismissible: false,
     action: nil,
     text_tag: 'p',
     **tag_options
@@ -91,12 +90,5 @@ class AlertComponent < BaseComponent
     helpers.nds_layout?
   rescue Devise::MissingWarden
     false
-  end
-
-  def validate_action
-    return if action.nil?
-    return if action[:label].present? && action[:url].present?
-
-    errors.add(:action, :incomplete, message: 'must include both label and url')
   end
 end
