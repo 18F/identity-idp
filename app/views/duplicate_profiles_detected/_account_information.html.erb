@@ -53,11 +53,12 @@
                 timestamp_html: render(TimeComponent.new(time: dupe_profile[:last_sign_in])),
               ) %>
         </p>
-      <% else %>
+      <% elsif sp_name.present? %>
         <p> <%= t(
                   'duplicate_profiles_detected.last_sign_in_at_html',
                   timestamp_html: t('duplicate_profiles_detected.never_logged_in') + ' ' + sp_name,
                 ) %>
+        </p>
       <% end %>
     </div>
   <% end %>

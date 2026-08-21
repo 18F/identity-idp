@@ -67,6 +67,20 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
       end
     end
 
+    context 'when a service provider name is present' do
+      render_views
+
+      before do
+        allow(controller).to receive(:user_session).and_return(session)
+      end
+
+      it 'renders the "never logged in" line with the service provider name' do
+        get :show, params: { source: :sign_in }
+
+        expect(response.body).to include(current_sp.friendly_name)
+      end
+    end
+
     context 'when service provider is not available and global detection is enabled' do
       render_views
 
@@ -83,16 +97,22 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
           .and_return(true)
       end
 
-      it 'redirects to the root path' do
-        expect(Rails.logger).to receive(:error)
-          .with(a_string_including('Template error in duplicate_profiles_detected#show')
-            .and(a_string_including('global_detection_enabled: true'))
-            .and(a_string_including('no implicit conversion of nil into String'))
-            .and(a_string_including('sp_name: ')))
+      it 'renders the show template without raising a template error' do
+        expect(Rails.logger).not_to receive(:error)
+          .with(a_string_including('Template error in duplicate_profiles_detected#show'))
 
         get :show, params: { source: :account_page }
+
+        expect(response).to have_http_status(:ok)
         expect(response).to render_template(:show)
-        expect(response).to redirect_to(root_path)
+      end
+
+      it 'omits the "never logged in" line when there is no service provider name' do
+        get :show, params: { source: :account_page }
+
+        expect(response.body).not_to include(
+          t('duplicate_profiles_detected.never_logged_in'),
+        )
       end
     end
   end
