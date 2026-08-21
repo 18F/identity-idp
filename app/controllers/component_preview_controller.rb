@@ -21,11 +21,6 @@ class ComponentPreviewController < ViewComponentsController
       I18n.locale = LocaleChooser.new(params[:locale], request).locale
     end
 
-    # Force the NDS bucket in previews via ?ui_test_bucket=nds so
-    # bucket-conditional components can be inspected in both looks. Previews
-    # have no A/B or auth context (the app's full resolution also reads a
-    # cookie and the A/B assignment), so this honors only the query param and
-    # defaults to the legacy bucket.
     def nds_layout?
       params[:ui_test_bucket] == 'nds'
     end

@@ -1,6 +1,4 @@
 module NDS
-  # Net-new NDS layout primitive; only renders in the NDS layout. Add
-  # ?ui_test_bucket=nds to the preview URL to load the NDS styles and see it.
   class StackComponentPreview < BaseComponentPreview
     include ActionView::Helpers::TagHelper
 

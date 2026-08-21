@@ -1,6 +1,4 @@
 module NDS
-  # Net-new NDS link primitive; only renders in the NDS layout. Add
-  # ?ui_test_bucket=nds to the preview URL to load the NDS styles and see it.
   class LinkComponentPreview < BaseComponentPreview
     def default
       render(NDS::LinkComponent.new(url: '#').with_content('Manage your account'))
