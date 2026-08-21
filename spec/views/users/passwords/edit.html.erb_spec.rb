@@ -69,5 +69,31 @@ RSpec.describe 'users/passwords/edit.html.erb' do
       render
       expect(rendered).to_not have_content(t('links.cancel'))
     end
+
+    describe 'compromised-password alert bucket-conditional rendering' do
+      context 'legacy bucket' do
+        it 'renders a plain non-dismissible usa-alert, no mount/close' do
+          render
+          expect(rendered).to have_css(
+            '.usa-alert.usa-alert--warning > .usa-alert__body > .usa-alert__text',
+          )
+          expect(rendered).not_to have_css('lg-alert')
+          expect(rendered).not_to have_css('.usa-alert__close')
+        end
+      end
+
+      context 'nds bucket' do
+        before { allow(view).to receive(:nds_layout?).and_return(true) }
+
+        it 'stays non-dismissible: no mount/close button' do
+          render
+          expect(rendered).to have_css(
+            '.usa-alert.usa-alert--warning > .usa-alert__body > .usa-alert__text',
+          )
+          expect(rendered).not_to have_css('lg-alert')
+          expect(rendered).not_to have_css('.usa-alert__close')
+        end
+      end
+    end
   end
 end
