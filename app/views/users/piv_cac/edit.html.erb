@@ -23,6 +23,7 @@
       url: piv_cac_path(id: @form.configuration.id),
       method: :delete,
       form: { aria: { label: @presenter.delete_button_label } },
+      variant: :destructive,
       big: true,
       wide: true,
       danger: true,

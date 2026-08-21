@@ -39,6 +39,7 @@
         url: submit_new_piv_cac_url,
         method: :post,
         params: { skip: 'true' },
+        variant: :tertiary,
         unstyled: true,
       ).with_content(t('mfa.skip')) %>
 <% end %>
