@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class AlertComponent < BaseComponent
+  include NDSBucketResolvable
+
   attr_reader :type, :title, :message, :dismissible, :action, :text_tag, :tag_options
 
   # nil is the historical default for existing call sites; :neutral is the
@@ -55,20 +57,12 @@ class AlertComponent < BaseComponent
     end
   end
 
-  # The A/B bucket can only be resolved at render time (helpers are unavailable
-  # in #initialize). Callers always instantiate AlertComponent; when the render
-  # resolves to the NDS bucket we delegate to NDSAlertComponent. The guard
-  # excludes NDSAlertComponent itself so it renders its own markup instead of
-  # recursing.
-  def before_render
-    super
-    @render_as_nds = nds_bucket? && !is_a?(NDSAlertComponent)
-  end
-
   private
 
-  def render_as_nds?
-    @render_as_nds
+  # The NDS variant excluded from the render-time flip (see
+  # NDSBucketResolvable) so it renders its own markup instead of recursing.
+  def nds_variant_class
+    NDSAlertComponent
   end
 
   def nds_delegate
@@ -76,19 +70,5 @@ class AlertComponent < BaseComponent
       type:, title:, message:, dismissible:, action:, text_tag:,
       **tag_options
     )
-  end
-
-  # ViewComponent delegates #helpers to the current view context, where
-  # nds_layout? is exposed as a controller helper_method. Guard for view
-  # contexts without that helper (e.g. mailers). When the bucket can't be
-  # resolved because there is no auth context (background jobs, isolated
-  # component renders — Devise::MissingWarden), default to the legacy bucket:
-  # legacy is the conservative default and rendering must never crash.
-  def nds_bucket?
-    return false unless helpers.respond_to?(:nds_layout?)
-
-    helpers.nds_layout?
-  rescue Devise::MissingWarden
-    false
   end
 end

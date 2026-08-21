@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ButtonComponent < BaseComponent
+  include NDSBucketResolvable
+
   attr_reader :url,
               :method,
               :icon,
@@ -76,22 +78,14 @@ class ButtonComponent < BaseComponent
     trimmed_content
   end
 
-  # The A/B bucket can only be resolved at render time (helpers are unavailable
-  # in #initialize). Callers always instantiate ButtonComponent (or one of its
-  # subclasses); when the render resolves to the NDS bucket we delegate to
-  # NDSButtonComponent, which renders itself with the variant/size API. The
-  # guard excludes NDSButtonComponent itself so it renders its own (NDS) markup
-  # instead of recursing — every other button (including the Submit/Print/
-  # Download subclasses) flips to NDS in the NDS bucket.
-  def before_render
-    super
-    @render_as_nds = nds_bucket? && !is_a?(NDSButtonComponent)
-  end
-
   private
 
-  def render_as_nds?
-    @render_as_nds
+  # The NDS variant excluded from the render-time flip (see
+  # NDSBucketResolvable). Every other button (including the Submit/Print/
+  # Download subclasses) flips to NDS in the NDS bucket; NDSButtonComponent
+  # renders its own markup instead of recursing.
+  def nds_variant_class
+    NDSButtonComponent
   end
 
   def nds_delegate
@@ -100,20 +94,6 @@ class ButtonComponent < BaseComponent
       big:, wide:, full_width:, outline:, unstyled:, danger:,
       **tag_options
     )
-  end
-
-  # ViewComponent delegates #helpers to the current view context, where
-  # nds_layout? is exposed as a controller helper_method. Guard for view
-  # contexts without that helper (e.g. mailers). When the A/B bucket can't be
-  # resolved because there is no auth context (background jobs, isolated
-  # component renders — Devise::MissingWarden), default to the legacy bucket:
-  # legacy is the conservative default and rendering must never crash.
-  def nds_bucket?
-    return false unless helpers.respond_to?(:nds_layout?)
-
-    helpers.nds_layout?
-  rescue Devise::MissingWarden
-    false
   end
 
   def action
