@@ -13,3 +13,9 @@
 @forward 'uswds';
 @forward 'design-system-waiting-room';
 @forward 'components';
+// NDS component overlays from identity-design-system, resolved from
+// packages-nds/nds/components/ via the packages-nds load path. Forwarded LAST
+// so the NDS look wins on equal specificity over both stock 'uswds' and idp's
+// own 'components'. The overlay index is an empty placeholder in the currently
+// pinned release; per-component overlays land in later design-system releases.
+@forward 'nds/components/index';
