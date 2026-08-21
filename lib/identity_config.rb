@@ -56,7 +56,7 @@ module IdentityConfig
     config.add(:acuant_sdk_initialization_endpoint)
     config.add(:add_email_link_valid_for_hours, type: :integer)
     config.add(:address_identity_proofing_supported_country_codes, type: :json)
-    config.add(:agent_proofed_user_time_validity_hours, type: :integer)
+    config.add(:idv_proofing_agent_proofed_user_validity_hours, type: :float)
     config.add(:all_redirect_uris_cache_duration_minutes, type: :integer)
     config.add(:allowed_attempts_providers, type: :json)
     config.add(:allowed_create_prompt_providers, type: :json)
@@ -159,7 +159,7 @@ module IdentityConfig
     config.add(:doc_auth_selfie_vendor_socure_percent, type: :integer)
     config.add(:doc_auth_selfie_vendor_switching_enabled, type: :boolean)
     config.add(:doc_auth_socure_wait_polling_refresh_max_seconds, type: :integer)
-    config.add(:doc_auth_socure_wait_polling_timeout_minutes, type: :integer)
+    config.add(:doc_auth_socure_wait_polling_timeout_seconds, type: :integer)
     config.add(:doc_auth_supported_country_codes, type: :json)
     config.add(:doc_auth_vendor, type: :string)
     config.add(:doc_auth_vendor_default, type: :string)
@@ -433,7 +433,7 @@ module IdentityConfig
     config.add(:proof_ssn_max_attempts, type: :integer)
     config.add(:proofer_mock_fallback, type: :boolean)
     config.add(
-      :proofing_agent_device_profiling,
+      :idv_proofing_agent_device_profiling,
       type: :symbol,
       enum: [:disabled, :collect_only, :enabled],
     )

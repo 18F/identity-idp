@@ -13,7 +13,7 @@ class ProofingAgentThreatMetrixJob < ApplicationJob
     user = User.find_by(id: user_id)
 
     device_profiling_result = nil
-    if !FeatureManagement.proofing_agent_device_profiling_collecting_enabled?
+    if !FeatureManagement.idv_proofing_agent_device_profiling_collecting_enabled?
       device_profiling_result = threatmetrix_plugin.threatmetrix_disabled_result
     end
 
@@ -45,7 +45,7 @@ class ProofingAgentThreatMetrixJob < ApplicationJob
 
   def store_device_profiling_result(user_id, result)
     return unless user_id.present?
-    return unless IdentityConfig.store.proofing_agent_device_profiling == :enabled
+    return unless IdentityConfig.store.idv_proofing_agent_device_profiling == :enabled
 
     device_profiling_result = DeviceProfilingResult.find_or_create_by(
       user_id:,

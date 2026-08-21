@@ -1335,7 +1335,7 @@ RSpec.describe Idv::EnterPasswordController do
         let(:threatmetrix_result) { nil }
 
         before do
-          allow(IdentityConfig.store).to receive(:proofing_agent_device_profiling)
+          allow(IdentityConfig.store).to receive(:idv_proofing_agent_device_profiling)
             .and_return(:collect_only)
           allow(IdentityConfig.store).to receive(:proofing_device_profiling)
             .and_return(:enabled)
