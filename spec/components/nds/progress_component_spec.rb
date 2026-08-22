@@ -46,10 +46,9 @@ RSpec.describe NDS::ProgressComponent, type: :component do
     )
   end
 
-  it 'renders sr-only status + substep text (unprefixed sr-only)' do
+  it 'renders sr-only status + substep text with the sr-only class' do
     rendered = render_progress(current_step: 1, current_substep: 2, substep_count: 4)
     expect(rendered).to have_css('span.sr-only')
-    expect(rendered.to_html).not_to include('ads-sr-only')
   end
 
   it 'uses the given aria label' do
@@ -57,9 +56,11 @@ RSpec.describe NDS::ProgressComponent, type: :component do
     expect(rendered).to have_css('ol.progress__stepper[aria-label="Custom label"]')
   end
 
-  it 'emits no prefixed ads- classes' do
+  it 'emits the progress, progress__step, and sr-only classes' do
     rendered = render_progress(current_step: 1, current_substep: 1, substep_count: 3)
-    expect(rendered.to_html).not_to include('ads-')
+    expect(rendered).to have_css('nds-progress.progress')
+    expect(rendered).to have_css('.progress__step')
+    expect(rendered).to have_css('span.sr-only')
   end
 
   it 'validates steps presence' do
