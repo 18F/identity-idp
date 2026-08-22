@@ -3,8 +3,8 @@
 module NDS
   # NDS card component. Renders in the nds layout. A card is a plain container
   # by default and becomes interactive when given a url or rendered as a button.
-  # Supports a compact padding variant and an optional trailing slot. Emits
-  # unprefixed `card*` classes.
+  # Supports a compact padding variant and an optional trailing slot. Renders
+  # the card, card__inner, card__body, and card__trailing classes.
   class CardComponent < BaseComponent
     PADDINGS = {
       default: nil,

@@ -53,7 +53,7 @@ RSpec.describe NDS::CardComponent, type: :component do
       .to raise_error(ActiveModel::ValidationError)
   end
 
-  it 'emits unprefixed card classes' do
+  it 'emits the card classes' do
     rendered = render_inline(NDS::CardComponent.new(url: '/x', padding: :compact)) { 'x' }
     expect(rendered).to have_css('a.card.card--compact.card--interactive[href="/x"]')
   end
