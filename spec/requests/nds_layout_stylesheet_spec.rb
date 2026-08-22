@@ -24,6 +24,15 @@ RSpec.describe 'NDS layout stylesheet swap', type: :request do
       expect(response.body).not_to include('nds_utilities')
       expect(response.body).not_to include('nds_print')
     end
+
+    it 'renders the legacy page structure (grid-container/card), not the nds shell' do
+      get root_url
+      doc = Nokogiri::HTML(response.body)
+
+      expect(doc.at_css('.grid-container')).to be_present
+      expect(doc.at_css('.auth-page')).to be_nil
+      expect(response.body).not_to include('data-nds-page-transition')
+    end
   end
 
   context 'forced nds bucket' do
@@ -47,6 +56,19 @@ RSpec.describe 'NDS layout stylesheet swap', type: :request do
       expect(response.body).to match(%r{stylesheet["'][^>]*/assets/nds_print[-.]})
       expect(response.body).not_to match(%r{stylesheet["'][^>]*/assets/utilities[-.]})
       expect(response.body).not_to match(%r{stylesheet["'][^>]*/assets/print[-.]})
+    end
+
+    it 'renders the NDS page shell with the transition attribute on .auth-page' do
+      get root_url, params: { ui_test_bucket: 'nds' }
+      doc = Nokogiri::HTML(response.body)
+
+      shell = doc.at_css('.auth-page')
+      expect(shell).to be_present
+      expect(shell.attributes).to have_key('data-nds-page-transition')
+      expect(doc.at_css('.auth-page__main#main-content')).to be_present
+      expect(doc.at_css('.auth-page__top-chrome')).to be_present
+      # nds shell replaces the legacy grid-container/card chrome
+      expect(doc.at_css('.grid-container.card')).to be_nil
     end
   end
 end
