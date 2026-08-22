@@ -1556,6 +1556,7 @@ links.create_account: Créer un compte
 links.exit_login: Quitter %{app_name}
 links.go_back: Retour
 links.help: Aide
+links.more: Plus
 links.new_tab: '(ouvre un nouvel onglet)'
 links.passwords.forgot: Mot de passe oublié ?
 links.privacy_policy: Confidentialité et sécurité
