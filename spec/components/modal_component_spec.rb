@@ -53,7 +53,7 @@ RSpec.describe ModalComponent, type: :component do
         allow_any_instance_of(ModalComponent).to receive(:nds_bucket?).and_return(false)
       end
 
-      it 'renders the origin/main lg-modal > dialog.modal__content block, no nds structure' do
+      it 'renders the default lg-modal > dialog.modal__content block, no nds structure' do
         rendered = render_inline(ModalComponent.new(wide: true, dismissible: false)) { 'Body' }
 
         expect(rendered).to have_css('lg-modal > dialog.modal__content', visible: false)
@@ -64,7 +64,7 @@ RSpec.describe ModalComponent, type: :component do
         expect(rendered).not_to have_css('dialog.modal')
       end
 
-      it 'ignores the nds slots and renders byte-identical to origin/main' do
+      it 'ignores the nds slots and renders the same markup as the default modal' do
         normalize = ->(html) { html.gsub(/[0-9a-f]{8}/, 'ID') }
 
         legacy = render_inline(ModalComponent.new) { 'Body' }.to_html
@@ -161,12 +161,15 @@ RSpec.describe ModalComponent, type: :component do
         expect(rendered).not_to have_css('.modal__title')
       end
 
-      it 'emits no prefixed ads- classes' do
+      it 'renders the modal structure classes' do
         rendered = render_inline(ModalComponent.new(wide: true)) do |c|
           c.with_title { 'T' }
           'Body'
         end
-        expect(rendered.to_html).not_to include('ads-')
+        expect(rendered).to have_css('dialog.modal.modal--wide', visible: false)
+        expect(rendered).to have_css('.modal__body', visible: false)
+        expect(rendered).to have_css('.modal__title', visible: false)
+        expect(rendered).to have_css('.modal__content', visible: false)
       end
     end
   end

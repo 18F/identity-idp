@@ -4,7 +4,7 @@ class ModalComponent < BaseComponent
   include NDSBucketResolvable
 
   # NDS slot API, accepted additively. The legacy bucket ignores these slots
-  # and renders block content byte-identical to origin/main.
+  # and renders the same block-content markup as the default modal.
   renders_one :trigger
   renders_one :media
   renders_one :title
