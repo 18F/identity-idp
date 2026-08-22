@@ -1,9 +1,23 @@
 # frozen_string_literal: true
 
 class ModalComponent < BaseComponent
-  attr_reader :tag_options
+  include NDSBucketResolvable
 
-  def initialize(**tag_options)
+  # NDS slot API, accepted additively. The legacy bucket ignores these slots
+  # and renders block content byte-identical to origin/main.
+  renders_one :trigger
+  renders_one :media
+  renders_one :title
+  renders_one :description
+  renders_one :footer
+
+  attr_reader :dismissible, :wide, :tag_options
+
+  # dismissible:/wide: are part of the NDS look and feel; the legacy bucket
+  # accepts them for API compatibility but never emits anything from them.
+  def initialize(dismissible: true, wide: false, **tag_options)
+    @dismissible = dismissible
+    @wide = wide
     @tag_options = tag_options
   end
 
@@ -23,5 +37,21 @@ class ModalComponent < BaseComponent
       ),
       &block
     )
+  end
+
+  private
+
+  # The NDS variant excluded from the render-time flip (see
+  # NDSBucketResolvable) so it renders its own markup instead of recursing.
+  def nds_variant_class
+    NDSModalComponent
+  end
+
+  def nds_delegate
+    delegate = NDSModalComponent.new(dismissible:, wide:, **tag_options)
+    # Share this component's id so the label_id/description_id the caller set on
+    # its own block content still match the delegate's aria references.
+    delegate.unique_id = unique_id
+    delegate
   end
 end
