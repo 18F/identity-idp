@@ -1,0 +1,27 @@
+<div class="<%= body_class %>"<%= ' data-nds-page-transition'.html_safe if transition %>>
+  <% unless hide_chrome %>
+    <% if chrome? %>
+      <%= chrome %>
+    <% else %>
+      <%= render NDS::PageChromeComponent.new %>
+    <% end %>
+  <% end %>
+
+  <%= content_tag(main_tag, **main_options) do %>
+    <% if body? %>
+      <%= body %>
+    <% else %>
+      <%= content %>
+    <% end %>
+  <% end %>
+
+  <% unless hide_footer %>
+    <div class="auth-page__footer-wrapper">
+      <% if footer? %>
+        <%= footer %>
+      <% else %>
+        <%= render NDS::PageFooterChromeComponent.new %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

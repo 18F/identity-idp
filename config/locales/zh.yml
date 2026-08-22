@@ -1569,6 +1569,7 @@ links.create_account: 设立账户
 links.exit_login: 退出 %{app_name}
 links.go_back: 返回
 links.help: 帮助
+links.more: 更多
 links.new_tab: '（打开新窗口）'
 links.passwords.forgot: 忘了你的密码?
 links.privacy_policy: 隐私与安全
