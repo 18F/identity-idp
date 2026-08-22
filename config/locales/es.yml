@@ -1743,6 +1743,7 @@ step_indicator.flows.idv.verify_phone: Verifique su número de teléfono
 step_indicator.status.complete: Completado
 step_indicator.status.current: Este paso
 step_indicator.status.not_complete: No completado
+step_indicator.substep: Subpaso %{current} de %{total}
 time.am: a. m.
 time.formats.event_date: '%-d de %B de %Y'
 time.formats.event_time: '%-l:%M %p'
