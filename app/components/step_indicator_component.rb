@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class StepIndicatorComponent < BaseComponent
+  include NDSBucketResolvable
+
   attr_reader :current_step, :locale_scope, :tag_options
 
   def initialize(steps:, current_step:, locale_scope: nil, **tag_options)
@@ -18,7 +20,30 @@ class StepIndicatorComponent < BaseComponent
     @steps.map { |step| { status: step_status(step), title: step_title(step) }.merge(step) }
   end
 
+  def step_titles
+    @steps.map { |step| step_title(step) }
+  end
+
+  def current_step_index
+    @steps.index { |step| step[:name] == current_step } || 0
+  end
+
   private
+
+  def nds_delegate
+    nds_variant_class.new(
+      steps: @steps,
+      current_step:,
+      locale_scope:,
+      **tag_options,
+    )
+  end
+
+  # The NDS variant excluded from the render-time flip (see
+  # NDSBucketResolvable) so it renders its own markup instead of recursing.
+  def nds_variant_class
+    NDSStepIndicatorComponent
+  end
 
   def step_status(step)
     if step[:name] == current_step
