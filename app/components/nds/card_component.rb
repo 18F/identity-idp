@@ -15,8 +15,9 @@ module NDS
 
     attr_reader :url, :method, :button, :padding, :tag_options
 
-    alias_method :button?, :button
     validate :validate_action_mode
+
+    def button? = button
 
     def initialize(url: nil, method: nil, button: false, padding: :default, **tag_options)
       @url = url
