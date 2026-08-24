@@ -68,7 +68,7 @@ module Proofing
         end
 
         def success?(response_body)
-          response_body[:token].present?
+          response_body[:token].present? && response_body[:id].present?
         end
 
         def extra_attributes

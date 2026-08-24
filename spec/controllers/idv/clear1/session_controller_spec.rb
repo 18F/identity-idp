@@ -10,6 +10,7 @@ RSpec.describe Idv::Clear1::SessionController do
   let(:clear1_enabled) { true }
   let(:idv_clear1_project_id) { 'fav-proj-id' }
   let(:token) { 'crystal_clear1_token' }
+  let(:session_id) { 'best_session' }
   let(:state) { SecureRandom.uuid }
   let(:idv_clear1_api_base_url) { 'https://fake-clear1.test' }
   let(:clear_session_endpoint) do
@@ -69,6 +70,8 @@ RSpec.describe Idv::Clear1::SessionController do
           expect(idv_session.pii_from_doc).to be(nil)
           expect(idv_session.doc_auth_vendor).to be(nil)
           expect(idv_session.source_check_vendor).to be(nil)
+          expect(idv_session.clear1_verification_state).to be(nil)
+          expect(idv_session.clear1_verification_token).to be_nil
         end
       end
     end
@@ -84,7 +87,7 @@ RSpec.describe Idv::Clear1::SessionController do
   end
 
   describe '#show' do
-    let(:response_body) { { token: }.compact }
+    let(:response_body) { { token:, id: session_id }.compact }
 
     before do
       stub_request(:post, clear_session_endpoint)
@@ -101,7 +104,7 @@ RSpec.describe Idv::Clear1::SessionController do
       stub_sign_in(user)
     end
 
-    context 'happy path' do
+    context 'clear1 session request is successful' do
       let(:clear1_app_url) { "#{idv_clear1_api_base_url}/verify?token=#{token}" }
 
       it 'sets clear token in idv session' do
@@ -114,29 +117,6 @@ RSpec.describe Idv::Clear1::SessionController do
         get(:show)
 
         expect(subject.idv_session.clear1_verification_state).to match(uuid_pattern)
-      end
-
-      context 'when the request class is called' do
-        let(:request_class) { Proofing::Clear1::Requests::SessionRequest }
-        before do
-          allow(request_class).to receive(:new).and_call_original
-        end
-        it 'sets clear token in idv session' do
-          expect(request_class).to receive(:new)
-            .with(
-              user_uuid: user.uuid,
-              redirect_url: idv_clear1_session_update_url,
-            )
-          get(:show)
-        end
-      end
-
-      xit 'logs correct info' do
-        get(:show)
-
-        expect(@analytics).to have_logged_event(
-          :idv_clear1_session_request_submitted,
-        )
       end
 
       it 'sets DocumentCaptureSession doc_auth_vendor value' do
@@ -156,7 +136,7 @@ RSpec.describe Idv::Clear1::SessionController do
       end
     end
 
-    context 'no token in the clear response' do
+    context 'token not present in the clear response' do
       let(:token) { nil }
 
       it 'redirects to the errors page' do

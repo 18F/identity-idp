@@ -55,6 +55,7 @@ module Idv
             idv_session.doc_auth_vendor = nil
             idv_session.source_check_vendor = nil
             idv_session.clear1_verification_token = nil
+            idv_session.clear1_verification_state = nil
           end,
         )
       end

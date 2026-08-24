@@ -9,12 +9,6 @@ RSpec.describe Proofing::Clear1::Request do
     allow(IdentityConfig.store).to receive(:idv_clear1_api_key).and_return(idv_clear1_api_key)
   end
 
-  describe 'a new request' do
-    it 'exists' do
-      expect(request).to be
-    end
-  end
-
   describe '#fetch' do
     let(:fake_clear1_endpoint) { 'https://clear1.test/' }
     let(:fake_metric_name) { 'fake metric' }

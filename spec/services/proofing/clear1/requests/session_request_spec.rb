@@ -10,6 +10,7 @@ RSpec.describe Proofing::Clear1::Requests::SessionRequest do
   end
   let(:status) { 200 }
   let(:token) { 'fake_token' }
+  let(:session_id) { 'fake_session_id' }
   let(:redirect_url) { 'http://login.test/clear1/session/update' }
 
   subject(:session_request) do
@@ -38,6 +39,7 @@ RSpec.describe Proofing::Clear1::Requests::SessionRequest do
           status:,
           body: {
             token:,
+            id: session_id,
           }.to_json,
         )
     end
@@ -61,6 +63,22 @@ RSpec.describe Proofing::Clear1::Requests::SessionRequest do
           },
           vendor_name: Idp::Constants::Vendors::CLEAR1,
           token: nil,
+        )
+      end
+    end
+
+    context 'when id is not returned' do
+      let(:session_id) { nil }
+
+      it 'fails with a clear1 error' do
+        expect(response.to_h).to include(
+          success: false,
+          errors: {
+            clear1: true,
+          },
+          vendor_name: Idp::Constants::Vendors::CLEAR1,
+          token:,
+          id: session_id,
         )
       end
     end

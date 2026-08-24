@@ -43,7 +43,7 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
     end
   end
 
-  it 'renders the Clear1 action' do
+  it 'does not render the Clear1 action' do
     expect(rendered).not_to have_selector(
       :xpath,
       '//form[@aria-label="Clear1"]',
