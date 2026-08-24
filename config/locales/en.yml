@@ -171,6 +171,14 @@ components.clipboard_button.label: Copy
 components.clipboard_button.tooltip: Copied!
 components.countdown_alert.time_remaining_html: '%{countdown_html} remaining'
 components.download_button.label: Download
+components.input.errors.date: Enter a date
+components.input.errors.date_invalid: Enter a valid date
+components.input.errors.email: Please enter a valid email address
+components.input.errors.password: Enter a password
+components.input.errors.tel: Enter a phone number
+components.input.errors.tel_invalid: Enter a valid phone number
+components.input.errors.text: Enter a value
+components.input.errors.text_invalid: Enter a valid value
 components.javascript_required.browser_instructions: 'Follow the instructions for your browser to enable JavaScript:'
 components.javascript_required.enabled_alert: You have enabled JavaScript in your browser.
 components.javascript_required.next_step: Please refresh this page once you have enabled JavaScript in your browser.
@@ -212,6 +220,7 @@ components.password_confirmation.confirm_label: Confirm password
 components.password_confirmation.errors.empty: Type your password again
 components.password_confirmation.errors.mismatch: Your passwords don’t match
 components.password_confirmation.toggle_label: Show password
+components.password_toggle.hide_label: Hide password
 components.password_toggle.label: Password
 components.password_toggle.toggle_label: Show password
 components.phone_input.country_code_label: Country code

@@ -171,6 +171,14 @@ components.clipboard_button.label: Copier
 components.clipboard_button.tooltip: Copié !
 components.countdown_alert.time_remaining_html: Il reste %{countdown_html}
 components.download_button.label: Télécharger
+components.input.errors.date: Saisissez une date
+components.input.errors.date_invalid: Saisissez une date valide
+components.input.errors.email: Saisissez une adresse e-mail valide
+components.input.errors.password: Saisissez un mot de passe
+components.input.errors.tel: Saisissez un numéro de téléphone
+components.input.errors.tel_invalid: Saisissez un numéro de téléphone valide
+components.input.errors.text: Saisissez une valeur
+components.input.errors.text_invalid: Saisissez une valeur valide
 components.javascript_required.browser_instructions: 'Suivez les instructions pour activer JavaScript dans votre navigateur :'
 components.javascript_required.enabled_alert: Vous avez activé JavaScript dans votre navigateur.
 components.javascript_required.next_step: Veuillez rafraîchir cette page une fois que vous avez activé JavaScript dans votre navigateur.
@@ -212,6 +220,7 @@ components.password_confirmation.confirm_label: Confirmer le mot de passe
 components.password_confirmation.errors.empty: Saisissez à nouveau votre mot de passe
 components.password_confirmation.errors.mismatch: Vos mots de passe ne correspondent pas
 components.password_confirmation.toggle_label: Afficher le mot de passe
+components.password_toggle.hide_label: Masquer le mot de passe
 components.password_toggle.label: Mot de passe
 components.password_toggle.toggle_label: Afficher le mot de passe
 components.phone_input.country_code_label: Indicatif pays

@@ -171,6 +171,14 @@ components.clipboard_button.label: Copiar
 components.clipboard_button.tooltip: Copiado
 components.countdown_alert.time_remaining_html: Quedan %{countdown_html}
 components.download_button.label: Descargar
+components.input.errors.date: Ingrese una fecha
+components.input.errors.date_invalid: Ingrese una fecha válida
+components.input.errors.email: Ingrese un correo electrónico válido
+components.input.errors.password: Ingrese una contraseña
+components.input.errors.tel: Ingrese un número de teléfono
+components.input.errors.tel_invalid: Ingrese un número de teléfono válido
+components.input.errors.text: Ingrese un valor
+components.input.errors.text_invalid: Ingrese un valor válido
 components.javascript_required.browser_instructions: 'Siga las instrucciones para habilitar JavaScript en su navegador:'
 components.javascript_required.enabled_alert: Habilitó JavaScript en su navegador.
 components.javascript_required.next_step: Actualice esta página después de haber habilitado JavaScript en su navegador.
@@ -212,6 +220,7 @@ components.password_confirmation.confirm_label: Confirmar contraseña
 components.password_confirmation.errors.empty: Vuelva a escribir su contraseña
 components.password_confirmation.errors.mismatch: Sus contraseñas no coinciden
 components.password_confirmation.toggle_label: Mostrar contraseña
+components.password_toggle.hide_label: Ocultar contraseña
 components.password_toggle.label: Contraseña
 components.password_toggle.toggle_label: Mostrar contraseña
 components.phone_input.country_code_label: Código de país
