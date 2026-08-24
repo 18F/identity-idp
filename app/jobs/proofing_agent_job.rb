@@ -363,7 +363,7 @@ class ProofingAgentJob < ApplicationJob
     @proofing_vendor ||= begin
       # if proofing vendor A/B test is disabled, return default vendor
       vendor = ab_test_bucket(
-        :PROOFING_VENDOR,
+        :PROOFING_AGENT_PROOFING_VENDOR,
         user:,
         service_provider: service_provider_issuer,
         current_session: nil,
