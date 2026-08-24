@@ -62,5 +62,10 @@
 <% end %>
 </p>
 
-<%= link_to (@mdl_requested ? t('idv.mdl.button') : t('forms.buttons.continue')), @url, class: 'usa-button usa-button--big usa-button--wide margin-top-4 margin-bottom-4' %>
+<%= render ClickObserverComponent.new(
+      event_name: 'idv_socure_docv_redirect_requested',
+      payload: { document_type_requested: @document_type_requested },
+    ) do %>
+  <%= link_to (@mdl_requested ? t('idv.mdl.button') : t('forms.buttons.continue')), @url, class: 'usa-button usa-button--big usa-button--wide margin-top-4 margin-bottom-4' %>
+<% end %>
 <%= render 'idv/doc_auth/cancel', step: 'verify_id' %>
