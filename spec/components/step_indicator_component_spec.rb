@@ -145,4 +145,47 @@ RSpec.describe StepIndicatorComponent, type: :component do
       expect(rendered).not_to have_css('.step-indicator__step--current')
     end
   end
+
+  describe 'bucket-conditional rendering' do
+    context 'in the legacy bucket' do
+      it 'renders the lg-step-indicator dots' do
+        expect(rendered).to have_css('lg-step-indicator.step-indicator')
+        expect(rendered).to have_css('.step-indicator__scroller .step-indicator__step')
+        expect(rendered).not_to have_css('nds-progress')
+      end
+    end
+
+    context 'in the nds bucket' do
+      before do
+        allow_any_instance_of(StepIndicatorComponent).to receive(:nds_bucket?).and_return(true)
+      end
+
+      it 'renders NDS::ProgressComponent in place of the dots' do
+        expect(rendered).to have_css('nds-progress.progress')
+        expect(rendered).to have_css('.progress__stepper .progress__step', count: 3)
+        expect(rendered).not_to have_css('lg-step-indicator')
+        expect(rendered).not_to have_css('.step-indicator__scroller')
+      end
+
+      it 'maps localized step titles to progress pills' do
+        expect(rendered).to have_css('.progress__step-label', text: 'One')
+        expect(rendered).to have_css('.progress__step-label', text: 'Two')
+        expect(rendered).to have_css('.progress__step-label', text: 'Three')
+      end
+
+      it 'maps the current step name to the active pill' do
+        active = rendered.css('.progress__step[aria-current="step"]')
+        expect(active.length).to eq(1)
+        expect(active.first).to have_text('One')
+      end
+
+      context 'with a later current step' do
+        let(:current_step) { :three }
+
+        it 'marks preceding pills complete' do
+          expect(rendered.css('.progress__step[data-complete="true"]').length).to eq(2)
+        end
+      end
+    end
+  end
 end

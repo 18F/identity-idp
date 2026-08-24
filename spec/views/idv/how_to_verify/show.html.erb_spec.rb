@@ -31,6 +31,21 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
       )
     end
 
+    context 'in the nds bucket' do
+      before { allow(view).to receive(:nds_layout?).and_return(true) }
+
+      it 'renders the NDS progress pill in place of the step indicator dots' do
+        render
+        pre_flash = view.content_for(:pre_flash_content)
+        expect(pre_flash).to have_css('nds-progress.progress')
+        expect(pre_flash).to have_css(
+          '.progress__step[aria-current="step"]',
+          text: t('step_indicator.flows.idv.getting_started'),
+        )
+        expect(pre_flash).not_to have_css('.step-indicator__scroller')
+      end
+    end
+
     it 'renders a title' do
       render
       expect(rendered).to have_content(t('doc_auth.headings.how_to_verify'))
