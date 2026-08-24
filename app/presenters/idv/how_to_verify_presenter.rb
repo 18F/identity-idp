@@ -4,15 +4,9 @@ class Idv::HowToVerifyPresenter
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TranslationHelper
 
-<<<<<<< HEAD
-  attr_reader :selfie_required, :passport_cards_supported, :mdl_enabled, :clear_enabled
+  attr_reader :selfie_required, :passport_cards_supported, :mdl_enabled, :clear1_enabled
 
-  def initialize(selfie_check_required:, passport_cards_supported: false, mdl_enabled: false, clear_enabled: false)
-=======
-  attr_reader :selfie_required, :mdl_enabled, :clear1_enabled
-
-  def initialize(selfie_check_required:, mdl_enabled: false, clear1_enabled: false)
->>>>>>> 01d37b1540 (rename clear -> clear1)
+  def initialize(selfie_check_required:, passport_cards_supported: false, mdl_enabled: false, clear1_enabled: false)
     @selfie_required = selfie_check_required
     @passport_cards_supported = passport_cards_supported
     @mdl_enabled = mdl_enabled
