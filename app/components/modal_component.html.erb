@@ -1,3 +1,13 @@
+<%- if render_as_nds? -%>
+<%= render(nds_delegate) do |c|
+      c.with_trigger { trigger.to_s } if trigger?
+      c.with_media { media.to_s } if media?
+      c.with_title { title.to_s } if title?
+      c.with_description { description.to_s } if description?
+      c.with_footer { footer.to_s } if footer?
+      content
+    end %>
+<%- else -%>
 <%= content_tag(:'lg-modal', **tag_options) do %>
   <%= content_tag(
         :dialog,
@@ -9,3 +19,4 @@
         class: 'modal__content',
       ) %>
 <% end %>
+<%- end -%>
