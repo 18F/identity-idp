@@ -63,6 +63,7 @@ RSpec.describe Proofing::Clear1::Requests::SessionRequest do
           },
           vendor_name: Idp::Constants::Vendors::CLEAR1,
           token: nil,
+          id: session_id,
         )
       end
     end
@@ -78,7 +79,7 @@ RSpec.describe Proofing::Clear1::Requests::SessionRequest do
           },
           vendor_name: Idp::Constants::Vendors::CLEAR1,
           token:,
-          id: session_id,
+          id: nil,
         )
       end
     end
