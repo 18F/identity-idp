@@ -20,14 +20,6 @@ class StepIndicatorComponent < BaseComponent
     @steps.map { |step| { status: step_status(step), title: step_title(step) }.merge(step) }
   end
 
-  def step_titles
-    @steps.map { |step| step_title(step) }
-  end
-
-  def current_step_index
-    @steps.index { |step| step[:name] == current_step } || 0
-  end
-
   private
 
   def nds_delegate

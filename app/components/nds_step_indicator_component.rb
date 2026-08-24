@@ -17,4 +17,14 @@ class NDSStepIndicatorComponent < StepIndicatorComponent
       **tag_options,
     )
   end
+
+  private
+
+  def step_titles
+    @steps.map { |step| step_title(step) }
+  end
+
+  def current_step_index
+    @steps.index { |step| step[:name] == current_step } || 0
+  end
 end
