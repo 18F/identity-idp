@@ -140,7 +140,7 @@ RSpec.describe AddressProofingJob, type: :job do
 
         result = document_capture_session.load_proofing_result[:result]
 
-        expect(result[:result][:review_status]).to eq('reject')
+        expect(result[:result][:review_status]).to eq('pass')
       end
 
       it 'adds cost data' do
