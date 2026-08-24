@@ -3,7 +3,7 @@ import type { CountryCode } from 'libphonenumber-js';
 import {
   bindFormSubmitters,
   consumeIgnoreBlurValidation,
-} from '@18f/identity-nds-input/form-submitters';
+} from '@18f/identity-input-validation/form-submitters';
 
 const DEFAULT_COUNTRY: CountryCode = 'US';
 const NDS_VALIDATION_READY = 'ndsValidationReady';

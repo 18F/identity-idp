@@ -1,1 +1,1 @@
-import '@18f/identity-nds-input/input-element';
+import '@18f/identity-input-validation/input-element';
