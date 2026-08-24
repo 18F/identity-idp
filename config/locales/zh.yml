@@ -1708,12 +1708,15 @@ service_providers.errors.inactive.heading: '%{sp_name} 不再使用 %{app_name}'
 service_providers.errors.inactive.instructions: '%{sp_name}不再用 %{app_name} 为其网站提供登录服务。如果你设立了 %{app_name} 账户的话，账户仍然有效，可用来访问其他参与本项目的政府网站。'
 service_providers.errors.inactive.instructions2: 请访问该机构的网站来联系他们并获得更多信息。
 shared.banner.fake_site: 美国政府的一个示范网站
+shared.banner.gov_description: .gov 网站属于一个美国官方政府机构。
 shared.banner.gov_description_html: '<strong>.gov</strong> 网站属于一个美国官方政府机构。'
 shared.banner.gov_heading: 官方网站使用 .gov
 shared.banner.how: 这里告诉你如何知道
 shared.banner.landmark_label: 官方政府网站
 shared.banner.lock_description: 锁上的锁头
+shared.banner.modal_title: 美国政府网站
 shared.banner.official_site: 美国政府的一个官方网站
+shared.banner.secure_description: 一把锁或者 https:// 意味着你已安全连接到 .gov 网站。只在官方、安全的网站上分享敏感信息。
 shared.banner.secure_description_html: 一把 <strong>锁</strong>（ %{lock_icon} ）或者 <strong>https://</strong> 意味着你已安全连接到 .gov 网站。只在官方、安全的网站上分享敏感信息。
 shared.banner.secure_heading: 安全的 .gov 网站使用 HTTPS
 shared.footer_lite.gsa: 美国联邦总务管理局
