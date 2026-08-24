@@ -1,0 +1,29 @@
+<%= tag.section(**html_options.except(:class).merge(class: css_class)) do %>
+  <%= render flash_component if claim_flash! && flash_component.render? %>
+  <%= alert if alert? && !alert_below? %>
+
+  <div class="auth__header<%= ' auth__header--with-media' if media? %>">
+    <%= media if media? %>
+    <%= render NDS::StackComponent.new(align: :center, class: 'auth__intro') do %>
+      <h1><%= title %></h1>
+      <% if subtitle.present? %>
+        <div class="auth__intro-description"><%= subtitle %></div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%= alert if alert? && alert_below? %>
+
+  <% if body? %>
+    <div class="auth__form-page-body">
+      <%= body %>
+    </div>
+  <% end %>
+
+  <% if actions? %>
+    <%= tag.hr(class: 'divider') if divider %>
+    <div class="auth__actions">
+      <%= actions %>
+    </div>
+  <% end %>
+<% end %>
