@@ -115,6 +115,33 @@
     </div>
   </div>
 <% end %>
+<% if true # @clear_enabled %>
+  <hr class="margin-top-4" />
+  <div class="grid-row grid-gap grid-gap-2">
+    <div class="grid-col-12 tablet:grid-col-auto">
+      <%= image_tag(
+            asset_url('idv/laptop-icon.svg'),
+            alt: t('image_description.laptop'),
+            width: 88,
+            height: 88,
+          ) %>
+    </div>
+    <div class="grid-col-12 tablet:grid-col-fill">
+      <%= simple_form_for(
+            :doc_auth,
+            url: url_for(type: :clear),
+            method: 'PUT',
+            class: 'margin-bottom-4',
+            html: {
+              id: 'form-to-submit-through-clear',
+              aria: { label: t('forms.buttons.upload_photos') },
+            },
+          ) do |f| %>
+        <%= f.submit 'Clear', outline: true %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
 <% if @upload_enabled %>
   <hr class="margin-bottom-4" />
   <div class="grid-row grid-gap grid-gap-2">

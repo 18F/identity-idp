@@ -16,6 +16,7 @@ module Idv
   # @attr had_barcode_attention_error [Boolean, nil]
   # @attr had_barcode_read_failure [Boolean, nil]
   # @attr hybrid_mobile_threatmetrix_review_status [String, nil]
+  # @attr idv_clear_enabled [String, nil]
   # @attr idv_consent_given [Boolean, nil]
   # @attr idv_consent_given_at [String, nil]
   # @attr idv_phone_step_document_capture_session_uuid [String, nil]
@@ -73,6 +74,7 @@ module Idv
       had_barcode_attention_error
       had_barcode_read_failure
       hybrid_mobile_threatmetrix_review_status
+      idv_clear_enabled
       idv_consent_given
       idv_consent_given_at
       idv_phone_step_document_capture_session_uuid
