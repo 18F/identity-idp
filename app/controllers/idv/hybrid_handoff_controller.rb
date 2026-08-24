@@ -69,10 +69,12 @@ module Idv
       Idv::StepInfo.new(
         key: :hybrid_handoff,
         controller: self,
-        next_steps: [:choose_id_type, :link_sent, :document_capture, :socure_document_capture],
+        next_steps: [
+          :choose_id_type, :link_sent, :document_capture, :socure_document_capture, :clear_session
+        ],
         preconditions: ->(idv_session:, user:) do
           idv_session.idv_consent_given? &&
-          (self.selected_remote(idv_session: idv_session) || # from opt-in screen
+          (self.selected_remote(idv_session:) || # from opt-in screen
             # back from ipp doc capture screen
             idv_session.skip_doc_auth_from_handoff)
         end,
@@ -90,6 +92,7 @@ module Idv
       @presenter = Idv::HowToVerifyPresenter.new(
         selfie_check_required: @selfie_required,
         mdl_enabled: document_capture_session.mdl_enabled,
+        clear_enabled: clear_enabled?,
       )
     end
 
@@ -124,26 +127,15 @@ module Idv
     def handle_clear_submission
       return rate_limited_failure if rate_limiter.limited?
       rate_limiter.increment!
-      # idv_session.phone_for_mobile_flow = formatted_destination_phone
       idv_session.flow_path = 'standard'
-      # telephony_result = send_link
-      # telephony_form_response = build_telephony_form_response(telephony_result)
 
-      # if (token = clear_session&.dig(:token))
-      #   clear_url = UriService.add_params("https://verified.clearme.com/verify", { token: })
-      #   puts "\n\nclear_url:\t#{clear_url}"
-      #   redirect_to clear_url, allow_other_host: true
-      # else
-      #   idv_session.flow_path = nil
-      #   # redirect_to idv_hybrid_handoff_url
-      #   failure('unclear')
-      # end
+      analytics.idv_doc_auth_hybrid_handoff_submitted(
+        **analytics_arguments.merge(
+          form_response(destination: :clear_session).to_h,
+        ),
+      )
 
-      redirect_to idv_clear_document_capture_url
-
-      # analytics.idv_doc_auth_hybrid_handoff_submitted(
-      #   **analytics_arguments.merge(telephony_form_response.to_h),
-      # )
+      redirect_to idv_clear_session_url
     end
 
     def send_link
@@ -235,7 +227,7 @@ module Idv
         success: true,
         errors: {},
         extra: {
-          destination: destination,
+          destination:,
           flow_path: idv_session.flow_path,
         },
       )
@@ -288,13 +280,6 @@ module Idv
       if idv_session.desktop_test_mode_enabled? &&
          document_capture_session.doc_auth_vendor != Idp::Constants::Vendors::MOCK
         document_capture_session.update(doc_auth_vendor: Idp::Constants::Vendors::MOCK)
-      end
-    end
-
-    def clear_session
-      @clear_session ||= begin
-        clear_session_request = Proofing::Clear::Requests::SessionRequest.new
-        clear_session_request.fetch
       end
     end
   end

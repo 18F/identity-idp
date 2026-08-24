@@ -56,8 +56,6 @@ module Proofing
       end
 
       def handle_invalid_response(http_response)
-
-        # {"http_method":"POST","host":"verified.clearme.com","path":"/v1/verification_session","duration_seconds":0.17259,"status":404,"service":"clear_session_request","name":"request_metric.faraday"}
         message = [
           self.class.name,
           'Unexpected HTTP response',
@@ -65,15 +63,13 @@ module Proofing
         ].join(' ')
         exception = DocAuth::RequestError.new(message, http_response.status)
 
-        response_body = begin
+        begin
           http_response.body.present? ? JSON.parse(http_response.body) : {}
         rescue JSON::JSONError
           {}
         end
 
-        handle_connection_error(
-          exception: exception,
-        )
+        handle_connection_error(exception:)
       end
 
       def handle_connection_error(exception:)

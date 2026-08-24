@@ -15,32 +15,20 @@ module Proofing
         end
 
         def handle_http_response(response)
-          JSON.parse(response.body, symbolize_names: true)
-          # puts result.inspect
-          # extra = {}
-          #   vendor_name: 'dos:passport',
-          #   correlation_id_sent: correlation_id,
-          #   correlation_id_received: response.headers['X-Correlation-ID'],
-          #   response: result[:response],
-          # }.compact
-          # case result[:response]
-          # when 'YES'
-          #   DocAuth::Response.new(success: true, errors: {}, exception: nil, extra:)
-          # when 'NO'
-          #   DocAuth::Response.new(
-          #     success: false,
-          #     errors: { passport: I18n.t('doc_auth.errors.general.fallback_field_level') },
-          #     exception: nil,
-          #     extra:,
-          #   )
-          # else
-          #   DocAuth::Response.new(
-          #     success: false,
-          #     errors: { message: "Unexpected response: #{result[:response]}" },
-          #     exception: nil,
-          #     extra:,
-          #   )
-          # end
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          FormResponse.new(
+            success: true,
+            extra: response_body.slice(
+              :id, :object_name, :projet_id, :redirect_url, :expires_at, :created_at, :status, :token, 
+            ),
+          )
+        rescue => exception
+          NewRelic::Agent.notice_error(exception)
+          FormResponse.new(
+            success: false,
+            extra: { exception: e.inspect },
+          )
         end
 
         def endpoint
