@@ -1744,6 +1744,7 @@ step_indicator.flows.idv.verify_phone: 验证你的电话号码
 step_indicator.status.complete: 完成了
 step_indicator.status.current: 目前步骤
 step_indicator.status.not_complete: 未完成
+step_indicator.substep: 子步骤 %{current} / %{total}
 time.am: 上午
 time.formats.event_date: '%Y年%B%-d日'
 time.formats.event_time: '%-l:%M %p'
