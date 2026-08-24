@@ -260,11 +260,11 @@ module AbTests
     user&.uuid || session&.dig(:session_id) || 'anon'
   end.freeze
 
-  CLEAR_ALLOWED = AbTest.new(
-    experiment_name: 'Clear Inherited Proofing Allowed',
+  CLEAR1_ALLOWED = AbTest.new(
+    experiment_name: 'Clear1 Inherited Proofing Allowed',
     should_log: /^idv/i,
     buckets: {
-      idv_clear_allowed: IdentityConfig.store.idv_clear_enabled_percent,
+      idv_clear1_allowed: IdentityConfig.store.idv_clear1_enabled_percent,
     },
   ) do |user:, user_session:, **|
     user&.uuid

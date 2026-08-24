@@ -23,7 +23,7 @@ module Idp
       STATE_ID_MOCK = 'StateIdMock'
       AAMVA_CHECK_SKIPPED = 'AamvaCheckSkipped'
       SOURCE_CHECK = [AAMVA, AAMVA_UNSUPPORTED_JURISDICTION, STATE_ID_MOCK].freeze
-      CLEAR = 'clear'
+      CLEAR1 = 'clear1'
     end
 
     module DocumentTypes

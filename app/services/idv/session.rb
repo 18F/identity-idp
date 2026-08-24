@@ -7,7 +7,7 @@ module Idv
   # @attr address_verification_mechanism [String, nil]
   # @attr agent_proofed [Boolean, nil]
   # @attr applicant [Struct, nil]
-  # @attr clear_enabled [Boolean, nil]
+  # @attr clear1_enabled [Boolean, nil]
   # @attr doc_auth_vendor [String, nil]
   # @attr document_capture_session_uuid [String, nil]
   # @attr flow_path [String, nil]
@@ -65,7 +65,7 @@ module Idv
       agent_proofed
       applicant
       bucketed_doc_auth_vendor
-      clear_enabled
+      clear1_enabled
       doc_auth_vendor
       document_capture_session_uuid
       flow_path

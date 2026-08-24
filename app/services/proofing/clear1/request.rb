@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 module Proofing
-  module Clear
+  module Clear1
     class Request
       attr_accessor :state_uuid
 
-      VENDOR_NAME = 'clear'
+      VENDOR_NAME = 'clear1'
 
       def fetch
         # return DocAuth::Response with DocAuth:Error if workflow invalid
@@ -75,7 +75,7 @@ module Proofing
       def handle_connection_error(exception:)
         FormResponse.new(
           success: false,
-          errors: { network: true, clear: true },
+          errors: { network: true, clear1: true },
           extra: {
             vendor_name: VENDOR_NAME,
             exception:,
