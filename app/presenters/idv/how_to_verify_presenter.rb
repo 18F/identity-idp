@@ -6,7 +6,8 @@ class Idv::HowToVerifyPresenter
 
   attr_reader :selfie_required, :passport_cards_supported, :mdl_enabled, :clear1_enabled
 
-  def initialize(selfie_check_required:, passport_cards_supported: false, mdl_enabled: false, clear1_enabled: false)
+  def initialize(selfie_check_required:, passport_cards_supported: false, mdl_enabled: false,
+                 clear1_enabled: false)
     @selfie_required = selfie_check_required
     @passport_cards_supported = passport_cards_supported
     @mdl_enabled = mdl_enabled
