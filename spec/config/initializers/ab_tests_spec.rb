@@ -640,4 +640,24 @@ RSpec.describe AbTests do
       end
     end
   end
+
+  describe 'CLEAR1_ALLOWED' do
+    let(:ab_test) { :CLEAR1_ALLOWED }
+
+    let(:disable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:idv_clear1_enabled_percent)
+          .and_return(0)
+      }
+    end
+
+    let(:enable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:idv_clear1_enabled_percent)
+          .and_return(50)
+      }
+    end
+
+    it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
+  end
 end
