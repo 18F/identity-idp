@@ -51,7 +51,6 @@ RSpec.feature 'clear1 inherited proofing step', :js, allow_browser_log: true do
       remove_request_stub(@stub)
       @stub = clear1_session_stub
       click_button 'Clear1'
-      # expect(page).to have_current_path(idv_clear1_session_url)
       expect(page).to have_current_path(clear_app_url)
     end
   end
