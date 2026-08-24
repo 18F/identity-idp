@@ -1731,6 +1731,7 @@ step_indicator.flows.idv.verify_phone: Verify your phone number
 step_indicator.status.complete: Completed
 step_indicator.status.current: Current step
 step_indicator.status.not_complete: Not completed
+step_indicator.substep: Substep %{current} of %{total}
 time.am: AM
 time.formats.event_date: '%B %-d, %Y'
 time.formats.event_time: '%-l:%M %p'
