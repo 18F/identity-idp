@@ -1,3 +1,6 @@
+<%- if render_as_nds? -%>
+<%= render nds_delegate %>
+<%- else -%>
 <%= content_tag(
       :'lg-step-indicator',
       role: 'region',
@@ -10,3 +13,4 @@
     <% end %>
   </ol>
 <% end %>
+<%- end -%>

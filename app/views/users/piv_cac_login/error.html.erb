@@ -11,6 +11,7 @@
 
   <%= render ButtonComponent.new(
         url: new_user_session_url,
+        variant: :quaternary,
         class: 'margin-top-3',
         big: true,
       ).with_content(t('instructions.mfa.piv_cac.back_to_sign_in')) %>

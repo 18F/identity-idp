@@ -32,6 +32,7 @@
   <% if @can_add_email %>
     <%= render ButtonComponent.new(
           url: add_email_path(in_select_email_flow: true),
+          variant: :quaternary,
           outline: true,
           big: true,
           wide: true,

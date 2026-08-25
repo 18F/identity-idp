@@ -1556,6 +1556,7 @@ links.create_account: Créer un compte
 links.exit_login: Quitter %{app_name}
 links.go_back: Retour
 links.help: Aide
+links.more: Plus
 links.new_tab: '(ouvre un nouvel onglet)'
 links.passwords.forgot: Mot de passe oublié ?
 links.privacy_policy: Confidentialité et sécurité
@@ -1695,12 +1696,15 @@ service_providers.errors.inactive.heading: '%{sp_name} n’utilise plus %{app_na
 service_providers.errors.inactive.instructions: '%{sp_name} n’utilise plus %{app_name} comme service de connexion pour son site Web. Si vous avez déjà créé un compte %{app_name}, sachez qu’il est toujours actif et qu’il peut être utilisé pour accéder aux autres sites Web participants de l’administration.'
 service_providers.errors.inactive.instructions2: Pour plus d’informations, veuillez vous rendre sur le site de l’organisme concerné pour le contacter.
 shared.banner.fake_site: Un site Web de DÉMONSTRATION des autorités des États-Unis
+shared.banner.gov_description: Un site Web .gov appartient à un organisme officiel des États-Unis.
 shared.banner.gov_description_html: Un site Web <strong>.gov</strong> appartient à un organisme officiel des États-Unis.
 shared.banner.gov_heading: Les sites Web officiels utilisent .gov
 shared.banner.how: Voici comment le savoir
 shared.banner.landmark_label: Site Web officiel des autorités
 shared.banner.lock_description: Un cadenas fermé
+shared.banner.modal_title: Sites Web du gouvernement des États-Unis
 shared.banner.official_site: Un site Web officiel de l’administration des États-Unis
+shared.banner.secure_description: La présence d’un cadenas ou de https:// signifie que vous êtes connecté en toute sécurité au site Web .gov. Ne partagez des informations sensibles que sur des sites Web officiels et sécurisés.
 shared.banner.secure_description_html: La présence d’un <strong>cadenas</strong> ( %{lock_icon} ) ou de <strong>https://</strong> signifie que vous êtes connecté en toute sécurité au site Web .gov. Ne partagez des informations sensibles que sur des sites Web officiels et sécurisés.
 shared.banner.secure_heading: Les sites Web sécurisés .gov utilisent HTTPS
 shared.footer_lite.gsa: Administration des services généraux des États-Unis
@@ -1731,6 +1735,7 @@ step_indicator.flows.idv.verify_phone: Vérifier votre numéro de téléphone
 step_indicator.status.complete: Étape effectuée
 step_indicator.status.current: Étape en cours
 step_indicator.status.not_complete: Étape non effectuée
+step_indicator.substep: Sous-étape %{current} sur %{total}
 time.am: A.M.
 time.formats.event_date: '%-d %B %Y'
 time.formats.event_time: '%-l h %M %p'

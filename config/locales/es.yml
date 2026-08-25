@@ -1567,6 +1567,7 @@ links.create_account: Crear una cuenta
 links.exit_login: Salir de %{app_name}
 links.go_back: Volver
 links.help: Ayuda
+links.more: Más
 links.new_tab: '(abrir nueva pestaña)'
 links.passwords.forgot: '¿Olvidó su contraseña?'
 links.privacy_policy: Privacidad y seguridad
@@ -1706,12 +1707,15 @@ service_providers.errors.inactive.heading: '%{sp_name} ya no utiliza %{app_name}
 service_providers.errors.inactive.instructions: '%{sp_name} ya no utiliza %{app_name} como servicio para iniciar sesión en su sitio web. Si ya creó una cuenta de %{app_name}, todavía está activa y se puede usar para acceder a otros sitios web participantes del gobierno.'
 service_providers.errors.inactive.instructions2: Visite la agencia para contactarlos y obtener más información.
 shared.banner.fake_site: Un sitio web de demostración del Gobierno de los Estados Unidos
+shared.banner.gov_description: Un sitio web .gov pertenece a una organización oficial del Gobierno de los Estados Unidos.
 shared.banner.gov_description_html: 'Un sitio web <strong>.gov</strong> pertenece a una organización oficial del Gobierno de los Estados Unidos.'
 shared.banner.gov_heading: Los sitios web oficiales usan .gov
 shared.banner.how: Así es como usted puede saberlo
 shared.banner.landmark_label: Sitio web oficial del Gobierno
 shared.banner.lock_description: Un candado cerrado
+shared.banner.modal_title: Sitios web del Gobierno de EE. UU.
 shared.banner.official_site: Un sitio web oficial del Gobierno de los Estados Unidos
+shared.banner.secure_description: Un candado o https:// significa que se conectó de forma segura a un sitio web .gov. Comunique información confidencial solo en los sitios web oficiales protegidos.
 shared.banner.secure_description_html: Un <strong>candado</strong> ( %{lock_icon} ) o <strong>https://</strong> significa que se conectó de forma segura a un sitio web .gov. Comunique información confidencial solo en los sitios web oficiales protegidos.
 shared.banner.secure_heading: Los sitios web .gov protegidos usan HTTPS
 shared.footer_lite.gsa: Administración General de Servicios de los EE. UU.
@@ -1742,6 +1746,7 @@ step_indicator.flows.idv.verify_phone: Verifique su número de teléfono
 step_indicator.status.complete: Completado
 step_indicator.status.current: Este paso
 step_indicator.status.not_complete: No completado
+step_indicator.substep: Subpaso %{current} de %{total}
 time.am: a. m.
 time.formats.event_date: '%-d de %B de %Y'
 time.formats.event_time: '%-l:%M %p'

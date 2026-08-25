@@ -163,6 +163,22 @@ module AbTests
     )
   end.freeze
 
+  PROOFING_AGENT_PROOFING_VENDOR = AbTest.new(
+    experiment_name: 'Proofing Agent Proofing Vendor',
+    should_log: /^idv/i,
+    default_bucket: IdentityConfig.store.idv_resolution_default_vendor,
+    buckets: {
+      socure_kyc: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
+        IdentityConfig.store.idv_resolution_vendor_socure_kyc_percent : 0,
+      instant_verify: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
+        IdentityConfig.store.idv_resolution_vendor_instant_verify_percent : 0,
+      instant_verify_ddp: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
+        IdentityConfig.store.idv_resolution_vendor_instant_verify_ddp_percent : 0,
+    },
+  ) do |service_provider:, session:, user:, user_session:, **|
+    user&.uuid
+  end.freeze
+
   PHONE_FINDER_RDP_VERSION = AbTest.new(
     experiment_name: 'phone_finder_rdp_version',
     should_log: /^idv/i,
@@ -258,5 +274,15 @@ module AbTests
     buckets: { nds: IdentityConfig.store.nds_look_and_feel_percent },
   ) do |user:, session:, **|
     user&.uuid || session&.dig(:session_id) || 'anon'
+  end.freeze
+
+  CLEAR1_ALLOWED = AbTest.new(
+    experiment_name: 'Clear1 Inherited Proofing Allowed',
+    should_log: /^idv/i,
+    buckets: {
+      idv_clear1_allowed: IdentityConfig.store.idv_clear1_enabled_percent,
+    },
+  ) do |user:, user_session:, **|
+    user&.uuid
   end.freeze
 end

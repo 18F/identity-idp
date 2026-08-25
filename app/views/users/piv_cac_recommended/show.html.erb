@@ -22,6 +22,7 @@
 <%= render ButtonComponent.new(
       url: login_piv_cac_recommended_skip_path,
       method: :post,
+      variant: :quaternary,
       unstyled: true,
     ).with_content(@recommended_presenter.skip_text) %>
 

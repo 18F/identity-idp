@@ -37,7 +37,7 @@ module Api
 
       def proof_user
         return render_user_not_found if user.blank?
-        return render_already_proofed if user_has_enhanced_profile?
+        return render_already_proofed if already_proofed?
         return render_user_awaiting_binding if user.proofing_agent_user_awaiting_binding?
 
         if proofing_rate_limiter.limited? || ssn_rate_limiter.limited?
@@ -293,6 +293,12 @@ module Api
         active_profiles.any? do |profile|
           profile.enhanced?
         end
+      end
+
+      def already_proofed?
+        return false if IdentityConfig.store.idv_proofing_agent_proof_user_with_enhanced_profile
+
+        user_has_enhanced_profile?
       end
 
       def email
