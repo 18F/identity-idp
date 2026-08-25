@@ -114,7 +114,6 @@ class WebauthnVerificationForm
     webauthn_configuration&.credential_public_key
   end
 
-  # Flags describe this specific assertion, unlike transports which describe the stored credential.
   def authenticator_data_flags
     return if authenticator_data.blank?
 

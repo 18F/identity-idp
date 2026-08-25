@@ -6739,8 +6739,7 @@ module AnalyticsEvents
   # @param [Boolean, nil] webauthn_verification_auto_prompted Whether passkey auth was auto-prompted
   # @param [String[], nil] webauthn_transports WebAuthn transports recorded when the credential was
   #   registered. Describes credential capability, not the transport used for this ceremony.
-  # @param [Hash, nil] authenticator_data_flags WebAuthn authenticator data flags for this
-  #   assertion, including backup eligibility (be) and backup state (bs)
+  # @param [Hash, nil] authenticator_data_flags WebAuthn authenticator data flags for creds
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
