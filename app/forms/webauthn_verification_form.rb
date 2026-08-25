@@ -102,7 +102,7 @@ class WebauthnVerificationForm
       public_key: Base64.decode64(public_key),
       sign_count: 0,
     )
-  rescue OpenSSL::PKey::PKeyError
+  rescue OpenSSL::PKey::PKeyError, IOError
     false
   end
 
