@@ -1,0 +1,46 @@
+<% dialog_id = self.dialog_id %>
+
+<section class="official-banner" aria-label="<%= t('shared.banner.landmark_label') %>">
+  <div class="official-banner__content">
+    <span class="official-banner__flag" aria-hidden="true">
+      <%= render IconComponent.new(icon: :flag, size: 20) %>
+    </span>
+    <p class="official-banner__text">
+      <%= t('shared.banner.official_site') %>
+      <button
+        type="button"
+        class="link official-banner__how"
+        data-nds-modal-open
+        aria-controls="<%= dialog_id %>"
+        aria-haspopup="dialog"
+        aria-expanded="false"
+      ><%= t('shared.banner.how') %></button>
+    </p>
+  </div>
+  <% if show_test_notice? %>
+    <p class="official-banner__test-notice"><%= t('idv.messages.sessions.no_pii') %></p>
+  <% end %>
+</section>
+
+<%= render ModalComponent.new(id: dialog_id, class: 'official-banner-modal') do |modal| %>
+  <% modal.with_title { t('shared.banner.modal_title') } %>
+  <div class="official-banner-modal__item">
+    <div class="official-banner-modal__header">
+      <%= render IconComponent.new(icon: :authority, size: 24) %>
+      <h3 class="official-banner-modal__heading"><%= t('shared.banner.gov_heading') %></h3>
+    </div>
+    <p class="official-banner-modal__description">
+      <%= t('shared.banner.gov_description') %>
+    </p>
+  </div>
+  <hr class="official-banner-modal__rule">
+  <div class="official-banner-modal__item">
+    <div class="official-banner-modal__header">
+      <%= render IconComponent.new(icon: :lock, size: 24) %>
+      <h3 class="official-banner-modal__heading"><%= t('shared.banner.secure_heading') %></h3>
+    </div>
+    <p class="official-banner-modal__description">
+      <%= t('shared.banner.secure_description') %>
+    </p>
+  </div>
+<% end %>
