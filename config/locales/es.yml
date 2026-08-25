@@ -1707,12 +1707,15 @@ service_providers.errors.inactive.heading: '%{sp_name} ya no utiliza %{app_name}
 service_providers.errors.inactive.instructions: '%{sp_name} ya no utiliza %{app_name} como servicio para iniciar sesión en su sitio web. Si ya creó una cuenta de %{app_name}, todavía está activa y se puede usar para acceder a otros sitios web participantes del gobierno.'
 service_providers.errors.inactive.instructions2: Visite la agencia para contactarlos y obtener más información.
 shared.banner.fake_site: Un sitio web de demostración del Gobierno de los Estados Unidos
+shared.banner.gov_description: Un sitio web .gov pertenece a una organización oficial del Gobierno de los Estados Unidos.
 shared.banner.gov_description_html: 'Un sitio web <strong>.gov</strong> pertenece a una organización oficial del Gobierno de los Estados Unidos.'
 shared.banner.gov_heading: Los sitios web oficiales usan .gov
 shared.banner.how: Así es como usted puede saberlo
 shared.banner.landmark_label: Sitio web oficial del Gobierno
 shared.banner.lock_description: Un candado cerrado
+shared.banner.modal_title: Sitios web del Gobierno de EE. UU.
 shared.banner.official_site: Un sitio web oficial del Gobierno de los Estados Unidos
+shared.banner.secure_description: Un candado o https:// significa que se conectó de forma segura a un sitio web .gov. Comunique información confidencial solo en los sitios web oficiales protegidos.
 shared.banner.secure_description_html: Un <strong>candado</strong> ( %{lock_icon} ) o <strong>https://</strong> significa que se conectó de forma segura a un sitio web .gov. Comunique información confidencial solo en los sitios web oficiales protegidos.
 shared.banner.secure_heading: Los sitios web .gov protegidos usan HTTPS
 shared.footer_lite.gsa: Administración General de Servicios de los EE. UU.

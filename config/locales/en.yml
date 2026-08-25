@@ -1695,12 +1695,15 @@ service_providers.errors.inactive.heading: '%{sp_name} no longer uses %{app_name
 service_providers.errors.inactive.instructions: '%{sp_name} no longer uses %{app_name} as a sign-in service for their website. If you already created a %{app_name} account, it is still active and can be used to access other participating government websites.'
 service_providers.errors.inactive.instructions2: Please visit the agency’s website to contact them for more information.
 shared.banner.fake_site: A DEMO website of the United States government
+shared.banner.gov_description: A .gov website belongs to an official government organization in the United States.
 shared.banner.gov_description_html: A <strong>.gov</strong> website belongs to an official government organization in the United States.
 shared.banner.gov_heading: Official websites use .gov
 shared.banner.how: Here’s how you know
 shared.banner.landmark_label: Official government website
 shared.banner.lock_description: A locked padlock
+shared.banner.modal_title: U.S. Government Websites
 shared.banner.official_site: An official website of the United States government
+shared.banner.secure_description: A lock or https:// means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
 shared.banner.secure_description_html: A <strong>lock</strong> ( %{lock_icon} ) or <strong>https://</strong> means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
 shared.banner.secure_heading: Secure .gov websites use HTTPS
 shared.footer_lite.gsa: US General Services Administration

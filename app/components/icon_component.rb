@@ -26,6 +26,7 @@ class IconComponent < BaseComponent
     assessment
     attach_file
     attach_money
+    authority
     autorenew
     backpack
     bathtub
