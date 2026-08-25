@@ -39,7 +39,6 @@ acuant_sdk_initialization_creds: 'a2V5bGVzc0dTQV9wcm9kQGxleGlzbmV4aXNyaXNrLmNvbT
 acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
 add_email_link_valid_for_hours: 24
 address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
-agent_proofed_user_time_validity_hours: 1
 all_redirect_uris_cache_duration_minutes: 2
 allowed_attempts_providers: '[]'
 allowed_client_id_in_risc_service_providers: '[]'
@@ -143,7 +142,7 @@ doc_auth_selfie_vendor_lexis_nexis_percent: 100 # note, LN is currently the defa
 doc_auth_selfie_vendor_socure_percent: 0
 doc_auth_selfie_vendor_switching_enabled: false
 doc_auth_socure_wait_polling_refresh_max_seconds: 15
-doc_auth_socure_wait_polling_timeout_minutes: 2
+doc_auth_socure_wait_polling_timeout_seconds: 60
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
 doc_auth_vendor: 'mock'
 doc_auth_vendor_default: 'mock'
@@ -240,8 +239,10 @@ idv_phone_verification_dual_vendor_check_enabled: false
 idv_phone_verification_dual_vendor_check_socure_percent: 0
 idv_phone_verification_dual_vendor_check_socure_reason_codes: '[]'
 idv_proofing_agent_config: '[]'
+idv_proofing_agent_device_profiling: enabled
 idv_proofing_agent_enabled: false
 idv_proofing_agent_passport_enabled: false
+idv_proofing_agent_proofed_user_validity_hours: 1
 idv_proofing_agent_result_expiration_seconds: 10
 idv_rdp_version_default: rdp_v2
 idv_rdp_version_switching_enabled: false
@@ -413,7 +414,6 @@ proof_address_max_attempts: 5
 proof_ssn_max_attempt_window_in_minutes: 60
 proof_ssn_max_attempts: 10
 proofer_mock_fallback: true
-proofing_agent_device_profiling: enabled
 proofing_device_hybrid_profiling: disabled
 proofing_device_profiling: enabled
 protocols_report_config: '[]'

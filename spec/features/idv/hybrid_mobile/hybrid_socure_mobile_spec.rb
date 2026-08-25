@@ -378,7 +378,7 @@ RSpec.describe 'Hybrid Flow' do
         before do
           allow(IdentityConfig.store).to receive_messages(
             doc_auth_max_attempts: 4,
-            doc_auth_socure_wait_polling_timeout_minutes: 0,
+            doc_auth_socure_wait_polling_timeout_seconds: 0,
             idv_socure_reason_codes_docv_selfie_fail: ['fail'],
             idv_socure_reason_codes_docv_selfie_not_processed: ['not_processed'],
             idv_socure_reason_codes_docv_selfie_pass: ['pass'],
@@ -754,7 +754,7 @@ RSpec.describe 'Hybrid Flow' do
         before do
           allow(IdentityConfig.store).to receive_messages(
             doc_auth_max_attempts: 4,
-            doc_auth_socure_wait_polling_timeout_minutes: 0,
+            doc_auth_socure_wait_polling_timeout_seconds: 0,
             idv_socure_reason_codes_docv_selfie_fail: ['fail'],
             idv_socure_reason_codes_docv_selfie_not_processed: ['not_processed'],
             idv_socure_reason_codes_docv_selfie_pass: ['pass'],
@@ -1042,7 +1042,7 @@ RSpec.describe 'Hybrid Flow' do
         DocAuth::Mock::DocAuthMockClient.reset!
         allow(IdentityConfig.store).to receive_messages(
           doc_auth_passports_enabled: false,
-          doc_auth_socure_wait_polling_timeout_minutes: 0,
+          doc_auth_socure_wait_polling_timeout_seconds: 0,
           in_person_proofing_enabled: true,
         )
         allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
@@ -1369,7 +1369,7 @@ RSpec.describe 'Hybrid Flow' do
         before do
           allow(IdentityConfig.store).to receive_messages(
             doc_auth_max_attempts: 6,
-            doc_auth_socure_wait_polling_timeout_minutes: 0,
+            doc_auth_socure_wait_polling_timeout_seconds: 0,
             idv_socure_reason_codes_docv_selfie_fail: ['fail'],
             idv_socure_reason_codes_docv_selfie_not_processed: ['not_processed'],
             idv_socure_reason_codes_docv_selfie_pass: ['pass'],

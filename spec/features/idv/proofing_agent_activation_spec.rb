@@ -157,7 +157,7 @@ RSpec.describe 'Proofing agent activation', :js do
     # collect_only runs the tmx job but never stores a DeviceProfilingResult,
     # so the enter password step has no stored result to read
     before do
-      allow(IdentityConfig.store).to receive(:proofing_agent_device_profiling)
+      allow(IdentityConfig.store).to receive(:idv_proofing_agent_device_profiling)
         .and_return(:collect_only)
     end
 

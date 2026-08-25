@@ -147,14 +147,14 @@ class FeatureManagement
   end
 
   # Whether we collect device profiling as part of the proofing_agent idv process
-  def self.proofing_agent_device_profiling_collecting_enabled?
+  def self.idv_proofing_agent_device_profiling_collecting_enabled?
     return false unless proofing_device_profiling_decisioning_enabled?
 
-    case IdentityConfig.store.proofing_agent_device_profiling
+    case IdentityConfig.store.idv_proofing_agent_device_profiling
     when :enabled, :collect_only then true
     when :disabled then false
     else
-      raise 'Invalid value for proofing_agent_device_profiling'
+      raise 'Invalid value for idv_proofing_agent_device_profiling'
     end
   end
 

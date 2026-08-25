@@ -149,7 +149,8 @@ class DocumentCaptureSession < ApplicationRecord
 
     EncryptedRedisStructStorage.store(
       session_result,
-      expires_in: IdentityConfig.store.agent_proofed_user_time_validity_hours.hours.in_seconds,
+      expires_in: IdentityConfig.store
+        .idv_proofing_agent_proofed_user_validity_hours.hours.in_seconds,
     )
     save!
     update!(pending_agent_proofed_user_at: Time.zone.now) if agent_proofing_result[:success]

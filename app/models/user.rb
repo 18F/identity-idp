@@ -413,7 +413,7 @@ class User < ApplicationRecord
     session = pending_agent_proofed_document_capture_session
     return false unless session
 
-    validity_hours = IdentityConfig.store.agent_proofed_user_time_validity_hours
+    validity_hours = IdentityConfig.store.idv_proofing_agent_proofed_user_validity_hours
     if session.pending_agent_proofed_user_at &&
        (session.pending_agent_proofed_user_at + validity_hours.hours) < Time.zone.now
       return true

@@ -170,7 +170,7 @@ module Idv
           end
           start = DateTime.parse(session[:socure_docv_wait_polling_started_at])
           timeout_period =
-            IdentityConfig.store.doc_auth_socure_wait_polling_timeout_minutes.minutes || 2.minutes
+            IdentityConfig.store.doc_auth_socure_wait_polling_timeout_seconds
           start + timeout_period < Time.zone.now
         end
 

@@ -14,7 +14,7 @@ module Idv
     before_action :move_agent_proofed_user_pii_to_idv_session
     before_action :override_csp_for_threat_metrix,
                   if: -> {
-                    FeatureManagement.proofing_agent_device_profiling_collecting_enabled?
+                    FeatureManagement.idv_proofing_agent_device_profiling_collecting_enabled?
                   }
 
     def new
@@ -42,7 +42,7 @@ module Idv
       )
 
       if form_response.success?
-        if FeatureManagement.proofing_agent_device_profiling_collecting_enabled?
+        if FeatureManagement.idv_proofing_agent_device_profiling_collecting_enabled?
           ::ProofingAgentThreatMetrixJob.perform_now(**tmx_job_attrs)
         end
         return redirect_to idv_enter_password_url
