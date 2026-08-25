@@ -296,7 +296,7 @@ module Api
       end
 
       def already_proofed?
-        return false if IdentityConfig.store.idv_proofing_agent_proof_user_with_profile
+        return false if IdentityConfig.store.idv_proofing_agent_proof_user_with_enhanced_profile
 
         user_has_enhanced_profile?
       end

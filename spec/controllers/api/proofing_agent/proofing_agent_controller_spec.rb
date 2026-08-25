@@ -912,9 +912,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               )
             end
 
-            context 'when idv_proofing_agent_proof_user_with_profile is true' do
+            context 'when idv_proofing_agent_proof_user_with_enhanced_profile is true' do
               before do
-                allow(IdentityConfig.store).to receive(:idv_proofing_agent_proof_user_with_profile)
+                allow(IdentityConfig.store).to receive(:idv_proofing_agent_proof_user_with_enhanced_profile)
                   .and_return(true)
               end
 
