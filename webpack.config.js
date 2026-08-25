@@ -17,7 +17,7 @@ const originPort = process.env.ORIGIN_PORT || 3000;
 const devServerPort = process.env.WEBPACK_PORT;
 const devtool = process.env.WEBPACK_DEVTOOL || (isProductionEnv ? 'source-map' : 'eval-source-map');
 
-const entries = glob('app/{components,javascript/packs}/*.{ts,tsx}');
+const entries = glob('app/{components,components/nds,javascript/packs}/*.{ts,tsx}');
 
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,

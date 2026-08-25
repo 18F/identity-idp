@@ -1,0 +1,18 @@
+<%= content_tag(
+      :'lg-toast',
+      **tag_options.except(:class, :data),
+      class: css_class,
+      data: {
+        open: 'false',
+        show_delay:,
+        dismiss_after:,
+        **tag_options.fetch(:data, {}),
+      },
+    ) do %>
+  <div class="toast__announcement" data-nds-toast-announcement>
+    <span class="toast__icon" aria-hidden="true">
+      <%= render IconComponent.new(icon: :check, size: 16) %>
+    </span>
+    <p class="toast__text"><%= content %></p>
+  </div>
+<% end %>
