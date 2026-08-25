@@ -102,7 +102,7 @@ class WebauthnVerificationForm
       public_key: Base64.decode64(public_key),
       sign_count: 0,
     )
-  rescue OpenSSL::PKey::PKeyError
+  rescue OpenSSL::PKey::PKeyError, WebAuthn::Error, IOError
     false
   end
 
@@ -112,6 +112,24 @@ class WebauthnVerificationForm
 
   def public_key
     webauthn_configuration&.credential_public_key
+  end
+
+  # Flags describe this specific assertion, unlike transports which describe the stored credential.
+  def authenticator_data_flags
+    return if authenticator_data.blank?
+
+    data = WebAuthn::AuthenticatorData.deserialize(Base64.decode64(authenticator_data))
+    # bits defined using https://w3c.github.io/webauthn/#sctn-authenticator-data
+    {
+      up: data.user_present?,
+      uv: data.user_verified?,
+      be: data.credential_backup_eligible?,
+      bs: data.credential_backed_up?,
+      at: data.attested_credential_data_included?,
+      ed: data.extension_data_included?,
+    }
+  rescue StandardError
+    nil
   end
 
   def generic_error_message
@@ -166,6 +184,8 @@ class WebauthnVerificationForm
       webauthn_configuration_id: webauthn_configuration&.id,
       frontend_error: webauthn_error.presence,
       webauthn_aaguid: webauthn_configuration&.aaguid,
+      webauthn_transports: webauthn_configuration&.transports,
+      authenticator_data_flags: authenticator_data_flags,
     }
   end
 end
