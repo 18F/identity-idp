@@ -14,6 +14,7 @@ RSpec.feature 'clear1 inherited proofing step', :js, allow_browser_log: true do
   let(:idv_clear1_project_id) { 'fake_project_id' }
   let(:status) { 200 }
   let(:token) { 'fake_token' }
+  let(:session_id) { 'fake_session_id' }
   let(:clear_app_url) do
     "#{IdentityConfig.store.idv_clear1_api_base_url}/verify?token=#{token}"
   end
@@ -58,7 +59,7 @@ RSpec.feature 'clear1 inherited proofing step', :js, allow_browser_log: true do
   xcontext 'mobile flow', driver: :headless_chrome_mobile do
   end
 
-  def clear1_session_stub(status: 200, token: 'fake_token')
+  def clear1_session_stub(status: 200, token: 'fake_token', session_id: 'fake_session_id')
     uuid_pattern = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i
     stub_request(:post, clear_session_endpoint)
       .with(body: hash_including(
@@ -70,6 +71,7 @@ RSpec.feature 'clear1 inherited proofing step', :js, allow_browser_log: true do
         status:,
         body: {
           token:,
+          id: session_id,
         }.compact.to_json,
       )
   end
