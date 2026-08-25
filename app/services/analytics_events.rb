@@ -6109,6 +6109,17 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] document_type_requested The type of document the user chose to verify with
+  # The user clicked the button on the document capture interstitial page that redirects
+  # them to the Socure DocV capture app
+  def idv_socure_docv_redirect_requested(document_type_requested: nil, **extra)
+    track_event(
+      :idv_socure_docv_redirect_requested,
+      document_type_requested:,
+      **extra,
+    )
+  end
+
   # Socure KYC API was called with the following results
   # @param [Boolean] success Result from Socure KYC API call
   # @param [Hash] errors Result from resolution proofing

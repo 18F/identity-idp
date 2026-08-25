@@ -498,6 +498,10 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
           expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MD')
           expect(fake_analytics).to have_logged_event(
+            :idv_socure_docv_redirect_requested,
+            document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
+          )
+          expect(fake_analytics).to have_logged_event(
             :idv_socure_document_request_submitted,
           )
           expect(fake_analytics).to have_logged_event(
@@ -605,6 +609,10 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
             expect(page).to have_current_path(idv_ssn_url)
 
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_docv_redirect_requested,
+              document_type_requested: Idp::Constants::DocumentTypes::MDL,
+            )
             expect(fake_analytics).to have_logged_event(
               :idv_socure_document_request_submitted,
             )
