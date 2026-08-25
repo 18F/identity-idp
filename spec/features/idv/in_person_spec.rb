@@ -912,6 +912,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
     context 'when AAMVA is enabled at the state ID form' do
       let(:user) { user_with_2fa }
+      let(:fake_analytics) { FakeAnalytics.new(user: user) }
+      let(:current_address_matches_id) { true }
 
       before do
         allow(IdentityConfig.store).to receive_messages(
@@ -923,13 +925,15 @@ RSpec.describe 'In Person Proofing', js: true do
         )
         reload_ab_tests
         stub_aamva_request(AamvaFixtures.verification_response)
+        allow_any_instance_of(ApplicationController).to receive(:analytics)
+          .and_return(fake_analytics)
 
         sign_in_and_2fa_user(user)
         begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_in
         complete_prepare_step(user)
         complete_location_step(user)
-        fill_out_state_id_form_ok(current_address_matches_id: true)
-        click_idv_continue
+        complete_state_id_controller(user, current_address_matches_id:)
+        complete_address_step(user, current_address_matches_id:) unless current_address_matches_id
         complete_ssn_step(user)
       end
 
@@ -950,6 +954,76 @@ RSpec.describe 'In Person Proofing', js: true do
 
           expect(page).to have_current_path(idv_in_person_ready_to_verify_path, wait: 10)
           expect(page).to have_content(strip_nbsp(t('in_person_proofing.headings.barcode')))
+        end
+      end
+
+      context 'when instant verify fails on the address' do
+        let(:instant_verify_response) do
+          LexisNexisFixtures.instant_verify_address_fail_response_json
+        end
+
+        # Everything AamvaFixtures.verification_response marks as matching.
+        let(:aamva_verified_attributes) do
+          %w[
+            address document_type_received dob eye_color first_name height last_name middle_name
+            name_suffix sex state_id_expiration state_id_issued state_id_number weight
+          ]
+        end
+
+        before do
+          stub_instant_verify_request(instant_verify_response)
+        end
+
+        context 'when the current address matches the state ID address' do
+          it 'passes the verify info step because AAMVA verified the same address' do
+            complete_verify_step(user)
+
+            expect(page).to have_current_path(idv_phone_path, wait: 10)
+            expect(fake_analytics).to have_logged_event(
+              'IdV: doc auth verify proofing results',
+              hash_including(
+                success: true,
+                analytics_id: 'In Person Proofing',
+                proofing_results: hash_including(
+                  context: hash_including(
+                    resolution_adjudication_reason: 'state_id_covers_failed_resolution',
+                    stages: hash_including(
+                      resolution: hash_including(
+                        success: false,
+                        can_pass_with_additional_verification: true,
+                        attributes_requiring_additional_verification: ['address'],
+                      ),
+                    ),
+                  ),
+                  biographical_info: hash_including(
+                    state_id_verified_attributes: match_array(aamva_verified_attributes),
+                  ),
+                ),
+              ),
+            )
+          end
+        end
+
+        context 'when the current address differs from the state ID address' do
+          let(:current_address_matches_id) { false }
+
+          it 'fails the verify info step because AAMVA never saw the current address' do
+            complete_verify_step(user)
+
+            expect(page).to have_current_path(idv_session_errors_warning_path(flow: 'in_person'))
+            expect(fake_analytics).to have_logged_event(
+              'IdV: doc auth verify proofing results',
+              hash_including(
+                success: false,
+                analytics_id: 'In Person Proofing',
+                proofing_results: hash_including(
+                  context: hash_including(
+                    resolution_adjudication_reason: 'fail_resolution_skip_state_id',
+                  ),
+                ),
+              ),
+            )
+          end
         end
       end
 

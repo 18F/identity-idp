@@ -798,8 +798,19 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
           expect(fake_analytics).to have_logged_event(
             'IdV: doc auth verify proofing results',
             hash_including(
+              success: true,
               address_edited: false,
               proofing_results: hash_including(
+                context: hash_including(
+                  resolution_adjudication_reason: 'state_id_covers_failed_resolution',
+                  stages: hash_including(
+                    resolution: hash_including(
+                      success: false,
+                      can_pass_with_additional_verification: true,
+                      attributes_requiring_additional_verification: ['address'],
+                    ),
+                  ),
+                ),
                 biographical_info: hash_including(
                   state_id_verified_attributes: match_array(aamva_verified_attributes),
                 ),
@@ -830,8 +841,19 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
           expect(fake_analytics).to have_logged_event(
             'IdV: doc auth verify proofing results',
             hash_including(
+              success: false,
               address_edited: true,
               proofing_results: hash_including(
+                context: hash_including(
+                  resolution_adjudication_reason: 'fail_resolution_without_state_id_coverage',
+                  stages: hash_including(
+                    resolution: hash_including(
+                      success: false,
+                      can_pass_with_additional_verification: true,
+                      attributes_requiring_additional_verification: ['address'],
+                    ),
+                  ),
+                ),
                 biographical_info: hash_including(
                   state_id_verified_attributes:
                     match_array(aamva_verified_attributes - ['address']),
