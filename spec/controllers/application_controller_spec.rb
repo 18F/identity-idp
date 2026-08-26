@@ -881,6 +881,7 @@ RSpec.describe ApplicationController do
   describe 'NDS layout resolution' do
     before { routes.draw { get 'index' => 'anonymous#index' } }
     after { Rails.application.reload_routes! }
+    let(:ui_test_bucket_params_enabled) { true }
 
     controller do
       def index
@@ -893,6 +894,10 @@ RSpec.describe ApplicationController do
     let(:nds_ab_bucket) { nil }
 
     before do
+      allow(IdentityConfig.store).to receive(
+        :ui_test_bucket_params_enabled,
+      ).and_return(ui_test_bucket_params_enabled)
+
       allow(controller).to receive(:ab_test_bucket)
         .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
         .and_return(nds_ab_bucket)
@@ -971,9 +976,8 @@ RSpec.describe ApplicationController do
       end
     end
 
-    context 'in production the dev override is ignored' do
-      before { allow(Rails.env).to receive(:production?).and_return(true) }
-
+    context 'when ui_tets_bucket_params_enabled is false' do
+      let(:ui_test_bucket_params_enabled) { false }
       it 'does not honor the param and falls back to the A/B bucket' do
         get :index, params: { ui_test_bucket: 'nds' }
         expect(controller.nds_layout?).to eq(false)
