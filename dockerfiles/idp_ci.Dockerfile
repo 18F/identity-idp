@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/ruby:3.4.5-bullseye
+FROM public.ecr.aws/docker/library/ruby:3.4.10-bookworm
 
 ENV NODE_MAJOR 22
 # We are running into the issue described in:
