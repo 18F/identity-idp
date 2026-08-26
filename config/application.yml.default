@@ -540,6 +540,7 @@ team_ursula_email: ''
 telephony_adapter: test
 test_ssn_allowed_list: ''
 totp_code_interval: 30
+ui_test_bucket_params_enabled: true
 unauthorized_scope_enabled: false
 update_cancel_account_reset_path: false
 use_dashboard_service_providers: false
@@ -672,6 +673,7 @@ production:
   session_encryptor_alert_enabled: true
   state_tracking_enabled: false
   telephony_adapter: pinpoint
+  ui_test_bucket_params_enabled: false
   use_kms: true
   usps_auth_token_refresh_job_enabled: true
 

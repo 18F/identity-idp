@@ -164,11 +164,13 @@ class ApplicationController < ActionController::Base
   end
 
   def resolve_nds_bucket
-    unless Rails.env.production?
-      # Dev override: ?ui_test_bucket=nds|legacy selects the bucket and persists
+    if IdentityConfig.store.ui_test_bucket_params_enabled
+      # Feature flag enabled override:
+      # ?ui_test_bucket=nds|legacy selects the bucket and persists
       # it in an httponly cookie so it sticks across navigation without
-      # re-appending the param; ?ui_test_bucket=clear forgets it. This is only an
-      # override in front of the real A/B assignment (it does not change the
+      # re-appending the param;
+      # ?ui_test_bucket=clear clears out the cookie.
+      # This is only an override in front of the real A/B assignment (it does not change the
       # user's actual experiment bucket), so it cannot desync experiment traffic.
       case params[:ui_test_bucket]
       when 'nds', 'legacy'
