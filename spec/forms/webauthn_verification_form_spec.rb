@@ -11,6 +11,10 @@ RSpec.describe WebauthnVerificationForm do
   let(:platform_authenticator) { false }
   let(:client_data_json) { verification_client_data_json }
   let(:webauthn_aaguid) { nil }
+  let(:expected_transports) { ['usb'] }
+  let(:expected_authenticator_data_flags) do
+    { up: true, uv: false, be: false, bs: false, at: false, ed: false }
+  end
   let!(:webauthn_configuration) do
     return if !user
     create(
@@ -54,6 +58,8 @@ RSpec.describe WebauthnVerificationForm do
             webauthn_configuration_id: webauthn_configuration.id,
             frontend_error: nil,
             webauthn_aaguid: nil,
+            webauthn_transports: expected_transports,
+            authenticator_data_flags: expected_authenticator_data_flags,
           )
         end
       end
@@ -68,6 +74,8 @@ RSpec.describe WebauthnVerificationForm do
             webauthn_configuration_id: webauthn_configuration.id,
             frontend_error: nil,
             webauthn_aaguid: aaguid,
+            webauthn_transports: expected_transports,
+            authenticator_data_flags: expected_authenticator_data_flags,
           )
         end
       end
@@ -81,6 +89,8 @@ RSpec.describe WebauthnVerificationForm do
             webauthn_configuration_id: webauthn_configuration.id,
             frontend_error: nil,
             webauthn_aaguid: nil,
+            webauthn_transports: expected_transports,
+            authenticator_data_flags: expected_authenticator_data_flags,
           )
         end
       end
@@ -100,6 +110,8 @@ RSpec.describe WebauthnVerificationForm do
             webauthn_configuration_id: webauthn_configuration.id,
             frontend_error: nil,
             webauthn_aaguid: nil,
+            webauthn_transports: expected_transports,
+            authenticator_data_flags: expected_authenticator_data_flags,
           )
         end
       end
@@ -116,6 +128,8 @@ RSpec.describe WebauthnVerificationForm do
             webauthn_configuration_id: webauthn_configuration.id,
             frontend_error: nil,
             webauthn_aaguid: nil,
+            webauthn_transports: expected_transports,
+            authenticator_data_flags: nil,
           )
         end
       end
@@ -133,6 +147,8 @@ RSpec.describe WebauthnVerificationForm do
             webauthn_configuration_id: webauthn_configuration.id,
             frontend_error: nil,
             webauthn_aaguid: nil,
+            webauthn_transports: expected_transports,
+            authenticator_data_flags: expected_authenticator_data_flags,
           )
         end
       end
@@ -150,6 +166,8 @@ RSpec.describe WebauthnVerificationForm do
             webauthn_configuration_id: webauthn_configuration.id,
             frontend_error: nil,
             webauthn_aaguid: nil,
+            webauthn_transports: expected_transports,
+            authenticator_data_flags: expected_authenticator_data_flags,
           )
         end
       end
@@ -164,6 +182,8 @@ RSpec.describe WebauthnVerificationForm do
             webauthn_configuration_id: nil,
             frontend_error: nil,
             webauthn_aaguid: nil,
+            webauthn_transports: nil,
+            authenticator_data_flags: expected_authenticator_data_flags,
           )
         end
       end
@@ -178,6 +198,8 @@ RSpec.describe WebauthnVerificationForm do
             webauthn_configuration_id: webauthn_configuration.id,
             frontend_error: webauthn_error,
             webauthn_aaguid: nil,
+            webauthn_transports: expected_transports,
+            authenticator_data_flags: expected_authenticator_data_flags,
           )
         end
       end
@@ -195,6 +217,8 @@ RSpec.describe WebauthnVerificationForm do
               webauthn_configuration_id: webauthn_configuration.id,
               frontend_error: nil,
               webauthn_aaguid: nil,
+              webauthn_transports: expected_transports,
+              authenticator_data_flags: expected_authenticator_data_flags,
             )
           end
 
@@ -223,6 +247,8 @@ RSpec.describe WebauthnVerificationForm do
                 webauthn_configuration_id: webauthn_configuration.id,
                 frontend_error: nil,
                 webauthn_aaguid: nil,
+                webauthn_transports: expected_transports,
+                authenticator_data_flags: expected_authenticator_data_flags,
               )
             end
 
@@ -250,6 +276,8 @@ RSpec.describe WebauthnVerificationForm do
                 webauthn_configuration_id: webauthn_configuration.id,
                 frontend_error: nil,
                 webauthn_aaguid: nil,
+                webauthn_transports: expected_transports,
+                authenticator_data_flags: expected_authenticator_data_flags,
               )
             end
 
@@ -276,6 +304,8 @@ RSpec.describe WebauthnVerificationForm do
                 webauthn_configuration_id: webauthn_configuration.id,
                 frontend_error: nil,
                 webauthn_aaguid: nil,
+                webauthn_transports: expected_transports,
+                authenticator_data_flags: expected_authenticator_data_flags,
               )
             end
 
@@ -304,6 +334,8 @@ RSpec.describe WebauthnVerificationForm do
             webauthn_configuration_id: webauthn_configuration.id,
             frontend_error: nil,
             webauthn_aaguid: nil,
+            webauthn_transports: expected_transports,
+            authenticator_data_flags: expected_authenticator_data_flags,
           )
         end
       end
@@ -321,7 +353,38 @@ RSpec.describe WebauthnVerificationForm do
             webauthn_configuration_id: webauthn_configuration.id,
             frontend_error: nil,
             webauthn_aaguid: nil,
+            webauthn_transports: expected_transports,
+            authenticator_data_flags: expected_authenticator_data_flags,
           )
+        end
+      end
+    end
+
+    context 'cross-device analytics attributes' do
+      context 'with a synced, backed-up credential' do
+        # Backup eligible (BE) and backup state (BS) set, indicating a multi-device credential
+        let(:authenticator_data) { 'SZYN5YgOjGh0NBcPZHZgW4/krrmihjLHmVzzuoMdl2MZAAAAcQ==' }
+
+        it 'reports the backup flags' do
+          expect(result.to_h[:authenticator_data_flags]).to eq(
+            up: true, uv: false, be: true, bs: true, at: false, ed: false,
+          )
+        end
+      end
+
+      context 'with a hybrid-capable credential' do
+        before { webauthn_configuration.update!(transports: ['internal', 'hybrid']) }
+
+        it 'reports the registered transports' do
+          expect(result.to_h[:webauthn_transports]).to eq(['internal', 'hybrid'])
+        end
+      end
+
+      context 'when authenticator data is malformed' do
+        let(:authenticator_data) { 'bm90LXZhbGlk' }
+
+        it 'reports nil flags rather than raising' do
+          expect(result.to_h[:authenticator_data_flags]).to be_nil
         end
       end
     end
