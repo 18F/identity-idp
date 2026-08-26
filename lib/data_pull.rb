@@ -41,6 +41,8 @@ class DataPull
 
         * #{basename} mfa-report uuid1 uuid2
 
+        * #{basename} mfa-lookup uuid1 uuid2
+
         * #{basename} ssn-signature-report ssn1
 
         * #{basename} profile-summary uuid1 uuid2
@@ -65,6 +67,7 @@ class DataPull
       'email-lookup' => EmailLookup,
       'events-summary' => EventsSummary,
       'ig-request' => InspectorGeneralRequest,
+      'mfa-lookup' => MfaLookup,
       'mfa-report' => MfaReport,
       'ssn-signature-report' => SsnSignatureReport,
       'profile-summary' => ProfileSummary,
@@ -159,6 +162,47 @@ class DataPull
 
       ScriptBase::Result.new(
         subtask: 'email-lookup',
+        uuids: users.map(&:uuid),
+        table:,
+      )
+    end
+  end
+
+  class MfaLookup
+    def run(args:, config:)
+      uuids = args
+
+      users = User.includes(
+        :phone_configurations,
+        :auth_app_configurations,
+        :webauthn_configurations,
+        :piv_cac_configurations,
+        :backup_code_configurations,
+      ).where(uuid: uuids).order(:uuid)
+
+      table = []
+      table << %w[uuid phone_count auth_app_count webauthn_count piv_cac_count backup_code_count]
+
+      users.each do |user|
+        table << [
+          user.uuid,
+          user.phone_configurations.size,
+          user.auth_app_configurations.size,
+          user.webauthn_configurations.size,
+          user.piv_cac_configurations.size,
+          user.backup_code_configurations.size,
+        ]
+      end
+
+      if config.include_missing?
+        (uuids - users.map(&:uuid)).each do |missing_uuid|
+          table << [missing_uuid, '[UUID NOT FOUND]', '[UUID NOT FOUND]', '[UUID NOT FOUND]',
+                    '[UUID NOT FOUND]', '[UUID NOT FOUND]']
+        end
+      end
+
+      ScriptBase::Result.new(
+        subtask: 'mfa-lookup',
         uuids: users.map(&:uuid),
         table:,
       )
