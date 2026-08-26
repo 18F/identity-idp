@@ -1004,10 +1004,11 @@ RSpec.describe 'In Person Proofing', js: true do
           end
         end
 
-        context 'when the current address differs from the state ID address' do
+        context 'when the residential address differs from the state ID address' do
           let(:current_address_matches_id) { false }
 
-          it 'fails the verify info step because AAMVA never saw the current address' do
+          it 'fails resolution proofing because AAMVA does not cover the residential address ' \
+            'failures' do
             complete_verify_step(user)
 
             expect(page).to have_current_path(idv_session_errors_warning_path(flow: 'in_person'))
