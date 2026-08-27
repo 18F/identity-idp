@@ -29,7 +29,6 @@ RSpec.describe SocureDocvResultsJob do
   let(:historical_attempts_api_enabled) { false }
   let(:selfie) { false }
   let(:mrz_response) { 'YES' }
-  let(:aamva_at_doc_auth_enabled) { false }
   let(:aamva_proofer) { instance_double(Proofing::Resolution::Plugins::AamvaPlugin) }
   let(:rate_limiter) do
     RateLimiter.new(user: document_capture_session.user, rate_limit_type: :idv_doc_auth)
@@ -88,7 +87,6 @@ RSpec.describe SocureDocvResultsJob do
     allow(IdentityConfig.store).to receive_messages(
       socure_idplus_base_url:,
       dos_passport_mrz_endpoint:,
-      idv_aamva_at_doc_auth_enabled: aamva_at_doc_auth_enabled,
       idv_socure_reason_codes_docv_mdl: ['mdl_pass', 'mdl_fail'],
     )
     stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
@@ -96,6 +94,9 @@ RSpec.describe SocureDocvResultsJob do
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
     allow(FraudOps::Tracker).to receive(:new).and_return(fraud_opt_tracker)
     allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new).and_return(aamva_proofer)
+    allow(aamva_proofer).to receive(:call).and_return(
+      Proofing::StateIdResult.new(success: true, vendor_name: 'state_id:aamva'),
+    )
 
     rate_limiter.increment!
 
@@ -189,7 +190,7 @@ RSpec.describe SocureDocvResultsJob do
           expect(document_capture_session_result.attention_with_barcode).to eq(false)
           expect(document_capture_session_result.doc_auth_success).to eq(true)
           expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-          expect(document_capture_session_result.aamva_status).to eq(:not_processed)
+          expect(document_capture_session_result.aamva_status).to eq(:passed)
           expect(document_capture_session_result.attempt).to eq(1)
         end
 
@@ -1098,7 +1099,6 @@ RSpec.describe SocureDocvResultsJob do
       end
 
       context 'when aamva at doc auth is enabled' do
-        let(:aamva_at_doc_auth_enabled) { true }
         let(:aamva_success) { true }
         let(:aamva_errors) { {} }
         let(:aamva_proofing_result) do
@@ -1136,7 +1136,6 @@ RSpec.describe SocureDocvResultsJob do
             },
             current_sp: sp,
             ipp_enrollment_in_progress: false,
-            state_id_address_resolution_result: nil,
             timer: an_instance_of(JobHelpers::Timer),
             doc_auth_flow: true,
             analytics: @analytics,
