@@ -1024,7 +1024,6 @@ RSpec.feature 'document capture step', :js do
 
   describe 'Standard flow with aamva check enabled', :allow_browser_log do
     before do
-      allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
       stub_health_check_settings
       stub_health_check_endpoints_success

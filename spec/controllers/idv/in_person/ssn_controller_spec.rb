@@ -20,6 +20,7 @@ RSpec.describe Idv::InPerson::SsnController do
     stub_attempts_tracker
     controller.idv_session.flow_path = 'standard'
     controller.idv_session.opted_in_to_in_person_proofing = true
+    controller.idv_session.ipp_aamva_result = { success: true }
     allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
   end
 
@@ -34,49 +35,27 @@ RSpec.describe Idv::InPerson::SsnController do
         allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
       end
 
-      context 'when AAMVA at doc auth is enabled' do
+      context 'when ipp_aamva_result is present' do
         before do
-          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled)
-            .and_return(true)
+          subject.idv_session.ipp_aamva_result = { success: true }
         end
 
-        context 'when ipp_aamva_result is present' do
-          before do
-            subject.idv_session.ipp_aamva_result = { success: true }
-          end
-
-          it 'returns true' do
-            expect(
-              described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
-            ).to be(true)
-          end
-        end
-
-        context 'when ipp_aamva_result is not present' do
-          before do
-            subject.idv_session.ipp_aamva_result = nil
-          end
-
-          it 'returns false' do
-            expect(
-              described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
-            ).to be(false)
-          end
-        end
-      end
-
-      context 'when AAMVA at doc auth is not enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled)
-            .and_return(false)
-        end
-
-        it 'returns true regardless of ipp_aamva_result' do
-          subject.idv_session.ipp_aamva_result = nil
-
+        it 'returns true' do
           expect(
             described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
           ).to be(true)
+        end
+      end
+
+      context 'when ipp_aamva_result is not present' do
+        before do
+          subject.idv_session.ipp_aamva_result = nil
+        end
+
+        it 'returns false' do
+          expect(
+            described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
+          ).to be(false)
         end
       end
     end

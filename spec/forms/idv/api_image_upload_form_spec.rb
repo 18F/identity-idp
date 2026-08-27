@@ -234,14 +234,15 @@ RSpec.describe Idv::ApiImageUploadForm do
 
     before do
       allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new).and_return(aamva_proofer)
+      allow(aamva_proofer).to receive(:call).and_return(
+        Proofing::StateIdResult.new(
+          success: true,
+          vendor_name: Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED,
+        ),
+      )
     end
 
-    context 'when aamva at doc auth is enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
-      end
-
-      context 'when state_id is submitted' do
+    context 'when state_id is submitted' do
         let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT }
         let(:applicant_pii) do
           pii.merge(
@@ -283,7 +284,6 @@ RSpec.describe Idv::ApiImageUploadForm do
             allow(aamva_proofer).to receive(:call).with(
               applicant_pii:,
               current_sp: service_provider,
-              state_id_address_resolution_result: nil,
               ipp_enrollment_in_progress: false,
               timer: instance_of(JobHelpers::Timer),
               analytics: fake_analytics,
@@ -319,7 +319,6 @@ RSpec.describe Idv::ApiImageUploadForm do
             allow(aamva_proofer).to receive(:call).with(
               applicant_pii:,
               current_sp: service_provider,
-              state_id_address_resolution_result: nil,
               ipp_enrollment_in_progress: false,
               timer: instance_of(JobHelpers::Timer),
               analytics: fake_analytics,
@@ -421,13 +420,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           end
         end
       end
-    end
 
-    context 'when aamva auth is not enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(false)
-      end
-
+    context 'general submit behavior' do
       context 'with a valid form' do
         it 'logs analytics' do
           form.submit
