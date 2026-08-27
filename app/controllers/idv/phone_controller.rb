@@ -36,15 +36,11 @@ module Idv
         analytics.idv_phone_of_record_visited(
           **ab_test_analytics_buckets,
         )
-        render(
-          :new, locals: { gpo_letter_available: gpo_verify_by_mail_policy.send_letter_available? }
-        )
+        render_new
       elsif async_state.missing?
         analytics.proofing_address_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
-        render(
-          :new, locals: { gpo_letter_available: gpo_verify_by_mail_policy.send_letter_available? }
-        )
+        render_new
       end
     end
 
@@ -70,13 +66,14 @@ module Idv
       )
 
       if result.success?
-        submit_proofing_attempt
-        redirect_to idv_phone_path
+        if proofing_with_superior_evidence?
+          start_phone_confirmation
+        else
+          start_phone_verification
+        end
       else
         flash.now[:error] = result.first_error_message
-        render(
-          :new, locals: { gpo_letter_available: gpo_verify_by_mail_policy.send_letter_available? }
-        )
+        render_new
       end
     end
 
@@ -100,6 +97,21 @@ module Idv
     end
 
     private
+
+    def proofing_with_superior_evidence?
+      idv_session.proofing_with_superior_evidence?
+    end
+
+    def start_phone_confirmation
+      step.start_phone_confirmation(step_params.to_h)
+      idv_session.address_verification_vendor = 'skipped_superior_evidence'
+      send_phone_confirmation_otp_and_handle_result
+    end
+
+    def start_phone_verification
+      submit_proofing_attempt
+      redirect_to idv_phone_path
+    end
 
     def redirect_to_next_step
       if phone_confirmation_required?
@@ -297,6 +309,18 @@ module Idv
         sent_at: original_session.sent_at,
         delivery_method: original_session.delivery_method,
         user: current_user,
+      )
+    end
+
+    def render_new
+      render(
+        :new, locals: {
+          presenter: Idv::PhonePresenter.new(
+            gpo_letter_available: gpo_verify_by_mail_policy.send_letter_available?,
+            proofing_with_superior_evidence: proofing_with_superior_evidence?,
+            url_options: url_options,
+          ),
+        }
       )
     end
   end
