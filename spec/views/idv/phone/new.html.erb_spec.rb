@@ -1,15 +1,24 @@
 require 'rails_helper'
 
-RSpec.describe 'idv/phone/new.html.erb' do
+RSpec.describe 'idv/phone/new.html.erb', type: :view do
   let(:gpo_letter_available) { false }
+  let(:skip_phone_verification) { false }
   let(:step_indicator_steps) { Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
   let(:nds_layout) { false }
+
+  let(:presenter) do
+    Idv::PhonePresenter.new(
+      gpo_letter_available:,
+      skip_phone_verification:,
+      url_options: {},
+    )
+  end
 
   before do
     allow(view).to receive(:nds_layout?).and_return(nds_layout)
     allow(view).to receive(:user_signing_up?).and_return(false)
     allow(view).to receive(:user_fully_authenticated?).and_return(true)
-    allow(view).to receive(:gpo_letter_available).and_return(gpo_letter_available)
+    allow(view).to receive(:presenter).and_return(presenter)
     allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
     @idv_form = Idv::PhoneForm.new(user: build_stubbed(:user), previous_params: nil)
   end
@@ -31,6 +40,34 @@ RSpec.describe 'idv/phone/new.html.erb' do
     it 'renders troubleshooting options' do
       expect(rendered).to have_link(t('idv.troubleshooting.options.learn_more_verify_by_phone'))
       expect(rendered).not_to have_link(t('idv.troubleshooting.options.verify_by_mail'))
+    end
+  end
+
+  context 'user is can skip phone verification' do
+    let(:skip_phone_verification) { true }
+
+    it 'sets the page title for phone skip verification' do
+      expect(view).to receive(:title=).with(t('titles.idv.phone_skip_verification'))
+      rendered
+    end
+
+    it 'renders the skip phone verification title and description' do
+      expect(rendered).to have_text(t('titles.idv.phone_skip_verification'))
+      expect(rendered).to have_text(t('idv.messages.phone.description_skip_verification'))
+    end
+  end
+
+  context 'user is not skipping phone verification' do
+    let(:skip_phone_verification) { false }
+
+    it 'sets the page title for phone verification' do
+      expect(view).to receive(:title=).with(t('titles.idv.phone'))
+      rendered
+    end
+
+    it 'renders the superior evidence title and description' do
+      expect(rendered).to have_text(t('titles.idv.phone'))
+      expect(rendered).to have_text(t('idv.messages.phone.description'))
     end
   end
 
