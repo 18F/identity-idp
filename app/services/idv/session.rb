@@ -138,6 +138,9 @@ module Idv
       end
     end
 
+    alias_method :clear1_enabled, :clear1_allowed
+    alias_method :clear1_enabled=, :clear1_allowed=
+
     def initialize(user_session:, current_user:, service_provider:)
       @user_session = user_session
       @current_user = current_user

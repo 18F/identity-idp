@@ -1,0 +1,59 @@
+<div role="group" aria-labelledby="verify-with-existing-account" class="grid-row grid-gap grid-gap-2 <%= local_assigns[:class] %>">
+  <div class="grid-col-12 tablet:grid-col-auto" aria-hidden="true">
+    <div class="width-illustration"></div>
+  </div>
+  <div class="grid-col-12 tablet:grid-col-fill">
+    <%= simple_form_for(
+          form,
+          html: {
+            id: 'form-to-verify-with-clear1',
+            class: 'margin-top-3',
+            aria: { label: presenter.clear1_submit },
+          },
+          method: :put,
+          url: url,
+        ) do |f|
+    %>
+      <%= f.hidden_field(
+            :selection,
+            value: Idv::HowToVerifyForm::CLEAR1,
+          ) %>
+      <%= f.label(
+            :selection_clear1,
+          ) do %>
+            <h2 id="verify-with-existing-account" class="margin-top-0"><%= presenter.verify_with_existing_account_text %></h2>
+            <div>
+              <p><%= presenter.clear1_description %></p>
+              <p class="margin-top-2">
+                <%= new_tab_link_to(
+                      presenter.clear1_link_text,
+                      help_center_redirect_path(
+                        category: 'verify-your-identity',
+                        article: 'overview',
+                        flow: :idv,
+                        step: step,
+                        location: 'troubleshooting_options',
+                      ),
+                    ) %>
+              </p>
+            </div>
+          <% end %>
+      <%= render ButtonComponent.new(
+            type: :submit,
+            full_width: true,
+            class: 'clear1-button margin-top-3 margin-bottom-4',
+            'aria-label': presenter.clear1_submit,
+          ) do %>
+        <span><%= presenter.clear1_submit_prefix %></span>
+        <%= image_tag(
+              asset_url(presenter.clear1_logo_url),
+              alt: '',
+              aria: { hidden: true },
+              width: 86,
+              height: 24,
+              class: 'clear1-button__logo',
+            ) %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

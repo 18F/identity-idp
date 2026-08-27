@@ -1611,7 +1611,7 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
-  # @param [String] selection Selection form parameter
+  # @param ["remote","ipp","clear1"] selection Selection form parameter
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_how_to_verify_submitted(
     success:,
@@ -1668,7 +1668,7 @@ module AnalyticsEvents
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
   #   warning
   # @param [Boolean] selfie_check_required Whether facial match check is required
-  # @param ["document_capture","send_link"] destination Where user is sent after submission
+  # @param ["document_capture","send_link","clear1_session"] destination Where user is sent after submission
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   #   SDK upgrades
