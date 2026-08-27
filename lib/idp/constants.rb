@@ -24,6 +24,7 @@ module Idp
       AAMVA_CHECK_SKIPPED = 'AamvaCheckSkipped'
       SOURCE_CHECK = [AAMVA, AAMVA_UNSUPPORTED_JURISDICTION, STATE_ID_MOCK].freeze
       CLEAR1 = 'clear1'
+      PHONE_CHECK_SUPERIOR_EVIDENCE_SKIPPED = 'SuperiorEvidenceSkipped'
     end
 
     module DocumentTypes
@@ -40,6 +41,7 @@ module Idp
       SUPPORTED_ID_TYPES = [*SUPPORTED_PASSPORT_TYPES, *SUPPORTED_STATE_ID_TYPES].freeze
       PASSPORT_TYPES = SUPPORTED_PASSPORT_TYPES
       DIGITAL_ID_TYPES = [MDL].freeze
+      SUPERIOR_EVIDENCE_DOCUMENT_TYPES = [MDL].freeze
     end
 
     SUPPORTED_PASSPORT_ISSUING_COUNTRY_CODES = %w[US USA].freeze

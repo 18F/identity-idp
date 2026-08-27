@@ -26,6 +26,24 @@ module IdvStepHelper
     complete_all_doc_auth_steps
   end
 
+  def complete_idv_steps_before_phone_step_with_mdl(user = user_with_2fa,
+                                                    docv_transaction_token: nil)
+    sign_in_and_2fa_user(user)
+    complete_doc_auth_steps_before_hybrid_handoff_step
+
+    unless page.mode == :headless_chrome_mobile
+      complete_hybrid_handoff_step
+    end
+
+    complete_choose_id_type_step(choose_id_type: Idp::Constants::DocumentTypes::MDL)
+    click_on t('idv.mdl.button')
+    socure_docv_upload_documents(docv_transaction_token:)
+    visit idv_socure_document_capture_update_path
+    expect(page).to have_current_path(idv_ssn_url)
+    complete_ssn_step
+    complete_verify_step
+  end
+
   def complete_phone_step(user)
     fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
     verify_phone_otp
