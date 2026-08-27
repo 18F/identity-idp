@@ -37,6 +37,7 @@ module Api
 
       def proof_user
         return render_user_not_found if user.blank?
+        return render_user_email_unconfirmed if user.last_sign_in_email_address.blank?
         return render_already_proofed if already_proofed?
         return render_user_awaiting_binding if user.proofing_agent_user_awaiting_binding?
 
@@ -133,6 +134,18 @@ module Api
 
       def render_user_not_found
         response_body = { status: 'failed', reason: 'email_not_found' }
+
+        analytics.idv_proofing_agent_proof_user_requested(
+          **analytics_arguments,
+          response_body:,
+          transaction_id: nil,
+        )
+
+        render json: response_body, status: :unprocessable_content
+      end
+
+      def render_user_email_unconfirmed
+        response_body = { status: 'failed', reason: 'account_email_unconfirmed' }
 
         analytics.idv_proofing_agent_proof_user_requested(
           **analytics_arguments,
