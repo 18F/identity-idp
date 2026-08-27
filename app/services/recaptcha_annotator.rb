@@ -25,9 +25,6 @@ class RecaptchaAnnotator
           annotation:,
           analytics:,
         )
-        # Future:
-        # assessment = create_or_update_assessment!(assessment_id:, reason:, annotation:)
-        # RecaptchaAnnotateJob.perform_later(assessment:)
       end
 
       { assessment_id:, reason:, annotation: }
