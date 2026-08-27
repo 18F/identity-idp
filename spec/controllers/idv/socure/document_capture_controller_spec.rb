@@ -31,6 +31,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       selfie_status: :none,
       pii: { first_name: 'Testy', last_name: 'Testerson', document_type_received: },
       attention_with_barcode: false,
+      aamva_status: doc_auth_success ? :passed : :not_processed,
     )
   end
 
