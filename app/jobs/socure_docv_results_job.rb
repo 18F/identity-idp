@@ -202,10 +202,6 @@ class SocureDocvResultsJob < ApplicationJob
     Proofing::Resolution::Plugins::AamvaPlugin.new
   end
 
-  def aamva_enabled?
-    IdentityConfig.store.idv_aamva_at_doc_auth_enabled
-  end
-
   def analytics
     @analytics ||= Analytics.new(
       user: document_capture_session.user,
@@ -304,12 +300,11 @@ class SocureDocvResultsJob < ApplicationJob
   end
 
   def validate_aamva(doc_pii_response)
-    if aamva_enabled? && document_capture_session.state_id_requested?
+    if document_capture_session.state_id_requested?
       aamva_proofer.call(
         applicant_pii: to_aamva_applicant_pii(doc_pii_response.pii_from_doc.to_h),
         current_sp: sp,
         ipp_enrollment_in_progress: false,
-        state_id_address_resolution_result: nil,
         timer: JobHelpers::Timer.new,
         doc_auth_flow: true,
         analytics:,

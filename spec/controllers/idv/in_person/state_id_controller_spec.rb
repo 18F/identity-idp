@@ -273,15 +273,18 @@ RSpec.describe Idv::InPerson::StateIdController do
 
         put :update, params: params
 
-        pii_from_user = subject.user_session['idv/in_person'][:pii_from_user]
-        expect(pii_from_user[:first_name]).to eq first_name
-        expect(pii_from_user[:last_name]).to eq last_name
-        expect(pii_from_user[:dob]).to eq formatted_dob
-        expect(pii_from_user[:state_id_expiration]).to eq formatted_expiration
-        expect(pii_from_user[:identity_doc_zipcode]).to eq identity_doc_zipcode
-        expect(pii_from_user[:identity_doc_address_state]).to eq identity_doc_address_state
+        # AAMVA runs before the data is committed to pii_from_user, so the
+        # submitted values are held in the pending state ID PII until the
+        # asynchronous AAMVA check succeeds.
+        pending_pii = subject.idv_session.ipp_aamva_pending_state_id_pii
+        expect(pending_pii[:first_name]).to eq first_name
+        expect(pending_pii[:last_name]).to eq last_name
+        expect(pending_pii[:dob]).to eq formatted_dob
+        expect(pending_pii[:state_id_expiration]).to eq formatted_expiration
+        expect(pending_pii[:identity_doc_zipcode]).to eq identity_doc_zipcode
+        expect(pending_pii[:identity_doc_address_state]).to eq identity_doc_address_state
         # param from form as id_number but is renamed to state_id_number on update
-        expect(pii_from_user[:state_id_number]).to eq id_number
+        expect(pending_pii[:state_id_number]).to eq id_number
       end
 
       it 'sets values in Idv::Session' do
@@ -289,16 +292,12 @@ RSpec.describe Idv::InPerson::StateIdController do
 
         expect(subject.idv_session.doc_auth_vendor).to eq(Idp::Constants::Vendors::USPS)
       end
-
-      it 'sets the enrollment document type' do
-        put :update, params: params
-
-        expect(enrollment.document_type).to eq(InPersonEnrollment::DOCUMENT_TYPE_STATE_ID)
-      end
     end
 
     context 'expiration edge cases (LG-17733)' do
-      let(:pii_from_user) { subject.user_session['idv/in_person'][:pii_from_user] }
+      # Submitted values are held in the pending state ID PII until the
+      # asynchronous AAMVA check succeeds and commits them to pii_from_user.
+      let(:pii_from_user) { subject.idv_session.ipp_aamva_pending_state_id_pii }
 
       before do
         allow(IdentityConfig.store)
@@ -420,12 +419,15 @@ RSpec.describe Idv::InPerson::StateIdController do
           # On Verify, user changes response from "No,..." to
           # "Yes, I live at the address on my state-issued ID
           put :update, params: params
+          # The submitted values are held in the pending state ID PII until the
+          # asynchronous AAMVA check succeeds and commits them to pii_from_user.
+          pending_pii = subject.idv_session.ipp_aamva_pending_state_id_pii
           # expect addr attr values to the same as the identity_doc attr values
-          expect(pii_from_user[:address1]).to eq identity_doc_address1
-          expect(pii_from_user[:address2]).to eq identity_doc_address2
-          expect(pii_from_user[:city]).to eq identity_doc_city
-          expect(pii_from_user[:state]).to eq identity_doc_address_state
-          expect(pii_from_user[:zipcode]).to eq identity_doc_zipcode
+          expect(pending_pii[:address1]).to eq identity_doc_address1
+          expect(pending_pii[:address2]).to eq identity_doc_address2
+          expect(pending_pii[:city]).to eq identity_doc_city
+          expect(pending_pii[:state]).to eq identity_doc_address_state
+          expect(pending_pii[:zipcode]).to eq identity_doc_zipcode
         end
       end
 
@@ -493,10 +495,6 @@ RSpec.describe Idv::InPerson::StateIdController do
   end
 
   describe 'AAMVA integration' do
-    before do
-      allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled).and_return(true)
-    end
-
     def valid_state_id_params(ipp_current_address_matches_id: 'true')
       {
         identity_doc: {
@@ -701,6 +699,9 @@ RSpec.describe Idv::InPerson::StateIdController do
           pii = subject.user_session['idv/in_person'][:pii_from_user]
           expect(pii[:first_name]).to eq('Charity')
           expect(pii[:last_name]).to eq('Johnson')
+
+          # Committing the state ID data also marks the enrollment document type
+          expect(enrollment.document_type).to eq(InPersonEnrollment::DOCUMENT_TYPE_STATE_ID)
 
           # Pending should be cleared
           expect(subject.idv_session.ipp_aamva_pending_state_id_pii).to be_nil
@@ -1112,25 +1113,6 @@ RSpec.describe Idv::InPerson::StateIdController do
           get :show
 
           expect(@analytics).to have_logged_event(:idv_ipp_aamva_proofing_result_missing)
-        end
-      end
-
-      context 'when AAMVA is disabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled)
-            .and_return(false)
-        end
-
-        it 'does not enqueue job' do
-          expect(IppAamvaProofingJob).not_to receive(:perform_later)
-
-          put :update, params: params
-        end
-
-        it 'redirects directly to SSN page' do
-          put :update, params: params
-
-          expect(response).to redirect_to(idv_in_person_ssn_url)
         end
       end
     end

@@ -54,7 +54,7 @@ module Idv
             mrz_response = validate_mrz(client_response)
           end
 
-          if aamva_enabled? && !passport_requested? && doc_pii_response.success?
+          if !passport_requested? && doc_pii_response.success?
             aamva_response = validate_aamva(doc_pii_response.pii_from_doc)
           end
         end
@@ -726,15 +726,10 @@ module Idv
       Proofing::Resolution::Plugins::AamvaPlugin.new
     end
 
-    def aamva_enabled?
-      IdentityConfig.store.idv_aamva_at_doc_auth_enabled
-    end
-
     def validate_aamva(pii)
       aamva_proofer.call(
         applicant_pii: pii.merge(additional_aamva_attributes),
         current_sp: service_provider,
-        state_id_address_resolution_result: nil,
         ipp_enrollment_in_progress: false,
         timer: JobHelpers::Timer.new,
         doc_auth_flow: true,

@@ -61,7 +61,6 @@ class IppAamvaProofingJob < ApplicationJob
     aamva_plugin.call(
       applicant_pii: applicant_pii.freeze,
       current_sp:,
-      state_id_address_resolution_result: nil,
       ipp_enrollment_in_progress: true,
       timer:,
       doc_auth_flow: true,

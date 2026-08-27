@@ -42,8 +42,9 @@ module Idv
             idv_session.ssn && idv_session.ipp_document_capture_complete? &&
               threatmetrix_session_id_present_or_not_required?(idv_session:) &&
               user.has_establishing_in_person_enrollment? &&
-              (!IdentityConfig.store.idv_aamva_at_doc_auth_ipp_enabled ||
-                idv_session.ipp_aamva_result.present?)
+              # AAMVA only runs on the state ID path; passport enrollments never
+              # produce an ipp_aamva_result, so exempt them from this requirement.
+              (idv_session.ipp_aamva_result.present? || idv_session.ipp_passport_requested?)
           end,
           undo_step: ->(idv_session:, user:) do
             idv_session.residential_resolution_vendor = nil

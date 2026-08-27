@@ -418,6 +418,10 @@ module Idv
       IdentityConfig.store.in_person_passports_enabled
     end
 
+    def ipp_passport_requested?
+      !!DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)&.passport_requested?
+    end
+
     def standard_flow_document_capture_eligible?
       flow_path == 'standard' &&
         (skip_hybrid_handoff || desktop_test_mode_enabled?)

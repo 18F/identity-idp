@@ -289,6 +289,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
         },
         attention_with_barcode: true,
         captured_at: document_capture_session_result_captured_at,
+        aamva_status: document_capture_session_result_success ? :passed : :not_processed,
         doc_auth_success: document_capture_session_result_success,
         selfie_status: document_capture_session_result_success ? :success : :fail,
         success: document_capture_session_result_success,

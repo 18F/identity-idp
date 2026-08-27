@@ -833,10 +833,6 @@ RSpec.describe 'In Person Proofing', js: true do
   end
 
   context 'AAMVA integration E2E tests' do
-    before do
-      allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
-    end
-
     context 'with successful AAMVA validation (default mock behavior)' do
       it 'completes full IPP flow with AAMVA verification', allow_browser_log: true do
         user = user_with_2fa
@@ -889,34 +885,11 @@ RSpec.describe 'In Person Proofing', js: true do
       end
     end
 
-    context 'AAMVA disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(false)
-      end
-
-      it 'skips AAMVA validation and proceeds normally', allow_browser_log: true do
-        user = user_with_2fa
-
-        sign_in_and_2fa_user(user)
-        begin_in_person_proofing(user)
-        complete_prepare_step(user)
-        complete_location_step(user)
-
-        fill_out_state_id_form_ok(current_address_matches_id: true)
-        click_idv_continue
-
-        expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
-        expect(page).to have_content(t('doc_auth.headings.ssn'))
-      end
-    end
-
     context 'when AAMVA is enabled at the state ID form' do
       let(:user) { user_with_2fa }
 
       before do
         allow(IdentityConfig.store).to receive_messages(
-          idv_aamva_at_doc_auth_enabled: true,
-          idv_aamva_at_doc_auth_ipp_enabled: true,
           proofer_mock_fallback: false,
           idv_resolution_default_vendor: :instant_verify,
           idv_resolution_vendor_switching_enabled: false,

@@ -58,8 +58,9 @@ module Idv
             # form is not setup yet. This should be updated during LG-15985 implmentation.
             (idv_session.ipp_state_id_complete? || idv_session.in_person_passports_allowed?) &&
               user.has_establishing_in_person_enrollment? &&
-              (!IdentityConfig.store.idv_aamva_at_doc_auth_ipp_enabled ||
-                idv_session.ipp_aamva_result.present?)
+              # AAMVA only runs on the state ID path; passport enrollments never
+              # produce an ipp_aamva_result, so exempt them from this requirement.
+              (idv_session.ipp_aamva_result.present? || idv_session.ipp_passport_requested?)
           end,
           undo_step: ->(idv_session:, user:) do
             idv_session.invalidate_in_person_address_step!

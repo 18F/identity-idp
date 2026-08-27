@@ -17,7 +17,6 @@ module Proofing
         def call(
           applicant_pii:,
           current_sp:,
-          state_id_address_resolution_result:,
           ipp_enrollment_in_progress:,
           timer:,
           analytics: nil,
@@ -30,19 +29,6 @@ module Proofing
 
           if !aamva_supports_state_id_jurisdiction?(applicant_pii)
             return process_unsupported_jurisdiction_result(
-              analytics:, applicant_pii:, ipp_enrollment_in_progress:, log_result: doc_auth_flow,
-            )
-          end
-
-          should_proof = should_proof_state_id?(
-            applicant_pii:,
-            state_id_address_resolution_result:,
-            ipp_enrollment_in_progress:,
-            doc_auth_flow:,
-          )
-
-          if !should_proof
-            return process_skipped_result(
               analytics:, applicant_pii:, ipp_enrollment_in_progress:, log_result: doc_auth_flow,
             )
           end
@@ -130,50 +116,6 @@ module Proofing
             end
         end
 
-        def ipp_current_address_matches_id?(applicant_pii)
-          applicant_pii[:ipp_current_address_matches_id] == true
-        end
-
-        def should_proof_state_id?(
-          applicant_pii:,
-          state_id_address_resolution_result:,
-          ipp_enrollment_in_progress:,
-          doc_auth_flow:
-        )
-          # Skip remaining checks if doc auth flow is true
-          return true if doc_auth_flow
-
-          # If the user is in in-person-proofing and they have changed their address then
-          # they are not eligible to pass with additional verification
-          if !ipp_enrollment_in_progress || ipp_current_address_matches_id?(applicant_pii)
-            user_can_pass_after_state_id_check?(state_id_address_resolution_result:)
-          else
-            state_id_address_resolution_result.success?
-          end
-        end
-
-        def user_can_pass_after_state_id_check?(
-          state_id_address_resolution_result:
-        )
-          return true if state_id_address_resolution_result.success?
-
-          # For failed IV results, this method validates that the user is eligible to pass if the
-          # failed attributes are covered by the same attributes in a successful AAMVA response
-          # aka the Get-to-Yes w/ AAMVA feature.
-          if !state_id_address_resolution_result
-              .failed_result_can_pass_with_additional_verification?
-            return false
-          end
-
-          attributes_aamva_can_pass = [:address, :dob, :state_id_number]
-          attributes_requiring_additional_verification =
-            state_id_address_resolution_result.attributes_requiring_additional_verification
-          results_that_cannot_pass_aamva =
-            attributes_requiring_additional_verification - attributes_aamva_can_pass
-
-          results_that_cannot_pass_aamva.blank?
-        end
-
         # Make a copy of pii with the user's state ID address overwriting the address keys
         # Need to first remove the address keys to avoid key/value collision
         def with_state_id_address(pii)
@@ -229,18 +171,6 @@ module Proofing
         end
 
         private
-
-        def process_skipped_result(analytics:, applicant_pii:, ipp_enrollment_in_progress:,
-                                   log_result:)
-          result = skipped_result
-          if log_result
-            log_state_id_validation(
-              analytics:, result: result.to_h, applicant_pii:, ipp_enrollment_in_progress:,
-              aamva_checked: false
-            )
-          end
-          return result
-        end
 
         def process_unsupported_jurisdiction_result(analytics:, applicant_pii:,
                                                     ipp_enrollment_in_progress:, log_result:)
