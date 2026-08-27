@@ -37,7 +37,7 @@ module Api
 
       def proof_user
         return render_user_not_found if user.blank?
-        return render_user_email_unconfirmed if user.last_sign_in_email_address.blank?
+        return render_user_email_unconfirmed if User.find_with_confirmed_email(email).blank?
         return render_already_proofed if already_proofed?
         return render_user_awaiting_binding if user.proofing_agent_user_awaiting_binding?
 
