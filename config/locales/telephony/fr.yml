@@ -26,7 +26,7 @@ fr:
       voice: Bonjour ! Votre code à usage unique %{app_name} à %{format_length} %{format_type} est %{code}. Votre code à usage unique est %{code}. À nouveau, votre code à usage unique est %{code}. Ce code expire dans %{expiration} minutes.
     doc_auth_link:
       sms: |-
-        %{app_name} : %{link} Vous êtes en train de confirmer votre identité pour accéder à %{sp_or_app_name}. Prenez une photo de votre pièce d'identité pour continuer.
+        %{app_name} : %{link} Pour accéder à %{sp_or_app_name}, ouvrez le lien et suivez les étapes pour vérifier votre identité à l'aide de votre pièce d'identité.
     dupe_profile_created_notice:
       sms: |-
         Alerte %{app_name} : Vos informations personnelles ont été vérifiées sur un autre compte. L’accès à ces comptes a été restreint. Nous vous avons envoyé un courriel contenant les instructions à suivre.
