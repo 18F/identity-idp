@@ -6821,11 +6821,13 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
+  # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param ['phone'] method_name Authentication method added
   def multi_factor_auth_added_phone(
     enabled_mfa_methods_count:,
     recaptcha_annotation:,
     in_account_creation_flow:,
+    phone_fingerprint:,
     method_name: :phone,
     **extra
   )
@@ -6835,6 +6837,7 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       recaptcha_annotation:,
       in_account_creation_flow:,
+      phone_fingerprint:,
       **extra,
     )
   end

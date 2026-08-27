@@ -719,6 +719,14 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               in_account_creation_flow: true,
               attempts: 1,
             )
+
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication: Added phone',
+              method_name: :phone,
+              enabled_mfa_methods_count: 1,
+              in_account_creation_flow: true,
+              phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            )
           end
 
           it 'resets otp session data' do
@@ -785,6 +793,9 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               in_account_creation_flow: false,
               attempts: 1,
             )
+            expect(@analytics).not_to have_logged_event(
+              'Multi-Factor Authentication: Added phone',
+            )
           end
 
           context 'user enters in valid code after invalid entry' do
@@ -824,6 +835,13 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
                 enabled_mfa_methods_count: 1,
                 in_account_creation_flow: false,
                 attempts: 1,
+              )
+              expect(@analytics).to have_logged_event(
+                'Multi-Factor Authentication: Added phone',
+                method_name: :phone,
+                enabled_mfa_methods_count: 2,
+                in_account_creation_flow: false,
+                phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               )
             end
           end

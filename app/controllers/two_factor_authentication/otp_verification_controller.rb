@@ -91,9 +91,11 @@ module TwoFactorAuthentication
     end
 
     def track_mfa_added
+      parsed_phone = Phonelib.parse(phone)
       analytics.multi_factor_auth_added_phone(
         enabled_mfa_methods_count: MfaContext.new(current_user).enabled_mfa_methods_count,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         recaptcha_annotation: RecaptchaAnnotator.annotate(
           assessment_id: user_session.delete(:phone_recaptcha_assessment_id),
           reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
@@ -267,9 +269,6 @@ module TwoFactorAuthentication
 
     def phone_confirmed
       create_user_event(:phone_confirmed)
-      # If the user has MFA configured, then they are not adding a phone during sign up and are
-      # instead adding it outside the sign up flow
-      return unless MfaPolicy.new(current_user).two_factor_enabled?
     end
 
     def selected_otp_make_default_number
