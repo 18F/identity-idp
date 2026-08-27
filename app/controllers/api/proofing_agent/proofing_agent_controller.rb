@@ -37,7 +37,7 @@ module Api
 
       def proof_user
         return render_user_not_found if user.blank?
-        return render_user_email_unconfirmed if User.find_with_confirmed_email(email).blank?
+        return render_user_email_unconfirmed unless email_confirmed?
         return render_already_proofed if already_proofed?
         return render_user_awaiting_binding if user.proofing_agent_user_awaiting_binding?
 
@@ -253,7 +253,15 @@ module Api
       end
 
       def user
-        @user ||= User.find_with_email(email)
+        @user ||= email_address&.user
+      end
+
+      def email_address
+        @email_address ||= EmailAddress.find_with_confirmed_or_unconfirmed_email(email)
+      end
+
+      def email_confirmed?
+        !!email_address&.confirmed_at
       end
 
       def ssn_active_profiles
