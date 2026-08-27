@@ -6748,6 +6748,9 @@ module AnalyticsEvents
   # @param [Boolean] available_webauthn_platform_config shows user has a webauth_platform config
   # @param [Integer] webauthn_auth_duration the duration to complete webauthn auth in seconds
   # @param [Boolean, nil] webauthn_verification_auto_prompted Whether passkey auth was auto-prompted
+  # @param [String[], nil] webauthn_transports WebAuthn transports recorded when the credential was
+  #   registered. Describes credential capability, not the transport used for this ceremony.
+  # @param [Hash, nil] authenticator_data_flags WebAuthn authenticator data flags for creds
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -6776,6 +6779,8 @@ module AnalyticsEvents
     available_webauthn_platform_config: nil,
     webauthn_auth_duration: nil,
     webauthn_verification_auto_prompted: nil,
+    webauthn_transports: nil,
+    authenticator_data_flags: nil,
     **extra
   )
     track_event(
@@ -6806,6 +6811,8 @@ module AnalyticsEvents
       available_webauthn_platform_config:,
       webauthn_auth_duration:,
       webauthn_verification_auto_prompted:,
+      webauthn_transports:,
+      authenticator_data_flags:,
       **extra,
     )
   end
