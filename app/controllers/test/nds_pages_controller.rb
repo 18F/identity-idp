@@ -1266,7 +1266,13 @@ module Test
 
     def setup_idv_phone
       @idv_form = Idv::PhoneForm.new(previous_params: {}, user: User.new)
-      { gpo_letter_available: params[:gpo].present? }
+      {
+        presenter: Idv::PhonePresenter.new(
+          gpo_letter_available: params[:gpo].present?,
+          skip_phone_verification: false,
+          url_options:,
+        ),
+      }
     end
 
     def setup_idv_phone_confirmation
