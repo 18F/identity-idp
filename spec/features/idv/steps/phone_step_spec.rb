@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.feature 'idv phone step', :js do
   include IdvStepHelper
   include IdvHelper
+  include AbTestsHelper
 
   let(:user) { user_with_2fa }
   let(:gpo_enabled) { true }
@@ -268,6 +269,141 @@ RSpec.feature 'idv phone step', :js do
 
       expect(page).to have_content(t('idv.troubleshooting.headings.need_assistance'))
       expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
+    end
+  end
+
+  context 'when user proofing with superior evidence' do
+    let(:fake_analytics) { FakeAnalytics.new }
+    let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+    let(:socure_docv_webhook_secret_key) { 'socure_docv_webhook_secret_key' }
+    let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
+    let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
+    let(:phone_number) { Features::SessionHelper::IAL1_USER_PHONE }
+    let(:socure_docv_webhook_repeat_endpoints) do # repeat webhooks
+      ['https://1.example.test/thepath', 'https://2.example.test/thepath']
+    end
+    let(:idv_socure_reason_codes_docv_mdl) { ['mdl_code1', 'mdl_code2'] }
+    let(:idv_superior_evidence_skip_phone_verification_enabled_percent) { 100 }
+
+    before do
+      allow(IdentityConfig.store).to receive_messages(
+        idv_superior_evidence_skip_phone_verification_enabled_percent:,
+        doc_auth_socure_wait_polling_timeout_minutes: 0,
+        doc_auth_passport_selfie_vendor_lexis_nexis_percent: 0,
+        doc_auth_passport_selfie_vendor_socure_percent: 100,
+        doc_auth_passport_selfie_vendor_switching_enabled: true,
+        doc_auth_passport_vendor_lexis_nexis_percent: 0,
+        doc_auth_passport_vendor_socure_percent: 100,
+        doc_auth_passport_vendor_switching_enabled: true,
+        doc_auth_selfie_vendor_lexis_nexis_percent: 0,
+        doc_auth_selfie_vendor_socure_percent: 100,
+        doc_auth_selfie_vendor_switching_enabled: true,
+        doc_auth_vendor_lexis_nexis_percent: 0,
+        doc_auth_vendor_socure_percent: 100,
+        doc_auth_vendor_switching_enabled: true,
+        ruby_workers_idv_enabled: false,
+        socure_docv_document_request_endpoint: fake_socure_docv_document_request_endpoint,
+        socure_docv_enabled: true,
+        socure_docv_webhook_repeat_endpoints:,
+        socure_docv_webhook_secret_key:,
+        use_vot_in_sp_requests: true,
+        idv_doc_auth_mdl_enabled_percent: 100,
+        idv_socure_reason_codes_docv_mdl:,
+      )
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+      allow_any_instance_of(ApplicationController).to receive(:attempts_api_tracker).and_return(
+        attempts_api_tracker,
+      )
+      allow_any_instance_of(SocureDocvResultsJob).to receive(:analytics).and_return(fake_analytics)
+      socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
+      @docv_transaction_token = stub_docv_document_request(user:)
+      @docv_stub = stub_docv_verification_data_pass(
+        docv_transaction_token: @docv_transaction_token,
+        reason_codes: idv_socure_reason_codes_docv_mdl,
+        user:,
+      )
+      reload_ab_tests
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step_with_mdl(
+        user,
+        docv_transaction_token: @docv_transaction_token,
+      )
+    end
+
+    after do
+      RSpec::Mocks.space.proxy_for(IdentityConfig.store).reset
+      reload_ab_tests
+      remove_request_stub(@docv_stub)
+    end
+
+    context 'when skip phone verification is enabled' do
+      let(:idv_superior_evidence_skip_phone_verification_enabled_percent) { 100 }
+
+      context 'when the user fails phone verification' do
+        it 'continues on to the phone confirmation page' do
+          expect(page).to have_current_path(idv_phone_url)
+          expect(page).to have_content(t('idv.messages.phone.description_skip_verification'))
+          fill_out_phone_form_fail
+          click_idv_send_security_code
+          expect(page).to have_current_path(idv_otp_verification_path)
+          expect(page).to have_content(t('titles.idv.enter_one_time_code'))
+
+          expect(fake_analytics).to have_logged_event(
+            'IdV: phone confirmation vendor',
+            hash_including(success: false),
+          )
+        end
+      end
+
+      context 'when the user passes phone verification' do
+        it 'continues on to the phone confirmation page' do
+          expect(page).to have_current_path(idv_phone_url)
+          expect(page).to have_content(t('idv.messages.phone.description_skip_verification'))
+          click_idv_send_security_code
+          expect(page).to have_current_path(idv_otp_verification_path)
+          expect(page).to have_content(t('titles.idv.enter_one_time_code'))
+
+          expect(fake_analytics).to have_logged_event(
+            'IdV: phone confirmation vendor',
+            hash_including(success: true),
+          )
+        end
+      end
+    end
+
+    context 'when skip phone verification is disabled' do
+      let(:idv_superior_evidence_skip_phone_verification_enabled_percent) { 0 }
+
+      context 'when the user fails phone verification' do
+        it 'displays the phone error warning page to the user' do
+          expect(page).to have_current_path(idv_phone_url)
+          expect(page).to have_content(t('idv.messages.phone.description'))
+          fill_out_phone_form_fail
+          click_idv_send_security_code
+          expect(page).to have_current_path(idv_phone_errors_warning_path)
+          expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+
+          expect(fake_analytics).to have_logged_event(
+            'IdV: phone confirmation vendor',
+            hash_including(success: false),
+          )
+        end
+      end
+
+      context 'when the user passes phone verification' do
+        it 'continues on to the phone confirmation page' do
+          expect(page).to have_current_path(idv_phone_url)
+          expect(page).to have_content(t('idv.messages.phone.description'))
+          click_idv_send_security_code
+          expect(page).to have_current_path(idv_otp_verification_path)
+          expect(page).to have_content(t('titles.idv.enter_one_time_code'))
+
+          expect(fake_analytics).to have_logged_event(
+            'IdV: phone confirmation vendor',
+            hash_including(success: true),
+          )
+        end
+      end
     end
   end
 
