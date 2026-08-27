@@ -74,6 +74,15 @@ module Idv
       { final_result:, alternate_result: }
     end
 
+    def start_phone_confirmation(step_params)
+      self.step_params = step_params
+      idv_session.previous_phone_step_params = step_params.slice(
+        :phone, :international_code,
+        :otp_delivery_preference
+      )
+      handle_successful_proofing_attempt
+    end
+
     private
 
     attr_accessor :idv_session, :step_params, :idv_result

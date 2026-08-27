@@ -518,4 +518,40 @@ RSpec.describe Idv::Session do
       end
     end
   end
+
+  describe '#proofing_with_superior_evidence?' do
+    let(:document_type_received) { nil }
+
+    before do
+      subject.pii_from_doc = { document_type_received:, first_name: 'JANE' }
+    end
+
+    context 'when the pii from doc document type received is a form of superior evidence' do
+      let(:document_type_received) do
+        Idp::Constants::DocumentTypes::SUPERIOR_EVIDENCE_DOCUMENT_TYPES.sample
+      end
+
+      it 'returns true' do
+        expect(subject.proofing_with_superior_evidence?).to be(true)
+      end
+    end
+
+    context 'when the pii from doc document type received is not a form of superior evidence' do
+      let(:document_type_received) do
+        Idp::Constants::DocumentTypes::SUPPORTED_ID_TYPES.sample
+      end
+
+      it 'returns false' do
+        expect(subject.proofing_with_superior_evidence?).to be(false)
+      end
+    end
+
+    context 'when the pii from doc is nil' do
+      before { subject.pii_from_doc = nil }
+
+      it 'returns false' do
+        expect(subject.proofing_with_superior_evidence?).to be(false)
+      end
+    end
+  end
 end

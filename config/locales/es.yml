@@ -1271,6 +1271,7 @@ idv.messages.gpo.verify_address_again_link_text: volver a verificar su direcció
 idv.messages.otp_delivery_method_description: Si introdujo un teléfono fijo arriba, seleccione “Llamada telefónica” a continuación.
 idv.messages.phone.alert_html: '<strong>Introduzca un número de teléfono que sea:</strong>'
 idv.messages.phone.description: Revisaremos los registros para verificar que su número de teléfono coincida con su información verificada, y enviaremos un código de un solo uso.
+idv.messages.phone.description_skip_verification: Añadiremos su número de teléfono a su perfil y le enviaremos un código de un solo uso.
 idv.messages.phone.failed_number.alert_text: No pudimos asociarlo a este número.
 idv.messages.phone.failed_number.gpo_alert_html: Intente con <strong>otro</strong> número o %{link_html}.
 idv.messages.phone.failed_number.gpo_verify_link: verificar por correo
@@ -1820,6 +1821,7 @@ titles.idv.enter_password_letter: Vuelva a ingresar su contraseña para enviar s
 titles.idv.get_letter: Obtenga una carta
 titles.idv.personal_key: Guarde su clave personal
 titles.idv.phone: Verifique su número de teléfono
+titles.idv.phone_skip_verification: Introduzca su número de teléfono
 titles.idv.reset_password: Restablecer la contraseña
 titles.idv.verify_info: Verifique su información
 titles.mfa_setup.face_touch_unlock_confirmation: Se agregó el desbloqueo facial o táctil

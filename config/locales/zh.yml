@@ -1273,6 +1273,7 @@ idv.messages.gpo.verify_address_again_link_text: 再次验证你的地址
 idv.messages.otp_delivery_method_description: 如果你在上面输入的是座机电话，请在下边选择“接听电话”。
 idv.messages.phone.alert_html: '<strong>输入一个符合以下条件的电话号码：</strong>'
 idv.messages.phone.description: 我们会检查记录以验证你的电话号码是否与你验证过的信息相符，并发送一个一次性代码。
+idv.messages.phone.description_skip_verification: 我们会将您的手机号码添加到您的个人资料中，并向您发送一次性验证码。
 idv.messages.phone.failed_number.alert_text: 我们无法将你与该号码匹配。
 idv.messages.phone.failed_number.gpo_alert_html: 试试 <strong>另一个</strong>号码或者%{link_html}。
 idv.messages.phone.failed_number.gpo_verify_link: 通过普通邮件验证
@@ -1821,6 +1822,7 @@ titles.idv.enter_password_letter: 重新输入你的密码来给你发信
 titles.idv.get_letter: 收信
 titles.idv.personal_key: 保存你的个人密钥
 titles.idv.phone: 验证你的电话号码
+titles.idv.phone_skip_verification: 输入您的电话号码
 titles.idv.reset_password: 重设密码
 titles.idv.verify_info: 验证你的信息
 titles.mfa_setup.face_touch_unlock_confirmation: 人脸或触摸解锁已添加
