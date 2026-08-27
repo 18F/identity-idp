@@ -660,6 +660,7 @@ doc_auth.headings.upload_from_phone: 使用你的手机
 doc_auth.headings.verify_at_post_office: 到一个参与本项目的邮局去
 doc_auth.headings.verify_identity: 验证你的身份
 doc_auth.headings.verify_online: 在网上验证身份
+doc_auth.headings.verify_with_existing_account: 使用您现有的帐户进行验证
 doc_auth.headings.welcome: 现在我们来为%{sp_name}验证你的身份
 doc_auth.headings.welcome_sp_reproof: 为 %{sp_name} 再次验证您的身份
 doc_auth.hybrid_flow_warning.explanation_html: 你在使用<strong>%{app_name}</strong>访问<strong>%{service_provider_name}</strong>。仅在你已请求%{app_name}使用你的电话来验证你的身份的情况下才添加你的身份证件。
@@ -732,6 +733,8 @@ doc_auth.info.verify_online_description_passport_card: 您可以使用的证件�
 doc_auth.info.verify_online_instruction: 您需要拍摄身份证件照片，以便在线完成身份验证。
 doc_auth.info.verify_online_instruction_selfie: 拍一张自拍照，并拍摄你 ID的照片。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
+doc_auth.info.verify_with_clear1: 之前用过 CLEAR® 吗？拍张自拍，几秒钟就能验证。
+doc_auth.info.verify_with_clear1_link_text: 了解更多关于关联账户的信息
 doc_auth.info.welcome_sp_reproof_alert: 为了您的安全，%{sp_name} 要求您再次验证您的身份。
 doc_auth.info.you_entered: 你输入了：
 doc_auth.instructions.bullet1: 拥有美国护照本、美国驾照或州身份证件
@@ -960,6 +963,8 @@ forms.buttons.submit.confirm_change: 确认变更
 forms.buttons.submit.default: 提交
 forms.buttons.submit.update: 更新
 forms.buttons.upload_photos: 上传照片
+forms.buttons.verify_with: Verify with
+forms.buttons.verify_with_clear1: Verify with CLEAR
 forms.confirmation.show_hdr: 设一个强密码
 forms.email.buttons.delete: 删除电邮地址
 forms.example: 举例：

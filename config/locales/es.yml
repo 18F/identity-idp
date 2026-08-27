@@ -660,6 +660,7 @@ doc_auth.headings.upload_from_phone: Use su teléfono
 doc_auth.headings.verify_at_post_office: Vaya a una oficina de correos participante
 doc_auth.headings.verify_identity: Verifique su identidad
 doc_auth.headings.verify_online: Verifique su identidad en línea
+doc_auth.headings.verify_with_existing_account: Verifique su identidad con una cuenta existente
 doc_auth.headings.welcome: Verifiquemos su identidad para %{sp_name}
 doc_auth.headings.welcome_sp_reproof: Verifique su identidad nuevamente para %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Está usando <strong>%{app_name}</strong> para acceder a <strong>%{service_provider_name}</strong>. Solo agregue su identificación si solicitó a %{app_name} verificar su identidad usando su teléfono.
@@ -732,6 +733,8 @@ doc_auth.info.verify_online_description_passport_card: Puede utilizar una libret
 doc_auth.info.verify_online_instruction: Deberá tomar fotos de su documento de identidad para verificar su identidad en línea.
 doc_auth.info.verify_online_instruction_selfie: Tómese una selfi y fotos de su identificación.
 doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea
+doc_auth.info.verify_with_clear1: '¿Ha usado CLEAR® antes? Verifique su identidad en segundos con una selfi.'
+doc_auth.info.verify_with_clear1_link_text: Más información sobre cómo vincular cuentas
 doc_auth.info.welcome_sp_reproof_alert: Por su seguridad, %{sp_name} requiere que verifique su identidad nuevamente.
 doc_auth.info.you_entered: 'Usted ingresó:'
 doc_auth.instructions.bullet1: Tener un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal
@@ -960,6 +963,8 @@ forms.buttons.submit.confirm_change: Confirmar cambio
 forms.buttons.submit.default: Enviar
 forms.buttons.submit.update: Actualizar
 forms.buttons.upload_photos: Cargar fotos
+forms.buttons.verify_with: Verify with
+forms.buttons.verify_with_clear1: Verify with CLEAR
 forms.confirmation.show_hdr: Crear una contraseña segura
 forms.email.buttons.delete: Eliminar dirección de correo electrónico
 forms.example: 'Ejemplo:'

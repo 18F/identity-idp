@@ -9,8 +9,9 @@ module Idv
 
     before_action :confirm_step_allowed
     before_action :set_how_to_verify_presenter
+    before_action :allow_clear1_form_action
 
-    check_or_render_not_found -> { self.class.enabled? }
+    check_or_render_not_found -> { self.class.enabled? || clear1_enabled? }
 
     def show
       analytics.idv_doc_auth_how_to_verify_visited(**analytics_arguments)
@@ -33,7 +34,16 @@ module Idv
       )
 
       if result.success?
-        if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
+        if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::CLEAR1
+          return render_not_found unless clear1_enabled?
+
+          idv_session.opted_in_to_in_person_proofing = false
+          idv_session.skip_doc_auth_from_how_to_verify = false
+          idv_session.flow_path = 'standard'
+          abandon_any_ipp_progress
+
+          redirect_to idv_clear1_session_url
+        elsif how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
           idv_session.opted_in_to_in_person_proofing = false
           idv_session.skip_doc_auth_from_how_to_verify = false
           idv_session.flow_path = 'standard'
@@ -42,6 +52,8 @@ module Idv
           redirect_to idv_choose_id_type_url
 
         else
+          return render_not_found unless in_person_proofing_route_enabled?
+
           idv_session.opted_in_to_in_person_proofing = true
           idv_session.flow_path = 'standard'
           idv_session.skip_doc_auth_from_how_to_verify = true
@@ -57,17 +69,21 @@ module Idv
         IdentityConfig.store.in_person_proofing_enabled
     end
 
+    def self.in_person_route_enabled?(idv_session:)
+      enabled? &&
+        Idv::InPersonConfig.enabled_for_issuer?(
+          idv_session.service_provider&.issuer,
+        )
+    end
+
     def self.step_info
       Idv::StepInfo.new(
         key: :how_to_verify,
         controller: self,
-        next_steps: [:choose_id_type, :document_capture],
+        next_steps: [:choose_id_type, :document_capture, :clear1_session],
         preconditions: ->(idv_session:, user:) do
-          self.enabled? &&
           idv_session.idv_consent_given? &&
-          Idv::InPersonConfig.enabled_for_issuer?(
-            idv_session.service_provider&.issuer,
-          )
+          (self.in_person_route_enabled?(idv_session:) || idv_session.clear1_enabled)
         end,
         undo_step: ->(idv_session:, user:) {
           idv_session.skip_doc_auth_from_how_to_verify = nil
@@ -98,10 +114,12 @@ module Idv
 
     def set_how_to_verify_presenter
       @selfie_required = idv_session.selfie_check_required
+      @post_office_enabled = in_person_proofing_route_enabled?
       @presenter = Idv::HowToVerifyPresenter.new(
         selfie_check_required: @selfie_required,
         passport_cards_supported: document_capture_session.passport_cards_supported?,
         mdl_enabled: document_capture_session.mdl_enabled,
+        clear1_enabled: clear1_enabled?,
       )
     end
   end
