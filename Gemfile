@@ -5,7 +5,7 @@ ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
 gem 'rails', '~> 8.1.0'
 
-gem 'ahoy_matey', '~> 3.0'
+gem 'ahoy_matey', '~> 5.0'
 gem 'aws-sdk-kms', '~> 1.71.0'
 gem 'aws-sdk-cloudwatchlogs', require: false
 gem 'aws-sdk-pinpoint'
@@ -143,3 +143,5 @@ group :test do
 end
 
 gem 'google-cloud-recaptcha_enterprise', '~> 2.1'
+
+gem 'geocoder', '~> 1.8'
