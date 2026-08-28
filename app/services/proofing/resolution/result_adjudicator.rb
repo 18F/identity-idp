@@ -11,7 +11,8 @@ module Proofing
                   :phone_result,
                   :ipp_current_address_matches_id,
                   :applicant_pii,
-                  :precheck_phone_number
+                  :precheck_phone_number,
+                  :proofing_vendor
 
       def initialize(
         resolution_result:, # InstantVerify
@@ -22,7 +23,8 @@ module Proofing
         ipp_current_address_matches_id:,
         applicant_pii:,
         precheck_phone_number:,
-        hybrid_mobile_device_profiling_result: nil # ThreatMetrix (Hybrid Mobile)
+        hybrid_mobile_device_profiling_result: nil, # ThreatMetrix (Hybrid Mobile)
+        proofing_vendor: nil # resolution vendor that produced resolution_result
       )
         @resolution_result = resolution_result
         @ipp_enrollment_in_progress = ipp_enrollment_in_progress
@@ -33,6 +35,7 @@ module Proofing
         @ipp_current_address_matches_id = ipp_current_address_matches_id # boolean(nil outside IPP)
         @applicant_pii = applicant_pii
         @precheck_phone_number = precheck_phone_number
+        @proofing_vendor = proofing_vendor
       end
 
       def adjudicated_result
@@ -157,11 +160,19 @@ module Proofing
       end
 
       def state_id_attributes_cover_resolution_failures?
+        return false unless get_to_yes_enabled_for_vendor?
         return false unless resolution_result.failed_result_can_pass_with_additional_verification?
 
         failed_resolution_attributes =
           resolution_result.attributes_requiring_additional_verification
         (failed_resolution_attributes.to_a - passed_state_id_attributes.map(&:to_sym)).empty?
+      end
+
+      # The "get to yes" feature is enabled per resolution vendor, since each vendor reports failed
+      # attributes differently. A nil vendor is never enabled, so the gate fails closed.
+      def get_to_yes_enabled_for_vendor?
+        IdentityConfig.store.idv_aamva_get_to_yes_enabled_vendors
+          .include?(proofing_vendor.to_s)
       end
 
       # AAMVA verifies the address printed on the identity document. If the user edited their
