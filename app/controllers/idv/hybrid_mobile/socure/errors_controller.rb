@@ -21,7 +21,11 @@ module Idv
             error_code = error_code_for(result)
           end
           track_event(error_code: error_code)
-          @presenter = socure_errors_presenter(error_code)
+          if error_code == 'mdl_not_found'
+            redirect_to idv_hybrid_mobile_choose_id_type_url(disable_mdl: true)
+          else
+            @presenter = socure_errors_presenter(error_code)
+          end
         end
 
         def self.step_info
