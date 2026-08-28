@@ -63,7 +63,7 @@
               [t('doc_auth.forms.id_type_preference.drivers_license'), :state_id_card],
               [t('doc_auth.forms.id_type_preference.passport'), :passport, disabled: disable_passports],
               (passport_cards_enabled ? [t('doc_auth.forms.id_type_preference.passport_card'), :passport_card, disabled: disable_passports] : nil),
-              (mdl_enabled ? [t('doc_auth.forms.id_type_preference.mdl'), :mobile_drivers_license] : nil),
+              (mdl_enabled ? [t('doc_auth.forms.id_type_preference.mdl'), :mobile_drivers_license, disabled: disable_mdl] : nil),
             ].compact,
             form: f,
             input_html: { class: 'usa-radio__input--tile' },

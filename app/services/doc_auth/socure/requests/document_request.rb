@@ -4,7 +4,7 @@ module DocAuth
   module Socure
     module Requests
       class DocumentRequest < DocAuth::Socure::Request
-        attr_reader :customer_user_id, :redirect_url, :language,
+        attr_reader :customer_user_id, :redirect_url, :language, :error_redirect_url,
                     :liveness_checking_required, :document_capture_session
 
         PASSPORT_DOCUMENT_TYPE = 'passport'
@@ -16,13 +16,15 @@ module DocAuth
           redirect_url:,
           language:,
           document_capture_session:,
-          liveness_checking_required: false
+          liveness_checking_required: false,
+          error_redirect_url: nil
         )
           @customer_user_id = customer_user_id
           @redirect_url = redirect_url
           @language = language
           @liveness_checking_required = liveness_checking_required
           @document_capture_session = document_capture_session
+          @error_redirect_url = error_redirect_url
         end
 
         def body
@@ -31,12 +33,23 @@ module DocAuth
             url: redirect_url,
           }
 
-          redirect = nil if Rails.env.development?
+          error_redirect = {
+            method: 'GET',
+            url: error_redirect_url,
+          }
+
+          if Rails.env.development?
+            redirect = nil
+            error_redirect = nil
+          elsif document_type != MDL_DOCUMENT_TYPE
+            error_redirect = nil
+          end
 
           {
             config: {
               documentType: document_type,
               redirect:,
+              errorRedirect: error_redirect,
               language: lang(language),
               useCaseKey: use_case_key,
             },

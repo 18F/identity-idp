@@ -185,6 +185,14 @@ module Idv
           pii_like_keypaths: [[:pii]],
         }.merge(ab_test_analytics_buckets)
       end
+
+      def error_redirect_url
+        return unless document_captue_session.mdl_requested?
+
+        idv_socure_document_capture_errors_url(
+          error_code: :mdl_not_found,
+        )
+      end
     end
   end
 end
