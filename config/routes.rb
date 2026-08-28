@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   get '/api/health/jobs' => 'health/health#index'
   get '/api/health/outbound' => 'health/outbound#index'
   get '/api/openid_connect/certs' => 'openid_connect/certs#index'
+  post '/api/openid_connect/exchange' => 'openid_connect/exchange#create'
+  match '/api/openid_connect/exchange' => 'openid_connect/exchange#options', via: :options
   post '/api/openid_connect/token' => 'openid_connect/token#create'
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'

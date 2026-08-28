@@ -69,6 +69,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_scope
   validate :validate_unauthorized_scope
   validate :validate_privileges
+  validate :validate_token_exchange_scope
   validate :validate_prompt
   validate :validate_verified_within_format, if: :verified_within_allowed?
   validate :validate_verified_within_duration, if: :verified_within_allowed?
@@ -248,6 +249,16 @@ class OpenidConnectAuthorizeForm
     errors.add(
       :scope, t('openid_connect.authorization.errors.unauthorized_scope'),
       type: :unauthorized_scope
+    )
+  end
+
+  def validate_token_exchange_scope
+    return unless scope.include?('token_exchange')
+    return if service_provider&.token_exchange_broker_allowed?
+
+    errors.add(
+      :scope, t('openid_connect.authorization.errors.no_valid_scope'),
+      type: :no_valid_scope
     )
   end
 

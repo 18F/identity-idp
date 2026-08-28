@@ -647,5 +647,48 @@ RSpec.describe SignUp::CompletionsController do
         end
       end
     end
+
+    context 'when the broker SP requires token-exchange consent' do
+      let(:current_sp) { create(:service_provider, :idv, :active) }
+      let(:user) { create(:user, :proofed) }
+      let(:broker_identity) do
+        create(:service_provider_identity, user: user, service_provider: current_sp.issuer)
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_service_providers)
+          .and_return([current_sp.issuer])
+        allow(@linker).to receive(:link_identity).and_return(broker_identity)
+        stub_sign_in(user)
+        subject.session[:sp] = {
+          issuer: current_sp.issuer,
+          acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+          request_url: 'http://example.com',
+          requested_attributes: %w[email token_exchange],
+        }
+      end
+
+      it 're-renders the consent screen and mints no consent when the box is unchecked' do
+        expect(@linker).not_to receive(:link_identity)
+
+        patch :update
+
+        expect(response).to render_template(:show)
+        expect(@analytics).to_not have_logged_event(:token_exchange_consent_granted)
+        expect(broker_identity.reload.token_exchange_consent_at).to be_nil
+      end
+
+      it 'proceeds, records consent, and logs it when the box is checked' do
+        patch :update, params: { idv_form: { token_exchange_consent: '1' } }
+
+        expect(response).to_not render_template(:show)
+        expect(broker_identity.reload.token_exchange_consent_at).to be_present
+        expect(@analytics).to have_logged_event(
+          :token_exchange_consent_granted,
+          issuer: current_sp.issuer,
+        )
+      end
+    end
   end
 end

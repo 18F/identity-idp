@@ -1098,6 +1098,7 @@ help_text.requested_attributes.intro_html: 'Divulgaremos esta información a %{s
 help_text.requested_attributes.phone: Número de teléfono
 help_text.requested_attributes.select_email_link: Seleccionar correo electrónico
 help_text.requested_attributes.social_security_number: Número de Seguro Social
+help_text.requested_attributes.token_exchange_html: 'Para conectarlo con otros servicios gubernamentales, %{sp_html} podrá compartir su identidad verificada con las agencias a las que elija acceder, para que no tenga que verificar su identidad nuevamente. Solo se comparte la información que cada agencia está autorizada a recibir.'
 help_text.requested_attributes.verified_at: Actualizado en
 help_text.requested_attributes.x509_issuer: Emisor de la tarjeta PIV o CAC
 help_text.requested_attributes.x509_subject: Identidad de la tarjeta PIV o CAC
@@ -1863,6 +1864,8 @@ sign_up.completed.smiling_image_alt: Una persona sonriente con una marca de veri
 sign_up.information_sharing_html: Para saber cómo %{app_name} comparte su información, consulte nuestra %{link_html}.
 sign_up.nds_terms_intro: Al continuar, acepta las
 sign_up.terms: Leí y acepto %{app_name}
+sign_up.token_exchange_consent_label: Permito que %{sp} comparta mi identidad verificada con otros servicios gubernamentales a los que elija acceder.
+sign_up.token_exchange_consent_required: Debe autorizar esto para continuar a %{sp}.
 simple_form.error_notification.default_message: 'Revise los siguientes problemas:'
 simple_form.no: 'No'
 simple_form.required.html: ''

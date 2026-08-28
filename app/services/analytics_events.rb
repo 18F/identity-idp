@@ -7546,6 +7546,43 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks an RFC 8693 browser-based token exchange from a broker SP to a target SP.
+  # @param [Boolean] success Whether the exchange succeeded
+  # @param [String] broker_issuer Issuer of the SP presenting the subject token
+  # @param [String] target_issuer Issuer the token was exchanged for
+  # @param [Integer] minted_ial IAL of the minted target identity
+  # @param [String] minted_scope Scope granted to the minted target identity
+  def openid_connect_token_exchange(
+    success:,
+    broker_issuer: nil,
+    target_issuer: nil,
+    minted_ial: nil,
+    minted_scope: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :openid_connect_token_exchange,
+      success:,
+      error_details:,
+      broker_issuer:,
+      target_issuer:,
+      minted_ial:,
+      minted_scope:,
+      **extra,
+    )
+  end
+
+  # Tracks when a user grants a broker SP consent to perform token exchange.
+  # @param [String] issuer Issuer of the broker SP the consent was granted to
+  def token_exchange_consent_granted(issuer:, **extra)
+    track_event(
+      :token_exchange_consent_granted,
+      issuer:,
+      **extra,
+    )
+  end
+
   # Tracks when user makes an otp delivery selection
   # @param [Boolean] success Whether the form was submitted successfully.
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission

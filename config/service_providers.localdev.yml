@@ -219,6 +219,39 @@ test:
     allow_prompt_login: true
     post_idv_follow_up_url: http://localhost/post_idv_follow_up_url
 
+  'urn:gov:gsa:openidconnect:sp:token_exchange_broker':
+    agency_id: 2
+    ial: 2
+    return_to_sp_url: 'http://localhost:8788'
+    redirect_uris:
+      - 'http://localhost:8788/'
+      - 'http://localhost:8788/callback'
+    certs:
+      - 'saml_test_sp'
+    friendly_name: 'Token Exchange Broker (local proof of concept)'
+    pkce: true
+    attribute_bundle:
+      - email
+      - first_name
+      - last_name
+      - dob
+      - address
+      - phone
+
+  'urn:gov:gsa:openidconnect:sp:token_exchange_target':
+    agency_id: 2
+    ial: 2
+    return_to_sp_url: 'http://localhost:8787'
+    redirect_uris:
+      - 'http://localhost:8787/'
+    certs:
+      - 'saml_test_sp'
+    friendly_name: 'Token Exchange Target (local proof of concept)'
+    attribute_bundle:
+      - email
+      - first_name
+      - last_name
+
   'urn:gov:gsa:openidconnect:sp:server_ial1':
     agency_id: 2
     redirect_uris:

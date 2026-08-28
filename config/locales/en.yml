@@ -1087,6 +1087,7 @@ help_text.requested_attributes.intro_html: 'We’ll share this information with 
 help_text.requested_attributes.phone: Phone number
 help_text.requested_attributes.select_email_link: Select email
 help_text.requested_attributes.social_security_number: Social Security number
+help_text.requested_attributes.token_exchange_html: 'To connect you to other government services, %{sp_html} will be able to share your verified identity with agencies you choose to access, so you don’t have to verify your identity again. Only the information each agency is approved to receive is shared.'
 help_text.requested_attributes.verified_at: Updated on
 help_text.requested_attributes.x509_issuer: PIV/CAC Issuer
 help_text.requested_attributes.x509_subject: PIV/CAC Identity
@@ -1851,6 +1852,8 @@ sign_up.completed.smiling_image_alt: A smiling person with a green checkmark ind
 sign_up.information_sharing_html: To learn how %{app_name} shares your information, review our %{link_html}.
 sign_up.nds_terms_intro: By continuing, you accept the
 sign_up.terms: I read and accept the %{app_name}
+sign_up.token_exchange_consent_label: I allow %{sp} to share my verified identity with other government services I choose to access.
+sign_up.token_exchange_consent_required: You must allow this to continue to %{sp}.
 simple_form.error_notification.default_message: 'Please review the problems below:'
 simple_form.no: 'No'
 simple_form.required.html: ''

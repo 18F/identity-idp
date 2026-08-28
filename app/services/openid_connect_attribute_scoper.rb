@@ -15,6 +15,7 @@ class OpenidConnectAttributeScoper
     profile:name
     profile:birthdate
     social_security_number
+    token_exchange
   ].freeze
 
   VALID_SCOPES = (%w[
@@ -49,6 +50,7 @@ class OpenidConnectAttributeScoper
     x509_subject: %w[x509 x509:subject],
     x509_presented: %w[x509 x509:presented],
     x509_issuer: %w[x509 x509:issuer],
+    token_exchange: %w[token_exchange],
   }.with_indifferent_access.freeze
 
   SCOPE_ATTRIBUTE_MAP = {}.tap do |scope_attribute_map|
@@ -84,6 +86,10 @@ class OpenidConnectAttributeScoper
 
   def all_emails_requested?
     scopes.include?('all_emails')
+  end
+
+  def token_exchange_requested?
+    scopes.include?('token_exchange')
   end
 
   def locale_requested?

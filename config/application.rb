@@ -147,6 +147,9 @@ module Identity
         end
         resource '/.well-known/openid-configuration', headers: :any, methods: [:get]
         resource '/api/openid_connect/certs', headers: :any, methods: [:get]
+        resource '/api/openid_connect/exchange',
+                 headers: :any,
+                 methods: %i[post options]
         resource '/api/openid_connect/token',
                  credentials: true,
                  headers: :any,
