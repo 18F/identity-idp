@@ -9,6 +9,7 @@
         url: login_two_factor_piv_cac_mismatch_url,
         method: :post,
         params: { add_piv_cac_after_2fa: 'true' },
+        variant: :primary,
         big: true,
         wide: true,
         class: 'display-block margin-top-5',
@@ -18,6 +19,7 @@
     <%= render ButtonComponent.new(
           url: login_two_factor_piv_cac_mismatch_url,
           method: :post,
+          variant: :quaternary,
           unstyled: true,
           class: 'display-block margin-top-2',
         ).with_content(t('two_factor_authentication.piv_cac_mismatch.skip')) %>
@@ -27,6 +29,7 @@
 
   <%= render ButtonComponent.new(
         url: account_reset_recovery_options_url,
+        variant: :destructive,
         big: true,
         wide: true,
         class: 'display-inline-block margin-top-3',

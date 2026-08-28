@@ -716,6 +716,7 @@ doc_auth.info.verify_at_post_office_link_text: Learn more about verifying in per
 doc_auth.info.verify_identity: We’ll ask for your ID, phone number, and other personal information to verify your identity against public records.
 doc_auth.info.verify_online_description: You can use a U.S. passport book, U.S. driver’s license or state ID.
 doc_auth.info.verify_online_description_mdl: You can use a U.S. passport book, U.S. driver’s license, mobile driver’s license (mDL) or state ID.
+doc_auth.info.verify_online_description_mdl_and_passport_card: You can use a U.S. passport book or card, driver’s license, mobile driver’s license (mDL) or state ID card.
 doc_auth.info.verify_online_description_passport_card: You can use a U.S. passport book or card, U.S. driver’s license or state ID.
 doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online.
 doc_auth.info.verify_online_instruction_selfie: You’ll take a selfie and photos of your ID to verify your identity fully online.
@@ -724,6 +725,7 @@ doc_auth.info.welcome_sp_reproof_alert: For your security, %{sp_name} requires y
 doc_auth.info.you_entered: 'You entered:'
 doc_auth.instructions.bullet1: Have a U.S. passport book, U.S. driver’s license or state ID
 doc_auth.instructions.bullet1_mdl: Have a U.S. passport book, U.S. driver’s license, mobile driver’s license (mDL) or state ID card
+doc_auth.instructions.bullet1_mdl_and_passport_card: Have a U.S. passport book or card, driver’s license, mobile driver’s license (mDL) or state ID card
 doc_auth.instructions.bullet1_passport_card: Have a U.S. passport book or card, U.S. driver’s license or state ID card
 doc_auth.instructions.bullet2: Enter your Social Security number
 doc_auth.instructions.bullet3: Match to your phone number
@@ -1215,9 +1217,8 @@ idv.gpo.return_to_profile: Return to your profile
 idv.gpo.title: Enter your verification code
 idv.gpo.will_send_to: 'You’ll get a letter in the mail from %{app_name} in 5 to 10 days at the address we verified and associated with you:'
 idv.images.come_back_later: Letter with a check mark
-idv.mdl.alert_html: <strong>Don’t have an mDL yet?</strong> It is available only for some U.S. states and territories. Please contact your state’s DMV for more information.
+idv.mdl.alert_html: <strong>Currently supported with Google Wallet and Samsung Wallet.</strong> Other wallets will be supported later this year.
 idv.mdl.button: Open digital wallet
-idv.mdl.learn_more: Learn more about how to use mDL
 idv.mdl.steps_heading: 'You’ll need:'
 idv.mdl.steps.device.title: A device with a digital wallet
 idv.mdl.steps.have_mdl.title: An active mobile driver’s license
@@ -1397,6 +1398,10 @@ in_person_proofing.form.state_id.dob_hint: 'Example: 4 28 1986'
 in_person_proofing.form.state_id.errors.unsupported_chars: 'Our system cannot read the following characters: %{char_list}. Please try again using the characters on your ID.'
 in_person_proofing.form.state_id.expiration_date: Expiration date
 in_person_proofing.form.state_id.expiration_date_hint: 'Example: 4 28 2028'
+in_person_proofing.form.state_id.expiration_date_options.enter_date: Enter a date
+in_person_proofing.form.state_id.expiration_date_options.indefinite: Indefinite (INDEF)
+in_person_proofing.form.state_id.expiration_date_options.military: Military (MIL)
+in_person_proofing.form.state_id.expiration_date_options.other: No date/Other
 in_person_proofing.form.state_id.first_name: First name
 in_person_proofing.form.state_id.id_type: ID type
 in_person_proofing.form.state_id.id_type_drivers_license: 'State Driver’s License'
@@ -1551,6 +1556,7 @@ links.create_account: Create an account
 links.exit_login: Exit %{app_name}
 links.go_back: Go back
 links.help: Help
+links.more: More
 links.new_tab: '(opens new tab)'
 links.passwords.forgot: Forgot your password?
 links.privacy_policy: Privacy & security
@@ -1690,12 +1696,15 @@ service_providers.errors.inactive.heading: '%{sp_name} no longer uses %{app_name
 service_providers.errors.inactive.instructions: '%{sp_name} no longer uses %{app_name} as a sign-in service for their website. If you already created a %{app_name} account, it is still active and can be used to access other participating government websites.'
 service_providers.errors.inactive.instructions2: Please visit the agency’s website to contact them for more information.
 shared.banner.fake_site: A DEMO website of the United States government
+shared.banner.gov_description: A .gov website belongs to an official government organization in the United States.
 shared.banner.gov_description_html: A <strong>.gov</strong> website belongs to an official government organization in the United States.
 shared.banner.gov_heading: Official websites use .gov
 shared.banner.how: Here’s how you know
 shared.banner.landmark_label: Official government website
 shared.banner.lock_description: A locked padlock
+shared.banner.modal_title: U.S. Government Websites
 shared.banner.official_site: An official website of the United States government
+shared.banner.secure_description: A lock or https:// means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
 shared.banner.secure_description_html: A <strong>lock</strong> ( %{lock_icon} ) or <strong>https://</strong> means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
 shared.banner.secure_heading: Secure .gov websites use HTTPS
 shared.footer_lite.gsa: US General Services Administration
@@ -1704,6 +1713,7 @@ sign_up.agree_and_continue: Agree and continue
 sign_up.cancel.success: Your account has been deleted. We did not save your information.
 sign_up.cancel.warning_header: 'If you cancel now:'
 sign_up.completed.smiling_image_alt: A smiling person with a green checkmark indicating success
+sign_up.information_sharing_html: To learn how %{app_name} shares your information, review our %{link_html}.
 sign_up.terms: I read and accept the %{app_name}
 simple_form.error_notification.default_message: 'Please review the problems below:'
 simple_form.no: 'No'
@@ -1725,6 +1735,7 @@ step_indicator.flows.idv.verify_phone: Verify your phone number
 step_indicator.status.complete: Completed
 step_indicator.status.current: Current step
 step_indicator.status.not_complete: Not completed
+step_indicator.substep: Substep %{current} of %{total}
 time.am: AM
 time.formats.event_date: '%B %-d, %Y'
 time.formats.event_time: '%-l:%M %p'
@@ -1792,7 +1803,7 @@ titles.sign_in: Sign in
 titles.sign_up.completion_consent_expired_auth_only: It’s been a year since you gave us consent to share your information
 titles.sign_up.completion_consent_expired_idv: It’s been a year since you gave us consent to share your verified identity
 titles.sign_up.completion_first_sign_in: Continue to %{sp}
-titles.sign_up.completion_idv: Connect your verified information to %{sp}
+titles.sign_up.completion_idv: Connect your information to %{sp}
 titles.sign_up.completion_new_attributes: '%{sp} is requesting new information'
 titles.sign_up.completion_new_sp: You are now signing in for the first time
 titles.sign_up.completion_reverified_consent: Share your updated information with %{sp}

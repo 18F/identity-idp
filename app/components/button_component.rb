@@ -1,9 +1,14 @@
 # frozen_string_literal: true
 
 class ButtonComponent < BaseComponent
+  include NDSBucketResolvable
+
   attr_reader :url,
               :method,
               :icon,
+              :icon_position,
+              :size,
+              :variant,
               :big,
               :wide,
               :full_width,
@@ -16,6 +21,9 @@ class ButtonComponent < BaseComponent
     url: nil,
     method: nil,
     icon: nil,
+    icon_position: :left,
+    size: :lg,
+    variant: :primary,
     big: false,
     wide: false,
     full_width: false,
@@ -27,6 +35,9 @@ class ButtonComponent < BaseComponent
     @url = url
     @method = method
     @icon = icon
+    @icon_position = icon_position.to_sym
+    @size = size.to_sym
+    @variant = variant.to_sym
     @big = big
     @wide = wide
     @full_width = full_width
@@ -36,6 +47,9 @@ class ButtonComponent < BaseComponent
     @tag_options = tag_options
   end
 
+  # Legacy/control bucket behavior. Byte-identical to origin/main: variant:/size:
+  # are ignored and the boolean API is honored. NDSButtonComponent overrides
+  # css_class/parts for the NDS bucket.
   def css_class
     classes = ['usa-button', *tag_options[:class]]
     classes << 'usa-button--big' if big
@@ -47,25 +61,40 @@ class ButtonComponent < BaseComponent
     classes
   end
 
+  def parts
+    [icon_content, content]
+  end
+
   def icon_content
     render IconComponent.new(icon:) if icon
   end
 
   def content
     original_content = super
-    if original_content.present? && icon.present?
-      # Content templates may include leading whitespace, which interferes with the layout when an
-      # icon is present. This can be solved in CSS using Flexbox, but doing so for all buttons may
-      # have unintended consequences.
-      trimmed_content = original_content.lstrip
-      trimmed_content = sanitize(trimmed_content) if original_content.html_safe?
-      trimmed_content
-    else
-      original_content
-    end
+    return original_content if original_content.blank? || icon.blank?
+
+    trimmed_content = original_content.lstrip
+    trimmed_content = sanitize(trimmed_content) if original_content.html_safe?
+    trimmed_content
   end
 
   private
+
+  # The NDS variant excluded from the render-time flip (see
+  # NDSBucketResolvable). Every other button (including the Submit/Print/
+  # Download subclasses) flips to NDS in the NDS bucket; NDSButtonComponent
+  # renders its own markup instead of recursing.
+  def nds_variant_class
+    NDSButtonComponent
+  end
+
+  def nds_delegate
+    NDSButtonComponent.new(
+      url:, method:, icon:, icon_position:, size:, variant:,
+      big:, wide:, full_width:, outline:, unstyled:, danger:,
+      **tag_options
+    )
+  end
 
   def action
     @action ||= begin

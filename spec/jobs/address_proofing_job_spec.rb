@@ -135,6 +135,14 @@ RSpec.describe AddressProofingJob, type: :job do
         expect(result[:alternate_result]).to be_nil
       end
 
+      it 'surfaces the DDP review_status inside the stored vendor result' do
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+
+        expect(result[:result][:review_status]).to eq('pass')
+      end
+
       it 'adds cost data' do
         expect { perform }.to(change { SpCost.count }.by(1))
 
@@ -186,6 +194,15 @@ RSpec.describe AddressProofingJob, type: :job do
         expect(result[:timed_out]).to be false
         expect(result[:vendor_name]).to eq('socure_phonerisk')
         expect(result[:alternate_result]).to be_nil
+      end
+
+      it 'does not add a review_status key to the stored vendor result' do
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+
+        expect(result).not_to have_key(:review_status)
+        expect(result[:result]).not_to have_key(:review_status)
       end
 
       it 'adds cost data' do

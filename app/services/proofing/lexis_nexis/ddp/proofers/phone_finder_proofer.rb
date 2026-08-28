@@ -6,6 +6,7 @@ module Proofing
       module Proofers
         class PhoneFinderProofer < Proofing::LexisNexis::Ddp::Proofer
           NOT_VERIFIED_TO_NAME = 'Input phone number could not be verified to name'
+          VALID_REVIEW_STATUSES = %w[pass review reject].freeze
 
           private
 
@@ -13,9 +14,12 @@ module Proofing
             response_body = verification_response.response_body
             parsed_response =
               Proofing::LexisNexis::Ddp::ParsedResponse.new(raw_response(response_body))
+            review_status = response_body['review_status']
+
+            validate_review_status!(review_status)
 
             AddressResult.new(
-              success: parsed_response.verification_status == 'passed',
+              success: review_status == 'pass',
               errors: parse_verification_errors(parsed_response),
               exception: nil,
               vendor_name: 'lexisnexis:phone_finder_ddp',
@@ -23,6 +27,12 @@ module Proofing
               dual_vendor_check_eligible: dual_vendor_check_eligible?(parsed_response),
               result: phone_metadata(response_body),
             )
+          end
+
+          def validate_review_status!(review_status)
+            return if VALID_REVIEW_STATUSES.include?(review_status)
+
+            raise "Unexpected PhoneFinder review_status value: #{review_status}"
           end
 
           def build_result_from_exception(exception)
@@ -63,6 +73,7 @@ module Proofing
               risk_count_high: response_body['phonefinder.primary_phone.risk_count_high'],
               risk_count_med: response_body['phonefinder.primary_phone.risk_count_med'],
               risk_count_low: response_body['phonefinder.primary_phone.risk_count_low'],
+              review_status: response_body['review_status'],
             }
           end
 

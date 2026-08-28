@@ -6109,6 +6109,17 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] document_type_requested The type of document the user chose to verify with
+  # The user clicked the button on the document capture interstitial page that redirects
+  # them to the Socure DocV capture app
+  def idv_socure_docv_redirect_requested(document_type_requested: nil, **extra)
+    track_event(
+      :idv_socure_docv_redirect_requested,
+      document_type_requested:,
+      **extra,
+    )
+  end
+
   # Socure KYC API was called with the following results
   # @param [Boolean] success Result from Socure KYC API call
   # @param [Hash] errors Result from resolution proofing
@@ -6737,6 +6748,9 @@ module AnalyticsEvents
   # @param [Boolean] available_webauthn_platform_config shows user has a webauth_platform config
   # @param [Integer] webauthn_auth_duration the duration to complete webauthn auth in seconds
   # @param [Boolean, nil] webauthn_verification_auto_prompted Whether passkey auth was auto-prompted
+  # @param [String[], nil] webauthn_transports WebAuthn transports recorded when the credential was
+  #   registered. Describes credential capability, not the transport used for this ceremony.
+  # @param [Hash, nil] authenticator_data_flags WebAuthn authenticator data flags for creds
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -6765,6 +6779,8 @@ module AnalyticsEvents
     available_webauthn_platform_config: nil,
     webauthn_auth_duration: nil,
     webauthn_verification_auto_prompted: nil,
+    webauthn_transports: nil,
+    authenticator_data_flags: nil,
     **extra
   )
     track_event(
@@ -6795,6 +6811,8 @@ module AnalyticsEvents
       available_webauthn_platform_config:,
       webauthn_auth_duration:,
       webauthn_verification_auto_prompted:,
+      webauthn_transports:,
+      authenticator_data_flags:,
       **extra,
     )
   end
@@ -8856,7 +8874,6 @@ module AnalyticsEvents
   #   reason for the consent screen being shown
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
-  # @param [String, nil] disposable_email_domain Disposable email domain used for registration
   # @param [String, nil] in_person_proofing_status In person proofing status
   # @param [String, nil] doc_auth_result The doc auth result
   def user_registration_complete(
@@ -8867,7 +8884,6 @@ module AnalyticsEvents
     needs_completion_screen_reason:,
     sp_session_requested_attributes:,
     ialmax: nil,
-    disposable_email_domain: nil,
     in_person_proofing_status: nil,
     doc_auth_result: nil,
     **extra
@@ -8881,7 +8897,6 @@ module AnalyticsEvents
       in_account_creation_flow:,
       needs_completion_screen_reason:,
       sp_session_requested_attributes:,
-      disposable_email_domain:,
       in_person_proofing_status:,
       doc_auth_result:,
       **extra,

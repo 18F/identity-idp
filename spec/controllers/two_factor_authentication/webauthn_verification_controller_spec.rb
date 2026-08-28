@@ -23,12 +23,21 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
 
   describe 'when signed in before 2fa' do
     let(:user) { create(:user) }
+    let(:expected_authenticator_data_flags) do
+      { up: true, uv: false, be: false, bs: false, at: false, ed: false }
+    end
 
     before do
       stub_analytics
       stub_attempts_tracker
       sign_in_before_2fa(user)
       allow(FeatureManagement).to receive(:webauthn_verification_auto_prompt?).and_return(false)
+      allow(controller).to receive(:ab_test_bucket)
+        .with(:PASSKEY_AUTH)
+        .and_return(:default)
+      allow(controller).to receive(:ab_test_bucket)
+        .with(:NDS_LOOK_AND_FEEL, { service_provider: nil })
+        .and_return(:default)
     end
 
     describe 'GET show' do
@@ -61,6 +70,9 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             allow(FeatureManagement)
               .to receive(:webauthn_verification_auto_prompt?)
               .and_return(true)
+            allow(controller).to receive(:ab_test_bucket)
+              .with(:PASSKEY_AUTH)
+              .and_return(:passkey_authentication)
           end
 
           it 'auto-prompts once and tracks the visit with trigger metadata' do
@@ -233,6 +245,8 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             new_device: true,
             available_webauthn_platform_config: false,
             attempts: 1,
+            webauthn_transports: ['usb'],
+            authenticator_data_flags: expected_authenticator_data_flags,
           )
           expect(@analytics).to have_logged_event(
             'User marked authenticated',
@@ -314,6 +328,8 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               attempts: 1,
               webauthn_auth_duration: a_value_within(1).of(2),
               webauthn_verification_auto_prompted: true,
+              webauthn_transports: ['internal', 'hybrid'],
+              authenticator_data_flags: expected_authenticator_data_flags,
             )
             expect(@analytics).to have_logged_event(
               'User marked authenticated',
@@ -354,6 +370,8 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           new_device: true,
           available_webauthn_platform_config: false,
           attempts: 1,
+          webauthn_transports: ['usb'],
+          authenticator_data_flags: expected_authenticator_data_flags,
         )
       end
 

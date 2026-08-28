@@ -727,14 +727,16 @@ doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre l
 doc_auth.info.verify_identity: Le pediremos su identificación, número de teléfono y otros datos personales para verificar su identidad comparándola con los registros públicos.
 doc_auth.info.verify_online_description: Puede usar un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal.
 doc_auth.info.verify_online_description_mdl: Puede utilizar un pasaporte, licencia de conducir, licencia de conducir móvil o tarjeta de identificación estatal de los EE. UU.
+doc_auth.info.verify_online_description_mdl_and_passport_card: Puede usar una libreta or tarjeta de pasaporte estadounidense, una licencia de conducir, una licencia de conducir móvil (mDL) o una tarjeta de identificación estatal.
 doc_auth.info.verify_online_description_passport_card: Puede utilizar una libreta o tarjeta de pasaporte, licencia de conducir o una identificación estatal de los EE. UU.
-doc_auth.info.verify_online_instruction: Tomará fotos de su documento de identidad para verificar su identidad de forma totalmente en línea.
+doc_auth.info.verify_online_instruction: Deberá tomar fotos de su documento de identidad para verificar su identidad en línea.
 doc_auth.info.verify_online_instruction_selfie: Tómese una selfi y fotos de su identificación.
 doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea
 doc_auth.info.welcome_sp_reproof_alert: Por su seguridad, %{sp_name} requiere que verifique su identidad nuevamente.
 doc_auth.info.you_entered: 'Usted ingresó:'
 doc_auth.instructions.bullet1: Tener un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal
 doc_auth.instructions.bullet1_mdl: Tener un pasaporte, licencia de conducir, licencia de conducir móvil (mDL) o tarjeta de identificación estatal de los EE. UU.
+doc_auth.instructions.bullet1_mdl_and_passport_card: Debe tener una libreta or tarjeta de pasaporte estadounidense, una licencia de conducir, una licencia de conducir móvil (mDL) o una tarjeta de identificación estatal.
 doc_auth.instructions.bullet1_passport_card: Tener un libreta o tarjeta de pasaporte, licencia de conducir o una tarjeta de identificación estatal de los EE. UU.
 doc_auth.instructions.bullet2: Ingresar su número de Seguro Social
 doc_auth.instructions.bullet3: Hacer coincidir su número de teléfono
@@ -783,7 +785,7 @@ duplicate_profiles_detected.intro.link: las cuentas duplicativas
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Último inicio de sesión: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Nunca he iniciado sesión en
 duplicate_profiles_detected.select_an_account.details_html: 'Conserva la cuenta que esté conectada a la mayor cantidad de servicios. Ve a la página %{link_html} para ver las servicios conectadas seleccionando “Tus servicios conectados” en el menú de la izquierda.'
-duplicate_profiles_detected.select_an_account.details.link: «Su cuenta»
+duplicate_profiles_detected.select_an_account.details.link: Su cuenta
 duplicate_profiles_detected.select_an_account.heading: Elija la cuenta que desea conservar.
 duplicate_profiles_detected.sign_back_in.details: Vuelva al sitio web de %{app_name} e inicie sesión usando la cuenta de %{app_name} que conservó.
 duplicate_profiles_detected.sign_back_in.heading: Vuelva a iniciar sesión en %{app_name} con una cuenta.
@@ -1226,9 +1228,8 @@ idv.gpo.return_to_profile: Vuelva a su perfil
 idv.gpo.title: Introduzca su código de verificación
 idv.gpo.will_send_to: 'En un plazo de 5 a 10 días, recibirá por correo una carta de %{app_name} en la dirección que verificamos y asociamos con usted:'
 idv.images.come_back_later: Carta con una marca de verificación
-idv.mdl.alert_html: <strong>¿Aún no tiene una mDL?</strong> Solo está disponible en algunos estados y territorios de EE. UU. Comuníquese con el DMV de su estado para obtener más información.
+idv.mdl.alert_html: <strong>Actualmente disponible con Google Wallet y Samsung Wallet.</strong> Se añadirán otras billeteras a finales de este año.
 idv.mdl.button: Abrir cartera digital
-idv.mdl.learn_more: Más información sobre cómo usar su mDL
 idv.mdl.steps_heading: 'Necesitará:'
 idv.mdl.steps.device.title: Un dispositivo con una cartera digital
 idv.mdl.steps.have_mdl.title: Una licencia de conducir móvil (mDL) activa
@@ -1408,6 +1409,10 @@ in_person_proofing.form.state_id.dob_hint: 'Ejemplo: 4 28 1986'
 in_person_proofing.form.state_id.errors.unsupported_chars: 'Nuestro sistema no puede leer estos caracteres: %{char_list}. Inténtelo de nuevo usando los caracteres de su identificación.'
 in_person_proofing.form.state_id.expiration_date: Fecha de vencimiento
 in_person_proofing.form.state_id.expiration_date_hint: 'Ejemplo: 4 28 2028'
+in_person_proofing.form.state_id.expiration_date_options.enter_date: Ingrese una fecha
+in_person_proofing.form.state_id.expiration_date_options.indefinite: Indefinida (INDEF)
+in_person_proofing.form.state_id.expiration_date_options.military: Militar (MIL)
+in_person_proofing.form.state_id.expiration_date_options.other: Sin fecha/Otro
 in_person_proofing.form.state_id.first_name: Nombre
 in_person_proofing.form.state_id.id_type: Tipo de identificación
 in_person_proofing.form.state_id.id_type_drivers_license: Licencia de conducir
@@ -1562,6 +1567,7 @@ links.create_account: Crear una cuenta
 links.exit_login: Salir de %{app_name}
 links.go_back: Volver
 links.help: Ayuda
+links.more: Más
 links.new_tab: '(abrir nueva pestaña)'
 links.passwords.forgot: '¿Olvidó su contraseña?'
 links.privacy_policy: Privacidad y seguridad
@@ -1702,12 +1708,15 @@ service_providers.errors.inactive.heading: '%{sp_name} ya no utiliza %{app_name}
 service_providers.errors.inactive.instructions: '%{sp_name} ya no utiliza %{app_name} como servicio para iniciar sesión en su sitio web. Si ya creó una cuenta de %{app_name}, todavía está activa y se puede usar para acceder a otros sitios web participantes del gobierno.'
 service_providers.errors.inactive.instructions2: Visite la agencia para contactarlos y obtener más información.
 shared.banner.fake_site: Un sitio web de demostración del Gobierno de los Estados Unidos
+shared.banner.gov_description: Un sitio web .gov pertenece a una organización oficial del Gobierno de los Estados Unidos.
 shared.banner.gov_description_html: 'Un sitio web <strong>.gov</strong> pertenece a una organización oficial del Gobierno de los Estados Unidos.'
 shared.banner.gov_heading: Los sitios web oficiales usan .gov
 shared.banner.how: Así es como usted puede saberlo
 shared.banner.landmark_label: Sitio web oficial del Gobierno
 shared.banner.lock_description: Un candado cerrado
+shared.banner.modal_title: Sitios web del Gobierno de EE. UU.
 shared.banner.official_site: Un sitio web oficial del Gobierno de los Estados Unidos
+shared.banner.secure_description: Un candado o https:// significa que se conectó de forma segura a un sitio web .gov. Comunique información confidencial solo en los sitios web oficiales protegidos.
 shared.banner.secure_description_html: Un <strong>candado</strong> ( %{lock_icon} ) o <strong>https://</strong> significa que se conectó de forma segura a un sitio web .gov. Comunique información confidencial solo en los sitios web oficiales protegidos.
 shared.banner.secure_heading: Los sitios web .gov protegidos usan HTTPS
 shared.footer_lite.gsa: Administración General de Servicios de los EE. UU.
@@ -1716,6 +1725,7 @@ sign_up.agree_and_continue: Aceptar y continuar
 sign_up.cancel.success: Su cuenta fue eliminada. No guardamos su información.
 sign_up.cancel.warning_header: 'Si cancela ahora:'
 sign_up.completed.smiling_image_alt: Una persona sonriente con una marca de verificación verde
+sign_up.information_sharing_html: Para saber cómo %{app_name} comparte su información, consulte nuestra %{link_html}.
 sign_up.terms: Leí y acepto %{app_name}
 simple_form.error_notification.default_message: 'Revise los siguientes problemas:'
 simple_form.no: 'No'
@@ -1737,6 +1747,7 @@ step_indicator.flows.idv.verify_phone: Verifique su número de teléfono
 step_indicator.status.complete: Completado
 step_indicator.status.current: Este paso
 step_indicator.status.not_complete: No completado
+step_indicator.substep: Subpaso %{current} de %{total}
 time.am: a. m.
 time.formats.event_date: '%-d de %B de %Y'
 time.formats.event_time: '%-l:%M %p'
@@ -1804,7 +1815,7 @@ titles.sign_in: Iniciar sesión
 titles.sign_up.completion_consent_expired_auth_only: Hace un año que nos dio su consentimiento para divulgar su información
 titles.sign_up.completion_consent_expired_idv: Hace un año que nos dio su consentimiento para divulgar su identidad verificada
 titles.sign_up.completion_first_sign_in: Continuar con %{sp}
-titles.sign_up.completion_idv: Conecte su información verificada a %{sp}
+titles.sign_up.completion_idv: Conecte su información a %{sp}
 titles.sign_up.completion_new_attributes: '%{sp} está solicitando nueva información'
 titles.sign_up.completion_new_sp: Está iniciando sesión por primera vez
 titles.sign_up.completion_reverified_consent: Comunique su información actualizada a %{sp}

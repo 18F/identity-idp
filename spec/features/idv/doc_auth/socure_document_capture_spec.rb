@@ -498,6 +498,10 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
           expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MD')
           expect(fake_analytics).to have_logged_event(
+            :idv_socure_docv_redirect_requested,
+            document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
+          )
+          expect(fake_analytics).to have_logged_event(
             :idv_socure_document_request_submitted,
           )
           expect(fake_analytics).to have_logged_event(
@@ -534,6 +538,9 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
             expect(page).to have_current_path(idv_socure_document_capture_url)
             expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+            expect(page).to have_content(t('idv.mdl.subtitle', app_name: APP_NAME))
+            expect(page).to have_content(strip_tags(t('idv.mdl.alert_html')))
+            expect(page).to_not have_link('Learn more about how to use mDL')
 
             # remove_request_stub(@docv_stub)
             @docv_stub = stub_docv_verification_data_pass(
@@ -602,6 +609,10 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
             expect(page).to have_current_path(idv_ssn_url)
 
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_docv_redirect_requested,
+              document_type_requested: Idp::Constants::DocumentTypes::MDL,
+            )
             expect(fake_analytics).to have_logged_event(
               :idv_socure_document_request_submitted,
             )

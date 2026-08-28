@@ -26,7 +26,6 @@ RSpec.describe SignUp::CompletionsController do
         let(:user) { create(:user, :fully_registered, email: temporary_email) }
 
         before do
-          DisposableEmailDomain.create(name: 'temporary.com')
           stub_sign_in(user)
           subject.session[:sp] = {
             issuer: current_sp.issuer,
@@ -285,34 +284,6 @@ RSpec.describe SignUp::CompletionsController do
         )
       end
 
-      context 'with a disposable email address' do
-        let(:user) { create(:user, :fully_registered, email: temporary_email) }
-
-        it 'logs disposable domain' do
-          DisposableEmailDomain.create(name: 'temporary.com')
-          stub_sign_in(user)
-          subject.session[:sp] = {
-            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-            issuer: current_sp.issuer,
-            request_url: 'http://example.com',
-          }
-          subject.user_session[:in_account_creation_flow] = true
-
-          patch :update
-
-          expect(@analytics).to have_logged_event(
-            'User registration: complete',
-            ial2: false,
-            ialmax: false,
-            page_occurence: 'agency-page',
-            needs_completion_screen_reason: :new_sp,
-            service_provider_name: current_sp.friendly_name,
-            in_account_creation_flow: true,
-            disposable_email_domain: 'temporary.com',
-          )
-        end
-      end
-
       context 'with unconfirmed email addresses' do
         it 'does not send email to unconfirmed email addresses' do
           user = create(:user, :fully_registered)
@@ -334,7 +305,6 @@ RSpec.describe SignUp::CompletionsController do
 
     context 'identity verification' do
       it 'tracks analytics' do
-        DisposableEmailDomain.create(name: 'temporary.com')
         user = create(
           :user,
           :fully_registered,
@@ -363,7 +333,6 @@ RSpec.describe SignUp::CompletionsController do
           needs_completion_screen_reason: :new_sp,
           sp_session_requested_attributes: ['email'],
           in_account_creation_flow: true,
-          disposable_email_domain: 'temporary.com',
           in_person_proofing_status: 'passed',
           doc_auth_result: 'Passed',
         )

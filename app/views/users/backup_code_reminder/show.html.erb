@@ -21,5 +21,6 @@
 <%= render ButtonComponent.new(
       url: backup_code_reminder_path,
       method: :post,
+      variant: :quaternary,
       unstyled: true,
     ).with_content(t('forms.backup_code_reminder.need_new_codes')) %>

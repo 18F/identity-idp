@@ -557,6 +557,34 @@ RSpec.describe AbTests do
     it_behaves_like 'A/B test using verify_info_step_document_capture_session_uuid discriminator'
   end
 
+  describe 'PROOFING_AGENT_PROOFING_VENDOR' do
+    let(:ab_test) { :PROOFING_AGENT_PROOFING_VENDOR }
+
+    let(:enable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:idv_resolution_default_vendor)
+          .and_return('vendor_a')
+        allow(IdentityConfig.store).to receive(:idv_resolution_vendor_switching_enabled)
+          .and_return(true)
+        allow(IdentityConfig.store).to receive(:idv_resolution_vendor_socure_kyc_percent)
+          .and_return(25)
+        allow(IdentityConfig.store).to receive(:idv_resolution_vendor_instant_verify_percent)
+          .and_return(25)
+        allow(IdentityConfig.store).to receive(:idv_resolution_vendor_instant_verify_ddp_percent)
+          .and_return(25)
+      }
+    end
+
+    let(:disable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:idv_resolution_vendor_switching_enabled)
+          .and_return(false)
+      }
+    end
+
+    it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
+  end
+
   describe 'HYBRID_MOBILE_TMX_PROCESSED' do
     let(:ab_test) { :HYBRID_MOBILE_TMX_PROCESSED }
 
@@ -590,6 +618,70 @@ RSpec.describe AbTests do
     let(:enable_ab_test) do
       -> {
         allow(IdentityConfig.store).to receive(:doc_auth_passport_cards_enabled_percent)
+          .and_return(50)
+      }
+    end
+
+    it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
+  end
+
+  describe 'NDS_LOOK_AND_FEEL' do
+    it 'is registered in AbTests.all' do
+      expect(AbTests.all[:NDS_LOOK_AND_FEEL]).to be_a(AbTest)
+    end
+
+    context 'when nds_look_and_feel_percent is 0' do
+      before do
+        allow(IdentityConfig.store).to receive(:nds_look_and_feel_percent).and_return(0)
+        reload_ab_tests
+      end
+
+      it 'does not assign the nds bucket' do
+        bucket = AbTests.all[:NDS_LOOK_AND_FEEL].bucket(
+          request: nil, service_provider: nil,
+          session: { session_id: 'sid' }, user: nil, user_session: nil
+        )
+        expect(bucket).to be_nil
+      end
+    end
+
+    context 'when nds_look_and_feel_percent is 100' do
+      before do
+        allow(IdentityConfig.store).to receive(:nds_look_and_feel_percent).and_return(100)
+        reload_ab_tests
+      end
+
+      it 'assigns the nds bucket' do
+        bucket = AbTests.all[:NDS_LOOK_AND_FEEL].bucket(
+          request: nil, service_provider: nil,
+          session: { session_id: 'sid' }, user: nil, user_session: nil
+        )
+        expect(bucket).to eq(:nds)
+      end
+
+      it 'falls back to an anon discriminator when both user and session are nil' do
+        bucket = AbTests.all[:NDS_LOOK_AND_FEEL].bucket(
+          request: nil, service_provider: nil,
+          session: nil, user: nil, user_session: nil
+        )
+        expect(bucket).to eq(:nds)
+      end
+    end
+  end
+
+  describe 'CLEAR1_ALLOWED' do
+    let(:ab_test) { :CLEAR1_ALLOWED }
+
+    let(:disable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:idv_clear1_enabled_percent)
+          .and_return(0)
+      }
+    end
+
+    let(:enable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:idv_clear1_enabled_percent)
           .and_return(50)
       }
     end

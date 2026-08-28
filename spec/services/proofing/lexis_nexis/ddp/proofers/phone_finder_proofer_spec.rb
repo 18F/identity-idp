@@ -92,6 +92,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
             risk_count_high: '0',
             risk_count_med: '1',
             risk_count_low: '4',
+            review_status: 'pass',
           }
         end
 
@@ -105,6 +106,12 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
           expect(result.dual_vendor_check_eligible).to be(false)
         end
 
+        it 'surfaces the top-level DDP policy review_status in the result' do
+          result = proofer.proof(proofing_applicant)
+
+          expect(result.result[:review_status]).to eq('pass')
+        end
+
         it 'surfaces phone metadata in result' do
           result = proofer.proof(proofing_applicant)
 
@@ -114,6 +121,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
         context 'when the phone metadata fields are absent' do
           let(:response_body) do
             {
+              'review_status' => 'pass',
               'integration_hub_results' => {
                 'test_org_id:test-policy' => {
                   'Phone Finder' => {
@@ -140,6 +148,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
               risk_count_high: nil,
               risk_count_med: nil,
               risk_count_low: nil,
+              review_status: 'pass',
             )
           end
         end
@@ -181,11 +190,18 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
             expect(result.vendor_name).to eq('lexisnexis:phone_finder_ddp')
             expect(result.dual_vendor_check_eligible).to be(true)
           end
+
+          it 'still surfaces the top-level DDP policy review_status in the result' do
+            result = proofer.proof(proofing_applicant)
+
+            expect(result.result[:review_status]).to eq('reject')
+          end
         end
 
         context 'when the failure is "could not be verified to name" with additional errors' do
           let(:response_body) do
             {
+              'review_status' => 'reject',
               'integration_hub_results' => {
                 'test_org_id:test-policy' => {
                   'Phone Finder' => {
@@ -251,6 +267,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
         context 'when the response fails with "Risk Indicators match determined"' do
           let(:response_body) do
             {
+              'review_status' => 'reject',
               'integration_hub_results' => {
                 'test_org_id:test-policy' => {
                   'Phone Finder' => {
@@ -309,6 +326,93 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
             expect(result.vendor_name).to eq('lexisnexis:phone_finder_ddp')
             expect(result.dual_vendor_check_eligible).to be(false)
           end
+        end
+
+        context 'when review_status is "review"' do
+          let(:response_body) do
+            {
+              'review_status' => 'review',
+              'integration_hub_results' => {
+                'test_org_id:test-policy' => {
+                  'Phone Finder' => {
+                    'tps_vendor_raw_response' => {
+                      'Products' => [],
+                      'Status' => {
+                        'ConversationId' => 'super-cool-test-session-id',
+                        'TransactionStatus' => 'passed',
+                      },
+                    },
+                  },
+                },
+              },
+            }.to_json
+          end
+
+          it 'is a failure result' do
+            result = proofer.proof(proofing_applicant)
+
+            expect(result.success?).to eq(false)
+          end
+        end
+
+        context 'when TransactionStatus is "passed" but review_status is "reject"' do
+          let(:response_body) do
+            {
+              'review_status' => 'reject',
+              'integration_hub_results' => {
+                'test_org_id:test-policy' => {
+                  'Phone Finder' => {
+                    'tps_vendor_raw_response' => {
+                      'Products' => [],
+                      'Status' => {
+                        'ConversationId' => 'super-cool-test-session-id',
+                        'TransactionStatus' => 'passed',
+                      },
+                    },
+                  },
+                },
+              },
+            }.to_json
+          end
+
+          it 'is a failure result driven by review_status' do
+            result = proofer.proof(proofing_applicant)
+
+            expect(result.success?).to eq(false)
+          end
+        end
+      end
+
+      context 'when review_status is an unexpected value' do
+        let(:response_body) do
+          {
+            'review_status' => 'unexpected_status',
+            'integration_hub_results' => {
+              'test_org_id:test-policy' => {
+                'Phone Finder' => {
+                  'tps_vendor_raw_response' => {
+                    'Products' => [],
+                    'Status' => {
+                      'ConversationId' => 'super-cool-test-session-id',
+                      'TransactionStatus' => 'passed',
+                    },
+                  },
+                },
+              },
+            },
+          }.to_json
+        end
+
+        it 'returns a failure result with a RuntimeError exception' do
+          expect(NewRelic::Agent).to receive(:notice_error)
+            .with(an_instance_of(RuntimeError))
+
+          result = proofer.proof(proofing_applicant)
+
+          expect(result.success?).to eq(false)
+          expect(result.exception).to be_a(RuntimeError)
+          expect(result.exception.message)
+            .to eq('Unexpected PhoneFinder review_status value: unexpected_status')
         end
       end
 

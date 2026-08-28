@@ -129,6 +129,22 @@ module AbTests
     user.uuid
   end.freeze
 
+  PASSKEY_AUTH = AbTest.new(
+    experiment_name: 'Passkey Authentication',
+    should_log: [
+      'Email and Password Authentication',
+      'Multi-Factor Authentication: enter webAuthn authentication visited',
+      :passkey_authentication_initiated,
+      'Multi-Factor Authentication',
+      'User marked authenticated',
+    ].to_set,
+    buckets: {
+      passkey_authentication: IdentityConfig.store.passkey_auth_ab_test_percentage,
+    },
+  ) do |user:, user_session:, **|
+    user.uuid
+  end.freeze
+
   PROOFING_VENDOR = AbTest.new(
     experiment_name: 'Proofing Vendor',
     should_log: /^idv/i,
@@ -145,6 +161,22 @@ module AbTests
     verify_info_step_document_capture_session_uuid_discriminator(
       service_provider:, user:, user_session:,
     )
+  end.freeze
+
+  PROOFING_AGENT_PROOFING_VENDOR = AbTest.new(
+    experiment_name: 'Proofing Agent Proofing Vendor',
+    should_log: /^idv/i,
+    default_bucket: IdentityConfig.store.idv_resolution_default_vendor,
+    buckets: {
+      socure_kyc: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
+        IdentityConfig.store.idv_resolution_vendor_socure_kyc_percent : 0,
+      instant_verify: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
+        IdentityConfig.store.idv_resolution_vendor_instant_verify_percent : 0,
+      instant_verify_ddp: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
+        IdentityConfig.store.idv_resolution_vendor_instant_verify_ddp_percent : 0,
+    },
+  ) do |service_provider:, session:, user:, user_session:, **|
+    user&.uuid
   end.freeze
 
   PHONE_FINDER_RDP_VERSION = AbTest.new(
@@ -231,6 +263,24 @@ module AbTests
     should_log: /^idv/i,
     buckets: {
       mdl_enabled: IdentityConfig.store.idv_doc_auth_mdl_enabled_percent,
+    },
+  ) do |user:, user_session:, **|
+    user&.uuid
+  end.freeze
+
+  NDS_LOOK_AND_FEEL = AbTest.new(
+    experiment_name: 'NDS Look and Feel Phase 1',
+    should_log: AbTest::ALL_EVENTS,
+    buckets: { nds: IdentityConfig.store.nds_look_and_feel_percent },
+  ) do |user:, session:, **|
+    user&.uuid || session&.dig(:session_id) || 'anon'
+  end.freeze
+
+  CLEAR1_ALLOWED = AbTest.new(
+    experiment_name: 'Clear1 Inherited Proofing Allowed',
+    should_log: /^idv/i,
+    buckets: {
+      idv_clear1_allowed: IdentityConfig.store.idv_clear1_enabled_percent,
     },
   ) do |user:, user_session:, **|
     user&.uuid

@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
     rescue_from error, with: :render_timeout
   end
 
-  helper_method :decorated_sp_session, :current_sp, :user_fully_authenticated?
+  helper_method :decorated_sp_session, :current_sp, :user_fully_authenticated?, :nds_layout?
 
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :set_session_start_value_if_nil
@@ -37,9 +37,17 @@ class ApplicationController < ActionController::Base
   before_action :cache_issuer_in_cookie
   after_action :store_web_locale_in_session
 
+  layout :resolve_layout
+
   def set_session_start_value_if_nil
     return if @skip_session_expiration || @skip_session_load
     session[:session_started_at] = Time.zone.now if session[:session_started_at].nil?
+  end
+
+  def nds_layout?
+    return @nds_layout if defined?(@nds_layout)
+
+    @nds_layout = resolve_nds_bucket
   end
 
   # for lograge
@@ -150,6 +158,35 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def resolve_layout
+    nds_layout? ? 'nds/application' : 'application'
+  end
+
+  def resolve_nds_bucket
+    if IdentityConfig.store.ui_test_bucket_params_enabled
+      # Feature flag enabled override:
+      # ?ui_test_bucket=nds|legacy selects the bucket and persists
+      # it in an httponly cookie so it sticks across navigation without
+      # re-appending the param;
+      # ?ui_test_bucket=clear clears out the cookie.
+      # This is only an override in front of the real A/B assignment (it does not change the
+      # user's actual experiment bucket), so it cannot desync experiment traffic.
+      case params[:ui_test_bucket]
+      when 'nds', 'legacy'
+        cookies[:ui_test_bucket] = { value: params[:ui_test_bucket], httponly: true }
+      when 'clear'
+        cookies.delete(:ui_test_bucket)
+      end
+
+      return true if params[:ui_test_bucket] == 'nds'
+      return false if params[:ui_test_bucket] == 'legacy'
+      return true if cookies[:ui_test_bucket] == 'nds'
+      return false if cookies[:ui_test_bucket] == 'legacy'
+    end
+
+    ab_test_bucket(:NDS_LOOK_AND_FEEL, service_provider: nil) == :nds
+  end
 
   def attempts_api_enabled_for_session?
     current_sp&.attempts_api_enabled? && attempts_api_session_id.present?

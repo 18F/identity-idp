@@ -26,6 +26,8 @@
 <% if current_user.phone_configurations.count < IdentityConfig.store.max_phone_numbers_per_account %>
   <%= render ButtonComponent.new(
         url: phone_setup_path,
+        variant: :secondary,
+        size: :md,
         outline: true,
         icon: :add,
         class: 'margin-top-2',

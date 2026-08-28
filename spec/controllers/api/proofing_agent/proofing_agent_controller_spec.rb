@@ -911,6 +911,29 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 issuer:,
               )
             end
+
+            context 'when idv_proofing_agent_proof_user_with_enhanced_profile is true' do
+              before do
+                allow(IdentityConfig.store)
+                  .to receive(:idv_proofing_agent_proof_user_with_enhanced_profile)
+                  .and_return(true)
+              end
+
+              it 'returns 202 accepted' do
+                expect(action.status).to eq(202)
+                transaction_id = DocumentCaptureSession.last.uuid
+
+                expect(@analytics).to have_logged_event(
+                  :idv_proofing_agent_proof_user_requested,
+                  response_body: a_hash_including(status: 'pending', transaction_id:),
+                  proofing_agent: proofing_agent_analytics_hash,
+                  issuer:,
+                  transaction_id:,
+                  remaining_attempts: a_kind_of(Integer),
+                  final_attempt: false,
+                )
+              end
+            end
           end
 
           context 'user already has a pending agent proofed document_capture_session' do

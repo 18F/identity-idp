@@ -98,7 +98,7 @@ RSpec.describe ProofingAgentJob, type: :job do
             proofing_components: {
               document_check: Idp::Constants::Vendors::PROOFING_AGENT,
               source_check: 'StateIdMock',
-              residential_resolution_check: 'ResidentialAddressNotRequired',
+              residential_resolution_check: 'ResolutionMock',
               resolution_check: 'ResolutionMock',
               address_check: 'AddressMock',
             },
@@ -174,13 +174,13 @@ RSpec.describe ProofingAgentJob, type: :job do
                     errors: {},
                     exception: nil,
                     timed_out: false,
-                    transaction_id: '',
-                    reference: '',
+                    transaction_id: Proofing::Mock::ResolutionMockClient::TRANSACTION_ID,
+                    reference: Proofing::Mock::ResolutionMockClient::REFERENCE,
                     reason_codes: {},
                     can_pass_with_additional_verification: false,
                     attributes_requiring_additional_verification: [],
                     source_attribution: [],
-                    vendor_name: 'ResidentialAddressNotRequired',
+                    vendor_name: 'ResolutionMock',
                     vendor_id: nil,
                     vendor_workflow: nil,
                     verified_attributes: nil },
@@ -230,7 +230,7 @@ RSpec.describe ProofingAgentJob, type: :job do
             },
             proofing_components: {
               source_check: 'StateIdMock',
-              residential_resolution_check: 'ResidentialAddressNotRequired',
+              residential_resolution_check: 'ResolutionMock',
               resolution_check: 'ResolutionMock',
               address_check: 'AddressMock',
             },
@@ -385,7 +385,7 @@ RSpec.describe ProofingAgentJob, type: :job do
             transaction_id: transaction_id,
           },
           proofing_components: {
-            residential_resolution_check: 'ResidentialAddressNotRequired',
+            residential_resolution_check: 'ResolutionMock',
             resolution_check: 'ResolutionMock',
             address_check: 'AddressMock',
             source_check: 'StateIdMock',
@@ -398,6 +398,31 @@ RSpec.describe ProofingAgentJob, type: :job do
 
         result = document_capture_session.reload.load_agent_proofed_user
         expect(result[:pii][:aamva_verified_attributes]).to be_present
+      end
+
+      context 'AAMVA and resolution use the same address selection (dual address verification)' do
+        let(:aamva_plugin) { Proofing::Resolution::Plugins::AamvaPlugin.new }
+
+        before do
+          allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new)
+            .and_return(aamva_plugin)
+        end
+
+        it 'verifies AAMVA with ipp_enrollment_in_progress: true' do
+          expect(aamva_plugin).to receive(:call)
+            .with(hash_including(ipp_enrollment_in_progress: true))
+            .and_call_original
+
+          perform
+        end
+
+        it 'runs the resolution job with ipp_enrollment_in_progress: true' do
+          expect(ResolutionProofingJob).to receive(:perform_now)
+            .with(hash_including(ipp_enrollment_in_progress: true))
+            .and_call_original
+
+          perform
+        end
       end
     end
 
