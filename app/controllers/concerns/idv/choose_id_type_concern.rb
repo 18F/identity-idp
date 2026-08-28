@@ -80,6 +80,7 @@ module Idv
         passport_cards_enabled: true,
         mdl_enabled: mdl_enabled?,
         show_verify_in_person:,
+        disable_mdl: disable_mdl?,
       }
     end
 
@@ -94,6 +95,10 @@ module Idv
 
     def mdl_enabled?
       document_capture_session.mdl_enabled
+    end
+
+    def disable_mdl?
+      params.permit(:disable_mdl)[:disable_mdl].present?
     end
   end
 end

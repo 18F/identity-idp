@@ -17,8 +17,13 @@ module Idv
         if error_code.nil?
           error_code = error_code_for(handle_stored_result)
         end
-        track_event(error_code: error_code)
-        @presenter = socure_errors_presenter(error_code)
+        track_event(error_code:)
+
+        if error_code == 'mdl_not_found'
+          redirect_to idv_choose_id_type_url(disable_mdl: true)
+        else
+          @presenter = socure_errors_presenter(error_code)
+        end
       end
 
       def self.step_info
