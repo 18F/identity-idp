@@ -274,6 +274,16 @@ RSpec.describe AccountShowPresenter do
     end
   end
 
+  describe '#formatted_ipp_due_date when user does not have a pending IPP enrollment' do
+    let(:user) { build(:user) }
+
+    subject(:formatted_ipp_due_date) { presenter.formatted_ipp_due_date }
+
+    it 'returns nil' do
+      expect(subject).to be_nil
+    end
+  end
+
   describe '#formatted_legacy_idv_date' do
     let(:user) { build(:user, :proofed_with_selfie) }
 

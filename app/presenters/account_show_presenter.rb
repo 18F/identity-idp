@@ -77,6 +77,8 @@ class AccountShowPresenter
   end
 
   def formatted_ipp_due_date
+    return nil unless user.pending_in_person_enrollment
+
     I18n.l(user.pending_in_person_enrollment.due_date, format: :event_date)
   end
 
