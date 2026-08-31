@@ -26,7 +26,7 @@ class OpenidConnectUserInfoPresenter
     info[:verified_at] = verified_at if scoper.verified_at_requested?
     info[:ial] = authn_context_resolver.asserted_ial_acr
     info[:aal] = requested_aal_value
-    info[:auth_time] = auth_time if FeatureManagement.auth_time_attribute_enabled?
+    info[:auth_time] = auth_time
 
     scoper.filter(info)
   end

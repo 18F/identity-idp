@@ -73,7 +73,6 @@ module IdentityConfig
     config.add(:attempts_api_signing_enabled, type: :boolean)
     config.add(:attribute_encryption_key, type: :string)
     config.add(:attribute_encryption_key_queue, type: :json)
-    config.add(:auth_time_attribute_enabled, type: :boolean)
     config.add(:available_locales, type: :comma_separated_string_list)
     config.add(:aws_http_retry_limit, type: :integer)
     config.add(:aws_http_retry_max_delay, type: :integer)

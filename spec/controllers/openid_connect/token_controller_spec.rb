@@ -71,14 +71,13 @@ RSpec.describe OpenidConnect::TokenController do
         expect(@analytics).to_not have_logged_event(:sp_integration_errors_present)
       end
 
-      context 'when auth_time is enabled' do
+      context 'with an authentication event' do
         let(:authentication_event_at) { Time.zone.parse('2026-07-01 12:00:00 UTC') }
         let(:remember_device_at) { Time.zone.parse('2026-07-01 12:30:00 UTC') }
         let(:federation_at) { Time.zone.parse('2026-07-01 13:00:00 UTC') }
         let(:stale_identity_timestamp) { 1.week.before(authentication_event_at) }
 
         before do
-          allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(true)
           identity.update!(last_authenticated_at: stale_identity_timestamp)
 
           travel_to(federation_at) do
