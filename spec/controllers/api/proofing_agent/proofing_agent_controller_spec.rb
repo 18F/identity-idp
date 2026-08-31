@@ -936,6 +936,47 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             end
           end
 
+          context 'when a user has not confirmed their email address' do
+            before do
+              user.email_addresses.update(confirmed_at: nil)
+            end
+
+            it 'returns 422 unprocessable_content' do
+              expect(action.status).to eq(422)
+            end
+
+            it 'returns a failed account email not confirmed response body' do
+              action
+              body = JSON.parse(response.body)
+              expect(body['status']).to eq('failed')
+              expect(body['reason']).to eq('account_email_unconfirmed')
+
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_proof_user_requested,
+                response_body: a_hash_including(
+                  status: 'failed',
+                  reason: 'account_email_unconfirmed',
+                ),
+                proofing_agent: proofing_agent_analytics_hash,
+                issuer:,
+              )
+            end
+          end
+
+          context 'when the submitted email is unconfirmed' do
+            let(:email) { 'unconfirmed@example.test' }
+
+            before do
+              create(:email_address, :unconfirmed, user:, email:)
+            end
+
+            it 'does not proof even though the account has a confirmed email' do
+              expect(action.status).to eq(422)
+              body = JSON.parse(response.body)
+              expect(body['reason']).to eq('account_email_unconfirmed')
+            end
+          end
+
           context 'user already has a pending agent proofed document_capture_session' do
             let(:session) do
               create(
