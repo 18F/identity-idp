@@ -936,7 +936,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             end
           end
 
-          context 'when a ser has not confirmed their email address' do
+          context 'when a user has not confirmed their email address' do
             before do
               user.email_addresses.update(confirmed_at: nil)
             end
