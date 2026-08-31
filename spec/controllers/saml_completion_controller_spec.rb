@@ -38,6 +38,12 @@ RSpec.describe SamlCompletionController do
         expect(response.body).to match(hidden_field_tag('SigAlg', sig_alg))
         expect(response.body).to match(hidden_field_tag('Signature', signature))
       end
+
+      it 'does not name the submit button' do
+        get :index, params: { path_year: path_year }
+
+        expect(response.body).not_to include('name="button"')
+      end
     end
 
     context 'with a blank service provider request session' do
