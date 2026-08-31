@@ -147,11 +147,11 @@ GEM
       uri (>= 0.13.1)
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
-    ahoy_matey (3.3.0)
-      activesupport (>= 5)
-      device_detector
-      geocoder (>= 1.4.5)
-      safely_block (>= 0.2.1)
+    ahoy_matey (5.5.0)
+      activesupport (>= 7.2)
+      cgi
+      device_detector (>= 1)
+      safely_block (>= 0.4)
     android_key_attestation (0.3.0)
     ast (2.4.3)
     aws-eventstream (1.4.0)
@@ -254,6 +254,7 @@ GEM
       nokogiri (~> 1.10, >= 1.10.4)
       rubyzip (>= 2.4, < 4)
     cbor (0.5.10.1)
+    cgi (0.5.2)
     childprocess (5.1.0)
       logger (~> 1.5)
     chunky_png (1.4.0)
@@ -962,7 +963,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  ahoy_matey (~> 3.0)
+  ahoy_matey (~> 5.0)
   aws-sdk-cloudwatchlogs
   aws-sdk-kms (~> 1.71.0)
   aws-sdk-pinpoint
@@ -998,6 +999,7 @@ DEPENDENCIES
   faraday-retry
   foundation_emails
   fugit
+  geocoder (~> 1.8)
   good_job (~> 4.0)
   google-cloud-recaptcha_enterprise (~> 2.1)
   http_accept_language
