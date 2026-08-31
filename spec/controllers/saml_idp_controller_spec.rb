@@ -2448,12 +2448,8 @@ RSpec.describe SamlIdpController do
       let(:user) { create(:user, :fully_registered) }
       let(:response_at) { nil }
       let(:auth_events) { nil }
-      let(:auth_time_attribute_enabled) { false }
 
       before do
-        allow(FeatureManagement).to receive(:auth_time_attribute_enabled?)
-          .and_return(auth_time_attribute_enabled)
-
         if response_at
           travel_to(response_at) do
             generate_saml_response(user, saml_settings, auth_events: auth_events)
@@ -2772,8 +2768,7 @@ RSpec.describe SamlIdpController do
           expect(subject.attributes['AuthnInstant'].value).to_not be_nil
         end
 
-        context 'when authentication timestamp support is enabled' do
-          let(:auth_time_attribute_enabled) { true }
+        context 'with an authentication timestamp' do
           let(:idp_authn_at) { Time.zone.parse('2026-07-08 12:04:56 UTC') }
           let(:response_at) { Time.zone.parse('2026-07-08 12:34:56 UTC') }
           let(:auth_events) do
