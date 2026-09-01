@@ -119,6 +119,7 @@ module Proofing
           ipp_current_address_matches_id: applicant_pii[:ipp_current_address_matches_id],
           applicant_pii:,
           precheck_phone_number: phone_plugin.phone_number,
+          proofing_vendor:,
         )
       end
 

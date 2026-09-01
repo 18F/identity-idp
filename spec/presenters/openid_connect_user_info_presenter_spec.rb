@@ -69,36 +69,23 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
     subject(:user_info) { presenter.user_info }
 
-    context 'when auth_time attribute is enabled' do
-      before do
-        allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(true)
-        allow(session_accessor).to receive(:authentication_event_at)
-          .and_return(authentication_event_at)
-      end
-
-      it 'includes auth_time from the session authentication event timestamp' do
-        expect(user_info[:auth_time]).to eq(authentication_event_at.to_i)
-      end
-
-      context 'without an authentication event timestamp' do
-        let(:authentication_event_at) { nil }
-        let(:now) { Time.zone.parse('2026-06-01 12:00:00 UTC') }
-
-        it 'falls back to the current time' do
-          travel_to(now) do
-            expect(user_info[:auth_time]).to eq(now.to_i)
-          end
-        end
-      end
+    before do
+      allow(session_accessor).to receive(:authentication_event_at)
+        .and_return(authentication_event_at)
     end
 
-    context 'when auth_time attribute is disabled' do
-      before do
-        allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(false)
-      end
+    it 'includes auth_time from the session authentication event timestamp' do
+      expect(user_info[:auth_time]).to eq(authentication_event_at.to_i)
+    end
 
-      it 'does not include auth_time' do
-        expect(user_info).to_not have_key(:auth_time)
+    context 'without an authentication event timestamp' do
+      let(:authentication_event_at) { nil }
+      let(:now) { Time.zone.parse('2026-06-01 12:00:00 UTC') }
+
+      it 'falls back to the current time' do
+        travel_to(now) do
+          expect(user_info[:auth_time]).to eq(now.to_i)
+        end
       end
     end
 

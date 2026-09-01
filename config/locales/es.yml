@@ -1553,6 +1553,8 @@ instructions.password.strength.2: Promedio
 instructions.password.strength.3: Buena
 instructions.password.strength.4: Muy buena
 instructions.password.strength.intro: 'Seguridad de la contraseña:'
+instructions.password.strength.strong: Fuerte
+instructions.password.strength.too_common: Demasiado común
 instructions.sp_handoff_bounced: Logró iniciar sesión, pero %{sp_name} lo envió de nuevo a %{app_name}. Contacte con %{sp_link} para obtener ayuda.
 instructions.sp_handoff_bounced_with_no_sp: su proveedor de servicios
 links.accessibility_statement: Declaración de accesibilidad
