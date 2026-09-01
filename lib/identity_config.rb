@@ -291,6 +291,7 @@ module IdentityConfig
     config.add(:idv_socure_reason_codes_docv_selfie_pass, type: :json)
     config.add(:idv_sp_required, type: :boolean)
     config.add(:idv_aamva_bypass_exception_ids, type: :json)
+    config.add(:idv_aamva_get_to_yes_enabled_vendors, type: :json)
     config.add(:idv_aamva_split_last_name_states, type: :json)
     config.add(:in_person_completion_survey_delivery_enabled, type: :boolean)
     config.add(:in_person_completion_survey_url, type: :string)
