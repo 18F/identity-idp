@@ -60,4 +60,25 @@ RSpec.describe ApplicationHelper do
       expect(helper.view_flow.get(:title)).to eq(title)
     end
   end
+
+  describe '#idv_requested?' do
+    subject(:idv_requested?) { helper.idv_requested? }
+
+    before do
+      allow(helper).to receive(:resolved_authn_context_result)
+        .and_return(double(identity_proofing?: identity_proofing))
+    end
+
+    context 'when the resolved authn context requires identity proofing' do
+      let(:identity_proofing) { true }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when the resolved authn context does not require identity proofing' do
+      let(:identity_proofing) { false }
+
+      it { is_expected.to eq(false) }
+    end
+  end
 end
