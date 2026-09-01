@@ -43,7 +43,7 @@ RSpec.describe Idv::InPerson::AddressController do
 
     context 'preconditions' do
       before do
-        allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled).and_return(false)
+        subject.idv_session.ipp_aamva_result = { success: true }
       end
 
       context 'when ipp_state_id steps have been completed' do
@@ -88,10 +88,8 @@ RSpec.describe Idv::InPerson::AddressController do
         end
       end
 
-      context 'when AAMVA at doc auth is enabled' do
+      context 'when checking ipp_aamva_result' do
         before do
-          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled)
-            .and_return(true)
           allow(subject.idv_session).to receive(:ipp_state_id_complete?).and_return(true)
         end
 
@@ -117,22 +115,6 @@ RSpec.describe Idv::InPerson::AddressController do
               described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
             ).to be(false)
           end
-        end
-      end
-
-      context 'when AAMVA at doc auth is not enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled)
-            .and_return(false)
-          allow(subject.idv_session).to receive(:ipp_state_id_complete?).and_return(true)
-        end
-
-        it 'returns true without requiring ipp_aamva_result' do
-          subject.idv_session.ipp_aamva_result = nil
-
-          expect(
-            described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
-          ).to be(true)
         end
       end
     end

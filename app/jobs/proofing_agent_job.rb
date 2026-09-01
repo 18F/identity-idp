@@ -332,7 +332,6 @@ class ProofingAgentJob < ApplicationJob
     aamva_plugin.call(
       applicant_pii:,
       current_sp:,
-      state_id_address_resolution_result: nil,
       ipp_enrollment_in_progress: PA_BEHAVES_LIKE_IPP,
       timer:,
       doc_auth_flow: true,
