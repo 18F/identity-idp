@@ -169,7 +169,7 @@ module Proofing
       end
 
       # The "get to yes" feature is enabled per resolution vendor, since each vendor reports failed
-      # attributes differently. A nil vendor is never enabled, so the gate fails closed.
+      # attributes differently. A nil vendor won't match the allowlist, so it stays disabled.
       def get_to_yes_enabled_for_vendor?
         IdentityConfig.store.idv_aamva_get_to_yes_enabled_vendors
           .include?(proofing_vendor.to_s)
