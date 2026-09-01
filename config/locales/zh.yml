@@ -1555,6 +1555,8 @@ instructions.password.strength.2: 一般
 instructions.password.strength.3: 好
 instructions.password.strength.4: 棒！
 instructions.password.strength.intro: '密码强度：'
+instructions.password.strength.strong: 强
+instructions.password.strength.too_common: 太常见
 instructions.sp_handoff_bounced: 你登录成功了，但 %{sp_name} 将你送回到 %{app_name}。请联系 %{sp_link} 寻求帮助。
 instructions.sp_handoff_bounced_with_no_sp: 你的服务提供商
 links.accessibility_statement: 无障碍声明

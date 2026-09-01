@@ -1,0 +1,11 @@
+{
+  "name": "@18f/identity-nds-password-strength",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "zxcvbn": "^4.4.2"
+  },
+  "sideEffects": [
+    "./password-strength-element.ts"
+  ]
+}
