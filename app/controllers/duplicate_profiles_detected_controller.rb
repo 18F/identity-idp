@@ -3,6 +3,7 @@
 class DuplicateProfilesDetectedController < ApplicationController
   before_action :confirm_two_factor_authenticated
   before_action :redirect_unless_user_has_active_duplicate_profile
+  before_action :redirect_unless_request_has_current_sp
   rescue_from ActionView::Template::Error, with: :handle_template_error
 
   def show
@@ -19,6 +20,10 @@ class DuplicateProfilesDetectedController < ApplicationController
   def redirect_unless_user_has_active_duplicate_profile
     return redirect_to(root_url) unless current_user&.identity_verified_with_facial_match?
     return redirect_to(root_url) unless duplicate_profile_set.present?
+  end
+
+  def redirect_unless_request_has_current_sp
+    redirect_to(root_url) unless current_sp.present?
   end
 
   def duplicate_profile_set
