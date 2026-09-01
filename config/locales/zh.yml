@@ -171,6 +171,14 @@ components.clipboard_button.label: 复制
 components.clipboard_button.tooltip: 复制了！
 components.countdown_alert.time_remaining_html: 余下 %{countdown_html}
 components.download_button.label: 下载
+components.input.errors.date: 请输入日期
+components.input.errors.date_invalid: 请输入有效的日期
+components.input.errors.email: 请输入有效的电子邮件
+components.input.errors.password: 请输入密码
+components.input.errors.tel: 请输入电话号码
+components.input.errors.tel_invalid: 请输入有效的电话号码
+components.input.errors.text: 请输入内容
+components.input.errors.text_invalid: 请输入有效内容
 components.javascript_required.browser_instructions: '按照说明让你浏览器启用 JavaScript:'
 components.javascript_required.enabled_alert: 你在浏览器中启用了 JavaScript。
 components.javascript_required.next_step: 你在浏览器中启用了 JavaScript后，请刷新本页面。
@@ -212,6 +220,7 @@ components.password_confirmation.confirm_label: 确认密码
 components.password_confirmation.errors.empty: 重打你的密码
 components.password_confirmation.errors.mismatch: 你的密码不一致
 components.password_confirmation.toggle_label: 显示密码
+components.password_toggle.hide_label: 隐藏密码
 components.password_toggle.label: 密码
 components.password_toggle.toggle_label: 显示密码
 components.phone_input.country_code_label: 国家代码
