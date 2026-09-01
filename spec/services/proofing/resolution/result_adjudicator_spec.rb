@@ -53,6 +53,14 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
 
   let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
 
+  let(:proofing_vendor) { :instant_verify_ddp }
+  let(:get_to_yes_enabled_vendors) { ['instant_verify', 'instant_verify_ddp'] }
+
+  before do
+    allow(IdentityConfig.store).to receive(:idv_aamva_get_to_yes_enabled_vendors)
+      .and_return(get_to_yes_enabled_vendors)
+  end
+
   subject do
     described_class.new(
       resolution_result: resolution_result,
@@ -64,6 +72,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       ipp_current_address_matches_id: ipp_current_address_matches_id,
       applicant_pii: applicant_pii,
       precheck_phone_number: phone_result.empty? ? nil : '202-555-5555',
+      proofing_vendor: proofing_vendor,
     )
   end
 
@@ -194,6 +203,68 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
 
           expect(result.extra[:biographical_info][:state_id_verified_attributes])
             .to eq([:dob])
+        end
+      end
+
+      context 'get to yes is configured per resolution vendor' do
+        let(:applicant_pii) do
+          Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
+            aamva_verified_attributes: [:address],
+            address_edited: false,
+          )
+        end
+
+        context 'the resolution vendor that proofed is enabled' do
+          [:instant_verify, :instant_verify_ddp].each do |vendor|
+            context "when #{vendor} proofed the resolution result" do
+              let(:proofing_vendor) { vendor }
+
+              it 'lets AAMVA cover the failure' do
+                result = subject.adjudicated_result
+
+                expect(result.success?).to eq(true)
+                expect(result.extra[:context][:resolution_adjudication_reason])
+                  .to eq(:state_id_covers_failed_resolution)
+              end
+            end
+          end
+        end
+
+        context 'no resolution vendor is enabled' do
+          let(:get_to_yes_enabled_vendors) { [] }
+
+          it 'does not let AAMVA cover the failure' do
+            result = subject.adjudicated_result
+
+            expect(result.success?).to eq(false)
+            expect(result.extra[:context][:resolution_adjudication_reason])
+              .to eq(:fail_resolution_without_state_id_coverage)
+          end
+        end
+
+        context 'a different resolution vendor is enabled' do
+          let(:proofing_vendor) { :instant_verify_ddp }
+          let(:get_to_yes_enabled_vendors) { ['socure_kyc'] }
+
+          it 'does not let AAMVA cover the failure for the vendor that proofed' do
+            result = subject.adjudicated_result
+
+            expect(result.success?).to eq(false)
+            expect(result.extra[:context][:resolution_adjudication_reason])
+              .to eq(:fail_resolution_without_state_id_coverage)
+          end
+        end
+
+        context 'the proofing vendor is unknown' do
+          let(:proofing_vendor) { nil }
+
+          it 'fails closed' do
+            result = subject.adjudicated_result
+
+            expect(result.success?).to eq(false)
+            expect(result.extra[:context][:resolution_adjudication_reason])
+              .to eq(:fail_resolution_without_state_id_coverage)
+          end
         end
       end
     end

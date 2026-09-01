@@ -919,6 +919,7 @@ RSpec.describe 'In Person Proofing', js: true do
         allow(IdentityConfig.store).to receive_messages(
           idv_aamva_at_doc_auth_enabled: true,
           idv_aamva_at_doc_auth_ipp_enabled: true,
+          idv_aamva_get_to_yes_enabled_vendors: ['instant_verify', 'instant_verify_ddp'],
           proofer_mock_fallback: false,
           idv_resolution_default_vendor: :instant_verify,
           idv_resolution_vendor_switching_enabled: false,
