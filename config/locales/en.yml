@@ -2041,6 +2041,9 @@ user_mailer.agent_proofing_succeeded.footer_html: If you did not attempt to veri
 user_mailer.agent_proofing_succeeded.header: You have successfully completed identity verification
 user_mailer.agent_proofing_succeeded.subject: 'Action Required: Confirm Your Verified Account'
 user_mailer.contact_link_text: contact us
+user_mailer.device_profiling_error.header: You can sign back in with your account
+user_mailer.device_profiling_error.info: The error on your account (LG22) has been resolved. You can now sign into the agency website with your account.
+user_mailer.device_profiling_error.subject: You can sign back in with your account
 user_mailer.dupe_profile.created.description: Someone has verified another %{app_name} account using your personal information. For your safety, we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.
 user_mailer.dupe_profile.created.description2_html: If this was you verifying another account, delete the duplicate account by following the %{steps_link_html}. If this wasn’t you contact the %{help_center_link_html}.
 user_mailer.dupe_profile.created.heading: Your personal information was verified on another %{app_name} account

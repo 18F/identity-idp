@@ -2054,6 +2054,9 @@ user_mailer.agent_proofing_succeeded.footer_html: 如果您并未亲自尝试进
 user_mailer.agent_proofing_succeeded.header: 您已成功完成身份验证
 user_mailer.agent_proofing_succeeded.subject: 需采取行动：确认您的已验证账户
 user_mailer.contact_link_text: 联系我们
+user_mailer.device_profiling_error.header: 您可以使用 帐户重新登录。
+user_mailer.device_profiling_error.info: 您的账户（LG22）错误已解决。您现在可以使用 账户登录机构网站。
+user_mailer.device_profiling_error.subject: 您可以使用 帐户重新登录。
 user_mailer.dupe_profile.created.description: 有人使用你的个人信息验证了另一个 %{app_name} 账户。 为了你的安全，我们已限制了具有同样信息的所有账户的访问权以及对 %{sp_or_app_name} 的访问权.
 user_mailer.dupe_profile.created.description2_html: 如果另一个账户是你本人验证的，请按照这里列出的 %{steps_link_html}。如果不是你本人，请联系 %{help_center_link_html}.
 user_mailer.dupe_profile.created.heading: 你的个人信息在另一个 %{app_name} 账户上得到了验证

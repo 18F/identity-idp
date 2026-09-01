@@ -2053,6 +2053,9 @@ user_mailer.agent_proofing_succeeded.footer_html: Si usted no intentó verificar
 user_mailer.agent_proofing_succeeded.header: Ha completado con éxito su verificación de identidad
 user_mailer.agent_proofing_succeeded.subject: 'Acción requerida: Confirme su cuenta verificada'
 user_mailer.contact_link_text: contáctenos
+user_mailer.device_profiling_error.header: Puede volver a iniciar sesión con su cuenta
+user_mailer.device_profiling_error.info: El error en su cuenta (LG22) se ha solucionado. Ahora puede iniciar sesión en el sitio web de la agencia con su cuenta.
+user_mailer.device_profiling_error.subject: Puede volver a iniciar sesión con su cuenta
 user_mailer.dupe_profile.created.description: Alguien verificó otra cuenta de %{app_name} usando la información personal de usted. Por su seguridad, hemos restringido su acceso a todas las cuentas con información que coincide y a %{sp_or_app_name}.
 user_mailer.dupe_profile.created.description2_html: Si fue usted quien verificó otra cuenta, elimine la cuenta duplicada siguiendo %{steps_link_html}. Si no fue usted, contacte con %{help_center_link_html}.
 user_mailer.dupe_profile.created.heading: Su información personal fue verificada en otra cuenta de %{app_name}

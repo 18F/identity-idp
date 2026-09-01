@@ -2042,6 +2042,9 @@ user_mailer.agent_proofing_succeeded.footer_html: 'Si vous n’avez pas tenté d
 user_mailer.agent_proofing_succeeded.header: Vous avez completé la vérification de votre identité avec succès.
 user_mailer.agent_proofing_succeeded.subject: 'Action requise : Confirmez votre compte vérifié'
 user_mailer.contact_link_text: nous contacter
+user_mailer.device_profiling_error.header: Vous pouvez vous reconnecter à votre compte
+user_mailer.device_profiling_error.info: L’erreur concernant votre compte (LG22) a été résolue. Vous pouvez désormais vous connecter au site web de l’agence avec votre compte.
+user_mailer.device_profiling_error.subject: Vous pouvez vous reconnecter à votre compte
 user_mailer.dupe_profile.created.description: Quelqu’un a utilisé vos renseignements personnels pour confirmer un autre compte %{app_name}. Pour votre sécurité, nous avons restreint votre accès sur tous les comptes comportant des informations identiques et ayant accès à %{sp_or_app_name}.
 user_mailer.dupe_profile.created.description2_html: Si c’est vous qui avez confirmé un autre compte, veuillez supprimer le compte en double en suivant %{steps_link_html}. Si vous n’avez pas effectué cette action, veuillez prendre contact avec le %{help_center_link_html}.
 user_mailer.dupe_profile.created.heading: Vos renseignements personnels ont été confirmés pour un autre compte %{app_name}
