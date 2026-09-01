@@ -204,7 +204,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer do
                 'Execute Instant Verify',
                 'tps_vendor_raw_response',
                 'Products',
-              ).first['ProductType'] = 'UKNOWN'
+              ).first['ProductType'] = 'UNKNOWN'
 
               result.to_json
             end
