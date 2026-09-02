@@ -20,6 +20,7 @@ module Idv
         track_event(error_code:)
 
         if error_code == 'mdl_not_found'
+          document_capture_session&.update!(mdl_enabled: false)
           redirect_to idv_choose_id_type_url(disable_mdl: true)
         else
           @presenter = socure_errors_presenter(error_code)

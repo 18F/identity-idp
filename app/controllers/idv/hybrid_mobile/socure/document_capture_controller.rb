@@ -195,7 +195,7 @@ module Idv
         end
 
         def error_redirect_url
-          return unless document_captue_session.mdl_requested?
+          return unless document_capture_session.mdl_requested?
 
           idv_hybrid_mobile_socure_document_capture_errors_url(
             error_code: :mdl_not_found,

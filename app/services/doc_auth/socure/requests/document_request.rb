@@ -33,26 +33,24 @@ module DocAuth
             url: redirect_url,
           }
 
-          error_redirect = {
-            method: 'GET',
-            url: error_redirect_url,
+          redirect = nil if Rails.env.development?
+
+          config = {
+            documentType: document_type,
+            redirect:,
+            language: lang(language),
+            useCaseKey: use_case_key,
           }
 
-          if Rails.env.development?
-            redirect = nil
-            error_redirect = nil
-          elsif document_type != MDL_DOCUMENT_TYPE
-            error_redirect = nil
+          if error_redirect_url.present? && !Rails.env.development?
+            config[:errorRedirect] = {
+              method: 'GET',
+              url: error_redirect_url,
+            }
           end
 
           {
-            config: {
-              documentType: document_type,
-              redirect:,
-              errorRedirect: error_redirect,
-              language: lang(language),
-              useCaseKey: use_case_key,
-            },
+            config:,
             customerUserId: customer_user_id,
           }.to_json
         end

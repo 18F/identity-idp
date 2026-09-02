@@ -138,6 +138,7 @@ module Idv
         customer_user_id: document_request_body[:customerUserId],
         document_type_requested: document_request_body[:documentType],
         use_case_key: document_request_body[:useCaseKey],
+        error_redirect: document_request_body[:errorRedirect],
         docv_transaction_token: response_hash.dig(:data, :docvTransactionToken),
         socure_status: response_hash[:status],
         socure_msg: response_hash[:msg],
@@ -147,6 +148,7 @@ module Idv
         .merge(document_request_body).except(
           :documentType, # requested document type
           :useCaseKey,
+          :errorRedirect, # logged as error_redirect
         )
         .merge(response_body: document_response.to_h)
       analytics.idv_socure_document_request_submitted(**analytics_hash)

@@ -38,6 +38,32 @@ RSpec.describe Idv::ChooseIdTypeForm do
       end
     end
 
+    context 'when the choose_id_type_preference is a mobile drivers license' do
+      let(:mdl_enabled) { true }
+      let(:subject) { Idv::ChooseIdTypeForm.new(mdl_enabled:, passport_cards_enabled:) }
+      let(:params) do
+        { choose_id_type_preference: Idp::Constants::DocumentTypes::MDL }
+      end
+
+      it 'returns a successful form response' do
+        result = subject.submit(params)
+
+        expect(result.success?).to eq(true)
+        expect(result.errors).to be_empty
+      end
+
+      context 'when mdl is not enabled' do
+        let(:mdl_enabled) { false }
+
+        it 'returns a failed form response' do
+          result = subject.submit(params)
+
+          expect(result.success?).to eq(false)
+          expect(result.errors).not_to be_empty
+        end
+      end
+    end
+
     context 'when the choose_id_type_preference is nil' do
       let(:params) { { choose_id_type_preference: nil } }
 

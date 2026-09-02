@@ -139,6 +139,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
               redirect_url: idv_hybrid_mobile_socure_document_capture_update_url,
               language: expected_language,
               liveness_checking_required: false,
+              error_redirect_url: nil,
             )
         end
 
@@ -218,6 +219,12 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                       },
                       language: expected_language,
                       useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
+                      errorRedirect: {
+                        method: 'GET',
+                        url: idv_hybrid_mobile_socure_document_capture_errors_url(
+                          error_code: :mdl_not_found,
+                        ),
+                      },
                     },
                     customerUserId: user.uuid,
                   },
@@ -358,6 +365,12 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                       },
                       language: expected_language,
                       useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
+                      errorRedirect: {
+                        method: 'GET',
+                        url: idv_hybrid_mobile_socure_document_capture_errors_url(
+                          error_code: :mdl_not_found,
+                        ),
+                      },
                     },
                     customerUserId: user.uuid,
                   },
