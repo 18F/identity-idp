@@ -135,6 +135,23 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
       end
     end
 
+    context 'when a section is present but is missing reason codes' do
+      let(:response_body) do
+        {
+          'referenceId' => 'some-reference-id',
+          'namePhoneCorrelation' => { 'score' => 0.99 },
+          'phoneRisk' => { 'score' => 0.01, 'signals' => { 'phone' => {} } },
+          'customerProfile' => { 'customerUserId' => 'somebody' },
+        }
+      end
+
+      it 'treats the missing reason codes as empty without raising' do
+        expect(result.dig(:phonerisk, :reason_codes)).to eq({})
+        expect(result.dig(:name_phone_correlation, :reason_codes)).to eq({})
+        expect(result[:autofail_reason_codes]).to eq([])
+      end
+    end
+
     context 'no phonerisk section on response' do
       let(:response_body) do
         {
