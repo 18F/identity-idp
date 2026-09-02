@@ -238,6 +238,29 @@ RSpec.describe ProofingAgentJob, type: :job do
         end
       end
 
+      context 'when document capture session is not found' do
+        let(:transaction_id) { 'not-found' }
+        let!(:webhook_stub) { stub_webhook_request }
+
+        before do
+          allow(NewRelic::Agent).to receive(:notice_error)
+          perform
+        rescue ArgumentError
+        end
+
+        it 'logs errors and sends them to new relic' do
+          expect(webhook_stub).to_not have_been_requested
+          expect(NewRelic::Agent).to have_received(:notice_error).with(
+            instance_of(ArgumentError),
+            custom_params: {
+              event: 'ProofingAgent proofing attempt failed',
+              source: 'unexpected',
+              transaction_id:,
+            },
+          )
+        end
+      end
+
       context 'when the webhook URL is not configured' do
         let(:webhook_url) { nil }
         it 'stores a successful result' do
@@ -346,6 +369,170 @@ RSpec.describe ProofingAgentJob, type: :job do
 
         expect(@analytics).not_to have_logged_event(
           :idv_proofing_agent_profile_confirmation_email_sent,
+        )
+      end
+    end
+
+    context 'when the resolution proofing throw an exception' do
+      let(:result) { document_capture_session.reload.load_agent_proofed_user }
+
+      before do
+        allow(NewRelic::Agent).to receive(:notice_error)
+        allow(ResolutionProofingJob).to receive(:perform_now).and_raise('I AM ERROR')
+        perform
+      end
+
+      it 'returns a system error in the document capture session' do
+        result = document_capture_session.reload.load_agent_proofed_user
+        expect(result[:success]).to be false
+        expect(result[:reason]).to eq('system_error')
+      end
+
+      it 'logs unsuccessful idv_doc_auth_verify_proofing_results event' do
+        perform
+        expect(@analytics).to have_logged_event(
+          'IdV: doc auth verify proofing results',
+          hash_including(
+            success: false,
+          ),
+        )
+      end
+
+      it 'notifies NewRelic of the caught exception' do
+        expect(NewRelic::Agent).to have_received(:notice_error).with(
+          instance_of(RuntimeError),
+          custom_params: hash_including(source: 'resolution', transaction_id:),
+        )
+      end
+
+      it 'enqueues a ProofingAgentWebhookJob with success: false and system_error reason' do
+        expect(ProofingAgentWebhookJob).to have_been_enqueued.with(
+          success: false,
+          reason: 'system_error',
+          transaction_id: transaction_id,
+          correlation_id: correlation_id,
+          analytics_attributes: an_instance_of(Hash),
+        )
+      end
+    end
+
+    context 'when AAMVA verification throws an unexpected exception' do
+      before do
+        allow(NewRelic::Agent).to receive(:notice_error)
+        allow_any_instance_of(Proofing::Resolution::Plugins::AamvaPlugin)
+          .to receive(:call).and_raise('AAMVA IS DOWN')
+      end
+
+      it 'does not raise and stores a system_error result' do
+        expect { perform }.not_to raise_error
+
+        result = document_capture_session.reload.load_agent_proofed_user
+        expect(result[:success]).to be false
+        expect(result[:reason]).to eq('system_error')
+      end
+
+      it 'enqueues a ProofingAgentWebhookJob with success: false and system_error reason' do
+        expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
+          success: false,
+          reason: 'system_error',
+          transaction_id: transaction_id,
+          correlation_id: correlation_id,
+          analytics_attributes: an_instance_of(Hash),
+        )
+      end
+
+      it 'notifies NewRelic of the caught exception' do
+        perform
+        expect(NewRelic::Agent).to have_received(:notice_error).with(
+          instance_of(RuntimeError),
+          custom_params: hash_including(source: 'aamva', transaction_id:),
+        )
+      end
+
+      it 'does not call ResolutionProofingJob' do
+        expect(ResolutionProofingJob).not_to receive(:perform_now)
+        perform
+      end
+    end
+
+    context 'when MRZ verification throws an unexpected exception' do
+      let(:pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT.merge(phone: '12025551212').freeze }
+
+      before do
+        allow(NewRelic::Agent).to receive(:notice_error)
+        dos_client = instance_double(DocAuth::Mock::DosPassportApiClient)
+        allow(dos_client).to receive(:fetch).and_raise('DOS IS DOWN')
+        allow(DocAuth::Mock::DosPassportApiClient).to receive(:new).and_return(dos_client)
+      end
+
+      it 'does not raise and stores a system_error result' do
+        expect { perform }.not_to raise_error
+
+        result = document_capture_session.reload.load_agent_proofed_user
+        expect(result[:success]).to be false
+        expect(result[:reason]).to eq('system_error')
+      end
+
+      it 'enqueues a ProofingAgentWebhookJob with success: false and system_error reason' do
+        expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
+          success: false,
+          reason: 'system_error',
+          transaction_id: transaction_id,
+          correlation_id: correlation_id,
+          analytics_attributes: an_instance_of(Hash),
+        )
+      end
+
+      it 'notifies NewRelic of the caught exception' do
+        perform
+        expect(NewRelic::Agent).to have_received(:notice_error).with(
+          instance_of(RuntimeError),
+          custom_params: hash_including(source: 'mrz', transaction_id:),
+        )
+      end
+
+      it 'does not call ResolutionProofingJob' do
+        expect(ResolutionProofingJob).not_to receive(:perform_now)
+        perform
+      end
+    end
+
+    context 'when an unexpected error occurs outside of vendor proofing calls' do
+      before do
+        allow(NewRelic::Agent).to receive(:notice_error)
+        allow(ServiceProvider).to receive(:find_by).and_raise('BOOM')
+      end
+
+      it 'still raises the error' do
+        expect { perform }.to raise_error('BOOM')
+      end
+
+      it 'returns a system error in the document capture session' do
+        expect { perform }.to raise_error('BOOM')
+
+        result = document_capture_session.reload.load_agent_proofed_user
+
+        expect(result[:success]).to be false
+        expect(result[:reason]).to eq('system_error')
+      end
+
+      it 'notifies NewRelic of the caught exception' do
+        expect { perform }.to raise_error('BOOM')
+        expect(NewRelic::Agent).to have_received(:notice_error).with(
+          instance_of(RuntimeError),
+          custom_params: hash_including(source: 'unexpected', transaction_id:),
+        )
+      end
+
+      it 'still enqueues a fallback ProofingAgentWebhookJob with system_error' do
+        expect do
+          expect { perform }.to raise_error('BOOM')
+        end.to have_enqueued_job(ProofingAgentWebhookJob).with(
+          success: false,
+          reason: 'system_error',
+          transaction_id: transaction_id,
+          correlation_id: correlation_id,
+          analytics_attributes: an_instance_of(Hash),
         )
       end
     end
@@ -614,12 +801,69 @@ RSpec.describe ProofingAgentJob, type: :job do
 
     context 'when storing the proofing result raises a Redis error' do
       before do
+        allow(NewRelic::Agent).to receive(:notice_error)
         allow_any_instance_of(DocumentCaptureSession).to receive(:store_agent_proofed_user)
           .and_raise(Redis::BaseConnectionError)
       end
 
       it 're-raises the error' do
         expect { perform }.to raise_error(Redis::BaseConnectionError)
+      end
+
+      it 'still enqueues a fallback ProofingAgentWebhookJob with system_error' do
+        expect do
+          expect { perform }.to raise_error(Redis::BaseConnectionError)
+        end.to have_enqueued_job(ProofingAgentWebhookJob).with(
+          success: false,
+          reason: 'system_error',
+          transaction_id: transaction_id,
+          correlation_id: correlation_id,
+          analytics_attributes: an_instance_of(Hash),
+        )
+      end
+
+      it 'notifies NewRelic of the caught exception' do
+        expect { perform }.to raise_error(Redis::BaseConnectionError)
+        expect(NewRelic::Agent).to have_received(:notice_error).with(
+          instance_of(Redis::BaseConnectionError),
+          custom_params: hash_including(source: 'unexpected', transaction_id:),
+        )
+      end
+
+      it 'does not store an agent proofed user with a system_error' do
+        expect { perform }.to raise_error(Redis::BaseConnectionError)
+        expect(document_capture_session.reload.load_agent_proofed_user).to be_nil
+      end
+    end
+
+    context 'when storing the proofing result raises an ActiveRecord::StatementInvalid error' do
+      before do
+        allow(NewRelic::Agent).to receive(:notice_error)
+        allow_any_instance_of(DocumentCaptureSession).to receive(:store_agent_proofed_user)
+          .and_raise(ActiveRecord::StatementInvalid)
+      end
+
+      it 're-raises the error' do
+        expect { perform }.to raise_error(ActiveRecord::StatementInvalid)
+      end
+
+      it 'does not attempt to store the proofed user a second time' do
+        expect_any_instance_of(DocumentCaptureSession).to receive(:store_agent_proofed_user).once
+          .and_raise(ActiveRecord::StatementInvalid)
+
+        expect { perform }.to raise_error(ActiveRecord::StatementInvalid)
+      end
+
+      it 'still enqueues a fallback ProofingAgentWebhookJob with system_error' do
+        expect do
+          expect { perform }.to raise_error(ActiveRecord::StatementInvalid)
+        end.to have_enqueued_job(ProofingAgentWebhookJob).with(
+          success: false,
+          reason: 'system_error',
+          transaction_id: transaction_id,
+          correlation_id: correlation_id,
+          analytics_attributes: an_instance_of(Hash),
+        )
       end
     end
 
