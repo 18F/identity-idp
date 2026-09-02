@@ -1649,6 +1649,9 @@ notices.timeout_warning.signed_in.sign_out: Déconnectez-moi
 notices.totp_configured: Une appli d’authentification a été ajoutée à votre compte.
 notices.use_diff_email.link: utiliser une adresse e-mail différente
 notices.use_diff_email.text_html: Ou %{link_html}
+notices.verify_email.body_html: Nous avons envoyé un lien à <strong>%{email}</strong>. Si vous ne recevez pas d’e-mail rapidement, vérifiez votre dossier de courrier indésirable.
+notices.verify_email.resend: Renvoyer l’e-mail de confirmation
+notices.verify_email.use_different_email: Utiliser une autre adresse e-mail
 notices.webauthn_configured: Une clé de sécurité a été ajoutée à votre compte.
 notices.webauthn_platform_configured: Vous avez utilisé le verrouillage de l’écran de votre appareil pour ajouter le déverrouillage facial ou tactile à votre compte.
 openid_connect.authorization.errors.bad_client_id: Mauvaise client_id. Veuillez consulter notre documentation à https://developers.login.gov/support/#bad-client-id

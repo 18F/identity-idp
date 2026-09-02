@@ -1649,6 +1649,9 @@ notices.timeout_warning.signed_in.sign_out: Sign me out
 notices.totp_configured: An authentication app was added to your account.
 notices.use_diff_email.link: use a different email address
 notices.use_diff_email.text_html: Or, %{link_html}
+notices.verify_email.body_html: We sent a link to <strong>%{email}</strong>. If you don’t receive an email shortly, check your spam or junk folder.
+notices.verify_email.resend: Resend confirmation email
+notices.verify_email.use_different_email: Use a different email
 notices.webauthn_configured: A security key was added to your account.
 notices.webauthn_platform_configured: You used your device’s screen lock to add face or touch unlock to your account.
 openid_connect.authorization.errors.bad_client_id: Bad client_id. Please see our documentation at https://developers.login.gov/support/#bad-client-id

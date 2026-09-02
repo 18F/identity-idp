@@ -1660,6 +1660,9 @@ notices.timeout_warning.signed_in.sign_out: Cerrar mi sesión
 notices.totp_configured: Se agregó una aplicación de autenticación a su cuenta.
 notices.use_diff_email.link: use una dirección de correo electrónico diferente
 notices.use_diff_email.text_html: O %{link_html}
+notices.verify_email.body_html: Le enviamos un enlace a <strong>%{email}</strong>. Si no recibe un correo electrónico en breve, revise su carpeta de correo no deseado.
+notices.verify_email.resend: Reenviar correo de confirmación
+notices.verify_email.use_different_email: Usar un correo electrónico diferente
 notices.webauthn_configured: Se agregó una clave de seguridad a su cuenta.
 notices.webauthn_platform_configured: Usó el bloqueo de pantalla de su dispositivo para agregar el desbloqueo facial o táctil a su cuenta.
 openid_connect.authorization.errors.bad_client_id: client_id incorrecto. Consulte nuestra documentación en https://developers.login.gov/support/#bad-client-id
