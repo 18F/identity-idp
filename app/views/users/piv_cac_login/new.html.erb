@@ -1,15 +1,44 @@
 <% self.title = @presenter.title %>
 
-<%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
+<% if nds_layout? %>
+  <%= render NDS::AuthEntryComponent.new do %>
+    <%= render ButtonComponent.new(
+          url: new_user_session_url,
+          variant: :secondary,
+          size: :md,
+          class: 'auth-entry__back usa-button--icon-only',
+          aria: { label: t('forms.buttons.back') },
+        ) do %>
+      <%= render NDS::IconComponent.new(icon: :chevron_left, size: 20) %>
+    <% end %>
 
-<p class="margin-bottom-5">
-  <%= @presenter.info %>
-</p>
+    <%= render NDS::FormPageComponent.new(title: @presenter.heading) do |page| %>
+      <% page.with_body do %>
+        <div class="copy copy--muted">
+          <p><%= @presenter.info %></p>
+        </div>
+      <% end %>
 
-<%= render SpinnerButtonComponent.new(
-      url: @presenter.piv_cac_service_link,
-      big: true,
-      wide: true,
-    ).with_content(@presenter.piv_cac_capture_text) %>
+      <% page.with_actions do %>
+        <%= render ButtonComponent.new(
+              url: @presenter.piv_cac_service_link,
+              full_width: true,
+            ).with_content(@presenter.piv_cac_capture_text) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
+  <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<%= render 'shared/cancel', link: new_user_session_url %>
+  <p class="margin-bottom-5">
+    <%= @presenter.info %>
+  </p>
+
+  <%= render SpinnerButtonComponent.new(
+        url: @presenter.piv_cac_service_link,
+        big: true,
+        wide: true,
+      ).with_content(@presenter.piv_cac_capture_text) %>
+
+  <%= render 'shared/cancel', link: new_user_session_url %>
+<% end %>
