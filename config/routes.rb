@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       get '/status' => 'events#status', as: :status
     end
     get '/attempts-certs' => 'attempts_certs#index', as: :attempts_certs
+    get '/users_report/:hourstamp' => 'users_report/reports#show'
 
     namespace :proofing_agent do
       post '/search_user' => 'proofing_agent#search_user'

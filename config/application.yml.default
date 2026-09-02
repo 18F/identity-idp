@@ -546,6 +546,8 @@ update_cancel_account_reset_path: false
 use_dashboard_service_providers: false
 use_kms: false
 use_vot_in_sp_requests: true
+users_report_api_config: '[]'
+users_report_api_enabled: false
 usps_auth_token_refresh_job_enabled: false
 usps_confirmation_max_days: 30
 usps_confirmation_max_days_contiguous_states: 21
