@@ -1743,6 +1743,9 @@ simple_form.required.mark: ''
 simple_form.required.text: Ce champ est obligatoire
 simple_form.yes: Oui
 step_indicator.accessible_label: Progression par étapes
+step_indicator.flows.account_creation.account: Compte
+step_indicator.flows.account_creation.security: Sécurité
+step_indicator.flows.account_creation.verification: Vérification
 step_indicator.flows.idv.confirm_your_information: Confirmez vos informations
 step_indicator.flows.idv.find_a_post_office: Trouver un bureau de poste
 step_indicator.flows.idv.getting_started: Démarrer

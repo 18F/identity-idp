@@ -1755,6 +1755,9 @@ simple_form.required.mark: ''
 simple_form.required.text: 该字段必需做
 simple_form.yes: 对
 step_indicator.accessible_label: 步骤进展
+step_indicator.flows.account_creation.account: 账户
+step_indicator.flows.account_creation.security: 安全
+step_indicator.flows.account_creation.verification: 验证
 step_indicator.flows.idv.confirm_your_information: 确认您的信息
 step_indicator.flows.idv.find_a_post_office: 找一个邮局
 step_indicator.flows.idv.getting_started: 开始

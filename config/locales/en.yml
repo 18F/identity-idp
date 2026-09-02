@@ -1742,6 +1742,9 @@ simple_form.required.mark: ''
 simple_form.required.text: This field is required
 simple_form.yes: 'Yes'
 step_indicator.accessible_label: Step progress
+step_indicator.flows.account_creation.account: Account
+step_indicator.flows.account_creation.security: Security
+step_indicator.flows.account_creation.verification: Verification
 step_indicator.flows.idv.confirm_your_information: Confirm your information
 step_indicator.flows.idv.find_a_post_office: Find a Post Office
 step_indicator.flows.idv.getting_started: Getting started
