@@ -1662,6 +1662,9 @@ notices.timeout_warning.signed_in.sign_out: 把我登出
 notices.totp_configured: 你账户添加了一个身份证实应用程序。
 notices.use_diff_email.link: 使用一个不同的电邮地址
 notices.use_diff_email.text_html: 或者，%{link_html}
+notices.verify_email.body_html: 我们向 <strong>%{email}</strong> 发送了一个链接。如果你没有很快收到电子邮件，请检查你的垃圾邮件文件夹。
+notices.verify_email.resend: 重新发送确认电子邮件
+notices.verify_email.use_different_email: 使用其他电子邮件
 notices.webauthn_configured: 你账户添加了一个安全密钥。
 notices.webauthn_platform_configured: 你用了自己设备的屏幕锁定给账户添加了人脸或触摸解锁。
 openid_connect.authorization.errors.bad_client_id: 坏的client_id。请参阅我们的文档：https://developers.login.gov/support/#bad-client-id
