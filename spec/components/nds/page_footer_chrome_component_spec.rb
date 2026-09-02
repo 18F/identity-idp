@@ -20,16 +20,32 @@ RSpec.describe NDS::PageFooterChromeComponent, type: :component do
     expect(rendered).to have_css('lg-nds-page-footer > footer.page-footer')
   end
 
-  it 'renders the agency link with unprefixed classes' do
-    expect(rendered).to have_css('a.page-footer__agency .page-footer__agency-name')
+  it 'renders the agency identifier with unprefixed classes' do
+    expect(rendered).to have_css('.page-footer__agency .page-footer__agency-name')
   end
 
-  it 'renders language + destination select controls with unprefixed classes' do
-    expect(rendered).to have_css('select.page-footer__select[name="locale"]')
-    expect(rendered).to have_css('select.page-footer__select[name="footer_destination"]')
-    expect(rendered).to have_css('.page-footer__control', count: 2)
-    html = rendered.to_html
-    expect(html).to include('footer-language-')
-    expect(html).to include('footer-destination-')
+  it 'renders language + overflow menus as native details popover-menus' do
+    expect(rendered).to have_css('details.page-footer__menu', count: 2)
+    expect(rendered).to have_css(
+      'details.page-footer__menu > summary.usa-button.usa-button--quaternary',
+      count: 2,
+    )
+    expect(rendered).to have_css(
+      '.popover-menu .popover-menu__item[lang="en"]', text: 'English', visible: :all
+    )
+    expect(rendered).to have_css('.popover-menu .popover-menu__item[lang="es"]', visible: :all)
+  end
+
+  it 'renders the privacy and help links as quaternary footer buttons' do
+    expect(rendered).to have_css(
+      'a.usa-button.usa-button--quaternary', text: t('links.privacy_policy')
+    )
+    expect(rendered).to have_css(
+      'a.page-footer__help.usa-button.usa-button--quaternary', text: t('links.help')
+    )
+  end
+
+  it 'does not render legacy native select controls' do
+    expect(rendered).not_to have_css('select.page-footer__select')
   end
 end

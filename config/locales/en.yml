@@ -75,6 +75,7 @@ account.index.email: Email address
 account.index.email_add: Add new email
 account.index.email_addresses: Email addresses
 account.index.email_preferences: Email preferences
+account.index.email_short: Email
 account.index.password: Password
 account.index.phone: Phone numbers
 account.index.phone_add: Add phone
@@ -115,6 +116,7 @@ account.items.personal_key: Personal key
 account.links.delete_account: Delete
 account.links.regenerate_personal_key: Reset
 account.login.forced_reauthentication_notice_html: '<strong>%{sp_name}</strong> needs you to enter your email and password again.'
+account.login.forgot_password: Forgot password?
 account.login.piv_cac: Sign in with your government employee ID
 account.login.tab_navigation: Account creation tabs
 account.navigation.add_authentication_apps: Add authentication apps
@@ -161,6 +163,10 @@ anonymous_mailer.password_reset_missing_user.info_request_different: You can req
 anonymous_mailer.password_reset_missing_user.subject: Email not found
 anonymous_mailer.password_reset_missing_user.try_different_email: Try a different email address
 anonymous_mailer.password_reset_missing_user.use_this_email_html: Or use this email address and %{create_account_link_html}.
+auth_entry.body: Sign in once to reach benefits, records and applications across participating agencies. No separate passwords for every government website.
+auth_entry.headline: One account for all your government services
+auth_entry.whats_new_intro: Welcome to the new and improved %{app_name}
+auth_entry.whats_new_link: See what’s new
 banned_user.details: We are unable to authenticate you at this time.
 banned_user.title: Access is restricted
 components.barcode.image_alt: Barcode
@@ -175,6 +181,7 @@ components.input.errors.date: Enter a date
 components.input.errors.date_invalid: Enter a valid date
 components.input.errors.email: Please enter a valid email address
 components.input.errors.password: Enter a password
+components.input.errors.password_current: Enter your password
 components.input.errors.tel: Enter a phone number
 components.input.errors.tel_invalid: Enter a valid phone number
 components.input.errors.text: Enter a value
@@ -1060,6 +1067,7 @@ headings.redirecting: Redirecting
 headings.residential_address: Current residential address
 headings.session_timeout_warning: Need more time?
 headings.sign_in_existing_users: Sign in for existing users
+headings.sign_in_to_sp: Log in to %{sp}
 headings.sign_in_with_sp: Sign in to continue to %{sp}
 headings.sign_in_without_sp: Sign in
 headings.sp_handoff_bounced: There was a problem connecting to %{sp_name}

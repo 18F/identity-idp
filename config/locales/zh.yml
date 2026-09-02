@@ -75,6 +75,7 @@ account.index.email: 电邮地址
 account.index.email_add: 添加新电邮
 account.index.email_addresses: 电邮地址
 account.index.email_preferences: 电邮选择
+account.index.email_short: Email
 account.index.password: 密码
 account.index.phone: 电话号码
 account.index.phone_add: 添加电话
@@ -115,6 +116,7 @@ account.items.personal_key: 个人密钥
 account.links.delete_account: 删除
 account.links.regenerate_personal_key: 重设
 account.login.forced_reauthentication_notice_html: '<strong>%{sp_name}</strong> 需要你再次输入你的电邮和密码。'
+account.login.forgot_password: 忘记密码？
 account.login.piv_cac: 使用你的政府雇员身份证件登录
 account.login.tab_navigation: 账户创建标签页
 account.navigation.add_authentication_apps: 添加身份证实应用程序
@@ -161,6 +163,10 @@ anonymous_mailer.password_reset_missing_user.info_request_different: 你可以�
 anonymous_mailer.password_reset_missing_user.subject: 未找到电子邮件
 anonymous_mailer.password_reset_missing_user.try_different_email: 尝试用一个不同的电邮地址
 anonymous_mailer.password_reset_missing_user.use_this_email_html: 或者使用此电子邮件地址和 %{create_account_link_html}。
+auth_entry.body: 登录一次即可访问参与机构的福利、记录和申请。无需为每个政府网站设置单独密码。
+auth_entry.headline: 一个账户，畅享所有政府服务
+auth_entry.whats_new_intro: 欢迎使用全新改进的%{app_name}
+auth_entry.whats_new_link: 查看新功能
 banned_user.details: 我们目前无法验证你的身份。
 banned_user.title: 访问受限。
 components.barcode.image_alt: 条形码
@@ -175,6 +181,7 @@ components.input.errors.date: 请输入日期
 components.input.errors.date_invalid: 请输入有效的日期
 components.input.errors.email: 请输入有效的电子邮件
 components.input.errors.password: 请输入密码
+components.input.errors.password_current: 请输入您的密码
 components.input.errors.tel: 请输入电话号码
 components.input.errors.tel_invalid: 请输入有效的电话号码
 components.input.errors.text: 请输入内容
@@ -1073,6 +1080,7 @@ headings.redirecting: 重定向
 headings.residential_address: 目前住宅地址
 headings.session_timeout_warning: 需要更多时间？
 headings.sign_in_existing_users: 现有用户登录
+headings.sign_in_to_sp: 登录到 %{sp}
 headings.sign_in_with_sp: 登录以继续到 %{sp}
 headings.sign_in_without_sp: 登录
 headings.sp_handoff_bounced: 连接 %{sp_name} 出了问题
