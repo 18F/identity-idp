@@ -58,6 +58,36 @@ RSpec.describe Idv::ChooseIdTypeController do
       end
     end
 
+    context 'when mdl was not detected' do
+      render_views
+
+      let(:document_capture_session) do
+        create(
+          :document_capture_session,
+          user:,
+          mdl_enabled: false,
+          document_type_requested: Idp::Constants::DocumentTypes::MDL,
+        )
+      end
+
+      before do
+        subject.idv_session.flow_path = 'standard'
+        get :show, params: { disable_mdl: true }
+      end
+
+      it 'renders the mdl option disabled' do
+        expect(response.body).to have_css(
+          'input[type=radio][value=mobile_drivers_license][disabled]',
+        )
+      end
+
+      it 'pre-checks the drivers license option' do
+        expect(response.body).to have_css(
+          'input[type=radio][value=state_id_card][checked]',
+        )
+      end
+    end
+
     context 'when the user does not have a flow path' do
       before do
         subject.idv_session.flow_path = nil
