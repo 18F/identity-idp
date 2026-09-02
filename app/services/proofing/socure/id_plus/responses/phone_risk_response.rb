@@ -62,7 +62,7 @@ module Proofing
           end
 
           def phonerisk_reason_codes
-            phonerisk.dig('reasonCodes')
+            phonerisk.dig('reasonCodes') || []
           end
 
           def phonerisk_signals
@@ -74,7 +74,7 @@ module Proofing
           end
 
           def name_phone_correlation_reason_codes
-            name_phone_correlation.dig('reasonCodes')
+            name_phone_correlation.dig('reasonCodes') || []
           end
 
           def name_correlation_score_threshold
