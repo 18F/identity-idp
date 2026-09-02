@@ -18,6 +18,11 @@ RSpec.describe NDS::PageChromeComponent, type: :component do
     expect(rendered).not_to have_css('.auth-page__logo-banner')
   end
 
+  it 'renders no progress wrapper by default' do
+    rendered = render_inline(NDS::PageChromeComponent.new)
+    expect(rendered).not_to have_css('.auth-page__top-chrome-progress')
+  end
+
   it 'renders a progress slot inside a progress wrapper' do
     rendered = render_inline(NDS::PageChromeComponent.new) do |chrome|
       chrome.with_progress { 'PROGRESS' }

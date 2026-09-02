@@ -17,6 +17,15 @@
         hide_footer: local_assigns.fetch(:hide_page_footer, false) ||
           content_for?(:hide_page_footer),
       ) do |shell| %>
+    <% if content_for?(:nds_header_progress) %>
+      <% shell.with_chrome do %>
+        <%= render NDS::PageChromeComponent.new do |chrome| %>
+          <% chrome.with_progress do %>
+            <%= yield(:nds_header_progress) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
     <% shell.with_body do %>
       <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
       <% unless content_for?(:skip_layout_flash) %>
