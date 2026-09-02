@@ -15,6 +15,8 @@ RSpec.describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
   let(:option) { presenter.options.first }
   subject(:rendered) { render(partial: 'mfa_selection', locals: { form: form_builder, option: }) }
 
+  before { allow(view).to receive(:nds_layout?).and_return(false) }
+
   context 'before selecting options' do
     subject(:rendered) do
       render partial: 'mfa_selection', locals: {
@@ -158,6 +160,67 @@ RSpec.describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
 
       it 'renders with recommended tag' do
         expect(rendered).to have_css('.usa-tag', text: t('two_factor_authentication.recommended'))
+      end
+    end
+  end
+
+  context 'nds bucket' do
+    before { allow(view).to receive(:nds_layout?).and_return(true) }
+
+    it 'renders the option as a card submit control' do
+      expect(rendered).to have_css('.card--mfa[type="submit"]')
+      expect(rendered).to have_css(
+        ".card--mfa[name='two_factor_options_form[selection][]']",
+      )
+    end
+
+    it 'renders the method icon and title' do
+      expect(rendered).to have_css('.card--mfa .card__row .usa-icon')
+      expect(rendered).to have_css('.card--mfa .card__title', text: option.label)
+    end
+
+    it 'renders a chevron and description for an enabled option' do
+      expect(rendered).to have_css('.card--mfa .card__trailing .usa-icon')
+      expect(rendered).to have_css('.card--mfa .card__description', text: option.info)
+    end
+
+    it 'does not render the legacy checkbox markup' do
+      expect(rendered).not_to have_css('.usa-checkbox__input')
+    end
+
+    context 'when the recommended option is enabled' do
+      let(:option) do
+        presenter.options.find do |o|
+          o.is_a?(TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter)
+        end
+      end
+
+      it 'renders the recommended badge' do
+        expect(rendered).to have_css(
+          '.card__badge',
+          text: t('two_factor_authentication.recommended'),
+        )
+      end
+    end
+
+    context 'when the option is already configured' do
+      let(:user) { create(:user, :with_backup_code) }
+      let(:option) do
+        presenter.options.find do |o|
+          o.is_a?(TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter)
+        end
+      end
+
+      it 'renders a disabled card with the configuration badge' do
+        expect(rendered).to have_css('.card--mfa[disabled]')
+        expect(rendered).to have_css(
+          '.card__badge--success',
+          text: option.mfa_configuration_description,
+        )
+      end
+
+      it 'does not render a chevron for the disabled option' do
+        expect(rendered).not_to have_css('.card--mfa .card__trailing .usa-icon')
       end
     end
   end

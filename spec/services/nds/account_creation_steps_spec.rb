@@ -50,7 +50,25 @@ RSpec.describe NDS::AccountCreationSteps do
       )
     end
 
-    it 'builds security with no substep counter' do
+    it 'builds security substep 1/2' do
+      expect(described_class.progress_args(step: :security, substep: 1)).to eq(
+        steps: described_class.labels,
+        current_step: 1,
+        current_substep: 1,
+        substep_count: 2,
+      )
+    end
+
+    it 'builds security substep 2/2' do
+      expect(described_class.progress_args(step: :security, substep: 2)).to eq(
+        steps: described_class.labels,
+        current_step: 1,
+        current_substep: 2,
+        substep_count: 2,
+      )
+    end
+
+    it 'builds security with no substep counter when substep omitted' do
       expect(described_class.progress_args(step: :security)).to eq(
         steps: described_class.labels,
         current_step: 1,
@@ -65,9 +83,9 @@ RSpec.describe NDS::AccountCreationSteps do
     end
 
     it 'omits substep args for steps without a substep count' do
-      expect(described_class.progress_args(step: :security, substep: 1)).to eq(
+      expect(described_class.progress_args(step: :verification, substep: 1)).to eq(
         steps: described_class.labels,
-        current_step: 1,
+        current_step: 2,
       )
     end
 
