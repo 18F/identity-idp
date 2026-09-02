@@ -10,7 +10,9 @@ module TwoFactorAuthentication
     before_action :redirect_if_blank_phone, only: [:show]
     before_action :confirm_voice_capability, only: [:show]
 
-    helper_method :in_multi_mfa_selection_flow?
+    delegate :enabled_mfa_methods_count, to: :mfa_context
+    helper_method :in_multi_mfa_selection_flow?, :in_account_creation_flow?,
+                  :enabled_mfa_methods_count
 
     def show
       recaptcha_annotation = annotate_recaptcha(

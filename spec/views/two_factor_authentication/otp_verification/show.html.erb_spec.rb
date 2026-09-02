@@ -15,6 +15,7 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
   context 'user has a phone' do
     before do
       allow(view).to receive(:user_session).and_return({})
+      allow(view).to receive(:nds_layout?).and_return(false)
       allow(view).to receive(:current_user).and_return(User.new)
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
       controller.request.path_parameters[:otp_delivery_preference] =
@@ -341,6 +342,175 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
             t('two_factor_authentication.login_options_link_text'),
             href: login_two_factor_options_path,
           )
+        end
+      end
+    end
+
+    context 'legacy (non-nds) bucket' do
+      it 'does not render the NDS form-page card' do
+        render
+
+        expect(rendered).not_to have_css('.auth--form-page')
+      end
+    end
+
+    context 'nds bucket' do
+      let(:enabled_mfa_methods_count) { 0 }
+      let(:in_account_creation_flow) { true }
+      let(:resend_path) do
+        otp_send_path(
+          otp_delivery_selection_form: {
+            otp_delivery_preference: presenter_data[:otp_delivery_preference],
+            resend: true,
+          },
+        )
+      end
+
+      before do
+        allow(view).to receive(:nds_layout?).and_return(true)
+        allow(view).to receive(:in_account_creation_flow?).and_return(in_account_creation_flow)
+        allow(view).to receive(:enabled_mfa_methods_count).and_return(enabled_mfa_methods_count)
+      end
+
+      it 'renders the FormPageComponent card with the presenter heading' do
+        render
+
+        expect(rendered).to have_css('.auth--form-page')
+        expect(rendered).to have_css('.auth--form-page h1', text: @presenter.header)
+      end
+
+      it 'renders the one-time code input inside the card' do
+        render
+
+        expect(rendered).to have_css('.auth--form-page lg-nds-input-otp .input-otp__input#code')
+        expect(rendered).to have_css('.auth--form-page .input-otp__slots .input-otp__slot', count: 6)
+      end
+
+      it 'submits the code with a Continue primary button' do
+        render
+
+        expect(rendered).to have_button(t('forms.buttons.continue'))
+      end
+
+      it 'renders the resend control pointing at the resend path' do
+        render
+
+        expect(rendered).to have_link(
+          t('links.two_factor_authentication.send_another_code'),
+          href: resend_path,
+        )
+      end
+
+      it 'renders the choose-another-method control' do
+        render
+
+        expect(rendered).to have_link(
+          t('nds.mfa.choose_another_method'),
+          href: login_two_factor_options_path,
+        )
+      end
+
+      context 'in the multi-mfa selection flow' do
+        before do
+          data = presenter_data.merge(in_multi_mfa_selection_flow: true)
+          @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+            data: data,
+            view: view,
+            service_provider: nil,
+          )
+        end
+
+        it 'points choose-another-method at the authentication methods setup page' do
+          render
+
+          expect(rendered).to have_link(
+            t('nds.mfa.choose_another_method'),
+            href: authentication_methods_setup_path,
+          )
+        end
+      end
+
+      context 'during account creation' do
+        let(:in_account_creation_flow) { true }
+
+        context 'confirming the first mfa method' do
+          let(:enabled_mfa_methods_count) { 0 }
+
+          it 'sets the Security header progress to substep 1 / 2' do
+            render
+            progress = view.content_for(:nds_header_progress)
+
+            expect(progress).to have_css(
+              '.progress__step[aria-current="step"]',
+              text: t('step_indicator.flows.account_creation.security'),
+            )
+            expect(progress).to have_css(
+              '.progress__step[aria-current="step"] .progress__step-counter',
+              text: '1 / 2',
+            )
+          end
+        end
+
+        context 'confirming an additional mfa method' do
+          let(:enabled_mfa_methods_count) { 1 }
+
+          it 'sets the Security header progress to substep 2 / 2' do
+            render
+            progress = view.content_for(:nds_header_progress)
+
+            expect(progress).to have_css(
+              '.progress__step[aria-current="step"] .progress__step-counter',
+              text: '2 / 2',
+            )
+          end
+        end
+      end
+
+      context 'during sign-in (not account creation)' do
+        let(:in_account_creation_flow) { false }
+
+        it 'does not emit the account-creation header progress' do
+          render
+
+          expect(view.content_for(:nds_header_progress)).to be_nil
+        end
+      end
+
+      context 'with a landline setup warning' do
+        before { assign(:landline_alert, true) }
+
+        it 'shows the landline warning inside the card' do
+          render
+
+          expect(rendered).to have_css('.auth--form-page .usa-alert--warning')
+          expect(rendered).to have_css('.auth--form-page', text: /landline phone/)
+        end
+      end
+
+      context 'with an OTP expiration' do
+        around do |example|
+          freeze_time { example.run }
+        end
+
+        before do
+          otp_user = create(
+            :user,
+            :fully_registered,
+            otp_delivery_preference: 'voice',
+            direct_otp_sent_at: Time.zone.now,
+          )
+          allow(view).to receive(:current_user).and_return(otp_user)
+          otp_expiration = otp_user.direct_otp_sent_at +
+                           TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
+          allow(@presenter).to receive(:otp_expiration).and_return(otp_expiration)
+        end
+
+        it 'renders the countdown alert with screen-reader live regions' do
+          render
+
+          expect(rendered).to include('countdown-phase-alert')
+          expect(rendered).to have_css('#otp-live-phase[aria-live="polite"]', visible: :all)
+          expect(rendered).to have_css('#otp-live-expiry[role="alert"]', visible: :all)
         end
       end
     end

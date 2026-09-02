@@ -1,5 +1,123 @@
 <% self.title = t('titles.enter_2fa_code.one_time_code') %>
 
+<% if nds_layout? %>
+  <% if in_account_creation_flow? %>
+    <% content_for(:nds_header_progress) do %>
+      <%= nds_account_creation_progress(
+            step: :security,
+            substep: enabled_mfa_methods_count >= 1 ? 2 : 1,
+          ) %>
+    <% end %>
+  <% end %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: @presenter.header,
+        subtitle: safe_join([@presenter.nds_code_sent_message, @presenter.nds_do_not_share_message], ' '),
+      ) do |page| %>
+    <% if @landline_alert || @presenter.otp_expiration.present? %>
+      <% page.with_alert do %>
+        <% if @landline_alert %>
+          <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-2') do %>
+            <%= @presenter.landline_warning %>
+          <% end %>
+        <% end %>
+        <% if @presenter.otp_expiration.present? %>
+          <div id="otp-live-phase" class="usa-sr-only" aria-live="polite" aria-atomic="true"></div>
+          <div id="otp-live-expiry" class="usa-sr-only" role="alert" aria-atomic="true"></div>
+
+          <%= render CountdownPhaseAlertComponent.new(
+                expiration: @presenter.otp_expiration,
+                phases: @presenter.alert_countdown_phases,
+                sr_phase_region_id: 'otp-live-phase',
+                sr_expiry_region_id: 'otp-live-expiry',
+                alert_options: { class: 'margin-bottom-4', role: 'presentation' },
+                countdown_options: { update_interval: 1.second },
+              ) %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% page.with_body do %>
+      <%= simple_form_for('') do |f| %>
+        <% if @presenter.reauthn %>
+          <%= render 'two_factor_authentication/totp_verification/reauthn' %>
+        <% end %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <% otp_length = TwoFactorAuthenticatable::DIRECT_OTP_LENGTH %>
+          <% otp_value = @presenter.code_value.to_s %>
+          <lg-nds-input-otp>
+            <div class="input-otp">
+              <%= f.label :code, t('components.one_time_code_input.label'), class: 'input-otp__label' %>
+              <div class="input-otp__shell">
+                <%= f.text_field(
+                      :code,
+                      value: otp_value,
+                      id: 'code',
+                      class: 'input-otp__input usa-input__control',
+                      type: :text,
+                      inputmode: 'numeric',
+                      pattern: "[0-9]{#{otp_length}}",
+                      maxlength: otp_length,
+                      autocomplete: 'one-time-code',
+                      autofocus: true,
+                      'aria-describedby': 'otp-hint',
+                    ) %>
+                <div class="input-otp__slots" aria-hidden="true">
+                  <div class="input-otp__group">
+                    <% otp_length.times do |i| %>
+                      <% char = otp_value[i] %>
+                      <div class="input-otp__slot<%= ' input-otp__slot--active input-otp__slot--caret' if otp_value.length == i %>"><%= char %></div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+              <p class="input-otp__hint usa-sr-only" id="otp-hint"><%= t('components.one_time_code_input.hint.numeric') %></p>
+            </div>
+          </lg-nds-input-otp>
+          <%= render NDS::CardComponent.new do %>
+            <div class="checkbox-group">
+              <div class="checkbox">
+                <%= f.check_box(
+                      :remember_device,
+                      { class: 'checkbox__input',
+                        checked: @presenter.remember_device_box_checked?,
+                        autocomplete: 'off',
+                        aria: { describedby: 'remember-browser-description' } },
+                      '1',
+                      '0',
+                    ) %>
+                <%= f.label :remember_device, class: 'checkbox__label' do %>
+                  <span class="checkbox__label-text"><%= t('forms.messages.remember_device') %></span>
+                  <span class="checkbox__label-description" id="remember-browser-description"><%= t('nds.mfa.remember_device_info') %></span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+          <%= hidden_field_tag 'otp_make_default_number', @presenter.otp_make_default_number %>
+          <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+            <%= render ButtonComponent.new(type: :submit, full_width: true)
+                  .with_content(t('forms.buttons.continue')) %>
+            <%= render ButtonComponent.new(
+                  url: otp_send_path(
+                    otp_delivery_selection_form: {
+                      otp_delivery_preference: @presenter.otp_delivery_preference,
+                      resend: true,
+                    },
+                  ),
+                  variant: :secondary,
+                  full_width: true,
+                ).with_content(t('links.two_factor_authentication.send_another_code')) %>
+            <%= render ButtonComponent.new(
+                  url: @presenter.choose_another_authentication_method_path,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('nds.mfa.choose_another_method')) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <% if @landline_alert %>
   <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-2') do %>
     <%= @presenter.landline_warning %>
@@ -77,4 +195,5 @@
   <%= render 'shared/cancel', link: @presenter.cancel_link %>
 <% else %>
   <%= render 'shared/cancel_or_back_to_options' %>
+<% end %>
 <% end %>
