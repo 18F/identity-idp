@@ -43,10 +43,6 @@ module NDS
       @destination_options || [
         { label: t('links.contact'), value: helpers.contact_redirect_url },
         {
-          label: t('links.privacy_policy'),
-          value: MarketingSite.security_and_privacy_practices_url,
-        },
-        {
           label: t('notices.privacy.privacy_act_statement'),
           value: MarketingSite.privacy_act_statement_url,
         },
@@ -55,6 +51,13 @@ module NDS
           value: MarketingSite.accessibility_statement_url,
         },
       ]
+    end
+
+    def privacy_link
+      {
+        label: t('links.privacy_policy'),
+        value: MarketingSite.security_and_privacy_practices_url,
+      }
     end
 
     def resolved_help_url

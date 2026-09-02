@@ -75,6 +75,7 @@ account.index.email: Adresse e-mail
 account.index.email_add: Ajouter une nouvelle adresse e-mail
 account.index.email_addresses: Adresses e-mail
 account.index.email_preferences: Préférences e-mail
+account.index.email_short: Email
 account.index.password: Mot de passe
 account.index.phone: Numéros de téléphone
 account.index.phone_add: Ajouter un téléphone
@@ -115,6 +116,7 @@ account.items.personal_key: Clé personnelle
 account.links.delete_account: Supprimer
 account.links.regenerate_personal_key: Réinitialiser
 account.login.forced_reauthentication_notice_html: '<strong>%{sp_name}</strong> nécessite que vous saisissiez à nouveau votre adresse e-mail et votre mot de passe.'
+account.login.forgot_password: Mot de passe oublié ?
 account.login.piv_cac: Connectez-vous avec votre identifiant d’employé.
 account.login.tab_navigation: Onglets de création de compte
 account.navigation.add_authentication_apps: Ajouter des applis d’authentification
@@ -161,6 +163,10 @@ anonymous_mailer.password_reset_missing_user.info_request_different: Vous pouvez
 anonymous_mailer.password_reset_missing_user.subject: Email non trouvé
 anonymous_mailer.password_reset_missing_user.try_different_email: Essayez une autre adresse e-mail
 anonymous_mailer.password_reset_missing_user.use_this_email_html: Ou utilisez cet e-mail et %{create_account_link_html}.
+auth_entry.body: Connectez-vous une seule fois pour accéder aux prestations, dossiers et demandes des organismes participants. Plus besoin d’un mot de passe distinct pour chaque site gouvernemental.
+auth_entry.headline: Un compte pour tous vos services gouvernementaux
+auth_entry.whats_new_intro: Bienvenue sur le nouveau %{app_name} amélioré
+auth_entry.whats_new_link: Découvrez les nouveautés
 banned_user.details: Nous ne sommes pas en mesure de vous authentifier pour le moment.
 banned_user.title: L’accès est restreint
 components.barcode.image_alt: Code-barres
@@ -175,6 +181,7 @@ components.input.errors.date: Saisissez une date
 components.input.errors.date_invalid: Saisissez une date valide
 components.input.errors.email: Saisissez une adresse e-mail valide
 components.input.errors.password: Saisissez un mot de passe
+components.input.errors.password_current: Saisissez votre mot de passe
 components.input.errors.tel: Saisissez un numéro de téléphone
 components.input.errors.tel_invalid: Saisissez un numéro de téléphone valide
 components.input.errors.text: Saisissez une valeur
@@ -1060,6 +1067,7 @@ headings.redirecting: Redirection
 headings.residential_address: Adresse résidentielle actuelle
 headings.session_timeout_warning: Vous avez besoin de plus de temps ?
 headings.sign_in_existing_users: Se connecter pour les utilisateurs existants
+headings.sign_in_to_sp: Connectez-vous à %{sp}
 headings.sign_in_with_sp: Se connecter pour continuer vers %{sp}
 headings.sign_in_without_sp: Se connecter
 headings.sp_handoff_bounced: Un problème est survenu lors de la connexion à %{sp_name}
