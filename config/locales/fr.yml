@@ -1575,6 +1575,7 @@ links.create_account: Créer un compte
 links.exit_login: Quitter %{app_name}
 links.go_back: Retour
 links.help: Aide
+links.i_already_have_an_account: J’ai déjà un compte
 links.more: Plus
 links.new_tab: '(ouvre un nouvel onglet)'
 links.passwords.forgot: Mot de passe oublié ?
@@ -1733,6 +1734,7 @@ sign_up.cancel.success: Votre compte a été supprimé. Nous n’avons pas sauve
 sign_up.cancel.warning_header: 'Si vous annulez maintenant :'
 sign_up.completed.smiling_image_alt: Une personne souriante avec une coche verte indiquant la réussite de la procédure
 sign_up.information_sharing_html: Pour savoir comment %{app_name} partage vos informations, consultez notre déclaration relative à la %{link_html}.
+sign_up.nds_terms_intro: En continuant, vous acceptez les
 sign_up.terms: J’ai lu et j’accepte les %{app_name}
 simple_form.error_notification.default_message: 'Veuillez examiner les problèmes ci-dessous :'
 simple_form.no: Non
