@@ -1,5 +1,78 @@
 <% self.title = t('titles.two_factor_setup') %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(
+          step: :security,
+          substep: enabled_mfa_methods_count >= 1 ? 2 : 1,
+        ) %>
+  <% end %>
+
+  <% option_order = %i[webauthn_platform phone auth_app webauthn backup_code piv_cac] %>
+  <% nds_options = @presenter.options.sort_by do |o|
+       [o.disabled? ? 0 : 1, option_order.index(o.type) || 99]
+     end %>
+
+  <%= simple_form_for @two_factor_options_form,
+                      method: :patch,
+                      url: authentication_methods_setup_path do %>
+    <%= render NDS::FormPageComponent.new(
+          title: @presenter.heading,
+          subtitle: @presenter.intro,
+        ) do |c| %>
+      <% c.with_alert do %>
+        <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :voice, only_if_all: true)) %>
+      <% end %>
+
+      <% c.with_body do %>
+        <div class="mfa-options" data-mfa-options>
+          <% nds_options.each_with_index do |option, index| %>
+            <div class="mfa-options__item<%= ' mfa-options__item--extra' if index >= 2 %>">
+              <%= render(option) do %>
+                <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
+                           locals: { option: option } %>
+              <% end %>
+            </div>
+          <% end %>
+          <% if nds_options.length > 2 %>
+            <%= render ButtonComponent.new(
+                  type: :button,
+                  variant: :tertiary,
+                  size: :md,
+                  class: 'mfa-options__more',
+                  data: { mfa_more: '' },
+                ).with_content(t('mfa.more_options')) %>
+          <% end %>
+        </div>
+
+        <%= hidden_field_tag :platform_authenticator_available, id: 'platform_authenticator_available' %>
+        <% javascript_packs_tag_once('platform-authenticator-available', 'mfa-more-options') %>
+        <% if FeatureManagement.account_creation_device_profiling_collecting_enabled? %>
+          <div class="margin-bottom-2">
+            <%= render partial: 'shared/threat_metrix_profiling',
+                       locals: {
+                         threatmetrix_session_id:,
+                         threatmetrix_javascript_urls:,
+                         threatmetrix_iframe_url:,
+                       } %>
+          </div>
+        <% end %>
+      <% end %>
+
+      <% if @presenter.skip_path || !@presenter.two_factor_enabled? %>
+        <% c.with_actions do %>
+          <%= render NDS::StackComponent.new(kind: :links) do %>
+            <% if @presenter.skip_path %>
+              <%= link_to @presenter.skip_label, @presenter.skip_path %>
+            <% elsif !@presenter.two_factor_enabled? %>
+              <%= link_to t('links.cancel_account_creation'), sign_up_cancel_path %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :voice, only_if_all: true)) %>
 
 <% if @presenter.icon %>
@@ -73,4 +146,5 @@
       <%= link_to t('links.cancel_account_creation'), sign_up_cancel_path %>
     <% end %>
   <% end %>
+<% end %>
 <% end %>

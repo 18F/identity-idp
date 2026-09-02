@@ -16,6 +16,7 @@ module Users
                   if: :account_creation_threatmetrix_bootstrap_needed?
 
     delegate :enabled_mfa_methods_count, to: :mfa_context
+    helper_method :enabled_mfa_methods_count
 
     def index
       two_factor_options_form

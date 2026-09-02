@@ -1,3 +1,45 @@
+<% if nds_layout? %>
+  <% icons = {
+       webauthn_platform: :fingerprint,
+       auth_app: :qr,
+       phone: :chat,
+       webauthn: :key,
+       backup_code: :download_backup,
+       piv_cac: :id,
+     } %>
+  <% description = option.mfa_configuration_description %>
+  <% show_recommended = option.type == :webauthn_platform && !option.disabled? %>
+
+  <%= render NDS::CardComponent.new(
+        button: true,
+        type: :submit,
+        class: 'card--mfa',
+        name: 'two_factor_options_form[selection][]',
+        value: option.type,
+        id: "two_factor_options_form_selection_#{option.type}",
+        disabled: option.disabled?,
+        'aria-disabled': option.disabled?,
+      ) do |card| %>
+    <% unless option.disabled? %>
+      <% card.with_trailing do %>
+        <%= render NDS::IconComponent.new(icon: :chevron_right, size: 20) %>
+      <% end %>
+    <% end %>
+    <% if show_recommended %>
+      <span class="card__badge"><%= t('two_factor_authentication.recommended') %></span>
+    <% end %>
+    <% if description.present? %>
+      <span class="card__badge card__badge--success"><%= description %></span>
+    <% end %>
+    <div class="card__row">
+      <%= render NDS::IconComponent.new(icon: icons.fetch(option.type), size: 24) %>
+      <p class="card__title"><%= option.label %></p>
+    </div>
+    <% unless option.disabled? %>
+      <p class="card__description"><%= option.info %></p>
+    <% end %>
+  <% end %>
+<% else %>
 <%= check_box_tag(
       'two_factor_options_form[selection][]',
       option.type,
@@ -39,4 +81,5 @@
       <% end %>
     </span>
   </div>
+<% end %>
 <% end %>

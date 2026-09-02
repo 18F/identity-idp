@@ -1618,6 +1618,7 @@ mailer.sent_at: 在 %{formatted_timestamp}时发出
 mfa.account_info: 添加另外一个身份证实方法可以预防你在失去其他方法后被锁在账户外。
 mfa.add: 添加另外一个方法
 mfa.info: 通过选择多因素身份证实方法来为您的 %{app_name} 帐户添加额外一层安全保障。
+mfa.more_options: 更多选项
 mfa.recommendation: 我们建议你选择至少两个不同方法，以防你丢失其中一个。
 mfa.second_method_warning.link: 添加第二个身份证实方法。
 mfa.second_method_warning.text: 如果你丢失唯一的身份证实方法，就不得不删除你的账户并从头开始。
