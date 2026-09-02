@@ -21,6 +21,8 @@ module Proofing
               name_correlation_successful: name_correlation_successful?,
               phonerisk_successful: phonerisk_successful?,
               has_autofail_reason_codes: has_autofail_reason_codes?,
+              autofail_reason_codes: SocureReasonCode
+                .with_definitions(matched_autofail_reason_codes),
             }
           end
 
@@ -86,8 +88,12 @@ module Proofing
           end
 
           def has_autofail_reason_codes?
-            (phonerisk_reason_codes & auto_failure_reason_codes).any? ||
-              (name_phone_correlation_reason_codes & auto_failure_reason_codes).any?
+            matched_autofail_reason_codes.any?
+          end
+
+          def matched_autofail_reason_codes
+            (phonerisk_reason_codes & auto_failure_reason_codes) |
+              (name_phone_correlation_reason_codes & auto_failure_reason_codes)
           end
 
           def has_name_verification_error_reason_codes?

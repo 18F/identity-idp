@@ -149,6 +149,7 @@ RSpec.describe SocureShadowModePhoneRiskJob do
               name_correlation_successful: true,
               phonerisk_successful: true,
               has_autofail_reason_codes: false,
+              autofail_reason_codes: {},
             },
             exception: nil,
             reference:,
