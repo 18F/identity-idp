@@ -1,5 +1,88 @@
 <% self.title = t('titles.create_account') %>
 
+<% if nds_layout? %>
+  <%= render NDS::AuthEntryComponent.new do %>
+    <%= render NDS::FormPageComponent.new(
+          title: t('titles.create_account'),
+          divider: true,
+        ) do |page| %>
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <%= render 'shared/sp_alert', section: 'sign_up' %>
+
+          <%= simple_form_for(
+                @register_user_email_form,
+                url: sign_up_register_path,
+                html: { data: { nds_submit_gate: true } },
+              ) do |f| %>
+            <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+              <div class="usa-form-group usa-input-group--floating<%= ' usa-form-group--error' if @register_user_email_form.errors[:email].present? %>">
+                <%= f.email_field(
+                      :email,
+                      class: "usa-input#{' usa-input--error' if @register_user_email_form.errors[:email].present?}",
+                      placeholder: ' ',
+                      required: true,
+                      autocorrect: 'off',
+                      autocomplete: 'email',
+                      'aria-invalid': @register_user_email_form.errors[:email].present?,
+                    ) %>
+                <%= f.label :email, t('account.index.email_short'), class: 'usa-label' %>
+                <% if @register_user_email_form.errors[:email].present? %>
+                  <p class="usa-error-message"><%= @register_user_email_form.errors[:email].first %></p>
+                <% end %>
+              </div>
+
+              <%= f.hidden_field :email_language, value: I18n.locale %>
+              <%= f.hidden_field :terms_accepted, value: '1' %>
+
+              <p class="auth__terms">
+                <%= t('sign_up.nds_terms_intro') %>
+                <%= render NDS::LinkComponent.new(
+                      url: MarketingSite.rules_of_use_url,
+                      target: '_blank',
+                      rel: 'noopener noreferrer',
+                    ) do %>
+                  <%= t('titles.rules_of_use') %>
+                <% end %>
+              </p>
+
+              <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+                <%= render ButtonComponent.new(
+                      type: :submit,
+                      full_width: true,
+                    ).with_content(t('forms.buttons.continue')) %>
+              <% end %>
+            <% end %>
+          <% end %>
+
+          <%= render NDS::StackComponent.new(kind: :links, align: :center) do %>
+            <%= render NDS::LinkComponent.new(
+                  url: policy_redirect_url(
+                    policy: :privacy_act_statement,
+                    flow: :create_account,
+                    step: :enter_email,
+                  ),
+                  target: '_blank',
+                  rel: 'noopener noreferrer',
+                ) do %>
+              <%= t('notices.privacy.privacy_act_statement') %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :links, align: :center) do %>
+          <%= render NDS::LinkComponent.new(url: new_user_session_path) do %>
+            <%= t('links.i_already_have_an_account') %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <%= render 'shared/sp_alert', section: 'sign_up' %>
 
 <% if decorated_sp_session.sp_name %>
@@ -73,3 +156,4 @@
         ),
       ) %>
 </p>
+<% end %>
