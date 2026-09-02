@@ -148,7 +148,6 @@ RSpec.describe SocureShadowModePhoneRiskJob do
               customer_user_id: user.uuid,
               name_correlation_successful: true,
               phonerisk_successful: true,
-              has_autofail_reason_codes: false,
               autofail_reason_codes: [],
             },
             exception: nil,

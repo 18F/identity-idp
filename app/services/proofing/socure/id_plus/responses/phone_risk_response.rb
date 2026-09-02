@@ -20,7 +20,6 @@ module Proofing
               customer_user_id:,
               name_correlation_successful: name_correlation_successful?,
               phonerisk_successful: phonerisk_successful?,
-              has_autofail_reason_codes: has_autofail_reason_codes?,
               autofail_reason_codes: matched_autofail_reason_codes,
             }
           end

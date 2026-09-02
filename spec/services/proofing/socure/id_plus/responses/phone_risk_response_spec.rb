@@ -92,9 +92,9 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
     it 'exposes the success and autofail signals' do
       expect(result[:name_correlation_successful]).to eq(true)
       expect(result[:phonerisk_successful]).to eq(true)
-      expect(result[:has_autofail_reason_codes]).to eq(false)
       expect(result[:autofail_reason_codes]).to eq([])
     end
+
     context 'phonerisk is above threshold' do
       let(:phonerisk_low) { false }
 
@@ -119,10 +119,6 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
         allow(IdentityConfig.store).to receive(
           :idv_socure_phonerisk_auto_failure_reason_codes,
         ).and_return([autofail_reason_code])
-      end
-
-      it 'reports autofail reason codes are present' do
-        expect(result[:has_autofail_reason_codes]).to eq(true)
       end
 
       it 'includes the matched autofail reason codes' do
