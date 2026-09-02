@@ -93,7 +93,7 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
       expect(result[:name_correlation_successful]).to eq(true)
       expect(result[:phonerisk_successful]).to eq(true)
       expect(result[:has_autofail_reason_codes]).to eq(false)
-      expect(result[:autofail_reason_codes]).to eq({})
+      expect(result[:autofail_reason_codes]).to eq([])
     end
     context 'phonerisk is above threshold' do
       let(:phonerisk_low) { false }
@@ -126,7 +126,7 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
       end
 
       it 'includes the matched autofail reason codes' do
-        expect(result[:autofail_reason_codes].keys).to eq([autofail_reason_code])
+        expect(result[:autofail_reason_codes]).to eq([autofail_reason_code])
       end
 
       context 'when the autofail code is in the name phone correlation section' do
@@ -134,7 +134,7 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
         let(:correlation_reason_codes) { ['I123', autofail_reason_code] }
 
         it 'includes the matched autofail reason codes' do
-          expect(result[:autofail_reason_codes].keys).to eq([autofail_reason_code])
+          expect(result[:autofail_reason_codes]).to eq([autofail_reason_code])
         end
       end
     end
