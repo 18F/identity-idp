@@ -1668,7 +1668,8 @@ module AnalyticsEvents
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
   #   warning
   # @param [Boolean] selfie_check_required Whether facial match check is required
-  # @param ["document_capture","send_link","clear1_session"] destination Where user is sent after submission
+  # @param ["document_capture","send_link","clear1_session"] destination Where user is sent after
+  #   submission
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   #   SDK upgrades
