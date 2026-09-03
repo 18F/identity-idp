@@ -33,14 +33,6 @@ else
   npm install --omit=dev --cache .npm-cache
 fi
 
-# uirefresh sandbox: track bleeding-edge design-system from GitHub main on every
-# recycle instead of the npm-pinned version. --no-save keeps package.json/lock
-# clean so this branch stays a thin diff on top of idp main. Runs IDS's own
-# `prepare` build (make build-assets build-package) to generate packages-nds.
-# PUPPETEER_SKIP_DOWNLOAD: IDS's prepare runs a full npm install incl. devDeps;
-# puppeteer's postinstall tries to fetch Chrome, which fails on the offline host.
-PUPPETEER_SKIP_DOWNLOAD=true npm install --no-save --cache .npm-cache github:18F/identity-design-system#main
-
 bundle binstubs --all
 
 set +x
