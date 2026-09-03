@@ -31,6 +31,7 @@ RSpec.describe 'idv/in_person/verify_info/show.html.erb' do
           dob: Faker::Date.in_date_period(year: 1985).to_s,
           state_id_jurisdiction: Faker::Address.state_abbr,
           state_id_number: Faker::Number.number(digits: 6).to_s,
+          state_id_expiration: Faker::Date.in_date_period(year: Time.zone.now.year + 1).to_s,
           identity_doc_address1: Faker::Address.street_address,
           identity_doc_address2: Faker::Address.secondary_address,
           identity_doc_city: Faker::Address.city,
@@ -72,6 +73,11 @@ RSpec.describe 'idv/in_person/verify_info/show.html.erb' do
         # State ID number
         expect(rendered).to have_content(t('idv.form.id_number'))
         expect(rendered).to have_content(pii[:state_id_number])
+        # State ID expiration date
+        expect(rendered).to have_content(t('in_person_proofing.form.state_id.expiration_date'))
+        expect(rendered).to have_content(
+          I18n.l(Date.parse(pii[:state_id_expiration]), format: I18n.t('time.formats.event_date')),
+        )
         # State ID address 1
         expect(rendered).to have_content(t('idv.form.address1'))
         expect(rendered).to have_content(pii[:identity_doc_address1])

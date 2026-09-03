@@ -29,6 +29,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true, allow_browser_log: true do
       expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
       expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
+      expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_EXPIRATION_FORMATTED_EVENT)
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1).twice
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2).twice
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY).twice
