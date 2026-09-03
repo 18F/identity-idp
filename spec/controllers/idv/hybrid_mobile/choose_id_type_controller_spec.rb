@@ -123,6 +123,30 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
     end
+
+    context 'when mdl was not detected' do
+      render_views
+
+      subject(:response) { get :show, params: { disable_mdl: true } }
+
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+
+      before do
+        document_capture_session.update!(mdl_enabled: false)
+      end
+
+      it 'renders the mdl option disabled' do
+        expect(response.body).to have_css(
+          'input[type=radio][value=mobile_drivers_license][disabled]',
+        )
+      end
+
+      it 'pre-checks the drivers license option' do
+        expect(response.body).to have_css(
+          'input[type=radio][value=state_id_card][checked]',
+        )
+      end
+    end
   end
 
   describe '#update' do

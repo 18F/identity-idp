@@ -45,6 +45,7 @@ module Idv
           language: I18n.locale,
           liveness_checking_required: resolved_authn_context_result.facial_match?,
           document_capture_session:,
+          error_redirect_url:,
         )
         timer = JobHelpers::Timer.new
         document_response = timer.time('vendor_request') do
@@ -184,6 +185,14 @@ module Idv
           selfie_check_required: resolved_authn_context_result.facial_match?,
           pii_like_keypaths: [[:pii]],
         }.merge(ab_test_analytics_buckets)
+      end
+
+      def error_redirect_url
+        return unless document_capture_session.mdl_requested?
+
+        idv_socure_document_capture_errors_url(
+          error_code: :mdl_not_found,
+        )
       end
     end
   end
