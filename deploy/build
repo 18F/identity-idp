@@ -30,8 +30,14 @@ then
   npm ci --omit=dev --offline --cache .npm-cache
 else
   bundle install --jobs 4
-  npm ci --omit=dev --cache .npm-cache
+  npm install --omit=dev --cache .npm-cache
 fi
+
+# uirefresh sandbox: track bleeding-edge design-system from GitHub main on every
+# recycle instead of the npm-pinned version. --no-save keeps package.json/lock
+# clean so this branch stays a thin diff on top of idp main. Runs IDS's own
+# `prepare` build (make build-assets build-package) to generate packages-nds.
+npm install --no-save --cache .npm-cache github:18F/identity-design-system#main
 
 bundle binstubs --all
 
