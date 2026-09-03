@@ -1,5 +1,113 @@
 <% self.title = @presenter.title %>
 
+<% if nds_layout? %>
+  <% if in_account_creation_flow? %>
+    <% content_for(:nds_header_progress) do %>
+      <%= nds_account_creation_progress(
+            step: :security,
+            substep: enabled_mfa_methods_count >= 1 ? 2 : 1,
+          ) %>
+    <% end %>
+  <% end %>
+
+  <%= simple_form_for(
+        '',
+        url: submit_new_piv_cac_url,
+        html: { data: { nds_submit_gate: true } },
+      ) do |f| %>
+    <%= render NDS::FormPageComponent.new(title: t('titles.piv_cac_login.add')) do |page| %>
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(tag: :ol, gap: 16, class: 'usa-list--unstyled') do %>
+          <li>
+            <div class="card stack stack--gap-16">
+              <ol class="usa-list margin-0" start="1">
+                <li class="text-body-emphasis"><%= t('nds.piv_cac_setup.step_1') %></li>
+              </ol>
+              <div class="usa-form-group usa-input-group--floating">
+                <%= f.text_field(
+                      :name,
+                      class: 'usa-input',
+                      id: 'name',
+                      placeholder: ' ',
+                      required: true,
+                      maxlength: 20,
+                    ) %>
+                <%= f.label :name, t('nds.piv_cac_setup.nickname'), class: 'usa-label' %>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="card stack stack--gap-16">
+              <ol class="usa-list margin-0" start="2">
+                <li class="text-body-emphasis"><%= t('nds.piv_cac_setup.step_2') %></li>
+              </ol>
+              <%= video_tag(
+                    'mfa-options/piv_cac_animation.mp4',
+                    autoplay: true,
+                    loop: true,
+                    muted: true,
+                    playsinline: true,
+                    class: 'width-full height-auto',
+                    aria: { hidden: true },
+                  ) %>
+            </div>
+          </li>
+          <li>
+            <div class="card stack stack--gap-12">
+              <ol class="usa-list margin-0" start="3">
+                <li class="text-body-emphasis"><%= t('nds.piv_cac_setup.step_3') %></li>
+              </ol>
+              <p class="card__description margin-0"><%= t('nds.piv_cac_setup.step_3_info') %></p>
+            </div>
+          </li>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+                full_width: true,
+              ).with_content(t('forms.buttons.continue')) %>
+
+          <% if user_session[:add_piv_cac_after_2fa] && !@piv_cac_required %>
+            <%= render ButtonComponent.new(
+                  type: :submit,
+                  name: 'skip',
+                  value: 'true',
+                  formnovalidate: true,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('mfa.skip')) %>
+          <% end %>
+
+          <% if user_session[:add_piv_cac_after_2fa] %>
+            <%= render ButtonComponent.new(
+                  url: sign_out_path,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('links.cancel')) %>
+          <% elsif MfaPolicy.new(current_user).two_factor_enabled? &&
+                   !in_multi_mfa_selection_flow? %>
+            <%= render ButtonComponent.new(
+                  url: account_path,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('links.cancel')) %>
+          <% else %>
+            <%= render ButtonComponent.new(
+                  url: authentication_methods_setup_path,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('nds.mfa.choose_another_method')) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('titles.piv_cac_login.add')) %>
 
 <p><%= t('headings.piv_cac_login.add') %></p>
@@ -50,4 +158,5 @@
   <% end %>
 <% else %>
   <%= render 'shared/cancel_or_back_to_options' %>
+<% end %>
 <% end %>
