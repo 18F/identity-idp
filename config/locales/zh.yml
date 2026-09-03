@@ -75,6 +75,7 @@ account.index.email: 电邮地址
 account.index.email_add: 添加新电邮
 account.index.email_addresses: 电邮地址
 account.index.email_preferences: 电邮选择
+account.index.email_short: Email
 account.index.password: 密码
 account.index.phone: 电话号码
 account.index.phone_add: 添加电话
@@ -115,6 +116,7 @@ account.items.personal_key: 个人密钥
 account.links.delete_account: 删除
 account.links.regenerate_personal_key: 重设
 account.login.forced_reauthentication_notice_html: '<strong>%{sp_name}</strong> 需要你再次输入你的电邮和密码。'
+account.login.forgot_password: 忘记密码？
 account.login.piv_cac: 使用你的政府雇员身份证件登录
 account.login.tab_navigation: 账户创建标签页
 account.navigation.add_authentication_apps: 添加身份证实应用程序
@@ -161,6 +163,10 @@ anonymous_mailer.password_reset_missing_user.info_request_different: 你可以�
 anonymous_mailer.password_reset_missing_user.subject: 未找到电子邮件
 anonymous_mailer.password_reset_missing_user.try_different_email: 尝试用一个不同的电邮地址
 anonymous_mailer.password_reset_missing_user.use_this_email_html: 或者使用此电子邮件地址和 %{create_account_link_html}。
+auth_entry.body: 登录一次即可访问参与机构的福利、记录和申请。无需为每个政府网站设置单独密码。
+auth_entry.headline: 一个账户，畅享所有政府服务
+auth_entry.whats_new_intro: 欢迎使用全新改进的%{app_name}
+auth_entry.whats_new_link: 查看新功能
 banned_user.details: 我们目前无法验证你的身份。
 banned_user.title: 访问受限。
 components.barcode.image_alt: 条形码
@@ -171,6 +177,15 @@ components.clipboard_button.label: 复制
 components.clipboard_button.tooltip: 复制了！
 components.countdown_alert.time_remaining_html: 余下 %{countdown_html}
 components.download_button.label: 下载
+components.input.errors.date: 请输入日期
+components.input.errors.date_invalid: 请输入有效的日期
+components.input.errors.email: 请输入有效的电子邮件
+components.input.errors.password: 请输入密码
+components.input.errors.password_current: 请输入您的密码
+components.input.errors.tel: 请输入电话号码
+components.input.errors.tel_invalid: 请输入有效的电话号码
+components.input.errors.text: 请输入内容
+components.input.errors.text_invalid: 请输入有效内容
 components.javascript_required.browser_instructions: '按照说明让你浏览器启用 JavaScript:'
 components.javascript_required.enabled_alert: 你在浏览器中启用了 JavaScript。
 components.javascript_required.next_step: 你在浏览器中启用了 JavaScript后，请刷新本页面。
@@ -212,6 +227,7 @@ components.password_confirmation.confirm_label: 确认密码
 components.password_confirmation.errors.empty: 重打你的密码
 components.password_confirmation.errors.mismatch: 你的密码不一致
 components.password_confirmation.toggle_label: 显示密码
+components.password_toggle.hide_label: 隐藏密码
 components.password_toggle.label: 密码
 components.password_toggle.toggle_label: 显示密码
 components.phone_input.country_code_label: 国家代码
@@ -1064,6 +1080,7 @@ headings.redirecting: 重定向
 headings.residential_address: 目前住宅地址
 headings.session_timeout_warning: 需要更多时间？
 headings.sign_in_existing_users: 现有用户登录
+headings.sign_in_to_sp: 登录到 %{sp}
 headings.sign_in_with_sp: 登录以继续到 %{sp}
 headings.sign_in_without_sp: 登录
 headings.sp_handoff_bounced: 连接 %{sp_name} 出了问题
@@ -1555,6 +1572,8 @@ instructions.password.strength.2: 一般
 instructions.password.strength.3: 好
 instructions.password.strength.4: 棒！
 instructions.password.strength.intro: '密码强度：'
+instructions.password.strength.strong: 强
+instructions.password.strength.too_common: 太常见
 instructions.sp_handoff_bounced: 你登录成功了，但 %{sp_name} 将你送回到 %{app_name}。请联系 %{sp_link} 寻求帮助。
 instructions.sp_handoff_bounced_with_no_sp: 你的服务提供商
 links.accessibility_statement: 无障碍声明
@@ -1569,6 +1588,7 @@ links.create_account: 设立账户
 links.exit_login: 退出 %{app_name}
 links.go_back: 返回
 links.help: 帮助
+links.i_already_have_an_account: 我已有账户
 links.more: 更多
 links.new_tab: '（打开新窗口）'
 links.passwords.forgot: 忘了你的密码?
@@ -1598,11 +1618,14 @@ mailer.sent_at: 在 %{formatted_timestamp}时发出
 mfa.account_info: 添加另外一个身份证实方法可以预防你在失去其他方法后被锁在账户外。
 mfa.add: 添加另外一个方法
 mfa.info: 通过选择多因素身份证实方法来为您的 %{app_name} 帐户添加额外一层安全保障。
+mfa.more_options: 更多选项
 mfa.recommendation: 我们建议你选择至少两个不同方法，以防你丢失其中一个。
 mfa.second_method_warning.link: 添加第二个身份证实方法。
 mfa.second_method_warning.text: 如果你丢失唯一的身份证实方法，就不得不删除你的账户并从头开始。
 mfa.skip: 现在先跳过
 mfa.webauthn_platform_message: 添加另一个身份证实方法，以防你无法使用第一个方法。
+nds.passwords.new.heading: 创建您的密码
+nds.passwords.new.info: 创建一个强密码来保护您的账户并确保个人信息安全。
 notices.account_reactivation: 好！你有个人密钥。
 notices.authenticated_successfully: 成功验证。
 notices.backup_codes_configured: 备用代码加到了你账户。
@@ -1639,6 +1662,9 @@ notices.timeout_warning.signed_in.sign_out: 把我登出
 notices.totp_configured: 你账户添加了一个身份证实应用程序。
 notices.use_diff_email.link: 使用一个不同的电邮地址
 notices.use_diff_email.text_html: 或者，%{link_html}
+notices.verify_email.body_html: 我们向 <strong>%{email}</strong> 发送了一个链接。如果你没有很快收到电子邮件，请检查你的垃圾邮件文件夹。
+notices.verify_email.resend: 重新发送确认电子邮件
+notices.verify_email.use_different_email: 使用其他电子邮件
 notices.webauthn_configured: 你账户添加了一个安全密钥。
 notices.webauthn_platform_configured: 你用了自己设备的屏幕锁定给账户添加了人脸或触摸解锁。
 openid_connect.authorization.errors.bad_client_id: 坏的client_id。请参阅我们的文档：https://developers.login.gov/support/#bad-client-id
@@ -1726,6 +1752,7 @@ sign_up.cancel.success: 你的账户已被删除。我们没有存储你的信�
 sign_up.cancel.warning_header: 如果你现在取消：
 sign_up.completed.smiling_image_alt: 面带笑容的一个人加上绿勾说明成功了
 sign_up.information_sharing_html: 如需了解 %{app_name} 如何共享您的信息，请查阅我们的《%{link_html}》。
+sign_up.nds_terms_intro: 继续即表示您接受
 sign_up.terms: 我已阅读并接受 %{app_name}
 simple_form.error_notification.default_message: 请仔细阅读以下问题：
 simple_form.no: 不
@@ -1734,6 +1761,9 @@ simple_form.required.mark: ''
 simple_form.required.text: 该字段必需做
 simple_form.yes: 对
 step_indicator.accessible_label: 步骤进展
+step_indicator.flows.account_creation.account: 账户
+step_indicator.flows.account_creation.security: 安全
+step_indicator.flows.account_creation.verification: 验证
 step_indicator.flows.idv.confirm_your_information: 确认您的信息
 step_indicator.flows.idv.find_a_post_office: 找一个邮局
 step_indicator.flows.idv.getting_started: 开始

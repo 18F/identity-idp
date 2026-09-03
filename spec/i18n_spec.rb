@@ -115,6 +115,7 @@ module I18n
         { key: 'webauthn_platform_setup.phishing_resistant' },
         { key: 'webauthn_platform_setup.upsell' },
         { key: 'webauthn_platform_setup.heading', locales: %i[es fr zh] }, # Translations pending
+        { key: 'account.index.email_short', locales: %i[es fr zh] }, # NDS: 'Email' same across locales
       ].freeze
       # rubocop:enable Layout/LineLength
 

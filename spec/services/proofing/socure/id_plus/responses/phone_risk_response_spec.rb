@@ -75,13 +75,81 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
   end
 
   describe '#to_h' do
-    it 'returns the correct reason codes' do
-      to_h = subject.to_h
+    let(:result) { subject.to_h }
 
-      expect(to_h.dig(:phonerisk, :reason_codes).keys).to eq(phone_risk_reason_codes)
-      expect(to_h.dig(:phonerisk, :score)).to eq(0.01)
-      expect(to_h.dig(:name_phone_correlation, :reason_codes).keys).to eq(correlation_reason_codes)
-      expect(to_h.dig(:name_phone_correlation, :score)).to eq(0.99)
+    it 'returns the correct reason codes' do
+      expect(result.dig(:phonerisk, :reason_codes).keys).to eq(phone_risk_reason_codes)
+      expect(result.dig(:phonerisk, :score)).to eq(0.01)
+      expect(
+        result.dig(
+          :name_phone_correlation,
+          :reason_codes,
+        ).keys,
+      ).to eq(correlation_reason_codes)
+      expect(result.dig(:name_phone_correlation, :score)).to eq(0.99)
+    end
+
+    it 'exposes the success and autofail signals' do
+      expect(result[:name_correlation_successful]).to eq(true)
+      expect(result[:phonerisk_successful]).to eq(true)
+      expect(result[:autofail_reason_codes]).to eq([])
+    end
+
+    context 'phonerisk is above threshold' do
+      let(:phonerisk_low) { false }
+
+      it 'reports phonerisk as unsuccessful' do
+        expect(result[:phonerisk_successful]).to eq(false)
+      end
+    end
+
+    context 'name phone correlation is below threshold' do
+      let(:name_phone_high) { false }
+
+      it 'reports name correlation as unsuccessful' do
+        expect(result[:name_correlation_successful]).to eq(false)
+      end
+    end
+
+    context 'when an autofail reason code is present' do
+      let(:autofail_reason_code) { 'R999' }
+      let(:phone_risk_reason_codes) { ['I123', autofail_reason_code] }
+
+      before do
+        allow(IdentityConfig.store).to receive(
+          :idv_socure_phonerisk_auto_failure_reason_codes,
+        ).and_return([autofail_reason_code])
+      end
+
+      it 'includes the matched autofail reason codes' do
+        expect(result[:autofail_reason_codes]).to eq([autofail_reason_code])
+      end
+
+      context 'when the autofail code is in the name phone correlation section' do
+        let(:phone_risk_reason_codes) { ['I123'] }
+        let(:correlation_reason_codes) { ['I123', autofail_reason_code] }
+
+        it 'includes the matched autofail reason codes' do
+          expect(result[:autofail_reason_codes]).to eq([autofail_reason_code])
+        end
+      end
+    end
+
+    context 'when a section is present but is missing reason codes' do
+      let(:response_body) do
+        {
+          'referenceId' => 'some-reference-id',
+          'namePhoneCorrelation' => { 'score' => 0.99 },
+          'phoneRisk' => { 'score' => 0.01, 'signals' => { 'phone' => {} } },
+          'customerProfile' => { 'customerUserId' => 'somebody' },
+        }
+      end
+
+      it 'treats the missing reason codes as empty without raising' do
+        expect(result.dig(:phonerisk, :reason_codes)).to eq({})
+        expect(result.dig(:name_phone_correlation, :reason_codes)).to eq({})
+        expect(result[:autofail_reason_codes]).to eq([])
+      end
     end
 
     context 'no phonerisk section on response' do

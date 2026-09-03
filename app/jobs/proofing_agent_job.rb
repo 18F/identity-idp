@@ -13,6 +13,8 @@ class ProofingAgentJob < ApplicationJob
   # a resolution failure for an address it never saw.
   PA_BEHAVES_LIKE_IPP = true
 
+  STORAGE_CONNECTION_ERRORS = [Redis::BaseConnectionError, ActiveRecord::StatementInvalid].freeze
+
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
   attr_reader :document_capture_session, :proofing_components, :proofing_agent
@@ -30,6 +32,15 @@ class ProofingAgentJob < ApplicationJob
   )
     timer = JobHelpers::Timer.new
 
+    @proofing_agent = {
+      agent_id: proofing_agent_id,
+      location_id: proofing_location_id,
+      correlation_id: correlation_id,
+      transaction_id: transaction_id,
+    }
+    @proofing_components = {}
+    webhook_enqueued = false
+
     @document_capture_session = DocumentCaptureSession.find_by(uuid: transaction_id)
     raise ArgumentError, 'DocumentCaptureSession not found' if @document_capture_session.nil?
 
@@ -45,14 +56,6 @@ class ProofingAgentJob < ApplicationJob
     applicant_pii = decrypted_args[:applicant_pii]
     applicant_pii[:uuid_prefix] = current_sp&.app_id
     applicant_pii[:uuid] = user.uuid
-
-    @proofing_components = {}
-    @proofing_agent = {
-      agent_id: proofing_agent_id,
-      location_id: proofing_location_id,
-      correlation_id: correlation_id,
-      transaction_id: transaction_id,
-    }
 
     proofing_result = make_vendor_proofing_requests(
       timer:,
@@ -73,17 +76,10 @@ class ProofingAgentJob < ApplicationJob
       proofing_components[:document_check] = Idp::Constants::Vendors::PROOFING_AGENT
     end
 
-    begin
-      document_capture_session.store_agent_proofed_user(proofing_result.combined_result)
-    rescue Redis::BaseConnectionError, ActiveRecord::StatementInvalid => e
-      logger_info_hash(
-        name: 'ProofingAgent',
-        reason: 'system_error',
-        error: e.message,
-        transaction_id:,
-      )
-      raise
-    end
+    store_agent_proofed_user_to_document_capture_session(
+      result: proofing_result.combined_result,
+      transaction_id:,
+    )
 
     success = combined_result[:success]
     reason = combined_result[:reason]
@@ -111,6 +107,7 @@ class ProofingAgentJob < ApplicationJob
           proofing_components:,
         },
       )
+      webhook_enqueued = true
     end
 
     if !success && final_attempt
@@ -123,6 +120,18 @@ class ProofingAgentJob < ApplicationJob
         transaction_id: transaction_id,
       )
     end
+  rescue StandardError => e
+    unless STORAGE_CONNECTION_ERRORS.include?(e.class)
+      store_agent_proofed_user_to_document_capture_session(
+        result: failed_proofing_result,
+        transaction_id:,
+      )
+    end
+    notify_system_error(source: 'unexpected', exception: e, transaction_id:)
+    unless webhook_enqueued
+      enqueue_system_error_webhook(transaction_id:, correlation_id:)
+    end
+    raise
   ensure
     logger_info_hash(
       name: 'ProofingAgent',
@@ -148,14 +157,18 @@ class ProofingAgentJob < ApplicationJob
     submit_attempts:,
     remaining_attempts:
   )
+    @proofing_exception_occurred = false
+
     aamva_result = nil
 
     if applicant_pii[:state_id_number].present?
-      aamva_result = call_aamva_verification(
-        applicant_pii:,
-        current_sp:,
-        timer:,
-      )
+      aamva_result = with_vendor_error_handling(source: 'aamva', transaction_id:) do
+        call_aamva_verification(
+          applicant_pii:,
+          current_sp:,
+          timer:,
+        )
+      end
       applicant_pii[:aamva_verified_attributes] = aamva_result.verified_attributes if aamva_result
       if aamva_result&.success?
         proofing_components[:source_check] = aamva_result.to_h[:vendor_name]
@@ -165,10 +178,12 @@ class ProofingAgentJob < ApplicationJob
     mrz_result = nil
 
     if applicant_pii[:mrz].present?
-      mrz_result = call_mrz_verification(
-        applicant_pii:,
-        timer:,
-      )
+      mrz_result = with_vendor_error_handling(source: 'mrz', transaction_id:) do
+        call_mrz_verification(
+          applicant_pii:,
+          timer:,
+        )
+      end
 
       analytics.idv_dos_passport_verification(
         success: mrz_result&.success?,
@@ -199,7 +214,7 @@ class ProofingAgentJob < ApplicationJob
         { applicant_pii: }.to_json,
       )
 
-      resolution_result = begin
+      resolution_result = with_vendor_error_handling(source: 'resolution', transaction_id:) do
         call_resolution_proofing_job(
           timer:,
           result_id: SecureRandom.uuid,
@@ -209,8 +224,6 @@ class ProofingAgentJob < ApplicationJob
           service_provider_issuer:,
           proofing_vendor:,
         )
-      rescue Redis::BaseConnectionError
-        nil
       end
 
       if resolution_result&.dig(:context, :stages, :resolution, :success) == true
@@ -230,7 +243,7 @@ class ProofingAgentJob < ApplicationJob
 
       analytics.idv_doc_auth_verify_proofing_results(
         **{
-          success: resolution_result&.dig(:context, :stages, :resolution, :success),
+          success: resolution_result&.dig(:context, :stages, :resolution, :success) || false,
           proofing_agent:,
           proofing_components: proofing_components.dup,
           analytics_id: 'Doc Auth',
@@ -298,9 +311,19 @@ class ProofingAgentJob < ApplicationJob
       resolution_result:,
       aamva_result:,
       mrz_result:,
-      system_error: (source_check_succeeded && resolution_result.nil?) ? 'system_error' : nil,
+      system_error: (
+        @proofing_exception_occurred || (source_check_succeeded && resolution_result.nil?)
+      ) ? 'system_error' : nil,
       service_provider_issuer:,
     )
+  end
+
+  def with_vendor_error_handling(source:, transaction_id:)
+    yield
+  rescue StandardError => e
+    @proofing_exception_occurred = true
+    notify_system_error(source:, exception: e, transaction_id:)
+    nil
   end
 
   def call_resolution_proofing_job(
@@ -391,15 +414,73 @@ class ProofingAgentJob < ApplicationJob
     logger.info(hash.to_json)
   end
 
+  def failed_proofing_result
+    ProofingAgent::ProofingResult.new(
+      proofing_agent_id: proofing_agent[:agent_id],
+      proofing_location_id: proofing_agent[:location_id],
+      correlation_id: proofing_agent[:correlation_id],
+      transaction_id: proofing_agent[:transaction_id],
+      resolution_result: nil,
+      service_provider_issuer: nil,
+      pii: nil,
+    ).failed_result
+  end
+
+  def store_agent_proofed_user_to_document_capture_session(result:, transaction_id:)
+    document_capture_session&.store_agent_proofed_user(result)
+  rescue *STORAGE_CONNECTION_ERRORS => e
+    logger_info_hash(
+      name: 'ProofingAgent',
+      reason: 'system_error',
+      error: e.message,
+      transaction_id:,
+    )
+    raise
+  end
+
+  def notify_system_error(source:, exception:, transaction_id:)
+    logger_info_hash(
+      name: 'ProofingAgent',
+      reason: 'system_error',
+      source:,
+      error: exception.message,
+      transaction_id:,
+    )
+
+    NewRelic::Agent.notice_error(
+      exception,
+      custom_params: {
+        event: 'ProofingAgent proofing attempt failed',
+        source:,
+        transaction_id:,
+      },
+    )
+  end
+
+  def enqueue_system_error_webhook(transaction_id:, correlation_id:)
+    return if webhook_url.blank?
+
+    ProofingAgentWebhookJob.perform_later(
+      success: false,
+      reason: 'system_error',
+      transaction_id:,
+      correlation_id:,
+      analytics_attributes: {
+        proofing_agent: proofing_agent || {},
+        proofing_components: proofing_components || {},
+      },
+    )
+  end
+
   def user
-    @user ||= document_capture_session.user
+    @user ||= document_capture_session&.user
   end
 
   def service_provider_issuer
-    document_capture_session.issuer
+    document_capture_session&.issuer
   end
 
   def result_id
-    document_capture_session.result_id
+    document_capture_session&.result_id
   end
 end

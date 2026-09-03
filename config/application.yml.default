@@ -56,7 +56,6 @@ attempts_api_signing_enabled: false
 attempts_api_signing_key: ''
 attribute_encryption_key:
 attribute_encryption_key_queue: '[]'
-auth_time_attribute_enabled: false
 available_locales: 'en,es,fr,zh'
 aws_http_retry_limit: 2
 aws_http_retry_max_delay: 1
@@ -216,6 +215,7 @@ identity_verification_outcomes_report_issuers: '[]'
 idv_aamva_at_doc_auth_enabled: false
 idv_aamva_at_doc_auth_ipp_enabled: false
 idv_aamva_bypass_exception_ids: '[]'
+idv_aamva_get_to_yes_enabled_vendors: '[]'
 idv_aamva_split_last_name_states: '[]'
 idv_account_verified_email_campaign_id: '20241028'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
