@@ -18,6 +18,12 @@ which bundle
 
 export NODE_ENV=production
 
+# uirefresh sandbox: assets:precompile (via css/jsbundling) re-runs `npm install`,
+# which re-prepares the github-main identity-design-system git dep in an npm temp
+# dir without this repo's .npmrc. Export the puppeteer skip so that nested install
+# doesn't try to fetch Chrome on the offline host.
+export PUPPETEER_SKIP_DOWNLOAD=true
+
 bundle exec rake assets:precompile
 
 bundle exec bin/copy_robots_file

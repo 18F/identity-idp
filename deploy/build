@@ -18,6 +18,12 @@ set -x
 : ${BUNDLE_DIR=/srv/idp/shared/bundle}
 : ${IDP_LOCAL_DEPENDENCIES=false}
 
+# uirefresh sandbox: @18f/identity-design-system is pinned to github main, whose
+# `prepare` runs a full npm install (incl. puppeteer) in an npm temp clone dir
+# where this repo's .npmrc is absent. Export the skip as an env var so the
+# nested install inherits it and doesn't try to fetch Chrome on the offline host.
+export PUPPETEER_SKIP_DOWNLOAD=true
+
 # use system libxml2, not the one vendored with nokogiri
 bundle config build.nokogiri --use-system-libraries
 bundle config set --local deployment 'true'
