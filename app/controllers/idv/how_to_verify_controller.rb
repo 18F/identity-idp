@@ -37,20 +37,11 @@ module Idv
         if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::CLEAR1
           return render_not_found unless clear1_enabled?
 
-          idv_session.opted_in_to_in_person_proofing = false
-          idv_session.skip_doc_auth_from_how_to_verify = false
-          idv_session.flow_path = 'standard'
-          abandon_any_ipp_progress
-
+          opt_out_of_in_person_proofing
           redirect_to idv_clear1_session_url
         elsif how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
-          idv_session.opted_in_to_in_person_proofing = false
-          idv_session.skip_doc_auth_from_how_to_verify = false
-          idv_session.flow_path = 'standard'
-          abandon_any_ipp_progress
-
+          opt_out_of_in_person_proofing
           redirect_to idv_choose_id_type_url
-
         else
           return render_not_found unless in_person_proofing_route_enabled?
 
@@ -96,6 +87,13 @@ module Idv
 
     def abandon_any_ipp_progress
       idv_session_user.establishing_in_person_enrollment&.cancel
+    end
+
+    def opt_out_of_in_person_proofing
+      idv_session.opted_in_to_in_person_proofing = false
+      idv_session.skip_doc_auth_from_how_to_verify = false
+      idv_session.flow_path = 'standard'
+      abandon_any_ipp_progress
     end
 
     def analytics_arguments

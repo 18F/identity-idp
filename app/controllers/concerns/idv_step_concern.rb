@@ -86,6 +86,29 @@ module IdvStepConcern
     idv_session.clear1_enabled ||= ab_test_bucket(:CLEAR1_ALLOWED) == :idv_clear1_allowed
   end
 
+  def in_person_proofing_route_enabled?
+    IdentityConfig.store.in_person_proofing_opt_in_enabled &&
+      Idv::InPersonConfig.enabled_for_issuer?(
+        decorated_sp_session.sp_issuer,
+      )
+  end
+
+  def vendor_document_capture_url
+    case document_capture_session.doc_auth_vendor
+    when Idp::Constants::Vendors::SOCURE,
+         Idp::Constants::Vendors::SOCURE_MOCK
+      idv_socure_document_capture_url
+    else
+      idv_document_capture_url
+    end
+  end
+
+  def in_person_passports_allowed?
+    IdentityConfig.store.in_person_passports_enabled
+  end
+
+  private
+
   # Submitting the "Verify with CLEAR" form ends in a server-side redirect to
   # CLEAR, which browsers check against the form-action CSP of the page that
   # contained the form. Allow CLEAR's origin so the redirect is not blocked.
@@ -109,29 +132,6 @@ module IdvStepConcern
   rescue URI::InvalidURIError
     nil
   end
-
-  def in_person_proofing_route_enabled?
-    IdentityConfig.store.in_person_proofing_opt_in_enabled &&
-      Idv::InPersonConfig.enabled_for_issuer?(
-        decorated_sp_session.sp_issuer,
-      )
-  end
-
-  def vendor_document_capture_url
-    case document_capture_session.doc_auth_vendor
-    when Idp::Constants::Vendors::SOCURE,
-         Idp::Constants::Vendors::SOCURE_MOCK
-      idv_socure_document_capture_url
-    else
-      idv_document_capture_url
-    end
-  end
-
-  def in_person_passports_allowed?
-    IdentityConfig.store.in_person_passports_enabled
-  end
-
-  private
 
   def extra_analytics_properties
     {
