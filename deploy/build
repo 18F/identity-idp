@@ -33,7 +33,12 @@ bundle config set --local without 'deploy development doc test'
 if [ "$IDP_LOCAL_DEPENDENCIES" == "true" ]
 then
   bundle install --jobs 4 --local
-  npm ci --omit=dev --offline --cache .npm-cache
+  # uirefresh sandbox: identity-design-system is a github#main git dep, which
+  # `npm ci --offline` cannot reconstruct from the artifact cache (ENOTCACHED on
+  # the codeload tarball). Use an online `npm install` so the git dep resolves
+  # via the outbound proxy. Assets are already precompiled in the artifact, so
+  # this only needs to satisfy dependencies.
+  npm install --omit=dev --cache .npm-cache
 else
   bundle install --jobs 4
   npm install --omit=dev --cache .npm-cache
