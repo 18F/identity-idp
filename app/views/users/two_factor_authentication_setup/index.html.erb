@@ -77,7 +77,7 @@
 
 <% if @presenter.show_personal_key_deprecation_warning? %>
   <%= render AlertComponent.new(
-        type: :warning,
+        type: :info,
         class: 'margin-bottom-4',
       ).with_content(t('mfa.personal_key_deprecation_warning')) %>
 <% end %>
