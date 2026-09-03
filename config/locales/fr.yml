@@ -75,6 +75,7 @@ account.index.email: Adresse e-mail
 account.index.email_add: Ajouter une nouvelle adresse e-mail
 account.index.email_addresses: Adresses e-mail
 account.index.email_preferences: Préférences e-mail
+account.index.email_short: Email
 account.index.password: Mot de passe
 account.index.phone: Numéros de téléphone
 account.index.phone_add: Ajouter un téléphone
@@ -115,6 +116,7 @@ account.items.personal_key: Clé personnelle
 account.links.delete_account: Supprimer
 account.links.regenerate_personal_key: Réinitialiser
 account.login.forced_reauthentication_notice_html: '<strong>%{sp_name}</strong> nécessite que vous saisissiez à nouveau votre adresse e-mail et votre mot de passe.'
+account.login.forgot_password: Mot de passe oublié ?
 account.login.piv_cac: Connectez-vous avec votre identifiant d’employé.
 account.login.tab_navigation: Onglets de création de compte
 account.navigation.add_authentication_apps: Ajouter des applis d’authentification
@@ -161,6 +163,10 @@ anonymous_mailer.password_reset_missing_user.info_request_different: Vous pouvez
 anonymous_mailer.password_reset_missing_user.subject: Email non trouvé
 anonymous_mailer.password_reset_missing_user.try_different_email: Essayez une autre adresse e-mail
 anonymous_mailer.password_reset_missing_user.use_this_email_html: Ou utilisez cet e-mail et %{create_account_link_html}.
+auth_entry.body: Connectez-vous une seule fois pour accéder aux prestations, dossiers et demandes des organismes participants. Plus besoin d’un mot de passe distinct pour chaque site gouvernemental.
+auth_entry.headline: Un compte pour tous vos services gouvernementaux
+auth_entry.whats_new_intro: Bienvenue sur le nouveau %{app_name} amélioré
+auth_entry.whats_new_link: Découvrez les nouveautés
 banned_user.details: Nous ne sommes pas en mesure de vous authentifier pour le moment.
 banned_user.title: L’accès est restreint
 components.barcode.image_alt: Code-barres
@@ -171,6 +177,15 @@ components.clipboard_button.label: Copier
 components.clipboard_button.tooltip: Copié !
 components.countdown_alert.time_remaining_html: Il reste %{countdown_html}
 components.download_button.label: Télécharger
+components.input.errors.date: Saisissez une date
+components.input.errors.date_invalid: Saisissez une date valide
+components.input.errors.email: Saisissez une adresse e-mail valide
+components.input.errors.password: Saisissez un mot de passe
+components.input.errors.password_current: Saisissez votre mot de passe
+components.input.errors.tel: Saisissez un numéro de téléphone
+components.input.errors.tel_invalid: Saisissez un numéro de téléphone valide
+components.input.errors.text: Saisissez une valeur
+components.input.errors.text_invalid: Saisissez une valeur valide
 components.javascript_required.browser_instructions: 'Suivez les instructions pour activer JavaScript dans votre navigateur :'
 components.javascript_required.enabled_alert: Vous avez activé JavaScript dans votre navigateur.
 components.javascript_required.next_step: Veuillez rafraîchir cette page une fois que vous avez activé JavaScript dans votre navigateur.
@@ -212,6 +227,7 @@ components.password_confirmation.confirm_label: Confirmer le mot de passe
 components.password_confirmation.errors.empty: Saisissez à nouveau votre mot de passe
 components.password_confirmation.errors.mismatch: Vos mots de passe ne correspondent pas
 components.password_confirmation.toggle_label: Afficher le mot de passe
+components.password_toggle.hide_label: Masquer le mot de passe
 components.password_toggle.label: Mot de passe
 components.password_toggle.toggle_label: Afficher le mot de passe
 components.phone_input.country_code_label: Indicatif pays
@@ -1051,6 +1067,7 @@ headings.redirecting: Redirection
 headings.residential_address: Adresse résidentielle actuelle
 headings.session_timeout_warning: Vous avez besoin de plus de temps ?
 headings.sign_in_existing_users: Se connecter pour les utilisateurs existants
+headings.sign_in_to_sp: Connectez-vous à %{sp}
 headings.sign_in_with_sp: Se connecter pour continuer vers %{sp}
 headings.sign_in_without_sp: Se connecter
 headings.sp_handoff_bounced: Un problème est survenu lors de la connexion à %{sp_name}
@@ -1558,6 +1575,7 @@ links.create_account: Créer un compte
 links.exit_login: Quitter %{app_name}
 links.go_back: Retour
 links.help: Aide
+links.i_already_have_an_account: J’ai déjà un compte
 links.more: Plus
 links.new_tab: '(ouvre un nouvel onglet)'
 links.passwords.forgot: Mot de passe oublié ?
@@ -1588,11 +1606,14 @@ mfa.account_info: L’ajout d’une autre méthode d’authentification vous év
 mfa.add: Ajouter une autre méthode
 mfa.info: Ajoutez une couche supplémentaire de sécurité à votre compte %{app_name} en sélectionnant une méthode d’authentification multi-facteurs.
 mfa.personal_key_deprecation_warning: Remplacez votre clé personnelle par une autre méthode d'authentification.
+mfa.more_options: Plus d’options
 mfa.recommendation: Nous vous recommandons de sélectionner au moins deux options différentes au cas où vous perdriez l’une de vos méthodes.
 mfa.second_method_warning.link: Ajouter une deuxième méthode d’authentification.
 mfa.second_method_warning.text: Vous devrez supprimer votre compte et recommencer si vous perdez votre seule méthode d’authentification.
 mfa.skip: Sauter pour le moment
 mfa.webauthn_platform_message: Ajouter une autre méthode d’authentification au cas où vous perdriez l’accès à la première.
+nds.passwords.new.heading: Créez votre mot de passe
+nds.passwords.new.info: Créez un mot de passe fort pour sécuriser votre compte et protéger vos renseignements personnels.
 notices.account_reactivation: Parfait ! Vous avez votre clé personnelle.
 notices.authenticated_successfully: Authentifié avec succès.
 notices.backup_codes_configured: Les codes de sauvegarde ont été ajoutés à votre compte.
@@ -1629,6 +1650,9 @@ notices.timeout_warning.signed_in.sign_out: Déconnectez-moi
 notices.totp_configured: Une appli d’authentification a été ajoutée à votre compte.
 notices.use_diff_email.link: utiliser une adresse e-mail différente
 notices.use_diff_email.text_html: Ou %{link_html}
+notices.verify_email.body_html: Nous avons envoyé un lien à <strong>%{email}</strong>. Si vous ne recevez pas d’e-mail rapidement, vérifiez votre dossier de courrier indésirable.
+notices.verify_email.resend: Renvoyer l’e-mail de confirmation
+notices.verify_email.use_different_email: Utiliser une autre adresse e-mail
 notices.webauthn_configured: Une clé de sécurité a été ajoutée à votre compte.
 notices.webauthn_platform_configured: Vous avez utilisé le verrouillage de l’écran de votre appareil pour ajouter le déverrouillage facial ou tactile à votre compte.
 openid_connect.authorization.errors.bad_client_id: Mauvaise client_id. Veuillez consulter notre documentation à https://developers.login.gov/support/#bad-client-id
@@ -1717,6 +1741,7 @@ sign_up.cancel.success: Votre compte a été supprimé. Nous n’avons pas sauve
 sign_up.cancel.warning_header: 'Si vous annulez maintenant :'
 sign_up.completed.smiling_image_alt: Une personne souriante avec une coche verte indiquant la réussite de la procédure
 sign_up.information_sharing_html: Pour savoir comment %{app_name} partage vos informations, consultez notre déclaration relative à la %{link_html}.
+sign_up.nds_terms_intro: En continuant, vous acceptez les
 sign_up.terms: J’ai lu et j’accepte les %{app_name}
 simple_form.error_notification.default_message: 'Veuillez examiner les problèmes ci-dessous :'
 simple_form.no: Non
@@ -1725,6 +1750,9 @@ simple_form.required.mark: ''
 simple_form.required.text: Ce champ est obligatoire
 simple_form.yes: Oui
 step_indicator.accessible_label: Progression par étapes
+step_indicator.flows.account_creation.account: Compte
+step_indicator.flows.account_creation.security: Sécurité
+step_indicator.flows.account_creation.verification: Vérification
 step_indicator.flows.idv.confirm_your_information: Confirmez vos informations
 step_indicator.flows.idv.find_a_post_office: Trouver un bureau de poste
 step_indicator.flows.idv.getting_started: Démarrer

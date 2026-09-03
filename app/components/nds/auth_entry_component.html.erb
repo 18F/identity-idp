@@ -1,0 +1,34 @@
+<div class="auth-entry">
+  <div class="auth-entry__blurs" aria-hidden="true">
+    <%= image_tag(
+          asset_url('auth-entry/blurs.svg'),
+          alt: '',
+          class: 'auth-entry__blurs-image',
+          width: 912,
+          height: 1070,
+        ) %>
+  </div>
+  <aside class="auth-entry__marketing">
+    <%= link_to MarketingSite.base_url, class: 'auth-entry__whats-new' do %>
+      <span class="auth-entry__whats-new-intro"><%= t('auth_entry.whats_new_intro', app_name: APP_NAME) %></span>
+      <span class="auth-entry__whats-new-link"><%= t('auth_entry.whats_new_link') %></span>
+    <% end %>
+    <%= link_to root_path, class: 'auth-entry__logo', aria: { label: APP_NAME } do %>
+      <%= image_tag(
+            asset_url('logo.svg'),
+            alt: '',
+            class: 'auth-entry__logo-image',
+            width: 150,
+            height: 20,
+            aria: { hidden: true },
+          ) %>
+    <% end %>
+    <div class="auth-entry__copy">
+      <p class="auth-entry__headline"><%= t('auth_entry.headline') %></p>
+      <p class="auth-entry__body"><%= t('auth_entry.body') %></p>
+    </div>
+  </aside>
+  <div class="auth-entry__card">
+    <%= content %>
+  </div>
+</div>

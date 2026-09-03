@@ -126,6 +126,9 @@ ignore_unused:
   # NDS bucket password strength keys, added ahead of the view that references them.
   - 'instructions.password.strength.strong'
   - 'instructions.password.strength.too_common'
+  # NDS bucket component built-but-not-yet-wired (wired later).
+  - 'components.input.errors.*'
+  - 'components.password_toggle.hide_label'
 ## Exclude these keys from the `i18n-tasks eq-base' report:
 # ignore_eq_base:
 #   all:

@@ -75,6 +75,7 @@ account.index.email: Dirección de correo electrónico
 account.index.email_add: Agregar nuevo correo electrónico
 account.index.email_addresses: Direcciones de correo electrónico
 account.index.email_preferences: Preferencias de correo electrónico
+account.index.email_short: Email
 account.index.password: Contraseña
 account.index.phone: Números de teléfono
 account.index.phone_add: Agregar teléfono
@@ -115,6 +116,7 @@ account.items.personal_key: Clave personal
 account.links.delete_account: Eliminar
 account.links.regenerate_personal_key: Restablecer
 account.login.forced_reauthentication_notice_html: '<strong>%{sp_name}</strong> requiere que vuelva a ingresar su correo electrónico y contraseña.'
+account.login.forgot_password: ¿Olvidó su contraseña?
 account.login.piv_cac: Inicie sesión con su identificación de empleado gubernamental
 account.login.tab_navigation: Pestañas para creación de cuentas
 account.navigation.add_authentication_apps: Agregar aplicaciones de autenticación
@@ -161,6 +163,10 @@ anonymous_mailer.password_reset_missing_user.info_request_different: Puedes soli
 anonymous_mailer.password_reset_missing_user.subject: El correo electrónico no encontrado
 anonymous_mailer.password_reset_missing_user.try_different_email: Pruebe con una dirección de correo electrónico diferente
 anonymous_mailer.password_reset_missing_user.use_this_email_html: O use este correo electrónico y %{create_account_link_html}.
+auth_entry.body: Inicie sesión una vez para acceder a beneficios, registros y solicitudes en las agencias participantes. Sin contraseñas distintas para cada sitio del gobierno.
+auth_entry.headline: Una cuenta para todos sus servicios gubernamentales
+auth_entry.whats_new_intro: Bienvenido al nuevo y mejorado %{app_name}
+auth_entry.whats_new_link: Vea las novedades
 banned_user.details: No podemos autenticarle en este momento.
 banned_user.title: Acceso restringido
 components.barcode.image_alt: Código de barras
@@ -171,6 +177,15 @@ components.clipboard_button.label: Copiar
 components.clipboard_button.tooltip: Copiado
 components.countdown_alert.time_remaining_html: Quedan %{countdown_html}
 components.download_button.label: Descargar
+components.input.errors.date: Ingrese una fecha
+components.input.errors.date_invalid: Ingrese una fecha válida
+components.input.errors.email: Ingrese un correo electrónico válido
+components.input.errors.password: Ingrese una contraseña
+components.input.errors.password_current: Ingrese su contraseña
+components.input.errors.tel: Ingrese un número de teléfono
+components.input.errors.tel_invalid: Ingrese un número de teléfono válido
+components.input.errors.text: Ingrese un valor
+components.input.errors.text_invalid: Ingrese un valor válido
 components.javascript_required.browser_instructions: 'Siga las instrucciones para habilitar JavaScript en su navegador:'
 components.javascript_required.enabled_alert: Habilitó JavaScript en su navegador.
 components.javascript_required.next_step: Actualice esta página después de haber habilitado JavaScript en su navegador.
@@ -212,6 +227,7 @@ components.password_confirmation.confirm_label: Confirmar contraseña
 components.password_confirmation.errors.empty: Vuelva a escribir su contraseña
 components.password_confirmation.errors.mismatch: Sus contraseñas no coinciden
 components.password_confirmation.toggle_label: Mostrar contraseña
+components.password_toggle.hide_label: Ocultar contraseña
 components.password_toggle.label: Contraseña
 components.password_toggle.toggle_label: Mostrar contraseña
 components.phone_input.country_code_label: Código de país
@@ -1062,6 +1078,7 @@ headings.redirecting: Redirigiendo
 headings.residential_address: Domicilio actual
 headings.session_timeout_warning: '¿Necesita más tiempo?'
 headings.sign_in_existing_users: Iniciar sesión para usuarios existentes
+headings.sign_in_to_sp: Inicie sesión en %{sp}
 headings.sign_in_with_sp: Iniciar sesión para continuar con %{sp}
 headings.sign_in_without_sp: Iniciar sesión
 headings.sp_handoff_bounced: Hubo un problema al conectarse a %{sp_name}
@@ -1569,6 +1586,7 @@ links.create_account: Crear una cuenta
 links.exit_login: Salir de %{app_name}
 links.go_back: Volver
 links.help: Ayuda
+links.i_already_have_an_account: Ya tengo una cuenta
 links.more: Más
 links.new_tab: '(abrir nueva pestaña)'
 links.passwords.forgot: '¿Olvidó su contraseña?'
@@ -1599,11 +1617,14 @@ mfa.account_info: Agregar otro método de autenticación evita que el acceso a s
 mfa.add: Agregar otro método
 mfa.info: Agregue un nivel de seguridad adicional para su cuenta de %{app_name} seleccionando un método de autenticación multifactor.
 mfa.personal_key_deprecation_warning: Sustituya su clave personal por otro método de autenticación.
+mfa.more_options: Más opciones
 mfa.recommendation: Le recomendamos seleccionar al menos dos opciones diferentes en caso de que pierda uno de los métodos.
 mfa.second_method_warning.link: Agregue un segundo método de autenticación.
 mfa.second_method_warning.text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de autenticación.
 mfa.skip: Omitir por ahora
 mfa.webauthn_platform_message: Agregue otro método de autenticación en caso de que pierda el acceso al primero.
+nds.passwords.new.heading: Cree su contraseña
+nds.passwords.new.info: Cree una contraseña segura para proteger su cuenta y mantener a salvo su información personal.
 notices.account_reactivation: Qué bien. Tiene su clave personal.
 notices.authenticated_successfully: Logró autenticarse.
 notices.backup_codes_configured: Los códigos de recuperación se agregaron a su cuenta.
@@ -1640,6 +1661,9 @@ notices.timeout_warning.signed_in.sign_out: Cerrar mi sesión
 notices.totp_configured: Se agregó una aplicación de autenticación a su cuenta.
 notices.use_diff_email.link: use una dirección de correo electrónico diferente
 notices.use_diff_email.text_html: O %{link_html}
+notices.verify_email.body_html: Le enviamos un enlace a <strong>%{email}</strong>. Si no recibe un correo electrónico en breve, revise su carpeta de correo no deseado.
+notices.verify_email.resend: Reenviar correo de confirmación
+notices.verify_email.use_different_email: Usar un correo electrónico diferente
 notices.webauthn_configured: Se agregó una clave de seguridad a su cuenta.
 notices.webauthn_platform_configured: Usó el bloqueo de pantalla de su dispositivo para agregar el desbloqueo facial o táctil a su cuenta.
 openid_connect.authorization.errors.bad_client_id: client_id incorrecto. Consulte nuestra documentación en https://developers.login.gov/support/#bad-client-id
@@ -1728,6 +1752,7 @@ sign_up.cancel.success: Su cuenta fue eliminada. No guardamos su información.
 sign_up.cancel.warning_header: 'Si cancela ahora:'
 sign_up.completed.smiling_image_alt: Una persona sonriente con una marca de verificación verde
 sign_up.information_sharing_html: Para saber cómo %{app_name} comparte su información, consulte nuestra %{link_html}.
+sign_up.nds_terms_intro: Al continuar, acepta las
 sign_up.terms: Leí y acepto %{app_name}
 simple_form.error_notification.default_message: 'Revise los siguientes problemas:'
 simple_form.no: 'No'
@@ -1736,6 +1761,9 @@ simple_form.required.mark: ''
 simple_form.required.text: Este campo es obligatorio
 simple_form.yes: Sí
 step_indicator.accessible_label: Avance por pasos
+step_indicator.flows.account_creation.account: Cuenta
+step_indicator.flows.account_creation.security: Seguridad
+step_indicator.flows.account_creation.verification: Verificación
 step_indicator.flows.idv.confirm_your_information: Confirme su información
 step_indicator.flows.idv.find_a_post_office: Busque una oficina de correos
 step_indicator.flows.idv.getting_started: Inicio
