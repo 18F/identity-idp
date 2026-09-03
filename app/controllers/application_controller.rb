@@ -33,6 +33,7 @@ class ApplicationController < ActionController::Base
   prepend_before_action :set_session_start_value_if_nil
   prepend_before_action :show_flash_with_redirect_if_session_timeout
   prepend_before_action :set_locale
+  before_action :nds_experiment_uuid
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
   after_action :store_web_locale_in_session
@@ -164,7 +165,6 @@ class ApplicationController < ActionController::Base
   end
 
   def resolve_nds_bucket
-    nds_experiment_uuid
     if IdentityConfig.store.ui_test_bucket_params_enabled
       # Feature flag enabled override:
       # ?ui_test_bucket=nds|legacy selects the bucket and persists
