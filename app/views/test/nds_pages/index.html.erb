@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>NDS page-state explorer</title>
+    <%= csrf_meta_tags %>
+    <style nonce="<%= content_security_policy_nonce %>">
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: #1b1b1b;
+        line-height: 1.4;
+      }
+      .explorer { max-width: 90rem; margin: 0 auto; padding: 2rem; }
+      .explorer h1 { margin-bottom: 0.25rem; }
+      .explorer__summary {
+        background: #eef4ff; border: 1px solid #cbd7f0; border-radius: 0.5rem;
+        padding: 0.75rem 1rem; font-size: 1.1rem; margin: 1rem 0 2rem;
+      }
+      .explorer__meter {
+        display: block; width: 100%; height: 0.5rem; margin-top: 0.5rem;
+        border: 0; border-radius: 999px; background: #dfe1e2; overflow: hidden;
+        -webkit-appearance: none; appearance: none;
+      }
+      .explorer__meter::-webkit-progress-bar { background: #dfe1e2; border-radius: 999px; }
+      .explorer__meter::-webkit-progress-value { background: #00a91c; border-radius: 999px; }
+      .explorer__meter::-moz-progress-bar { background: #00a91c; border-radius: 999px; }
+      .explorer__audit {
+        background: #fff5c2; border: 1px solid #e6c000; border-radius: 0.5rem;
+        padding: 0.75rem 1rem; margin-bottom: 2rem;
+      }
+      .explorer__columns { display: flex; gap: 2rem; align-items: flex-start; }
+      .explorer__columns > section { flex: 1 1 0; min-width: 0; }
+      .explorer__col-head {
+        position: sticky; top: 0; background: #fff; padding: 0.5rem 0;
+        border-bottom: 2px solid #1b1b1b; margin-bottom: 0.75rem;
+      }
+      .explorer__col-head h2 { margin: 0; font-size: 1.2rem; }
+      .explorer__list { list-style: none; margin: 0; padding: 0; }
+      .explorer__item {
+        border: 1px solid #dfe1e2; border-radius: 0.4rem; padding: 0.6rem 0.75rem;
+        margin-bottom: 0.5rem;
+      }
+      .explorer__item--nds { border-left: 4px solid #00a91c; }
+      .explorer__item--legacy { border-left: 4px solid #adadad; }
+      .explorer__meta { color: #5c5c5c; font-size: 0.8rem; margin-top: 0.15rem; }
+      .explorer__params {
+        display: inline-flex; align-items: center; gap: 0.4rem;
+        margin-left: 0.5rem; font-size: 0.75rem; color: #71767a;
+      }
+      .explorer__param { display: inline-flex; align-items: center; gap: 0.2rem; }
+      .explorer__params input {
+        border: 1px solid #c6cace; border-radius: 0.25rem; padding: 0.1rem 0.3rem;
+        font-size: 0.75rem;
+      }
+      .explorer__go {
+        border: 1px solid #005ea2; background: #005ea2; color: #fff;
+        border-radius: 0.25rem; padding: 0.1rem 0.5rem; font-size: 0.75rem; cursor: pointer;
+      }
+      .explorer__go:hover { background: #1a4480; }
+      .explorer__seed-state {
+        display: inline-block; margin-top: 0.4rem;
+        border: 1px solid #4d8055; background: #4d8055; color: #fff;
+        border-radius: 0.25rem; padding: 0.15rem 0.5rem; font-size: 0.75rem; cursor: pointer;
+      }
+      .explorer__seed-state:hover { background: #3d6644; }
+      .explorer__reset-state {
+        display: inline-block; margin-top: 0.4rem;
+        border: 1px solid #b50909; background: #fff; color: #b50909;
+        border-radius: 0.25rem; padding: 0.15rem 0.5rem; font-size: 0.75rem; cursor: pointer;
+      }
+      .explorer__reset-state:hover { background: #b50909; color: #fff; }
+      .explorer__item form { display: inline-block; margin: 0 0.3rem 0 0; }
+      .explorer__session {
+        display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+        background: #f0f0f0; border: 1px solid #dfe1e2; border-radius: 0.5rem;
+        padding: 0.75rem 1rem; margin-bottom: 1.5rem;
+      }
+      .explorer__session form { margin: 0; }
+      .explorer__session button {
+        border: 1px solid #005ea2; background: #005ea2; color: #fff;
+        border-radius: 0.25rem; padding: 0.35rem 0.75rem; font-size: 0.9rem; cursor: pointer;
+      }
+      .explorer__session button:hover { background: #1a4480; }
+      .explorer__session-status { font-weight: 600; }
+      .explorer__ial {
+        display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+      }
+      .explorer__ial select { font-size: 0.9rem; padding: 0.2rem; }
+      .explorer__perms { margin: 0.4rem 0 0; padding-left: 1rem; }
+      .explorer__perms a { font-size: 0.9rem; }
+      .explorer__badge {
+        display: inline-block; background: #00a91c; color: #fff; font-size: 0.65rem;
+        border-radius: 0.25rem; padding: 0.05rem 0.35rem; margin-right: 0.4rem;
+        text-transform: uppercase; letter-spacing: 0.03em;
+      }
+      .explorer__params select {
+        border: 1px solid #c6cace; border-radius: 0.25rem; font-size: 0.75rem; max-width: 12rem;
+      }
+      .explorer__del {
+        border: 1px solid #b50909; background: #fff; color: #b50909;
+        border-radius: 0.25rem; padding: 0 0.3rem; font-size: 0.75rem; cursor: pointer;
+      }
+      .explorer__del:hover { background: #b50909; color: #fff; }
+      code { font-size: 0.85rem; }
+    </style>
+  </head>
+  <body>
+    <div class="explorer">
+      <% total = @inventory[:nds].length + @inventory[:legacy].length %>
+      <% pct = total.zero? ? 0 : (@inventory[:nds].length * 100.0 / total).round %>
+      <h1>NDS page-state explorer</h1>
+      <p>Dev-only tool for jumping to NDS page states and tracking conversion coverage.</p>
+
+      <div class="explorer__session">
+        <span class="explorer__session-status">
+          <% if @dev_user %>
+            Signed in as <%= @dev_user.email_addresses.take&.email || @dev_user.uuid %>
+          <% else %>
+            Not signed in
+          <% end %>
+        </span>
+        <%= button_to 'Sign in as dev user', test_nds_seed_session_path %>
+        <button type="button" id="explorer-generate">Generate MFA &amp; records</button>
+        <%= button_to 'Sign out', test_nds_sign_out_path %>
+      </div>
+
+      <% if @dev_user %>
+        <% current_level = current_identity_level(@dev_user) %>
+        <%= form_with url: test_nds_set_identity_level_path, method: :post, class: 'explorer__ial' do |f| %>
+          <span class="explorer__session-status">Identity level:</span>
+          <%= f.select :level,
+                       identity_levels.map { |level| [level[:label], level[:key]] },
+                       { selected: current_level } %>
+          <%= f.submit 'Apply' %>
+        <% end %>
+      <% end %>
+
+      <div class="explorer__summary">
+        <strong><%= @inventory[:nds].length %> of <%= total %></strong> pages converted to NDS
+        (<%= @inventory[:legacy].length %> remaining &mdash; <%= pct %>%).
+        <progress class="explorer__meter" value="<%= @inventory[:nds].length %>" max="<%= total %>"></progress>
+      </div>
+
+      <% if @inventory[:missing].any? || @inventory[:stale].any? %>
+        <div class="explorer__audit">
+          <strong>Catalog self-audit</strong>
+          <% if @inventory[:missing].any? %>
+            <p>NDS templates missing from the catalog:</p>
+            <ul>
+              <% @inventory[:missing].each do |template| %>
+                <li>
+                  <code>app/views/<%= template %>.html.erb</code>
+                  <% route = Test::NDSPageCatalog.route_for_template(template) %>
+                  <% if route %>&rarr; <code><%= route %></code><% end %>
+                </li>
+              <% end %>
+            </ul>
+          <% end %>
+          <% if @inventory[:stale].any? %>
+            <p>Stale catalog entries:</p>
+            <ul>
+              <% @inventory[:stale].each do |template| %>
+                <li><code><%= template %></code></li>
+              <% end %>
+            </ul>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div class="explorer__columns">
+        <section>
+          <div class="explorer__col-head">
+            <h2>Live / legacy routes</h2>
+          </div>
+          <p class="explorer__meta">Every renderable live page. NDS-converted ones are tagged and open with <code>ui_test_bucket=legacy</code> so you can compare the pre-NDS version against the NDS render on the right. Seed records first to populate the dropdowns.</p>
+          <ul class="explorer__list">
+            <% left_entries = (@inventory[:legacy] + @inventory[:nds]).select { |e| e.path.present? }.sort_by(&:path) %>
+            <% left_entries.each do |entry| %>
+              <% converted = entry.page.present? || @inventory[:nds].include?(entry) %>
+              <% url = entry.path.sub(%r{\(/:locale\)}, '') %>
+              <li class="explorer__item explorer__item--legacy">
+                <% if converted %><span class="explorer__badge">NDS-converted</span><% end %>
+                <% if url.exclude?(':') %>
+                  <% href = converted ? "#{url}?ui_test_bucket=legacy" : url %>
+                  <%= link_to url, href, target: '_blank', rel: 'noopener' %>
+                <% else %>
+                  <code><%= url %></code>
+                  <% params = url.scan(/:(\w+)/).flatten %>
+                  <span class="explorer__params" data-template="<%= url %>" data-converted="<%= converted %>">
+                    <% params.each do |param| %>
+                      <% kind = record_kind_for(url, param) %>
+                      <label class="explorer__param">
+                        <%= param %>
+                        <select data-param="<%= param %>" data-record="<%= kind %>">
+                          <option value="1">(seed records first)</option>
+                        </select>
+                        <% if deletable_record_kind?(kind) %>
+                          <button type="button" class="explorer__del" data-record="<%= kind %>" title="Delete selected record">&times;</button>
+                        <% end %>
+                      </label>
+                    <% end %>
+                    <button type="button" class="explorer__go">Go</button>
+                  </span>
+                <% end %>
+                <% if (state = page_state_for(url)) %>
+                  <%= button_to state[:label], test_nds_seed_state_path,
+                                params: { path: url }, class: 'explorer__seed-state' %>
+                  <% if state[:resetter] %>
+                    <%= button_to 'Clear state', test_nds_reset_state_path,
+                                  params: { path: url }, class: 'explorer__reset-state' %>
+                  <% end %>
+                <% end %>
+                <div class="explorer__meta">
+                  <%= entry.controller %>#<%= entry.action %>
+                  &middot; <%= entry.template %>.html.erb
+                </div>
+              </li>
+            <% end %>
+          </ul>
+        </section>
+
+        <section>
+          <div class="explorer__col-head">
+            <h2>NDS (<%= @inventory[:nds].length %>)</h2>
+          </div>
+          <p class="explorer__meta">Pages with an NDS treatment. Cataloged pages link to their rendered states + permutations.</p>
+          <ul class="explorer__list">
+            <% @inventory[:nds].each do |entry| %>
+              <li class="explorer__item explorer__item--nds">
+                <% if entry.page %>
+                  <strong><%= link_to entry.page.title, test_nds_page_path(page: entry.page.key) %></strong>
+                  <div class="explorer__meta"><%= entry.template %>.html.erb</div>
+                  <ul class="explorer__perms">
+                    <% entry.page.permutations.each do |permutation| %>
+                      <li>
+                        <%= link_to(
+                              permutation.label,
+                              test_nds_page_path(page: entry.page.key, **permutation.params),
+                            ) %>
+                      </li>
+                    <% end %>
+                  </ul>
+                <% else %>
+                  <code><%= entry.template %>.html.erb</code>
+                  <span class="explorer__meta">(not cataloged)</span>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </section>
+      </div>
+    </div>
+    <script nonce="<%= content_security_policy_nonce %>">
+      var csrfToken = (function () {
+        var meta = document.querySelector('meta[name="csrf-token"]');
+        return meta ? meta.getAttribute('content') : '';
+      })();
+
+      function populateSelects(data) {
+        var byTemplate = data.by_template || {};
+        var byParam = data.by_param || {};
+        document.querySelectorAll('.explorer__params').forEach(function (container) {
+          var template = container.dataset.template;
+          container.querySelectorAll('select[data-param]').forEach(function (select) {
+            var param = select.dataset.param;
+            var options = byTemplate[template] || byParam[param];
+            if (!options) { return; }
+            var previous = select.value;
+            select.innerHTML = '';
+            options.forEach(function (option) {
+              var el = document.createElement('option');
+              el.value = option.value;
+              el.textContent = option.label;
+              select.appendChild(el);
+            });
+            select.value = previous;
+          });
+        });
+      }
+
+      function fetchOptions(url, method) {
+        return fetch(url, {
+          method: method,
+          headers: { 'X-CSRF-Token': csrfToken, Accept: 'application/json' },
+          credentials: 'same-origin',
+        }).then(function (response) {
+          if (!response.ok) { throw new Error('request failed: ' + response.status); }
+          return response.json();
+        }).then(populateSelects).catch(function (error) {
+          window.console && window.console.error('[nds-explorer]', error);
+        });
+      }
+
+      document.querySelectorAll('.explorer__go').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var container = button.closest('.explorer__params');
+          var path = container.dataset.template;
+          container.querySelectorAll('select[data-param]').forEach(function (select) {
+            path = path.replace(':' + select.dataset.param, encodeURIComponent(select.value));
+          });
+          if (container.dataset.converted === 'true') {
+            path += (path.indexOf('?') === -1 ? '?' : '&') + 'ui_test_bucket=legacy';
+          }
+          window.open(path, '_blank', 'noopener');
+        });
+      });
+
+      document.querySelectorAll('.explorer__del').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var label = button.closest('.explorer__param');
+          var select = label.querySelector('select[data-param]');
+          if (!select || !select.value || select.value === '0') { return; }
+          button.disabled = true;
+          var body = new URLSearchParams({ param: button.dataset.record, id: select.value });
+          fetch('<%= test_nds_delete_record_path %>', {
+            method: 'POST',
+            headers: {
+              'X-CSRF-Token': csrfToken,
+              Accept: 'application/json',
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            credentials: 'same-origin',
+            body: body,
+          }).then(function (response) {
+            if (!response.ok) { throw new Error('delete failed: ' + response.status); }
+            return response.json();
+          }).then(populateSelects).catch(function (error) {
+            window.console && window.console.error('[nds-explorer]', error);
+          }).finally(function () {
+            button.disabled = false;
+          });
+        });
+      });
+
+      var generateButton = document.getElementById('explorer-generate');
+      if (generateButton) {
+        generateButton.addEventListener('click', function () {
+          generateButton.disabled = true;
+          fetchOptions('<%= test_nds_generate_mfa_path %>', 'POST').finally(function () {
+            generateButton.disabled = false;
+          });
+        });
+      }
+
+      fetchOptions('<%= test_nds_record_options_path %>', 'GET');
+    </script>
+  </body>
+</html>
