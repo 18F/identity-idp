@@ -829,6 +829,23 @@ module Test
       {}
     end
 
+    def setup_totp_setup
+      user = build_mfa_user(configured: params[:second].present?)
+      @nds_current_user = user
+      @in_account_creation_flow = params[:account_creation].present?
+      email = EmailAddressStub.new(email: DEV_USER_EMAIL)
+      user.define_singleton_method(:last_sign_in_email_address) { email }
+      @code = user.generate_totp_secret
+      @qrcode = user.qrcode(@code)
+      @presenter = SetupPresenter.new(
+        current_user: user,
+        user_fully_authenticated: true,
+        user_opted_remember_device_cookie: nil,
+        remember_device_default: false,
+      )
+      {}
+    end
+
     def build_mfa_user(configured:)
       user = User.new
       if configured
