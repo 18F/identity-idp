@@ -871,6 +871,18 @@ module Test
       {}
     end
 
+    def setup_choose_id_type
+      {
+        presenter: Idv::ChooseIdTypePresenter.new,
+        form_submit_url: '#',
+        disable_passports: params[:no_passport].present?,
+        auto_check_value: :state_id_card,
+        passport_cards_enabled: params[:passport_card].present?,
+        mdl_enabled: params[:mdl].present?,
+        show_verify_in_person: params[:ipp].present?,
+      }
+    end
+
     def build_mfa_user(configured:)
       user = User.new
       if configured
