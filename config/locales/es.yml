@@ -1622,6 +1622,14 @@ mfa.second_method_warning.link: Agregue un segundo método de autenticación.
 mfa.second_method_warning.text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de autenticación.
 mfa.skip: Omitir por ahora
 mfa.webauthn_platform_message: Agregue otro método de autenticación en caso de que pierda el acceso al primero.
+nds.choose_id_type.option_drivers_license: Licencia de conducir o identificación estatal de los EE. UU.
+nds.choose_id_type.option_mdl: Licencia de conducir móvil
+nds.choose_id_type.option_passport: Libreta de pasaporte de los EE. UU.
+nds.choose_id_type.option_passport_card: Tarjeta de pasaporte de los EE. UU.
+nds.choose_id_type.or: o
+nds.choose_id_type.subtitle: Tome una foto de su identificación y una selfie rápida para verificar su identidad en línea.
+nds.choose_id_type.title: Elija el tipo de identificación para verificar
+nds.choose_id_type.verify_in_person: Verificar en persona
 nds.idv_welcome.consent_html: Al marcar esta casilla, usted permite que %{app_name} solicite, use, conserve y comparta su información personal. La usaremos para verificar su identidad. Lea sobre nuestras medidas de %{link_html}.
 nds.idv_welcome.consent_link: privacidad y seguridad
 nds.idv_welcome.how_we_protect_heading: Cómo protegemos sus datos
