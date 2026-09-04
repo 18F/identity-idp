@@ -790,7 +790,10 @@ module Test
       @two_factor_options_form = TwoFactorOptionsForm.new(
         user:, phishing_resistant_required:, piv_cac_required:,
       )
-      {}
+      # dev config enables account-creation device profiling (collect_only), so
+      # the view renders the ThreatMetrix partial; supply the inert no-op locals
+      # the real controller passes when no session is bootstrapped.
+      ThreatMetrixHelper::NO_THREAT_METRIX_VARIABLES.dup
     end
 
     def setup_piv_cac_setup
