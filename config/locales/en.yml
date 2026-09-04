@@ -1619,6 +1619,23 @@ nds.idv_welcome.intro: '%{sp_name} needs to verify your identity before you cont
 nds.idv_welcome.no_phone_link: I don’t have a U.S. phone number
 nds.idv_welcome.title: Let’s verify your identity to access %{sp_name}
 nds.idv_welcome.what_youll_need: What you’ll need
+nds.mfa_setup.badge_passkey: Fast and secure
+nds.mfa_setup.heading: Secure your account
+nds.mfa_setup.heading_second: Choose a second authentication method
+nds.mfa_setup.intro: Your account safeguards personal information. Add a layer of protection by choosing a multi-factor authentication method. Update your methods any time in your account settings.
+nds.mfa_setup.intro_second: Set up a second method so you can always access your account even if your primary method is unavailable.
+nds.mfa_setup.options.auth_app: Authentication app
+nds.mfa_setup.options.auth_app_info: Get a one-time code from an app on your phone. It works even without a signal.
+nds.mfa_setup.options.backup_code: Backup codes
+nds.mfa_setup.options.backup_code_info: Save a list of one-time codes. Use them to sign in if another method isn’t available.
+nds.mfa_setup.options.phone: Text or phone call
+nds.mfa_setup.options.phone_info: We send a one-time code by text or phone call. Enter it on the next screen to sign in.
+nds.mfa_setup.options.piv_cac: Government employee ID
+nds.mfa_setup.options.piv_cac_info: Sign in with your government PIV or CAC card using a card reader on your device.
+nds.mfa_setup.options.webauthn: Security key
+nds.mfa_setup.options.webauthn_info: Insert a small physical key into your device, to prove it’s really you.
+nds.mfa_setup.options.webauthn_platform: Passkey
+nds.mfa_setup.options.webauthn_platform_info: Use your face, fingerprint, or a PIN to sign in. Nothing to remember, nothing for hackers to steal.
 nds.mfa.choose_another_method: Choose another method
 nds.passwords.new.heading: Create your password
 nds.passwords.new.info: Create a strong password to secure your account and keep personal information safe.

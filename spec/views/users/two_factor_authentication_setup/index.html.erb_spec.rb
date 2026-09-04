@@ -131,9 +131,9 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
   context 'nds bucket' do
     before { allow(view).to receive(:nds_layout?).and_return(true) }
 
-    it 'renders the FormPageComponent card with the presenter heading' do
+    it 'renders the FormPageComponent card with the NDS heading' do
       expect(rendered).to have_css('.auth--form-page')
-      expect(rendered).to have_css('.auth--form-page h1', text: @presenter.heading)
+      expect(rendered).to have_css('.auth--form-page h1', text: t('nds.mfa_setup.heading'))
     end
 
     it 'renders the mfa options card list container' do
@@ -144,7 +144,7 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
       expect(rendered).to have_css('.mfa-options .card--mfa[type="submit"]')
       expect(rendered).to have_css(
         '.mfa-options .card--mfa .card__title',
-        text: t('two_factor_authentication.two_factor_choice_options.phone'),
+        text: t('nds.mfa_setup.options.phone'),
       )
     end
 
@@ -178,8 +178,8 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
       expect(rendered).to have_css('input#platform_authenticator_available', visible: false)
     end
 
-    it 'renders the cancel account creation footer link for a new user' do
-      expect(rendered).to have_link(t('links.cancel_account_creation'), href: sign_up_cancel_path)
+    it 'does not render a cancel account creation link for a new user' do
+      expect(rendered).to have_no_link(t('links.cancel_account_creation'))
     end
 
     context 'first MFA (no methods configured yet)' do
@@ -210,6 +210,26 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
           '.progress__step[aria-current="step"] .progress__step-counter',
           text: '2 / 2',
         )
+      end
+    end
+
+    context 'when a method is already configured' do
+      let(:user) { build(:user, :with_phone) }
+
+      it 'renders the second-method heading and intro' do
+        expect(rendered).to have_css(
+          '.auth--form-page h1',
+          text: t('nds.mfa_setup.heading_second'),
+        )
+        expect(rendered).to have_content(t('nds.mfa_setup.intro_second'))
+      end
+
+      it 'renders skip as a secondary button in the actions region, not a link' do
+        expect(rendered).to have_css(
+          '.auth__actions a.usa-button.usa-button--secondary',
+          text: t('mfa.skip'),
+        )
+        expect(rendered).to have_no_link(t('links.cancel_account_creation'))
       end
     end
   end
