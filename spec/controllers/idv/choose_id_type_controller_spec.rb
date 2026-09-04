@@ -128,6 +128,35 @@ RSpec.describe Idv::ChooseIdTypeController do
         expect(response).to redirect_to(idv_document_capture_url)
       end
     end
+
+    context 'verify in person (NDS opt-in)' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
+          .and_return(true)
+        allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
+      end
+
+      it 'opts into in-person proofing and redirects to document capture' do
+        put :update, params: { verify_in_person: 'true' }
+
+        expect(subject.idv_session.opted_in_to_in_person_proofing).to eq(true)
+        expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to eq(true)
+        expect(response).to redirect_to(idv_document_capture_url(step: :choose_id_type))
+      end
+    end
+  end
+
+  describe 'NDS layout rendering' do
+    render_views
+
+    before { allow(controller).to receive(:nds_layout?).and_return(true) }
+
+    it 'renders the NDS choose-id-type page without error' do
+      get :show
+
+      expect(response).to render_template('idv/shared/choose_id_type')
+      expect(response.body).to include(t('nds.choose_id_type.title'))
+    end
   end
 
   describe '#step_info' do

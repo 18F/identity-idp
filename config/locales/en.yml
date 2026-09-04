@@ -1611,6 +1611,14 @@ mfa.second_method_warning.link: Add a second authentication method.
 mfa.second_method_warning.text: You will have to delete your account and start over if you lose your only authentication method.
 mfa.skip: Skip for now
 mfa.webauthn_platform_message: Add another authentication method in case you lose access to your first one.
+nds.choose_id_type.option_drivers_license: U.S. driver’s license or state ID
+nds.choose_id_type.option_mdl: Mobile driver’s license
+nds.choose_id_type.option_passport: U.S. passport book
+nds.choose_id_type.option_passport_card: U.S. passport card
+nds.choose_id_type.or: or
+nds.choose_id_type.subtitle: Take a photo of your ID and a quick selfie to verify your identity online.
+nds.choose_id_type.title: Choose your ID type to verify
+nds.choose_id_type.verify_in_person: Verify in person
 nds.idv_welcome.consent_html: By checking this box, you are letting %{app_name} ask for, use, keep and share your personal information. We will use it to verify your identity. Read about our %{link_html} measures.
 nds.idv_welcome.consent_link: privacy and security
 nds.idv_welcome.how_we_protect_heading: How we protect your data
