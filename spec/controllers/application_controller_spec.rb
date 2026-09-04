@@ -899,7 +899,7 @@ RSpec.describe ApplicationController do
       ).and_return(ui_test_bucket_params_enabled)
 
       allow(controller).to receive(:ab_test_bucket)
-        .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
+        .with(:NDS_LOOK_AND_FEEL, any_args)
         .and_return(nds_ab_bucket)
     end
 

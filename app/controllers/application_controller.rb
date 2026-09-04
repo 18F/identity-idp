@@ -33,6 +33,7 @@ class ApplicationController < ActionController::Base
   prepend_before_action :set_session_start_value_if_nil
   prepend_before_action :show_flash_with_redirect_if_session_timeout
   prepend_before_action :set_locale
+  before_action :nds_experiment_uuid
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
   after_action :store_web_locale_in_session
@@ -185,7 +186,7 @@ class ApplicationController < ActionController::Base
       return false if cookies[:ui_test_bucket] == 'legacy'
     end
 
-    ab_test_bucket(:NDS_LOOK_AND_FEEL, service_provider: nil) == :nds
+    ab_test_bucket(:NDS_LOOK_AND_FEEL, request:) == :nds
   end
 
   def attempts_api_enabled_for_session?
@@ -649,5 +650,10 @@ class ApplicationController < ActionController::Base
     return unless session[:redirect_to_change_password]
 
     redirect_to manage_password_url
+  end
+
+  def nds_experiment_uuid
+    @nds_experiment_uuid ||= cookies[:nds_experiment_uuid].presence ||
+                             cookies.permanent[:nds_experiment_uuid] = SecureRandom.uuid
   end
 end

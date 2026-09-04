@@ -166,7 +166,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
           .and_return(true)
         controller.user_session[:in_account_creation_flow] = true
         allow(controller).to receive(:ab_test_bucket)
-          .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
+          .with(:NDS_LOOK_AND_FEEL, any_args)
       end
 
       context 'when platform authenticator is available' do
