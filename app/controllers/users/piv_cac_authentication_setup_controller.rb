@@ -15,7 +15,8 @@ module Users
     before_action :cap_piv_cac_count, only: %i[new submit_new_piv_cac]
     before_action :confirm_recently_authenticated_2fa
 
-    helper_method :in_multi_mfa_selection_flow?
+    helper_method :in_multi_mfa_selection_flow?, :in_account_creation_flow?,
+                  :enabled_mfa_methods_count
 
     def new
       @piv_cac_required = service_provider_mfa_policy.piv_cac_required?
@@ -155,6 +156,10 @@ module Users
 
     def current_cac_count
       current_user.piv_cac_configurations.count
+    end
+
+    def enabled_mfa_methods_count
+      mfa_context.enabled_mfa_methods_count
     end
   end
 end

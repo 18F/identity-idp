@@ -43,6 +43,15 @@ RSpec.describe Test::NDSPageCatalog do
     end
   end
 
+  describe '.helper_wiring_gaps' do
+    subject(:gaps) { described_class.helper_wiring_gaps }
+
+    it 'is empty, so every explorer-stubbed helper a page uses is also '\
+       'view-visible on that page\'s real controller' do
+      expect(gaps).to be_empty
+    end
+  end
+
   describe '.inventory' do
     subject(:inventory) { described_class.inventory }
 

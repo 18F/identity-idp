@@ -87,6 +87,17 @@ module Test
         ],
       ),
       Page.new(
+        key: 'piv-cac-setup',
+        title: 'Add government employee ID (PIV/CAC)',
+        flow: MFA,
+        template: 'users/piv_cac_authentication_setup/new',
+        permutations: [
+          Permutation.new(label: 'First MFA', params: {}),
+          Permutation.new(label: 'Second MFA (configured)', params: { second: '1' }),
+          Permutation.new(label: 'Add after sign-in (skip)', params: { skip: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'otp-entry',
         title: 'One-time code entry',
         flow: OTP,
@@ -181,6 +192,55 @@ module Test
           r.verb.to_s.include?('GET')
       end
       route&.path&.spec.to_s.delete_suffix('(.:format)').presence
+    end
+
+    # The real controller class that renders a template, resolved from the
+    # Rails-conventional controller path (template dirname). Returns nil when the
+    # constant does not exist (e.g. shared/partial-style templates).
+    def self.controller_for_template(template)
+      "#{File.dirname(template)}_controller".camelize.constantize
+    rescue NameError
+      nil
+    end
+
+    # Helper-context self-audit. The explorer renders real view templates against
+    # its OWN controller, which stubs a fixed set of `helper_method`s so pages
+    # render without the full flow. That means a page can reference a helper the
+    # explorer stubs while its REAL controller never exposes it to views — the
+    # page works in the explorer but 500s in production. This flags exactly that
+    # drift: for each catalog page, any explorer-stubbed helper the template
+    # references that the page's real controller does not make view-visible.
+    #
+    # View-visibility is approximated by the controller's `_helpers` module,
+    # which aggregates included helper modules plus `helper_method` proxies — the
+    # same surface a view resolves against. URL/path helpers (framework-injected,
+    # always available in views) are excluded so they do not read as gaps.
+    #
+    # Returns a hash of template => [missing helper symbols]; empty when wired
+    # correctly. Templates whose controller cannot be resolved are skipped (the
+    # coverage audit already guards template existence).
+    def self.helper_wiring_gaps
+      stubbed = NDSPagesController._helper_methods.map(&:to_sym).reject do |helper|
+        helper.to_s.end_with?('_path', '_url')
+      end.to_set
+
+      PAGES.each_with_object({}) do |page, gaps|
+        controller = controller_for_template(page.template)
+        next if controller.nil?
+
+        path = Rails.root.join('app/views', "#{page.template}.html.erb")
+        next unless path.exist?
+
+        body = path.read
+        exposed = controller._helpers.instance_methods.to_set
+        referenced = stubbed.select do |helper|
+          next false if exposed.include?(helper)
+
+          # Whole-identifier match so `resource` does not match `resource_name`.
+          body.match?(/(?<![\w?])#{Regexp.escape(helper.to_s)}(?!\w)/)
+        end
+        gaps[page.template] = referenced.sort unless referenced.empty?
+      end
     end
 
     Entry = Struct.new(:path, :controller, :action, :template, :page, keyword_init: true)
