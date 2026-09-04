@@ -1622,6 +1622,14 @@ mfa.second_method_warning.link: Agregue un segundo método de autenticación.
 mfa.second_method_warning.text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de autenticación.
 mfa.skip: Omitir por ahora
 mfa.webauthn_platform_message: Agregue otro método de autenticación en caso de que pierda el acceso al primero.
+nds.idv_welcome.consent_html: Al marcar esta casilla, usted permite que %{app_name} solicite, use, conserve y comparta su información personal. La usaremos para verificar su identidad. Lea sobre nuestras medidas de %{link_html}.
+nds.idv_welcome.consent_link: privacidad y seguridad
+nds.idv_welcome.how_we_protect_heading: Cómo protegemos sus datos
+nds.idv_welcome.how_we_protect_info: Solo usamos lo que usted ingresa para verificar su identidad con la Administración del Seguro Social. Su información nunca se compartirá ni se venderá fuera del Gobierno.
+nds.idv_welcome.intro: '%{sp_name} necesita verificar su identidad antes de que continúe. La mayoría de las personas terminan en unos 7 minutos.'
+nds.idv_welcome.no_phone_link: No tengo un número de teléfono de los EE. UU.
+nds.idv_welcome.title: Verifiquemos su identidad para acceder a %{sp_name}
+nds.idv_welcome.what_youll_need: Lo que necesitará
 nds.mfa.choose_another_method: Elija otro método
 nds.passwords.new.heading: Cree su contraseña
 nds.passwords.new.info: Cree una contraseña segura para proteger su cuenta y mantener a salvo su información personal.

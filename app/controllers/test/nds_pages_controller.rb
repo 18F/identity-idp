@@ -846,6 +846,31 @@ module Test
       {}
     end
 
+    def setup_idv_welcome
+      if params[:sp].present?
+        @decorated_sp_session = SpSessionStub.new(
+          sp_name: 'Example Service Provider',
+          sp_alert_text: nil,
+          cancel_link_url: root_url,
+        )
+      end
+      if params[:logo].present?
+        @current_sp = ServiceProviderStub.new(
+          logo: 'logo.svg',
+          logo_url: helpers.image_path('logo.svg'),
+          issuer: DEV_SP_ISSUER,
+        )
+      end
+      @presenter = Idv::WelcomePresenter.new(
+        decorated_sp_session:,
+        show_sp_reproof_banner: params[:reproof].present?,
+        passport_cards_supported: true,
+        mdl_enabled: true,
+      )
+      @consent_form = Idv::ConsentForm.new(idv_consent_given: false)
+      {}
+    end
+
     def build_mfa_user(configured:)
       user = User.new
       if configured

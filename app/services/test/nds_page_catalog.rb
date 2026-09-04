@@ -13,6 +13,7 @@ module Test
     CREATE_ACCOUNT = 'Create account'
     MFA = 'MFA'
     OTP = 'OTP'
+    IDV = 'Identity verification'
 
     PAGES = [
       Page.new(
@@ -126,6 +127,18 @@ module Test
           Permutation.new(label: 'Countdown', params: { countdown: '1' }),
           Permutation.new(label: 'Reauthentication', params: { reauthn: '1' }),
           Permutation.new(label: 'Prefilled code', params: { code: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'idv-welcome',
+        title: 'Verify your identity (welcome)',
+        flow: IDV,
+        template: 'idv/welcome/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'With service provider', params: { sp: '1' }),
+          Permutation.new(label: 'SP + logo', params: { sp: '1', logo: '1' }),
+          Permutation.new(label: 'SP reproof banner', params: { sp: '1', reproof: '1' }),
         ],
       ),
     ].freeze
