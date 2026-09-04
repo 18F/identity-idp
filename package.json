@@ -123,6 +123,7 @@
     "serialize-javascript": ">=7.0.3",
     "styled-components": "6.4.1",
     "diff": "^8.0.3",
-    "undici": "6.28.0"
+    "undici": "6.28.0",
+    "@faker-js/faker": "10.5.0"
   }
 }
