@@ -365,8 +365,16 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
       let(:passport_cards_supported) { true }
       let(:ddp_response_body) { LexisNexisFixtures.ddp_true_id_passport_card_response_success }
 
-      it 'is an usuccessful result' do
-        expect(response.success?).to eq(false)
+      it 'is a successful result' do
+        expect(response.success?).to eq(true)
+      end
+
+      it 'records the document_type_received as passport_card' do
+        expect(response.pii_from_doc.document_type_received).to eq('passport_card')
+      end
+
+      it 'does not have passport card error messages' do
+        expect(response.error_messages[:passport_card]).to eq(nil)
       end
     end
   end

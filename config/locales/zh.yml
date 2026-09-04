@@ -1625,8 +1625,14 @@ mfa.second_method_warning.link: 添加第二个身份证实方法。
 mfa.second_method_warning.text: 如果你丢失唯一的身份证实方法，就不得不删除你的账户并从头开始。
 mfa.skip: 现在先跳过
 mfa.webauthn_platform_message: 添加另一个身份证实方法，以防你无法使用第一个方法。
+nds.mfa.choose_another_method: 选择另一种方法
 nds.passwords.new.heading: 创建您的密码
 nds.passwords.new.info: 创建一个强密码来保护您的账户并确保个人信息安全。
+nds.piv_cac_setup.nickname: 身份证件昵称
+nds.piv_cac_setup.step_1: 输入昵称
+nds.piv_cac_setup.step_2: 把 PIV 或 CAC 插入读卡器
+nds.piv_cac_setup.step_3: 添加 PIV 或 CAC
+nds.piv_cac_setup.step_3_info: 点击继续按钮后，系统会要求你选择一个证书并输入你的 PIN。
 notices.account_reactivation: 好！你有个人密钥。
 notices.authenticated_successfully: 成功验证。
 notices.backup_codes_configured: 备用代码加到了你账户。

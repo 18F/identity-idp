@@ -1623,8 +1623,14 @@ mfa.second_method_warning.link: Agregue un segundo método de autenticación.
 mfa.second_method_warning.text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de autenticación.
 mfa.skip: Omitir por ahora
 mfa.webauthn_platform_message: Agregue otro método de autenticación en caso de que pierda el acceso al primero.
+nds.mfa.choose_another_method: Elija otro método
 nds.passwords.new.heading: Cree su contraseña
 nds.passwords.new.info: Cree una contraseña segura para proteger su cuenta y mantener a salvo su información personal.
+nds.piv_cac_setup.nickname: Alias de la identificación
+nds.piv_cac_setup.step_1: Ingrese un alias
+nds.piv_cac_setup.step_2: Inserte su tarjeta PIV o CAC en su lector de tarjetas
+nds.piv_cac_setup.step_3: Agregue su tarjeta PIV o CAC
+nds.piv_cac_setup.step_3_info: Se le pedirá que elija un certificado e ingrese su PIN después de hacer clic en el botón de continuar.
 notices.account_reactivation: Qué bien. Tiene su clave personal.
 notices.authenticated_successfully: Logró autenticarse.
 notices.backup_codes_configured: Los códigos de recuperación se agregaron a su cuenta.

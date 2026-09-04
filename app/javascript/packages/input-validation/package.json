@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "libphonenumber-js": "^1.13.8"
+    "libphonenumber-js": "^1.13.12"
   },
   "sideEffects": [
     "./input-element.ts"

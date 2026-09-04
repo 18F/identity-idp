@@ -1612,8 +1612,14 @@ mfa.second_method_warning.link: Add a second authentication method.
 mfa.second_method_warning.text: You will have to delete your account and start over if you lose your only authentication method.
 mfa.skip: Skip for now
 mfa.webauthn_platform_message: Add another authentication method in case you lose access to your first one.
+nds.mfa.choose_another_method: Choose another method
 nds.passwords.new.heading: Create your password
 nds.passwords.new.info: Create a strong password to secure your account and keep personal information safe.
+nds.piv_cac_setup.nickname: ID nickname
+nds.piv_cac_setup.step_1: Enter a nickname
+nds.piv_cac_setup.step_2: Insert your PIV or CAC into your card reader
+nds.piv_cac_setup.step_3: Add your PIV or CAC
+nds.piv_cac_setup.step_3_info: You’ll be asked to choose a certificate and enter your PIN after clicking the continue button.
 notices.account_reactivation: Great! You have your personal key.
 notices.authenticated_successfully: Authenticated successfully.
 notices.backup_codes_configured: Backup codes were added to your account.

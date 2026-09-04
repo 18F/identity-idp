@@ -44,6 +44,28 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
         expect(assigns(:piv_cac_required)).to eq(false)
       end
 
+      context 'when rendering the NDS layout' do
+        render_views
+
+        let(:params) { { n: 'nds' } }
+
+        it 'renders the setup page without error' do
+          expect(response).to render_template(:new)
+          expect(response.body).to include(t('titles.piv_cac_login.add'))
+        end
+
+        context 'in the account creation flow' do
+          before do
+            allow(controller).to receive(:user_session)
+              .and_return(in_account_creation_flow: true)
+          end
+
+          it 'renders the account-creation stepper without error' do
+            expect(response).to render_template(:new)
+          end
+        end
+      end
+
       context 'when SP requires PIV/CAC' do
         let(:service_provider) { create(:service_provider) }
 
