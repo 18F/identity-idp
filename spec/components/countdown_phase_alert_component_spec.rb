@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe CountdownPhaseAlertComponent, type: :component do
   around { |ex| freeze_time { ex.run } }
 
-  let(:expiration) { Time.zone.now + 90.seconds }
+  let(:expiration) { Time.zone.now + 10.seconds }
 
   let(:phases_unsorted) do
     [
@@ -18,7 +18,8 @@ RSpec.describe CountdownPhaseAlertComponent, type: :component do
   let(:phases_sorted) { phases_unsorted.sort_by { |p| p[:at_s] } }
 
   let(:first_displayed_phase) do
-    phases_sorted.last
+    seconds_left = (expiration - Time.zone.now).ceil
+    phases_sorted.find { |p| seconds_left <= p[:at_s] } || phases_sorted.first
   end
 
   let(:base_opts) do
@@ -47,6 +48,48 @@ RSpec.describe CountdownPhaseAlertComponent, type: :component do
     )
 
     expect(rendered).to have_css('.usa-alert.margin-bottom-4.usa-alert--info')
+  end
+
+  describe 'initial phase selection based on time remaining' do
+    it 'renders the info phase when well within the largest threshold' do
+      rendered = render_inline described_class.new(
+        **base_opts,
+        expiration: Time.zone.now + 12.seconds,
+      )
+
+      expect(rendered).to have_css('.usa-alert.usa-alert--info')
+      expect(rendered).to have_css('[data-role="phase-label"]', text: '12 seconds')
+    end
+
+    it 'renders a warning phase once a lower threshold is crossed' do
+      rendered = render_inline described_class.new(
+        **base_opts,
+        expiration: Time.zone.now + 5.seconds,
+      )
+
+      expect(rendered).to have_css('.usa-alert.usa-alert--warning')
+      expect(rendered).to have_css('[data-role="phase-label"]', text: '6 seconds left')
+    end
+
+    it 'renders the expired phase when no time remains' do
+      rendered = render_inline described_class.new(
+        **base_opts,
+        expiration: Time.zone.now,
+      )
+
+      expect(rendered).to have_css('.usa-alert.usa-alert--error')
+      expect(rendered).to have_css('[data-role="phase-label"]', text: 'Expired')
+    end
+
+    it 'renders the expired phase when expiration is already in the past' do
+      rendered = render_inline described_class.new(
+        **base_opts,
+        expiration: Time.zone.now - 5.seconds,
+      )
+
+      expect(rendered).to have_css('.usa-alert.usa-alert--error')
+      expect(rendered).to have_css('[data-role="phase-label"]', text: 'Expired')
+    end
   end
 
   it 'renders a hidden countdown element with an expiration' do
