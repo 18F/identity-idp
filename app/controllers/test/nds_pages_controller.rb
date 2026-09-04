@@ -793,6 +793,17 @@ module Test
       {}
     end
 
+    def setup_piv_cac_setup
+      skip = params[:skip].present?
+      user = build_mfa_user(configured: params[:second].present?)
+      @nds_current_user = user
+      @piv_cac_required = false
+      @in_account_creation_flow = !skip
+      user_session[:add_piv_cac_after_2fa] = true if skip
+      @presenter = PivCacAuthenticationSetupPresenter.new(user, true, nil)
+      {}
+    end
+
     def setup_otp_entry
       @nds_current_user = User.new
       delivery = params[:delivery] == 'voice' ? 'voice' : 'sms'
