@@ -13,7 +13,7 @@ module NDS
       { name: :verification },
     ].freeze
 
-    SUBSTEP_COUNTS = { account: 2, security: 2 }.freeze
+    SUBSTEP_COUNTS = { account: 2, security: 2, verification: 12 }.freeze
 
     module_function
 

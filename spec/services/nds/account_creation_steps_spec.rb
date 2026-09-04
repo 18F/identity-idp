@@ -82,8 +82,17 @@ RSpec.describe NDS::AccountCreationSteps do
       )
     end
 
-    it 'omits substep args for steps without a substep count' do
-      expect(described_class.progress_args(step: :verification, substep: 1)).to eq(
+    it 'includes substep args for the verification step' do
+      expect(described_class.progress_args(step: :verification, substep: 2)).to eq(
+        steps: described_class.labels,
+        current_step: 2,
+        current_substep: 2,
+        substep_count: 12,
+      )
+    end
+
+    it 'omits substep args when no substep is given' do
+      expect(described_class.progress_args(step: :verification)).to eq(
         steps: described_class.labels,
         current_step: 2,
       )

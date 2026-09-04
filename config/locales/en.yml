@@ -1611,6 +1611,14 @@ mfa.second_method_warning.link: Add a second authentication method.
 mfa.second_method_warning.text: You will have to delete your account and start over if you lose your only authentication method.
 mfa.skip: Skip for now
 mfa.webauthn_platform_message: Add another authentication method in case you lose access to your first one.
+nds.idv_welcome.consent_html: By checking this box, you are letting %{app_name} ask for, use, keep and share your personal information. We will use it to verify your identity. Read about our %{link_html} measures.
+nds.idv_welcome.consent_link: privacy and security
+nds.idv_welcome.how_we_protect_heading: How we protect your data
+nds.idv_welcome.how_we_protect_info: We only use what you enter to verify your identity with the Social Security Administration. Your information will never be shared or sold outside the government.
+nds.idv_welcome.intro: '%{sp_name} needs to verify your identity before you continue. Most people finish in about 7 minutes.'
+nds.idv_welcome.no_phone_link: I don’t have a U.S. phone number
+nds.idv_welcome.title: Let’s verify your identity to access %{sp_name}
+nds.idv_welcome.what_youll_need: What you’ll need
 nds.mfa.choose_another_method: Choose another method
 nds.passwords.new.heading: Create your password
 nds.passwords.new.info: Create a strong password to secure your account and keep personal information safe.
