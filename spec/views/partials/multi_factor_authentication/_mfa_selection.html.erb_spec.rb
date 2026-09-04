@@ -176,12 +176,18 @@ RSpec.describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
 
     it 'renders the method icon and title' do
       expect(rendered).to have_css('.card--mfa .card__row .usa-icon')
-      expect(rendered).to have_css('.card--mfa .card__title', text: option.label)
+      expect(rendered).to have_css(
+        '.card--mfa .card__title',
+        text: t("nds.mfa_setup.options.#{option.type}"),
+      )
     end
 
     it 'renders a chevron and description for an enabled option' do
       expect(rendered).to have_css('.card--mfa .card__trailing .usa-icon')
-      expect(rendered).to have_css('.card--mfa .card__description', text: option.info)
+      expect(rendered).to have_css(
+        '.card--mfa .card__description',
+        text: t("nds.mfa_setup.options.#{option.type}_info"),
+      )
     end
 
     it 'does not render the legacy checkbox markup' do
@@ -198,7 +204,7 @@ RSpec.describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
       it 'renders the recommended badge' do
         expect(rendered).to have_css(
           '.card__badge',
-          text: t('two_factor_authentication.recommended'),
+          text: t('nds.mfa_setup.badge_passkey'),
         )
       end
     end

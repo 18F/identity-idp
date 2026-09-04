@@ -1632,6 +1632,23 @@ nds.idv_welcome.intro: '%{sp_name}需要先验证您的身份，然后您才能�
 nds.idv_welcome.no_phone_link: 我没有美国电话号码
 nds.idv_welcome.title: 让我们验证您的身份以访问%{sp_name}
 nds.idv_welcome.what_youll_need: 您需要准备的内容
+nds.mfa_setup.badge_passkey: 快速又安全
+nds.mfa_setup.heading: 保护您的账户
+nds.mfa_setup.heading_second: 选择第二种身份验证方法
+nds.mfa_setup.intro: 您的账户保护着个人信息。通过选择一种多因素身份验证方法来增加一层保护。您可以随时在账户设置中更新您的方法。
+nds.mfa_setup.intro_second: 设置第二种方法，这样即使您的主要方法不可用，您也能始终访问自己的账户。
+nds.mfa_setup.options.auth_app: 身份验证应用程序
+nds.mfa_setup.options.auth_app_info: 从您手机上的应用程序获取一次性代码。即使没有信号也能使用。
+nds.mfa_setup.options.backup_code: 备用代码
+nds.mfa_setup.options.backup_code_info: 保存一份一次性代码清单。当没有其他方法可用时，用它们来登录。
+nds.mfa_setup.options.phone: 短信或电话
+nds.mfa_setup.options.phone_info: 我们通过短信或电话向您发送一次性代码。在下一个屏幕上输入它即可登录。
+nds.mfa_setup.options.piv_cac: 政府雇员身份证件
+nds.mfa_setup.options.piv_cac_info: 使用您设备上的读卡器，通过您的政府 PIV 或 CAC 卡登录。
+nds.mfa_setup.options.webauthn: 安全密钥
+nds.mfa_setup.options.webauthn_info: 将一个小型实体密钥插入您的设备，以证明确实是您本人。
+nds.mfa_setup.options.webauthn_platform: 通行密钥
+nds.mfa_setup.options.webauthn_platform_info: 使用您的面容、指纹或 PIN 码登录。无需记忆，也没有可供黑客窃取的东西。
 nds.mfa.choose_another_method: 选择另一种方法
 nds.passwords.new.heading: 创建您的密码
 nds.passwords.new.info: 创建一个强密码来保护您的账户并确保个人信息安全。

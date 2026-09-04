@@ -1630,6 +1630,23 @@ nds.idv_welcome.intro: '%{sp_name} necesita verificar su identidad antes de que 
 nds.idv_welcome.no_phone_link: No tengo un número de teléfono de los EE. UU.
 nds.idv_welcome.title: Verifiquemos su identidad para acceder a %{sp_name}
 nds.idv_welcome.what_youll_need: Lo que necesitará
+nds.mfa_setup.badge_passkey: Rápido y seguro
+nds.mfa_setup.heading: Proteja su cuenta
+nds.mfa_setup.heading_second: Elija un segundo método de autenticación
+nds.mfa_setup.intro: Su cuenta protege su información personal. Agregue una capa de protección eligiendo un método de autenticación de múltiples factores. Actualice sus métodos en cualquier momento en la configuración de su cuenta.
+nds.mfa_setup.intro_second: Configure un segundo método para que siempre pueda acceder a su cuenta, incluso si su método principal no está disponible.
+nds.mfa_setup.options.auth_app: Aplicación de autenticación
+nds.mfa_setup.options.auth_app_info: Obtenga un código de un solo uso desde una aplicación en su teléfono. Funciona incluso sin señal.
+nds.mfa_setup.options.backup_code: Códigos de recuperación
+nds.mfa_setup.options.backup_code_info: Guarde una lista de códigos de un solo uso. Úselos para iniciar sesión si no tiene disponible otro método.
+nds.mfa_setup.options.phone: Mensaje de texto o llamada
+nds.mfa_setup.options.phone_info: Le enviamos un código de un solo uso por mensaje de texto o llamada. Ingréselo en la siguiente pantalla para iniciar sesión.
+nds.mfa_setup.options.piv_cac: Identificación de empleado del Gobierno
+nds.mfa_setup.options.piv_cac_info: Inicie sesión con su tarjeta PIV o CAC del Gobierno usando un lector de tarjetas en su dispositivo.
+nds.mfa_setup.options.webauthn: Llave de seguridad
+nds.mfa_setup.options.webauthn_info: Inserte una pequeña llave física en su dispositivo para comprobar que realmente es usted.
+nds.mfa_setup.options.webauthn_platform: Clave de acceso
+nds.mfa_setup.options.webauthn_platform_info: Use su rostro, huella digital o un PIN para iniciar sesión. Nada que recordar, nada que los piratas informáticos puedan robar.
 nds.mfa.choose_another_method: Elija otro método
 nds.passwords.new.heading: Cree su contraseña
 nds.passwords.new.info: Cree una contraseña segura para proteger su cuenta y mantener a salvo su información personal.
