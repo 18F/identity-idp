@@ -1619,6 +1619,14 @@ nds.piv_cac_setup.step_1: Enter a nickname
 nds.piv_cac_setup.step_2: Insert your PIV or CAC into your card reader
 nds.piv_cac_setup.step_3: Add your PIV or CAC
 nds.piv_cac_setup.step_3_info: You’ll be asked to choose a certificate and enter your PIN after clicking the continue button.
+nds.totp_setup.new.code_label: Code
+nds.totp_setup.new.heading: Set up an authentication app
+nds.totp_setup.new.nickname_label: App nickname
+nds.totp_setup.new.remember_device_info: Select this to skip authentication on supported sites. Do not select this if you are on a public or shared device.
+nds.totp_setup.new.setup_code_label: Setup code
+nds.totp_setup.new.step_1: Enter a nickname
+nds.totp_setup.new.step_2: Open your preferred authentication app
+nds.totp_setup.new.step_3: Scan the QR code or enter the set up code manually in your authentication app
 notices.account_reactivation: Great! You have your personal key.
 notices.authenticated_successfully: Authenticated successfully.
 notices.backup_codes_configured: Backup codes were added to your account.

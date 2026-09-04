@@ -1632,6 +1632,14 @@ nds.piv_cac_setup.step_1: 输入昵称
 nds.piv_cac_setup.step_2: 把 PIV 或 CAC 插入读卡器
 nds.piv_cac_setup.step_3: 添加 PIV 或 CAC
 nds.piv_cac_setup.step_3_info: 点击继续按钮后，系统会要求你选择一个证书并输入你的 PIN。
+nds.totp_setup.new.code_label: 代码
+nds.totp_setup.new.heading: 设置一个身份验证应用程序
+nds.totp_setup.new.nickname_label: 应用程序昵称
+nds.totp_setup.new.remember_device_info: 选择此项可在支持的网站上跳过身份验证。如果您使用的是公共或共享设备，请勿选择此项。
+nds.totp_setup.new.setup_code_label: 设置代码
+nds.totp_setup.new.step_1: 输入一个昵称
+nds.totp_setup.new.step_2: 打开您首选的身份验证应用程序
+nds.totp_setup.new.step_3: 扫描二维码或在身份验证应用程序中手动输入设置代码
 notices.account_reactivation: 好！你有个人密钥。
 notices.authenticated_successfully: 成功验证。
 notices.backup_codes_configured: 备用代码加到了你账户。
