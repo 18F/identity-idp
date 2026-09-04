@@ -1624,6 +1624,14 @@ mfa.second_method_warning.link: 添加第二个身份证实方法。
 mfa.second_method_warning.text: 如果你丢失唯一的身份证实方法，就不得不删除你的账户并从头开始。
 mfa.skip: 现在先跳过
 mfa.webauthn_platform_message: 添加另一个身份证实方法，以防你无法使用第一个方法。
+nds.idv_welcome.consent_html: 勾选此框即表示您允许%{app_name}索取、使用、保存和共享您的个人信息。我们将用它来验证您的身份。请阅读我们的%{link_html}措施。
+nds.idv_welcome.consent_link: 隐私和安全
+nds.idv_welcome.how_we_protect_heading: 我们如何保护您的数据
+nds.idv_welcome.how_we_protect_info: 我们仅使用您输入的信息向社会保障局验证您的身份。您的信息绝不会在政府之外被共享或出售。
+nds.idv_welcome.intro: '%{sp_name}需要先验证您的身份，然后您才能继续。大多数人大约在 7 分钟内完成。'
+nds.idv_welcome.no_phone_link: 我没有美国电话号码
+nds.idv_welcome.title: 让我们验证您的身份以访问%{sp_name}
+nds.idv_welcome.what_youll_need: 您需要准备的内容
 nds.mfa.choose_another_method: 选择另一种方法
 nds.passwords.new.heading: 创建您的密码
 nds.passwords.new.info: 创建一个强密码来保护您的账户并确保个人信息安全。
