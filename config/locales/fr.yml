@@ -1619,6 +1619,23 @@ nds.idv_welcome.intro: '%{sp_name} doit vérifier votre identité avant que vous
 nds.idv_welcome.no_phone_link: Je n’ai pas de numéro de téléphone américain
 nds.idv_welcome.title: Vérifions votre identité pour accéder à %{sp_name}
 nds.idv_welcome.what_youll_need: Ce dont vous aurez besoin
+nds.mfa_setup.badge_passkey: Rapide et sécurisé
+nds.mfa_setup.heading: Sécurisez votre compte
+nds.mfa_setup.heading_second: Choisissez une deuxième méthode d’authentification
+nds.mfa_setup.intro: Votre compte protège vos renseignements personnels. Ajoutez une couche de protection en choisissant une méthode d’authentification à plusieurs facteurs. Modifiez vos méthodes à tout moment dans les paramètres de votre compte.
+nds.mfa_setup.intro_second: Configurez une deuxième méthode pour toujours pouvoir accéder à votre compte, même si votre méthode principale n’est pas disponible.
+nds.mfa_setup.options.auth_app: Application d’authentification
+nds.mfa_setup.options.auth_app_info: Obtenez un code à usage unique depuis une application sur votre téléphone. Elle fonctionne même sans signal.
+nds.mfa_setup.options.backup_code: Codes de sauvegarde
+nds.mfa_setup.options.backup_code_info: Enregistrez une liste de codes à usage unique. Utilisez-les pour vous connecter si une autre méthode n’est pas disponible.
+nds.mfa_setup.options.phone: Texto ou appel téléphonique
+nds.mfa_setup.options.phone_info: Nous envoyons un code à usage unique par texto ou appel téléphonique. Saisissez-le sur l’écran suivant pour vous connecter.
+nds.mfa_setup.options.piv_cac: Pièce d’identité d’employé du gouvernement
+nds.mfa_setup.options.piv_cac_info: Connectez-vous avec votre carte PIV ou CAC du gouvernement à l’aide d’un lecteur de carte sur votre appareil.
+nds.mfa_setup.options.webauthn: Clé de sécurité
+nds.mfa_setup.options.webauthn_info: Insérez une petite clé physique dans votre appareil pour prouver que c’est bien vous.
+nds.mfa_setup.options.webauthn_platform: Clé d’accès
+nds.mfa_setup.options.webauthn_platform_info: Utilisez votre visage, votre empreinte digitale ou un PIN pour vous connecter. Rien à retenir, rien à voler pour les pirates.
 nds.mfa.choose_another_method: Choisir une autre méthode
 nds.passwords.new.heading: Créez votre mot de passe
 nds.passwords.new.info: Créez un mot de passe fort pour sécuriser votre compte et protéger vos renseignements personnels.
