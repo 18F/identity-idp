@@ -98,6 +98,23 @@ module Test
         ],
       ),
       Page.new(
+        key: 'totp-setup',
+        title: 'Authentication app setup',
+        flow: MFA,
+        template: 'users/totp_setup/new',
+        permutations: [
+          Permutation.new(label: 'During sign-in (no stepper)', params: {}),
+          Permutation.new(
+            label: 'First MFA (account creation)',
+            params: { account_creation: '1' },
+          ),
+          Permutation.new(
+            label: 'Second MFA (account creation)',
+            params: { account_creation: '1', second: '1' },
+          ),
+        ],
+      ),
+      Page.new(
         key: 'otp-entry',
         title: 'One-time code entry',
         flow: OTP,
