@@ -91,6 +91,15 @@ class TwoFactorOptionsPresenter
     @show_skip_additional_mfa_link
   end
 
+  # Phase 1 of personal key MFA deprecation: warn users who authenticate with a
+  # personal key (an MFA method) to replace it. Identity-verified users use their
+  # personal key for account recovery/IDV and are excluded via PersonalKeyPolicy.
+  def show_personal_key_deprecation_warning?
+    return false unless FeatureManagement.personal_key_mfa_deprecation_phase_1_enabled?
+
+    TwoFactorAuthentication::PersonalKeyPolicy.new(user).enabled?
+  end
+
   def skip_path
     if show_cancel_return_to_sp?
       return_to_sp_cancel_path

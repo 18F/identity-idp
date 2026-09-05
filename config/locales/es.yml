@@ -1617,6 +1617,7 @@ mfa.account_info: Agregar otro método de autenticación evita que el acceso a s
 mfa.add: Agregar otro método
 mfa.info: Agregue un nivel de seguridad adicional para su cuenta de %{app_name} seleccionando un método de autenticación multifactor.
 mfa.more_options: Más opciones
+mfa.personal_key_deprecation_warning: Sustituya su clave personal por otro método de autenticación.
 mfa.recommendation: Le recomendamos seleccionar al menos dos opciones diferentes en caso de que pierda uno de los métodos.
 mfa.second_method_warning.link: Agregue un segundo método de autenticación.
 mfa.second_method_warning.text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de autenticación.
