@@ -225,8 +225,8 @@ GEM
       smart_properties
     bigdecimal (4.1.2)
     bindata (2.5.1)
-    bootsnap (1.23.0)
-      msgpack (~> 1.2)
+    bootsnap (1.25.0)
+      msgpack (~> 1.5)
     brakeman (8.0.4)
       racc
     browser (6.2.0)
@@ -1092,7 +1092,7 @@ DEPENDENCIES
   zxcvbn (= 0.1.12)
 
 RUBY VERSION
-   ruby 3.4.5p51
+   ruby 3.4.10p104
 
 BUNDLED WITH
    2.6.9
