@@ -423,6 +423,12 @@ module Idv
         (skip_hybrid_handoff || desktop_test_mode_enabled?)
     end
 
+    def proofing_with_superior_evidence?
+      Idp::Constants::DocumentTypes::SUPERIOR_EVIDENCE_DOCUMENT_TYPES.include?(
+        pii_from_doc&.document_type_received,
+      )
+    end
+
     private
 
     attr_reader :user_session

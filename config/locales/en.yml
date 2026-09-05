@@ -1260,6 +1260,7 @@ idv.messages.gpo.verify_address_again_link_text: verify your address again
 idv.messages.otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
 idv.messages.phone.alert_html: '<strong>Enter a phone number that is:</strong>'
 idv.messages.phone.description: We will check records to verify that your phone number matches your verified information, and send a one-time code.
+idv.messages.phone.description_skip_verification: We will add your phone number to your profile and send a one-time code.
 idv.messages.phone.failed_number.alert_text: We couldn’t match you to this number.
 idv.messages.phone.failed_number.gpo_alert_html: Try <strong>another</strong> number or %{link_html}.
 idv.messages.phone.failed_number.gpo_verify_link: verify by mail
@@ -1855,6 +1856,7 @@ titles.idv.enter_password_letter: Re-enter your password to send your letter
 titles.idv.get_letter: Get a letter
 titles.idv.personal_key: Save your personal key
 titles.idv.phone: Verify your phone number
+titles.idv.phone_skip_verification: Enter your phone number
 titles.idv.reset_password: Reset Password
 titles.idv.verify_info: Verify your information
 titles.mfa_setup.face_touch_unlock_confirmation: Face or touch unlock added

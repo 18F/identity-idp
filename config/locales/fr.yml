@@ -1260,6 +1260,7 @@ idv.messages.gpo.verify_address_again_link_text: confirmer à nouveau votre adre
 idv.messages.otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus, veuillez sélectionner « Appel téléphonique » ci-dessous.
 idv.messages.phone.alert_html: '<strong>Saisissez un numéro de téléphone qui est :</strong>'
 idv.messages.phone.description: Nous vérifierons que votre numéro de téléphone correspond aux renseignements figurant sur votre pièce d’identité.
+idv.messages.phone.description_skip_verification: Nous ajouterons votre numéro de téléphone à votre profil et vous enverrons un code à usage unique.
 idv.messages.phone.failed_number.alert_text: Nous n’avons pas pu vous associer à ce numéro.
 idv.messages.phone.failed_number.gpo_alert_html: Essayez un <strong>autre</strong> numéro ou %{link_html}.
 idv.messages.phone.failed_number.gpo_verify_link: vérifiez par courrier
@@ -1856,6 +1857,7 @@ titles.idv.enter_password_letter: Ressaisissez votre mot de passe pour envoyer v
 titles.idv.get_letter: Obtenir une lettre
 titles.idv.personal_key: Sauvegarder votre clé personnelle
 titles.idv.phone: Vérifier votre numéro de téléphone
+titles.idv.phone_skip_verification: Entrez votre numéro de téléphone
 titles.idv.reset_password: Réinitialiser le mot de passe
 titles.idv.verify_info: Vérifier vos informations
 titles.mfa_setup.face_touch_unlock_confirmation: Déverrouillage facial ou tactile ajouté
