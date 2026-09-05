@@ -1,0 +1,23 @@
+@use 'sass:color';
+@use 'uswds-core' as *;
+
+$clear1-navy: #041a55;
+
+.clear1-button {
+  align-items: center;
+  background-color: $clear1-navy;
+  display: inline-flex;
+  gap: units(1.5);
+  justify-content: center;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: color.adjust($clear1-navy, $lightness: -5%);
+  }
+
+  &__logo {
+    height: units(3);
+    width: auto;
+  }
+}

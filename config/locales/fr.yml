@@ -665,6 +665,7 @@ doc_auth.headings.upload_from_phone: Utilisez votre téléphone
 doc_auth.headings.verify_at_post_office: Vous rendre à un bureau de poste participant
 doc_auth.headings.verify_identity: Confirmer votre identité
 doc_auth.headings.verify_online: Confirmer votre identité en ligne
+doc_auth.headings.verify_with_existing_account: Vérifiez avec votre compte existant
 doc_auth.headings.welcome: Vérifions votre identité auprès de %{sp_name}
 doc_auth.headings.welcome_sp_reproof: Vérifiez à nouveau votre identité pour %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Vous utilisez <strong>%{app_name}</strong> pour accéder à <strong>%{service_provider_name}</strong>. Ajoutez uniquement votre pièce d’identité si vous avez demandé à %{app_name} de vérifier votre identité à l’aide de votre téléphone.
@@ -737,6 +738,8 @@ doc_auth.info.verify_online_description_passport_card: Vous pouvez utiliser un p
 doc_auth.info.verify_online_instruction: Vous devrez photographier votre pièce d’identité pour vérifier votre identité en ligne.
 doc_auth.info.verify_online_instruction_selfie: Prenez un selfie et des photos de votre pièce d’identité.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
+doc_auth.info.verify_with_clear1: 'Vous avez déjà utilisé CLEAR® ? Vérifiez en quelques secondes en prenant un selfie.'
+doc_auth.info.verify_with_clear1_link_text: En savoir plus sur la liaison des comptes
 doc_auth.info.welcome_sp_reproof_alert: Pour votre sécurité, %{sp_name} exige que vous vérifiiez à nouveau votre identité.
 doc_auth.info.you_entered: 'Vous avez saisi :'
 doc_auth.instructions.bullet1: Munissez-vous d’un passeport, d’un permis de conduire ou d’une carte d’identité d’un État des États-Unis
@@ -965,6 +968,8 @@ forms.buttons.submit.confirm_change: Confirmer le changement
 forms.buttons.submit.default: Valider
 forms.buttons.submit.update: Mettre à jour
 forms.buttons.upload_photos: Télécharger des photos
+forms.buttons.verify_with: Verify with
+forms.buttons.verify_with_clear1: Verify with CLEAR
 forms.confirmation.show_hdr: Créer un mot de passe fort
 forms.email.buttons.delete: Supprimer l’adresse e-mail
 forms.example: 'Exemple :'

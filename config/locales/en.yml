@@ -665,6 +665,7 @@ doc_auth.headings.upload_from_phone: Use your phone
 doc_auth.headings.verify_at_post_office: Go to a participating Post Office
 doc_auth.headings.verify_identity: Verify your identity
 doc_auth.headings.verify_online: Verify your identity online
+doc_auth.headings.verify_with_existing_account: Verify with your existing account
 doc_auth.headings.welcome: Let’s verify your identity for %{sp_name}
 doc_auth.headings.welcome_sp_reproof: Verify your identity again for %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: You’re using <strong>%{app_name}</strong> to access <strong>%{service_provider_name}</strong>. Only add your ID if you asked %{app_name} to verify your ID using your phone.
@@ -737,6 +738,8 @@ doc_auth.info.verify_online_description_passport_card: You can use a U.S. passpo
 doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online.
 doc_auth.info.verify_online_instruction_selfie: You’ll take a selfie and photos of your ID to verify your identity fully online.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
+doc_auth.info.verify_with_clear1: 'Used CLEAR® before? Verify in seconds with the snap of a selfie.'
+doc_auth.info.verify_with_clear1_link_text: Learn more about linking accounts
 doc_auth.info.welcome_sp_reproof_alert: For your security, %{sp_name} requires you to verify your identity again.
 doc_auth.info.you_entered: 'You entered:'
 doc_auth.instructions.bullet1: Have a U.S. passport book, U.S. driver’s license or state ID
@@ -965,6 +968,8 @@ forms.buttons.submit.confirm_change: Confirm change
 forms.buttons.submit.default: Submit
 forms.buttons.submit.update: Update
 forms.buttons.upload_photos: Upload photos
+forms.buttons.verify_with: Verify with
+forms.buttons.verify_with_clear1: Verify with CLEAR
 forms.confirmation.show_hdr: Create a strong password
 forms.email.buttons.delete: Delete email address
 forms.example: 'Example:'

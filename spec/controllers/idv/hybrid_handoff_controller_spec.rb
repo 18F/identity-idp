@@ -467,7 +467,7 @@ RSpec.describe Idv::HybridHandoffController do
 
       let(:params) do
         {
-          type: 'clear1',
+          idv_how_to_verify_form: { selection: Idv::HowToVerifyForm::CLEAR1 },
         }
       end
 

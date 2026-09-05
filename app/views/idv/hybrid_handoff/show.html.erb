@@ -59,6 +59,14 @@
     <% end %>
   </div>
 </div>
+<% if @presenter.clear1_enabled? %>
+  <hr class="margin-top-4" />
+  <%= render 'idv/shared/clear1_option',
+             presenter: @presenter,
+             form: @idv_how_to_verify_form,
+             url: idv_hybrid_handoff_url,
+             step: :hybrid_handoff %>
+<% end %>
 <% if @post_office_enabled %>
   <hr class="margin-top-4" />
   <div role="group" class="grid-row grid-gap grid-gap-2">
@@ -111,33 +119,6 @@
               </div>
             <% end %>
         <%= f.submit t('forms.buttons.continue_ipp'), class: 'display-block margin-top-3 margin-bottom-2', outline: true %>
-      <% end %>
-    </div>
-  </div>
-<% end %>
-<% if @presenter.clear1_enabled? %>
-  <hr class="margin-top-4" />
-  <div class="grid-row grid-gap grid-gap-2">
-    <div class="grid-col-12 tablet:grid-col-auto">
-      <%= image_tag(
-            asset_url('idv/laptop-icon.svg'),
-            alt: t('image_description.laptop'),
-            width: 88,
-            height: 88,
-          ) %>
-    </div>
-    <div class="grid-col-12 tablet:grid-col-fill">
-      <%= simple_form_for(
-            :doc_auth,
-            url: url_for(type: :clear1),
-            method: 'PUT',
-            class: 'margin-bottom-4',
-            html: {
-              id: 'form-to-submit-through-clear1',
-              aria: { label: 'Clear1' },
-            },
-          ) do |f| %>
-        <%= f.submit 'Clear1', outline: true %>
       <% end %>
     </div>
   </div>

@@ -98,4 +98,28 @@ class Idv::HowToVerifyPresenter
   def clear1_enabled?
     clear1_enabled
   end
+
+  def verify_with_existing_account_text
+    t('doc_auth.headings.verify_with_existing_account')
+  end
+
+  def clear1_description
+    t('doc_auth.info.verify_with_clear1')
+  end
+
+  def clear1_link_text
+    t('doc_auth.info.verify_with_clear1_link_text')
+  end
+
+  def clear1_submit
+    t('forms.buttons.verify_with_clear1')
+  end
+
+  def clear1_submit_prefix
+    t('forms.buttons.verify_with')
+  end
+
+  def clear1_logo_url
+    'idv/clear-logo.svg'
+  end
 end
