@@ -9042,6 +9042,33 @@ module AnalyticsEvents
     track_event(:user_suspension_confirmed)
   end
 
+  # @param [String, nil] issuer
+  # @param [String, nil] hourstamp
+  # @param [String, nil] agency_abbreviation
+  # @param [Boolean] success
+  # @param [Integer] status
+  # @param [Symbol, nil] failure_type
+  def users_report_api_requested(
+    issuer:,
+    hourstamp:,
+    agency_abbreviation:,
+    success:,
+    status:,
+    failure_type: nil,
+    **extra
+  )
+    track_event(
+      :users_report_api_requested,
+      issuer:,
+      hourstamp:,
+      agency_abbreviation:,
+      success:,
+      status:,
+      failure_type:,
+      **extra,
+    )
+  end
+
   # Tracks when USPS in-person proofing enrollment is created
   # @param [String] enrollment_code
   # @param [Integer] enrollment_id
