@@ -6821,11 +6821,13 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
+  # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param ['phone'] method_name Authentication method added
   def multi_factor_auth_added_phone(
     enabled_mfa_methods_count:,
     recaptcha_annotation:,
     in_account_creation_flow:,
+    phone_fingerprint:,
     method_name: :phone,
     **extra
   )
@@ -6835,6 +6837,7 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       recaptcha_annotation:,
       in_account_creation_flow:,
+      phone_fingerprint:,
       **extra,
     )
   end
@@ -6860,19 +6863,18 @@ module AnalyticsEvents
   # @param [Integer] attempts number of MFA setup attempts
   # @param [String] multi_factor_auth_method
   # @param [Boolean] confirmation_for_add_phone
-  # @param [Integer] phone_configuration_id
   # @param [String] area_code Area code of phone number
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
+  # @param [Integer] phone_configuration_id
   # Multi-Factor Authentication enter OTP visited
   def multi_factor_auth_enter_otp_visit(
     context:,
     multi_factor_auth_method:,
     confirmation_for_add_phone:,
-    phone_configuration_id:,
     area_code:,
     country_code:,
     phone_fingerprint:,
@@ -6880,6 +6882,7 @@ module AnalyticsEvents
     enabled_mfa_methods_count:,
     attempts: nil,
     recaptcha_annotation: nil,
+    phone_configuration_id: nil,
     **extra
   )
     track_event(
@@ -6888,13 +6891,13 @@ module AnalyticsEvents
       attempts:,
       multi_factor_auth_method:,
       confirmation_for_add_phone:,
-      phone_configuration_id:,
       area_code:,
       country_code:,
       phone_fingerprint:,
       in_account_creation_flow:,
       enabled_mfa_methods_count:,
       recaptcha_annotation:,
+      phone_configuration_id:,
       **extra,
     )
   end
@@ -7080,7 +7083,6 @@ module AnalyticsEvents
   # @param [String] area_code Area code of phone number
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
-  # @param [Integer] phone_configuration_id Database ID of phone configuration
   # @param [Integer] auth_app_configuration_id Database ID of authentication app configuration
   # @param [Boolean] totp_secret_present Whether TOTP secret was present in form validation
   # @param [Boolean] new_device Whether the user is authenticating from a new device
@@ -7112,7 +7114,6 @@ module AnalyticsEvents
     area_code: nil,
     country_code: nil,
     phone_fingerprint: nil,
-    phone_configuration_id: nil,
     totp_secret_present: nil,
     auth_app_configuration_id: nil,
     new_device: nil,
@@ -7144,7 +7145,6 @@ module AnalyticsEvents
       area_code:,
       country_code:,
       phone_fingerprint:,
-      phone_configuration_id:,
       totp_secret_present:,
       auth_app_configuration_id:,
       new_device:,
