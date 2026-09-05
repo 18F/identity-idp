@@ -19,6 +19,8 @@ module Idv
 
     rescue_from UspsInPersonProofing::Exception::RequestEnrollException,
                 with: :handle_request_enroll_exception
+    rescue_from UspsInPersonProofing::Exception::EnrollmentNotPendingError,
+                with: :handle_enrollment_not_pending_error
 
     def new
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
@@ -219,6 +221,16 @@ module Idv
         original_exception_class: err.exception_class,
         exception_message: scrub_message(err.message),
         reason: 'Request exception',
+      )
+      flash[:error] = t('idv.failure.exceptions.internal_error')
+      idv_session.invalidate_personal_key!
+      redirect_to idv_enter_password_url
+    end
+
+    def handle_enrollment_not_pending_error(err)
+      analytics.idv_in_person_usps_enrollment_not_pending(
+        context: context,
+        enrollment_id: err.enrollment_id,
       )
       flash[:error] = t('idv.failure.exceptions.internal_error')
       idv_session.invalidate_personal_key!
