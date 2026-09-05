@@ -17,10 +17,6 @@ class Idv::InPerson::VerifyInfoPresenter
     @enrollment.passport_book?
   end
 
-  def show_state_id_expiration?
-    IdentityConfig.store.in_person_proofing_expiration_edge_cases_enabled
-  end
-
   # Human-readable expiration value for the verify-info screen, handling the
   # edge-case sentinels and literal placeholder dates.
   def formatted_state_id_expiration(pii)
