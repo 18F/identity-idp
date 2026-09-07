@@ -1,3 +1,14 @@
+<% if nds_layout? %>
+  <% self.title = t('titles.doc_auth.switch_back') %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 4) %>
+  <% end %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('titles.doc_auth.switch_back'),
+        subtitle: t('nds.capture_complete.info'),
+      ) %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
@@ -14,3 +25,4 @@
 <% self.title = t('titles.doc_auth.switch_back') %>
 
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.instructions.switch_back')) %>
+<% end %>
