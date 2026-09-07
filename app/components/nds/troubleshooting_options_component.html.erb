@@ -1,5 +1,5 @@
 <%= render NDS::StackComponent.new(kind: :actions, align: :stretch, class: 'nds-troubleshooting-options margin-top-4') do %>
-  <%= content_tag(heading_level, heading, class: 'heading-s text-center') %>
+  <%= content_tag(heading_level, heading, class: 'heading-s text-center') if heading.present? %>
   <% options.each do |option| %>
     <%= render button_for(option) do %>
       <%= option.text %>
