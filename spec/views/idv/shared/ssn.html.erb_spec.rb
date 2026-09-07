@@ -17,8 +17,10 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
   end
 
   let(:sp_name) { 'SP' }
+  let(:nds_layout) { false }
 
   before :each do
+    allow(view).to receive(:nds_layout?).and_return(nds_layout)
     allow(view).to receive(:url_for).and_return('https://example.com/')
 
     allow(IdentityConfig.store).to receive(:proofing_device_profiling)
@@ -131,5 +133,68 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
   def expect_session_id_input_not_rendered
     expect(rendered)
       .not_to have_css('input[name="doc_auth[threatmetrix_session_id]"]', visible: false)
+  end
+
+  context 'in the NDS layout' do
+    let(:nds_layout) { true }
+    let(:updating_ssn) { false }
+
+    before do
+      assign(
+        :ssn_presenter,
+        Idv::SsnPresenter.new(
+          sp_name: sp_name,
+          ssn_form: Idv::SsnFormatForm.new(updating_ssn ? '900-12-3456' : nil),
+          step_indicator_steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
+        ),
+      )
+      render template: 'idv/shared/ssn', locals: {
+        threatmetrix_session_id: nil, threatmetrix_javascript_urls: [], threatmetrix_iframe_url: nil
+      }
+    end
+
+    it 'renders the SSN card with a password-style masked input and continue' do
+      expect(rendered).to have_css('.auth--form-page h1', text: t('doc_auth.headings.ssn'))
+      expect(rendered).to have_css(
+        '.auth__intro-description',
+        text: t('nds.ssn.info', app_name: APP_NAME),
+      )
+      expect(rendered).to have_css('.usa-input--ssn .usa-input__control--ssn[name="doc_auth[ssn]"]')
+      expect(rendered).to have_css(
+        '.usa-input--ssn input[type=hidden][data-nds-ssn-value]',
+        visible: :all,
+      )
+      expect(rendered).to have_css('button.usa-input__toggle[data-nds-ssn-toggle]')
+      expect(rendered).to have_css(
+        '.auth__actions button[type=submit]',
+        text: t('forms.buttons.continue'),
+      )
+    end
+
+    it 'keeps the no-SSN copy and the exit off-ramp as a tertiary action' do
+      expect(rendered).to have_css('h2', text: t('doc_auth.headings.no_ssn'))
+      expect(rendered).to have_text(t('doc_auth.info.no_ssn'))
+      expect(rendered).to have_css(
+        ".auth__actions a.usa-button--tertiary[href='#{idv_cancel_url(step: 'ssn_offramp')}']",
+      )
+    end
+
+    it 'sets the verification header progress' do
+      expect(view.content_for(:nds_header_progress)).to have_css(
+        'nds-progress .progress__step[aria-current="step"]',
+      )
+    end
+
+    context 'when updating the SSN' do
+      let(:updating_ssn) { true }
+
+      it 'uses the update heading, prefilled value, update submit and a back action' do
+        expect(rendered).to have_css('h1', text: t('doc_auth.headings.ssn_update'))
+        expect(rendered).to have_css('.usa-input__control--ssn[value="•••-••-•••6"]')
+        expect(rendered).to have_css('input[data-nds-ssn-value][value="900123456"]', visible: :all)
+        expect(rendered).to have_css('button[type=submit]', text: t('forms.buttons.submit.update'))
+        expect(rendered).to have_link(t('forms.buttons.back'), href: idv_verify_info_path)
+      end
+    end
   end
 end
