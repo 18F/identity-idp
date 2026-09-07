@@ -360,6 +360,7 @@ RSpec.describe Idv::WelcomeController do
           expect(subject.idv_session.idv_consent_given_at).to eq(Time.zone.now)
           expect(subject.idv_session.welcome_visited).to eq(true)
           expect(subject.idv_session.flow_path).to eq('standard')
+          expect(subject.idv_session.phone_first_flow).to eq(true)
           expect(response).to redirect_to(idv_choose_id_type_url)
         end
       end

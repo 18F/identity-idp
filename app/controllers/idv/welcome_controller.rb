@@ -86,6 +86,7 @@ module Idv
       idv_session.opted_in_to_in_person_proofing = false
       idv_session.skip_doc_auth_from_how_to_verify = false
       idv_session.flow_path = 'standard'
+      idv_session.phone_first_flow = true
 
       redirect_to idv_choose_id_type_url
     end
