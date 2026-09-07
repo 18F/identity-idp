@@ -287,6 +287,14 @@ RSpec.describe 'idv/shared/_error.html.erb' do
         end
       end
 
+      context 'with a destructive variant' do
+        let(:action) { { text: 'Cancel', url: '#cancel', variant: :destructive } }
+
+        it 'renders the primary action with the requested variant' do
+          expect(rendered).to have_css('.auth__actions a.usa-button--danger', text: 'Cancel')
+        end
+      end
+
       context 'with form action' do
         let(:action) { { text: 'Delete', url: '#delete', method: :delete } }
 

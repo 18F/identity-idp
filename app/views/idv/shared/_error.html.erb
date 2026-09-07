@@ -65,6 +65,7 @@ locals:
           <%= render ButtonComponent.new(
                 url: action[:url],
                 method: action[:method],
+                variant: action.fetch(:variant, :primary),
                 full_width: true,
               ).with_content(action[:text]) %>
 
