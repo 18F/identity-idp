@@ -1611,6 +1611,7 @@ mfa.second_method_warning.link: Ajouter une deuxième méthode d’authentificat
 mfa.second_method_warning.text: Vous devrez supprimer votre compte et recommencer si vous perdez votre seule méthode d’authentification.
 mfa.skip: Sauter pour le moment
 mfa.webauthn_platform_message: Ajouter une autre méthode d’authentification au cas où vous perdriez l’accès à la première.
+nds.capture_complete.info: Votre pièce d’identité a été vérifiée avec succès. Retournez sur votre ordinateur pour terminer la vérification de votre identité.
 nds.choose_id_type.option_drivers_license: Permis de conduire ou pièce d’identité d’État des États-Unis
 nds.choose_id_type.option_mdl: Permis de conduire mobile
 nds.choose_id_type.option_passport: Passeport américain (livret)
@@ -1619,6 +1620,39 @@ nds.choose_id_type.or: ou
 nds.choose_id_type.subtitle: Prenez une photo de votre pièce d’identité et un égoportrait rapide pour vérifier votre identité en ligne.
 nds.choose_id_type.title: Choisissez le type de pièce d’identité à vérifier
 nds.choose_id_type.verify_in_person: Vérifier en personne
+nds.completions.heading_idv: Identité vérifiée
+nds.completions.intro_html: En sélectionnant Continuer, vous acceptez de partager les informations ci-dessous avec %{sp_html} et d’accéder à son site.
+nds.completions.nist_alt: 'Sceau du NIST : Chiffré. Protégé. Éprouvé. National Institute of Standards and Technology'
+nds.duplicate_profiles_detected.cant_access: Je ne peux pas accéder à un compte
+nds.duplicate_profiles_detected.connected_agencies: 'Agences connectées : %{count}'
+nds.duplicate_profiles_detected.created_at_html: 'Créé : %{timestamp_html}'
+nds.duplicate_profiles_detected.dont_recognize_account: Je ne reconnais pas l’un des comptes ci-dessus
+nds.duplicate_profiles_detected.duplicate: En double
+nds.duplicate_profiles_detected.get_help: Obtenir de l’aide
+nds.duplicate_profiles_detected.instructions: 'Vous devez supprimer les comptes en double avant de vous connecter. Voici la marche à suivre :'
+nds.duplicate_profiles_detected.intro_html: '%{sp_name} exige que vous ne disposiez que d’un seul compte %{app_name} avec une identité vérifiée. %{link_html}'
+nds.duplicate_profiles_detected.last_sign_in_html: 'Dernière connexion : %{timestamp_html}'
+nds.duplicate_profiles_detected.learn_more_link: En savoir plus sur les comptes en double.
+nds.duplicate_profiles_detected.never_signed_in: Jamais connecté à %{sp_name}
+nds.duplicate_profiles_detected.sign_out: Se déconnecter
+nds.duplicate_profiles_detected.signed_in: Connecté
+nds.duplicate_profiles_detected.step_1.account_link: Votre compte
+nds.duplicate_profiles_detected.step_1.body: Conservez le compte que vous utilisez avec le plus de services. Ainsi, vous n’aurez pas à reconnecter les services.
+nds.duplicate_profiles_detected.step_1.connected_html: Rendez-vous sur %{link_html} et cliquez sur «Vos services connectés» dans le menu de gauche pour voir à quelles agences ce compte est connecté.
+nds.duplicate_profiles_detected.step_1.heading: Choisir un compte à conserver
+nds.duplicate_profiles_detected.step_2.body_html: Connectez-vous au compte que vous souhaitez supprimer sur %{login_link_html}. Voici %{delete_link_html}.
+nds.duplicate_profiles_detected.step_2.delete_link: comment supprimer votre compte
+nds.duplicate_profiles_detected.step_2.heading: Supprimer le(s) compte(s) en double
+nds.duplicate_profiles_detected.step_3.body: Retournez sur le site web de %{sp_name} et connectez-vous à l’aide du compte %{app_name} que vous avez conservé.
+nds.duplicate_profiles_detected.step_3.heading: Reconnectez-vous à %{sp_name} avec un seul compte
+nds.duplicate_profiles_please_call.error_details_html: <p>Si vous ne reconnaissez pas un compte ou ne pouvez pas accéder à l’un des comptes que vous avez identifiés sur la page détaillant vos différents comptes, veuillez appeler notre centre de contact au %{contact_number} en fournissant le code d’erreur %{error_code}.</p><p>Vous avez des questions sur les comptes en double ou la marche à suivre ? En savoir plus sur <a href="%{help_url}">la manière de résoudre les problèmes de comptes en double</a>.</p>
+nds.enter_password.info: Vos informations sont chiffrées avec votre mot de passe. Vous êtes donc la seule personne à pouvoir y accéder ou les modifier.
+nds.errors.cancel_verification: Annuler la vérification
+nds.errors.return_home: Retour à l’accueil
+nds.errors.start_over_warning: Vous devrez vérifier votre identité depuis le début
+nds.hybrid_handoff.heading: Saisissez votre numéro de téléphone
+nds.hybrid_handoff.subtitle: Nous vous enverrons un lien pour vérifier votre pièce d’identité auprès d’un prestataire de confiance.
+nds.idv_phone.info: Saisissez un numéro de téléphone américain. Nous vous enverrons un SMS ou vous appellerons avec un code à 6 chiffres. Lignes téléphoniques standard uniquement ; pas de numéros VoIP ni surtaxés. Des frais de messagerie et de données peuvent s’appliquer.
 nds.idv_welcome.consent_html: En cochant cette case, vous autorisez %{app_name} à demander, utiliser, conserver et partager vos renseignements personnels. Nous les utiliserons pour vérifier votre identité. Consultez nos mesures de %{link_html}.
 nds.idv_welcome.consent_link: confidentialité et de sécurité
 nds.idv_welcome.how_we_protect_heading: Comment nous protégeons vos données
@@ -1627,6 +1661,9 @@ nds.idv_welcome.intro: '%{sp_name} doit vérifier votre identité avant que vous
 nds.idv_welcome.no_phone_link: Je n’ai pas de numéro de téléphone américain
 nds.idv_welcome.title: Vérifions votre identité pour accéder à %{sp_name}
 nds.idv_welcome.what_youll_need: Ce dont vous aurez besoin
+nds.link_sent.heading: Continuez sur votre téléphone
+nds.link_sent.instructions: Suivez les instructions pour photographier votre pièce d’identité et prendre un selfie, puis revenez ici pour terminer.
+nds.link_sent.keep_open: Gardez cette fenêtre ouverte.
 nds.mfa_setup.badge_passkey: Rapide et sécurisé
 nds.mfa_setup.heading: Sécurisez votre compte
 nds.mfa_setup.heading_second: Choisissez une deuxième méthode d’authentification
@@ -1645,13 +1682,35 @@ nds.mfa_setup.options.webauthn_info: Insérez une petite clé physique dans votr
 nds.mfa_setup.options.webauthn_platform: Clé d’accès
 nds.mfa_setup.options.webauthn_platform_info: Utilisez votre visage, votre empreinte digitale ou un PIN pour vous connecter. Rien à retenir, rien à voler pour les pirates.
 nds.mfa.choose_another_method: Choisir une autre méthode
+nds.mfa.remember_device_info: Sélectionnez cette option pour ignorer l’authentification sur les sites pris en charge. Ne la sélectionnez pas si vous êtes sur un appareil public ou partagé.
+nds.otp_verification.do_not_share_html: 'Ne partagez pas ce code. Si quelqu’un vous appelle, vous envoie un texto ou un courriel pour vous demander ce code, il peut s’agir d’une arnaque. %{link_html}'
+nds.otp_verification.invalid_otp_body: Ce code n’est pas valide. Veuillez réessayer ou demander un nouveau code.
+nds.otp_verification.invalid_otp_heading: Code à usage unique non valide
+nds.otp_verification.learn_more: En savoir plus
+nds.otp_verification.sms.code_sent_html: 'Nous avons envoyé un code à usage unique au %{number_html}.'
+nds.otp_verification.voice.code_sent_html: 'Nous vous avons appelé avec un code à usage unique au %{number_html}.'
 nds.passwords.new.heading: Créez votre mot de passe
 nds.passwords.new.info: Créez un mot de passe fort pour sécuriser votre compte et protéger vos renseignements personnels.
+nds.personal_key.acknowledgment: J’ai enregistré ma clé personnelle dans un endroit sûr
+nds.personal_key.generated_on: Générée le %{date}
+nds.personal_key.info: Votre clé personnelle est le seul moyen d’accéder à votre compte vérifié si vous réinitialisez votre mot de passe. Si vous perdez cette clé et oubliez votre mot de passe, vous devrez vérifier à nouveau votre identité.
+nds.phone_required.heading: Un numéro de téléphone américain est requis
+nds.phone_required.info: Actuellement, la vérification de votre identité nécessite un numéro de téléphone américain. Nous travaillons à ajouter d’autres options et mettrons cette page à jour lorsqu’elles seront disponibles.
+nds.phone_setup.delivery.sms: Message texte
+nds.phone_setup.delivery.voice: Appel téléphonique
+nds.phone_setup.heading: Saisissez votre numéro de téléphone
+nds.phone_setup.info: Nous vous enverrons un code à 6 chiffres par texto ou par appel. Lignes téléphoniques standard uniquement. Pas de VoIP ni de numéros surtaxés. Des frais de messagerie et de données peuvent s’appliquer.
 nds.piv_cac_setup.nickname: Surnom de l’identifiant
 nds.piv_cac_setup.step_1: Saisissez un surnom
 nds.piv_cac_setup.step_2: Insérez votre PIV ou CAC dans votre lecteur de carte
 nds.piv_cac_setup.step_3: Ajoutez votre PIV ou CAC
 nds.piv_cac_setup.step_3_info: On vous demandera de choisir un certificat et de saisir votre PIN après avoir cliqué sur le bouton continuer.
+nds.request_letter.heading: Vérifiez plutôt par courrier
+nds.request_letter.info: Pour vérifier votre identité, nous enverrons à votre adresse une lettre contenant un code de vérification et des instructions. Elle devrait arriver sous 5 à 10 jours. Suivez les instructions de la lettre pour terminer la vérification de votre identité.
+nds.socure_errors.in_person_heading: Ou, essayez de confirmer votre identité en personne
+nds.socure_errors.rate_limit_html.one: Vous avez encore <strong>un essai.</strong> Ensuite, vous devrez attendre 6 heures avant de réessayer.
+nds.socure_errors.rate_limit_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite, vous devrez attendre 6 heures avant de réessayer.
+nds.ssn.info: Votre numéro de sécurité sociale permet de vérifier votre identité dans les services %{app_name} ; il reste chiffré et n’est jamais partagé sans votre consentement.
 nds.totp_setup.new.code_label: Code
 nds.totp_setup.new.heading: Configurer une appli d’authentification
 nds.totp_setup.new.nickname_label: Surnom de l’appli
@@ -1660,6 +1719,7 @@ nds.totp_setup.new.setup_code_label: Code de configuration
 nds.totp_setup.new.step_1: Saisir un surnom
 nds.totp_setup.new.step_2: Ouvrir votre appli d’authentification préférée
 nds.totp_setup.new.step_3: Scanner le code QR ou saisir le code de configuration manuellement dans votre appli d’authentification
+nds.verify_info.address: Adresse
 notices.account_reactivation: Parfait ! Vous avez votre clé personnelle.
 notices.authenticated_successfully: Authentifié avec succès.
 notices.backup_codes_configured: Les codes de sauvegarde ont été ajoutés à votre compte.

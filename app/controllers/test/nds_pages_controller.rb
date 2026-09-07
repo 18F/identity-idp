@@ -21,6 +21,8 @@ module Test
 
     EmailAddressStub = Struct.new(:email, keyword_init: true)
 
+    DupeProfilesPresenterStub = Struct.new(:heading, :associated_profiles, keyword_init: true)
+
     DEV_USER_EMAIL = 'nds-explorer-dev@example.com'
     DEV_DUPLICATE_EMAIL = 'nds-explorer-dupe@example.com'
     DEV_USER_PASSWORD = 'NDS explorer dev pass!1'
@@ -98,6 +100,69 @@ module Test
       { key: 'gpo_pending', label: 'Verify-by-mail pending (reentrant)' },
       { key: 'fraud_review_pending', label: 'Fraud review pending' },
     ].freeze
+
+    # Copy introduced by NDS page PRs that have not merged yet. The keys are
+    # consolidated here ahead of those PRs; these markers let the i18n unused-key
+    # check pass until the consuming views land, then can be deleted.
+    # i18n-tasks-use t('nds.capture_complete.info')
+    # i18n-tasks-use t('nds.completions.heading_idv')
+    # i18n-tasks-use t('nds.completions.intro_html')
+    # i18n-tasks-use t('nds.completions.nist_alt')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.cant_access')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.connected_agencies')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.created_at_html')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.dont_recognize_account')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.duplicate')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.get_help')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.instructions')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.intro_html')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.last_sign_in_html')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.learn_more_link')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.never_signed_in')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.sign_out')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.signed_in')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.step_1.account_link')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.step_1.body')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.step_1.connected_html')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.step_1.heading')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.step_2.body_html')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.step_2.delete_link')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.step_2.heading')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.step_3.body')
+    # i18n-tasks-use t('nds.duplicate_profiles_detected.step_3.heading')
+    # i18n-tasks-use t('nds.duplicate_profiles_please_call.error_details_html')
+    # i18n-tasks-use t('nds.enter_password.info')
+    # i18n-tasks-use t('nds.errors.cancel_verification')
+    # i18n-tasks-use t('nds.errors.return_home')
+    # i18n-tasks-use t('nds.errors.start_over_warning')
+    # i18n-tasks-use t('nds.hybrid_handoff.heading')
+    # i18n-tasks-use t('nds.hybrid_handoff.subtitle')
+    # i18n-tasks-use t('nds.idv_phone.info')
+    # i18n-tasks-use t('nds.link_sent.heading')
+    # i18n-tasks-use t('nds.link_sent.instructions')
+    # i18n-tasks-use t('nds.link_sent.keep_open')
+    # i18n-tasks-use t('nds.mfa.remember_device_info')
+    # i18n-tasks-use t('nds.otp_verification.do_not_share_html')
+    # i18n-tasks-use t('nds.otp_verification.invalid_otp_body')
+    # i18n-tasks-use t('nds.otp_verification.invalid_otp_heading')
+    # i18n-tasks-use t('nds.otp_verification.learn_more')
+    # i18n-tasks-use t('nds.otp_verification.sms.code_sent_html')
+    # i18n-tasks-use t('nds.otp_verification.voice.code_sent_html')
+    # i18n-tasks-use t('nds.personal_key.acknowledgment')
+    # i18n-tasks-use t('nds.personal_key.generated_on')
+    # i18n-tasks-use t('nds.personal_key.info')
+    # i18n-tasks-use t('nds.phone_required.heading')
+    # i18n-tasks-use t('nds.phone_required.info')
+    # i18n-tasks-use t('nds.phone_setup.delivery.sms')
+    # i18n-tasks-use t('nds.phone_setup.delivery.voice')
+    # i18n-tasks-use t('nds.phone_setup.heading')
+    # i18n-tasks-use t('nds.phone_setup.info')
+    # i18n-tasks-use t('nds.request_letter.heading')
+    # i18n-tasks-use t('nds.request_letter.info')
+    # i18n-tasks-use t('nds.socure_errors.in_person_heading')
+    # i18n-tasks-use t('nds.socure_errors.rate_limit_html')
+    # i18n-tasks-use t('nds.ssn.info')
+    # i18n-tasks-use t('nds.verify_info.address')
 
     before_action :require_test_routes_enabled
     before_action :require_dev_or_test_env,
@@ -807,6 +872,22 @@ module Test
       {}
     end
 
+    def setup_phone_setup
+      user = build_mfa_user(configured: params[:second].present?)
+      @nds_current_user = user
+      @in_account_creation_flow = params[:flow] != 'sign_in'
+      @webauthn_platform_configured = true
+      @new_phone_form = NewPhoneForm.new(
+        user:,
+        analytics:,
+        setup_voice_preference: params[:delivery] == 'voice',
+      )
+      if params[:error].present?
+        @new_phone_form.errors.add(:phone, t('errors.messages.invalid_phone_number.us'))
+      end
+      {}
+    end
+
     def setup_otp_entry
       @nds_current_user = User.new
       delivery = params[:delivery] == 'voice' ? 'voice' : 'sms'
@@ -827,8 +908,10 @@ module Test
         },
         view: view_context,
         service_provider: nil,
-        remember_device_default: true,
+        remember_device_default: false,
       )
+      flash.now[:error] = t('two_factor_authentication.invalid_otp') if
+        params[:error].present?
       {}
     end
 
@@ -846,6 +929,10 @@ module Test
         user_opted_remember_device_cookie: nil,
         remember_device_default: false,
       )
+      {}
+    end
+
+    def setup_backup_code_delete
       {}
     end
 
@@ -884,6 +971,324 @@ module Test
         mdl_enabled: params[:mdl].present?,
         show_verify_in_person: params[:ipp].present?,
       }
+    end
+
+    def setup_idv_unavailable
+      if params[:sp].present?
+        @decorated_sp_session = SpSessionStub.new(
+          sp_name: 'Example Service Provider',
+          sp_alert_text: nil,
+          cancel_link_url: root_url,
+        )
+      end
+      {}
+    end
+
+    def setup_sp_inactive
+      @sp_name = if params[:sp].present?
+                   'Example Service Provider'
+                 else
+                   t('service_providers.errors.generic_sp_name')
+                 end
+      {}
+    end
+
+    def setup_duplicate_profiles_detected
+      @nds_current_user = User.new
+      @decorated_sp_session = SpSessionStub.new(
+        sp_name: 'Veterans Affairs',
+        sp_alert_text: nil,
+        cancel_link_url: root_url,
+      )
+      never = params[:never].present?
+      created = Time.zone.local(2025, 4, 15, 20, 18)
+      dupe_email = 'jane.doe@example.com'
+      @dupe_profiles_detected_presenter = DupeProfilesPresenterStub.new(
+        heading: t('duplicate_profiles_detected.heading'),
+        associated_profiles: [
+          {
+            email: DEV_USER_EMAIL,
+            masked_email: EmailMasker.mask(DEV_USER_EMAIL),
+            last_sign_in: nil,
+            created_at: created,
+            connected_accts: 5,
+            current_account: true,
+          },
+          {
+            email: dupe_email,
+            masked_email: EmailMasker.mask(dupe_email),
+            last_sign_in: never ? nil : Time.zone.local(2026, 9, 2, 12, 0),
+            created_at: created,
+            connected_accts: 5,
+            current_account: false,
+          },
+        ],
+      )
+      {}
+    end
+
+    def setup_banned_user
+      {}
+    end
+
+    def setup_device_profiling_failed
+      {}
+    end
+
+    def setup_security_check_failed
+      {}
+    end
+
+    def setup_proofing_agent_expired
+      {}
+    end
+
+    def setup_mail_only_warning
+      if params[:sp].present?
+        @current_sp = ServiceProvider.new(
+          issuer: DEV_SP_ISSUER, friendly_name: 'Example Service Provider',
+        )
+      end
+      { current_sp:, exit_url: account_path }
+    end
+
+    def setup_session_error_warning
+      @remaining_submit_attempts = params[:attempts].present? ? params[:attempts].to_i : 3
+      @try_again_path = idv_verify_info_path
+      {}
+    end
+
+    def setup_session_error_address_warning
+      @remaining_submit_attempts = params[:attempts].present? ? params[:attempts].to_i : 3
+      @address_path = idv_address_path
+      {}
+    end
+
+    def stub_sp_session_if_requested
+      return if params[:sp].blank?
+
+      @decorated_sp_session = SpSessionStub.new(
+        sp_name: 'Example Service Provider',
+        sp_alert_text: nil,
+        cancel_link_url: root_url,
+      )
+    end
+
+    def setup_vendor_outage
+      @specific_message = t('vendor_outage.blocked.idv.generic')
+      @show_gpo_option = params[:gpo].present?
+      {}
+    end
+
+    def setup_please_call
+      {}
+    end
+
+    def setup_idv_please_call
+      @call_by_date = 14.days.from_now
+      @in_person = params[:ipp].present?
+      { step_indicator_steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
+    end
+
+    def setup_idv_not_verified
+      stub_sp_session_if_requested
+      {}
+    end
+
+    def setup_session_error_failure
+      stub_sp_session_if_requested
+      @expires_at = 6.hours.from_now
+      @sp_name = decorated_sp_session.sp_name
+      {}
+    end
+
+    def setup_session_error_exception
+      @try_again_path = idv_verify_info_path
+      {}
+    end
+
+    def setup_session_error_rate_limited
+      stub_sp_session_if_requested
+      @expires_at = 6.hours.from_now
+      {}
+    end
+
+    def setup_session_error_state_id_warning
+      @try_again_path = idv_verify_info_path
+      { step_indicator_steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
+    end
+
+    def setup_socure_errors(flow_path: :standard)
+      @presenter = SocureErrorPresenter.new(
+        error_code: (params[:code] || :network).to_sym,
+        remaining_attempts: 3,
+        sp_name: 'Example Service Provider',
+        issuer: DEV_SP_ISSUER,
+        passport_requested: false,
+        flow_path:,
+      )
+      { step_indicator_steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
+    end
+
+    def setup_hybrid_socure_errors
+      setup_socure_errors(flow_path: :hybrid)
+    end
+
+    def setup_socure_document_capture_errors
+      setup_socure_errors
+    end
+
+    def setup_hybrid_socure_document_capture_errors
+      setup_socure_errors(flow_path: :hybrid)
+    end
+
+    def setup_enter_code_rate_limited
+      stub_sp_session_if_requested
+      @expires_at = 6.hours.from_now
+      {}
+    end
+
+    def setup_confirm_start_over
+      @step_indicator_step = :verify_address
+      { step_indicator_steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO }
+    end
+
+    def setup_confirm_start_over_before_letter
+      @step_indicator_step = :verify_address
+      { step_indicator_steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO }
+    end
+
+    def setup_duplicate_profiles_please_call
+      {}
+    end
+
+    def setup_phone_error_failure
+      @expires_at = 6.hours.from_now
+      @gpo_letter_available = params[:gpo].present?
+      { step_indicator_steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
+    end
+
+    def setup_phone_error_warning
+      @remaining_submit_attempts = 3
+      @phone = '2025551212'
+      @formatted_phone = '(202) 555-1212'
+      @gpo_letter_available = params[:gpo].present?
+      { step_indicator_steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
+    end
+
+    def setup_hybrid_handoff
+      @upload_enabled = params[:upload].present?
+      @presenter = Idv::HowToVerifyPresenter.new(
+        selfie_check_required: false, mdl_enabled: false, clear1_enabled: false,
+      )
+      form = Idv::PhoneForm.new(
+        previous_params: { phone: '2025551212' }, user: User.new, delivery_methods: [:sms],
+      )
+      { idv_phone_form: form }
+    end
+
+    def setup_link_sent
+      { phone: '(202) 555-1212' }
+    end
+
+    def setup_capture_complete
+      {}
+    end
+
+    def setup_idv_ssn
+      @ssn_presenter = Idv::SsnPresenter.new(
+        sp_name: params[:sp].present? ? 'Example Service Provider' : nil,
+        ssn_form: Idv::SsnFormatForm.new(params[:update].present? ? '900-12-3456' : nil),
+        step_indicator_steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
+      )
+      ThreatMetrixHelper::NO_THREAT_METRIX_VARIABLES.dup
+    end
+
+    def setup_idv_address
+      @presenter = Idv::AddressPresenter.new(
+        gpo_request_letter_visited: params[:gpo].present?,
+        address_update_request: params[:update].present?,
+      )
+      @address_form = Idv::AddressForm.new(
+        params[:update].present? ? Idp::Constants::MOCK_IDV_APPLICANT.slice(
+          :address1, :city,
+          :state, :zipcode
+        ) : {},
+      )
+      {}
+    end
+
+    def setup_idv_verify_info
+      @pii = Idp::Constants::MOCK_IDV_APPLICANT.dup
+      @ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+      @had_barcode_read_failure = params[:barcode].present?
+      @step_indicator_steps = Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS
+      {}
+    end
+
+    def setup_idv_enter_password
+      @nds_current_user = User.new
+      @title = t('titles.idv.enter_password')
+      @heading = t('idv.titles.session.enter_password', app_name: APP_NAME)
+      @verify_by_mail = params[:gpo].present?
+      if params[:toast].present?
+        flash.now[:success] =
+          t('idv.messages.enter_password.phone_verified')
+      end
+      {}
+    end
+
+    def setup_idv_phone
+      @idv_form = Idv::PhoneForm.new(previous_params: {}, user: User.new)
+      { gpo_letter_available: params[:gpo].present? }
+    end
+
+    def setup_idv_phone_confirmation
+      session_stub = Struct.new(:phone, :delivery_method, :code).new(
+        '(202) 555-1212', params[:delivery] == 'voice' ? :voice : :sms, nil
+      )
+      idv_session_stub = Struct.new(:user_phone_confirmation_session).new(session_stub)
+      @presenter = Idv::OtpVerificationPresenter.new(idv_session: idv_session_stub)
+      @otp_code_length = TwoFactorAuthenticatable::DIRECT_OTP_LENGTH
+      flash.now[:error] = t('two_factor_authentication.invalid_otp') if params[:error].present?
+      {}
+    end
+
+    def setup_idv_request_letter
+      @applicant = Idp::Constants::MOCK_IDV_APPLICANT.dup
+      {}
+    end
+
+    def setup_idv_personal_key
+      @code = '0193-0039-4739-9920'
+      @personal_key_generated_at = Time.zone.today
+      flash.now[:success] = t('idv.messages.confirm') if params[:toast].present?
+      {}
+    end
+
+    def setup_completions
+      user = build_mfa_user(configured: true)
+      email = EmailAddressStub.new(email: DEV_USER_EMAIL)
+      user.define_singleton_method(:last_sign_in_email_address) { email }
+      profile = Struct.new(:verified_at).new(Time.zone.now)
+      user.define_singleton_method(:active_profile) { profile }
+      @nds_current_user = user
+      @multiple_factors_enabled = params[:single].blank?
+      @current_sp = ServiceProvider.new(issuer: DEV_SP_ISSUER, friendly_name: 'Veterans Affairs')
+      idv = params[:auth].blank?
+      pii = idv ? Pii::Attributes.new_from_hash(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN) : {}
+      requested = idv ? %i[email full_name address birthdate social_security_number
+                           verified_at] : %i[email]
+      @presenter = CompletionsPresenter.new(
+        current_user: user,
+        current_sp: @current_sp,
+        decrypted_pii: pii,
+        requested_attributes: requested,
+        idv_requested: idv,
+        completion_context: :new_sp,
+        selected_email_id: nil,
+      )
+      {}
     end
 
     def build_mfa_user(configured:)
