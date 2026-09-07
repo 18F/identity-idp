@@ -1,3 +1,6 @@
+<% if nds_layout? %>
+  <%= render 'idv/socure/nds_errors', presenter: @presenter %>
+<% else %>
 <%= render(
       'idv/shared/error',
       type: :warning,
@@ -14,4 +17,5 @@
 %>
   <p><%= @presenter.body_text %></p>
   <p><%= @presenter.rate_limit_text %></p>
+<% end %>
 <% end %>
