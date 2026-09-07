@@ -59,7 +59,7 @@ locals:
       <% end %>
     <% end %>
 
-    <% if local_assigns[:action] || local_assigns.fetch(:options, []).present? %>
+    <% if local_assigns[:action] || local_assigns[:secondary_action] || local_assigns.fetch(:options, []).present? %>
       <% page.with_actions do %>
         <% if local_assigns[:action] %>
           <%= render ButtonComponent.new(
@@ -67,16 +67,18 @@ locals:
                 method: action[:method],
                 variant: action.fetch(:variant, :primary),
                 full_width: true,
+                **(action[:new_tab] ? { target: '_blank', rel: 'noopener' } : {}),
               ).with_content(action[:text]) %>
+        <% end %>
 
-          <% if local_assigns[:secondary_action] %>
-            <%= render ButtonComponent.new(
-                  url: secondary_action[:url],
-                  method: secondary_action[:method],
-                  variant: :secondary,
-                  full_width: true,
-                ).with_content(secondary_action[:text]) %>
-          <% end %>
+        <% if local_assigns[:secondary_action] %>
+          <%= render ButtonComponent.new(
+                url: secondary_action[:url],
+                method: secondary_action[:method],
+                variant: :secondary,
+                full_width: true,
+                **(secondary_action[:new_tab] ? { target: '_blank', rel: 'noopener' } : {}),
+              ).with_content(secondary_action[:text]) %>
         <% end %>
 
         <%= render NDS::TroubleshootingOptionsComponent.new(

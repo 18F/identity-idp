@@ -311,6 +311,18 @@ RSpec.describe 'idv/shared/_error.html.erb' do
     describe 'secondary action' do
       let(:action) { { text: 'Primary Action', url: '#primary' } }
 
+      context 'without a primary action' do
+        let(:action) { nil }
+        let(:secondary_action) { { text: 'Only Action', url: '#only', new_tab: true } }
+
+        it 'still renders the secondary button in a new tab' do
+          expect(rendered).to have_css(
+            "a.usa-button--secondary[target=_blank][href='#only']",
+            text: 'Only Action',
+          )
+        end
+      end
+
       context 'without secondary action' do
         it 'does not render a secondary button' do
           expect(rendered).not_to have_css('.usa-button--secondary')
