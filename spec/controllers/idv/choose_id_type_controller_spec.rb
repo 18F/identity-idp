@@ -111,6 +111,38 @@ RSpec.describe Idv::ChooseIdTypeController do
       end
     end
 
+    context 'in the phone-first (NDS) flow' do
+      before { subject.idv_session.phone_first_flow = true }
+
+      it 'redirects to hybrid handoff instead of document capture' do
+        put :update, params: params
+
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
+      end
+
+      it 'redirects to document capture when handoff is skipped on mobile' do
+        subject.idv_session.skip_hybrid_handoff = true
+        put :update, params: params
+
+        expect(response).to redirect_to(idv_document_capture_url)
+      end
+
+      context 'when the user chooses to verify in person' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
+            .and_return(true)
+          allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
+        end
+
+        it 'enters document capture as the in-person location picker' do
+          put :update, params: { verify_in_person: 'true' }
+
+          expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be true
+          expect(response).to redirect_to(idv_document_capture_url(step: :how_to_verify))
+        end
+      end
+    end
+
     context 'user selects passport' do
       let(:chosen_id_type) { 'passport' }
 
