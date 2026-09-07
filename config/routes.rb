@@ -435,6 +435,7 @@ Rails.application.routes.draw do
       get '/hybrid_mobile/choose_id_type' => 'hybrid_mobile/choose_id_type#show'
       put '/hybrid_mobile/choose_id_type' => 'hybrid_mobile/choose_id_type#update'
       get '/hybrid_handoff' => 'hybrid_handoff#show'
+      get '/phone_required' => 'phone_required#show'
       put '/hybrid_handoff' => 'hybrid_handoff#update'
       get '/choose_id_type' => 'choose_id_type#show'
       put '/choose_id_type' => 'choose_id_type#update'

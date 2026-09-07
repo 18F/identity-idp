@@ -5345,6 +5345,11 @@ module AnalyticsEvents
     )
   end
 
+  # The user reached the NDS dead end because identity verification requires a U.S. phone number
+  def idv_phone_required_visited(**extra)
+    track_event(:idv_phone_required_visited, **extra)
+  end
+
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor

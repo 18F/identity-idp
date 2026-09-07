@@ -101,6 +101,7 @@ module Idv
     end
 
     def handle_phone_submission
+      return redirect_to idv_phone_required_url if non_us_phone_in_phone_first_flow?
       return rate_limited_failure if rate_limiter.limited?
       rate_limiter.increment!
       idv_session.phone_for_mobile_flow = formatted_destination_phone
@@ -263,6 +264,16 @@ module Idv
       form_response_params = { success: false, errors: { message: message } }
       form_response_params[:extra] = extra unless extra.nil?
       FormResponse.new(**form_response_params)
+    end
+
+    # The phone-first flow collects the country explicitly; identity
+    # verification currently needs a U.S. number, so stop before sending a link.
+    def non_us_phone_in_phone_first_flow?
+      return false unless idv_session.phone_first_flow?
+
+      country = params.dig(:doc_auth, :international_code).presence ||
+                Phonelib.parse(params.dig(:doc_auth, :phone)).country
+      country.present? && country != 'US'
     end
 
     def formatted_destination_phone

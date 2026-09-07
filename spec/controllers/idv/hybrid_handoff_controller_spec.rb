@@ -403,6 +403,17 @@ RSpec.describe Idv::HybridHandoffController do
 
         expect(response).to redirect_to(idv_document_capture_url)
       end
+
+      it 'sends users with a non-U.S. number to the phone-required dead end' do
+        expect(Telephony).not_to receive(:send_doc_auth_link)
+
+        put :update,
+            params: { type: 'mobile',
+                      doc_auth: { phone: '20 7946 0958', international_code: 'GB' } }
+
+        expect(response).to redirect_to(idv_phone_required_url)
+        expect(subject.idv_session.phone_for_mobile_flow).to be_nil
+      end
     end
 
     context 'desktop flow' do
