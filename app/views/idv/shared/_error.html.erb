@@ -43,10 +43,13 @@ locals:
       </span>
     <% end %>
 
+    <% body = capture { yield } %>
     <% page.with_body do %>
-      <hr class="divider" />
+      <% if body.present? %>
+        <hr class="divider" />
+      <% end %>
 
-      <%= yield %>
+      <%= body %>
 
       <% if local_assigns[:secondary_action] && local_assigns[:secondary_action_heading] %>
         <h2 class="heading-s"><%= local_assigns[:secondary_action_heading] %></h2>

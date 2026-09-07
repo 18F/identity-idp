@@ -209,9 +209,20 @@ RSpec.describe 'idv/shared/_error.html.erb' do
   context 'in the NDS layout' do
     let(:nds_layout) { true }
 
-    it 'renders the form-page card with the heading and a divider under it' do
+    it 'renders the form-page card with the heading' do
       expect(rendered).to have_css('section.auth.auth--form-page h1', text: heading)
-      expect(rendered).to have_css('.auth__form-page-body hr.divider')
+    end
+
+    it 'omits the divider when there is no body content' do
+      expect(rendered).not_to have_css('.auth__form-page-body hr.divider')
+    end
+
+    context 'with body content' do
+      before { render 'idv/shared/error', **params do 'Body copy' end }
+
+      it 'renders a divider under the heading' do
+        expect(rendered).to have_css('.auth__form-page-body hr.divider')
+      end
     end
 
     describe 'type' do
