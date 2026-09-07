@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'idv/session_errors/state_id_warning.html.erb' do
   before do
+    allow(view).to receive(:nds_layout?).and_return(false)
     assign(:try_again_path, '/try_again')
 
     render

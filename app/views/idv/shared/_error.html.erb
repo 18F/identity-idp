@@ -26,6 +26,63 @@ locals:
 
 <% self.title = local_assigns.fetch(:title, heading) %>
 
+<% if nds_layout? %>
+  <% if local_assigns[:current_step] and defined?(step_indicator_steps) %>
+    <% content_for(:nds_header_progress) do %>
+      <%= nds_account_creation_progress(
+            step: :verification,
+            substep: step_indicator_steps.index { |s| s[:name] == local_assigns[:current_step] }.to_i + 1,
+          ) %>
+    <% end %>
+  <% end %>
+
+  <%= render NDS::FormPageComponent.new(title: heading) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--<%= icon_name %>">
+        <%= render NDS::IconComponent.new(icon: icon_name, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <%= yield %>
+
+      <% if local_assigns[:secondary_action] && local_assigns[:secondary_action_heading] %>
+        <h2 class="heading-s"><%= local_assigns[:secondary_action_heading] %></h2>
+      <% end %>
+      <% if local_assigns[:secondary_action] && local_assigns[:secondary_action_text] %>
+        <p><%= local_assigns[:secondary_action_text] %></p>
+      <% end %>
+    <% end %>
+
+    <% if local_assigns[:action] || local_assigns.fetch(:options, []).present? %>
+      <% page.with_actions do %>
+        <% if local_assigns[:action] %>
+          <%= render ButtonComponent.new(
+                url: action[:url],
+                method: action[:method],
+                full_width: true,
+              ).with_content(action[:text]) %>
+
+          <% if local_assigns[:secondary_action] %>
+            <%= render ButtonComponent.new(
+                  url: secondary_action[:url],
+                  method: secondary_action[:method],
+                  variant: :secondary,
+                  full_width: true,
+                ).with_content(secondary_action[:text]) %>
+          <% end %>
+        <% end %>
+
+        <%= render NDS::TroubleshootingOptionsComponent.new(
+              heading: troubleshooting_heading,
+              options: local_assigns.fetch(:options, []),
+            ) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <% if local_assigns[:current_step] and defined?(step_indicator_steps) %>
   <% content_for(:pre_flash_content) do %>
     <%= render StepIndicatorComponent.new(
@@ -81,3 +138,4 @@ locals:
       options: local_assigns.fetch(:options, []),
       class: 'margin-top-5',
     ) %>
+<% end %>
