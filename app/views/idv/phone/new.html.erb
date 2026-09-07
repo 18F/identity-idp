@@ -1,3 +1,107 @@
+<% if nds_layout? %>
+  <% self.title = t('titles.idv.phone') %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 8) %>
+  <% end %>
+
+  <div id="form-steps-wait-alert"></div>
+
+  <%= simple_form_for(
+        @idv_form,
+        url: idv_phone_path,
+        method: :put,
+        html: {
+          data: {
+            form_steps_wait: '',
+            error_message: t('idv.failure.exceptions.internal_error'),
+            alert_target: '#form-steps-wait-alert',
+            wait_step_path: idv_phone_path,
+            poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
+            nds_submit_gate: true,
+          },
+        },
+      ) do |f| %>
+    <%= render NDS::FormPageComponent.new(
+          title: t('titles.idv.phone'),
+          subtitle: t('nds.idv_phone.info'),
+        ) do |page| %>
+      <% page.with_alert do %>
+        <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :idv)) %>
+        <%= tag.div(
+              id: 'phone-already-submitted-alert',
+              data: { failed_phone_numbers: @idv_form.failed_phone_numbers },
+              hidden: true,
+            ) do %>
+          <%= render AlertComponent.new(type: :warning) do %>
+            <%= t('idv.messages.phone.failed_number.alert_text') %>
+            <% if gpo_letter_available %>
+              <%= t(
+                    'idv.messages.phone.failed_number.gpo_alert_html',
+                    link_html: link_to(
+                      t('idv.messages.phone.failed_number.gpo_verify_link'),
+                      idv_request_letter_path,
+                    ),
+                  ) %>
+            <% else %>
+              <%= t('idv.messages.phone.failed_number.try_again_html') %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <%= render 'users/shared/nds_phone_input', form: f %>
+
+          <fieldset class="usa-fieldset radio-group">
+            <legend class="usa-sr-only">
+              <%= t('two_factor_authentication.otp_delivery_preference.title') %>
+            </legend>
+            <div class="radio">
+              <%= f.radio_button(
+                    :otp_delivery_preference,
+                    :sms,
+                    checked: @idv_form.otp_delivery_preference != 'voice' && !OutageStatus.new.vendor_outage?(:sms),
+                    disabled: OutageStatus.new.vendor_outage?(:sms),
+                    class: 'radio__input usa-sr-only',
+                  ) %>
+              <%= f.label :otp_delivery_preference_sms, t('nds.phone_setup.delivery.sms'), class: 'radio__label' %>
+            </div>
+            <div class="radio">
+              <%= f.radio_button(
+                    :otp_delivery_preference,
+                    :voice,
+                    checked: @idv_form.otp_delivery_preference == 'voice',
+                    disabled: OutageStatus.new.vendor_outage?(:voice),
+                    class: 'radio__input usa-sr-only',
+                  ) %>
+              <%= f.label :otp_delivery_preference_voice, t('nds.phone_setup.delivery.voice'), class: 'radio__label' %>
+            </div>
+          </fieldset>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render SpinnerButtonComponent.new(
+                action_message: t('idv.messages.verifying'),
+                type: :submit,
+                full_width: true,
+              ).with_content(t('forms.buttons.send_one_time_code')) %>
+          <% if gpo_letter_available %>
+            <%= render ButtonComponent.new(
+                  url: idv_request_letter_path,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('idv.troubleshooting.options.verify_by_mail')) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('form-steps-wait', 'nds-auth-submit-gate', 'nds-idv-phone-alert', preload_links_header: false) %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: step_indicator_steps,
@@ -134,3 +238,4 @@
 <%= render 'idv/doc_auth/cancel', step: 'phone' %>
 
 <% javascript_packs_tag_once 'form-steps-wait', 'idv-phone-alert' %>
+<% end %>
