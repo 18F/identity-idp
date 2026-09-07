@@ -1,5 +1,57 @@
 <% self.title = @presenter.header_text %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 4) %>
+  <% end %>
+
+  <%= simple_form_for(
+        idv_phone_form,
+        as: :doc_auth,
+        url: url_for(type: :mobile, combined: true),
+        method: 'PUT',
+        html: {
+          id: 'form-to-submit-photos-through-mobile',
+          aria: { label: t('forms.buttons.send_link') },
+          data: { nds_submit_gate: true },
+        },
+      ) do |f| %>
+    <%= render NDS::FormPageComponent.new(
+          title: t('nds.hybrid_handoff.heading'),
+          subtitle: t('nds.hybrid_handoff.subtitle'),
+        ) do |page| %>
+      <% page.with_body do %>
+        <%= render 'users/shared/nds_phone_input', form: f %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+                full_width: true,
+              ).with_content(t('forms.buttons.send_link')) %>
+          <% if @upload_enabled %>
+            <div class="separator"><%= t('nds.choose_id_type.or') %></div>
+            <%= render ButtonComponent.new(
+                  type: :submit,
+                  formaction: url_for(type: :desktop),
+                  formnovalidate: true,
+                  variant: :secondary,
+                  full_width: true,
+                ).with_content(t('doc_auth.headings.upload_from_computer')) %>
+          <% end %>
+          <%= render ButtonComponent.new(
+                url: idv_cancel_path(step: 'hybrid_handoff'),
+                variant: :tertiary,
+                full_width: true,
+              ).with_content(t('links.cancel')) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
@@ -174,3 +226,4 @@
   </div>
 <% end %>
 <%= render 'idv/doc_auth/cancel', step: 'hybrid_handoff' %>
+<% end %>
