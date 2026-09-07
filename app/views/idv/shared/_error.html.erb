@@ -45,7 +45,7 @@ locals:
 
     <% body = capture { yield } %>
     <% page.with_body do %>
-      <% if body.present? %>
+      <% if strip_tags(body).present? %>
         <hr class="divider" />
       <% end %>
 

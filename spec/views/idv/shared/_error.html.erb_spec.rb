@@ -217,8 +217,16 @@ RSpec.describe 'idv/shared/_error.html.erb' do
       expect(rendered).not_to have_css('.auth__form-page-body hr.divider')
     end
 
+    context 'with whitespace-only body content' do
+      before { render('idv/shared/error', **params) { '<p> </p>'.html_safe } }
+
+      it 'omits the divider' do
+        expect(rendered).not_to have_css('.auth__form-page-body hr.divider')
+      end
+    end
+
     context 'with body content' do
-      before { render 'idv/shared/error', **params do 'Body copy' end }
+      before { render('idv/shared/error', **params) { 'Body copy' } }
 
       it 'renders a divider under the heading' do
         expect(rendered).to have_css('.auth__form-page-body hr.divider')
@@ -324,6 +332,17 @@ RSpec.describe 'idv/shared/_error.html.erb' do
 
         it 'does not render troubleshooting options' do
           expect(rendered).not_to have_css('.nds-troubleshooting-options')
+        end
+      end
+
+      context 'with a promoted option' do
+        let(:options) { [{ text: 'Status', url: '#status', variant: :secondary }] }
+
+        it 'renders it with the requested variant' do
+          expect(rendered).to have_css(
+            '.nds-troubleshooting-options a.usa-button--secondary',
+            text: 'Status',
+          )
         end
       end
 

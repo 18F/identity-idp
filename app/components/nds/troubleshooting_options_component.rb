@@ -4,10 +4,10 @@ module NDS
   # Net-new NDS troubleshooting options (nds bucket only): the auth-flow
   # replacement for TroubleshootingOptionsComponent. Renders a heading over a
   # stack of tertiary ButtonComponents (Figma "links" in auth flows are
-  # tertiary buttons), with new-tab options opened in a new window and
-  # announced to screen readers.
+  # tertiary buttons; an option may set variant: to promote itself), with
+  # new-tab options opened in a new window and announced to screen readers.
   class TroubleshootingOptionsComponent < BaseComponent
-    Option = Struct.new(:text, :url, :new_tab, :method, keyword_init: true)
+    Option = Struct.new(:text, :url, :new_tab, :method, :variant, keyword_init: true)
 
     attr_reader :heading, :options, :heading_level
 
@@ -25,7 +25,7 @@ module NDS
       ButtonComponent.new(
         url: option.url,
         method: option.method,
-        variant: :tertiary,
+        variant: option.variant || :tertiary,
         full_width: true,
         **(option.new_tab ? { target: '_blank', rel: 'noopener' } : {}),
       )
