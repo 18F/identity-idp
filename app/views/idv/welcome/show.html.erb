@@ -113,16 +113,10 @@
                   full_width: true,
                 ).with_content(t('doc_auth.buttons.continue')) %>
             <%= render ButtonComponent.new(
-                  url: help_center_redirect_path(
-                    category: 'verify-your-identity',
-                    article: 'phone-number',
-                    flow: :idv,
-                    step: :welcome,
-                    location: 'no_phone_number',
-                  ),
+                  url: idv_cancel_path(step: 'welcome'),
                   variant: :tertiary,
                   full_width: true,
-                ).with_content(t('nds.idv_welcome.no_phone_link')) %>
+                ).with_content(t('links.cancel')) %>
           <% end %>
         <% end %>
       <% end %>
