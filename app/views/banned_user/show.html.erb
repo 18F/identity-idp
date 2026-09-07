@@ -1,7 +1,25 @@
 <% self.title = t('banned_user.title') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(title: t('banned_user.title')) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--error">
+        <%= render NDS::IconComponent.new(icon: :error, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <p>
+        <%= t('banned_user.details') %>
+      </p>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render AlertIconComponent.new(icon_name: :error, class: 'display-block margin-bottom-4') %>
 <%= render PageHeadingComponent.new.with_content(t('banned_user.title')) %>
 <p>
   <%= t('banned_user.details') %>
 </p>
+<% end %>
