@@ -1,3 +1,32 @@
+<% if nds_layout? %>
+  <% self.title = t('nds.link_sent.heading') %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 4) %>
+  <% end %>
+
+  <%= render NDS::CardComponent.new(class: 'card--elevated card--centered') do %>
+    <%= render NDS::StackComponent.new(align: :center, gap: 24) do %>
+      <h1 class="heading-s"><%= t('nds.link_sent.heading') %></h1>
+      <%= image_tag('nds/illustrations/devices.svg', alt: '', width: 87, height: 65) %>
+      <%= render NDS::StackComponent.new(align: :center, gap: 16, class: 'copy copy--muted text-center') do %>
+        <p class="margin-0"><%= t('nds.link_sent.instructions') %></p>
+        <p class="margin-0"><%= t('nds.link_sent.keep_open') %></p>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= button_to(
+        idv_link_sent_url,
+        method: :put,
+        class: 'usa-button usa-button--tertiary usa-button--full-width margin-top-4',
+        form_class: 'link-sent-continue-button-form',
+      ) { t('forms.buttons.continue') } %>
+
+  <% if FeatureManagement.doc_capture_polling_enabled? %>
+    <%= content_tag 'script', '', data: { status_endpoint: idv_link_sent_poll_url } %>
+    <%= javascript_packs_tag_once 'doc-capture-polling' %>
+  <% end %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
@@ -52,3 +81,4 @@
         class: 'link-sent-back-link',
       ) %>
 </div>
+<% end %>
