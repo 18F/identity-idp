@@ -36,6 +36,34 @@ RSpec.feature 'Signing in via one-time use personal key' do
     )
   end
 
+  context 'when personal key MFA deprecation phase 1 is enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:personal_key_mfa_deprecation_phase_1_enabled)
+        .and_return(true)
+    end
+
+    it 'warns the user to replace their personal key and does not issue a new one' do
+      user = create(
+        :user, :fully_registered, :with_phone, :with_personal_key,
+        with: { phone: '+1 (202) 345-6789' }
+      )
+      raw_key = PersonalKeyGenerator.new(user).generate!
+      old_key = user.reload.encrypted_recovery_code_digest_multi_region
+
+      sign_in_before_2fa(user)
+      choose_another_security_option('personal_key')
+      enter_personal_key(personal_key: raw_key)
+      click_submit_default
+
+      user.reload
+      # No new personal key is issued for a personal key MFA user in phase 1.
+      expect(user.encrypted_recovery_code_digest_multi_region).to eq old_key
+
+      expect(page).to have_current_path authentication_methods_setup_path
+      expect(page).to have_content(t('mfa.personal_key_deprecation_warning'))
+    end
+  end
+
   context 'user enters incorrect personal key' do
     it 'locks user out when max login attempts has been reached' do
       user = create(
