@@ -1,4 +1,4 @@
-import { AsYouType } from 'libphonenumber-js';
+import { AsYouType, isValidNumber, isValidNumberForRegion } from 'libphonenumber-js';
 import type { CountryCode } from 'libphonenumber-js';
 import {
   bindFormSubmitters,
@@ -93,6 +93,148 @@ const bindPhoneInput = (phoneField: HTMLInputElement) => {
 
 export const enhancePhoneInputs = (root: ParentNode = document) => {
   root.querySelectorAll<HTMLInputElement>('[data-nds-phone-input]').forEach(bindPhoneInput);
+};
+
+const NDS_PHONE_GROUP_READY = 'ndsPhoneGroupReady';
+
+interface NdsPhoneMessages {
+  valueMissing?: string;
+  invalidUs?: string;
+  invalidInternational?: string;
+}
+
+const parsePhoneMessages = (group: HTMLElement): NdsPhoneMessages => {
+  try {
+    return JSON.parse(group.dataset.ndsPhoneMessages || '{}');
+  } catch {
+    return {};
+  }
+};
+
+/**
+ * Enhances the `.usa-phone-input-group` (`.usa-phone-input` pill + `<details>`
+ * country picker) with as-you-type formatting and libphonenumber validation,
+ * rendering inline errors into the group's `[data-nds-phone-error]` region
+ * instead of the native validation bubble. Works with JavaScript disabled: the
+ * radio picker still submits and native `required` still applies.
+ */
+const bindNdsPhoneGroup = (group: HTMLElement) => {
+  if (group.dataset[NDS_PHONE_GROUP_READY] === 'true') {
+    return;
+  }
+
+  const field = group.querySelector<HTMLInputElement>('.usa-phone-input__input');
+  if (!field) {
+    return;
+  }
+
+  group.dataset[NDS_PHONE_GROUP_READY] = 'true';
+
+  const details = group.querySelector<HTMLDetailsElement>('.usa-phone-input__country');
+  const dial = group.querySelector<HTMLElement>('[data-nds-phone-dial]');
+  const radios = Array.from(group.querySelectorAll<HTMLInputElement>('[data-nds-phone-country]'));
+  const errorRegion = group.querySelector<HTMLElement>('[data-nds-phone-error]');
+  const messages = parsePhoneMessages(group);
+
+  const country = () =>
+    (radios.find((radio) => radio.checked)?.value || DEFAULT_COUNTRY) as CountryCode;
+
+  const renderError = (message: string) => {
+    field.setAttribute('aria-invalid', String(Boolean(message)));
+    if (!errorRegion) {
+      return;
+    }
+    errorRegion.textContent = message;
+    errorRegion.hidden = !message;
+  };
+
+  const invalidFormatMessage = () =>
+    (country() === 'US' ? messages.invalidUs : messages.invalidInternational) || '';
+
+  const syncCustomValidity = () => {
+    const value = field.value.trim();
+    if (!value) {
+      // Empty is governed by the native `required` constraint (valueMissing).
+      field.setCustomValidity('');
+      return;
+    }
+    const region = country();
+    const invalid = !isValidNumberForRegion(value, region) || !isValidNumber(value, region);
+    field.setCustomValidity(invalid ? invalidFormatMessage() : '');
+  };
+
+  const validate = () => {
+    syncCustomValidity();
+    if (field.validity.valid) {
+      renderError('');
+    } else if (field.validity.valueMissing) {
+      renderError(messages.valueMissing || field.validationMessage);
+    } else {
+      renderError(field.validationMessage);
+    }
+    return field.validity.valid;
+  };
+
+  field.addEventListener('input', () => {
+    formatPhoneInput(field, country());
+    syncCustomValidity();
+    if (field.validity.valid) {
+      renderError('');
+    }
+  });
+
+  field.addEventListener('blur', () => {
+    if (consumeIgnoreBlurValidation(field.form)) {
+      return;
+    }
+    validate();
+  });
+
+  field.addEventListener('invalid', (event) => {
+    event.preventDefault();
+    validate();
+    field.focus();
+  });
+
+  radios.forEach((radio) => {
+    radio.addEventListener('change', () => {
+      if (dial) {
+        dial.textContent = radio.dataset.dial || '';
+      }
+      if (details) {
+        details.open = false;
+      }
+      formatPhoneInput(field, country(), { preserveCaret: false });
+      syncCustomValidity();
+      if (field.validity.valid) {
+        renderError('');
+      }
+    });
+  });
+
+  if (details) {
+    document.addEventListener('click', (event) => {
+      if (details.open && !details.contains(event.target as Node)) {
+        details.open = false;
+      }
+    });
+    details.addEventListener('keydown', (event) => {
+      if ((event as KeyboardEvent).key === 'Escape') {
+        details.open = false;
+        details.querySelector<HTMLElement>('.usa-phone-input__country-toggle')?.focus();
+      }
+    });
+  }
+
+  if (field.value.trim()) {
+    formatPhoneInput(field, country(), { preserveCaret: false });
+  }
+};
+
+export const enhanceNdsPhoneGroups = (root: ParentNode = document) => {
+  root
+    .querySelectorAll<HTMLElement>('.usa-phone-input-group[data-nds-phone]')
+    .forEach(bindNdsPhoneGroup);
 };
 
 const syncPasswordToggle = (input: HTMLInputElement, button: HTMLButtonElement) => {
@@ -522,6 +664,7 @@ export const normalizeInputErrors = (root: ParentNode = document) => {
 };
 
 enhancePhoneInputs();
+enhanceNdsPhoneGroups();
 enhancePasswordToggles();
 enhanceOverflowScrollFade();
 normalizeInputErrors();
