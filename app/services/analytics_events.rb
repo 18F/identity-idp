@@ -3738,6 +3738,22 @@ module AnalyticsEvents
     track_event('IdV: in person proofing switch_back visited', flow_path: flow_path, **extra)
   end
 
+  # Tracks when a USPS in-person proofing enrollment never reached "pending" status after scheduling
+  # @param [String] context
+  # @param [Integer] enrollment_id
+  def idv_in_person_usps_enrollment_not_pending(
+    context:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      :idv_in_person_usps_enrollment_not_pending,
+      context:,
+      enrollment_id:,
+      **extra,
+    )
+  end
+
   # An email from USPS with an enrollment code has been received, indicating
   # the enrollment is approved or failed. A check is required to get the status
   # it is not included in the email.
