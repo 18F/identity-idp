@@ -1,5 +1,64 @@
 <% self.title = @title %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 10) %>
+  <% end %>
+
+  <% content_for(:skip_layout_flash, 'true') %>
+  <% content_for(:form_page_flash, 'true') %>
+
+  <% if flash[:success].present? %>
+    <%= render NDS::ToastComponent.new(message: flash[:success]) %>
+  <% end %>
+
+  <%= simple_form_for(
+        current_user,
+        url: idv_enter_password_path,
+        method: :put,
+        html: { data: { nds_submit_gate: true } },
+      ) do |f| %>
+    <%= render NDS::FormPageComponent.new(
+          title: @heading,
+          subtitle: t('nds.enter_password.info'),
+        ) do |page| %>
+      <% if @verify_by_mail %>
+        <% page.with_alert do %>
+          <%= render AlertComponent.new(type: :warning, id: 'by-mail-password-warning') do
+                t('idv.messages.enter_password.by_mail_password_reminder_html')
+              end %>
+        <% end %>
+      <% end %>
+
+      <% page.with_body do %>
+        <%= render NDS::InputComponent.new(
+              form: f,
+              attribute: :password,
+              type: :password,
+              label: t('idv.form.password'),
+              required: true,
+              autocomplete: 'current-password',
+            ) %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+                full_width: true,
+              ).with_content(t('forms.buttons.continue')) %>
+          <%= render ButtonComponent.new(
+                url: idv_forgot_password_url,
+                variant: :tertiary,
+                full_width: true,
+              ).with_content(t('idv.forgot_password.link_text')) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: step_indicator_steps,
@@ -50,3 +109,4 @@
 <% end %>
 
 <%= render 'idv/doc_auth/cancel', step: 'review' %>
+<% end %>
