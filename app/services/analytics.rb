@@ -70,6 +70,7 @@ class Analytics
 
     attributes[:git_sha] = IdentityConfig::GIT_SHA
     attributes[:git_branch] = IdentityConfig::GIT_BRANCH
+    attributes[:nds_experiment_uuid] = request.cookie_jar[:nds_experiment_uuid]
 
     attributes.merge!(browser_attributes)
   end
