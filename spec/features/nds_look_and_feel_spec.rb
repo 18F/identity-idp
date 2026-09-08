@@ -2,6 +2,10 @@ require 'rails_helper'
 
 RSpec.feature 'NDS look and feel experiment' do
   before do
+    # The experiment UUID cookie is permanent and short-circuits generation, so a
+    # cookie left over from an earlier example in this shard would mask the
+    # stubbed UUID. Start every scenario from an empty jar.
+    Capybara.reset_sessions!
     allow(IdentityConfig.store).to receive(:nds_look_and_feel_percent).and_return(50)
     reload_ab_tests
     allow(SecureRandom).to receive(:uuid).and_return('experiment-uuid')
