@@ -1669,7 +1669,6 @@ nds.idv_welcome.consent_link: privacidad y seguridad
 nds.idv_welcome.how_we_protect_heading: Cómo protegemos sus datos
 nds.idv_welcome.how_we_protect_info: Solo usamos lo que usted ingresa para verificar su identidad con la Administración del Seguro Social. Su información nunca se compartirá ni se venderá fuera del Gobierno.
 nds.idv_welcome.intro: '%{sp_name} necesita verificar su identidad antes de que continúe. La mayoría de las personas terminan en unos 7 minutos.'
-nds.idv_welcome.no_phone_link: No tengo un número de teléfono de los EE. UU.
 nds.idv_welcome.title: Verifiquemos su identidad para acceder a %{sp_name}
 nds.idv_welcome.what_youll_need: Lo que necesitará
 nds.link_sent.heading: Continúe en su teléfono

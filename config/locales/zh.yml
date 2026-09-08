@@ -1671,7 +1671,6 @@ nds.idv_welcome.consent_link: 隐私和安全
 nds.idv_welcome.how_we_protect_heading: 我们如何保护您的数据
 nds.idv_welcome.how_we_protect_info: 我们仅使用您输入的信息向社会保障局验证您的身份。您的信息绝不会在政府之外被共享或出售。
 nds.idv_welcome.intro: '%{sp_name}需要先验证您的身份，然后您才能继续。大多数人大约在 7 分钟内完成。'
-nds.idv_welcome.no_phone_link: 我没有美国电话号码
 nds.idv_welcome.title: 让我们验证您的身份以访问%{sp_name}
 nds.idv_welcome.what_youll_need: 您需要准备的内容
 nds.link_sent.heading: 在您的手机上继续
