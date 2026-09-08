@@ -1,5 +1,200 @@
 <% self.title = @dupe_profiles_detected_presenter.heading %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(
+        title: @dupe_profiles_detected_presenter.heading,
+        subtitle: t(
+          'nds.duplicate_profiles_detected.intro_html',
+          app_name: APP_NAME,
+          sp_name: decorated_sp_session.sp_name,
+          link_html: new_tab_link_to(
+            t('nds.duplicate_profiles_detected.learn_more_link'),
+            MarketingSite.help_center_article_url(
+              category: 'manage-your-account',
+              article: 'resolve-duplicate-accounts',
+            ),
+          ),
+        ),
+        class_name: 'duplicate-profiles',
+      ) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--warning">
+        <%= render NDS::IconComponent.new(icon: :warning, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+        <hr class="divider" />
+
+        <p class="duplicate-profiles__instructions">
+          <%= t('nds.duplicate_profiles_detected.instructions') %>
+        </p>
+
+        <ol class="process-list">
+          <li class="process-list__item">
+            <span class="process-list__marker" aria-hidden="true"></span>
+            <div class="process-list__body">
+              <h2 class="process-list__heading">
+                <%= t('nds.duplicate_profiles_detected.step_1.heading') %>
+              </h2>
+              <p><%= t('nds.duplicate_profiles_detected.step_1.body') %></p>
+              <p>
+                <%= t(
+                      'nds.duplicate_profiles_detected.step_1.connected_html',
+                      link_html: link_to(
+                        t('nds.duplicate_profiles_detected.step_1.account_link'),
+                        account_path,
+                      ),
+                    ) %>
+              </p>
+            </div>
+          </li>
+          <li class="process-list__item">
+            <span class="process-list__marker" aria-hidden="true"></span>
+            <div class="process-list__body">
+              <h2 class="process-list__heading">
+                <%= t('nds.duplicate_profiles_detected.step_2.heading') %>
+              </h2>
+              <p>
+                <%= t(
+                      'nds.duplicate_profiles_detected.step_2.body_html',
+                      login_link_html: new_tab_link_to(
+                        'https://secure.login.gov',
+                        'https://secure.login.gov',
+                      ),
+                      delete_link_html: new_tab_link_to(
+                        t('nds.duplicate_profiles_detected.step_2.delete_link'),
+                        MarketingSite.help_center_article_url(
+                          category: 'manage-your-account',
+                          article: 'delete-your-account',
+                        ),
+                      ),
+                    ) %>
+              </p>
+            </div>
+          </li>
+          <li class="process-list__item">
+            <span class="process-list__marker" aria-hidden="true"></span>
+            <div class="process-list__body">
+              <h2 class="process-list__heading">
+                <%= t(
+                      'nds.duplicate_profiles_detected.step_3.heading',
+                      sp_name: decorated_sp_session.sp_name,
+                    ) %>
+              </h2>
+              <p>
+                <%= t(
+                      'nds.duplicate_profiles_detected.step_3.body',
+                      sp_name: decorated_sp_session.sp_name,
+                      app_name: APP_NAME,
+                    ) %>
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="duplicate-profiles__accounts">
+          <% @dupe_profiles_detected_presenter.associated_profiles.each_with_index do |dupe_profile, index| %>
+            <% if index.positive? %>
+              <hr class="duplicate-profiles__account-divider" />
+            <% end %>
+            <div class="duplicate-profiles__account">
+              <% if dupe_profile[:current_account] %>
+                <span class="badge badge--success">
+                  <%= t('nds.duplicate_profiles_detected.signed_in') %>
+                </span>
+              <% else %>
+                <span class="badge badge--warning">
+                  <%= t('nds.duplicate_profiles_detected.duplicate') %>
+                </span>
+              <% end %>
+
+              <div class="duplicate-profiles__details">
+                <p class="duplicate-profiles__email">
+                  <% if dupe_profile[:current_account] %>
+                    <%= dupe_profile[:email] %>
+                  <% else %>
+                    <%= dupe_profile[:masked_email] %>
+                  <% end %>
+                </p>
+                <div class="duplicate-profiles__meta">
+                  <p>
+                    <%= t(
+                          'nds.duplicate_profiles_detected.created_at_html',
+                          timestamp_html: render(TimeComponent.new(time: dupe_profile[:created_at])),
+                        ) %>
+                  </p>
+                  <% if dupe_profile[:current_account] %>
+                    <p>
+                      <%= t(
+                            'nds.duplicate_profiles_detected.connected_agencies',
+                            count: dupe_profile[:connected_accts],
+                          ) %>
+                    </p>
+                  <% elsif dupe_profile[:last_sign_in] %>
+                    <p>
+                      <%= t(
+                            'nds.duplicate_profiles_detected.last_sign_in_html',
+                            timestamp_html: render(TimeComponent.new(time: dupe_profile[:last_sign_in])),
+                          ) %>
+                    </p>
+                  <% else %>
+                    <p>
+                      <%= t(
+                            'nds.duplicate_profiles_detected.never_signed_in',
+                            sp_name: decorated_sp_session.sp_name,
+                          ) %>
+                    </p>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+
+          <hr class="duplicate-profiles__account-divider" />
+          <%= render ButtonComponent.new(
+                url: duplicate_profiles_please_call_path(source: 'dont_recognize'),
+                method: :get,
+                variant: :tertiary,
+                full_width: true,
+              ).with_content(t('nds.duplicate_profiles_detected.dont_recognize_account')) %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: MarketingSite.help_center_article_url(
+                category: 'manage-your-account',
+                article: 'resolve-duplicate-accounts',
+              ),
+              full_width: true,
+              target: '_blank',
+              rel: 'noopener noreferrer',
+              class: 'duplicate-profiles__get-help',
+            ) do %>
+          <span><%= t('nds.duplicate_profiles_detected.get_help') %></span>
+          <%= render NDS::IconComponent.new(icon: :launch, size: 20) %>
+          <span class="usa-sr-only"><%= t('links.new_tab') %></span>
+        <% end %>
+        <%= render ButtonComponent.new(
+              url: logout_path,
+              method: :delete,
+              variant: :secondary,
+              full_width: true,
+            ).with_content(t('nds.duplicate_profiles_detected.sign_out')) %>
+        <%= render ButtonComponent.new(
+              url: duplicate_profiles_please_call_path(source: 'cant_access'),
+              method: :get,
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('nds.duplicate_profiles_detected.cant_access')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render StatusPageComponent.new(status: :warning) do |c| %>
   <% c.with_header { @dupe_profiles_detected_presenter.heading } %>
 
@@ -98,4 +293,5 @@
           unstyled: true,
         ).with_content(t('duplicate_profiles_detected.cant_access')) %>
   </div>
+<% end %>
 <% end %>
