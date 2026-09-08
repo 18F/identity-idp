@@ -4,6 +4,7 @@ RSpec.describe 'idv/please_call/show.html.erb' do
   let(:in_person_proofing_enabled) { false }
   let(:in_person) { false }
   before do
+    allow(view).to receive(:nds_layout?).and_return(false)
     @call_by_date = Date.new(2023, 10, 13)
     @in_person = in_person
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)

@@ -9,6 +9,7 @@ RSpec.describe 'idv/session_errors/failure.html.erb' do
   end
 
   before do
+    allow(view).to receive(:nds_layout?).and_return(false)
     allow(IdentityConfig.store).to receive(:idv_attempt_window_in_hours).and_return(timeout_hours)
 
     @expires_at = Time.zone.now + timeout_hours.hours

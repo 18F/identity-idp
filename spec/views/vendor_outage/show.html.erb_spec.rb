@@ -6,6 +6,7 @@ RSpec.describe 'vendor_outage/show.html.erb' do
   subject(:rendered) { render }
 
   before do
+    allow(view).to receive(:nds_layout?).and_return(false)
     @show_gpo_option = show_gpo_option
   end
 

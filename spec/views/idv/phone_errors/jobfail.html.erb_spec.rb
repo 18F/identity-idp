@@ -5,6 +5,7 @@ RSpec.describe 'idv/phone_errors/jobfail.html.erb' do
   let(:gpo_letter_available) { false }
 
   before do
+    allow(view).to receive(:nds_layout?).and_return(false)
     decorated_sp_session = instance_double(ServiceProviderSession, sp_name: sp_name)
     allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
     assign(:gpo_letter_available, gpo_letter_available)

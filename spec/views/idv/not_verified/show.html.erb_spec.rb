@@ -4,6 +4,7 @@ RSpec.describe 'idv/not_verified/show.html.erb' do
   let(:sp_name) { nil }
 
   before do
+    allow(view).to receive(:nds_layout?).and_return(false)
     allow(view).to receive(:decorated_sp_session).and_return(
       instance_double(ServiceProviderSession, sp_name: sp_name),
     )

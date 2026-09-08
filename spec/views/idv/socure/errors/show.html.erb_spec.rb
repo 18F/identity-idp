@@ -3,6 +3,10 @@ require 'rails_helper'
 RSpec.describe 'idv/socure/errors/show.html.erb' do
   include Devise::Test::ControllerHelpers
 
+  before do
+    allow(view).to receive(:nds_layout?).and_return(false)
+  end
+
   let(:remaining_submit_attempts) { 5 }
   let(:in_person_url) { nil }
   let(:passport_requested) { false }

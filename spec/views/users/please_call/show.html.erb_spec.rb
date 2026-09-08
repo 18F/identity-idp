@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'users/please_call/show.html.erb' do
   before do
+    allow(view).to receive(:nds_layout?).and_return(false)
     render
   end
 

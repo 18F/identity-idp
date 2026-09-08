@@ -5,6 +5,7 @@ RSpec.describe 'idv/session_errors/rate_limited.html.erb' do
   let(:sp_issuer) { nil }
 
   before do
+    allow(view).to receive(:nds_layout?).and_return(false)
     decorated_sp_session = instance_double(
       ServiceProviderSession,
       sp_name: sp_name,
