@@ -1658,7 +1658,6 @@ nds.idv_welcome.consent_link: confidentialité et de sécurité
 nds.idv_welcome.how_we_protect_heading: Comment nous protégeons vos données
 nds.idv_welcome.how_we_protect_info: Nous n’utilisons que ce que vous saisissez pour vérifier votre identité auprès de la Social Security Administration. Vos renseignements ne seront jamais partagés ni vendus en dehors du gouvernement.
 nds.idv_welcome.intro: '%{sp_name} doit vérifier votre identité avant que vous continuiez. La plupart des gens terminent en environ 7 minutes.'
-nds.idv_welcome.no_phone_link: Je n’ai pas de numéro de téléphone américain
 nds.idv_welcome.title: Vérifions votre identité pour accéder à %{sp_name}
 nds.idv_welcome.what_youll_need: Ce dont vous aurez besoin
 nds.link_sent.heading: Continuez sur votre téléphone
