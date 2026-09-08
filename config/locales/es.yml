@@ -1622,8 +1622,55 @@ mfa.second_method_warning.link: Agregue un segundo método de autenticación.
 mfa.second_method_warning.text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de autenticación.
 mfa.skip: Omitir por ahora
 mfa.webauthn_platform_message: Agregue otro método de autenticación en caso de que pierda el acceso al primero.
+nds.choose_id_type.option_drivers_license: Licencia de conducir o identificación estatal de los EE. UU.
+nds.choose_id_type.option_mdl: Licencia de conducir móvil
+nds.choose_id_type.option_passport: Libreta de pasaporte de los EE. UU.
+nds.choose_id_type.option_passport_card: Tarjeta de pasaporte de los EE. UU.
+nds.choose_id_type.or: o
+nds.choose_id_type.subtitle: Tome una foto de su identificación y una selfie rápida para verificar su identidad en línea.
+nds.choose_id_type.title: Elija el tipo de identificación para verificar
+nds.choose_id_type.verify_in_person: Verificar en persona
+nds.idv_welcome.consent_html: Al marcar esta casilla, usted permite que %{app_name} solicite, use, conserve y comparta su información personal. La usaremos para verificar su identidad. Lea sobre nuestras medidas de %{link_html}.
+nds.idv_welcome.consent_link: privacidad y seguridad
+nds.idv_welcome.how_we_protect_heading: Cómo protegemos sus datos
+nds.idv_welcome.how_we_protect_info: Solo usamos lo que usted ingresa para verificar su identidad con la Administración del Seguro Social. Su información nunca se compartirá ni se venderá fuera del Gobierno.
+nds.idv_welcome.intro: '%{sp_name} necesita verificar su identidad antes de que continúe. La mayoría de las personas terminan en unos 7 minutos.'
+nds.idv_welcome.no_phone_link: No tengo un número de teléfono de los EE. UU.
+nds.idv_welcome.title: Verifiquemos su identidad para acceder a %{sp_name}
+nds.idv_welcome.what_youll_need: Lo que necesitará
+nds.mfa_setup.badge_passkey: Rápido y seguro
+nds.mfa_setup.heading: Proteja su cuenta
+nds.mfa_setup.heading_second: Elija un segundo método de autenticación
+nds.mfa_setup.intro: Su cuenta protege su información personal. Agregue una capa de protección eligiendo un método de autenticación de múltiples factores. Actualice sus métodos en cualquier momento en la configuración de su cuenta.
+nds.mfa_setup.intro_second: Configure un segundo método para que siempre pueda acceder a su cuenta, incluso si su método principal no está disponible.
+nds.mfa_setup.options.auth_app: Aplicación de autenticación
+nds.mfa_setup.options.auth_app_info: Obtenga un código de un solo uso desde una aplicación en su teléfono. Funciona incluso sin señal.
+nds.mfa_setup.options.backup_code: Códigos de recuperación
+nds.mfa_setup.options.backup_code_info: Guarde una lista de códigos de un solo uso. Úselos para iniciar sesión si no tiene disponible otro método.
+nds.mfa_setup.options.phone: Mensaje de texto o llamada
+nds.mfa_setup.options.phone_info: Le enviamos un código de un solo uso por mensaje de texto o llamada. Ingréselo en la siguiente pantalla para iniciar sesión.
+nds.mfa_setup.options.piv_cac: Identificación de empleado del Gobierno
+nds.mfa_setup.options.piv_cac_info: Inicie sesión con su tarjeta PIV o CAC del Gobierno usando un lector de tarjetas en su dispositivo.
+nds.mfa_setup.options.webauthn: Llave de seguridad
+nds.mfa_setup.options.webauthn_info: Inserte una pequeña llave física en su dispositivo para comprobar que realmente es usted.
+nds.mfa_setup.options.webauthn_platform: Clave de acceso
+nds.mfa_setup.options.webauthn_platform_info: Use su rostro, huella digital o un PIN para iniciar sesión. Nada que recordar, nada que los piratas informáticos puedan robar.
+nds.mfa.choose_another_method: Elija otro método
 nds.passwords.new.heading: Cree su contraseña
 nds.passwords.new.info: Cree una contraseña segura para proteger su cuenta y mantener a salvo su información personal.
+nds.piv_cac_setup.nickname: Alias de la identificación
+nds.piv_cac_setup.step_1: Ingrese un alias
+nds.piv_cac_setup.step_2: Inserte su tarjeta PIV o CAC en su lector de tarjetas
+nds.piv_cac_setup.step_3: Agregue su tarjeta PIV o CAC
+nds.piv_cac_setup.step_3_info: Se le pedirá que elija un certificado e ingrese su PIN después de hacer clic en el botón de continuar.
+nds.totp_setup.new.code_label: Código
+nds.totp_setup.new.heading: Configure una aplicación de autenticación
+nds.totp_setup.new.nickname_label: Sobrenombre de la aplicación
+nds.totp_setup.new.remember_device_info: Seleccione esto para omitir la autenticación en los sitios compatibles. No seleccione esto si se encuentra en un dispositivo público o compartido.
+nds.totp_setup.new.setup_code_label: Código de configuración
+nds.totp_setup.new.step_1: Ingrese un sobrenombre
+nds.totp_setup.new.step_2: Abra su aplicación de autenticación preferida
+nds.totp_setup.new.step_3: Escanee el código QR o ingrese el código de configuración manualmente en su aplicación de autenticación
 notices.account_reactivation: Qué bien. Tiene su clave personal.
 notices.authenticated_successfully: Logró autenticarse.
 notices.backup_codes_configured: Los códigos de recuperación se agregaron a su cuenta.

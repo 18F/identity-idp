@@ -23,10 +23,19 @@ module Idv
         passport_cards_supported: passport_cards_supported?,
         mdl_enabled: mdl_enabled?,
       )
+      # NDS merges the agreement consent checkbox onto the welcome screen; the
+      # legacy layout ignores this form.
+      @consent_form = Idv::ConsentForm.new(idv_consent_given: idv_session.idv_consent_given?)
     end
 
     def update
       clear_future_steps!
+
+      # NDS presents the agreement consent on the welcome screen, so welcome
+      # records consent and advances straight to hybrid handoff. The legacy
+      # layout keeps welcome and agreement as separate steps.
+      return update_nds if nds_layout?
+
       clear_idv_session
       idv_session.proofing_started_at ||= Time.zone.now.iso8601
       create_document_capture_session
@@ -40,7 +49,8 @@ module Idv
       Idv::StepInfo.new(
         key: :welcome,
         controller: self,
-        next_steps: [:agreement],
+        next_steps: [:agreement, :hybrid_handoff, :choose_id_type, :document_capture,
+                     :how_to_verify],
         preconditions: ->(idv_session:, user:) { true },
         undo_step: ->(idv_session:, user:) do
           idv_session.welcome_visited = nil
@@ -50,6 +60,44 @@ module Idv
     end
 
     private
+
+    def update_nds
+      skip_to_capture if params[:skip_hybrid_handoff]
+
+      @consent_form = Idv::ConsentForm.new(idv_consent_given: idv_session.idv_consent_given?)
+      result = @consent_form.submit(consent_form_params)
+      analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
+
+      unless result.success?
+        @presenter = Idv::WelcomePresenter.new(
+          decorated_sp_session:,
+          show_sp_reproof_banner: show_sp_reproof_banner?,
+          passport_cards_supported: passport_cards_supported?,
+          mdl_enabled: mdl_enabled?,
+        )
+        return render :show
+      end
+
+      clear_idv_session
+      idv_session.proofing_started_at ||= Time.zone.now.iso8601
+      create_document_capture_session
+      idv_session.welcome_visited = true
+      idv_session.idv_consent_given_at = Time.zone.now
+      idv_session.opted_in_to_in_person_proofing = false
+      idv_session.skip_doc_auth_from_how_to_verify = false
+      idv_session.flow_path = 'standard'
+
+      redirect_to idv_choose_id_type_url
+    end
+
+    def skip_to_capture
+      idv_session.flow_path = 'standard'
+      idv_session.skip_hybrid_handoff = true
+    end
+
+    def consent_form_params
+      params.require(:doc_auth).permit(:idv_consent_given)
+    end
 
     def show_sp_reproof_banner?
       IdentityConfig.store.feature_show_sp_reproof_banner_enabled &&

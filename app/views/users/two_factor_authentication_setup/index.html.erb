@@ -17,8 +17,12 @@
                       method: :patch,
                       url: authentication_methods_setup_path do %>
     <%= render NDS::FormPageComponent.new(
-          title: @presenter.heading,
-          subtitle: @presenter.intro,
+          title: @presenter.two_factor_enabled? ?
+            t('nds.mfa_setup.heading_second') :
+            t('nds.mfa_setup.heading'),
+          subtitle: @presenter.two_factor_enabled? ?
+            t('nds.mfa_setup.intro_second') :
+            t('nds.mfa_setup.intro'),
         ) do |c| %>
       <% c.with_alert do %>
         <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :voice, only_if_all: true)) %>
@@ -37,7 +41,7 @@
           <% if nds_options.length > 2 %>
             <%= render ButtonComponent.new(
                   type: :button,
-                  variant: :tertiary,
+                  variant: :secondary,
                   size: :md,
                   class: 'mfa-options__more',
                   data: { mfa_more: '' },
@@ -59,14 +63,14 @@
         <% end %>
       <% end %>
 
-      <% if @presenter.skip_path || !@presenter.two_factor_enabled? %>
+      <% if @presenter.skip_path %>
         <% c.with_actions do %>
-          <%= render NDS::StackComponent.new(kind: :links) do %>
-            <% if @presenter.skip_path %>
-              <%= link_to @presenter.skip_label, @presenter.skip_path %>
-            <% elsif !@presenter.two_factor_enabled? %>
-              <%= link_to t('links.cancel_account_creation'), sign_up_cancel_path %>
-            <% end %>
+          <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+            <%= render ButtonComponent.new(
+                  url: @presenter.skip_path,
+                  variant: :secondary,
+                  full_width: true,
+                ).with_content(@presenter.skip_label) %>
           <% end %>
         <% end %>
       <% end %>

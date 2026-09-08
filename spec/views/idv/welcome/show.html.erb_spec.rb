@@ -9,6 +9,7 @@ RSpec.describe 'idv/welcome/show.html.erb' do
   let(:sp) { build(:service_provider) }
 
   before do
+    allow(view).to receive(:nds_layout?).and_return(false)
     allow(view_context).to receive(:current_user).and_return(user)
 
     decorated_sp_session = ServiceProviderSession.new(

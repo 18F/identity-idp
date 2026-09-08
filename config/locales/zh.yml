@@ -1624,8 +1624,55 @@ mfa.second_method_warning.link: 添加第二个身份证实方法。
 mfa.second_method_warning.text: 如果你丢失唯一的身份证实方法，就不得不删除你的账户并从头开始。
 mfa.skip: 现在先跳过
 mfa.webauthn_platform_message: 添加另一个身份证实方法，以防你无法使用第一个方法。
+nds.choose_id_type.option_drivers_license: 美国驾照或州身份证
+nds.choose_id_type.option_mdl: 移动驾照
+nds.choose_id_type.option_passport: 美国护照簿
+nds.choose_id_type.option_passport_card: 美国护照卡
+nds.choose_id_type.or: 或
+nds.choose_id_type.subtitle: 拍摄您的身份证件照片和一张快速自拍，即可在线验证您的身份。
+nds.choose_id_type.title: 选择要验证的身份证件类型
+nds.choose_id_type.verify_in_person: 亲自验证
+nds.idv_welcome.consent_html: 勾选此框即表示您允许%{app_name}索取、使用、保存和共享您的个人信息。我们将用它来验证您的身份。请阅读我们的%{link_html}措施。
+nds.idv_welcome.consent_link: 隐私和安全
+nds.idv_welcome.how_we_protect_heading: 我们如何保护您的数据
+nds.idv_welcome.how_we_protect_info: 我们仅使用您输入的信息向社会保障局验证您的身份。您的信息绝不会在政府之外被共享或出售。
+nds.idv_welcome.intro: '%{sp_name}需要先验证您的身份，然后您才能继续。大多数人大约在 7 分钟内完成。'
+nds.idv_welcome.no_phone_link: 我没有美国电话号码
+nds.idv_welcome.title: 让我们验证您的身份以访问%{sp_name}
+nds.idv_welcome.what_youll_need: 您需要准备的内容
+nds.mfa_setup.badge_passkey: 快速又安全
+nds.mfa_setup.heading: 保护您的账户
+nds.mfa_setup.heading_second: 选择第二种身份验证方法
+nds.mfa_setup.intro: 您的账户保护着个人信息。通过选择一种多因素身份验证方法来增加一层保护。您可以随时在账户设置中更新您的方法。
+nds.mfa_setup.intro_second: 设置第二种方法，这样即使您的主要方法不可用，您也能始终访问自己的账户。
+nds.mfa_setup.options.auth_app: 身份验证应用程序
+nds.mfa_setup.options.auth_app_info: 从您手机上的应用程序获取一次性代码。即使没有信号也能使用。
+nds.mfa_setup.options.backup_code: 备用代码
+nds.mfa_setup.options.backup_code_info: 保存一份一次性代码清单。当没有其他方法可用时，用它们来登录。
+nds.mfa_setup.options.phone: 短信或电话
+nds.mfa_setup.options.phone_info: 我们通过短信或电话向您发送一次性代码。在下一个屏幕上输入它即可登录。
+nds.mfa_setup.options.piv_cac: 政府雇员身份证件
+nds.mfa_setup.options.piv_cac_info: 使用您设备上的读卡器，通过您的政府 PIV 或 CAC 卡登录。
+nds.mfa_setup.options.webauthn: 安全密钥
+nds.mfa_setup.options.webauthn_info: 将一个小型实体密钥插入您的设备，以证明确实是您本人。
+nds.mfa_setup.options.webauthn_platform: 通行密钥
+nds.mfa_setup.options.webauthn_platform_info: 使用您的面容、指纹或 PIN 码登录。无需记忆，也没有可供黑客窃取的东西。
+nds.mfa.choose_another_method: 选择另一种方法
 nds.passwords.new.heading: 创建您的密码
 nds.passwords.new.info: 创建一个强密码来保护您的账户并确保个人信息安全。
+nds.piv_cac_setup.nickname: 身份证件昵称
+nds.piv_cac_setup.step_1: 输入昵称
+nds.piv_cac_setup.step_2: 把 PIV 或 CAC 插入读卡器
+nds.piv_cac_setup.step_3: 添加 PIV 或 CAC
+nds.piv_cac_setup.step_3_info: 点击继续按钮后，系统会要求你选择一个证书并输入你的 PIN。
+nds.totp_setup.new.code_label: 代码
+nds.totp_setup.new.heading: 设置一个身份验证应用程序
+nds.totp_setup.new.nickname_label: 应用程序昵称
+nds.totp_setup.new.remember_device_info: 选择此项可在支持的网站上跳过身份验证。如果您使用的是公共或共享设备，请勿选择此项。
+nds.totp_setup.new.setup_code_label: 设置代码
+nds.totp_setup.new.step_1: 输入一个昵称
+nds.totp_setup.new.step_2: 打开您首选的身份验证应用程序
+nds.totp_setup.new.step_3: 扫描二维码或在身份验证应用程序中手动输入设置代码
 notices.account_reactivation: 好！你有个人密钥。
 notices.authenticated_successfully: 成功验证。
 notices.backup_codes_configured: 备用代码加到了你账户。

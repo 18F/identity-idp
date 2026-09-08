@@ -1,5 +1,95 @@
 <% self.title = t('doc_auth.headings.choose_id_type') %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 2) %>
+  <% end %>
+
+  <% id_type_options = [
+       [t('nds.choose_id_type.option_drivers_license'), :state_id_card, false],
+       [t('nds.choose_id_type.option_passport'), :passport, disable_passports],
+       (if passport_cards_enabled
+          [t('nds.choose_id_type.option_passport_card'), :passport_card, disable_passports]
+        end),
+       (if mdl_enabled
+          [t('nds.choose_id_type.option_mdl'), :mobile_drivers_license, false]
+        end),
+     ].compact %>
+
+  <%= simple_form_for(
+        :doc_auth,
+        url: form_submit_url,
+        method: :put,
+        html: { data: { nds_submit_gate: true } },
+      ) do |f| %>
+    <%= render NDS::FormPageComponent.new(
+          title: t('nds.choose_id_type.title'),
+          subtitle: t('nds.choose_id_type.subtitle'),
+        ) do |page| %>
+      <% if presenter.hybrid_flow? %>
+        <% page.with_alert do %>
+          <%= render AlertComponent.new(type: :warning) do %>
+            <%= t(
+                  'doc_auth.hybrid_flow_warning.explanation_html',
+                  app_name: APP_NAME,
+                  service_provider_name: decorated_sp_session.sp_name,
+                ) %>
+          <% end %>
+        <% end %>
+      <% elsif disable_passports %>
+        <% page.with_alert do %>
+          <%= render AlertComponent.new(type: :error) do %>
+            <%= t('doc_auth.info.dos_passport_api_down_message') %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% page.with_body do %>
+        <fieldset class="usa-fieldset radio-group">
+          <legend class="usa-sr-only"><%= t('doc_auth.headings.choose_id_type') %></legend>
+          <% id_type_options.each do |label, value, disabled| %>
+            <div class="radio">
+              <%= f.radio_button(
+                    :choose_id_type_preference,
+                    value,
+                    class: 'radio__input usa-sr-only',
+                    checked: auto_check_value == value,
+                    disabled: disabled,
+                    required: true,
+                  ) %>
+              <%= f.label "choose_id_type_preference_#{value}", class: 'radio__label' do %>
+                <%= label %>
+              <% end %>
+            </div>
+          <% end %>
+        </fieldset>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+                full_width: true,
+              ).with_content(t('forms.buttons.continue')) %>
+          <% if local_assigns[:show_verify_in_person] %>
+            <div class="separator"><%= t('nds.choose_id_type.or') %></div>
+            <%= render ButtonComponent.new(
+                  type: :submit,
+                  name: 'verify_in_person',
+                  value: 'true',
+                  formnovalidate: true,
+                  variant: :secondary,
+                  full_width: true,
+                ).with_content(t('nds.choose_id_type.verify_in_person')) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
+
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: presenter.step_indicator_steps,
@@ -78,3 +168,4 @@
 <% end %>
 
 <%= render 'idv/doc_auth/cancel', step: 'choose_id_type' %>
+<% end %>
