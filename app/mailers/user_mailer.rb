@@ -589,7 +589,10 @@ class UserMailer < ActionMailer::Base
 
   def device_profiling_error_cleared
     with_user_locale(user) do
-      mail(to: email_address.email, subject: t('user_mailer.account_reinstated.subject'))
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.device_profiling_error_cleared.subject'),
+      )
     end
   end
 
