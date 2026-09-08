@@ -24,26 +24,22 @@
             :selection,
             value: Idv::HowToVerifyForm::CLEAR1,
           ) %>
-      <%= f.label(
-            :selection_clear1,
-          ) do %>
-            <h2 id="verify-with-existing-account" class="margin-top-0 margin-bottom-2"><%= presenter.verify_with_existing_account_text %></h2>
-            <div>
-              <p><%= presenter.clear1_description %></p>
-              <p class="margin-top-2">
-                <%= new_tab_link_to(
-                      presenter.clear1_link_text,
-                      help_center_redirect_path(
-                        category: 'verify-your-identity',
-                        article: 'overview',
-                        flow: :idv,
-                        step: step,
-                        location: 'troubleshooting_options',
-                      ),
-                    ) %>
-              </p>
-            </div>
-          <% end %>
+      <h2 id="verify-with-existing-account" class="margin-top-0 margin-bottom-2"><%= presenter.verify_with_existing_account_text %></h2>
+      <div>
+        <p><%= presenter.clear1_description %></p>
+        <p class="margin-top-2">
+          <%= new_tab_link_to(
+                presenter.clear1_link_text,
+                help_center_redirect_path(
+                  category: 'verify-your-identity',
+                  article: 'overview',
+                  flow: :idv,
+                  step: step,
+                  location: 'troubleshooting_options',
+                ),
+              ) %>
+        </p>
+      </div>
       <%= render ButtonComponent.new(
             type: :submit,
             big: true,
