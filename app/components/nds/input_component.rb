@@ -72,6 +72,20 @@ module NDS
       type == :password
     end
 
+    # SSN: a display-only masked control plus a hidden input that carries the
+    # submitted digits; the IDS inputSsn behavior keeps them in sync.
+    def ssn?
+      type == :ssn
+    end
+
+    def ssn_display_value
+      digits = form.object&.public_send(attribute).to_s.gsub(/\D/, '')
+      return '' if digits.empty?
+
+      masked = ('•' * (digits.length - 1)) + digits[-1]
+      [masked[0, 3], masked[3, 2], masked[5, 4]].compact.reject(&:empty?).join('-')
+    end
+
     def validation_error_messages
       {
         valueMissing: value_missing_error_message,
@@ -85,6 +99,7 @@ module NDS
       classes = ['usa-input']
       classes << 'usa-input--phone' if country_selector
       classes << 'usa-input--password' if password?
+      classes << 'usa-input--ssn' if ssn?
       classes << field_class if field_class.present?
       classes.join(' ')
     end
@@ -97,6 +112,7 @@ module NDS
       classes = ['usa-input__control']
       classes << 'usa-input__control--phone' if country_selector
       classes << 'usa-input__control--password' if password?
+      classes << 'usa-input__control--ssn' if ssn?
       classes << 'usa-input__control--floating' if @floating_label
       classes.concat(Array(@input_options[:class]))
       classes.join(' ')
@@ -173,12 +189,38 @@ module NDS
         opts[:pattern] ||= EMAIL_PATTERN
         form.email_field(attribute, **opts)
       when :password then form.password_field(attribute, **opts)
+      when :ssn      then render_ssn_input(opts)
       when :tel      then form.telephone_field(attribute, **opts)
       else                form.text_field(attribute, **opts)
       end
     end
 
     private
+
+    # The visible control keeps the field name so a no-JS submit still works;
+    # the behavior moves the name onto the hidden input once it mounts.
+    def render_ssn_input(opts)
+      opts = opts.merge(
+        value: ssn_display_value,
+        inputmode: 'numeric',
+        autocomplete: 'off',
+        pattern: nil,
+        maxlength: 11,
+        data: (opts[:data] || {}).merge(nds_ssn_incomplete: error_messages[:customError]),
+      )
+      safe_join(
+        [
+          form.text_field(attribute, **opts),
+          form.hidden_field(
+            attribute,
+            id: "#{input_id}_value",
+            name: nil,
+            value: form.object&.public_send(attribute).to_s.gsub(/\D/, ''),
+            data: { nds_ssn_value: true },
+          ),
+        ],
+      )
+    end
 
     def country_option_data(data, dial_code)
       supports_sms = data['supports_sms']

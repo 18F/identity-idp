@@ -192,4 +192,35 @@ RSpec.describe NDS::InputComponent, type: :component do
       )
     end
   end
+
+  context 'ssn contract' do
+    let(:options) do
+      { type: :ssn, attribute: :ssn, label: 'SSN', error_messages: { customError: 'Nine digits' } }
+    end
+
+    it 'emits a display control, a hidden value input and the reveal toggle' do
+      expect(rendered).to have_css('.usa-input.usa-input--ssn')
+      expect(rendered).to have_css(
+        'input[type=text].usa-input__control--ssn[name="preview[ssn]"]' \
+        '[inputmode=numeric][data-nds-ssn-incomplete="Nine digits"]',
+      )
+      expect(rendered).to have_css(
+        'input[type=hidden][data-nds-ssn-value]:not([name])',
+        visible: :all,
+      )
+      expect(rendered).to have_css('button.usa-input__toggle[data-nds-ssn-toggle]')
+    end
+
+    context 'with an existing value' do
+      let(:form) do
+        object = Struct.new(:ssn).new('900-12-3456')
+        ActionView::Helpers::FormBuilder.new(:preview, object, view_context, {})
+      end
+
+      it 'masks all but the last digit in the display and keeps the digits in the hidden input' do
+        expect(rendered).to have_css('.usa-input__control--ssn[value="•••-••-•••6"]')
+        expect(rendered).to have_css('input[data-nds-ssn-value][value="900123456"]', visible: :all)
+      end
+    end
+  end
 end
