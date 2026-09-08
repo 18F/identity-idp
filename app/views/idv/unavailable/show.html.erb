@@ -1,5 +1,50 @@
 <% self.title = t('idv.titles.unavailable') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(
+        title: t('idv.titles.unavailable'),
+      ) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--error">
+        <%= render NDS::IconComponent.new(icon: :error, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <p>
+        <% if decorated_sp_session.sp_name.present? %>
+          <%= t('idv.unavailable.idv_explanation.with_sp_html', sp: decorated_sp_session.sp_name) %>
+        <% else %>
+          <%= t('idv.unavailable.idv_explanation.without_sp') %>
+        <% end %>
+      </p>
+
+      <p>
+        <%= t('idv.unavailable.technical_difficulties') %>
+      </p>
+
+      <p>
+        <%= t(
+              'idv.unavailable.next_steps_html',
+              app_name: APP_NAME,
+              status_page_link_html: new_tab_link_to(
+                t('idv.unavailable.status_page_link'),
+                StatusPage.base_url,
+              ),
+            ) %>
+      </p>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render ButtonComponent.new(
+            url: return_to_sp_failure_to_proof_path(step: :unavailable, location: :unavailable),
+            full_width: true,
+          ).with_content(t('idv.unavailable.exit_button', app_name: APP_NAME)) %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render StatusPageComponent.new(status: :error) do |c| %>
 
   <% c.with_header { t('idv.titles.unavailable') } %>
@@ -33,4 +78,5 @@
        wide: true,
      ).with_content(t('idv.unavailable.exit_button', app_name: APP_NAME)) %>
 
+<% end %>
 <% end %>
