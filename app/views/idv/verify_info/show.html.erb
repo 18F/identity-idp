@@ -1,3 +1,117 @@
+<% if nds_layout? %>
+  <% self.title = t('titles.idv.verify_info') %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 7) %>
+  <% end %>
+
+  <div id="form-steps-wait-alert"></div>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('headings.verify'),
+        subtitle: t('idv.messages.verify_info'),
+      ) do |page| %>
+    <% if @had_barcode_read_failure %>
+      <% page.with_alert do %>
+        <%= render AlertComponent.new(type: :warning) do %>
+          <%= t(
+                'doc_auth.headings.capture_scan_warning_html',
+                link_html: link_to(
+                  t('doc_auth.headings.capture_scan_warning_link'),
+                  idv_hybrid_handoff_url(redo: true),
+                  'aria-label': t('doc_auth.headings.capture_scan_warning_link'),
+                ),
+              ) %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% page.with_body do %>
+      <%= render NDS::CardComponent.new(class: 'card--elevated card--spacious text-left') do %>
+        <dl class="nds-summary">
+          <div class="nds-summary__row">
+            <dt class="nds-summary__label"><%= t('idv.form.first_name') %></dt>
+            <dd class="nds-summary__value"><%= @pii[:first_name] %></dd>
+          </div>
+          <div class="nds-summary__row">
+            <dt class="nds-summary__label"><%= t('idv.form.last_name') %></dt>
+            <dd class="nds-summary__value"><%= @pii[:last_name] %></dd>
+          </div>
+          <div class="nds-summary__row">
+            <dt class="nds-summary__label"><%= t('idv.form.dob') %></dt>
+            <dd class="nds-summary__value">
+              <%= I18n.l(Date.parse(@pii[:dob]), format: I18n.t('time.formats.event_date')) %>
+            </dd>
+          </div>
+          <div class="nds-summary__row">
+            <dt class="nds-summary__label"><%= t('idv.form.id_number') %></dt>
+            <dd class="nds-summary__value"><%= @pii[:state_id_number] || @pii[:document_number] %></dd>
+          </div>
+          <div class="nds-summary__row">
+            <div class="nds-summary__cell">
+              <dt class="nds-summary__label"><%= t('nds.verify_info.address') %></dt>
+              <dd class="nds-summary__value">
+                <%= @pii[:address1] %><br>
+                <% if @pii[:address2].present? %><%= @pii[:address2] %><br><% end %>
+                <%= @pii[:city] %>, <%= @pii[:state] %> <%= @pii[:zipcode] %>
+              </dd>
+            </div>
+            <%= render ButtonComponent.new(
+                  url: idv_address_url,
+                  variant: :tertiary,
+                  size: :sm,
+                  'aria-label': t('idv.buttons.change_address_label'),
+                ).with_content(t('forms.buttons.edit')) %>
+          </div>
+          <div class="nds-summary__row">
+            <div class="nds-summary__cell">
+              <dt class="nds-summary__label"><%= t('idv.form.ssn') %></dt>
+              <dd class="nds-summary__value">
+                <span class="nds-masked" data-nds-masked>
+                  <span class="masked-text__text" data-masked="true">
+                    <span class="usa-sr-only"><%= t('idv.accessible_labels.masked_ssn', first_number: @ssn[0], last_number: @ssn[-1]) %></span>
+                    <span aria-hidden="true" class="text-no-wrap"><%= "•••-••-#{@ssn.to_s.delete('-')[-4..]}" %></span>
+                  </span>
+                  <span class="masked-text__text display-none text-no-wrap" data-masked="false"><%= SsnFormatter.format(@ssn) %></span>
+                  <button type="button" class="nds-masked__toggle" data-nds-masked-toggle aria-pressed="false" aria-label="<%= t('forms.ssn.show') %>">
+                    <%= render NDS::IconComponent.new(icon: :visibility_off, size: 16, class: 'nds-masked__icon-show') %>
+                    <%= render NDS::IconComponent.new(icon: :visibility, size: 16, class: 'nds-masked__icon-hide', hidden: true) %>
+                  </button>
+                </span>
+              </dd>
+            </div>
+            <%= render ButtonComponent.new(
+                  url: idv_ssn_url,
+                  variant: :tertiary,
+                  size: :sm,
+                  'aria-label': t('idv.buttons.change_ssn_label'),
+                ).with_content(t('forms.buttons.edit')) %>
+          </div>
+        </dl>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render SpinnerButtonComponent.new(
+            url: idv_verify_info_path,
+            full_width: true,
+            action_message: t('idv.messages.verifying'),
+            method: :put,
+            form: {
+              class: 'button_to',
+              data: {
+                form_steps_wait: '',
+                error_message: t('idv.failure.exceptions.internal_error'),
+                alert_target: '#form-steps-wait-alert',
+                wait_step_path: idv_verify_info_path,
+                poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
+              },
+            },
+          ).with_content(t('forms.buttons.continue')) %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('form-steps-wait', 'nds-masked-text', preload_links_header: false) %>
+<% else %>
 <%#
 locals:
   @step_indicator_steps - the correct Idv::Flows variable for this flow
@@ -142,3 +256,4 @@ locals:
 
 <% javascript_packs_tag_once 'form-steps-wait' %>
 <%= render 'idv/doc_auth/cancel', step: 'verify' %>
+<% end %>
