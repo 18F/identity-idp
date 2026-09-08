@@ -1,5 +1,61 @@
 <% self.title = t('titles.idv.get_letter') %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 8) %>
+  <% end %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('nds.request_letter.heading'),
+        subtitle: t('nds.request_letter.info'),
+      ) do |page| %>
+    <% page.with_body do %>
+      <%= render NDS::CardComponent.new(class: 'card--elevated card--spacious text-left') do %>
+        <dl class="nds-summary">
+          <div class="nds-summary__row">
+            <div class="nds-summary__cell">
+              <dt class="nds-summary__label"><%= t('nds.verify_info.address') %></dt>
+              <dd class="nds-summary__value">
+                <%= @applicant[:address1] %><br>
+                <% if @applicant[:address2].present? %><%= @applicant[:address2] %><br><% end %>
+                <%= @applicant[:city] %>, <%= @applicant[:state] %> <%= @applicant[:zipcode] %>
+              </dd>
+            </div>
+            <%= render ButtonComponent.new(
+                  url: idv_address_url,
+                  variant: :tertiary,
+                  size: :sm,
+                  'aria-label': t('idv.buttons.change_address_label'),
+                ).with_content(t('forms.buttons.edit')) %>
+          </div>
+        </dl>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: idv_request_letter_path,
+              method: :put,
+              full_width: true,
+            ).with_content(t('idv.buttons.mail.send')) %>
+        <% if FeatureManagement.idv_by_mail_only? %>
+          <%= render ButtonComponent.new(
+                url: idv_cancel_path(step: 'gpo'),
+                variant: :tertiary,
+                full_width: true,
+              ).with_content(t('links.cancel')) %>
+        <% else %>
+          <%= render ButtonComponent.new(
+                url: go_back_path || idv_phone_path,
+                variant: :tertiary,
+                full_width: true,
+              ).with_content(t('forms.buttons.back')) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: step_indicator_steps,
@@ -63,4 +119,5 @@
   <%= render 'idv/doc_auth/cancel', step: 'gpo' %>
 <% else %>
   <%= render 'idv/shared/back', fallback_path: idv_phone_path %>
+<% end %>
 <% end %>
