@@ -1,6 +1,11 @@
 <div role="group" aria-labelledby="verify-with-existing-account" class="grid-row grid-gap grid-gap-2 <%= local_assigns[:class] %>">
-  <div class="grid-col-12 tablet:grid-col-auto" aria-hidden="true">
-    <div class="width-illustration"></div>
+  <div class="grid-col-12 tablet:grid-col-auto margin-top-3" aria-hidden="true">
+    <%= image_tag(
+          asset_url(presenter.clear1_asset_url),
+          width: 88,
+          height: 88,
+          alt: '',
+        ) %>
   </div>
   <div class="grid-col-12 tablet:grid-col-fill">
     <%= simple_form_for(
@@ -40,8 +45,8 @@
           <% end %>
       <%= render ButtonComponent.new(
             type: :submit,
-            full_width: true,
-            class: 'clear1-button margin-top-3 margin-bottom-4',
+            big: true,
+            class: 'clear1-button margin-top-3 margin-bottom-5',
             'aria-label': presenter.clear1_submit,
           ) do %>
         <span><%= presenter.clear1_submit_prefix %></span>
@@ -49,8 +54,8 @@
               asset_url(presenter.clear1_logo_url),
               alt: '',
               aria: { hidden: true },
-              width: 86,
-              height: 24,
+              width: 122,
+              height: 34,
               class: 'clear1-button__logo',
             ) %>
       <% end %>
