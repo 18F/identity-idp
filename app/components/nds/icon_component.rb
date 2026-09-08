@@ -29,7 +29,6 @@ module NDS
       check: :checkmark,
       expand_more: :chevron_down,
       question: :question_circle,
-      warning: :error,
     }.freeze
 
     attr_reader :icon, :label, :size, :tag_options
