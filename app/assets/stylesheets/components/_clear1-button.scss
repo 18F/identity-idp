@@ -6,9 +6,14 @@ $clear1-navy: #041a55;
 .clear1-button {
   align-items: center;
   background-color: $clear1-navy;
-  display: inline-flex;
+  // Block-level so margins collapse with the paragraph above, like the sibling
+  // .display-block buttons. inline-flex would sit 16px lower.
+  display: flex;
   gap: units(1.5);
   justify-content: center;
+  // 34px logo + 9px top/bottom = 52px, matching the usa-button--big siblings.
+  padding-bottom: 9px;
+  padding-top: 9px;
 
   &:hover,
   &:focus,
@@ -17,7 +22,7 @@ $clear1-navy: #041a55;
   }
 
   &__logo {
-    height: units(3);
+    height: 34px;
     width: auto;
   }
 }

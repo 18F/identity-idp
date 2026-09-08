@@ -122,4 +122,8 @@ class Idv::HowToVerifyPresenter
   def clear1_logo_url
     'idv/clear-logo.svg'
   end
+
+  def clear1_asset_url
+    'idv/clear-placeholder.svg'
+  end
 end
