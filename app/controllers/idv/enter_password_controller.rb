@@ -250,7 +250,9 @@ module Idv
 
       analytics.historic_event_data_saved(profile_id: idv_session.profile.id)
 
-      AttemptsApi::Cacher.new(idv_session.current_user, user_session)
+      # current_user.active_profile can be stale here because and pass in
+      # the wrong profile. passing the profile in directly ensures it is cached correctly
+      AttemptsApi::Cacher.new(current_user, user_session)
         .save(password:, profile: idv_session.profile)
 
       user_session.delete('idv/attempts')
