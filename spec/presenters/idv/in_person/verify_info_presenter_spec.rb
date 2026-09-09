@@ -35,21 +35,6 @@ RSpec.describe Idv::InPerson::VerifyInfoPresenter do
     end
   end
 
-  describe '#show_state_id_expiration?' do
-    [true, false].each do |flag|
-      context "when the feature flag is #{flag}" do
-        before do
-          allow(IdentityConfig.store)
-            .to receive(:in_person_proofing_expiration_edge_cases_enabled).and_return(flag)
-        end
-
-        it "returns #{flag}" do
-          expect(subject.show_state_id_expiration?).to eq(flag)
-        end
-      end
-    end
-  end
-
   describe '#formatted_state_id_expiration' do
     def formatted(value)
       subject.formatted_state_id_expiration(state_id_expiration: value)
