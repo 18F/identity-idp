@@ -26,7 +26,7 @@ module Api
           ssn_profile_found: ssn_active_profiles.any?,
           profiles: active_profiles_info,
           email_account_awaiting_binding: !!user&.proofing_agent_user_awaiting_binding?,
-          user_email_confirmed: email_confirmed?,
+          account_email_confirmed: email_confirmed?,
         }
 
         analytics.idv_proofing_agent_account_check_requested(
