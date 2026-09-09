@@ -1,5 +1,51 @@
 <% self.title = t('security_check_failed.title') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(title: t('security_check_failed.title')) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--warning">
+        <%= render NDS::IconComponent.new(icon: :warning, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <p>
+        <%= t('security_check_failed.details') %>
+        <%= new_tab_link_to(
+              t('security_check_failed.learn_more', app_name: APP_NAME),
+              help_center_redirect_path(
+                category: 'trouble-signing-in',
+                article: 'security-check-failed',
+              ),
+            ) %>
+      </p>
+
+      <ul class="usa-list">
+        <li><%= t('security_check_failed.info_p1', app_name: APP_NAME) %></li>
+        <li><%= t('security_check_failed.info_p2_html', piv_cac_url: login_piv_cac_url) %></li>
+        <li><%= t('security_check_failed.info_p3') %></li>
+      </ul>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render ButtonComponent.new(
+            url: contact_redirect_url,
+            target: '_blank',
+            rel: 'noopener',
+            variant: :tertiary,
+          ) do %>
+        <%= t('security_check_failed.contact', app_name: APP_NAME) %>
+        <span class="usa-sr-only"><%= t('links.new_tab') %></span>
+      <% end %>
+      <%= render ButtonComponent.new(
+            url: root_url,
+            variant: :tertiary,
+          ).with_content(t('forms.buttons.back')) %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render StatusPageComponent.new(status: :warning) do |c| %>
   <% c.with_header { t('security_check_failed.title') } %>
   <p>
@@ -30,4 +76,5 @@
 
 <%= render PageFooterComponent.new do %>
   <%= link_to t('forms.buttons.back'), root_url %>
+<% end %>
 <% end %>
