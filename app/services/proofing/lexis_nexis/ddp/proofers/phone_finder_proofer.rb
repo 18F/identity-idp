@@ -12,13 +12,14 @@ module Proofing
 
           def build_result_from_response(verification_response)
             response_body = verification_response.response_body
+            vendor_raw_response = raw_response(response_body)
             review_status = response_body['review_status']
 
             validate_review_status!(review_status)
 
             parsed_response =
               Proofing::LexisNexis::Ddp::ParsedResponse.new(
-                raw_response(response_body),
+                vendor_raw_response,
                 review_status: review_status,
               )
 
