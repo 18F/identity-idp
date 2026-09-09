@@ -4,13 +4,14 @@ RSpec.describe 'idv/phone_errors/failure.html.erb' do
   let(:sp_name) { 'Example SP' }
   let(:timeout_hours) { 6 }
   let(:gpo_letter_available) { true }
+  let(:nds_layout) { false }
 
   around do |ex|
     freeze_time { ex.run }
   end
 
   before do
-    allow(view).to receive(:nds_layout?).and_return(false)
+    allow(view).to receive(:nds_layout?).and_return(nds_layout)
     decorated_sp_session = instance_double(ServiceProviderSession, sp_name: sp_name)
     allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
     assign(:gpo_letter_available, gpo_letter_available)
@@ -84,6 +85,48 @@ RSpec.describe 'idv/phone_errors/failure.html.erb' do
         '.usa-button',
         text: t('idv.failure.phone.rate_limited.gpo.button'),
       )
+    end
+  end
+
+  context 'in the NDS layout' do
+    let(:nds_layout) { true }
+
+    it 'renders verify-by-mail primary, contact secondary, and cancel tertiary actions' do
+      expect(rendered).to have_css(
+        ".auth__actions a.usa-button:not(.usa-button--secondary):not(.usa-button--tertiary)" \
+        "[href='#{idv_request_letter_path}']",
+        text: t('idv.failure.phone.rate_limited.gpo.button'),
+      )
+      expect(rendered).to have_css(
+        '.auth__actions a.usa-button--secondary[target=_blank]',
+        text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
+      )
+      expect(rendered).to have_css(
+        ".auth__actions a.usa-button--tertiary[href='#{idv_cancel_path(step: :phone_error)}']",
+        text: t('links.cancel'),
+      )
+      expect(rendered).not_to have_css('.nds-troubleshooting-options h2')
+    end
+
+    it 'does not render the legacy options list' do
+      expect(rendered).not_to have_text(t('idv.failure.phone.rate_limited.options_header'))
+      expect(rendered).not_to have_css('.auth__form-page-body ul')
+    end
+
+    context 'without gpo letter available' do
+      let(:gpo_letter_available) { false }
+
+      it 'omits the verify-by-mail action and shows the no-gpo try-again copy' do
+        expect(rendered).not_to have_link(t('idv.failure.phone.rate_limited.gpo.button'))
+        expect(rendered).to have_text(
+          strip_tags(
+            t(
+              'idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html',
+              time_left: distance_of_time_in_words(timeout_hours.hours),
+            ),
+          ),
+        )
+      end
     end
   end
 end
