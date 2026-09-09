@@ -682,6 +682,20 @@ RSpec.describe AbTests do
         )
         expect(bucket).to eq(:nds)
       end
+
+      it 'persists assignment to database' do
+        expect do
+          AbTests.all[:NDS_LOOK_AND_FEEL].bucket(
+            request:, service_provider: nil,
+            session: nil, user: nil, user_session: nil
+          )
+        end.to change { AbTestAssignment.count }.by(1)
+
+        assignment = AbTestAssignment.last
+        expect(assignment.experiment).to eq('NDS Look and Feel Phase 1')
+        expect(assignment.discriminator).to eq(nds_experiment_uuid)
+        expect(assignment.bucket).to eq('nds')
+      end
     end
   end
 
