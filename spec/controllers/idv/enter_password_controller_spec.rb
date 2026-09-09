@@ -1269,7 +1269,7 @@ RSpec.describe Idv::EnterPasswordController do
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
               event = UserProofingEvent.last
 
-              expect(event.profile_id).to eq(user.profiles.last.id)
+              expect(event.profile_id).to eq(user.active_profile.id)
             end
 
             it 'tracks an analytic event' do
@@ -1277,7 +1277,45 @@ RSpec.describe Idv::EnterPasswordController do
 
               expect(@analytics).to have_logged_event(
                 :historic_event_data_saved,
-                profile_id: user.profiles.last.id,
+                profile_id: user.active_profile.id,
+              )
+            end
+
+            it 'caches user proofing events' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              data = controller.user_session[:encrypted_proofing_events]
+              historical_attempts = JSON.parse(
+                SessionEncryptor.new.kms_decrypt(data),
+              )
+
+              expect(historical_attempts).to eq([idv_attempt])
+            end
+          end
+
+          context 'with a user upgrades to an IAL identity proofed profile' do
+            let(:user) do
+              create(
+                :user,
+                :proofed,
+                password: ControllerHelper::VALID_PASSWORD,
+              )
+            end
+
+            it 'creates a UserProofingEvent for the profile' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              updated_user = User.find(user.id)
+              event = UserProofingEvent.last
+
+              expect(event.profile_id).to eq(updated_user.active_profile.id)
+            end
+
+            it 'tracks an analytic event' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              updated_user = User.find(user.id)
+
+              expect(@analytics).to have_logged_event(
+                :historic_event_data_saved,
+                profile_id: updated_user.active_profile.id,
               )
             end
 
