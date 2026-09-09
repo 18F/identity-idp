@@ -1663,6 +1663,10 @@ nds.enter_password.info: 您的信息使用您的密码加密。这意味着只�
 nds.errors.cancel_verification: 取消验证
 nds.errors.return_home: 返回主页
 nds.errors.start_over_warning: 您需要从头开始验证您的身份
+nds.footer.experience_notice_html: You’re part of a group experiencing %{link_html}.
+nds.footer.experience_notice_label: Interface preference
+nds.footer.experience_notice_link: our refreshed interface
+nds.footer.switch_to_legacy: Switch to legacy
 nds.hybrid_handoff.heading: 输入您的电话号码
 nds.hybrid_handoff.subtitle: 我们将向您发送一个链接，以便通过可信的服务提供商验证您的身份证件。
 nds.idv_phone.info: 请输入美国电话号码。我们将通过短信或电话向您发送 6 位数验证码。仅支持标准电话线路，不支持 VoIP 或增值号码。可能产生短信和数据费用。

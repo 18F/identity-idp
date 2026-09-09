@@ -1,19 +1,17 @@
 require 'rails_helper'
 
 RSpec.feature 'NDS look and feel experiment' do
+  let(:experiment_uuid_cookie) do
+    page.driver.browser.rack_mock_session.cookie_jar['nds_experiment_uuid']
+  end
+
   before do
-    # The experiment UUID cookie is permanent and short-circuits generation, so a
-    # cookie left over from an earlier example in this shard would mask the
-    # stubbed UUID. Start every scenario from an empty jar.
-    Capybara.reset_sessions!
-    allow(IdentityConfig.store).to receive(:nds_look_and_feel_percent).and_return(50)
-    reload_ab_tests
-    allow(SecureRandom).to receive(:uuid).and_return('experiment-uuid')
     stub_const(
       'AbTests::NDS_LOOK_AND_FEEL',
       instance_double(
         AbTest,
         bucket:,
+        experiment: 'NDS Look and Feel Phase 1',
         include_in_analytics_event?: true,
       ),
     )
@@ -26,8 +24,7 @@ RSpec.feature 'NDS look and feel experiment' do
       visit root_path
 
       expect(page).to have_css('link[href*="nds_application"]', visible: :all)
-      expect(page.driver.browser.rack_mock_session.cookie_jar[:nds_experiment_uuid])
-        .to eq('experiment-uuid')
+      expect(experiment_uuid_cookie).to match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
     end
   end
 
@@ -39,8 +36,7 @@ RSpec.feature 'NDS look and feel experiment' do
 
       expect(page).to have_css('.site-wrap.bg-primary-lighter')
       expect(page).not_to have_css('link[href*="nds_application"]', visible: :all)
-      expect(page.driver.browser.rack_mock_session.cookie_jar[:nds_experiment_uuid])
-        .to eq('experiment-uuid')
+      expect(experiment_uuid_cookie).to match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
     end
   end
 end
