@@ -61,6 +61,7 @@ class FrontendLogController < ApplicationController
     idv_selfie_image_added
     idv_selfie_image_clicked
     idv_socure_docv_redirect_requested
+    multi_factor_auth_more_options_clicked
     passkey_authentication_initiated
     phone_input_country_changed
     tab_navigation_current_page_clicked

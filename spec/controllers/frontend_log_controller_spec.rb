@@ -124,10 +124,21 @@ RSpec.describe FrontendLogController do
         end
       end
 
+            context 'allowlisted symbol analytics event' do
+        let(:event) { 'multi_factor_auth_more_options_clicked' }
+
+        it 'succeeds' do
+          action
+
+          expect(@analytics).to have_logged_event(:multi_factor_auth_more_options_clicked)
+          expect(response).to have_http_status(:ok)
+          expect(json[:success]).to eq(true)
+        end
+      end
+
       context 'invalid param' do
         it 'rejects a non-hash payload' do
-          params[:payload] = 'abc'
-          action
+          params[:payload] = 'abc'          action
 
           expect(@analytics).to_not have_logged_event
           expect(response).to have_http_status(:bad_request)
