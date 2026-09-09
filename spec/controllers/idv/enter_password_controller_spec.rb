@@ -1292,7 +1292,7 @@ RSpec.describe Idv::EnterPasswordController do
             end
           end
 
-          context 'with a user upgrades to an IAL identity proofed profile' do
+          context 'when a user upgrades to an IAL identity proofed profile' do
             let(:user) do
               create(
                 :user,
@@ -1300,12 +1300,14 @@ RSpec.describe Idv::EnterPasswordController do
                 password: ControllerHelper::VALID_PASSWORD,
               )
             end
+            let(:old_profile) { user.active_profile }
 
             it 'creates a UserProofingEvent for the profile' do
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
               updated_user = User.find(user.id)
               event = UserProofingEvent.last
 
+              expect(event.profile_id).not_to eq(old_profile.id)
               expect(event.profile_id).to eq(updated_user.active_profile.id)
             end
 
