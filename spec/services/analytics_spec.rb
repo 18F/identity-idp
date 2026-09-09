@@ -498,16 +498,39 @@ RSpec.describe Analytics do
             include_examples 'track event with :sp_request'
           end
 
-          context 'when the user is proofed w/basic idv but has an account with the SP' do
-            let(:current_user) do
+          context 'when the user is proofed w/basic idv but has a verified account with the SP' do
+            let(:identity) do
               build(
-                :user, :proofed,
-                identities: [build(:service_provider_identity, service_provider: 'http://localhost:3000')]
+                :service_provider_identity,
+                service_provider: 'http://localhost:3000',
+                verified_at: 1.day.ago,
               )
             end
+            let(:current_user) { build(:user, :proofed, identities: [identity]) }
             let(:sp_request) do
               {
                 aal2: true,
+                identity_proofing: true,
+              }
+            end
+
+            include_examples 'track event with :sp_request'
+          end
+
+          context 'when the user is proofed w/basic idv but has an unverified account with the SP' do
+            let(:identity) do
+              build(
+                :service_provider_identity,
+                service_provider: 'http://localhost:3000',
+                verified_at: nil,
+              )
+            end
+            let(:current_user) { build(:user, :proofed, identities: [identity]) }
+            let(:sp_request) do
+              {
+                aal2: true,
+                facial_match: true,
+                two_pieces_of_fair_evidence: true,
                 identity_proofing: true,
               }
             end
