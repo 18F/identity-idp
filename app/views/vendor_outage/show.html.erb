@@ -1,3 +1,38 @@
+<% if nds_layout? %>
+  <%= render(
+        'idv/shared/error',
+        heading: t('vendor_outage.working'),
+        options: [
+          @show_gpo_option && {
+            text: t('idv.troubleshooting.options.verify_by_mail'),
+            url: idv_request_letter_path,
+          },
+          {
+            text: t('vendor_outage.get_updates_on_status_page'),
+            url: StatusPage.base_url,
+            new_tab: true,
+            variant: :secondary,
+          },
+          {
+            text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
+            url: contact_redirect_url,
+            new_tab: true,
+          },
+        ].select(&:present?),
+      ) do %>
+    <p><%= @specific_message %></p>
+  <% end %>
+
+  <% if go_back_path %>
+    <%= render NDS::StackComponent.new(kind: :actions, align: :stretch, class: 'margin-top-4') do %>
+      <%= render ButtonComponent.new(
+            url: go_back_path,
+            variant: :tertiary,
+            full_width: true,
+          ).with_content(t('forms.buttons.back')) %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render(
       'idv/shared/error',
       heading: t('vendor_outage.working'),
@@ -22,3 +57,4 @@
 <% end %>
 
 <%= render('idv/shared/back') %>
+<% end %>
