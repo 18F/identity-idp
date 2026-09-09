@@ -138,7 +138,8 @@ RSpec.describe FrontendLogController do
 
       context 'invalid param' do
         it 'rejects a non-hash payload' do
-          params[:payload] = 'abc'          action
+          params[:payload] = 'abc'
+          action
 
           expect(@analytics).to_not have_logged_event
           expect(response).to have_http_status(:bad_request)
