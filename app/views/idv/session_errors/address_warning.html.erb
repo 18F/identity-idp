@@ -1,5 +1,37 @@
 <% self.title = t('titles.failure.information_not_verified') %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 2) %>
+  <% end %>
+
+  <%= render NDS::FormPageComponent.new(title: t('idv.warning.address.heading')) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--warning">
+        <%= render NDS::IconComponent.new(icon: :warning, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <p><%= t('idv.failure.address.warning') %></p>
+      <p><%= t('idv.failure.attempts_html', count: @remaining_submit_attempts) %></p>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render ButtonComponent.new(
+            url: @address_path,
+            full_width: true,
+          ).with_content(t('idv.forgot_password.try_again')) %>
+      <%= render ButtonComponent.new(
+            url: idv_cancel_path(step: :invalid_session),
+            variant: :tertiary,
+            full_width: true,
+          ).with_content(t('links.cancel')) %>
+    <% end %>
+  <% end %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: @step_indicator_steps,
@@ -23,4 +55,5 @@
 
 <%= render PageFooterComponent.new do %>
   <%= link_to t('links.cancel'), idv_cancel_path(step: :invalid_session) %>
+<% end %>
 <% end %>
