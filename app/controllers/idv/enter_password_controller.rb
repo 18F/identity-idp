@@ -250,7 +250,8 @@ module Idv
 
       analytics.historic_event_data_saved(profile_id: idv_session.profile.id)
 
-      AttemptsApi::Cacher.new(User.find(idv_session.current_user.id), user_session).save(password:)
+      AttemptsApi::Cacher.new(idv_session.current_user, user_session)
+        .save(password:, profile: idv_session.profile)
 
       user_session.delete('idv/attempts')
     end
