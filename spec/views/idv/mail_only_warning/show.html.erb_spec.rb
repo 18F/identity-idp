@@ -55,7 +55,7 @@ RSpec.describe 'idv/mail_only_warning/show.html.erb' do
         text: t('vendor_outage.alerts.pinpoint.idv.status_page_link'),
       )
       expect(rendered).to have_selector(
-        '.auth__form-page-body ul.usa-list li',
+        '.auth__form-page-body ul.usa-list.text-left li',
         count: t('vendor_outage.alerts.pinpoint.idv.options_html', app_name: APP_NAME).length,
       )
     end
