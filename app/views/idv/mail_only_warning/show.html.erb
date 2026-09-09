@@ -24,7 +24,7 @@
         <%= t('vendor_outage.alerts.pinpoint.idv.status_page_html', link_html: new_tab_link_to(t('vendor_outage.alerts.pinpoint.idv.status_page_link'), StatusPage.base_url)) %>
       </p>
       <p><%= t('vendor_outage.alerts.pinpoint.idv.options_prompt') %></p>
-      <ul class="usa-list">
+      <ul class="usa-list text-left">
         <% t('vendor_outage.alerts.pinpoint.idv.options_html', app_name: APP_NAME).each do |option| %>
           <li>
             <%= option %>

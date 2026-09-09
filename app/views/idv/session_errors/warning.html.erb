@@ -2,7 +2,7 @@
 
 <% if nds_layout? %>
   <% content_for(:nds_header_progress) do %>
-    <%= nds_account_creation_progress(step: :verification, substep: 2) %>
+    <%= nds_account_creation_progress(step: :verification, substep: 7) %>
   <% end %>
 
   <%= render NDS::FormPageComponent.new(title: t('idv.warning.sessions.heading')) do |page| %>
