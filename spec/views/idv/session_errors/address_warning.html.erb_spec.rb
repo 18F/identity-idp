@@ -72,9 +72,12 @@ RSpec.describe 'idv/session_errors/address_warning.html.erb' do
       )
     end
 
-    it 'sets the verification header progress' do
+    it 'sets the verification header progress to the address substep' do
       progress = view.content_for(:nds_header_progress)
-      expect(progress).to have_css('nds-progress .progress__step[aria-current="step"]')
+      expect(progress).to have_css(
+        'nds-progress .progress__step[aria-current="step"] .progress__step-counter',
+        text: '6 / 12',
+      )
     end
 
     it 'renders the warning status-icon badge and divider' do
