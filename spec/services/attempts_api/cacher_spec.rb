@@ -18,7 +18,6 @@ RSpec.describe AttemptsApi::Cacher do
 
   describe '#save' do
     before do
-      allow(user).to receive(:active_profile).and_return(profile)
       allow(profile).to receive(:decrypt_user_proofing_events).with(password:).and_return(
         returned_events,
       )
