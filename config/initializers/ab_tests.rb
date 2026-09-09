@@ -272,6 +272,7 @@ module AbTests
     experiment_name: 'NDS Look and Feel Phase 1',
     should_log: AbTest::ALL_EVENTS,
     buckets: { nds: IdentityConfig.store.nds_look_and_feel_percent },
+    persist: true,
   ) do |request:, **|
     request&.cookie_jar&.[](:nds_experiment_uuid) || 'anon'
   end.freeze
