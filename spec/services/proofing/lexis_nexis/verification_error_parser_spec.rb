@@ -100,4 +100,3 @@ RSpec.describe Proofing::LexisNexis::VerificationErrorParser do
     end
   end
 end
-
