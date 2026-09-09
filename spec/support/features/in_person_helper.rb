@@ -17,6 +17,9 @@ module InPersonHelper
   GOOD_STATE_ID_NUMBER = Idp::Constants::MOCK_IDV_APPLICANT[:state_id_number].freeze
   GOOD_STATE_ID_EXPIRATION =
     Idp::Constants::MOCK_IPP_APPLICANT[:state_id_expiration].freeze
+  GOOD_STATE_ID_EXPIRATION_FORMATTED_EVENT = I18n.l(
+    Date.parse(GOOD_STATE_ID_EXPIRATION), format: I18n.t('time.formats.event_date')
+  ).freeze
 
   GOOD_ADDRESS1 = Idp::Constants::MOCK_IDV_APPLICANT[:address1].freeze
   GOOD_ADDRESS2 = Idp::Constants::MOCK_IDV_APPLICANT[:address2].freeze
