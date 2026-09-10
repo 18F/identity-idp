@@ -84,7 +84,8 @@ class ActionAccount
         closed_inconclusive_duplicate:
           'User has been notified that the fraud investigation is inconclusive',
         deactivated_duplicate: "User's profile has been deactivated and the user has been notified",
-        device_profiling_approved: 'Device profiling result has been updated to pass',
+        device_profiling_approved:
+          'Device profiling result has been updated to pass and the user has been emailed',
         device_profiling_already_passed: 'Device profiling result already passed',
         device_profiling_no_results_found: 'No device profiling results found for this user',
         error_activating: "There was an error activating the user's profile. Please try again.",
@@ -152,6 +153,7 @@ class ActionAccount
             log_texts << log_text[:device_profiling_already_passed]
           else
             result.update!(review_status: 'pass', notes: 'Manually overridden')
+            user.send_email_to_all_addresses(:device_profiling_error_cleared)
             log_texts << log_text[:device_profiling_approved]
           end
         else

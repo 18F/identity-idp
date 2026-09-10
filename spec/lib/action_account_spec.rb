@@ -484,13 +484,57 @@ RSpec.describe ActionAccount do
         expect(result.table).to match_array(
           [
             ['uuid', 'status', 'reason'],
-            [user.uuid, 'Device profiling result has been updated to pass', nil],
+            [user.uuid,
+             'Device profiling result has been updated to pass and the user has been emailed', nil],
             [user2.uuid, 'No device profiling results found for this user', nil],
           ],
         )
 
         expect(result.subtask).to eq('clear-device-profiling-failure-user')
         expect(result.uuids).to match_array([user.uuid, user2.uuid])
+      end
+
+      it 'updates the device profiling result to pass' do
+        result
+        expect(device_profiling_result.reload.review_status).to eq('pass')
+      end
+
+      it 'sends the device profiling error cleared email to the user' do
+        expect { result }.to(
+          change { ActionMailer::Base.deliveries.count }.by(user.email_addresses.count),
+        )
+
+        mail = ActionMailer::Base.deliveries.last
+        expect(mail.subject).to eq(t('user_mailer.device_profiling_error_cleared.subject'))
+      end
+
+      context 'when the device profiling result already passed' do
+        let!(:device_profiling_result) do
+          create(
+            :device_profiling_result,
+            user:,
+            review_status: 'pass',
+            profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation],
+          )
+        end
+
+        it 'does not send an email' do
+          expect { result }.to_not(change { ActionMailer::Base.deliveries.count })
+        end
+
+        it 'reports that the result already passed' do
+          expect(result.table).to include(
+            [user.uuid, 'Device profiling result already passed', nil],
+          )
+        end
+      end
+
+      context 'when no device profiling results are found' do
+        let!(:device_profiling_result) { nil }
+
+        it 'does not send an email' do
+          expect { result }.to_not(change { ActionMailer::Base.deliveries.count })
+        end
       end
     end
   end
