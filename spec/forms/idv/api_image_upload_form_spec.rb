@@ -237,7 +237,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       allow(aamva_proofer).to receive(:call).and_return(
         Proofing::StateIdResult.new(
           success: true,
-          vendor_name: Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED,
+          vendor_name: Idp::Constants::Vendors::AAMVA,
         ),
       )
     end

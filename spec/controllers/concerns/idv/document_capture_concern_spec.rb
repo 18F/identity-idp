@@ -126,71 +126,69 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         expect(response.success?).to eq(true)
       end
 
-      context 'with AAMVA enabled' do
-        context 'when AAMVA check passes' do
+      context 'when AAMVA check passes' do
+        it 'returns success response' do
+          response = controller.handle_stored_result(user:)
+          expect(response.success?).to eq(true)
+        end
+      end
+
+      context 'when AAMVA check fails' do
+        let(:aamva_status) { :failed }
+
+        it 'returns failure response' do
+          response = controller.handle_stored_result(user:)
+          expect(response.success?).to eq(false)
+        end
+      end
+
+      context 'when AAMVA check not processed' do
+        let(:aamva_status) { :not_processed }
+
+        it 'returns failure response' do
+          response = controller.handle_stored_result(user:)
+          expect(response.success?).to eq(false)
+        end
+
+        context 'when mdL is requested' do
+          let(:pii_data) do
+            {
+              first_name: 'Test',
+              last_name: 'User',
+              state: 'MD',
+              document_type_received: Idp::Constants::DocumentTypes::MDL,
+            }
+          end
+          let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+
           it 'returns success response' do
             response = controller.handle_stored_result(user:)
             expect(response.success?).to eq(true)
           end
-        end
 
-        context 'when AAMVA check fails' do
-          let(:aamva_status) { :failed }
+          context 'when doc auth fails' do
+            let(:success) { false }
+            let(:doc_auth_success) { false }
 
-          it 'returns failure response' do
-            response = controller.handle_stored_result(user:)
-            expect(response.success?).to eq(false)
-          end
-        end
-
-        context 'when AAMVA check not processed' do
-          let(:aamva_status) { :not_processed }
-
-          it 'returns failure response' do
-            response = controller.handle_stored_result(user:)
-            expect(response.success?).to eq(false)
+            it 'returns failed response' do
+              response = controller.handle_stored_result(user:)
+              expect(response.success?).to eq(false)
+            end
           end
 
-          context 'when mdL is requested' do
+          context 'when a drivers license is submitted' do
             let(:pii_data) do
               {
                 first_name: 'Test',
                 last_name: 'User',
                 state: 'MD',
-                document_type_received: Idp::Constants::DocumentTypes::MDL,
+                document_type_received: Idp::Constants::DocumentTypes::DRIVERS_LICENSE,
               }
             end
-            let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
 
-            it 'returns success response' do
+            it 'returns failed response' do
               response = controller.handle_stored_result(user:)
-              expect(response.success?).to eq(true)
-            end
-
-            context 'when doc auth fails' do
-              let(:success) { false }
-              let(:doc_auth_success) { false }
-
-              it 'returns failed response' do
-                response = controller.handle_stored_result(user:)
-                expect(response.success?).to eq(false)
-              end
-            end
-
-            context 'when a drivers license is submitted' do
-              let(:pii_data) do
-                {
-                  first_name: 'Test',
-                  last_name: 'User',
-                  state: 'MD',
-                  document_type_received: Idp::Constants::DocumentTypes::DRIVERS_LICENSE,
-                }
-              end
-
-              it 'returns failed response' do
-                response = controller.handle_stored_result(user:)
-                expect(response.success?).to eq(false)
-              end
+              expect(response.success?).to eq(false)
             end
           end
         end
@@ -338,7 +336,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       end
     end
 
-    context 'when document is a state ID and AAMVA is enabled' do
+    context 'when document is a state ID' do
       let(:pii_data) { state_id_pii_data }
 
       context 'when aamva_status is :passed' do

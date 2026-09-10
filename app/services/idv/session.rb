@@ -422,6 +422,14 @@ module Idv
       !!DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)&.passport_requested?
     end
 
+    # In-person AAMVA only runs on the state ID path, so the requirement depends
+    # on the enrollment's document type: a passport enrollment never produces an
+    # ipp_aamva_result and therefore has no AAMVA requirement, while a state ID
+    # enrollment must have a completed AAMVA check.
+    def ipp_aamva_requirement_satisfied?
+      ipp_passport_requested? || ipp_aamva_result.present?
+    end
+
     def standard_flow_document_capture_eligible?
       flow_path == 'standard' &&
         (skip_hybrid_handoff || desktop_test_mode_enabled?)

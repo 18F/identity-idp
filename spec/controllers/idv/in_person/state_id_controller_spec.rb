@@ -428,6 +428,15 @@ RSpec.describe Idv::InPerson::StateIdController do
           expect(pending_pii[:city]).to eq identity_doc_city
           expect(pending_pii[:state]).to eq identity_doc_address_state
           expect(pending_pii[:zipcode]).to eq identity_doc_zipcode
+
+          # pii_from_user is not updated until the AAMVA check succeeds and
+          # commits the pending PII, so it still holds the previously-stored
+          # residential address rather than the newly-submitted identity_doc values
+          expect(pii_from_user[:address1]).to eq address1
+          expect(pii_from_user[:address2]).to eq address2
+          expect(pii_from_user[:city]).to eq city
+          expect(pii_from_user[:state]).to eq state
+          expect(pii_from_user[:zipcode]).to eq zipcode
         end
       end
 

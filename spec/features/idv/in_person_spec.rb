@@ -885,7 +885,7 @@ RSpec.describe 'In Person Proofing', js: true do
       end
     end
 
-    context 'when AAMVA is enabled at the state ID form' do
+    context 'at the state ID form' do
       let(:user) { user_with_2fa }
 
       before do

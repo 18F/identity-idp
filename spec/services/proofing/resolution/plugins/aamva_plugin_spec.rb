@@ -43,7 +43,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
       ).count
     end
 
-    context 'ad hoc proofing' do
+    context 'document authentication flow' do
       let(:doc_auth_flow) { true }
 
       subject(:call) do

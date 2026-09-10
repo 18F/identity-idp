@@ -80,9 +80,7 @@ module Idv
           preconditions: ->(idv_session:, user:) do
             idv_session.ipp_document_capture_complete? &&
               user.has_establishing_in_person_enrollment? &&
-              # AAMVA only runs on the state ID path; passport enrollments never
-              # produce an ipp_aamva_result, so exempt them from this requirement.
-              (idv_session.ipp_aamva_result.present? || idv_session.ipp_passport_requested?)
+              idv_session.ipp_aamva_requirement_satisfied?
           end,
           undo_step: ->(idv_session:, user:) {
             idv_session.invalidate_ssn_step!
