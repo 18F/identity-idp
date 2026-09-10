@@ -483,6 +483,24 @@ RSpec.describe Idv::DocumentCaptureController do
         expect(response).to render_template :show
         expect(subject.idv_session.skip_doc_auth_from_handoff).to eq(true)
       end
+
+      it 'sends the in-person picker back to how to verify in the legacy flow' do
+        get :show, params: { step: 'how_to_verify' }
+
+        expect(response).to render_template :show
+        expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to eq(true)
+        expect(assigns(:how_to_verify_url)).to be_nil
+      end
+
+      it 'sends the in-person picker back to choose ID type in the phone-first flow' do
+        subject.idv_session.phone_first_flow = true
+
+        get :show, params: { step: 'how_to_verify' }
+
+        expect(response).to render_template :show
+        expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to eq(true)
+        expect(assigns(:how_to_verify_url)).to eq(idv_choose_id_type_url)
+      end
     end
 
     context 'ipp disabled for sp' do
