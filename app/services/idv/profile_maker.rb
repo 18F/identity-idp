@@ -35,6 +35,7 @@ module Idv
       profile.idv_level = set_idv_level(
         in_person_verification_needed: in_person_verification_needed,
         selfie_check_performed: selfie_check_performed,
+        document_type_received: proofing_components[:document_type_received],
         proofing_agent_requested: proofing_agent_requested,
       )
 
@@ -52,6 +53,7 @@ module Idv
     def set_idv_level(
       in_person_verification_needed:,
       selfie_check_performed:,
+      document_type_received:,
       proofing_agent_requested:
     )
       if in_person_verification_needed
@@ -61,6 +63,8 @@ module Idv
         else
           :legacy_in_person
         end
+      elsif Idp::Constants::DocumentTypes::DIGITAL_ID_TYPES.include?(document_type_received)
+        :unsupervised_with_digital_id
       elsif selfie_check_performed
         :unsupervised_with_selfie
       elsif proofing_agent_requested
