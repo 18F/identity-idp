@@ -392,6 +392,19 @@ RSpec.describe Idv::HybridHandoffController do
       end
     end
 
+    context 'phone-first (NDS) flow' do
+      before do
+        subject.idv_session.phone_first_flow = true
+        stub_up_to(:choose_id_type, idv_session: subject.idv_session)
+      end
+
+      it 'continues on this computer straight to document capture' do
+        put :update, params: { type: 'desktop' }
+
+        expect(response).to redirect_to(idv_document_capture_url)
+      end
+    end
+
     context 'desktop flow' do
       let(:analytics_args) do
         {

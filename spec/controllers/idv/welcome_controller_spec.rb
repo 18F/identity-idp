@@ -360,6 +360,14 @@ RSpec.describe Idv::WelcomeController do
           expect(subject.idv_session.idv_consent_given_at).to eq(Time.zone.now)
           expect(subject.idv_session.welcome_visited).to eq(true)
           expect(subject.idv_session.flow_path).to eq('standard')
+          expect(subject.idv_session.phone_first_flow).to eq(true)
+          expect(response).to redirect_to(idv_choose_id_type_url)
+        end
+
+        it 'keeps skip_hybrid_handoff set when the device can capture on its own' do
+          put :update, params: { doc_auth: { idv_consent_given: '1' }, skip_hybrid_handoff: 'true' }
+
+          expect(subject.idv_session.skip_hybrid_handoff).to eq(true)
           expect(response).to redirect_to(idv_choose_id_type_url)
         end
       end

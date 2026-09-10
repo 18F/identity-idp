@@ -376,4 +376,97 @@ RSpec.describe 'Idv::FlowPolicy' do
       end
     end
   end
+
+  describe 'legacy step graph' do
+    # The phone-first (NDS) flow lives in a separate steps table; the legacy
+    # graph must stay exactly as it was.
+    let(:legacy_next_steps) do
+      {
+        root: %i[welcome request_letter],
+        welcome: %i[agreement hybrid_handoff choose_id_type document_capture how_to_verify],
+        agreement: %i[hybrid_handoff choose_id_type document_capture how_to_verify],
+        how_to_verify: %i[choose_id_type document_capture],
+        hybrid_handoff: %i[choose_id_type link_sent document_capture socure_document_capture
+                           clear1_session],
+        choose_id_type: %i[document_capture],
+        link_sent: %i[ssn],
+        document_capture: %i[ssn ipp_state_id ipp_choose_id_type],
+        clear1_session: %i[enter_password],
+        socure_document_capture: %i[ssn ipp_ssn],
+        socure_errors: %i[final],
+        ipp_choose_id_type: %i[ipp_state_id ipp_passport],
+        ipp_passport: %i[ipp_address],
+        ipp_state_id: %i[ipp_address ipp_ssn],
+        ipp_address: %i[ipp_ssn],
+        ssn: %i[verify_info],
+        ipp_ssn: %i[ipp_verify_info],
+        verify_info: %i[phone request_letter],
+        ipp_verify_info: %i[phone],
+        address: %i[verify_info],
+        phone: %i[otp_verification],
+        phone_errors: %i[final],
+        otp_verification: %i[enter_password],
+        request_letter: %i[enter_password],
+        enter_password: %i[personal_key],
+        personal_key: %i[final],
+      }
+    end
+
+    it 'is unchanged by the phone-first fork' do
+      expect(Idv::FlowPolicy::STEPS.transform_values(&:next_steps)).to eq(legacy_next_steps)
+    end
+  end
+
+  describe 'phone-first (NDS) flow' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_desktop_test_mode).and_return(false)
+      idv_session.phone_first_flow = true
+      stub_up_to(:agreement, idv_session: idv_session)
+      idv_session.skip_doc_auth_from_how_to_verify = false
+      idv_session.flow_path = 'standard'
+    end
+
+    it 'does not allow hybrid handoff until an ID type is chosen' do
+      expect(subject.controller_allowed?(controller: Idv::ChooseIdTypeController)).to be true
+      expect(subject.controller_allowed?(controller: Idv::HybridHandoffController)).to be false
+      expect(subject.info_for_latest_step.key).to eq(:choose_id_type)
+    end
+
+    it 'does not loop hybrid handoff back to choose_id_type' do
+      expect(Idv::FlowPolicy::PHONE_FIRST_STEPS[:hybrid_handoff].next_steps)
+        .not_to include(:choose_id_type)
+    end
+
+    context 'after an ID type is chosen' do
+      before { stub_step(key: :choose_id_type, idv_session: idv_session) }
+
+      it 'routes to hybrid handoff' do
+        expect(subject.controller_allowed?(controller: Idv::HybridHandoffController)).to be true
+        expect(subject.info_for_latest_step.key).to eq(:hybrid_handoff)
+      end
+
+      it 'clears the handoff phone but keeps the standard flow path when undoing' do
+        idv_session.phone_for_mobile_flow = '+1 202-555-1212'
+        subject.undo_future_steps_from_controller!(controller: Idv::ChooseIdTypeController)
+        expect(idv_session.phone_for_mobile_flow).to be_nil
+        expect(idv_session.flow_path).to eq('standard')
+        expect(subject.controller_allowed?(controller: Idv::ChooseIdTypeController)).to be true
+      end
+
+      context 'on mobile (handoff skipped)' do
+        before { idv_session.skip_hybrid_handoff = true }
+
+        it 'skips handoff and goes to document capture' do
+          expect(subject.controller_allowed?(controller: Idv::HybridHandoffController)).to be false
+          expect(subject.info_for_latest_step.key).to eq(:document_capture)
+        end
+      end
+    end
+
+    it 'leaves the rest of the graph identical to legacy' do
+      (Idv::FlowPolicy::STEPS.keys - %i[choose_id_type hybrid_handoff]).each do |key|
+        expect(Idv::FlowPolicy::PHONE_FIRST_STEPS[key]).to equal(Idv::FlowPolicy::STEPS[key])
+      end
+    end
+  end
 end

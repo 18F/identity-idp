@@ -6,9 +6,15 @@
        dial: "+#{opts.dig(:data, :country_code)}",
      }
    end
+   pinned_isos = %w[US CA]
+   pinned, others = countries.partition { |c| pinned_isos.include?(c[:iso]) }
+   countries = pinned.sort_by { |c| pinned_isos.index(c[:iso]) } + others
    selected_iso = form.object.international_code.presence || 'US'
    selected = countries.find { |c| c[:iso] == selected_iso } || countries.first
    radio_name = "#{form.object_name}[international_code]"
+   # The dial code is shown by the country toggle, so present the number itself
+   # in national format rather than the form's "+1 …" international string.
+   national_phone = form.object.phone.present? ? Phonelib.parse(form.object.phone, selected[:iso]).national : nil
    phone_id = "#{form.object_name}_phone"
    error_id = "#{phone_id}-error"
    messages = {
@@ -36,7 +42,10 @@
       <div class="popover-menu popover-menu--left usa-phone-input__country-list"
            role="group"
            aria-label="<%= t('components.phone_input.country_code_label') %>">
-        <% countries.each do |country| %>
+        <% countries.each_with_index do |country, index| %>
+          <% if index == pinned.length && pinned.any? %>
+            <hr class="usa-phone-input__country-rule" />
+          <% end %>
           <label class="popover-menu__item usa-phone-input__country-option">
             <%= radio_button_tag(
                   radio_name,
@@ -46,8 +55,15 @@
                   data: { nds_phone_country: '', dial: country[:dial] },
                   id: "#{form.object_name}_international_code_#{country[:iso].downcase}",
                 ) %>
-            <%= country[:name] %>
-            <span class="usa-phone-input__country-option-dial"><%= country[:dial] %></span>
+            <span class="usa-phone-input__country-option-label">
+              <%= country[:name] %>
+              <span class="usa-phone-input__country-option-dial">(<%= country[:dial] %>)</span>
+            </span>
+            <%= render NDS::IconComponent.new(
+                  icon: :checkmark,
+                  size: 16,
+                  class: 'usa-phone-input__country-option-check',
+                ) %>
           </label>
         <% end %>
       </div>
@@ -55,6 +71,7 @@
     <span class="usa-phone-input__field">
       <%= form.telephone_field(
             :phone,
+            value: national_phone,
             id: phone_id,
             class: 'usa-phone-input__input',
             placeholder: ' ',

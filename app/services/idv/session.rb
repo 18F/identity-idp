@@ -32,6 +32,7 @@ module Idv
   # @attr personal_key [String, nil]
   # @attr personal_key_acknowledged [Boolean, nil]
   # @attr phone_confirmation_manually_reviewed [Boolean, nil]
+  # @attr phone_first_flow [Boolean, nil] NDS: hybrid handoff (phone) precedes document capture
   # @attr phone_for_mobile_flow [String, nil]
   # @attr previous_phone_step_params [Array]
   # @attr previous_ssn [String, nil]
@@ -90,6 +91,7 @@ module Idv
       personal_key
       phone_confirmation_manually_reviewed
       personal_key_acknowledged
+      phone_first_flow
       phone_for_mobile_flow
       phone_precheck_successful
       phone_precheck_vendor
@@ -412,6 +414,10 @@ module Idv
       session[:address_verification_mechanism] = nil
       session[:vendor_phone_confirmation] = nil
       session[:user_phone_confirmation] = nil
+    end
+
+    def phone_first_flow?
+      !!session[:phone_first_flow]
     end
 
     def skip_hybrid_handoff?
