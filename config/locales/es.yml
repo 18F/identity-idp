@@ -1661,6 +1661,10 @@ nds.enter_password.info: Su información está cifrada con su contraseña. Esto 
 nds.errors.cancel_verification: Cancelar la verificación
 nds.errors.return_home: Volver al inicio
 nds.errors.start_over_warning: Deberá verificar su identidad desde el principio
+nds.footer.experience_notice_html: You’re part of a group experiencing %{link_html}.
+nds.footer.experience_notice_label: Interface preference
+nds.footer.experience_notice_link: our refreshed interface
+nds.footer.switch_to_legacy: Switch to legacy
 nds.hybrid_handoff.heading: Ingrese su número de teléfono
 nds.hybrid_handoff.subtitle: Le enviaremos un enlace para verificar su identificación con un proveedor de servicios de confianza.
 nds.idv_phone.info: Ingrese un número de teléfono de EE. UU. Le enviaremos un mensaje de texto o lo llamaremos con un código de 6 dígitos. Solo líneas telefónicas estándar; no se admiten números VoIP ni premium. Pueden aplicarse tarifas de mensajes y datos.

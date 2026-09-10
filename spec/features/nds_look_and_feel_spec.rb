@@ -14,6 +14,7 @@ RSpec.feature 'NDS look and feel experiment' do
       instance_double(
         AbTest,
         bucket:,
+        experiment: 'NDS Look and Feel Phase 1',
         include_in_analytics_event?: true,
       ),
     )

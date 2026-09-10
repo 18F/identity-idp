@@ -7180,6 +7180,11 @@ module AnalyticsEvents
     )
   end
 
+  # Records that a user opted out of the NDS interface.
+  def nds_look_and_feel_opted_out
+    track_event(:nds_look_and_feel_opted_out)
+  end
+
   # New device alert skipped as there were no events to send
   def new_device_alert_skipped(**extra)
     track_event(:new_device_alert_skipped, **extra)
