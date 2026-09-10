@@ -723,13 +723,21 @@ describe('NDS phone group', () => {
     valueMissing: 'Phone number is required',
     invalidUs: 'Enter a 10 digit phone number.',
     invalidInternational: 'Enter a phone number with the correct number of digits.',
+    failedNumber: 'We couldn’t match you to this number.',
   };
 
-  const renderPhoneGroup = ({ value = '', country = 'US' } = {}) => {
+  const renderPhoneGroup = ({
+    value = '',
+    country = 'US',
+    failedNumbers = [] as string[],
+  } = {}) => {
+    const failedAttribute = failedNumbers.length
+      ? `data-nds-phone-failed-numbers='${JSON.stringify(failedNumbers)}'`
+      : '';
     document.body.innerHTML = `
       <form>
         <div class="usa-phone-input-group" data-nds-phone
-             data-nds-phone-messages='${JSON.stringify(messages)}'>
+             data-nds-phone-messages='${JSON.stringify(messages)}' ${failedAttribute}>
           <div class="usa-phone-input">
             <details class="usa-phone-input__country">
               <summary class="usa-phone-input__country-toggle">
@@ -842,5 +850,36 @@ describe('NDS phone group', () => {
 
     expect(input.validity.valid).to.equal(true);
     expect(errorRegion.hidden).to.equal(true);
+  });
+
+  it('blocks resubmitting a number that already failed verification', () => {
+    const { input, errorRegion } = renderPhoneGroup({ failedNumbers: ['+12025550199'] });
+    type(input, '2025550199');
+
+    expect(input.validity.valid).to.equal(false);
+    expect(input.validationMessage).to.equal(messages.failedNumber);
+
+    input.dispatchEvent(new FocusEvent('blur'));
+    expect(errorRegion.hidden).to.equal(false);
+    expect(errorRegion.textContent).to.equal(messages.failedNumber);
+  });
+
+  it('accepts a different valid number when others have failed', () => {
+    const { input } = renderPhoneGroup({ failedNumbers: ['+12025550199'] });
+    type(input, '2025550198');
+
+    expect(input.validity.valid).to.equal(true);
+  });
+
+  it('matches failed numbers against the selected country', () => {
+    const { input, radios } = renderPhoneGroup({ failedNumbers: ['+442071234567'] });
+    type(input, '02071234567');
+    expect(input.validity.valid).to.equal(false);
+
+    const gb = radios.find((radio) => radio.value === 'GB')!;
+    gb.checked = true;
+    gb.dispatchEvent(new Event('change', { bubbles: true }));
+
+    expect(input.validationMessage).to.equal(messages.failedNumber);
   });
 });
