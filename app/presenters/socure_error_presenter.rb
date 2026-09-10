@@ -6,7 +6,7 @@ class SocureErrorPresenter
   include ActionView::Helpers::TranslationHelper
   include LinkHelper
 
-  attr_reader :url_options, :passport_requested
+  attr_reader :url_options, :passport_requested, :remaining_attempts
 
   def initialize(error_code:, remaining_attempts:, sp_name:, issuer:, passport_requested:,
                  flow_path:)
@@ -77,7 +77,7 @@ class SocureErrorPresenter
 
   private
 
-  attr_reader :error_code, :remaining_attempts, :sp_name, :issuer, :flow_path
+  attr_reader :error_code, :sp_name, :issuer, :flow_path
 
   SOCURE_ERROR_MAP = {
     'I848' => 'unreadable_id',
