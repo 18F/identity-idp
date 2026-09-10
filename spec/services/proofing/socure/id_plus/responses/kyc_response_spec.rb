@@ -9,6 +9,8 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::KycResponse do
     ]
   end
 
+  let(:field_validation_overrides) { {} }
+
   let(:response_body) do
     {
       'referenceId' => 'a1234b56-e789-0123-4fga-56b7c890d123',
@@ -24,7 +26,7 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::KycResponse do
           'mobileNumber' => 0.99,
           'dob' => 0.99,
           'ssn' => 0.99,
-        },
+        }.merge(field_validation_overrides),
       },
     }
   end
@@ -130,6 +132,121 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::KycResponse do
         expect do
           subject.field_validations
         end.to raise_error(RuntimeError)
+      end
+    end
+  end
+
+  # The base fixture fails city, state, and zip, so address is the only unverified
+  # required attribute unless a context overrides more fields.
+  describe '#attributes_requiring_additional_verification' do
+    it 'reports the unverified address' do
+      expect(subject.attributes_requiring_additional_verification).to eq([:address])
+    end
+
+    context 'when every required attribute is verified' do
+      let(:field_validation_overrides) { { 'city' => 0.99, 'state' => 0.99, 'zip' => 0.99 } }
+
+      it 'reports nothing' do
+        expect(subject.attributes_requiring_additional_verification).to eq([])
+      end
+    end
+
+    context 'when dob is not verified' do
+      let(:field_validation_overrides) { { 'dob' => 0.01 } }
+
+      it 'reports address and dob' do
+        expect(subject.attributes_requiring_additional_verification).to eq([:address, :dob])
+      end
+    end
+
+    context 'when ssn is not verified' do
+      let(:field_validation_overrides) { { 'ssn' => 0.01 } }
+
+      it 'reports address and ssn' do
+        expect(subject.attributes_requiring_additional_verification).to eq([:address, :ssn])
+      end
+    end
+
+    context 'when a name is not verified' do
+      let(:field_validation_overrides) do
+        { 'city' => 0.99, 'state' => 0.99, 'zip' => 0.99, 'firstName' => 0.01 }
+      end
+
+      it 'reports the name as unknown, since AAMVA coverage cannot be claimed for it' do
+        expect(subject.attributes_requiring_additional_verification).to eq([:unknown])
+      end
+    end
+
+    context 'when both names are not verified' do
+      let(:field_validation_overrides) do
+        {
+          'city' => 0.99,
+          'state' => 0.99,
+          'zip' => 0.99,
+          'firstName' => 0.01,
+          'surName' => 0.01,
+        }
+      end
+
+      it 'reports a single unknown entry' do
+        expect(subject.attributes_requiring_additional_verification).to eq([:unknown])
+      end
+    end
+
+    context 'when a reportable attribute and a name are both unverified' do
+      let(:field_validation_overrides) { { 'firstName' => 0.01 } }
+
+      it 'reports the attribute alongside unknown' do
+        expect(subject.attributes_requiring_additional_verification)
+          .to eq([:address, :unknown])
+      end
+    end
+
+    context 'when only phone is not verified' do
+      let(:field_validation_overrides) do
+        { 'city' => 0.99, 'state' => 0.99, 'zip' => 0.99, 'mobileNumber' => 0.01 }
+      end
+
+      it 'reports nothing, since phone is not a required attribute' do
+        expect(subject.attributes_requiring_additional_verification).to eq([])
+      end
+    end
+  end
+
+  describe '#failed_result_can_pass_with_additional_verification?' do
+    before do
+      allow(IdentityConfig.store).to receive(:idv_socure_kyc_auto_failure_reason_codes)
+        .and_return(['R995'])
+    end
+
+    it 'is true when the result failed on a reportable attribute' do
+      expect(subject.failed_result_can_pass_with_additional_verification?).to eq(true)
+    end
+
+    context 'when the result was successful' do
+      let(:field_validation_overrides) { { 'city' => 0.99, 'state' => 0.99, 'zip' => 0.99 } }
+
+      it 'is false' do
+        expect(subject.failed_result_can_pass_with_additional_verification?).to eq(false)
+      end
+    end
+
+    context 'when the result has an autofail reason code' do
+      let(:response_reason_codes) { ['R995'] }
+
+      it 'is false, since the failure is not about attributes' do
+        expect(subject.failed_result_can_pass_with_additional_verification?).to eq(false)
+      end
+    end
+
+    context 'when the only unverified attribute is a name' do
+      let(:field_validation_overrides) do
+        { 'city' => 0.99, 'state' => 0.99, 'zip' => 0.99, 'firstName' => 0.01 }
+      end
+
+      it 'is true, and the reported unknown attribute prevents the rescue downstream' do
+        expect(subject.failed_result_can_pass_with_additional_verification?).to eq(true)
+        expect(subject.attributes_requiring_additional_verification).to eq([:unknown])
       end
     end
   end

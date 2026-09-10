@@ -22,8 +22,25 @@ module Proofing
             ssn
           ].to_set.freeze
 
+          # Failed attributes we report by name so AAMVA coverage can rescue the result.
+          # Anything else is reported as :unknown, which never appears in aamva_verified_attributes.
+          REPORTABLE_FAILED_ATTRIBUTES = %i[address dob ssn].to_set.freeze
+
           def all_required_attributes_verified?
             (REQUIRED_ATTRIBUTES - verified_attributes).empty?
+          end
+
+          def attributes_requiring_additional_verification
+            (REQUIRED_ATTRIBUTES - verified_attributes)
+              .map { |attribute| reportable_failed_attribute(attribute) }
+              .uniq.sort
+          end
+
+          def failed_result_can_pass_with_additional_verification?
+            return false if successful?
+            return false if has_autofail_reason_codes?
+
+            attributes_requiring_additional_verification.any?
           end
 
           def reason_codes
@@ -69,6 +86,10 @@ module Proofing
           private
 
           attr_reader :http_response
+
+          def reportable_failed_attribute(attribute)
+            REPORTABLE_FAILED_ATTRIBUTES.include?(attribute) ? attribute : :unknown
+          end
 
           def kyc(*fields)
             kyc_object = http_response.body['kyc']
