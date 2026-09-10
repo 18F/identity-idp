@@ -1,0 +1,93 @@
+<% component = PhoneInputComponent.new(form: form, confirmed_phone: false, required: true)
+   countries = component.international_phone_codes.map do |_label, code_key, opts|
+     {
+       iso: code_key,
+       name: opts.dig(:data, :country_name),
+       dial: "+#{opts.dig(:data, :country_code)}",
+     }
+   end
+   pinned_isos = %w[US CA]
+   pinned, others = countries.partition { |c| pinned_isos.include?(c[:iso]) }
+   countries = pinned.sort_by { |c| pinned_isos.index(c[:iso]) } + others
+   selected_iso = form.object.international_code.presence || 'US'
+   selected = countries.find { |c| c[:iso] == selected_iso } || countries.first
+   radio_name = "#{form.object_name}[international_code]"
+   # The dial code is shown by the country toggle, so present the number itself
+   # in national format rather than the form's "+1 …" international string.
+   national_phone = form.object.phone.present? ? Phonelib.parse(form.object.phone, selected[:iso]).national : nil
+   phone_id = "#{form.object_name}_phone"
+   error_id = "#{phone_id}-error"
+   failed_phone_numbers = local_assigns.fetch(:failed_phone_numbers, [])
+   messages = {
+     valueMissing: t('errors.messages.phone_required'),
+     invalidUs: t('errors.messages.invalid_phone_number.us'),
+     invalidInternational: t('errors.messages.invalid_phone_number.international'),
+   }
+   messages[:failedNumber] = t('idv.messages.phone.failed_number.alert_text') if failed_phone_numbers.present?
+   group_data = { nds_phone: '', nds_phone_messages: messages.to_json }
+   group_data[:nds_phone_failed_numbers] = failed_phone_numbers.to_json if failed_phone_numbers.present? %>
+
+<%= tag.div(class: 'usa-phone-input-group', data: group_data) do %>
+  <div class="usa-phone-input">
+    <details class="usa-phone-input__country">
+      <summary class="usa-phone-input__country-toggle"
+               aria-label="<%= t('components.phone_input.country_code_label') %>">
+        <span class="usa-phone-input__country-code" data-nds-phone-dial>
+          <%= selected[:dial] %>
+        </span>
+        <%= render NDS::IconComponent.new(
+              icon: :expand_more,
+              size: 20,
+              class: 'usa-phone-input__country-chevron',
+            ) %>
+      </summary>
+      <div class="popover-menu popover-menu--left usa-phone-input__country-list"
+           role="group"
+           aria-label="<%= t('components.phone_input.country_code_label') %>">
+        <% countries.each_with_index do |country, index| %>
+          <% if index == pinned.length && pinned.any? %>
+            <hr class="usa-phone-input__country-rule" />
+          <% end %>
+          <label class="popover-menu__item usa-phone-input__country-option">
+            <%= radio_button_tag(
+                  radio_name,
+                  country[:iso],
+                  country[:iso] == selected[:iso],
+                  class: 'usa-phone-input__country-radio usa-sr-only',
+                  data: { nds_phone_country: '', dial: country[:dial] },
+                  id: "#{form.object_name}_international_code_#{country[:iso].downcase}",
+                ) %>
+            <span class="usa-phone-input__country-option-label">
+              <%= country[:name] %>
+              <span class="usa-phone-input__country-option-dial">(<%= country[:dial] %>)</span>
+            </span>
+            <%= render NDS::IconComponent.new(
+                  icon: :checkmark,
+                  size: 16,
+                  class: 'usa-phone-input__country-option-check',
+                ) %>
+          </label>
+        <% end %>
+      </div>
+    </details>
+    <span class="usa-phone-input__field">
+      <%= form.telephone_field(
+            :phone,
+            value: national_phone,
+            id: phone_id,
+            class: 'usa-phone-input__input',
+            placeholder: ' ',
+            required: true,
+            autocomplete: 'tel',
+            aria: { describedby: error_id },
+          ) %>
+      <%= form.label(
+            :phone,
+            t('two_factor_authentication.phone_label'),
+            class: 'usa-phone-input__label',
+          ) %>
+    </span>
+  </div>
+  <p class="usa-error-message" id="<%= error_id %>" data-nds-phone-error aria-live="polite" hidden></p>
+<% end %>
+<%= javascript_packs_tag_once('input_component') %>

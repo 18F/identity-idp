@@ -32,6 +32,7 @@ module Idv
   # @attr personal_key [String, nil]
   # @attr personal_key_acknowledged [Boolean, nil]
   # @attr phone_confirmation_manually_reviewed [Boolean, nil]
+  # @attr phone_first_flow [Boolean, nil] NDS: hybrid handoff (phone) precedes document capture
   # @attr phone_for_mobile_flow [String, nil]
   # @attr previous_phone_step_params [Array]
   # @attr previous_ssn [String, nil]
@@ -90,6 +91,7 @@ module Idv
       personal_key
       phone_confirmation_manually_reviewed
       personal_key_acknowledged
+      phone_first_flow
       phone_for_mobile_flow
       phone_precheck_successful
       phone_precheck_vendor
@@ -153,18 +155,33 @@ module Idv
       end
 
       active_enrollment = current_user.active_enrollment
+      user_has_pending_enrollment = current_user.pending_in_person_enrollment.present?
+
+      # Enrollment never moves from establishing to pending
+      if active_enrollment.present? && !user_has_pending_enrollment
+        raise UspsInPersonProofing::Exception::EnrollmentNotPendingError.new(
+          active_enrollment.id,
+        )
+      end
 
       profile_maker = build_profile_maker(user_password)
-      profile = profile_maker.save_profile(
-        fraud_pending_reason: threatmetrix_fraud_pending_reason,
-        gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
-        in_person_verification_needed: active_enrollment.present?,
-        selfie_check_performed: session[:selfie_check_performed],
-        proofing_components:,
-        proofing_agent_requested: agent_proofed,
-      )
+      profile = ActiveRecord::Base.transaction do
+        profile = profile_maker.save_profile(
+          fraud_pending_reason: threatmetrix_fraud_pending_reason,
+          gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
+          in_person_verification_needed: user_has_pending_enrollment,
+          selfie_check_performed: session[:selfie_check_performed],
+          proofing_components:,
+          proofing_agent_requested: agent_proofed,
+        )
 
-      profile.activate unless profile.reason_not_to_activate
+        profile.activate unless profile.reason_not_to_activate
+
+        # assign profile to the enrollment
+        active_enrollment.update!(profile:) if profile.in_person_verification_pending?
+
+        profile
+      end
 
       self.profile_id = profile.id
       self.personal_key = profile.personal_key
@@ -173,9 +190,6 @@ module Idv
         profile_maker.pii_attributes,
         profile.id,
       )
-
-      # assign profile to the enrollment
-      active_enrollment.update(profile:) if profile.in_person_verification_pending?
 
       if profile.gpo_verification_pending?
         create_gpo_entry(profile_maker.pii_attributes, profile)
@@ -400,6 +414,10 @@ module Idv
       session[:address_verification_mechanism] = nil
       session[:vendor_phone_confirmation] = nil
       session[:user_phone_confirmation] = nil
+    end
+
+    def phone_first_flow?
+      !!session[:phone_first_flow]
     end
 
     def skip_hybrid_handoff?

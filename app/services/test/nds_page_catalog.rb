@@ -14,6 +14,7 @@ module Test
     MFA = 'MFA'
     OTP = 'OTP'
     IDV = 'Identity verification'
+    ERRORS = 'Errors'
 
     PAGES = [
       Page.new(
@@ -116,6 +117,28 @@ module Test
         ],
       ),
       Page.new(
+        key: 'phone-setup',
+        title: 'Add a phone number',
+        flow: MFA,
+        template: 'users/phone_setup/index',
+        permutations: [
+          Permutation.new(label: 'First MFA', params: {}),
+          Permutation.new(label: 'Second MFA (configured)', params: { second: '1' }),
+          Permutation.new(label: 'Voice preferred', params: { delivery: 'voice' }),
+          Permutation.new(label: 'Sign-in (no stepper)', params: { flow: 'sign_in' }),
+          Permutation.new(label: 'Phone error', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'backup-code-delete',
+        title: 'Delete backup codes',
+        flow: MFA,
+        template: 'users/backup_code_setup/confirm_delete',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
         key: 'otp-entry',
         title: 'One-time code entry',
         flow: OTP,
@@ -127,6 +150,7 @@ module Test
           Permutation.new(label: 'Countdown', params: { countdown: '1' }),
           Permutation.new(label: 'Reauthentication', params: { reauthn: '1' }),
           Permutation.new(label: 'Prefilled code', params: { code: '1' }),
+          Permutation.new(label: 'Incorrect code', params: { error: '1', code: '1' }),
         ],
       ),
       Page.new(
@@ -152,6 +176,392 @@ module Test
           Permutation.new(label: 'With mDL', params: { mdl: '1' }),
           Permutation.new(label: 'Verify in person', params: { ipp: '1' }),
           Permutation.new(label: 'Passports disabled', params: { no_passport: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'idv-unavailable',
+        title: 'Identity verification unavailable',
+        flow: IDV,
+        template: 'idv/unavailable/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'With service provider', params: { sp: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'sp-inactive',
+        title: 'Service provider inactive',
+        flow: ERRORS,
+        template: 'users/service_provider_inactive/index',
+        permutations: [
+          Permutation.new(label: 'Generic service provider', params: {}),
+          Permutation.new(label: 'Named service provider', params: { sp: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'duplicate-profiles-detected',
+        title: 'Duplicate profiles detected',
+        flow: SIGN_IN,
+        template: 'duplicate_profiles_detected/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Duplicate never signed in', params: { never: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'banned-user',
+        title: 'Account banned',
+        flow: ERRORS,
+        template: 'banned_user/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'device-profiling-failed',
+        title: 'Device profiling failed',
+        flow: ERRORS,
+        template: 'device_profiling_failed/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'security-check-failed',
+        title: 'Sign-in security check failed',
+        flow: ERRORS,
+        template: 'sign_in_security_check_failed/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'proofing-agent-expired',
+        title: 'Proofing agent session expired',
+        flow: ERRORS,
+        template: 'idv/proofing_agent_expired/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'mail-only-warning',
+        title: 'Verify by mail only (phone outage)',
+        flow: ERRORS,
+        template: 'idv/mail_only_warning/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'With service provider', params: { sp: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'session-error-warning',
+        title: 'Verify info warning (attempts remaining)',
+        flow: ERRORS,
+        template: 'idv/session_errors/warning',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Last attempt', params: { attempts: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'session-error-address-warning',
+        title: 'Address warning (attempts remaining)',
+        flow: ERRORS,
+        template: 'idv/session_errors/address_warning',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Last attempt', params: { attempts: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'vendor-outage',
+        title: 'Vendor outage',
+        flow: ERRORS,
+        template: 'vendor_outage/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'With verify-by-mail option', params: { gpo: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'please-call',
+        title: 'Please call (suspended account)',
+        flow: ERRORS,
+        template: 'users/please_call/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'idv-please-call',
+        title: 'Please call (fraud review)',
+        flow: ERRORS,
+        template: 'idv/please_call/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'In person (no stepper)', params: { ipp: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'idv-not-verified',
+        title: 'Information not verified',
+        flow: ERRORS,
+        template: 'idv/not_verified/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'With service provider', params: { sp: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'session-error-failure',
+        title: 'Verify info failure (rate limited)',
+        flow: ERRORS,
+        template: 'idv/session_errors/failure',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'With service provider', params: { sp: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'session-error-exception',
+        title: 'Verify info exception',
+        flow: ERRORS,
+        template: 'idv/session_errors/exception',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'session-error-rate-limited',
+        title: 'Document capture rate limited',
+        flow: ERRORS,
+        template: 'idv/session_errors/rate_limited',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'With service provider', params: { sp: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'session-error-state-id-warning',
+        title: 'State ID warning',
+        flow: ERRORS,
+        template: 'idv/session_errors/state_id_warning',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'socure-errors',
+        title: 'Socure document capture error',
+        flow: ERRORS,
+        template: 'idv/socure/errors/show',
+        permutations: [
+          Permutation.new(label: 'Network', params: {}),
+          Permutation.new(label: 'Timeout', params: { code: 'timeout' }),
+          Permutation.new(label: 'Unaccepted ID type', params: { code: 'unaccepted_id_type' }),
+          Permutation.new(label: 'Selfie failed', params: { code: 'selfie_fail' }),
+        ],
+      ),
+      Page.new(
+        key: 'hybrid-socure-errors',
+        title: 'Socure document capture error (hybrid mobile)',
+        flow: ERRORS,
+        template: 'idv/hybrid_mobile/socure/errors/show',
+        permutations: [
+          Permutation.new(label: 'Network', params: {}),
+          Permutation.new(label: 'Timeout', params: { code: 'timeout' }),
+        ],
+      ),
+      Page.new(
+        key: 'socure-document-capture-errors',
+        title: 'Socure document capture error (legacy route)',
+        flow: ERRORS,
+        template: 'idv/socure/document_capture/errors',
+        permutations: [
+          Permutation.new(label: 'Network', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'hybrid-socure-document-capture-errors',
+        title: 'Socure document capture error (hybrid, legacy route)',
+        flow: ERRORS,
+        template: 'idv/hybrid_mobile/socure/document_capture/errors',
+        permutations: [
+          Permutation.new(label: 'Network', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'enter-code-rate-limited',
+        title: 'Verify by mail code rate limited',
+        flow: ERRORS,
+        template: 'idv/by_mail/enter_code_rate_limited/index',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'With service provider', params: { sp: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'confirm-start-over',
+        title: 'Confirm start over (verify by mail)',
+        flow: ERRORS,
+        template: 'idv/confirm_start_over/index',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'confirm-start-over-before-letter',
+        title: 'Confirm start over (before letter)',
+        flow: ERRORS,
+        template: 'idv/confirm_start_over/before_letter',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'duplicate-profiles-please-call',
+        title: 'Duplicate profiles please call',
+        flow: ERRORS,
+        template: 'users/duplicate_profiles_please_call/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'phone-error-failure',
+        title: 'Phone verification failure (rate limited)',
+        flow: ERRORS,
+        template: 'idv/phone_errors/failure',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Verify by mail available', params: { gpo: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'phone-error-warning',
+        title: 'Phone verification warning',
+        flow: ERRORS,
+        template: 'idv/phone_errors/warning',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Verify by mail available', params: { gpo: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'hybrid-handoff',
+        title: 'Send a link to your phone (hybrid handoff)',
+        flow: IDV,
+        template: 'idv/hybrid_handoff/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Desktop upload enabled', params: { upload: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'link-sent',
+        title: 'Continue on your phone (link sent)',
+        flow: IDV,
+        template: 'idv/link_sent/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'capture-complete',
+        title: 'Switch back to your computer (mobile)',
+        flow: IDV,
+        template: 'idv/hybrid_mobile/capture_complete/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'idv-ssn',
+        title: 'Enter your Social Security number',
+        flow: IDV,
+        template: 'idv/shared/ssn',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Updating SSN', params: { update: '1' }),
+          Permutation.new(label: 'With service provider', params: { sp: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'idv-address',
+        title: 'Enter your residential address',
+        flow: IDV,
+        template: 'idv/address/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Updating address', params: { update: '1' }),
+          Permutation.new(label: 'Mailing address (letter)', params: { gpo: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'idv-verify-info',
+        title: 'Verify your information',
+        flow: IDV,
+        template: 'idv/verify_info/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Barcode read failure', params: { barcode: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'idv-enter-password',
+        title: 'Re-enter your password',
+        flow: IDV,
+        template: 'idv/enter_password/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Phone verified toast', params: { toast: '1' }),
+          Permutation.new(label: 'Verify by mail', params: { gpo: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'idv-phone',
+        title: 'Verify your phone number',
+        flow: IDV,
+        template: 'idv/phone/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Verify by mail available', params: { gpo: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'idv-phone-confirmation',
+        title: 'Enter your one-time code (IdV)',
+        flow: IDV,
+        template: 'idv/otp_verification/show',
+        permutations: [
+          Permutation.new(label: 'SMS', params: {}),
+          Permutation.new(label: 'Voice', params: { delivery: 'voice' }),
+          Permutation.new(label: 'Invalid code', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'idv-request-letter',
+        title: 'Verify by mail instead (request letter)',
+        flow: IDV,
+        template: 'idv/by_mail/request_letter/index',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'idv-personal-key',
+        title: 'Save your personal key',
+        flow: IDV,
+        template: 'idv/personal_key/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'With toast', params: { toast: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'completions',
+        title: 'Identity verified (share information / consent)',
+        flow: IDV,
+        template: 'sign_up/completions/show',
+        permutations: [
+          Permutation.new(label: 'Verified identity', params: {}),
+          Permutation.new(label: 'Auth only (new SP)', params: { auth: '1' }),
+          Permutation.new(label: 'Single MFA warning', params: { single: '1' }),
         ],
       ),
     ].freeze
@@ -180,16 +590,18 @@ module Test
     # Dynamic single source of truth for NDS-page completeness: the set of
     # view templates is scanned at runtime rather than hardcoded. A template is
     # an NDS page if it contains an `nds_layout?` conditional (its authoritative
-    # NDS-bucket branch), plus the explicit branchless allowlist above. Scanning
-    # templates is preferred over resolving every route's render target because
-    # render resolution is unreliable for non-conventional actions.
+    # NDS-bucket branch) either directly or via a shared partial it renders
+    # (one level, e.g. `render 'idv/shared/error'`), plus the explicit
+    # branchless allowlist above. Scanning templates is preferred over
+    # resolving every route's render target because render resolution is
+    # unreliable for non-conventional actions.
     def self.discovered_templates
       scanned = Rails.root.glob('app/views/**/*.html.erb').filter_map do |path|
         rel = path.relative_path_from(Rails.root.join('app/views')).to_s
         template = rel.delete_suffix('.html.erb')
         next if File.basename(template).start_with?('_')
         next if template.start_with?('layouts/')
-        next unless path.read.include?('nds_layout?')
+        next unless nds_branch_source?(path)
 
         template
       end
@@ -202,7 +614,24 @@ module Test
 
     def self.branch_template?(template)
       path = Rails.root.join('app/views', "#{template}.html.erb")
-      path.exist? && path.read.include?('nds_layout?')
+      path.exist? && nds_branch_source?(path)
+    end
+
+    RENDER_PARTIAL_PATTERN = /render\(?\s*(?:partial:\s*)?['"]([\w\/]+)['"]/
+
+    # True when the template carries an `nds_layout?` branch itself or renders
+    # a shared partial that does. Only one level of indirection is followed:
+    # that covers the shared status/error partials without turning the scan
+    # into a full render-graph walk.
+    def self.nds_branch_source?(path)
+      source = path.read
+      return true if source.include?('nds_layout?')
+
+      source.scan(RENDER_PARTIAL_PATTERN).flatten.any? do |partial|
+        dir, base = File.split(partial)
+        partial_path = Rails.root.join('app/views', dir, "_#{base}.html.erb")
+        partial_path.exist? && partial_path.read.include?('nds_layout?')
+      end
     end
 
     # Cross-check the dynamically discovered NDS templates against PAGES so the
@@ -216,12 +645,19 @@ module Test
       catalog_templates = PAGES.map(&:template)
 
       missing = discovered - catalog_templates
-      stale = catalog_templates.reject do |template|
+      unconverted = catalog_templates.reject do |template|
         BRANCHLESS_NDS_TEMPLATES.include?(template) || branch_template?(template)
       end
-      covered = catalog_templates - stale
+      # A cataloged template whose NDS branch has not landed yet (its page PR is
+      # still open) is pending, not stale; stale means the template is gone.
+      stale, pending = unconverted.partition { |template| !template_exists?(template) }
+      covered = catalog_templates - unconverted
 
-      { covered:, missing:, stale: }
+      { covered:, pending:, missing:, stale: }
+    end
+
+    def self.pending?(page)
+      coverage[:pending].include?(page.template)
     end
 
     # Best-guess GET route path for a template, mapping the Rails-conventional
@@ -357,6 +793,7 @@ module Test
       {
         nds: nds.sort_by(&:template),
         legacy: legacy.sort_by(&:template),
+        pending: audit[:pending],
         missing: audit[:missing],
         stale: audit[:stale],
       }

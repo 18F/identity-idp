@@ -142,6 +142,7 @@ module Idv
       return false unless IdentityConfig.store.in_person_proofing_opt_in_enabled &&
                           Idv::InPersonConfig.enabled_for_issuer?(decorated_sp_session.sp_issuer)
       @previous_step_url = step_is_handoff? ? idv_hybrid_handoff_path : nil
+      @how_to_verify_url = idv_choose_id_type_url if phone_first_in_person_entry?
       idv_session.flow_path = 'standard'
       idv_session.skip_doc_auth_from_handoff = step_is_handoff?
       idv_session.skip_doc_auth_from_how_to_verify = params[:step] == 'how_to_verify'
@@ -151,6 +152,10 @@ module Idv
 
     def step_is_handoff?
       params[:step] == 'hybrid_handoff'
+    end
+
+    def phone_first_in_person_entry?
+      idv_session.phone_first_flow? && params[:step] == 'how_to_verify'
     end
 
     def set_usps_form_presenter

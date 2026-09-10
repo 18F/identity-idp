@@ -1611,6 +1611,7 @@ mfa.second_method_warning.link: Add a second authentication method.
 mfa.second_method_warning.text: You will have to delete your account and start over if you lose your only authentication method.
 mfa.skip: Skip for now
 mfa.webauthn_platform_message: Add another authentication method in case you lose access to your first one.
+nds.capture_complete.info: Identity document successfully verified. Return to your computer to finish the identity verification process.
 nds.choose_id_type.option_drivers_license: U.S. driver’s license or state ID
 nds.choose_id_type.option_mdl: Mobile driver’s license
 nds.choose_id_type.option_passport: U.S. passport book
@@ -1619,14 +1620,49 @@ nds.choose_id_type.or: or
 nds.choose_id_type.subtitle: Take a photo of your ID and a quick selfie to verify your identity online.
 nds.choose_id_type.title: Choose your ID type to verify
 nds.choose_id_type.verify_in_person: Verify in person
+nds.completions.heading_idv: Identity verified
+nds.completions.intro_html: By selecting Continue, you agree to share the information below with %{sp_html} and go to their site.
+nds.completions.nist_alt: 'NIST seal: Encrypted. Protected. Proven. National Institute of Standards and Technology'
+nds.duplicate_profiles_detected.cant_access: I can’t access an account
+nds.duplicate_profiles_detected.connected_agencies: 'Connected agencies: %{count}'
+nds.duplicate_profiles_detected.created_at_html: 'Created: %{timestamp_html}'
+nds.duplicate_profiles_detected.dont_recognize_account: I don’t recognize an account above
+nds.duplicate_profiles_detected.duplicate: Duplicate
+nds.duplicate_profiles_detected.get_help: Get help
+nds.duplicate_profiles_detected.instructions: 'You need to delete duplicate accounts before signing in. Here’s what to do:'
+nds.duplicate_profiles_detected.intro_html: '%{sp_name} requires that you only have one %{app_name} account with a verified identity. %{link_html}'
+nds.duplicate_profiles_detected.last_sign_in_html: 'Last sign in: %{timestamp_html}'
+nds.duplicate_profiles_detected.learn_more_link: Learn more about duplicate accounts.
+nds.duplicate_profiles_detected.never_signed_in: Never signed in to %{sp_name}
+nds.duplicate_profiles_detected.sign_out: Sign out
+nds.duplicate_profiles_detected.signed_in: Signed in
+nds.duplicate_profiles_detected.step_1.account_link: Your account
+nds.duplicate_profiles_detected.step_1.body: Keep the account you use with the most services. That way, you won’t have to reconnect services.
+nds.duplicate_profiles_detected.step_1.connected_html: Go to %{link_html} and click on the “Your connected accounts” in the left side menu to see which agencies this account is connected to.
+nds.duplicate_profiles_detected.step_1.heading: Choose an account to keep
+nds.duplicate_profiles_detected.step_2.body_html: Sign into the account you are going to delete at %{login_link_html}. Here’s %{delete_link_html}.
+nds.duplicate_profiles_detected.step_2.delete_link: how to delete your account
+nds.duplicate_profiles_detected.step_2.heading: Delete the duplicate account(s)
+nds.duplicate_profiles_detected.step_3.body: Go back to the %{sp_name} website and sign in using the one %{app_name} account you kept.
+nds.duplicate_profiles_detected.step_3.heading: Sign back into %{sp_name} with one account
+nds.duplicate_profiles_please_call.error_details_html: <p>If you don’t recognize or can’t delete one of the duplicate accounts you saw on the multiple accounts page, call our contact center at %{contact_number} and provide them with the error code %{error_code}.</p><p>Having questions about duplicate accounts or how to move forward? Learn more about <a href="%{help_url}">how to resolve duplicate accounts</a>.</p>
+nds.enter_password.info: Your information is encrypted with your password. This means that only you can access or change it.
+nds.errors.cancel_verification: Cancel verification
+nds.errors.return_home: Return home
+nds.errors.start_over_warning: You will need to verify your identity from the beginning
+nds.hybrid_handoff.heading: Enter your phone number
+nds.hybrid_handoff.subtitle: We’ll send you a link to verify your ID using a trusted service provider.
+nds.idv_phone.info: Enter a U.S. phone number. We’ll text or call you with a 6-digit code. Standard phone lines only. No VoIP or premium numbers. Message and data rates may apply.
 nds.idv_welcome.consent_html: By checking this box, you are letting %{app_name} ask for, use, keep and share your personal information. We will use it to verify your identity. Read about our %{link_html} measures.
 nds.idv_welcome.consent_link: privacy and security
 nds.idv_welcome.how_we_protect_heading: How we protect your data
 nds.idv_welcome.how_we_protect_info: We only use what you enter to verify your identity with the Social Security Administration. Your information will never be shared or sold outside the government.
 nds.idv_welcome.intro: '%{sp_name} needs to verify your identity before you continue. Most people finish in about 7 minutes.'
-nds.idv_welcome.no_phone_link: I don’t have a U.S. phone number
 nds.idv_welcome.title: Let’s verify your identity to access %{sp_name}
 nds.idv_welcome.what_youll_need: What you’ll need
+nds.link_sent.heading: Continue on your phone
+nds.link_sent.instructions: Follow the instructions to capture your ID photos and selfie, then return here to finish.
+nds.link_sent.keep_open: Keep this window open.
 nds.mfa_setup.badge_passkey: Fast and secure
 nds.mfa_setup.heading: Secure your account
 nds.mfa_setup.heading_second: Choose a second authentication method
@@ -1645,13 +1681,35 @@ nds.mfa_setup.options.webauthn_info: Insert a small physical key into your devic
 nds.mfa_setup.options.webauthn_platform: Passkey
 nds.mfa_setup.options.webauthn_platform_info: Use your face, fingerprint, or a PIN to sign in. Nothing to remember, nothing for hackers to steal.
 nds.mfa.choose_another_method: Choose another method
+nds.mfa.remember_device_info: Select this to skip authentication on supported sites. Do not select this if you are on a public or shared device.
+nds.otp_verification.do_not_share_html: 'Do not share this code. If someone calls, texts or emails asking for this code, it may be a scam. %{link_html}'
+nds.otp_verification.invalid_otp_body: That code is invalid. Try again or request a new code.
+nds.otp_verification.invalid_otp_heading: Invalid one-time code
+nds.otp_verification.learn_more: Learn more
+nds.otp_verification.sms.code_sent_html: 'We sent a one-time code to %{number_html}.'
+nds.otp_verification.voice.code_sent_html: 'We called you with a one-time code at %{number_html}.'
 nds.passwords.new.heading: Create your password
 nds.passwords.new.info: Create a strong password to secure your account and keep personal information safe.
+nds.personal_key.acknowledgment: I’ve saved my personal key in a safe place
+nds.personal_key.generated_on: Generated on %{date}
+nds.personal_key.info: Your personal key is the only way to access your verified account if you reset your password. If you lose this key and forget your password, you’ll need to verify your identity again.
+nds.phone_required.heading: A U.S. phone number is required
+nds.phone_required.info: Currently, verifying your identity requires a U.S. phone number. We’re working on adding other options and will update this page when they’re available.
+nds.phone_setup.delivery.sms: Text message
+nds.phone_setup.delivery.voice: Phone call
+nds.phone_setup.heading: Enter your phone number
+nds.phone_setup.info: We’ll text or call you with a 6-digit code. Standard phone lines only. No VoIP or premium numbers. Message and data rates may apply.
 nds.piv_cac_setup.nickname: ID nickname
 nds.piv_cac_setup.step_1: Enter a nickname
 nds.piv_cac_setup.step_2: Insert your PIV or CAC into your card reader
 nds.piv_cac_setup.step_3: Add your PIV or CAC
 nds.piv_cac_setup.step_3_info: You’ll be asked to choose a certificate and enter your PIN after clicking the continue button.
+nds.request_letter.heading: Verify by mail instead
+nds.request_letter.info: To verify your identity, we’ll mail a letter with a verification code and instructions to your address. It should arrive in 5 to 10 days. Follow the instructions in the letter to finish verifying your identity.
+nds.socure_errors.in_person_heading: Or, try verifying your ID in person
+nds.socure_errors.rate_limit_html.one: You can try <strong>1 more time.</strong> Then, you must wait 6 hours before trying again.
+nds.socure_errors.rate_limit_html.other: You can try <strong>%{count} more times.</strong> Then, you must wait 6 hours before trying again.
+nds.ssn.info: Your Social Security number verifies your identity across %{app_name} services and stays encrypted, never shared without your consent.
 nds.totp_setup.new.code_label: Code
 nds.totp_setup.new.heading: Set up an authentication app
 nds.totp_setup.new.nickname_label: App nickname
@@ -1660,6 +1718,7 @@ nds.totp_setup.new.setup_code_label: Setup code
 nds.totp_setup.new.step_1: Enter a nickname
 nds.totp_setup.new.step_2: Open your preferred authentication app
 nds.totp_setup.new.step_3: Scan the QR code or enter the set up code manually in your authentication app
+nds.verify_info.address: Address
 notices.account_reactivation: Great! You have your personal key.
 notices.authenticated_successfully: Authenticated successfully.
 notices.backup_codes_configured: Backup codes were added to your account.

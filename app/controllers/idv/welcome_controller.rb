@@ -62,8 +62,6 @@ module Idv
     private
 
     def update_nds
-      skip_to_capture if params[:skip_hybrid_handoff]
-
       @consent_form = Idv::ConsentForm.new(idv_consent_given: idv_session.idv_consent_given?)
       result = @consent_form.submit(consent_form_params)
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
@@ -86,6 +84,8 @@ module Idv
       idv_session.opted_in_to_in_person_proofing = false
       idv_session.skip_doc_auth_from_how_to_verify = false
       idv_session.flow_path = 'standard'
+      idv_session.phone_first_flow = true
+      skip_to_capture if params[:skip_hybrid_handoff]
 
       redirect_to idv_choose_id_type_url
     end

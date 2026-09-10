@@ -317,6 +317,12 @@ RSpec.describe Idv::EnterPasswordController do
       expect(response).to redirect_to idv_personal_key_path
     end
 
+    it 'creates the profile with idv_level of legacy_unsupervised' do
+      put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+      expect(user.profiles.last.idv_level).to eq('legacy_unsupervised')
+    end
+
     it 'redirects to confirmation path after user presses the back button' do
       put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
       allow_any_instance_of(User).to receive(:active_profile).and_return(true)
@@ -552,6 +558,12 @@ RSpec.describe Idv::EnterPasswordController do
           subject.idv_session.applicant =
             Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        end
+
+        it 'creates the profile with idv_level of legacy_in_person' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+          expect(user.profiles.last.idv_level).to eq('legacy_in_person')
         end
 
         it 'redirects to personal key path' do
@@ -934,6 +946,52 @@ RSpec.describe Idv::EnterPasswordController do
           end
         end
 
+        context 'when USPS enrollment scheduling does not move the enrollment to pending' do
+          before do
+            allow(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment)
+          end
+
+          it 'logs an error message' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(@analytics).to have_logged_event(
+              :idv_in_person_usps_enrollment_not_pending,
+              context: 'authentication',
+              enrollment_id: enrollment.id,
+            )
+          end
+
+          it 'does not create a profile and leaves the enrollment in establishing' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(user.profiles.count).to eq(0)
+            expect(InPersonEnrollment.count).to be(1)
+            enrollment.reload
+            expect(enrollment.status).to eq(InPersonEnrollment::STATUS_ESTABLISHING)
+            expect(enrollment.profile_id).to be_nil
+          end
+
+          it 'allows the user to retry the request' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            expect(flash[:error]).to eq t('idv.failure.exceptions.internal_error')
+            expect(response).to redirect_to idv_enter_password_path
+
+            user.reload
+            allow(UspsInPersonProofing::EnrollmentHelper)
+              .to receive(:schedule_in_person_enrollment).and_call_original
+
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(response).to redirect_to idv_personal_key_path
+
+            enrollment.reload
+
+            expect(enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
+            expect(enrollment.profile).to eq(user.profiles.last)
+            expect(enrollment.profile.in_person_verification_pending?).to eq(true)
+          end
+        end
+
         context 'when user enters an address2 value' do
           it 'does not include address2' do
             subject.idv_session.applicant =
@@ -1127,6 +1185,48 @@ RSpec.describe Idv::EnterPasswordController do
               subject: t('user_mailer.idv_please_call.subject'),
             )
           end
+        end
+      end
+    end
+
+    context 'user submited a mobile drivers license' do
+      before do
+        subject.idv_session.pii_from_doc = Pii::StateId.new(
+          **Idp::Constants::MOCK_IDV_APPLICANT
+            .merge(document_type_received: Idp::Constants::DocumentTypes::MDL),
+        )
+      end
+
+      it 'creates the profile with idv_level of unsupervised_with_digital_id' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(user.profiles.last.idv_level).to eq('unsupervised_with_digital_id')
+      end
+    end
+
+    context 'selfie check was performed' do
+      before do
+        subject.idv_session.selfie_check_performed = true
+      end
+
+      it 'creates the profile with idv_level of unsupervised_with_selfie' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(user.profiles.last.idv_level).to eq('unsupervised_with_selfie')
+      end
+
+      context 'user submited a mobile drivers license' do
+        before do
+          subject.idv_session.pii_from_doc = Pii::StateId.new(
+            **Idp::Constants::MOCK_IDV_APPLICANT
+              .merge(document_type_received: Idp::Constants::DocumentTypes::MDL),
+          )
+        end
+
+        it 'creates the profile with idv_level of unsupervised_with_digital_id' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+          expect(user.profiles.last.idv_level).to eq('unsupervised_with_digital_id')
         end
       end
     end

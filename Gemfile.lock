@@ -824,7 +824,7 @@ GEM
       nokogiri (>= 1.13.10)
       rexml
     ruby-statistics (3.0.2)
-    rubyzip (3.2.2)
+    rubyzip (3.6.0)
     safe_target_blank (1.0.2)
       rails
     safely_block (0.5.0)

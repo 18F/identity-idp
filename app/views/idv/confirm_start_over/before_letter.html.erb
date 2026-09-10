@@ -1,3 +1,24 @@
+<% if nds_layout? %>
+  <%= render(
+        'idv/shared/error',
+        type: :warning,
+        heading: t('idv.cancel.headings.prompt.start_over'),
+        current_step: @step_indicator_step,
+        action: {
+          text: t('nds.errors.cancel_verification'),
+          url: idv_session_path(step: :request_letter),
+          method: :delete,
+          variant: :destructive,
+        },
+        secondary_action: {
+          text: t('forms.buttons.back'),
+          url: go_back_path || idv_request_letter_path,
+        },
+      ) do %>
+    <p><%= t('idv.cancel.description.gpo.start_over_new_address') %></p>
+    <p><%= t('idv.cancel.description.gpo.continue') %></p>
+  <% end %>
+<% else %>
 <%= render(
       'idv/shared/error',
       type: :warning,
@@ -21,3 +42,4 @@
   </div>
 <% end %>
 <%= render('idv/shared/back', step: 'request_letter', fallback_path: idv_request_letter_path) %>
+<% end %>
