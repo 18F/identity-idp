@@ -1,4 +1,9 @@
-import { AsYouType, isValidNumber, isValidNumberForRegion } from 'libphonenumber-js';
+import {
+  AsYouType,
+  isValidNumber,
+  isValidNumberForRegion,
+  parsePhoneNumberFromString,
+} from 'libphonenumber-js';
 import type { CountryCode } from 'libphonenumber-js';
 import {
   bindFormSubmitters,
@@ -101,6 +106,7 @@ interface NdsPhoneMessages {
   valueMissing?: string;
   invalidUs?: string;
   invalidInternational?: string;
+  failedNumber?: string;
 }
 
 const parsePhoneMessages = (group: HTMLElement): NdsPhoneMessages => {
@@ -108,6 +114,16 @@ const parsePhoneMessages = (group: HTMLElement): NdsPhoneMessages => {
     return JSON.parse(group.dataset.ndsPhoneMessages || '{}');
   } catch {
     return {};
+  }
+};
+
+/** E.164 numbers that already failed verification and must not be resubmitted. */
+const parseFailedNumbers = (group: HTMLElement): string[] => {
+  try {
+    const parsed = JSON.parse(group.dataset.ndsPhoneFailedNumbers || '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
   }
 };
 
@@ -135,6 +151,7 @@ const bindNdsPhoneGroup = (group: HTMLElement) => {
   const radios = Array.from(group.querySelectorAll<HTMLInputElement>('[data-nds-phone-country]'));
   const errorRegion = group.querySelector<HTMLElement>('[data-nds-phone-error]');
   const messages = parsePhoneMessages(group);
+  const failedNumbers = parseFailedNumbers(group);
 
   const country = () =>
     (radios.find((radio) => radio.checked)?.value || DEFAULT_COUNTRY) as CountryCode;
@@ -160,7 +177,13 @@ const bindNdsPhoneGroup = (group: HTMLElement) => {
     }
     const region = country();
     const invalid = !isValidNumberForRegion(value, region) || !isValidNumber(value, region);
-    field.setCustomValidity(invalid ? invalidFormatMessage() : '');
+    if (invalid) {
+      field.setCustomValidity(invalidFormatMessage());
+      return;
+    }
+    const e164 = parsePhoneNumberFromString(value, region)?.number;
+    const failed = Boolean(e164 && failedNumbers.includes(e164));
+    field.setCustomValidity(failed ? messages.failedNumber || invalidFormatMessage() : '');
   };
 
   const validate = () => {

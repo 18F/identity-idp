@@ -17,15 +17,17 @@
    national_phone = form.object.phone.present? ? Phonelib.parse(form.object.phone, selected[:iso]).national : nil
    phone_id = "#{form.object_name}_phone"
    error_id = "#{phone_id}-error"
+   failed_phone_numbers = local_assigns.fetch(:failed_phone_numbers, [])
    messages = {
      valueMissing: t('errors.messages.phone_required'),
      invalidUs: t('errors.messages.invalid_phone_number.us'),
      invalidInternational: t('errors.messages.invalid_phone_number.international'),
-   } %>
+   }
+   messages[:failedNumber] = t('idv.messages.phone.failed_number.alert_text') if failed_phone_numbers.present?
+   group_data = { nds_phone: '', nds_phone_messages: messages.to_json }
+   group_data[:nds_phone_failed_numbers] = failed_phone_numbers.to_json if failed_phone_numbers.present? %>
 
-<div class="usa-phone-input-group"
-     data-nds-phone
-     data-nds-phone-messages="<%= messages.to_json %>">
+<%= tag.div(class: 'usa-phone-input-group', data: group_data) do %>
   <div class="usa-phone-input">
     <details class="usa-phone-input__country">
       <summary class="usa-phone-input__country-toggle"
@@ -87,5 +89,5 @@
     </span>
   </div>
   <p class="usa-error-message" id="<%= error_id %>" data-nds-phone-error aria-live="polite" hidden></p>
-</div>
+<% end %>
 <%= javascript_packs_tag_once('input_component') %>
