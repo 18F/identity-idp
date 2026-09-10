@@ -241,16 +241,19 @@ module Idv
       return unless historical_events_enabled?
       return unless idv_requested?
 
-      current_user.active_profile.create_user_proofing_event(
+      idv_session.profile.create_user_proofing_event(
         attempt_events:,
         password:,
         personal_key: idv_session.personal_key,
         sent_to_sp: attempts_api_enabled_for_session?,
       )
 
-      analytics.historic_event_data_saved(profile_id: current_user.active_profile.id)
+      analytics.historic_event_data_saved(profile_id: idv_session.profile.id)
 
-      AttemptsApi::Cacher.new(current_user, user_session).save(password:)
+      # current_user.active_profile can be stale here because and pass in
+      # the wrong profile. passing the profile in directly ensures it is cached correctly
+      AttemptsApi::Cacher.new(current_user, user_session)
+        .save(password:, profile: idv_session.profile)
 
       user_session.delete('idv/attempts')
     end
