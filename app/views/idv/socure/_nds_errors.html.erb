@@ -1,0 +1,76 @@
+<%#
+NDS-bucket body for the Socure document-capture error pages (standard and
+hybrid). Renders the SocureErrorPresenter as a single card: attempts copy,
+try-again / use-another-ID actions, the in-person CTA, then the remaining
+troubleshooting options as links.
+locals:
+* presenter: SocureErrorPresenter
+%>
+<% self.title = presenter.heading %>
+<% content_for(:nds_header_progress) do %>
+  <%= nds_account_creation_progress(step: :verification, substep: 2) %>
+<% end %>
+
+<% another_id_option, *help_options = presenter.options %>
+
+<%= render NDS::FormPageComponent.new(title: presenter.heading) do |page| %>
+  <% page.with_media do %>
+    <span class="nds-status-icon nds-status-icon--warning">
+      <%= render NDS::IconComponent.new(icon: :warning, size: 24) %>
+    </span>
+  <% end %>
+
+  <% if presenter.rate_limit_text.present? %>
+    <% page.with_body do %>
+      <hr class="divider" />
+      <p><%= t('nds.socure_errors.rate_limit_html', count: presenter.remaining_attempts) %></p>
+    <% end %>
+  <% end %>
+
+  <% page.with_actions do %>
+    <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+      <%= render ButtonComponent.new(
+            url: presenter.action[:url],
+            full_width: true,
+          ).with_content(presenter.action[:text]) %>
+      <% if another_id_option %>
+        <%= render ButtonComponent.new(
+              url: another_id_option[:url],
+              variant: :secondary,
+              full_width: true,
+            ).with_content(another_id_option[:text]) %>
+      <% end %>
+    <% end %>
+
+    <% if presenter.secondary_action %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch, class: 'margin-top-4') do %>
+        <h2 class="heading-s text-center"><%= t('nds.socure_errors.in_person_heading') %></h2>
+        <p class="text-center margin-0"><%= presenter.secondary_action_text %></p>
+        <%= render ButtonComponent.new(
+              url: presenter.secondary_action[:url],
+              variant: :secondary,
+              full_width: true,
+            ).with_content(presenter.secondary_action[:text]) %>
+      <% end %>
+    <% end %>
+
+    <% if help_options.present? %>
+      <%= render NDS::StackComponent.new(kind: :links, align: :center, class: 'margin-top-4') do %>
+        <h2 class="heading-s text-center"><%= presenter.troubleshooting_heading %></h2>
+        <% help_options.each do |option| %>
+          <% external_redirect = option[:isExternal] && option[:url].include?('return_to_sp') %>
+          <%= link_to(
+                option[:url],
+                class: 'link',
+                **(option[:isExternal] && !external_redirect ? { target: '_blank', rel: 'noopener' } : {}),
+              ) do %>
+            <%= option[:text] %>
+            <% if external_redirect %>
+              <%= render NDS::IconComponent.new(icon: :launch, size: 20, class: 'margin-left-05 text-middle') %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

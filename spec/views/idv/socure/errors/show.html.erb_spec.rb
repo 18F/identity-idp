@@ -3,8 +3,10 @@ require 'rails_helper'
 RSpec.describe 'idv/socure/errors/show.html.erb' do
   include Devise::Test::ControllerHelpers
 
+  let(:nds_layout) { false }
+
   before do
-    allow(view).to receive(:nds_layout?).and_return(false)
+    allow(view).to receive(:nds_layout?).and_return(nds_layout)
   end
 
   let(:remaining_submit_attempts) { 5 }
@@ -224,6 +226,68 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
       expect(rendered).to have_link(
         t('idv.failure.button.warning'),
         href: idv_socure_document_capture_path,
+      )
+    end
+  end
+
+  context 'in the NDS layout' do
+    let(:nds_layout) { true }
+    let(:error_code) { :network }
+
+    before do
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      assign(:presenter, presenter)
+      render
+    end
+
+    it 'renders the warning card with attempts copy and no try-again-later text' do
+      expect(rendered).to have_css('.auth--form-page h1', text: presenter.heading)
+      expect(rendered).to have_css('.nds-status-icon--warning')
+      expect(rendered).to have_css(
+        '.auth__form-page-body p',
+        text: strip_tags(t('nds.socure_errors.rate_limit_html', count: remaining_submit_attempts)),
+      )
+      expect(rendered).not_to have_text(t('idv.errors.try_again_later'))
+    end
+
+    it 'renders try-again primary and use-another-ID secondary actions' do
+      expect(rendered).to have_css(
+        '.auth__actions a.usa-button:not(.usa-button--secondary)',
+        text: t('idv.failure.button.warning'),
+      )
+      expect(rendered).to have_css(
+        '.auth__actions a.usa-button--secondary',
+        text: t('idv.troubleshooting.options.use_another_id_type'),
+      )
+    end
+
+    it 'renders the in-person CTA with its heading and copy' do
+      expect(rendered).to have_css('h2', text: t('nds.socure_errors.in_person_heading'))
+      expect(rendered).to have_text(t('in_person_proofing.body.cta.prompt_detail'))
+      expect(rendered).to have_css(
+        'a.usa-button--secondary',
+        text: t('in_person_proofing.body.cta.button'),
+      )
+    end
+
+    it 'renders the remaining troubleshooting options as links' do
+      expect(rendered).to have_css('h2', text: t('components.troubleshooting_options.ipp_heading'))
+      expect(rendered).to have_css(
+        'a.link[target=_blank]',
+        text: t('idv.troubleshooting.options.doc_capture_tips'),
+      )
+      expect(rendered).to have_css(
+        'a.link[target=_blank]',
+        text: t('idv.troubleshooting.options.supported_documents'),
+      )
+      expect(rendered).to have_css(
+        'a.link:not([target]) svg.usa-icon',
+      )
+    end
+
+    it 'sets the verification header progress' do
+      expect(view.content_for(:nds_header_progress)).to have_css(
+        'nds-progress .progress__step[aria-current="step"]',
       )
     end
   end
