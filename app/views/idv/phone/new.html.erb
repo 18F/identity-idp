@@ -51,7 +51,9 @@
 
       <% page.with_body do %>
         <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
-          <%= render 'users/shared/nds_phone_input', form: f %>
+          <%= render 'users/shared/nds_phone_input',
+                     form: f,
+                     failed_phone_numbers: @idv_form.failed_phone_numbers %>
 
           <fieldset class="usa-fieldset radio-group">
             <legend class="usa-sr-only">

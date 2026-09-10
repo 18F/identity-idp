@@ -65,6 +65,30 @@ RSpec.describe 'idv/phone/new.html.erb' do
       expect(rendered).not_to have_css('#phone-already-submitted-alert')
     end
 
+    it 'does not mark any numbers as failed on the phone group by default' do
+      expect(rendered).to have_css('.usa-phone-input-group[data-nds-phone]')
+      expect(rendered).not_to have_css('.usa-phone-input-group[data-nds-phone-failed-numbers]')
+    end
+
+    context 'with previously failed numbers' do
+      before do
+        @idv_form = Idv::PhoneForm.new(
+          user: build_stubbed(:user),
+          previous_params: nil,
+          failed_phone_numbers: ['+12025550199'],
+        )
+      end
+
+      it 'hands the failed numbers to the phone group so they cannot be resubmitted' do
+        expect(rendered).to have_css(
+          '.usa-phone-input-group[data-nds-phone-failed-numbers=\'["+12025550199"]\']',
+        )
+        group = Nokogiri::HTML(rendered).at_css('.usa-phone-input-group')
+        messages = JSON.parse(group['data-nds-phone-messages'])
+        expect(messages['failedNumber']).to eq(t('idv.messages.phone.failed_number.alert_text'))
+      end
+    end
+
     context 'gpo letter available' do
       let(:gpo_letter_available) { true }
 
