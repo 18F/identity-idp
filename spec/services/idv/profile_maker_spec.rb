@@ -264,6 +264,24 @@ RSpec.describe Idv::ProfileMaker do
           expect(profile.idv_level).to eql('unsupervised_with_selfie')
         end
       end
+
+      context 'unsupervised with digital id' do
+        let(:proofing_components) { { document_check: :mock, document_type_received: Idp::Constants::DocumentTypes::MDL } }
+
+        it 'creates an active profile' do
+          expect(profile.activated_at).to be_nil
+          expect(profile.active).to eq(false)
+          expect(profile.deactivation_reason).to be_nil
+          expect(profile.fraud_pending_reason).to be_nil
+          expect(profile.fraud_review_pending?).to eq(false)
+          expect(profile.gpo_verification_pending_at.present?).to eq(false)
+          expect(profile.initiating_service_provider).to eq(nil)
+          expect(profile.verified_at).to be_nil
+        end
+        it 'marks the profile as unsupervised_with_digital_id' do
+          expect(profile.idv_level).to eql('unsupervised_with_digital_id')
+        end
+      end
     end
 
     context 'with an initiating service provider' do

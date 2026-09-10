@@ -54,6 +54,7 @@ class Profile < ApplicationRecord
     unsupervised_with_selfie: 3,
     in_person: 4,
     proofing_agent: 5,
+    unsupervised_with_digital_id: 6,
   }
 
   attr_reader :personal_key
