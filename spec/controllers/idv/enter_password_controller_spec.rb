@@ -317,7 +317,7 @@ RSpec.describe Idv::EnterPasswordController do
       expect(response).to redirect_to idv_personal_key_path
     end
 
-    it 'creates the profile with idv_level of proofing_agent' do
+    it 'creates the profile with idv_level of legacy_unsupervised' do
       put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
       expect(user.profiles.last.idv_level).to eq('legacy_unsupervised')
