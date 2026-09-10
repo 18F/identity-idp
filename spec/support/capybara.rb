@@ -26,6 +26,7 @@ Capybara.register_driver :headless_chrome do |app|
   options.add_argument('--window-size=1200x700')
   options.add_argument('--no-sandbox')
   options.add_argument('--disable-dev-shm-usage')
+  options.add_argument('--disable-features=DeferRendererTasksAfterInput')
   options.add_argument("--proxy-server=127.0.0.1:#{Capybara::Webmock.port_number}")
 
   Capybara::Selenium::Driver.new app,
