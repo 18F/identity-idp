@@ -343,5 +343,51 @@ RSpec.describe Idv::WelcomeController do
 
       expect(subject.idv_session.proofing_started_at).to eq(Time.zone.now.iso8601)
     end
+
+    it 'redirects to the agreement step in the legacy layout' do
+      put :update
+
+      expect(response).to redirect_to(idv_agreement_url)
+    end
+
+    context 'in the NDS layout' do
+      before { allow(controller).to receive(:nds_layout?).and_return(true) }
+
+      context 'when consent is given' do
+        it 'records consent and advances to choose ID type', :freeze_time do
+          put :update, params: { doc_auth: { idv_consent_given: '1' } }
+
+          expect(subject.idv_session.idv_consent_given_at).to eq(Time.zone.now)
+          expect(subject.idv_session.welcome_visited).to eq(true)
+          expect(subject.idv_session.flow_path).to eq('standard')
+          expect(response).to redirect_to(idv_choose_id_type_url)
+        end
+      end
+
+      context 'when consent is not given' do
+        render_views
+
+        it 're-renders the welcome page without advancing' do
+          put :update, params: { doc_auth: { idv_consent_given: '0' } }
+
+          expect(subject.idv_session.idv_consent_given_at).to be_nil
+          expect(response).to render_template(:show)
+        end
+      end
+    end
+  end
+
+  describe 'NDS layout rendering' do
+    render_views
+
+    before { allow(controller).to receive(:nds_layout?).and_return(true) }
+
+    it 'renders the merged welcome + consent page without error' do
+      get :show
+
+      expect(response).to render_template(:show)
+      expect(response.body).to include(t('nds.idv_welcome.what_youll_need'))
+      expect(response.body).to include('doc_auth[idv_consent_given]')
+    end
   end
 end

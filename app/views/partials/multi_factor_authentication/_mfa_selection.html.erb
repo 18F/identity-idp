@@ -26,17 +26,17 @@
       <% end %>
     <% end %>
     <% if show_recommended %>
-      <span class="card__badge"><%= t('two_factor_authentication.recommended') %></span>
+      <span class="card__badge"><%= t('nds.mfa_setup.badge_passkey') %></span>
     <% end %>
     <% if description.present? %>
       <span class="card__badge card__badge--success"><%= description %></span>
     <% end %>
     <div class="card__row">
       <%= render NDS::IconComponent.new(icon: icons.fetch(option.type), size: 24) %>
-      <p class="card__title"><%= option.label %></p>
+      <p class="card__title"><%= t("nds.mfa_setup.options.#{option.type}") %></p>
     </div>
     <% unless option.disabled? %>
-      <p class="card__description"><%= option.info %></p>
+      <p class="card__description"><%= t("nds.mfa_setup.options.#{option.type}_info") %></p>
     <% end %>
   <% end %>
 <% else %>

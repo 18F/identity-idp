@@ -14,7 +14,8 @@ module Users
     before_action :cap_auth_app_count, only: %i[new confirm]
     before_action :confirm_recently_authenticated_2fa
 
-    helper_method :in_multi_mfa_selection_flow?
+    helper_method :in_multi_mfa_selection_flow?, :in_account_creation_flow?,
+                  :enabled_mfa_methods_count
 
     def new
       store_totp_secret_in_session
@@ -44,6 +45,10 @@ module Users
     end
 
     private
+
+    def enabled_mfa_methods_count
+      MfaContext.new(current_user).enabled_mfa_methods_count
+    end
 
     def totp_setup_form
       @totp_setup_form ||= TotpSetupForm.new(

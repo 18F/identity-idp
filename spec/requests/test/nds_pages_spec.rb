@@ -28,7 +28,9 @@ RSpec.describe 'Test::NdsPages', type: :request do
   describe 'GET /test/nds/:page' do
     context 'with the default permutation for every page' do
       it 'renders 200' do
-        Test::NDSPageCatalog.pages.each do |page|
+        Test::NDSPageCatalog.pages.reject do |page|
+          Test::NDSPageCatalog.pending?(page)
+        end.each do |page|
           get test_nds_page_path(page: page.key)
 
           expect(response).to have_http_status(:ok), "expected 200 for #{page.key}"

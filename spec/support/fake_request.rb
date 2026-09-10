@@ -27,6 +27,10 @@ class FakeRequest
     'fake_cookies'
   end
 
+  def cookie_jar
+    { nds_experiment_uuid: 'fake_nds_experiment_uuid' }
+  end
+
   def path
     'fake_path'
   end

@@ -144,9 +144,17 @@
         <progress class="explorer__meter" value="<%= @inventory[:nds].length %>" max="<%= total %>"></progress>
       </div>
 
-      <% if @inventory[:missing].any? || @inventory[:stale].any? %>
+      <% if @inventory[:missing].any? || @inventory[:stale].any? || @inventory[:pending].any? %>
         <div class="explorer__audit">
           <strong>Catalog self-audit</strong>
+          <% if @inventory[:pending].any? %>
+            <p>Cataloged pages whose NDS view has not merged yet (not renderable here):</p>
+            <ul>
+              <% @inventory[:pending].each do |template| %>
+                <li><code><%= template %></code></li>
+              <% end %>
+            </ul>
+          <% end %>
           <% if @inventory[:missing].any? %>
             <p>NDS templates missing from the catalog:</p>
             <ul>
@@ -247,6 +255,13 @@
                   <code><%= entry.template %>.html.erb</code>
                   <span class="explorer__meta">(not cataloged)</span>
                 <% end %>
+              </li>
+            <% end %>
+            <% Test::NDSPageCatalog.pages.select { |page| @inventory[:pending].include?(page.template) }.each do |page| %>
+              <li class="explorer__item explorer__item--nds">
+                <strong><%= page.title %></strong>
+                <span class="explorer__badge">pending</span>
+                <div class="explorer__meta"><%= page.template %>.html.erb &mdash; NDS view not merged yet</div>
               </li>
             <% end %>
           </ul>

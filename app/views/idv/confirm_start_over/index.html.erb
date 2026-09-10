@@ -1,3 +1,27 @@
+<% if nds_layout? %>
+  <%= render(
+        'idv/shared/error',
+        type: :warning,
+        heading: t('idv.cancel.headings.prompt.standard'),
+        current_step: @step_indicator_step,
+        action: {
+          text: t('nds.errors.cancel_verification'),
+          url: idv_session_path(step: :gpo_verify),
+          method: :delete,
+          variant: :destructive,
+        },
+        secondary_action: {
+          text: t('forms.buttons.back'),
+          url: go_back_path || idv_verify_by_mail_enter_code_path,
+        },
+      ) do %>
+    <p><%= t('idv.cancel.description.gpo.start_over') %></p>
+    <ul class="usa-list text-left">
+      <li><%= t('idv.cancel.description.gpo.warnings').first %></li>
+      <li><%= t('nds.errors.start_over_warning') %></li>
+    </ul>
+  <% end %>
+<% else %>
 <%= render(
       'idv/shared/error',
       type: :warning,
@@ -25,3 +49,4 @@
   </div>
 <% end %>
 <%= render('idv/shared/back', step: 'gpo_verify', fallback_path: idv_verify_by_mail_enter_code_path) %>
+<% end %>

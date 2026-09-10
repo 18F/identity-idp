@@ -30,6 +30,7 @@ RSpec.describe Analytics do
       pid: Process.pid,
       trace_id: nil,
       referer: nil,
+      nds_experiment_uuid: 'fake_nds_experiment_uuid',
     }
   end
 

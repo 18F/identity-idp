@@ -97,6 +97,7 @@ module I18n
         { key: 'in_person_proofing.process.passport.info' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.info.choose_id_type', locales: %i[fr es zh] }, # Waiting on translations
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
+        { key: 'nds.totp_setup.new.code_label', locales: %i[fr] }, # "Code" is "Code" in French
         { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
         { key: 'telephony.format_length.six', locales: %i[zh] }, # numeral is not translated

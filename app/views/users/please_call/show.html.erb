@@ -1,3 +1,34 @@
+<% if nds_layout? %>
+  <%= render(
+        'idv/shared/error',
+        heading: t('users.suspended_sign_in_account.heading'),
+      ) do %>
+    <p>
+      <%= t('users.suspended_sign_in_account.contact_details', contact_number: '%{number}')
+            .split('%{number}', -1)
+            .map { |part| ERB::Util.html_escape(part) }
+            .join(
+              link_to(
+                IdentityConfig.store.idv_contact_phone_number,
+                "tel:#{IdentityConfig.store.idv_contact_phone_number.gsub(/\D/, '')}",
+                class: 'link text-no-wrap',
+              ),
+            )
+            .html_safe %>
+    </p>
+    <p>
+      <%= t('users.suspended_sign_in_account.error_details', error_code: '%{code}')
+            .split('%{code}', -1)
+            .map { |part| ERB::Util.html_escape(part) }
+            .join(
+              content_tag(:span, class: 'field-readout field-readout--inline') do
+                content_tag(:span, IdentityConfig.store.account_suspended_support_code, class: 'field-readout__value')
+              end,
+            )
+            .html_safe %>
+    </p>
+  <% end %>
+<% else %>
 <%= render(
       'idv/shared/error',
       heading: t('users.suspended_sign_in_account.heading'),
@@ -8,4 +39,5 @@
     <p>
       <%= t('users.suspended_sign_in_account.error_details', error_code: IdentityConfig.store.account_suspended_support_code) %>
     </p>
+<% end %>
 <% end %>

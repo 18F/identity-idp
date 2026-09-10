@@ -1,5 +1,6 @@
 import {
   enhanceInputValidation,
+  enhanceNdsPhoneGroups,
   enhanceOverflowScrollFade,
   enhancePasswordToggles,
   enhancePhoneInputs,
@@ -714,5 +715,132 @@ describe('InputComponent validation', () => {
     confirmation.dispatchEvent(new InputEvent('input', { bubbles: true }));
     expect(button.disabled).to.equal(false);
     expect(confirmation.validity.valid).to.equal(true);
+  });
+});
+
+describe('NDS phone group', () => {
+  const messages = {
+    valueMissing: 'Phone number is required',
+    invalidUs: 'Enter a 10 digit phone number.',
+    invalidInternational: 'Enter a phone number with the correct number of digits.',
+  };
+
+  const renderPhoneGroup = ({ value = '', country = 'US' } = {}) => {
+    document.body.innerHTML = `
+      <form>
+        <div class="usa-phone-input-group" data-nds-phone
+             data-nds-phone-messages='${JSON.stringify(messages)}'>
+          <div class="usa-phone-input">
+            <details class="usa-phone-input__country">
+              <summary class="usa-phone-input__country-toggle">
+                <span class="usa-phone-input__country-code" data-nds-phone-dial>+1</span>
+              </summary>
+              <div class="popover-menu usa-phone-input__country-list">
+                <label class="usa-phone-input__country-option">
+                  <input type="radio" class="usa-phone-input__country-radio usa-sr-only"
+                         data-nds-phone-country data-dial="+1"
+                         name="new_phone_form[international_code]" value="US" checked>
+                  United States
+                </label>
+                <label class="usa-phone-input__country-option">
+                  <input type="radio" class="usa-phone-input__country-radio usa-sr-only"
+                         data-nds-phone-country data-dial="+44"
+                         name="new_phone_form[international_code]" value="GB">
+                  United Kingdom
+                </label>
+              </div>
+            </details>
+            <span class="usa-phone-input__field">
+              <input id="phone" type="tel" class="usa-phone-input__input" placeholder=" " required>
+              <label for="phone" class="usa-phone-input__label">Phone number</label>
+            </span>
+          </div>
+          <p class="usa-error-message" id="phone-error" data-nds-phone-error hidden></p>
+        </div>
+      </form>
+    `;
+
+    const input = document.querySelector<HTMLInputElement>('.usa-phone-input__input')!;
+    const details = document.querySelector<HTMLDetailsElement>('.usa-phone-input__country')!;
+    const dial = document.querySelector<HTMLElement>('[data-nds-phone-dial]')!;
+    const errorRegion = document.querySelector<HTMLElement>('[data-nds-phone-error]')!;
+    const radios = Array.from(
+      document.querySelectorAll<HTMLInputElement>('[data-nds-phone-country]'),
+    );
+    if (country !== 'US') {
+      radios.find((radio) => radio.value === country)!.checked = true;
+    }
+    input.value = value;
+    enhanceNdsPhoneGroups();
+
+    return { input, details, dial, errorRegion, radios };
+  };
+
+  const type = (input: HTMLInputElement, value: string) => {
+    input.focus();
+    for (const character of value) {
+      const start = input.selectionStart ?? input.value.length;
+      const end = input.selectionEnd ?? start;
+      input.setRangeText(character, start, end, 'end');
+      input.dispatchEvent(new InputEvent('input', { bubbles: true, data: character }));
+    }
+  };
+
+  it('formats the number as you type for the selected country', () => {
+    const { input } = renderPhoneGroup();
+    type(input, '2025550199');
+    expect(input.value).to.equal('(202) 555-0199');
+  });
+
+  it('reformats and updates the collapsed dial code when the country changes', () => {
+    const { input, dial, radios } = renderPhoneGroup({ value: '2025550199' });
+    expect(input.value).to.equal('(202) 555-0199');
+
+    const gb = radios.find((radio) => radio.value === 'GB')!;
+    gb.checked = true;
+    gb.dispatchEvent(new Event('change', { bubbles: true }));
+
+    expect(dial.textContent).to.equal('+44');
+  });
+
+  it('closes the country disclosure after a selection', () => {
+    const { details, radios } = renderPhoneGroup();
+    details.open = true;
+
+    const gb = radios.find((radio) => radio.value === 'GB')!;
+    gb.checked = true;
+    gb.dispatchEvent(new Event('change', { bubbles: true }));
+
+    expect(details.open).to.equal(false);
+  });
+
+  it('shows the required message on blur when empty', () => {
+    const { input, errorRegion } = renderPhoneGroup();
+    input.dispatchEvent(new FocusEvent('blur'));
+
+    expect(input.getAttribute('aria-invalid')).to.equal('true');
+    expect(errorRegion.hidden).to.equal(false);
+    expect(errorRegion.textContent).to.equal(messages.valueMissing);
+  });
+
+  it('shows the invalid-format message for an incomplete number on blur', () => {
+    const { input, errorRegion } = renderPhoneGroup();
+    type(input, '202');
+    input.dispatchEvent(new FocusEvent('blur'));
+
+    expect(input.validity.valid).to.equal(false);
+    expect(errorRegion.textContent).to.equal(messages.invalidUs);
+  });
+
+  it('clears the error once a valid number is entered', () => {
+    const { input, errorRegion } = renderPhoneGroup();
+    type(input, '202');
+    input.dispatchEvent(new FocusEvent('blur'));
+    expect(errorRegion.hidden).to.equal(false);
+
+    type(input, '5550199');
+
+    expect(input.validity.valid).to.equal(true);
+    expect(errorRegion.hidden).to.equal(true);
   });
 });

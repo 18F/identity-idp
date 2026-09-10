@@ -6,9 +6,11 @@ RSpec.describe 'idv/address/new' do
   let(:gpo_request_letter_visited) { nil }
   let(:address_update_request) { nil }
   let(:step_indicator_steps) { Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
+  let(:nds_layout) { false }
 
   shared_examples 'valid address page and form' do
     before do
+      allow(view).to receive(:nds_layout?).and_return(nds_layout)
       allow(view).to receive(:current_user).and_return(user)
       allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
       assign(
@@ -131,5 +133,72 @@ RSpec.describe 'idv/address/new' do
     let(:address_update_request) { true }
 
     it_behaves_like 'valid address page and form'
+  end
+
+  context 'in the NDS layout' do
+    let(:nds_layout) { true }
+
+    before do
+      allow(view).to receive(:nds_layout?).and_return(true)
+      allow(view).to receive(:current_user).and_return(user)
+      allow(view).to receive(:go_back_path).and_return(nil)
+      assign(
+        :presenter, Idv::AddressPresenter.new(
+          gpo_request_letter_visited: gpo_request_letter_visited,
+          address_update_request: address_update_request,
+        )
+      )
+      assign(:address_form, Idv::AddressForm.new({}))
+      render
+    end
+
+    it 'renders the address card with NDS inputs, a state select and continue' do
+      expect(rendered).to have_css('.auth--form-page h1', text: t('doc_auth.headings.address'))
+      expect(rendered).to have_css('.auth__intro-description', text: t('doc_auth.info.address'))
+      %w[address1 address2 city zipcode].each do |field|
+        expect(rendered).to have_css(".usa-input__control[name='idv_form[#{field}]']")
+      end
+      expect(rendered).to have_css(
+        "select.usa-select[name='idv_form[state]'] option[value='']",
+        text: t('idv.form.state'),
+      )
+      expect(rendered).to have_css(
+        '.auth__actions button[type=submit]',
+        text: t('forms.buttons.continue'),
+      )
+      expect(rendered).to have_link(t('links.cancel'), href: idv_cancel_path(step: 'verify'))
+    end
+
+    it 'keeps the hidden Puerto Rico guidance for the state-guidance script' do
+      expect(rendered).to have_css(
+        '#puerto-rico-extra-text.puerto-rico-extras.display-none',
+        visible: :all,
+      )
+    end
+
+    it 'sets the verification header progress' do
+      expect(view.content_for(:nds_header_progress)).to have_css(
+        'nds-progress .progress__step[aria-current="step"]',
+      )
+    end
+
+    context 'when updating the address' do
+      let(:address_update_request) { true }
+
+      it 'uses the update heading and submit with a back action' do
+        expect(rendered).to have_css('h1', text: t('doc_auth.headings.address_update'))
+        expect(rendered).to have_css('button[type=submit]', text: t('forms.buttons.submit.update'))
+        expect(rendered).to have_link(t('forms.buttons.back'), href: idv_verify_info_path)
+      end
+    end
+
+    context 'when requesting a letter' do
+      let(:gpo_request_letter_visited) { true }
+
+      it 'uses the mailing address copy with a back action to the letter page' do
+        expect(rendered).to have_css('h1', text: t('doc_auth.headings.mailing_address'))
+        expect(rendered).to have_link(t('forms.buttons.back'), href: idv_request_letter_path)
+      end
+    end
   end
 end

@@ -1,3 +1,80 @@
+<% if nds_layout? %>
+  <% self.title = t('titles.doc_auth.ssn') %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 5) %>
+  <% end %>
+
+  <% if FeatureManagement.proofing_device_profiling_collecting_enabled? %>
+    <%= render partial: 'shared/threat_metrix_profiling',
+               locals: {
+                 threatmetrix_session_id:,
+                 threatmetrix_javascript_urls:,
+                 threatmetrix_iframe_url:,
+               } %>
+  <% end %>
+
+  <%= simple_form_for(
+        @ssn_presenter.ssn_form,
+        url: url_for,
+        method: :put,
+        html: { data: { nds_submit_gate: true } },
+      ) do |f| %>
+    <%= render NDS::FormPageComponent.new(
+          title: @ssn_presenter.updating_ssn? ? t('doc_auth.headings.ssn_update') : t('doc_auth.headings.ssn'),
+          subtitle: t('nds.ssn.info', app_name: APP_NAME),
+        ) do |page| %>
+      <% if IdentityConfig.store.proofer_mock_fallback %>
+        <% page.with_alert do %>
+          <%= render AlertComponent.new(type: :info) do %>
+            <%= t('doc_auth.instructions.test_ssn') %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <%= render NDS::InputComponent.new(
+                form: f,
+                attribute: :ssn,
+                type: :ssn,
+                label: t('idv.form.ssn_label'),
+                required: true,
+                password_toggle_label: t('forms.ssn.show'),
+                error_messages: { customError: t('idv.errors.pattern_mismatch.ssn') },
+              ) %>
+
+          <div class="copy text-center">
+            <h2 class="heading-s"><%= t('doc_auth.headings.no_ssn') %></h2>
+            <p class="copy--muted margin-0"><%= t('doc_auth.info.no_ssn') %></p>
+          </div>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(type: :submit, full_width: true) do %>
+            <%= @ssn_presenter.updating_ssn? ? t('forms.buttons.submit.update') : t('forms.buttons.continue') %>
+          <% end %>
+          <% if @ssn_presenter.updating_ssn? %>
+            <%= render ButtonComponent.new(
+                  url: go_back_path || idv_verify_info_path,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('forms.buttons.back')) %>
+          <% else %>
+            <%= render ButtonComponent.new(
+                  url: idv_cancel_url(step: 'ssn_offramp'),
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(@ssn_presenter.exit_text) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('nds-input-ssn', 'nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <%#
 Renders a page asking the user to enter their SSN or update their SSN if they had previously entered it.
 This template is used from both the remote and in person (IPP) SsnControllers.
@@ -75,4 +152,5 @@ locals:
   <%= render 'idv/shared/back', fallback_path: idv_verify_info_path %>
 <% else %>
   <%= render 'idv/doc_auth/cancel', step: 'ssn' %>
+<% end %>
 <% end %>

@@ -40,11 +40,11 @@
       <% if @floating_label %>
         <span class="usa-input__floating-label" aria-hidden="true"><%= floating_label_text %></span>
       <% end %>
-      <% if password? %>
+      <% if password? || ssn? %>
         <button
           type="button"
           class="usa-input__toggle"
-          data-nds-password-toggle
+          <%= ssn? ? 'data-nds-ssn-toggle' : 'data-nds-password-toggle' %>
           data-label-show="<%= password_toggle_label %>"
           data-label-hide="<%= password_toggle_hide_label %>"
           aria-controls="<%= input_id %>"

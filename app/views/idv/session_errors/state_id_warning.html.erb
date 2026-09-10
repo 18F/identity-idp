@@ -16,11 +16,13 @@
 
   <p><%= t('idv.warning.state_id.explanation') %></p>
 
-  <p class="margin-bottom-0"><%= t('idv.warning.state_id.next_steps.preamble') %></p>
-  <ul>
-    <% t('idv.warning.state_id.next_steps.items_html', app_name: APP_NAME).each do |item| %>
-      <li><%= item %></li>
-    <% end %>
-  </ul>
+  <% unless nds_layout? %>
+    <p class="margin-bottom-0"><%= t('idv.warning.state_id.next_steps.preamble') %></p>
+    <ul>
+      <% t('idv.warning.state_id.next_steps.items_html', app_name: APP_NAME).each do |item| %>
+        <li><%= item %></li>
+      <% end %>
+    </ul>
+  <% end %>
 <% end %>
 

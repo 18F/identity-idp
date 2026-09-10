@@ -1,5 +1,156 @@
 <% self.title = t('titles.totp_setup.new') %>
 
+<% if nds_layout? %>
+  <% if in_account_creation_flow? %>
+    <% content_for(:nds_header_progress) do %>
+      <%= nds_account_creation_progress(
+            step: :security,
+            substep: enabled_mfa_methods_count >= 1 ? 2 : 1,
+          ) %>
+    <% end %>
+  <% end %>
+
+  <% content_for(:skip_layout_flash, 'true') %>
+  <% content_for(:form_page_flash, 'true') %>
+
+  <%= simple_form_for('', method: :patch, html: { data: { nds_submit_gate: true } }) do |f| %>
+    <%= render NDS::FormPageComponent.new(title: t('nds.totp_setup.new.heading')) do |page| %>
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(gap: 16, align: :stretch) do %>
+          <%= render NDS::StackComponent.new(tag: :ol, gap: 16, class: 'usa-list--unstyled') do %>
+            <li>
+              <div class="card stack stack--gap-24">
+                <ol class="usa-list margin-0" start="1">
+                  <li class="text-body-emphasis" id="totp-step-1-label"><%= t('nds.totp_setup.new.step_1') %></li>
+                </ol>
+                <div class="usa-form-group usa-input-group--floating">
+                  <%= f.text_field(
+                        :name,
+                        class: 'usa-input',
+                        id: 'name',
+                        placeholder: ' ',
+                        required: true,
+                        maxlength: 20,
+                        aria: { labelledby: 'totp-step-1-label' },
+                      ) %>
+                  <%= f.label :name, t('nds.totp_setup.new.nickname_label'), class: 'usa-label' %>
+                </div>
+              </div>
+            </li>
+
+            <li>
+              <div class="card stack stack--gap-24">
+                <ol class="usa-list margin-0" start="2">
+                  <li class="text-body-emphasis"><%= t('nds.totp_setup.new.step_2') %></li>
+                </ol>
+              </div>
+            </li>
+
+            <li>
+              <div class="card stack stack--gap-24">
+                <ol class="usa-list margin-0" start="3">
+                  <li class="text-body-emphasis"><%= t('nds.totp_setup.new.step_3') %></li>
+                </ol>
+                <div class="nds-totp-setup__qrcode text-center padding-y-105">
+                  <%= image_tag @qrcode, size: 220, skip_pipeline: true, alt: t('image_description.totp_qrcode') %>
+                </div>
+                <lg-clipboard-button class="display-block width-full" clipboard-text="<%= @code.upcase %>" tooltip-text="<%= t('components.clipboard_button.tooltip') %>">
+                  <div class="field-readout">
+                    <span class="field-readout__body">
+                      <span class="field-readout__label" id="totp-setup-code-label"><%= t('nds.totp_setup.new.setup_code_label') %></span>
+                      <span class="field-readout__value font-mono-sm" id="qr-code" aria-labelledby="totp-setup-code-label totp-manual-entry"><%= @code %></span>
+                      <span id="totp-manual-entry" class="usa-sr-only"><%= t('instructions.mfa.authenticator.manual_entry') %></span>
+                    </span>
+                    <button type="button" class="field-readout__action" aria-label="<%= t('components.clipboard_button.label') %>">
+                      <%= render NDS::IconComponent.new(icon: :content_copy, size: 24) %>
+                    </button>
+                  </div>
+                </lg-clipboard-button>
+              </div>
+            </li>
+
+            <li>
+              <div class="card stack stack--gap-24">
+                <ol class="usa-list margin-0" start="4">
+                  <li class="text-body-emphasis" id="totp-step-4-label"><%= t('forms.totp_setup.totp_step_4') %></li>
+                </ol>
+                <lg-one-time-code-input class="display-block width-full">
+                  <div class="usa-form-group usa-input-group--floating margin-0">
+                    <%= f.text_field(
+                          :code,
+                          class: 'usa-input',
+                          id: 'code',
+                          placeholder: ' ',
+                          required: true,
+                          autocomplete: 'one-time-code',
+                          inputmode: 'numeric',
+                          pattern: "[0-9]{#{TwoFactorAuthenticatable::OTP_LENGTH}}",
+                          maxlength: TwoFactorAuthenticatable::OTP_LENGTH,
+                        ) %>
+                    <%= f.label :code, t('nds.totp_setup.new.code_label'), class: 'usa-label' %>
+                  </div>
+                </lg-one-time-code-input>
+              </div>
+            </li>
+          <% end %>
+
+          <div class="card">
+            <div class="checkbox-group">
+              <div class="checkbox">
+                <%= f.check_box(
+                      :remember_device,
+                      { class: 'checkbox__input',
+                        checked: @presenter.remember_device_box_checked?,
+                        autocomplete: 'off',
+                        aria: { describedby: 'remember-browser-description' } },
+                      '1',
+                      '0',
+                    ) %>
+                <%= f.label :remember_device, class: 'checkbox__label' do %>
+                  <span class="checkbox__label-text"><%= t('forms.messages.remember_device') %></span>
+                  <span class="checkbox__label-description" id="remember-browser-description"><%= t('nds.totp_setup.new.remember_device_info') %></span>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(type: :submit, full_width: true).with_content(t('forms.buttons.continue')) %>
+          <% if MfaPolicy.new(current_user).two_factor_enabled? && !in_multi_mfa_selection_flow? %>
+            <%= render ButtonComponent.new(
+                  url: account_path,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('links.cancel')) %>
+          <% else %>
+            <%= render ButtonComponent.new(
+                  url: authentication_methods_setup_path,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('nds.mfa.choose_another_method')) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <%= javascript_packs_tag_once(
+          'nds-auth-submit-gate',
+          'clipboard_button_component',
+          'one_time_code_input_component',
+          preload_links_header: false,
+        ) %>
+
+    <%= javascript_tag(nonce: true) do %>
+      window.addEventListener('pageshow', function () {
+        var el = document.getElementById('remember_device');
+        if (el) { el.checked = el.defaultChecked; }
+      });
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('headings.totp_setup.new')) %>
 
 <p>
@@ -77,3 +228,4 @@
 <% end %>
 
 <%= render 'shared/cancel_or_back_to_options' %>
+<% end %>
