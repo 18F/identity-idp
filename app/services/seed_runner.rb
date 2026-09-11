@@ -8,11 +8,11 @@ class SeedRunner
     @failed_seeders = []
   end
 
-  def run(name)
+  def run(seeder, name: seeder.class.name)
     logger.info("[db:seed] Starting #{name}")
-    started_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-    yield
-    duration = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started_at
+    started_at = Time.zone.now
+    yield seeder
+    duration = Time.zone.now - started_at
     logger.info("[db:seed] #{name} succeeded (#{duration.round(2)}s)")
   rescue StandardError => e
     logger.error("[db:seed] #{name} failed: #{e.class}: #{e.message}")
