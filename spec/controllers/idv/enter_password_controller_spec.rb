@@ -534,14 +534,14 @@ RSpec.describe Idv::EnterPasswordController do
           context 'when there is no precheck phone' do
             before { subject.idv_session.precheck_phone = nil }
 
-            it 'dispatches account verified alert without a phone' do
+            it 'falls back to the default phone configuration phone' do
               allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
 
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
               expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
                 profile: user.reload.active_profile,
-                phone: nil,
+                phone: user.default_phone_configuration.formatted_phone,
               )
             end
           end
@@ -557,7 +557,7 @@ RSpec.describe Idv::EnterPasswordController do
 
                 expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
                   profile: user.reload.active_profile,
-                  phone: nil,
+                  phone: user.default_phone_configuration.formatted_phone,
                 )
               end
             end
@@ -566,7 +566,7 @@ RSpec.describe Idv::EnterPasswordController do
 
         context 'when the user completed verification via the hybrid/mobile flow' do
           before do
-            subject.idv_session.address_verification_mechanism = nil
+            subject.idv_session.user_phone_confirmation_session = nil
             subject.idv_session.phone_for_mobile_flow = '+1 202-555-5555'
           end
 
@@ -584,7 +584,7 @@ RSpec.describe Idv::EnterPasswordController do
 
         context 'when there is no phone confirmation session or mobile flow phone' do
           before do
-            subject.idv_session.address_verification_mechanism = nil
+            subject.idv_session.user_phone_confirmation_session = nil
             subject.idv_session.phone_for_mobile_flow = nil
           end
 
@@ -596,6 +596,23 @@ RSpec.describe Idv::EnterPasswordController do
             expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
               profile: user.reload.active_profile,
               phone: user.default_phone_configuration.formatted_phone,
+            )
+          end
+        end
+
+        context 'when the address verification mechanism is not phone' do
+          before do
+            subject.idv_session.address_verification_mechanism = nil
+          end
+
+          it 'dispatches account verified alert without a phone' do
+            allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
+              profile: user.reload.active_profile,
+              phone: nil,
             )
           end
         end
