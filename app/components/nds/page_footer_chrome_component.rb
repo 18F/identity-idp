@@ -82,7 +82,7 @@ module NDS
     end
 
     def opt_out_url
-      Rails.application.routes.url_helpers.nds_opt_out_path
+      nds_opt_out_path
     end
 
     def agency_name

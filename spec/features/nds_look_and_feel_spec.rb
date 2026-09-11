@@ -44,4 +44,27 @@ RSpec.feature 'NDS look and feel experiment' do
         .to eq('experiment-uuid')
     end
   end
+
+  context 'when a user in the NDS bucket opts out via the footer' do
+    let(:bucket) { :nds }
+
+    scenario 'switches to the legacy layout and persists the opt-out' do
+      visit root_path
+      expect(page).to have_css('link[href*="nds_application"]', visible: :all)
+
+      click_button t('nds.footer.switch_to_legacy')
+
+      expect(page).to have_current_path(root_path)
+      expect(page).not_to have_css('link[href*="nds_application"]', visible: :all)
+      expect(
+        AbTestAssignment.bucket(
+          experiment: 'NDS Look and Feel Phase 1',
+          discriminator: 'experiment-uuid',
+        ),
+      ).to eq(:opt_out)
+
+      visit root_path
+      expect(page).not_to have_css('link[href*="nds_application"]', visible: :all)
+    end
+  end
 end
