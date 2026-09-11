@@ -1,0 +1,89 @@
+require 'rails_helper'
+
+RSpec.describe PasswordResetRecaptchaForm do
+  let(:score_threshold_config) { 0.2 }
+  let(:analytics) { FakeAnalytics.new }
+  let(:recaptcha_token) { 'token' }
+  let(:score) { 1.0 }
+  subject(:form) do
+    described_class.new(
+      form_class: RecaptchaMockForm,
+      analytics:,
+      score:,
+    )
+  end
+  before do
+    allow(IdentityConfig.store).to receive(:password_reset_recaptcha_score_threshold)
+      .and_return(score_threshold_config)
+  end
+
+  it 'passes instance variables to form' do
+    recaptcha_form = instance_double(
+      RecaptchaMockForm,
+      submit: FormResponse.new(success: true),
+    )
+    expect(RecaptchaMockForm).to receive(:new)
+      .with(
+        score_threshold: score_threshold_config,
+        score:,
+        analytics:,
+        recaptcha_action: described_class::RECAPTCHA_ACTION,
+      )
+      .and_return(recaptcha_form)
+
+    form.submit(recaptcha_token:)
+  end
+
+  context 'with custom recaptcha form class' do
+    subject(:form) do
+      described_class.new(
+        analytics:,
+        form_class: RecaptchaEnterpriseForm,
+      )
+    end
+
+    it 'validates using form instance of the given class' do
+      recaptcha_form = instance_double(
+        RecaptchaEnterpriseForm,
+        submit: FormResponse.new(success: true),
+      )
+      expect(RecaptchaEnterpriseForm).to receive(:new).and_return(recaptcha_form)
+      expect(recaptcha_form).to receive(:submit)
+
+      form.submit(recaptcha_token:)
+    end
+  end
+
+  describe '#exempt?' do
+    subject(:exempt?) { form.exempt? }
+
+    it { is_expected.to eq(false) }
+
+    context 'score threshold configured at zero' do
+      let(:score_threshold_config) { 0.0 }
+
+      it { is_expected.to eq(true) }
+    end
+  end
+
+  describe '#submit' do
+    subject(:response) { form.submit(recaptcha_token:) }
+
+    context 'recaptcha form validates as unsuccessful' do
+      let(:score) { 0.0 }
+
+      it 'is unsuccessful with errors from recaptcha validation' do
+        expect(response.to_h).to eq(
+          success: false,
+          error_details: { recaptcha_token: { invalid: true } },
+        )
+      end
+    end
+
+    context 'recaptcha form validates as successful' do
+      it 'is successful' do
+        expect(response.to_h).to eq(success: true)
+      end
+    end
+  end
+end
