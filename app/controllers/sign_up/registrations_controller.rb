@@ -25,7 +25,7 @@ module SignUp
         analytics:, attempts_api_tracker:,
       )
 
-      return process_failed_captcha unless recaptcha_response.success?
+      return process_failed_captcha unless recaptcha_form.exempt? || recaptcha_response.success?
 
       result = @register_user_email_form.submit(permitted_params.merge(request_id:))
 

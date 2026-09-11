@@ -17,7 +17,7 @@ module Users
     def create
       @password_reset_email_form = PasswordResetEmailForm.new(email)
 
-      return process_failed_captcha unless recaptcha_response.success?
+      return process_failed_captcha unless recaptcha_form.exempt? || recaptcha_response.success?
 
       result = @password_reset_email_form.submit
 
