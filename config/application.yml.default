@@ -589,7 +589,7 @@ development:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   account_creation_device_profiling: collect_only
-  account_creation_recaptcha_score_threshold: 0.3
+  account_creation_recaptcha_score_threshold: 0.0
   account_creation_tmx_processed_percent: 100
   attribute_encryption_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
