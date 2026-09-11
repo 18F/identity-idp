@@ -375,9 +375,7 @@ module Reporting
       <<~QUERY
         fields @timestamp, @message, id
         | filter name = 'IdV: phone confirmation vendor'
-        | filter properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder" or 
-        properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder_ddp" or 
-        properties.event_properties.alternate_result.vendor.vendor_name = "lexisnexis:phone_finder_ddp"
+        | filter properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder" or properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder_ddp" 
         | display id
         | limit 10000
       QUERY
