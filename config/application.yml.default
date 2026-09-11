@@ -718,7 +718,6 @@ test:
   otps_per_ip_period: 10
   otps_per_ip_track_only_mode: false
   password_pepper: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-  password_reset_recaptcha_score_threshold: 0.0
   phone_confirmation_max_attempt_window_in_minutes: 10
   phone_confirmation_max_attempts: 5
   phone_setups_per_ip_limit: 3
