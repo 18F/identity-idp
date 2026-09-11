@@ -25,6 +25,7 @@ aamva_verification_url: https://example.org:12345/verification/url
 account_creation_device_profiling: disabled
 account_creation_passkey_auto_prompt_percent: 0
 account_creation_passkey_setup_after_password_percent: 0
+account_creation_recaptcha_score_threshold: 0.3
 account_creation_tmx_processed_percent: 0
 account_reset_attempt_window_in_minutes: 1_440
 account_reset_fraud_user_wait_period_days:
@@ -391,6 +392,7 @@ participate_in_dap: false
 passkey_auth_ab_test_percentage: 0
 password_max_attempts: 3
 password_pepper:
+password_reset_recaptcha_score_threshold: 0.0
 personal_key_as_mfa_active: true
 phone_carrier_registration_blocklist_array: '[]'
 phone_confirmation_max_attempt_window_in_minutes: 1_440
@@ -588,6 +590,7 @@ development:
   aamva_public_key: 123abc
   account_creation_device_profiling: collect_only
   account_creation_tmx_processed_percent: 100
+  account_creation_recaptcha_score_threshold: 0.3
   attribute_encryption_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   check_user_password_compromised_enabled: true
@@ -614,6 +617,7 @@ development:
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   password_pepper: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  password_reset_recaptcha_score_threshold: 0.3
   phone_recaptcha_score_threshold: 0.5
   piv_cac_verify_token_secret: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   push_notifications_enabled: true
