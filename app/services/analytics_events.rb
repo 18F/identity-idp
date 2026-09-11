@@ -7015,6 +7015,12 @@ module AnalyticsEvents
     track_event('Multi-Factor Authentication: max otp sends reached')
   end
 
+  # User clicked the "more options" button to reveal additional MFA methods on
+  # the MFA selection page during the NDS look-and-feel experiment.
+  def multi_factor_auth_more_options_clicked(**extra)
+    track_event(:multi_factor_auth_more_options_clicked, **extra)
+  end
+
   # Multi factor selected from auth options list
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
