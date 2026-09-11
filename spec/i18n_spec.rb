@@ -117,7 +117,10 @@ module I18n
         { key: 'webauthn_platform_setup.upsell' },
         { key: 'webauthn_platform_setup.heading', locales: %i[es fr zh] }, # Translations pending
         { key: 'account.index.email_short', locales: %i[es fr zh] }, # NDS: 'Email' same across locales
-        { key: /^nds\.footer\./, locales: %i[es fr zh] }, # Temporary English-only NDS opt-out copy
+        { key: 'nds.footer.experience_notice_html', locales: %i[es fr zh] }, # Translations pending
+        { key: 'nds.footer.experience_notice_label', locales: %i[es fr zh] }, # Translations pending
+        { key: 'nds.footer.experience_notice_link', locales: %i[es fr zh] }, # Translations pending
+        { key: 'nds.footer.switch_to_legacy', locales: %i[es fr zh] }, # Translations pending
       ].freeze
       # rubocop:enable Layout/LineLength
 

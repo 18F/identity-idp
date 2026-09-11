@@ -1,7 +1,5 @@
 @use 'uswds-core' as *;
 
-$nds-opt-out-breakpoint: 800px;
-
 .page-footer__experience-notice {
   align-items: center;
   background: color('base-lightest');
@@ -23,10 +21,8 @@ $nds-opt-out-breakpoint: 800px;
   .usa-link {
     flex: 0 0 auto;
   }
-}
 
-@media (width >= #{$nds-opt-out-breakpoint}) {
-  .page-footer__experience-notice {
+  @include at-media('tablet') {
     flex-direction: row;
     justify-content: space-between;
     padding: units(3) units(8);
@@ -34,7 +30,6 @@ $nds-opt-out-breakpoint: 800px;
 
     .copy {
       text-align: left;
-      white-space: nowrap;
     }
   }
 }

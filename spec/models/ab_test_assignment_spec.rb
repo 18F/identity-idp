@@ -38,9 +38,9 @@ RSpec.describe AbTestAssignment do
   describe '.opt_out!' do
     let(:args) { { experiment: 'experiment', discriminator: 'discriminator' } }
 
-    it 'returns false when no assignment exists' do
-      expect(described_class.opt_out!(**args)).to be(false)
-      expect(described_class.count).to eq(0)
+    it 'creates an opt_out assignment when none exists' do
+      expect { described_class.opt_out!(**args) }.to change { described_class.count }.by(1)
+      expect(described_class.bucket(**args)).to eq(:opt_out)
     end
 
     it 'updates an existing assignment' do

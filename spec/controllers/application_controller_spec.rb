@@ -942,15 +942,49 @@ RSpec.describe ApplicationController do
     end
 
     context 'when the user has opted out of the NDS interface' do
-      it 'continues to resolve the legacy layout from the opt_out assignment' do
-        AbTestAssignment.create!(
-          experiment: AbTests::NDS_LOOK_AND_FEEL.experiment,
-          discriminator: controller.send(:nds_experiment_uuid),
-          bucket: 'opt_out',
-        )
+      let(:nds_ab_bucket) { :opt_out }
+
+      it 'resolves the legacy layout from the opt_out assignment' do
         get :index
 
         expect(controller.nds_layout?).to eq(false)
+        expect(session[:nds_ab_test_bucket]).to eq('opt_out')
+      end
+
+      it 'is not overridden by the ui_test_bucket param or cookie' do
+        request.cookies['ui_test_bucket'] = 'nds'
+        get :index, params: { ui_test_bucket: 'nds' }
+
+        expect(controller.nds_layout?).to eq(false)
+      end
+
+      it 'resolves the legacy layout from the session without re-evaluating the A/B test' do
+        session[:nds_ab_test_bucket] = 'opt_out'
+        expect(controller).not_to receive(:ab_test_bucket)
+
+        get :index
+
+        expect(controller.nds_layout?).to eq(false)
+      end
+    end
+
+    context 'when the A/B bucket is nds' do
+      let(:nds_ab_bucket) { :nds }
+
+      it 'resolves the nds layout and caches the bucket as a string in the session' do
+        get :index
+
+        expect(controller.nds_layout?).to eq(true)
+        expect(session[:nds_ab_test_bucket]).to eq('nds')
+      end
+    end
+
+    context 'when the A/B test is inactive' do
+      it 'does not cache a bucket, so the test is re-evaluated on the next request' do
+        get :index
+
+        expect(controller.nds_layout?).to eq(false)
+        expect(session[:nds_ab_test_bucket]).to be_nil
       end
     end
 

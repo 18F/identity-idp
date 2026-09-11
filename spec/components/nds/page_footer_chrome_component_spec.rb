@@ -32,7 +32,7 @@ RSpec.describe NDS::PageFooterChromeComponent, type: :component do
 
   it 'renders a localized experience notice with a same-page legacy link' do
     expect(rendered).to have_css(
-      'aside.page-footer__experience-notice p.copy.copy--muted',
+      '[role=region].page-footer__experience-notice p.copy.copy--muted',
       text: t('nds.footer.experience_notice_link'),
     )
     expect(rendered).to have_link(
