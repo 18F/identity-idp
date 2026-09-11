@@ -147,11 +147,11 @@ GEM
       uri (>= 0.13.1)
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
-    ahoy_matey (3.3.0)
-      activesupport (>= 5)
-      device_detector
-      geocoder (>= 1.4.5)
-      safely_block (>= 0.2.1)
+    ahoy_matey (5.5.0)
+      activesupport (>= 7.2)
+      cgi
+      device_detector (>= 1)
+      safely_block (>= 0.4)
     android_key_attestation (0.3.0)
     ast (2.4.3)
     aws-eventstream (1.4.0)
@@ -254,6 +254,7 @@ GEM
       nokogiri (~> 1.10, >= 1.10.4)
       rubyzip (>= 2.4, < 4)
     cbor (0.5.10.1)
+    cgi (0.5.2)
     childprocess (5.1.0)
       logger (~> 1.5)
     chunky_png (1.4.0)
@@ -620,7 +621,13 @@ GEM
     parser (3.3.10.2)
       ast (~> 2.4.1)
       racc
-    pg (1.5.9)
+    pg (1.6.3)
+    pg (1.6.3-aarch64-linux)
+    pg (1.6.3-aarch64-linux-musl)
+    pg (1.6.3-arm64-darwin)
+    pg (1.6.3-x86_64-darwin)
+    pg (1.6.3-x86_64-linux)
+    pg (1.6.3-x86_64-linux-musl)
     pg_query (6.2.2)
       google-protobuf (>= 3.25.3)
     phonelib (0.10.15)
@@ -817,7 +824,7 @@ GEM
       nokogiri (>= 1.13.10)
       rexml
     ruby-statistics (3.0.2)
-    rubyzip (3.2.2)
+    rubyzip (3.6.0)
     safe_target_blank (1.0.2)
       rails
     safely_block (0.5.0)
@@ -857,18 +864,18 @@ GEM
     simplecov_json_formatter (0.1.4)
     simpleidn (0.2.3)
     smart_properties (1.17.0)
-    sqlite3 (2.9.5)
+    sqlite3 (2.9.6)
       mini_portile2 (~> 2.8.0)
-    sqlite3 (2.9.5-aarch64-linux-gnu)
-    sqlite3 (2.9.5-aarch64-linux-musl)
-    sqlite3 (2.9.5-arm-linux-gnu)
-    sqlite3 (2.9.5-arm-linux-musl)
-    sqlite3 (2.9.5-arm64-darwin)
-    sqlite3 (2.9.5-x86-linux-gnu)
-    sqlite3 (2.9.5-x86-linux-musl)
-    sqlite3 (2.9.5-x86_64-darwin)
-    sqlite3 (2.9.5-x86_64-linux-gnu)
-    sqlite3 (2.9.5-x86_64-linux-musl)
+    sqlite3 (2.9.6-aarch64-linux-gnu)
+    sqlite3 (2.9.6-aarch64-linux-musl)
+    sqlite3 (2.9.6-arm-linux-gnu)
+    sqlite3 (2.9.6-arm-linux-musl)
+    sqlite3 (2.9.6-arm64-darwin)
+    sqlite3 (2.9.6-x86-linux-gnu)
+    sqlite3 (2.9.6-x86-linux-musl)
+    sqlite3 (2.9.6-x86_64-darwin)
+    sqlite3 (2.9.6-x86_64-linux-gnu)
+    sqlite3 (2.9.6-x86_64-linux-musl)
     ssrf_filter (1.5.0)
     stringex (2.8.6)
     stringio (3.2.0)
@@ -956,7 +963,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  ahoy_matey (~> 3.0)
+  ahoy_matey (~> 5.0)
   aws-sdk-cloudwatchlogs
   aws-sdk-kms (~> 1.71.0)
   aws-sdk-pinpoint
@@ -992,6 +999,7 @@ DEPENDENCIES
   faraday-retry
   foundation_emails
   fugit
+  geocoder (~> 1.8)
   good_job (~> 4.0)
   google-cloud-recaptcha_enterprise (~> 2.1)
   http_accept_language
@@ -1019,7 +1027,7 @@ DEPENDENCIES
   nokogiri (~> 1.19.4)
   numbers_and_words (~> 1.0)
   openapi3_parser (~> 0.10.0)
-  pg (~> 1.5.0)
+  pg (~> 1.6.0)
   pg_query
   phonelib (= 0.10.15)
   premailer-rails (>= 1.12.0)

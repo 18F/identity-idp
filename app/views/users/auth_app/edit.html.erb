@@ -24,6 +24,7 @@
       url: auth_app_path(id: @form.configuration.id),
       method: :delete,
       form: { aria: { label: t('two_factor_authentication.auth_app.delete') } },
+      variant: :destructive,
       big: true,
       wide: true,
       danger: true,

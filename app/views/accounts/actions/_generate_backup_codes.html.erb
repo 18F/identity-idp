@@ -1,5 +1,7 @@
 <%= render ButtonComponent.new(
       url: backup_code_setup_path,
+      variant: :secondary,
+      size: :md,
       icon: :add,
       class: 'usa-button usa-button--outline margin-top-2',
     ).with_content(t('forms.backup_code.generate')) %>

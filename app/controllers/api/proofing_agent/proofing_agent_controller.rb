@@ -26,6 +26,7 @@ module Api
           ssn_profile_found: ssn_active_profiles.any?,
           profiles: active_profiles_info,
           email_account_awaiting_binding: !!user&.proofing_agent_user_awaiting_binding?,
+          account_email_confirmed: email_confirmed?,
         }
 
         analytics.idv_proofing_agent_account_check_requested(
@@ -37,7 +38,8 @@ module Api
 
       def proof_user
         return render_user_not_found if user.blank?
-        return render_already_proofed if user_has_enhanced_profile?
+        return render_user_email_unconfirmed unless email_confirmed?
+        return render_already_proofed if already_proofed?
         return render_user_awaiting_binding if user.proofing_agent_user_awaiting_binding?
 
         if proofing_rate_limiter.limited? || ssn_rate_limiter.limited?
@@ -133,6 +135,18 @@ module Api
 
       def render_user_not_found
         response_body = { status: 'failed', reason: 'email_not_found' }
+
+        analytics.idv_proofing_agent_proof_user_requested(
+          **analytics_arguments,
+          response_body:,
+          transaction_id: nil,
+        )
+
+        render json: response_body, status: :unprocessable_content
+      end
+
+      def render_user_email_unconfirmed
+        response_body = { status: 'failed', reason: 'account_email_unconfirmed' }
 
         analytics.idv_proofing_agent_proof_user_requested(
           **analytics_arguments,
@@ -240,7 +254,15 @@ module Api
       end
 
       def user
-        @user ||= User.find_with_email(email)
+        @user ||= email_address&.user
+      end
+
+      def email_address
+        @email_address ||= EmailAddress.find_with_confirmed_or_unconfirmed_email(email)
+      end
+
+      def email_confirmed?
+        !!email_address&.confirmed_at
       end
 
       def ssn_active_profiles
@@ -293,6 +315,12 @@ module Api
         active_profiles.any? do |profile|
           profile.enhanced?
         end
+      end
+
+      def already_proofed?
+        return false if IdentityConfig.store.idv_proofing_agent_proof_user_with_enhanced_profile
+
+        user_has_enhanced_profile?
       end
 
       def email

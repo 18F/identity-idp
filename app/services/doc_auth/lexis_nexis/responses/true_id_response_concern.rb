@@ -62,6 +62,10 @@ module DocAuth
           )
         end
 
+        def unsupported_passport_card?
+          passport_card_detected? && !passport_cards_supported
+        end
+
         def expected_document_type_received?
           expected_id_types = passport_requested ?
             Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES :

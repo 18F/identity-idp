@@ -71,11 +71,19 @@ module IdvStepConcern
     if idv_session.skip_hybrid_handoff? || !FeatureManagement.idv_allow_hybrid_flow?
       idv_session.flow_path = 'standard'
 
-      if in_person_proofing_route_enabled?
+      if in_person_proofing_route_enabled? || clear1_enabled?
         redirect_to idv_how_to_verify_url
       else
         redirect_to idv_choose_id_type_url
       end
+    end
+  end
+
+  def clear1_enabled?
+    idv_session.clear1_enabled ||= begin
+      return false unless IdentityConfig.store.idv_clear1_enabled
+
+      ab_test_bucket(:CLEAR1_ALLOWED) == :idv_clear1_allowed
     end
   end
 

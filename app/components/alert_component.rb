@@ -1,25 +1,43 @@
 # frozen_string_literal: true
 
 class AlertComponent < BaseComponent
-  attr_reader :type, :message, :tag_options, :text_tag
+  include NDSBucketResolvable
 
-  validates_inclusion_of :type, in: [nil, :info, :success, :warning, :error, :emergency]
+  attr_reader :type, :title, :message, :dismissible, :action, :text_tag, :tag_options
 
-  def initialize(type: nil, text_tag: 'p', message: nil, **tag_options)
+  # nil is the historical default for existing call sites; :neutral is the
+  # default used by the NDS look and feel. Both render as a neutral alert.
+  validates_inclusion_of :type,
+                         in: [nil, :neutral, :info, :success, :warning, :error, :emergency]
+
+  def initialize(
+    type: nil,
+    title: nil,
+    message: nil,
+    dismissible: false,
+    action: nil,
+    text_tag: 'p',
+    **tag_options
+  )
     @type = type
+    @title = title
     @message = message
-    @tag_options = tag_options
+    @dismissible = dismissible
+    @action = action&.to_h&.symbolize_keys
     @text_tag = text_tag
+    @tag_options = tag_options
   end
 
   def role
-    if type == :error
-      'alert'
-    else
-      'status'
-    end
+    type == :error ? 'alert' : 'status'
   end
 
+  def content
+    @message || super
+  end
+
+  # Legacy bucket: origin/main markup. title:/dismissible:/action: are ignored
+  # here; NDSAlertComponent honors them.
   def css_class
     ['usa-alert', modifier_css_class, *tag_options[:class]]
   end
@@ -39,7 +57,18 @@ class AlertComponent < BaseComponent
     end
   end
 
-  def content
-    @message || super
+  private
+
+  # The NDS variant excluded from the render-time flip (see
+  # NDSBucketResolvable) so it renders its own markup instead of recursing.
+  def nds_variant_class
+    NDSAlertComponent
+  end
+
+  def nds_delegate
+    NDSAlertComponent.new(
+      type:, title:, message:, dismissible:, action:, text_tag:,
+      **tag_options
+    )
   end
 end

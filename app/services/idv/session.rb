@@ -7,6 +7,9 @@ module Idv
   # @attr address_verification_mechanism [String, nil]
   # @attr agent_proofed [Boolean, nil]
   # @attr applicant [Struct, nil]
+  # @attr clear1_enabled [Boolean, nil]
+  # @attr clear1_verification_state [String, nil]
+  # @attr clear1_verification_token [String, nil]
   # @attr doc_auth_vendor [String, nil]
   # @attr document_capture_session_uuid [String, nil]
   # @attr flow_path [String, nil]
@@ -63,7 +66,9 @@ module Idv
       address_verification_mechanism
       agent_proofed
       applicant
-      bucketed_doc_auth_vendor
+      clear1_enabled
+      clear1_verification_state
+      clear1_verification_token
       doc_auth_vendor
       document_capture_session_uuid
       flow_path
@@ -148,18 +153,33 @@ module Idv
       end
 
       active_enrollment = current_user.active_enrollment
+      user_has_pending_enrollment = current_user.pending_in_person_enrollment.present?
+
+      # Enrollment never moves from establishing to pending
+      if active_enrollment.present? && !user_has_pending_enrollment
+        raise UspsInPersonProofing::Exception::EnrollmentNotPendingError.new(
+          active_enrollment.id,
+        )
+      end
 
       profile_maker = build_profile_maker(user_password)
-      profile = profile_maker.save_profile(
-        fraud_pending_reason: threatmetrix_fraud_pending_reason,
-        gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
-        in_person_verification_needed: active_enrollment.present?,
-        selfie_check_performed: session[:selfie_check_performed],
-        proofing_components:,
-        proofing_agent_requested: agent_proofed,
-      )
+      profile = ActiveRecord::Base.transaction do
+        profile = profile_maker.save_profile(
+          fraud_pending_reason: threatmetrix_fraud_pending_reason,
+          gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
+          in_person_verification_needed: user_has_pending_enrollment,
+          selfie_check_performed: session[:selfie_check_performed],
+          proofing_components:,
+          proofing_agent_requested: agent_proofed,
+        )
 
-      profile.activate unless profile.reason_not_to_activate
+        profile.activate unless profile.reason_not_to_activate
+
+        # assign profile to the enrollment
+        active_enrollment.update!(profile:) if profile.in_person_verification_pending?
+
+        profile
+      end
 
       self.profile_id = profile.id
       self.personal_key = profile.personal_key
@@ -168,9 +188,6 @@ module Idv
         profile_maker.pii_attributes,
         profile.id,
       )
-
-      # assign profile to the enrollment
-      active_enrollment.update(profile:) if profile.in_person_verification_pending?
 
       if profile.gpo_verification_pending?
         create_gpo_entry(profile_maker.pii_attributes, profile)

@@ -10,7 +10,9 @@ module TwoFactorAuthentication
     before_action :redirect_if_blank_phone, only: [:show]
     before_action :confirm_voice_capability, only: [:show]
 
-    helper_method :in_multi_mfa_selection_flow?
+    delegate :enabled_mfa_methods_count, to: :mfa_context
+    helper_method :in_multi_mfa_selection_flow?, :in_account_creation_flow?,
+                  :enabled_mfa_methods_count
 
     def show
       recaptcha_annotation = annotate_recaptcha(
@@ -91,9 +93,11 @@ module TwoFactorAuthentication
     end
 
     def track_mfa_added
+      parsed_phone = Phonelib.parse(phone)
       analytics.multi_factor_auth_added_phone(
         enabled_mfa_methods_count: MfaContext.new(current_user).enabled_mfa_methods_count,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         recaptcha_annotation: RecaptchaAnnotator.annotate(
           assessment_id: user_session.delete(:phone_recaptcha_assessment_id),
           reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
@@ -150,8 +154,8 @@ module TwoFactorAuthentication
     end
 
     def phone
-      phone_configuration&.phone ||
-        user_session[:unconfirmed_phone]
+      return user_session[:unconfirmed_phone] if unconfirmed_phone?
+      phone_configuration&.phone
     end
 
     def phone_configuration
@@ -182,18 +186,21 @@ module TwoFactorAuthentication
     def analytics_properties
       parsed_phone = Phonelib.parse(phone)
 
-      {
+      properties = {
         context: context,
         multi_factor_auth_method: params[:otp_delivery_preference],
         confirmation_for_add_phone: confirmation_for_add_phone?,
         area_code: parsed_phone.area_code,
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
-        phone_configuration_id: phone_configuration&.id,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
         attempts: mfa_attempts_count,
       }
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
+        properties[:phone_configuration_id] = phone_configuration&.id
+      end
+      properties
     end
 
     def presenter_for_two_factor_authentication_method
@@ -264,9 +271,6 @@ module TwoFactorAuthentication
 
     def phone_confirmed
       create_user_event(:phone_confirmed)
-      # If the user has MFA configured, then they are not adding a phone during sign up and are
-      # instead adding it outside the sign up flow
-      return unless MfaPolicy.new(current_user).two_factor_enabled?
     end
 
     def selected_otp_make_default_number

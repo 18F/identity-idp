@@ -1,3 +1,27 @@
+<% if nds_layout? %>
+  <% help_url = if decorated_sp_session.sp_name.present?
+                  return_to_sp_failure_to_proof_path(step: 'verify_info', location: request.params[:action])
+                else
+                  account_path
+                end %>
+  <%= render(
+        'idv/shared/error',
+        title: t('titles.failure.information_not_verified'),
+        heading: t('idv.failure.verify.heading'),
+        action: { text: t('idv.failure.verify.exit', app_name: APP_NAME), url: :return_to_sp_failure_to_proof, method: :get },
+        secondary_action: {
+          text: strip_tags(
+            t('idv.failure.verify.fail_link_html', sp_name: decorated_sp_session.sp_name.presence || APP_NAME),
+          ),
+          url: help_url,
+        },
+      ) do %>
+    <p>
+      <%= t('idv.failure.verify.fail_link_html', sp_name: decorated_sp_session.sp_name.presence || APP_NAME) %>
+      <%= t('idv.failure.verify.fail_text') %>
+    </p>
+  <% end %>
+<% else %>
 <%= render(
       'idv/shared/error',
       title: t('titles.failure.information_not_verified'),
@@ -21,4 +45,5 @@
       <% end %>
       <%= t('idv.failure.verify.fail_text') %>
     </p>
+<% end %>
 <% end %>

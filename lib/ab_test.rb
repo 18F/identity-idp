@@ -14,6 +14,8 @@ class AbTest
 
   MAX_SHA = (16 ** 64) - 1
 
+  ALL_EVENTS = //
+
   ReportQueryConfig = Struct.new(:title, :query, :row_labels, keyword_init: true).freeze
 
   ReportConfig = Struct.new(:email, :queries, keyword_init: true) do

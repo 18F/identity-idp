@@ -1,5 +1,103 @@
 <% self.title = @presenter.heading %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 12) %>
+  <% end %>
+
+  <%= simple_form_for(:idv_form, url: sign_up_completed_path, html: { data: { nds_submit_gate: true } }) do |f| %>
+    <%= render NDS::FormPageComponent.new(
+          title: @presenter.idv_requested? ? t('nds.completions.heading_idv') : @presenter.heading,
+          subtitle: @presenter.idv_requested? ?
+            t('nds.completions.intro_html', sp_html: content_tag(:strong, @presenter.sp_name)) :
+            @presenter.intro,
+        ) do |page| %>
+      <% if current_sp&.logo.present? %>
+        <% page.with_media do %>
+          <%= image_tag(current_sp.logo_url, alt: @presenter.sp_name, class: 'auth__media', width: 96, height: 96) %>
+        <% end %>
+      <% end %>
+
+      <% if !@multiple_factors_enabled %>
+        <% page.with_alert do %>
+          <%= render(AlertComponent.new(type: :warning)) do %>
+            <%= link_to(t('mfa.second_method_warning.link'), authentication_methods_setup_path) %>
+            <%= t('mfa.second_method_warning.text') %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(align: :stretch, gap: 24) do %>
+          <%= render NDS::CardComponent.new(class: 'card--elevated text-left') do %>
+            <%= render NDS::StackComponent.new(align: :stretch, gap: 24) do %>
+              <dl class="nds-summary">
+                <% @presenter.pii.each do |attribute_key, attribute_value| %>
+                  <% next if attribute_value.blank? %>
+                  <div class="nds-summary__row">
+                    <div class="nds-summary__cell">
+                      <dt class="nds-summary__label"><%= t("help_text.requested_attributes.#{attribute_key}") %></dt>
+                      <dd class="nds-summary__value">
+                        <% if attribute_value.is_a? Array %>
+                          <%= safe_join(attribute_value, tag.br) %>
+                        <% elsif attribute_key == :social_security_number %>
+                          <span class="nds-masked" data-nds-masked>
+                            <span class="masked-text__text" data-masked="true">
+                              <span class="usa-sr-only"><%= t('idv.accessible_labels.masked_ssn', first_number: attribute_value[0], last_number: attribute_value[-1]) %></span>
+                              <span aria-hidden="true" class="text-no-wrap"><%= "•••-••-#{attribute_value.to_s.delete('-')[-4..]}" %></span>
+                            </span>
+                            <span class="masked-text__text display-none text-no-wrap" data-masked="false"><%= attribute_value %></span>
+                            <button type="button" class="nds-masked__toggle" data-nds-masked-toggle aria-pressed="false" aria-label="<%= t('forms.ssn.show') %>">
+                              <%= render NDS::IconComponent.new(icon: :visibility_off, size: 16, class: 'nds-masked__icon-show') %>
+                              <%= render NDS::IconComponent.new(icon: :visibility, size: 16, class: 'nds-masked__icon-hide', hidden: true) %>
+                            </button>
+                          </span>
+                        <% elsif attribute_key == :verified_at %>
+                          <%= render TimeComponent.new(time: attribute_value) %>
+                        <% else %>
+                          <%= attribute_value.to_s %>
+                        <% end %>
+                      </dd>
+                    </div>
+                    <% if attribute_key == :email %>
+                      <%= render ButtonComponent.new(
+                            url: sign_up_select_email_path,
+                            variant: :tertiary,
+                            size: :sm,
+                          ).with_content(t('help_text.requested_attributes.change_email_link')) %>
+                    <% end %>
+                  </div>
+                <% end %>
+              </dl>
+
+              <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+                <%= render ButtonComponent.new(type: :submit, full_width: true)
+                      .with_content(t('forms.buttons.continue')) %>
+                <%= render ButtonComponent.new(
+                      url: sign_up_completed_cancel_path,
+                      variant: :secondary,
+                      full_width: true,
+                    ).with_content(t('links.cancel')) %>
+              <% end %>
+            <% end %>
+          <% end %>
+
+          <p class="copy--muted text-center margin-0">
+            <%= t(
+                  'sign_up.information_sharing_html',
+                  app_name: APP_NAME,
+                  link_html: new_tab_link_to(t('notices.privacy.privacy_act_statement'), MarketingSite.privacy_act_statement_url),
+                ) %>
+          </p>
+
+          <%= image_tag('nds/illustrations/nist.png', alt: t('nds.completions.nist_alt'), class: 'width-full height-auto') %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('nds-masked-text', 'nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <div class="text-center">
   <%= image_tag(
         asset_url('user-signup.svg'),
@@ -68,10 +166,23 @@
   <% end %>
 <% end %>
 
+<p class="margin-top-4 margin-bottom-4">
+  <%= t(
+        'sign_up.information_sharing_html',
+        app_name: APP_NAME,
+        link_html: new_tab_link_to(
+          t('notices.privacy.privacy_act_statement'),
+          MarketingSite.privacy_act_statement_url,
+        ),
+      )
+  %>
+</p>
+
 <%= simple_form_for(:idv_form, url: sign_up_completed_path, html: { class: 'margin-y-5' }) do |f| %>
   <%= f.submit t('sign_up.agree_and_continue') %>
 <% end %>
 
 <%= render PageFooterComponent.new do %>
   <%= link_to t('links.cancel'), sign_up_completed_cancel_path %>
+<% end %>
 <% end %>

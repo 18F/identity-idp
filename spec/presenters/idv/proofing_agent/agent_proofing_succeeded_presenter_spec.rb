@@ -16,6 +16,32 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
     it 'routes users to the sign-in screen' do
       expect(presenter.confirmation_url).to eq(new_user_session_url(host: 'example.com'))
     end
+
+    context 'with a service provider' do
+      let(:service_provider) do
+        create(:service_provider, return_to_sp_url: 'https://partner.example.gov')
+      end
+
+      subject(:presenter) do
+        described_class.new(
+          verified_at: '2026-04-02 16:24:00 -0500',
+          url_options: { host: 'example.com' },
+          service_provider:,
+        )
+      end
+
+      it 'routes users to the partner' do
+        expect(presenter.confirmation_url).to eq('https://partner.example.gov')
+      end
+
+      context 'when the service provider has no return to SP url' do
+        let(:service_provider) { create(:service_provider, return_to_sp_url: nil) }
+
+        it 'falls back to the sign-in screen' do
+          expect(presenter.confirmation_url).to eq(new_user_session_url(host: 'example.com'))
+        end
+      end
+    end
   end
 
   describe '#contact_us_url' do

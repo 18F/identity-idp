@@ -21,6 +21,8 @@ module FraudOps
     def track_event(event_type, metadata = {})
       return unless enabled?
 
+      overwrite_user_if_applicable(metadata.delete(:user_id))
+
       event = AttemptsApi::AttemptEvent.new(
         event_type: event_type,
         session_id: session_id,

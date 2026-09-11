@@ -3738,6 +3738,22 @@ module AnalyticsEvents
     track_event('IdV: in person proofing switch_back visited', flow_path: flow_path, **extra)
   end
 
+  # Tracks when a USPS in-person proofing enrollment never reached "pending" status after scheduling
+  # @param [String] context
+  # @param [Integer] enrollment_id
+  def idv_in_person_usps_enrollment_not_pending(
+    context:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      :idv_in_person_usps_enrollment_not_pending,
+      context:,
+      enrollment_id:,
+      **extra,
+    )
+  end
+
   # An email from USPS with an enrollment code has been received, indicating
   # the enrollment is approved or failed. A check is required to get the status
   # it is not included in the email.
@@ -6109,6 +6125,17 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] document_type_requested The type of document the user chose to verify with
+  # The user clicked the button on the document capture interstitial page that redirects
+  # them to the Socure DocV capture app
+  def idv_socure_docv_redirect_requested(document_type_requested: nil, **extra)
+    track_event(
+      :idv_socure_docv_redirect_requested,
+      document_type_requested:,
+      **extra,
+    )
+  end
+
   # Socure KYC API was called with the following results
   # @param [Boolean] success Result from Socure KYC API call
   # @param [Hash] errors Result from resolution proofing
@@ -6737,6 +6764,9 @@ module AnalyticsEvents
   # @param [Boolean] available_webauthn_platform_config shows user has a webauth_platform config
   # @param [Integer] webauthn_auth_duration the duration to complete webauthn auth in seconds
   # @param [Boolean, nil] webauthn_verification_auto_prompted Whether passkey auth was auto-prompted
+  # @param [String[], nil] webauthn_transports WebAuthn transports recorded when the credential was
+  #   registered. Describes credential capability, not the transport used for this ceremony.
+  # @param [Hash, nil] authenticator_data_flags WebAuthn authenticator data flags for creds
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -6765,6 +6795,8 @@ module AnalyticsEvents
     available_webauthn_platform_config: nil,
     webauthn_auth_duration: nil,
     webauthn_verification_auto_prompted: nil,
+    webauthn_transports: nil,
+    authenticator_data_flags: nil,
     **extra
   )
     track_event(
@@ -6795,6 +6827,8 @@ module AnalyticsEvents
       available_webauthn_platform_config:,
       webauthn_auth_duration:,
       webauthn_verification_auto_prompted:,
+      webauthn_transports:,
+      authenticator_data_flags:,
       **extra,
     )
   end
@@ -6803,11 +6837,13 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
+  # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param ['phone'] method_name Authentication method added
   def multi_factor_auth_added_phone(
     enabled_mfa_methods_count:,
     recaptcha_annotation:,
     in_account_creation_flow:,
+    phone_fingerprint:,
     method_name: :phone,
     **extra
   )
@@ -6817,6 +6853,7 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       recaptcha_annotation:,
       in_account_creation_flow:,
+      phone_fingerprint:,
       **extra,
     )
   end
@@ -6842,19 +6879,18 @@ module AnalyticsEvents
   # @param [Integer] attempts number of MFA setup attempts
   # @param [String] multi_factor_auth_method
   # @param [Boolean] confirmation_for_add_phone
-  # @param [Integer] phone_configuration_id
   # @param [String] area_code Area code of phone number
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
+  # @param [Integer] phone_configuration_id
   # Multi-Factor Authentication enter OTP visited
   def multi_factor_auth_enter_otp_visit(
     context:,
     multi_factor_auth_method:,
     confirmation_for_add_phone:,
-    phone_configuration_id:,
     area_code:,
     country_code:,
     phone_fingerprint:,
@@ -6862,6 +6898,7 @@ module AnalyticsEvents
     enabled_mfa_methods_count:,
     attempts: nil,
     recaptcha_annotation: nil,
+    phone_configuration_id: nil,
     **extra
   )
     track_event(
@@ -6870,13 +6907,13 @@ module AnalyticsEvents
       attempts:,
       multi_factor_auth_method:,
       confirmation_for_add_phone:,
-      phone_configuration_id:,
       area_code:,
       country_code:,
       phone_fingerprint:,
       in_account_creation_flow:,
       enabled_mfa_methods_count:,
       recaptcha_annotation:,
+      phone_configuration_id:,
       **extra,
     )
   end
@@ -7062,7 +7099,6 @@ module AnalyticsEvents
   # @param [String] area_code Area code of phone number
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
-  # @param [Integer] phone_configuration_id Database ID of phone configuration
   # @param [Integer] auth_app_configuration_id Database ID of authentication app configuration
   # @param [Boolean] totp_secret_present Whether TOTP secret was present in form validation
   # @param [Boolean] new_device Whether the user is authenticating from a new device
@@ -7094,7 +7130,6 @@ module AnalyticsEvents
     area_code: nil,
     country_code: nil,
     phone_fingerprint: nil,
-    phone_configuration_id: nil,
     totp_secret_present: nil,
     auth_app_configuration_id: nil,
     new_device: nil,
@@ -7126,7 +7161,6 @@ module AnalyticsEvents
       area_code:,
       country_code:,
       phone_fingerprint:,
-      phone_configuration_id:,
       totp_secret_present:,
       auth_app_configuration_id:,
       new_device:,
@@ -8856,7 +8890,6 @@ module AnalyticsEvents
   #   reason for the consent screen being shown
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
-  # @param [String, nil] disposable_email_domain Disposable email domain used for registration
   # @param [String, nil] in_person_proofing_status In person proofing status
   # @param [String, nil] doc_auth_result The doc auth result
   def user_registration_complete(
@@ -8867,7 +8900,6 @@ module AnalyticsEvents
     needs_completion_screen_reason:,
     sp_session_requested_attributes:,
     ialmax: nil,
-    disposable_email_domain: nil,
     in_person_proofing_status: nil,
     doc_auth_result: nil,
     **extra
@@ -8881,7 +8913,6 @@ module AnalyticsEvents
       in_account_creation_flow:,
       needs_completion_screen_reason:,
       sp_session_requested_attributes:,
-      disposable_email_domain:,
       in_person_proofing_status:,
       doc_auth_result:,
       **extra,
@@ -8896,6 +8927,7 @@ module AnalyticsEvents
   # @param [Boolean] email_already_exists Whether an account with the email address already exists
   # @param [String] domain_name Domain name of email address submitted
   # @param [String] email_language Preferred language for email communication
+  # @param [Boolean] idv_requested Whether the resolved authn context requires identity proofing
   def user_registration_email(
     success:,
     rate_limited:,
@@ -8903,6 +8935,7 @@ module AnalyticsEvents
     email_already_exists:,
     domain_name:,
     email_language:,
+    idv_requested:,
     error_details: nil,
     **extra
   )
@@ -8915,6 +8948,7 @@ module AnalyticsEvents
       email_already_exists:,
       domain_name:,
       email_language:,
+      idv_requested:,
       **extra,
     )
   end

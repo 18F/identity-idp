@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Proofing agent activation', :js do
   include IdvStepHelper
+  include OidcAuthHelper
 
   let(:user) { create(:user, :fully_registered) }
   let(:service_provider) do
@@ -60,6 +61,7 @@ RSpec.describe 'Proofing agent activation', :js do
       proofing_location_id: 'location-456',
       correlation_id: 'correlation-789',
       transaction_id: document_capture_session.uuid,
+      service_provider_issuer: service_provider.issuer,
     }
   end
 
@@ -68,13 +70,47 @@ RSpec.describe 'Proofing agent activation', :js do
     document_capture_session.store_agent_proofed_user(agent_proofing_result)
   end
 
-  scenario 'user activates their profile after being proofed by proofing agent' do
+  context 'user tries going to welcome page' do
+    scenario 'user is redirected to binding page' do
+      visit_idp_from_ial2_oidc_sp
+      sign_in_live_with_2fa(user)
+      expect(page).to have_current_path idv_enter_dob_ssn_path
+      visit idv_welcome_path
+      expect(page).to have_current_path idv_enter_dob_ssn_path
+    end
+  end
+
+  scenario 'user activates their profile and connects it to the service provider' do
     sign_in_live_with_2fa(user)
     expect(page).to have_current_path idv_enter_dob_ssn_path
     complete_idv_enter_dob_ssn_step
     complete_enter_password_step(user)
     acknowledge_and_confirm_personal_key
     expect(page).to have_current_path(account_path)
+  end
+
+  context 'user signs in through the service provider' do
+    scenario 'binding completes the original authorization request' do
+      visit_idp_from_ial2_oidc_sp(client_id: service_provider.issuer)
+      sign_in_live_with_2fa(user)
+
+      # the redirect from sign in to the binding page ships separately; this
+      # covers the sp session surviving the binding step
+      visit idv_enter_dob_ssn_path
+      complete_idv_enter_dob_ssn_step
+      complete_enter_password_step(user)
+      acknowledge_and_confirm_personal_key
+
+      expect(page).to have_current_path(sign_up_completed_path, wait: 10)
+      click_agree_and_continue
+
+      expect(page).to have_current_path(
+        'http://localhost:7654/auth/result',
+        url: true,
+        ignore_query: true,
+        wait: 10,
+      )
+    end
   end
 
   context 'when the user enters an incorrect SSN' do

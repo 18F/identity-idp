@@ -114,9 +114,6 @@ module SignUp
         attributes[:doc_auth_result] = last_enrollment.doc_auth_result
       end
 
-      if page_occurence.present? && DisposableEmailDomain.disposable?(email_domain)
-        attributes[:disposable_email_domain] = email_domain
-      end
       attributes
     end
 

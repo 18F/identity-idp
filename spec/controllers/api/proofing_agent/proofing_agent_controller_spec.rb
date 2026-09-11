@@ -289,12 +289,15 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(body['ssn_profile_found']).to eq(false)
               expect(body['profiles']).to eq([])
               expect(body['email_account_awaiting_binding']).to eq(false)
+              expect(body['account_email_confirmed']).to eq(false)
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_account_check_requested,
                 response_body: a_hash_including(
                   email_account_found: false,
                   ssn_profile_found: false,
                   profiles: [],
+                  account_email_confirmed: false,
+                  email_account_awaiting_binding: false,
                 ),
                 proofing_agent: proofing_agent_analytics_hash,
                 issuer:,
@@ -316,6 +319,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(body['email_account_found']).to eq(false)
               expect(body['ssn_profile_found']).to eq(true)
               expect(body['email_account_awaiting_binding']).to eq(false)
+              expect(body['account_email_confirmed']).to eq(false)
               expect(body['profiles'].length).to eq(1)
               expect(body['profiles']).to include(
                 a_hash_including(
@@ -329,6 +333,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 response_body: a_hash_including(
                   email_account_found: false,
                   email_account_awaiting_binding: false,
+                  account_email_confirmed: false,
                   ssn_profile_found: true,
                   profiles: include(
                     a_hash_including(
@@ -360,10 +365,39 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(body['ssn_profile_found']).to eq(false)
             expect(body['profiles'].length).to eq(0)
             expect(body['email_account_awaiting_binding']).to eq(false)
+            expect(body['account_email_confirmed']).to eq(true)
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_account_check_requested,
               response_body: a_hash_including(
                 email_account_found: true,
+                account_email_confirmed: true,
+                email_account_awaiting_binding: false,
+                ssn_profile_found: false,
+                profiles: [],
+              ),
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
+            )
+          end
+        end
+
+        context 'when a user has not confirmed their email address' do
+          before do
+            user.email_addresses.update(confirmed_at: nil)
+          end
+          it 'returns correct profiles and found attributes' do
+            user.update!(confirmed_at: nil)
+            action
+            body = JSON.parse(response.body)
+            expect(body['email_account_found']).to eq(true)
+            expect(body['ssn_profile_found']).to eq(false)
+            expect(body['email_account_awaiting_binding']).to eq(false)
+            expect(body['account_email_confirmed']).to eq(false)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_account_check_requested,
+              response_body: a_hash_including(
+                email_account_found: true,
+                account_email_confirmed: false,
                 email_account_awaiting_binding: false,
                 ssn_profile_found: false,
                 profiles: [],
@@ -423,6 +457,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(body['email_account_found']).to eq(true)
             expect(body['ssn_profile_found']).to eq(true)
             expect(body['email_account_awaiting_binding']).to eq(false)
+            expect(body['account_email_confirmed']).to eq(true)
             expect(body['profiles'].length).to eq(3)
             expect(body['profiles']).to include(
               a_hash_including(
@@ -446,6 +481,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               response_body: a_hash_including(
                 email_account_found: true,
                 email_account_awaiting_binding: false,
+                account_email_confirmed: true,
                 ssn_profile_found: true,
                 profiles: include(
                   a_hash_including(
@@ -513,6 +549,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(body['email_account_found']).to eq(true)
             expect(body['ssn_profile_found']).to eq(true)
             expect(body['email_account_awaiting_binding']).to eq(false)
+            expect(body['account_email_confirmed']).to eq(true)
             expect(body['profiles'].length).to eq(2)
             expect(body['profiles']).to include(
               a_hash_including(
@@ -532,6 +569,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 email_account_found: true,
                 ssn_profile_found: true,
                 email_account_awaiting_binding: false,
+                account_email_confirmed: true,
                 profiles: include(
                   a_hash_including(
                     email_match: true,
@@ -589,6 +627,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(body['email_account_found']).to eq(true)
             expect(body['ssn_profile_found']).to eq(true)
             expect(body['email_account_awaiting_binding']).to eq(true)
+            expect(body['account_email_confirmed']).to eq(true)
             expect(body['profiles'].length).to eq(1)
             expect(body['profiles']).to include(
               a_hash_including(
@@ -603,6 +642,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 email_account_found: true,
                 email_account_awaiting_binding: true,
                 ssn_profile_found: true,
+                account_email_confirmed: true,
                 profiles: include(
                   a_hash_including(
                     email_match: true,
@@ -910,6 +950,70 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 proofing_agent: proofing_agent_analytics_hash,
                 issuer:,
               )
+            end
+
+            context 'when idv_proofing_agent_proof_user_with_enhanced_profile is true' do
+              before do
+                allow(IdentityConfig.store)
+                  .to receive(:idv_proofing_agent_proof_user_with_enhanced_profile)
+                  .and_return(true)
+              end
+
+              it 'returns 202 accepted' do
+                expect(action.status).to eq(202)
+                transaction_id = DocumentCaptureSession.last.uuid
+
+                expect(@analytics).to have_logged_event(
+                  :idv_proofing_agent_proof_user_requested,
+                  response_body: a_hash_including(status: 'pending', transaction_id:),
+                  proofing_agent: proofing_agent_analytics_hash,
+                  issuer:,
+                  transaction_id:,
+                  remaining_attempts: a_kind_of(Integer),
+                  final_attempt: false,
+                )
+              end
+            end
+          end
+
+          context 'when a user has not confirmed their email address' do
+            before do
+              user.email_addresses.update(confirmed_at: nil)
+            end
+
+            it 'returns 422 unprocessable_content' do
+              expect(action.status).to eq(422)
+            end
+
+            it 'returns a failed account email not confirmed response body' do
+              action
+              body = JSON.parse(response.body)
+              expect(body['status']).to eq('failed')
+              expect(body['reason']).to eq('account_email_unconfirmed')
+
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_proof_user_requested,
+                response_body: a_hash_including(
+                  status: 'failed',
+                  reason: 'account_email_unconfirmed',
+                ),
+                proofing_agent: proofing_agent_analytics_hash,
+                issuer:,
+              )
+            end
+          end
+
+          context 'when the submitted email is unconfirmed' do
+            let(:email) { 'unconfirmed@example.test' }
+
+            before do
+              create(:email_address, :unconfirmed, user:, email:)
+            end
+
+            it 'does not proof even though the account has a confirmed email' do
+              expect(action.status).to eq(422)
+              body = JSON.parse(response.body)
+              expect(body['reason']).to eq('account_email_unconfirmed')
             end
           end
 

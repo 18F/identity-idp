@@ -21,6 +21,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:hybrid_mobile_threatmetrix_session_id) { nil }
   let(:hybrid_mobile_request_ip) { nil }
   let(:proofing_device_hybrid_profiling) { :disabled }
+  let(:get_to_yes_enabled_vendors) { [] }
 
   before do
     allow(IdentityConfig.store).to receive(:proofing_device_profiling)
@@ -33,6 +34,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
       .and_return('https://www.example.com')
     allow(IdentityConfig.store).to receive(:idv_resolution_default_vendor)
       .and_return(:instant_verify)
+    allow(IdentityConfig.store).to receive(:idv_aamva_get_to_yes_enabled_vendors)
+      .and_return(get_to_yes_enabled_vendors)
   end
 
   describe '#perform' do
@@ -257,6 +260,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         end
 
         context 'when attributes requiring additional verification were verified by AAMVA' do
+          let(:get_to_yes_enabled_vendors) { ['instant_verify', 'instant_verify_ddp'] }
           let(:pii) do
             { aamva_verified_attributes: [:address, :ssn] }
               .merge(Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID)
@@ -503,6 +507,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
       context 'when the InstantVerify proofing fails' do
         context 'when aamva already proofed at doc auth' do
+          let(:get_to_yes_enabled_vendors) { ['instant_verify', 'instant_verify_ddp'] }
           let(:pii) do
             { aamva_verified_attributes: [:address, :ssn] }
               .merge(Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID)

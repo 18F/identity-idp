@@ -179,13 +179,12 @@ RSpec.describe OpenidConnect::UserInfoController do
         expect(request.session.to_h).to eq(session_hash)
       end
 
-      context 'when auth_time is enabled' do
+      context 'with an authentication event' do
         let(:authentication_event_at) { Time.zone.parse('2026-07-01 12:00:00 UTC') }
         let(:remember_device_at) { Time.zone.parse('2026-07-01 12:30:00 UTC') }
         let(:federation_at) { Time.zone.parse('2026-07-01 13:00:00 UTC') }
 
         before do
-          allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(true)
           identity.update!(last_authenticated_at: federation_at)
           write_out_of_band_user_session(
             session_uuid: identity.rails_session_id,

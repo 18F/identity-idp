@@ -27,7 +27,7 @@ zh:
       voice: 你好！你的%{format_length}%{format_type} %{app_name} 一次性代码是，%{code}。你的一次性代码是 ，%{code}。重复一下，你的一次性代码是 %{code}。此代码 %{expiration} 分钟后会作废。
     doc_auth_link:
       sms: |-
-        %{app_name}: %{link} 你在验证身份以访问 %{sp_or_app_name}。拍张你身份证件的照片以继续。
+        %{app_name}: %{link} 要访问 %{sp_or_app_name}，请打开链接并按照步骤使用您的身份证件验证身份。
     dupe_profile_created_notice:
       sms: |-
         %{app_name} 提醒：您的个人信息已在其他帐户上得到验证。我们已限制对这些帐户的访问权限。我们已向您发送一封电子邮件，其中包含后续操作的详细信息。

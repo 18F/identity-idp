@@ -61,10 +61,16 @@ module Idv
 
     def move_agent_proofed_user_pii_to_idv_session
       if agent_proofed_user
-        session[:sp] = {
-          issuer: agent_proofed_user&.issuer,
-          acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
-        }
+        # a user who signed in through a live SP authorization request already
+        # has a session[:sp] whose request_url finishes that request; only
+        # synthesize one for users arriving from the plain sign in link in the
+        # binding email
+        if sp_session[:request_url].blank?
+          session[:sp] = {
+            issuer: agent_proofed_user&.issuer,
+            acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+          }.compact
+        end
         idv_session.applicant = agent_proofed_user&.pii
         idv_session.agent_proofed = true
         # a successful agent proofed user should have phone precheck completed

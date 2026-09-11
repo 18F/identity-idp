@@ -33,7 +33,7 @@ module ProofingAgent
     end
 
     def residential_address_fields
-      address = pii[:residential_address]
+      address = residential_address
       return {} if address.blank?
 
       {
@@ -43,6 +43,22 @@ module ProofingAgent
         state: address[:state],
         zipcode: address[:zip_code],
       }
+    end
+
+    # When the agent only sends the state-ID address (no separate residential
+    # address), the current address matches the ID, so the state-ID address is
+    # also the residential address. Mirror the in-person flow, which copies the
+    # identity-doc address into the residential address fields in this case
+    # (see Idv::InPerson::StateIdController#pending_pii).
+    def residential_address
+      pii[:residential_address].presence || state_id_address
+    end
+
+    def state_id_address
+      state_id = pii[:state_id]
+      return if state_id.blank?
+
+      state_id.slice(:address1, :address2, :city, :state, :zip_code)
     end
 
     def state_id_fields

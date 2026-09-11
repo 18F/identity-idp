@@ -86,6 +86,58 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
     end
   end
 
+  context 'When the applicant selects a non-standard expiration option (LG-17733)' do
+    before do
+      allow(IdentityConfig.store).to receive(:usps_opt_in_ipp_applicant_with_document_data)
+        .and_return(true)
+      allow(IdentityConfig.store)
+        .to receive(:in_person_proofing_expiration_edge_cases_enabled).and_return(true)
+    end
+
+    it 'Then docExpiration is omitted from the USPS enroll request',
+       allow_browser_log: true do
+      user = user_with_2fa
+
+      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+      sign_in_and_2fa_user(user)
+      begin_in_person_proofing(user)
+
+      complete_prepare_step(user)
+      complete_location_step
+
+      # Fill the state ID form, then choose the Military expiration option so the
+      # date inputs are disabled and no calendar expiration is submitted.
+      expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
+      fill_out_state_id_form_ok(current_address_matches_id: true)
+      choose t('in_person_proofing.form.state_id.expiration_date_options.military')
+      click_idv_continue
+
+      complete_ssn_step(user)
+      complete_verify_step(user)
+      fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
+      click_idv_send_security_code
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+      complete_enter_password_step(user)
+      acknowledge_and_confirm_personal_key
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+      expect(
+        a_request(
+          :post,
+          %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
+        ).with do |req|
+          body = JSON.parse(req.body)
+          expect(body['docInfo']).to eq(
+            [{
+              'docType' => usps_expected_document_type,
+              'docNumber' => InPersonHelper::GOOD_STATE_ID_NUMBER,
+            }],
+          )
+        end,
+      ).to have_been_made
+    end
+  end
+
   context 'When the usps_opt_in_ipp_applicant_with_document_data is false' do
     before do
       allow(IdentityConfig.store).to receive(

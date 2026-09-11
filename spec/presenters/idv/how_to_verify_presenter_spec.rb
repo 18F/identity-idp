@@ -5,11 +5,13 @@ RSpec.describe Idv::HowToVerifyPresenter do
     Idv::HowToVerifyPresenter.new(
       selfie_check_required:,
       passport_cards_supported:,
+      mdl_enabled:,
     )
   end
 
   let(:selfie_check_required) { false }
   let(:passport_cards_supported) { false }
+  let(:mdl_enabled) { false }
 
   describe '#verify_online_description' do
     context 'when passport cards are supported' do
@@ -18,6 +20,15 @@ RSpec.describe Idv::HowToVerifyPresenter do
       it 'mentions the passport card' do
         expect(presenter.verify_online_description)
           .to eq(t('doc_auth.info.verify_online_description_passport_card'))
+      end
+
+      context 'when passport cards are supported and mdl enabled' do
+        let(:mdl_enabled) { true }
+
+        it 'mentions the passport card and mdl' do
+          expect(presenter.verify_online_description)
+            .to eq(t('doc_auth.info.verify_online_description_mdl_and_passport_card'))
+        end
       end
     end
 

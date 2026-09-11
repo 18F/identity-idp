@@ -115,6 +115,54 @@ RSpec.describe DocAuth::Mock::ResultResponse do
     end
   end
 
+  context 'when a passport card is submitted' do
+    subject(:response) do
+      described_class.new(
+        input, config,
+        selfie_required:,
+        passport_submittal: true,
+        passport_requested: true,
+        passport_cards_supported:
+      )
+    end
+
+    let(:input) do
+      <<~YAML
+        document:
+          first_name: Susan
+          last_name: Smith
+          middle_name: Q
+          birth_place: 'Springfield, IL'
+          passport_expiration: '2030-01-01'
+          mrz: 'P<USASMITH<<SUSAN<<<<<<<<<<<<<<<<<<<<<<<<<1234567890USA8001019F2301012<<<<<<<<<<<<<<04'
+          passport_issued: '2020-01-01'
+          nationality_code: USA
+          document_number: '1234567890'
+          document_type_received: passport_card
+      YAML
+    end
+
+    context 'when passport cards are supported' do
+      let(:passport_cards_supported) { true }
+
+      it 'returns a successful result with the passport card document type' do
+        expect(response.success?).to eq(true)
+        expect(response.pii_from_doc).to be_a(Pii::Passport)
+        expect(response.pii_from_doc.document_type_received).to eq('passport_card')
+      end
+    end
+
+    context 'when passport cards are not supported' do
+      let(:passport_cards_supported) { false }
+
+      it 'is not a successful result and returns a passport card doc type error' do
+        expect(response.success?).to eq(false)
+        expect(response.errors)
+          .to eq({ passport_card: I18n.t('doc_auth.errors.doc.doc_type_check') })
+      end
+    end
+  end
+
   context 'with a yaml file containing PII' do
     let(:input) do
       <<~YAML

@@ -2,8 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Idv::DocAuthVendorConcern, :controller do
   let(:document_type_requested) { nil }
+  let(:doc_auth_vendor) { nil }
   let(:document_capture_session) do
-    create(:document_capture_session, document_type_requested:)
+    create(:document_capture_session, document_type_requested:, doc_auth_vendor:)
   end
   let(:user) { document_capture_session.user }
   let(:bucket) { :mock }
@@ -104,6 +105,17 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
             expect(document_capture_session.doc_auth_vendor)
               .to eq(Idp::Constants::Vendors::SOCURE)
           end
+        end
+      end
+
+      context 'clear1 is doc auth vendor' do
+        let(:doc_auth_vendor) { Idp::Constants::Vendors::CLEAR1 }
+
+        it 'returns clear1 as the vendor' do
+          controller.update_doc_auth_vendor
+
+          expect(document_capture_session.doc_auth_vendor)
+            .not_to eq(Idp::Constants::Vendors::CLEAR1)
         end
       end
     end

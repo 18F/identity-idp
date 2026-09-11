@@ -81,3 +81,30 @@ RSpec.describe 'idv/cancellations/new.html.erb' do
     end
   end
 end
+
+RSpec.describe 'idv/cancellations/new.html.erb bucket-conditional buttons' do
+  let(:params) { ActionController::Parameters.new }
+
+  def render_bucket(nds:)
+    assign(:hybrid_session, false)
+    assign(:presenter, Idv::CancellationsPresenter.new(sp_name: nil, url_options: {}))
+    allow(view).to receive(:params).and_return(params)
+    allow(view).to receive(:nds_layout?).and_return(nds)
+    render template: 'idv/cancellations/new'
+  end
+
+  it 'legacy bucket emits origin/main classes, no nds variant modifiers' do
+    render_bucket(nds: false)
+    expect(rendered).to have_css('.usa-button--big.usa-button--wide')
+    expect(rendered).to have_css('.usa-button--outline')
+    expect(rendered).not_to have_css('.usa-button--destructive, .usa-button--secondary')
+  end
+
+  it 'nds bucket emits start_over=destructive (--danger) and keep_going=secondary' do
+    render_bucket(nds: true)
+    expect(rendered).to have_css('.usa-button--danger')
+    expect(rendered).to have_css('.usa-button--secondary')
+    expect(rendered).not_to have_css('.usa-button--big')
+    expect(rendered).not_to have_css('.usa-button--outline')
+  end
+end

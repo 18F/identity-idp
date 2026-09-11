@@ -9,8 +9,10 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
   let(:phone) { '+13602345678' }
   let(:country_code) { 'US' }
   let(:formatted_phone) { '+1 360-234-5678' }
+  let(:nds_layout) { false }
 
   before do
+    allow(view).to receive(:nds_layout?).and_return(nds_layout)
     decorated_sp_session = instance_double(ServiceProviderSession, sp_name: sp_name)
     allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
     assign(:gpo_letter_available, gpo_letter_available)
@@ -112,6 +114,47 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
           t('idv.failure.phone.warning.you_entered_html', formatted_phone: formatted_phone),
         ),
       )
+    end
+  end
+
+  context 'in the NDS layout' do
+    let(:nds_layout) { true }
+
+    it 'renders try-another-number primary and go-back secondary actions' do
+      expect(rendered).to have_css(
+        ".auth__actions a.usa-button:not(.usa-button--secondary)[href='#{idv_phone_path}']",
+        text: t('idv.failure.phone.warning.try_again_button'),
+      )
+      expect(rendered).to have_css(
+        ".auth__actions a.usa-button--secondary[href='#{idv_cancel_path(step: 'phone')}']",
+        text: t('links.go_back'),
+      )
+      expect(rendered).not_to have_link(t('links.cancel'))
+    end
+
+    it 'keeps the entered number, next steps and attempts in the body' do
+      expect(rendered).to have_css('.auth__form-page-body strong', text: formatted_phone)
+      expect(rendered).to have_css(
+        '.auth__form-page-body a[target=_blank]',
+        text: t('idv.failure.phone.warning.learn_more_link'),
+      )
+    end
+
+    it 'does not render the verify-by-mail block when unavailable' do
+      expect(rendered).not_to have_css('h2', text: t('idv.failure.phone.warning.gpo.heading'))
+    end
+
+    context 'with gpo letter available' do
+      let(:gpo_letter_available) { true }
+
+      it 'renders the verify-by-mail heading, copy and secondary button' do
+        expect(rendered).to have_css('h2', text: t('idv.failure.phone.warning.gpo.heading'))
+        expect(rendered).to have_text(t('idv.failure.phone.warning.gpo.explanation'))
+        expect(rendered).to have_css(
+          "a.usa-button--secondary[href='#{idv_request_letter_path}']",
+          text: t('idv.failure.phone.warning.gpo.button'),
+        )
+      end
     end
   end
 end

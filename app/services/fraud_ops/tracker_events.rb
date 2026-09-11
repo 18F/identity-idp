@@ -3,6 +3,7 @@
 module FraudOps
   module TrackerEvents
     # @param [Boolean] success
+    # @param [String] user_id The user's uuid (will not be used in Redis event)
     # @param [String] document_state
     # @param [String] document_number
     # @param [String] document_issued
@@ -29,6 +30,7 @@ module FraudOps
     # The document was uploaded during the IDV process
     def fraud_ops_idv_document_upload_submitted(
       success:,
+      user_id: nil,
       document_state: nil,
       document_number: nil,
       document_issued: nil,
@@ -59,6 +61,7 @@ module FraudOps
       track_event(
         :idv_document_upload_submitted,
         success:,
+        user_id:,
         document_state:,
         document_number:,
         document_issued:,

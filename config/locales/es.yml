@@ -75,6 +75,7 @@ account.index.email: Dirección de correo electrónico
 account.index.email_add: Agregar nuevo correo electrónico
 account.index.email_addresses: Direcciones de correo electrónico
 account.index.email_preferences: Preferencias de correo electrónico
+account.index.email_short: Email
 account.index.password: Contraseña
 account.index.phone: Números de teléfono
 account.index.phone_add: Agregar teléfono
@@ -115,6 +116,7 @@ account.items.personal_key: Clave personal
 account.links.delete_account: Eliminar
 account.links.regenerate_personal_key: Restablecer
 account.login.forced_reauthentication_notice_html: '<strong>%{sp_name}</strong> requiere que vuelva a ingresar su correo electrónico y contraseña.'
+account.login.forgot_password: ¿Olvidó su contraseña?
 account.login.piv_cac: Inicie sesión con su identificación de empleado gubernamental
 account.login.tab_navigation: Pestañas para creación de cuentas
 account.navigation.add_authentication_apps: Agregar aplicaciones de autenticación
@@ -161,6 +163,10 @@ anonymous_mailer.password_reset_missing_user.info_request_different: Puedes soli
 anonymous_mailer.password_reset_missing_user.subject: El correo electrónico no encontrado
 anonymous_mailer.password_reset_missing_user.try_different_email: Pruebe con una dirección de correo electrónico diferente
 anonymous_mailer.password_reset_missing_user.use_this_email_html: O use este correo electrónico y %{create_account_link_html}.
+auth_entry.body: Inicie sesión una vez para acceder a beneficios, registros y solicitudes en las agencias participantes. Sin contraseñas distintas para cada sitio del gobierno.
+auth_entry.headline: Una cuenta para todos sus servicios gubernamentales
+auth_entry.whats_new_intro: Bienvenido al nuevo y mejorado %{app_name}
+auth_entry.whats_new_link: Vea las novedades
 banned_user.details: No podemos autenticarle en este momento.
 banned_user.title: Acceso restringido
 components.barcode.image_alt: Código de barras
@@ -171,6 +177,15 @@ components.clipboard_button.label: Copiar
 components.clipboard_button.tooltip: Copiado
 components.countdown_alert.time_remaining_html: Quedan %{countdown_html}
 components.download_button.label: Descargar
+components.input.errors.date: Ingrese una fecha
+components.input.errors.date_invalid: Ingrese una fecha válida
+components.input.errors.email: Ingrese un correo electrónico válido
+components.input.errors.password: Ingrese una contraseña
+components.input.errors.password_current: Ingrese su contraseña
+components.input.errors.tel: Ingrese un número de teléfono
+components.input.errors.tel_invalid: Ingrese un número de teléfono válido
+components.input.errors.text: Ingrese un valor
+components.input.errors.text_invalid: Ingrese un valor válido
 components.javascript_required.browser_instructions: 'Siga las instrucciones para habilitar JavaScript en su navegador:'
 components.javascript_required.enabled_alert: Habilitó JavaScript en su navegador.
 components.javascript_required.next_step: Actualice esta página después de haber habilitado JavaScript en su navegador.
@@ -212,6 +227,7 @@ components.password_confirmation.confirm_label: Confirmar contraseña
 components.password_confirmation.errors.empty: Vuelva a escribir su contraseña
 components.password_confirmation.errors.mismatch: Sus contraseñas no coinciden
 components.password_confirmation.toggle_label: Mostrar contraseña
+components.password_toggle.hide_label: Ocultar contraseña
 components.password_toggle.label: Contraseña
 components.password_toggle.toggle_label: Mostrar contraseña
 components.phone_input.country_code_label: Código de país
@@ -727,14 +743,16 @@ doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre l
 doc_auth.info.verify_identity: Le pediremos su identificación, número de teléfono y otros datos personales para verificar su identidad comparándola con los registros públicos.
 doc_auth.info.verify_online_description: Puede usar un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal.
 doc_auth.info.verify_online_description_mdl: Puede utilizar un pasaporte, licencia de conducir, licencia de conducir móvil o tarjeta de identificación estatal de los EE. UU.
+doc_auth.info.verify_online_description_mdl_and_passport_card: Puede usar una libreta or tarjeta de pasaporte estadounidense, una licencia de conducir, una licencia de conducir móvil (mDL) o una tarjeta de identificación estatal.
 doc_auth.info.verify_online_description_passport_card: Puede utilizar una libreta o tarjeta de pasaporte, licencia de conducir o una identificación estatal de los EE. UU.
-doc_auth.info.verify_online_instruction: Tomará fotos de su documento de identidad para verificar su identidad de forma totalmente en línea.
+doc_auth.info.verify_online_instruction: Deberá tomar fotos de su documento de identidad para verificar su identidad en línea.
 doc_auth.info.verify_online_instruction_selfie: Tómese una selfi y fotos de su identificación.
 doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea
 doc_auth.info.welcome_sp_reproof_alert: Por su seguridad, %{sp_name} requiere que verifique su identidad nuevamente.
 doc_auth.info.you_entered: 'Usted ingresó:'
 doc_auth.instructions.bullet1: Tener un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal
 doc_auth.instructions.bullet1_mdl: Tener un pasaporte, licencia de conducir, licencia de conducir móvil (mDL) o tarjeta de identificación estatal de los EE. UU.
+doc_auth.instructions.bullet1_mdl_and_passport_card: Debe tener una libreta or tarjeta de pasaporte estadounidense, una licencia de conducir, una licencia de conducir móvil (mDL) o una tarjeta de identificación estatal.
 doc_auth.instructions.bullet1_passport_card: Tener un libreta o tarjeta de pasaporte, licencia de conducir o una tarjeta de identificación estatal de los EE. UU.
 doc_auth.instructions.bullet2: Ingresar su número de Seguro Social
 doc_auth.instructions.bullet3: Hacer coincidir su número de teléfono
@@ -783,7 +801,7 @@ duplicate_profiles_detected.intro.link: las cuentas duplicativas
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Último inicio de sesión: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Nunca he iniciado sesión en
 duplicate_profiles_detected.select_an_account.details_html: 'Conserva la cuenta que esté conectada a la mayor cantidad de servicios. Ve a la página %{link_html} para ver las servicios conectadas seleccionando “Tus servicios conectados” en el menú de la izquierda.'
-duplicate_profiles_detected.select_an_account.details.link: «Su cuenta»
+duplicate_profiles_detected.select_an_account.details.link: Su cuenta
 duplicate_profiles_detected.select_an_account.heading: Elija la cuenta que desea conservar.
 duplicate_profiles_detected.sign_back_in.details: Vuelva al sitio web de %{app_name} e inicie sesión usando la cuenta de %{app_name} que conservó.
 duplicate_profiles_detected.sign_back_in.heading: Vuelva a iniciar sesión en %{app_name} con una cuenta.
@@ -1060,6 +1078,7 @@ headings.redirecting: Redirigiendo
 headings.residential_address: Domicilio actual
 headings.session_timeout_warning: '¿Necesita más tiempo?'
 headings.sign_in_existing_users: Iniciar sesión para usuarios existentes
+headings.sign_in_to_sp: Inicie sesión en %{sp}
 headings.sign_in_with_sp: Iniciar sesión para continuar con %{sp}
 headings.sign_in_without_sp: Iniciar sesión
 headings.sp_handoff_bounced: Hubo un problema al conectarse a %{sp_name}
@@ -1226,9 +1245,8 @@ idv.gpo.return_to_profile: Vuelva a su perfil
 idv.gpo.title: Introduzca su código de verificación
 idv.gpo.will_send_to: 'En un plazo de 5 a 10 días, recibirá por correo una carta de %{app_name} en la dirección que verificamos y asociamos con usted:'
 idv.images.come_back_later: Carta con una marca de verificación
-idv.mdl.alert_html: <strong>¿Aún no tiene una mDL?</strong> Solo está disponible en algunos estados y territorios de EE. UU. Comuníquese con el DMV de su estado para obtener más información.
+idv.mdl.alert_html: <strong>Actualmente disponible con Google Wallet y Samsung Wallet.</strong> Se añadirán otras billeteras a finales de este año.
 idv.mdl.button: Abrir cartera digital
-idv.mdl.learn_more: Más información sobre cómo usar su mDL
 idv.mdl.steps_heading: 'Necesitará:'
 idv.mdl.steps.device.title: Un dispositivo con una cartera digital
 idv.mdl.steps.have_mdl.title: Una licencia de conducir móvil (mDL) activa
@@ -1408,6 +1426,10 @@ in_person_proofing.form.state_id.dob_hint: 'Ejemplo: 4 28 1986'
 in_person_proofing.form.state_id.errors.unsupported_chars: 'Nuestro sistema no puede leer estos caracteres: %{char_list}. Inténtelo de nuevo usando los caracteres de su identificación.'
 in_person_proofing.form.state_id.expiration_date: Fecha de vencimiento
 in_person_proofing.form.state_id.expiration_date_hint: 'Ejemplo: 4 28 2028'
+in_person_proofing.form.state_id.expiration_date_options.enter_date: Ingrese una fecha
+in_person_proofing.form.state_id.expiration_date_options.indefinite: Indefinida (INDEF)
+in_person_proofing.form.state_id.expiration_date_options.military: Militar (MIL)
+in_person_proofing.form.state_id.expiration_date_options.other: Sin fecha/Otro
 in_person_proofing.form.state_id.first_name: Nombre
 in_person_proofing.form.state_id.id_type: Tipo de identificación
 in_person_proofing.form.state_id.id_type_drivers_license: Licencia de conducir
@@ -1548,6 +1570,8 @@ instructions.password.strength.2: Promedio
 instructions.password.strength.3: Buena
 instructions.password.strength.4: Muy buena
 instructions.password.strength.intro: 'Seguridad de la contraseña:'
+instructions.password.strength.strong: Fuerte
+instructions.password.strength.too_common: Demasiado común
 instructions.sp_handoff_bounced: Logró iniciar sesión, pero %{sp_name} lo envió de nuevo a %{app_name}. Contacte con %{sp_link} para obtener ayuda.
 instructions.sp_handoff_bounced_with_no_sp: su proveedor de servicios
 links.accessibility_statement: Declaración de accesibilidad
@@ -1562,6 +1586,8 @@ links.create_account: Crear una cuenta
 links.exit_login: Salir de %{app_name}
 links.go_back: Volver
 links.help: Ayuda
+links.i_already_have_an_account: Ya tengo una cuenta
+links.more: Más
 links.new_tab: '(abrir nueva pestaña)'
 links.passwords.forgot: '¿Olvidó su contraseña?'
 links.privacy_policy: Privacidad y seguridad
@@ -1590,11 +1616,120 @@ mailer.sent_at: 'Enviado: %{formatted_timestamp}'
 mfa.account_info: Agregar otro método de autenticación evita que el acceso a su cuenta quede bloqueado si pierde uno de sus métodos.
 mfa.add: Agregar otro método
 mfa.info: Agregue un nivel de seguridad adicional para su cuenta de %{app_name} seleccionando un método de autenticación multifactor.
+mfa.more_options: Más opciones
 mfa.recommendation: Le recomendamos seleccionar al menos dos opciones diferentes en caso de que pierda uno de los métodos.
 mfa.second_method_warning.link: Agregue un segundo método de autenticación.
 mfa.second_method_warning.text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de autenticación.
 mfa.skip: Omitir por ahora
 mfa.webauthn_platform_message: Agregue otro método de autenticación en caso de que pierda el acceso al primero.
+nds.capture_complete.info: Su documento de identidad se verificó correctamente. Vuelva a su computadora para terminar el proceso de verificación de identidad.
+nds.choose_id_type.option_drivers_license: Licencia de conducir o identificación estatal de los EE. UU.
+nds.choose_id_type.option_mdl: Licencia de conducir móvil
+nds.choose_id_type.option_passport: Libreta de pasaporte de los EE. UU.
+nds.choose_id_type.option_passport_card: Tarjeta de pasaporte de los EE. UU.
+nds.choose_id_type.or: o
+nds.choose_id_type.subtitle: Tome una foto de su identificación y una selfie rápida para verificar su identidad en línea.
+nds.choose_id_type.title: Elija el tipo de identificación para verificar
+nds.choose_id_type.verify_in_person: Verificar en persona
+nds.completions.heading_idv: Identidad verificada
+nds.completions.intro_html: Al seleccionar Continuar, acepta compartir la siguiente información con %{sp_html} e ir a su sitio.
+nds.completions.nist_alt: 'Sello del NIST: Cifrado. Protegido. Comprobado. Instituto Nacional de Estándares y Tecnología'
+nds.duplicate_profiles_detected.cant_access: No puedo acceder a una cuenta
+nds.duplicate_profiles_detected.connected_agencies: 'Agencias conectadas: %{count}'
+nds.duplicate_profiles_detected.created_at_html: 'Creado: %{timestamp_html}'
+nds.duplicate_profiles_detected.dont_recognize_account: No reconozco una de estas cuentas
+nds.duplicate_profiles_detected.duplicate: Duplicada
+nds.duplicate_profiles_detected.get_help: Obtener ayuda
+nds.duplicate_profiles_detected.instructions: 'Debe eliminar las cuentas duplicadas antes de iniciar sesión. Esto es lo que debe hacer:'
+nds.duplicate_profiles_detected.intro_html: '%{sp_name} requiere que usted tenga únicamente una cuenta de %{app_name} con una identidad verificada. %{link_html}'
+nds.duplicate_profiles_detected.last_sign_in_html: 'Último inicio de sesión: %{timestamp_html}'
+nds.duplicate_profiles_detected.learn_more_link: Más información sobre las cuentas duplicadas.
+nds.duplicate_profiles_detected.never_signed_in: Nunca ha iniciado sesión en %{sp_name}
+nds.duplicate_profiles_detected.sign_out: Cerrar sesión
+nds.duplicate_profiles_detected.signed_in: Iniciado sesión
+nds.duplicate_profiles_detected.step_1.account_link: Su cuenta
+nds.duplicate_profiles_detected.step_1.body: Conserve la cuenta que usa con la mayor cantidad de servicios. Así no tendrá que volver a conectar los servicios.
+nds.duplicate_profiles_detected.step_1.connected_html: Vaya a %{link_html} y haga clic en “Sus servicios conectados” en el menú de la izquierda para ver a qué agencias está conectada esta cuenta.
+nds.duplicate_profiles_detected.step_1.heading: Elija la cuenta que desea conservar
+nds.duplicate_profiles_detected.step_2.body_html: Inicie sesión en la cuenta que va a eliminar en %{login_link_html}. Así es %{delete_link_html}.
+nds.duplicate_profiles_detected.step_2.delete_link: cómo puede eliminar su cuenta
+nds.duplicate_profiles_detected.step_2.heading: Elimine las cuentas duplicadas
+nds.duplicate_profiles_detected.step_3.body: Vuelva al sitio web de %{sp_name} e inicie sesión usando la cuenta de %{app_name} que conservó.
+nds.duplicate_profiles_detected.step_3.heading: Vuelva a iniciar sesión en %{sp_name} con una cuenta
+nds.duplicate_profiles_please_call.error_details_html: <p>Si no reconoce o no puede eliminar una de las cuentas duplicadas que vio en la página que muestra varias cuentas, llame a nuestro centro de contacto al %{contact_number} y mencione el código de error %{error_code}.</p><p>¿Tiene preguntas acerca de las cuentas duplicadas o de lo que debe hacer? Obtenga más información acerca <a href="%{help_url}">de cómo resolver las cuentas duplicadas</a>.</p>
+nds.enter_password.info: Su información está cifrada con su contraseña. Esto significa que solo usted puede acceder a ella o modificarla.
+nds.errors.cancel_verification: Cancelar la verificación
+nds.errors.return_home: Volver al inicio
+nds.errors.start_over_warning: Deberá verificar su identidad desde el principio
+nds.hybrid_handoff.heading: Ingrese su número de teléfono
+nds.hybrid_handoff.subtitle: Le enviaremos un enlace para verificar su identificación con un proveedor de servicios de confianza.
+nds.idv_phone.info: Ingrese un número de teléfono de EE. UU. Le enviaremos un mensaje de texto o lo llamaremos con un código de 6 dígitos. Solo líneas telefónicas estándar; no se admiten números VoIP ni premium. Pueden aplicarse tarifas de mensajes y datos.
+nds.idv_welcome.consent_html: Al marcar esta casilla, usted permite que %{app_name} solicite, use, conserve y comparta su información personal. La usaremos para verificar su identidad. Lea sobre nuestras medidas de %{link_html}.
+nds.idv_welcome.consent_link: privacidad y seguridad
+nds.idv_welcome.how_we_protect_heading: Cómo protegemos sus datos
+nds.idv_welcome.how_we_protect_info: Solo usamos lo que usted ingresa para verificar su identidad con la Administración del Seguro Social. Su información nunca se compartirá ni se venderá fuera del Gobierno.
+nds.idv_welcome.intro: '%{sp_name} necesita verificar su identidad antes de que continúe. La mayoría de las personas terminan en unos 7 minutos.'
+nds.idv_welcome.title: Verifiquemos su identidad para acceder a %{sp_name}
+nds.idv_welcome.what_youll_need: Lo que necesitará
+nds.link_sent.heading: Continúe en su teléfono
+nds.link_sent.instructions: Siga las instrucciones para tomar las fotos de su identificación y su selfie, luego vuelva aquí para terminar.
+nds.link_sent.keep_open: Mantenga esta ventana abierta.
+nds.mfa_setup.badge_passkey: Rápido y seguro
+nds.mfa_setup.heading: Proteja su cuenta
+nds.mfa_setup.heading_second: Elija un segundo método de autenticación
+nds.mfa_setup.intro: Su cuenta protege su información personal. Agregue una capa de protección eligiendo un método de autenticación de múltiples factores. Actualice sus métodos en cualquier momento en la configuración de su cuenta.
+nds.mfa_setup.intro_second: Configure un segundo método para que siempre pueda acceder a su cuenta, incluso si su método principal no está disponible.
+nds.mfa_setup.options.auth_app: Aplicación de autenticación
+nds.mfa_setup.options.auth_app_info: Obtenga un código de un solo uso desde una aplicación en su teléfono. Funciona incluso sin señal.
+nds.mfa_setup.options.backup_code: Códigos de recuperación
+nds.mfa_setup.options.backup_code_info: Guarde una lista de códigos de un solo uso. Úselos para iniciar sesión si no tiene disponible otro método.
+nds.mfa_setup.options.phone: Mensaje de texto o llamada
+nds.mfa_setup.options.phone_info: Le enviamos un código de un solo uso por mensaje de texto o llamada. Ingréselo en la siguiente pantalla para iniciar sesión.
+nds.mfa_setup.options.piv_cac: Identificación de empleado del Gobierno
+nds.mfa_setup.options.piv_cac_info: Inicie sesión con su tarjeta PIV o CAC del Gobierno usando un lector de tarjetas en su dispositivo.
+nds.mfa_setup.options.webauthn: Llave de seguridad
+nds.mfa_setup.options.webauthn_info: Inserte una pequeña llave física en su dispositivo para comprobar que realmente es usted.
+nds.mfa_setup.options.webauthn_platform: Clave de acceso
+nds.mfa_setup.options.webauthn_platform_info: Use su rostro, huella digital o un PIN para iniciar sesión. Nada que recordar, nada que los piratas informáticos puedan robar.
+nds.mfa.choose_another_method: Elija otro método
+nds.mfa.remember_device_info: Seleccione esto para omitir la autenticación en los sitios compatibles. No seleccione esto si se encuentra en un dispositivo público o compartido.
+nds.otp_verification.do_not_share_html: 'No comparta este código. Si alguien lo llama, le envía mensajes de texto o correos electrónicos para pedirle este código, podría ser una estafa. %{link_html}'
+nds.otp_verification.invalid_otp_body: Ese código no es válido. Inténtelo de nuevo o solicite un nuevo código.
+nds.otp_verification.invalid_otp_heading: Código de un solo uso no válido
+nds.otp_verification.learn_more: Más información
+nds.otp_verification.sms.code_sent_html: 'Le enviamos un código de un solo uso al %{number_html}.'
+nds.otp_verification.voice.code_sent_html: 'Lo llamamos con un código de un solo uso al %{number_html}.'
+nds.passwords.new.heading: Cree su contraseña
+nds.passwords.new.info: Cree una contraseña segura para proteger su cuenta y mantener a salvo su información personal.
+nds.personal_key.acknowledgment: Guardé mi clave personal en un lugar seguro
+nds.personal_key.generated_on: Generada el %{date}
+nds.personal_key.info: Su clave personal es la única forma de acceder a su cuenta verificada si restablece su contraseña. Si pierde esta clave y olvida su contraseña, tendrá que verificar su identidad de nuevo.
+nds.phone_required.heading: Se requiere un número de teléfono de EE. UU.
+nds.phone_required.info: Actualmente, para verificar su identidad se requiere un número de teléfono de EE. UU. Estamos trabajando para agregar otras opciones y actualizaremos esta página cuando estén disponibles.
+nds.phone_setup.delivery.sms: Mensaje de texto
+nds.phone_setup.delivery.voice: Llamada telefónica
+nds.phone_setup.heading: Ingrese su número de teléfono
+nds.phone_setup.info: Le enviaremos un código de 6 dígitos por mensaje de texto o llamada. Solo líneas telefónicas estándar. Nada de VoIP ni números premium. Pueden aplicarse tarifas de mensajes y datos.
+nds.piv_cac_setup.nickname: Alias de la identificación
+nds.piv_cac_setup.step_1: Ingrese un alias
+nds.piv_cac_setup.step_2: Inserte su tarjeta PIV o CAC en su lector de tarjetas
+nds.piv_cac_setup.step_3: Agregue su tarjeta PIV o CAC
+nds.piv_cac_setup.step_3_info: Se le pedirá que elija un certificado e ingrese su PIN después de hacer clic en el botón de continuar.
+nds.request_letter.heading: Verifique por correo postal
+nds.request_letter.info: Para verificar su identidad, le enviaremos por correo una carta con un código de verificación e instrucciones a su dirección. Debería llegar en 5 a 10 días. Siga las instrucciones de la carta para terminar de verificar su identidad.
+nds.socure_errors.in_person_heading: O, intente verificar su identidad en persona
+nds.socure_errors.rate_limit_html.one: Puede intentarlo <strong>una vez más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
+nds.socure_errors.rate_limit_html.other: Puede intentarlo <strong>%{count} veces más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
+nds.ssn.info: Su número de Seguro Social verifica su identidad en los servicios de %{app_name} y permanece cifrado; nunca se comparte sin su consentimiento.
+nds.totp_setup.new.code_label: Código
+nds.totp_setup.new.heading: Configure una aplicación de autenticación
+nds.totp_setup.new.nickname_label: Sobrenombre de la aplicación
+nds.totp_setup.new.remember_device_info: Seleccione esto para omitir la autenticación en los sitios compatibles. No seleccione esto si se encuentra en un dispositivo público o compartido.
+nds.totp_setup.new.setup_code_label: Código de configuración
+nds.totp_setup.new.step_1: Ingrese un sobrenombre
+nds.totp_setup.new.step_2: Abra su aplicación de autenticación preferida
+nds.totp_setup.new.step_3: Escanee el código QR o ingrese el código de configuración manualmente en su aplicación de autenticación
+nds.verify_info.address: Dirección
 notices.account_reactivation: Qué bien. Tiene su clave personal.
 notices.authenticated_successfully: Logró autenticarse.
 notices.backup_codes_configured: Los códigos de recuperación se agregaron a su cuenta.
@@ -1631,6 +1766,9 @@ notices.timeout_warning.signed_in.sign_out: Cerrar mi sesión
 notices.totp_configured: Se agregó una aplicación de autenticación a su cuenta.
 notices.use_diff_email.link: use una dirección de correo electrónico diferente
 notices.use_diff_email.text_html: O %{link_html}
+notices.verify_email.body_html: Le enviamos un enlace a <strong>%{email}</strong>. Si no recibe un correo electrónico en breve, revise su carpeta de correo no deseado.
+notices.verify_email.resend: Reenviar correo de confirmación
+notices.verify_email.use_different_email: Usar un correo electrónico diferente
 notices.webauthn_configured: Se agregó una clave de seguridad a su cuenta.
 notices.webauthn_platform_configured: Usó el bloqueo de pantalla de su dispositivo para agregar el desbloqueo facial o táctil a su cuenta.
 openid_connect.authorization.errors.bad_client_id: client_id incorrecto. Consulte nuestra documentación en https://developers.login.gov/support/#bad-client-id
@@ -1701,12 +1839,15 @@ service_providers.errors.inactive.heading: '%{sp_name} ya no utiliza %{app_name}
 service_providers.errors.inactive.instructions: '%{sp_name} ya no utiliza %{app_name} como servicio para iniciar sesión en su sitio web. Si ya creó una cuenta de %{app_name}, todavía está activa y se puede usar para acceder a otros sitios web participantes del gobierno.'
 service_providers.errors.inactive.instructions2: Visite la agencia para contactarlos y obtener más información.
 shared.banner.fake_site: Un sitio web de demostración del Gobierno de los Estados Unidos
+shared.banner.gov_description: Un sitio web .gov pertenece a una organización oficial del Gobierno de los Estados Unidos.
 shared.banner.gov_description_html: 'Un sitio web <strong>.gov</strong> pertenece a una organización oficial del Gobierno de los Estados Unidos.'
 shared.banner.gov_heading: Los sitios web oficiales usan .gov
 shared.banner.how: Así es como usted puede saberlo
 shared.banner.landmark_label: Sitio web oficial del Gobierno
 shared.banner.lock_description: Un candado cerrado
+shared.banner.modal_title: Sitios web del Gobierno de EE. UU.
 shared.banner.official_site: Un sitio web oficial del Gobierno de los Estados Unidos
+shared.banner.secure_description: Un candado o https:// significa que se conectó de forma segura a un sitio web .gov. Comunique información confidencial solo en los sitios web oficiales protegidos.
 shared.banner.secure_description_html: Un <strong>candado</strong> ( %{lock_icon} ) o <strong>https://</strong> significa que se conectó de forma segura a un sitio web .gov. Comunique información confidencial solo en los sitios web oficiales protegidos.
 shared.banner.secure_heading: Los sitios web .gov protegidos usan HTTPS
 shared.footer_lite.gsa: Administración General de Servicios de los EE. UU.
@@ -1715,6 +1856,8 @@ sign_up.agree_and_continue: Aceptar y continuar
 sign_up.cancel.success: Su cuenta fue eliminada. No guardamos su información.
 sign_up.cancel.warning_header: 'Si cancela ahora:'
 sign_up.completed.smiling_image_alt: Una persona sonriente con una marca de verificación verde
+sign_up.information_sharing_html: Para saber cómo %{app_name} comparte su información, consulte nuestra %{link_html}.
+sign_up.nds_terms_intro: Al continuar, acepta las
 sign_up.terms: Leí y acepto %{app_name}
 simple_form.error_notification.default_message: 'Revise los siguientes problemas:'
 simple_form.no: 'No'
@@ -1723,6 +1866,9 @@ simple_form.required.mark: ''
 simple_form.required.text: Este campo es obligatorio
 simple_form.yes: Sí
 step_indicator.accessible_label: Avance por pasos
+step_indicator.flows.account_creation.account: Cuenta
+step_indicator.flows.account_creation.security: Seguridad
+step_indicator.flows.account_creation.verification: Verificación
 step_indicator.flows.idv.confirm_your_information: Confirme su información
 step_indicator.flows.idv.find_a_post_office: Busque una oficina de correos
 step_indicator.flows.idv.getting_started: Inicio
@@ -1736,6 +1882,7 @@ step_indicator.flows.idv.verify_phone: Verifique su número de teléfono
 step_indicator.status.complete: Completado
 step_indicator.status.current: Este paso
 step_indicator.status.not_complete: No completado
+step_indicator.substep: Subpaso %{current} de %{total}
 time.am: a. m.
 time.formats.event_date: '%-d de %B de %Y'
 time.formats.event_time: '%-l:%M %p'
@@ -1803,7 +1950,7 @@ titles.sign_in: Iniciar sesión
 titles.sign_up.completion_consent_expired_auth_only: Hace un año que nos dio su consentimiento para divulgar su información
 titles.sign_up.completion_consent_expired_idv: Hace un año que nos dio su consentimiento para divulgar su identidad verificada
 titles.sign_up.completion_first_sign_in: Continuar con %{sp}
-titles.sign_up.completion_idv: Conecte su información verificada a %{sp}
+titles.sign_up.completion_idv: Conecte su información a %{sp}
 titles.sign_up.completion_new_attributes: '%{sp} está solicitando nueva información'
 titles.sign_up.completion_new_sp: Está iniciando sesión por primera vez
 titles.sign_up.completion_reverified_consent: Comunique su información actualizada a %{sp}

@@ -293,6 +293,142 @@ RSpec.describe DataPull do
     end
   end
 
+  describe DataPull::MfaLookup do
+    subject(:subtask) { DataPull::MfaLookup.new }
+
+    describe '#run when user only has an auth app' do
+      let(:user) { create(:user, :with_authentication_app) }
+
+      let(:args) { [user.uuid, 'does-not-exist'] }
+      let(:include_missing) { true }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
+      subject(:result) { subtask.run(args:, config:) }
+
+      it 'loads MFA configurations for the user', aggregate_failures: true do
+        expected_table = [
+          %w[uuid phone_count auth_app_count webauthn_count piv_cac_count backup_code_count],
+          [user.uuid, 0, 1, 0, 0, 0],
+          ['does-not-exist', '[UUID NOT FOUND]', '[UUID NOT FOUND]', '[UUID NOT FOUND]',
+           '[UUID NOT FOUND]', '[UUID NOT FOUND]'],
+        ]
+        expect(result.table).to match(expected_table)
+        expect(result.subtask).to eq('mfa-lookup')
+        expect_consistent_row_length(result.table)
+        expect(result.uuids).to eq([user.uuid])
+      end
+    end
+
+    describe '#run when user only has piv_cac' do
+      let(:user) { create(:user, :with_piv_or_cac) }
+
+      let(:args) { [user.uuid, 'does-not-exist'] }
+      let(:include_missing) { true }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
+      subject(:result) { subtask.run(args:, config:) }
+
+      it 'loads MFA configurations for the user', aggregate_failures: true do
+        expected_table = [
+          %w[uuid phone_count auth_app_count webauthn_count piv_cac_count backup_code_count],
+          [user.uuid, 0, 0, 0, 1, 0],
+          ['does-not-exist', '[UUID NOT FOUND]', '[UUID NOT FOUND]', '[UUID NOT FOUND]',
+           '[UUID NOT FOUND]', '[UUID NOT FOUND]'],
+        ]
+        expect(result.table).to match(expected_table)
+        expect(result.subtask).to eq('mfa-lookup')
+        expect_consistent_row_length(result.table)
+        expect(result.uuids).to eq([user.uuid])
+      end
+    end
+
+    describe '#run when user only has phone' do
+      let(:user) { create(:user, :with_phone) }
+
+      let(:args) { [user.uuid, 'does-not-exist'] }
+      let(:include_missing) { true }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
+      subject(:result) { subtask.run(args:, config:) }
+
+      it 'loads MFA configurations for the user', aggregate_failures: true do
+        expected_table = [
+          %w[uuid phone_count auth_app_count webauthn_count piv_cac_count backup_code_count],
+          [user.uuid, 1, 0, 0, 0, 0],
+          ['does-not-exist', '[UUID NOT FOUND]', '[UUID NOT FOUND]', '[UUID NOT FOUND]',
+           '[UUID NOT FOUND]', '[UUID NOT FOUND]'],
+        ]
+        expect(result.table).to match(expected_table)
+        expect(result.subtask).to eq('mfa-lookup')
+        expect_consistent_row_length(result.table)
+        expect(result.uuids).to eq([user.uuid])
+      end
+    end
+
+    describe '#run when user only has webauthn' do
+      let(:user) { create(:user, :with_webauthn) }
+
+      let(:args) { [user.uuid, 'does-not-exist'] }
+      let(:include_missing) { true }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
+      subject(:result) { subtask.run(args:, config:) }
+
+      it 'loads MFA configurations for the user', aggregate_failures: true do
+        expected_table = [
+          %w[uuid phone_count auth_app_count webauthn_count piv_cac_count backup_code_count],
+          [user.uuid, 0, 0, 1, 0, 0],
+          ['does-not-exist', '[UUID NOT FOUND]', '[UUID NOT FOUND]', '[UUID NOT FOUND]',
+           '[UUID NOT FOUND]', '[UUID NOT FOUND]'],
+        ]
+        expect(result.table).to match(expected_table)
+        expect(result.subtask).to eq('mfa-lookup')
+        expect_consistent_row_length(result.table)
+        expect(result.uuids).to eq([user.uuid])
+      end
+    end
+
+    describe '#run when user only has backup codes' do
+      let(:user) { create(:user, :with_backup_code) }
+
+      let(:args) { [user.uuid, 'does-not-exist'] }
+      let(:include_missing) { true }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
+      subject(:result) { subtask.run(args:, config:) }
+
+      it 'loads MFA configurations for the user', aggregate_failures: true do
+        expected_table = [
+          %w[uuid phone_count auth_app_count webauthn_count piv_cac_count backup_code_count],
+          [user.uuid, 0, 0, 0, 0, 10],
+          ['does-not-exist', '[UUID NOT FOUND]', '[UUID NOT FOUND]', '[UUID NOT FOUND]',
+           '[UUID NOT FOUND]', '[UUID NOT FOUND]'],
+        ]
+        expect(result.table).to match(expected_table)
+        expect(result.subtask).to eq('mfa-lookup')
+        expect_consistent_row_length(result.table)
+        expect(result.uuids).to eq([user.uuid])
+      end
+    end
+
+    describe '#run when user has multiple MFA options' do
+      let(:user) { create(:user, :with_piv_or_cac, :with_webauthn) }
+
+      let(:args) { [user.uuid, 'does-not-exist'] }
+      let(:include_missing) { true }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
+      subject(:result) { subtask.run(args:, config:) }
+
+      it 'displays the count of all MFA configurations for the user', aggregate_failures: true do
+        expected_table = [
+          %w[uuid phone_count auth_app_count webauthn_count piv_cac_count backup_code_count],
+          [user.uuid, 0, 0, 1, 1, 0],
+          ['does-not-exist', '[UUID NOT FOUND]', '[UUID NOT FOUND]', '[UUID NOT FOUND]',
+           '[UUID NOT FOUND]', '[UUID NOT FOUND]'],
+        ]
+        expect(result.table).to match(expected_table)
+        expect(result.subtask).to eq('mfa-lookup')
+        expect_consistent_row_length(result.table)
+        expect(result.uuids).to eq([user.uuid])
+      end
+    end
+  end
+
   describe DataPull::MfaReport do
     subject(:subtask) { DataPull::MfaReport.new }
 

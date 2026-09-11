@@ -1,0 +1,41 @@
+<%= content_tag(
+      :'nds-progress',
+      **tag_options.except(:class, :data),
+      class: css_class,
+      data: { progress_label: label }.merge(tag_options[:data].to_h),
+    ) do %>
+  <div class="progress__scroll">
+    <%= tag.ol(class: 'progress__stepper', aria: { label: label }) do %>
+      <% steps.each_with_index do |step_label, index| %>
+        <li>
+          <%= tag.span(**step_options(index)) do %>
+            <span class="progress__step-surface">
+              <% if completed_step?(index) %>
+                <%= render IconComponent.new(
+                      icon: :check,
+                      size: 20,
+                      class: 'progress__step-check',
+                    ) %>
+              <% end %>
+              <span class="progress__step-label"><%= step_label %></span>
+              <% if show_substep_counter?(index) %>
+                <span class="progress__step-counter" aria-hidden="true">
+                  <%= current_substep %> / <%= substep_count %>
+                </span>
+              <% end %>
+            </span>
+            <% if active_step?(index) && substep_label.present? %>
+              <span class="sr-only"><%= substep_label %></span>
+            <% end %>
+            <% if (status = status_sr_text(index)).present? %>
+              <span class="sr-only"><%= status %></span>
+            <% end %>
+            <% if (substep = substep_sr_text(index)).present? %>
+              <span class="sr-only"><%= substep %></span>
+            <% end %>
+          <% end %>
+        </li>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

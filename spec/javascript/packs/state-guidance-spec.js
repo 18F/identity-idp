@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import {
   showOrHideJurisdictionExtras,
   showOrHidePuertoRicoExtras,
+  onExpirationOptionSelection,
 } from '../../../app/javascript/packs/state-guidance';
 
 describe('state-guidance', () => {
@@ -96,6 +97,69 @@ describe('state-guidance', () => {
       expect(defaultText[0].classList.contains('display-none')).to.eq(false);
 
       expect(nonDefaultText.length + defaultText.length).to.eq(allHintTexts.length);
+    });
+  });
+
+  describe('onExpirationOptionSelection', () => {
+    beforeEach(() => {
+      document.body.innerHTML = `
+        <fieldset>
+          <input type="radio" class="expiration-option-input" name="opt" value="date" checked />
+          <input type="radio" class="expiration-option-input" name="opt" value="military" />
+          <input type="radio" class="expiration-option-input" name="opt" value="indefinite" />
+          <input type="radio" class="expiration-option-input" name="opt" value="none" />
+          <div class="expiration-date-inputs">
+            <input name="id_expiration[month]" />
+            <input name="id_expiration[day]" />
+            <input name="id_expiration[year]" />
+          </div>
+        </fieldset>
+      `;
+    });
+
+    const dateWrapper = () => document.querySelector('.expiration-date-inputs');
+    const dateInputs = () => document.querySelectorAll('.expiration-date-inputs input');
+
+    it('shows and enables the date inputs when "date" is selected', () => {
+      onExpirationOptionSelection();
+
+      expect(dateWrapper().classList.contains('display-none')).to.eq(false);
+      dateInputs().forEach((input) => expect(input.disabled).to.eq(false));
+    });
+
+    it('hides and disables the date inputs when a non-date option is selected', () => {
+      onExpirationOptionSelection();
+
+      const military = document.querySelector('.expiration-option-input[value=military]');
+      document.querySelector('.expiration-option-input[value=date]').checked = false;
+      military.checked = true;
+      military.dispatchEvent(new Event('change'));
+
+      expect(dateWrapper().classList.contains('display-none')).to.eq(true);
+      dateInputs().forEach((input) => expect(input.disabled).to.eq(true));
+    });
+
+    it('re-shows and re-enables the date inputs when switching back to "date"', () => {
+      onExpirationOptionSelection();
+
+      const dateOption = document.querySelector('.expiration-option-input[value=date]');
+      const military = document.querySelector('.expiration-option-input[value=military]');
+      dateOption.checked = false;
+      military.checked = true;
+      military.dispatchEvent(new Event('change'));
+
+      military.checked = false;
+      dateOption.checked = true;
+      dateOption.dispatchEvent(new Event('change'));
+
+      expect(dateWrapper().classList.contains('display-none')).to.eq(false);
+      dateInputs().forEach((input) => expect(input.disabled).to.eq(false));
+    });
+
+    it('does nothing when the expiration inputs are not present', () => {
+      document.body.innerHTML = '<div></div>';
+
+      expect(() => onExpirationOptionSelection()).not.to.throw();
     });
   });
 });

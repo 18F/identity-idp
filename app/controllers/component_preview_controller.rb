@@ -13,10 +13,16 @@ class ComponentPreviewController < ViewComponentsController
     helper_method :enqueue_component_stylesheets
     alias_method :enqueue_component_stylesheets, :stylesheet_tag_once
 
+    helper_method :nds_layout?
+
     before_action :set_locale
 
     def set_locale
       I18n.locale = LocaleChooser.new(params[:locale], request).locale
+    end
+
+    def nds_layout?
+      params[:ui_test_bucket] == 'nds'
     end
   end
 end

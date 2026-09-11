@@ -60,6 +60,7 @@ class FrontendLogController < ApplicationController
     idv_sdk_selfie_image_taken
     idv_selfie_image_added
     idv_selfie_image_clicked
+    idv_socure_docv_redirect_requested
     passkey_authentication_initiated
     phone_input_country_changed
     tab_navigation_current_page_clicked

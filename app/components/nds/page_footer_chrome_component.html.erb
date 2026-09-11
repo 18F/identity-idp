@@ -1,0 +1,63 @@
+<lg-nds-page-footer>
+  <footer class="page-footer">
+    <div class="page-footer__agency">
+      <%= image_tag(
+            asset_url('sp-logos/square-gsa.svg'),
+            size: 20,
+            alt: '',
+            aria: { hidden: true },
+          ) %>
+      <span class="page-footer__agency-name"><%= agency_name %></span>
+    </div>
+
+    <div class="page-footer__actions">
+      <details class="page-footer__menu">
+        <summary
+          class="usa-button usa-button--quaternary usa-button--icon-right"
+          aria-label="<%= t('i18n.language') %>"
+        >
+          <%= selected_language_label %>
+          <%= render IconComponent.new(icon: :expand_more) %>
+        </summary>
+        <div class="popover-menu popover-menu--up popover-menu--left">
+          <% language_options.each do |option| %>
+            <%= link_to(
+                  option[:label],
+                  option[:value],
+                  class: 'popover-menu__item',
+                  lang: option[:lang],
+                  hreflang: option[:lang],
+                ) %>
+          <% end %>
+        </div>
+      </details>
+
+      <%= link_to(
+            privacy_link[:label],
+            privacy_link[:value],
+            class: 'usa-button usa-button--quaternary',
+          ) %>
+
+      <%= link_to(
+            t('links.help'),
+            resolved_help_url,
+            class: 'usa-button usa-button--quaternary page-footer__help',
+          ) %>
+
+      <details class="page-footer__menu">
+        <summary
+          class="usa-button usa-button--quaternary usa-button--icon-right"
+          aria-label="<%= more_label %>"
+        >
+          <%= more_label %>
+          <%= render IconComponent.new(icon: :expand_more) %>
+        </summary>
+        <div class="popover-menu popover-menu--up popover-menu--right">
+          <% destination_options.each do |option| %>
+            <%= link_to(option[:label], option[:value], class: 'popover-menu__item') %>
+          <% end %>
+        </div>
+      </details>
+    </div>
+  </footer>
+</lg-nds-page-footer>

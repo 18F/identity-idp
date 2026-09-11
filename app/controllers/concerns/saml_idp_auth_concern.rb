@@ -204,9 +204,8 @@ module SamlIdpAuthConcern
       encryption: encryption_opts,
       signature: saml_response_signature_options,
       signed_response_message: saml_request_service_provider&.signed_response_message_requested,
-    }.tap do |options|
-      options[:authn_instant] = saml_authn_instant if FeatureManagement.auth_time_attribute_enabled?
-    end
+      authn_instant: saml_authn_instant,
+    }
   end
 
   def saml_authn_instant

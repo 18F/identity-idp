@@ -1,0 +1,8 @@
+{
+  "name": "@18f/identity-nds-toast",
+  "version": "1.0.0",
+  "private": true,
+  "sideEffects": [
+    "./toast-element.ts"
+  ]
+}

@@ -194,6 +194,18 @@ Rails.application.routes.draw do
 
         get '/session_data' => 'session_data#index'
 
+        get '/nds' => 'nds_pages#index', as: :nds
+        post '/nds/seed_session' => 'nds_pages#seed_session', as: :nds_seed_session
+        post '/nds/generate_mfa' => 'nds_pages#generate_mfa', as: :nds_generate_mfa
+        get '/nds/record_options' => 'nds_pages#record_options', as: :nds_record_options
+        post '/nds/delete_record' => 'nds_pages#delete_record', as: :nds_delete_record
+        post '/nds/seed_state' => 'nds_pages#seed_state', as: :nds_seed_state
+        post '/nds/reset_state' => 'nds_pages#reset_state', as: :nds_reset_state
+        post '/nds/set_identity_level' => 'nds_pages#set_identity_level',
+             as: :nds_set_identity_level
+        post '/nds/sign_out' => 'nds_pages#sign_out_dev', as: :nds_sign_out
+        get '/nds/:page' => 'nds_pages#show', as: :nds_page
+
         get '/mock_socure/document_capture' => 'mock_socure#index'
         post '/mock_socure/document_capture' => 'mock_socure#update'
         post '/mock_socure/document_capture/continue' => 'mock_socure#continue'
@@ -407,6 +419,8 @@ Rails.application.routes.draw do
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
       get '/in_person/direct' => 'document_capture#direct_in_person'
+      get '/clear1/session' => 'clear1/session#show'
+      get '/clear1/session_update' => 'clear1/session#update', as: :clear1_session_update
       get '/socure/document_capture' => 'socure/document_capture#show'
       get '/socure/document_capture_update' => 'socure/document_capture#update', as: :socure_document_capture_update
       get '/socure/document_capture_errors' => 'socure/errors#show', as: :socure_document_capture_errors

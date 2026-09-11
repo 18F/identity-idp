@@ -46,7 +46,8 @@ module Proofing
             return if parsed_response.product_list.blank?
 
             product = parsed_response.product_list.first
-            return unless product['ProductType'] == 'Verify'
+            return unless product['ProductType'] == 'Verification' ||
+                          product['ProductType'] == 'Verify'
 
             product
           end

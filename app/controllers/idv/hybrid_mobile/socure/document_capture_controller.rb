@@ -37,6 +37,7 @@ module Idv
           @hybrid_flow = true
           @passport_requested = document_capture_session.passport_requested?
           @mdl_requested = document_capture_session.mdl_requested?
+          @document_type_requested = document_capture_session.document_type_requested
           @url = document_capture_session.socure_docv_capture_app_url
 
           return if @url.present?

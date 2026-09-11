@@ -386,7 +386,13 @@ class UserMailerPreview < ActionMailer::Preview
 
   def agent_proofing_succeeded
     UserMailer.with(user: user, email_address: email_address_record)
-      .agent_proofing_succeeded(verified_at: Time.zone.now.to_s)
+      .agent_proofing_succeeded(
+        verified_at: Time.zone.now.to_s,
+        # partner-routed CTA when a seeded SP exists; plain sign-in link otherwise
+        service_provider: ServiceProvider.find_by(
+          issuer: 'urn:gov:gsa:openidconnect:sp:sinatra',
+        ),
+      )
   end
 
   private

@@ -26,6 +26,7 @@
 .vagrant
 .capistrano
 .tool-versions
+.stylelintcache
 
 # avoid checking in stray files
 *.bak

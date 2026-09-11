@@ -1,0 +1,50 @@
+// NDS analog of app/assets/stylesheets/_uswds-core.scss.
+//
+// Mirrors the legacy overlay's mechanism exactly: a thin chained `@forward`
+// of IDS's overlay partial, layering only the idp-specific composition vars
+// on top. The forward target resolves (via the packages-nds load path) to
+// `packages-nds/_uswds-core.scss` — the same module that packages-nds's own
+// component partials (`_uswds-elements.scss`) load via `@use 'uswds-core'`.
+// Sharing that single module is what avoids the "module already loaded, so
+// it can't be configured using with" collision.
+@forward '@18f/identity-design-system/packages-nds/uswds-core' with (
+  $theme-body-font-size: 'sm',
+  $theme-button-icon-gap: 0.5,
+  $theme-font-weight-light: false,
+  $theme-image-path: '',
+  $theme-global-border-box-sizing: true,
+  $theme-global-link-styles: true,
+  $theme-grid-container-max-width: 'tablet-lg',
+  $theme-header-min-width: 'tablet',
+  $theme-link-visited-color: 'primary',
+  $theme-style-body-element: true,
+  $output-these-utilities: (
+    'add-list-reset',
+    'align-items',
+    'background-color',
+    'border',
+    'border-color',
+    'border-style',
+    'border-width',
+    'color',
+    'display',
+    'flex',
+    'float',
+    'font',
+    'font-family',
+    'font-style',
+    'font-weight',
+    'height',
+    'justify-content',
+    'margin',
+    'margin-horizontal',
+    'margin-vertical',
+    'padding',
+    'position',
+    'text-align',
+    'text-transform',
+    'vertical-align',
+    'whitespace',
+    'width',
+  )
+);

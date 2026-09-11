@@ -309,6 +309,34 @@ RSpec.describe Idv::HybridHandoffController do
         end
       end
     end
+
+    it 'pass on correct flags and states and logs correct info' do
+      get :show
+      expect(subject.idv_session.clear1_enabled).to be_nil
+    end
+
+    context 'when clear1 is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:idv_clear1_enabled_percent).and_return(100)
+        reload_ab_tests
+      end
+
+      after do
+        reload_ab_tests
+      end
+
+      it 'pass on correct flags and states and logs correct info' do
+        expect(Idv::HowToVerifyPresenter).to receive(:new).with(
+          selfie_check_required: false,
+          mdl_enabled: nil,
+          clear1_enabled: true,
+        )
+        get :show
+
+        expect(subject.idv_session.clear1_enabled).to eq(true)
+      end
+    end
   end
 
   describe '#update' do
@@ -422,6 +450,47 @@ RSpec.describe Idv::HybridHandoffController do
 
           expect(response).to redirect_to(idv_choose_id_type_url)
         end
+      end
+    end
+
+    context 'clear1' do
+      let(:analytics_args) do
+        {
+          success: true,
+          destination: :clear1_session,
+          flow_path: 'standard',
+          step: 'hybrid_handoff',
+          analytics_id: 'Doc Auth',
+          selfie_check_required: sp_selfie_enabled,
+        }
+      end
+
+      let(:params) do
+        {
+          type: 'clear1',
+        }
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:idv_clear1_enabled_percent).and_return(100)
+        reload_ab_tests
+      end
+
+      after do
+        reload_ab_tests
+      end
+
+      it 'redirects to clear1 url' do
+        put :update, params: params
+
+        expect(response).to redirect_to(idv_clear1_session_url)
+      end
+
+      it 'sends analytics_submitted event for clear1' do
+        put :update, params: params
+
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
     end
   end

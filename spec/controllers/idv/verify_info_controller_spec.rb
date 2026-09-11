@@ -1285,10 +1285,28 @@ RSpec.describe Idv::VerifyInfoController do
           expect(Idv::Agent).to receive(:new).with(
             hash_including(
               aamva_verified_attributes: %w[ssn dob],
+              address_edited: false,
             ),
           ).and_call_original
 
           put :update
+        end
+
+        context 'when the user edited their residential address' do
+          before do
+            controller.idv_session.address_edited = true
+          end
+
+          it 'modifies PII to flag the edited address' do
+            expect(Idv::Agent).to receive(:new).with(
+              hash_including(
+                aamva_verified_attributes: %w[ssn dob],
+                address_edited: true,
+              ),
+            ).and_call_original
+
+            put :update
+          end
         end
       end
     end
