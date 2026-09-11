@@ -364,8 +364,8 @@ module Reporting
     def socure_phonerisk_query
       <<~QUERY
         fields @timestamp, @message
-        | filter (name IN ["idv_socure_shadow_mode_phonerisk_result"])
-        OR (name = 'IdV: phone confirmation vendor' AND properties.event_properties.vendor.vendor_name = "socure_phonerisk")
+        |filter name = 'IdV: phone confirmation vendor' 
+        AND (properties.event_properties.vendor.vendor_name = "socure_phonerisk" OR properties.event_properties.alternate_result.vendor.vendor_name = "socure_phonerisk")
         | display id
         | limit 10000
       QUERY
@@ -375,7 +375,9 @@ module Reporting
       <<~QUERY
         fields @timestamp, @message, id
         | filter name = 'IdV: phone confirmation vendor'
-        | filter properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder" or properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder_ddp"
+        | filter properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder" or 
+        properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder_ddp" or 
+        properties.event_properties.alternate_result.vendor.vendor_name = "lexisnexis:phone_finder_ddp"
         | display id
         | limit 10000
       QUERY
