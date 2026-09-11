@@ -1876,4 +1876,26 @@ RSpec.describe UserMailer, type: :mailer do
       end
     end
   end
+
+  describe '#device_profiling_error_cleared' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).device_profiling_error_cleared
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq(t('user_mailer.device_profiling_error_cleared.subject'))
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).to have_content(
+        t('user_mailer.device_profiling_error_cleared.header'),
+      )
+      expect(mail.html_part.body).to have_content(
+        t('user_mailer.device_profiling_error_cleared.info'),
+      )
+    end
+  end
 end

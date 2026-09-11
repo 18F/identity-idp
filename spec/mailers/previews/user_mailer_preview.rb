@@ -395,6 +395,13 @@ class UserMailerPreview < ActionMailer::Preview
       )
   end
 
+  def device_profiling_error_cleared
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).device_profiling_error_cleared
+  end
+
   private
 
   def user
