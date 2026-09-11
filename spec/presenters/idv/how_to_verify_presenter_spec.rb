@@ -6,12 +6,38 @@ RSpec.describe Idv::HowToVerifyPresenter do
       selfie_check_required:,
       passport_cards_supported:,
       mdl_enabled:,
+      clear1_enabled:,
     )
   end
 
   let(:selfie_check_required) { false }
   let(:passport_cards_supported) { false }
   let(:mdl_enabled) { false }
+  let(:clear1_enabled) { false }
+
+  describe '#clear1_enabled?' do
+    it 'is false by default' do
+      expect(presenter.clear1_enabled?).to eq(false)
+    end
+
+    context 'when clear1 is enabled' do
+      let(:clear1_enabled) { true }
+
+      it 'is true' do
+        expect(presenter.clear1_enabled?).to eq(true)
+      end
+    end
+  end
+
+  describe 'clear1 copy' do
+    it 'returns the designed heading, description, link text and button text' do
+      expect(presenter.verify_with_existing_account_text)
+        .to eq(t('doc_auth.headings.verify_with_existing_account'))
+      expect(presenter.clear1_description).to eq(t('doc_auth.info.verify_with_clear1'))
+      expect(presenter.clear1_link_text).to eq(t('doc_auth.info.verify_with_clear1_link_text'))
+      expect(presenter.clear1_submit).to eq(t('forms.buttons.verify_with_clear1'))
+    end
+  end
 
   describe '#verify_online_description' do
     context 'when passport cards are supported' do

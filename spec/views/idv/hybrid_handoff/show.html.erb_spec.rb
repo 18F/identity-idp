@@ -44,18 +44,28 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
   end
 
   it 'does not render the Clear1 action' do
-    expect(rendered).not_to have_selector(
-      :xpath,
-      '//form[@aria-label="Clear1"]',
-    )
+    expect(rendered).not_to have_selector('#form-to-verify-with-clear1')
+    expect(rendered).not_to have_content(t('doc_auth.headings.verify_with_existing_account'))
   end
 
   context 'when clear1 is enabled' do
     let(:clear1_enabled) { true }
-    it 'renders the Clear1 action' do
+
+    it 'renders the Clear1 action as designed' do
       expect(rendered).to have_selector(
         :xpath,
-        '//form[@aria-label="Clear1"]',
+        "//form[@aria-label=\"#{t('forms.buttons.verify_with_clear1')}\"]",
+      )
+      expect(rendered).to have_selector(
+        'h2',
+        text: t('doc_auth.headings.verify_with_existing_account'),
+      )
+      expect(rendered).to have_content(t('doc_auth.info.verify_with_clear1'))
+      expect(rendered).to have_link(t('doc_auth.info.verify_with_clear1_link_text'))
+      expect(rendered).to have_button(t('forms.buttons.verify_with_clear1'))
+      expect(rendered).to have_selector(
+        "input[name='idv_how_to_verify_form[selection]'][value='#{Idv::HowToVerifyForm::CLEAR1}']",
+        visible: :all,
       )
     end
   end

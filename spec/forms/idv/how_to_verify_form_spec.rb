@@ -12,6 +12,21 @@ RSpec.describe Idv::HowToVerifyForm do
         expect(result.success?).to eq(true)
         expect(result.errors).to be_empty
       end
+
+      it 'accepts the clear1 selection' do
+        result = subject.submit(selection: Idv::HowToVerifyForm::CLEAR1)
+
+        expect(result.success?).to eq(true)
+      end
+    end
+
+    context 'when the selection is not a known option' do
+      it 'returns an unsuccessful form response' do
+        result = subject.submit(selection: 'carrier_pigeon')
+
+        expect(result.success?).to eq(false)
+        expect(result.errors[:selection]).to be_present
+      end
     end
   end
 

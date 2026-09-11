@@ -25,7 +25,7 @@ module Idv
         if clear1_session.success?
           token = clear1_session.extra[:token]
 
-          @clear1_endpoint = UriService.add_params(
+          clear1_endpoint = UriService.add_params(
             [IdentityConfig.store.idv_clear1_api_base_url, 'verify'].join('/'),
             { token: },
           )
@@ -33,6 +33,8 @@ module Idv
           idv_session.clear1_verification_token = token
           idv_session.clear1_verification_state = clear1_session.extra[:state]
           document_capture_session.update!(doc_auth_vendor: Idp::Constants::Vendors::CLEAR1)
+
+          redirect_to clear1_endpoint, allow_other_host: true
         else
           redirect_to idv_hybrid_handoff_path
         end

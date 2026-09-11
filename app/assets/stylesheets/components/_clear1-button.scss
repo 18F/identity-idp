@@ -1,0 +1,29 @@
+@use 'sass:color';
+@use 'uswds-core' as *;
+
+$clear1-navy: #041a55;
+
+.clear1-button {
+  align-items: center;
+  background-color: $clear1-navy;
+  border-radius: 10px; // per design; sibling CTAs are 8px
+  // Block-level so margins collapse with the paragraph above, like the sibling
+  // .display-block buttons. inline-flex would sit 16px lower.
+  display: flex;
+  gap: units(1.5);
+  justify-content: center;
+  // 34px logo + 9px top/bottom = 52px, matching the usa-button--big siblings.
+  padding-bottom: 9px;
+  padding-top: 9px;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: color.adjust($clear1-navy, $lightness: -5%);
+  }
+
+  &__logo {
+    height: 34px;
+    width: auto;
+  }
+}
