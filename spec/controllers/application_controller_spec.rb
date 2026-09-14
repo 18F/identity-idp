@@ -941,6 +941,19 @@ RSpec.describe ApplicationController do
       end
     end
 
+    context 'when the user has opted out of the NDS interface' do
+      it 'continues to resolve the legacy layout from the opt_out assignment' do
+        AbTestAssignment.create!(
+          experiment: AbTests::NDS_LOOK_AND_FEEL.experiment,
+          discriminator: controller.send(:nds_experiment_uuid),
+          bucket: 'opt_out',
+        )
+        get :index
+
+        expect(controller.nds_layout?).to eq(false)
+      end
+    end
+
     context 'when the ui_test_bucket cookie is set' do
       context 'when there is no param passed' do
         it 'sticks to nds when the cookie is nds, even if the A/B bucket is not nds' do

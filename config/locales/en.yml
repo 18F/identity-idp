@@ -1650,6 +1650,10 @@ nds.enter_password.info: Your information is encrypted with your password. This 
 nds.errors.cancel_verification: Cancel verification
 nds.errors.return_home: Return home
 nds.errors.start_over_warning: You will need to verify your identity from the beginning
+nds.footer.experience_notice_html: You’re part of a group experiencing %{link_html}.
+nds.footer.experience_notice_label: Interface preference
+nds.footer.experience_notice_link: our refreshed interface
+nds.footer.switch_to_legacy: Switch to legacy
 nds.hybrid_handoff.heading: Enter your phone number
 nds.hybrid_handoff.subtitle: We’ll send you a link to verify your ID using a trusted service provider.
 nds.idv_phone.info: Enter a U.S. phone number. We’ll text or call you with a 6-digit code. Standard phone lines only. No VoIP or premium numbers. Message and data rates may apply.
