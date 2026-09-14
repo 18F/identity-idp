@@ -67,6 +67,7 @@ module Idv
 
       if result.success?
         if proofing_with_superior_evidence?
+          set_idv_session_address_vendor_to_superior_evidence_skipped
           start_phone_confirmation
         else
           start_phone_verification
@@ -102,9 +103,13 @@ module Idv
       idv_session.proofing_with_superior_evidence?
     end
 
+    def set_idv_session_address_vendor_to_superior_evidence_skipped
+      idv_session.address_verification_vendor =
+        Idp::Constants::Vendors::PHONE_CHECK_SUPERIOR_EVIDENCE_SKIPPED
+    end
+
     def start_phone_confirmation
       step.start_phone_confirmation(step_params.to_h)
-      idv_session.address_verification_vendor = 'skipped_superior_evidence'
       send_phone_confirmation_otp_and_handle_result
     end
 

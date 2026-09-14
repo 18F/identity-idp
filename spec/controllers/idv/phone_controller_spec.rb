@@ -795,9 +795,10 @@ RSpec.describe Idv::PhoneController do
           put :create, params: phone_params
         end
 
-        it 'sets the idv_session address verification vendor to "skipped_superior_evidence"' do
+        it 'sets the idv_session address verification vendor to "SuperiorEvidenceSkipped"' do
           expect(subject.idv_session).to have_attributes(
-            address_verification_vendor: 'skipped_superior_evidence',
+            address_verification_vendor:
+              Idp::Constants::Vendors::PHONE_CHECK_SUPERIOR_EVIDENCE_SKIPPED,
           )
         end
 
