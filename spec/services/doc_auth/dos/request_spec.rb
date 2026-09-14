@@ -165,5 +165,20 @@ RSpec.describe DocAuth::Dos::Request do
         )
       end
     end
+
+    context 'handle connection error' do
+      let(:response_body) { '' }
+
+      before do
+        allow(NewRelic::Agent).to receive(:notice_error)
+      end
+
+      it 'notices the error to NewRelic and returns a response with network error' do
+        response = subject.send(:handle_invalid_response, http_response)
+
+        expect(response.success?).to be(false)
+        expect(NewRelic::Agent).to have_received(:notice_error)
+      end
+    end
   end
 end
