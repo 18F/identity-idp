@@ -1308,7 +1308,7 @@ RSpec.describe Idv::EnterPasswordController do
       end
 
       context 'when historical attempts api is enabled' do
-        context 'when the request requires identity verification' do
+        context 'when the request requires IAL2' do
           before do
             resolved_authn_context_result = Component::Parser.new(
               acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
@@ -1346,7 +1346,7 @@ RSpec.describe Idv::EnterPasswordController do
             end
           end
 
-          context 'when a user upgrades to an IAL identity proofed profile' do
+          context 'when a user upgrades from basic IdV to IAL2' do
             let(:user) do
               create(
                 :user,
@@ -1372,6 +1372,45 @@ RSpec.describe Idv::EnterPasswordController do
               expect(@analytics).to have_logged_event(
                 :historic_event_data_saved,
                 profile_id: updated_user.active_profile.id,
+              )
+            end
+
+            it 'caches user proofing events' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              data = controller.user_session[:encrypted_proofing_events]
+              historical_attempts = JSON.parse(
+                SessionEncryptor.new.kms_decrypt(data),
+              )
+
+              expect(historical_attempts).to eq([idv_attempt])
+            end
+          end
+        end
+
+        context 'when the request requires basic IdV' do
+          before do
+            resolved_authn_context_result = Component::Parser.new(
+              acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+            ).parse
+
+            allow(controller).to receive(:resolved_authn_context_result)
+              .and_return(resolved_authn_context_result)
+          end
+
+          context 'with a newly proofed user' do
+            it 'creates a UserProofingEvent for the profile' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              event = UserProofingEvent.last
+
+              expect(event.profile_id).to eq(user.active_profile.id)
+            end
+
+            it 'tracks an analytic event' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(@analytics).to have_logged_event(
+                :historic_event_data_saved,
+                profile_id: user.active_profile.id,
               )
             end
 
