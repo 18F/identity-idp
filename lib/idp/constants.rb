@@ -24,6 +24,7 @@ module Idp
       AAMVA_CHECK_SKIPPED = 'AamvaCheckSkipped'
       SOURCE_CHECK = [AAMVA, AAMVA_UNSUPPORTED_JURISDICTION, STATE_ID_MOCK].freeze
       CLEAR1 = 'clear1'
+      PHONE_CHECK_SUPERIOR_EVIDENCE_SKIPPED = 'SuperiorEvidenceSkipped'
     end
 
     module DocumentTypes
