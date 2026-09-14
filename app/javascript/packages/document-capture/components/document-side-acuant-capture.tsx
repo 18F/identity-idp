@@ -10,6 +10,7 @@ import type {
 } from '@18f/identity-form-steps';
 import AcuantCapture, { AcuantDocumentType } from './acuant-capture';
 import SelfieCaptureContext from '../context/selfie-capture';
+import UploadContext from '../context/upload';
 
 interface DocumentSideAcuantCaptureProps {
   side: 'front' | 'back' | 'passport' | 'selfie';
@@ -63,8 +64,12 @@ function DocumentSideAcuantCapture({
   const error = errors.find(({ field }) => field === errorSide)?.error;
   const { changeStepCanComplete } = useContext(FormStepsContext);
   const { isDesktopTestMode, isUploadEnabled } = useContext(SelfieCaptureContext);
+  const { idType } = useContext(UploadContext);
   const isUploadAllowed = isDesktopTestMode || isUploadEnabled;
   const stepCanComplete = !isReviewStep ? undefined : true;
+  const isPassportCardBack = idType === 'passport_card' && side === 'back';
+  const labelSide = isPassportCardBack ? 'passport_card_back' : side;
+  const bannerSide = isPassportCardBack ? 'passport_card_back' : side;
 
   return (
     <AcuantCapture
@@ -72,13 +77,15 @@ function DocumentSideAcuantCapture({
       /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
       /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
       /* i18n-tasks-use t('doc_auth.headings.document_capture_passport') */
+      /* i18n-tasks-use t('doc_auth.headings.document_capture_passport_card_back') */
       /* i18n-tasks-use t('doc_auth.headings.document_capture_selfie') */
-      label={t(`doc_auth.headings.document_capture_${side}`)}
+      label={t(`doc_auth.headings.document_capture_${labelSide}`)}
       /* i18n-tasks-use t('doc_auth.headings.back') */
       /* i18n-tasks-use t('doc_auth.headings.front') */
       /* i18n-tasks-use t('doc_auth.headings.passport') */
+      /* i18n-tasks-use t('doc_auth.headings.passport_card_back') */
       /* i18n-tasks-use t('doc_auth.headings.selfie') */
-      bannerText={t(`doc_auth.headings.${side}`)}
+      bannerText={t(`doc_auth.headings.${bannerSide}`)}
       value={value}
       onChange={(nextValue, metadata) => {
         onChange({

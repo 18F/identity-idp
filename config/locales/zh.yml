@@ -649,6 +649,7 @@ doc_auth.headings.document_capture: 添加你身份证件的照片
 doc_auth.headings.document_capture_back: 你身份证件的背面
 doc_auth.headings.document_capture_front: 你身份证件的正面
 doc_auth.headings.document_capture_passport: 你的护照
+doc_auth.headings.document_capture_passport_card_back: 护照卡的背面
 doc_auth.headings.document_capture_selfie: 自拍照
 doc_auth.headings.document_capture_subheader_selfie: 拍一张自拍照
 doc_auth.headings.document_capture_subheader_selfie_review: 自拍照
@@ -661,6 +662,7 @@ doc_auth.headings.mdl_capture: 添加您的移动驾驶证 （mDL） 信息
 doc_auth.headings.no_ssn: 没有社会保障号码？
 doc_auth.headings.passport: 你的护照
 doc_auth.headings.passport_capture: 添加一张你护照的照片
+doc_auth.headings.passport_card_back: 护照卡的背面
 doc_auth.headings.passport_instructions.howto: '如何拍摄你本人的照片：'
 doc_auth.headings.review_issues: 检查一下你的图片并再试一次
 doc_auth.headings.review_issues_passport: 检查一下你的照片并再试一次

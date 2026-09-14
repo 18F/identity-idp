@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import DocumentCaptureReviewIssues from '@18f/identity-document-capture/components/document-capture-review-issues';
-import { InPersonContext } from '@18f/identity-document-capture/context';
+import { InPersonContext, UploadContext } from '@18f/identity-document-capture/context';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
 import { I18nContext } from '@18f/identity-react-i18n';
 import { I18n } from '@18f/identity-i18n';
@@ -153,6 +153,56 @@ describe('DocumentCaptureReviewIssues', () => {
       expect(backCapture).to.be.ok();
       expect(getByText('back side doc type error')).to.be.ok();
       expect(getByRole('button', { name: 'forms.buttons.submit.default' })).to.be.ok();
+    });
+
+    it('renders passport and back capture for a passport card', () => {
+      const { getByLabelText } = render(
+        <InPersonContext.Provider
+          value={{
+            inPersonURL: '/verify/doc_capture',
+            locationsURL: '',
+            inPersonOutageMessageEnabled: false,
+            optedInToInPersonProofing: false,
+            usStatesTerritories: [['Los Angeles', 'NY']],
+          }}
+        >
+          <UploadContext.Provider
+            value={{
+              upload: () => Promise.resolve({ success: true, isPending: false }),
+              getStatus: () => Promise.resolve({ success: true, isPending: false }),
+              statusPollInterval: undefined,
+              isMockClient: false,
+              flowPath: 'standard',
+              idType: 'passport_card',
+              formData: {},
+              submitAttempts: 0,
+            }}
+          >
+            <DocumentCaptureReviewIssues
+              {...{
+                ...DEFAULT_OPTIONS,
+                isFailedDocType: false,
+                errors: [
+                  {
+                    field: 'front',
+                    error: toFormEntryError({ field: 'front', message: 'front side error' }),
+                  },
+                  {
+                    field: 'back',
+                    error: toFormEntryError({ field: 'back', message: 'back side error' }),
+                  },
+                ],
+              }}
+            />
+          </UploadContext.Provider>
+        </InPersonContext.Provider>,
+      );
+
+      const frontCapture = getByLabelText('doc_auth.headings.document_capture_passport');
+      expect(frontCapture).to.be.ok();
+
+      const backCapture = getByLabelText('doc_auth.headings.document_capture_passport_card_back');
+      expect(backCapture).to.be.ok();
     });
   });
 });

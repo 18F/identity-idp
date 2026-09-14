@@ -649,6 +649,7 @@ doc_auth.headings.document_capture: Añade fotos de tu licencia de conducir o cr
 doc_auth.headings.document_capture_back: Reverso de su identificación
 doc_auth.headings.document_capture_front: Frente de su identificación
 doc_auth.headings.document_capture_passport: Su pasaporte
+doc_auth.headings.document_capture_passport_card_back: Reverso de su tarjeta de pasaporte
 doc_auth.headings.document_capture_selfie: Selfi
 doc_auth.headings.document_capture_subheader_selfie: Tómese una selfi
 doc_auth.headings.document_capture_subheader_selfie_review: Selfi
@@ -661,6 +662,7 @@ doc_auth.headings.mdl_capture: Añada la información de su licencia de conducir
 doc_auth.headings.no_ssn: '¿No tiene un número de Seguro Social?'
 doc_auth.headings.passport: Su pasaporte
 doc_auth.headings.passport_capture: Agregue una foto de su pasaporte
+doc_auth.headings.passport_card_back: Reverso de su tarjeta de pasaporte
 doc_auth.headings.passport_instructions.howto: 'Cómo tomar su fotografía:'
 doc_auth.headings.review_issues: Revise sus imágenes e inténtelo de nuevo
 doc_auth.headings.review_issues_passport: Revise su foto e inténtelo de nuevo

@@ -638,6 +638,7 @@ doc_auth.headings.document_capture: Add photos of your driver’s license or sta
 doc_auth.headings.document_capture_back: Back of your ID
 doc_auth.headings.document_capture_front: Front of your ID
 doc_auth.headings.document_capture_passport: Your passport
+doc_auth.headings.document_capture_passport_card_back: Back of your passport card
 doc_auth.headings.document_capture_selfie: Selfie
 doc_auth.headings.document_capture_subheader_selfie: Take a selfie
 doc_auth.headings.document_capture_subheader_selfie_review: Selfie
@@ -650,6 +651,7 @@ doc_auth.headings.mdl_capture: Add your mobile driver’s license (mDL) informat
 doc_auth.headings.no_ssn: Don’t have a Social Security number?
 doc_auth.headings.passport: Your passport
 doc_auth.headings.passport_capture: Add a photo of your passport
+doc_auth.headings.passport_card_back: Back of your passport card
 doc_auth.headings.passport_instructions.howto: How to take your photo
 doc_auth.headings.review_issues: Check your images and try again
 doc_auth.headings.review_issues_passport: Check your photo and try again

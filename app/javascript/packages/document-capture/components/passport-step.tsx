@@ -21,11 +21,15 @@ import AcuantPassportInstructions from './acuant-passport-instructions';
 export function PassportCaptureStep({
   defaultSideProps,
   passportValue,
+  backValue,
+  isPassportCard = false,
   showHelp,
   isReviewStep = false,
 }: {
   defaultSideProps: DefaultSideProps;
   passportValue: ImageValue;
+  backValue?: ImageValue;
+  isPassportCard?: boolean;
   showHelp: boolean;
   isReviewStep: boolean;
 }) {
@@ -33,14 +37,26 @@ export function PassportCaptureStep({
     <>
       {showHelp && <AcuantPassportInstructions />}
       {!showHelp && (
-        <DocumentSideAcuantCapture
-          {...defaultSideProps}
-          key="passport"
-          side="passport"
-          value={passportValue}
-          isReviewStep={isReviewStep}
-          showSelfieHelp={() => undefined}
-        />
+        <>
+          <DocumentSideAcuantCapture
+            {...defaultSideProps}
+            key="passport"
+            side="passport"
+            value={passportValue}
+            isReviewStep={isReviewStep}
+            showSelfieHelp={() => undefined}
+          />
+          {isPassportCard && (
+            <DocumentSideAcuantCapture
+              {...defaultSideProps}
+              key="back"
+              side="back"
+              value={backValue}
+              isReviewStep={isReviewStep}
+              showSelfieHelp={() => undefined}
+            />
+          )}
+        </>
       )}
     </>
   );
@@ -66,9 +82,10 @@ export default function PassportStep({
   const { t } = useI18n();
   const { isLastStep } = useContext(FormStepsContext);
   const { isMobile } = useContext(DeviceContext);
-  const { flowPath } = useContext(UploadContext);
+  const { flowPath, idType } = useContext(UploadContext);
   const { showHelpInitially } = useContext(PassportCaptureContext);
   const [showHelp, setShowHelp] = useState(showHelpInitially && isMobile);
+  const isPassportCard = idType === 'passport_card';
 
   const defaultSideProps: DefaultSideProps = {
     registerField,
@@ -125,6 +142,8 @@ export default function PassportStep({
       <PassportCaptureStep
         defaultSideProps={defaultSideProps}
         passportValue={value.passport}
+        backValue={value.back}
+        isPassportCard={isPassportCard}
         showHelp={showHelp}
         isReviewStep={false}
       />
