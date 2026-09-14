@@ -6,8 +6,9 @@ module Proofing
       class ParsedResponse
         attr_reader :response
 
-        def initialize(response)
+        def initialize(response, review_status: nil)
           @response = response
+          @review_status = review_status
         end
 
         def verification_errors
@@ -59,7 +60,8 @@ module Proofing
         end
 
         def verification_error_parser
-          @verification_error_parser ||= VerificationErrorParser.new(response_body)
+          @verification_error_parser ||=
+            VerificationErrorParser.new(response_body, review_status: @review_status)
         end
       end
     end
