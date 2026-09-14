@@ -574,6 +574,8 @@ module IdentityConfig
     config.add(:ui_test_bucket_params_enabled, type: :boolean)
     config.add(:unauthorized_scope_enabled, type: :boolean)
     config.add(:update_cancel_account_reset_path, type: :boolean)
+    config.add(:users_report_api_config, type: :json)
+    config.add(:users_report_api_enabled, type: :boolean)
     config.add(:use_dashboard_service_providers, type: :boolean)
     config.add(:use_kms, type: :boolean)
     config.add(:use_vot_in_sp_requests, type: :boolean)
