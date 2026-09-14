@@ -638,6 +638,7 @@ doc_auth.headings.document_capture: Ajoutez des photos de votre permis de condui
 doc_auth.headings.document_capture_back: Verso de votre pièce d’identité
 doc_auth.headings.document_capture_front: Recto de votre carte d’identité
 doc_auth.headings.document_capture_passport: Votre passeport
+doc_auth.headings.document_capture_passport_card_back: Verso de votre carte de passeport
 doc_auth.headings.document_capture_selfie: Selfie
 doc_auth.headings.document_capture_subheader_selfie: Prenez un selfie
 doc_auth.headings.document_capture_subheader_selfie_review: Selfie
@@ -650,6 +651,7 @@ doc_auth.headings.mdl_capture: Renseignez les informations de votre permis de co
 doc_auth.headings.no_ssn: Vous n’avez pas de numéro de sécurité sociale ?
 doc_auth.headings.passport: Votre passeport
 doc_auth.headings.passport_capture: Ajouter une photo de votre passeport
+doc_auth.headings.passport_card_back: Verso de votre carte de passeport
 doc_auth.headings.passport_instructions.howto: 'Comment vous prendre en photo :'
 doc_auth.headings.review_issues: Vérifiez vos images et essayez à nouveau
 doc_auth.headings.review_issues_passport: Vérifiez votre photo et essayez à nouveau
