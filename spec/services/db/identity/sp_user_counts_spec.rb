@@ -3,31 +3,34 @@ require 'rails_helper'
 RSpec.describe Db::Identity::SpUserCounts do
   subject { described_class }
   let(:proofed_user) { create(:user, :proofed) }
+  let(:sp1) { create(:service_provider, :idv, :active) }
+  let(:sp2) { create(:service_provider, :idv, :active) }
+  let(:user1) { create(:user) }
+  let(:user2) { create(:user) }
+  let(:user3) { create(:user) }
 
   describe '.by_issuer' do
-    let(:issuer) { 'foo' }
-    let(:app_id) { 'app_id' }
-    let(:issuer2) { 'foo2' }
-    let(:app_id2) { 'app_id2' }
+    let(:issuer) { sp1.issuer }
+    let(:app_id) { sp1.app_id }
+    let(:issuer2) { sp2.issuer }
+    let(:app_id2) { sp2.app_id }
 
     it 'is empty' do
       expect(subject.by_issuer.size).to eq(0)
     end
 
     it 'returns the total user counts per sp broken down by ial1 and ial2' do
-      ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: app_id)
-      ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, app_id: app_id2)
-      ServiceProviderIdentity.create(user_id: 1, service_provider: issuer, uuid: 'foo1')
-      ServiceProviderIdentity.create(user_id: 2, service_provider: issuer, uuid: 'foo2')
+      ServiceProviderIdentity.create(user_id: user1.id, service_provider: issuer, uuid: 'foo1')
+      ServiceProviderIdentity.create(user_id: user2.id, service_provider: issuer, uuid: 'foo2')
       ServiceProviderIdentity.create(
-        user_id: 3, service_provider: issuer, uuid: 'foo3',
+        user_id: user3.id, service_provider: issuer, uuid: 'foo3',
         verified_at: Time.zone.now
       )
       ServiceProviderIdentity.create(
         user_id: proofed_user.id, service_provider: issuer2, uuid: 'foo4',
         verified_at: Time.zone.now
       )
-      result = { issuer: issuer, total: 3, ial1_total: 2, ial2_total: 1, app_id: app_id }.to_json
+      result = { issuer:, total: 3, ial1_total: 2, ial2_total: 1, app_id: }.to_json
       result2 = { issuer: issuer2, total: 1, ial1_total: 0, ial2_total: 1, app_id: app_id2 }.to_json
 
       tuples = subject.by_issuer
@@ -38,9 +41,6 @@ RSpec.describe Db::Identity::SpUserCounts do
   end
 
   describe '.overall' do
-    let(:sp1) { create(:service_provider) }
-    let(:sp2) { create(:service_provider) }
-
     it 'has zeroes with no data' do
       result = subject.overall
       expect(result.size).to eq(1)
