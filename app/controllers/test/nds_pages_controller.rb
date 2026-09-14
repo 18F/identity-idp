@@ -1266,6 +1266,12 @@ module Test
       {}
     end
 
+    def setup_email_language
+      user = User.new(email_language: params[:language].presence)
+      @nds_current_user = user
+      {}
+    end
+
     def setup_completions
       user = build_mfa_user(configured: true)
       email = EmailAddressStub.new(email: DEV_USER_EMAIL)
