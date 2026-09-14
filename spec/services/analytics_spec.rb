@@ -63,6 +63,12 @@ RSpec.describe Analytics do
       analytics.track_event('Trackable Event')
     end
 
+    it 'tracks NDS opt out' do
+      expect(ahoy).to receive(:track).with(:nds_look_and_feel_opted_out, anything)
+
+      analytics.nds_look_and_feel_opted_out
+    end
+
     it 'does not track nil values' do
       expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
 

@@ -1650,6 +1650,10 @@ nds.enter_password.info: Vos informations sont chiffrées avec votre mot de pass
 nds.errors.cancel_verification: Annuler la vérification
 nds.errors.return_home: Retour à l’accueil
 nds.errors.start_over_warning: Vous devrez vérifier votre identité depuis le début
+nds.footer.experience_notice_html: You’re part of a group experiencing %{link_html}.
+nds.footer.experience_notice_label: Interface preference
+nds.footer.experience_notice_link: our refreshed interface
+nds.footer.switch_to_legacy: Switch to legacy
 nds.hybrid_handoff.heading: Saisissez votre numéro de téléphone
 nds.hybrid_handoff.subtitle: Nous vous enverrons un lien pour vérifier votre pièce d’identité auprès d’un prestataire de confiance.
 nds.idv_phone.info: Saisissez un numéro de téléphone américain. Nous vous enverrons un SMS ou vous appellerons avec un code à 6 chiffres. Lignes téléphoniques standard uniquement ; pas de numéros VoIP ni surtaxés. Des frais de messagerie et de données peuvent s’appliquer.

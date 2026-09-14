@@ -11,6 +11,7 @@ module NDS
   # bucket-conditional ButtonComponent (quaternary in nds).
   class PageFooterChromeComponent < BaseComponent
     GSA_URL = 'https://www.gsa.gov'
+    NEW_USER_INTERFACE_URL = 'https://login.gov/new-user-interface/'
 
     attr_reader :gsa_url, :help_url
 
@@ -70,6 +71,18 @@ module NDS
 
     def more_label
       t('links.more')
+    end
+
+    def experience_notice_link
+      link_to(
+        t('nds.footer.experience_notice_link'),
+        NEW_USER_INTERFACE_URL,
+        class: 'usa-link link--nowrap',
+      )
+    end
+
+    def opt_out_url
+      Rails.application.routes.url_helpers.nds_opt_out_path
     end
 
     def agency_name

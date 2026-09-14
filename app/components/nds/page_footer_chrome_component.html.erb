@@ -1,4 +1,19 @@
 <lg-nds-page-footer>
+  <aside
+    class="page-footer__experience-notice"
+    aria-label="<%= t('nds.footer.experience_notice_label') %>"
+  >
+    <p class="copy copy--muted margin-bottom-0">
+      <%= t('nds.footer.experience_notice_html', link_html: experience_notice_link) %>
+    </p>
+    <%= button_to(
+          t('nds.footer.switch_to_legacy'),
+          opt_out_url,
+          class: 'usa-button usa-button--unstyled',
+          form_class: 'display-inline',
+        ) %>
+  </aside>
+
   <footer class="page-footer">
     <div class="page-footer__agency">
       <%= image_tag(

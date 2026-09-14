@@ -12,6 +12,12 @@ RSpec.describe NDS::PageFooterChromeComponent, type: :component do
     allow_any_instance_of(NDS::PageFooterChromeComponent).to receive_message_chain(
       :helpers, :help_center_redirect_url
     ).and_return('/help')
+
+    # This prevents the component from raising an error due to missing CSRF protection in the
+    # test environment.
+    allow_any_instance_of(NDS::PageFooterChromeComponent).to receive_message_chain(
+      :helpers, :protect_against_forgery?
+    ).and_return(false)
   end
 
   subject(:rendered) { render_inline(NDS::PageFooterChromeComponent.new) }
@@ -22,6 +28,24 @@ RSpec.describe NDS::PageFooterChromeComponent, type: :component do
 
   it 'renders the agency identifier with unprefixed classes' do
     expect(rendered).to have_css('.page-footer__agency .page-footer__agency-name')
+  end
+
+  it 'renders a localized experience notice with a same-page legacy link' do
+    expect(rendered).to have_css(
+      'aside.page-footer__experience-notice p.copy.copy--muted',
+      text: t('nds.footer.experience_notice_link'),
+    )
+    expect(rendered).to have_link(
+      t('nds.footer.experience_notice_link'),
+      href: NDS::PageFooterChromeComponent::NEW_USER_INTERFACE_URL,
+      class: 'usa-link link--nowrap',
+    )
+    expect(rendered).to have_button(
+      t('nds.footer.switch_to_legacy'),
+    )
+    expect(rendered).to have_css(
+      "form[action='/nds/opt_out'][method='post']",
+    )
   end
 
   it 'renders language + overflow menus as native details popover-menus' do
