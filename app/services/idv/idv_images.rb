@@ -9,13 +9,14 @@ module Idv
     # @returns [Hash{Symbol => Hash}] errors are keyed by Idv::Image#type
     attr_accessor :errors
 
-    def initialize(params, binary_image: false)
+    def initialize(params, binary_image: false, passport_card_requested: false)
       @images = TYPES.map do |type|
         next unless params[type].present?
 
         Idv::IdvImage.new(type:, value: params[type], binary_image:)
       end.compact
       @errors = {}
+      @passport_card_requested = passport_card_requested
     end
 
     def attempts_file_data
@@ -59,6 +60,8 @@ module Idv
             @errors[image] = { type: :blank }
           end
         end
+      elsif passport_card_requested? && back.nil?
+        @errors[:back] = { type: :blank }
       end
 
       errors
@@ -78,6 +81,10 @@ module Idv
 
     def passport
       images.find { |image| image.type == :passport }
+    end
+
+    def passport_card_requested?
+      @passport_card_requested
     end
 
     private

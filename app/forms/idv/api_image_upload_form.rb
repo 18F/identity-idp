@@ -211,6 +211,7 @@ module Idv
           document_type_requested:,
           passport_requested: document_capture_session.passport_requested?,
           passport_cards_supported: document_capture_session.passport_cards_supported?,
+          passport_card_requested: document_capture_session.passport_card_requested?,
         }
         post_images_args[:user_email] = user_email if ddp_client?
         doc_auth_client.post_images(**post_images_args)
@@ -387,7 +388,10 @@ module Idv
     end
 
     def images_metadata
-      @images_metadata ||= IdvImages.new(params)
+      @images_metadata ||= IdvImages.new(
+        params,
+        passport_card_requested: document_capture_session&.passport_card_requested?,
+      )
     end
 
     def doc_escrow_images
@@ -570,6 +574,7 @@ module Idv
     def update_funnel(client_response)
       steps = %i[front_image back_image]
       steps = %i[passport_image] if passport_submittal
+      steps += %i[back_image] if passport_submittal && images_metadata.back.present?
       steps.each do |step|
         Funnel::DocAuth::RegisterStep.new(user_id, service_provider&.issuer)
           .call(step.to_s, :update, client_response.success?)
