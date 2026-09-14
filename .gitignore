@@ -76,6 +76,7 @@ Vagrantfile
 /.tmp/
 /.vscode/
 /vendor/bundle
+/ventor/cache
 .yardoc
 /doc/
 

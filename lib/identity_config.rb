@@ -42,6 +42,7 @@ module IdentityConfig
       enum: [:disabled, :collect_only, :enabled],
     )
     config.add(:account_creation_passkey_auto_prompt_percent, type: :integer)
+    config.add(:account_creation_recaptcha_score_threshold, type: :float)
     config.add(:account_creation_passkey_setup_after_password_percent, type: :integer)
     config.add(:account_creation_tmx_processed_percent, type: :integer)
     config.add(:account_reset_token_valid_for_days, type: :integer)
@@ -406,6 +407,7 @@ module IdentityConfig
     config.add(:passkey_auth_ab_test_percentage, type: :integer)
     config.add(:password_max_attempts, type: :integer)
     config.add(:password_pepper, type: :string)
+    config.add(:password_reset_recaptcha_score_threshold, type: :float)
     config.add(:personal_key_as_mfa_active, type: :boolean)
     config.add(:phone_carrier_registration_blocklist_array, type: :json)
     config.add(:phone_confirmation_max_attempt_window_in_minutes, type: :integer)

@@ -122,6 +122,14 @@ class FeatureManagement
     IdentityConfig.store.sign_in_recaptcha_score_threshold.positive? && recaptcha_enabled?
   end
 
+  def self.account_creation_recaptcha_enabled?
+    IdentityConfig.store.account_creation_recaptcha_score_threshold.positive? && recaptcha_enabled?
+  end
+
+  def self.password_reset_recaptcha_enabled?
+    IdentityConfig.store.password_reset_recaptcha_score_threshold.positive? && recaptcha_enabled?
+  end
+
   def self.recaptcha_enabled?
     IdentityConfig.store.recaptcha_site_key.present? &&
       IdentityConfig.store.recaptcha_enterprise_api_key.present? &&
