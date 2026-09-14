@@ -218,8 +218,10 @@ class FeatureManagement
     IdentityConfig.store.idv_proofing_agent_passport_enabled
   end
 
-  # Whether to prompt new users to set up a passkey immediately after email/password creation.
-  # Only enabled in non-production environments as part of Test A experiment (LG-16912).
+  # Whether to automatically prompt eligible mobile users to set up a passkey immediately after
+  # email/password creation. When enabled, the percentage of users who receive the prompt is
+  # controlled by account_creation_passkey_auto_prompt_percent (PASSKEY_UPSELL A/B test). See
+  # LG-17649 / LG-17914 (mobile rollout of the automatic passkey setup prompt).
   def self.account_creation_passkey_auto_prompt_enabled?
     IdentityConfig.store.feature_account_creation_passkey_auto_prompt
   end
