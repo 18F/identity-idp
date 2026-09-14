@@ -932,6 +932,10 @@ module Test
       {}
     end
 
+    def setup_confirm_backup_codes
+      {}
+    end
+
     def setup_backup_code_delete
       {}
     end
