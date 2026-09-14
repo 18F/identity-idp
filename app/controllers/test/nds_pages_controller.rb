@@ -1276,6 +1276,16 @@ module Test
       {}
     end
 
+    def setup_account_delete
+      user = User.new
+      if params[:verified].present?
+        user.define_singleton_method(:identity_verified?) { true }
+      end
+      @nds_current_user = user
+      flash.now[:error] = t('idv.errors.incorrect_password') if params[:error].present?
+      {}
+    end
+
     def setup_completions
       user = build_mfa_user(configured: true)
       email = EmailAddressStub.new(email: DEV_USER_EMAIL)
