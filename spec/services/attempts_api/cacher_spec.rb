@@ -18,14 +18,13 @@ RSpec.describe AttemptsApi::Cacher do
 
   describe '#save' do
     before do
-      allow(user).to receive(:active_profile).and_return(profile)
       allow(profile).to receive(:decrypt_user_proofing_events).with(password:).and_return(
         returned_events,
       )
     end
 
     it 'encrypts and saves proofing events in the session' do
-      subject.save(password:)
+      subject.save(password:, profile:)
 
       expect(user_session[:encrypted_proofing_events]).to be_present
 
@@ -43,7 +42,7 @@ RSpec.describe AttemptsApi::Cacher do
       context 'no decrypted events are returned' do
         let(:returned_events) { nil }
         it 'does not attempt to encrypt events' do
-          expect { subject.save(password:) }.to_not raise_error
+          expect { subject.save(password:, profile:) }.to_not raise_error
 
           expect(user_session[:encrypted_proofing_events]).to be_blank
         end
