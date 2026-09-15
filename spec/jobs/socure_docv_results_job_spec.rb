@@ -1067,6 +1067,90 @@ RSpec.describe SocureDocvResultsJob do
 
                           perform
                         end
+
+                        context 'when historical_attempts_api_enabled is true' do
+                          let(:doc_escrow_enabled) { true }
+                          let(:historical_attempts_api_enabled) { true }
+
+                          it 'tracks the attempt with front and back image data' do
+                            expect(attempts_api_tracker).to receive(:idv_document_upload_submitted)
+                              .with(
+                                success: true,
+                                document_back_image_encryption_key: an_instance_of(String),
+                                document_back_image_file_id: an_instance_of(String),
+                                document_front_image_encryption_key: an_instance_of(String),
+                                document_front_image_file_id: an_instance_of(String),
+                                document_state: address_data[:state],
+                                document_number: pii_from_doc[:documentNumber],
+                                # Socure does not send back a document issue date for passports
+                                document_issued: nil,
+                                document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+                                first_name: pii_from_doc[:firstName],
+                                last_name: pii_from_doc[:surName],
+                                date_of_birth: Date.parse(pii_from_doc[:dob]),
+                                address1: address_data[:physicalAddress],
+                                address2: address_data[:physicalAddress2],
+                                city: address_data[:city],
+                                state: address_data[:state],
+                                zip: address_data[:zip],
+                                failure_reason: nil,
+                              )
+
+                            perform
+                          end
+                        end
+
+                        context 'when the MRZ is not valid' do
+                          let(:mrz_response) { 'NO' }
+
+                          it 'stores the failed result in the document capture session' do
+                            perform
+                            expect(document_capture_session.reload.load_result).to have_attributes(
+                              success: false,
+                              doc_auth_success: true,
+                              selfie_status: :not_processed,
+                              failed_front_image_fingerprints: [],
+                              failed_back_image_fingerprints: [],
+                              failed_passport_image_fingerprints: [],
+                              failed_selfie_image_fingerprints: nil,
+                              errors: { passport: 'Please add a new image' },
+                              mrz_status: :failed,
+                              attempt: 1,
+                            )
+                          end
+
+                          context 'when historical_attempts_api_enabled is true' do
+                            let(:doc_escrow_enabled) { true }
+                            let(:historical_attempts_api_enabled) { true }
+
+                            it 'tracks the attempt with front and back image data' do
+                              expect(attempts_api_tracker)
+                                .to receive(:idv_document_upload_submitted).with(
+                                  success: false,
+                                  document_back_image_encryption_key: an_instance_of(String),
+                                  document_back_image_file_id: an_instance_of(String),
+                                  document_front_image_encryption_key: an_instance_of(String),
+                                  document_front_image_file_id: an_instance_of(String),
+                                  document_state: address_data[:state],
+                                  document_number: pii_from_doc[:documentNumber],
+                                  # Socure does not send back a document issue date for passports
+                                  document_issued: nil,
+                                  document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+                                  first_name: pii_from_doc[:firstName],
+                                  last_name: pii_from_doc[:surName],
+                                  date_of_birth: Date.parse(pii_from_doc[:dob]),
+                                  address1: address_data[:physicalAddress],
+                                  address2: address_data[:physicalAddress2],
+                                  city: address_data[:city],
+                                  state: address_data[:state],
+                                  zip: address_data[:zip],
+                                  failure_reason: { passport: 'Please add a new image' },
+                                )
+
+                              perform
+                            end
+                          end
+                        end
                       end
                     end
                   end
