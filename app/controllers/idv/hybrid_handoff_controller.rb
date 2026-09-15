@@ -10,6 +10,7 @@ module Idv
     before_action :confirm_not_rate_limited
     before_action :confirm_step_allowed
     before_action :confirm_hybrid_handoff_needed, only: :show
+    before_action :allow_clear1_form_action, only: :show
 
     def show
       abandon_any_ipp_progress
@@ -42,10 +43,10 @@ module Idv
         idv_session.flow_path = 'standard'
         idv_session.skip_doc_auth_from_how_to_verify = true
         redirect_to idv_document_capture_url(step: :hybrid_handoff)
+      elsif how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::CLEAR1
+        handle_clear1_submission
       elsif params[:type] == 'mobile'
         handle_phone_submission
-      elsif params[:type] == 'clear1'
-        handle_clear1_submission
       else
         update_vendor_if_test_mode_enabled
         bypass_send_link_steps
@@ -125,6 +126,8 @@ module Idv
     end
 
     def handle_clear1_submission
+      return render_not_found unless clear1_enabled?
+
       idv_session.flow_path = 'standard'
 
       analytics.idv_doc_auth_hybrid_handoff_submitted(
