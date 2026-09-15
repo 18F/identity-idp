@@ -34,17 +34,7 @@
             ) do %>
           <%= render AlertComponent.new(type: :warning) do %>
             <%= t('idv.messages.phone.failed_number.alert_text') %>
-            <% if gpo_letter_available %>
-              <%= t(
-                    'idv.messages.phone.failed_number.gpo_alert_html',
-                    link_html: link_to(
-                      t('idv.messages.phone.failed_number.gpo_verify_link'),
-                      idv_request_letter_path,
-                    ),
-                  ) %>
-            <% else %>
-              <%= t('idv.messages.phone.failed_number.try_again_html') %>
-            <% end %>
+            <%= presenter.phone_failure_alert_body %>
           <% end %>
         <% end %>
       <% end %>
@@ -90,7 +80,7 @@
                 type: :submit,
                 full_width: true,
               ).with_content(t('forms.buttons.send_one_time_code')) %>
-          <% if gpo_letter_available %>
+          <% if presenter.gpo_letter_available %>
             <%= render ButtonComponent.new(
                   url: idv_request_letter_path,
                   variant: :tertiary,
@@ -119,11 +109,10 @@
 <% self.title = t('titles.idv.phone') %>
 
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :idv)) %>
-
-<%= render PageHeadingComponent.new.with_content(t('titles.idv.phone')) %>
+<%= render PageHeadingComponent.new.with_content(presenter.heading) %>
 
 <p>
-  <%= t('idv.messages.phone.description') %>
+  <%= presenter.description %>
 </p>
 
 <p class="margin-bottom-1">
@@ -178,17 +167,7 @@
         hidden: true,
       ) do %>
     <%= t('idv.messages.phone.failed_number.alert_text') %>
-    <% if gpo_letter_available %>
-      <%= t(
-            'idv.messages.phone.failed_number.gpo_alert_html',
-            link_html: link_to(
-              t('idv.messages.phone.failed_number.gpo_verify_link'),
-              idv_request_letter_path,
-            ),
-          ) %>
-    <% else %>
-      <%= t('idv.messages.phone.failed_number.try_again_html') %>
-    <% end %>
+    <%= presenter.phone_failure_alert_body %>
   <% end %>
 
   <p><%= t('idv.messages.otp_delivery_method_description') %></p>
@@ -229,12 +208,7 @@
 <%= render(
       'shared/troubleshooting_options',
       heading: t('components.troubleshooting_options.default_heading'),
-      options: [
-        gpo_letter_available && {
-          url: idv_request_letter_path,
-          text: t('idv.troubleshooting.options.verify_by_mail'),
-        },
-      ].select(&:present?),
+      options: presenter.troubleshooting_options,
     ) %>
 
 <%= render 'idv/doc_auth/cancel', step: 'phone' %>
