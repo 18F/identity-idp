@@ -1,0 +1,40 @@
+@use 'uswds-core' as *;
+
+$nds-opt-out-breakpoint: 800px;
+
+.page-footer__experience-notice {
+  align-items: center;
+  background: color('base-lightest');
+  border-bottom: 1px solid color('base-lighter');
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: units(2);
+  padding: units(4) units(3);
+  text-align: center;
+  width: 100%;
+
+  .copy {
+    display: block;
+    text-align: center;
+    width: auto;
+  }
+
+  .usa-link {
+    flex: 0 0 auto;
+  }
+}
+
+@media (width >= #{$nds-opt-out-breakpoint}) {
+  .page-footer__experience-notice {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: units(3) units(8);
+    text-align: left;
+
+    .copy {
+      text-align: left;
+      white-space: nowrap;
+    }
+  }
+}

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'csv'
+require 'reporting/demographics_metrics_s3_report'
 
 module Reports
   # This job reads pre-generated demographics CSV files from S3 and emails them to partners.
