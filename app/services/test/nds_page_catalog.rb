@@ -15,6 +15,7 @@ module Test
     OTP = 'OTP'
     IDV = 'Identity verification'
     ERRORS = 'Errors'
+    ACCOUNT = 'Account'
 
     PAGES = [
       Page.new(
@@ -571,6 +572,16 @@ module Test
           Permutation.new(label: 'Verified identity', params: {}),
           Permutation.new(label: 'Auth only (new SP)', params: { auth: '1' }),
           Permutation.new(label: 'Single MFA warning', params: { single: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'email-language',
+        title: 'Email language preference',
+        flow: ACCOUNT,
+        template: 'users/email_language/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Spanish selected', params: { language: 'es' }),
         ],
       ),
     ].freeze
