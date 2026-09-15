@@ -416,6 +416,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     it 'does not have error messages' do
       expect(response.error_messages[:passport_card]).to eq(nil)
     end
+
+    it 'includes Back classification info' do
+      expect(response.extra_attributes[:classification_info]).to include(:Front, :Back)
+    end
   end
 
   context 'when the response is a success for passport' do
@@ -443,6 +447,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       extra_attributes = response.extra_attributes
       expect(extra_attributes).not_to be_empty
       expect(extra_attributes[:classification_info]).to include(:Front)
+      expect(extra_attributes[:classification_info]).not_to include(:Back)
       expect(extra_attributes).to have_key(:workflow)
       expect(extra_attributes).to have_key(:reference)
     end

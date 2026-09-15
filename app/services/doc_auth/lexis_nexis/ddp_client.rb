@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+ frozen_string_literal: true
 
 module DocAuth
   module LexisNexis
@@ -16,6 +16,7 @@ module DocAuth
       def post_images(
         document_type_requested: nil,
         passport_requested: false,
+        passport_card_requested: false,
         liveness_checking_required: false,
         front_image: nil,
         back_image: nil,
@@ -36,6 +37,7 @@ module DocAuth
           document_type_requested:,
           liveness_checking_required:,
           passport_requested:,
+          passport_card_requested:,
           uuid_prefix:,
           uuid: user_uuid,
           email: user_email,

@@ -80,6 +80,32 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
         expect(result.success?).to eq(false)
       end
     end
+
+    context 'with a passport card' do
+      let(:workflow) { 'NOLIVENESS.CROPPING.WORKFLOW' }
+
+      it 'sends both the passport image (as front) and the back image to the vendor' do
+        request_stub = stub_request(:post, image_upload_url).with do |request|
+          request_json = JSON.parse(request.body, symbolize_names: true)
+          request_json[:Document][:Back].present? &&
+            request_json[:Document][:DocumentType] == DocAuth::LexisNexis::DocumentTypes::PASSPORT
+        end.to_return(body: LexisNexisFixtures.true_id_response_passport_card)
+
+        result = client.post_images(
+          user_uuid: document_capture_session.uuid,
+          passport_image: DocAuthImageFixtures.document_passport_image,
+          back_image: DocAuthImageFixtures.document_back_image,
+          document_type_requested: DocAuth::LexisNexis::DocumentTypes::PASSPORT,
+          passport_requested: true,
+          passport_cards_supported: true,
+          passport_card_requested: true,
+          images_cropped: images_cropped,
+        )
+
+        expect(request_stub).to have_been_requested
+        expect(result.class).to eq(DocAuth::LexisNexis::Responses::TrueIdResponse)
+      end
+    end
   end
 
   context 'when the request is not successful' do
