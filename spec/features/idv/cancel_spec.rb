@@ -124,7 +124,8 @@ RSpec.describe 'cancel IdV' do
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation visited',
         proofing_components: { document_check: 'mock',
-                               document_type_received: 'drivers_license' },
+                               document_type_received: 'drivers_license',
+                               source_check: 'StateIdMock' },
         request_came_from: 'idv/ssn#show',
         step: 'ssn',
       )
