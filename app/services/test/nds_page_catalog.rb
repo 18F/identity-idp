@@ -584,6 +584,17 @@ module Test
           Permutation.new(label: 'Spanish selected', params: { language: 'es' }),
         ],
       ),
+      Page.new(
+        key: 'account-delete',
+        title: 'Delete account',
+        flow: ACCOUNT,
+        template: 'users/delete/show',
+        permutations: [
+          Permutation.new(label: 'Unverified', params: {}),
+          Permutation.new(label: 'Verified identity', params: { verified: '1' }),
+          Permutation.new(label: 'Incorrect password', params: { error: '1' }),
+        ],
+      ),
     ].freeze
 
     def self.pages
