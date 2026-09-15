@@ -257,6 +257,21 @@ module Idv
       vendor_phone_confirmation && address_verification_mechanism == 'phone'
     end
 
+    # The phone number confirmed for address verification. A successful phone precheck
+    # completes the phone step without sending an OTP, so there is no phone confirmation
+    # session to read the number from in that case.
+    def verification_phone_number
+      user_phone_confirmation_session&.phone.presence ||
+        precheck_phone_number.presence ||
+        phone_for_mobile_flow.presence
+    end
+
+    def precheck_phone_number
+      return unless phone_precheck_successful
+
+      precheck_phone&.with_indifferent_access&.dig(:phone)
+    end
+
     def user_phone_confirmation_session
       session_value = session[:user_phone_confirmation_session]
       return if session_value.blank?
