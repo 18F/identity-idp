@@ -130,6 +130,15 @@ module Test
         ],
       ),
       Page.new(
+        key: 'confirm-backup-codes',
+        title: 'Backup codes confirmation (add another method)',
+        flow: MFA,
+        template: 'users/backup_code_setup/confirm_backup_codes',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
         key: 'backup-code-delete',
         title: 'Delete backup codes',
         flow: MFA,
