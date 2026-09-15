@@ -17,8 +17,11 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
   let(:images_cropped) { false }
   let(:document_type) { 'DriversLicense' }
   let(:document_class_name) { 'Drivers License' }
+  let(:doc_issue_type) { document_type }
   let(:back_image_required) { true }
   let(:passport_requested) { false }
+  let(:passport_cards_supported) { false }
+  let(:passport_card_requested) { false }
 
   let(:config) do
     DocAuth::LexisNexis::Config.new(
@@ -49,6 +52,8 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       liveness_checking_required: liveness_checking_required,
       document_type_requested: document_type,
       passport_requested:,
+      passport_cards_supported:,
+      passport_card_requested:,
     )
   end
 
@@ -187,6 +192,32 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     it_behaves_like 'a successful request'
   end
 
+  context 'with a Passport document_type and passport_card_requested' do
+    let(:document_type) { 'Passport' }
+    let(:document_class_name) { 'Identification Card' }
+    let(:doc_issue_type) { 'Passport Card' }
+    let(:back_image_required) { true }
+    let(:passport_image) { DocAuthImageFixtures.document_passport_image }
+    let(:back_image) { DocAuthImageFixtures.document_back_image }
+    let(:passport_requested) { true }
+    let(:passport_cards_supported) { true }
+    let(:passport_card_requested) { true }
+    let(:expected_cropping_mode) { cropping_mode_always }
+
+    it_behaves_like 'a successful request'
+
+    it 'sends the passport image as the front and the back image as the back' do
+      stub_request(:post, full_url).with do |request|
+        request_json = JSON.parse(request.body, symbolize_names: true)
+        expect(Base64.strict_decode64(request_json[:Document][:Front]).b).to eq(passport_image.b)
+        expect(Base64.strict_decode64(request_json[:Document][:Back]).b).to eq(back_image.b)
+        true
+      end.to_return(body: response_body(liveness_checking_required), status: 201)
+
+      subject.fetch
+    end
+  end
+
   context 'with the wrong id type submitted' do
     context 'user requests DriversLicense but submits Passport' do
       let(:document_type) { 'DriversLicense' }
@@ -298,7 +329,7 @@ def response_body(include_liveness)
             Name: 'DocIssueType',
             Values: [
               {
-                Value: document_type,
+                Value: doc_issue_type,
               },
             ],
           },
@@ -359,7 +390,7 @@ def response_body_with_doc_auth_errors(include_liveness)
             Name: 'DocIssueType',
             Values: [
               {
-                Value: document_type,
+                Value: doc_issue_type,
               },
             ],
           },

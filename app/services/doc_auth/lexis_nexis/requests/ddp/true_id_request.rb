@@ -104,7 +104,8 @@ module DocAuth
           end
 
           def back_image_required?
-            applicant[:document_type_requested] == DocumentTypes::DRIVERS_LICENSE
+            applicant[:document_type_requested] == DocumentTypes::DRIVERS_LICENSE ||
+              applicant[:passport_card_requested]
           end
 
           def liveness_checking_required?
@@ -130,6 +131,9 @@ module DocAuth
             if passport_document?
               if applicant[:passport_image].blank?
                 raise ArgumentError, 'passport_image is required for passport documents'
+              end
+              if applicant[:passport_card_requested] && applicant[:back_image].blank?
+                raise ArgumentError, 'back_image is required for passport card documents'
               end
             else
               raise ArgumentError, 'front_image is required' if applicant[:front_image].blank?
