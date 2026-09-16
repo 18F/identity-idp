@@ -15,6 +15,10 @@ module Idv
     end
 
     def document_type_received
+      if proofing_agent_without_pii_from_doc?
+        return idv_session.applicant&.[](:document_type_received)
+      end
+
       idv_session.pii_from_doc&.document_type_received
     end
 
@@ -23,11 +27,15 @@ module Idv
     end
 
     def residential_resolution_check
-      idv_session.residential_resolution_vendor if idv_session.verify_info_step_complete?
+      if idv_session.verify_info_step_complete? || idv_session.agent_proofed
+        idv_session.residential_resolution_vendor
+      end
     end
 
     def resolution_check
-      idv_session.resolution_vendor if idv_session.verify_info_step_complete?
+      if idv_session.verify_info_step_complete? || idv_session.agent_proofed
+        idv_session.resolution_vendor
+      end
     end
 
     def address_check
@@ -79,5 +87,9 @@ module Idv
     private
 
     attr_reader :idv_session
+
+    def proofing_agent_without_pii_from_doc?
+      !!idv_session.agent_proofed && !idv_session.pii_from_doc.present?
+    end
   end
 end
