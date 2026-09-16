@@ -8,6 +8,7 @@ module Users
     include ReauthenticationRequiredConcern
     include ThreatMetrixHelper
     include ThreatMetrixConcern
+    include WebauthnSetupFormConcern
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
@@ -199,6 +200,7 @@ module Users
           analytics,
           threatmetrix_attrs,
         )
+
         flash[:success] = t('notices.webauthn_platform_configured') if !form.transports_mismatch?
       else
         handle_valid_verification_for_confirmation_context(
@@ -210,6 +212,7 @@ module Users
           analytics,
           threatmetrix_attrs,
         )
+
         flash[:success] = t('notices.webauthn_configured') if !form.transports_mismatch?
       end
 

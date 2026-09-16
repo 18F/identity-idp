@@ -212,6 +212,7 @@ module Users
         otp_delivery_preference: method,
         otp_delivery_selection_result: otp_delivery_selection_result,
       )
+      invalid_phone_number('NIL', action: action_name)
       if @telephony_result.success?
         redirect_to login_two_factor_url(
           otp_delivery_preference: method,
