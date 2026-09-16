@@ -638,6 +638,7 @@ doc_auth.headings.document_capture: Add photos of your driver’s license or sta
 doc_auth.headings.document_capture_back: Back of your ID
 doc_auth.headings.document_capture_front: Front of your ID
 doc_auth.headings.document_capture_passport: Your passport
+doc_auth.headings.document_capture_passport_card: Your passport card
 doc_auth.headings.document_capture_passport_card_back: Back of your passport card
 doc_auth.headings.document_capture_selfie: Selfie
 doc_auth.headings.document_capture_subheader_selfie: Take a selfie
@@ -651,7 +652,9 @@ doc_auth.headings.mdl_capture: Add your mobile driver’s license (mDL) informat
 doc_auth.headings.no_ssn: Don’t have a Social Security number?
 doc_auth.headings.passport: Your passport
 doc_auth.headings.passport_capture: Add a photo of your passport
+doc_auth.headings.passport_card: Your passport card
 doc_auth.headings.passport_card_back: Back of your passport card
+doc_auth.headings.passport_card_capture: Add a photo of your passport card
 doc_auth.headings.passport_instructions.howto: How to take your photo
 doc_auth.headings.review_issues: Check your images and try again
 doc_auth.headings.review_issues_passport: Check your photo and try again
@@ -705,6 +708,8 @@ doc_auth.info.no_ssn: You must have a Social Security number to finish verifying
 doc_auth.info.passport_capture: Take a photo of the data page of your passport book. This page has your passport photo and personal information.
 doc_auth.info.passport_capture_help_1: Line up the data page of your passport book with the guide lines.
 doc_auth.info.passport_capture_help_2: Hold still and wait for the tool to capture a photo.
+doc_auth.info.passport_card_capture: Take a photo of the data page of your passport card. This page has your passport photo and personal information.
+doc_auth.info.passport_card_capture_help_1: Line up the data page of your passport card with the guide lines.
 doc_auth.info.review_examples_of_photos: Review examples of how to take clear photos of your ID.
 doc_auth.info.review_passport: We couldn’t find records matching the information from your passport. Add a new photo of your ID in case your passport information was read incorrectly.
 doc_auth.info.secure_account: We’ll encrypt your account when you re-enter your password. Encryption means your data is protected and only you will be able to access or change your information.

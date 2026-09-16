@@ -638,6 +638,7 @@ doc_auth.headings.document_capture: Ajoutez des photos de votre permis de condui
 doc_auth.headings.document_capture_back: Verso de votre pièce d’identité
 doc_auth.headings.document_capture_front: Recto de votre carte d’identité
 doc_auth.headings.document_capture_passport: Votre passeport
+doc_auth.headings.document_capture_passport_card: Votre carte de passeport
 doc_auth.headings.document_capture_passport_card_back: Verso de votre carte de passeport
 doc_auth.headings.document_capture_selfie: Selfie
 doc_auth.headings.document_capture_subheader_selfie: Prenez un selfie
@@ -651,7 +652,9 @@ doc_auth.headings.mdl_capture: Renseignez les informations de votre permis de co
 doc_auth.headings.no_ssn: Vous n’avez pas de numéro de sécurité sociale ?
 doc_auth.headings.passport: Votre passeport
 doc_auth.headings.passport_capture: Ajouter une photo de votre passeport
+doc_auth.headings.passport_card: Votre carte de passeport
 doc_auth.headings.passport_card_back: Verso de votre carte de passeport
+doc_auth.headings.passport_card_capture: Ajouter une photo de votre carte de passeport
 doc_auth.headings.passport_instructions.howto: 'Comment vous prendre en photo :'
 doc_auth.headings.review_issues: Vérifiez vos images et essayez à nouveau
 doc_auth.headings.review_issues_passport: Vérifiez votre photo et essayez à nouveau
@@ -704,6 +707,8 @@ doc_auth.info.manual_capture_mode: Prenez la photo vous-même.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
 doc_auth.info.passport_capture: Prenez une photo de la page d’informations de votre passeport. Cette page comporte votre photo d’identité et vos informations personnelles.
 doc_auth.info.passport_capture_help_1: Placez la page d’informations du passeport à l’intérieur des lignes définissant le cadre.
+doc_auth.info.passport_card_capture: Prenez une photo de la page d’informations de votre carte de passeport. Cette page comporte votre photo d’identité et vos informations personnelles.
+doc_auth.info.passport_card_capture_help_1: Placez la page d’informations de la carte de passeport à l’intérieur des lignes définissant le cadre.
 doc_auth.info.passport_capture_help_2: Ne bougez pas et attendez que l’appareil se déclenche.
 doc_auth.info.review_examples_of_photos: Voir des exemples qui montrent comment prendre des photos nettes de votre pièce d’identité.
 doc_auth.info.review_passport: Nous n’avons pas trouvé dans nos données enregistrées d’informations correspondant aux informations figurant sur votre passeport. Ajouter une nouvelle photo de votre pièce d’identité au cas où les informations figurant sur votre passeport auraient été lues de façon incorrecte.

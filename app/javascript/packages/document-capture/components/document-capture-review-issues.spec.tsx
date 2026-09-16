@@ -198,7 +198,7 @@ describe('DocumentCaptureReviewIssues', () => {
         </InPersonContext.Provider>,
       );
 
-      const frontCapture = getByLabelText('doc_auth.headings.document_capture_passport');
+      const frontCapture = getByLabelText('doc_auth.headings.document_capture_passport_card');
       expect(frontCapture).to.be.ok();
 
       const backCapture = getByLabelText('doc_auth.headings.document_capture_passport_card_back');

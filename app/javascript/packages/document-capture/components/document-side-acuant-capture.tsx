@@ -68,8 +68,14 @@ function DocumentSideAcuantCapture({
   const isUploadAllowed = isDesktopTestMode || isUploadEnabled;
   const stepCanComplete = !isReviewStep ? undefined : true;
   const isPassportCardBack = idType === 'passport_card' && side === 'back';
-  const labelSide = isPassportCardBack ? 'passport_card_back' : side;
-  const bannerSide = isPassportCardBack ? 'passport_card_back' : side;
+  const isPassportCardFront = idType === 'passport_card' && side === 'passport';
+  let labelSide: typeof side | 'passport_card_back' | 'passport_card' = side;
+  if (isPassportCardBack) {
+    labelSide = 'passport_card_back';
+  } else if (isPassportCardFront) {
+    labelSide = 'passport_card';
+  }
+  const bannerSide = labelSide;
 
   return (
     <AcuantCapture
@@ -77,12 +83,14 @@ function DocumentSideAcuantCapture({
       /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
       /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
       /* i18n-tasks-use t('doc_auth.headings.document_capture_passport') */
+      /* i18n-tasks-use t('doc_auth.headings.document_capture_passport_card') */
       /* i18n-tasks-use t('doc_auth.headings.document_capture_passport_card_back') */
       /* i18n-tasks-use t('doc_auth.headings.document_capture_selfie') */
       label={t(`doc_auth.headings.document_capture_${labelSide}`)}
       /* i18n-tasks-use t('doc_auth.headings.back') */
       /* i18n-tasks-use t('doc_auth.headings.front') */
       /* i18n-tasks-use t('doc_auth.headings.passport') */
+      /* i18n-tasks-use t('doc_auth.headings.passport_card') */
       /* i18n-tasks-use t('doc_auth.headings.passport_card_back') */
       /* i18n-tasks-use t('doc_auth.headings.selfie') */
       bannerText={t(`doc_auth.headings.${bannerSide}`)}
