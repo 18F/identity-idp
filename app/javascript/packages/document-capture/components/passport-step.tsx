@@ -62,14 +62,28 @@ export function PassportCaptureStep({
   );
 }
 
-export function PassportCaptureSubheaderOne() {
+export function PassportCaptureSubheaderOne({
+  isPassportCard = false,
+}: {
+  isPassportCard?: boolean;
+}) {
   const { t } = useI18n();
-  return <h1>{t('doc_auth.headings.passport_capture')}</h1>;
+  const heading = isPassportCard
+    ? t('doc_auth.headings.passport_card_capture')
+    : t('doc_auth.headings.passport_capture');
+  return <h1>{heading}</h1>;
 }
 
-export function PassportCaptureInfo() {
+export function PassportCaptureInfo({
+  isPassportCard = false,
+}: {
+  isPassportCard?: boolean;
+}) {
   const { t } = useI18n();
-  return <p>{t('doc_auth.info.passport_capture')}</p>;
+  const content = isPassportCard
+    ? t('doc_auth.info.passport_card_capture')
+    : t('doc_auth.info.passport_capture');
+  return <p>{content}</p>;
 }
 
 export default function PassportStep({
@@ -115,8 +129,8 @@ export default function PassportStep({
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
-      <PassportCaptureSubheaderOne />
-      <PassportCaptureInfo />
+      <PassportCaptureSubheaderOne isPassportCard={isPassportCard} />
+      <PassportCaptureInfo isPassportCard={isPassportCard}/>
       {isMobile && (
         <TipList
           titleClassName="margin-bottom-0 text-bold"
