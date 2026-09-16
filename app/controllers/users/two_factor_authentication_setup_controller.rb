@@ -93,20 +93,18 @@ module Users
     end
 
     def trigger_auto_passkey_setup
-      auto_bucket = auto_passkey_prompt_bucket == :auto_passkey_prompt
       user_session[:auto_passkey_prompted] = true
-      user_session[:auto_passkey_prompt_pending] = true if auto_bucket
+      user_session[:auto_passkey_prompt_pending] = true
       redirect_to webauthn_setup_url(
         platform: true,
         passkey_upsell: true,
-        auto_trigger: auto_bucket.presence,
+        auto_trigger: true,
       )
     end
 
     def auto_passkey_prompt_eligible?
       auto_passkey_prompt_available? &&
-        [:auto_passkey_prompt, :passkey_setup_prompt_after_password_creation]
-          .include?(auto_passkey_prompt_bucket)
+        auto_passkey_prompt_bucket == :auto_passkey_prompt
     end
 
     def auto_passkey_prompted?
@@ -115,6 +113,7 @@ module Users
 
     def auto_passkey_prompt_available?
       FeatureManagement.account_creation_passkey_auto_prompt_enabled? &&
+        mobile? &&
         in_account_creation_flow? &&
         user_session[:platform_authenticator_available] == true &&
         !auto_passkey_prompted?

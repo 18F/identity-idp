@@ -163,7 +163,9 @@ module MfaSetupConcern
   end
 
   def recommend_webauthn_platform_for_sms_user?
-    user_session[:platform_authenticator_available] == true && user_has_phone_setup?
+    user_session[:platform_authenticator_available] == true &&
+      !user_session[:auto_passkey_prompted] &&
+      user_has_phone_setup?
   end
 
   def user_set_up_with_sms?
