@@ -189,6 +189,49 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       expect(user.encrypted_recovery_code_digest_multi_region).to_not eq old_key
     end
 
+    context 'when personal key MFA deprecation phase 1 is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:personal_key_mfa_deprecation_phase_1_enabled)
+          .and_return(true)
+      end
+
+      it 'does not issue a new personal key for a personal key MFA user' do
+        user = create(:user, :with_phone)
+        raw_key = PersonalKeyGenerator.new(user).generate!
+        old_key = user.reload.encrypted_recovery_code_digest_multi_region
+        stub_sign_in_before_2fa(user)
+
+        post :create, params: { personal_key_form: { personal_key: raw_key } }
+        user.reload
+
+        expect(user.encrypted_recovery_code_digest_multi_region).to eq old_key
+      end
+
+      it 'redirects a personal key MFA user to authentication method setup' do
+        user = create(:user, :with_phone)
+        raw_key = PersonalKeyGenerator.new(user).generate!
+        stub_sign_in_before_2fa(user)
+
+        post :create, params: { personal_key_form: { personal_key: raw_key } }
+
+        expect(response).to redirect_to(authentication_methods_setup_url)
+      end
+
+      it 'does not affect an identity-verified (IDV) user' do
+        profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
+        user = profile.user
+        raw_key = PersonalKeyGenerator.new(user).generate!
+        stub_sign_in_before_2fa(user)
+
+        post :create, params: { personal_key_form: { personal_key: raw_key } }
+
+        # IDV users have a profile, so PersonalKeyPolicy#enabled? is false and the
+        # check_personal_key_enabled before_action redirects them away before the
+        # phase 1 logic can run. They are therefore unaffected by phase 1.
+        expect(response).to redirect_to(authentication_methods_setup_url)
+      end
+    end
+
     it 'redirects to the two_factor_options page if user is IAL2' do
       profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
       user = profile.user
