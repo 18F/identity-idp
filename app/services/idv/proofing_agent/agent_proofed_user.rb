@@ -49,7 +49,7 @@ module Idv
       end
 
       def source_check_vendor
-        self[:source_check_vendor]&.to_sym
+        self[:source_check_vendor]
       end
 
       def aamva_verified_attributes
@@ -58,6 +58,26 @@ module Idv
 
       def address_resolution_status
         self[:address_resolution_status]&.to_sym
+      end
+
+      def document_type_received
+        pii[:document_type_received]
+      end
+
+      def resolution_vendor
+        resolution&.dig(:context, :stages, :resolution, :vendor_name)
+      end
+
+      def residential_resolution_vendor
+        resolution&.dig(:context, :stages, :residential_address, :vendor_name)
+      end
+
+      def phone_precheck_vendor
+        resolution&.dig(:context, :stages, :phone_precheck, :vendor_name)
+      end
+
+      def phone_precheck_successful?
+        !!resolution&.dig(:context, :stages, :phone_precheck, :success)
       end
 
       # This hash includes the values that should be merged into the idv_session in order to
