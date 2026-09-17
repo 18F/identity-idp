@@ -332,6 +332,30 @@ lint:
     reports:
       junit: rubocop.xml
 
+analytics_event_changes:
+  stage: test
+  tags:
+    - test-pool
+  variables:
+    GIT_DEPTH: 100
+  allow_failure:
+    exit_codes: 1
+  script:
+    - git fetch origin --quiet
+    - |
+      if [ -n "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" ]
+      then
+        ./scripts/analytics_event_changes.rb -b origin/"${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" -s HEAD
+      elif [ -n "$CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME" ]
+      then
+        ./scripts/analytics_event_changes.rb -b origin/"${CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME}" -s HEAD
+      else
+        echo "Skipping because this is not a merge request pipeline"
+        exit 0
+      fi
+  rules:
+    - !reference [.merge_request, rules]
+
 js_build:
   stage: test
   tags:
