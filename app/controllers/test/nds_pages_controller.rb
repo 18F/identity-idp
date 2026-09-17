@@ -1247,7 +1247,7 @@ module Test
       {
         presenter: Idv::PhonePresenter.new(
           gpo_letter_available: params[:gpo].present?,
-          proofing_with_superior_evidence: false,
+          skip_phone_verification: false,
           url_options:,
         ),
       }

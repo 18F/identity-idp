@@ -793,33 +793,73 @@ RSpec.describe Idv::PhoneController do
           )
         end
 
-        context 'when the there is a phone vendor outage' do
+        context 'when superior evidence skip phone verification is enabled' do
           before do
-            allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?)
-              .and_return(true)
+            allow(IdentityConfig.store).to receive(
+              :idv_superior_evidence_skip_phone_verification_enabled_percent,
+            ).and_return(100)
 
-            put :create, params: phone_params
+            reload_ab_tests
           end
 
-          it 'redirects the user to vendor outage path' do
-            expect(response).to redirect_to vendor_outage_path(from: :idv_phone)
+          after do
+            reload_ab_tests
+          end
+
+          context 'when the there is a phone vendor outage' do
+            before do
+              allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?)
+                .and_return(true)
+
+              put :create, params: phone_params
+            end
+
+            it 'redirects the user to vendor outage path' do
+              expect(response).to redirect_to vendor_outage_path(from: :idv_phone)
+            end
+          end
+
+          context 'when there is not a phone vendor outage' do
+            before do
+              put :create, params: phone_params
+            end
+
+            it 'sets the address verification vendor to "SuperiorEvidenceSkipped"' do
+              expect(subject.idv_session).to have_attributes(
+                address_verification_vendor:
+                  Idp::Constants::Vendors::PHONE_CHECK_SUPERIOR_EVIDENCE_SKIPPED,
+              )
+            end
+
+            it 'redirects the user to OTP' do
+              expect(response).to redirect_to idv_otp_verification_path
+            end
           end
         end
 
-        context 'when there is not a phone vendor outage' do
+        context 'when superior evidence skip phone verification is disabled' do
           before do
+            allow(IdentityConfig.store).to receive(
+              :idv_superior_evidence_skip_phone_verification_enabled_percent,
+            ).and_return(0)
+
+            reload_ab_tests
             put :create, params: phone_params
           end
 
-          it 'sets the idv_session address verification vendor to "SuperiorEvidenceSkipped"' do
-            expect(subject.idv_session).to have_attributes(
+          after do
+            reload_ab_tests
+          end
+
+          it 'does not set the address verification vendor to "SuperiorEvidenceSkipped"' do
+            expect(subject.idv_session).not_to have_attributes(
               address_verification_vendor:
                 Idp::Constants::Vendors::PHONE_CHECK_SUPERIOR_EVIDENCE_SKIPPED,
             )
           end
 
-          it 'redirects the user to OTP' do
-            expect(response).to redirect_to idv_otp_verification_path
+          it 'redirects the user to phone path' do
+            expect(response).to redirect_to idv_phone_path
           end
         end
       end

@@ -7,26 +7,26 @@ class Idv::PhonePresenter
 
   attr_reader :url_options, :gpo_letter_available
 
-  def initialize(gpo_letter_available:, proofing_with_superior_evidence:, url_options:)
+  def initialize(gpo_letter_available:, skip_phone_verification:, url_options:)
     @gpo_letter_available = gpo_letter_available
-    @proofing_with_superior_evidence = proofing_with_superior_evidence
+    @skip_phone_verification = skip_phone_verification
     @url_options = url_options
   end
 
   def title
-    proofing_with_superior_evidence ?
+    skip_phone_verification ?
       t('titles.idv.phone_skip_verification') :
       t('titles.idv.phone')
   end
 
   def heading
-    proofing_with_superior_evidence ?
+    skip_phone_verification ?
       t('titles.idv.phone_skip_verification') :
       t('titles.idv.phone')
   end
 
   def description
-    proofing_with_superior_evidence ?
+    skip_phone_verification ?
       t('idv.messages.phone.description_skip_verification') :
       t('idv.messages.phone.description')
   end
@@ -41,7 +41,7 @@ class Idv::PhonePresenter
 
   private
 
-  attr_reader :proofing_with_superior_evidence
+  attr_reader :skip_phone_verification
 
   def gpo_troubleshooting_options
     { url: idv_request_letter_path, text: t('idv.troubleshooting.options.verify_by_mail') }

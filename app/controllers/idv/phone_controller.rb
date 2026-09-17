@@ -66,7 +66,7 @@ module Idv
       )
 
       if result.success?
-        if proofing_with_superior_evidence?
+        if skip_phone_verification?
           record_superior_evidence_skipped
           start_phone_confirmation
         else
@@ -99,8 +99,16 @@ module Idv
 
     private
 
+    def skip_phone_verification?
+      proofing_with_superior_evidence? && superior_evidence_skip_phone_verification_enabled?
+    end
+
     def proofing_with_superior_evidence?
       idv_session.proofing_with_superior_evidence?
+    end
+
+    def superior_evidence_skip_phone_verification_enabled?
+      ab_test_bucket(:SUPERIOR_EVIDENCE_SKIP_PHONE_VERIFICATION_ALLOWED) == :allowed
     end
 
     def record_superior_evidence_skipped
@@ -322,7 +330,7 @@ module Idv
         :new, locals: {
           presenter: Idv::PhonePresenter.new(
             gpo_letter_available: gpo_verify_by_mail_policy.send_letter_available?,
-            proofing_with_superior_evidence: proofing_with_superior_evidence?,
+            skip_phone_verification: skip_phone_verification?,
             url_options: url_options,
           ),
         }

@@ -5,27 +5,27 @@ RSpec.describe Idv::PhonePresenter do
   include ActionView::Helpers::UrlHelper
 
   let(:gpo_letter_available) { false }
-  let(:proofing_with_superior_evidence) { false }
+  let(:skip_phone_verification) { false }
 
   subject do
     described_class.new(
       gpo_letter_available:,
-      proofing_with_superior_evidence:,
+      skip_phone_verification:,
       url_options: {},
     )
   end
 
   describe '#title' do
-    context 'when proofing with superior evidence is true' do
-      let(:proofing_with_superior_evidence) { true }
+    context 'when skip phone verification is true' do
+      let(:skip_phone_verification) { true }
 
       it 'returns title.idv.phone_skip_verification translation text' do
         expect(subject.title).to eq(t('titles.idv.phone_skip_verification'))
       end
     end
 
-    context 'when proofing with superior evidence is false' do
-      let(:proofing_with_superior_evidence) { false }
+    context 'when skip phone verification is false' do
+      let(:skip_phone_verification) { false }
 
       it 'returns title.idv.phone translation text' do
         expect(subject.title).to eq(t('titles.idv.phone'))
@@ -34,16 +34,16 @@ RSpec.describe Idv::PhonePresenter do
   end
 
   describe '#heading' do
-    context 'when proofing with superior evidence is true' do
-      let(:proofing_with_superior_evidence) { true }
+    context 'when skip phone verification is true' do
+      let(:skip_phone_verification) { true }
 
       it 'returns title.idv.phone_skip_verification translation text' do
         expect(subject.heading).to eq(t('titles.idv.phone_skip_verification'))
       end
     end
 
-    context 'when proofing with superior evidence is false' do
-      let(:proofing_with_superior_evidence) { false }
+    context 'when skip phone verification is false' do
+      let(:skip_phone_verification) { false }
 
       it 'returns title.idv.phone translation text' do
         expect(subject.heading).to eq(t('titles.idv.phone'))
@@ -52,16 +52,16 @@ RSpec.describe Idv::PhonePresenter do
   end
 
   describe '#description' do
-    context 'when proofing with superior evidence is true' do
-      let(:proofing_with_superior_evidence) { true }
+    context 'when skip phone verification is true' do
+      let(:skip_phone_verification) { true }
 
       it 'returns idv.messages.phone.description_skip_verification translation text' do
         expect(subject.description).to eq(t('idv.messages.phone.description_skip_verification'))
       end
     end
 
-    context 'when proofing with superior evidence is false' do
-      let(:proofing_with_superior_evidence) { false }
+    context 'when skip phone verification is false' do
+      let(:skip_phone_verification) { false }
 
       it 'returns idv.messages.phone.description translation text' do
         expect(subject.description).to eq(t('idv.messages.phone.description'))

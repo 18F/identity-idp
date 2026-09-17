@@ -2,14 +2,14 @@ require 'rails_helper'
 
 RSpec.describe 'idv/phone/new.html.erb', type: :view do
   let(:gpo_letter_available) { false }
-  let(:proofing_with_superior_evidence) { false }
+  let(:skip_phone_verification) { false }
   let(:step_indicator_steps) { Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
   let(:nds_layout) { false }
 
   let(:presenter) do
     Idv::PhonePresenter.new(
       gpo_letter_available:,
-      proofing_with_superior_evidence:,
+      skip_phone_verification:,
       url_options: {},
     )
   end
@@ -43,22 +43,22 @@ RSpec.describe 'idv/phone/new.html.erb', type: :view do
     end
   end
 
-  context 'user is proofing with superior evidence' do
-    let(:proofing_with_superior_evidence) { true }
+  context 'user is can skip phone verification' do
+    let(:skip_phone_verification) { true }
 
     it 'sets the page title for phone skip verification' do
       expect(view).to receive(:title=).with(t('titles.idv.phone_skip_verification'))
       rendered
     end
 
-    it 'renders the superior evidence title and description' do
+    it 'renders the skip phone verification title and description' do
       expect(rendered).to have_text(t('titles.idv.phone_skip_verification'))
       expect(rendered).to have_text(t('idv.messages.phone.description_skip_verification'))
     end
   end
 
-  context 'user is not proofing with superior evidence' do
-    let(:proofing_with_superior_evidence) { false }
+  context 'user is not skipping phone verification' do
+    let(:skip_phone_verification) { false }
 
     it 'sets the page title for phone verification' do
       expect(view).to receive(:title=).with(t('titles.idv.phone'))
