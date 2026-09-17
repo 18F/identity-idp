@@ -442,8 +442,63 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
 
     context 'PKCE' do
-      let(:code_challenge) { 'abcdef' }
+      let(:code_challenge) { Digest::SHA256.urlsafe_base64digest('a' * 43) }
       let(:code_challenge_method) { 'S256' }
+
+      it 'accepts S256 for legacy integrations' do
+        expect(valid?).to eq(true)
+      end
+
+      [nil, '', 'a' * 42, 'a' * 44, '+' * 43].each do |challenge|
+        context "with invalid challenge #{challenge.inspect}" do
+          let(:code_challenge) { challenge }
+
+          it 'rejects the request' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:code_challenge]).to be_present
+          end
+        end
+      end
+
+      context 'with a private_key_jwt integration' do
+        before { form.service_provider.update!(pkce: false) }
+
+        it 'rejects PKCE by default' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code_challenge]).to include(
+            t('openid_connect.authorization.errors.pkce_not_enabled'),
+          )
+        end
+
+        context 'with the feature enabled' do
+          before do
+            allow(IdentityConfig.store).to receive(
+              :openid_connect_private_key_jwt_pkce_enabled,
+            ).and_return(true)
+          end
+
+          it 'accepts PKCE' do
+            expect(valid?).to eq(true)
+          end
+        end
+
+        context 'without PKCE parameters' do
+          let(:code_challenge) { nil }
+          let(:code_challenge_method) { nil }
+
+          it 'continues to accept the existing flow' do
+            expect(valid?).to eq(true)
+          end
+        end
+      end
+
+      context 'with a public integration' do
+        before { form.service_provider.update!(pkce: true) }
+
+        it 'accepts PKCE with the feature disabled' do
+          expect(valid?).to eq(true)
+        end
+      end
 
       context 'code_challenge but no code_challenge_method' do
         let(:code_challenge_method) { nil }
@@ -742,8 +797,24 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
 
     context 'with PKCE' do
-      let(:code_challenge) { 'abcdef' }
+      let(:code_challenge) { Digest::SHA256.urlsafe_base64digest('a' * 43) }
       let(:code_challenge_method) { 'S256' }
+
+      it 'clears the challenge when the next authorization does not request PKCE' do
+        args = {
+          current_user: user, ial: 1, rails_session_id: rails_session_id, email_address_id: 4
+        }
+        form.link_identity_to_service_provider(**args)
+        identity = user.identities.find_by!(service_provider: client_id)
+        previous_code = identity.session_uuid
+        next_form = OpenidConnectAuthorizeForm.new(
+          client_id: client_id, scope: scope, acr_values: acr_values,
+        )
+        next_form.link_identity_to_service_provider(**args)
+
+        expect(identity.reload.code_challenge).to be_nil
+        expect(identity.session_uuid).not_to eq(previous_code)
+      end
 
       it 'records the code_challenge on the identity' do
         form.link_identity_to_service_provider(

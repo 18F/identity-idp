@@ -58,7 +58,9 @@ class OpenidConnectAuthorizeForm
 
   validates :response_type, inclusion: { in: %w[code] }
   validates :prompt, presence: true, inclusion: { in: %w[create login select_account] }
-  validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :code_challenge
+  validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :pkce_requested?
+  validates :code_challenge, format: { with: /\A[A-Za-z0-9_-]{43}\z/ }, if: :pkce_requested?
+  validate :validate_pkce_enabled
 
   validate :validate_acr_values
   validate :validate_client_id
@@ -152,6 +154,21 @@ class OpenidConnectAuthorizeForm
   private
 
   attr_reader :identity, :success
+
+  def pkce_requested?
+    !code_challenge.nil? || !code_challenge_method.nil?
+  end
+
+  def validate_pkce_enabled
+    return unless pkce_requested? && service_provider&.pkce == false
+    return if IdentityConfig.store.openid_connect_private_key_jwt_pkce_enabled
+
+    errors.add(
+      :code_challenge,
+      t('openid_connect.authorization.errors.pkce_not_enabled'),
+      type: :pkce_not_enabled,
+    )
+  end
 
   def code
     identity&.session_uuid

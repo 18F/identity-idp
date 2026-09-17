@@ -58,6 +58,8 @@ class OpenidConnectTokenForm
         expires_in: @ttl,
         id_token: id_token_builder.id_token,
       }
+    elsif errors.include?(:code_verifier)
+      { error: 'invalid_grant', error_description: errors.to_a.join(' ') }
     else
       { error: errors.to_a.join(' ') }
     end
@@ -80,15 +82,14 @@ class OpenidConnectTokenForm
   end
 
   def pkce?
-    pkce_sp && (code_verifier.present? || identity.try(:code_challenge).present?)
+    # Enforce previously issued challenges even when admission of new PKCE requests is disabled.
+    !code_verifier.nil? || identity.try(:code_challenge).present?
   end
 
   def private_key_jwt?
-    non_pkce_sp && (client_assertion.present? || client_assertion_type.present?)
-  end
-
-  def non_pkce_sp
-    !service_provider&.pkce
+    service_provider&.pkce == false ||
+      (service_provider&.pkce.nil? &&
+        (client_assertion.present? || client_assertion_type.present?))
   end
 
   def pkce_sp
@@ -97,7 +98,8 @@ class OpenidConnectTokenForm
   end
 
   def validate_pkce_or_private_key_jwt
-    return if pkce? || private_key_jwt?
+    return if (pkce_sp && pkce?) ||
+              (private_key_jwt? && (client_assertion.present? || client_assertion_type.present?))
     errors.add :code,
                t('openid_connect.token.errors.invalid_authentication'),
                type: :invalid_authentication
@@ -120,8 +122,8 @@ class OpenidConnectTokenForm
   def validate_code_verifier
     expected_code_challenge = remove_base64_padding(identity.try(:code_challenge))
     given_code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier.to_s)
-    if expected_code_challenge &&
-       given_code_challenge &&
+    if code_verifier.is_a?(String) && code_verifier.match?(/\A[A-Za-z0-9._~-]{43,128}\z/) &&
+       identity.try(:code_challenge).present? && expected_code_challenge &&
        ActiveSupport::SecurityUtils.secure_compare(expected_code_challenge, given_code_challenge)
       return
     end
@@ -204,6 +206,7 @@ class OpenidConnectTokenForm
       user_id: identity&.user&.uuid,
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
       code_verifier_present: code_verifier.present?,
+      code_challenge_present: identity.try(:code_challenge).present?,
       service_provider_pkce: service_provider&.pkce,
       ial: identity&.ial,
       integration_errors:,
