@@ -15,6 +15,24 @@ RSpec.describe Idv::PhonePresenter do
     )
   end
 
+  describe '#title' do
+    context 'when proofing with superior evidence is true' do
+      let(:proofing_with_superior_evidence) { true }
+
+      it 'returns title.idv.phone_skip_verification translation text' do
+        expect(subject.title).to eq(t('titles.idv.phone_skip_verification'))
+      end
+    end
+
+    context 'when proofing with superior evidence is false' do
+      let(:proofing_with_superior_evidence) { false }
+
+      it 'returns title.idv.phone translation text' do
+        expect(subject.title).to eq(t('titles.idv.phone'))
+      end
+    end
+  end
+
   describe '#heading' do
     context 'when proofing with superior evidence is true' do
       let(:proofing_with_superior_evidence) { true }

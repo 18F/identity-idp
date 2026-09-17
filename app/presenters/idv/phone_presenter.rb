@@ -13,6 +13,12 @@ class Idv::PhonePresenter
     @url_options = url_options
   end
 
+  def title
+    proofing_with_superior_evidence ?
+      t('titles.idv.phone_skip_verification') :
+      t('titles.idv.phone')
+  end
+
   def heading
     proofing_with_superior_evidence ?
       t('titles.idv.phone_skip_verification') :

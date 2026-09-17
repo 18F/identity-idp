@@ -791,19 +791,36 @@ RSpec.describe Idv::PhoneController do
             **Idp::Constants::MOCK_IDV_APPLICANT,
             document_type_received: document_type,
           )
-
-          put :create, params: phone_params
         end
 
-        it 'sets the idv_session address verification vendor to "SuperiorEvidenceSkipped"' do
-          expect(subject.idv_session).to have_attributes(
-            address_verification_vendor:
-              Idp::Constants::Vendors::PHONE_CHECK_SUPERIOR_EVIDENCE_SKIPPED,
-          )
+        context 'when the there is a phone vendor outage' do
+          before do
+            allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?)
+              .and_return(true)
+
+            put :create, params: phone_params
+          end
+
+          it 'redirects the user to vendor outage path' do
+            expect(response).to redirect_to vendor_outage_path(from: :idv_phone)
+          end
         end
 
-        it 'redirects the user to OTP' do
-          expect(response).to redirect_to idv_otp_verification_path
+        context 'when there is not a phone vendor outage' do
+          before do
+            put :create, params: phone_params
+          end
+
+          it 'sets the idv_session address verification vendor to "SuperiorEvidenceSkipped"' do
+            expect(subject.idv_session).to have_attributes(
+              address_verification_vendor:
+                Idp::Constants::Vendors::PHONE_CHECK_SUPERIOR_EVIDENCE_SKIPPED,
+            )
+          end
+
+          it 'redirects the user to OTP' do
+            expect(response).to redirect_to idv_otp_verification_path
+          end
         end
       end
     end

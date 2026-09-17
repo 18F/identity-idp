@@ -106,7 +106,7 @@
 <div id="form-steps-wait-alert">
 </div>
 
-<% self.title = t('titles.idv.phone') %>
+<% self.title = presenter.title %>
 
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :idv)) %>
 <%= render PageHeadingComponent.new.with_content(presenter.heading) %>
