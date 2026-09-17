@@ -8,16 +8,22 @@ module EventSummarizer
         'drivers_license' => "drivers' license",
       }.freeze
 
+      # These mirror Proofing::Aamva::Proofer#successful?, which requires a match on the first list
+      # and tolerates 'MISSING' on the second.
+      #
       # TODO: Load these from the AAMVA proofer or put them somewhere common
-
-      REQUIRED_VERIFICATION_ATTRIBUTES = [:state_id_number].freeze
-
-      REQUIRED_IF_PRESENT_ATTRIBUTES = %i[
-        state_id_expiration
+      REQUIRED_VERIFICATION_ATTRIBUTES = %i[
+        state_id_number
         dob
         last_name
         first_name
       ].freeze
+
+      REQUIRED_IF_PRESENT_ATTRIBUTES = [:state_id_expiration].freeze
+
+      # errors keys arrive as strings from the Cloudwatch payload.
+      REQUIRED_VERIFICATION_ATTRIBUTE_NAMES =
+        REQUIRED_VERIFICATION_ATTRIBUTES.map(&:to_s).freeze
 
       # @param result {Hash} The result structure logged to Cloudwatch
       # @return [Hash] A Hash with a type, timestamp, and description key.
@@ -75,7 +81,7 @@ module EventSummarizer
       def self.explain_errors(result)
         # The values in the errors object are arrays
         attributes = {}
-        result['errors'].each do |key, values|
+        result['errors']&.each do |key, values|
           attributes[key] = values.first
         end
 
@@ -112,20 +118,20 @@ module EventSummarizer
       end
 
       def self.relevant_failed_attributes(attributes)
-        failed_attributes = Set.new
+        # 'UNVERIFIED' is a real mismatch, so always report it. 'MISSING' usually just means we
+        # never sent the attribute (height, weight, sex...), so only report it where the proofer
+        # requires a match.
+        failed = attributes.select do |attr, status|
+          status == 'UNVERIFIED' ||
+            (status == 'MISSING' && REQUIRED_VERIFICATION_ATTRIBUTE_NAMES.include?(attr))
+        end.keys
 
-        REQUIRED_VERIFICATION_ATTRIBUTES.each do |attr|
-          failed_attributes << attr if attributes[attr.to_s] != 'VERIFIED'
+        # Required attributes first; they are the most likely cause.
+        required, other = failed.partition do |attr|
+          REQUIRED_VERIFICATION_ATTRIBUTE_NAMES.include?(attr)
         end
 
-        REQUIRED_IF_PRESENT_ATTRIBUTES.each do |attr|
-          attr_key = attr.to_s
-          if attributes[attr_key].present? && attributes[attr_key] != 'VERIFIED'
-            failed_attributes << attr
-          end
-        end
-
-        failed_attributes
+        required + other
       end
     end
   end
