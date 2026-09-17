@@ -18,19 +18,15 @@ module EventSummarizer
         }
       end
 
+      # Items are read regardless of ProductStatus: LexisNexis marks the PhoneFinder product 'pass'
+      # when the lookup ran, even while individual Items fail. The verdict is in PhoneFinder Checks.
       def self.itemized_errors(result)
-        failed_items = []
         pf_instances = result.dig('errors', 'PhoneFinder')
         return [] unless pf_instances && !pf_instances.empty?
 
-        pf_instances.each do |pf_instance|
-          next if pf_instance['ProductStatus'] != 'fail'
-
-          items = pf_instance['Items']
-          failed_items.concat(items.select { |item| item['ItemStatus'] == 'fail' })
-        end
-
-        failed_items
+        pf_instances
+          .flat_map { |pf_instance| pf_instance['Items'] || [] }
+          .select { |item| item['ItemStatus'] == 'fail' }
           .map { |item| item.dig('ItemReason', 'Description').to_s.strip }
           .reject(&:empty?)
           .uniq
@@ -45,20 +41,23 @@ module EventSummarizer
         failed_status&.dig('ProductReason', 'Description')
       end
 
+      # Itemized reasons first: the general error is the same text on every failure, and misleading
+      # when the real reason is e.g. a deceased subject rather than a name mismatch.
       def self.failure_payload(result)
-        fail_reasons = [*itemized_errors(result), general_error(result)].compact
+        fail_reasons = itemized_errors(result)
+        fail_reasons = [general_error(result)].compact if fail_reasons.empty?
 
-        if fail_reasons.any?
-          {
-            type: :phone_finder_error,
-            description: "Phone Finder check failed: #{fail_reasons.uniq.join('; ')}",
-          }
-        else
-          {
-            type: :phone_finder_error,
-            description: 'Phone Finder check failed. Review logs for more information.',
-          }
-        end
+        detail =
+          if fail_reasons.any?
+            ": #{fail_reasons.join('; ')}"
+          else
+            '. Review logs for more information.'
+          end
+
+        {
+          type: :phone_finder_error,
+          description: "Phone Finder check failed#{detail}",
+        }
       end
     end
   end
