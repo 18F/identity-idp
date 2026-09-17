@@ -385,6 +385,7 @@ module IdentityConfig
     config.add(:nds_look_and_feel_percent, type: :integer)
     config.add(:newrelic_license_key, type: :string)
     config.add(:openid_connect_authorization_code_expiration_seconds, type: :integer)
+    config.add(:openid_connect_private_key_jwt_pkce_enabled, type: :boolean)
     config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(
       :openid_connect_redirect,

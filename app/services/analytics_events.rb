@@ -7515,6 +7515,7 @@ module AnalyticsEvents
   # @param [String] code_digest hash of "code" param
   # @param [Integer, nil] expires_in time to expiration of token
   # @param [Integer, nil] ial ial level of identity
+  # @param [Boolean] code_challenge_present Whether the authorization code is bound to PKCE
   # @param [Boolean] code_verifier_present Whether code verifier parameter was present
   # @param [Boolean, nil] service_provider_pkce Whether service provider is configured for PKCE. Nil
   # if the service provider is unknown.
@@ -7527,6 +7528,7 @@ module AnalyticsEvents
     ial:,
     code_verifier_present:,
     service_provider_pkce:,
+    code_challenge_present: false,
     error_details: nil,
     **extra
   )
@@ -7540,6 +7542,7 @@ module AnalyticsEvents
       expires_in:,
       ial:,
       code_verifier_present:,
+      code_challenge_present:,
       service_provider_pkce:,
       **extra,
     )
