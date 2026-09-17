@@ -15,6 +15,7 @@ module Test
     OTP = 'OTP'
     IDV = 'Identity verification'
     ERRORS = 'Errors'
+    ACCOUNT = 'Account'
 
     PAGES = [
       Page.new(
@@ -127,6 +128,15 @@ module Test
           Permutation.new(label: 'Voice preferred', params: { delivery: 'voice' }),
           Permutation.new(label: 'Sign-in (no stepper)', params: { flow: 'sign_in' }),
           Permutation.new(label: 'Phone error', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'confirm-backup-codes',
+        title: 'Backup codes confirmation (add another method)',
+        flow: MFA,
+        template: 'users/backup_code_setup/confirm_backup_codes',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
         ],
       ),
       Page.new(
@@ -562,6 +572,27 @@ module Test
           Permutation.new(label: 'Verified identity', params: {}),
           Permutation.new(label: 'Auth only (new SP)', params: { auth: '1' }),
           Permutation.new(label: 'Single MFA warning', params: { single: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'email-language',
+        title: 'Email language preference',
+        flow: ACCOUNT,
+        template: 'users/email_language/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Spanish selected', params: { language: 'es' }),
+        ],
+      ),
+      Page.new(
+        key: 'account-delete',
+        title: 'Delete account',
+        flow: ACCOUNT,
+        template: 'users/delete/show',
+        permutations: [
+          Permutation.new(label: 'Unverified', params: {}),
+          Permutation.new(label: 'Verified identity', params: { verified: '1' }),
+          Permutation.new(label: 'Incorrect password', params: { error: '1' }),
         ],
       ),
     ].freeze

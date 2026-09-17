@@ -1,5 +1,56 @@
 <% self.title = t('titles.edit_info.email_language') %>
 
+<% if nds_layout? %>
+  <%= simple_form_for(current_user, url: account_email_language_path, method: 'PATCH') do |f| %>
+    <%= render NDS::FormPageComponent.new(
+          title: t('account.email_language.edit_title'),
+          subtitle: t('account.email_language.languages_list', app_name: APP_NAME),
+        ) do |page| %>
+      <% page.with_body do %>
+        <fieldset class="usa-fieldset margin-0">
+          <legend class="usa-sr-only"><%= t('forms.registration.labels.email_language') %></legend>
+          <div class="radio-group">
+            <% I18n.available_locales.each do |locale| %>
+              <% label = locale == I18n.locale ?
+                   t('account.email_language.default', language: t("i18n.locale.#{locale}")) :
+                   t("i18n.locale.#{locale}") %>
+              <div class="radio">
+                <%= f.radio_button(
+                      :email_language,
+                      locale,
+                      class: 'radio__input usa-sr-only',
+                      checked: (current_user.email_language || I18n.locale).to_s == locale.to_s,
+                      lang: locale,
+                    ) %>
+                <%= f.label(
+                      :email_language,
+                      label,
+                      value: locale,
+                      class: 'radio__label',
+                      lang: locale,
+                    ) %>
+              </div>
+            <% end %>
+          </div>
+        </fieldset>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+                full_width: true,
+              ).with_content(t('forms.buttons.submit.default')) %>
+          <%= render ButtonComponent.new(
+                url: account_path,
+                variant: :secondary,
+                full_width: true,
+              ).with_content(t('links.cancel')) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('account.email_language.edit_title')) %>
 
 <p>
@@ -10,4 +61,5 @@
   <%= render partial: 'shared/email_languages',
              locals: { f: f, hint: false, selection: current_user.email_language } %>
   <%= f.submit t('forms.buttons.submit.default'), class: 'grid-col-8 tablet:grid-col-6' %>
+<% end %>
 <% end %>
