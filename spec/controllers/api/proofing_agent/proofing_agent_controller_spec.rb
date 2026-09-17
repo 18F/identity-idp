@@ -141,6 +141,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:dob) do
     (Time.zone.today - (IdentityConfig.store.idv_min_age_years + 1).years).strftime('%Y-%m-%d')
   end
+  let(:ssn) { '111223333' }
   let(:document_number) { '123' }
   let(:jurisdiction) { 'MD' }
   let(:address1) { '123 Main' }
@@ -218,7 +219,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       last_name:,
       dob:,
       phone: '555-555-5555',
-      ssn: '111223333',
+      ssn:,
       id_type:,
       residential_address:,
       state_id:,
@@ -289,12 +290,15 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(body['ssn_profile_found']).to eq(false)
               expect(body['profiles']).to eq([])
               expect(body['email_account_awaiting_binding']).to eq(false)
+              expect(body['account_email_confirmed']).to eq(false)
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_account_check_requested,
                 response_body: a_hash_including(
                   email_account_found: false,
                   ssn_profile_found: false,
                   profiles: [],
+                  account_email_confirmed: false,
+                  email_account_awaiting_binding: false,
                 ),
                 proofing_agent: proofing_agent_analytics_hash,
                 issuer:,
@@ -316,6 +320,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(body['email_account_found']).to eq(false)
               expect(body['ssn_profile_found']).to eq(true)
               expect(body['email_account_awaiting_binding']).to eq(false)
+              expect(body['account_email_confirmed']).to eq(false)
               expect(body['profiles'].length).to eq(1)
               expect(body['profiles']).to include(
                 a_hash_including(
@@ -329,6 +334,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 response_body: a_hash_including(
                   email_account_found: false,
                   email_account_awaiting_binding: false,
+                  account_email_confirmed: false,
                   ssn_profile_found: true,
                   profiles: include(
                     a_hash_including(
@@ -360,10 +366,39 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(body['ssn_profile_found']).to eq(false)
             expect(body['profiles'].length).to eq(0)
             expect(body['email_account_awaiting_binding']).to eq(false)
+            expect(body['account_email_confirmed']).to eq(true)
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_account_check_requested,
               response_body: a_hash_including(
                 email_account_found: true,
+                account_email_confirmed: true,
+                email_account_awaiting_binding: false,
+                ssn_profile_found: false,
+                profiles: [],
+              ),
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
+            )
+          end
+        end
+
+        context 'when a user has not confirmed their email address' do
+          before do
+            user.email_addresses.update(confirmed_at: nil)
+          end
+          it 'returns correct profiles and found attributes' do
+            user.update!(confirmed_at: nil)
+            action
+            body = JSON.parse(response.body)
+            expect(body['email_account_found']).to eq(true)
+            expect(body['ssn_profile_found']).to eq(false)
+            expect(body['email_account_awaiting_binding']).to eq(false)
+            expect(body['account_email_confirmed']).to eq(false)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_account_check_requested,
+              response_body: a_hash_including(
+                email_account_found: true,
+                account_email_confirmed: false,
                 email_account_awaiting_binding: false,
                 ssn_profile_found: false,
                 profiles: [],
@@ -423,6 +458,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(body['email_account_found']).to eq(true)
             expect(body['ssn_profile_found']).to eq(true)
             expect(body['email_account_awaiting_binding']).to eq(false)
+            expect(body['account_email_confirmed']).to eq(true)
             expect(body['profiles'].length).to eq(3)
             expect(body['profiles']).to include(
               a_hash_including(
@@ -446,6 +482,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               response_body: a_hash_including(
                 email_account_found: true,
                 email_account_awaiting_binding: false,
+                account_email_confirmed: true,
                 ssn_profile_found: true,
                 profiles: include(
                   a_hash_including(
@@ -513,6 +550,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(body['email_account_found']).to eq(true)
             expect(body['ssn_profile_found']).to eq(true)
             expect(body['email_account_awaiting_binding']).to eq(false)
+            expect(body['account_email_confirmed']).to eq(true)
             expect(body['profiles'].length).to eq(2)
             expect(body['profiles']).to include(
               a_hash_including(
@@ -532,6 +570,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 email_account_found: true,
                 ssn_profile_found: true,
                 email_account_awaiting_binding: false,
+                account_email_confirmed: true,
                 profiles: include(
                   a_hash_including(
                     email_match: true,
@@ -589,6 +628,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(body['email_account_found']).to eq(true)
             expect(body['ssn_profile_found']).to eq(true)
             expect(body['email_account_awaiting_binding']).to eq(true)
+            expect(body['account_email_confirmed']).to eq(true)
             expect(body['profiles'].length).to eq(1)
             expect(body['profiles']).to include(
               a_hash_including(
@@ -603,6 +643,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 email_account_found: true,
                 email_account_awaiting_binding: true,
                 ssn_profile_found: true,
+                account_email_confirmed: true,
                 profiles: include(
                   a_hash_including(
                     email_match: true,
@@ -880,8 +921,24 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             end
           end
 
+          context 'ssn data format is invalid' do
+            let(:ssn) { '123-45-6789' }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'dob data format is invalid' do
+            let(:dob) { '04-04-1990' }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
           context 'user already has an enhanced profile' do
-            let(:ssn) { '111-22-3333' }
+            let(:ssn) { '111223333' }
             before do
               Profile.create!(
                 user_id: user.id,

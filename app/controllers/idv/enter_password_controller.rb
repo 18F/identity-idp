@@ -19,6 +19,8 @@ module Idv
 
     rescue_from UspsInPersonProofing::Exception::RequestEnrollException,
                 with: :handle_request_enroll_exception
+    rescue_from UspsInPersonProofing::Exception::EnrollmentNotPendingError,
+                with: :handle_enrollment_not_pending_error
 
     def new
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
@@ -94,7 +96,11 @@ module Idv
         action: :new,
         next_steps: [:personal_key],
         preconditions: ->(idv_session:, user:) do
-          idv_session.phone_or_address_step_complete?
+          if idv_session.agent_proofed
+            idv_session.proofing_agent_match? && idv_session.phone_or_address_step_complete?
+          else
+            idv_session.phone_or_address_step_complete?
+          end
         end,
         undo_step: ->(idv_session:, user:) {},
       )
@@ -225,20 +231,33 @@ module Idv
       redirect_to idv_enter_password_url
     end
 
+    def handle_enrollment_not_pending_error(err)
+      analytics.idv_in_person_usps_enrollment_not_pending(
+        context: context,
+        enrollment_id: err.enrollment_id,
+      )
+      flash[:error] = t('idv.failure.exceptions.internal_error')
+      idv_session.invalidate_personal_key!
+      redirect_to idv_enter_password_url
+    end
+
     def record_user_proofing_events
       return unless historical_events_enabled?
       return unless idv_requested?
 
-      current_user.active_profile.create_user_proofing_event(
+      idv_session.profile.create_user_proofing_event(
         attempt_events:,
         password:,
         personal_key: idv_session.personal_key,
         sent_to_sp: attempts_api_enabled_for_session?,
       )
 
-      analytics.historic_event_data_saved(profile_id: current_user.active_profile.id)
+      analytics.historic_event_data_saved(profile_id: idv_session.profile.id)
 
-      AttemptsApi::Cacher.new(current_user, user_session).save(password:)
+      # current_user.active_profile can be stale here because and pass in
+      # the wrong profile. passing the profile in directly ensures it is cached correctly
+      AttemptsApi::Cacher.new(current_user, user_session)
+        .save(password:, profile: idv_session.profile)
 
       user_session.delete('idv/attempts')
     end

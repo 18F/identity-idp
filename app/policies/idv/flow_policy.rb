@@ -41,6 +41,58 @@ module Idv
         personal_key: Idv::PersonalKeyController.step_info,
       }.freeze
 
+    # Rebuilds a step with a different next_steps list and/or an additional
+    # precondition (ANDed with the original); controller, action and undo are
+    # carried over.
+    def self.rewire(step, next_steps: step.next_steps, also_require: nil, undo_step: step.undo_step)
+      preconditions = if also_require
+                        ->(idv_session:, user:) do
+                          step.preconditions.call(idv_session:, user:) &&
+                            also_require.call(idv_session:, user:)
+                        end
+                      else
+                        step.preconditions
+                      end
+      Idv::StepInfo.new(
+        key: step.key,
+        controller: "#{step.controller.delete_prefix('/')}_controller".camelize.constantize,
+        action: step.action,
+        next_steps:,
+        preconditions:,
+        undo_step:,
+      )
+    end
+    private_class_method :rewire
+
+    # NDS bucket ("phone first"): hybrid handoff — enter a phone number to get a
+    # link, or continue on this computer — comes right after choosing an ID type
+    # and before document capture, so a user without a usable phone finds out
+    # before investing in the rest of the flow. Only the ordering around
+    # choose_id_type differs: handoff now requires a chosen ID type and is skipped
+    # on mobile, and it loses choose_id_type as a successor since it precedes it.
+    PHONE_FIRST_HANDOFF = lambda do |idv_session:, user:|
+      !idv_session.skip_hybrid_handoff? &&
+        Idv::DocumentCaptureController.ensure_choose_id_type_completed(idv_session:, user:)
+    end.freeze
+    private_constant :PHONE_FIRST_HANDOFF
+
+    PHONE_FIRST_STEPS = STEPS.merge(
+      choose_id_type: rewire(
+        STEPS[:choose_id_type],
+        next_steps: [:hybrid_handoff, :document_capture],
+      ),
+      hybrid_handoff: rewire(
+        STEPS[:hybrid_handoff],
+        next_steps: STEPS[:hybrid_handoff].next_steps - [:choose_id_type],
+        also_require: PHONE_FIRST_HANDOFF,
+        undo_step: ->(idv_session:, user:) do
+          idv_session.flow_path = 'standard'
+          idv_session.phone_for_mobile_flow = nil
+          idv_session.source_check_vendor = nil
+        end,
+      ),
+    ).freeze
+
     def initialize(idv_session:, user:)
       @idv_session = idv_session
       @user = user
@@ -79,7 +131,7 @@ module Idv
     end
 
     def steps
-      STEPS
+      idv_session.phone_first_flow? ? PHONE_FIRST_STEPS : STEPS
     end
 
     def step_allowed?(key:)

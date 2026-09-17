@@ -1,5 +1,103 @@
 <% self.title = t('titles.add_info.phone') %>
 
+<% if nds_layout? %>
+  <% if in_account_creation_flow? %>
+    <% content_for(:nds_header_progress) do %>
+      <%= nds_account_creation_progress(
+            step: :security,
+            substep: enabled_mfa_methods_count >= 1 ? 2 : 1,
+          ) %>
+    <% end %>
+  <% end %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('nds.phone_setup.heading'),
+        subtitle: t('nds.phone_setup.info'),
+      ) do |page| %>
+    <% page.with_alert do %>
+      <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
+    <% end %>
+
+    <% page.with_body do %>
+      <%= simple_form_for(@new_phone_form, url: phone_setup_path) do |f| %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <%= render NDS::StackComponent.new(align: :stretch) do %>
+            <%= render 'users/shared/nds_phone_input', form: f %>
+
+            <%= render 'users/shared/nds_otp_delivery_preference_selection',
+                       form_obj: @new_phone_form %>
+
+            <% if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled? %>
+              <%= render 'users/shared/otp_make_default_number',
+                         form_obj: @new_phone_form %>
+            <% end %>
+          <% end %>
+
+          <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+            <%= render CaptchaSubmitButtonComponent.new(
+                  form: f,
+                  action: PhoneRecaptchaForm::RECAPTCHA_ACTION,
+                ).with_content(t('forms.buttons.send_one_time_code')) %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% if !@webauthn_platform_configured %>
+        <%= render(AlertComponent.new(type: :info, class: 'margin-top-4')) do %>
+          <%= t(
+                'notices.phishing_warning_html',
+                common_scams_link_html:
+                new_tab_link_to(
+                  t('links.scams'),
+                  MarketingSite.help_center_article_url(
+                    category: 'fraud-concerns',
+                    article: 'common-scams',
+                  ),
+                ),
+                ft_unlock_setup_link_html: link_to(
+                  t('links.setup_ft_unlock'),
+                  webauthn_setup_url(platform: true),
+                ),
+              ) %>
+        <% end %>
+      <% end %>
+
+      <% if FeatureManagement.phone_recaptcha_enabled? %>
+        <p class="margin-top-4">
+          <%= t(
+                'two_factor_authentication.recaptcha.disclosure_statement_html',
+                app_name: APP_NAME,
+                google_policy_link_html: new_tab_link_to(t('two_factor_authentication.recaptcha.google_policy_link'), GooglePolicySite.privacy_url),
+                google_tos_link_html: new_tab_link_to(t('two_factor_authentication.recaptcha.google_tos_link'), GooglePolicySite.terms_url),
+                login_tos_link_html: new_tab_link_to(t('two_factor_authentication.recaptcha.login_tos_link'), MarketingSite.rules_of_use_url),
+              ) %>
+        </p>
+      <% else %>
+        <%= link_to t('two_factor_authentication.mobile_terms_of_service'),
+                    MarketingSite.messaging_practices_url,
+                    class: 'display-block margin-top-4' %>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <% if MfaPolicy.new(current_user).two_factor_enabled? && !in_multi_mfa_selection_flow? %>
+          <%= render ButtonComponent.new(
+                url: account_path,
+                variant: :tertiary,
+                full_width: true,
+              ).with_content(t('links.cancel')) %>
+        <% else %>
+          <%= render ButtonComponent.new(
+                url: authentication_methods_setup_path,
+                variant: :tertiary,
+                full_width: true,
+              ).with_content(t('nds.mfa.choose_another_method')) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.add_info.phone')) %>
@@ -74,3 +172,4 @@
 <% end %>
 
 <%= render 'shared/cancel_or_back_to_options' %>
+<% end %>

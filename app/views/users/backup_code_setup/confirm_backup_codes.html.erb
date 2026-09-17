@@ -1,5 +1,30 @@
 <% self.title = t('titles.backup_codes') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(title: t('titles.backup_codes')) do |page| %>
+    <% page.with_body do %>
+      <div class="copy copy--muted">
+        <p><%= t('two_factor_authentication.backup_codes.warning_html') %></p>
+        <p><%= t('two_factor_authentication.backup_codes.instructions', app_name: APP_NAME) %></p>
+      </div>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: authentication_methods_setup_path,
+              full_width: true,
+            ).with_content(t('mfa.add')) %>
+        <%= render ButtonComponent.new(
+              url: auth_method_confirmation_skip_path,
+              method: :post,
+              variant: :secondary,
+              full_width: true,
+            ).with_content(t('forms.buttons.continue')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('titles.backup_codes')) %>
 
 <p>
@@ -25,4 +50,5 @@
       ) do %>
     <%= t('forms.buttons.continue') %>
   <% end %>
+<% end %>
 <% end %>

@@ -1,5 +1,42 @@
 <% self.title = t('idv.proofing_agent_expired.heading') %>
 
+<% if nds_layout? %>
+  <%= simple_form_for(
+        '',
+        url: idv_proofing_agent_expired_path,
+        method: :post,
+        html: { data: { nds_submit_gate: true } },
+      ) do |f| %>
+    <%= render NDS::FormPageComponent.new(title: t('idv.proofing_agent_expired.heading')) do |page| %>
+      <% page.with_media do %>
+        <span class="nds-status-icon nds-status-icon--warning">
+          <%= render NDS::IconComponent.new(icon: :warning, size: 24) %>
+        </span>
+      <% end %>
+
+      <% page.with_body do %>
+        <hr class="divider" />
+
+        <p>
+          <%= t('idv.proofing_agent_expired.body') %>
+        </p>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render ButtonComponent.new(
+              type: :submit,
+              full_width: true,
+            ).with_content(t('idv.proofing_agent_expired.continue')) %>
+        <%= render ButtonComponent.new(
+              url: account_path,
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(cancel_link_text) %>
+      <% end %>
+    <% end %>
+  <% end %>
+  <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <div class="proofing-agent-expired-page">
   <%= render AlertIconComponent.new(icon_name: :warning, class: 'display-block margin-bottom-4') %>
 
@@ -30,3 +67,4 @@
 
   <%= render 'shared/cancel', link: account_path %>
 </div>
+<% end %>

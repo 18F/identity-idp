@@ -16,12 +16,20 @@ module Idv
              locals: locals_attrs(
                presenter: Idv::ChooseIdTypePresenter.new,
                form_submit_url: idv_choose_id_type_path,
+               show_verify_in_person: in_person_opt_in_available?,
              ),
              layout: true
     end
 
     def update
       clear_future_steps!
+
+      if params[:verify_in_person].present? && in_person_opt_in_available?
+        idv_session.opted_in_to_in_person_proofing = true
+        idv_session.flow_path = 'standard'
+        idv_session.skip_doc_auth_from_how_to_verify = true
+        return redirect_to idv_document_capture_url(step: in_person_entry_step)
+      end
 
       @choose_id_type_form = Idv::ChooseIdTypeForm.new(
         mdl_enabled: mdl_enabled?,
@@ -67,8 +75,27 @@ module Idv
 
     private
 
+    def in_person_opt_in_available?
+      IdentityConfig.store.in_person_proofing_opt_in_enabled &&
+        Idv::InPersonConfig.enabled_for_issuer?(decorated_sp_session.sp_issuer)
+    end
+
+    # In the NDS phone-first flow, hybrid handoff (phone or continue on this
+    # computer) follows choosing an ID type, unless handoff is skipped on mobile.
     def next_step
-      idv_document_capture_url
+      if idv_session.phone_first_flow? && !idv_session.skip_hybrid_handoff?
+        idv_hybrid_handoff_url
+      else
+        idv_document_capture_url
+      end
+    end
+
+    # Document capture's direct-IPP entry re-derives skip_doc_auth_from_how_to_verify
+    # from the step param, so anything other than how_to_verify lands the user on
+    # photo capture instead of the in-person location picker. The NDS flow has no
+    # how-to-verify page; verify-in-person from choose_id_type is that entry point.
+    def in_person_entry_step
+      idv_session.phone_first_flow? ? :how_to_verify : :choose_id_type
     end
 
     def analytics_arguments

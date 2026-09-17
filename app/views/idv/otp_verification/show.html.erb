@@ -1,3 +1,83 @@
+<% if nds_layout? %>
+  <% self.title = t('titles.idv.enter_one_time_code') %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 9) %>
+  <% end %>
+
+  <% otp_invalid_error = flash[:error] == t('two_factor_authentication.invalid_otp') ? flash.delete(:error) : nil %>
+
+  <%= simple_form_for('', method: :put, html: { data: { nds_submit_gate: true } }) do |f| %>
+    <%= render NDS::FormPageComponent.new(
+          title: t('two_factor_authentication.header_text'),
+          subtitle: safe_join([@presenter.nds_code_sent_message, @presenter.nds_do_not_share_message], ' '),
+        ) do |page| %>
+      <% if otp_invalid_error %>
+        <% page.with_alert do %>
+          <%= render AlertComponent.new(
+                type: :error,
+                title: t('nds.otp_verification.invalid_otp_heading'),
+              ).with_content(t('nds.otp_verification.invalid_otp_body')) %>
+        <% end %>
+      <% end %>
+
+      <% page.with_body do %>
+        <% otp_length = @otp_code_length %>
+        <% otp_value = @code.to_s %>
+        <lg-nds-input-otp>
+          <div class="input-otp">
+            <%= f.label :code, t('components.one_time_code_input.label'), class: 'input-otp__label' %>
+            <div class="input-otp__shell">
+              <%= f.text_field(
+                    :code,
+                    value: otp_value,
+                    id: 'code',
+                    class: 'input-otp__input usa-input__control',
+                    type: :text,
+                    pattern: "[a-zA-Z0-9]{#{otp_length}}",
+                    maxlength: otp_length,
+                    autocomplete: 'one-time-code',
+                    autofocus: true,
+                    required: true,
+                    'aria-describedby': 'otp-hint',
+                  ) %>
+              <div class="input-otp__slots" aria-hidden="true">
+                <div class="input-otp__group">
+                  <% otp_length.times do |i| %>
+                    <div class="input-otp__slot<%= ' input-otp__slot--active input-otp__slot--caret' if otp_value.length == i %>"><%= otp_value[i] %></div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            <p class="input-otp__hint usa-sr-only" id="otp-hint"><%= t('components.one_time_code_input.hint.alphanumeric') %></p>
+          </div>
+        </lg-nds-input-otp>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(type: :submit, full_width: true)
+                .with_content(t('forms.buttons.continue')) %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+                form: 'idv-resend-otp-form',
+                formnovalidate: true,
+                variant: :secondary,
+                full_width: true,
+              ).with_content(t('links.two_factor_authentication.send_another_code')) %>
+          <%= render ButtonComponent.new(
+                url: idv_phone_path(step: 'phone_otp_verification'),
+                variant: :tertiary,
+                full_width: true,
+              ).with_content(t('forms.two_factor.try_again')) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= form_with(url: idv_resend_otp_path, method: :post, id: 'idv-resend-otp-form', html: { class: 'display-none' }) do %><% end %>
+
+  <%= javascript_packs_tag_once('nds-input-otp', 'nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: step_indicator_steps,
@@ -50,3 +130,4 @@
 </p>
 
 <%= render 'idv/doc_auth/cancel', step: 'phone_otp_verification' %>
+<% end %>

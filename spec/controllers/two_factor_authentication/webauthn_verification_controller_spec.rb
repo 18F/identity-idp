@@ -33,10 +33,10 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
       sign_in_before_2fa(user)
       allow(FeatureManagement).to receive(:webauthn_verification_auto_prompt?).and_return(false)
       allow(controller).to receive(:ab_test_bucket)
-        .with(:PASSKEY_AUTH)
+        .with(:NDS_LOOK_AND_FEEL, any_args)
         .and_return(:default)
       allow(controller).to receive(:ab_test_bucket)
-        .with(:NDS_LOOK_AND_FEEL, { service_provider: nil })
+        .with(:PASSKEY_AUTH)
         .and_return(:default)
     end
 

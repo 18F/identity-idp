@@ -1,5 +1,142 @@
 <% self.title = t('titles.sign_in') %>
 
+<% if nds_layout? %>
+  <% page_title = if decorated_sp_session.sp_name
+                    t('headings.sign_in_to_sp', sp: decorated_sp_session.sp_name)
+                  else
+                    t('titles.sign_in')
+                  end %>
+  <% logo_url = current_sp&.logo.present? ? current_sp.logo_url : nil %>
+
+  <%= render NDS::AuthEntryComponent.new do %>
+    <%= render NDS::FormPageComponent.new(
+          title: page_title,
+          divider: true,
+        ) do |page| %>
+      <% if logo_url.present? %>
+        <% page.with_media do %>
+          <%= image_tag(
+                logo_url,
+                alt: decorated_sp_session.sp_name,
+                class: 'auth__media',
+                width: 96,
+                height: 96,
+              ) %>
+        <% end %>
+      <% end %>
+
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <%= render 'shared/sp_alert', section: 'sign_in' %>
+
+          <% if @issuer_forced_reauthentication %>
+            <div class="copy">
+              <p>
+                <%= t(
+                      'account.login.forced_reauthentication_notice_html',
+                      sp_name: decorated_sp_session.sp_name,
+                    ) %>
+              </p>
+            </div>
+          <% end %>
+
+          <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), html: { data: { nds_submit_gate: true } }) do |f| %>
+            <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+              <%= render NDS::StackComponent.new(align: :stretch) do %>
+                <div class="usa-form-group usa-input-group--floating<%= ' usa-form-group--error' if resource.errors[:email].present? %>">
+                  <%= f.email_field(
+                        :email,
+                        class: "usa-input#{' usa-input--error' if resource.errors[:email].present?}",
+                        placeholder: ' ',
+                        required: true,
+                        autocorrect: 'off',
+                        autocomplete: 'email',
+                        'aria-invalid': resource.errors[:email].present?,
+                      ) %>
+                  <%= f.label :email, t('account.index.email_short'), class: 'usa-label' %>
+                  <% if resource.errors[:email].present? %>
+                    <p class="usa-error-message"><%= resource.errors[:email].first %></p>
+                  <% end %>
+                </div>
+                <div class="usa-form-group usa-input-group--floating<%= ' usa-form-group--error' if resource.errors[:password].present? %>">
+                  <%= f.password_field(
+                        :password,
+                        class: "usa-input#{' usa-input--error' if resource.errors[:password].present?}",
+                        placeholder: ' ',
+                        required: true,
+                        autocomplete: 'current-password',
+                        'aria-invalid': resource.errors[:password].present?,
+                      ) %>
+                  <%= f.label :password, t('forms.password'), class: 'usa-label' %>
+                  <% if resource.errors[:password].present? %>
+                    <p class="usa-error-message"><%= resource.errors[:password].first %></p>
+                  <% end %>
+                </div>
+                <%= hidden_field_tag(
+                      :platform_authenticator_available,
+                      id: 'platform_authenticator_available',
+                    ) %>
+                <div class="auth__inline-link">
+                  <%= render NDS::LinkComponent.new(url: new_user_password_url) do %>
+                    <%= t('account.login.forgot_password') %>
+                  <% end %>
+                </div>
+              <% end %>
+
+              <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+                <% if FeatureManagement.sign_in_recaptcha_enabled? || IdentityConfig.store.recaptcha_mock_validator %>
+                  <%= render CaptchaSubmitButtonComponent.new(
+                        form: f,
+                        action: SignInRecaptchaForm::RECAPTCHA_ACTION,
+                      ).with_content(t('titles.sign_in')) %>
+                <% else %>
+                  <%= render ButtonComponent.new(
+                        type: :submit,
+                      ).with_content(t('titles.sign_in')) %>
+                <% end %>
+
+                <%= render ButtonComponent.new(
+                      url: sign_up_email_path,
+                      variant: :secondary,
+                    ).with_content(t('links.create_account')) %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :links, align: :center, gap: 20) do %>
+          <% if desktop_device? %>
+            <%= render NDS::LinkComponent.new(url: login_piv_cac_url) do %>
+              <%= t('account.login.piv_cac') %>
+            <% end %>
+          <% end %>
+
+          <% if decorated_sp_session.sp_name %>
+            <%= render ButtonComponent.new(
+                  url: return_to_sp_cancel_path(step: :authentication),
+                  variant: :quaternary,
+                ).with_content(t('links.back_to_sp', sp: decorated_sp_session.sp_name)) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('platform-authenticator-available', preload_links_header: false) %>
+  <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
+  <% if IdentityConfig.store.participate_in_dap %>
+    <!-- <%= t('notices.dap_participation') %> -->
+    <%= javascript_packs_tag_once(
+          'digital-analytics-program',
+          url_params: { agency: 'GSA', subagency: 'TTS' },
+          defer: true,
+          id: '_fed_an_ua_tag',
+          preload_links_header: false,
+        ) %>
+  <% end %>
+<% else %>
 <% if decorated_sp_session.sp_name %>
   <%= render 'sign_up/registrations/sp_registration_heading' %>
 <% end %>
@@ -115,4 +252,5 @@
         id: '_fed_an_ua_tag',
         preload_links_header: false,
       ) %>
+<% end %>
 <% end %>

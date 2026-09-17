@@ -4,6 +4,16 @@ RSpec.feature 'webauthn sign up' do
   include OidcAuthHelper
   include WebAuthnHelper
 
+  before do
+    allow_any_instance_of(ApplicationController)
+      .to receive(:ab_test_bucket)
+      .and_call_original
+    allow_any_instance_of(ApplicationController)
+      .to receive(:ab_test_bucket)
+      .with(:NDS_LOOK_AND_FEEL, any_args)
+      .and_return(:default)
+  end
+
   let!(:user) { sign_up_and_set_password }
 
   def visit_webauthn_setup
@@ -50,14 +60,22 @@ RSpec.feature 'webauthn sign up' do
           .and_return(true)
         allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
           .to receive(:ab_test_bucket)
-          .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
+          .and_call_original
+        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
+          .to receive(:ab_test_bucket)
+          .with(:NDS_LOOK_AND_FEEL, any_args)
+          .and_return(:default)
         allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
           .to receive(:ab_test_bucket)
           .with(:PASSKEY_UPSELL)
           .and_return(:auto_passkey_prompt)
         allow_any_instance_of(Users::WebauthnSetupController)
           .to receive(:ab_test_bucket)
-          .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
+          .and_call_original
+        allow_any_instance_of(Users::WebauthnSetupController)
+          .to receive(:ab_test_bucket)
+          .with(:NDS_LOOK_AND_FEEL, any_args)
+          .and_return(:default)
         allow_any_instance_of(Users::WebauthnSetupController)
           .to receive(:ab_test_bucket)
           .with(:PASSKEY_UPSELL)
@@ -100,14 +118,22 @@ RSpec.feature 'webauthn sign up' do
           .and_return(true)
         allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
           .to receive(:ab_test_bucket)
-          .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
+          .and_call_original
+        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
+          .to receive(:ab_test_bucket)
+          .with(:NDS_LOOK_AND_FEEL, any_args)
+          .and_return(:default)
         allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
           .to receive(:ab_test_bucket)
           .with(:PASSKEY_UPSELL)
           .and_return(:passkey_setup_prompt_after_password_creation)
         allow_any_instance_of(Users::WebauthnSetupController)
           .to receive(:ab_test_bucket)
-          .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
+          .and_call_original
+        allow_any_instance_of(Users::WebauthnSetupController)
+          .to receive(:ab_test_bucket)
+          .with(:NDS_LOOK_AND_FEEL, any_args)
+          .and_return(:default)
         allow_any_instance_of(Users::WebauthnSetupController)
           .to receive(:ab_test_bucket)
           .with(:PASSKEY_UPSELL)

@@ -18,7 +18,10 @@ module Users
 
     after_action :add_recaptcha_resource_hints, if: :recaptcha_enabled?
 
-    helper_method :in_multi_mfa_selection_flow?
+    delegate :enabled_mfa_methods_count, to: :mfa_context
+
+    helper_method :in_multi_mfa_selection_flow?, :in_account_creation_flow?,
+                  :enabled_mfa_methods_count
 
     def index
       user_session[:phone_id] = nil

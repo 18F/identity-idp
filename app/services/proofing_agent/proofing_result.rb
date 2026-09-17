@@ -59,6 +59,18 @@ module ProofingAgent
       result
     end
 
+    def failed_result
+      {
+        success: false,
+        reason: 'system_error',
+        service_provider_issuer:,
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+        transaction_id:,
+      }
+    end
+
     def phone_precheck_attempted?
       resolution_result&.dig(:context, :stages, :phone_precheck).present?
     end

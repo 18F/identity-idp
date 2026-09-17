@@ -30,6 +30,7 @@ RSpec.describe Analytics do
       pid: Process.pid,
       trace_id: nil,
       referer: nil,
+      nds_experiment_uuid: 'fake_nds_experiment_uuid',
     }
   end
 
@@ -60,6 +61,12 @@ RSpec.describe Analytics do
       expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
 
       analytics.track_event('Trackable Event')
+    end
+
+    it 'tracks NDS opt out' do
+      expect(ahoy).to receive(:track).with(:nds_look_and_feel_opted_out, anything)
+
+      analytics.nds_look_and_feel_opted_out
     end
 
     it 'does not track nil values' do

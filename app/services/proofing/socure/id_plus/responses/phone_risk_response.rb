@@ -18,6 +18,9 @@ module Proofing
                 score: name_phone_correlation_score,
               },
               customer_user_id:,
+              name_correlation_successful: name_correlation_successful?,
+              phonerisk_successful: phonerisk_successful?,
+              autofail_reason_codes: matched_autofail_reason_codes,
             }
           end
 
@@ -59,7 +62,7 @@ module Proofing
           end
 
           def phonerisk_reason_codes
-            phonerisk.dig('reasonCodes')
+            phonerisk.dig('reasonCodes') || []
           end
 
           def phonerisk_signals
@@ -71,7 +74,7 @@ module Proofing
           end
 
           def name_phone_correlation_reason_codes
-            name_phone_correlation.dig('reasonCodes')
+            name_phone_correlation.dig('reasonCodes') || []
           end
 
           def name_correlation_score_threshold
@@ -83,8 +86,12 @@ module Proofing
           end
 
           def has_autofail_reason_codes?
-            (phonerisk_reason_codes & auto_failure_reason_codes).any? ||
-              (name_phone_correlation_reason_codes & auto_failure_reason_codes).any?
+            matched_autofail_reason_codes.any?
+          end
+
+          def matched_autofail_reason_codes
+            (phonerisk_reason_codes & auto_failure_reason_codes) |
+              (name_phone_correlation_reason_codes & auto_failure_reason_codes)
           end
 
           def has_name_verification_error_reason_codes?

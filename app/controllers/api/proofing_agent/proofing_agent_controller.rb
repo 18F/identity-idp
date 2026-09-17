@@ -26,6 +26,7 @@ module Api
           ssn_profile_found: ssn_active_profiles.any?,
           profiles: active_profiles_info,
           email_account_awaiting_binding: !!user&.proofing_agent_user_awaiting_binding?,
+          account_email_confirmed: email_confirmed?,
         }
 
         analytics.idv_proofing_agent_account_check_requested(
@@ -40,6 +41,14 @@ module Api
         return render_user_email_unconfirmed unless email_confirmed?
         return render_already_proofed if already_proofed?
         return render_user_awaiting_binding if user.proofing_agent_user_awaiting_binding?
+        if !dob_valid_format?
+          return render_bad_request(errors: { dob: ['must be in YYYY-MM-DD format'] })
+        end
+        if !ssn_valid_format?
+          return render_bad_request(
+            errors: { ssn: ['must be 9 digits long and contain no dashes or spaces'] },
+          )
+        end
 
         if proofing_rate_limiter.limited? || ssn_rate_limiter.limited?
           analytics.rate_limit_reached(limiter_type: :idv_resolution, step_name: 'proof_user')
@@ -262,6 +271,21 @@ module Api
 
       def email_confirmed?
         !!email_address&.confirmed_at
+      end
+
+      def dob_valid_format?
+        return true if proof_params[:dob].blank?
+        dob = proof_params[:dob].to_s
+
+        return false unless dob.match?(/\A\d{4}-\d{2}-\d{2}\z/)
+        true
+      end
+
+      def ssn_valid_format?
+        return true if proof_params[:ssn].blank?
+
+        ssn = proof_params[:ssn]
+        ssn.is_a?(String) && ssn.length == 9 && ssn.match?(/\A[0-9]+\z/)
       end
 
       def ssn_active_profiles

@@ -63,7 +63,10 @@ class CountdownPhaseAlertComponent < BaseComponent
   end
 
   def initial_phase
-    phases.max_by { |p| p[:at_s] }
+    seconds_left = (expiration - Time.zone.now).ceil
+    # if TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS is icreased from 600
+    # PhoneDeliveryPresenter alert_countdown_phases will need to be updated
+    phases.find { |p| seconds_left <= p[:at_s] } || phases.first
   end
 
   def normalize_phases(phases)

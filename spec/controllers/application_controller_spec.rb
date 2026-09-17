@@ -899,7 +899,7 @@ RSpec.describe ApplicationController do
       ).and_return(ui_test_bucket_params_enabled)
 
       allow(controller).to receive(:ab_test_bucket)
-        .with(:NDS_LOOK_AND_FEEL, service_provider: nil)
+        .with(:NDS_LOOK_AND_FEEL, any_args)
         .and_return(nds_ab_bucket)
     end
 
@@ -938,6 +938,19 @@ RSpec.describe ApplicationController do
           controller_set_cookies = controller.send(:cookies).instance_variable_get(:@set_cookies)
           expect(controller_set_cookies['ui_test_bucket'][:value]).to eq('legacy')
         end
+      end
+    end
+
+    context 'when the user has opted out of the NDS interface' do
+      it 'continues to resolve the legacy layout from the opt_out assignment' do
+        AbTestAssignment.create!(
+          experiment: AbTests::NDS_LOOK_AND_FEEL.experiment,
+          discriminator: controller.send(:nds_experiment_uuid),
+          bucket: 'opt_out',
+        )
+        get :index
+
+        expect(controller.nds_layout?).to eq(false)
       end
     end
 

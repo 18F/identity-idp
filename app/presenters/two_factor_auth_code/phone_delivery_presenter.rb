@@ -40,6 +40,29 @@ module TwoFactorAuthCode
       )
     end
 
+    # NDS (design-system refresh) subtitle. Combines the delivery message and
+    # the do-not-share guidance into one string, with the refreshed copy
+    # (no "(SMS)" qualifier, plain "Learn more" link).
+    def nds_code_sent_message
+      t(
+        "nds.otp_verification.#{otp_delivery_preference}.code_sent_html",
+        number_html: content_tag(:strong, phone_number),
+      )
+    end
+
+    def nds_do_not_share_message
+      t(
+        'nds.otp_verification.do_not_share_html',
+        link_html: new_tab_link_to(
+          t('nds.otp_verification.learn_more'),
+          MarketingSite.help_center_article_url(
+            category: 'fraud-concerns',
+            article: 'overview',
+          ),
+        ),
+      )
+    end
+
     def landline_warning
       t(
         'two_factor_authentication.otp_delivery_preference.landline_warning_html',
@@ -106,6 +129,15 @@ module TwoFactorAuthCode
         account_path(locale: locale)
       else
         sign_out_path(locale: locale)
+      end
+    end
+
+    def choose_another_authentication_method_path
+      locale = LinkLocaleResolver.locale
+      if in_multi_mfa_selection_flow
+        authentication_methods_setup_path(locale: locale)
+      else
+        login_two_factor_options_path(locale: locale)
       end
     end
 

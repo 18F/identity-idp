@@ -1,5 +1,65 @@
 <% self.title = t('titles.confirmations.show') %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :account, substep: 2) %>
+  <% end %>
+
+  <% content_for(:skip_layout_flash, 'true') %>
+  <% content_for(:form_page_flash, 'true') %>
+
+  <% if flash[:success].present? %>
+    <%= render NDS::ToastComponent.new(message: flash[:success]) %>
+  <% end %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('nds.passwords.new.heading'),
+        subtitle: t('nds.passwords.new.info'),
+      ) do |page| %>
+    <% page.with_body do %>
+      <%= simple_form_for(@password_form, url: sign_up_create_password_path) do |f| %>
+        <%= text_field_tag('username', @email_address.email, hidden: true, autocomplete: 'username') %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <%= render NDS::StackComponent.new(align: :stretch) do %>
+            <%= render NDS::InputComponent.new(
+                  form: f,
+                  attribute: :password,
+                  type: :password,
+                  label: t('forms.password'),
+                  required: true,
+                  autocomplete: 'new-password',
+                ) %>
+            <%= render NDS::InputComponent.new(
+                  form: f,
+                  attribute: :password_confirmation,
+                  type: :password,
+                  label: t('components.password_confirmation.confirm_label'),
+                  required: true,
+                  autocomplete: 'new-password',
+                  error_messages: {
+                    valueMissing: t('components.password_confirmation.errors.empty'),
+                    customError: t('components.password_confirmation.errors.mismatch'),
+                  },
+                ) %>
+            <%= render NDS::PasswordStrengthComponent.new(
+                  input_id: f.field_id(:password),
+                  minimum_length: Devise.password_length.first,
+                  forbidden_passwords: @forbidden_passwords,
+                ) %>
+          <% end %>
+          <%= hidden_field_tag :confirmation_token, @confirmation_token, id: 'confirmation_token' %>
+          <%= hidden_field_tag :platform_authenticator_available, nil, id: 'platform_authenticator_available' %>
+          <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+            <%= render ButtonComponent.new(type: :submit).with_content(t('forms.buttons.continue')) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('platform-authenticator-available', preload_links_header: false) %>
+  <%= javascript_packs_tag_once('nds_password_strength_component', preload_links_header: false) %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('forms.confirmation.show_hdr')) %>
 
 <p class="margin-top-2 margin-bottom-0" id="password-description">
@@ -24,3 +84,4 @@
 <%= render 'shared/cancel' %>
 
 <%= javascript_packs_tag_once('platform-authenticator-available', preload_links_header: false) %>
+<% end %>

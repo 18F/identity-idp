@@ -17,6 +17,11 @@ const originPort = process.env.ORIGIN_PORT || 3000;
 const devServerPort = process.env.WEBPACK_PORT;
 const devtool = process.env.WEBPACK_DEVTOOL || (isProductionEnv ? 'source-map' : 'eval-source-map');
 
+// Entries are keyed by basename only (see `parse(path).name` below), so a
+// sidecar in `app/components/nds` collides with a same-named one in
+// `app/components`. NDS sidecars whose component name matches a legacy one are
+// therefore prefixed (e.g. `nds_password_strength_component.ts`) to keep their
+// entry unique — do not rename them to match their component's filename.
 const entries = glob('app/{components,components/nds,javascript/packs}/*.{ts,tsx}');
 
 module.exports = /** @type {import('webpack').Configuration} */ ({

@@ -10,7 +10,7 @@ module AbTestingConcern
     service_provider: current_sp&.issuer,
     current_session: session,
     current_user_session: user_session,
-    request: nil # no a/b test currently use the request
+    request: nil
   )
     test = AbTests.all[test_name]
     raise "Unknown A/B test: #{test_name}" unless test

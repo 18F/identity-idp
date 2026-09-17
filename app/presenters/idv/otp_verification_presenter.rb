@@ -34,6 +34,26 @@ module Idv
       )
     end
 
+    def nds_code_sent_message
+      t(
+        "nds.otp_verification.#{otp_delivery_preference}.code_sent_html",
+        number_html: content_tag(:strong, phone_number),
+      )
+    end
+
+    def nds_do_not_share_message
+      t(
+        'nds.otp_verification.do_not_share_html',
+        link_html: new_tab_link_to(
+          t('nds.otp_verification.learn_more'),
+          MarketingSite.help_center_article_url(
+            category: 'fraud-concerns',
+            article: 'overview',
+          ),
+        ),
+      )
+    end
+
     private
 
     def phone_number

@@ -1,5 +1,51 @@
 <% self.title = t('vendor_outage.alerts.pinpoint.idv.header') %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 1) %>
+  <% end %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('vendor_outage.alerts.pinpoint.idv.header'),
+      ) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--warning">
+        <%= render NDS::IconComponent.new(icon: :warning, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <p>
+        <%= t('vendor_outage.alerts.pinpoint.idv.message_html', sp_name_html: content_tag(:strong, current_sp&.friendly_name || APP_NAME)) %>
+      </p>
+      <p>
+        <%= t('vendor_outage.alerts.pinpoint.idv.status_page_html', link_html: new_tab_link_to(t('vendor_outage.alerts.pinpoint.idv.status_page_link'), StatusPage.base_url)) %>
+      </p>
+      <p><%= t('vendor_outage.alerts.pinpoint.idv.options_prompt') %></p>
+      <ul class="usa-list text-left">
+        <% t('vendor_outage.alerts.pinpoint.idv.options_html', app_name: APP_NAME).each do |option| %>
+          <li>
+            <%= option %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render ButtonComponent.new(
+            url: idv_url,
+            full_width: true,
+          ).with_content(t('doc_auth.buttons.continue')) %>
+      <%= render ButtonComponent.new(
+            url: exit_url,
+            variant: :secondary,
+            full_width: true,
+          ).with_content(t('links.exit_login', app_name: APP_NAME)) %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render StepIndicatorComponent.new(
       steps: step_indicator_steps,
       current_step: :getting_started,
@@ -36,4 +82,5 @@
        outline: true,
        class: 'usa-button',
      ).with_content(t('links.exit_login', app_name: APP_NAME)) %>
+<% end %>
 <% end %>

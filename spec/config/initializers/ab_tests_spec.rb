@@ -651,6 +651,15 @@ RSpec.describe AbTests do
         reload_ab_tests
       end
 
+      let(:nds_experiment_uuid) { SecureRandom.uuid }
+      let(:request) do
+        cookie_jar = { nds_experiment_uuid: nds_experiment_uuid }
+        instance_double(
+          ActionDispatch::Request,
+          cookie_jar:,
+        )
+      end
+
       it 'assigns the nds bucket' do
         bucket = AbTests.all[:NDS_LOOK_AND_FEEL].bucket(
           request: nil, service_provider: nil,
@@ -659,12 +668,33 @@ RSpec.describe AbTests do
         expect(bucket).to eq(:nds)
       end
 
+      it 'uses the NDS experiment UUID as the discriminator' do
+        ab_test = AbTests.all[:NDS_LOOK_AND_FEEL]
+        discriminator = ab_test.instance_variable_get(:@discriminator)
+
+        expect(discriminator.call(request:)).to eq(nds_experiment_uuid)
+      end
+
       it 'falls back to an anon discriminator when both user and session are nil' do
         bucket = AbTests.all[:NDS_LOOK_AND_FEEL].bucket(
           request: nil, service_provider: nil,
           session: nil, user: nil, user_session: nil
         )
         expect(bucket).to eq(:nds)
+      end
+
+      it 'persists assignment to database' do
+        expect do
+          AbTests.all[:NDS_LOOK_AND_FEEL].bucket(
+            request:, service_provider: nil,
+            session: nil, user: nil, user_session: nil
+          )
+        end.to change { AbTestAssignment.count }.by(1)
+
+        assignment = AbTestAssignment.last
+        expect(assignment.experiment).to eq('NDS Look and Feel Phase 1')
+        expect(assignment.discriminator).to eq(nds_experiment_uuid)
+        expect(assignment.bucket).to eq('nds')
       end
     end
   end

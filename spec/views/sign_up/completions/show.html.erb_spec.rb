@@ -10,6 +10,7 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
   let(:requested_attributes) { [:email] }
   let(:idv_requested) { false }
   let(:completion_context) { :new_sp }
+  let(:nds_layout) { false }
 
   let(:view_context) { ActionController::Base.new.view_context }
   let(:decorated_sp_session) do
@@ -34,6 +35,8 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
   end
 
   before do
+    allow(view).to receive(:nds_layout?).and_return(nds_layout)
+    allow(view).to receive(:current_sp).and_return(service_provider)
     @user = user
     @presenter = presenter
     allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
@@ -158,6 +161,37 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
         render
         expect(rendered).not_to have_content(t('mfa.second_method_warning.text'))
       end
+    end
+  end
+
+  context 'in the NDS layout' do
+    let(:nds_layout) { true }
+    let(:idv_requested) { true }
+    let(:requested_attributes) { %i[email given_name family_name address social_security_number] }
+    let(:decrypted_pii) { Pii::Attributes.new_from_hash(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN) }
+
+    before { render }
+
+    it 'renders the identity-verified card with summary rows, actions and NIST seal' do
+      expect(rendered).to have_css('.auth--form-page h1', text: t('nds.completions.heading_idv'))
+      expect(rendered).to have_css(
+        '.auth__intro-description strong',
+        text: service_provider.friendly_name,
+      )
+      expect(rendered).to have_css(
+        '.card--elevated .nds-summary__label',
+        text: t('help_text.requested_attributes.full_name'),
+      )
+      expect(rendered).to have_css(
+        '.card--elevated [data-nds-masked] [data-masked="true"]',
+        text: /•••-••-\d{4}/,
+      )
+      expect(rendered).to have_css(
+        '.card--elevated button[type=submit]',
+        text: t('forms.buttons.continue'),
+      )
+      expect(rendered).to have_link(t('links.cancel'), href: sign_up_completed_cancel_path)
+      expect(rendered).to have_css("img[src*='nist'][alt='#{t('nds.completions.nist_alt')}']")
     end
   end
 end

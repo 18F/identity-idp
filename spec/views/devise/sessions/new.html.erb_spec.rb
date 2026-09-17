@@ -10,6 +10,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
     allow(view).to receive(:devise_mapping).and_return(Devise.mappings[:user])
     allow(view).to receive(:controller_name).and_return('sessions')
     allow(view).to receive(:decorated_sp_session).and_return(NullServiceProviderSession.new)
+    allow(view).to receive(:nds_layout?).and_return(false)
     allow_any_instance_of(ActionController::TestRequest).to receive(:path)
       .and_return('/')
   end
@@ -273,6 +274,31 @@ RSpec.describe 'devise/sessions/new.html.erb' do
           ),
         )
       end
+    end
+  end
+
+  context 'nds bucket' do
+    before do
+      allow(view).to receive(:nds_layout?).and_return(true)
+      allow(view).to receive(:desktop_device?).and_return(true)
+      allow(view).to receive(:current_sp).and_return(nil)
+    end
+
+    it 'renders the NDS auth-entry sign-in with email/password + create-account' do
+      allow(view).to receive(:params).and_return(ActionController::Parameters.new({}))
+      render
+      expect(rendered).to have_css('.auth-entry .auth-entry__card section.auth.auth--form-page')
+      expect(rendered).to have_css('form .usa-input-group--floating input.usa-input[type=email]')
+      expect(rendered).to have_css('form .usa-input-group--floating input.usa-input[type=password]')
+      expect(rendered).to have_css(
+        'form .usa-input-group--floating input[type=email] + label.usa-label',
+        text: t('account.index.email_short'),
+      )
+      expect(rendered).to have_css('.auth__inline-link a', text: t('account.login.forgot_password'))
+      expect(rendered).to have_button(t('titles.sign_in'))
+      expect(rendered).to have_link(t('links.create_account'), href: sign_up_email_path)
+      expect(rendered).not_to have_css('.auth__media')
+      expect(rendered).not_to include('ads-')
     end
   end
 end

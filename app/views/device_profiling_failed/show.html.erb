@@ -1,5 +1,27 @@
 <% self.title = t('profiling_failed.title') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(title: t('profiling_failed.title')) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--error">
+        <%= render NDS::IconComponent.new(icon: :error, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <p>
+        <%= t('profiling_failed.details_html') %>
+      </p>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render ButtonComponent.new(url: root_url)
+            .with_content(t('links.exit_login', app_name: APP_NAME)) %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render AlertIconComponent.new(icon_name: :error, class: 'display-block margin-bottom-4') %>
 <%= render PageHeadingComponent.new.with_content(t('profiling_failed.title')) %>
 <p>
@@ -11,3 +33,4 @@
       class: 'usa-button usa-button--big usa-button--wide',
     ) { t('links.exit_login', app_name: APP_NAME) } %>
 
+<% end %>

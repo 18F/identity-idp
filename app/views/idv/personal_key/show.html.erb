@@ -1,3 +1,92 @@
+<% if nds_layout? %>
+  <% self.title = t('titles.idv.personal_key') %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 11) %>
+  <% end %>
+
+  <% content_for(:skip_layout_flash, 'true') %>
+  <% content_for(:form_page_flash, 'true') %>
+  <% if flash[:success].present? %>
+    <%= render NDS::ToastComponent.new(message: flash[:success]) %>
+  <% end %>
+
+  <%= simple_form_for('', url: idv_personal_key_path, html: { data: { nds_submit_gate: true } }) do |f| %>
+    <%= render NDS::FormPageComponent.new(
+          title: t('forms.personal_key_partial.header'),
+          subtitle: t('nds.personal_key.info'),
+        ) do |page| %>
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(align: :stretch, gap: 16) do %>
+          <%= render NDS::CardComponent.new do %>
+            <%= render NDS::StackComponent.new(align: :stretch, gap: 24) do %>
+              <p class="copy--muted margin-0 text-center">
+                <%= t(
+                      'nds.personal_key.generated_on',
+                      date: I18n.l(@personal_key_generated_at || Time.zone.today, format: I18n.t('time.formats.event_date')),
+                    ) %>
+              </p>
+              <p class="heading-s margin-0 padding-y-2 text-center" aria-label="<%= t('forms.personal_key.confirmation_label') %>">
+                <%= @code.split('-').join(' - ') %>
+              </p>
+              <hr class="divider" />
+              <div class="display-flex">
+                <lg-clipboard-button class="flex-1 display-flex" clipboard-text="<%= @code %>" tooltip-text="<%= t('components.clipboard_button.tooltip') %>">
+                  <%= render ButtonComponent.new(type: :button, variant: :tertiary, size: :sm, class: 'flex-1') do %>
+                    <%= render NDS::IconComponent.new(icon: :copy, size: 20) %>
+                    <%= t('components.clipboard_button.label') %>
+                  <% end %>
+                </lg-clipboard-button>
+                <%= render ClickObserverComponent.new(event_name: 'IdV: download personal key', class: 'flex-1 display-flex') do %>
+                  <%= render ButtonComponent.new(
+                        url: "data:text/plain;charset=utf-8,#{ERB::Util.url_encode(@code)}",
+                        download: 'personal_key.txt',
+                        variant: :tertiary,
+                        size: :sm,
+                        class: 'flex-1',
+                      ) do %>
+                    <%= render NDS::IconComponent.new(icon: :download, size: 20) %>
+                    <%= t('components.download_button.label') %>
+                  <% end %>
+                <% end %>
+                <lg-print-button class="flex-1 display-flex">
+                  <%= render ButtonComponent.new(type: :button, variant: :tertiary, size: :sm, class: 'flex-1') do %>
+                    <%= render NDS::IconComponent.new(icon: :print, size: 20) %>
+                    <%= t('components.print_button.label') %>
+                  <% end %>
+                </lg-print-button>
+              </div>
+            <% end %>
+          <% end %>
+
+          <%= render NDS::CardComponent.new do %>
+            <%= render ClickObserverComponent.new(event_name: 'IdV: personal key acknowledgment toggled') do %>
+              <div class="checkbox-group">
+                <div class="checkbox">
+                  <%= f.check_box(
+                        :acknowledgment,
+                        { class: 'checkbox__input', required: true, autocomplete: 'off' },
+                        '1',
+                        '0',
+                      ) %>
+                  <%= f.label :acknowledgment, class: 'checkbox__label' do %>
+                    <span class="checkbox__label-text"><%= t('nds.personal_key.acknowledgment') %></span>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render ButtonComponent.new(type: :submit, full_width: true)
+              .with_content(t('forms.buttons.continue')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('clipboard_button_component', 'print_button_component', 'nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: step_indicator_steps,
@@ -14,3 +103,4 @@
            personal_key_generated_at: @personal_key_generated_at,
            update_path: idv_personal_key_path
 %>
+<% end %>
