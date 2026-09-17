@@ -80,6 +80,17 @@ RSpec.describe 'Proofing agent activation', :js do
     end
   end
 
+  context 'user tries going to enter password page without binding' do
+    scenario 'user is redirected to binding page' do
+      visit_idp_from_ial2_oidc_sp
+      sign_in_live_with_2fa(user)
+      expect(page).to have_current_path idv_enter_dob_ssn_path
+      binding.pry
+      visit idv_enter_password_path
+      expect(page).to have_current_path idv_enter_dob_ssn_path
+    end
+  end
+
   scenario 'user activates their profile and connects it to the service provider' do
     sign_in_live_with_2fa(user)
     expect(page).to have_current_path idv_enter_dob_ssn_path
