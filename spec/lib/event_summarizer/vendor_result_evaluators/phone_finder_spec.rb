@@ -76,5 +76,116 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::PhoneFinder do
         )
       end
     end
+
+    context 'when the lookup succeeded but individual items failed' do
+      # Real payload shape: LexisNexis marks the 'PhoneFinder' product 'pass' because the lookup
+      # executed, and reports the verdict separately in 'PhoneFinder Checks'. The itemized reasons
+      # were previously discarded because the code required ProductStatus == 'fail'.
+      let(:phone_result) do
+        {
+          success: false,
+          errors: {
+            base: ["Verification failed with code: 'phone_finder_fail'"],
+            PhoneFinder: [
+              {
+                ProductType: 'PhoneFinder',
+                ProductStatus: 'pass',
+                Items: [
+                  { ItemName: 'SpoofingPhoneNumber', ItemStatus: 'pass' },
+                  {
+                    ItemName: 'PrepaidPhoneNumber',
+                    ItemStatus: 'fail',
+                    ItemReason: {
+                      Code: 'PrepaidPhoneNumber.MEDIUM',
+                      Description: 'Phone # is a Prepaid Phone',
+                    },
+                  },
+                  {
+                    ItemName: 'SubjectDeceased',
+                    ItemStatus: 'fail',
+                    ItemReason: {
+                      Code: 'SubjectDeceased.HIGH',
+                      Description: 'Primary Subject associated to the phone is deceased',
+                    },
+                  },
+                ],
+              },
+            ],
+            'PhoneFinder Checks': [
+              {
+                ProductStatus: 'fail',
+                ProductReason: {
+                  Code: 'phone_finder_fail',
+                  Description: 'Failed - Input phone number could not be verified to name',
+                },
+              },
+            ],
+          },
+        }
+      end
+
+      it 'reports the specific failed checks' do
+        expect(evaluation).to eql(
+          {
+            description: 'Phone Finder check failed: Phone # is a Prepaid Phone; ' \
+                         'Primary Subject associated to the phone is deceased',
+            type: :phone_finder_error,
+          },
+        )
+      end
+
+      it 'does not fall back to the generic name-verification text' do
+        # That text is boilerplate on every failure and is misleading here: neither a prepaid phone
+        # nor a deceased subject has anything to do with name verification.
+        expect(evaluation[:description]).not_to include('could not be verified to name')
+      end
+    end
+
+    context 'with no itemized reasons' do
+      let(:phone_result) do
+        {
+          success: false,
+          errors: {
+            PhoneFinder: [
+              {
+                ProductStatus: 'pass',
+                Items: [{ ItemName: 'VOIPPhone', ItemStatus: 'pass' }],
+              },
+            ],
+            'PhoneFinder Checks': [
+              {
+                ProductStatus: 'fail',
+                ProductReason: {
+                  Description: 'Failed - Input phone number could not be verified to name',
+                },
+              },
+            ],
+          },
+        }
+      end
+
+      it 'falls back to the general reason' do
+        expect(evaluation).to eql(
+          {
+            description: 'Phone Finder check failed: ' \
+                         'Failed - Input phone number could not be verified to name',
+            type: :phone_finder_error,
+          },
+        )
+      end
+    end
+
+    context 'with nothing usable in the payload' do
+      let(:phone_result) { { success: false, errors: {} } }
+
+      it 'points at the logs' do
+        expect(evaluation).to eql(
+          {
+            description: 'Phone Finder check failed. Review logs for more information.',
+            type: :phone_finder_error,
+          },
+        )
+      end
+    end
   end
 end

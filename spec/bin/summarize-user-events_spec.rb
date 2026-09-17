@@ -183,5 +183,81 @@ RSpec.describe SummarizeUserEvents do
         * (10:42 AM) User abandoned identity verification
       END
     end
+
+    context 'when the source yields events out of chronological order' do
+      # CloudwatchClient#fetch queries day-slices across several threads and yields each row as its
+      # slice finishes, so rows can arrive out of order. The matchers are a state machine over the
+      # timeline -- IdvMatcher drops anything arriving before an attempt is open -- so a terminal
+      # event that arrived early used to be discarded, and output depended on thread scheduling.
+      let(:cloudwatch_events) do
+        [
+          {
+            '@timestamp' => '2024-12-30 20:11:04.000',
+            '@message' => JSON.generate(
+              name: 'GetUspsProofingResultsJob: Enrollment status updated',
+              properties: {
+                event_properties: { passed: true, tmx_status: 'threatmetrix_pass' },
+              },
+            ),
+          },
+          {
+            '@timestamp' => '2024-12-30 15:42:51.336',
+            '@message' => JSON.generate(name: 'IdV: doc auth welcome submitted'),
+          },
+          {
+            '@timestamp' => '2024-12-30 15:44:10.000',
+            '@message' => JSON.generate(
+              name: 'idv_in_person_direct_start',
+              properties: { event_properties: {} },
+            ),
+          },
+        ]
+      end
+
+      it 'reports the IPP completion instead of dropping it' do
+        expect(command_output).to include(
+          'User visited the post office and completed IPP enrollment',
+        )
+        expect(command_output).to include('Identity verified')
+      end
+
+      it 'does not warn about a missing welcome event' do
+        command_output
+        expect(stderr.string).to be_empty
+      end
+
+      it 'orders the summary by timestamp' do
+        lines = command_output.lines.map(&:strip).reject(&:empty?)
+        ipp_entry = lines.index { |l| l.include?('entered the in-person proofing flow') }
+        enrollment = lines.index { |l| l.include?('completed IPP enrollment') }
+
+        expect(ipp_entry).to be < enrollment
+      end
+    end
+
+    context 'when events share a timestamp' do
+      # All stages of a proofing result are logged with one timestamp. sort_by is not stable in
+      # Ruby, so the sort carries the original index to keep the vendor's ordering.
+      let(:cloudwatch_events) do
+        [
+          {
+            '@timestamp' => '2024-12-30 15:42:51.336',
+            '@message' => JSON.generate(name: 'IdV: doc auth welcome submitted'),
+          },
+        ] + Array.new(5) do |i|
+          {
+            '@timestamp' => '2024-12-30 15:43:00.000',
+            '@message' => JSON.generate(
+              name: 'Rate Limit Reached',
+              properties: { event_properties: { limiter_type: 'idv_doc_auth', step_name: i.to_s } },
+            ),
+          }
+        end
+      end
+
+      it 'preserves the order they arrived in' do
+        expect(command_output.scan(/Rate limited for Doc Auth/).length).to eql(5)
+      end
+    end
   end
 end
