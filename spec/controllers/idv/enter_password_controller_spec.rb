@@ -271,6 +271,69 @@ RSpec.describe Idv::EnterPasswordController do
 
       expect(response).to redirect_to(idv_phone_url)
     end
+
+    context 'proofing agent flow' do
+      let(:agent_proofed_user) do
+        {
+          pii: {},
+          success: true,
+          proofing_agent_id: 'agent_123',
+          proofing_location_id: 'location_456',
+          correlation_id: 'correlation_789',
+          transaction_id: document_capture_session.uuid,
+          service_provider_issuer: sp.issuer,
+        }
+      end
+      let(:document_capture_session) do
+        create(
+          :document_capture_session,
+          user:,
+          doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
+          issuer: sp.issuer,
+          pending_agent_proofed_user_at: Time.zone.now,
+        )
+      end
+      before do
+        # clear out idv_session state
+        subject.idv_session.welcome_visited = nil
+        subject.idv_session.idv_consent_given_at = nil
+        subject.idv_session.proofing_started_at = nil
+        subject.idv_session.flow_path = nil
+        subject.idv_session.pii_from_doc = nil
+        subject.idv_session.ssn = nil
+        subject.idv_session.threatmetrix_session_id = nil
+        subject.idv_session.threatmetrix_review_status = nil
+        subject.idv_session.resolution_successful = nil
+        subject.idv_session.applicant = nil
+        subject.idv_session.resolution_successful = nil
+        allow(IdentityConfig.store).to receive(:idv_proofing_agent_enabled).and_return(true)
+        document_capture_session.store_agent_proofed_user(agent_proofed_user)
+      end
+      context 'when user is agent proofed' do
+        it 'renders the enter_password page' do
+          subject.idv_session.agent_proofed = true
+          subject.idv_session.proofing_agent_match = true
+          subject.idv_session.vendor_phone_confirmation = true
+          subject.idv_session.user_phone_confirmation = true
+
+          get :new
+
+          expect(response).to render_template :new
+        end
+      end
+
+      context 'when user is not agent proofed' do
+        it 'redirects to binding step if the user has not completed it' do
+          subject.idv_session.agent_proofed = true
+          subject.idv_session.proofing_agent_match = nil
+
+          get :new
+
+          # it will redirect to welcome which will redirect to enter_dob_ssn_controller
+          expect(response).to redirect_to(idv_welcome_url)
+        end
+      end
+    end
   end
 
   describe '#create' do
