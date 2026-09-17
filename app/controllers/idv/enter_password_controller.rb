@@ -96,7 +96,11 @@ module Idv
         action: :new,
         next_steps: [:personal_key],
         preconditions: ->(idv_session:, user:) do
-          idv_session.phone_or_address_step_complete?
+          if idv_session.agent_proofed
+            idv_session.proofing_agent_match? && idv_session.phone_or_address_step_complete?
+          else
+            idv_session.phone_or_address_step_complete?
+          end
         end,
         undo_step: ->(idv_session:, user:) {},
       )

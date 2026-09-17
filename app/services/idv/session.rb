@@ -369,7 +369,7 @@ module Idv
     end
 
     def phone_or_address_step_complete?
-      verify_by_mail? || phone_confirmed? || proofing_agent_match?
+      verify_by_mail? || phone_confirmed?
     end
 
     def address_mechanism_chosen?
