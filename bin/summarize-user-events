@@ -125,13 +125,11 @@ class SummarizeUserEvents
 
   def run
     in_correct_time_zone do
-      find_cloudwatch_events do |event|
+      each_event_in_chronological_order do |event|
         # Time.zone is thread-local, and CloudwatchClient may use multiple
         # threads to make requests. So we have to make double-sure we're 
         # in the right Timezone.
         in_correct_time_zone do
-          normalize_event!(event)
-
           matchers.each do |matcher|
             matcher.handle_cloudwatch_event(event)
           end
@@ -147,6 +145,21 @@ class SummarizeUserEvents
 
       stdout.puts format_results(overall_results)
     end
+  end
+
+  # Matchers track state across events, so they need them in timestamp order. CloudwatchClient
+  # queries day-slices in parallel and yields rows as each slice finishes, which is not in order.
+  def each_event_in_chronological_order(&block)
+    events = []
+
+    find_cloudwatch_events do |event|
+      normalize_event!(event)
+      events << event
+    end
+
+    # sort_by is unstable; the index keeps the original order for events sharing a timestamp.
+    events.each_with_index.sort_by { |event, i| [event['@timestamp'], i] }.
+      each { |event, _i| block.call(event) }
   end
 
   def format_results(results)
@@ -232,17 +245,9 @@ class SummarizeUserEvents
   end
 
   def file_source(&block)
-    events = []
-
     File.read(file_name).each_line do |line|
       next if line.blank?
-      events << JSON.parse(line)
-    end
-
-    events.sort_by! { |e| e['@timestamp'] }
-
-    events.each do |e|
-      block.call(e)
+      block.call(JSON.parse(line))
     end
   end
 
