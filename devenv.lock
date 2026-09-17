@@ -34,10 +34,10 @@
     "flake-compat_2": {
       "flake": false,
       "locked": {
-        "lastModified": 1747046372,
+        "lastModified": 1767039857,
         "owner": "edolstra",
         "repo": "flake-compat",
-        "rev": "9100a0f413b0c601e0533d1d94ffd501ce2e7885",
+        "rev": "5edf11c44bc78a0d334f6334cdaf7d60d732daab",
         "type": "github"
       },
       "original": {
@@ -128,10 +128,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1758002259,
+        "lastModified": 1789468926,
         "owner": "bobvanderlinden",
         "repo": "nixpkgs-ruby",
-        "rev": "52ccd11c43fa57f1b1b22ba514da5bec21c5cb8f",
+        "rev": "92e7a5600cffa412fe4dcdc4642aefe3c8acfcb4",
         "type": "github"
       },
       "original": {
@@ -142,10 +142,10 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1759632233,
+        "lastModified": 1789370336,
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "d7f52a7a640bc54c7bb414cca603835bf8dd4b10",
+        "rev": "c7def046b9a883d46974757852106483d741586f",
         "type": "github"
       },
       "original": {

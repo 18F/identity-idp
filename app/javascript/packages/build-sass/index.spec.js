@@ -1,9 +1,8 @@
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { stat } from 'node:fs/promises';
 import { buildFile } from './index.js';
 
-const cwd = dirname(fileURLToPath(import.meta.url));
+const cwd = __dirname;
 
 describe('buildFile', () => {
   context('with .css.scss file extension', () => {
