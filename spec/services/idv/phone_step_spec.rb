@@ -344,4 +344,29 @@ RSpec.describe Idv::PhoneStep do
       end
     end
   end
+
+  context '#start_phone_confirmation' do
+    let(:otp_delivery_preference) { 'sms' }
+    let(:step_params) do
+      { phone: good_phone, otp_delivery_preference:, international_code: 'US' }
+    end
+
+    before do
+      subject.start_phone_confirmation(step_params)
+    end
+
+    it 'updates the idv session to initialize the phone confirmation' do
+      expect(idv_session).to have_attributes(
+        address_verification_mechanism: 'phone',
+        vendor_phone_confirmation: true,
+        user_phone_confirmation: false,
+        applicant: hash_including(
+          phone: good_phone,
+          uuid_prefix: service_provider.app_id,
+        ),
+        user_phone_confirmation_session: an_instance_of(Idv::PhoneConfirmationSession),
+        previous_phone_step_params: step_params,
+      )
+    end
+  end
 end

@@ -286,4 +286,14 @@ module AbTests
   ) do |user:, user_session:, **|
     user&.uuid
   end.freeze
+
+  SUPERIOR_EVIDENCE_SKIP_PHONE_VERIFICATION_ALLOWED = AbTest.new(
+    experiment_name: 'Skip phone verification with superior evidence',
+    should_log: /^idv/i,
+    buckets: {
+      allowed: IdentityConfig.store.idv_superior_evidence_skip_phone_verification_enabled_percent,
+    },
+  ) do |user:, user_session:, **|
+    user&.uuid
+  end.freeze
 end
