@@ -262,5 +262,34 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
         expect(response).to render_template(:new)
       end
     end
+
+    context 'with reCAPTCHA validation enabled' do
+      let(:params) do
+        { user: { email:, terms_accepted: '1', email_language:, recaptcha_token: 'token' } }
+      end
+
+      before do
+        allow(FeatureManagement).to receive(:account_creation_recaptcha_enabled?)
+          .and_return(true)
+        allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
+        allow(IdentityConfig.store).to receive(:account_creation_recaptcha_score_threshold)
+          .and_return(0.2)
+      end
+
+      it 'creates the account when reCAPTCHA passes' do
+        post :create, params: params.deep_merge(user: { recaptcha_mock_score: 0.9 })
+
+        expect(User.find_with_email(email)).to be_present
+        expect(response).to redirect_to(sign_up_verify_email_url)
+      end
+
+      it 'does not send an email and redirects to the security check failed page when blocked' do
+        post :create, params: params.deep_merge(user: { recaptcha_mock_score: 0.1 })
+
+        expect(User.find_with_email(email)).to be_nil
+        expect(ActionMailer::Base.deliveries).to be_empty
+        expect(response).to redirect_to(sign_in_security_check_failed_url)
+      end
+    end
   end
 end

@@ -3,8 +3,11 @@
 module Users
   class ResetPasswordsController < Devise::PasswordsController
     include AuthorizationCountConcern
+    include RecaptchaConcern
     before_action :store_sp_metadata_in_session, only: [:edit]
     before_action :store_token_in_session, only: [:edit]
+    before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?, only: [:new, :create]
+    after_action :add_recaptcha_resource_hints, if: :recaptcha_enabled?, only: [:new, :create]
 
     def new
       analytics.password_reset_visit
@@ -13,6 +16,9 @@ module Users
 
     def create
       @password_reset_email_form = PasswordResetEmailForm.new(email)
+
+      return process_failed_captcha unless recaptcha_form.exempt? || recaptcha_response.success?
+
       result = @password_reset_email_form.submit
 
       analytics.password_reset_email(**result)
@@ -104,6 +110,36 @@ module Users
 
     def email
       email_params[:email]
+    end
+
+    def recaptcha_enabled?
+      FeatureManagement.password_reset_recaptcha_enabled?
+    end
+
+    def recaptcha_response
+      @recaptcha_response ||= recaptcha_form.submit(
+        recaptcha_token: params.require(:password_reset_email_form)[:recaptcha_token],
+      )
+    end
+
+    def recaptcha_form
+      @recaptcha_form ||= PasswordResetRecaptchaForm.new(**recaptcha_form_args)
+    end
+
+    def recaptcha_form_args
+      args = { analytics:, user_agent: request.user_agent, user_ip_address: request.remote_ip }
+      if IdentityConfig.store.recaptcha_mock_validator
+        args.merge(
+          form_class: RecaptchaMockForm,
+          score: params.require(:password_reset_email_form)[:recaptcha_mock_score].to_f,
+        )
+      else
+        args.merge(form_class: RecaptchaEnterpriseForm)
+      end
+    end
+
+    def process_failed_captcha
+      redirect_to sign_in_security_check_failed_url
     end
 
     def request_id
