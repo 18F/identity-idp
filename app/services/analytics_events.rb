@@ -6067,6 +6067,7 @@ module AnalyticsEvents
   # @param [String] socure_status Socure's status value for internal errors on their side.
   # @param [String] socure_msg Socure's status message for interal errors on their side.
   # @param [String] use_case_key name of requested DocV flow
+  # @param [Hash] error_redirect hash for error redirect (url and method)
   # The request for socure verification was sent
   def idv_socure_document_request_submitted(
     success:,
@@ -6093,6 +6094,7 @@ module AnalyticsEvents
     socure_status: nil,
     socure_msg: nil,
     use_case_key: nil,
+    error_redirect: nil,
     **extra
   )
     track_event(
@@ -6121,6 +6123,7 @@ module AnalyticsEvents
       socure_status:,
       socure_msg:,
       use_case_key:,
+      error_redirect:,
       **extra,
     )
   end
