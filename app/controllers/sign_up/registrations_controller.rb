@@ -3,10 +3,13 @@
 module SignUp
   class RegistrationsController < ApplicationController
     include ApplicationHelper # for idv_requested?
+    include RecaptchaConcern
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
     before_action :require_no_authentication
     before_action :redirect_if_idv_requested_and_unavailable
+    before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?, only: [:new, :create]
+    after_action :add_recaptcha_resource_hints, if: :recaptcha_enabled?, only: [:new, :create]
 
     CREATE_ACCOUNT = 'create_account'
 
@@ -21,6 +24,8 @@ module SignUp
       @register_user_email_form = RegisterUserEmailForm.new(
         analytics:, attempts_api_tracker:,
       )
+
+      return process_failed_captcha unless recaptcha_form.exempt? || recaptcha_response.success?
 
       result = @register_user_email_form.submit(permitted_params.merge(request_id:))
 
@@ -49,6 +54,36 @@ module SignUp
 
     def permitted_params
       params.require(:user).permit(:email, :email_language, :terms_accepted)
+    end
+
+    def recaptcha_enabled?
+      FeatureManagement.account_creation_recaptcha_enabled?
+    end
+
+    def recaptcha_response
+      @recaptcha_response ||= recaptcha_form.submit(
+        recaptcha_token: params.require(:user)[:recaptcha_token],
+      )
+    end
+
+    def recaptcha_form
+      @recaptcha_form ||= AccountCreationRecaptchaForm.new(**recaptcha_form_args)
+    end
+
+    def recaptcha_form_args
+      args = { analytics:, user_agent: request.user_agent, user_ip_address: request.remote_ip }
+      if IdentityConfig.store.recaptcha_mock_validator
+        args.merge(
+          form_class: RecaptchaMockForm,
+          score: params.require(:user)[:recaptcha_mock_score].to_f,
+        )
+      else
+        args.merge(form_class: RecaptchaEnterpriseForm)
+      end
+    end
+
+    def process_failed_captcha
+      redirect_to sign_in_security_check_failed_url
     end
 
     def process_successful_creation
