@@ -120,25 +120,6 @@ RSpec.describe SignUp::PasswordsController do
         end
       end
 
-      context 'passkey upsell A/B test' do
-        let(:params) do
-          super().merge(platform_authenticator_available: 'true')
-        end
-
-        before do
-          allow(controller).to receive(:ab_test_bucket)
-            .with(:NDS_LOOK_AND_FEEL, service_provider: nil, request: anything)
-          allow(controller).to receive(:ab_test_bucket)
-            .with(:PASSKEY_UPSELL)
-            .and_return(:passkey_setup_prompt_after_password_creation)
-          allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-            .and_return(true)
-        end
-        it 'always hands off to MFA selection (upsell handled downstream)' do
-          expect(response).to redirect_to(authentication_methods_setup_url)
-        end
-      end
-
       context 'auto passkey upsell A/B test' do
         let(:params) do
           super().merge(platform_authenticator_available: 'true')

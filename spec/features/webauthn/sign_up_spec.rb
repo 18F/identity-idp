@@ -59,6 +59,9 @@ RSpec.feature 'webauthn sign up' do
         allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
           .and_return(true)
         allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
+          .to receive(:mobile?)
+          .and_return(true)
+        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
           .to receive(:ab_test_bucket)
           .and_call_original
         allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
@@ -117,6 +120,9 @@ RSpec.feature 'webauthn sign up' do
         allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
           .and_return(true)
         allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
+          .to receive(:mobile?)
+          .and_return(true)
+        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
           .to receive(:ab_test_bucket)
           .and_call_original
         allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
@@ -126,7 +132,7 @@ RSpec.feature 'webauthn sign up' do
         allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
           .to receive(:ab_test_bucket)
           .with(:PASSKEY_UPSELL)
-          .and_return(:passkey_setup_prompt_after_password_creation)
+          .and_return(:auto_passkey_prompt)
         allow_any_instance_of(Users::WebauthnSetupController)
           .to receive(:ab_test_bucket)
           .and_call_original
@@ -137,7 +143,7 @@ RSpec.feature 'webauthn sign up' do
         allow_any_instance_of(Users::WebauthnSetupController)
           .to receive(:ab_test_bucket)
           .with(:PASSKEY_UPSELL)
-          .and_return(:passkey_setup_prompt_after_password_creation)
+          .and_return(:auto_passkey_prompt)
         user = sign_up
         set_hidden_field('platform_authenticator_available', 'true')
         set_password(user)
@@ -145,7 +151,7 @@ RSpec.feature 'webauthn sign up' do
 
       it 'redirects to webauthn platform setup upsell page' do
         expect(page).to have_current_path(
-          webauthn_setup_path(platform: true, passkey_upsell: true),
+          webauthn_setup_path(platform: true, passkey_upsell: true, auto_trigger: true),
         )
       end
     end
