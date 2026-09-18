@@ -105,6 +105,44 @@ RSpec.describe ServiceProvider do
     end
   end
 
+  describe '#document_images_sharing_allowed?' do
+    context 'when sharing is enabled and the issuer is allow-listed' do
+      before do
+        allow(IdentityConfig.store).to receive(:document_images_sharing_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+          .and_return([service_provider.issuer])
+      end
+
+      it 'is true' do
+        expect(service_provider.document_images_sharing_allowed?).to be(true)
+      end
+    end
+
+    context 'when sharing is enabled but the issuer is not allow-listed' do
+      before do
+        allow(IdentityConfig.store).to receive(:document_images_sharing_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+          .and_return([])
+      end
+
+      it 'is false' do
+        expect(service_provider.document_images_sharing_allowed?).to be(false)
+      end
+    end
+
+    context 'when sharing is disabled globally' do
+      before do
+        allow(IdentityConfig.store).to receive(:document_images_sharing_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+          .and_return([service_provider.issuer])
+      end
+
+      it 'is false' do
+        expect(service_provider.document_images_sharing_allowed?).to be(false)
+      end
+    end
+  end
+
   describe '#attempts_api_enabled?' do
     context 'when attempts api is enabled' do
       before do

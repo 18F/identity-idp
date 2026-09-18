@@ -158,6 +158,38 @@ RSpec.describe OpenidConnectAttributeScoper do
         expect(filtered[:social_security_number]).to be_present
       end
     end
+
+    context 'with document_images scope' do
+      let(:scope) { 'openid document_images' }
+      let(:user_info) { super().merge(document_images: { front: 'https://idp.test/front' }) }
+
+      it 'includes document_images' do
+        expect(filtered[:document_images]).to be_present
+      end
+    end
+
+    context 'without document_images scope' do
+      let(:scope) { 'openid' }
+      let(:user_info) { super().merge(document_images: { front: 'https://idp.test/front' }) }
+
+      it 'excludes document_images' do
+        expect(filtered).not_to have_key(:document_images)
+      end
+    end
+  end
+
+  describe '#document_images_requested?' do
+    context 'when requested' do
+      let(:scope) { 'openid document_images' }
+
+      it { expect(scoper.document_images_requested?).to eq(true) }
+    end
+
+    context 'when not requested' do
+      let(:scope) { 'openid profile' }
+
+      it { expect(scoper.document_images_requested?).to eq(false) }
+    end
   end
 
   describe '#requested_attributes' do

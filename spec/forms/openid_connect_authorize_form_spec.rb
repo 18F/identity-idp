@@ -394,6 +394,33 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
+    context 'when scope includes document_images' do
+      let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+      let(:scope) { 'openid document_images' }
+
+      context 'and the SP is not allow-listed for image sharing' do
+        it 'has errors' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:scope])
+            .to include(t('openid_connect.authorization.errors.no_valid_scope'))
+        end
+      end
+
+      context 'and the SP is allow-listed for image sharing' do
+        before do
+          allow(IdentityConfig.store).to receive(:document_images_sharing_enabled)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+            .and_return([client_id])
+        end
+
+        it 'is valid' do
+          expect(valid?).to eq(true)
+          expect(form.errors[:scope]).to be_empty
+        end
+      end
+    end
+
     context 'redirect_uri' do
       context 'without a redirect_uri' do
         let(:redirect_uri) { nil }

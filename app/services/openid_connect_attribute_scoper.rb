@@ -15,6 +15,7 @@ class OpenidConnectAttributeScoper
     profile:name
     profile:birthdate
     social_security_number
+    document_images
   ].freeze
 
   VALID_SCOPES = (%w[
@@ -49,6 +50,7 @@ class OpenidConnectAttributeScoper
     x509_subject: %w[x509 x509:subject],
     x509_presented: %w[x509 x509:presented],
     x509_issuer: %w[x509 x509:issuer],
+    document_images: %w[document_images],
   }.with_indifferent_access.freeze
 
   SCOPE_ATTRIBUTE_MAP = {}.tap do |scope_attribute_map|
@@ -84,6 +86,10 @@ class OpenidConnectAttributeScoper
 
   def all_emails_requested?
     scopes.include?('all_emails')
+  end
+
+  def document_images_requested?
+    scopes.include?('document_images')
   end
 
   def locale_requested?

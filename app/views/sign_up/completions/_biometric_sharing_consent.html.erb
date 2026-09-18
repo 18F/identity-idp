@@ -1,0 +1,10 @@
+<%= render(AlertComponent.new(type: :info, class: 'margin-bottom-4')) do %>
+  <%= presenter.document_images_sharing_disclosure.html_safe %>
+<% end %>
+<%= form.input(
+      :biometric_sharing_consent,
+      as: :boolean,
+      required: true,
+      label: t('sign_up.document_images_sharing_consent_label', sp: presenter.sp_name),
+      wrapper_html: { class: 'margin-bottom-4' },
+    ) %>

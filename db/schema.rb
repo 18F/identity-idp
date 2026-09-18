@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_24_100400) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -197,6 +197,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
 
+  create_table "document_artifacts", force: :cascade do |t|
+    t.string "content_type", default: "image/jpeg", null: false, comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.bigint "document_capture_session_id", null: false, comment: "sensitive=false"
+    t.string "encrypted_encryption_key", null: false, comment: "sensitive=true"
+    t.string "image_type", null: false, comment: "sensitive=false"
+    t.bigint "profile_id", comment: "sensitive=false"
+    t.string "storage_name", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.index ["document_capture_session_id", "image_type"], name: "index_document_artifacts_on_capture_session_and_image_type", unique: true
+    t.index ["document_capture_session_id"], name: "index_document_artifacts_on_document_capture_session_id"
+    t.index ["profile_id", "image_type"], name: "index_document_artifacts_on_profile_id_and_image_type", unique: true
+    t.index ["profile_id"], name: "index_document_artifacts_on_profile_id"
+  end
+
   create_table "document_capture_sessions", force: :cascade do |t|
     t.datetime "cancelled_at", precision: nil, comment: "sensitive=false"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
@@ -211,6 +226,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
     t.boolean "passport_cards_supported", default: false, comment: "sensitive=false"
     t.string "passport_status", comment: "sensitive=false"
     t.datetime "pending_agent_proofed_user_at", comment: "sensitive=false"
+    t.bigint "profile_id", comment: "sensitive=false"
     t.datetime "requested_at", precision: nil, comment: "sensitive=false"
     t.string "result_id", comment: "sensitive=false"
     t.string "socure_docv_capture_app_url", comment: "sensitive=false"
@@ -219,6 +235,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
     t.bigint "user_id", comment: "sensitive=false"
     t.string "uuid", comment: "sensitive=false"
     t.index ["passport_status"], name: "idx_document_capture_sessions_on_passport_status_null_doc_type", where: "((document_type_requested IS NULL) AND (passport_status IS NOT NULL))"
+    t.index ["profile_id"], name: "index_document_capture_sessions_on_profile_id"
     t.index ["result_id"], name: "index_document_capture_sessions_on_result_id"
     t.index ["socure_docv_transaction_token"], name: "index_socure_docv_transaction_token", unique: true
     t.index ["user_id", "pending_agent_proofed_user_at"], name: "idx_on_user_id_pending_agent_proofed_user_at_9c062ecb7b"
@@ -315,6 +332,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
     t.integer "aal", comment: "sensitive=false"
     t.string "access_token", comment: "sensitive=true"
     t.string "acr_values", comment: "sensitive=false"
+    t.datetime "biometric_sharing_consent_at", comment: "sensitive=false"
     t.string "code_challenge", comment: "sensitive=true"
     t.datetime "created_at", precision: nil, comment: "sensitive=false"
     t.datetime "deleted_at", precision: nil, comment: "sensitive=false"
@@ -729,6 +747,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
   end
 
   add_foreign_key "device_profiling_results", "users"
+  add_foreign_key "document_artifacts", "document_capture_sessions"
+  add_foreign_key "document_artifacts", "profiles"
+  add_foreign_key "document_capture_sessions", "profiles", on_delete: :nullify
   add_foreign_key "document_capture_sessions", "users"
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"

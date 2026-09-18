@@ -180,6 +180,8 @@ module Idv
         # assign profile to the enrollment
         active_enrollment.update!(profile:) if profile.in_person_verification_pending?
 
+        associate_document_artifacts_with_profile(profile)
+
         profile
       end
 
@@ -472,6 +474,30 @@ module Idv
     private
 
     attr_reader :user_session
+
+    # Records which capture session produced this profile, then links any
+    # artifacts already persisted for it. Takes the capture-session row lock so
+    # this serializes with SocureImageRetrievalJob#persist_document_artifacts:
+    # if the job is still in flight it will block here, then see the stamp and
+    # link its own rows on arrival. Runs inside the profile transaction.
+    #
+    # Skipped entirely for in-person verification: the identity is established
+    # by the USPS visit, not by the remote images, and the capture session may
+    # hold artifacts from an earlier, abandoned remote attempt.
+    def associate_document_artifacts_with_profile(profile)
+      return if document_capture_session_uuid.blank?
+      return if profile.in_person_verification_pending?
+
+      document_capture_session = DocumentCaptureSession.lock.find_by(
+        uuid: document_capture_session_uuid,
+      )
+      return if document_capture_session.nil? || document_capture_session.mdl_requested?
+
+      # rubocop:disable Rails/SkipsModelValidations
+      document_capture_session.update_column(:profile_id, profile.id)
+      document_capture_session.document_artifacts.update_all(profile_id: profile.id)
+      # rubocop:enable Rails/SkipsModelValidations
+    end
 
     def set_idv_session
       user_session[:idv] = new_idv_session unless user_session.key?(:idv)

@@ -1095,6 +1095,7 @@ help_text.requested_attributes.all_emails: Direcciones de correo electrónico en
 help_text.requested_attributes.birthdate: Fecha de nacimiento
 help_text.requested_attributes.change_email_link: Cambiar
 help_text.requested_attributes.consent_reminder_html: Debe dar su consentimiento cada año para divulgar su información a %{sp_html}.
+help_text.requested_attributes.document_images_html: 'Para respaldar su solicitud, %{sp_html} también recibirá las fotos de sus documentos de identidad y la selfie que tomó al verificar su identidad. Estas imágenes se comparten únicamente para la adjudicación de identidad.'
 help_text.requested_attributes.email: Dirección de correo electrónico
 help_text.requested_attributes.full_name: Nombre completo
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp_html}:'
@@ -1864,6 +1865,8 @@ sign_up.agree_and_continue: Aceptar y continuar
 sign_up.cancel.success: Su cuenta fue eliminada. No guardamos su información.
 sign_up.cancel.warning_header: 'Si cancela ahora:'
 sign_up.completed.smiling_image_alt: Una persona sonriente con una marca de verificación verde
+sign_up.document_images_sharing_consent_label: Doy mi consentimiento para compartir las fotos de mis documentos de identidad y la selfie de verificación de identidad con %{sp} para la adjudicación de identidad.
+sign_up.document_images_sharing_consent_required: Debe dar su consentimiento para compartir las fotos de sus documentos de identidad y su selfie para continuar, o cancelar.
 sign_up.information_sharing_html: Para saber cómo %{app_name} comparte su información, consulte nuestra %{link_html}.
 sign_up.nds_terms_intro: Al continuar, acepta las
 sign_up.terms: Leí y acepto %{app_name}

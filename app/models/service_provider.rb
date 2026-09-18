@@ -82,6 +82,11 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.facial_match_general_availability_enabled
   end
 
+  def document_images_sharing_allowed?
+    IdentityConfig.store.document_images_sharing_enabled &&
+      IdentityConfig.store.document_images_sharing_service_providers.include?(issuer)
+  end
+
   def attempts_api_enabled?
     IdentityConfig.store.attempts_api_enabled && attempts_config.present?
   end

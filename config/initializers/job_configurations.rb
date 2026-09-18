@@ -39,6 +39,12 @@ else
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },
+      # Remove document artifact rows once their escrow objects have expired
+      expire_document_artifacts: {
+        class: 'ExpireDocumentArtifactsJob',
+        cron: cron_24h_and_a_bit,
+        args: -> { [Time.zone.now] },
+      },
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
         class: 'Reports::TotalMonthlyAuthsReport',

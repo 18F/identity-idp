@@ -5,6 +5,8 @@ class DocumentCaptureSession < ApplicationRecord
   include ApplicationHelper
 
   belongs_to :user
+  belongs_to :profile, optional: true
+  has_many :document_artifacts, dependent: :destroy
 
   PASSPORT_STATUSES = [
     'not_requested',

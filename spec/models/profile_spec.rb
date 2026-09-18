@@ -1609,4 +1609,23 @@ RSpec.describe Profile do
       expect(reencrypted_events).to_not eq(encrypted_events)
     end
   end
+
+  describe 'document capture session and artifact cleanup' do
+    let(:capture_session) { create(:document_capture_session, user:, profile:) }
+    let!(:artifact) do
+      create(:document_artifact, document_capture_session: capture_session, profile:)
+    end
+
+    it 'destroys artifacts and nullifies the producing capture session on profile destroy' do
+      profile.destroy!
+
+      expect(DocumentArtifact.exists?(artifact.id)).to eq(false)
+      expect(capture_session.reload.profile_id).to be_nil
+    end
+
+    it 'does not block account deletion when a capture session is stamped with the profile' do
+      expect { user.destroy! }.not_to raise_error
+      expect(DocumentCaptureSession.exists?(capture_session.id)).to eq(false)
+    end
+  end
 end

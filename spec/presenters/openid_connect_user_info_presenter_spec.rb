@@ -428,5 +428,130 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         expect(user_info[:email]).to eq(identity.user.email_addresses.last.email)
       end
     end
+
+    context 'document_images' do
+      let(:scope) { 'openid document_images' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:document_images_sharing_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+          .and_return([service_provider.issuer])
+        identity.biometric_sharing_consent_at = profile.verified_at + 1.second
+      end
+
+      context 'when sharing is authorized and the profile has escrowed artifacts' do
+        before do
+          create(
+            :document_artifact,
+            profile:,
+            image_type: 'selfie',
+            document_capture_session: create(:document_capture_session, user: identity.user),
+          )
+          create(
+            :document_artifact,
+            profile:,
+            image_type: 'front',
+            document_capture_session: create(:document_capture_session, user: identity.user),
+          )
+        end
+
+        it 'returns a URL per artifact pointing at the proxy endpoint' do
+          expect(user_info[:document_images]).to eq(
+            front: api_openid_connect_document_image_url(image_type: 'front'),
+            selfie: api_openid_connect_document_image_url(image_type: 'selfie'),
+          )
+        end
+      end
+
+      context 'when sharing is authorized but no artifacts exist yet (mDL, or job not landed)' do
+        it 'emits an empty hash so the RP can distinguish "retry" from "not authorized"' do
+          expect(user_info).to have_key(:document_images)
+          expect(user_info[:document_images]).to eq({})
+        end
+      end
+
+      context 'when the SP is not allow-listed for sharing' do
+        before do
+          allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+            .and_return([])
+          create(
+            :document_artifact,
+            profile:,
+            image_type: 'front',
+            document_capture_session: create(:document_capture_session, user: identity.user),
+          )
+        end
+
+        it 'omits the claim' do
+          expect(user_info).not_to have_key(:document_images)
+        end
+      end
+
+      context 'when the user has not consented to biometric sharing' do
+        before do
+          identity.biometric_sharing_consent_at = nil
+          create(
+            :document_artifact,
+            profile:,
+            image_type: 'front',
+            document_capture_session: create(:document_capture_session, user: identity.user),
+          )
+        end
+
+        it 'omits the claim' do
+          expect(user_info).not_to have_key(:document_images)
+        end
+      end
+
+      context 'when biometric consent has expired' do
+        before do
+          identity.biometric_sharing_consent_at =
+            (ServiceProviderIdentity::CONSENT_EXPIRATION + 1.day).ago
+          create(
+            :document_artifact,
+            profile:,
+            image_type: 'front',
+            document_capture_session: create(:document_capture_session, user: identity.user),
+          )
+        end
+
+        it 'omits the claim' do
+          expect(user_info).not_to have_key(:document_images)
+        end
+      end
+
+      context 'when the user re-proofed after granting consent' do
+        before do
+          identity.biometric_sharing_consent_at = profile.verified_at - 1.day
+          create(
+            :document_artifact,
+            profile:,
+            image_type: 'front',
+            document_capture_session: create(:document_capture_session, user: identity.user),
+          )
+        end
+
+        it 'omits the claim (stale consent from a prior proofing)' do
+          expect(user_info).not_to have_key(:document_images)
+        end
+      end
+
+      context 'when the scope is not requested' do
+        let(:scope) { 'openid profile' }
+
+        before do
+          create(
+            :document_artifact,
+            profile:,
+            image_type: 'front',
+            document_capture_session: create(:document_capture_session, user: identity.user),
+          )
+        end
+
+        it 'omits the claim' do
+          expect(user_info).not_to have_key(:document_images)
+        end
+      end
+    end
   end
 end

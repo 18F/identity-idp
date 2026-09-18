@@ -11,6 +11,12 @@ module EncryptedDocStorage
       end
     end
 
+    def read_image(name:)
+      full_path = tmp_document_storage_dir.join(name)
+
+      File.read(full_path, mode: 'rb') if File.exist?(full_path)
+    end
+
     # @param [String] file_path "#{user_uuid}/#{profile.id}/#{file.uuid}"
     # @param [String] encrypted_attempt_events a bundle of events that have been encrypted
     def write_attempt_events(path:, encrypted_attempt_events:)
