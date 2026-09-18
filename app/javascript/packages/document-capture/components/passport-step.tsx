@@ -74,11 +74,7 @@ export function PassportCaptureSubheaderOne({
   return <h1>{heading}</h1>;
 }
 
-export function PassportCaptureInfo({
-  isPassportCard = false,
-}: {
-  isPassportCard?: boolean;
-}) {
+export function PassportCaptureInfo({ isPassportCard = false }: { isPassportCard?: boolean }) {
   const { t } = useI18n();
   const content = isPassportCard
     ? t('doc_auth.info.passport_card_capture')
@@ -130,7 +126,7 @@ export default function PassportStep({
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
       <PassportCaptureSubheaderOne isPassportCard={isPassportCard} />
-      <PassportCaptureInfo isPassportCard={isPassportCard}/>
+      <PassportCaptureInfo isPassportCard={isPassportCard} />
       {isMobile && (
         <TipList
           titleClassName="margin-bottom-0 text-bold"
