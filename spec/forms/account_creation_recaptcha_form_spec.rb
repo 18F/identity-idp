@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe AccountCreationRecaptchaForm do
   let(:score_threshold_config) { 0.2 }
+  let(:recaptcha_enabled_config) { false }
   let(:analytics) { FakeAnalytics.new }
   let(:recaptcha_token) { 'token' }
   let(:score) { 1.0 }
@@ -15,6 +16,8 @@ RSpec.describe AccountCreationRecaptchaForm do
   before do
     allow(IdentityConfig.store).to receive(:account_creation_recaptcha_score_threshold)
       .and_return(score_threshold_config)
+    allow(IdentityConfig.store).to receive(:account_creation_recaptcha_enabled)
+      .and_return(recaptcha_enabled_config)
   end
 
   it 'passes instance variables to form' do
@@ -63,6 +66,14 @@ RSpec.describe AccountCreationRecaptchaForm do
       let(:score_threshold_config) { 0.0 }
 
       it { is_expected.to eq(true) }
+
+      context 'recaptcha toggle enabled' do
+        let(:recaptcha_enabled_config) { true }
+
+        it 'is not exempt because the toggle overrides the threshold' do
+          is_expected.to eq(false)
+        end
+      end
     end
   end
 
