@@ -416,7 +416,6 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
     context 'standard flow with aamva check enabled' do
       before do
         allow(IdentityConfig.store).to receive_messages(
-          idv_aamva_at_doc_auth_enabled: true,
           proofer_mock_fallback: false,
         )
         visit_idp_from_oidc_sp_with_ial2
