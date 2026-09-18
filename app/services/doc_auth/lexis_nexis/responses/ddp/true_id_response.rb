@@ -186,7 +186,7 @@ module DocAuth
                 CountryCode: issuing_country_code,
               },
             }
-            if !passport_pii?
+            if id_type != Idp::Constants::DocumentTypes::PASSPORT
               classification_hash[:Back] = {
                 ClassName: doc_class_name, # document_type_received_slug,
                 CountryCode: issuing_country_code,
