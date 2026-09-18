@@ -707,9 +707,8 @@ doc_auth.info.manual_capture_mode: Prenez la photo vous-même.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
 doc_auth.info.passport_capture: Prenez une photo de la page d’informations de votre passeport. Cette page comporte votre photo d’identité et vos informations personnelles.
 doc_auth.info.passport_capture_help_1: Placez la page d’informations du passeport à l’intérieur des lignes définissant le cadre.
-doc_auth.info.passport_card_capture: Prenez une photo de la page d’informations de votre carte de passeport. Cette page comporte votre photo d’identité et vos informations personnelles.
-doc_auth.info.passport_card_capture_help_1: Placez la page d’informations de la carte de passeport à l’intérieur des lignes définissant le cadre.
 doc_auth.info.passport_capture_help_2: Ne bougez pas et attendez que l’appareil se déclenche.
+doc_auth.info.passport_card_capture: Prenez une photo de la page d’informations de votre carte de passeport. Cette page comporte votre photo d’identité et vos informations personnelles.
 doc_auth.info.review_examples_of_photos: Voir des exemples qui montrent comment prendre des photos nettes de votre pièce d’identité.
 doc_auth.info.review_passport: Nous n’avons pas trouvé dans nos données enregistrées d’informations correspondant aux informations figurant sur votre passeport. Ajouter une nouvelle photo de votre pièce d’identité au cas où les informations figurant sur votre passeport auraient été lues de façon incorrecte.
 doc_auth.info.secure_account: Nous chiffrons votre compte lorsque vous ressaisissez votre mot de passe. Avec le chiffrement, vos données sont protégées et vous seul pouvez modifier vos informations.
