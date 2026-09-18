@@ -59,6 +59,9 @@ RSpec.feature 'webauthn sign up' do
         allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
           .and_return(true)
         allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
+          .to receive(:mobile?)
+          .and_return(true)
+        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
           .to receive(:ab_test_bucket)
           .and_call_original
         allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
