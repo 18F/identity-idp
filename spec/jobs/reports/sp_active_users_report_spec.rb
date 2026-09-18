@@ -3,9 +3,16 @@ require 'rails_helper'
 RSpec.describe Reports::SpActiveUsersReport do
   subject { Reports::SpActiveUsersReport.new }
 
-  let(:issuer) { 'foo' }
-  let(:issuer2) { 'foo2' }
   let(:app_id) { 'app' }
+  let(:sp) { create(:service_provider, app_id:) }
+  let(:sp2) { create(:service_provider) }
+  let(:issuer) { sp.issuer }
+  let(:issuer2) { sp2.issuer }
+  let(:user1) { create(:user) }
+  let(:user2) { create(:user) }
+  let(:user3) { create(:user) }
+  let(:user4) { create(:user) }
+  let(:user5) { create(:user) }
 
   it 'has overall data' do
     report = JSON.parse(subject.perform(Time.zone.today), symbolize_names: true)
@@ -25,21 +32,20 @@ RSpec.describe Reports::SpActiveUsersReport do
   it 'returns total active user counts per sp broken down by ial1 and ial2' do
     job_date = Date.new(2022, 1, 1)
     authenticated_time = job_date.noon
-    ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: 'app')
     ServiceProviderIdentity.create(
-      user_id: 1, service_provider: issuer, uuid: 'foo1',
+      user_id: user1.id, service_provider: issuer, uuid: 'foo1',
       last_ial1_authenticated_at: authenticated_time, last_ial2_authenticated_at: authenticated_time
     )
     ServiceProviderIdentity.create(
-      user_id: 2, service_provider: issuer, uuid: 'foo2',
+      user_id: user2.id, service_provider: issuer, uuid: 'foo2',
       last_ial1_authenticated_at: authenticated_time
     )
     ServiceProviderIdentity.create(
-      user_id: 3, service_provider: issuer, uuid: 'foo3',
+      user_id: user3.id, service_provider: issuer, uuid: 'foo3',
       last_ial2_authenticated_at: authenticated_time
     )
     ServiceProviderIdentity.create(
-      user_id: 4, service_provider: issuer, uuid: 'foo4',
+      user_id: user4.id, service_provider: issuer, uuid: 'foo4',
       last_ial2_authenticated_at: authenticated_time
     )
     result = [
@@ -73,35 +79,34 @@ RSpec.describe Reports::SpActiveUsersReport do
     beginning_of_current_fiscal_year = job_date.beginning_of_day
     current_fiscal_year = job_date.change(hour: 12, minute: 30)
 
-    ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: 'app')
     ServiceProviderIdentity.create(
-      user_id: 1, service_provider: issuer, uuid: 'foo1',
+      user_id: user1.id, service_provider: issuer, uuid: 'foo1',
       last_ial1_authenticated_at: beginning_of_last_fiscal_year,
       last_ial2_authenticated_at: beginning_of_last_fiscal_year
     )
     ServiceProviderIdentity.create(
-      user_id: 2, service_provider: issuer, uuid: 'foo2',
+      user_id: user2.id, service_provider: issuer, uuid: 'foo2',
       last_ial1_authenticated_at: end_of_last_fiscal_year,
       last_ial2_authenticated_at: end_of_last_fiscal_year
     )
     ServiceProviderIdentity.create(
-      user_id: 3, service_provider: issuer, uuid: 'foo3',
+      user_id: user3.id, service_provider: issuer, uuid: 'foo3',
       last_ial2_authenticated_at: middle_of_last_fiscal_year
     )
     ServiceProviderIdentity.create(
-      user_id: 4, service_provider: issuer, uuid: 'foo4',
+      user_id: user4.id, service_provider: issuer, uuid: 'foo4',
       last_ial2_authenticated_at: beginning_of_current_fiscal_year
     )
 
     ServiceProviderIdentity.create(
-      user_id: 5, service_provider: issuer, uuid: 'foo5',
+      user_id: user5.id, service_provider: issuer, uuid: 'foo5',
       last_ial2_authenticated_at: current_fiscal_year
     )
 
     result = [
       {
-        issuer: issuer,
-        app_id: app_id,
+        issuer:,
+        app_id:,
         total_ial1_active: 0,
         total_ial2_active: 3,
       },
