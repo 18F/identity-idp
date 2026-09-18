@@ -22,6 +22,8 @@ class AccountCreationRecaptchaForm
   end
 
   def exempt?
+    return false if IdentityConfig.store.account_creation_recaptcha_enabled
+
     score_threshold.zero?
   end
 
