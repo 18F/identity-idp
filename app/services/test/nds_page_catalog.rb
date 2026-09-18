@@ -140,6 +140,15 @@ module Test
         ],
       ),
       Page.new(
+        key: 'backup-code-reminder',
+        title: 'Backup codes reminder',
+        flow: MFA,
+        template: 'users/backup_code_reminder/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
         key: 'backup-code-delete',
         title: 'Delete backup codes',
         flow: MFA,

@@ -936,6 +936,11 @@ module Test
       {}
     end
 
+    def setup_backup_code_reminder
+      flash.now[:success] = t('notices.authenticated_successfully')
+      {}
+    end
+
     def setup_backup_code_delete
       {}
     end
