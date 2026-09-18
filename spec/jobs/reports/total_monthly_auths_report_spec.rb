@@ -3,8 +3,11 @@ require 'rails_helper'
 RSpec.describe Reports::TotalMonthlyAuthsReport do
   subject { Reports::TotalMonthlyAuthsReport.new }
 
-  let(:issuer) { 'foo' }
   let(:app_id) { 'app_id' }
+  let(:sp) { create(:service_provider, :active, app_id:) }
+  let(:issuer) { sp.issuer }
+  let(:user1) { create(:user) }
+  let(:user2) { create(:user) }
   let(:year_month) { '201901' }
 
   it 'is empty' do
@@ -12,16 +15,15 @@ RSpec.describe Reports::TotalMonthlyAuthsReport do
   end
 
   it 'returns the total monthly auths' do
-    ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: app_id)
     [
-      { user_id: 2, count: 7 },
-      { user_id: 3, count: 3 },
+      { user_id: user1.id, count: 7 },
+      { user_id: user2.id, count: 3 },
     ].each do |config|
       config[:count].times do
         create(
           :sp_return_log,
           user_id: config[:user_id],
-          issuer: issuer,
+          issuer:,
           ial: 1,
           billable: true,
           returned_at: Date.new(2019, 1, 15).to_date,
@@ -29,7 +31,7 @@ RSpec.describe Reports::TotalMonthlyAuthsReport do
       end
     end
 
-    result = [{ issuer: 'foo', ial: 1, year_month: '201901', total: 10, app_id: app_id }].to_json
+    result = [{ issuer:, ial: 1, year_month:, total: 10, app_id: }].to_json
 
     expect(subject.perform(Time.zone.today)).to eq(result)
   end
