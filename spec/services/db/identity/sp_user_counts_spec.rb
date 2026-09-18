@@ -31,13 +31,17 @@ RSpec.describe Db::Identity::SpUserCounts do
         verified_at: Time.zone.now
       )
 
-      result = { issuer:, total: 3, ial1_total: 2, ial2_total: 1, app_id: }.to_json
-      result2 = { issuer: issuer2, total: 1, ial1_total: 0, ial2_total: 1, app_id: app_id2 }.to_json
+      result = { issuer:, total: 3, ial1_total: 2, ial2_total: 1, app_id: }.with_indifferent_access
+      result2 = { issuer: issuer2,
+                  total: 1,
+                  ial1_total: 0,
+                  ial2_total: 1,
+                  app_id: app_id2 }.with_indifferent_access
 
       tuples = subject.by_issuer
       expect(tuples.size).to eq(2)
-      expect(tuples[0].to_json).to eq(result)
-      expect(tuples[1].to_json).to eq(result2)
+      expect(tuples).to include(result)
+      expect(tuples).to include(result2)
     end
   end
 
