@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe Db::Identity::SpUserCounts do
   subject { described_class }
   let(:proofed_user) { create(:user, :proofed) }
-  let(:sp1) { create(:service_provider, :idv, :active) }
-  let(:sp2) { create(:service_provider, :idv, :active) }
+  let(:sp1) { create(:service_provider, :idv) }
+  let(:sp2) { create(:service_provider, :idv) }
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -20,14 +20,14 @@ RSpec.describe Db::Identity::SpUserCounts do
     end
 
     it 'returns the total user counts per sp broken down by ial1 and ial2' do
-      ServiceProviderIdentity.create(user_id: user1.id, service_provider: issuer, ial: 1)
-      ServiceProviderIdentity.create(user_id: user2.id, service_provider: issuer, ial: 1)
+      ServiceProviderIdentity.create(user_id: user1.id, service_provider: issuer)
+      ServiceProviderIdentity.create(user_id: user2.id, service_provider: issuer)
       ServiceProviderIdentity.create(
-        user_id: user3.id, service_provider: issuer, ial: 2,
+        user_id: user3.id, service_provider: issuer,
         verified_at: Time.zone.now
       )
       ServiceProviderIdentity.create(
-        user_id: proofed_user.id, service_provider: issuer2, ial: 2,
+        user_id: proofed_user.id, service_provider: issuer2,
         verified_at: Time.zone.now
       )
 

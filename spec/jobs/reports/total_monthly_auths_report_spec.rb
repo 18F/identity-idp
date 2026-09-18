@@ -4,7 +4,7 @@ RSpec.describe Reports::TotalMonthlyAuthsReport do
   subject { Reports::TotalMonthlyAuthsReport.new }
 
   let(:app_id) { 'app_id' }
-  let(:sp) { create(:service_provider, :active, app_id:) }
+  let(:sp) { create(:service_provider, app_id:) }
   let(:issuer) { sp.issuer }
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }

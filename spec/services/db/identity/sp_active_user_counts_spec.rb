@@ -4,12 +4,12 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
   subject { described_class }
 
   let(:fiscal_start_date) { 1.year.ago }
-  let(:sp1) { create(:service_provider, :active) }
-  let(:sp2) { create(:service_provider, :active) }
+  let(:app_id1) { 'app_id1' }
+  let(:app_id2) { 'app_id2' }
+  let(:sp1) { create(:service_provider, app_id: app_id1) }
+  let(:sp2) { create(:service_provider, app_id: app_id2) }
   let(:issuer) { sp1.issuer }
   let(:issuer2) { sp2.issuer }
-  let(:app_id1) { sp1.app_id }
-  let(:app_id2) { sp2.app_id }
   let(:now) { Time.zone.now }
   let(:users) { create_list(:user, 4) }
 

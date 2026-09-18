@@ -5,8 +5,8 @@ RSpec.describe Reports::SpUserCountsReport do
 
   let(:app_id) { 'app_id' }
   let(:app_id2) { 'app_id2' }
-  let(:sp) { create(:service_provider, :active, app_id:) }
-  let(:sp2) { create(:service_provider, :active, app_id: app_id2) }
+  let(:sp) { create(:service_provider, app_id:) }
+  let(:sp2) { create(:service_provider, app_id: app_id2) }
   let(:issuer) { sp.issuer }
   let(:issuer2) { sp2.issuer }
   let(:user1) { create(:user) }
