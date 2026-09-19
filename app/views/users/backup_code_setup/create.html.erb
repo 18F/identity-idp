@@ -1,5 +1,106 @@
 <% self.title = t('forms.backup_code.title') %>
 
+<% if nds_layout? %>
+  <% if in_account_creation_flow? %>
+    <% content_for(:nds_header_progress) do %>
+      <%= nds_account_creation_progress(
+            step: :security,
+            substep: enabled_mfa_methods_count >= 1 ? 2 : 1,
+          ) %>
+    <% end %>
+  <% end %>
+
+  <%= simple_form_for(
+        :backup_code_accepted_form,
+        url: backup_code_continue_path,
+        method: :patch,
+        html: { data: { nds_submit_gate: true } },
+      ) do |f| %>
+    <%= render NDS::FormPageComponent.new(
+          title: t('nds.backup_codes.title'),
+          subtitle: t('nds.backup_codes.info'),
+        ) do |page| %>
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(align: :stretch, gap: 16) do %>
+          <%= render NDS::CardComponent.new do %>
+            <%= render NDS::StackComponent.new(align: :stretch, gap: 24) do %>
+              <div class="card__code-grid">
+                <% [@codes.first((@codes.length / 2.0).ceil), @codes.last(@codes.length / 2)].each do |section| %>
+                  <ul class="card__code-grid-col usa-list--unstyled margin-0">
+                    <% section.each do |code| %>
+                      <li><code class="card__value font-family-sans"><%= RandomPhrase.format(code, separator: '-') %></code></li>
+                    <% end %>
+                  </ul>
+                <% end %>
+              </div>
+              <hr class="divider" />
+              <div class="display-flex">
+                <lg-clipboard-button class="flex-1 display-flex" clipboard-text="<%= @codes.join(' ') %>" tooltip-text="<%= t('components.clipboard_button.tooltip') %>">
+                  <%= render ButtonComponent.new(type: :button, variant: :tertiary, size: :sm, class: 'flex-1') do %>
+                    <%= render NDS::IconComponent.new(icon: :copy, size: 20) %>
+                    <%= t('components.clipboard_button.label') %>
+                  <% end %>
+                </lg-clipboard-button>
+                <%= render ClickObserverComponent.new(event_name: 'Multi-Factor Authentication: download backup code', class: 'flex-1 display-flex') do %>
+                  <%= render ButtonComponent.new(
+                        url: "data:text/plain;charset=utf-8,#{ERB::Util.url_encode(@codes.join("\n"))}",
+                        download: 'backup_codes.txt',
+                        variant: :tertiary,
+                        size: :sm,
+                        class: 'flex-1',
+                      ) do %>
+                    <%= render NDS::IconComponent.new(icon: :download, size: 20) %>
+                    <%= t('components.download_button.label') %>
+                  <% end %>
+                <% end %>
+                <lg-print-button class="flex-1 display-flex">
+                  <%= render ButtonComponent.new(type: :button, variant: :tertiary, size: :sm, class: 'flex-1') do %>
+                    <%= render NDS::IconComponent.new(icon: :print, size: 20) %>
+                    <%= t('components.print_button.label') %>
+                  <% end %>
+                </lg-print-button>
+              </div>
+            <% end %>
+          <% end %>
+
+          <%= render NDS::CardComponent.new do %>
+            <div class="checkbox-group">
+              <div class="checkbox">
+                <%= f.check_box(
+                      :backup_code_notice_accepted,
+                      { class: 'checkbox__input', required: true, autocomplete: 'off' },
+                      '1',
+                      '0',
+                    ) %>
+                <%= f.label :backup_code_notice_accepted, class: 'checkbox__label checkbox__label--regular' do %>
+                  <span class="checkbox__label-text"><%= t('nds.backup_codes.acknowledgment') %></span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(type: :submit, full_width: true)
+                .with_content(t('forms.buttons.continue')) %>
+          <% if in_multi_mfa_selection_flow? %>
+            <%= render ButtonComponent.new(
+                  url: backup_code_delete_path,
+                  method: :delete,
+                  variant: :tertiary,
+                  full_width: true,
+                  form: { data: { turbo: false } },
+                ).with_content(t('nds.mfa.choose_another_method')) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('clipboard_button_component', 'print_button_component', 'nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('forms.backup_code.title')) %>
 
 <p>
@@ -71,4 +172,5 @@
 
     <% end %>
   <% end %>
+<% end %>
 <% end %>
