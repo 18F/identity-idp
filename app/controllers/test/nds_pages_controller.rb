@@ -945,6 +945,15 @@ module Test
       {}
     end
 
+    def setup_backup_codes
+      user = build_mfa_user(configured: params[:second].present?)
+      @nds_current_user = user
+      @in_account_creation_flow = params[:account_creation].present?
+      @in_multi_mfa_selection_flow = params[:multi].present?
+      @codes = BackupCodeGenerator.new(user).send(:generate_new_codes)
+      {}
+    end
+
     def setup_backup_code_delete
       {}
     end

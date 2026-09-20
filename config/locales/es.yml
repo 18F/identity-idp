@@ -1622,6 +1622,9 @@ mfa.second_method_warning.link: Agregue un segundo método de autenticación.
 mfa.second_method_warning.text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de autenticación.
 mfa.skip: Omitir por ahora
 mfa.webauthn_platform_message: Agregue otro método de autenticación en caso de que pierda el acceso al primero.
+nds.backup_codes.acknowledgment: Guardé mis códigos de recuperación en un lugar seguro
+nds.backup_codes.info: Los códigos de recuperación le permiten iniciar sesión si alguna vez pierde el acceso a su teléfono u otros métodos de inicio de sesión. Cada código funciona solo una vez. No comparta estos códigos.
+nds.backup_codes.title: Guarde sus códigos de recuperación
 nds.capture_complete.info: Su documento de identidad se verificó correctamente. Vuelva a su computadora para terminar el proceso de verificación de identidad.
 nds.choose_id_type.option_drivers_license: Licencia de conducir o identificación estatal de los EE. UU.
 nds.choose_id_type.option_mdl: Licencia de conducir móvil
