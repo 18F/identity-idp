@@ -941,6 +941,10 @@ module Test
       {}
     end
 
+    def setup_backup_code_regenerate
+      {}
+    end
+
     def setup_backup_code_delete
       {}
     end
