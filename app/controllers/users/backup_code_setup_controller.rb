@@ -17,7 +17,8 @@ module Users
     before_action :confirm_recently_authenticated_2fa, except: [:continue]
     before_action :validate_multi_mfa_selection, only: [:index]
 
-    helper_method :in_multi_mfa_selection_flow?
+    helper_method :in_multi_mfa_selection_flow?, :in_account_creation_flow?,
+                  :enabled_mfa_methods_count
 
     def index
       result = BackupCodeSetupForm.new(current_user).submit
@@ -108,6 +109,10 @@ module Users
 
     def mfa_user
       @mfa_user ||= MfaContext.new(current_user)
+    end
+
+    def enabled_mfa_methods_count
+      mfa_user.enabled_mfa_methods_count
     end
 
     def ensure_backup_codes_in_session

@@ -1611,6 +1611,9 @@ mfa.second_method_warning.link: Add a second authentication method.
 mfa.second_method_warning.text: You will have to delete your account and start over if you lose your only authentication method.
 mfa.skip: Skip for now
 mfa.webauthn_platform_message: Add another authentication method in case you lose access to your first one.
+nds.backup_codes.acknowledgment: I’ve saved my backup codes in a safe place
+nds.backup_codes.info: Backup codes let you sign in if you ever lose access to your phone or other sign-in methods. Each code works only once. Do not share these codes.
+nds.backup_codes.title: Save your backup codes
 nds.capture_complete.info: Identity document successfully verified. Return to your computer to finish the identity verification process.
 nds.choose_id_type.option_drivers_license: U.S. driver’s license or state ID
 nds.choose_id_type.option_mdl: Mobile driver’s license

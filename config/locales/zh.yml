@@ -1624,6 +1624,9 @@ mfa.second_method_warning.link: 添加第二个身份证实方法。
 mfa.second_method_warning.text: 如果你丢失唯一的身份证实方法，就不得不删除你的账户并从头开始。
 mfa.skip: 现在先跳过
 mfa.webauthn_platform_message: 添加另一个身份证实方法，以防你无法使用第一个方法。
+nds.backup_codes.acknowledgment: 我已将备用代码保存在安全的地方
+nds.backup_codes.info: 如果您失去对手机或其他登录方式的访问权限，备用代码可让您登录。每个代码只能使用一次。请勿分享这些代码。
+nds.backup_codes.title: 保存您的备用代码
 nds.capture_complete.info: 身份证件已成功验证。请返回您的计算机以完成身份验证流程。
 nds.choose_id_type.option_drivers_license: 美国驾照或州身份证
 nds.choose_id_type.option_mdl: 移动驾照
