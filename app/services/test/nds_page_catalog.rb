@@ -149,6 +149,15 @@ module Test
         ],
       ),
       Page.new(
+        key: 'backup-code-regenerate',
+        title: 'Regenerate backup codes',
+        flow: MFA,
+        template: 'users/backup_code_setup/edit',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
         key: 'backup-code-delete',
         title: 'Delete backup codes',
         flow: MFA,
