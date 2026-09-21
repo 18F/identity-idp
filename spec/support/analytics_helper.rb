@@ -38,4 +38,24 @@ module AnalyticsHelper
     job.analytics = nil if defined?(job)
     @analytics = nil
   end
+
+  class EventNotYetLogged < StandardError; end
+
+  # Waits, using Capybara's synchronization, for an analytics event to be logged. Events sent from
+  # the browser (navigator.sendBeacon) can arrive after the test thread has moved on, so a plain
+  # expectation can race the request. Falls through to the expectation on timeout so a miss
+  # reports the full event diff.
+  def wait_for_logged_event(
+    analytics,
+    event,
+    attributes = nil,
+    wait: Capybara.default_max_wait_time
+  )
+    matcher = have_logged_event(event, attributes)
+    page.document.synchronize(wait, errors: [EventNotYetLogged]) do
+      raise EventNotYetLogged unless matcher.matches?(analytics)
+    end
+  rescue EventNotYetLogged
+    expect(analytics).to matcher
+  end
 end

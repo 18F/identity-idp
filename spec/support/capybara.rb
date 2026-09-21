@@ -1,6 +1,7 @@
 require 'capybara/rspec'
 require 'rack_session_access/capybara'
 require 'selenium/webdriver'
+require 'extensions/capybara/node/base'
 require 'extensions/capybara/node/simple'
 
 # Resolve the chromedriver binary. When one is provided explicitly via
