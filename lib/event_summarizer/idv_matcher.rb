@@ -472,8 +472,7 @@ module EventSummarizer
         'idv_doc_auth' => 'Doc Auth',
       }
 
-      # idv_doc_auth covers both document capture and the IPP state ID step, so the limiter name
-      # alone reads as though the user was still uploading documents. Unlisted steps omit the step.
+      # idv_doc_auth covers more than document capture, so name the step when we recognize it.
       steps = {
         'ipp_state_id' => 'entering their state ID for in-person proofing',
       }
@@ -554,7 +553,6 @@ module EventSummarizer
       success = event.dig(*EVENT_PROPERTIES, 'success')
       doc_type = event.dig(*EVENT_PROPERTIES, 'document_metadata', 'type')
 
-      # A submission has been made; the rejection page that may follow now refers to it.
       @submission_awaiting_outcome = true
 
       if success
@@ -613,10 +611,6 @@ module EventSummarizer
       add_events_for_failed_vendor_result(event.dig(*EVENT_PROPERTIES), timestamp:)
     end
 
-    # In the doc auth flow the state ID check is a gate: when it fails the caller returns early and
-    # the user's attempt is burned, so it can be the only reason a user cannot proceed.
-    #
-    # bypass_exception means aamva_plugin logged this failure and then let the user through anyway.
     def handle_state_id_validation_event(event:)
       properties = event.dig(*EVENT_PROPERTIES)
       return if properties.present? && properties['bypass_exception']
@@ -625,7 +619,6 @@ module EventSummarizer
     end
 
     # :start_ipp is otherwise only emitted from 'IdV: final resolution', which a user who never
-    # clears doc auth never reaches -- so their IPP attempt was reported as abandoned.
     def handle_in_person_direct_start(event:)
       return if current_idv_attempt.ipp?
 
@@ -636,12 +629,6 @@ module EventSummarizer
       )
     end
 
-    # The user was sent back to the document capture screen. This is a page-visit event, so it also
-    # fires on revisit and back-navigation -- only report it against a submission awaiting an
-    # outcome, so one submission produces at most one line.
-    #
-    # Only 'state_id_verification' is worth reporting: it ties the AAMVA failure to the submission
-    # outcome. Document rejections are already named by the vendor's own line.
     def handle_socure_error_visited(event:)
       return unless @submission_awaiting_outcome
 
@@ -656,8 +643,6 @@ module EventSummarizer
       )
     end
 
-    # Details were typed by hand, not read off a document image. That distinguishes a misread
-    # document from the state having no matching record, so the AAMVA failure that follows differs.
     def handle_ipp_state_id_submitted(event:)
       return unless event.dig(*EVENT_PROPERTIES, 'success')
 
