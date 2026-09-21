@@ -525,11 +525,14 @@ RSpec.describe 'In Person Proofing', js: true do
             visit idv_hybrid_handoff_url
             click_send_link
 
-            # Test that user stays on the link sent page
-            sleep(5)
             expect(page).to(have_content(t('doc_auth.headings.text_message')))
 
-            # Test that user doesn't automatically get moved forward to the state id page on desktop
+            # The poller only advances the desktop when this endpoint answers 200. Re-sending
+            # the link cancelled the IPP enrollment, so it must answer 202 and leave the user
+            # on the link sent page rather than moving them to the state id page.
+            expect(user.reload.establishing_in_person_enrollment).to be_nil
+            expect(link_sent_poll_status).to eq(202)
+            expect(page).to(have_content(t('doc_auth.headings.text_message')))
             expect(page).not_to(have_content(t('in_person_proofing.headings.state_id_milestone_2')))
           end
         end
