@@ -31,6 +31,7 @@ module Idv
           )
 
           idv_session.clear1_verification_token = token
+          idv_session.clear1_verification_session_id = clear1_session.extra[:id]
           idv_session.clear1_verification_state = clear1_session.extra[:state]
           document_capture_session.update!(doc_auth_vendor: Idp::Constants::Vendors::CLEAR1)
         else
@@ -39,6 +40,27 @@ module Idv
       end
 
       def update
+        clear_future_steps!
+        idv_session.redo_document_capture = nil # done with this redo
+
+        # TODO: new analytics event
+
+        Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
+          .call('clear1_inherited_proofing', :update, true)
+
+        result = fetch_synchronous_verification_result
+
+        if result.success?
+          idv_session.clear1_verified = true
+          pii = extract_pii_from_result(result)
+          # validate_pii_from_result(pii)
+          idv_session.applicant = pii
+          redirect_to idv_enter_password_url
+        else
+          # todo: redirect_to clear1 failure page
+          idv_session.clear1_verified = false
+          redirect_to idv_clear1_session_url
+        end
       end
 
       def self.step_info
@@ -55,6 +77,7 @@ module Idv
             idv_session.doc_auth_vendor = nil
             idv_session.source_check_vendor = nil
             idv_session.clear1_verification_token = nil
+            idv_session.clear1_verification_session_id = nil
             idv_session.clear1_verification_state = nil
           end,
         )
@@ -68,6 +91,23 @@ module Idv
           step: 'clear1_session',
           pii_like_keypaths: [[:pii]],
         }.merge(ab_test_analytics_buckets)
+      end
+
+      def fetch_synchronous_verification_result
+        timer = JobHelpers::Timer.new
+        timer.time('vendor_request') do
+          Proofing::Clear1::Requests::ResultRequest.new(
+            verification_session_id: idv_session.clear1_verification_session_id,
+          ).fetch
+        end
+      end
+
+      def extract_pii_from_result(result)
+        # See also Idv::InPerson::StateIdController#update
+        idv_session.doc_auth_vendor = document_capture_session.doc_auth_vendor
+        idv_session.pii_from_doc = result.pii_from_doc
+
+        track_document_issuing_state(user, result.pii_from_doc[:state])
       end
     end
   end
