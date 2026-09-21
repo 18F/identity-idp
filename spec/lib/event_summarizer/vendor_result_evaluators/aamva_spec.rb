@@ -2,15 +2,23 @@ require 'json'
 require 'event_summarizer/vendor_result_evaluators/aamva'
 
 RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
+  let(:success) { true }
+  let(:errors) { {} }
+  let(:exception) { nil }
+  let(:timed_out) { false }
+  let(:mva_exception) { false }
+  let(:state_id_jurisdiction) { 'MD' }
+  let(:document_type_received) { 'drivers_license' }
+
   let(:aamva_result) do
     {
-      success: true,
-      errors: {},
-      exception: nil,
-      timed_out: false,
-      mva_exception: false,
-      state_id_jurisdiction: 'MD',
-      document_type_received: 'drivers_license',
+      success:,
+      errors:,
+      exception:,
+      timed_out:,
+      mva_exception:,
+      state_id_jurisdiction:,
+      document_type_received:,
     }
   end
 
@@ -32,7 +40,8 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
   end
 
   context 'request timed out' do
-    let(:aamva_result) { super().merge(success: false, timed_out: true) }
+    let(:success) { false }
+    let(:timed_out) { true }
 
     it 'reports the timeout' do
       expect(evaluation).to eql(
@@ -45,7 +54,8 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
   end
 
   context 'the state MVA failed to respond' do
-    let(:aamva_result) { super().merge(success: false, mva_exception: true) }
+    let(:success) { false }
+    let(:mva_exception) { true }
 
     it 'names the state' do
       expect(evaluation).to eql(
@@ -58,17 +68,15 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
   end
 
   describe 'attribute mismatches' do
-    context 'when the MVA could not find the ID number at all' do
-      # Everything except the ID number comes back MISSING: the MVA had no record to compare.
-      let(:aamva_result) do
-        super().merge(
-          success: false,
-          errors: {
-            state_id_number: ['UNVERIFIED'],
-            dob: ['MISSING'],
-            last_name: ['MISSING'],
-          },
-        )
+    let(:success) { false }
+
+    context 'when the MVA has no record of the ID number' do
+      let(:errors) do
+        {
+          state_id_number: ['UNVERIFIED'],
+          dob: ['MISSING'],
+          last_name: ['MISSING'],
+        }
       end
 
       it 'says the ID number was invalid according to the state' do
@@ -80,20 +88,15 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
       end
     end
 
-    context 'when an UNVERIFIED attribute is outside the required lists' do
-      # Regression: state_id_issued and address1 were dropped entirely, so a summary reported
-      # "1 attribute failed to validate" when the state had in fact rejected three.
-      let(:aamva_result) do
-        super().merge(
-          success: false,
-          errors: {
-            state_id_number: ['UNVERIFIED'],
-            state_id_issued: ['UNVERIFIED'],
-            address1: ['UNVERIFIED'],
-            height: ['MISSING'],
-            sex: ['MISSING'],
-          },
-        )
+    context 'when attributes outside the required lists are UNVERIFIED' do
+      let(:errors) do
+        {
+          state_id_number: ['UNVERIFIED'],
+          state_id_issued: ['UNVERIFIED'],
+          address1: ['UNVERIFIED'],
+          height: ['MISSING'],
+          sex: ['MISSING'],
+        }
       end
 
       it 'reports every mismatched attribute, required ones first' do
@@ -103,23 +106,18 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
         )
       end
 
-      it 'does not report MISSING attributes we never sent' do
+      it 'does not report MISSING attributes that were never sent' do
         expect(evaluation[:description]).not_to include('height')
         expect(evaluation[:description]).not_to include('sex')
       end
     end
 
     context 'when a required attribute is MISSING' do
-      # Proofing::Aamva::Proofer#successful? requires an affirmative match on these, so MISSING
-      # is a failure and worth naming.
-      let(:aamva_result) do
-        super().merge(
-          success: false,
-          errors: {
-            first_name: ['MISSING'],
-            address2: ['MISSING'],
-          },
-        )
+      let(:errors) do
+        {
+          first_name: ['MISSING'],
+          address2: ['MISSING'],
+        }
       end
 
       it 'reports the required attribute and not the optional one' do
@@ -130,8 +128,8 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
     end
 
     context 'with a single mismatch' do
-      let(:aamva_result) do
-        super().merge(success: false, errors: { dob: ['UNVERIFIED'] })
+      let(:errors) do
+        { dob: ['UNVERIFIED'] }
       end
 
       it 'uses the singular' do
@@ -141,8 +139,10 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
       end
     end
 
-    context 'when there is no usable explanation' do
-      let(:aamva_result) { super().merge(success: false, errors: {}) }
+    context 'when there are no errors to explain' do
+      let(:errors) do
+        {}
+      end
 
       it 'falls back to pointing at the logs' do
         expect(evaluation).to eql(
@@ -155,7 +155,7 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
     end
 
     context 'when errors is absent entirely' do
-      let(:aamva_result) { super().merge(success: false, errors: nil) }
+      let(:errors) { nil }
 
       it 'falls back rather than raising' do
         expect { evaluation }.not_to raise_error

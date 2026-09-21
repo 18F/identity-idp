@@ -21,6 +21,33 @@ RSpec.describe EventSummarizer::IdvMatcher do
       end
     end
 
+    def socure_submission(success:, reason_codes: [])
+      {
+        '@timestamp' => Time.zone.now,
+        'name' => 'idv_socure_verification_data_requested',
+        '@message' => {
+          'properties' => {
+            'event_properties' => {
+              'success' => success,
+              'vendor' => 'Socure',
+              'document_metadata' => { 'type' => 'Drivers License' },
+              'reason_codes' => reason_codes,
+            },
+          },
+        },
+      }
+    end
+
+    def error_visited_event(error_code:)
+      {
+        '@timestamp' => Time.zone.now,
+        'name' => 'idv_doc_auth_socure_error_visited',
+        '@message' => {
+          'properties' => { 'event_properties' => { 'error_code' => error_code } },
+        },
+      }
+    end
+
     context 'On unknown event' do
       let(:event) { super().merge('name' => 'Some random event') }
       it 'does not throw' do
@@ -362,23 +389,30 @@ RSpec.describe EventSummarizer::IdvMatcher do
     end
 
     context "On 'idv_state_id_validation' event" do
-      # Payload shape taken from a real CloudWatch capture: AAMVA reached the Maryland MVA, which
-      # verified most attributes but would not verify the ID number.
-      def state_id_event(properties)
+      let(:success) { false }
+      let(:vendor_name) { 'aamva:state_id' }
+      let(:aamva_checked) { true }
+      let(:bypass_exception) { nil }
+      let(:timed_out) { false }
+      let(:errors) { {} }
+
+      let(:event) do
         {
           '@timestamp' => Time.zone.now,
           'name' => 'idv_state_id_validation',
           '@message' => {
             'properties' => {
               'event_properties' => {
-                'vendor_name' => 'aamva:state_id',
-                'aamva_checked' => true,
+                'success' => success,
+                'vendor_name' => vendor_name,
+                'aamva_checked' => aamva_checked,
+                'bypass_exception' => bypass_exception,
                 'supported_jurisdiction' => true,
-                'jurisdiction_in_maintenance_window' => false,
-                'timed_out' => false,
+                'timed_out' => timed_out,
                 'mva_exception' => false,
                 'state_id_jurisdiction' => 'MD',
-              }.merge(properties),
+                'errors' => errors,
+              },
             },
           },
         }
@@ -396,16 +430,12 @@ RSpec.describe EventSummarizer::IdvMatcher do
       subject(:significant_events) { matcher.current_idv_attempt.significant_events }
 
       context 'when the state MVA would not verify the ID number' do
-        let(:event) do
-          state_id_event(
-            'success' => false,
-            'verified_attributes' => %w[dob last_name first_name address],
-            'errors' => {
-              'state_id_number' => ['UNVERIFIED'],
-              'state_id_issued' => ['UNVERIFIED'],
-              'height' => ['MISSING'],
-            },
-          )
+        let(:errors) do
+          {
+            'state_id_number' => ['UNVERIFIED'],
+            'state_id_issued' => ['UNVERIFIED'],
+            'height' => ['MISSING'],
+          }
         end
 
         it 'reports the AAMVA failure and names the failed attributes' do
@@ -419,7 +449,7 @@ RSpec.describe EventSummarizer::IdvMatcher do
       end
 
       context 'when AAMVA succeeded' do
-        let(:event) { state_id_event('success' => true, 'errors' => {}) }
+        let(:success) { true }
 
         it 'adds no failure event' do
           expect(significant_events).to be_empty
@@ -427,16 +457,9 @@ RSpec.describe EventSummarizer::IdvMatcher do
       end
 
       context 'when the check was skipped' do
-        # AamvaPlugin#skipped_result / #unsupported_jurisdiction_result carry success: true, and
-        # their vendor names are covered by RESOLUTION_SENTINELS if one arrives as a failure.
-        let(:event) do
-          state_id_event(
-            'success' => true,
-            'aamva_checked' => false,
-            'vendor_name' => 'AamvaCheckSkipped',
-            'errors' => {},
-          )
-        end
+        let(:success) { true }
+        let(:aamva_checked) { false }
+        let(:vendor_name) { 'AamvaCheckSkipped' }
 
         it 'stays silent rather than reporting a failure the user never hit' do
           expect(significant_events).to be_empty
@@ -444,16 +467,7 @@ RSpec.describe EventSummarizer::IdvMatcher do
       end
 
       context 'when the exception was on the configured bypass list' do
-        # aamva_plugin.rb logs the pre-conversion result -- success: false -- and only then turns it
-        # into a skip, so the user proceeded and there is nothing to report.
-        let(:event) do
-          state_id_event(
-            'success' => false,
-            'bypass_exception' => true,
-            'exception' => 'ExceptionId: 0001',
-            'errors' => {},
-          )
-        end
+        let(:bypass_exception) { true }
 
         it 'stays silent because the plugin converts this into a skip' do
           expect(significant_events).to be_empty
@@ -461,9 +475,7 @@ RSpec.describe EventSummarizer::IdvMatcher do
       end
 
       context 'when AAMVA timed out' do
-        let(:event) do
-          state_id_event('success' => false, 'timed_out' => true, 'errors' => {})
-        end
+        let(:timed_out) { true }
 
         it 'reports the timeout' do
           expect(significant_events).to include(
@@ -531,19 +543,11 @@ RSpec.describe EventSummarizer::IdvMatcher do
     describe 'reporting a document submission' do
       subject(:significant_events) { matcher.current_idv_attempt.significant_events }
 
-      def socure_event(properties)
-        {
-          '@timestamp' => Time.zone.now,
-          'name' => 'idv_socure_verification_data_requested',
-          '@message' => {
-            'properties' => {
-              'event_properties' => {
-                'vendor' => 'Socure',
-                'document_metadata' => { 'type' => 'Drivers License' },
-              }.merge(properties),
-            },
-          },
-        }
+      let(:success) { true }
+      let(:reason_codes) { [] }
+
+      let(:event) do
+        socure_submission(success:, reason_codes:)
       end
 
       before do
@@ -552,47 +556,36 @@ RSpec.describe EventSummarizer::IdvMatcher do
             started_at: Time.zone.now,
           ),
         )
+        matcher.handle_cloudwatch_event(event)
       end
 
-      it 'says the images were accepted, not that the user was verified' do
-        # The images being accepted is not the same as the submission passing: the same job then
-        # runs the state ID check and can reject the submission seconds later. Claiming the user
-        # "successfully verified their drivers license" here is wrong whenever that happens.
-        matcher.handle_cloudwatch_event(socure_event('success' => true))
-
-        expect(significant_events).to include(
-          have_attributes(
-            type: :document_images_accepted,
-            description: "Socure DocV accepted the user's drivers license images",
-          ),
-        )
-        expect(significant_events).not_to include(
-          have_attributes(description: a_string_including('successfully verified')),
-        )
+      context 'when the vendor accepted the images' do
+        it 'says the images were accepted, not that the user was verified' do
+          expect(significant_events).to include(
+            have_attributes(
+              type: :document_images_accepted,
+              description: "Socure DocV accepted the user's drivers license images",
+            ),
+          )
+          expect(significant_events).not_to include(
+            have_attributes(description: a_string_including('successfully verified')),
+          )
+        end
       end
 
-      it 'still reports vendor rejections with their reason codes' do
-        matcher.handle_cloudwatch_event(
-          socure_event('success' => false, 'reason_codes' => ['R836']),
-        )
+      context 'when the vendor rejected the images' do
+        let(:success) { false }
+        let(:reason_codes) { ['R836'] }
 
-        expect(significant_events).to include(
-          have_attributes(type: :socure_docv_failures),
-        )
+        it 'still reports the vendor reason codes' do
+          expect(significant_events).to include(
+            have_attributes(type: :socure_docv_failures),
+          )
+        end
       end
     end
 
     context "On 'idv_doc_auth_socure_error_visited' event" do
-      def error_visited_event(properties)
-        {
-          '@timestamp' => Time.zone.now,
-          'name' => 'idv_doc_auth_socure_error_visited',
-          '@message' => {
-            'properties' => { 'event_properties' => properties },
-          },
-        }
-      end
-
       before do
         allow(matcher).to receive(:current_idv_attempt).and_return(
           EventSummarizer::IdvMatcher::IdvAttempt.new(
@@ -603,30 +596,10 @@ RSpec.describe EventSummarizer::IdvMatcher do
 
       subject(:significant_events) { matcher.current_idv_attempt.significant_events }
 
-      def socure_submission(success:)
-        {
-          '@timestamp' => Time.zone.now,
-          'name' => 'idv_socure_verification_data_requested',
-          '@message' => {
-            'properties' => {
-              'event_properties' => {
-                'success' => success,
-                'vendor' => 'Socure',
-                'document_metadata' => { 'type' => 'Drivers License' },
-                'reason_codes' => success ? [] : ['R836'],
-              },
-            },
-          },
-        }
-      end
-
       it 'reports a submission ended by the state ID check' do
-        # error_code 'state_id_verification' comes from Proofing::StateIdResult#doc_auth_errors:
-        # the images were fine, AAMVA ended the submission. This is the case worth its own line --
-        # the AAMVA result otherwise has nothing tying it to the submission outcome.
         matcher.handle_cloudwatch_event(socure_submission(success: true))
         matcher.handle_cloudwatch_event(
-          error_visited_event('error_code' => 'state_id_verification'),
+          error_visited_event(error_code: 'state_id_verification'),
         )
 
         expect(significant_events).to include(
@@ -638,10 +611,10 @@ RSpec.describe EventSummarizer::IdvMatcher do
       end
 
       it 'stays quiet when the vendor already reported the reason' do
-        # The Socure DocV failure line already names the reason codes; a rejection line would
-        # only repeat it.
-        matcher.handle_cloudwatch_event(socure_submission(success: false))
-        matcher.handle_cloudwatch_event(error_visited_event('error_code' => 'I834'))
+        matcher.handle_cloudwatch_event(
+          socure_submission(success: false, reason_codes: ['R836']),
+        )
+        matcher.handle_cloudwatch_event(error_visited_event(error_code: 'I834'))
 
         expect(significant_events).to include(
           have_attributes(type: :socure_docv_failures),
@@ -652,25 +625,20 @@ RSpec.describe EventSummarizer::IdvMatcher do
       end
 
       it 'does not report a rejection with no submission behind it' do
-        # This is a page-visit event: it fires on revisit and back-navigation too. Without a
-        # submission awaiting an outcome there is nothing to report.
         matcher.handle_cloudwatch_event(
-          error_visited_event('error_code' => 'state_id_verification'),
+          error_visited_event(error_code: 'state_id_verification'),
         )
 
         expect(significant_events).to be_empty
       end
 
       it 'reports one rejection per submission, not one per page view' do
-        # Regression: the user submitted once at 11:47, was rejected, wandered to the ID type
-        # chooser, and landed back on the error page at 11:48 -- producing two identical
-        # rejection lines for a single submission.
         matcher.handle_cloudwatch_event(socure_submission(success: true))
         matcher.handle_cloudwatch_event(
-          error_visited_event('error_code' => 'state_id_verification'),
+          error_visited_event(error_code: 'state_id_verification'),
         )
         matcher.handle_cloudwatch_event(
-          error_visited_event('error_code' => 'state_id_verification'),
+          error_visited_event(error_code: 'state_id_verification'),
         )
 
         expect(
@@ -682,7 +650,7 @@ RSpec.describe EventSummarizer::IdvMatcher do
         2.times do
           matcher.handle_cloudwatch_event(socure_submission(success: true))
           matcher.handle_cloudwatch_event(
-            error_visited_event('error_code' => 'state_id_verification'),
+            error_visited_event(error_code: 'state_id_verification'),
           )
         end
 
@@ -693,7 +661,9 @@ RSpec.describe EventSummarizer::IdvMatcher do
     end
 
     context "On 'IdV: in person proofing state_id submitted' event" do
-      def ipp_state_id_event(success:)
+      let(:success) { true }
+
+      let(:event) do
         {
           '@timestamp' => Time.zone.now,
           'name' => 'IdV: in person proofing state_id submitted',
@@ -715,16 +685,12 @@ RSpec.describe EventSummarizer::IdvMatcher do
             started_at: Time.zone.now,
           ),
         )
+        matcher.handle_cloudwatch_event(event)
       end
 
       subject(:significant_events) { matcher.current_idv_attempt.significant_events }
 
       it 'records that the state ID details were hand-entered' do
-        # Without this, an AAMVA failure against typed data is indistinguishable from one against
-        # data read off a document image -- which is the difference between a misread document and
-        # the state having no matching record.
-        matcher.handle_cloudwatch_event(ipp_state_id_event(success: true))
-
         expect(significant_events).to include(
           have_attributes(
             type: :ipp_state_id_entered,
@@ -733,11 +699,12 @@ RSpec.describe EventSummarizer::IdvMatcher do
         )
       end
 
-      it 'ignores a failed form submission' do
-        # Form validation failed, so nothing was sent to the state.
-        matcher.handle_cloudwatch_event(ipp_state_id_event(success: false))
+      context 'when the form submission failed' do
+        let(:success) { false }
 
-        expect(significant_events).to be_empty
+        it 'adds no event' do
+          expect(significant_events).to be_empty
+        end
       end
     end
 
@@ -770,8 +737,6 @@ RSpec.describe EventSummarizer::IdvMatcher do
       end
 
       it 'does not claim the user abandoned verification' do
-        # Entering IPP makes the attempt workflow_complete?, which suppresses the abandonment
-        # heuristic. The user was actively working through the IPP flow.
         expect(results.first[:attributes]).not_to include(
           hash_including(type: :idv_abandoned),
         )
@@ -779,12 +744,20 @@ RSpec.describe EventSummarizer::IdvMatcher do
     end
 
     context "On 'Rate Limit Reached' event" do
-      def rate_limit_event(properties)
+      let(:limiter_type) { 'idv_doc_auth' }
+      let(:step_name) { nil }
+
+      let(:event) do
         {
           '@timestamp' => Time.zone.now,
           'name' => 'Rate Limit Reached',
           '@message' => {
-            'properties' => { 'event_properties' => properties },
+            'properties' => {
+              'event_properties' => {
+                'limiter_type' => limiter_type,
+                'step_name' => step_name,
+              },
+            },
           },
         }
       end
@@ -795,48 +768,49 @@ RSpec.describe EventSummarizer::IdvMatcher do
             started_at: Time.zone.now,
           ),
         )
+        matcher.handle_cloudwatch_event(event)
       end
 
       subject(:significant_events) { matcher.current_idv_attempt.significant_events }
 
-      it 'names the step where the limit was hit' do
-        # The idv_doc_auth limiter is shared between document capture and the IPP state ID step, so
-        # the limiter name alone reads as though the user was still uploading documents.
-        matcher.handle_cloudwatch_event(
-          rate_limit_event('limiter_type' => 'idv_doc_auth', 'step_name' => 'ipp_state_id'),
-        )
+      context 'when the step is one we can name' do
+        let(:step_name) { 'ipp_state_id' }
 
-        expect(significant_events).to include(
-          have_attributes(
-            type: :rate_limited,
-            description: 'Rate limited for Doc Auth while entering their state ID for ' \
-                         'in-person proofing',
-          ),
-        )
+        it 'names the step where the limit was hit' do
+          expect(significant_events).to include(
+            have_attributes(
+              type: :rate_limited,
+              description: 'Rate limited for Doc Auth while entering their state ID for ' \
+                           'in-person proofing',
+            ),
+          )
+        end
       end
 
-      it 'falls back to the limiter alone for an unrecognized step' do
-        matcher.handle_cloudwatch_event(
-          rate_limit_event('limiter_type' => 'idv_doc_auth', 'step_name' => 'something_new'),
-        )
+      context 'when the step is unrecognized' do
+        let(:step_name) { 'something_new' }
 
-        expect(significant_events).to include(
-          have_attributes(description: 'Rate limited for Doc Auth'),
-        )
+        it 'falls back to the limiter alone' do
+          expect(significant_events).to include(
+            have_attributes(description: 'Rate limited for Doc Auth'),
+          )
+        end
       end
 
-      it 'falls back to the limiter alone when no step is given' do
-        matcher.handle_cloudwatch_event(rate_limit_event('limiter_type' => 'idv_doc_auth'))
-
-        expect(significant_events).to include(
-          have_attributes(description: 'Rate limited for Doc Auth'),
-        )
+      context 'when no step is given' do
+        it 'falls back to the limiter alone' do
+          expect(significant_events).to include(
+            have_attributes(description: 'Rate limited for Doc Auth'),
+          )
+        end
       end
 
-      it 'ignores limiters it does not report on' do
-        matcher.handle_cloudwatch_event(rate_limit_event('limiter_type' => 'idv_resolution'))
+      context 'when the limiter is not one we report on' do
+        let(:limiter_type) { 'idv_resolution' }
 
-        expect(significant_events).to be_empty
+        it 'adds no event' do
+          expect(significant_events).to be_empty
+        end
       end
     end
   end

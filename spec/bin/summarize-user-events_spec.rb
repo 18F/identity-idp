@@ -185,10 +185,6 @@ RSpec.describe SummarizeUserEvents do
     end
 
     context 'when the source yields events out of chronological order' do
-      # CloudwatchClient#fetch queries day-slices across several threads and yields each row as its
-      # slice finishes, so rows can arrive out of order. The matchers are a state machine over the
-      # timeline -- IdvMatcher drops anything arriving before an attempt is open -- so a terminal
-      # event that arrived early used to be discarded, and output depended on thread scheduling.
       let(:cloudwatch_events) do
         [
           {
@@ -236,8 +232,6 @@ RSpec.describe SummarizeUserEvents do
     end
 
     context 'when events share a timestamp' do
-      # All stages of a proofing result are logged with one timestamp. sort_by is not stable in
-      # Ruby, so the sort carries the original index to keep the vendor's ordering.
       let(:cloudwatch_events) do
         [
           {

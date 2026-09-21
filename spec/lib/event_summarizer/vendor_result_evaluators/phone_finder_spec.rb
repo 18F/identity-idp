@@ -78,9 +78,6 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::PhoneFinder do
     end
 
     context 'when the lookup succeeded but individual items failed' do
-      # Real payload shape: LexisNexis marks the 'PhoneFinder' product 'pass' because the lookup
-      # executed, and reports the verdict separately in 'PhoneFinder Checks'. The itemized reasons
-      # were previously discarded because the code required ProductStatus == 'fail'.
       let(:phone_result) do
         {
           success: false,
@@ -135,8 +132,6 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::PhoneFinder do
       end
 
       it 'does not fall back to the generic name-verification text' do
-        # That text is boilerplate on every failure and is misleading here: neither a prepaid phone
-        # nor a deceased subject has anything to do with name verification.
         expect(evaluation[:description]).not_to include('could not be verified to name')
       end
     end
@@ -176,7 +171,9 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::PhoneFinder do
     end
 
     context 'with nothing usable in the payload' do
-      let(:phone_result) { { success: false, errors: {} } }
+      let(:phone_result) do
+        { success: false, errors: {} }
+      end
 
       it 'points at the logs' do
         expect(evaluation).to eql(
