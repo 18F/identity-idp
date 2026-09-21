@@ -52,6 +52,20 @@ module DocAuthHelper
     click_on t('forms.buttons.send_link')
   end
 
+  # Issues the same request the link sent page's poller makes, from the browser session, and
+  # returns the HTTP status. Lets specs assert on polling outcomes without waiting for the
+  # client-side poll interval to elapse. Selenium bounds async scripts by the Capybara wait
+  # time, which this suite sets to 0, so allow the request time to complete.
+  def link_sent_poll_status
+    status_endpoint = find('[data-status-endpoint]', visible: :all)['data-status-endpoint']
+    Capybara.using_wait_time(10) do
+      page.evaluate_async_script(
+        'fetch(arguments[0]).then((response) => arguments[1](response.status))',
+        status_endpoint,
+      )
+    end
+  end
+
   def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
     # This should be refactored at some point to not require the path conditional
     visit idv_welcome_path unless have_current_path(idv_welcome_path).matches?(page)
