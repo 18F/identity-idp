@@ -21,15 +21,25 @@ module EventSummarizer
       # Items are read regardless of ProductStatus: LexisNexis marks the PhoneFinder product 'pass'
       # when the lookup ran, even while individual Items fail. The verdict is in PhoneFinder Checks.
       def self.itemized_errors(result)
+        failed_items = []
         pf_instances = result.dig('errors', 'PhoneFinder')
         return [] unless pf_instances && !pf_instances.empty?
 
-        pf_instances
-          .flat_map { |pf_instance| pf_instance['Items'] || [] }
-          .select { |item| item['ItemStatus'] == 'fail' }
-          .map { |item| item.dig('ItemReason', 'Description').to_s.strip }
-          .reject(&:empty?)
-          .uniq
+        pf_instances.each do |pf_instance|
+          items = pf_instance['Items'] || []
+
+          items.each do |item|
+            failed_items << item if item['ItemStatus'] == 'fail'
+          end
+        end
+
+        failed_items.filter_map { |item| failure_reason(item) }.uniq
+      end
+
+      def self.failure_reason(item)
+        reason = item.dig('ItemReason', 'Description').to_s.strip
+
+        reason unless reason.empty?
       end
 
       def self.general_error(result)

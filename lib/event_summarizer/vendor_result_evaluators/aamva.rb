@@ -100,11 +100,20 @@ module EventSummarizer
       end
 
       def self.relevant_failed_attributes(attributes)
-        attributes
-          .select { |attribute, status| failed?(attribute, status) }
-          .keys
-          .partition { |attribute| required?(attribute) }
-          .flatten
+        required_failures = []
+        other_failures = []
+
+        attributes.each do |attribute, status|
+          next unless failed?(attribute, status)
+
+          if required?(attribute)
+            required_failures << attribute
+          else
+            other_failures << attribute
+          end
+        end
+
+        required_failures + other_failures
       end
 
       def self.failed?(attribute, status)
