@@ -618,7 +618,6 @@ module EventSummarizer
       add_events_for_failed_vendor_result(properties, timestamp: event['@timestamp'])
     end
 
-    # :start_ipp is otherwise only emitted from 'IdV: final resolution', which a user who never
     def handle_in_person_direct_start(event:)
       return if current_idv_attempt.ipp?
 
@@ -752,7 +751,6 @@ module EventSummarizer
     def start_new_idv_attempt(event:)
       finish_current_idv_attempt if current_idv_attempt
 
-      # A pending submission belongs to the attempt that made it.
       @submission_awaiting_outcome = false
 
       @current_idv_attempt = IdvAttempt.new(

@@ -18,8 +18,6 @@ module EventSummarizer
         }
       end
 
-      # Items are read regardless of ProductStatus: LexisNexis marks the PhoneFinder product 'pass'
-      # when the lookup ran, even while individual Items fail. The verdict is in PhoneFinder Checks.
       def self.itemized_errors(result)
         failed_items = []
         pf_instances = result.dig('errors', 'PhoneFinder')
@@ -51,8 +49,6 @@ module EventSummarizer
         failed_status&.dig('ProductReason', 'Description')
       end
 
-      # Itemized reasons first: the general error is the same text on every failure, and misleading
-      # when the real reason is e.g. a deceased subject rather than a name mismatch.
       def self.failure_payload(result)
         fail_reasons = itemized_errors(result)
         fail_reasons = [general_error(result)].compact if fail_reasons.empty?
