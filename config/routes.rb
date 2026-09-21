@@ -384,6 +384,7 @@ Rails.application.routes.draw do
     post '/nds/opt_out' => 'nds/opt_out#create', as: :nds_opt_out
 
     get '/redirect/return_to_sp/account_verified_cta' => 'idv/account_verified_cta_visited#show', as: :account_verified_sign_in_redirect
+
     get '/redirect/return_to_sp/cancel' => 'redirect/return_to_sp#cancel', as: :return_to_sp_cancel
     get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof',
         as: :return_to_sp_failure_to_proof

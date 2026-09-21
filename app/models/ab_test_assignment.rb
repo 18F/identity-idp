@@ -9,12 +9,7 @@ class AbTestAssignment < ApplicationRecord
     end
 
     def opt_out!(experiment:, discriminator:)
-      transaction do
-        assignment = find_by(experiment:, discriminator:)
-        return false if assignment.nil?
-        assignment.update!(bucket: OPT_OUT_BUCKET)
-        true
-      end
+      find_or_initialize_by(experiment:, discriminator:).update!(bucket: OPT_OUT_BUCKET)
     end
   end
 end
