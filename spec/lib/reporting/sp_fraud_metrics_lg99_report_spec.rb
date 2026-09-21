@@ -13,11 +13,11 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
       ['Fraud Rules Catch Count', 'Count',
        'The count of unique accounts flagged for fraud review.'],
       ['Credentials Disabled', 'Count',
-       'The count of unique accounts suspended due to ' +
-       'suspected fraudulent activity within the reporting month.'],
+       'The count of unique accounts suspended due to ' \
+         'suspected fraudulent activity within the reporting month.'],
       ['Credentials Reinstated', 'Count',
-       'The count of unique suspended accounts ' +
-       'that are reinstated within the reporting month.'],
+       'The count of unique suspended accounts ' \
+         'that are reinstated within the reporting month.'],
     ]
   end
 

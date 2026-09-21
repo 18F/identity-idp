@@ -80,11 +80,11 @@ module Reporting
         ['Fraud Rules Catch Count', 'Count',
          'The count of unique accounts flagged for fraud review.'],
         ['Credentials Disabled', 'Count',
-         'The count of unique accounts suspended due to ' +
-         'suspected fraudulent activity within the reporting month.'],
+         'The count of unique accounts suspended due to ' \
+           'suspected fraudulent activity within the reporting month.'],
         ['Credentials Reinstated', 'Count',
-         'The count of unique suspended accounts ' +
-         'that are reinstated within the reporting month.'],
+         'The count of unique suspended accounts ' \
+           'that are reinstated within the reporting month.'],
       ]
     end
 
@@ -171,15 +171,24 @@ module Reporting
     end
 
     def fetch_idv_final_resolution_results
-      cloudwatch_client.fetch(query: query_idv_final_resolution, from: time_range.begin, to: time_range.end)
+      cloudwatch_client.fetch(
+        query: query_idv_final_resolution, from: time_range.begin,
+        to: time_range.end
+      )
     end
 
     def fetch_suspended_users_results
-      cloudwatch_client.fetch(query: query_suspended_users, from: time_range.begin, to: time_range.end)
+      cloudwatch_client.fetch(
+        query: query_suspended_users, from: time_range.begin,
+        to: time_range.end
+      )
     end
 
     def fetch_reinstated_users_results
-      cloudwatch_client.fetch(query: query_reinstated_users, from: time_range.begin, to: time_range.end)
+      cloudwatch_client.fetch(
+        query: query_reinstated_users, from: time_range.begin,
+        to: time_range.end
+      )
     end
 
     # Fetches one row per unique user ID associated with the issuer(s) in this
