@@ -39,6 +39,8 @@ RSpec.describe Idv::Clear1::SessionController do
       idv_session.document_capture_session_uuid = document_capture_session.uuid
       idv_session.flow_path = 'standard'
       idv_session.clear1_enabled = clear1_enabled
+      idv_session.clear1_verification_state = 'myState'
+      idv_session.clear1_verification_token = 'myToken'
     end
 
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)

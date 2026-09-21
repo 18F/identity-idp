@@ -8,8 +8,11 @@ module Idv
   # @attr agent_proofed [Boolean, nil]
   # @attr applicant [Struct, nil]
   # @attr clear1_enabled [Boolean, nil]
+  # @attr clear1_verification_session_id [String, nil]
   # @attr clear1_verification_state [String, nil]
   # @attr clear1_verification_token [String, nil]
+  # @attr clear1_verified [Boolean, nil]
+  # @attr clear1_wait_polling_started_at [Integer, nil]
   # @attr doc_auth_vendor [String, nil]
   # @attr document_capture_session_uuid [String, nil]
   # @attr flow_path [String, nil]
@@ -68,8 +71,11 @@ module Idv
       agent_proofed
       applicant
       clear1_enabled
+      clear1_verification_session_id
+      clear1_wait_polling_started_at
       clear1_verification_state
       clear1_verification_token
+      clear1_verified
       doc_auth_vendor
       document_capture_session_uuid
       flow_path
@@ -384,7 +390,7 @@ module Idv
     end
 
     def phone_or_address_step_complete?
-      verify_by_mail? || phone_confirmed?
+      verify_by_mail? || phone_confirmed? || clear1_verified
     end
 
     def address_mechanism_chosen?
