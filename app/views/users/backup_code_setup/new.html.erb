@@ -1,5 +1,36 @@
 <% self.title = t('two_factor_authentication.confirm_backup_code_setup_title') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(
+        title: t('two_factor_authentication.confirm_backup_code_setup_title'),
+      ) do |page| %>
+    <% page.with_body do %>
+      <div class="copy copy--muted">
+        <% t(
+             'two_factor_authentication.confirm_backup_code_setup_content_html',
+             number_of_codes: BackupCodeGenerator::NUMBER_OF_CODES,
+           ).each do |desc_p| %>
+          <p><%= desc_p %></p>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: backup_code_setup_path,
+              method: :post,
+              full_width: true,
+            ).with_content(t('forms.buttons.continue')) %>
+        <%= render ButtonComponent.new(
+              url: session[:account_redirect_path] || account_path,
+              variant: :secondary,
+              full_width: true,
+            ).with_content(t('links.cancel')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.confirm_backup_code_setup_title')) %>
 
 <% t(
@@ -24,3 +55,4 @@
       wide: true,
       outline: true,
     ).with_content(t('links.cancel')) %>
+<% end %>
