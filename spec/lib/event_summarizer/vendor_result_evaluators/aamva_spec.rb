@@ -75,7 +75,7 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
         expect(evaluation[:type]).to eql(:aamva_error)
         expect(evaluation[:description]).to eql(
           "AAMVA request failed. The ID # from the user's drivers' license was invalid " \
-          'according to the state of MD',
+          "according to the state of MD",
         )
       end
     end
