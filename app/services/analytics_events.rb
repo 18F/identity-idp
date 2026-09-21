@@ -7180,9 +7180,10 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String, nil] previous_bucket A/B bucket the user was in before opting out
   # Records that a user opted out of the NDS interface.
-  def nds_look_and_feel_opted_out
-    track_event(:nds_look_and_feel_opted_out)
+  def nds_look_and_feel_opted_out(previous_bucket:, **extra)
+    track_event(:nds_look_and_feel_opted_out, previous_bucket:, **extra)
   end
 
   # New device alert skipped as there were no events to send

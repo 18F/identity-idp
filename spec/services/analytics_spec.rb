@@ -66,7 +66,7 @@ RSpec.describe Analytics do
     it 'tracks NDS opt out' do
       expect(ahoy).to receive(:track).with(:nds_look_and_feel_opted_out, anything)
 
-      analytics.nds_look_and_feel_opted_out
+      analytics.nds_look_and_feel_opted_out(previous_bucket: 'nds')
     end
 
     it 'does not track nil values' do
