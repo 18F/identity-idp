@@ -159,6 +159,21 @@ class ProofingAgentJob < ApplicationJob
   )
     @proofing_exception_occurred = false
 
+    if ProofingAgent::ProofingResult.expiration_date_near?(applicant_pii)
+      return ProofingAgent::ProofingResult.new(
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+        transaction_id:,
+        pii: applicant_pii,
+        resolution_result: nil,
+        aamva_result: nil,
+        mrz_result: nil,
+        system_error: nil,
+        service_provider_issuer:,
+      )
+    end
+
     aamva_result = nil
 
     if applicant_pii[:state_id_number].present?
