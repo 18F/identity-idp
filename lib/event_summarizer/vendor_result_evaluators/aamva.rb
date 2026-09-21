@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/string/inflections'
+
 module EventSummarizer
   module VendorResultEvaluators
     module Aamva
@@ -8,130 +10,109 @@ module EventSummarizer
         'drivers_license' => "drivers' license",
       }.freeze
 
-      # These mirror Proofing::Aamva::Proofer#successful?, which requires a match on the first list
-      # and tolerates 'MISSING' on the second.
-      #
-      # TODO: Load these from the AAMVA proofer or put them somewhere common
-      REQUIRED_VERIFICATION_ATTRIBUTES = %i[
+      UNVERIFIED = 'UNVERIFIED'
+      MISSING = 'MISSING'
+
+      ID_NUMBER = 'state_id_number'
+
+      # Attributes Proofing::Aamva::Proofer#successful? requires a match on. Every other attribute
+      # may come back MISSING.
+      REQUIRED_VERIFICATION_ATTRIBUTES = %w[
         state_id_number
         dob
         last_name
         first_name
       ].freeze
 
-      REQUIRED_IF_PRESENT_ATTRIBUTES = [:state_id_expiration].freeze
-
-      # errors keys arrive as strings from the Cloudwatch payload.
-      REQUIRED_VERIFICATION_ATTRIBUTE_NAMES =
-        REQUIRED_VERIFICATION_ATTRIBUTES.map(&:to_s).freeze
-
-      # @param result {Hash} The result structure logged to Cloudwatch
-      # @return [Hash] A Hash with a type, timestamp, and description key.
       def self.evaluate_result(result)
         if result['success']
-          return {
+          {
             type: :aamva_success,
             description: 'AAMVA call succeeded',
           }
-        end
-
-        if result['timed_out']
-          return {
+        elsif result['timed_out']
+          {
             type: :aamva_timed_out,
             description: 'AAMVA request timed out.',
           }
-        end
-
-        if result['mva_exception']
-          state = result['state_id_jurisdiction']
-          return {
+        elsif result['mva_exception']
+          {
             type: :aamva_mva_exception,
-            # rubocop:disable Layout/LineLength
-            description: "AAMVA request failed because the MVA in #{state} failed to return a response.",
-            # rubocop:enable Layout/LineLength
+            description: "AAMVA request failed because the MVA in " \
+                         "#{result['state_id_jurisdiction']} failed to return a response.",
           }
-        end
-
-        if result['exception']
-
-          description = 'AAMVA request resulted in an exception'
-
-          m = /ExceptionText: (.+?),/.match(result['exception'])
-          if m.present?
-            description = "#{description} (#{m[1]})"
-          end
-
-          return {
+        elsif result['exception']
+          {
             type: :aamva_exception,
-            description:,
+            description: exception_description(result['exception']),
+          }
+        else
+          explanation = explain_errors(result) || 'Check logs for more info.'
+
+          {
+            type: :aamva_error,
+            description: "AAMVA request failed. #{explanation}",
           }
         end
+      end
 
-        # The API call failed because of actual errors in the user's data.
-        # Try to come up with an explanation
+      def self.exception_description(exception)
+        description = 'AAMVA request resulted in an exception'
+        exception_text = exception.to_s[/ExceptionText: (.+?),/, 1]
 
-        explanation = explain_errors(result) || 'Check logs for more info.'
+        return description if exception_text.nil?
 
-        return {
-          type: :aamva_error,
-          description: "AAMVA request failed. #{explanation}",
-        }
+        "#{description} (#{exception_text})"
       end
 
       def self.explain_errors(result)
-        # The values in the errors object are arrays
-        attributes = {}
-        result['errors']&.each do |key, values|
-          attributes[key] = values.first
-        end
-
-        document_type = ID_TYPES[result['document_type_received']] || 'id card'
-        state = result['state_id_jurisdiction']
+        attributes = attribute_statuses(result['errors'])
 
         if mva_says_invalid_id_number?(attributes)
-          # rubocop:disable Layout/LineLength
-          return "The ID # from the user's #{document_type} was invalid according to the state of #{state}"
-          # rubocop:enable Layout/LineLength
+          invalid_id_number_description(result)
+        else
+          failed_attributes_description(relevant_failed_attributes(attributes))
         end
+      end
 
-        failed_attributes = relevant_failed_attributes(attributes)
+      def self.invalid_id_number_description(result)
+        document_type = ID_TYPES[result['document_type_received']] || 'id card'
 
-        if !failed_attributes.empty?
-          plural = failed_attributes.length == 1 ? '' : 's'
+        "The ID # from the user's #{document_type} was invalid according to " \
+          "the state of #{result['state_id_jurisdiction']}"
+      end
 
-          # rubocop:disable Layout/LineLength
-          "#{failed_attributes.length} attribute#{plural} failed to validate: #{failed_attributes.join(', ')}"
-          # rubocop:enable Layout/LineLength
-        end
+      def self.failed_attributes_description(failed_attributes)
+        return if failed_attributes.empty?
+
+        "#{failed_attributes.length} #{'attribute'.pluralize(failed_attributes.length)} " \
+          "failed to validate: #{failed_attributes.join(', ')}"
+      end
+
+      def self.attribute_statuses(errors)
+        errors.to_h.transform_values(&:first)
       end
 
       def self.mva_says_invalid_id_number?(attributes)
-        # When all attributes are marked "MISSING", except ID number,
-        # which is marked "UNVERIFIED", that indicates the MVA could not
-        # find the ID number to compare PII
+        return false unless attributes[ID_NUMBER] == UNVERIFIED
 
-        missing_count = attributes.count do |_attr, status|
-          status == 'MISSING'
-        end
-
-        attributes['state_id_number'] == 'UNVERIFIED' && missing_count == attributes.count - 1
+        attributes.except(ID_NUMBER).values.all?(MISSING)
       end
 
       def self.relevant_failed_attributes(attributes)
-        # 'UNVERIFIED' is a real mismatch, so always report it. 'MISSING' usually just means we
-        # never sent the attribute (height, weight, sex...), so only report it where the proofer
-        # requires a match.
-        failed = attributes.select do |attr, status|
-          status == 'UNVERIFIED' ||
-            (status == 'MISSING' && REQUIRED_VERIFICATION_ATTRIBUTE_NAMES.include?(attr))
-        end.keys
+        attributes
+          .select { |attribute, status| failed?(attribute, status) }
+          .keys
+          .partition { |attribute| required?(attribute) }
+          .flatten
+      end
 
-        # Required attributes first; they are the most likely cause.
-        required, other = failed.partition do |attr|
-          REQUIRED_VERIFICATION_ATTRIBUTE_NAMES.include?(attr)
-        end
+      def self.failed?(attribute, status)
+        status == UNVERIFIED || (status == MISSING && required?(attribute))
+      end
 
-        required + other
+      def self.required?(attribute)
+        REQUIRED_VERIFICATION_ATTRIBUTES.include?(attribute)
       end
     end
   end
