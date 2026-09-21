@@ -26,6 +26,7 @@ RSpec.describe ProofingAgentJob, type: :job do
   let(:webhook_secret) { 'webhook-secret' }
   let(:webhook_status) { 200 }
   let(:webhook_headers) { nil }
+  let(:failure_email_users) { instance_double(Idv::ProofingAgent::FailureEmailUserSet) }
   let(:idv_proofing_agent_config) do
     [
       {
@@ -50,6 +51,11 @@ RSpec.describe ProofingAgentJob, type: :job do
       ActiveJob::Base.queue_adapter = :test
       ActiveJob::Base.queue_adapter.enqueued_jobs.clear
       ActiveJob::Base.queue_adapter.performed_jobs.clear
+      allow(Idv::ProofingAgent::FailureEmailUserSet).to receive(:new).and_return(
+        failure_email_users,
+      )
+      allow(failure_email_users).to receive(:add)
+      allow(failure_email_users).to receive(:remove)
       allow(IdentityConfig.store).to receive(:idv_proofing_agent_config)
         .and_return(idv_proofing_agent_config)
       allow(Db::SpCost::AddSpCost).to receive(:call)
@@ -104,6 +110,12 @@ RSpec.describe ProofingAgentJob, type: :job do
             },
           },
         )
+      end
+
+      it 'removes the user uuid from the failure email users' do
+        perform
+
+        expect(failure_email_users).to have_received(:remove).with(user.uuid)
       end
 
       it 'sends a profile confirmation email to the user' do
@@ -362,6 +374,11 @@ RSpec.describe ProofingAgentJob, type: :job do
 
       it 'does not send a profile confirmation email' do
         expect { perform }.not_to change { ActionMailer::Base.deliveries.count }
+      end
+
+      it 'adds the user to the failure email users' do
+        perform
+        expect(failure_email_users).to have_received(:add).with(user.uuid)
       end
 
       it 'does not log the profile confirmation email analytics event' do
@@ -914,6 +931,12 @@ RSpec.describe ProofingAgentJob, type: :job do
         let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.merge(zipcode: '00000') }
         let(:final_attempt) { true }
 
+        it 'removes the user uuid from the failure email users' do
+          perform
+
+          expect(failure_email_users).to have_received(:remove).with(user.uuid)
+        end
+
         it 'sends a failure email to the user' do
           expect { perform }.to change { ActionMailer::Base.deliveries.count }.by(1)
           expect(ActionMailer::Base.deliveries.last.to)
@@ -956,6 +979,12 @@ RSpec.describe ProofingAgentJob, type: :job do
           allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
         end
 
+        it 'removes the user uuid from the failure email users' do
+          perform
+
+          expect(failure_email_users).to have_received(:remove).with(user.uuid)
+        end
+
         it 'does not send a failure email' do
           perform
           expect(job_analytics).to_not have_logged_event(
@@ -966,6 +995,12 @@ RSpec.describe ProofingAgentJob, type: :job do
 
       context 'when final_attempt is false and proofing fails' do
         let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.merge(zipcode: '00000') }
+
+        it 'adds the user uuid from the failure email users' do
+          perform
+
+          expect(failure_email_users).to have_received(:add).with(user.uuid)
+        end
 
         it 'does not send a failure email' do
           expect { perform }.not_to change { ActionMailer::Base.deliveries.count }
