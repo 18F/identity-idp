@@ -381,6 +381,12 @@ else
         cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
+      # Proofing Agent send failure email
+      proofing_agent_send_failure_emails: {
+        class: 'ProofingAgentSendFailureEmailsJob',
+        cron: IdentityConfig.store.idv_proofing_agent_send_failure_emails_cron,
+        args: -> { [Time.zone.now] },
+      },
     }.compact
   end
   # rubocop:enable Metrics/BlockLength
