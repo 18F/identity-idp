@@ -378,7 +378,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
         expect(response.error_messages[:passport_card]).to eq(nil)
       end
 
-      it 'includes Back classification info, unlike a passport book' do
+      it 'includes Back classification info' do
         expect(response.extra_attributes[:classification_info]).to include(:Front, :Back)
       end
     end

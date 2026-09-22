@@ -596,7 +596,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         )
       end
 
-      it 'also posts the back image' do
+      it 'posts the back image' do
         post_images_response
 
         expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
