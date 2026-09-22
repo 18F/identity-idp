@@ -445,8 +445,12 @@ RSpec.describe OpenidConnectAuthorizeForm do
       let(:code_challenge) { Digest::SHA256.urlsafe_base64digest('a' * 43) }
       let(:code_challenge_method) { 'S256' }
 
-      it 'accepts S256 for legacy integrations' do
-        expect(valid?).to eq(true)
+      context 'with an SP whose PKCE setting is unset' do
+        before { form.service_provider.update!(pkce: nil) }
+
+        it 'accepts an S256 challenge' do
+          expect(valid?).to eq(true)
+        end
       end
 
       [nil, '', 'a' * 42, 'a' * 44, '+' * 43].each do |challenge|
@@ -460,7 +464,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
         end
       end
 
-      context 'with a private_key_jwt integration' do
+      context 'with an SP configured for private_key_jwt (pkce: false)' do
         before { form.service_provider.update!(pkce: false) }
 
         it 'rejects PKCE by default' do
@@ -492,11 +496,22 @@ RSpec.describe OpenidConnectAuthorizeForm do
         end
       end
 
-      context 'with a public integration' do
+      context 'with an SP configured for PKCE (pkce: true)' do
         before { form.service_provider.update!(pkce: true) }
 
         it 'accepts PKCE with the feature disabled' do
           expect(valid?).to eq(true)
+        end
+      end
+
+      context 'with both PKCE parameters empty' do
+        let(:code_challenge) { '' }
+        let(:code_challenge_method) { '' }
+
+        it 'rejects the request instead of skipping PKCE validation' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code_challenge]).to be_present
+          expect(form.errors[:code_challenge_method]).to be_present
         end
       end
 

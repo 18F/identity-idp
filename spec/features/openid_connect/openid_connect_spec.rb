@@ -826,7 +826,7 @@ RSpec.describe 'OpenID Connect' do
         code_challenge_method: 'S256',
       )
 
-      _user = sign_in_live_with_2fa(user)
+      sign_in_live_with_2fa(user)
       expect(page.html).to_not include(code_challenge)
 
       click_button t('webauthn_platform_recommended.skip')
