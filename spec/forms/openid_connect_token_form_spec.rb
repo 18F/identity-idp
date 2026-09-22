@@ -315,7 +315,7 @@ RSpec.describe OpenidConnectTokenForm do
       let(:client_assertion_type) { nil }
 
       let(:code_challenge) { Digest::SHA256.urlsafe_base64digest(code_verifier) }
-      let(:code_verifier) { SecureRandom.hex }
+      let(:code_verifier) { SecureRandom.urlsafe_base64(32) }
 
       context 'with valid params' do
         it 'is true, and has no errors' do
@@ -360,7 +360,7 @@ RSpec.describe OpenidConnectTokenForm do
       end
 
       context 'with a code_challenge does not have base64 padding' do
-        let(:code_verifier) { SecureRandom.uuid }
+        let(:code_verifier) { SecureRandom.urlsafe_base64(32) }
         let(:code_challenge) { Digest::SHA256.urlsafe_base64digest(code_verifier) }
 
         it 'is valid' do
@@ -370,6 +370,136 @@ RSpec.describe OpenidConnectTokenForm do
           expect(valid?).to eq(true)
           expect(form.errors).to be_blank
         end
+      end
+    end
+
+    context 'private_key_jwt with PKCE' do
+      let(:code_verifier) { SecureRandom.urlsafe_base64(32) }
+      let(:code_challenge) { Digest::SHA256.urlsafe_base64digest(code_verifier) }
+
+      before { service_provider.update!(pkce: false) }
+
+      it 'requires both proofs and succeeds even with admission disabled' do
+        expect(IdentityConfig.store.openid_connect_private_key_jwt_pkce_enabled).to eq(false)
+        expect(valid?).to eq(true)
+      end
+
+      context 'without an assertion' do
+        let(:client_assertion) { nil }
+        let(:client_assertion_type) { nil }
+
+        it 'does not allow PKCE to replace client authentication' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:client_assertion]).to be_present
+        end
+      end
+
+      context 'with an invalid assertion' do
+        let(:client_assertion) { 'invalid' }
+
+        it 'rejects the request despite a valid verifier' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:client_assertion]).to be_present
+        end
+      end
+
+      context 'with an invalid assertion type' do
+        let(:client_assertion_type) { 'invalid' }
+
+        it 'rejects the request' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:client_assertion_type]).to be_present
+        end
+      end
+
+      [nil, '', 'a' * 43].each do |verifier|
+        context "with missing or mismatched verifier #{verifier.inspect}" do
+          let(:code_challenge) { Digest::SHA256.urlsafe_base64digest('b' * 43) }
+          let(:code_verifier) { verifier }
+
+          it 'rejects the request without issuing tokens or consuming the code' do
+            original_code = identity.session_uuid
+            expect(form.submit.success?).to eq(false)
+            expect(form.response).to include(error: 'invalid_grant')
+            expect(form.response).not_to have_key(:access_token)
+            expect(identity.reload.session_uuid).to eq(original_code)
+          end
+        end
+      end
+
+      ['a' * 42, 'a' * 129, '+' * 43, 'a' * 43 + "\n"].each do |verifier|
+        context "with malformed verifier #{verifier.inspect}" do
+          let(:code_verifier) { verifier }
+
+          it 'rejects even when the digest matches' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:code_verifier]).to be_present
+          end
+        end
+      end
+
+      [43, 128].each do |length|
+        context "with a #{length}-character verifier" do
+          let(:code_verifier) { ('aZ09-._~' * 16).first(length) }
+
+          it 'accepts the RFC verifier length boundary and alphabet' do
+            expect(valid?).to eq(true)
+          end
+        end
+      end
+
+      context 'with a legacy integration and no assertion' do
+        before { service_provider.update!(pkce: nil) }
+        let(:client_assertion) { nil }
+        let(:client_assertion_type) { nil }
+
+        it 'preserves legacy PKCE authentication' do
+          expect(valid?).to eq(true)
+        end
+      end
+
+      context 'with a legacy integration and an invalid assertion' do
+        before { service_provider.update!(pkce: nil) }
+        let(:client_assertion) { 'invalid' }
+
+        it 'does not skip a supplied assertion when the verifier is valid' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:client_assertion]).to be_present
+        end
+      end
+
+      context 'with a stored padded challenge' do
+        let(:code_challenge) { Base64.urlsafe_encode64(Digest::SHA256.digest(code_verifier)) }
+
+        it 'continues to verify previously issued challenges' do
+          expect(valid?).to eq(true)
+        end
+      end
+
+      context 'with no stored challenge' do
+        let(:code_challenge) { nil }
+
+        it 'rejects an unsolicited verifier to prevent downgrade' do
+          expect(valid?).to eq(false)
+          expect(form.response).to include(error: 'invalid_grant')
+        end
+      end
+
+      context 'with an expired code' do
+        before { identity.update!(updated_at: 1.day.ago) }
+
+        it 'rejects valid proofs for an expired code' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).to include(t('openid_connect.token.errors.expired_code'))
+        end
+      end
+
+      it 'consumes the code on success and rejects replay' do
+        request_params = params
+        expect(form.submit.success?).to eq(true)
+        expect(form.response[:access_token]).to be_present
+        expect(identity.reload.session_uuid).to be_nil
+        expect(OpenidConnectTokenForm.new(request_params).submit.success?).to eq(false)
       end
     end
 
@@ -397,6 +527,7 @@ RSpec.describe OpenidConnectTokenForm do
           user_id: user.uuid,
           code_digest: Digest::SHA256.hexdigest(code),
           code_verifier_present: false,
+          code_challenge_present: false,
           service_provider_pkce: nil,
           ial: 1,
           integration_errors: nil,
@@ -433,6 +564,7 @@ RSpec.describe OpenidConnectTokenForm do
           user_id: user.uuid,
           code_digest: Digest::SHA256.hexdigest(code),
           code_verifier_present: false,
+          code_challenge_present: false,
           service_provider_pkce: nil,
           ial: 1,
           integration_errors: {
