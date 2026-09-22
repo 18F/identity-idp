@@ -7,7 +7,7 @@ module Idv
   # @attr address_verification_mechanism [String, nil]
   # @attr agent_proofed [Boolean, nil]
   # @attr applicant [Struct, nil]
-  # @attr clear1_enabled [Boolean, nil]
+  # @attr clear1_allowed [Boolean, nil]
   # @attr clear1_verification_session_id [String, nil]
   # @attr clear1_verification_state [String, nil]
   # @attr clear1_verification_token [String, nil]
@@ -70,7 +70,7 @@ module Idv
       address_verification_mechanism
       agent_proofed
       applicant
-      clear1_enabled
+      clear1_allowed
       clear1_verification_session_id
       clear1_wait_polling_started_at
       clear1_verification_state
@@ -174,7 +174,7 @@ module Idv
       profile = ActiveRecord::Base.transaction do
         profile = profile_maker.save_profile(
           fraud_pending_reason: threatmetrix_fraud_pending_reason,
-          gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
+          gpo_verification_needed: gpo_verification_needed?,
           in_person_verification_needed: user_has_pending_enrollment,
           selfie_check_performed: session[:selfie_check_performed],
           proofing_components:,
@@ -394,7 +394,7 @@ module Idv
     end
 
     def inheritly_proofed?
-       !!clear1_verified
+      !!clear1_verified
     end
 
     def address_mechanism_chosen?
@@ -509,6 +509,12 @@ module Idv
       elsif review_statuses.include?('review')
         'threatmetrix_review'
       end
+    end
+
+    def gpo_verification_needed?
+      return false if clear1_allowed && clear1_verified
+
+      !phone_confirmed? || verify_by_mail?
     end
   end
 end
