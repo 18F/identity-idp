@@ -390,7 +390,11 @@ module Idv
     end
 
     def phone_or_address_step_complete?
-      verify_by_mail? || phone_confirmed? || clear1_verified
+      verify_by_mail? || phone_confirmed?
+    end
+
+    def inheritly_proofed?
+       !!clear1_verified
     end
 
     def address_mechanism_chosen?

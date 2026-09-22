@@ -53,7 +53,7 @@ module Idv
         if result.success?
           idv_session.clear1_verified = true
           pii = extract_pii_from_result(result)
-          # validate_pii_from_result(pii)
+          # todo: validate_pii_from_result(pii)
           idv_session.applicant = pii
           redirect_to idv_enter_password_url
         else
@@ -105,9 +105,7 @@ module Idv
       def extract_pii_from_result(result)
         # See also Idv::InPerson::StateIdController#update
         idv_session.doc_auth_vendor = document_capture_session.doc_auth_vendor
-        idv_session.pii_from_doc = result.pii_from_doc
-
-        track_document_issuing_state(user, result.pii_from_doc[:state])
+        idv_session.applicant = result.pii
       end
     end
   end
