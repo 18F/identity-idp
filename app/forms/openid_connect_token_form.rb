@@ -22,13 +22,13 @@ class OpenidConnectTokenForm
   validates_inclusion_of :grant_type, in: %w[authorization_code]
   validates_inclusion_of :client_assertion_type,
                          in: [CLIENT_ASSERTION_TYPE],
-                         if: :private_key_jwt?
+                         if: :client_assertion_required?
 
   validate :validate_expired
   validate :validate_code
   validate :validate_pkce_or_private_key_jwt
-  validate :validate_code_verifier, if: :pkce?
-  validate :validate_client_assertion, if: :private_key_jwt?
+  validate :validate_code_verifier, if: :pkce_verification_required?
+  validate :validate_client_assertion, if: :client_assertion_required?
 
   def initialize(params)
     ATTRS.each do |key|
@@ -58,6 +58,8 @@ class OpenidConnectTokenForm
         expires_in: @ttl,
         id_token: id_token_builder.id_token,
       }
+    elsif errors.include?(:code_verifier)
+      { error: 'invalid_grant', error_description: errors.to_a.join(' ') }
     else
       { error: errors.to_a.join(' ') }
     end
@@ -79,25 +81,29 @@ class OpenidConnectTokenForm
       .order(updated_at: :desc).first
   end
 
-  def pkce?
-    pkce_sp && (code_verifier.present? || identity.try(:code_challenge).present?)
+  def pkce_verification_required?
+    # Enforce previously issued challenges even when admission of new PKCE requests is disabled.
+    !code_verifier.nil? || identity&.code_challenge.present?
   end
 
-  def private_key_jwt?
-    non_pkce_sp && (client_assertion.present? || client_assertion_type.present?)
+  def client_assertion_required?
+    service_provider&.pkce == false ||
+      (service_provider&.pkce.nil? &&
+        client_assertion_provided?)
   end
 
-  def non_pkce_sp
-    !service_provider&.pkce
+  def client_assertion_provided?
+    client_assertion.present? || client_assertion_type.present?
   end
 
-  def pkce_sp
+  def pkce_authentication_allowed?
     pkce = service_provider&.pkce
     pkce.nil? || pkce
   end
 
   def validate_pkce_or_private_key_jwt
-    return if pkce? || private_key_jwt?
+    return if (pkce_authentication_allowed? && pkce_verification_required?) ||
+              (client_assertion_required? && client_assertion_provided?)
     errors.add :code,
                t('openid_connect.token.errors.invalid_authentication'),
                type: :invalid_authentication
@@ -118,16 +124,30 @@ class OpenidConnectTokenForm
   end
 
   def validate_code_verifier
-    expected_code_challenge = remove_base64_padding(identity.try(:code_challenge))
-    given_code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier.to_s)
-    if expected_code_challenge &&
-       given_code_challenge &&
-       ActiveSupport::SecurityUtils.secure_compare(expected_code_challenge, given_code_challenge)
+    if valid_code_verifier? && valid_code_challenge? && code_verifier_matches_challenge?
       return
     end
+
     errors.add :code_verifier,
                t('openid_connect.token.errors.invalid_code_verifier'),
                type: :invalid_code_verifier
+  end
+
+  def valid_code_verifier?
+    code_verifier.is_a?(String) && code_verifier.match?(/\A[A-Za-z0-9._~-]{43,128}\z/)
+  end
+
+  def valid_code_challenge?
+    identity&.code_challenge.present? && expected_code_challenge.present?
+  end
+
+  def expected_code_challenge
+    remove_base64_padding(identity&.code_challenge)
+  end
+
+  def code_verifier_matches_challenge?
+    given_code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier)
+    ActiveSupport::SecurityUtils.secure_compare(expected_code_challenge, given_code_challenge)
   end
 
   def validate_client_assertion
@@ -204,6 +224,7 @@ class OpenidConnectTokenForm
       user_id: identity&.user&.uuid,
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
       code_verifier_present: code_verifier.present?,
+      code_challenge_present: identity&.code_challenge.present?,
       service_provider_pkce: service_provider&.pkce,
       ial: identity&.ial,
       integration_errors:,
