@@ -35,7 +35,7 @@ RSpec.feature 'clear1 inherited proofing step', :js, allow_browser_log: true do
   end
 
   context 'desktop flow', driver: :headless_chrome do
-    it 'redirects user to clear app' do
+    it 'proofs user' do
       visit_idp_from_oidc_sp_with_ial2
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_hybrid_handoff_step
@@ -53,6 +53,14 @@ RSpec.feature 'clear1 inherited proofing step', :js, allow_browser_log: true do
       @stub = clear1_session_stub
       click_button 'Clear1'
       expect(page).to have_current_path(clear_app_url)
+
+      clear1_result_stub
+
+      visit idv_clear1_session_update_url
+      expect(page).to have_current_path(idv_enter_password_path)
+      complete_enter_password_step(user)
+
+      expect(page).to have_current_path(idv_personal_key_path)
     end
   end
 
@@ -73,6 +81,21 @@ RSpec.feature 'clear1 inherited proofing step', :js, allow_browser_log: true do
           token:,
           id: session_id,
         }.compact.to_json,
+      )
+  end
+
+  def clear1_result_stub
+    clear1_result_endpoint = [
+      IdentityConfig.store.idv_clear1_api_base_url,
+      'v1',
+      'verification_sessions',
+      session_id,
+    ].join('/')
+
+    stub_request(:get, clear1_result_endpoint)
+      .to_return(
+        status:,
+        body: Clear1Fixtures.pass_json,
       )
   end
 end
