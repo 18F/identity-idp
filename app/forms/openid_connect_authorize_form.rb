@@ -58,9 +58,10 @@ class OpenidConnectAuthorizeForm
 
   validates :response_type, inclusion: { in: %w[code] }
   validates :prompt, presence: true, inclusion: { in: %w[create login select_account] }
-  validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :pkce_parameters_provided?
+  validate :validate_pkce_parameter_pair
+  validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :pkce_requested?
   validates :code_challenge, format: { with: /\A[A-Za-z0-9_-]{43}\z/ },
-                             if: :pkce_parameters_provided?
+                             if: :pkce_requested?
   validate :validate_private_key_jwt_pkce_enabled
 
   validate :validate_acr_values
@@ -165,7 +166,19 @@ class OpenidConnectAuthorizeForm
   end
 
   def private_key_jwt_sp?
+    # Missing service providers are rejected by validate_client_id.
     service_provider&.pkce == false
+  end
+
+  def validate_pkce_parameter_pair
+    return unless pkce_parameters_provided?
+    return if pkce_requested?
+
+    errors.add(
+      :base,
+      t('openid_connect.authorization.errors.pkce_parameter_pair'),
+      type: :pkce_parameter_pair,
+    )
   end
 
   def validate_private_key_jwt_pkce_enabled

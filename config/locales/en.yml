@@ -1776,6 +1776,7 @@ openid_connect.authorization.errors.no_auth: The acr_values are not authorized. 
 openid_connect.authorization.errors.no_valid_acr_values: No acceptable acr_values found. Please see our documentation at https://developers.login.gov/support/#oidc-no-acr-values
 openid_connect.authorization.errors.no_valid_scope: No valid scope values found. Please see our documentation at https://developers.login.gov/support/#oidc-no-scope
 openid_connect.authorization.errors.pkce_not_enabled: PKCE with private_key_jwt is not enabled.
+openid_connect.authorization.errors.pkce_parameter_pair: code_challenge and code_challenge_method must be provided together and must not be blank.
 openid_connect.authorization.errors.prompt_invalid: No valid prompt values found. Please see our documentation at https://developers.login.gov/support/#oidc-no-prompt
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri is invalid. Please see our documentation at https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri does not match registered redirect_uri. Please see our documentation at https://developers.login.gov/support/#oidc-redirect-match

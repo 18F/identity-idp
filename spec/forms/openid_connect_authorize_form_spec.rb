@@ -453,7 +453,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
         end
       end
 
-      [nil, '', 'a' * 42, 'a' * 44, '+' * 43].each do |challenge|
+      ['a' * 42, 'a' * 44, '+' * 43].each do |challenge|
         context "with invalid challenge #{challenge.inspect}" do
           let(:code_challenge) { challenge }
 
@@ -504,22 +504,30 @@ RSpec.describe OpenidConnectAuthorizeForm do
         end
       end
 
-      context 'with both PKCE parameters empty' do
-        let(:code_challenge) { '' }
-        let(:code_challenge_method) { '' }
+      [
+        [nil, 'S256'],
+        ['', 'S256'],
+        [' ', 'S256'],
+        ['a' * 43, nil],
+        ['a' * 43, ''],
+        ['a' * 43, ' '],
+        ['', nil],
+        [nil, ''],
+        ['', ''],
+        [' ', ' '],
+      ].each do |challenge, method|
+        context "with incomplete PKCE parameters #{[challenge, method].inspect}" do
+          let(:code_challenge) { challenge }
+          let(:code_challenge_method) { method }
 
-        it 'rejects the request instead of skipping PKCE validation' do
-          expect(valid?).to eq(false)
-          expect(form.errors[:code_challenge]).to be_present
-          expect(form.errors[:code_challenge_method]).to be_present
-        end
-      end
+          before { form.service_provider.update!(pkce: false) }
 
-      context 'code_challenge but no code_challenge_method' do
-        let(:code_challenge_method) { nil }
-        it 'has errors' do
-          expect(valid?).to eq(false)
-          expect(form.errors[:code_challenge_method]).to be_present
+          it 'returns only the parameter-pair error' do
+            expect(valid?).to eq(false)
+            expect(form.errors.to_hash).to eq(
+              base: [t('openid_connect.authorization.errors.pkce_parameter_pair')],
+            )
+          end
         end
       end
 
