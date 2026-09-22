@@ -942,10 +942,8 @@ RSpec.feature 'Sign in' do
       reload_ab_tests
     end
 
-    context 'when not configured to log failures only' do
-      it_behaves_like 'logs reCAPTCHA event and redirects appropriately',
-                      successful_sign_in: false
-    end
+    it_behaves_like 'logs reCAPTCHA event and redirects appropriately',
+                    successful_sign_in: false
   end
 
   context 'when piv/cac is required' do
