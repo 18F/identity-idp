@@ -130,10 +130,21 @@ RSpec.configure do |config|
 
   config.around(:each, type: :feature) do |example|
     Bullet.enable = true
-    Capybara::Webmock.start
     example.run
-    Capybara::Webmock.stop
     Bullet.enable = false
+  end
+
+  # The Capybara::Webmock proxy is what stops headless Chrome from reaching the network; only
+  # browser-driven examples route through it. Starting it per example spawns a rackup process and
+  # stopping it sleeps at least a second waiting for that process to exit, so keep one proxy for
+  # the whole run. Requests never hit it except via Chrome, so there is no state to reset between
+  # examples.
+  config.before(:each, type: :feature) do
+    Capybara::Webmock.start if Capybara.current_driver.to_s.start_with?('headless_chrome')
+  end
+
+  config.after(:suite) do
+    Capybara::Webmock.stop
   end
 
   config.around(:each, freeze_time: true) do |example|

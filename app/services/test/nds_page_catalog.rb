@@ -140,6 +140,48 @@ module Test
         ],
       ),
       Page.new(
+        key: 'backup-code-reminder',
+        title: 'Backup codes reminder',
+        flow: MFA,
+        template: 'users/backup_code_reminder/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'backup-code-regenerate',
+        title: 'Regenerate backup codes',
+        flow: MFA,
+        template: 'users/backup_code_setup/edit',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'backup-codes',
+        title: 'Save your backup codes',
+        flow: MFA,
+        template: 'users/backup_code_setup/create',
+        permutations: [
+          Permutation.new(label: 'Account creation (first MFA)', params: { account_creation: '1' }),
+          Permutation.new(
+            label: 'Account creation (second MFA)',
+            params: { account_creation: '1', second: '1' },
+          ),
+          Permutation.new(label: 'Multi-MFA selection (choose another)', params: { multi: '1' }),
+          Permutation.new(label: 'Regenerated (no stepper)', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'backup-code-confirm-setup',
+        title: 'Backup codes setup (confirm)',
+        flow: MFA,
+        template: 'users/backup_code_setup/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
         key: 'backup-code-delete',
         title: 'Delete backup codes',
         flow: MFA,

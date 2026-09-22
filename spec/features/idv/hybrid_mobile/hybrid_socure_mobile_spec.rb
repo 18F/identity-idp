@@ -1192,6 +1192,11 @@ RSpec.describe 'Hybrid Flow' do
       let(:socure_docv_webhook_repeat_endpoints) do # repeat webhooks
         ['https://1.example.test/thepath', 'https://2.example.test/thepath']
       end
+      # The final Socure result is held until the desktop has polled while the last attempt is
+      # still being processed. That is the window in which the rate limit has already been
+      # incremented but no result is stored yet, and where LG-16672 wrongly rate limited users.
+      let(:final_result_requested) { Queue.new }
+      let(:final_result_released) { Queue.new }
 
       before do
         stub_request(:post, "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore")
@@ -1204,7 +1209,8 @@ RSpec.describe 'Hybrid Flow' do
           .times(max_attempts - 1)
           .then
           .to_return do |_request|
-            sleep(1)
+            final_result_requested << true
+            final_result_released.pop(timeout: 10)
             {
               headers: {
                 'Content-Type' => 'application/json',
@@ -1235,10 +1241,28 @@ RSpec.describe 'Hybrid Flow' do
           complete_choose_id_type_step
           click_idv_continue
           expect(page).to have_current_path(fake_socure_document_capture_app_url)
-          max_attempts.times do
+          (max_attempts - 1).times do
             socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
           end
+        end
 
+        final_upload = Thread.new do
+          socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
+        end
+
+        begin
+          expect(final_result_requested.pop(timeout: 10)).to be(true)
+
+          perform_in_browser(:desktop) do
+            expect(link_sent_poll_status).to eq(401)
+            expect(page).to have_current_path(idv_link_sent_path)
+          end
+        ensure
+          final_result_released << true
+          final_upload.join
+        end
+
+        perform_in_browser(:mobile) do
           visit idv_hybrid_mobile_socure_document_capture_update_url
           expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
           expect(page).to have_text(t('doc_auth.instructions.switch_back'))
