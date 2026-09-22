@@ -48,6 +48,7 @@ module Proofing
             zipcode: traits.dig(:address, :postal_code),
             issuing_country_code: document_data[:issuing_country],
             sex: traits[:gender],
+            dob: document_data_date(document_data, :date_of_birth),
           }
 
           document_data = traits&.[](:document)
