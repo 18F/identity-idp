@@ -50,20 +50,19 @@ module EventSummarizer
       end
 
       def self.failure_payload(result)
-        fail_reasons = itemized_errors(result)
-        fail_reasons = [general_error(result)].compact if fail_reasons.empty?
+        fail_reasons = [general_error(result), *itemized_errors(result)].compact
 
-        detail =
-          if fail_reasons.any?
-            ": #{fail_reasons.join('; ')}"
-          else
-            '. Review logs for more information.'
-          end
-
-        {
-          type: :phone_finder_error,
-          description: "Phone Finder check failed#{detail}",
-        }
+        if fail_reasons.any?
+          {
+            type: :phone_finder_error,
+            description: "Phone Finder check failed: #{fail_reasons.uniq.join('; ')}",
+          }
+        else
+          {
+            type: :phone_finder_error,
+            description: 'Phone Finder check failed. Review logs for more information.',
+          }
+        end
       end
     end
   end

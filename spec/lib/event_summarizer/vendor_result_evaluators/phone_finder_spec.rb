@@ -8,158 +8,70 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::PhoneFinder do
     )
   end
 
+  let(:phone_result) do
+    {
+      success: false,
+      errors: errors,
+    }
+  end
+
+  let(:verdict) do
+    {
+      ProductStatus: 'fail',
+      ProductReason: {
+        Description: 'Failed - Input phone number could not be verified to name',
+      },
+    }
+  end
+
+  let(:itemized_reasons) do
+    {
+      ProductStatus: 'pass',
+      Items: [
+        {
+          ItemName: 'SpoofingPhoneNumber',
+          ItemStatus: 'pass',
+        },
+        {
+          ItemName: 'SubjectDeceased',
+          ItemStatus: 'fail',
+          ItemReason: {
+            Description: 'Primary Subject associated to the phone is deceased',
+          },
+        },
+      ],
+    }
+  end
+
   describe 'failed result' do
-    context 'general failure' do
-      let(:phone_result) do
+    context 'with a verdict and itemized reasons' do
+      let(:errors) do
         {
-          success: false,
-          errors: {
-            base: ["Verification failed with code: 'phone_finder_fail'"],
-            "PhoneFinder Checks": [
-              {
-                ProductStatus: 'fail',
-                ProductReason: {
-                  Description: 'General failure reason',
-                },
-              },
-            ],
-          },
+          PhoneFinder: [itemized_reasons],
+          'PhoneFinder Checks': [verdict],
         }
       end
 
-      it 'returns the correct result' do
-        expect(evaluation).to eql(
-          {
-            description: 'Phone Finder check failed: General failure reason',
-            type: :phone_finder_error,
-          },
-        )
-      end
-    end
-
-    context 'itemized failure' do
-      let(:phone_result) do
-        {
-          success: false,
-          errors: {
-            base: ["Verification failed with code: 'phone_finder_fail'"],
-            PhoneFinder: [
-              {
-                ProductStatus: 'fail',
-                Items: [
-                  {
-                    ItemStatus: 'fail',
-                    ItemReason: {
-                      Description: 'Specific failure reason A',
-                    },
-                  },
-                  {
-                    ItemStatus: 'fail',
-                    ItemReason: {
-                      Description: 'Specific failure reason B',
-                    },
-                  },
-                ],
-              },
-            ],
-          },
-        }
-      end
-
-      it 'returns the correct result' do
+      it 'reports the verdict, then the reasons behind it' do
         expect(evaluation).to eql(
           {
             description: 'Phone Finder check failed: ' \
-            'Specific failure reason A; Specific failure reason B',
-            type: :phone_finder_error,
-          },
-        )
-      end
-    end
-
-    context 'when the lookup succeeded but individual items failed' do
-      let(:phone_result) do
-        {
-          success: false,
-          errors: {
-            base: ["Verification failed with code: 'phone_finder_fail'"],
-            PhoneFinder: [
-              {
-                ProductType: 'PhoneFinder',
-                ProductStatus: 'pass',
-                Items: [
-                  { ItemName: 'SpoofingPhoneNumber', ItemStatus: 'pass' },
-                  {
-                    ItemName: 'PrepaidPhoneNumber',
-                    ItemStatus: 'fail',
-                    ItemReason: {
-                      Code: 'PrepaidPhoneNumber.MEDIUM',
-                      Description: 'Phone # is a Prepaid Phone',
-                    },
-                  },
-                  {
-                    ItemName: 'SubjectDeceased',
-                    ItemStatus: 'fail',
-                    ItemReason: {
-                      Code: 'SubjectDeceased.HIGH',
-                      Description: 'Primary Subject associated to the phone is deceased',
-                    },
-                  },
-                ],
-              },
-            ],
-            'PhoneFinder Checks': [
-              {
-                ProductStatus: 'fail',
-                ProductReason: {
-                  Code: 'phone_finder_fail',
-                  Description: 'Failed - Input phone number could not be verified to name',
-                },
-              },
-            ],
-          },
-        }
-      end
-
-      it 'reports the specific failed checks' do
-        expect(evaluation).to eql(
-          {
-            description: 'Phone Finder check failed: Phone # is a Prepaid Phone; ' \
+                         'Failed - Input phone number could not be verified to name; ' \
                          'Primary Subject associated to the phone is deceased',
             type: :phone_finder_error,
           },
         )
       end
-
-      it 'does not fall back to the generic name-verification text' do
-        expect(evaluation[:description]).not_to include('could not be verified to name')
-      end
     end
 
-    context 'with no itemized reasons' do
-      let(:phone_result) do
+    context 'with a verdict and no itemized reasons' do
+      let(:errors) do
         {
-          success: false,
-          errors: {
-            PhoneFinder: [
-              {
-                ProductStatus: 'pass',
-                Items: [{ ItemName: 'VOIPPhone', ItemStatus: 'pass' }],
-              },
-            ],
-            'PhoneFinder Checks': [
-              {
-                ProductStatus: 'fail',
-                ProductReason: {
-                  Description: 'Failed - Input phone number could not be verified to name',
-                },
-              },
-            ],
-          },
+          'PhoneFinder Checks': [verdict],
         }
       end
 
-      it 'falls back to the general reason' do
+      it 'reports the verdict' do
         expect(evaluation).to eql(
           {
             description: 'Phone Finder check failed: ' \
@@ -170,9 +82,27 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::PhoneFinder do
       end
     end
 
-    context 'with nothing usable in the payload' do
-      let(:phone_result) do
-        { success: false, errors: {} }
+    context 'with itemized reasons and no verdict' do
+      let(:errors) do
+        {
+          PhoneFinder: [itemized_reasons],
+        }
+      end
+
+      it 'reports the reasons' do
+        expect(evaluation).to eql(
+          {
+            description: 'Phone Finder check failed: ' \
+                         'Primary Subject associated to the phone is deceased',
+            type: :phone_finder_error,
+          },
+        )
+      end
+    end
+
+    context 'with nothing to explain the failure' do
+      let(:errors) do
+        {}
       end
 
       it 'points at the logs' do
