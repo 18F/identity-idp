@@ -613,7 +613,7 @@ module EventSummarizer
 
     def handle_state_id_validation_event(event:)
       properties = event.dig(*EVENT_PROPERTIES)
-      return if properties.present? && properties['bypass_exception']
+      return if properties&.dig('bypass_exception')
 
       add_events_for_failed_vendor_result(properties, timestamp: event['@timestamp'])
     end

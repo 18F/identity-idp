@@ -99,7 +99,7 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
         }
       end
 
-      it 'reports every mismatched attribute, required ones first' do
+      it 'reports every mismatched attribute, blocking ones first' do
         expect(evaluation[:description]).to eql(
           'AAMVA request failed. 3 attributes failed to validate: ' \
           'state_id_number, state_id_issued, address1',
@@ -109,6 +109,37 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
       it 'does not report MISSING attributes that were never sent' do
         expect(evaluation[:description]).not_to include('height')
         expect(evaluation[:description]).not_to include('sex')
+      end
+    end
+
+    context 'when an expired ID is what failed the request' do
+      let(:errors) do
+        {
+          state_id_expiration: ['UNVERIFIED'],
+          address1: ['UNVERIFIED'],
+        }
+      end
+
+      it 'lists the expiration ahead of attributes that cannot fail the request' do
+        expect(evaluation[:description]).to eql(
+          'AAMVA request failed. 2 attributes failed to validate: ' \
+          'state_id_expiration, address1',
+        )
+      end
+    end
+
+    context 'when the ID was sent without an expiration date' do
+      let(:errors) do
+        {
+          state_id_expiration: ['MISSING'],
+          address1: ['UNVERIFIED'],
+        }
+      end
+
+      it 'leaves it out, because #successful? accepts it MISSING' do
+        expect(evaluation[:description]).to eql(
+          'AAMVA request failed. 1 attribute failed to validate: address1',
+        )
       end
     end
 

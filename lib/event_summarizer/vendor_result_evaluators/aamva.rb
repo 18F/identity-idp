@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'active_support/core_ext/string/inflections'
-
 module EventSummarizer
   module VendorResultEvaluators
     module Aamva
@@ -15,13 +13,15 @@ module EventSummarizer
 
       ID_NUMBER = 'state_id_number'
 
-      # Attributes Proofing::Aamva::Proofer#successful? requires a match on. Every other attribute
-      # may come back MISSING.
       REQUIRED_VERIFICATION_ATTRIBUTES = %w[
         state_id_number
         dob
         last_name
         first_name
+      ].freeze
+
+      REQUIRED_IF_PRESENT_ATTRIBUTES = %w[
+        state_id_expiration
       ].freeze
 
       def self.evaluate_result(result)
@@ -85,7 +85,9 @@ module EventSummarizer
       def self.failed_attributes_description(failed_attributes)
         return if failed_attributes.empty?
 
-        "#{failed_attributes.length} #{'attribute'.pluralize(failed_attributes.length)} " \
+        plural = failed_attributes.length == 1 ? '' : 's'
+
+        "#{failed_attributes.length} attribute#{plural} " \
           "failed to validate: #{failed_attributes.join(', ')}"
       end
 
@@ -100,28 +102,37 @@ module EventSummarizer
       end
 
       def self.relevant_failed_attributes(attributes)
-        required_failures = []
+        blocking_failures = []
         other_failures = []
 
         attributes.each do |attribute, status|
           next unless failed?(attribute, status)
 
-          if required?(attribute)
-            required_failures << attribute
+          if blocking?(attribute)
+            blocking_failures << attribute
           else
             other_failures << attribute
           end
         end
 
-        required_failures + other_failures
+        blocking_failures + other_failures
       end
 
       def self.failed?(attribute, status)
         status == UNVERIFIED || (status == MISSING && required?(attribute))
       end
 
+      # An attribute the state contradicted, where that contradiction is what failed the request.
+      def self.blocking?(attribute)
+        required?(attribute) || required_if_present?(attribute)
+      end
+
       def self.required?(attribute)
         REQUIRED_VERIFICATION_ATTRIBUTES.include?(attribute)
+      end
+
+      def self.required_if_present?(attribute)
+        REQUIRED_IF_PRESENT_ATTRIBUTES.include?(attribute)
       end
     end
   end

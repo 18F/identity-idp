@@ -614,7 +614,7 @@ RSpec.describe EventSummarizer::IdvMatcher do
         matcher.handle_cloudwatch_event(
           socure_submission(success: false, reason_codes: ['R836']),
         )
-        matcher.handle_cloudwatch_event(error_visited_event(error_code: 'I834'))
+        matcher.handle_cloudwatch_event(error_visited_event(error_code: 'R836'))
 
         expect(significant_events).to include(
           have_attributes(type: :socure_docv_failures),
