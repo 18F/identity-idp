@@ -1786,8 +1786,6 @@ openid_connect.authorization.errors.missing_ial: Falta un nivel válido de IAL. 
 openid_connect.authorization.errors.no_auth: Los acr_values no están autorizados. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-missing-acr-values
 openid_connect.authorization.errors.no_valid_acr_values: No se encontraron ial_values aceptables. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-no-acr-values
 openid_connect.authorization.errors.no_valid_scope: No se encontraron valores de ámbito válidos. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-no-scope
-openid_connect.authorization.errors.pkce_not_enabled: PKCE con private_key_jwt no está habilitado.
-openid_connect.authorization.errors.pkce_parameter_pair: code_challenge y code_challenge_method deben proporcionarse juntos y no deben estar vacíos.
 openid_connect.authorization.errors.prompt_invalid: No se encontraron valores de consulta válidos. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-no-prompt
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri no es válido. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri no coincide con el redirect_uri registrado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-redirect-match

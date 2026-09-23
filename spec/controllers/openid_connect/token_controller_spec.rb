@@ -63,7 +63,6 @@ RSpec.describe OpenidConnect::TokenController do
             user_id: user.uuid,
             code_digest: kind_of(String),
             code_verifier_present: false,
-            code_challenge_present: false,
             expires_in: 0,
             ial: 1,
           }
@@ -148,7 +147,6 @@ RSpec.describe OpenidConnect::TokenController do
             user_id: user.uuid,
             code_digest: kind_of(String),
             code_verifier_present: false,
-            code_challenge_present: false,
             error_details: hash_including(:grant_type),
             ial: 1,
           }
