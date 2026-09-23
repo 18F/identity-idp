@@ -20,10 +20,6 @@ module Reporting
       IDV_FINAL_RESOLUTION = 'IdV: final resolution'
       SUSPENDED_USERS = 'User Suspension: Suspended'
       REINSTATED_USERS = 'User Suspension: Reinstated'
-
-      def self.all_events
-        constants.map { |c| const_get(c) }
-      end
     end
 
     # @param [Array<String>] issuers
