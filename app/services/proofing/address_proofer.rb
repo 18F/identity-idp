@@ -61,7 +61,7 @@ module Proofing
     end
 
     def proofer(address_vendor)
-      return proofing_agent_proofer if is_proofing_agent
+      return proofing_agent_proofer(address_vendor) if is_proofing_agent
 
       case address_vendor
       when :lexis_nexis
@@ -99,8 +99,10 @@ module Proofing
       end
     end
 
-    def proofing_agent_proofer
-      case IdentityConfig.store.idv_proofing_agent_phone_vendor
+    def proofing_agent_proofer(address_vendor)
+      phone_vendor = FeatureManagement.dual_vendor_check_enabled? ?
+                     address_vendor : IdentityConfig.store.idv_proofing_agent_phone_vendor
+      case phone_vendor
       when :lexis_nexis
         Proofing::LexisNexis::PhoneFinder::Proofer.new(
           phone_finder_workflow: IdentityConfig.store.lexisnexis_phone_finder_workflow,
