@@ -19,7 +19,7 @@ module DocAuth
           image_source: nil,
           images_cropped: false,
           liveness_checking_required: false,
-          passport_requested: false,
+          passport_requested: false
         )
           super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
           @front_image = front_image

@@ -47,7 +47,7 @@ module DocAuth
         def initialize(
           http_response:,
           document_capture_session:,
-          passport_requested: false,
+          passport_requested: false
         )
           @http_response = http_response
           @pii_from_doc = read_pii

@@ -21,7 +21,7 @@ module DocAuth
         user_uuid: nil,
         uuid_prefix: nil,
         liveness_checking_required: false,
-        passport_requested: false,
+        passport_requested: false
       )
         Requests::TrueIdRequest.new(
           config: config,

@@ -121,8 +121,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         input, config,
         selfie_required:,
         passport_submittal: true,
-        passport_requested: true,
-        passport_cards_supported:
+        passport_requested: true
       )
     end
 
@@ -142,24 +141,10 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       YAML
     end
 
-    context 'when passport cards are supported' do
-      let(:passport_cards_supported) { true }
-
-      it 'returns a successful result with the passport card document type' do
-        expect(response.success?).to eq(true)
-        expect(response.pii_from_doc).to be_a(Pii::Passport)
-        expect(response.pii_from_doc.document_type_received).to eq('passport_card')
-      end
-    end
-
-    context 'when passport cards are not supported' do
-      let(:passport_cards_supported) { false }
-
-      it 'is not a successful result and returns a passport card doc type error' do
-        expect(response.success?).to eq(false)
-        expect(response.errors)
-          .to eq({ passport_card: I18n.t('doc_auth.errors.doc.doc_type_check') })
-      end
+    it 'returns a successful result with the passport card document type' do
+      expect(response.success?).to eq(true)
+      expect(response.pii_from_doc).to be_a(Pii::Passport)
+      expect(response.pii_from_doc.document_type_received).to eq('passport_card')
     end
   end
 
