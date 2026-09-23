@@ -9,11 +9,13 @@ class RecaptchaService
     :score,
     :errors,
     :reasons,
+    :extended_verdict_reasons,
     keyword_init: true,
   ) do
     alias_method :success?, :success
 
-    def initialize(success:, assessment_id: nil, score: nil, errors: [], reasons: [])
+    def initialize(success:, assessment_id: nil, score: nil,
+                   errors: [], reasons: [], extended_verdict_reasons: [])
       super
     end
   end
@@ -57,6 +59,7 @@ class RecaptchaService
           assessment_id: response.name,
           score: response.risk_analysis.score,
           reasons: response.risk_analysis.reasons,
+          extended_verdict_reasons: response.risk_analysis.extended_verdict_reasons,
         )
       else
         RecaptchaResult.new(

@@ -129,6 +129,7 @@ RSpec.describe RecaptchaEnterpriseForm do
             score: nil,
             errors: [],
             reasons: ['EXPIRED'],
+            extended_verdict_reasons: [],
             assessment_id: nil,
           },
           evaluated_as_valid: false,
@@ -146,6 +147,7 @@ RSpec.describe RecaptchaEnterpriseForm do
       let(:recaptcha_action) { 'ACTION' }
       let(:recaptcha_service) { instance_double(RecaptchaService) }
       let(:risk_analysis_reason) { 'AUTOMATION' }
+      let(:extended_verdict_reason) { 'Known bot' }
 
       before do
         allow(RecaptchaService).to receive(:new).and_return(recaptcha_service)
@@ -154,6 +156,7 @@ RSpec.describe RecaptchaEnterpriseForm do
           .and_return(RecaptchaService::RecaptchaResult.new(
             success: true,
             reasons: [risk_analysis_reason],
+            extended_verdict_reasons: [extended_verdict_reason],
             assessment_id: name,
             score:,
           ))
@@ -178,6 +181,7 @@ RSpec.describe RecaptchaEnterpriseForm do
             success: true,
             score:,
             reasons: [risk_analysis_reason],
+            extended_verdict_reasons: [extended_verdict_reason],
             errors: [],
             assessment_id: name,
           },
@@ -207,6 +211,7 @@ RSpec.describe RecaptchaEnterpriseForm do
               success: true,
               score:,
               reasons: ['LOW_CONFIDENCE_SCORE'],
+              extended_verdict_reasons: [extended_verdict_reason],
               errors: [],
               assessment_id: name,
             },
@@ -254,6 +259,7 @@ RSpec.describe RecaptchaEnterpriseForm do
             success: true,
             score:,
             reasons: ['LOW_CONFIDENCE'],
+            extended_verdict_reasons: [],
             errors: [],
             assessment_id: name,
           },
@@ -276,6 +282,7 @@ RSpec.describe RecaptchaEnterpriseForm do
               success: true,
               score:,
               reasons: ['LOW_CONFIDENCE'],
+              extended_verdict_reasons: [],
               errors: [],
               assessment_id: name,
             },
