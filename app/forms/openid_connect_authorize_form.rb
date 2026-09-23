@@ -58,11 +58,7 @@ class OpenidConnectAuthorizeForm
 
   validates :response_type, inclusion: { in: %w[code] }
   validates :prompt, presence: true, inclusion: { in: %w[create login select_account] }
-  validate :validate_pkce_parameter_pair
-  validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :pkce_requested?
-  validates :code_challenge, format: { with: /\A[A-Za-z0-9_-]{43}\z/ },
-                             if: :pkce_requested?
-  validate :validate_private_key_jwt_pkce_enabled
+  validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :code_challenge
 
   validate :validate_acr_values
   validate :validate_client_id
@@ -156,42 +152,6 @@ class OpenidConnectAuthorizeForm
   private
 
   attr_reader :identity, :success
-
-  def pkce_parameters_provided?
-    [code_challenge, code_challenge_method].compact.present?
-  end
-
-  def pkce_requested?
-    code_challenge.present? && code_challenge_method.present?
-  end
-
-  def private_key_jwt_sp?
-    # Missing service providers are rejected by validate_client_id.
-    service_provider&.pkce == false
-  end
-
-  def validate_pkce_parameter_pair
-    return unless pkce_parameters_provided?
-    return if pkce_requested?
-
-    errors.add(
-      :base,
-      t('openid_connect.authorization.errors.pkce_parameter_pair'),
-      type: :pkce_parameter_pair,
-    )
-  end
-
-  def validate_private_key_jwt_pkce_enabled
-    return unless private_key_jwt_sp?
-    return unless pkce_requested?
-    return if IdentityConfig.store.openid_connect_private_key_jwt_pkce_enabled
-
-    errors.add(
-      :code_challenge,
-      t('openid_connect.authorization.errors.pkce_not_enabled'),
-      type: :pkce_not_enabled,
-    )
-  end
 
   def code
     identity&.session_uuid

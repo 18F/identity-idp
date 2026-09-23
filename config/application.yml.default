@@ -375,7 +375,6 @@ new_device_alert_window_start_in_minutes: 480
 newrelic_license_key: ''
 openid_connect_authorization_code_expiration_seconds: 300
 openid_connect_content_security_form_action_enabled: false
-openid_connect_private_key_jwt_pkce_enabled: false
 openid_connect_redirect: client_side_js
 otp_delivery_blocklist_findtime: 5
 otp_delivery_blocklist_maxretry: 10
