@@ -227,12 +227,12 @@ else
         class: 'GpoExpirationJob',
         cron: cron_24h,
       },
-      # Monthly report checking in on key metrics
-      monthly_key_metrics_report: {
-        class: 'Reports::MonthlyKeyMetricsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.yesterday.end_of_day] },
-      },
+      # Disabled with redshift/S3 version replacing it, will delete soon
+      # monthly_key_metrics_report: {
+      #  class: 'Reports::MonthlyKeyMetricsReport',
+      #  cron: cron_24h,
+      #  args: -> { [Time.zone.yesterday.end_of_day] },
+      # },
       monthly_key_metrics_s3_report: {
         class: 'Reports::MonthlyKeyMetricsS3Report',
         cron: cron_24h_6am, # reporting rails scheduled a little after midnight

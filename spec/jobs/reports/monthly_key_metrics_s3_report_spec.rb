@@ -107,7 +107,7 @@ RSpec.describe Reports::MonthlyKeyMetricsS3Report do
   it 'sends out a report to just team agnes' do
     expect(ReportMailer).to receive(:tables_report).once.with(
       to: anything,
-      subject: 'Monthly Key Metrics Report NEW - 2026-03-02',
+      subject: 'Monthly Key Metrics Report - 2026-03-02',
       reports: anything,
       message: report.preamble,
       attachment_format: :xlsx,
@@ -122,7 +122,7 @@ RSpec.describe Reports::MonthlyKeyMetricsS3Report do
     it 'sends out a report to everybody' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: anything,
-        subject: 'Monthly Key Metrics Report NEW - 2026-02-28',
+        subject: 'Monthly Key Metrics Report - 2026-02-28',
         reports: anything,
         message: report.preamble,
         attachment_format: :xlsx,

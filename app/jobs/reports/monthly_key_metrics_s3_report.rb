@@ -53,7 +53,7 @@ module Reports
 
       ReportMailer.tables_report(
         to: email_addresses,
-        subject: "Monthly Key Metrics Report NEW - #{date.to_date}",
+        subject: "Monthly Key Metrics Report - #{date.to_date}",
         reports: reports,
         message: preamble,
         attachment_format: :xlsx,
