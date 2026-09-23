@@ -77,6 +77,7 @@ module Idv
         form_submit_url:,
         disable_passports: disable_passports?,
         auto_check_value:,
+        passport_cards_enabled: true,
         mdl_enabled: mdl_enabled?,
         show_verify_in_person:,
       }

@@ -605,26 +605,6 @@ RSpec.describe AbTests do
     it_behaves_like 'an A/B test that uses document_capture_session_uuid as a discriminator'
   end
 
-  describe 'DOC_AUTH_PASSPORT_CARDS_ALLOWED' do
-    let(:ab_test) { :DOC_AUTH_PASSPORT_CARDS_ALLOWED }
-
-    let(:disable_ab_test) do
-      -> {
-        allow(IdentityConfig.store).to receive(:doc_auth_passport_cards_enabled_percent)
-          .and_return(0)
-      }
-    end
-
-    let(:enable_ab_test) do
-      -> {
-        allow(IdentityConfig.store).to receive(:doc_auth_passport_cards_enabled_percent)
-          .and_return(50)
-      }
-    end
-
-    it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
-  end
-
   describe 'NDS_LOOK_AND_FEEL' do
     it 'is registered in AbTests.all' do
       expect(AbTests.all[:NDS_LOOK_AND_FEEL]).to be_a(AbTest)

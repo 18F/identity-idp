@@ -248,7 +248,6 @@ module DocAuth
           Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES :
           Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
 
-          expected_id_types += [Idp::Constants::DocumentTypes::PASSPORT_CARD]
         expected_id_types.include?(id_type)
       end
 
