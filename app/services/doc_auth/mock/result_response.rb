@@ -8,16 +8,15 @@ module DocAuth
       include DocAuth::Mock::YmlLoaderConcern
 
       attr_reader :uploaded_file, :config, :selfie_required, :passport_submittal,
-                  :passport_requested, :passport_cards_supported
+                  :passport_requested
 
       def initialize(uploaded_file, config, selfie_required: false, passport_submittal: false,
-                     passport_requested: false, passport_cards_supported: false)
+                     passport_requested: false)
         @uploaded_file = uploaded_file.to_s
         @config = config
         @selfie_required = selfie_required
         @passport_submittal = passport_submittal
         @passport_requested = passport_requested
-        @passport_cards_supported = passport_cards_supported
         super(
           success: success?,
           errors:,
@@ -67,10 +66,6 @@ module DocAuth
               classification_info,
               passport_check_result,
             ].any?(&:present?)
-
-            if unsupported_passport_card?
-              return { passport_card: I18n.t('doc_auth.errors.doc.doc_type_check') }
-            end
 
             if id_type.present? && !expected_document_type_received?
               return { unexpected_id_type: true, expected_id_type: expected_id_type }
@@ -134,7 +129,6 @@ module DocAuth
       end
 
       def doc_auth_success?
-        return false if unsupported_passport_card?
         return false unless id_type_supported?
         return false unless expected_document_type_received?
         return false if transaction_status_from_uploaded_file ==
@@ -254,9 +248,7 @@ module DocAuth
           Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES :
           Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
 
-        if passport_cards_supported
           expected_id_types += [Idp::Constants::DocumentTypes::PASSPORT_CARD]
-        end
         expected_id_types.include?(id_type)
       end
 
@@ -266,10 +258,6 @@ module DocAuth
 
       def passport_card_detected?
         id_type == Idp::Constants::DocumentTypes::PASSPORT_CARD
-      end
-
-      def unsupported_passport_card?
-        passport_card_detected? && !passport_cards_supported
       end
 
       def expected_id_type
