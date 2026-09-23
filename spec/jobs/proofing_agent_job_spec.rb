@@ -52,6 +52,7 @@ RSpec.describe ProofingAgentJob, type: :job do
       ActiveJob::Base.queue_adapter.performed_jobs.clear
       allow(IdentityConfig.store).to receive(:idv_proofing_agent_config)
         .and_return(idv_proofing_agent_config)
+      allow(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor).and_return(:mock)
       allow(Db::SpCost::AddSpCost).to receive(:call)
       stub_analytics
       allow(Analytics).to receive(:new).and_return(@analytics)
