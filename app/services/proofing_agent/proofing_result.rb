@@ -75,30 +75,10 @@ module ProofingAgent
       resolution_result&.dig(:context, :stages, :phone_precheck).present?
     end
 
-    def self.expiration_date_near?(pii)
-      return false if pii.blank?
-
-      expiration_date = pii[:state_id_expiration] ||
-                        pii[:passport_expiration] ||
-                        pii.dig(:state_id, :expiration_date) ||
-                        pii.dig(:passport, :expiration_date)
-      return false if expiration_date.blank?
-
-      parsed_date = DateParser.parse_legacy(expiration_date)
-      parsed_date <= Time.zone.today.to_date + 2.days
-    rescue StandardError
-      false
-    end
-
-    def expiration_date_near?
-      self.class.expiration_date_near?(pii)
-    end
-
     private
 
     def determine_failure_reason
       return 'system_error' if system_error.present?
-      return 'expiration_date_near' if expiration_date_near?
       return 'system_error' if all_vendor_results_missing?
 
       if resolution_result.present? && resolution_result[:exception].present?

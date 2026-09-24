@@ -1310,8 +1310,38 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           context 'when the state_id is near expiration (2 days away)' do
             let(:expiration_date) { (Time.zone.today + 2.days).strftime('%Y-%m-%d') }
 
-            it 'returns 202' do
-              expect(action.status).to eq(202)
+            it 'returns 422' do
+              action
+              expect(action.status).to eq(422)
+              body = JSON.parse(response.body)
+
+              expect(body['status']).to eq('failed')
+              expect(body['reason']).to eq('expiration_date_near')
+
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_proof_user_requested,
+                response_body: a_hash_including(status: 'failed', reason: 'expiration_date_near'),
+                proofing_agent: proofing_agent_analytics_hash,
+                issuer:,
+              )
+            end
+          end
+
+          context 'when the state_id is expiration date is invalid' do
+            let(:expiration_date) { 'doh' }
+            let(:body_errors) do
+              { expiration_date: ['invalid format'] }
+            end
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+
+              body = JSON.parse(response.body)
+              expect(body['expiration_date']).to eq(['invalid format'])
             end
           end
 
@@ -1959,8 +1989,38 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         context 'when the passport is near expiration (2 days away)' do
           let(:expiration_date) { (Time.zone.today + 2.days).strftime('%Y-%m-%d') }
 
-          it 'returns 202' do
-            expect(action.status).to eq(202)
+          it 'returns 422' do
+            action
+            expect(action.status).to eq(422)
+            body = JSON.parse(response.body)
+
+            expect(body['status']).to eq('failed')
+            expect(body['reason']).to eq('expiration_date_near')
+
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_proof_user_requested,
+              response_body: a_hash_including(status: 'failed', reason: 'expiration_date_near'),
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
+            )
+          end
+        end
+
+        context 'when the state_id is expiration date is invalid' do
+          let(:expiration_date) { 'umm' }
+          let(:body_errors) do
+            { expiration_date: ['invalid format'] }
+          end
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              **body_failure_event_attrs,
+            )
+
+            body = JSON.parse(response.body)
+            expect(body['expiration_date']).to eq(['invalid format'])
           end
         end
 
