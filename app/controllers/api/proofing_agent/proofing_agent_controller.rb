@@ -68,11 +68,7 @@ module Api
         pii_validation = Idv::ProofingAgent::AgentPiiForm.new(pii: proof_params).submit
         render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
 
-        begin
-          render_expiration_date_near and return if expiration_date_near?
-        rescue
-          render_bad_request(errors: { expiration_date: ['invalid format'] }) and return
-        end
+        render_expiration_date_near and return if expiration_date_near? # date already validated
 
         document_capture_session = DocumentCaptureSession.create!(
           user_id: user.id,
@@ -470,6 +466,7 @@ module Api
 
         return false if expiration_date.blank?
 
+        # expiration data already pii validated
         parsed_date = DateParser.parse_legacy(expiration_date)
         parsed_date.between?(Time.zone.today.to_date, Time.zone.today.to_date + 2.days)
       end
