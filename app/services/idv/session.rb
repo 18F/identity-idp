@@ -394,7 +394,7 @@ module Idv
     end
 
     def inherited_proofed?
-      clear1_allowed && !!clear1_verified
+      !!clear1_allowed && !!clear1_verified
     end
 
     def address_mechanism_chosen?
