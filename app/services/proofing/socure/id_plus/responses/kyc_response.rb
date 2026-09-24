@@ -31,9 +31,10 @@ module Proofing
           end
 
           def attributes_requiring_additional_verification
-            (REQUIRED_ATTRIBUTES - verified_attributes)
+            failed_attributes = (REQUIRED_ATTRIBUTES - verified_attributes)
               .map { |attribute| reportable_failed_attribute(attribute) }
-              .uniq.sort
+            failed_attributes << :unknown if has_get_to_yes_blocking_reason_codes?
+            failed_attributes.uniq.sort
           end
 
           def failed_result_can_pass_with_additional_verification?
@@ -81,6 +82,21 @@ module Proofing
           def auto_failure_reason_codes
             @auto_failure_reason_codes ||=
               IdentityConfig.store.idv_socure_kyc_auto_failure_reason_codes
+          end
+
+          # Some reason codes describe conditions AAMVA coverage cannot speak to, such as a
+          # commercial address. Unlike the autofail codes they do not fail
+          # the result on their own, but they must prevent an AAMVA rescue. Reporting :unknown
+          # alongside the failed attributes blocks it, since :unknown never appears in
+          # aamva_verified_attributes. This mirrors LexisNexis, where checks we do not map become
+          # :unknown for the same reason.
+          def has_get_to_yes_blocking_reason_codes?
+            (reason_codes & get_to_yes_blocking_reason_codes).any?
+          end
+
+          def get_to_yes_blocking_reason_codes
+            @get_to_yes_blocking_reason_codes ||=
+              IdentityConfig.store.idv_aamva_get_to_yes_socure_kyc_blocking_reason_codes
           end
 
           private

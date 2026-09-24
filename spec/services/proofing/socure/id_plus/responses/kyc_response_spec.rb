@@ -11,6 +11,14 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::KycResponse do
 
   let(:field_validation_overrides) { {} }
 
+  let(:get_to_yes_blocking_reason_codes) { [] }
+
+  before do
+    allow(IdentityConfig.store)
+      .to receive(:idv_aamva_get_to_yes_socure_kyc_blocking_reason_codes)
+      .and_return(get_to_yes_blocking_reason_codes)
+  end
+
   let(:response_body) do
     {
       'referenceId' => 'a1234b56-e789-0123-4fga-56b7c890d123',
@@ -211,6 +219,41 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::KycResponse do
         expect(subject.attributes_requiring_additional_verification).to eq([])
       end
     end
+
+    context 'when a rescue blocking reason code is present' do
+      let(:get_to_yes_blocking_reason_codes) { ['R909'] }
+      let(:response_reason_codes) { ['I919', 'R909'] }
+
+      it 'reports unknown alongside the failed attribute' do
+        expect(subject.attributes_requiring_additional_verification)
+          .to eq([:address, :unknown])
+      end
+
+      context 'when a name is also unverified' do
+        let(:field_validation_overrides) { { 'firstName' => 0.01 } }
+
+        it 'reports a single unknown entry' do
+          expect(subject.attributes_requiring_additional_verification)
+            .to eq([:address, :unknown])
+        end
+      end
+
+      context 'when every required attribute is verified' do
+        let(:field_validation_overrides) { { 'city' => 0.99, 'state' => 0.99, 'zip' => 0.99 } }
+
+        it 'reports only unknown' do
+          expect(subject.attributes_requiring_additional_verification).to eq([:unknown])
+        end
+      end
+    end
+
+    context 'when a reason code is not configured as rescue blocking' do
+      let(:get_to_yes_blocking_reason_codes) { ['R909'] }
+
+      it 'reports only the failed attribute' do
+        expect(subject.attributes_requiring_additional_verification).to eq([:address])
+      end
+    end
   end
 
   describe '#failed_result_can_pass_with_additional_verification?' do
@@ -247,6 +290,38 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::KycResponse do
       it 'is true, and the reported unknown attribute prevents the rescue downstream' do
         expect(subject.failed_result_can_pass_with_additional_verification?).to eq(true)
         expect(subject.attributes_requiring_additional_verification).to eq([:unknown])
+      end
+    end
+
+    context 'when a rescue blocking reason code is present' do
+      let(:get_to_yes_blocking_reason_codes) { ['R909'] }
+      let(:response_reason_codes) { ['I919', 'R909'] }
+
+      it 'is true, and the reported unknown attribute prevents the rescue downstream' do
+        expect(subject.failed_result_can_pass_with_additional_verification?).to eq(true)
+        expect(subject.attributes_requiring_additional_verification)
+          .to eq([:address, :unknown])
+      end
+
+      context 'when every required attribute is verified' do
+        let(:field_validation_overrides) { { 'city' => 0.99, 'state' => 0.99, 'zip' => 0.99 } }
+
+        it 'does not fail the result, unlike an autofail reason code' do
+          expect(subject.successful?).to eq(true)
+          expect(subject.failed_result_can_pass_with_additional_verification?).to eq(false)
+        end
+      end
+
+      context 'when the code is also configured as an autofail code' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_socure_kyc_auto_failure_reason_codes)
+            .and_return(['R909'])
+        end
+
+        it 'fails the result and cannot pass with additional verification' do
+          expect(subject.successful?).to eq(false)
+          expect(subject.failed_result_can_pass_with_additional_verification?).to eq(false)
+        end
       end
     end
   end
