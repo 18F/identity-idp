@@ -1294,7 +1294,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             let(:expiration_date) { '2026-01-01' }
 
             it 'returns 202' do
-              expect(action.status).to eq(202)
+              expect(action.status).to eq(400)
             end
           end
 
@@ -1330,7 +1330,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           context 'when the state_id is expiration date is invalid' do
             let(:expiration_date) { 'doh' }
             let(:body_errors) do
-              { expiration_date: ['invalid format'] }
+              { expiration_date: ['is expired, or invalid'] }
             end
 
             it 'returns 400' do
@@ -1341,7 +1341,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               )
 
               body = JSON.parse(response.body)
-              expect(body['expiration_date']).to eq(['invalid format'])
+              expect(body['expiration_date']).to eq(['is expired, or invalid'])
             end
           end
 
@@ -1645,8 +1645,19 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           context 'when the state_id is expired' do
             let(:expiration_date) { '2026-01-01' }
 
-            it 'returns 202' do
-              expect(action.status).to eq(202)
+            let(:body_errors) do
+              { expiration_date: ['is expired, or invalid'] }
+            end
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+
+              body = JSON.parse(response.body)
+              expect(body['expiration_date']).to eq(['is expired, or invalid'])
             end
           end
         end
@@ -1882,8 +1893,19 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           context 'when the state_id is expired' do
             let(:expiration_date) { '2026-01-01' }
 
-            it 'returns 202' do
-              expect(action.status).to eq(202)
+            let(:body_errors) do
+              { expiration_date: ['is expired, or invalid'] }
+            end
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+
+              body = JSON.parse(response.body)
+              expect(body['expiration_date']).to eq(['is expired, or invalid'])
             end
           end
         end
@@ -1973,7 +1995,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           let(:expiration_date) { '2026-01-01' }
 
           it 'returns 202' do
-            expect(action.status).to eq(202)
+            expect(action.status).to eq(400)
           end
         end
 
@@ -2009,7 +2031,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         context 'when the state_id is expiration date is invalid' do
           let(:expiration_date) { 'umm' }
           let(:body_errors) do
-            { expiration_date: ['invalid format'] }
+            { expiration_date: ['is expired, or invalid'] }
           end
 
           it 'returns 400' do
@@ -2020,7 +2042,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             )
 
             body = JSON.parse(response.body)
-            expect(body['expiration_date']).to eq(['invalid format'])
+            expect(body['expiration_date']).to eq(['is expired, or invalid'])
           end
         end
 

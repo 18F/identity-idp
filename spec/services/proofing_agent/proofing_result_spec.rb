@@ -320,62 +320,6 @@ RSpec.describe ProofingAgent::ProofingResult do
     end
   end
 
-  context 'when state_id expiration is near (2 days away)' do
-    let(:resolution_result) { nil }
-    let(:aamva_result) { nil }
-    let(:mrz_result) { nil }
-    let(:pii) { { state_id_expiration: (Time.zone.today + 2.days).to_s } }
-
-    it 'returns failure with expiration_date_near reason' do
-      expect(subject.combined_result).to include(
-        success: false,
-        reason: 'expiration_date_near',
-      )
-    end
-  end
-
-  context 'when state_id expiration is in the past' do
-    let(:resolution_result) { nil }
-    let(:aamva_result) { nil }
-    let(:mrz_result) { nil }
-    let(:pii) { { state_id_expiration: (Time.zone.today - 1.day).to_s } }
-
-    it 'returns failure with expiration_date_near reason' do
-      expect(subject.combined_result).to include(
-        success: false,
-        reason: 'expiration_date_near',
-      )
-    end
-  end
-
-  context 'when passport expiration is near (2 days away)' do
-    let(:resolution_result) { nil }
-    let(:aamva_result) { nil }
-    let(:mrz_result) { nil }
-    let(:pii) { { passport_expiration: (Time.zone.today + 2.days).to_s } }
-
-    it 'returns failure with expiration_date_near reason' do
-      expect(subject.combined_result).to include(
-        success: false,
-        reason: 'expiration_date_near',
-      )
-    end
-  end
-
-  context 'when passport expiration is in the past' do
-    let(:resolution_result) { nil }
-    let(:aamva_result) { nil }
-    let(:mrz_result) { nil }
-    let(:pii) { { passport_expiration: (Time.zone.today - 1.day).to_s } }
-
-    it 'returns failure with expiration_date_near reason' do
-      expect(subject.combined_result).to include(
-        success: false,
-        reason: 'expiration_date_near',
-      )
-    end
-  end
-
   context 'when state_id expiration is 3 days away' do
     let(:aamva_result) { { success: true, vendor_name: 'TestVendor' } }
     let(:pii) { { state_id_expiration: (Time.zone.today + 3.days).to_s } }

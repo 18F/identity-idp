@@ -13,6 +13,13 @@ module Pii
       validates :issuing_country_code,
                 inclusion: { in: Idp::Constants::SUPPORTED_PASSPORT_ISSUING_COUNTRY_CODES,
                              message: 'is not a valid issuing country code' }
+      validates_with UspsInPersonProofing::DateValidator,
+                     attributes: [:expiration_date],
+                     if: -> { expiration_date.present? },
+                     greater_than: ->(_rec) do
+                       Time.zone.today.to_date
+                     end,
+                     message: 'is expired, or invalid'
     end
   end
 end
