@@ -17,9 +17,9 @@ module Pii
                      attributes: [:expiration_date],
                      if: -> { expiration_date.present? },
                      greater_than: ->(_rec) do
-                       Time.zone.today.to_date + 2.days
+                       Time.zone.today.to_date
                      end,
-                     message: 'is expired, or near expiration'
+                     message: 'is expired, or invalid'
     end
   end
 end

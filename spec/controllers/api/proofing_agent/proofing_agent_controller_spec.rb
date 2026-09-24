@@ -1292,16 +1292,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           context 'when the state_id is expired' do
             let(:expiration_date) { '2026-01-01' }
-            let(:body_errors) { { expiration_date: ['is expired, or near expiration'] } }
 
-            it 'returns 400' do
+            it 'returns 202' do
               expect(action.status).to eq(400)
-              expect(@analytics).to have_logged_event(
-                :idv_proofing_agent_request_failed,
-                **body_failure_event_attrs,
-              )
-              body = JSON.parse(response.body)
-              expect(body['expiration_date'][0]).to eq(body_errors[:expiration_date][0])
             end
           end
 
@@ -1316,7 +1309,29 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           context 'when the state_id is near expiration (2 days away)' do
             let(:expiration_date) { (Time.zone.today + 2.days).strftime('%Y-%m-%d') }
-            let(:body_errors) { { expiration_date: ['is expired, or near expiration'] } }
+
+            it 'returns 422' do
+              action
+              expect(action.status).to eq(422)
+              body = JSON.parse(response.body)
+
+              expect(body['status']).to eq('failed')
+              expect(body['reason']).to eq('expiration_date_near')
+
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_proof_user_requested,
+                response_body: a_hash_including(status: 'failed', reason: 'expiration_date_near'),
+                proofing_agent: proofing_agent_analytics_hash,
+                issuer:,
+              )
+            end
+          end
+
+          context 'when the state_id is expiration date is invalid' do
+            let(:expiration_date) { 'doh' }
+            let(:body_errors) do
+              { expiration_date: ['is expired, or invalid'] }
+            end
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -1324,8 +1339,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 :idv_proofing_agent_request_failed,
                 **body_failure_event_attrs,
               )
+
               body = JSON.parse(response.body)
-              expect(body['expiration_date'][0]).to eq(body_errors[:expiration_date][0])
+              expect(body['expiration_date']).to eq(['is expired, or invalid'])
             end
           end
 
@@ -1628,7 +1644,10 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           context 'when the state_id is expired' do
             let(:expiration_date) { '2026-01-01' }
-            let(:body_errors) { { expiration_date: ['is expired, or near expiration'] } }
+
+            let(:body_errors) do
+              { expiration_date: ['is expired, or invalid'] }
+            end
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -1636,8 +1655,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 :idv_proofing_agent_request_failed,
                 **body_failure_event_attrs,
               )
+
               body = JSON.parse(response.body)
-              expect(body['expiration_date'][0]).to eq(body_errors[:expiration_date][0])
+              expect(body['expiration_date']).to eq(['is expired, or invalid'])
             end
           end
         end
@@ -1872,7 +1892,10 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           context 'when the state_id is expired' do
             let(:expiration_date) { '2026-01-01' }
-            let(:body_errors) { { expiration_date: ['is expired, or near expiration'] } }
+
+            let(:body_errors) do
+              { expiration_date: ['is expired, or invalid'] }
+            end
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -1880,8 +1903,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 :idv_proofing_agent_request_failed,
                 **body_failure_event_attrs,
               )
+
               body = JSON.parse(response.body)
-              expect(body['expiration_date'][0]).to eq(body_errors[:expiration_date][0])
+              expect(body['expiration_date']).to eq(['is expired, or invalid'])
             end
           end
         end
@@ -1969,16 +1993,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
         context 'when the passport is expired' do
           let(:expiration_date) { '2026-01-01' }
-          let(:body_errors) { { expiration_date: ['is expired, or near expiration'] } }
 
-          it 'returns 400' do
+          it 'returns 202' do
             expect(action.status).to eq(400)
-            expect(@analytics).to have_logged_event(
-              :idv_proofing_agent_request_failed,
-              **body_failure_event_attrs,
-            )
-            body = JSON.parse(response.body)
-            expect(body['expiration_date'][0]).to eq(body_errors[:expiration_date][0])
           end
         end
 
@@ -1991,9 +2008,31 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
         end
 
-        context 'when the state_id is near expiration (2 days away)' do
+        context 'when the passport is near expiration (2 days away)' do
           let(:expiration_date) { (Time.zone.today + 2.days).strftime('%Y-%m-%d') }
-          let(:body_errors) { { expiration_date: ['is expired, or near expiration'] } }
+
+          it 'returns 422' do
+            action
+            expect(action.status).to eq(422)
+            body = JSON.parse(response.body)
+
+            expect(body['status']).to eq('failed')
+            expect(body['reason']).to eq('expiration_date_near')
+
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_proof_user_requested,
+              response_body: a_hash_including(status: 'failed', reason: 'expiration_date_near'),
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
+            )
+          end
+        end
+
+        context 'when the state_id is expiration date is invalid' do
+          let(:expiration_date) { 'umm' }
+          let(:body_errors) do
+            { expiration_date: ['is expired, or invalid'] }
+          end
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -2001,12 +2040,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               :idv_proofing_agent_request_failed,
               **body_failure_event_attrs,
             )
+
             body = JSON.parse(response.body)
-            expect(body['expiration_date'][0]).to eq(body_errors[:expiration_date][0])
+            expect(body['expiration_date']).to eq(['is expired, or invalid'])
           end
         end
 
-        context 'when the state_id is near expiration (3 days away)' do
+        context 'when the passport is near expiration (3 days away)' do
           let(:expiration_date) { (Time.zone.today + 3.days).strftime('%Y-%m-%d') }
           let(:body_errors) { {} }
 
@@ -2386,6 +2426,36 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               issuer:,
               transaction_id:,
             )
+          end
+        end
+
+        context 'when proofing failed due to near expiration' do
+          let(:failed_proofing_result) do
+            Idv::ProofingAgent::AgentProofedUser.new(
+              id: SecureRandom.uuid,
+              success: false,
+              reason: 'expiration_date_near',
+              transaction_id:,
+            )
+          end
+
+          before do
+            session = DocumentCaptureSession.create!(
+              uuid: transaction_id,
+              user_id: user.id,
+              issuer:,
+            )
+            allow(session).to receive(:load_agent_proofed_user).and_return(failed_proofing_result)
+            allow(DocumentCaptureSession).to receive(:find_by).with(uuid: transaction_id)
+              .and_return(session)
+          end
+
+          it 'returns expiration_date_near reason' do
+            action
+            body = JSON.parse(response.body)
+            expect(body['success']).to eq(false)
+            expect(body['reason']).to eq('expiration_date_near')
+            expect(body['transaction_id']).to eq(transaction_id)
           end
         end
 

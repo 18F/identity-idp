@@ -68,6 +68,8 @@ module Api
         pii_validation = Idv::ProofingAgent::AgentPiiForm.new(pii: proof_params).submit
         render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
 
+        render_expiration_date_near and return if expiration_date_near? # date already validated
+
         document_capture_session = DocumentCaptureSession.create!(
           user_id: user.id,
           issuer:,
@@ -206,6 +208,18 @@ module Api
         )
 
         render json: response_body, status: :not_found
+      end
+
+      def render_expiration_date_near
+        response_body = { status: 'failed', reason: 'expiration_date_near' }
+
+        analytics.idv_proofing_agent_proof_user_requested(
+          **analytics_arguments,
+          response_body:,
+          transaction_id: nil,
+        )
+
+        render json: response_body, status: :unprocessable_content
       end
 
       def validate_required_headers
@@ -444,6 +458,17 @@ module Api
 
       def ssn_rate_limiter
         @ssn_rate_limiter ||= RateLimiter.new(user: user, rate_limit_type: :proof_ssn)
+      end
+
+      def expiration_date_near?
+        expiration_date = proof_params.dig(:state_id, :expiration_date) ||
+                          proof_params.dig(:passport, :expiration_date)
+
+        return false if expiration_date.blank?
+
+        # expiration data already pii validated
+        parsed_date = DateParser.parse_legacy(expiration_date)
+        parsed_date.between?(Time.zone.today.to_date, Time.zone.today.to_date + 2.days)
       end
     end
   end
