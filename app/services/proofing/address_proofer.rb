@@ -61,9 +61,9 @@ module Proofing
     end
 
     def proofer(address_vendor)
-      return proofing_agent_proofer(address_vendor) if is_proofing_agent
+      vendor = proofing_vendor(address_vendor)
 
-      case address_vendor
+      case vendor
       when :lexis_nexis
         Proofing::LexisNexis::PhoneFinder::Proofer.new(
           phone_finder_workflow: IdentityConfig.store.lexisnexis_phone_finder_workflow,
@@ -99,43 +99,11 @@ module Proofing
       end
     end
 
-    def proofing_agent_proofer(address_vendor)
-      phone_vendor = FeatureManagement.dual_vendor_check_enabled? ?
-                     address_vendor : IdentityConfig.store.idv_proofing_agent_phone_vendor
-      case phone_vendor
-      when :lexis_nexis
-        Proofing::LexisNexis::PhoneFinder::Proofer.new(
-          phone_finder_workflow: IdentityConfig.store.lexisnexis_phone_finder_workflow,
-          account_id: IdentityConfig.store.lexisnexis_account_id,
-          base_url: IdentityConfig.store.lexisnexis_base_url,
-          username: IdentityConfig.store.lexisnexis_username,
-          password: IdentityConfig.store.lexisnexis_password,
-          hmac_key_id: IdentityConfig.store.lexisnexis_hmac_key_id,
-          hmac_secret_key: IdentityConfig.store.lexisnexis_hmac_secret_key,
-          request_mode: IdentityConfig.store.lexisnexis_request_mode,
-        )
-      when :lexis_nexis_ddp
-        Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer.new(
-          api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
-          org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
-          base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
-          ddp_policy: IdentityConfig.store.lexisnexis_phone_finder_ddp_policy,
-        )
-      when :socure
-        Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer.new(
-          Proofing::Socure::IdPlus::Config.new(
-            user_uuid:,
-            user_email:,
-            api_key: IdentityConfig.store.socure_idplus_api_key,
-            base_url: IdentityConfig.store.socure_idplus_base_url,
-            timeout: IdentityConfig.store.socure_idplus_timeout_in_seconds,
-          ),
-        )
-      when :mock
-        Proofing::Mock::AddressMockClient.new
-      else
-        raise InvalidAddressVendorError, "#{address_vendor} is not a valid address vendor"
-      end
+    def proofing_vendor(address_vendor)
+      return address_vendor unless is_proofing_agent
+
+      FeatureManagement.dual_vendor_check_enabled? ?
+                        address_vendor : IdentityConfig.store.idv_proofing_agent_phone_vendor
     end
 
     def primary_vendor
