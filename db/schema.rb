@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_08_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -720,7 +720,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_120000) do
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.text "credential_id", null: false, comment: "sensitive=false"
     t.text "credential_public_key", null: false, comment: "sensitive=false"
-    t.string "name", limit: 80, null: false, comment: "sensitive=true"
+    t.string "name", limit: 180, null: false, comment: "sensitive=true"
     t.boolean "platform_authenticator", comment: "sensitive=false"
     t.string "transports", comment: "sensitive=false", array: true
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
