@@ -393,8 +393,8 @@ module Idv
       verify_by_mail? || phone_confirmed?
     end
 
-    def inheritly_proofed?
-      !!clear1_verified
+    def inherited_proofed?
+      clear1_allowed && !!clear1_verified
     end
 
     def address_mechanism_chosen?
