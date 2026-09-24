@@ -2,12 +2,14 @@
 
 module Idv
   class PhoneStep
-    def initialize(idv_session:, trace_id:, analytics:, attempts_api_tracker:, fraud_ops_tracker:)
+    def initialize(idv_session:, trace_id:, analytics:, attempts_api_tracker:, fraud_ops_tracker:,
+                   superior_evidence_ignore_phone_verification: false)
       self.idv_session = idv_session
       @trace_id = trace_id
       @analytics = analytics
       @attempts_api_tracker = attempts_api_tracker
       @fraud_ops_tracker = fraud_ops_tracker
+      @superior_evidence_ignore_phone_verification = superior_evidence_ignore_phone_verification
     end
 
     def submit(step_params)
@@ -44,20 +46,22 @@ module Idv
 
     def async_state_done(async_state)
       @idv_result = async_state.result
-      if (success = idv_result[:success])
-        handle_successful_proofing_attempt
-        idv_session.address_verification_vendor = address_verification_vendor
+      if idv_result[:success]
+        handle_successful_proofing_attempt(vendor: address_verification_vendor)
       else
         handle_failed_proofing_attempt
         if phone_confirmation_manually_reviewed?
-          handle_successful_proofing_attempt
-          idv_session.address_verification_vendor = 'manual_review'
+          handle_successful_proofing_attempt(vendor: 'manual_review')
+        elsif @superior_evidence_ignore_phone_verification
+          handle_successful_proofing_attempt(
+            vendor: Idp::Constants::Vendors::PHONE_CHECK_SUPERIOR_EVIDENCE_SKIPPED,
+          )
         end
       end
 
       delete_async
       final_result = FormResponse.new(
-        success:,
+        success: idv_result[:success],
         errors: idv_result[:errors],
         extra: extra_analytics_attributes(idv_result.except(:alternate_result)),
       )
@@ -72,15 +76,6 @@ module Idv
       end
 
       { final_result:, alternate_result: }
-    end
-
-    def start_phone_confirmation(step_params)
-      self.step_params = step_params
-      idv_session.previous_phone_step_params = step_params.slice(
-        :phone, :international_code,
-        :otp_delivery_preference
-      )
-      handle_successful_proofing_attempt
     end
 
     private
@@ -100,8 +95,8 @@ module Idv
       run_job(document_capture_session)
     end
 
-    def handle_successful_proofing_attempt
-      update_idv_session
+    def handle_successful_proofing_attempt(vendor:)
+      update_idv_session(vendor)
       start_phone_confirmation_session
     end
 
@@ -159,8 +154,9 @@ module Idv
       idv_result[:timed_out] || idv_result[:exception]
     end
 
-    def update_idv_session
+    def update_idv_session(vendor)
       idv_session.applicant = applicant
+      idv_session.address_verification_vendor = vendor
       idv_session.mark_phone_step_started!
     end
 

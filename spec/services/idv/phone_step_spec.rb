@@ -237,6 +237,41 @@ RSpec.describe Idv::PhoneStep do
           end
         end
       end
+
+      context 'when superior evidence ignore phone verificaiton is true' do
+        subject do
+          described_class.new(
+            idv_session:,
+            trace_id:,
+            analytics:,
+            attempts_api_tracker:,
+            fraud_ops_tracker:,
+            superior_evidence_ignore_phone_verification: true,
+          )
+        end
+
+        it 'sets address_verification_vendor to SuperiorEvidenceSkipped' do
+          proofing_phone = Phonelib.parse(bad_phone)
+          extra = {
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+            country_code: proofing_phone.country,
+            area_code: proofing_phone.area_code,
+            vendor: mock_vendor,
+          }
+
+          subject.submit(phone: bad_phone)
+          expect(subject.async_state).to be_done
+          result = subject.async_state_done(subject.async_state)
+          result = result[:final_result]
+
+          expect(result).to be_kind_of(FormResponse)
+          expect(result.success?).to eq(false)
+          expect(result.extra).to eq(extra)
+          expect(idv_session.address_verification_vendor).to eq(
+            Idp::Constants::Vendors::PHONE_CHECK_SUPERIOR_EVIDENCE_SKIPPED,
+          )
+        end
+      end
     end
 
     it 'increments step attempts when the vendor request times out' do
@@ -342,31 +377,6 @@ RSpec.describe Idv::PhoneStep do
 
         expect(subject.failure_reason).to eq(:jobfail)
       end
-    end
-  end
-
-  context '#start_phone_confirmation' do
-    let(:otp_delivery_preference) { 'sms' }
-    let(:step_params) do
-      { phone: good_phone, otp_delivery_preference:, international_code: 'US' }
-    end
-
-    before do
-      subject.start_phone_confirmation(step_params)
-    end
-
-    it 'updates the idv session to initialize the phone confirmation' do
-      expect(idv_session).to have_attributes(
-        address_verification_mechanism: 'phone',
-        vendor_phone_confirmation: true,
-        user_phone_confirmation: false,
-        applicant: hash_including(
-          phone: good_phone,
-          uuid_prefix: service_provider.app_id,
-        ),
-        user_phone_confirmation_session: an_instance_of(Idv::PhoneConfirmationSession),
-        previous_phone_step_params: step_params,
-      )
     end
   end
 end

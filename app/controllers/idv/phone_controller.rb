@@ -66,12 +66,7 @@ module Idv
       )
 
       if result.success?
-        if skip_phone_verification?
-          record_superior_evidence_skipped
-          start_phone_confirmation
-        else
-          start_phone_verification
-        end
+        start_phone_verification
       else
         flash.now[:error] = result.first_error_message
         render_new
@@ -98,28 +93,6 @@ module Idv
     end
 
     private
-
-    def skip_phone_verification?
-      proofing_with_superior_evidence? && superior_evidence_skip_phone_verification_enabled?
-    end
-
-    def proofing_with_superior_evidence?
-      idv_session.proofing_with_superior_evidence?
-    end
-
-    def superior_evidence_skip_phone_verification_enabled?
-      ab_test_bucket(:SUPERIOR_EVIDENCE_SKIP_PHONE_VERIFICATION_ALLOWED) == :allowed
-    end
-
-    def record_superior_evidence_skipped
-      idv_session.address_verification_vendor =
-        Idp::Constants::Vendors::PHONE_CHECK_SUPERIOR_EVIDENCE_SKIPPED
-    end
-
-    def start_phone_confirmation
-      step.start_phone_confirmation(step_params.to_h)
-      redirect_to_next_step
-    end
 
     def start_phone_verification
       submit_proofing_attempt
@@ -193,6 +166,7 @@ module Idv
         analytics:,
         attempts_api_tracker:,
         fraud_ops_tracker:,
+        superior_evidence_ignore_phone_verification: superior_evidence_ignore_phone_check?,
       )
     end
 
@@ -258,11 +232,27 @@ module Idv
         failure_reason: attempts_api_tracker.parse_failure_reason(form_result),
       )
 
-      if form_result.success? || idv_session.phone_confirmation_manually_reviewed
+      if form_result.success? || bypass_phone_check_result?
         redirect_to_next_step
       else
         handle_proofing_failure
       end
+    end
+
+    def bypass_phone_check_result?
+      idv_session.phone_confirmation_manually_reviewed || superior_evidence_ignore_phone_check?
+    end
+
+    def superior_evidence_ignore_phone_check?
+      proofing_with_superior_evidence? && superior_evidence_skip_phone_verification_enabled?
+    end
+
+    def proofing_with_superior_evidence?
+      idv_session.proofing_with_superior_evidence?
+    end
+
+    def superior_evidence_skip_phone_verification_enabled?
+      ab_test_bucket(:SUPERIOR_EVIDENCE_SKIP_PHONE_VERIFICATION_ALLOWED) == :allowed
     end
 
     def attempts_failure_reason(result)
@@ -330,7 +320,7 @@ module Idv
         :new, locals: {
           presenter: Idv::PhonePresenter.new(
             gpo_letter_available: gpo_verify_by_mail_policy.send_letter_available?,
-            skip_phone_verification: skip_phone_verification?,
+            skip_phone_verification: superior_evidence_ignore_phone_check?,
             url_options: url_options,
           ),
         }
