@@ -81,7 +81,6 @@ RSpec.describe IppAamvaProofingJob, type: :job do
               ),
             ),
             current_sp: service_provider,
-            state_id_address_resolution_result: nil,
             ipp_enrollment_in_progress: true,
             doc_auth_flow: true,
             analytics: analytics_spy,
