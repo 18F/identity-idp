@@ -70,7 +70,7 @@ module Api
 
         begin
           render_expiration_date_near and return if expiration_date_near?
-        rescue => e
+        rescue
           render_bad_request(errors: { expiration_date: ['invalid format'] }) and return
         end
 
