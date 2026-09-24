@@ -66,7 +66,8 @@ module DocAuth
         uuid_prefix: nil,
         liveness_checking_required: false,
         passport_requested: false,
-        passport_cards_supported: false
+        passport_cards_supported: false,
+        passport_card_requested: false
       )
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
@@ -77,6 +78,11 @@ module DocAuth
             instance_id: instance_id,
           )
           return passport_image_response unless passport_image_response.success?
+
+          if passport_card_requested && !back_image.nil?
+            back_image_response = post_back_image(image: back_image, instance_id: instance_id)
+            return back_image_response unless back_image_response.success?
+          end
         else
           front_image_response = post_front_image(image: front_image, instance_id: instance_id)
           return front_image_response unless front_image_response.success?

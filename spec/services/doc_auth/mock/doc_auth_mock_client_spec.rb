@@ -585,5 +585,45 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         )
       end
     end
+
+    context 'when the document type is passport and it is a passport card' do
+      let(:post_images_response) do
+        client.post_images(
+          passport_image: DocAuthImageFixtures.document_front_image_data_uri,
+          back_image: DocAuthImageFixtures.document_back_image,
+          document_type_requested: 'Passport',
+          passport_card_requested: true,
+        )
+      end
+
+      it 'also posts the back image' do
+        post_images_response
+
+        expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
+          DocAuthImageFixtures.document_back_image,
+        )
+      end
+
+      it 'returns a successful mock doc auth response' do
+        expect(post_images_response).to be_a(DocAuth::Mock::ResultResponse)
+        expect(post_images_response.success?).to be(true)
+      end
+
+      context 'when the back image upload fails' do
+        let(:post_images_response) do
+          client.post_images(
+            passport_image: DocAuthImageFixtures.document_front_image_data_uri,
+            back_image: "http_status:\n  back: 500\n",
+            document_type_requested: 'Passport',
+            passport_card_requested: true,
+          )
+        end
+
+        it 'returns the back image failure response without checking results' do
+          expect(post_images_response.success?).to eq(false)
+          expect(post_images_response.errors).to eq(general: ['network'])
+        end
+      end
+    end
   end
 end

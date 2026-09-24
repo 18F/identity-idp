@@ -1641,6 +1641,87 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
+    context 'uploading a Passport Card image' do
+      let(:front_image) { nil }
+      let(:passport_image) { DocAuthImageFixtures.document_passport_image_multipart }
+      let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
+      let(:passport_requested) { true }
+
+      before do
+        document_capture_session.request_passport_card!
+      end
+
+      describe '#valid?' do
+        context 'when the back image is missing' do
+          let(:back_image) { nil }
+
+          it 'is not valid' do
+            expect(form.valid?).to eq(false)
+            expect(form.errors[:back]).to be_present
+          end
+        end
+
+        context 'when the back image is present' do
+          it 'is valid' do
+            expect(form.valid?).to eq(true)
+            expect(form.errors).to be_blank
+          end
+        end
+      end
+
+      describe '#submit' do
+        let(:doc_auth_client) { double(DocAuth::LexisNexis::LexisNexisClient) }
+        let(:mock_response) do
+          DocAuth::Mock::ResultResponse.new(
+            DocAuthImageFixtures.document_passport_image,
+            image_config,
+            passport_submittal: true,
+            passport_requested: true,
+          )
+        end
+
+        before do
+          form.instance_variable_set(:@doc_auth_client, doc_auth_client)
+          allow(doc_auth_client).to receive(:post_images).and_return(mock_response)
+          allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(true)
+          allow_any_instance_of(DocAuth::Mock::DosPassportApiClient).to receive(:fetch)
+            .and_return(DocAuth::Response.new(success: true, errors: {}))
+        end
+
+        it 'sends both the passport image and the back image to the vendor' do
+          expect(doc_auth_client).to receive(:post_images).with(
+            hash_including(
+              passport_image: an_instance_of(String),
+              back_image: an_instance_of(String),
+              document_type_requested: DocAuth::LexisNexis::DocumentTypes::PASSPORT,
+              passport_requested: true,
+              passport_card_requested: true,
+            ),
+          ).and_return(mock_response)
+
+          form.submit
+        end
+
+        context 'doc escrow is enabled' do
+          let(:doc_escrow_enabled) { true }
+          let(:attempts_api_enabled_for_sp) { true }
+
+          it 'escrows both the passport (front) and back images' do
+            expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              hash_including(
+                document_passport_image_file_id: an_instance_of(String),
+                document_passport_image_encryption_key: an_instance_of(String),
+                document_back_image_file_id: an_instance_of(String),
+                document_back_image_encryption_key: an_instance_of(String),
+              ),
+            )
+
+            form.submit
+          end
+        end
+      end
+    end
+
     describe 'image source' do
       let(:source) { nil }
       let(:front_image_metadata) do

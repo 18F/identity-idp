@@ -188,8 +188,13 @@ module Idv
     end
 
     def document_type_requested
-      document_capture_session.passport_requested? ? Idp::Constants::DocumentTypes::PASSPORT :
+      if document_capture_session.passport_card_requested?
+        Idp::Constants::DocumentTypes::PASSPORT_CARD
+      elsif document_capture_session.passport_book_requested?
+        Idp::Constants::DocumentTypes::PASSPORT
+      else
         Idp::Constants::DocumentTypes::STATE_ID_CARD
+      end
     end
 
     def track_document_issuing_state(user, state)

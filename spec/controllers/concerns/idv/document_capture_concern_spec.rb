@@ -524,4 +524,37 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       end
     end
   end
+
+  describe '#document_type_requested (private)' do
+    before do
+      allow(controller).to receive(:document_capture_session).and_return(document_capture_session)
+    end
+
+    context 'when a passport book is requested' do
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
+
+      it 'returns passport' do
+        expect(controller.send(:document_type_requested))
+          .to eq(Idp::Constants::DocumentTypes::PASSPORT)
+      end
+    end
+
+    context 'when a passport card is requested' do
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT_CARD }
+
+      it 'returns passport_card' do
+        expect(controller.send(:document_type_requested))
+          .to eq(Idp::Constants::DocumentTypes::PASSPORT_CARD)
+      end
+    end
+
+    context 'when a state id is requested' do
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
+
+      it 'returns state_id_card' do
+        expect(controller.send(:document_type_requested))
+          .to eq(Idp::Constants::DocumentTypes::STATE_ID_CARD)
+      end
+    end
+  end
 end

@@ -71,6 +71,31 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
       expect(result.extra_attributes[:review_status]).to eq('pass')
     end
 
+    context 'with a passport card' do
+      let(:response_body) { LexisNexisFixtures.ddp_true_id_passport_card_response_success }
+
+      it 'sends both the passport image (as front) and the back image to the vendor' do
+        subject.post_images(
+          passport_image:,
+          back_image:,
+          document_type_requested: DocAuth::LexisNexis::DocumentTypes::PASSPORT,
+          passport_requested: true,
+          passport_cards_supported: true,
+          passport_card_requested: true,
+          liveness_checking_required:,
+          user_uuid:,
+          user_email:,
+        )
+
+        expect(WebMock).to have_requested(:post, post_url)
+          .with { |req|
+            body = JSON.parse(req.body)
+            body['Trueid.image_data.white_front'] == Base64.strict_encode64(passport_image) &&
+              body['Trueid.image_data.white_back'] == Base64.strict_encode64(back_image)
+          }
+      end
+    end
+
     context 'when the request fails with an exception' do
       before do
         stub_request(:post, post_url)
@@ -247,6 +272,21 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
             user_email:,
           )
         end.to raise_error(ArgumentError, 'passport_image is required for passport documents')
+      end
+
+      it 'returns ArgumentError when back_image is nil for a passport card' do
+        expect do
+          subject.post_images(
+            passport_image:,
+            back_image: nil,
+            document_type_requested: DocAuth::LexisNexis::DocumentTypes::PASSPORT,
+            passport_requested:,
+            passport_card_requested: true,
+            liveness_checking_required:,
+            user_uuid:,
+            user_email:,
+          )
+        end.to raise_error(ArgumentError, 'back_image is required for passport card documents')
       end
 
       it 'returns ArgumentError when selfie_image is nil with liveness checking' do

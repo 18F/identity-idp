@@ -12,6 +12,7 @@ RSpec.describe Idv::IdvImages do
     EncryptedDocStorage::DocWriter::Result.new(name: 'name', encryption_key: '12345')
   end
   let(:doc_escrow_s3_storage_enabled) { false }
+  let(:passport_card_requested) { false }
 
   let(:params) do
     {
@@ -22,7 +23,9 @@ RSpec.describe Idv::IdvImages do
     }.compact
   end
 
-  subject(:idv_images) { described_class.new(params) }
+  subject(:idv_images) do
+    described_class.new(params, passport_card_requested: passport_card_requested)
+  end
   let(:images) { subject.images }
 
   describe '#initalize' do
@@ -183,6 +186,26 @@ RSpec.describe Idv::IdvImages do
             expect(subject.needed_images_present?(liveness_checking_required)).to eq({})
           end
         end
+
+        context 'when passport_card_requested is true' do
+          let(:passport_card_requested) { true }
+
+          context 'and a back image is submitted' do
+            let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
+
+            it 'returns no errors' do
+              expect(subject.needed_images_present?(liveness_checking_required)).to eq({})
+            end
+          end
+
+          context 'and no back image is submitted' do
+            it 'returns an error for the back image' do
+              expect(subject.needed_images_present?(liveness_checking_required)).to eq(
+                { back: { type: :blank } },
+              )
+            end
+          end
+        end
       end
     end
 
@@ -244,6 +267,22 @@ RSpec.describe Idv::IdvImages do
       let(:selfie_image) { nil }
       it 'returns nil' do
         expect(subject.selfie).to be nil
+      end
+    end
+  end
+
+  describe '#passport_card_requested?' do
+    context 'when passport_card_requested is true' do
+      let(:passport_card_requested) { true }
+
+      it 'returns true' do
+        expect(subject.passport_card_requested?).to be true
+      end
+    end
+
+    context 'when passport_card_requested is false' do
+      it 'returns false' do
+        expect(subject.passport_card_requested?).to be false
       end
     end
   end
