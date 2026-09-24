@@ -350,6 +350,43 @@ RSpec.describe Idv::WelcomeController do
       expect(response).to redirect_to(idv_agreement_url)
     end
 
+    it 'clear1_allowed is false' do
+      put :update
+
+      expect(subject.idv_session.clear1_allowed).to eq(false)
+    end
+
+    context 'when inherited proofing clear1 is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(true)
+      end
+
+      context 'when user is NOT bucketed into clear1 AB' do
+        before do
+          reload_ab_tests
+        end
+        it 'passes passport_cards_supported as false to the presenter' do
+          put :update
+
+          expect(subject.idv_session.clear1_allowed).to eq(false)
+        end
+      end
+
+      context 'when user is bucketed into clear1 AB' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:idv_clear1_enabled_percent).and_return(100)
+          reload_ab_tests
+        end
+
+        it 'allows clear1 proofing' do
+          put :update
+
+          expect(subject.idv_session.clear1_allowed).to eq(true)
+        end
+      end
+    end
+
     context 'in the NDS layout' do
       before { allow(controller).to receive(:nds_layout?).and_return(true) }
 
