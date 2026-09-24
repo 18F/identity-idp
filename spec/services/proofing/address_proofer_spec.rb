@@ -230,6 +230,11 @@ RSpec.describe Proofing::AddressProofer do
         before do
           allow(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
             .and_return(:socure)
+          expect(Db::SpCost::AddSpCost).to receive(:call).with(
+            service_provider,
+            :socure_address,
+            transaction_id: socure_phone_risk_result.transaction_id,
+          )
         end
 
         it 'calls set idv_proofing_agent_phone_vendor' do
