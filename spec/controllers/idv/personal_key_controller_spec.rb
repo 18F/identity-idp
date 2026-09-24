@@ -140,6 +140,17 @@ RSpec.describe Idv::PersonalKeyController do
         it 'returns a falsey result' do
           expect(preconditions).to be_falsey
         end
+
+        context 'when inherited proofed' do
+          before do
+            idv_session.clear1_allowed = true
+            idv_session.clear1_verified = true
+          end
+
+          it 'returns a truthy result' do
+            expect(preconditions).to be_truthy
+          end
+        end
       end
 
       context 'when personal_key_acknowledged is false' do
