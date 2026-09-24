@@ -68,6 +68,8 @@ module Api
         pii_validation = Idv::ProofingAgent::AgentPiiForm.new(pii: proof_params).submit
         render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
 
+        return render_expiration_date_near if expiration_date_near?
+
         document_capture_session = DocumentCaptureSession.create!(
           user_id: user.id,
           issuer:,
@@ -155,6 +157,18 @@ module Api
 
       def render_user_email_unconfirmed
         response_body = { status: 'failed', reason: 'account_email_unconfirmed' }
+
+        analytics.idv_proofing_agent_proof_user_requested(
+          **analytics_arguments,
+          response_body:,
+          transaction_id: nil,
+        )
+
+        render json: response_body, status: :unprocessable_content
+      end
+
+      def render_expiration_date_near
+        response_body = { status: 'failed', reason: 'expiration_date_near' }
 
         analytics.idv_proofing_agent_proof_user_requested(
           **analytics_arguments,
@@ -286,6 +300,21 @@ module Api
 
         ssn = proof_params[:ssn]
         ssn.is_a?(String) && ssn.length == 9 && ssn.match?(/\A[0-9]+\z/)
+      end
+
+      def expiration_date_near?
+        expiration_date = proof_params.dig(:state_id, :expiration_date) ||
+                          proof_params.dig(:passport, :expiration_date) ||
+                          proof_params[:state_id_expiration] ||
+                          proof_params[:passport_expiration]
+        return false if expiration_date.blank?
+
+        parsed_date = DateParser.parse_legacy(expiration_date)
+        return false if parsed_date.blank?
+
+        parsed_date <= Time.zone.today.to_date + 2.days
+      rescue StandardError
+        false
       end
 
       def ssn_active_profiles
