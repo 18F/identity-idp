@@ -61,6 +61,10 @@ RSpec.feature 'clear1 inherited proofing step', :js, allow_browser_log: true do
       complete_enter_password_step(user)
 
       expect(page).to have_current_path(idv_personal_key_path)
+      acknowledge_and_confirm_personal_key
+
+      # sign up completed
+      expect(page).to have_current_path(sign_up_completed_url)
     end
   end
 
