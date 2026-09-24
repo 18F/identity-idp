@@ -61,7 +61,8 @@ RSpec.describe Pii::StateIdForm do
     let(:state_id) { valid_state_id.merge(expiration_date: (Time.zone.today - 1).to_s) }
 
     it 'is valid' do
-      expect(form).to be_valid
+      form.valid?
+      expect(form.errors[:expiration_date]).to include('is expired, or invalid')
     end
   end
 
