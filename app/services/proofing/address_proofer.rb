@@ -97,13 +97,6 @@ module Proofing
       end
     end
 
-    def proofing_vendor(address_vendor)
-      return address_vendor unless is_proofing_agent
-
-      FeatureManagement.dual_vendor_check_enabled? ?
-                        address_vendor : IdentityConfig.store.idv_proofing_agent_phone_vendor
-    end
-
     def primary_vendor
       @primary_vendor ||= begin
         if (rand * 100) <= IdentityConfig.store.idv_address_vendor_socure_percent
