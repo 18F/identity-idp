@@ -267,7 +267,10 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
       let(:params) do
         {
           user: {
-            email:, terms_accepted: '1', email_language:, recaptcha_token: 'token',
+            email:,
+            terms_accepted: '1',
+            email_language:,
+            recaptcha_token: 'token',
             recaptcha_mock_score:
           },
         }
