@@ -112,6 +112,36 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
       end
     end
 
+    context 'when an error redirect url is provided' do
+      let(:error_redirect_url) { 'https://idv.test/errors?error_code=mdl_not_found' }
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+      let(:document_type) { DocAuth::Socure::Requests::DocumentRequest::MDL_DOCUMENT_TYPE }
+
+      subject(:document_request) do
+        described_class.new(
+          customer_user_id: customer_user_id,
+          redirect_url: redirect_url,
+          language:,
+          document_capture_session:,
+          error_redirect_url:,
+        )
+      end
+
+      before do
+        expected_request_body[:config][:errorRedirect] = {
+          method: 'GET',
+          url: error_redirect_url,
+        }
+      end
+
+      it 'includes errorRedirect in the config' do
+        document_request.fetch
+
+        expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+          .with(body: JSON.generate(expected_request_body))
+      end
+    end
+
     it 'passes the response through' do
       response = document_request.fetch
 

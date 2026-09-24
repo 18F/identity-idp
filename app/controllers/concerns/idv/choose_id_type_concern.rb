@@ -53,7 +53,11 @@ module Idv
     def locals_attrs(presenter:, form_submit_url: nil, show_verify_in_person: false)
       auto_check_value = case document_capture_session.document_type_requested
                         when Idp::Constants::DocumentTypes::MDL
-                          :mobile_drivers_license
+                          if disable_mdl?
+                            :state_id_card
+                          else
+                            :mobile_drivers_license
+                          end
                         when *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
                           :state_id_card
                         when Idp::Constants::DocumentTypes::PASSPORT
@@ -79,6 +83,7 @@ module Idv
         auto_check_value:,
         passport_cards_enabled: document_capture_session.passport_cards_supported?,
         mdl_enabled: mdl_enabled?,
+        disable_mdl: disable_mdl?,
         show_verify_in_person:,
       }
     end
@@ -94,6 +99,10 @@ module Idv
 
     def mdl_enabled?
       document_capture_session.mdl_enabled
+    end
+
+    def disable_mdl?
+      params.permit(:disable_mdl)[:disable_mdl].present?
     end
   end
 end
