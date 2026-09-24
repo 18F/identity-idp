@@ -17,6 +17,23 @@ module Api
       before_action :mock_system_error
       after_action :add_custom_headers_to_response
 
+      FORMAT_RULES = {
+        email: { max_length: 255, numbers_allowed: true, special_characters_allowed: true, letters_allowed: true },
+        first_name: { max_length: 128, numbers_allowed: false, special_characters_allowed: false, letters_allowed: true },
+        last_name: { max_length: 128, numbers_allowed: false, special_characters_allowed: false, letters_allowed: true },
+        phone: { max_length: 20, numbers_allowed: true, special_characters_allowed: true, letters_allowed: false },
+        address1: { max_length: 255, numbers_allowed: true, special_characters_allowed: true, letters_allowed: true },
+        address2: { max_length: 255, numbers_allowed: true, special_characters_allowed: true, letters_allowed: true },
+        city: { max_length: 255, numbers_allowed: true, special_characters_allowed: true, letters_allowed: true },
+        state: { max_length: 64, numbers_allowed: false, special_characters_allowed: false, letters_allowed: true },
+        zip_code: { max_length: 10, numbers_allowed: true, special_characters_allowed: false, letters_allowed: false },
+        id_type: { max_length: 20, numbers_allowed: false, special_characters_allowed: true, letters_allowed: true },
+        jurisdiction: { max_length: 64, numbers_allowed: false, special_characters_allowed: false, letters_allowed: true },
+        document_number: { max_length: 64, numbers_allowed: true, special_characters_allowed: true, letters_allowed: true },
+        expiration_date: { max_length: 10, date_format: true },
+        issue_date: { max_length: 10, date_format: true },
+      }
+
       def search_user
         pii_validation = Idv::ProofingAgent::SearchUserForm.new(email:, ssn:).submit
         render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
