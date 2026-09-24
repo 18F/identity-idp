@@ -9,6 +9,7 @@ module IdvStepConcern
   include FraudReviewConcern
   include Idv::AbTestAnalyticsConcern
   include Idv::VerifyByMailConcern
+  include SecureHeadersConcern
 
   included do
     before_action :confirm_two_factor_authenticated
@@ -80,11 +81,9 @@ module IdvStepConcern
   end
 
   def clear1_enabled?
-    idv_session.clear1_enabled ||= begin
-      return false unless IdentityConfig.store.idv_clear1_enabled
+    return false unless IdentityConfig.store.idv_clear1_enabled
 
-      ab_test_bucket(:CLEAR1_ALLOWED) == :idv_clear1_allowed
-    end
+    idv_session.clear1_enabled ||= ab_test_bucket(:CLEAR1_ALLOWED) == :idv_clear1_allowed
   end
 
   def in_person_proofing_route_enabled?
@@ -109,6 +108,30 @@ module IdvStepConcern
   end
 
   private
+
+  # Submitting the "Verify with CLEAR" form ends in a server-side redirect to
+  # CLEAR, which browsers check against the form-action CSP of the page that
+  # contained the form. Allow CLEAR's origin so the redirect is not blocked.
+  def allow_clear1_form_action
+    return unless clear1_enabled?
+
+    origin = clear1_origin
+    return if origin.blank?
+
+    override_form_action_csp(["'self'", origin])
+  end
+
+  def clear1_origin
+    base_url = IdentityConfig.store.idv_clear1_api_base_url
+    return if base_url.blank?
+
+    uri = URI.parse(base_url)
+    return if uri.scheme.blank? || uri.host.blank?
+
+    "#{uri.scheme}://#{uri.host}#{":#{uri.port}" if uri.port != uri.default_port}"
+  rescue URI::InvalidURIError
+    nil
+  end
 
   def extra_analytics_properties
     {
