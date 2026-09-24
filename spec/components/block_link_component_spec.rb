@@ -20,6 +20,43 @@ RSpec.describe BlockLinkComponent, type: :component do
     end
   end
 
+  context 'with an unsafe url scheme' do
+    it 'raises for a javascript: url' do
+      expect { BlockLinkComponent.new(url: 'javascript:alert(1)') }
+        .to raise_error(ArgumentError, /^Unsafe URL scheme/)
+    end
+
+    it 'raises for a data: url' do
+      expect { BlockLinkComponent.new(url: 'data:text/html,<script>alert(1)</script>') }
+        .to raise_error(ArgumentError, /^Invalid URL/)
+    end
+
+    it 'raises for a vbscript: url' do
+      expect { BlockLinkComponent.new(url: 'vbscript:msgbox(1)') }
+        .to raise_error(ArgumentError, /^Unsafe URL scheme/)
+    end
+
+    it 'raises for a mixed-case scheme' do
+      expect { BlockLinkComponent.new(url: 'JavaScript:alert(1)') }
+        .to raise_error(ArgumentError, /^Unsafe URL scheme/)
+    end
+
+    it 'raises when the scheme is obscured by leading whitespace' do
+      expect { BlockLinkComponent.new(url: ' javascript:alert(1)') }
+        .to raise_error(ArgumentError, /^Unsafe URL scheme/)
+    end
+  end
+
+  context 'with a safe url' do
+    ['/', '#', 'https://example.com', '/path?query=1', 'relative/path'].each do |url|
+      it "renders a link for #{url.inspect}" do
+        rendered = render_inline BlockLinkComponent.new(url:).with_content('Link Text')
+
+        expect(rendered).to have_link('Link Text', href: url)
+      end
+    end
+  end
+
   context 'with new tab' do
     it 'renders as external' do
       rendered = render_inline BlockLinkComponent.new(url: '/', new_tab: true)
