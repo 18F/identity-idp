@@ -779,6 +779,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
     end
 
     context 'with reCAPTCHA validation enabled' do
+      let(:user) { create(:user, :fully_registered) }
+
       before do
         allow(FeatureManagement).to receive(:password_reset_recaptcha_enabled?)
           .and_return(true)
@@ -787,36 +789,32 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           .and_return(0.2)
       end
 
-      it 'sends the reset email when reCAPTCHA passes' do
-        user = create(:user, :fully_registered)
-
-        expect do
-          put :create, params: {
-            password_reset_email_form: {
-              email: user.email,
-              recaptcha_token: 'token',
-              recaptcha_mock_score: 0.9,
-            },
-          }
-        end.to change { ActionMailer::Base.deliveries.count }.by(1)
-
-        expect(response).to redirect_to(forgot_password_url)
+      subject(:response) do
+        put :create, params: {
+          password_reset_email_form: {
+            email: user.email,
+            recaptcha_token: 'token',
+            recaptcha_mock_score:,
+          },
+        }
       end
 
-      it 'does not send an email and redirects to security check failed when blocked' do
-        user = create(:user, :fully_registered)
+      context 'when reCAPTCHA passes' do
+        let(:recaptcha_mock_score) { 0.9 }
 
-        expect do
-          put :create, params: {
-            password_reset_email_form: {
-              email: user.email,
-              recaptcha_token: 'token',
-              recaptcha_mock_score: 0.1,
-            },
-          }
-        end.to change { ActionMailer::Base.deliveries.count }.by(0)
+        it 'sends the reset email' do
+          expect { response }.to change { ActionMailer::Base.deliveries.count }.by(1)
+          expect(response).to redirect_to(forgot_password_url)
+        end
+      end
 
-        expect(response).to redirect_to(sign_in_security_check_failed_url)
+      context 'when reCAPTCHA fails' do
+        let(:recaptcha_mock_score) { 0.1 }
+
+        it 'does not send an email and redirects to security check failed' do
+          expect { response }.to change { ActionMailer::Base.deliveries.count }.by(0)
+          expect(response).to redirect_to(sign_in_security_check_failed_url)
+        end
       end
     end
   end

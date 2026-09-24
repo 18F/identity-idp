@@ -80,20 +80,22 @@ RSpec.describe AccountCreationRecaptchaForm do
   describe '#submit' do
     subject(:response) { form.submit(recaptcha_token:) }
 
-    context 'recaptcha form validates as unsuccessful' do
-      let(:score) { 0.0 }
+    context 'when reCAPTCHA passes' do
+      let(:score) { 0.9 }
+
+      it 'is successful' do
+        expect(response.to_h).to eq(success: true)
+      end
+    end
+
+    context 'when reCAPTCHA fails' do
+      let(:score) { 0.1 }
 
       it 'is unsuccessful with errors from recaptcha validation' do
         expect(response.to_h).to eq(
           success: false,
           error_details: { recaptcha_token: { invalid: true } },
         )
-      end
-    end
-
-    context 'recaptcha form validates as successful' do
-      it 'is successful' do
-        expect(response.to_h).to eq(success: true)
       end
     end
   end
