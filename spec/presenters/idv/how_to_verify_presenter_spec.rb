@@ -14,7 +14,7 @@ RSpec.describe Idv::HowToVerifyPresenter do
   describe '#verify_online_description' do
     it 'mentions the passport card' do
       expect(presenter.verify_online_description)
-        .to eq(t('doc_auth.info.verify_online_description_passport_card'))
+        .to eq(t('doc_auth.info.verify_online_description'))
     end
 
     context 'when mdl is enabled' do

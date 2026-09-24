@@ -87,7 +87,7 @@ module Idv
 
     def id_type_copy
       return t('doc_auth.instructions.bullet1_mdl_and_passport_card') if mdl_enabled
-      t('doc_auth.instructions.bullet1_passport_card')
+      t('doc_auth.instructions.bullet1')
     end
 
     def bullet_point(bullet, text)

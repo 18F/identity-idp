@@ -51,7 +51,7 @@ class Idv::HowToVerifyPresenter
       return t('doc_auth.info.verify_online_description_mdl_and_passport_card')
     end
 
-    t('doc_auth.info.verify_online_description_passport_card')
+    t('doc_auth.info.verify_online_description')
   end
 
   def online_submit
