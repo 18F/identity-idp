@@ -218,16 +218,23 @@ RSpec.describe SummarizeUserEvents do
       end
 
       it 'does not warn about a missing welcome event' do
-        command_output
-        expect(stderr.string).to be_empty
+        expect { command_output }.to_not output.to_stderr
       end
 
-      it 'orders the summary by timestamp' do
-        lines = command_output.lines.map(&:strip).reject(&:empty?)
-        ipp_entry = lines.index { |l| l.include?('entered the in-person proofing flow') }
-        enrollment = lines.index { |l| l.include?('completed IPP enrollment') }
+      it 'yields events in timestamp order' do
+        yielded = []
 
-        expect(ipp_entry).to be < enrollment
+        instance.each_event_in_chronological_order do |event|
+          yielded << event['name']
+        end
+
+        expect(yielded).to eql(
+          [
+            'IdV: doc auth welcome submitted',
+            'idv_in_person_direct_start',
+            'GetUspsProofingResultsJob: Enrollment status updated',
+          ],
+        )
       end
     end
 
@@ -250,7 +257,13 @@ RSpec.describe SummarizeUserEvents do
       end
 
       it 'preserves the order they arrived in' do
-        expect(command_output.scan(/Rate limited for Doc Auth/).length).to eql(5)
+        yielded = []
+
+        instance.each_event_in_chronological_order do |event|
+          yielded << event.dig('@message', 'properties', 'event_properties', 'step_name')
+        end
+
+        expect(yielded).to eql([nil, '0', '1', '2', '3', '4'])
       end
     end
   end
