@@ -35,8 +35,10 @@ class Idv::ProofingAgent::FailureEmailUserSet
 
   # Removes uuids from the "idv:proofing_agent_failure_email:users" set.
   # @param user_uuids [Array<String>] List of user uuids.
-  # @return [Boolean] whether the item has been removed from the set.
+  # @return [Integer] Number of uuids removed.
   def remove_uuids(user_uuids)
+    return 0 if user_uuids.empty?
+
     redis_pool.with { |client| client.zrem(KEY, user_uuids) }
   end
 

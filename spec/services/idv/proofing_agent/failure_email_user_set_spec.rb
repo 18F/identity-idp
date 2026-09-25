@@ -116,7 +116,7 @@ RSpec.describe Idv::ProofingAgent::FailureEmailUserSet do
     end
   end
 
-  describe '#remove_group' do
+  describe '#remove_uuids' do
     let(:user_uuids) { Array.new(3) { Faker::Internet.uuid } }
 
     before do
@@ -127,14 +127,14 @@ RSpec.describe Idv::ProofingAgent::FailureEmailUserSet do
 
     context 'when the uuids are present in the set' do
       it 'removes the uuids from the set' do
-        subject.remove_group(user_uuids)
+        subject.remove_uuids(user_uuids)
         expect(REDIS_POOL.with { |client| client.zrange(key, 0, -1) }).to eq([])
       end
     end
 
     context 'when a subset of the uuids are present in the set' do
       it 'removes the uuids from the set' do
-        subject.remove_group([user_uuids[0], user_uuids[2]])
+        subject.remove_uuids([user_uuids[0], user_uuids[2]])
         expect(REDIS_POOL.with { |client| client.zrange(key, 0, -1) }).to eq([user_uuids[1]])
       end
     end
@@ -143,8 +143,14 @@ RSpec.describe Idv::ProofingAgent::FailureEmailUserSet do
       let(:non_existing_user_uuids) { ['1234'] }
 
       it 'does not remove a uuid from the set' do
-        subject.remove_group(non_existing_user_uuids)
+        subject.remove_uuids(non_existing_user_uuids)
         expect(REDIS_POOL.with { |client| client.zrange(key, 0, -1) }).to include(*user_uuids)
+      end
+    end
+
+    context 'when the uuids array is empty' do
+      it 'returns 0' do
+        expect(subject.remove_uuids([])).to eq(0)
       end
     end
   end

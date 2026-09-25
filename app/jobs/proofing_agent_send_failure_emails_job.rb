@@ -4,15 +4,22 @@ class ProofingAgentSendFailureEmailsJob < ApplicationJob
   queue_as :long_running
 
   def perform(_now)
-    # Consider doing this with pagination
-    completed_uuids = []
+    start_time = Time.zone.now
+    processed_uuids = []
 
     failure_email_users.each do |user|
       send_failure_email(user)
-      completed_uuids << user.uuid
+      processed_uuids << user.uuid
+    rescue StandardError => e
+      user_analytics(user).proofing_agent_failure_email_job_error(exception: e.message)
     end
 
-    remove_failure_email_users(completed_uuids)
+    remove_failure_email_users(processed_uuids)
+
+    job_analytics.proofing_agent_failure_email_job_completed(
+      processed_count: processed_uuids.count,
+      duration_sec: cal_duration_in_seconds(start_time),
+    )
   end
 
   private
@@ -40,7 +47,8 @@ class ProofingAgentSendFailureEmailsJob < ApplicationJob
   def send_failure_email(user)
     doc_session = user.current_proofing_agent_session
     results = doc_session.load_agent_proofed_user
-    ProofingAgent::FailureEmailSender.new(user: user, analytics: analytics(user)).call(
+
+    ProofingAgent::FailureEmailSender.new(user: user, analytics: user_analytics(user)).call(
       visited_at: (doc_session.requested_at || Time.zone.now).iso8601,
       reason: results.reason,
       proofing_agent_id: results.proofing_agent_id,
@@ -50,7 +58,7 @@ class ProofingAgentSendFailureEmailsJob < ApplicationJob
     )
   end
 
-  def analytics(user)
+  def user_analytics(user)
     Analytics.new(
       user:,
       request: nil,
@@ -61,5 +69,13 @@ class ProofingAgentSendFailureEmailsJob < ApplicationJob
 
   def remove_failure_email_users(uuids)
     failure_email_user_set.remove_uuids(uuids)
+  end
+
+  def job_analytics
+    Analytics.new(user: AnonymousUser.new, request: nil, session: {}, sp: nil)
+  end
+
+  def cal_duration_in_seconds(start_time)
+    (Time.zone.now - start_time).seconds.round(2)
   end
 end
