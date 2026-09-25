@@ -66,6 +66,38 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       expect(response.status).to eq(302)
       expect(response.location).to eq(authentication_methods_setup_url)
     end
+
+    context 'personal key deprecation warning' do
+      let(:user) { build(:user, :with_personal_key, password: ControllerHelper::VALID_PASSWORD) }
+
+      before { stub_sign_in_before_2fa(user) }
+
+      context 'when personal key MFA deprecation phase 1 is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:personal_key_mfa_deprecation_phase_1_enabled)
+            .and_return(true)
+        end
+
+        it 'assigns the deprecation warning to be shown for personal key MFA users' do
+          get :show
+
+          expect(assigns(:show_deprecation_warning)).to eq(true)
+        end
+      end
+
+      context 'when personal key MFA deprecation phase 1 is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:personal_key_mfa_deprecation_phase_1_enabled)
+            .and_return(false)
+        end
+
+        it 'does not assign the deprecation warning to be shown' do
+          get :show
+
+          expect(assigns(:show_deprecation_warning)).to eq(false)
+        end
+      end
+    end
   end
 
   describe '#create' do

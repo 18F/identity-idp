@@ -15,6 +15,7 @@ module TwoFactorAuthentication
       analytics.multi_factor_auth_enter_personal_key_visit(context: context, recaptcha_annotation:)
       @presenter = TwoFactorAuthCode::PersonalKeyPresenter.new
       @personal_key_form = PersonalKeyForm.new(current_user)
+      @show_deprecation_warning = show_personal_key_deprecation_warning?
     end
 
     def create
@@ -38,6 +39,13 @@ module TwoFactorAuthentication
       return if TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled?
 
       redirect_to authentication_methods_setup_url
+    end
+
+    # Personal key MFA users see a Phase 1 deprecation warning telling them to set
+    # up another authentication method before personal keys stop being supported.
+    def show_personal_key_deprecation_warning?
+      FeatureManagement.personal_key_mfa_deprecation_phase_1_enabled? &&
+        TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled?
     end
 
     def presenter_for_two_factor_authentication_method
