@@ -777,6 +777,46 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
       expect(response).to render_template(:new)
     end
+
+    context 'with reCAPTCHA validation enabled' do
+      let(:user) { create(:user, :fully_registered) }
+
+      before do
+        allow(FeatureManagement).to receive(:password_reset_recaptcha_enabled?)
+          .and_return(true)
+        allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
+        allow(IdentityConfig.store).to receive(:password_reset_recaptcha_score_threshold)
+          .and_return(0.2)
+      end
+
+      subject(:response) do
+        put :create, params: {
+          password_reset_email_form: {
+            email: user.email,
+            recaptcha_token: 'token',
+            recaptcha_mock_score:,
+          },
+        }
+      end
+
+      context 'when reCAPTCHA passes' do
+        let(:recaptcha_mock_score) { 0.9 }
+
+        it 'sends the reset email' do
+          expect { response }.to change { ActionMailer::Base.deliveries.count }.by(1)
+          expect(response).to redirect_to(forgot_password_url)
+        end
+      end
+
+      context 'when reCAPTCHA fails' do
+        let(:recaptcha_mock_score) { 0.1 }
+
+        it 'does not send an email and redirects to security check failed' do
+          expect { response }.to change { ActionMailer::Base.deliveries.count }.by(0)
+          expect(response).to redirect_to(sign_in_security_check_failed_url)
+        end
+      end
+    end
   end
 
   describe '#new' do
