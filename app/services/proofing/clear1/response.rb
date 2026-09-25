@@ -63,12 +63,10 @@ module Proofing
               },
             )
           elsif Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES.include?(document_type_received)
-            proofed_user_pii.merge!(
-              {
-                passport_expiration: document_data_date(document_data, :date_of_expiry),
-                passport_number: document_data[:document_number],
-              },
+            proofed_user_pii[:passport_expiration] = document_data_date(
+              document_data, :date_of_expiry
             )
+            proofed_user_pii[:passport_number] = document_data[:document_number]
           end
 
           proofed_user_pii.with_indifferent_access
@@ -80,7 +78,6 @@ module Proofing
       end
 
       private
-
 
       def extra_attributes
         response_body.slice(
