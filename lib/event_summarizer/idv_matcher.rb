@@ -21,8 +21,12 @@ module EventSummarizer
     IDV_IMAGE_UPLOAD_VENDOR_SUBMITTED_EVENT = 'IdV: doc auth image upload vendor submitted'
     IDV_SOCURE_VERIFICATION_DATA_REQUESTED = 'idv_socure_verification_data_requested'
     IDV_PHONE_CONFIRMATION_VENDOR_EVENT = 'IdV: phone confirmation vendor'
+    IDV_STATE_ID_VALIDATION_EVENT = 'idv_state_id_validation'
+    IDV_SOCURE_ERROR_VISITED_EVENT = 'idv_doc_auth_socure_error_visited'
+    IPP_STATE_ID_SUBMITTED_EVENT = 'IdV: in person proofing state_id submitted'
     IDV_VERIFY_PROOFING_RESULTS_EVENT = 'IdV: doc auth verify proofing results'
     IDV_DIFFERENT_PHONE_NUMBER = 'IdV: use different phone number'
+    IDV_IN_PERSON_DIRECT_START_EVENT = 'idv_in_person_direct_start'
     IPP_ENROLLMENT_STATUS_UPDATED_EVENT = 'GetUspsProofingResultsJob: Enrollment status updated'
     PROFILE_ENCRYPTION_INVALID_EVENT = 'Profile Encryption: Invalid'
     RATE_LIMIT_REACHED_EVENT = 'Rate Limit Reached'
@@ -162,6 +166,7 @@ module EventSummarizer
     def initialize
       @idv_attempts = []
       @current_idv_attempt = nil
+      @submission_awaiting_outcome = false
     end
 
     # @return {Hash,nil}
@@ -199,6 +204,26 @@ module EventSummarizer
         when IDV_PHONE_CONFIRMATION_VENDOR_EVENT
           for_current_idv_attempt(event:) do
             handle_phone_confirmation_vendor_event(event:)
+          end
+
+        when IDV_STATE_ID_VALIDATION_EVENT
+          for_current_idv_attempt(event:) do
+            handle_state_id_validation_event(event:)
+          end
+
+        when IDV_SOCURE_ERROR_VISITED_EVENT
+          for_current_idv_attempt(event:) do
+            handle_socure_error_visited(event:)
+          end
+
+        when IPP_STATE_ID_SUBMITTED_EVENT
+          for_current_idv_attempt(event:) do
+            handle_ipp_state_id_submitted(event:)
+          end
+
+        when IDV_IN_PERSON_DIRECT_START_EVENT
+          for_current_idv_attempt(event:) do
+            handle_in_person_direct_start(event:)
           end
 
         when IDV_DIFFERENT_PHONE_NUMBER
@@ -323,7 +348,7 @@ module EventSummarizer
         'in_person_verification_pending',
       )
 
-      if ipp_pending
+      if ipp_pending && !current_idv_attempt.ipp?
         add_significant_event(
           type: :start_ipp,
           timestamp:,
@@ -447,6 +472,11 @@ module EventSummarizer
         'idv_doc_auth' => 'Doc Auth',
       }
 
+      # idv_doc_auth covers more than document capture, so name the step when we recognize it.
+      steps = {
+        'ipp_state_id' => 'entering their state ID for in-person proofing',
+      }
+
       limiter_type = event.dig(*EVENT_PROPERTIES, 'limiter_type')
 
       limit_name = limiters[limiter_type]
@@ -455,11 +485,19 @@ module EventSummarizer
 
       timestamp = event['@timestamp']
 
+      step = steps[event.dig(*EVENT_PROPERTIES, 'step_name')]
+      description =
+        if step
+          "Rate limited for #{limit_name} while #{step}"
+        else
+          "Rate limited for #{limit_name}"
+        end
+
       for_current_idv_attempt(event:) do
         add_significant_event(
           type: :rate_limited,
           timestamp:,
-          description: "Rate limited for #{limit_name}",
+          description:,
         )
       end
     end
@@ -478,16 +516,10 @@ module EventSummarizer
       doc_type = event.dig(*EVENT_PROPERTIES, 'DocClassName')
 
       if success
-        prior_failures = current_idv_attempt.significant_events.count do |e|
-          e.type == :failed_document_capture
-        end
-        attempts = prior_failures > 0 ? "after #{prior_failures} tries" : 'on the first attempt'
-
         add_significant_event(
           timestamp:,
-          type: :passed_document_capture,
-          description:
-            "User successfully verified their #{doc_type.downcase} via TrueID #{attempts}",
+          type: :document_images_accepted,
+          description: "TrueID accepted the user's #{doc_type.downcase} images",
         )
         return
       end
@@ -521,17 +553,13 @@ module EventSummarizer
       success = event.dig(*EVENT_PROPERTIES, 'success')
       doc_type = event.dig(*EVENT_PROPERTIES, 'document_metadata', 'type')
 
-      if success
-        prior_failures = current_idv_attempt.significant_events.count do |e|
-          e.type == :failed_document_capture
-        end
-        attempts = prior_failures > 0 ? "after #{prior_failures} tries" : 'on the first attempt'
+      @submission_awaiting_outcome = true
 
+      if success
         add_significant_event(
           timestamp:,
-          type: :passed_document_capture,
-          description:
-            "User successfully verified their #{doc_type.downcase} via Socure DocV #{attempts}",
+          type: :document_images_accepted,
+          description: "Socure DocV accepted the user's #{doc_type.downcase} images",
         )
         return
       end
@@ -581,6 +609,47 @@ module EventSummarizer
       end
 
       add_events_for_failed_vendor_result(event.dig(*EVENT_PROPERTIES), timestamp:)
+    end
+
+    def handle_state_id_validation_event(event:)
+      properties = event.dig(*EVENT_PROPERTIES)
+      return if properties&.dig('bypass_exception')
+
+      add_events_for_failed_vendor_result(properties, timestamp: event['@timestamp'])
+    end
+
+    def handle_in_person_direct_start(event:)
+      return if current_idv_attempt.ipp?
+
+      add_significant_event(
+        timestamp: event['@timestamp'],
+        type: :start_ipp,
+        description: 'User entered the in-person proofing flow',
+      )
+    end
+
+    def handle_socure_error_visited(event:)
+      return unless @submission_awaiting_outcome
+
+      @submission_awaiting_outcome = false
+
+      return unless event.dig(*EVENT_PROPERTIES, 'error_code') == 'state_id_verification'
+
+      add_significant_event(
+        timestamp: event['@timestamp'],
+        type: :document_submission_rejected,
+        description: 'Document submission rejected because the state ID check did not pass',
+      )
+    end
+
+    def handle_ipp_state_id_submitted(event:)
+      return unless event.dig(*EVENT_PROPERTIES, 'success')
+
+      add_significant_event(
+        timestamp: event['@timestamp'],
+        type: :ipp_state_id_entered,
+        description: 'User entered their state ID details manually for in-person proofing',
+      )
     end
 
     def handle_verify_proofing_results_event(event:)
@@ -681,6 +750,8 @@ module EventSummarizer
     # @return {IdvAttempt,nil} The previous IdvAttempt (if any)
     def start_new_idv_attempt(event:)
       finish_current_idv_attempt if current_idv_attempt
+
+      @submission_awaiting_outcome = false
 
       @current_idv_attempt = IdvAttempt.new(
         started_at: event['@timestamp'],
