@@ -386,7 +386,6 @@ RSpec.describe Idv::EnterPasswordController do
 
       context 'when user is not inherited proofed' do
         it 'redirects to welcome page' do
-
           get :new
 
           expect(response).to redirect_to(idv_welcome_url)
