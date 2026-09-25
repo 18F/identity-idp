@@ -249,6 +249,8 @@ idv_proofing_agent_enabled: false
 idv_proofing_agent_passport_enabled: false
 idv_proofing_agent_proof_user_with_enhanced_profile: false
 idv_proofing_agent_result_expiration_seconds: 10
+idv_proofing_agent_send_failure_email_after_min: 30
+idv_proofing_agent_send_failure_emails_cron: '0/30 * * * *'
 idv_rdp_version_default: rdp_v2
 idv_rdp_version_switching_enabled: false
 idv_rdp_version_v2_percent: 100

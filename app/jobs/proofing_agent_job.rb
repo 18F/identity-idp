@@ -17,7 +17,7 @@ class ProofingAgentJob < ApplicationJob
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
-  attr_reader :document_capture_session, :proofing_components, :proofing_agent
+  attr_reader :document_capture_session, :proofing_components, :proofing_agent, :failure_email_users
 
   def perform(
     encrypted_arguments:,
@@ -39,6 +39,7 @@ class ProofingAgentJob < ApplicationJob
       transaction_id: transaction_id,
     }
     @proofing_components = {}
+    @failure_email_users = Idv::ProofingAgent::FailureEmailUserSet.new
     webhook_enqueued = false
 
     @document_capture_session = DocumentCaptureSession.find_by(uuid: transaction_id)
@@ -85,6 +86,7 @@ class ProofingAgentJob < ApplicationJob
     reason = combined_result[:reason]
 
     if success
+      failure_email_users.remove(user.uuid)
       ProofingAgent::SuccessEmailSender.new(
         user: user, analytics: analytics,
         service_provider: current_sp
@@ -95,6 +97,8 @@ class ProofingAgentJob < ApplicationJob
         correlation_id: correlation_id,
         transaction_id: transaction_id,
       )
+    else
+      failure_email_users.add(user.uuid) unless final_attempt
     end
     if webhook_url.present?
       ProofingAgentWebhookJob.perform_later(
@@ -111,6 +115,7 @@ class ProofingAgentJob < ApplicationJob
     end
 
     if !success && final_attempt
+      failure_email_users.remove(user.uuid)
       ProofingAgent::FailureEmailSender.new(user: user, analytics: analytics).call(
         visited_at: (document_capture_session.requested_at || Time.zone.now).iso8601,
         reason: reason,

@@ -262,6 +262,8 @@ module IdentityConfig
     config.add(:idv_proofing_agent_passport_enabled, type: :boolean)
     config.add(:idv_proofing_agent_proof_user_with_enhanced_profile, type: :boolean)
     config.add(:idv_proofing_agent_result_expiration_seconds, type: :integer)
+    config.add(:idv_proofing_agent_send_failure_email_after_min, type: :integer)
+    config.add(:idv_proofing_agent_send_failure_emails_cron, type: :string)
     config.add(:idv_rdp_version_default, type: :string)
     config.add(:idv_rdp_version_switching_enabled, type: :boolean)
     config.add(:idv_rdp_version_v2_percent, type: :integer)

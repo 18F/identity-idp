@@ -64,6 +64,12 @@ class User < ApplicationRecord
           dependent: :destroy
   belongs_to :reset_password_email_address, class_name: 'EmailAddress', optional: true
 
+  has_one :current_proofing_agent_session,
+          -> {
+            where(doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT)
+              .order(requested_at: :desc)
+          }, class_name: 'DocumentCaptureSession', inverse_of: :user, dependent: :destroy
+
   attr_accessor :asserted_attributes, :email
 
   def confirmed_email_addresses
