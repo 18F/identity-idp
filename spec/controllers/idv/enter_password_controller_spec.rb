@@ -386,12 +386,9 @@ RSpec.describe Idv::EnterPasswordController do
 
       context 'when user is not inherited proofed' do
         it 'redirects to welcome page' do
-          # subject.idv_session.agent_proofed = true
-          # subject.idv_session.proofing_agent_match = nil
 
           get :new
 
-          # it will redirect to welcome which will redirect to enter_dob_ssn_controller
           expect(response).to redirect_to(idv_welcome_url)
         end
       end
