@@ -13,13 +13,14 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
       ['Fraud Rules Catch Count', 'Count',
        'The count of unique accounts flagged for fraud review.'],
       ['Credentials Disabled', 'Count',
-       'The count of unique accounts suspended due to ' + '
-         suspected fraudulent activity within the reporting month.'],
+       'The count of unique accounts suspended due to ' \
+         'suspected fraudulent activity within the reporting month.'],
       ['Credentials Reinstated', 'Count',
-       'The count of unique suspended accounts ' + '
-         that are reinstated within the reporting month.'],
+       'The count of unique suspended accounts ' \
+         'that are reinstated within the reporting month.'],
     ]
   end
+
   let(:expected_overview_table) do
     [
       ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
@@ -27,6 +28,7 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
       ['Issuer', issuer],
     ]
   end
+
   let(:expected_lg99_metrics_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
@@ -47,25 +49,43 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
 
   before do
     travel_to Time.zone.now.beginning_of_day
-    stub_cloudwatch_logs(
+
+    allow(report).to receive(:fetch_issuer_users_results).and_return(
+      [
+        { 'user_id' => 'user1' },
+        { 'user_id' => 'user2' },
+        { 'user_id' => 'user3' },
+        { 'user_id' => 'user4' },
+        { 'user_id' => 'user5' },
+        { 'user_id' => 'user6' },
+        { 'user_id' => 'user7' },
+      ],
+    )
+
+    allow(report).to receive(:fetch_idv_final_resolution_results).and_return(
       [
         { 'user_id' => 'user1', 'name' => 'IdV: final resolution' },
         { 'user_id' => 'user1', 'name' => 'IdV: final resolution' },
-
         { 'user_id' => 'user2', 'name' => 'IdV: final resolution' },
-
         { 'user_id' => 'user3', 'name' => 'IdV: final resolution' },
-
         { 'user_id' => 'user4', 'name' => 'IdV: final resolution' },
-
         { 'user_id' => 'user5', 'name' => 'IdV: final resolution' },
+      ],
+    )
 
+    allow(report).to receive(:fetch_suspended_users_results).and_return(
+      [
         { 'user_id' => 'user6', 'name' => 'User Suspension: Suspended' },
-        { 'user_id' => 'user6', 'name' => 'User Suspension: Reinstated' },
-
         { 'user_id' => 'user7', 'name' => 'User Suspension: Suspended' },
       ],
     )
+
+    allow(report).to receive(:fetch_reinstated_users_results).and_return(
+      [
+        { 'user_id' => 'user6', 'name' => 'User Suspension: Reinstated' },
+      ],
+    )
+
     user7.profiles.verified.last.update(created_at: 1.day.ago, activated_at: 1.day.ago) if user7
   end
 
@@ -182,6 +202,7 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
         ),
       ]
     end
+
     it 'return expected table for email' do
       expect(report.as_emailable_reports).to eq expected_reports
     end
