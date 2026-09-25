@@ -336,6 +336,7 @@ RSpec.describe Idv::EnterPasswordController do
     end
 
     context 'inherited proofing flow' do
+      let(:idv_clear1_enabled) { true }
       let(:document_capture_session) do
         create(
           :document_capture_session,
@@ -359,7 +360,7 @@ RSpec.describe Idv::EnterPasswordController do
         subject.idv_session.resolution_successful = nil
         subject.idv_session.applicant = nil
         subject.idv_session.resolution_successful = nil
-        allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(idv_clear1_enabled)
       end
 
       context 'when user is inherited proofed' do
@@ -371,6 +372,15 @@ RSpec.describe Idv::EnterPasswordController do
           get :new
 
           expect(response).to render_template :new
+        end
+
+        context 'when clear1 disabled' do
+          let(:idv_clear1_enabled) { false }
+          it 'renders the enter_password page' do
+            get :new
+
+            expect(response).to redirect_to(idv_welcome_url)
+          end
         end
       end
 
