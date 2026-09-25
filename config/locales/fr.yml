@@ -1606,6 +1606,7 @@ mfa.account_info: L’ajout d’une autre méthode d’authentification vous év
 mfa.add: Ajouter une autre méthode
 mfa.info: Ajoutez une couche supplémentaire de sécurité à votre compte %{app_name} en sélectionnant une méthode d’authentification multi-facteurs.
 mfa.more_options: Plus d’options
+mfa.personal_key_deprecation_warning: Remplacez votre clé personnelle par une autre méthode d’authentification.
 mfa.recommendation: Nous vous recommandons de sélectionner au moins deux options différentes au cas où vous perdriez l’une de vos méthodes.
 mfa.second_method_warning.link: Ajouter une deuxième méthode d’authentification.
 mfa.second_method_warning.text: Vous devrez supprimer votre compte et recommencer si vous perdez votre seule méthode d’authentification.
@@ -2036,6 +2037,7 @@ two_factor_authentication.otp_make_default_number.label: Numéro de téléphone 
 two_factor_authentication.otp_make_default_number.one_number_instruction: Vous devez avoir ajouté plus d’un numéro de téléphone pour pouvoir sélectionner un numéro de téléphone par défaut.
 two_factor_authentication.otp_make_default_number.one_number_title: Ce numéro est votre numéro par défaut
 two_factor_authentication.otp_make_default_number.title: Faire de ce numéro votre numéro de téléphone par défaut ?
+two_factor_authentication.personal_key_deprecation_warning: Après le 1er mars 2026, les clés personnelles ne seront plus prises en charge pour l’authentification. Veuillez vous assurer d’avoir configuré une autre méthode d’authentification afin de ne pas être bloqué hors de votre compte.
 two_factor_authentication.personal_key_header_text: Saisir votre clé personnelle
 two_factor_authentication.personal_key_prompt: Vous pouvez utiliser cette clé personnelle une fois. Une fois que vous l’avez saisie, vous recevrez une nouvelle clé.
 two_factor_authentication.phone_fee_disclosure: Des tarifs de messagerie et de données peuvent s’appliquer.

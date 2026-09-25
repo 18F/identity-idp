@@ -1606,6 +1606,7 @@ mfa.account_info: Adding another authentication method prevents you from getting
 mfa.add: Add another method
 mfa.info: Add an additional layer of protection to your %{app_name} account by selecting a multi-factor authentication method.
 mfa.more_options: More options
+mfa.personal_key_deprecation_warning: Replace your personal key with another authentication method.
 mfa.recommendation: We recommend you select at least two different options in case you lose one of your methods.
 mfa.second_method_warning.link: Add a second authentication method.
 mfa.second_method_warning.text: You will have to delete your account and start over if you lose your only authentication method.
@@ -2035,6 +2036,7 @@ two_factor_authentication.otp_make_default_number.label: Default phone number
 two_factor_authentication.otp_make_default_number.one_number_instruction: You must have more than one phone number added to select a default phone number.
 two_factor_authentication.otp_make_default_number.one_number_title: This is your default number
 two_factor_authentication.otp_make_default_number.title: Make this your default phone number?
+two_factor_authentication.personal_key_deprecation_warning: After March 1, 2026 personal keys will no longer be supported for authentication. Please ensure you have another authentication method set up so you don’t get locked out of your account.
 two_factor_authentication.personal_key_header_text: Enter your personal key
 two_factor_authentication.personal_key_prompt: You can use this personal key once. After you enter it, you’ll be provided a new key.
 two_factor_authentication.phone_fee_disclosure: Message and data rates may apply.
