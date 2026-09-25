@@ -113,6 +113,32 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           .to eq({ unexpected_id_type: true, expected_id_type: 'drivers_license' })
       end
     end
+
+    context 'doc type requested is drivers_license but document_type_received is passport_card' do
+      let(:passport_submittal) { true }
+      let(:passport_requested) { false }
+      let(:input) do
+        <<~YAML
+          document:
+            first_name: Susan
+            last_name: Smith
+            middle_name: Q
+            birth_place: 'Springfield, IL'
+            passport_expiration: '2030-01-01'
+            mrz: 'P<USASMITH<<SUSAN<<<<<<<<<<<<<<<<<<<<<<<<<1234567890USA8001019F2301012<<<<<<<<<<<<<<04'
+            passport_issued: '2020-01-01'
+            nationality_code: USA
+            document_number: '1234567890'
+            document_type_received: passport_card
+        YAML
+      end
+
+      it 'returns an error about the doc type mismatch' do
+        expect(response.success?).to eq(false)
+        expect(response.errors)
+          .to eq({ unexpected_id_type: true, expected_id_type: 'drivers_license' })
+      end
+    end
   end
 
   context 'when a passport card is submitted' do
@@ -121,8 +147,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         input, config,
         selfie_required:,
         passport_submittal: true,
-        passport_requested: true,
-        passport_cards_supported:
+        passport_requested: true
       )
     end
 
@@ -142,24 +167,10 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       YAML
     end
 
-    context 'when passport cards are supported' do
-      let(:passport_cards_supported) { true }
-
-      it 'returns a successful result with the passport card document type' do
-        expect(response.success?).to eq(true)
-        expect(response.pii_from_doc).to be_a(Pii::Passport)
-        expect(response.pii_from_doc.document_type_received).to eq('passport_card')
-      end
-    end
-
-    context 'when passport cards are not supported' do
-      let(:passport_cards_supported) { false }
-
-      it 'is not a successful result and returns a passport card doc type error' do
-        expect(response.success?).to eq(false)
-        expect(response.errors)
-          .to eq({ passport_card: I18n.t('doc_auth.errors.doc.doc_type_check') })
-      end
+    it 'returns a successful result with the passport card document type' do
+      expect(response.success?).to eq(true)
+      expect(response.pii_from_doc).to be_a(Pii::Passport)
+      expect(response.pii_from_doc.document_type_received).to eq('passport_card')
     end
   end
 

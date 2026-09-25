@@ -13,9 +13,8 @@ RSpec.describe SocureDocvResultsJob do
   let(:socure_user_id) { 'socure_user_id' }
   let(:socure_reference_id) { SecureRandom.uuid }
   let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
-  let(:passport_cards_supported) { false }
   let(:document_capture_session) do
-    create(:document_capture_session, document_type_requested:, passport_cards_supported:)
+    create(:document_capture_session, document_type_requested:)
   end
   let(:user) { document_capture_session.user }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
@@ -971,41 +970,7 @@ RSpec.describe SocureDocvResultsJob do
                 context 'when passport card is submitted' do
                   let(:document_metadata_type) { 'Passport Card' }
 
-                  it 'doc auth fails' do
-                    perform
-
-                    document_capture_session.reload
-                    document_capture_session_result = document_capture_session.load_result
-                    expect(document_capture_session_result.success).to eq(false)
-                    expect(document_capture_session_result.pii).to be_nil
-                    expect(document_capture_session_result.doc_auth_success).to eq(false)
-                    expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-                    expect(document_capture_session_result.aamva_status).to eq(:not_processed)
-                    expect(document_capture_session_result.errors).to eq(
-                      { unaccepted_id_type: true },
-                    )
-                    expect(@analytics).to have_logged_event(
-                      :idv_socure_verification_data_requested,
-                      hash_including(
-                        :customer_user_id,
-                        :decision,
-                        :reference_id,
-                        :expiration_date,
-                      ),
-                    )
-                  end
-
                   context 'when passport cards are supported' do
-                    let(:passport_cards_supported) { true }
-
-                    it 'doc auth succeeds' do
-                      perform
-
-                      document_capture_session.reload
-                      document_capture_session_result = document_capture_session.load_result
-                      expect(document_capture_session_result.success).to eq(true)
-                    end
-
                     context 'when a passport card was requested' do
                       let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT_CARD }
 

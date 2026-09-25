@@ -635,8 +635,6 @@ RSpec.describe 'Hybrid Flow' do
       before do
         allow(IdentityConfig.store).to receive_messages(
           doc_auth_passports_enabled: true,
-          doc_auth_passport_cards_enabled: true,
-          doc_auth_passport_cards_enabled_percent: 100,
         )
 
         stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
