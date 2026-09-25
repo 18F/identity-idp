@@ -2041,6 +2041,7 @@ two_factor_authentication.otp_make_default_number.label: Número de teléfono pr
 two_factor_authentication.otp_make_default_number.one_number_instruction: Debe haber agregado más de un número de teléfono para seleccionar un número de teléfono predeterminado.
 two_factor_authentication.otp_make_default_number.one_number_title: Este es su número predeterminado
 two_factor_authentication.otp_make_default_number.title: '¿Desea configurar este como su número de teléfono predeterminado?'
+two_factor_authentication.personal_key_deprecation_warning: Después del 1 de marzo de 2026, las claves personales ya no se admitirán para la autenticación. Asegúrese de tener configurado otro método de autenticación para no quedar bloqueado de su cuenta.
 two_factor_authentication.personal_key_header_text: Ingrese su clave personal
 two_factor_authentication.personal_key_prompt: Puede usar esta clave personal una sola vez. Después de ingresarla, recibirá una nueva clave.
 two_factor_authentication.phone_fee_disclosure: Se pueden aplicar tarifas por mensajes y datos.
