@@ -18,11 +18,13 @@ RSpec.describe Idv::Clear1::SessionController do
     "#{idv_clear1_api_base_url}/v1/verification_sessions"
   end
   let(:clear1_status) { 200 }
+  let(:doc_auth_vendor) { nil }
   let(:document_capture_session) do
     create(
       :document_capture_session,
       user:,
       requested_at: Time.zone.now,
+      doc_auth_vendor:,
     )
   end
   let(:uuid_pattern) { /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i }
@@ -175,6 +177,7 @@ RSpec.describe Idv::Clear1::SessionController do
 
   describe '#update' do
     let(:body) { Clear1Fixtures.pass_json }
+    let(:doc_auth_vendor) { Idp::Constants::Vendors::CLEAR1 }
     before do
       stub_sign_in(user)
       subject.idv_session.clear1_verification_token = token
@@ -208,6 +211,8 @@ RSpec.describe Idv::Clear1::SessionController do
       get(:update)
 
       expect(response).to redirect_to(idv_enter_password_path)
+      expect(subject.idv_session.applicant).not_to be_empty
+      expect(subject.idv_session.doc_auth_vendor).to eq(Idp::Constants::Vendors::CLEAR1)
     end
 
     context 'when inherited proofing fails' do
@@ -216,6 +221,8 @@ RSpec.describe Idv::Clear1::SessionController do
         get(:update)
 
         expect(response).to redirect_to(idv_clear1_session_url)
+        expect(subject.idv_session.applicant).to be_nil
+        expect(subject.idv_session.doc_auth_vendor).to be_nil
       end
     end
   end
