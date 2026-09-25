@@ -63,9 +63,9 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
     allow(report.monthly_idv_report).to receive(:as_csv)
       .and_return(mock_monthly_idv_data)
 
-    allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
+    allow(IdentityConfig.store).to receive(:key_metrics_internal_emails)
       .and_return(mock_daily_reports_emails)
-    allow(IdentityConfig.store).to receive(:team_all_login_emails)
+    allow(IdentityConfig.store).to receive(:key_metrics_external_emails)
       .and_return(mock_all_login_emails)
   end
 
@@ -98,7 +98,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   end
 
   it 'does not send out a report with no emails' do
-    allow(IdentityConfig.store).to receive(:team_daily_reports_emails).and_return('')
+    allow(IdentityConfig.store).to receive(:key_metrics_internal_emails).and_return('')
 
     expect(report).to_not receive(:reports)
 

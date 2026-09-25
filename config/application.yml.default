@@ -46,7 +46,8 @@ allowed_client_id_in_risc_service_providers: '[]'
 allowed_create_prompt_providers: '[]'
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
-api_transaction_count_report_config: '[]'
+api_transaction_count_external_emails: '[]'
+api_transaction_count_internal_emails: '[]'
 asset_host: ''
 async_stale_job_timeout_seconds: 300
 async_wait_timeout_seconds: 60
@@ -303,6 +304,10 @@ in_person_results_delay_in_hours: 1
 in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
 invalid_gpo_confirmation_zipcode: '00001'
+key_metrics_external_emails: '[]'
+key_metrics_internal_emails: '[]'
+key_metrics_s3_external_emails: '[]'
+key_metrics_s3_internal_emails: '[]'
 
 # LexisNexis #####################################################
 # Instant Verify and Phone Finder Integrations
@@ -532,9 +537,7 @@ sp_verification_demographics_report_configs: '[]'
 sp_verification_report_configs: '[]'
 state_tracking_enabled: true
 team_ada_email: ''
-team_all_login_emails: '[]'
 team_daily_fraud_metrics_emails: '[]'
-team_daily_reports_emails: '[]'
 team_monthly_fraud_metrics_emails: '[]'
 team_ursula_email: ''
 telephony_adapter: test
@@ -681,6 +684,8 @@ test:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   account_reset_fraud_user_wait_period_days: 30
+  api_transaction_count_external_emails: '["mock_api_transaction_ext@example.com"]'
+  api_transaction_count_internal_emails: '["mock_api_transaction_int@example.com"]'
   attribute_encryption_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   dashboard_api_token: 123ABC
@@ -701,6 +706,10 @@ test:
   idv_clear1_project_id: 'test-project-id'
   idv_socure_phonerisk_name_correlation_score_threshold: 0.5
   idv_socure_phonerisk_score_threshold: 0.5
+  key_metrics_external_emails: '["mock_key_metrics_ext@example.com"]'
+  key_metrics_internal_emails: '["mock_key_metrics_int@example.com"]'
+  key_metrics_s3_external_emails: '["mock_key_metrics_s3_ext@example.com"]'
+  key_metrics_s3_internal_emails: '["mock_key_metrics_s3_int@example.com"]'
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2
@@ -742,9 +751,7 @@ test:
   socure_docv_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'
   socure_idplus_base_url: 'https://sandbox.socure.test'
   team_ada_email: 'ada@example.com'
-  team_all_login_emails: '["b@example.com", "c@example.com"]'
   team_daily_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
-  team_daily_reports_emails: '["a@example.com", "d@example.com"]'
   team_monthly_fraud_metrics_emails: '["e@example.com", "f@example.com"]'
   test_ssn_allowed_list: '999999999'
   totp_code_interval: 3

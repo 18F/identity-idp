@@ -227,7 +227,7 @@ else
         class: 'GpoExpirationJob',
         cron: cron_24h,
       },
-      # Monthly report checking in on key metrics
+      # Disabled with redshift/S3 version replacing it, will delete soon
       monthly_key_metrics_report: {
         class: 'Reports::MonthlyKeyMetricsReport',
         cron: cron_24h,
