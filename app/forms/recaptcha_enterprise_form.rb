@@ -68,14 +68,6 @@ class RecaptchaEnterpriseForm
     )
   end
 
-  def faraday
-    Faraday.new do |conn|
-      conn.request :instrumentation, name: 'request_log.faraday'
-      conn.request :json
-      conn.response :json
-    end
-  end
-
   def log_analytics(result: nil, error: nil)
     analytics&.recaptcha_verify_result_received(
       recaptcha_result: result.to_h.presence,
