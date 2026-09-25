@@ -8059,16 +8059,6 @@ module AnalyticsEvents
     track_event('Proofing Address Result Missing')
   end
 
-  # Logs the error received when during processing
-  # @param [String] exception The message from the exception rasied.
-  def proofing_agent_failure_email_job_error(exception:, **extra)
-    track_event(
-      :proofing_agent_failure_email_job_error,
-      exception:,
-      **extra,
-    )
-  end
-
   # Signifies the completion of the proofing agent failure email job
   # @param [Integer] processed_count The number of items processed during the job
   # @param [Float] duration_sec The duration of the job in seconds
@@ -8077,6 +8067,16 @@ module AnalyticsEvents
       :proofing_agent_failure_email_job_completed,
       processed_count:,
       duration_sec:,
+      **extra,
+    )
+  end
+
+  # Logs the error received when during processing
+  # @param [String] exception The message from the exception raised.
+  def proofing_agent_failure_email_job_error(exception:, **extra)
+    track_event(
+      :proofing_agent_failure_email_job_error,
+      exception:,
       **extra,
     )
   end
