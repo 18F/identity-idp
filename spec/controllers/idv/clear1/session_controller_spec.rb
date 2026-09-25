@@ -7,7 +7,8 @@ RSpec.describe Idv::Clear1::SessionController do
   let(:vendor_switching_enabled) { true }
   let(:user) { create(:user) }
   let(:clear1_success) { true }
-  let(:clear1_enabled) { true }
+  let(:idv_clear1_enabled) { true }
+  let(:clear1_allowed) { idv_clear1_enabled }
   let(:idv_clear1_project_id) { 'fav-proj-id' }
   let(:token) { 'crystal_clear1_token' }
   let(:session_id) { 'best_session' }
@@ -30,6 +31,7 @@ RSpec.describe Idv::Clear1::SessionController do
     allow(IdentityConfig.store).to receive_messages(
       idv_clear1_api_base_url:,
       idv_clear1_project_id:,
+      idv_clear1_enabled:,
     )
 
     user_session = {}
@@ -38,9 +40,10 @@ RSpec.describe Idv::Clear1::SessionController do
     subject.idv_session.tap do |idv_session|
       idv_session.document_capture_session_uuid = document_capture_session.uuid
       idv_session.flow_path = 'standard'
-      idv_session.clear1_enabled = clear1_enabled
+      idv_session.clear1_allowed = clear1_allowed
       idv_session.clear1_verification_state = 'myState'
       idv_session.clear1_verification_token = 'myToken'
+      idv_session.clear1_allowed = clear1_allowed
     end
 
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
@@ -151,7 +154,7 @@ RSpec.describe Idv::Clear1::SessionController do
     end
 
     context 'when clear1 is disabled' do
-      let(:clear1_enabled) { false }
+      let(:idv_clear1_enabled) { false }
 
       it 'the webhook route does not exist' do
         get(:show)
@@ -178,7 +181,7 @@ RSpec.describe Idv::Clear1::SessionController do
     end
 
     context 'when clear1 is disabled' do
-      let(:clear1_enabled) { false }
+      let(:idv_clear1_enabled) { false }
 
       it 'the route does not exist' do
         get(:update)
