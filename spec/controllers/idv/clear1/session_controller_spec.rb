@@ -174,6 +174,7 @@ RSpec.describe Idv::Clear1::SessionController do
   end
 
   describe '#update' do
+    let(:body) { Clear1Fixtures.pass_json }
     before do
       stub_sign_in(user)
       subject.idv_session.clear1_verification_token = token
@@ -189,7 +190,7 @@ RSpec.describe Idv::Clear1::SessionController do
 
       stub_request(:get, clear1_result_endpoint)
         .to_return(
-          body: Clear1Fixtures.pass_json,
+          body:,
         )
     end
 
@@ -207,6 +208,15 @@ RSpec.describe Idv::Clear1::SessionController do
       get(:update)
 
       expect(response).to redirect_to(idv_enter_password_path)
+    end
+
+    context 'when inherited proofing fails' do
+      let(:body) { Clear1Fixtures.fail_json }
+      it 'redirects to clear 1 page' do
+        get(:update)
+
+        expect(response).to redirect_to(idv_clear1_session_url)
+      end
     end
   end
 end
