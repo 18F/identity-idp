@@ -271,7 +271,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
             terms_accepted: '1',
             email_language:,
             recaptcha_token: 'token',
-            recaptcha_mock_score:
+            recaptcha_mock_score:,
           },
         }
       end
