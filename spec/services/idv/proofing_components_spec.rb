@@ -249,55 +249,97 @@ RSpec.describe Idv::ProofingComponents do
         end
       end
     end
+
+    context 'proofing agent' do
+      let(:document_type_received) { 'passport' }
+
+      before do
+        idv_session.agent_proofed = true
+        idv_session.applicant = { document_type_received: }
+      end
+
+      it 'returns the document_type_received from the idv session applicant' do
+        expect(subject.document_type_received).to eql(document_type_received)
+      end
+    end
   end
 
   describe '#source_check' do
-    it 'returns nil by default' do
-      expect(subject.source_check).to be_nil
+    let(:source_check_vendor) { Idp::Constants::Vendors::AAMVA }
+
+    before do
+      idv_session.source_check_vendor = source_check_vendor
     end
 
-    context 'after verification' do
-      before do
-        idv_session.mark_verify_info_step_complete!
-        idv_session.source_check_vendor = 'aamva'
-      end
-
-      it 'returns aamva' do
-        expect(subject.source_check).to eql(Idp::Constants::Vendors::AAMVA)
-      end
+    it 'returns the idv session source check vendor' do
+      expect(subject.source_check).to eql(source_check_vendor)
     end
   end
 
   describe '#residential_resolution_check' do
-    it 'returns nil by default' do
-      expect(subject.residential_resolution_check).to be_nil
+    let(:vendor) { 'AReallyGoodVendor' }
+
+    before do
+      idv_session.residential_resolution_vendor = vendor
     end
 
-    context 'when resolution_vendor is set on idv_session' do
+    context 'when the verify info step is marked as completed' do
       before do
         idv_session.mark_verify_info_step_complete!
-        idv_session.residential_resolution_vendor = 'AReallyGoodVendor'
       end
 
-      it 'returns the vendor we set' do
-        expect(subject.residential_resolution_check).to eql('AReallyGoodVendor')
+      it 'returns the idv session residential resolution vendor' do
+        expect(subject.residential_resolution_check).to eql(vendor)
+      end
+    end
+
+    context 'when agent proofed is true' do
+      before do
+        idv_session.agent_proofed = true
+      end
+
+      it 'returns the idv session residential resolution vendor' do
+        expect(subject.residential_resolution_check).to eql(vendor)
+      end
+    end
+
+    context 'when the verify info is not completed and proofing agent is not set' do
+      it 'returns nil' do
+        expect(subject.residential_resolution_check).to be_nil
       end
     end
   end
 
   describe '#resolution_check' do
-    it 'returns nil by default' do
-      expect(subject.resolution_check).to be_nil
+    let(:vendor) { 'AReallyGoodVendor' }
+
+    before do
+      idv_session.resolution_vendor = vendor
     end
 
-    context 'when resolution_vendor is set on idv_session' do
+    context 'when the verify info step is marked as completed' do
       before do
         idv_session.mark_verify_info_step_complete!
-        idv_session.resolution_vendor = 'AReallyGoodVendor'
       end
 
-      it 'returns the vendor we set' do
-        expect(subject.resolution_check).to eql('AReallyGoodVendor')
+      it 'returns the idv session resolution vendor' do
+        expect(subject.resolution_check).to eql(vendor)
+      end
+    end
+
+    context 'when agent proofed is true' do
+      before do
+        idv_session.agent_proofed = true
+      end
+
+      it 'returns the idv session resolution vendor' do
+        expect(subject.resolution_check).to eql(vendor)
+      end
+    end
+
+    context 'when the verify info is not completed and proofing agent is not set' do
+      it 'returns nil' do
+        expect(subject.resolution_check).to be_nil
       end
     end
   end

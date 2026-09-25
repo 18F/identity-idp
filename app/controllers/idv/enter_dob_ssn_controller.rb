@@ -71,14 +71,24 @@ module Idv
             acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
           }.compact
         end
+
         idv_session.applicant = agent_proofed_user&.pii
-        idv_session.agent_proofed = true
+        set_idv_session_proofing_components
+        idv_session.phone_precheck_successful = agent_proofed_user.phone_precheck_successful?
         # a successful agent proofed user should have phone precheck completed
         idv_session.mark_phone_step_started!
         idv_session.mark_phone_step_complete!
       else
         redirect_to idv_proofing_agent_expired_url
       end
+    end
+
+    def set_idv_session_proofing_components
+      idv_session.agent_proofed = true
+      idv_session.phone_precheck_vendor = agent_proofed_user.phone_precheck_vendor
+      idv_session.resolution_vendor = agent_proofed_user.resolution_vendor
+      idv_session.residential_resolution_vendor = agent_proofed_user.residential_resolution_vendor
+      idv_session.source_check_vendor = agent_proofed_user.source_check_vendor
     end
 
     def confirm_verification_needed
