@@ -178,6 +178,19 @@ RSpec.describe Idv::Clear1::SessionController do
       stub_sign_in(user)
       subject.idv_session.clear1_verification_token = token
       subject.idv_session.clear1_verification_state = SecureRandom.uuid
+      subject.idv_session.clear1_verification_session_id = session_id
+
+      clear1_result_endpoint = [
+        IdentityConfig.store.idv_clear1_api_base_url,
+        'v1',
+        'verification_sessions',
+        session_id,
+      ].join('/')
+
+      stub_request(:get, clear1_result_endpoint)
+        .to_return(
+          body: Clear1Fixtures.pass_json,
+        )
     end
 
     context 'when clear1 is disabled' do
@@ -185,8 +198,15 @@ RSpec.describe Idv::Clear1::SessionController do
 
       it 'the route does not exist' do
         get(:update)
+
         expect(response).to be_not_found
       end
+    end
+
+    it 'redirects to enter password page' do
+      get(:update)
+
+      expect(response).to redirect_to(idv_enter_password_path)
     end
   end
 end
