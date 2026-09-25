@@ -7,6 +7,11 @@ module Clear1Fixtures
       JSON.parse(raw).to_json
     end
 
+    def fail_json
+      raw = read_fixture_file_at_path('fail.json')
+      JSON.parse(raw).to_json
+    end
+
     private
 
     def read_fixture_file_at_path(filepath)
