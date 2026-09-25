@@ -164,6 +164,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       before do
         allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
           .and_return(true)
+        allow(controller).to receive(:mobile?).and_return(true)
         controller.user_session[:in_account_creation_flow] = true
         allow(controller).to receive(:ab_test_bucket)
           .with(:NDS_LOOK_AND_FEEL, any_args)
@@ -201,24 +202,17 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
             expect(response).to render_template(:index)
             expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
           end
-        end
 
-        context 'when user is in the passkey setup prompt after password creation bucket' do
-          before do
-            allow(controller).to receive(:ab_test_bucket)
-              .with(:PASSKEY_UPSELL)
-              .and_return(:passkey_setup_prompt_after_password_creation)
-          end
+          context 'when the user is on a desktop device' do
+            before do
+              allow(controller).to receive(:mobile?).and_return(false)
+            end
 
-          it 'redirects to platform webauthn setup' do
-            expect { response }
-              .to change { controller.user_session[:auto_passkey_prompted] }
-              .from(nil)
-              .to(true)
+            it 'renders the mfa selection page' do
+              get :index
 
-            expect(response).to redirect_to(
-              webauthn_setup_url(platform: true, passkey_upsell: true),
-            )
+              expect(response).to render_template(:index)
+            end
           end
         end
 
