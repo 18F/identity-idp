@@ -289,6 +289,7 @@ module IdentityConfig
     config.add(:idv_socure_reason_codes_docv_selfie_fail, type: :json)
     config.add(:idv_socure_reason_codes_docv_selfie_not_processed, type: :json)
     config.add(:idv_socure_reason_codes_docv_selfie_pass, type: :json)
+    config.add(:idv_superior_evidence_skip_phone_verification_enabled_percent, type: :integer)
     config.add(:idv_sp_required, type: :boolean)
     config.add(:idv_aamva_bypass_exception_ids, type: :json)
     config.add(:idv_aamva_get_to_yes_enabled_vendors, type: :json)
