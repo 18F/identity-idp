@@ -1205,7 +1205,7 @@ module Test
     def setup_hybrid_handoff
       @upload_enabled = params[:upload].present?
       @presenter = Idv::HowToVerifyPresenter.new(
-        selfie_check_required: false, mdl_enabled: false, clear1_enabled: false,
+        selfie_check_required: false, mdl_enabled: false, clear1_allowed: false,
       )
       form = Idv::PhoneForm.new(
         previous_params: { phone: '2025551212' }, user: User.new, delivery_methods: [:sms],

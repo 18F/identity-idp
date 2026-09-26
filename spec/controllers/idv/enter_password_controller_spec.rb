@@ -334,6 +334,64 @@ RSpec.describe Idv::EnterPasswordController do
         end
       end
     end
+
+    context 'inherited proofing flow' do
+      let(:idv_clear1_enabled) { true }
+      let(:document_capture_session) do
+        create(
+          :document_capture_session,
+          user:,
+          doc_auth_vendor: Idp::Constants::Vendors::CLEAR1,
+          issuer: sp.issuer,
+          pending_agent_proofed_user_at: Time.zone.now,
+        )
+      end
+      before do
+        # clear out idv_session state
+        subject.idv_session.vendor_phone_confirmation = nil
+        subject.idv_session.welcome_visited = nil
+        subject.idv_session.idv_consent_given_at = nil
+        subject.idv_session.proofing_started_at = nil
+        subject.idv_session.flow_path = nil
+        subject.idv_session.pii_from_doc = nil
+        subject.idv_session.ssn = nil
+        subject.idv_session.threatmetrix_session_id = nil
+        subject.idv_session.threatmetrix_review_status = nil
+        subject.idv_session.resolution_successful = nil
+        subject.idv_session.applicant = nil
+        subject.idv_session.resolution_successful = nil
+        allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(idv_clear1_enabled)
+      end
+
+      context 'when user is inherited proofed' do
+        before do
+          subject.idv_session.clear1_allowed = true
+          subject.idv_session.clear1_verified = true
+        end
+        it 'renders the enter_password page' do
+          get :new
+
+          expect(response).to render_template :new
+        end
+
+        context 'when clear1 disabled' do
+          let(:idv_clear1_enabled) { false }
+          it 'renders the enter_password page' do
+            get :new
+
+            expect(response).to redirect_to(idv_welcome_url)
+          end
+        end
+      end
+
+      context 'when user is not inherited proofed' do
+        it 'redirects to welcome page' do
+          get :new
+
+          expect(response).to redirect_to(idv_welcome_url)
+        end
+      end
+    end
   end
 
   describe '#create' do

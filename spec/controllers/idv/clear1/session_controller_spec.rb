@@ -7,7 +7,8 @@ RSpec.describe Idv::Clear1::SessionController do
   let(:vendor_switching_enabled) { true }
   let(:user) { create(:user) }
   let(:clear1_success) { true }
-  let(:clear1_enabled) { true }
+  let(:idv_clear1_enabled) { true }
+  let(:clear1_allowed) { idv_clear1_enabled }
   let(:idv_clear1_project_id) { 'fav-proj-id' }
   let(:token) { 'crystal_clear1_token' }
   let(:session_id) { 'best_session' }
@@ -17,11 +18,13 @@ RSpec.describe Idv::Clear1::SessionController do
     "#{idv_clear1_api_base_url}/v1/verification_sessions"
   end
   let(:clear1_status) { 200 }
+  let(:doc_auth_vendor) { nil }
   let(:document_capture_session) do
     create(
       :document_capture_session,
       user:,
       requested_at: Time.zone.now,
+      doc_auth_vendor:,
     )
   end
   let(:uuid_pattern) { /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i }
@@ -30,6 +33,7 @@ RSpec.describe Idv::Clear1::SessionController do
     allow(IdentityConfig.store).to receive_messages(
       idv_clear1_api_base_url:,
       idv_clear1_project_id:,
+      idv_clear1_enabled:,
     )
 
     user_session = {}
@@ -38,7 +42,10 @@ RSpec.describe Idv::Clear1::SessionController do
     subject.idv_session.tap do |idv_session|
       idv_session.document_capture_session_uuid = document_capture_session.uuid
       idv_session.flow_path = 'standard'
-      idv_session.clear1_enabled = clear1_enabled
+      idv_session.clear1_allowed = clear1_allowed
+      idv_session.clear1_verification_state = 'myState'
+      idv_session.clear1_verification_token = 'myToken'
+      idv_session.clear1_allowed = clear1_allowed
     end
 
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
@@ -149,7 +156,7 @@ RSpec.describe Idv::Clear1::SessionController do
     end
 
     context 'when clear1 is disabled' do
-      let(:clear1_enabled) { false }
+      let(:idv_clear1_enabled) { false }
 
       it 'the webhook route does not exist' do
         get(:show)
@@ -169,18 +176,53 @@ RSpec.describe Idv::Clear1::SessionController do
   end
 
   describe '#update' do
+    let(:body) { Clear1Fixtures.pass_json }
+    let(:doc_auth_vendor) { Idp::Constants::Vendors::CLEAR1 }
     before do
       stub_sign_in(user)
       subject.idv_session.clear1_verification_token = token
       subject.idv_session.clear1_verification_state = SecureRandom.uuid
+      subject.idv_session.clear1_verification_session_id = session_id
+
+      clear1_result_endpoint = [
+        IdentityConfig.store.idv_clear1_api_base_url,
+        'v1',
+        'verification_sessions',
+        session_id,
+      ].join('/')
+
+      stub_request(:get, clear1_result_endpoint)
+        .to_return(
+          body:,
+        )
     end
 
     context 'when clear1 is disabled' do
-      let(:clear1_enabled) { false }
+      let(:idv_clear1_enabled) { false }
 
       it 'the route does not exist' do
         get(:update)
+
         expect(response).to be_not_found
+      end
+    end
+
+    it 'redirects to enter password page' do
+      get(:update)
+
+      expect(response).to redirect_to(idv_enter_password_path)
+      expect(subject.idv_session.applicant).not_to be_empty
+      expect(subject.idv_session.doc_auth_vendor).to eq(Idp::Constants::Vendors::CLEAR1)
+    end
+
+    context 'when inherited proofing fails' do
+      let(:body) { Clear1Fixtures.fail_json }
+      it 'redirects to clear 1 page' do
+        get(:update)
+
+        expect(response).to redirect_to(idv_clear1_session_url)
+        expect(subject.idv_session.applicant).to be_nil
+        expect(subject.idv_session.doc_auth_vendor).to be_nil
       end
     end
   end

@@ -605,6 +605,43 @@ RSpec.describe Idv::Session do
     end
   end
 
+  describe '#inherited_proofed?' do
+    it 'returns false' do
+      expect(subject.inherited_proofed?).to be(false)
+    end
+
+    context 'when clear1 allowed' do
+      before do
+        subject.clear1_allowed = true
+      end
+
+      it 'returns false' do
+        expect(subject.inherited_proofed?).to be(false)
+      end
+
+      context 'when clear1 verified' do
+        before do
+          subject.clear1_verified = true
+        end
+
+        it 'returns true' do
+          expect(subject.inherited_proofed?).to be(true)
+        end
+      end
+    end
+
+    context 'when clear1 is not allowed but verified' do
+      before do
+        subject.clear1_allowed = true
+        subject.clear1_verified = false
+      end
+
+      it 'returns false' do
+        expect(subject.inherited_proofed?).to be(false)
+      end
+    end
+  end
+
   describe '#pii_from_doc' do
     before { subject.pii_from_doc = { document_type_received:, first_name: 'JANE' } }
 
