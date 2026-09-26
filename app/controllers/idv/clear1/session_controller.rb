@@ -94,6 +94,7 @@ module Idv
       end
 
       def fetch_synchronous_verification_result
+        # todo: make async
         timer = JobHelpers::Timer.new
         timer.time('vendor_request') do
           Proofing::Clear1::Requests::ResultRequest.new(
@@ -103,7 +104,6 @@ module Idv
       end
 
       def extract_pii_from_result(result)
-        # See also Idv::InPerson::StateIdController#update
         idv_session.doc_auth_vendor = document_capture_session.doc_auth_vendor
         idv_session.applicant = result.pii
       end
