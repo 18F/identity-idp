@@ -12,7 +12,6 @@ module Idv
   # @attr clear1_verification_state [String, nil]
   # @attr clear1_verification_token [String, nil]
   # @attr clear1_verified [Boolean, nil]
-  # @attr clear1_wait_polling_started_at [Integer, nil]
   # @attr doc_auth_vendor [String, nil]
   # @attr document_capture_session_uuid [String, nil]
   # @attr flow_path [String, nil]
@@ -72,7 +71,6 @@ module Idv
       applicant
       clear1_allowed
       clear1_verification_session_id
-      clear1_wait_polling_started_at
       clear1_verification_state
       clear1_verification_token
       clear1_verified
