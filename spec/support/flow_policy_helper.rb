@@ -59,6 +59,9 @@ module FlowPolicyHelper
       idv_session.send(:user_session)['idv/in_person'] = {
         pii_from_user: Idp::Constants::MOCK_IPP_APPLICANT.dup,
       }
+      # AAMVA is always performed when completing the state ID step, which
+      # records the result the downstream IPP steps require in their preconditions.
+      idv_session.ipp_aamva_result = { success: true }
     when :ipp_address
       idv_session.send(:user_session)['idv/in_person'] = {
         pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup,

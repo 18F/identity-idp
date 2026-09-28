@@ -753,10 +753,9 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     end
   end
 
-  context 'when AAMVA is enabled at doc auth' do
+  context 'when applicant has AAMVA verified attributes' do
     before do
       allow(IdentityConfig.store).to receive_messages(
-        idv_aamva_at_doc_auth_enabled: true,
         idv_aamva_get_to_yes_enabled_vendors: ['instant_verify', 'instant_verify_ddp'],
         proofer_mock_fallback: false,
         idv_resolution_default_vendor: :instant_verify,

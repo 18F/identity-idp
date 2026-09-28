@@ -496,6 +496,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         success: true,
         selfie_status: 'not_processed',
         pii: { state: 'MD', document_type_received: 'drivers_license' },
+        aamva_status: :passed,
       )
     end
 
