@@ -165,19 +165,13 @@ module MfaSetupConcern
   def recommend_webauthn_platform_for_sms_user?
     user_session[:platform_authenticator_available] == true &&
       !user_session[:auto_passkey_prompted] &&
-      user_has_phone_setup?
+      in_account_creation_flow? &&
+      only_mfa_is_sms_phone?
   end
 
-  def user_set_up_with_sms?
-    current_user.phone_configurations.any? do |phone_configuration|
-      phone_configuration.mfa_enabled? && phone_configuration.delivery_preference == 'sms'
-    end
-  end
-
-  def user_has_phone_setup?
-    user_session[:in_account_creation_flow] == true &&
-      mfa_context.enabled_mfa_methods_count == 1 &&
-      mfa_context.phone_configurations.present? &&
-      user_set_up_with_sms?
+  # True when the user's single configured MFA method is a phone using SMS.
+  def only_mfa_is_sms_phone?
+    mfa_context.enabled_mfa_methods_count == 1 &&
+      mfa_context.phone_configurations.any? { |config| config.mfa_enabled? && config.sms? }
   end
 end

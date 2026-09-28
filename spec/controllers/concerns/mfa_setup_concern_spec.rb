@@ -66,10 +66,17 @@ RSpec.describe MfaSetupConcern do
       end
 
       let(:user) { create(:user, :fully_registered) }
-      let(:recommend_webauthn_platform_for_sms_user?) { true }
 
       it 'redirects to webauthn recommendation screen' do
         expect(next_setup_path).to eq(webauthn_platform_recommended_path)
+      end
+
+      context 'when the user set up their phone with voice delivery' do
+        let(:user) { create(:user, :fully_registered, with: { delivery_preference: :voice }) }
+
+        it 'does not redirect to webauthn recommendation screen' do
+          expect(next_setup_path).to_not eq(webauthn_platform_recommended_path)
+        end
       end
     end
 
