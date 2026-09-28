@@ -15,7 +15,6 @@ RSpec.feature 'SP Costing', :email do
   before do
     allow(IdentityConfig.store).to receive(:allowed_verified_within_providers)
       .and_return([issuer])
-    allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
   end
 
   it 'logs the correct costs for an ial2 user creation from sp with oidc', js: true do
