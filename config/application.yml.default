@@ -304,10 +304,10 @@ in_person_results_delay_in_hours: 1
 in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
 invalid_gpo_confirmation_zipcode: '00001'
+key_metrics_original_external_emails: '[]'
+key_metrics_original_internal_emails: '[]'
 key_metrics_external_emails: '[]'
 key_metrics_internal_emails: '[]'
-key_metrics_s3_external_emails: '[]'
-key_metrics_s3_internal_emails: '[]'
 
 # LexisNexis #####################################################
 # Instant Verify and Phone Finder Integrations
@@ -706,10 +706,10 @@ test:
   idv_clear1_project_id: 'test-project-id'
   idv_socure_phonerisk_name_correlation_score_threshold: 0.5
   idv_socure_phonerisk_score_threshold: 0.5
+  key_metrics_original_external_emails: '["mock_key_metrics_org_ext@example.com"]'
+  key_metrics_original_internal_emails: '["mock_key_metrics_org_int@example.com"]'
   key_metrics_external_emails: '["mock_key_metrics_ext@example.com"]'
   key_metrics_internal_emails: '["mock_key_metrics_int@example.com"]'
-  key_metrics_s3_external_emails: '["mock_key_metrics_s3_ext@example.com"]'
-  key_metrics_s3_internal_emails: '["mock_key_metrics_s3_int@example.com"]'
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2

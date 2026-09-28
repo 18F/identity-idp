@@ -115,9 +115,9 @@ module Reports
     end
 
     def emails
-      emails = [*IdentityConfig.store.key_metrics_s3_internal_emails]
+      emails = [*IdentityConfig.store.key_metrics_internal_emails]
       if report_date.next_day.day == 1
-        emails += IdentityConfig.store.key_metrics_s3_external_emails
+        emails += IdentityConfig.store.key_metrics_external_emails
       end
       emails
     end

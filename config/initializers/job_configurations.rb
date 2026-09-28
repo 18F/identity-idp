@@ -227,7 +227,7 @@ else
         class: 'GpoExpirationJob',
         cron: cron_24h,
       },
-      # Disabled with redshift/S3 version replacing it, will delete soon
+      # Disabled via email configs being empty. Redshift/S3 version replacing it, will delete soon
       monthly_key_metrics_report: {
         class: 'Reports::MonthlyKeyMetricsReport',
         cron: cron_24h,
