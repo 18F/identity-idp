@@ -40,6 +40,7 @@ module Proofing
           proofer = Proofing::AddressProofer.new(
             user_uuid: phone_applicant[:uuid],
             user_email:,
+            is_proofing_agent:,
           )
           timer.time('phone') do
             proofer.proof(applicant_pii: phone_applicant, current_sp:)
