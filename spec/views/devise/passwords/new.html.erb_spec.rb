@@ -74,6 +74,47 @@ RSpec.describe 'devise/passwords/new.html.erb' do
     expect(rendered).to have_link(t('forms.passwords.reset.how_to_reset_with_personal_key'))
   end
 
+  describe 'reCAPTCHA submit button' do
+    before do
+      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(false)
+    end
+
+    context 'when password_reset_recaptcha_enabled? is true' do
+      before do
+        allow(FeatureManagement).to receive(:password_reset_recaptcha_enabled?)
+          .and_return(true)
+      end
+
+      it 'renders the captcha submit button' do
+        render
+
+        expect(rendered).to have_css('lg-captcha-submit-button')
+      end
+    end
+
+    context 'when password_reset_recaptcha_enabled? is false' do
+      before do
+        allow(FeatureManagement).to receive(:password_reset_recaptcha_enabled?)
+          .and_return(false)
+      end
+
+      it 'renders a plain submit button with no captcha' do
+        render
+
+        expect(rendered).to have_button(t('forms.buttons.continue'))
+        expect(rendered).to_not have_css('lg-captcha-submit-button')
+      end
+
+      it 'still renders the captcha when the mock validator is enabled' do
+        allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
+
+        render
+
+        expect(rendered).to have_css('lg-captcha-submit-button')
+      end
+    end
+  end
+
   context 'service provider does not have custom help text' do
     let(:sp) do
       build_stubbed(

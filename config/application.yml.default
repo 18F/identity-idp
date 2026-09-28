@@ -654,6 +654,7 @@ development:
 production:
   aamva_auth_url: 'https://authentication-cert.aamva.org/Authentication/Authenticate.svc'
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
+  account_creation_recaptcha_enabled: false
   disable_email_sending: false
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
@@ -669,6 +670,7 @@ production:
   openid_connect_content_security_form_action_enabled: true
   openid_connect_redirect: server_side
   participate_in_dap: true
+  password_reset_recaptcha_enabled: false
   raise_on_component_validation_error: false
   recaptcha_mock_validator: false
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
