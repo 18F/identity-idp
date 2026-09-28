@@ -264,6 +264,47 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       end
     end
 
+    context 'when the flow feature flags are off (default configuration)' do
+      before do
+        allow(FeatureManagement)
+          .to receive(:personal_key_mfa_deprecation_phase_1_enabled?).and_return(false)
+        allow(FeatureManagement)
+          .to receive(:enable_additional_mfa_redirect_for_personal_key_mfa?).and_return(false)
+      end
+
+      it 'does not prompt a personal key MFA user to add a new method' do
+        user = create(:user, :with_phone)
+        raw_key = PersonalKeyGenerator.new(user).generate!
+        stub_sign_in_before_2fa(user)
+
+        post :create, params: { personal_key_form: { personal_key: raw_key } }
+
+        expect(response).to redirect_to(account_path)
+      end
+    end
+
+    context 'when the personal key belongs to an identity-verified user' do
+      before do
+        allow(FeatureManagement)
+          .to receive(:personal_key_mfa_deprecation_phase_1_enabled?).and_return(true)
+      end
+
+      it 'sends the user to manage their personal key rather than MFA setup' do
+        profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
+        user = profile.user
+        # The verified user reaches #show/#create via the manage flow, so the
+        # check_personal_key_enabled before_action must let them through.
+        allow_any_instance_of(TwoFactorAuthentication::PersonalKeyPolicy)
+          .to receive(:enabled?).and_return(true)
+        raw_key = PersonalKeyGenerator.new(user).generate!
+        stub_sign_in_before_2fa(user)
+
+        post :create, params: { personal_key_form: { personal_key: raw_key } }
+
+        expect(response).to redirect_to(manage_personal_key_url)
+      end
+    end
+
     it 'redirects to the two_factor_options page if user is IAL2' do
       profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
       user = profile.user
