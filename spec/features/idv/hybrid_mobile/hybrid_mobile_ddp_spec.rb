@@ -69,7 +69,7 @@ RSpec.describe 'Hybrid Flow DDP', js: true do
 
       perform_in_browser(:desktop) do
         user = user_with_2fa
-        visit_idp_from_oidc_sp_with_ial2
+        visit_idp_from_oidc_sp_with_basic
         sign_in_and_2fa_user(user)
 
         complete_doc_auth_steps_before_hybrid_handoff_step
@@ -149,7 +149,7 @@ RSpec.describe 'Hybrid Flow DDP', js: true do
 
       perform_in_browser(:desktop) do
         user = user_with_2fa
-        visit_idp_from_oidc_sp_with_ial2
+        visit_idp_from_oidc_sp_with_basic
         sign_in_and_2fa_user(user)
 
         complete_doc_auth_steps_before_hybrid_handoff_step

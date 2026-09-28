@@ -27,7 +27,7 @@ RSpec.describe 'when Socure throws an internal error' do
 
   context 'mobile flow', :js, driver: :headless_chrome_mobile do
     before do
-      visit_idp_from_oidc_sp_with_ial2
+      visit_idp_from_oidc_sp_with_basic
       @user = sign_in_and_2fa_user
       complete_doc_auth_steps_before_hybrid_handoff_step
       complete_choose_id_type_step
@@ -52,7 +52,7 @@ RSpec.describe 'when Socure throws an internal error' do
 
     it 'correctly logs a document capture request submitted event', js: true do
       perform_in_browser(:desktop) do
-        visit_idp_from_oidc_sp_with_ial2
+        visit_idp_from_oidc_sp_with_basic
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_hybrid_handoff_step
         click_send_link

@@ -13,11 +13,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
   end
   let(:facial_match_required) { false }
   before do
-    if facial_match_required
-      visit_idp_from_oidc_sp_with_ial2(
-        facial_match_required: facial_match_required,
-      )
-    end
+    visit_idp_from_oidc_sp_with_enhanced if facial_match_required
     sign_in_and_2fa_user
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:attempts_api_tracker).and_return(
