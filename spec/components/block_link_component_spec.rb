@@ -21,35 +21,68 @@ RSpec.describe BlockLinkComponent, type: :component do
   end
 
   context 'with an unsafe url scheme' do
-    it 'raises for a javascript: url' do
-      expect { BlockLinkComponent.new(url: 'javascript:alert(1)') }
-        .to raise_error(ArgumentError, /^Unsafe URL scheme/)
+    before do
+      allow(NewRelic::Agent).to receive(:notice_error)
+    end
+    it 'sends a NewRelic error for a javascript: url' do
+      BlockLinkComponent.new(url: 'javascript:alert(1)')
+
+      expect(NewRelic::Agent).to have_received(:notice_error).with(
+        ArgumentError.new('Unsafe URL scheme for BlockLinkComponent: javascript'),
+      )
     end
 
-    it 'raises for a data: url' do
-      expect { BlockLinkComponent.new(url: 'data:text/html,<script>alert(1)</script>') }
-        .to raise_error(ArgumentError, /^Invalid URL/)
+    it 'sends a NewRelic error for a data: url' do
+      BlockLinkComponent.new(url: 'data:text/html,<script>alert(1)</script>')
+
+      expect(NewRelic::Agent).to have_received(:notice_error).with(
+        ArgumentError.new(
+          'Invalid URL for BlockLinkComponent: data:text/html,<script>alert(1)</script>',
+        ),
+      )
     end
 
-    it 'raises for a vbscript: url' do
-      expect { BlockLinkComponent.new(url: 'vbscript:msgbox(1)') }
-        .to raise_error(ArgumentError, /^Unsafe URL scheme/)
+    it 'sends a NewRelic error for a vbscript: url' do
+      BlockLinkComponent.new(url: 'vbscript:msgbox(1)')
+
+      expect(NewRelic::Agent).to have_received(:notice_error).with(
+        ArgumentError.new('Unsafe URL scheme for BlockLinkComponent: vbscript'),
+      )
     end
 
-    it 'raises for a mixed-case scheme' do
-      expect { BlockLinkComponent.new(url: 'JavaScript:alert(1)') }
-        .to raise_error(ArgumentError, /^Unsafe URL scheme/)
+    it 'sends a NewRelic error for a mixed-case scheme' do
+      BlockLinkComponent.new(url: 'JavaScript:alert(1)')
+
+      expect(NewRelic::Agent).to have_received(:notice_error).with(
+        ArgumentError.new('Unsafe URL scheme for BlockLinkComponent: javascript'),
+      )
     end
 
-    it 'raises when the scheme is obscured by leading whitespace' do
-      expect { BlockLinkComponent.new(url: ' javascript:alert(1)') }
-        .to raise_error(ArgumentError, /^Unsafe URL scheme/)
+    it 'sends a NewRelic error when the scheme is obscured by leading whitespace' do
+      BlockLinkComponent.new(url: ' javascript:alert(1)')
+
+      expect(NewRelic::Agent).to have_received(:notice_error).with(
+        ArgumentError.new('Unsafe URL scheme for BlockLinkComponent: javascript'),
+      )
+    end
+
+    [
+      'data:text/html,<script>alert(1)</script>',
+      'javascript:alert(1)',
+      'vbscript:msgbox(1)',
+    ].each do |url|
+      it "does not render a component for #{url}" do
+        text = "The page you were looking for doesn't exist (406)"
+        rendered = render_inline BlockLinkComponent.new(url:).with_content('Link Text')
+
+        expect(rendered.text.include?(text)).to be true
+      end
     end
   end
 
   context 'with a safe url' do
     ['/', '#', 'https://example.com', '/path?query=1', 'relative/path'].each do |url|
-      it "renders a link for #{url.inspect}" do
+      it "renders a link for #{url}" do
         rendered = render_inline BlockLinkComponent.new(url:).with_content('Link Text')
 
         expect(rendered).to have_link('Link Text', href: url)
