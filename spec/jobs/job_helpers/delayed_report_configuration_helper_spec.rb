@@ -81,7 +81,7 @@ RSpec.describe JobHelpers::DelayedReportConfigurationHelper do
           expect(
             described_class.determine_receiver_for_period_report(
               run_date: Time.zone.now, lookback_days: 1, time_frame: 'monthly',
-              external_rule: 'always_internal',
+              external_rule: 'always_internal'
             ),
           ).to eq(:internal)
         end
@@ -92,25 +92,25 @@ RSpec.describe JobHelpers::DelayedReportConfigurationHelper do
           expect(
             described_class.determine_receiver_for_period_report(
               run_date: Time.zone.now, lookback_days: 1, time_frame: 'monthly',
-              external_rule: 'always_external',
+              external_rule: 'always_external'
             ),
           ).to eq(:both)
         end
       end
 
       it 'raises for an unsupported rule' do
-        expect {
+        expect do
           described_class.determine_receiver_for_period_report(
             time_frame: 'monthly', external_rule: 'whenever_i_feel_like_it',
           )
-        }.to raise_error(ArgumentError, /Unsupported external rule/)
+        end.to raise_error(ArgumentError, /Unsupported external rule/)
       end
     end
 
     it 'raises for an unsupported time frame' do
-      expect {
+      expect do
         described_class.determine_receiver_for_period_report(time_frame: 'fortnightly')
-      }.to raise_error(ArgumentError, /Unsupported time frame/)
+      end.to raise_error(ArgumentError, /Unsupported time frame/)
     end
   end
 end

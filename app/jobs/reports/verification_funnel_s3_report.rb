@@ -336,6 +336,14 @@ module Reports
       end
     end
 
+    # Example config structure (one entry per issuer):
+    #   [
+    #     {
+    #       'issuer_string' => 'issuer_string_1',
+    #       'internal_emails' => ['internal_email@login.gov'],
+    #       'partner_emails' => ['external_email@login.gov'],
+    #     },
+    #   ]
     def report_configs
       IdentityConfig.store.verification_funnel_s3_report_configs
     end

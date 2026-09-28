@@ -162,9 +162,9 @@ RSpec.describe Reports::VerificationFunnelS3Report do
       end
 
       it 'raises error for invalid receiver' do
-        expect {
+        expect do
           Reports::VerificationFunnelS3Report.new(run_date, days_back, :external, time_frame)
-        }.to raise_error(ArgumentError, /report_receiver must be :internal or :both/)
+        end.to raise_error(ArgumentError, /report_receiver must be :internal or :both/)
       end
 
       it 'raises error for invalid time_frame' do

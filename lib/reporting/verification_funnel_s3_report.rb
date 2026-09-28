@@ -37,6 +37,8 @@ module Reporting
         ),
         Reporting::EmailableReport.new(
           title: "#{agency_abbreviation_prefix}Verification Funnel Metrics",
+          float_as_percent: true,
+          precision: 2,
           table: verification_funnel_metrics_table,
           filename: 'verification_funnel_metrics',
         ),
@@ -65,7 +67,7 @@ module Reporting
       @csv_cache ||= {}
       @csv_cache[report_name] ||= begin
         body = fetch_csv_from_s3(report_name)
-        CSV.parse(body)
+        CSV.parse(body).map { |row| row.map { |cell| coerce_cell(cell) } }
       end
     end
 
@@ -78,6 +80,29 @@ module Reporting
     end
 
     private
+
+    # CSV stores everything as strings. The producer writes Integers (counts) and
+    # Floats (rates); recreate that here so:
+    #   - integer-looking cells (counts) -> Integer
+    #   - decimal-looking cells (rates) -> Float (so float_as_percent kicks in
+    #     in the mailer template)
+    #   - everything else (labels, headers) -> left as the original String
+    def coerce_cell(cell)
+      return cell unless cell.is_a?(String)
+
+      stripped = cell.strip
+      return cell if stripped.empty?
+
+      if stripped.match?(/\A-?\d+\z/)
+        Integer(stripped)
+      elsif stripped.match?(/\A-?\d*\.\d+\z/)
+        Float(stripped)
+      else
+        cell
+      end
+    rescue ArgumentError
+      cell
+    end
 
     def agency_abbreviation_prefix
       if agency_abbreviation.present?
