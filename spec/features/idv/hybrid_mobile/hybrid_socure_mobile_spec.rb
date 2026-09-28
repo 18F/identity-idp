@@ -60,7 +60,7 @@ RSpec.describe 'Hybrid Flow' do
       expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
 
       perform_in_browser(:desktop) do
-        visit_idp_from_oidc_sp_with_ial2
+        visit_idp_from_oidc_sp_with_basic
         sign_in_and_2fa_user(user)
 
         complete_doc_auth_steps_before_hybrid_handoff_step
@@ -169,7 +169,7 @@ RSpec.describe 'Hybrid Flow' do
         expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
 
         perform_in_browser(:desktop) do
-          visit_idp_from_oidc_sp_with_ial2
+          visit_idp_from_oidc_sp_with_basic
           sign_in_and_2fa_user(user)
 
           complete_doc_auth_steps_before_hybrid_handoff_step
@@ -286,7 +286,7 @@ RSpec.describe 'Hybrid Flow' do
         expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
 
         perform_in_browser(:desktop) do
-          visit_idp_from_oidc_sp_with_ial2
+          visit_idp_from_oidc_sp_with_basic
           sign_in_and_2fa_user(user)
 
           complete_doc_auth_steps_before_hybrid_handoff_step
@@ -393,7 +393,7 @@ RSpec.describe 'Hybrid Flow' do
           expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
 
           perform_in_browser(:desktop) do
-            visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+            visit_idp_from_oidc_sp_with_enhanced
             sign_in_and_2fa_user(user)
 
             complete_doc_auth_steps_before_hybrid_handoff_step
@@ -537,7 +537,7 @@ RSpec.describe 'Hybrid Flow' do
             expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
 
             perform_in_browser(:desktop) do
-              visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+              visit_idp_from_oidc_sp_with_enhanced
               sign_in_and_2fa_user(user)
 
               complete_doc_auth_steps_before_hybrid_handoff_step
@@ -661,7 +661,7 @@ RSpec.describe 'Hybrid Flow' do
         expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
 
         perform_in_browser(:desktop) do
-          visit_idp_from_oidc_sp_with_ial2
+          visit_idp_from_oidc_sp_with_basic
           sign_in_and_2fa_user(user)
 
           complete_doc_auth_steps_before_hybrid_handoff_step
@@ -769,7 +769,7 @@ RSpec.describe 'Hybrid Flow' do
           expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
 
           perform_in_browser(:desktop) do
-            visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+            visit_idp_from_oidc_sp_with_enhanced
             sign_in_and_2fa_user(user)
 
             complete_doc_auth_steps_before_hybrid_handoff_step
@@ -913,7 +913,7 @@ RSpec.describe 'Hybrid Flow' do
             expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
 
             perform_in_browser(:desktop) do
-              visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+              visit_idp_from_oidc_sp_with_enhanced
               sign_in_and_2fa_user(user)
 
               complete_doc_auth_steps_before_hybrid_handoff_step
@@ -1051,7 +1051,7 @@ RSpec.describe 'Hybrid Flow' do
 
       it 'presents options to try again or try in person', js: true do
         perform_in_browser(:desktop) do
-          visit_idp_from_oidc_sp_with_ial2
+          visit_idp_from_oidc_sp_with_basic
           sign_in_and_2fa_user(user)
 
           complete_doc_auth_steps_before_hybrid_handoff_step
@@ -1296,7 +1296,7 @@ RSpec.describe 'Hybrid Flow' do
           .times.and_call_original
 
         perform_in_browser(:desktop) do
-          visit_idp_from_oidc_sp_with_ial2
+          visit_idp_from_oidc_sp_with_basic
           sign_in_and_2fa_user(user, auth_method: 'totp')
 
           complete_doc_auth_steps_before_hybrid_handoff_step
@@ -1342,7 +1342,7 @@ RSpec.describe 'Hybrid Flow' do
     context 'invalid ID type' do
       it 'presents as an unaccepted ID type error', js: true do
         perform_in_browser(:desktop) do
-          visit_idp_from_oidc_sp_with_ial2
+          visit_idp_from_oidc_sp_with_basic
           sign_in_and_2fa_user(user)
 
           complete_doc_auth_steps_before_hybrid_handoff_step
@@ -1388,7 +1388,6 @@ RSpec.describe 'Hybrid Flow' do
     end
 
     context 'selfie is required' do
-      let(:facial_match_required) { true }
       context 'state id is submitted' do
         before do
           allow(IdentityConfig.store).to receive_messages(
@@ -1405,7 +1404,7 @@ RSpec.describe 'Hybrid Flow' do
           expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
 
           perform_in_browser(:desktop) do
-            visit_idp_from_oidc_sp_with_ial2(facial_match_required:)
+            visit_idp_from_oidc_sp_with_enhanced
             sign_in_and_2fa_user(user)
 
             complete_doc_auth_steps_before_hybrid_handoff_step
@@ -1560,7 +1559,7 @@ RSpec.describe 'Hybrid Flow' do
           expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
 
           perform_in_browser(:desktop) do
-            visit_idp_from_oidc_sp_with_ial2(facial_match_required:)
+            visit_idp_from_oidc_sp_with_enhanced
             sign_in_and_2fa_user(user)
 
             complete_doc_auth_steps_before_hybrid_handoff_step
@@ -1660,7 +1659,7 @@ RSpec.describe 'Hybrid Flow' do
   shared_examples 'a properly categorized Socure error' do |socure_error_code, expected_header_key|
     it 'shows the correct error page', allow_browser_log: true, js: true do
       perform_in_browser(:desktop) do
-        visit_idp_from_oidc_sp_with_ial2
+        visit_idp_from_oidc_sp_with_basic
         sign_in_and_2fa_user(user)
 
         complete_doc_auth_steps_before_hybrid_handoff_step
@@ -1739,7 +1738,7 @@ RSpec.describe 'Hybrid Flow' do
       it 'shows the network error page on the phone and the link sent page on the desktop',
          js: true do
         perform_in_browser(:desktop) do
-          visit_idp_from_oidc_sp_with_ial2
+          visit_idp_from_oidc_sp_with_basic
           sign_in_and_2fa_user(user)
 
           complete_doc_auth_steps_before_hybrid_handoff_step
@@ -1791,7 +1790,7 @@ RSpec.describe 'Hybrid Flow' do
 
       it 'presents as a type 1 error', js: true do
         perform_in_browser(:desktop) do
-          visit_idp_from_oidc_sp_with_ial2
+          visit_idp_from_oidc_sp_with_basic
           sign_in_and_2fa_user(user)
 
           complete_doc_auth_steps_before_hybrid_handoff_step

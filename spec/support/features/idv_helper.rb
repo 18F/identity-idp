@@ -89,13 +89,26 @@ module IdvHelper
   end
 
   def visit_idp_from_sp_with_ial2(sp_type, **extra)
+    facial_match_required = extra.delete(:facial_match_required)
     if sp_type == :saml
-      visit_idp_from_saml_sp_with_ial2
+      if facial_match_required
+        visit_idp_from_saml_sp_with_enhanced
+      else
+        visit_idp_from_saml_sp_with_basic
+      end
     elsif sp_type == :oidc
       @state = SecureRandom.hex
       @nonce = SecureRandom.hex
       @client_id = sp_oidc_issuer
-      visit_idp_from_oidc_sp_with_ial2(state: @state, client_id: @client_id, nonce: @nonce, **extra)
+      if facial_match_required
+        visit_idp_from_oidc_sp_with_enhanced(
+          state: @state, client_id: @client_id, nonce: @nonce, **extra,
+        )
+      else
+        visit_idp_from_oidc_sp_with_basic(
+          state: @state, client_id: @client_id, nonce: @nonce, **extra,
+        )
+      end
     end
   end
 
@@ -115,11 +128,30 @@ module IdvHelper
     end
   end
 
-  def visit_idp_from_saml_sp_with_ial2(issuer: sp1_issuer)
+  # IAL2 without facial match (basic verified scope)
+  def visit_idp_from_saml_sp_with_basic(issuer: sp1_issuer)
+    visit_idp_from_saml_sp_with_authn_context(
+      issuer:,
+      ial_authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+    )
+  end
+
+  # IAL2 with facial match required (enhanced verified scope)
+  def visit_idp_from_saml_sp_with_enhanced(issuer: sp1_issuer)
+    visit_idp_from_saml_sp_with_authn_context(
+      issuer:,
+      ial_authn_context: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+    )
+  end
+
+  def visit_idp_from_saml_sp_with_authn_context(
+    issuer: sp1_issuer,
+    ial_authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+  )
     saml_overrides = {
       issuer: issuer,
       authn_context: [
-        Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        ial_authn_context,
         "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
         "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
       ],
@@ -137,14 +169,46 @@ module IdvHelper
     visit_saml_authn_request_url(overrides: saml_overrides)
   end
 
-  def visit_idp_from_oidc_sp_with_ial2(
+  # IAL2 without facial match (basic verified scope)
+  def visit_idp_from_oidc_sp_with_basic(
+    client_id: sp_oidc_issuer,
+    state: SecureRandom.hex,
+    nonce: SecureRandom.hex,
+    verified_within: nil
+  )
+    visit_idp_from_oidc_sp_with_acr_values(
+      client_id:,
+      state:,
+      nonce:,
+      verified_within:,
+      acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+    )
+  end
+
+  # IAL2 with facial match required (enhanced verified scope)
+  def visit_idp_from_oidc_sp_with_enhanced(
+    client_id: sp_oidc_issuer,
+    state: SecureRandom.hex,
+    nonce: SecureRandom.hex,
+    verified_within: nil
+  )
+    visit_idp_from_oidc_sp_with_acr_values(
+      client_id:,
+      state:,
+      nonce:,
+      verified_within:,
+      acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+    )
+  end
+
+  def visit_idp_from_oidc_sp_with_acr_values(
     client_id: sp_oidc_issuer,
     state: SecureRandom.hex,
     nonce: SecureRandom.hex,
     verified_within: nil,
-    facial_match_required: nil
+    acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR
   )
-    params = {
+    visit openid_connect_authorize_path(
       client_id:,
       response_type: 'code',
       scope: 'openid email profile:name phone social_security_number',
@@ -153,15 +217,8 @@ module IdvHelper
       prompt: 'select_account',
       nonce:,
       verified_within:,
-    }
-
-    if facial_match_required
-      params[:acr_values] = Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
-    else
-      params[:acr_values] = Saml::Idp::Constants::IAL_VERIFIED_ACR
-    end
-
-    visit openid_connect_authorize_path(params)
+      acr_values:,
+    )
   end
 
   def visit_idp_from_oidc_sp_with_loa3

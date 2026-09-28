@@ -253,7 +253,7 @@ RSpec.feature 'saml api' do
       let(:user) { create(:profile, :active, :verified, pii: pii).user }
 
       scenario 'sign in flow with user authorizing SP' do
-        visit_idp_from_saml_sp_with_ial2
+        visit_idp_from_saml_sp_with_basic
         sign_in_live_with_2fa(user)
         click_submit_default
         click_agree_and_continue

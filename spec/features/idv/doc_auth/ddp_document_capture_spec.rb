@@ -49,7 +49,7 @@ RSpec.feature 'ddp document capture step', :js do
       .to_return_json({ status: 200, body: { response: 'YES' } })
     stub_request(:post, test_request_url)
       .to_return(status: 200, body: response_body.to_s, headers: {})
-    visit_idp_from_oidc_sp_with_ial2
+    visit_idp_from_oidc_sp_with_basic
     sign_in_and_2fa_user(@user)
     complete_doc_auth_steps_before_document_capture_step(choose_id_type: choose_id_type)
   end

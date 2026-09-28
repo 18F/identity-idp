@@ -65,7 +65,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
     context 'standard desktop flow' do
       before do
-        visit_idp_from_oidc_sp_with_ial2
+        visit_idp_from_oidc_sp_with_basic
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_hybrid_handoff_step
         complete_choose_id_type_step
@@ -323,7 +323,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           end
 
           it 'shows the network error page', js: true do
-            visit_idp_from_oidc_sp_with_ial2
+            visit_idp_from_oidc_sp_with_basic
             sign_in_and_2fa_user(user)
 
             complete_doc_auth_steps_before_hybrid_handoff_step
@@ -419,7 +419,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           idv_aamva_at_doc_auth_enabled: true,
           proofer_mock_fallback: false,
         )
-        visit_idp_from_oidc_sp_with_ial2
+        visit_idp_from_oidc_sp_with_basic
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_hybrid_handoff_step
         complete_choose_id_type_step
@@ -483,7 +483,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           .exactly(6 * socure_docv_webhook_repeat_endpoints.length).times.and_call_original
 
         perform_in_browser(:mobile) do
-          visit_idp_from_oidc_sp_with_ial2
+          visit_idp_from_oidc_sp_with_basic
           sign_in_and_2fa_user(user)
           complete_doc_auth_steps_before_hybrid_handoff_step
           complete_choose_id_type_step
@@ -526,7 +526,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
         it 'proceeds to the next page with valid info' do
           perform_in_browser(:mobile) do
-            visit_idp_from_oidc_sp_with_ial2
+            visit_idp_from_oidc_sp_with_basic
             sign_in_and_2fa_user(user)
 
             complete_doc_auth_steps_before_hybrid_handoff_step
@@ -651,7 +651,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
         it 'proceeds to the next page with valid info' do
           perform_in_browser(:mobile) do
-            visit_idp_from_oidc_sp_with_ial2
+            visit_idp_from_oidc_sp_with_basic
             sign_in_and_2fa_user(user)
 
             complete_doc_auth_steps_before_hybrid_handoff_step
@@ -732,7 +732,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
           it 'proceeds to the next page with valid info' do
             perform_in_browser(:mobile) do
-              visit_idp_from_oidc_sp_with_ial2
+              visit_idp_from_oidc_sp_with_basic
               sign_in_and_2fa_user(user)
 
               complete_doc_auth_steps_before_hybrid_handoff_step
@@ -812,7 +812,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         context 'retries w/ state ID after network error on the MRZ check' do
           it 'proceeds to the next page with valid info' do
             perform_in_browser(:mobile) do
-              visit_idp_from_oidc_sp_with_ial2
+              visit_idp_from_oidc_sp_with_basic
               sign_in_and_2fa_user(user)
 
               complete_doc_auth_steps_before_hybrid_handoff_step
@@ -888,7 +888,6 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         end
 
         context 'when a selfie is required' do
-          let(:facial_match_required) { true }
           context ' when a passport id is submitted' do
             let(:socure_docv_webhook_repeat_endpoints) { [] }
             let(:max_attempts) { 4 }
@@ -906,7 +905,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             end
 
             it 'proceeds to the next page with valid info' do
-              visit_idp_from_oidc_sp_with_ial2(facial_match_required:)
+              visit_idp_from_oidc_sp_with_enhanced
               sign_in_and_2fa_user(user)
 
               complete_doc_auth_steps_before_hybrid_handoff_step
@@ -1035,7 +1034,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
               end
 
               it 'proceeds to the next page with valid info' do
-                visit_idp_from_oidc_sp_with_ial2(facial_match_required:)
+                visit_idp_from_oidc_sp_with_enhanced
                 sign_in_and_2fa_user(user)
 
                 complete_doc_auth_steps_before_hybrid_handoff_step
@@ -1144,7 +1143,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           idv_socure_reason_codes_docv_selfie_pass: ['pass'],
           use_vot_in_sp_requests: true,
         )
-        visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+        visit_idp_from_oidc_sp_with_enhanced
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_hybrid_handoff_step
         complete_choose_id_type_step
@@ -1257,7 +1256,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         user:,
       )
 
-      visit_idp_from_oidc_sp_with_ial2
+      visit_idp_from_oidc_sp_with_basic
       sign_in_and_2fa_user(user)
 
       complete_doc_auth_steps_before_hybrid_handoff_step
@@ -1320,7 +1319,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
     it 'presents as a type 1 error' do
       stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token, user:)
 
-      visit_idp_from_oidc_sp_with_ial2
+      visit_idp_from_oidc_sp_with_basic
       sign_in_and_2fa_user(user)
 
       complete_doc_auth_steps_before_hybrid_handoff_step
