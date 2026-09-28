@@ -72,9 +72,10 @@ RSpec.describe BlockLinkComponent, type: :component do
       'vbscript:msgbox(1)',
     ].each do |url|
       it "does not render a component for #{url}" do
+        text = "The page you were looking for doesn't exist (406)"
         rendered = render_inline BlockLinkComponent.new(url:).with_content('Link Text')
 
-        expect(rendered.text.blank?).to be true
+        expect(rendered.text.include?(text)).to be true
       end
     end
   end

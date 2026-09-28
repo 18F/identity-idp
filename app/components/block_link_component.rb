@@ -42,8 +42,10 @@ class BlockLinkComponent < BaseComponent
   end
 
   def wrapper(&block)
-    return nil unless @valid
-    if component
+    if !@valid
+      render template: 'pages/not_acceptable', layout: false, status: :not_acceptable,
+             formats: :html
+    elsif component
       render component.new(href: url, class: css_class), &block
     else
       action = tag.method(:a)
