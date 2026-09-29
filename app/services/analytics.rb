@@ -35,6 +35,7 @@ class Analytics
     analytics_hash.merge!(request_attributes) if request
     analytics_hash.merge!(sp_request_attributes) if sp_request_attributes
     analytics_hash.merge!(ab_test_attributes(event))
+    analytics_hash[:sp_request_id] = sp_request_id if sp_request_id
 
     ahoy.track(event, analytics_hash)
 
@@ -165,6 +166,19 @@ class Analytics
     end
 
     { sp_request: attributes }
+  end
+
+  # The SP request_id stored in the session, if any. This is the same identifier
+  # used as the unique key on SpReturnLog, which lets downstream consumers join
+  # analytics events to the service provider request that started the journey.
+  # Not present for flows without an inbound SP request (e.g. session-less API
+  # requests, or sessions where session[:sp] was never populated).
+  #
+  # Emitted as +sp_request_id+, not +request_id+, to avoid colliding with the
+  # unrelated per-event +request_id+ properties already emitted by the Pinpoint
+  # SMS and TrueID events.
+  def sp_request_id
+    session&.dig(:sp, :request_id).presence
   end
 
   def differentiator
