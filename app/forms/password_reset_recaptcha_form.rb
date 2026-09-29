@@ -4,8 +4,6 @@ class PasswordResetRecaptchaForm < RecaptchaForm
   RECAPTCHA_ACTION = 'password_reset'
 
   def exempt?
-    return false if IdentityConfig.store.password_reset_recaptcha_enabled
-
     score_threshold.zero?
   end
 
