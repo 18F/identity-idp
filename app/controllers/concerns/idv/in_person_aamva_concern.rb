@@ -58,10 +58,6 @@ module Idv
 
     private
 
-    def aamva_enabled?
-      IdentityConfig.store.idv_aamva_at_doc_auth_ipp_enabled
-    end
-
     # The expiration edge-case values (Military/Indefinite/No-date sentinels and
     # literal placeholder dates like 9999-99-99) are not real dates. AAMVA sends
     # state_id_expiration verbatim as DriverLicenseExpirationDate, and because it
