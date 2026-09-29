@@ -78,6 +78,26 @@ RSpec.describe MfaSetupConcern do
           expect(next_setup_path).to_not eq(webauthn_platform_recommended_path)
         end
       end
+
+      context 'when the user was already auto prompted to set up a passkey' do
+        before do
+          controller.user_session[:auto_passkey_prompted] = true
+        end
+
+        it 'does not redirect to webauthn recommendation screen' do
+          expect(next_setup_path).to_not eq(webauthn_platform_recommended_path)
+        end
+      end
+
+      context 'when the user is not in the account creation flow' do
+        before do
+          controller.user_session[:in_account_creation_flow] = false
+        end
+
+        it 'does not redirect to webauthn recommendation screen' do
+          expect(next_setup_path).to_not eq(webauthn_platform_recommended_path)
+        end
+      end
     end
 
     context 'when user converts from second mfa reminder' do

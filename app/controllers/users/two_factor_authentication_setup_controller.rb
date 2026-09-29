@@ -115,13 +115,13 @@ module Users
       FeatureManagement.account_creation_passkey_auto_prompt_enabled? &&
         mobile? &&
         in_account_creation_flow? &&
-        user_session[:platform_authenticator_available] == true &&
+        platform_authenticator_available? &&
         !auto_passkey_prompted?
     end
 
+    # Only read the bucket once the user is otherwise eligible, since reading it
+    # persists a rollout assignment for the user.
     def auto_passkey_prompt_bucket
-      return unless auto_passkey_prompt_available?
-
       @auto_passkey_prompt_bucket ||= ab_test_bucket(:PASSKEY_UPSELL)
     end
 
