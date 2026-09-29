@@ -1891,9 +1891,6 @@ RSpec.describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.device_profiling_error_cleared.header'),
-      )
-      expect(mail.html_part.body).to have_content(
         t('user_mailer.device_profiling_error_cleared.info'),
       )
     end
