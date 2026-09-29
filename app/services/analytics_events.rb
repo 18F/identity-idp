@@ -9216,12 +9216,15 @@ module AnalyticsEvents
   # @param [Boolean] success Whether the submission was successful
   # @param [Hash, nil] errors Errors resulting from form validation, or nil if successful.
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
+  # @param [Boolean, nil] auto_passkey_prompted Whether the setup came from the automatic passkey
+  #   prompt rather than the user selecting passkey from the MFA options
   # Tracks whether or not Webauthn setup was successful
   def webauthn_setup_submitted(
     platform_authenticator:,
     success:,
     in_account_creation_flow: nil,
     errors: nil,
+    auto_passkey_prompted: nil,
     **extra
   )
     track_event(
@@ -9230,6 +9233,7 @@ module AnalyticsEvents
       success:,
       errors:,
       in_account_creation_flow:,
+      auto_passkey_prompted:,
       **extra,
     )
   end

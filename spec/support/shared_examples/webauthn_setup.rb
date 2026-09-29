@@ -75,6 +75,7 @@ RSpec.shared_examples 'webauthn setup' do
         platform_authenticator: false,
         in_account_creation_flow: true,
         success: false,
+        auto_passkey_prompted: false,
       )
     end
 
@@ -89,6 +90,7 @@ RSpec.shared_examples 'webauthn setup' do
         success: true,
         in_account_creation_flow: true,
         platform_authenticator: false,
+        auto_passkey_prompted: false,
       )
     end
   end
