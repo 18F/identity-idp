@@ -70,6 +70,19 @@
                 <% end %>
               </dl>
 
+              <% if @presenter.token_exchange_sharing? %>
+                <%= render(AlertComponent.new(type: :info)) do %>
+                  <%= @presenter.token_exchange_sharing_disclosure.html_safe %>
+                <% end %>
+                <%= render ValidatedFieldComponent.new(
+                      form: f,
+                      name: :token_exchange_consent,
+                      as: :boolean,
+                      label: t('sign_up.token_exchange_consent_label', sp: @presenter.sp_name),
+                      required: true,
+                    ) %>
+              <% end %>
+
               <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
                 <%= render ButtonComponent.new(type: :submit, full_width: true)
                       .with_content(t('forms.buttons.continue')) %>

@@ -45,14 +45,16 @@ class IdTokenBuilder
   def id_token_claims
     claims = {
       acr:,
-      nonce: identity.nonce,
       aud: identity.service_provider,
       jti: SecureRandom.urlsafe_base64,
       at_hash: hash_token(identity.access_token),
     }
     if @actor
+      # An exchanged token has no authorization request to bind to: no nonce
+      # (some clients reject an explicit null) and no authorization code.
       claims[:act] = @actor
     else
+      claims[:nonce] = identity.nonce
       claims[:c_hash] = hash_token(code)
     end
     claims

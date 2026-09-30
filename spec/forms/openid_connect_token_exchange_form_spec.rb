@@ -83,6 +83,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         expect(payload['act']).to eq('sub' => 'broker.gov')
         expect(payload['aud']).to eq('target.gov')
         expect(payload).not_to have_key('c_hash')
+        expect(payload).not_to have_key('nonce')
         expect(payload['at_hash']).to be_present
       end
     end
@@ -137,6 +138,40 @@ RSpec.describe OpenidConnectTokenExchangeForm do
           .with('broker.gov').and_return([])
         expect(form.submit.success?).to eq(false)
         expect(form.response[:error]).to eq('invalid_target')
+      end
+
+      it 'refuses a broker exchanging for itself' do
+        allow(TokenExchangeManifest).to receive(:allowed_targets)
+          .with('broker.gov').and_return(['broker.gov'])
+        form = described_class.new(params.merge(audience: 'broker.gov'))
+        expect(form.submit.success?).to eq(false)
+        expect(form.response[:error]).to eq('invalid_target')
+        expect(broker_identity.reload.access_token).to eq(params[:subject_token])
+      end
+
+      it 'describes only the highest-precedence error' do
+        form = described_class.new(params.merge(grant_type: 'bogus', subject_token: 'nope'))
+        expect(form.response[:error]).to eq('unsupported_grant_type')
+        expect(form.response[:error_description]).not_to include('subject_token')
+      end
+    end
+
+    context 'when an unauthorized token holder probes audiences' do
+      let(:consent_at) { nil }
+      let!(:revoked_target_identity) do
+        create(
+          :service_provider_identity,
+          user: user,
+          service_provider: target_sp.issuer,
+          deleted_at: 1.day.ago,
+        )
+      end
+
+      it 'reveals nothing about the target connection' do
+        response = form.response
+        expect(response[:error]).to eq('invalid_request')
+        expect(response[:error_description]).not_to match(/target|revoked|in_use|forbids/)
+        expect(form.errors.details[:audience]).to be_blank
       end
     end
 
@@ -311,12 +346,13 @@ RSpec.describe OpenidConnectTokenExchangeForm do
           expect(form.submit.success?).to eq(true)
 
           minted = user.identities.find_by(service_provider: 'target.gov')
-          # The broker holds only the umbrella `profile`, which would also release
-          # family_name + verified_at that the bundle does not cover, so it is
-          # refused; no finer profile:* scope was held, so none can be granted.
-          expect(minted.scope.split(' ')).to match_array(%w[openid email])
+          # The broker's `profile` authorizes birthdate, and the bundle names dob,
+          # so the narrower profile:birthdate is granted. `profile` itself is
+          # refused (it would also release family_name + verified_at), and phone
+          # is outside the bundle.
+          expect(minted.scope.split(' ')).to match_array(%w[openid email profile:birthdate])
           expect(minted.scope).not_to include('phone')
-          expect(minted.verified_attributes).to eq(%w[email])
+          expect(minted.verified_attributes).to match_array(%w[email birthdate])
         end
       end
 
@@ -350,6 +386,40 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
           minted = user.identities.find_by(service_provider: 'target.gov')
           expect(minted.scope.split(' ')).to include('profile')
+        end
+
+        it 'grants the narrower profile:name to a name-only target when the broker holds profile' do
+          target_sp.update!(attribute_bundle: %w[email first_name last_name])
+          expect(form.submit.success?).to eq(true)
+
+          minted = user.identities.find_by(service_provider: 'target.gov')
+          expect(minted.scope.split(' ')).to match_array(%w[openid email profile:name])
+          expect(minted.verified_attributes).to match_array(%w[email given_name family_name])
+        end
+      end
+
+      context 'when the target bundle uses the address component vocabulary' do
+        let(:broker_identity) do
+          create(
+            :service_provider_identity,
+            user: user,
+            service_provider: broker_sp.issuer,
+            access_token: SecureRandom.urlsafe_base64,
+            rails_session_id: rails_session_id,
+            ial: Idp::Constants::IAL2,
+            verified_attributes: %w[email address],
+            scope: 'openid email address token_exchange',
+            token_exchange_consent_at: Time.zone.now,
+          )
+        end
+
+        it 'maps address1/city/state/zipcode to the composite address claim' do
+          target_sp.update!(attribute_bundle: %w[email address1 city state zipcode])
+          expect(form.submit.success?).to eq(true)
+
+          minted = user.identities.find_by(service_provider: 'target.gov')
+          expect(minted.scope.split(' ')).to match_array(%w[openid email address])
+          expect(minted.verified_attributes).to match_array(%w[email address])
         end
       end
 

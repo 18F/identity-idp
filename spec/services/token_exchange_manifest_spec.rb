@@ -157,7 +157,7 @@ RSpec.describe TokenExchangeManifest do
         .with(headers: { 'If-None-Match' => 'v1' }).to_return(status: 304)
       allow(NewRelic::Agent).to receive(:notice_error)
 
-      travel(6.minutes) do
+      travel(8.minutes) do
         expect(described_class.allowed_targets(broker)).to eq([])
       end
     end
@@ -167,7 +167,7 @@ RSpec.describe TokenExchangeManifest do
       stub_request(:get, manifest_url).to_return(body: short, headers: { 'ETag' => 'v1' })
       described_class.allowed_targets(broker)
 
-      travel(6.minutes) do
+      travel(8.minutes) do
         fresh = jws(claims.merge(exp: Time.zone.now.to_i + 2 * 60 * 60))
         stub_request(:get, manifest_url).to_return(body: fresh, headers: { 'ETag' => 'v2' })
 

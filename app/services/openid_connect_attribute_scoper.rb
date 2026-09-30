@@ -63,7 +63,12 @@ class OpenidConnectAttributeScoper
     end
   end.with_indifferent_access.freeze
 
-  CLAIMS = ATTRIBUTE_SCOPES_MAP.keys.freeze
+  # Scopes that grant a capability rather than release a claim. They flow through
+  # requested_attributes so consent can be captured, but are not identity claims
+  # and must not be advertised as such.
+  CAPABILITY_SCOPES = %w[token_exchange].freeze
+
+  CLAIMS = (ATTRIBUTE_SCOPES_MAP.keys - CAPABILITY_SCOPES).freeze
   UNSCOPED_CLAIMS = %w[auth_time iss sub].freeze
 
   attr_reader :scopes

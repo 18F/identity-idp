@@ -41,19 +41,27 @@ class OpenidConnectTokenExchangeForm
     consent_required: ['invalid_request', :bad_request],
     ial_insufficient: ['invalid_request', :bad_request],
     audience_not_allowed: ['invalid_target', :bad_request],
+    self_exchange: ['invalid_target', :bad_request],
     unknown_target: ['invalid_target', :bad_request],
     target_forbids_broker: ['invalid_target', :bad_request],
     target_revoked: ['invalid_target', :bad_request],
     target_in_use: ['invalid_target', :bad_request],
   }.freeze
 
-  # Translates SP-facing attribute_bundle names to OIDC claim names used by
-  # OpenidConnectAttributeScoper::ATTRIBUTE_SCOPES_MAP.
+  # Translates SP-facing attribute_bundle names (AttributeAsserter::VALID_ATTRIBUTES
+  # vocabulary, as configured in the partner portal) to the OIDC claim names used
+  # by OpenidConnectAttributeScoper::ATTRIBUTE_SCOPES_MAP. Any of the address
+  # component names entitles the target to the composite `address` claim.
   BUNDLE_ATTRIBUTE_TO_CLAIM = {
     'first_name' => 'given_name',
     'last_name' => 'family_name',
     'dob' => 'birthdate',
     'ssn' => 'social_security_number',
+    'address1' => 'address',
+    'address2' => 'address',
+    'city' => 'address',
+    'state' => 'address',
+    'zipcode' => 'address',
   }.freeze
 
   ATTRS = %i[grant_type subject_token subject_token_type audience requested_token_type scope].freeze
@@ -124,12 +132,35 @@ class OpenidConnectTokenExchangeForm
 
   private
 
+  # Only the highest-precedence error is described. Joining every message
+  # would let any access-token holder probe arbitrary audiences and learn which
+  # SPs the user is connected to; see also #broker_authorized?.
   def error_response
     code, = ERROR_CODES[first_error_type]
     {
       error: code || 'invalid_request',
-      error_description: errors.full_messages.join(' '),
+      error_description: first_error_message,
     }
+  end
+
+  def first_error_message
+    type = first_error_type
+    detail = errors.details.find { |_attr, ds| ds.any? { |d| d[:type] == type } }
+    attr = detail&.first
+    attr ? errors.full_messages_for(attr).first : errors.full_messages.first
+  end
+
+  # Every target-side validation is withheld until the presenting broker has
+  # cleared its own gates (allow-listed, user-consented, IAL2). Otherwise the
+  # error surface for `audience` would let an arbitrary token holder enumerate
+  # the user's SP connections, revocations and live sessions.
+  def broker_authorized?
+    return false if broker_identity.blank? || broker_identity.user.blank?
+    broker_service_provider&.active? &&
+      broker_service_provider.token_exchange_broker_allowed? &&
+      broker_identity.token_exchange_consented? &&
+      OpenidConnectAttributeScoper.new(broker_identity.scope).token_exchange_requested? &&
+      broker_asserted_ial2?
   end
 
   def first_error_type
@@ -140,38 +171,49 @@ class OpenidConnectTokenExchangeForm
   def link_target_identity
     return @link_target_identity if defined?(@link_target_identity)
 
-    identity = IdentityLinker.new(broker_identity.user, target_service_provider)
-      .link_identity(
-        ial: broker_identity.ial,
-        aal: broker_identity.aal,
-        acr_values: broker_identity.acr_values,
-        requested_aal_value: broker_identity.requested_aal_value,
-        rails_session_id: broker_identity.rails_session_id,
-        scope: target_scope,
+    @link_target_identity = ServiceProviderIdentity.transaction do
+      identity = IdentityLinker.new(broker_identity.user, target_service_provider)
+        .link_identity(
+          ial: broker_identity.ial,
+          aal: broker_identity.aal,
+          acr_values: broker_identity.acr_values,
+          requested_aal_value: broker_identity.requested_aal_value,
+          rails_session_id: broker_identity.rails_session_id,
+          scope: target_scope,
+          verified_attributes: target_verified_attributes,
+          email_address_id: broker_identity.email_address_id,
+          last_consented_at: Time.zone.now,
+        )
+      # IdentityLinker unions verified_attributes with whatever the (possibly
+      # reused) row already held; force the exact narrowed set so a reused row
+      # can never carry PII beyond the target SP's current bundle. Re-assert
+      # email_address_id because the union may have included all_emails, which
+      # clears it on save. The exchange never returns an authorization code, so
+      # retire the one IdentityLinker minted rather than leave a redeemable code
+      # behind. Both writes commit together.
+      identity.update!(
         verified_attributes: target_verified_attributes,
         email_address_id: broker_identity.email_address_id,
-        last_consented_at: Time.zone.now,
+        session_uuid: nil,
       )
-    # IdentityLinker unions verified_attributes with whatever the (possibly
-    # revived) row already held; force the exact narrowed set so a reused row
-    # can never carry PII beyond the target SP's current bundle. The exchange
-    # never returns an authorization code, so retire the one IdentityLinker
-    # minted rather than leave a redeemable code behind.
-    identity.update!(verified_attributes: target_verified_attributes, session_uuid: nil)
-    @link_target_identity = identity
+      identity
+    end
   end
 
-  # Scope granted to the target. A scope is admitted only when EVERY claim it
-  # releases is one the target may receive (see #target_allowed_claims); this
-  # is what stops an umbrella scope such as `profile` from releasing birthdate
-  # to a target whose bundle only names first_name. Further narrowed to any
-  # `scope` the client explicitly requested (RFC 8693 §2.1). Never a superset.
+  # Scope granted to the target. Safety is enforced in claim space, so the
+  # candidates are every valid scope (not just the strings the broker literally
+  # requested): a scope is admitted only when EVERY claim it releases is one the
+  # target may receive (see #target_allowed_claims). This lets a broker that
+  # holds the umbrella `profile` grant the narrower `profile:name` to a
+  # name-only target, while refusing `profile` itself (which would also release
+  # birthdate). Further narrowed to any `scope` the client explicitly requested
+  # (RFC 8693 §2.1). Never a superset of what the broker holds or the target may
+  # receive.
   def target_scope
     return @target_scope if defined?(@target_scope)
     return @target_scope = nil if broker_identity.blank? || target_service_provider.blank?
 
-    broker_scopes = OpenidConnectAttributeScoper.new(broker_identity.scope).scopes
-    candidates = broker_scopes
+    candidates = OpenidConnectAttributeScoper::VALID_SCOPES - %w[openid token_exchange]
     if scope.present?
       candidates &= OpenidConnectAttributeScoper.new(scope).scopes
     end
@@ -192,9 +234,11 @@ class OpenidConnectTokenExchangeForm
 
   # OIDC claim names the target may receive: its onboarding attribute_bundle
   # (SP-facing names such as first_name/dob, translated to claim names)
-  # intersected with the claims the broker itself was verified for. Both sides
-  # bound the result; the target never receives a claim its bundle omits, and
-  # never one the broker was not itself authorized to hold.
+  # intersected with the claims the broker itself was verified for AND the
+  # claims the broker's own granted scope releases. All three bound the result:
+  # the target never receives a claim its bundle omits, never one the broker was
+  # not verified for, and never one the broker's scope did not authorize it to
+  # hold (a stale verified_attributes entry cannot resurface via exchange).
   def target_allowed_claims
     return @target_allowed_claims if defined?(@target_allowed_claims)
 
@@ -202,7 +246,9 @@ class OpenidConnectTokenExchangeForm
       BUNDLE_ATTRIBUTE_TO_CLAIM.fetch(attr.to_s, attr.to_s)
     end
     held_claims = Array(broker_identity.verified_attributes).map(&:to_s)
-    @target_allowed_claims = bundle_claims & held_claims
+    scoped_claims = OpenidConnectAttributeScoper.new(broker_identity.scope)
+      .requested_attributes.map(&:to_s)
+    @target_allowed_claims = bundle_claims & held_claims & scoped_claims
   end
 
   # verified_attributes stored on the minted identity, in OIDC claim-name space
@@ -296,7 +342,10 @@ class OpenidConnectTokenExchangeForm
   end
 
   def validate_audience_allowed
-    return if broker_identity.blank?
+    return unless broker_authorized?
+    if audience.present? && audience == broker_identity.service_provider
+      return errors.add(:audience, 'self_exchange', type: :self_exchange)
+    end
     return if allowed_audiences.include?(audience)
     errors.add(:audience, 'audience_not_allowed', type: :audience_not_allowed)
   end
@@ -306,6 +355,7 @@ class OpenidConnectTokenExchangeForm
   # proofed attributes; an auth-only (IAL1) target must never receive them,
   # exactly as /authorize would refuse an IAL2 request from such an SP.
   def validate_target_service_provider
+    return unless broker_authorized?
     return if audience.blank?
     return if target_service_provider&.active? &&
               target_service_provider.identity_proofing_allowed?
@@ -317,7 +367,8 @@ class OpenidConnectTokenExchangeForm
   # the partner management portal). Neither login nor the broker can force a
   # target to accept exchanged tokens it did not agree to.
   def validate_target_allows_broker
-    return if broker_identity.blank? || target_service_provider.blank?
+    return unless broker_authorized?
+    return if target_service_provider.blank?
     return if target_service_provider.allows_token_exchange_broker?(
       broker_identity.service_provider,
     )
@@ -349,7 +400,8 @@ class OpenidConnectTokenExchangeForm
   # session is dead or was never bound to one) is fine and just rotates the
   # token.
   def validate_target_not_in_use
-    return if broker_identity.blank? || target_service_provider.blank?
+    return unless broker_authorized?
+    return if target_service_provider.blank?
     existing = broker_identity.user.identities.find_by(service_provider: audience)
     return if existing.blank?
     if existing.deleted_at.present?
