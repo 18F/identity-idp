@@ -306,7 +306,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
 
         it 'logs an account creation reCAPTCHA failure event' do
           expect(@analytics).to have_logged_event(
-            'Account Creation: reCAPTCHA Failed',
+            :account_creation_recaptcha_failed,
             success: false,
             error_details: { recaptcha_token: { invalid: true } },
             valid_captcha_result: false,

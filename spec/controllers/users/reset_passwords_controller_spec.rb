@@ -820,7 +820,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           response
 
           expect(@analytics).to have_logged_event(
-            'Password Reset: reCAPTCHA Failed',
+            :password_reset_recaptcha_failed,
             success: false,
             error_details: { recaptcha_token: { invalid: true } },
             valid_captcha_result: false,

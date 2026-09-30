@@ -24,7 +24,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Account Creation: reCAPTCHA Failed',
+      :account_creation_recaptcha_failed,
       success:,
       error_details:,
       valid_captcha_result:,
@@ -7778,7 +7778,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Password Reset: reCAPTCHA Failed',
+      :password_reset_recaptcha_failed,
       success:,
       error_details:,
       valid_captcha_result:,
