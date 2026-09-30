@@ -5,7 +5,13 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
   let(:user) { create(:user, :proofed) }
   let(:broker_sp) { create(:service_provider, issuer: 'broker.gov') }
-  let(:target_sp) { create(:service_provider, :active, issuer: 'target.gov') }
+  let(:target_sp) do
+    create(
+      :service_provider, :active,
+      issuer: 'target.gov',
+      allowed_token_exchange_brokers: ['broker.gov']
+    )
+  end
   let(:rails_session_id) { SecureRandom.uuid }
 
   let(:broker_identity) do
@@ -68,6 +74,65 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         expect(response[:exchanged_from]).to eq('broker.gov')
         expect(response[:expires_in]).to be > 0
       end
+
+      it 'issues an id_token expressing delegation via the RFC 8693 act claim' do
+        payload, = JWT.decode(form.response[:id_token], nil, false)
+
+        expect(payload['act']).to eq('sub' => 'broker.gov')
+        expect(payload['aud']).to eq('target.gov')
+        expect(payload).not_to have_key('c_hash')
+        expect(payload['at_hash']).to be_present
+      end
+    end
+
+    context 'RFC 8693 request parameter handling' do
+      it 'rejects an unsupported requested_token_type with invalid_request' do
+        form = described_class.new(
+          params.merge(requested_token_type: 'urn:ietf:params:oauth:token-type:id_token'),
+        )
+        expect(form.submit.success?).to eq(false)
+        expect(form.response[:error]).to eq('invalid_request')
+        expect(form.http_status).to eq(:bad_request)
+      end
+
+      it 'accepts an explicit access_token requested_token_type' do
+        form = described_class.new(
+          params.merge(requested_token_type: OpenidConnectTokenExchangeForm::ACCESS_TOKEN_TYPE),
+        )
+        expect(form.submit.success?).to eq(true)
+      end
+
+      it 'further narrows the issued scope to an explicitly requested scope' do
+        broker_identity.update!(scope: 'openid email phone', verified_attributes: %w[email phone])
+        target_sp.update!(attribute_bundle: %w[email phone])
+
+        form = described_class.new(params.merge(scope: 'openid email'))
+        expect(form.submit.success?).to eq(true)
+        expect(form.response[:scope].split(' ')).to match_array(%w[openid email])
+      end
+
+      it 'never widens scope beyond what the broker holds, even if requested' do
+        target_sp.update!(attribute_bundle: %w[email phone address])
+        form = described_class.new(params.merge(scope: 'openid email phone address'))
+        expect(form.submit.success?).to eq(true)
+        expect(form.response[:scope].split(' ')).to match_array(%w[openid email])
+      end
+    end
+
+    context 'RFC 8693 §2.2.2 error mapping' do
+      it 'maps a policy-rejected subject token to invalid_request, not invalid_grant' do
+        form = described_class.new(params.merge(subject_token: 'nope'))
+        expect(form.submit.success?).to eq(false)
+        expect(form.response[:error]).to eq('invalid_request')
+        expect(form.http_status).to eq(:bad_request)
+      end
+
+      it 'maps an unusable audience to invalid_target' do
+        allow(TokenExchangeManifest).to receive(:allowed_targets)
+          .with('broker.gov').and_return([])
+        expect(form.submit.success?).to eq(false)
+        expect(form.response[:error]).to eq('invalid_target')
+      end
     end
 
     context 'when the broker SP is not an allow-listed broker' do
@@ -116,6 +181,15 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         allow(TokenExchangeManifest).to receive(:allowed_targets)
           .with('broker.gov').and_return(['other.gov'])
       end
+
+      it 'fails and mints nothing' do
+        expect(form.submit.success?).to eq(false)
+        expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
+      end
+    end
+
+    context 'when the target SP has not allow-listed the broker' do
+      before { target_sp.update!(allowed_token_exchange_brokers: []) }
 
       it 'fails and mints nothing' do
         expect(form.submit.success?).to eq(false)

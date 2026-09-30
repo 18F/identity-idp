@@ -27,16 +27,22 @@ class OpenidConnectTokenExchangeForm
 
   # Maps an internal validation error type to an RFC 6749/8693 error code and
   # the HTTP status the endpoint should return. Order defines error precedence.
+  #
+  # Per RFC 8693 §2.2.2, a subject_token that is invalid for any reason or
+  # unacceptable based on policy MUST yield `invalid_request`; an unusable
+  # target (audience) SHOULD yield `invalid_target`.
   ERROR_CODES = {
     grant_type: ['unsupported_grant_type', :bad_request],
     subject_token_type: ['invalid_request', :bad_request],
-    invalid_subject_token: ['invalid_grant', :unauthorized],
-    expired_subject_token: ['invalid_grant', :unauthorized],
-    ial_insufficient: ['invalid_grant', :unauthorized],
-    consent_required: ['invalid_grant', :unauthorized],
-    broker_not_allowed: ['invalid_client', :unauthorized],
+    requested_token_type: ['invalid_request', :bad_request],
+    invalid_subject_token: ['invalid_request', :bad_request],
+    expired_subject_token: ['invalid_request', :bad_request],
+    broker_not_allowed: ['invalid_request', :bad_request],
+    consent_required: ['invalid_request', :bad_request],
+    ial_insufficient: ['invalid_request', :bad_request],
     audience_not_allowed: ['invalid_target', :bad_request],
     unknown_target: ['invalid_target', :bad_request],
+    target_forbids_broker: ['invalid_target', :bad_request],
     target_in_use: ['invalid_target', :bad_request],
   }.freeze
 
@@ -50,16 +56,18 @@ class OpenidConnectTokenExchangeForm
   }.freeze
   CLAIM_TO_BUNDLE_ATTRIBUTE = BUNDLE_ATTRIBUTE_TO_CLAIM.invert.freeze
 
-  ATTRS = %i[grant_type subject_token subject_token_type audience].freeze
+  ATTRS = %i[grant_type subject_token subject_token_type audience requested_token_type scope].freeze
   attr_reader(*ATTRS)
 
   validate :validate_grant_type
   validate :validate_subject_token_type
+  validate :validate_requested_token_type
   validate :validate_subject_token
   validate :validate_broker_allowed
   validate :validate_broker_consent
   validate :validate_audience_allowed
   validate :validate_target_service_provider
+  validate :validate_target_allows_broker
   validate :validate_broker_ial
   validate :validate_target_not_in_use
 
@@ -92,6 +100,7 @@ class OpenidConnectTokenExchangeForm
     id_token_builder = IdTokenBuilder.new(
       identity: @link_target_identity,
       code: @link_target_identity.session_uuid,
+      actor: actor_claim,
     )
 
     {
@@ -149,13 +158,28 @@ class OpenidConnectTokenExchangeForm
   end
 
   # Scope granted to the target = what the broker holds, narrowed to what the
-  # target SP is itself authorized to request. Never a superset of either.
+  # target SP is itself authorized to request, and further narrowed to any
+  # `scope` the client explicitly requested (RFC 8693 §2.1). Never a superset
+  # of any of these.
   def target_scope
     return @target_scope if defined?(@target_scope)
     return @target_scope = nil if broker_identity.blank? || target_service_provider.blank?
 
     broker_scopes = OpenidConnectAttributeScoper.new(broker_identity.scope).scopes
-    @target_scope = ((%w[openid] + broker_scopes) & target_allowed_scopes).uniq.join(' ')
+    granted = (%w[openid] + broker_scopes) & target_allowed_scopes
+    if scope.present?
+      requested = OpenidConnectAttributeScoper.new(scope).scopes
+      granted &= (%w[openid] + requested)
+    end
+    @target_scope = granted.uniq.join(' ')
+  end
+
+  # RFC 8693 §4.1 `act` claim: the exchange is delegation -- the broker acts on
+  # behalf of the subject at the target -- so the issued id_token names the
+  # broker as the current actor. This lets the target tell a brokered token
+  # apart from a direct sign-in and apply policy accordingly.
+  def actor_claim
+    { sub: broker_identity.service_provider }
   end
 
   # Scopes derived from the target SP's configured attribute bundle. The bundle
@@ -220,6 +244,17 @@ class OpenidConnectTokenExchangeForm
     errors.add(:subject_token_type, 'invalid_subject_token_type', type: :subject_token_type)
   end
 
+  # `requested_token_type` is OPTIONAL (RFC 8693 §2.1). When omitted the issued
+  # type is at our discretion (an access token). When supplied it must name a
+  # type we can actually issue; we only issue access tokens.
+  def validate_requested_token_type
+    return if requested_token_type.blank? || requested_token_type == ACCESS_TOKEN_TYPE
+    errors.add(
+      :requested_token_type, 'unsupported_requested_token_type',
+      type: :requested_token_type
+    )
+  end
+
   def validate_subject_token
     return errors.add(:subject_token, 'invalid_subject_token', type: :invalid_subject_token) if
       broker_identity.blank? || broker_identity.user.blank?
@@ -256,6 +291,18 @@ class OpenidConnectTokenExchangeForm
     return if audience.blank?
     return if target_service_provider&.active?
     errors.add(:audience, 'unknown_target', type: :unknown_target)
+  end
+
+  # The target SP must itself opt in to being a token-exchange target for this
+  # broker, by allow-listing the broker issuer in its own configuration (set in
+  # the partner management portal). Neither login nor the broker can force a
+  # target to accept exchanged tokens it did not agree to.
+  def validate_target_allows_broker
+    return if broker_identity.blank? || target_service_provider.blank?
+    return if target_service_provider.allows_token_exchange_broker?(
+      broker_identity.service_provider,
+    )
+    errors.add(:audience, 'target_forbids_broker', type: :target_forbids_broker)
   end
 
   # No step-up and no elevation: the exchange trusts the IAL that was actually

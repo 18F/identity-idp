@@ -542,6 +542,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
     t.boolean "active", default: false, null: false, comment: "sensitive=false"
     t.integer "agency_id", comment: "sensitive=false"
     t.boolean "allow_prompt_login", default: false, comment: "sensitive=false"
+    t.string "allowed_token_exchange_brokers", default: [], comment: "sensitive=false", array: true
     t.string "app_id", comment: "sensitive=false"
     t.boolean "approved", default: false, null: false, comment: "sensitive=false"
     t.text "assertion_consumer_logout_service_url", comment: "sensitive=false"

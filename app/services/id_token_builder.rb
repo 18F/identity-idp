@@ -6,11 +6,16 @@ class IdTokenBuilder
 
   attr_reader :identity, :now
 
-  def initialize(identity:, code:, custom_expiration: nil, now: Time.zone.now)
+  # @param actor [Hash, nil] RFC 8693 §4.1 `act` (actor) claim. When present the
+  #   issued token expresses delegation: the actor is acting on behalf of the
+  #   subject. Exchanged tokens have no authorization code, so `c_hash` is
+  #   omitted whenever an actor is given.
+  def initialize(identity:, code:, custom_expiration: nil, now: Time.zone.now, actor: nil)
     @identity = identity
     @code = code
     @custom_expiration = custom_expiration
     @now = now
+    @actor = actor
   end
 
   def id_token
@@ -38,14 +43,19 @@ class IdTokenBuilder
   end
 
   def id_token_claims
-    {
+    claims = {
       acr:,
       nonce: identity.nonce,
       aud: identity.service_provider,
       jti: SecureRandom.urlsafe_base64,
       at_hash: hash_token(identity.access_token),
-      c_hash: hash_token(code),
     }
+    if @actor
+      claims[:act] = @actor
+    else
+      claims[:c_hash] = hash_token(code)
+    end
+    claims
   end
 
   def timestamp_claims

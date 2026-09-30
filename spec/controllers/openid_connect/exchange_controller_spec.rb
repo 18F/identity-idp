@@ -15,7 +15,13 @@ RSpec.describe OpenidConnect::ExchangeController do
     let(:user) { create(:user, :proofed) }
     let(:rails_session_id) { SecureRandom.uuid }
     let!(:broker_sp) { create(:service_provider, :active, issuer: 'broker.gov') }
-    let!(:target_sp) { create(:service_provider, :active, issuer: 'target.gov') }
+    let!(:target_sp) do
+      create(
+        :service_provider, :active,
+        issuer: 'target.gov',
+        allowed_token_exchange_brokers: ['broker.gov']
+      )
+    end
     let!(:broker_identity) do
       create(
         :service_provider_identity,
@@ -75,9 +81,10 @@ RSpec.describe OpenidConnect::ExchangeController do
         )
       end
 
-      it 'returns unauthorized and mints nothing' do
+      it 'returns invalid_request (RFC 8693 §2.2.2) and mints nothing' do
         action
-        expect(response).to have_http_status(:unauthorized)
+        expect(response).to have_http_status(:bad_request)
+        expect(JSON.parse(response.body)['error']).to eq('invalid_request')
         expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
       end
     end

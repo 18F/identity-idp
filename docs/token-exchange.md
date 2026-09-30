@@ -89,6 +89,12 @@ nothing is minted:
 5. **Target must be a real, active SP.** Unknown or inactive issuers are
    rejected.
 6. **Target must be on the broker's signed allowlist** (below).
+7. **Target must have opted in to the broker.** The target SP allow-lists the
+   broker issuer in its own configuration (`allowed_token_exchange_brokers`, set
+   in the partner management portal and synced to login). A broker can never mint
+   for a target that has not agreed to accept it — this is the target side's
+   independent consent, complementing the broker's manifest (which targets *it*
+   is willing to reach).
 
 ### Signed, broker-controlled allowlist
 
@@ -115,6 +121,34 @@ cached list). If the broker is unreachable past that window, login.gov **fails
 closed** — it returns an empty allowlist rather than serving a stale, possibly
 revoked one. So a broker's revocation always takes effect within the cache
 window even if its manifest host is down.
+
+## RFC 8693 conformance notes
+
+- **Delegation, not impersonation.** The exchange is modelled as delegation:
+  the broker acts on behalf of the user at the target. The issued `id_token`
+  therefore carries an RFC 8693 §4.1 `act` (actor) claim naming the broker,
+  `{"act": {"sub": "<broker issuer>"}}`. A target can tell a brokered token
+  apart from a direct sign-in and apply policy accordingly. (`exchanged_from`
+  in the JSON response conveys the same fact to the broker; only `act` reaches
+  the target.)
+- **No `c_hash`.** An exchange has no authorization code, so the issued
+  `id_token` omits `c_hash`. `at_hash` is present as usual.
+- **Request parameters.** `grant_type`, `subject_token`, `subject_token_type`
+  are required. `audience` selects the target. `requested_token_type` is
+  optional; when supplied it must be the access-token URN (the only type
+  issued) or the request fails with `invalid_request`. `scope`, when supplied,
+  further narrows the issued scope (it can never widen it). `actor_token` is not
+  accepted; the acting party is always the presenting broker.
+- **Response.** `access_token`, `issued_token_type`, and `token_type` are always
+  present; `scope` is always returned because the issued scope is narrowed;
+  `expires_in` is included. No refresh token is issued.
+- **Errors (§2.2.2).** A subject token that is invalid or unacceptable under
+  policy (unknown, expired session, broker not onboarded, no user consent,
+  insufficient IAL) returns `invalid_request`. A target that cannot be issued
+  for (not on the manifest, unknown/inactive, has not opted in to the broker,
+  or held by another live session) returns `invalid_target`. An unsupported
+  `grant_type` returns `unsupported_grant_type`. All errors are HTTP 400 with an
+  `error_description`.
 
 ## Configuration
 

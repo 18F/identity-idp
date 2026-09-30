@@ -32,6 +32,8 @@ module OpenidConnect
         :subject_token,
         :subject_token_type,
         :audience,
+        :requested_token_type,
+        :scope,
       )
     end
   end
