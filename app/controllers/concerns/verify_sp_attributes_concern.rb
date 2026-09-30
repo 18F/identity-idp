@@ -48,7 +48,7 @@ module VerifySpAttributesConcern
 
   def token_exchange_consent_requested?
     current_sp&.token_exchange_broker_allowed? &&
-      Array(sp_session[:requested_attributes]).map(&:to_s).include?('token_exchange')
+      decorated_sp_session.requested_attributes.map(&:to_s).include?('token_exchange')
   end
 
   def token_exchange_consent_checked?

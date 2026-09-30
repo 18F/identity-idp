@@ -18,9 +18,12 @@ audience=<target SP issuer>
 
 Given a live broker access token, the endpoint mints a fresh access token +
 `id_token` for the target SP, reusing the broker's Rails session so token
-lifetimes match. The minted identity's scope is the broker's scope intersected
-with the target SP's own `attribute_bundle` — the target never receives
-attributes it isn't already configured to request.
+lifetimes match. Scope narrowing is done in **claim space**: a scope is granted
+only when *every* claim it releases is both in the target SP's `attribute_bundle`
+and among the claims the broker was itself verified for. This is what stops an
+umbrella scope such as `profile` from releasing `birthdate` to a target whose
+bundle only names `first_name` — the target never receives a claim it isn't
+configured to request, and never one the broker wasn't authorized to hold.
 
 Nothing about the endpoint is agency-specific: which SPs may act as brokers is a
 login-controlled configuration allowlist, and which targets a given broker may
@@ -64,8 +67,11 @@ existing OIDC consent (grant) flow rather than granted silently.
   new proofing session never carries stale consent forward.
 - The exchange endpoint mints **only** when the broker identity has a valid
   recorded consent (`ServiceProviderIdentity#token_exchange_consented?`, subject
-  to the same one-year `CONSENT_EXPIRATION` as other SP consent). Absent or
-  expired consent fails closed with `invalid_grant`.
+  to the same one-year `CONSENT_EXPIRATION` as other SP consent) **and** the
+  subject token being presented was itself issued with the `token_exchange`
+  scope. Consent travels with the grant it was given for: a later broker
+  authorization that dropped the scope cannot reuse an earlier consent. Absent
+  or expired consent fails closed with `invalid_request`.
 
 This reuses login's established model: an SP's accessible attributes are fixed at
 onboarding (its `attribute_bundle`), the SP may request a subset per grant, and
@@ -79,15 +85,17 @@ nothing is minted:
 
 1. **Subject token is valid and its session is live.** A dead/expired session
    cannot be exchanged.
-2. **The broker SP is allow-listed.** Only an SP configured as a token-exchange
-   broker may present a subject token for exchange.
-3. **The user consented to token exchange** for this broker, and that consent is
-   present, unrevoked, and unexpired.
+2. **The broker SP is allow-listed and active.** Only an active SP configured
+   as a token-exchange broker may present a subject token for exchange.
+3. **The user consented to token exchange** for this broker, that consent is
+   present, unrevoked, and unexpired, and the presented token carries the
+   `token_exchange` scope.
 4. **IAL is forwarded, never elevated.** The minted token carries the IAL the
    broker token was actually asserted at. A broker token below IAL2 mints
    nothing; there is no step-up.
-5. **Target must be a real, active SP.** Unknown or inactive issuers are
-   rejected.
+5. **Target must be a real, active SP entitled to identity proofing.** Unknown,
+   inactive, or auth-only (IAL1) issuers are rejected -- an IAL2 assertion is
+   never released to an SP that could not request one itself.
 6. **Target must be on the broker's signed allowlist** (below).
 7. **Target must have opted in to the broker.** The target SP allow-lists the
    broker issuer in its own configuration (`allowed_token_exchange_brokers`, set
@@ -95,6 +103,11 @@ nothing is minted:
    for a target that has not agreed to accept it — this is the target side's
    independent consent, complementing the broker's manifest (which targets *it*
    is willing to reach).
+8. **Target connection not revoked, not held by another live session.** An
+   exchange never silently revives a target connection the user explicitly
+   disconnected, and never hijacks a target identity bound to a different,
+   still-live session. Re-exchanging within the same broker session rotates the
+   token. The minted identity carries no redeemable authorization code.
 
 ### Signed, broker-controlled allowlist
 

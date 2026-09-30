@@ -7548,6 +7548,7 @@ module AnalyticsEvents
 
   # Tracks an RFC 8693 browser-based token exchange from a broker SP to a target SP.
   # @param [Boolean] success Whether the exchange succeeded
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] broker_issuer Issuer of the SP presenting the subject token
   # @param [String] target_issuer Issuer the token was exchanged for
   # @param [Integer] minted_ial IAL of the minted target identity

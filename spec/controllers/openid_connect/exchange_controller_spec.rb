@@ -19,6 +19,8 @@ RSpec.describe OpenidConnect::ExchangeController do
       create(
         :service_provider, :active,
         issuer: 'target.gov',
+        ial: 2,
+        attribute_bundle: %w[email],
         allowed_token_exchange_brokers: ['broker.gov']
       )
     end
@@ -31,7 +33,7 @@ RSpec.describe OpenidConnect::ExchangeController do
         rails_session_id: rails_session_id,
         ial: 2,
         verified_attributes: %w[email],
-        scope: 'openid email',
+        scope: 'openid email token_exchange',
         token_exchange_consent_at: Time.zone.now,
       )
     end
@@ -76,7 +78,7 @@ RSpec.describe OpenidConnect::ExchangeController do
           rails_session_id: rails_session_id,
           ial: 2,
           verified_attributes: %w[email],
-          scope: 'openid email',
+          scope: 'openid email token_exchange',
           token_exchange_consent_at: nil,
         )
       end

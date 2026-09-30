@@ -22,9 +22,9 @@ module SignUp
 
     def update
       if token_exchange_consent_requested? && !token_exchange_consent_checked?
-        flash.now[:error] = t('sign_up.token_exchange_consent_required')
         @multiple_factors_enabled = MfaPolicy.new(current_user).multiple_factors_enabled?
         @presenter = completions_presenter
+        flash.now[:error] = t('sign_up.token_exchange_consent_required', sp: @presenter.sp_name)
         return render :show
       end
       track_completion_event('agency-page')

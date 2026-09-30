@@ -4,11 +4,13 @@ RSpec.describe OpenidConnectTokenExchangeForm do
   subject(:form) { described_class.new(params) }
 
   let(:user) { create(:user, :proofed) }
-  let(:broker_sp) { create(:service_provider, issuer: 'broker.gov') }
+  let(:broker_sp) { create(:service_provider, :active, issuer: 'broker.gov') }
   let(:target_sp) do
     create(
       :service_provider, :active,
       issuer: 'target.gov',
+      ial: 2,
+      attribute_bundle: %w[email],
       allowed_token_exchange_brokers: ['broker.gov']
     )
   end
@@ -23,7 +25,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       rails_session_id: rails_session_id,
       ial: broker_ial,
       verified_attributes: %w[email],
-      scope: 'openid email',
+      scope: 'openid email token_exchange',
       token_exchange_consent_at: consent_at,
     )
   end
@@ -103,7 +105,10 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
 
       it 'further narrows the issued scope to an explicitly requested scope' do
-        broker_identity.update!(scope: 'openid email phone', verified_attributes: %w[email phone])
+        broker_identity.update!(
+          scope: 'openid email phone token_exchange',
+          verified_attributes: %w[email phone],
+        )
         target_sp.update!(attribute_bundle: %w[email phone])
 
         form = described_class.new(params.merge(scope: 'openid email'))
@@ -268,7 +273,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
           rails_session_id: rails_session_id,
           ial: Idp::Constants::IAL2,
           verified_attributes: %w[email phone address],
-          scope: 'openid email phone address',
+          scope: 'openid email phone address token_exchange',
           token_exchange_consent_at: Time.zone.now,
         )
       end
@@ -294,21 +299,57 @@ RSpec.describe OpenidConnectTokenExchangeForm do
             access_token: SecureRandom.urlsafe_base64,
             rails_session_id: rails_session_id,
             ial: Idp::Constants::IAL2,
-            verified_attributes: %w[email first_name dob phone],
-            scope: 'openid email profile phone',
+            verified_attributes: %w[email given_name birthdate phone],
+            scope: 'openid email profile phone token_exchange',
             token_exchange_consent_at: Time.zone.now,
           )
         end
 
         before { target_sp.update!(attribute_bundle: %w[email first_name dob]) }
 
-        it 'translates bundle names to claims and keeps only their scopes' do
+        it 'translates bundle names to claims and admits only fully-covered scopes' do
           expect(form.submit.success?).to eq(true)
 
           minted = user.identities.find_by(service_provider: 'target.gov')
-          expect(minted.scope.split(' ')).to match_array(%w[openid email profile])
+          # The broker holds only the umbrella `profile`, which would also release
+          # family_name + verified_at that the bundle does not cover, so it is
+          # refused; no finer profile:* scope was held, so none can be granted.
+          expect(minted.scope.split(' ')).to match_array(%w[openid email])
           expect(minted.scope).not_to include('phone')
-          expect(minted.verified_attributes).to match_array(%w[email first_name dob])
+          expect(minted.verified_attributes).to eq(%w[email])
+        end
+      end
+
+      context 'when the broker holds the umbrella profile scope' do
+        let(:broker_identity) do
+          create(
+            :service_provider_identity,
+            user: user,
+            service_provider: broker_sp.issuer,
+            access_token: SecureRandom.urlsafe_base64,
+            rails_session_id: rails_session_id,
+            ial: Idp::Constants::IAL2,
+            verified_attributes: %w[email given_name family_name birthdate verified_at],
+            scope: 'openid email profile token_exchange',
+            token_exchange_consent_at: Time.zone.now,
+          )
+        end
+
+        it 'refuses profile for a target whose bundle only names first_name' do
+          target_sp.update!(attribute_bundle: %w[email first_name])
+          expect(form.submit.success?).to eq(true)
+
+          minted = user.identities.find_by(service_provider: 'target.gov')
+          expect(minted.scope.split(' ')).to match_array(%w[openid email])
+          expect(minted.scope).not_to include('profile')
+        end
+
+        it 'grants profile only when the bundle covers every claim it releases' do
+          target_sp.update!(attribute_bundle: %w[email first_name last_name dob verified_at])
+          expect(form.submit.success?).to eq(true)
+
+          minted = user.identities.find_by(service_provider: 'target.gov')
+          expect(minted.scope.split(' ')).to include('profile')
         end
       end
 
@@ -321,8 +362,8 @@ RSpec.describe OpenidConnectTokenExchangeForm do
             access_token: SecureRandom.urlsafe_base64,
             rails_session_id: rails_session_id,
             ial: Idp::Constants::IAL2,
-            verified_attributes: %w[email ssn],
-            scope: 'openid email',
+            verified_attributes: %w[email social_security_number],
+            scope: 'openid email token_exchange',
             token_exchange_consent_at: Time.zone.now,
           )
         end
@@ -339,8 +380,74 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when a revived deleted target identity held broader attributes' do
-      let!(:stale_identity) do
+    context 'minted identity hygiene' do
+      it 'forwards aal, requested_aal_value and email_address_id from the broker' do
+        email_address = user.confirmed_email_addresses.first
+        broker_identity.update!(
+          aal: 2,
+          requested_aal_value: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          email_address_id: email_address.id,
+        )
+        expect(form.submit.success?).to eq(true)
+
+        minted = user.identities.find_by(service_provider: 'target.gov')
+        expect(minted.aal).to eq(2)
+        expect(minted.requested_aal_value)
+          .to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
+        # verified_attributes includes plain `email`, so the model keeps the id.
+        expect(minted.verified_attributes).to include('email')
+        expect(minted.email_address_id).to eq(email_address.id)
+      end
+
+      it 'leaves no redeemable authorization code on the minted identity' do
+        expect(form.submit.success?).to eq(true)
+        expect(user.identities.find_by(service_provider: 'target.gov').session_uuid).to be_nil
+      end
+    end
+
+    context 'when the presented broker token was not issued with token_exchange' do
+      let(:broker_identity) do
+        create(
+          :service_provider_identity,
+          user: user,
+          service_provider: broker_sp.issuer,
+          access_token: SecureRandom.urlsafe_base64,
+          rails_session_id: rails_session_id,
+          ial: Idp::Constants::IAL2,
+          verified_attributes: %w[email],
+          scope: 'openid email',
+          token_exchange_consent_at: Time.zone.now,
+        )
+      end
+
+      it 'fails even though a prior consent is recorded (consent travels with the grant)' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.response[:error]).to eq('invalid_request')
+        expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
+      end
+    end
+
+    context 'when the target SP is not entitled to identity proofing (IAL1)' do
+      before { target_sp.update!(ial: 1) }
+
+      it 'refuses to mint an IAL2 identity for it' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.response[:error]).to eq('invalid_target')
+        expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
+      end
+    end
+
+    context 'when the broker SP is no longer active' do
+      before { broker_sp.update!(active: false) }
+
+      it 'fails and mints nothing' do
+        expect(form.submit.success?).to eq(false)
+        expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
+      end
+    end
+
+    context 'when the user previously revoked the target connection' do
+      let!(:revoked_identity) do
         create(
           :service_provider_identity,
           user: user,
@@ -350,11 +457,26 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         )
       end
 
-      before { target_sp.update!(attribute_bundle: %w[email]) }
+      it 'refuses to silently revive it' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.response[:error]).to eq('invalid_target')
+        expect(revoked_identity.reload.deleted_at).to be_present
+      end
+    end
 
-      it 'forces the narrowed set rather than unioning the stale one' do
+    context 'when a target identity exists with no bound session' do
+      let!(:unbound_identity) do
+        create(
+          :service_provider_identity,
+          user: user,
+          service_provider: target_sp.issuer,
+          rails_session_id: nil,
+        )
+      end
+
+      it 'treats it as reusable rather than crashing' do
+        expect { form.submit }.not_to raise_error
         expect(form.submit.success?).to eq(true)
-        expect(stale_identity.reload.verified_attributes).to eq(%w[email])
       end
     end
 
