@@ -85,20 +85,17 @@ RSpec.describe ProofingAgentSendFailureEmailsJob, type: :job do
       end
 
       context 'when there a processing error' do
+        let(:failed_user) { users[0] }
         before do
-          @raise_exception = true
-          allow(failure_email_sender).to receive(:call) do
-            if @raise_exception
-              @raise_exception = false
-              raise 'I AM ERROR'
-            else
-              true
-            end
-          end
+          allow(failure_email_sender).to receive(:call).and_return(true)
+          allow(failure_email_sender).to receive(:call).with(
+            hash_including(
+              transaction_id: failed_user.current_proofing_agent_session.result_id,
+            ),
+          ).and_raise(StandardError)
 
           subject.perform(Time.zone.now)
         end
-
         it 'sends a failure email and logs email event for each user', aggregate_failures: true do
           users.each do |user|
             expect(failure_email_sender).to have_received(:call).with(
