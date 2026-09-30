@@ -60,6 +60,10 @@ module SignUp
       FeatureManagement.account_creation_recaptcha_enabled?
     end
 
+    def captcha_validation_performed?
+      !recaptcha_form.exempt?
+    end
+
     def recaptcha_response
       @recaptcha_response ||= recaptcha_form.submit(
         recaptcha_token: params.require(:user)[:recaptcha_token],
@@ -83,6 +87,12 @@ module SignUp
     end
 
     def process_failed_captcha
+      analytics.account_creation_recaptcha_failed(
+        **recaptcha_response,
+        success: false,
+        valid_captcha_result: recaptcha_response.success?,
+        captcha_validation_performed: captcha_validation_performed?,
+      )
       redirect_to sign_in_security_check_failed_url
     end
 

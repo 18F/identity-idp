@@ -11,6 +11,28 @@
 #                 ||     ||
 
 module AnalyticsEvents
+  # @param [Boolean] success Whether the reCAPTCHA check passed (always false for this event)
+  # @param [Boolean] valid_captcha_result Whether the user passed the reCAPTCHA check or was exempt
+  # @param [Boolean] captcha_validation_performed Whether a reCAPTCHA check was performed
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # The account creation reCAPTCHA check failed and the request was blocked
+  def account_creation_recaptcha_failed(
+    success:,
+    valid_captcha_result:,
+    captcha_validation_performed:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      'Account Creation: reCAPTCHA Failed',
+      success:,
+      error_details:,
+      valid_captcha_result:,
+      captcha_validation_performed:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success Check whether threatmetrix succeeded properly.
   # @param [String] transaction_id Vendor-specific transaction ID for the request.
   # @param [String, nil] client Client user was directed from when creating account
@@ -7739,6 +7761,28 @@ module AnalyticsEvents
       profile_deactivated:,
       pending_profile_invalidated:,
       pending_profile_pending_reasons:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether the reCAPTCHA check passed (always false for this event)
+  # @param [Boolean] valid_captcha_result Whether the user passed the reCAPTCHA check or was exempt
+  # @param [Boolean] captcha_validation_performed Whether a reCAPTCHA check was performed
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # The password reset reCAPTCHA check failed and the request was blocked
+  def password_reset_recaptcha_failed(
+    success:,
+    valid_captcha_result:,
+    captcha_validation_performed:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      'Password Reset: reCAPTCHA Failed',
+      success:,
+      error_details:,
+      valid_captcha_result:,
+      captcha_validation_performed:,
       **extra,
     )
   end
