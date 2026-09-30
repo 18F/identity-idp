@@ -5,8 +5,9 @@ module Proofing
     class VerificationErrorParser
       attr_reader :body
 
-      def initialize(response_body)
+      def initialize(response_body, review_status: nil)
         @body = response_body
+        @review_status = review_status
         @product_error_messages = parse_product_error_messages
         @base_error_message = parse_base_error_message
       end
@@ -21,7 +22,7 @@ module Proofing
 
       private
 
-      attr_reader :base_error_message, :product_error_messages
+      attr_reader :base_error_message, :product_error_messages, :review_status
 
       def parse_base_error_message
         return "Invalid status in response body: '#{verification_status}'" if !valid_status?
@@ -61,7 +62,22 @@ module Proofing
         return true if product['ProductStatus'] != 'pass'
         return true if product['ProductType'] == 'InstantVerify'
         return true if product['Items']&.flat_map(&:keys)&.include?('ItemReason')
+        return true if product['ProductType'] == 'PhoneFinder' && phone_finder_not_passed?
         return false
+      end
+
+      def phone_finder_not_passed?
+        return review_status != 'pass' unless review_status.nil?
+
+        products = body['Products']
+        return false unless products.is_a?(Array)
+
+        products.any? do |product|
+          next false unless product.is_a?(Hash)
+
+          product['ProductType'].to_s.start_with?('PhoneFinder') &&
+            product['ProductStatus'] != 'pass'
+        end
       end
     end
   end

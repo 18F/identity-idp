@@ -525,11 +525,14 @@ RSpec.describe 'In Person Proofing', js: true do
             visit idv_hybrid_handoff_url
             click_send_link
 
-            # Test that user stays on the link sent page
-            sleep(5)
             expect(page).to(have_content(t('doc_auth.headings.text_message')))
 
-            # Test that user doesn't automatically get moved forward to the state id page on desktop
+            # The poller only advances the desktop when this endpoint answers 200. Re-sending
+            # the link cancelled the IPP enrollment, so it must answer 202 and leave the user
+            # on the link sent page rather than moving them to the state id page.
+            expect(user.reload.establishing_in_person_enrollment).to be_nil
+            expect(link_sent_poll_status).to eq(202)
+            expect(page).to(have_content(t('doc_auth.headings.text_message')))
             expect(page).not_to(have_content(t('in_person_proofing.headings.state_id_milestone_2')))
           end
         end
@@ -833,10 +836,6 @@ RSpec.describe 'In Person Proofing', js: true do
   end
 
   context 'AAMVA integration E2E tests' do
-    before do
-      allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
-    end
-
     context 'with successful AAMVA validation (default mock behavior)' do
       it 'completes full IPP flow with AAMVA verification', allow_browser_log: true do
         user = user_with_2fa
@@ -889,36 +888,13 @@ RSpec.describe 'In Person Proofing', js: true do
       end
     end
 
-    context 'AAMVA disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(false)
-      end
-
-      it 'skips AAMVA validation and proceeds normally', allow_browser_log: true do
-        user = user_with_2fa
-
-        sign_in_and_2fa_user(user)
-        begin_in_person_proofing(user)
-        complete_prepare_step(user)
-        complete_location_step(user)
-
-        fill_out_state_id_form_ok(current_address_matches_id: true)
-        click_idv_continue
-
-        expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
-        expect(page).to have_content(t('doc_auth.headings.ssn'))
-      end
-    end
-
-    context 'when AAMVA is enabled at the state ID form' do
+    context 'at the state ID form' do
       let(:user) { user_with_2fa }
       let(:fake_analytics) { FakeAnalytics.new(user: user) }
       let(:current_address_matches_id) { true }
 
       before do
         allow(IdentityConfig.store).to receive_messages(
-          idv_aamva_at_doc_auth_enabled: true,
-          idv_aamva_at_doc_auth_ipp_enabled: true,
           idv_aamva_get_to_yes_enabled_vendors: ['instant_verify', 'instant_verify_ddp'],
           proofer_mock_fallback: false,
           idv_resolution_default_vendor: :instant_verify,

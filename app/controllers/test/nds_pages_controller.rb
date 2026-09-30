@@ -932,6 +932,32 @@ module Test
       {}
     end
 
+    def setup_confirm_backup_codes
+      {}
+    end
+
+    def setup_backup_code_reminder
+      flash.now[:success] = t('notices.authenticated_successfully')
+      {}
+    end
+
+    def setup_backup_code_regenerate
+      {}
+    end
+
+    def setup_backup_codes
+      user = build_mfa_user(configured: params[:second].present?)
+      @nds_current_user = user
+      @in_account_creation_flow = params[:account_creation].present?
+      @in_multi_mfa_selection_flow = params[:multi].present?
+      @codes = BackupCodeGenerator.new(user).send(:generate_new_codes)
+      {}
+    end
+
+    def setup_backup_code_confirm_setup
+      {}
+    end
+
     def setup_backup_code_delete
       {}
     end
@@ -1263,6 +1289,22 @@ module Test
       @code = '0193-0039-4739-9920'
       @personal_key_generated_at = Time.zone.today
       flash.now[:success] = t('idv.messages.confirm') if params[:toast].present?
+      {}
+    end
+
+    def setup_email_language
+      user = User.new(email_language: params[:language].presence)
+      @nds_current_user = user
+      {}
+    end
+
+    def setup_account_delete
+      user = User.new
+      if params[:verified].present?
+        user.define_singleton_method(:identity_verified?) { true }
+      end
+      @nds_current_user = user
+      flash.now[:error] = t('idv.errors.incorrect_password') if params[:error].present?
       {}
     end
 

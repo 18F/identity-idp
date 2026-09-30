@@ -96,7 +96,11 @@ module Idv
         action: :new,
         next_steps: [:personal_key],
         preconditions: ->(idv_session:, user:) do
-          idv_session.phone_or_address_step_complete?
+          if idv_session.agent_proofed
+            idv_session.proofing_agent_match? && idv_session.phone_or_address_step_complete?
+          else
+            idv_session.phone_or_address_step_complete?
+          end
         end,
         undo_step: ->(idv_session:, user:) {},
       )
@@ -178,13 +182,10 @@ module Idv
     end
 
     def proofing_completion_phone_number
-      if idv_session.address_verification_mechanism == 'phone'
-        idv_session.user_phone_confirmation_session&.phone
-      elsif idv_session.phone_for_mobile_flow.present?
-        idv_session.phone_for_mobile_flow
-      else
+      return unless idv_session.address_verification_mechanism == 'phone'
+
+      idv_session.verification_phone_number ||
         current_user.default_phone_configuration&.formatted_phone
-      end
     end
 
     def confirm_no_profile_yet

@@ -257,6 +257,21 @@ module Idv
       vendor_phone_confirmation && address_verification_mechanism == 'phone'
     end
 
+    # The phone number confirmed for address verification. A successful phone precheck
+    # completes the phone step without sending an OTP, so there is no phone confirmation
+    # session to read the number from in that case.
+    def verification_phone_number
+      user_phone_confirmation_session&.phone.presence ||
+        precheck_phone_number.presence ||
+        phone_for_mobile_flow.presence
+    end
+
+    def precheck_phone_number
+      return unless phone_precheck_successful
+
+      precheck_phone&.with_indifferent_access&.dig(:phone)
+    end
+
     def user_phone_confirmation_session
       session_value = session[:user_phone_confirmation_session]
       return if session_value.blank?
@@ -369,7 +384,7 @@ module Idv
     end
 
     def phone_or_address_step_complete?
-      verify_by_mail? || phone_confirmed? || proofing_agent_match?
+      verify_by_mail? || phone_confirmed?
     end
 
     def address_mechanism_chosen?
@@ -434,6 +449,19 @@ module Idv
 
     def in_person_passports_allowed?
       IdentityConfig.store.in_person_passports_enabled
+    end
+
+    def ipp_passport_requested?
+      !!DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)&.passport_requested?
+    end
+
+    # Confirms the enrollment's document has been verified for its type. In-person
+    # AAMVA only runs on the state ID path, so a passport enrollment never produces
+    # an ipp_aamva_result and is considered complete once requested (a passport
+    # validity check will be added later), while a state ID enrollment must have a
+    # completed AAMVA check.
+    def ipp_document_verification_complete?
+      ipp_passport_requested? || ipp_aamva_result.present?
     end
 
     def standard_flow_document_capture_eligible?

@@ -1622,6 +1622,9 @@ mfa.second_method_warning.link: Agregue un segundo método de autenticación.
 mfa.second_method_warning.text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de autenticación.
 mfa.skip: Omitir por ahora
 mfa.webauthn_platform_message: Agregue otro método de autenticación en caso de que pierda el acceso al primero.
+nds.backup_codes.acknowledgment: Guardé mis códigos de recuperación en un lugar seguro
+nds.backup_codes.info: Los códigos de recuperación le permiten iniciar sesión si alguna vez pierde el acceso a su teléfono u otros métodos de inicio de sesión. Cada código funciona solo una vez. No comparta estos códigos.
+nds.backup_codes.title: Guarde sus códigos de recuperación
 nds.capture_complete.info: Su documento de identidad se verificó correctamente. Vuelva a su computadora para terminar el proceso de verificación de identidad.
 nds.choose_id_type.option_drivers_license: Licencia de conducir o identificación estatal de los EE. UU.
 nds.choose_id_type.option_mdl: Licencia de conducir móvil
@@ -1783,6 +1786,7 @@ openid_connect.authorization.errors.missing_ial: Falta un nivel válido de IAL. 
 openid_connect.authorization.errors.no_auth: Los acr_values no están autorizados. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-missing-acr-values
 openid_connect.authorization.errors.no_valid_acr_values: No se encontraron ial_values aceptables. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-no-acr-values
 openid_connect.authorization.errors.no_valid_scope: No se encontraron valores de ámbito válidos. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-no-scope
+openid_connect.authorization.errors.pkce_parameter_pair: code_challenge y code_challenge_method deben proporcionarse juntos y no deben estar vacíos.
 openid_connect.authorization.errors.prompt_invalid: No se encontraron valores de consulta válidos. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-no-prompt
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri no es válido. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri no coincide con el redirect_uri registrado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-redirect-match
@@ -2193,7 +2197,6 @@ user_mailer.agent_proofing_succeeded.footer_html: Si usted no intentó verificar
 user_mailer.agent_proofing_succeeded.header: Ha completado con éxito su verificación de identidad
 user_mailer.agent_proofing_succeeded.subject: 'Acción requerida: Confirme su cuenta verificada'
 user_mailer.contact_link_text: contáctenos
-user_mailer.device_profiling_error_cleared.header: Puede volver a iniciar sesión con su cuenta
 user_mailer.device_profiling_error_cleared.info: El error en su cuenta (LG22) se ha solucionado. Ahora puede iniciar sesión en el sitio web de la agencia con su cuenta.
 user_mailer.device_profiling_error_cleared.subject: Puede volver a iniciar sesión con su cuenta
 user_mailer.dupe_profile.created.description: Alguien verificó otra cuenta de %{app_name} usando la información personal de usted. Por su seguridad, hemos restringido su acceso a todas las cuentas con información que coincide y a %{sp_or_app_name}.

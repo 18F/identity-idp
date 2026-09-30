@@ -58,7 +58,7 @@ module Idv
                            %i[issue_date expiration_date issuing_country_code mrz] :
                            %i[address1 state zip_code jurisdiction document_number]
 
-        attrs = %i[first_name last_name dob dob_min_age] + document_attrs
+        attrs = %i[first_name last_name dob ssn dob_min_age] + document_attrs
 
         attrs.each do |k|
           keypaths << [:errors, k]

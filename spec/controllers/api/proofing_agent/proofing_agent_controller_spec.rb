@@ -141,6 +141,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:dob) do
     (Time.zone.today - (IdentityConfig.store.idv_min_age_years + 1).years).strftime('%Y-%m-%d')
   end
+  let(:ssn) { '111223333' }
   let(:document_number) { '123' }
   let(:jurisdiction) { 'MD' }
   let(:address1) { '123 Main' }
@@ -218,7 +219,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       last_name:,
       dob:,
       phone: '555-555-5555',
-      ssn: '111223333',
+      ssn:,
       id_type:,
       residential_address:,
       state_id:,
@@ -920,8 +921,24 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             end
           end
 
+          context 'ssn data format is invalid' do
+            let(:ssn) { '123-45-6789' }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'dob data format is invalid' do
+            let(:dob) { '04-04-1990' }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
           context 'user already has an enhanced profile' do
-            let(:ssn) { '111-22-3333' }
+            let(:ssn) { '111223333' }
             before do
               Profile.create!(
                 user_id: user.id,

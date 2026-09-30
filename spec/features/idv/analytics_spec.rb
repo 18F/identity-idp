@@ -855,8 +855,6 @@ RSpec.feature 'Analytics Regression', :js do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
       .and_return(false)
     allow(IdentityConfig.store).to receive(:proofing_device_profiling)
@@ -1346,9 +1344,8 @@ RSpec.feature 'Analytics Regression', :js do
     end
 
     it 'records all of the events', allow_browser_log: true do
-      max_wait = Time.zone.now + 5.seconds
-      wait_for_event('IdV: user clicked what to bring link on ready to verify page', max_wait)
-      wait_for_event('IdV: user clicked sp link on ready to verify page', max_wait)
+      wait_for_event('IdV: user clicked what to bring link on ready to verify page')
+      wait_for_event('IdV: user clicked sp link on ready to verify page')
       in_person_path_events.each do |event, attributes|
         expect(fake_analytics).to have_logged_event(event, attributes)
       end
@@ -1375,26 +1372,18 @@ RSpec.feature 'Analytics Regression', :js do
       end
 
       it 'records all of the events', allow_browser_log: true do
-        max_wait = Time.zone.now + 5.seconds
-        wait_for_event('IdV: user clicked what to bring link on ready to verify page', max_wait)
-        wait_for_event('IdV: user clicked sp link on ready to verify page', max_wait)
+        wait_for_event('IdV: user clicked what to bring link on ready to verify page')
+        wait_for_event('IdV: user clicked sp link on ready to verify page')
         in_person_path_events.each do |event, attributes|
           expect(fake_analytics).to have_logged_event(event, attributes)
         end
       end
     end
 
-    # wait for event to happen
-    def wait_for_event(event, wait)
-      frequency = 0.1.seconds
-      loop do
-        expect(fake_analytics).to have_logged_event(event)
-        return
-      rescue RSpec::Expectations::ExpectationNotMetError => err
-        raise err if wait - Time.zone.now < frequency
-        sleep frequency
-        next
-      end
+    # Frontend events are sent with navigator.sendBeacon while the page navigates away, so they
+    # can land after the test thread has moved on.
+    def wait_for_event(event)
+      wait_for_logged_event(fake_analytics, event, wait: 5)
     end
   end
 end

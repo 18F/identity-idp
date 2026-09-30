@@ -1624,6 +1624,9 @@ mfa.second_method_warning.link: 添加第二个身份证实方法。
 mfa.second_method_warning.text: 如果你丢失唯一的身份证实方法，就不得不删除你的账户并从头开始。
 mfa.skip: 现在先跳过
 mfa.webauthn_platform_message: 添加另一个身份证实方法，以防你无法使用第一个方法。
+nds.backup_codes.acknowledgment: 我已将备用代码保存在安全的地方
+nds.backup_codes.info: 如果您失去对手机或其他登录方式的访问权限，备用代码可让您登录。每个代码只能使用一次。请勿分享这些代码。
+nds.backup_codes.title: 保存您的备用代码
 nds.capture_complete.info: 身份证件已成功验证。请返回您的计算机以完成身份验证流程。
 nds.choose_id_type.option_drivers_license: 美国驾照或州身份证
 nds.choose_id_type.option_mdl: 移动驾照
@@ -1785,6 +1788,7 @@ openid_connect.authorization.errors.missing_ial: 缺失有效的 IAL 级别。�
 openid_connect.authorization.errors.no_auth: Acr_values 未经授权。请参阅我们的文档：https://developers.login.gov/support/#oidc-missing-acr-values
 openid_connect.authorization.errors.no_valid_acr_values: 未找到可接受的 acr_values。请参阅我们的文档：https://developers.login.gov/support/#oidc-no-acr-values
 openid_connect.authorization.errors.no_valid_scope: 未找到有效的范围值。请参阅我们的文档：https://developers.login.gov/support/#oidc-no-scope
+openid_connect.authorization.errors.pkce_parameter_pair: code_challenge 和 code_challenge_method 必须同时提供，且不能为空。
 openid_connect.authorization.errors.prompt_invalid: 未找到有效的提示值。请参阅我们的文档：https://developers.login.gov/support/#oidc-no-prompt
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri 有误。请参阅我们的文档：https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri 与注册的 redirect_uri 不匹配。请参阅我们的文档：https://developers.login.gov/support/#oidc-redirect-match
@@ -2194,7 +2198,6 @@ user_mailer.agent_proofing_succeeded.footer_html: 如果您并未亲自尝试进
 user_mailer.agent_proofing_succeeded.header: 您已成功完成身份验证
 user_mailer.agent_proofing_succeeded.subject: 需采取行动：确认您的已验证账户
 user_mailer.contact_link_text: 联系我们
-user_mailer.device_profiling_error_cleared.header: 您可以使用 帐户重新登录。
 user_mailer.device_profiling_error_cleared.info: 您的账户（LG22）错误已解决。您现在可以使用您的账户登录机构网站。
 user_mailer.device_profiling_error_cleared.subject: 您可以使用 帐户重新登录。
 user_mailer.dupe_profile.created.description: 有人使用你的个人信息验证了另一个 %{app_name} 账户。 为了你的安全，我们已限制了具有同样信息的所有账户的访问权以及对 %{sp_or_app_name} 的访问权.

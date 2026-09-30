@@ -6,7 +6,7 @@
 # avoid having build-essential and the large-files token be in the
 # main image.
 #########################################################################
-FROM public.ecr.aws/docker/library/ruby:3.4.5-slim as builder
+FROM public.ecr.aws/docker/library/ruby:3.4.10-slim as builder
 
 # Set environment variables
 ENV RAILS_ROOT /app
@@ -134,7 +134,7 @@ RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
 #########################################################################
 # This is the main image.
 #########################################################################
-FROM public.ecr.aws/docker/library/ruby:3.4.5-slim as main
+FROM public.ecr.aws/docker/library/ruby:3.4.10-slim as main
 
 # Set environment variables
 ENV RAILS_ROOT /app

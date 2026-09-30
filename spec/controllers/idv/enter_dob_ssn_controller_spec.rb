@@ -5,10 +5,15 @@ RSpec.describe Idv::EnterDobSsnController do
   let(:success) { true }
   let(:pii) do
     {
+      document_type_received: 'drivers_license',
       ssn: '123456789',
       dob: '1990-01-01',
     }
   end
+  let(:resolution_vendor) { 'lexisnexis:instant_verify_ddp' }
+  let(:residential_vendor) { 'lexisnexis:instant_verify_ddp' }
+  let(:phone_precheck_vendor) { 'socure_phonerisk' }
+  let(:source_check_vendor) { 'aamva:state_id' }
   let(:agent_proofed_user) do
     {
       pii: pii,
@@ -18,6 +23,28 @@ RSpec.describe Idv::EnterDobSsnController do
       correlation_id: 'correlation_789',
       transaction_id: document_capture_session.uuid,
       service_provider_issuer: sp.issuer,
+      resolution: {
+        context: {
+          stages: {
+            resolution: {
+              success: true,
+              vendor_name: resolution_vendor,
+            },
+            residential_address: {
+              success: true,
+              vendor_name: residential_vendor,
+            },
+            phone_precheck: {
+              success: true,
+              vendor_name: phone_precheck_vendor,
+            },
+          },
+        },
+      },
+      aamva: {
+        success: true,
+        vendor_name: source_check_vendor,
+      },
     }
   end
   let(:sp) { create(:service_provider, :idv, :active) }
@@ -106,7 +133,7 @@ RSpec.describe Idv::EnterDobSsnController do
     end
 
     context 'user has proofing agent pending pii' do
-      before { get :new }
+      before { response }
 
       it 'moves agent proofed user pii to idv_session applicant' do
         expect(subject.idv_session.applicant).to eq(pii.stringify_keys)
@@ -120,10 +147,21 @@ RSpec.describe Idv::EnterDobSsnController do
         expect(controller.current_sp).to eq(sp)
       end
 
-      it 'sets phone step to completed' do
-        expect(subject.idv_session.address_verification_mechanism).to eq('phone')
-        expect(subject.idv_session.vendor_phone_confirmation).to eq true
-        expect(subject.idv_session.user_phone_confirmation).to eq true
+      it 'sets the idv session applicant' do
+        expect(subject.idv_session.applicant).to eq(
+          agent_proofed_user[:pii].with_indifferent_access,
+        )
+      end
+
+      it 'does not set proofing components', :aggregate_failures do
+        expect(subject.idv_session.agent_proofed).to be_nil
+        expect(subject.idv_session.source_check_vendor).to be_nil
+        expect(subject.idv_session.resolution_vendor).to be_nil
+        expect(subject.idv_session.residential_resolution_vendor).to be_nil
+        expect(subject.idv_session.phone_precheck_vendor).to be_nil
+        expect(subject.idv_session.address_verification_mechanism).to be_nil
+        expect(subject.idv_session.vendor_phone_confirmation).to be_nil
+        expect(subject.idv_session.user_phone_confirmation).to be_nil
       end
 
       it 'sends the correct analytics' do
@@ -224,9 +262,22 @@ RSpec.describe Idv::EnterDobSsnController do
     end
 
     context 'user typed dob and ssn matches idv_session.applicant dob and ssn' do
-      it 'redirects to enter password step' do
+      before do
         post :create, params: params
+      end
 
+      it 'sets the proofing components', :aggregate_failures do
+        expect(subject.idv_session.agent_proofed).to eq(true)
+        expect(subject.idv_session.source_check_vendor).to eq(source_check_vendor)
+        expect(subject.idv_session.resolution_vendor).to eq(resolution_vendor)
+        expect(subject.idv_session.residential_resolution_vendor).to eq(residential_vendor)
+        expect(subject.idv_session.phone_precheck_vendor).to eq('socure_address')
+        expect(subject.idv_session.address_verification_mechanism).to eq('phone')
+        expect(subject.idv_session.vendor_phone_confirmation).to eq true
+        expect(subject.idv_session.user_phone_confirmation).to eq true
+      end
+
+      it 'redirects to enter password step' do
         expect(response).to redirect_to(idv_enter_password_url)
         expect(@analytics).to have_logged_event(
           :idv_proofing_agent_user_confirmation_submitted,
@@ -247,6 +298,16 @@ RSpec.describe Idv::EnterDobSsnController do
         post :create, params: params
 
         expect(response).to render_template(:new)
+
+        # Does not set the idv session proofing components
+        expect(subject.idv_session.agent_proofed).to be_nil
+        expect(subject.idv_session.source_check_vendor).to be_nil
+        expect(subject.idv_session.resolution_vendor).to be_nil
+        expect(subject.idv_session.residential_resolution_vendor).to be_nil
+        expect(subject.idv_session.phone_precheck_vendor).to be_nil
+        expect(subject.idv_session.address_verification_mechanism).to be_nil
+        expect(subject.idv_session.vendor_phone_confirmation).to be_nil
+        expect(subject.idv_session.user_phone_confirmation).to be_nil
       end
     end
 
@@ -257,6 +318,16 @@ RSpec.describe Idv::EnterDobSsnController do
         post :create, params: params
 
         expect(response).to render_template(:new)
+
+        # Does not set the idv session proofing components
+        expect(subject.idv_session.agent_proofed).to be_nil
+        expect(subject.idv_session.source_check_vendor).to be_nil
+        expect(subject.idv_session.resolution_vendor).to be_nil
+        expect(subject.idv_session.residential_resolution_vendor).to be_nil
+        expect(subject.idv_session.phone_precheck_vendor).to be_nil
+        expect(subject.idv_session.address_verification_mechanism).to be_nil
+        expect(subject.idv_session.vendor_phone_confirmation).to be_nil
+        expect(subject.idv_session.user_phone_confirmation).to be_nil
       end
     end
 

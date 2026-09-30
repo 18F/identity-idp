@@ -191,7 +191,7 @@ RSpec.describe DocumentCaptureSession do
     let(:resolution) { { success: true } }
     let(:mrz) { nil }
     let(:aamva_success) { true }
-    let(:aamva_vendor) { :document_check_vendor }
+    let(:aamva_vendor) { 'document_check_vendor' }
     let(:aamva_attrs) { %w[all of them] }
     let(:aamva) do
       {
@@ -363,7 +363,7 @@ RSpec.describe DocumentCaptureSession do
           it 'stores mrz_status as :passed' do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(
               mrz_status: :pass,
-              source_check_vendor: :test_dos,
+              source_check_vendor: 'test_dos',
             )
           end
         end
@@ -374,7 +374,7 @@ RSpec.describe DocumentCaptureSession do
           it 'stores mrz_status as :failed' do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(
               mrz_status: :failed,
-              source_check_vendor: :test_dos,
+              source_check_vendor: 'test_dos',
             )
           end
         end

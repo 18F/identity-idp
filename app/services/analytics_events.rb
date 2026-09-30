@@ -7180,9 +7180,10 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String, nil] previous_bucket A/B bucket the user was in before opting out
   # Records that a user opted out of the NDS interface.
-  def nds_look_and_feel_opted_out
-    track_event(:nds_look_and_feel_opted_out)
+  def nds_look_and_feel_opted_out(previous_bucket:, **extra)
+    track_event(:nds_look_and_feel_opted_out, previous_bucket:, **extra)
   end
 
   # New device alert skipped as there were no events to send
@@ -8056,6 +8057,28 @@ module AnalyticsEvents
   # place during the expected time frame
   def proofing_address_result_missing
     track_event('Proofing Address Result Missing')
+  end
+
+  # Signifies the completion of the proofing agent failure email job
+  # @param [Integer] processed_count The number of items processed during the job
+  # @param [Float] duration_sec The duration of the job in seconds
+  def proofing_agent_failure_email_job_completed(processed_count:, duration_sec:, **extra)
+    track_event(
+      :proofing_agent_failure_email_job_completed,
+      processed_count:,
+      duration_sec:,
+      **extra,
+    )
+  end
+
+  # Logs the error received when during processing
+  # @param [String] exception The message from the exception raised.
+  def proofing_agent_failure_email_job_error(exception:, **extra)
+    track_event(
+      :proofing_agent_failure_email_job_error,
+      exception:,
+      **extra,
+    )
   end
 
   # Tracks when a user triggered a rate limiter

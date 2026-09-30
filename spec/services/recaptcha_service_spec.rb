@@ -76,6 +76,9 @@ RSpec.describe RecaptchaService do
             .and_return(0.1)
           allow(recaptcha_assessment).to receive_message_chain('risk_analysis.reasons')
             .and_return('AUTOMATION')
+          allow(recaptcha_assessment).to receive_message_chain(
+            'risk_analysis.extended_verdict_reasons',
+          ).and_return('Suspicious origin')
         end
 
         it 'succeeds with the assessment_id, score, and reasons' do
@@ -85,6 +88,7 @@ RSpec.describe RecaptchaService do
           expect(result.assessment_id).to eq('ASSESSMENT_ID')
           expect(result.score).to eq(0.1)
           expect(result.reasons).to eq('AUTOMATION')
+          expect(result.extended_verdict_reasons).to eq('Suspicious origin')
         end
 
         it 'includes the user agent and user ip address in the assessment event' do
