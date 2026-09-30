@@ -802,6 +802,44 @@ audit_packages_scheduled:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
 
+# Regenerates the pwned passwords list and uploads it to S3.
+# This job only runs on a scheduled pipeline that sets PWNED_PASSWORDS_REFRESH,
+# so it stays out of the normal CI pipeline AND out of other scheduled pipelines.
+# To run monthly:
+#   1. In GitLab: Build > Pipeline schedules > New schedule
+#   2. Set the cron interval to monthly, e.g. `0 6 1 * *` (06:00 UTC on the 1st)
+#   3. Under Variables, add key PWNED_PASSWORDS_REFRESH with value `true`
+#   4. (Optional) Add key PWNED_PASSWORDS_TARGET with value `sandbox` (default),
+#      `dev`, or `prod` to control which environment the list is uploaded to.
+# The runner must have AWS credentials and the target bucket variable
+# (sandbox_bucket / dev_bucket / prod_bucket) available in its CI/CD variables.
+pwned_passwords_scheduled:
+  needs:
+    - job: install
+  cache:
+    - <<: *ruby_cache
+  variables:
+    PWNED_PASSWORDS_TARGET: 'sandbox'
+  script:
+    - *bundle_install
+    - |-
+      case "$PWNED_PASSWORDS_TARGET" in
+        prod)
+          echo "Uploading pwned passwords to PROD"
+          ./scripts/pwned-passwords.sh -y -p
+          ;;
+        dev)
+          echo "Uploading pwned passwords to DEV"
+          ./scripts/pwned-passwords.sh -y -d
+          ;;
+        *)
+          echo "Uploading pwned passwords to SANDBOX"
+          ./scripts/pwned-passwords.sh -y -s
+          ;;
+      esac
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $PWNED_PASSWORDS_REFRESH == "true"'
+
 # EKS deployment
 deploy_eks:
   trigger:
