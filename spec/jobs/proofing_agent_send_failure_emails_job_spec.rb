@@ -5,8 +5,6 @@ require 'rails_helper'
 RSpec.describe ProofingAgentSendFailureEmailsJob, type: :job do
   subject { described_class.new }
 
-  let(:failure_email_user_set_key) { Idv::ProofingAgent::FailureEmailUserSet::KEY }
-
   before do
     allow(IdentityConfig.store).to receive(:idv_proofing_agent_send_failure_email_after_min)
       .and_return(0)
@@ -72,7 +70,9 @@ RSpec.describe ProofingAgentSendFailureEmailsJob, type: :job do
         end
 
         it 'removes the users with the emails sent from the failure email user set' do
-          expect(failure_email_user_set).to have_received(:remove_uuids).with(user_uuids)
+          expect(failure_email_user_set).to have_received(:remove_uuids).with(
+            contain_exactly(*user_uuids),
+          )
         end
 
         it 'logs the job completed event' do
@@ -108,7 +108,7 @@ RSpec.describe ProofingAgentSendFailureEmailsJob, type: :job do
 
         it 'removes the users with the emails sent from the failure email user set' do
           expect(failure_email_user_set).to have_received(:remove_uuids).with(
-            [users[1].uuid, users[2].uuid],
+            contain_exactly(users[1].uuid, users[2].uuid),
           )
         end
 
