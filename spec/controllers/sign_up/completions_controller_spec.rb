@@ -679,6 +679,11 @@ RSpec.describe SignUp::CompletionsController do
         expect(broker_identity.reload.token_exchange_consent_at).to be_nil
       end
 
+      it 'treats a malformed idv_form param as unchecked rather than raising' do
+        expect { patch :update, params: { idv_form: 'x' } }.not_to raise_error
+        expect(response).to render_template(:show)
+      end
+
       it 'proceeds, records consent, and logs it when the box is checked' do
         patch :update, params: { idv_form: { token_exchange_consent: '1' } }
 

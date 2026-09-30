@@ -154,6 +154,18 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         expect(form.response[:error]).to eq('unsupported_grant_type')
         expect(form.response[:error_description]).not_to include('subject_token')
       end
+
+      it 'rejects a null byte in subject_token without raising' do
+        form = described_class.new(params.merge(subject_token: "abc\x00def"))
+        expect { form.submit }.not_to raise_error
+        expect(form.response[:error]).to eq('invalid_request')
+      end
+
+      it 'rejects a null byte in audience without raising' do
+        form = described_class.new(params.merge(audience: "target\x00.gov"))
+        expect { form.submit }.not_to raise_error
+        expect(form.submit.success?).to eq(false)
+      end
     end
 
     context 'when an unauthorized token holder probes audiences' do

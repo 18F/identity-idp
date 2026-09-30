@@ -145,9 +145,9 @@ class OpenidConnectTokenExchangeForm
 
   def first_error_message
     type = first_error_type
-    detail = errors.details.find { |_attr, ds| ds.any? { |d| d[:type] == type } }
-    attr = detail&.first
-    attr ? errors.full_messages_for(attr).first : errors.full_messages.first
+    _attr, details = errors.details.find { |_a, ds| ds.any? { |d| d[:type] == type } }
+    matched = details&.find { |d| d[:type] == type }
+    matched ? matched[:error].to_s : errors.full_messages.first
   end
 
   # Every target-side validation is withheld until the presenting broker has
@@ -262,7 +262,7 @@ class OpenidConnectTokenExchangeForm
   def broker_identity
     return @broker_identity if defined?(@broker_identity)
     @broker_identity = ServiceProviderIdentity.find_by(access_token: subject_token) if
-      subject_token.present?
+      db_safe?(subject_token)
   end
 
   def broker_service_provider
@@ -280,7 +280,13 @@ class OpenidConnectTokenExchangeForm
 
   def target_service_provider
     return @target_service_provider if defined?(@target_service_provider)
-    @target_service_provider = ServiceProvider.find_by(issuer: audience) if audience.present?
+    @target_service_provider = ServiceProvider.find_by(issuer: audience) if db_safe?(audience)
+  end
+
+  # A null byte in a lookup value makes the PG adapter raise before validation
+  # can reject it; treat such input as simply absent.
+  def db_safe?(value)
+    value.present? && !value.include?("\x00")
   end
 
   def allowed_audiences

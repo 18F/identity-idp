@@ -31,8 +31,11 @@ module VerifySpAttributesConcern
     )
 
     # Record token-exchange consent as a distinct, purpose-specific decision;
-    # only touched for allow-listed brokers, and set-or-cleared so stale consent
-    # never carries over to a new proofing session or a dropped scope.
+    # only touched for allow-listed brokers, and set-or-cleared whenever this
+    # screen runs so a dropped scope or new proofing session does not carry
+    # stale consent forward. (The exchange endpoint additionally requires the
+    # presented token's own scope to include token_exchange, so consent can
+    # never outlive the grant it was given for.)
     if current_sp&.token_exchange_broker_allowed?
       identity&.update!(
         token_exchange_consent_at: (Time.zone.now if token_exchange_consent_granted?),
@@ -52,7 +55,9 @@ module VerifySpAttributesConcern
   end
 
   def token_exchange_consent_checked?
-    ActiveModel::Type::Boolean.new.cast(params.dig(:idv_form, :token_exchange_consent))
+    form = params[:idv_form]
+    return false unless form.respond_to?(:[]) && !form.is_a?(String)
+    ActiveModel::Type::Boolean.new.cast(form[:token_exchange_consent])
   end
 
   def consent_has_expired?(sp_session_identity)
