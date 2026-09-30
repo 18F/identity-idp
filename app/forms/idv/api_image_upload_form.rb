@@ -210,7 +210,6 @@ module Idv
           liveness_checking_required:,
           document_type_requested:,
           passport_requested: document_capture_session.passport_requested?,
-          passport_cards_supported: document_capture_session.passport_cards_supported?,
         }
         post_images_args[:user_email] = user_email if ddp_client?
         doc_auth_client.post_images(**post_images_args)

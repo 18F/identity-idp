@@ -980,7 +980,6 @@ module Test
       @presenter = Idv::WelcomePresenter.new(
         decorated_sp_session:,
         show_sp_reproof_banner: params[:reproof].present?,
-        passport_cards_supported: true,
         mdl_enabled: true,
       )
       @consent_form = Idv::ConsentForm.new(idv_consent_given: false)
