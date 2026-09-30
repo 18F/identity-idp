@@ -164,48 +164,55 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       before do
         allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
           .and_return(true)
-        allow(controller).to receive(:mobile?).and_return(true)
         controller.user_session[:in_account_creation_flow] = true
         allow(controller).to receive(:ab_test_bucket)
           .with(:NDS_LOOK_AND_FEEL, any_args)
       end
 
-      context 'when platform authenticator is available' do
+      context 'when the user is on a mobile device' do
         before do
-          controller.user_session[:platform_authenticator_available] = true
+          allow(controller).to receive(:mobile?).and_return(true)
         end
 
-        context 'when user is in the auto prompt bucket' do
+        context 'when platform authenticator is available' do
           before do
-            allow(controller).to receive(:ab_test_bucket)
-              .with(:PASSKEY_UPSELL)
-              .and_return(:auto_passkey_prompt)
+            controller.user_session[:platform_authenticator_available] = true
           end
 
-          it 'redirects to platform webauthn setup' do
-            expect { response }
-              .to change { controller.user_session[:auto_passkey_prompted] }
-              .from(nil)
-              .to(true)
-            expect(controller.user_session[:auto_passkey_prompt_pending]).to eq(true)
-
-            expect(response).to redirect_to(
-              webauthn_setup_url(platform: true, passkey_upsell: true, auto_trigger: true),
-            )
-          end
-
-          it 'does not auto prompt after it has already been triggered once' do
-            controller.user_session[:auto_passkey_prompted] = true
-
-            get :index
-
-            expect(response).to render_template(:index)
-            expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
-          end
-
-          context 'when the user is on a desktop device' do
+          context 'when user is in the auto prompt bucket' do
             before do
-              allow(controller).to receive(:mobile?).and_return(false)
+              allow(controller).to receive(:ab_test_bucket)
+                .with(:PASSKEY_UPSELL)
+                .and_return(:auto_passkey_prompt)
+            end
+
+            it 'redirects to platform webauthn setup' do
+              expect { response }
+                .to change { controller.user_session[:auto_passkey_prompted] }
+                .from(nil)
+                .to(true)
+              expect(controller.user_session[:auto_passkey_prompt_pending]).to eq(true)
+
+              expect(response).to redirect_to(
+                webauthn_setup_url(platform: true, passkey_upsell: true, auto_trigger: true),
+              )
+            end
+
+            it 'does not auto prompt after it has already been triggered once' do
+              controller.user_session[:auto_passkey_prompted] = true
+
+              get :index
+
+              expect(response).to render_template(:index)
+              expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
+            end
+          end
+
+          context 'when user is in the control bucket' do
+            before do
+              allow(controller).to receive(:ab_test_bucket)
+                .with(:PASSKEY_UPSELL)
+                .and_return(:mfa_selection)
             end
 
             it 'renders the mfa selection page' do
@@ -216,14 +223,15 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
           end
         end
 
-        context 'when user is in the control bucket' do
+        context 'when platform authenticator is not available' do
           before do
+            controller.user_session[:platform_authenticator_available] = false
             allow(controller).to receive(:ab_test_bucket)
               .with(:PASSKEY_UPSELL)
-              .and_return(:mfa_selection)
+              .and_return(:auto_passkey_prompt)
           end
 
-          it 'renders the mfa selection page' do
+          it 'does not redirect to platform webauthn setup' do
             get :index
 
             expect(response).to render_template(:index)
@@ -231,15 +239,16 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         end
       end
 
-      context 'when platform authenticator is not available' do
+      context 'when the user is on a desktop device' do
         before do
-          controller.user_session[:platform_authenticator_available] = false
+          allow(controller).to receive(:mobile?).and_return(false)
+          controller.user_session[:platform_authenticator_available] = true
           allow(controller).to receive(:ab_test_bucket)
             .with(:PASSKEY_UPSELL)
             .and_return(:auto_passkey_prompt)
         end
 
-        it 'does not redirect to platform webauthn setup' do
+        it 'renders the mfa selection page' do
           get :index
 
           expect(response).to render_template(:index)
