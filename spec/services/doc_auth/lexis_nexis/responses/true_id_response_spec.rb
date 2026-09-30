@@ -72,7 +72,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   # rubocop:enable Layout/LineLength
 
   let(:passport_requested) { false }
-  let(:passport_cards_supported) { false }
   let(:config) do
     DocAuth::LexisNexis::Config.new
   end
@@ -338,7 +337,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         expect(response.to_h[:vendor]).to eq('TrueID')
       end
 
-      it 'records the document_type_received as passport_card' do
+      it 'records the document_type_received as identification_card' do
         expect(response.pii_from_doc.document_type_received).to eq('identification_card')
       end
     end
@@ -395,6 +394,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   context 'when the response is a success with passport card' do
+    let(:passport_requested) { true }
     let(:response) do
       described_class.new(
         http_response: success_with_passport_card_response,
@@ -402,42 +402,19 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         config:,
         liveness_checking_enabled:,
         request_context:,
-        passport_cards_supported:,
       )
     end
 
-    context 'when passports are enabled' do
-      let(:passport_requested) { true }
-
-      it 'is not a successful result' do
-        expect(response.successful_result?).to eq(false)
-      end
-
-      it 'records the document_type_received as passport_card' do
-        expect(response.pii_from_doc.document_type_received).to eq('passport_card')
-      end
-
-      it 'has error messages' do
-        expect(response.error_messages[:passport_card]).to eq(
-          I18n.t('doc_auth.errors.doc.doc_type_check'),
-        )
-      end
+    it 'is a successful result' do
+      expect(response.successful_result?).to eq(true)
     end
 
-    context 'when passport cards are supported' do
-      let(:passport_cards_supported) { true }
-      let(:passport_requested) { true }
-      it 'is a successful result' do
-        expect(response.successful_result?).to eq(true)
-      end
+    it 'records the document_type_received as passport_card' do
+      expect(response.pii_from_doc.document_type_received).to eq('passport_card')
+    end
 
-      it 'records the document_type_received as passport_card' do
-        expect(response.pii_from_doc.document_type_received).to eq('passport_card')
-      end
-
-      it 'does not have error messages' do
-        expect(response.error_messages[:passport_card]).to eq(nil)
-      end
+    it 'does not have error messages' do
+      expect(response.error_messages[:passport_card]).to eq(nil)
     end
   end
 
