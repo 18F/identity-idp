@@ -60,10 +60,6 @@ module SignUp
       FeatureManagement.account_creation_recaptcha_enabled?
     end
 
-    def captcha_validation_performed?
-      !recaptcha_form.exempt?
-    end
-
     def recaptcha_response
       @recaptcha_response ||= recaptcha_form.submit(
         recaptcha_token: params.require(:user)[:recaptcha_token],

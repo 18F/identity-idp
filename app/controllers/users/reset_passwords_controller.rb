@@ -116,10 +116,6 @@ module Users
       FeatureManagement.password_reset_recaptcha_enabled?
     end
 
-    def captcha_validation_performed?
-      !recaptcha_form.exempt?
-    end
-
     def recaptcha_response
       @recaptcha_response ||= recaptcha_form.submit(
         recaptcha_token: params.require(:password_reset_email_form)[:recaptcha_token],
