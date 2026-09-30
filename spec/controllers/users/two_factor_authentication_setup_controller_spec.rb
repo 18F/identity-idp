@@ -198,13 +198,17 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
               )
             end
 
-            it 'does not auto prompt after it has already been triggered once' do
-              controller.user_session[:auto_passkey_prompted] = true
+            context 'when the passkey has already been prompted' do
+              before do
+                controller.user_session[:auto_passkey_prompted] = true
+              end
 
-              get :index
+              it 'renders the mfa selection page without prompting again' do
+                get :index
 
-              expect(response).to render_template(:index)
-              expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
+                expect(response).to render_template(:index)
+                expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
+              end
             end
           end
 
