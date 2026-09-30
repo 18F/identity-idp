@@ -303,6 +303,16 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
           expect(ActionMailer::Base.deliveries).to be_empty
           expect(response).to redirect_to(sign_in_security_check_failed_url)
         end
+
+        it 'logs an account creation reCAPTCHA failure event' do
+          expect(@analytics).to have_logged_event(
+            :account_creation_recaptcha_failed,
+            success: false,
+            error_details: { recaptcha_token: { invalid: true } },
+            valid_captcha_result: false,
+            captcha_validation_performed: true,
+          )
+        end
       end
     end
   end
