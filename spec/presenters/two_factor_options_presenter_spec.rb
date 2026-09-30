@@ -217,4 +217,50 @@ RSpec.describe TwoFactorOptionsPresenter do
       end
     end
   end
+
+  describe '#show_personal_key_deprecation_warning?' do
+    context 'when the phase 1 feature flag is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:personal_key_mfa_deprecation_phase_1_enabled)
+          .and_return(false)
+      end
+
+      it 'returns false even for a personal key MFA user' do
+        user = create(:user, :with_personal_key, :with_phone)
+        presenter = described_class.new(user:, user_agent:)
+
+        expect(presenter.show_personal_key_deprecation_warning?).to eq(false)
+      end
+    end
+
+    context 'when the phase 1 feature flag is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:personal_key_mfa_deprecation_phase_1_enabled)
+          .and_return(true)
+      end
+
+      it 'returns true for a personal key MFA user (not identity verified)' do
+        user = create(:user, :with_personal_key, :with_phone)
+        presenter = described_class.new(user:, user_agent:)
+
+        expect(presenter.show_personal_key_deprecation_warning?).to eq(true)
+      end
+
+      it 'returns false for a user without a personal key' do
+        user = create(:user, :with_phone)
+        presenter = described_class.new(user:, user_agent:)
+
+        expect(presenter.show_personal_key_deprecation_warning?).to eq(false)
+      end
+
+      it 'returns false for an identity-verified (IDV) user with a personal key' do
+        profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
+        user = profile.user
+        PersonalKeyGenerator.new(user).generate!
+        presenter = described_class.new(user: user.reload, user_agent:)
+
+        expect(presenter.show_personal_key_deprecation_warning?).to eq(false)
+      end
+    end
+  end
 end
