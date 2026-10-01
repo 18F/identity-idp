@@ -213,6 +213,12 @@ Rails.application.routes.draw do
         post '/mock_socure/api/document_request' => 'mock_socure#document_request'
         post '/mock_socure/api/3.0/EmailAuthScore' => 'mock_socure#docv_results', as: 'mock_socure_auth_score'
         post '/mock_socure/api/5.0/documents/:referenceId' => 'mock_socure#images_request', as: 'mock_socure_images_request'
+
+        # Mock receiver for outbound proofing agent webhooks in lower environments.
+        post '/proofing_agent/webhook' => 'proofing_agent_webhook#create',
+             as: 'proofing_agent_webhook'
+        get '/proofing_agent/webhook' => 'proofing_agent_webhook#index'
+        delete '/proofing_agent/webhook' => 'proofing_agent_webhook#destroy'
       end
     end
 
