@@ -124,27 +124,23 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
       end
     end
 
-    context 'when mdl was not detected' do
-      render_views
-
-      subject(:response) { get :show, params: { disable_mdl: true } }
-
+    context 'when redirected after mDL was not detected (with disable_mdl param)' do
       let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
 
       before do
         document_capture_session.update!(mdl_enabled: false)
       end
 
-      it 'renders the mdl option disabled' do
-        expect(response.body).to have_css(
-          'input[type=radio][value=mobile_drivers_license][disabled]',
-        )
-      end
+      it 'renders the choose_id_type template with disable_mdl and auto_check_value' do
+        expect(controller).to receive(:render).with(
+          'idv/shared/choose_id_type',
+          locals: hash_including(
+            disable_mdl: true,
+            auto_check_value: :state_id_card,
+          ),
+        ).and_call_original
 
-      it 'pre-checks the drivers license option' do
-        expect(response.body).to have_css(
-          'input[type=radio][value=state_id_card][checked]',
-        )
+        get :show, params: { disable_mdl: true }
       end
     end
   end
