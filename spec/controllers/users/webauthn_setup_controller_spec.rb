@@ -19,9 +19,11 @@ RSpec.describe Users::WebauthnSetupController do
     )
   end
 
-  def expect_multi_factor_authentication_setup(attributes)
-    attributes = if attributes.instance_of?(Hash)
-                   { auto_passkey_prompted: false }.merge(attributes)
+  # `auto_passkey_prompted` is logged on these events for every request, so default it to false
+  # rather than restating it in each expectation.
+  def with_auto_passkey_prompted_default(attributes)
+    if attributes.instance_of?(Hash)
+      { auto_passkey_prompted: false }.merge(attributes)
     elsif attributes.instance_of?(RSpec::Matchers::BuiltIn::Include)
       include(auto_passkey_prompted: false, **attributes.expecteds.first)
     elsif attributes.instance_of?(RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher)
@@ -29,17 +31,19 @@ RSpec.describe Users::WebauthnSetupController do
     else
       attributes
     end
+  end
 
+  def expect_multi_factor_authentication_setup(attributes)
     expect(@analytics).to have_logged_event(
       'Multi-Factor Authentication Setup',
-      attributes,
+      with_auto_passkey_prompted_default(attributes),
     )
   end
 
   def expect_webauthn_setup_submitted(attributes)
     expect(@analytics).to have_logged_event(
       :webauthn_setup_submitted,
-      attributes,
+      with_auto_passkey_prompted_default(attributes),
     )
   end
 
@@ -647,6 +651,20 @@ RSpec.describe Users::WebauthnSetupController do
               success: false,
               platform_authenticator: true,
             ),
+          )
+        end
+
+        it 'logs that setup came from the automatic passkey prompt' do
+          expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn_platform')
+
+          patch :confirm, params: params.merge(auto_trigger: 'true')
+
+          expect(@analytics).to have_logged_event(
+            :webauthn_setup_submitted,
+            platform_authenticator: true,
+            in_account_creation_flow: true,
+            success: true,
+            auto_passkey_prompted: true,
           )
         end
       end

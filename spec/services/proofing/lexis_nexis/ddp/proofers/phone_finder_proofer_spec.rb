@@ -196,6 +196,15 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
 
             expect(result.result[:review_status]).to eq('reject')
           end
+
+          it 'logs the PhoneFinder detail product (with Items) alongside the decision' do
+            result = proofer.proof(proofing_applicant)
+            phone_finder_detail = result.errors[:PhoneFinder].first
+
+            expect(phone_finder_detail).to be_a(Hash)
+            expect(phone_finder_detail['Items']).to be_present
+            expect(phone_finder_detail['ParameterDetails']).to be_nil
+          end
         end
 
         context 'when the failure is "could not be verified to name" with additional errors' do

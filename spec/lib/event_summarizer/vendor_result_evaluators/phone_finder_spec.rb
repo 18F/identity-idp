@@ -8,69 +8,107 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::PhoneFinder do
     )
   end
 
-  describe 'failed result' do
-    context 'general failure' do
-      let(:phone_result) do
+  let(:phone_result) do
+    {
+      success: false,
+      errors: errors,
+    }
+  end
+
+  let(:verdict) do
+    {
+      ProductStatus: 'fail',
+      ProductReason: {
+        Description: 'Failed - Input phone number could not be verified to name',
+      },
+    }
+  end
+
+  let(:itemized_reasons) do
+    {
+      ProductStatus: 'pass',
+      Items: [
         {
-          success: false,
-          errors: {
-            base: ["Verification failed with code: 'phone_finder_fail'"],
-            "PhoneFinder Checks": [
-              {
-                ProductStatus: 'fail',
-                ProductReason: {
-                  Description: 'General failure reason',
-                },
-              },
-            ],
+          ItemName: 'SpoofingPhoneNumber',
+          ItemStatus: 'pass',
+        },
+        {
+          ItemName: 'SubjectDeceased',
+          ItemStatus: 'fail',
+          ItemReason: {
+            Description: 'Primary Subject associated to the phone is deceased',
           },
+        },
+      ],
+    }
+  end
+
+  describe 'failed result' do
+    context 'with a verdict and itemized reasons' do
+      let(:errors) do
+        {
+          PhoneFinder: [itemized_reasons],
+          'PhoneFinder Checks': [verdict],
         }
       end
 
-      it 'returns the correct result' do
+      it 'reports the verdict, then the reasons behind it' do
         expect(evaluation).to eql(
           {
-            description: 'Phone Finder check failed: General failure reason',
+            description: 'Phone Finder check failed: ' \
+                         'Failed - Input phone number could not be verified to name; ' \
+                         'Primary Subject associated to the phone is deceased',
             type: :phone_finder_error,
           },
         )
       end
     end
 
-    context 'itemized failure' do
-      let(:phone_result) do
+    context 'with a verdict and no itemized reasons' do
+      let(:errors) do
         {
-          success: false,
-          errors: {
-            base: ["Verification failed with code: 'phone_finder_fail'"],
-            PhoneFinder: [
-              {
-                ProductStatus: 'fail',
-                Items: [
-                  {
-                    ItemStatus: 'fail',
-                    ItemReason: {
-                      Description: 'Specific failure reason A',
-                    },
-                  },
-                  {
-                    ItemStatus: 'fail',
-                    ItemReason: {
-                      Description: 'Specific failure reason B',
-                    },
-                  },
-                ],
-              },
-            ],
-          },
+          'PhoneFinder Checks': [verdict],
         }
       end
 
-      it 'returns the correct result' do
+      it 'reports the verdict' do
         expect(evaluation).to eql(
           {
             description: 'Phone Finder check failed: ' \
-            'Specific failure reason A; Specific failure reason B',
+                         'Failed - Input phone number could not be verified to name',
+            type: :phone_finder_error,
+          },
+        )
+      end
+    end
+
+    context 'with itemized reasons and no verdict' do
+      let(:errors) do
+        {
+          PhoneFinder: [itemized_reasons],
+        }
+      end
+
+      it 'reports the reasons' do
+        expect(evaluation).to eql(
+          {
+            description: 'Phone Finder check failed: ' \
+                         'Primary Subject associated to the phone is deceased',
+            type: :phone_finder_error,
+          },
+        )
+      end
+    end
+
+    context 'with nothing to explain the failure' do
+      let(:errors) do
+        {}
+      end
+
+      it 'points at the logs' do
+        expect(evaluation).to eql(
+          {
+            description: 'Phone Finder check failed. Review logs for more information.',
             type: :phone_finder_error,
           },
         )

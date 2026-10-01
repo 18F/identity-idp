@@ -1776,6 +1776,7 @@ openid_connect.authorization.errors.missing_ial: Missing a valid IAL level. Plea
 openid_connect.authorization.errors.no_auth: The acr_values are not authorized. Please see our documentation at https://developers.login.gov/support/#oidc-missing-acr-values
 openid_connect.authorization.errors.no_valid_acr_values: No acceptable acr_values found. Please see our documentation at https://developers.login.gov/support/#oidc-no-acr-values
 openid_connect.authorization.errors.no_valid_scope: No valid scope values found. Please see our documentation at https://developers.login.gov/support/#oidc-no-scope
+openid_connect.authorization.errors.pkce_parameter_pair: code_challenge and code_challenge_method must be provided together and must not be blank.
 openid_connect.authorization.errors.prompt_invalid: No valid prompt values found. Please see our documentation at https://developers.login.gov/support/#oidc-no-prompt
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri is invalid. Please see our documentation at https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri does not match registered redirect_uri. Please see our documentation at https://developers.login.gov/support/#oidc-redirect-match
@@ -2186,7 +2187,6 @@ user_mailer.agent_proofing_succeeded.footer_html: If you did not attempt to veri
 user_mailer.agent_proofing_succeeded.header: You have successfully completed identity verification
 user_mailer.agent_proofing_succeeded.subject: 'Action Required: Confirm Your Verified Account'
 user_mailer.contact_link_text: contact us
-user_mailer.device_profiling_error_cleared.header: You can sign back in with your account
 user_mailer.device_profiling_error_cleared.info: The error on your account (LG22) has been resolved. You can now sign into the agency website with your account.
 user_mailer.device_profiling_error_cleared.subject: You can sign back in with your account
 user_mailer.dupe_profile.created.description: Someone has verified another %{app_name} account using your personal information. For your safety, we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.

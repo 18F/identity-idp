@@ -126,6 +126,14 @@ class FeatureManagement
     IdentityConfig.store.sign_in_recaptcha_score_threshold.positive? && recaptcha_enabled?
   end
 
+  def self.account_creation_recaptcha_enabled?
+    IdentityConfig.store.account_creation_recaptcha_score_threshold.positive? && recaptcha_enabled?
+  end
+
+  def self.password_reset_recaptcha_enabled?
+    IdentityConfig.store.password_reset_recaptcha_score_threshold.positive? && recaptcha_enabled?
+  end
+
   def self.recaptcha_enabled?
     IdentityConfig.store.recaptcha_site_key.present? &&
       IdentityConfig.store.recaptcha_enterprise_api_key.present? &&
@@ -222,8 +230,6 @@ class FeatureManagement
     IdentityConfig.store.idv_proofing_agent_passport_enabled
   end
 
-  # Whether to prompt new users to set up a passkey immediately after email/password creation.
-  # Only enabled in non-production environments as part of Test A experiment (LG-16912).
   def self.account_creation_passkey_auto_prompt_enabled?
     IdentityConfig.store.feature_account_creation_passkey_auto_prompt
   end

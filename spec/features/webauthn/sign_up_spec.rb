@@ -59,6 +59,9 @@ RSpec.feature 'webauthn sign up' do
         allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
           .and_return(true)
         allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
+          .to receive(:mobile?)
+          .and_return(true)
+        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
           .to receive(:ab_test_bucket)
           .and_call_original
         allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
@@ -107,46 +110,6 @@ RSpec.feature 'webauthn sign up' do
 
       it 'redirects new user to MFA selection page' do
         expect(page).to have_current_path(authentication_methods_setup_path)
-      end
-    end
-  end
-
-  describe 'account creation setup after password setup' do
-    context 'when the A/B test is enabled' do
-      let!(:user) do
-        allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-          .and_return(true)
-        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
-          .to receive(:ab_test_bucket)
-          .and_call_original
-        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
-          .to receive(:ab_test_bucket)
-          .with(:NDS_LOOK_AND_FEEL, any_args)
-          .and_return(:default)
-        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
-          .to receive(:ab_test_bucket)
-          .with(:PASSKEY_UPSELL)
-          .and_return(:passkey_setup_prompt_after_password_creation)
-        allow_any_instance_of(Users::WebauthnSetupController)
-          .to receive(:ab_test_bucket)
-          .and_call_original
-        allow_any_instance_of(Users::WebauthnSetupController)
-          .to receive(:ab_test_bucket)
-          .with(:NDS_LOOK_AND_FEEL, any_args)
-          .and_return(:default)
-        allow_any_instance_of(Users::WebauthnSetupController)
-          .to receive(:ab_test_bucket)
-          .with(:PASSKEY_UPSELL)
-          .and_return(:passkey_setup_prompt_after_password_creation)
-        user = sign_up
-        set_hidden_field('platform_authenticator_available', 'true')
-        set_password(user)
-      end
-
-      it 'redirects to webauthn platform setup upsell page' do
-        expect(page).to have_current_path(
-          webauthn_setup_path(platform: true, passkey_upsell: true),
-        )
       end
     end
   end

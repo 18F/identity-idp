@@ -66,6 +66,7 @@ module Users
           in_account_creation_flow: user_session[:in_account_creation_flow] || false,
           errors: result.errors,
           success: false,
+          auto_passkey_prompted: auto_trigger_request?,
         )
 
         mfa_device_type = @platform_authenticator.present? ?
@@ -186,6 +187,7 @@ module Users
         platform_authenticator: form.platform_authenticator?,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         success: true,
+        auto_passkey_prompted: auto_trigger_request?,
       )
       log_passkey_upsell_submitted if passkey_upsell_request?
       handle_remember_device_preference(params[:remember_device])

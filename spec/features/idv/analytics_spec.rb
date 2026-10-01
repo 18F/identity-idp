@@ -855,8 +855,6 @@ RSpec.feature 'Analytics Regression', :js do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
       .and_return(false)
     allow(IdentityConfig.store).to receive(:proofing_device_profiling)
