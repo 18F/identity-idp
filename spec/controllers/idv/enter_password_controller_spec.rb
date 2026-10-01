@@ -367,6 +367,7 @@ RSpec.describe Idv::EnterPasswordController do
         before do
           subject.idv_session.clear1_allowed = true
           subject.idv_session.clear1_verified = true
+          subject.idv_session.doc_auth_vendor = Idp::Constants::Vendors::CLEAR1
         end
         it 'renders the enter_password page' do
           get :new
