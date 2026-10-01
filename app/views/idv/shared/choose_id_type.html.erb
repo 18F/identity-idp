@@ -11,8 +11,8 @@
        (if passport_cards_enabled
           [t('nds.choose_id_type.option_passport_card'), :passport_card, disable_passports]
         end),
-       (if mdl_enabled
-          [t('nds.choose_id_type.option_mdl'), :mobile_drivers_license, false]
+       (if mdl_enabled || disable_mdl
+          [t('nds.choose_id_type.option_mdl'), :mobile_drivers_license, disable_mdl]
         end),
      ].compact %>
 
