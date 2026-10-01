@@ -9178,11 +9178,8 @@ module AnalyticsEvents
 
   # User visits webauthn platform upsell after sign up
   # @param [String] upsell_bucket Which bucket user landed on
-  def webauthn_platform_signup_setup_visited(upsell_bucket:, **extra)
-    track_event(
-      :webauthn_platform_signup_setup_visited, upsell_bucket: upsell_bucket,
-                                               **extra
-    )
+  def webauthn_platform_signup_setup_visited
+    track_event(:webauthn_platform_signup_setup_visited)
   end
 
   # @param [Boolean] platform_authenticator Whether authentication method was registered as platform
