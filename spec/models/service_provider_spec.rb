@@ -81,30 +81,6 @@ RSpec.describe ServiceProvider do
     end
   end
 
-  describe '#facial_match_ial_allowed?' do
-    context 'when facial match general availability is enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:facial_match_general_availability_enabled)
-          .and_return(true)
-      end
-
-      it 'allows the service provider to use facial match IALs' do
-        expect(service_provider.facial_match_ial_allowed?).to be(true)
-      end
-    end
-
-    context 'when the facial match general availability is disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:facial_match_general_availability_enabled)
-          .and_return(false)
-      end
-
-      it 'does not allow the service provider to use facial match IALs' do
-        expect(service_provider.facial_match_ial_allowed?).to be(false)
-      end
-    end
-  end
-
   describe '#attempts_api_enabled?' do
     context 'when attempts api is enabled' do
       before do

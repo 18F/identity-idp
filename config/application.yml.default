@@ -179,7 +179,6 @@ enable_rate_limiting: true
 enable_test_routes: true
 encrypted_document_storage_s3_bucket: 'test-bucket'
 event_disavowal_expiration_hours: 240
-facial_match_general_availability_enabled: true
 facial_match_preferred_on_connected_accounts: false
 feature_account_creation_passkey_auto_prompt: false
 feature_idv_force_gpo_verification_enabled: false
@@ -658,7 +657,6 @@ production:
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   encrypted_document_storage_s3_bucket: ''
-  facial_match_general_availability_enabled: false
   idv_gpo_verification_enabled: false
   idv_sp_required: true
   invalid_gpo_confirmation_zipcode: ''

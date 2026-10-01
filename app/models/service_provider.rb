@@ -78,10 +78,6 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.allowed_ialmax_providers.include?(issuer)
   end
 
-  def facial_match_ial_allowed?
-    IdentityConfig.store.facial_match_general_availability_enabled
-  end
-
   def attempts_api_enabled?
     IdentityConfig.store.attempts_api_enabled && attempts_config.present?
   end
