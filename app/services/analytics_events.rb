@@ -9169,19 +9169,19 @@ module AnalyticsEvents
 
   # User submits form to add passkey to account during account creation
   # @param [String] upsell_bucket Which bucket user landed on or submitted with
-  def webauthn_platform_signup_setup_ab_test_submitted(upsell_bucket:, **extra)
+  def webauthn_platform_signup_setup_submitted(upsell_bucket:, **extra)
     track_event(
-      :webauthn_platform_signup_setup_ab_test_submitted, upsell_bucket: upsell_bucket,
-                                                         **extra
+      :webauthn_platform_signup_setup_submitted, upsell_bucket: upsell_bucket,
+                                                 **extra
     )
   end
 
   # User visits webauthn platform upsell after sign up
   # @param [String] upsell_bucket Which bucket user landed on
-  def webauthn_platform_signup_setup_ab_test_visited(upsell_bucket:, **extra)
+  def webauthn_platform_signup_setup_visited(upsell_bucket:, **extra)
     track_event(
-      :webauthn_platform_signup_setup_ab_test_visited, upsell_bucket: upsell_bucket,
-                                                       **extra
+      :webauthn_platform_signup_setup_visited, upsell_bucket: upsell_bucket,
+                                               **extra
     )
   end
 
