@@ -827,7 +827,11 @@ pwned_passwords_scheduled:
     # fails, the proxy env vars exist but Net::HTTP::Persistent isn't using
     # them. If curl also times out, outbound egress is blocked entirely.
     - 'echo "http_proxy=${http_proxy:-unset} https_proxy=${https_proxy:-unset} no_proxy=${no_proxy:-unset}"'
-    - curl -sS -o /dev/null -w "curl HTTP status: %{http_code}, time: %{time_total}s\n" --max-time 15 https://api.pwnedpasswords.com/range/00000 || echo "curl to HIBP API failed (exit $?)"
+    - |-
+      curl -sS -o /dev/null \
+        -w "curl HTTP status: %{http_code}, time: %{time_total}s\n" \
+        --max-time 15 https://api.pwnedpasswords.com/range/00000 \
+        || echo "curl to HIBP API failed (exit $?)"
     - |-
       case "$PWNED_PASSWORDS_TARGET" in
         prod)
