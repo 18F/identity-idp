@@ -20,7 +20,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
   let(:doc_issue_type) { document_type }
   let(:back_image_required) { true }
   let(:passport_requested) { false }
-  let(:passport_cards_supported) { false }
   let(:passport_card_requested) { false }
 
   let(:config) do
@@ -52,7 +51,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       liveness_checking_required: liveness_checking_required,
       document_type_requested: document_type,
       passport_requested:,
-      passport_cards_supported:,
       passport_card_requested:,
     )
   end
@@ -200,7 +198,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     let(:passport_image) { DocAuthImageFixtures.document_passport_image }
     let(:back_image) { DocAuthImageFixtures.document_back_image }
     let(:passport_requested) { true }
-    let(:passport_cards_supported) { true }
     let(:passport_card_requested) { true }
     let(:expected_cropping_mode) { cropping_mode_always }
 

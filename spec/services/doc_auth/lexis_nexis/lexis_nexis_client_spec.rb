@@ -97,7 +97,6 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
           back_image: DocAuthImageFixtures.document_back_image,
           document_type_requested: DocAuth::LexisNexis::DocumentTypes::PASSPORT,
           passport_requested: true,
-          passport_cards_supported: true,
           passport_card_requested: true,
           images_cropped: images_cropped,
         )

@@ -80,7 +80,6 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
           back_image:,
           document_type_requested: DocAuth::LexisNexis::DocumentTypes::PASSPORT,
           passport_requested: true,
-          passport_cards_supported: true,
           passport_card_requested: true,
           liveness_checking_required:,
           user_uuid:,
