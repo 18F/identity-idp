@@ -65,8 +65,12 @@ class PwnedPasswordDownloader
                 download_one(prefix:, net_http:)
               end,
             )
-          rescue
-            failed_prefixes << prefix
+          rescue => e
+            warn(
+              "pwned_password_downloader: failed to download prefix #{prefix}: " \
+              "#{e.class}: #{e.message}",
+            )
+            failed_prefixes << { prefix: prefix, error: e }
           else
             progress_bar.increment
           end
@@ -77,7 +81,12 @@ class PwnedPasswordDownloader
     end
 
     wait_for_progress until progress_bar.finished? || !failed_prefixes.empty?
-    raise "Error: Failed to download prefix #{failed_prefixes.pop}" if !failed_prefixes.empty?
+    if !failed_prefixes.empty?
+      failure = failed_prefixes.pop
+      error = failure[:error]
+      raise "Error: Failed to download prefix #{failure[:prefix]} " \
+            "(#{error.class}: #{error.message})"
+    end
   ensure
     progress_bar.stop
   end
