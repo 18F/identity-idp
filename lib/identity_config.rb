@@ -42,6 +42,7 @@ module IdentityConfig
       enum: [:disabled, :collect_only, :enabled],
     )
     config.add(:account_creation_passkey_auto_prompt_percent, type: :integer)
+    config.add(:account_creation_recaptcha_score_threshold, type: :float)
     config.add(:account_creation_passkey_setup_after_password_percent, type: :integer)
     config.add(:account_creation_tmx_processed_percent, type: :integer)
     config.add(:account_reset_token_valid_for_days, type: :integer)
@@ -146,8 +147,6 @@ module IdentityConfig
     config.add(:doc_auth_passport_vendor_socure_percent, type: :integer)
     config.add(:doc_auth_passport_vendor_switching_enabled, type: :boolean)
     config.add(:doc_auth_desktop_test_mode, type: :boolean)
-    config.add(:doc_auth_passport_cards_enabled, type: :boolean)
-    config.add(:doc_auth_passport_cards_enabled_percent, type: :integer)
     config.add(:doc_auth_passport_selfie_vendor_default, type: :string)
     config.add(:doc_auth_passport_selfie_vendor_lexis_nexis_ddp_percent, type: :integer)
     config.add(:doc_auth_passport_selfie_vendor_lexis_nexis_percent, type: :integer)
@@ -393,6 +392,7 @@ module IdentityConfig
     config.add(:newrelic_license_key, type: :string)
     config.add(:openid_connect_authorization_code_expiration_seconds, type: :integer)
     config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
+    config.add(:openid_connect_private_key_jwt_pkce_enabled, type: :boolean)
     config.add(
       :openid_connect_redirect,
       type: :string,
@@ -413,6 +413,7 @@ module IdentityConfig
     config.add(:passkey_auth_ab_test_percentage, type: :integer)
     config.add(:password_max_attempts, type: :integer)
     config.add(:password_pepper, type: :string)
+    config.add(:password_reset_recaptcha_score_threshold, type: :float)
     config.add(:personal_key_as_mfa_active, type: :boolean)
     config.add(:phone_carrier_registration_blocklist_array, type: :json)
     config.add(:phone_confirmation_max_attempt_window_in_minutes, type: :integer)

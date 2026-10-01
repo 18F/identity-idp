@@ -170,6 +170,19 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
       end
     end
 
+    context 'user chooses passport_card' do
+      let(:chosen_id_type) { 'passport_card' }
+      let(:params) do
+        { doc_auth: { choose_id_type_preference: chosen_id_type } }
+      end
+
+      it 'sets document_type_requested to passport_card with a supported vendor' do
+        put :update, params: params
+        expect(document_capture_session.passport_card_requested?).to eq(true)
+        expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+      end
+    end
+
     context 'when hybrid flow threatmetrix is enabled' do
       let(:tmx_session_id) { 'test-tmx-session-id-1234' }
       let(:request_ip) { Faker::Internet.ip_v4_address }

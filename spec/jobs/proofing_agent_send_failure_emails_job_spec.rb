@@ -5,8 +5,6 @@ require 'rails_helper'
 RSpec.describe ProofingAgentSendFailureEmailsJob, type: :job do
   subject { described_class.new }
 
-  let(:failure_email_user_set_key) { Idv::ProofingAgent::FailureEmailUserSet::KEY }
-
   before do
     allow(IdentityConfig.store).to receive(:idv_proofing_agent_send_failure_email_after_min)
       .and_return(0)
@@ -72,7 +70,9 @@ RSpec.describe ProofingAgentSendFailureEmailsJob, type: :job do
         end
 
         it 'removes the users with the emails sent from the failure email user set' do
-          expect(failure_email_user_set).to have_received(:remove_uuids).with(user_uuids)
+          expect(failure_email_user_set).to have_received(:remove_uuids).with(
+            contain_exactly(*user_uuids),
+          )
         end
 
         it 'logs the job completed event' do
@@ -85,20 +85,17 @@ RSpec.describe ProofingAgentSendFailureEmailsJob, type: :job do
       end
 
       context 'when there a processing error' do
+        let(:failed_user) { users[0] }
         before do
-          @raise_exception = true
-          allow(failure_email_sender).to receive(:call) do
-            if @raise_exception
-              @raise_exception = false
-              raise 'I AM ERROR'
-            else
-              true
-            end
-          end
+          allow(failure_email_sender).to receive(:call).and_return(true)
+          allow(failure_email_sender).to receive(:call).with(
+            hash_including(
+              transaction_id: failed_user.current_proofing_agent_session.result_id,
+            ),
+          ).and_raise(StandardError)
 
           subject.perform(Time.zone.now)
         end
-
         it 'sends a failure email and logs email event for each user', aggregate_failures: true do
           users.each do |user|
             expect(failure_email_sender).to have_received(:call).with(
@@ -111,7 +108,7 @@ RSpec.describe ProofingAgentSendFailureEmailsJob, type: :job do
 
         it 'removes the users with the emails sent from the failure email user set' do
           expect(failure_email_user_set).to have_received(:remove_uuids).with(
-            [users[1].uuid, users[2].uuid],
+            contain_exactly(users[1].uuid, users[2].uuid),
           )
         end
 

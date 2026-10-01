@@ -10,15 +10,14 @@ module DocAuth
           include DocAuth::LexisNexis::DocPiiReader
           include DocAuth::ClassificationConcern
 
-          attr_reader :config, :http_response, :passport_requested, :passport_cards_supported
+          attr_reader :config, :http_response, :passport_requested
 
           def initialize(http_response:, config:, passport_requested: false,
-                         passport_cards_supported: false, liveness_checking_enabled: false,
+                         liveness_checking_enabled: false,
                          request_context: {}, request: nil)
             @config = config
             @http_response = http_response
             @passport_requested = passport_requested
-            @passport_cards_supported = passport_cards_supported
             @request_context = request_context
             @request = request
             @liveness_checking_enabled = liveness_checking_enabled
@@ -46,8 +45,6 @@ module DocAuth
           # vendor (document and selfie if requested)
           # Will be further implemented in future tickets
           def successful_result?
-            return false if unsupported_passport_card?
-
             doc_auth_success? &&
               (@liveness_checking_enabled ? selfie_passed? : true)
           end
@@ -59,9 +56,7 @@ module DocAuth
           def error_messages
             return {} if successful_result?
 
-            if unsupported_passport_card?
-              { passport_card: I18n.t('doc_auth.errors.doc.doc_type_check') }
-            elsif id_type.present? && !expected_document_type_received?
+            if id_type.present? && !expected_document_type_received?
               { unexpected_id_type: true, expected_id_type: expected_id_type }
             elsif with_authentication_result?
               ErrorGenerator.new(config).generate_doc_auth_errors(response_info)

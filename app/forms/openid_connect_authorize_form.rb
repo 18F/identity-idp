@@ -58,7 +58,11 @@ class OpenidConnectAuthorizeForm
 
   validates :response_type, inclusion: { in: %w[code] }
   validates :prompt, presence: true, inclusion: { in: %w[create login select_account] }
-  validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :code_challenge
+  validates :code_challenge_method, inclusion: { in: %w[S256] },
+                                    if: :validate_code_challenge_method?
+  validate :validate_pkce_parameter_pair, if: :private_key_jwt_pkce_enabled?
+  validates :code_challenge, format: { with: /\A[A-Za-z0-9_-]{43}\z/ },
+                             if: :private_key_jwt_pkce_requested?
 
   validate :validate_acr_values
   validate :validate_client_id
@@ -121,6 +125,7 @@ class OpenidConnectAuthorizeForm
       requested_aal_value: requested_aal_value,
       scope: scope.join(' '),
       code_challenge: code_challenge,
+      private_key_jwt_pkce: private_key_jwt_pkce_requested?,
       email_address_id: email_address_id,
     )
   end
@@ -152,6 +157,43 @@ class OpenidConnectAuthorizeForm
   private
 
   attr_reader :identity, :success
+
+  def private_key_jwt_sp?
+    # Missing service providers are rejected by validate_client_id.
+    service_provider&.pkce == false
+  end
+
+  def private_key_jwt_pkce_enabled?
+    IdentityConfig.store.openid_connect_private_key_jwt_pkce_enabled && private_key_jwt_sp?
+  end
+
+  def pkce_parameters_provided?
+    [code_challenge, code_challenge_method].compact.present?
+  end
+
+  def pkce_requested?
+    code_challenge.present? && code_challenge_method.present?
+  end
+
+  def private_key_jwt_pkce_requested?
+    private_key_jwt_pkce_enabled? && pkce_requested?
+  end
+
+  def validate_code_challenge_method?
+    # Preserve the original truthiness check for disabled and legacy flows, including empty strings.
+    private_key_jwt_pkce_enabled? ? pkce_requested? : !!code_challenge
+  end
+
+  def validate_pkce_parameter_pair
+    return unless pkce_parameters_provided?
+    return if pkce_requested?
+
+    errors.add(
+      :base,
+      t('openid_connect.authorization.errors.pkce_parameter_pair'),
+      type: :pkce_parameter_pair,
+    )
+  end
 
   def code
     identity&.session_uuid

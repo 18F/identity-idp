@@ -741,19 +741,15 @@ doc_auth.info.verify_at_post_office_description_passport_html: <strong>你只能
 doc_auth.info.verify_at_post_office_instruction: 在网上输入你的信息，然后到一个参与本项目的邮局去亲身验证你的身份。
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话号码和其他个人信息并通过与公共记录核对来验证你的身份。
-doc_auth.info.verify_online_description: 你可以使用美国护照本、美国驾照或州身份证件。
-doc_auth.info.verify_online_description_mdl: 您可以使用美国护照、驾驶执照、移动驾驶执照或州身份证。
+doc_auth.info.verify_online_description: 您可以使用的证件包括：美国护照（护照本或护照卡）、美国驾驶执照或州身份证。
 doc_auth.info.verify_online_description_mdl_and_passport_card: 您可以使用美国护照本或护照卡、驾驶执照、移动驾驶执照（mDL）或州身份证。
-doc_auth.info.verify_online_description_passport_card: 您可以使用的证件包括：美国护照（护照本或护照卡）、美国驾驶执照或州身份证。
 doc_auth.info.verify_online_instruction: 您需要拍摄身份证件照片，以便在线完成身份验证。
 doc_auth.info.verify_online_instruction_selfie: 拍一张自拍照，并拍摄你 ID的照片。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.welcome_sp_reproof_alert: 为了您的安全，%{sp_name} 要求您再次验证您的身份。
 doc_auth.info.you_entered: 你输入了：
-doc_auth.instructions.bullet1: 拥有美国护照本、美国驾照或州身份证件
-doc_auth.instructions.bullet1_mdl: 持有美国护照本、驾驶执照、移动驾驶执照 （mDL） 或州身份证
+doc_auth.instructions.bullet1: 持有美国护照（护照本或护照卡）、美国驾驶执照或州身份证
 doc_auth.instructions.bullet1_mdl_and_passport_card: 持有美国护照本或护照卡、驾驶执照、移动驾驶执照 （mDL） 或州身份证
-doc_auth.instructions.bullet1_passport_card: 持有美国护照（护照本或护照卡）、美国驾驶执照或州身份证
 doc_auth.instructions.bullet2: 输入你的社会保障号码
 doc_auth.instructions.bullet3: 与你电话号码匹配
 doc_auth.instructions.bullet4: 重新输入你 %{app_name} 密码
@@ -1788,6 +1784,7 @@ openid_connect.authorization.errors.missing_ial: 缺失有效的 IAL 级别。�
 openid_connect.authorization.errors.no_auth: Acr_values 未经授权。请参阅我们的文档：https://developers.login.gov/support/#oidc-missing-acr-values
 openid_connect.authorization.errors.no_valid_acr_values: 未找到可接受的 acr_values。请参阅我们的文档：https://developers.login.gov/support/#oidc-no-acr-values
 openid_connect.authorization.errors.no_valid_scope: 未找到有效的范围值。请参阅我们的文档：https://developers.login.gov/support/#oidc-no-scope
+openid_connect.authorization.errors.pkce_parameter_pair: code_challenge 和 code_challenge_method 必须同时提供，且不能为空。
 openid_connect.authorization.errors.prompt_invalid: 未找到有效的提示值。请参阅我们的文档：https://developers.login.gov/support/#oidc-no-prompt
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri 有误。请参阅我们的文档：https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri 与注册的 redirect_uri 不匹配。请参阅我们的文档：https://developers.login.gov/support/#oidc-redirect-match

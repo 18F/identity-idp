@@ -46,7 +46,9 @@ module Idv
       @idv_result = async_state.result
       if (success = idv_result[:success])
         handle_successful_proofing_attempt
-        idv_session.address_verification_vendor = address_verification_vendor
+        idv_session.address_verification_vendor = Idv::PhoneVendor.address_verification_vendor(
+          idv_result[:vendor_name],
+        )
       else
         handle_failed_proofing_attempt
         if phone_confirmation_manually_reviewed?
@@ -153,19 +155,6 @@ module Idv
     def update_idv_session
       idv_session.applicant = applicant
       idv_session.mark_phone_step_started!
-    end
-
-    def address_verification_vendor
-      return if idv_result[:vendor_name].blank?
-
-      case idv_result[:vendor_name]
-      when 'socure_phonerisk'
-        'socure_address'
-      when 'lexis_nexis_address', 'AddressMock'
-        'lexis_nexis_address'
-      else
-        idv_result[:vendor_name]
-      end
     end
 
     def start_phone_confirmation_session
