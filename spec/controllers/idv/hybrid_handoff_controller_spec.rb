@@ -390,6 +390,37 @@ RSpec.describe Idv::HybridHandoffController do
 
         put :update, params: params
       end
+
+      it 'sends a doc auth link with the country_code derived from the phone' do
+        expect(Telephony).to receive(:send_doc_auth_link).with(
+          hash_including(
+            link: a_string_including(document_capture_session_uuid),
+            country_code: 'US',
+          ),
+        ).and_call_original
+
+        put :update, params: params
+      end
+
+      context 'with an international phone number' do
+        let(:params) do
+          {
+            type: 'mobile',
+            doc_auth: { phone: '+44 20 7946 0000' },
+          }
+        end
+
+        it 'sends a doc auth link with the international country_code' do
+          expect(Telephony).to receive(:send_doc_auth_link).with(
+            hash_including(
+              link: a_string_including(document_capture_session_uuid),
+              country_code: 'GB',
+            ),
+          ).and_call_original
+
+          put :update, params: params
+        end
+      end
     end
 
     context 'phone-first (NDS) flow' do
