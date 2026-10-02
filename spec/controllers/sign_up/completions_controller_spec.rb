@@ -682,11 +682,6 @@ RSpec.describe SignUp::CompletionsController do
         )
       end
 
-      before do
-        allow(TokenExchangeManifest).to receive(:allowed_targets)
-          .with(current_sp.issuer).and_return(%w[target-a.gov target-b.gov])
-      end
-
       def grants
         TokenExchangeGrant.where(user: user, broker_issuer: current_sp.issuer)
       end
@@ -716,8 +711,8 @@ RSpec.describe SignUp::CompletionsController do
       end
 
       it 're-renders when "all" is chosen but the broker currently reaches nothing' do
-        allow(TokenExchangeManifest).to receive(:allowed_targets)
-          .with(current_sp.issuer).and_return([])
+        ServiceProvider.where(issuer: %w[target-a.gov target-b.gov])
+          .update_all(allowed_token_exchange_brokers: [])
 
         patch :update, params: { idv_form: { token_exchange_grant: 'all' } }
 
@@ -729,8 +724,8 @@ RSpec.describe SignUp::CompletionsController do
       end
 
       it 'allows "all and future" even when the broker currently reaches nothing' do
-        allow(TokenExchangeManifest).to receive(:allowed_targets)
-          .with(current_sp.issuer).and_return([])
+        ServiceProvider.where(issuer: %w[target-a.gov target-b.gov])
+          .update_all(allowed_token_exchange_brokers: [])
 
         patch :update, params: { idv_form: { token_exchange_grant: 'all_and_future' } }
 

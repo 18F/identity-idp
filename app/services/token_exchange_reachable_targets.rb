@@ -1,21 +1,22 @@
 # frozen_string_literal: true
 
-# The applications a broker service provider may currently reach by token
-# exchange, resolved to active service providers that have opted in to that
-# broker. Sourced from the broker's signed manifest, so this is exactly the set a
-# grant can ever be honored for; a target not yet onboarded, inactive, or not
-# opted in to this broker is omitted.
+# The applications a broker service provider may reach by token exchange: every
+# active service provider that has opted in to that broker by allow-listing it
+# in its own configuration (`allowed_token_exchange_brokers`, set in the partner
+# management portal). This is the authoritative reach of a broker -- a target
+# decides for itself which brokers it accepts, and a broker simply never
+# requests a target it does not support -- so no broker-asserted allowlist is
+# needed or consulted.
 module TokenExchangeReachableTargets
   module_function
 
   # @param broker_issuer [String]
   # @return [Array<ServiceProvider>] sorted by display name
   def for_broker(broker_issuer)
-    issuers = TokenExchangeManifest.allowed_targets(broker_issuer)
-    return [] if issuers.blank?
+    return [] if broker_issuer.blank?
 
-    ServiceProvider.active.where(issuer: issuers)
-      .select { |sp| sp.allows_token_exchange_broker?(broker_issuer) }
+    ServiceProvider.active
+      .where('? = ANY(allowed_token_exchange_brokers)', broker_issuer)
       .sort_by { |sp| sp.display_name.to_s.downcase }
   end
 end

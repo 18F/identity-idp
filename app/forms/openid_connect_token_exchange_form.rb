@@ -40,7 +40,6 @@ class OpenidConnectTokenExchangeForm
     broker_not_allowed: ['invalid_request', :bad_request],
     consent_required: ['invalid_request', :bad_request],
     ial_insufficient: ['invalid_request', :bad_request],
-    audience_not_allowed: ['invalid_target', :bad_request],
     self_exchange: ['invalid_target', :bad_request],
     unknown_target: ['invalid_target', :bad_request],
     target_forbids_broker: ['invalid_target', :bad_request],
@@ -74,7 +73,6 @@ class OpenidConnectTokenExchangeForm
   validate :validate_subject_token
   validate :validate_broker_allowed
   validate :validate_broker_consent
-  validate :validate_audience_allowed
   validate :validate_target_service_provider
   validate :validate_target_allows_broker
   validate :validate_target_granted
@@ -415,11 +413,6 @@ class OpenidConnectTokenExchangeForm
     value.present? && !value.include?("\x00")
   end
 
-  def allowed_audiences
-    return [] if broker_identity.blank?
-    TokenExchangeManifest.allowed_targets(broker_identity.service_provider)
-  end
-
   def validate_grant_type
     return if grant_type == TOKEN_EXCHANGE_GRANT_TYPE
     errors.add(:grant_type, 'unsupported_grant_type', type: :grant_type)
@@ -487,22 +480,19 @@ class OpenidConnectTokenExchangeForm
     errors.add(:audience, 'target_not_granted', type: :target_not_granted)
   end
 
-  def validate_audience_allowed
+  # The target must be a real, active SP that is itself entitled to identity
+  # proofing (IAL2), and must not be the broker itself. The exchange forwards an
+  # IAL2 assertion and releases proofed attributes; an auth-only (IAL1) target
+  # must never receive them, exactly as /authorize would refuse an IAL2 request
+  # from such an SP. Which targets a broker may reach is decided solely by the
+  # targets' own opt-in (#validate_target_allows_broker) and the user's grant
+  # (#validate_target_granted); a broker simply never requests a target it does
+  # not support.
+  def validate_target_service_provider
     return unless broker_authorized?
     if audience.present? && audience == broker_identity.service_provider
       return errors.add(:audience, 'self_exchange', type: :self_exchange)
     end
-    return if allowed_audiences.include?(audience)
-    errors.add(:audience, 'audience_not_allowed', type: :audience_not_allowed)
-  end
-
-  # The target must be a real, active SP that is itself entitled to identity
-  # proofing (IAL2). The exchange forwards an IAL2 assertion and releases
-  # proofed attributes; an auth-only (IAL1) target must never receive them,
-  # exactly as /authorize would refuse an IAL2 request from such an SP.
-  def validate_target_service_provider
-    return unless broker_authorized?
-    return if audience.blank?
     return if target_service_provider&.active? &&
               target_service_provider.identity_proofing_allowed?
     errors.add(:audience, 'unknown_target', type: :unknown_target)

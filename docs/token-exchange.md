@@ -27,7 +27,7 @@ configured to request, and never one the broker wasn't authorized to hold.
 
 Nothing about the endpoint is agency-specific: which SPs may act as brokers is a
 login-controlled configuration allowlist, and which targets a given broker may
-mint for is the broker's own signed manifest. Both are data, not code.
+mint for is decided by each target's own opt-in. Both are data, not code.
 
 ## What the minted token is (read this)
 
@@ -42,9 +42,9 @@ control. Treat the minted token as a **full downstream credential for that
 user**, not a scoped-down one.
 
 Because of this, the real containment is *which targets can be minted for at
-all* (the signed allowlist), *that the user was genuinely proofed* (IAL
-forwarding), and *that the user consented to token exchange* (below) — not the
-scope string. The scope/attribute narrowing is defense-in-depth on released
+all* (each target's own opt-in to the broker), *that the user was genuinely
+proofed* (IAL forwarding), and *that the user consented to token exchange*
+(below) — not the scope string. The scope/attribute narrowing is defense-in-depth on released
 claims, nothing more.
 
 ## User consent — the token-exchange grant
@@ -63,12 +63,12 @@ existing OIDC consent (grant) flow rather than granted silently.
   the broker. A choice is **required**; submitting without one re-renders the
   screen with an error. The options are:
   - **All services the broker currently offers** — covers exactly the targets on
-    the broker's manifest at the moment of consent. Each is snapshotted as its
+    the broker's reachable set at the moment of consent. Each is snapshotted as its
     own grant row, so a target the broker adds *later* is **not** covered.
   - **All services now or added in the next 12 months** — additionally covers
     targets the broker adds during the grant period.
   - **Only the services I choose** — a collapsed-by-default list of the broker's
-    reachable applications (manifest ∩ active ∩ opted-in to this broker); the
+    reachable applications (every active target opted in to this broker); the
     user picks one or more. At least one is required for this option.
 - Grants are stored in `token_exchange_grants`, **one row per (user, broker,
   target)** with its own `granted_at` / `expires_at` (12 months) / `revoked_at`,
@@ -107,44 +107,19 @@ nothing is minted:
 5. **Target must be a real, active SP entitled to identity proofing.** Unknown,
    inactive, or auth-only (IAL1) issuers are rejected -- an IAL2 assertion is
    never released to an SP that could not request one itself.
-6. **Target must be on the broker's signed allowlist** (below).
-7. **Target must have opted in to the broker.** The target SP allow-lists the
+6. **Target must have opted in to the broker.** The target SP allow-lists the
    broker issuer in its own configuration (`allowed_token_exchange_brokers`, set
    in the partner management portal and synced to login). A broker can never mint
-   for a target that has not agreed to accept it — this is the target side's
-   independent consent, complementing the broker's manifest (which targets *it*
-   is willing to reach).
-8. **Target connection not revoked, not held by another live session.** An
+   for a target that has not agreed to accept it. This is the sole source of a
+   broker's reach: there is no broker-asserted allowlist to maintain, because a
+   broker simply never requests a target it does not support, and a target it
+   does request must have opted in. The set of opted-in targets is also what
+   the consent screen lists for the user.
+7. **Target connection not revoked, not held by another live session.** An
    exchange never silently revives a target connection the user explicitly
    disconnected, and never hijacks a target identity bound to a different,
    still-live session. Re-exchanging within the same broker session rotates the
    token. The minted identity carries no redeemable authorization code.
-
-### Signed, broker-controlled allowlist
-
-The set of targets a broker may exchange for is **not** hardcoded in login.gov.
-Each broker publishes a signed manifest at a configured URL; login.gov fetches
-and verifies it, and only issuers it lists may be minted for. This lets the
-broker constrain and revoke its own reach without a login.gov deploy.
-
-The manifest is a compact JWS (a signed JWT). login.gov trusts it only when:
-
-- the signature verifies as **RS256** against a **pre-configured public key**
-  selected by the JWS header `kid` (keys are configured per broker; `alg` is
-  pinned, so `alg:none`/HS confusion is rejected),
-- `iss` equals the broker we're resolving,
-- `aud` equals login.gov's own issuer (a manifest can't be replayed at another
-  relying party),
-- `exp`/`nbf` are valid (60s clock-skew leeway).
-
-### Caching and revocation
-
-A verified manifest is cached for at most **`min(manifest exp, 15 min)`**. On
-expiry login.gov refetches (conditional GET; a `304 Not Modified` re-affirms the
-cached list). If the broker is unreachable past that window, login.gov **fails
-closed** — it returns an empty allowlist rather than serving a stale, possibly
-revoked one. So a broker's revocation always takes effect within the cache
-window even if its manifest host is down.
 
 ## Billing and fraud signals go to the target
 
@@ -193,7 +168,7 @@ exactly as if the user had completed a direct sign-in there.
 - **Errors (§2.2.2).** A subject token that is invalid or unacceptable under
   policy (unknown, expired session, broker not onboarded, no user consent,
   insufficient IAL) returns `invalid_request`. A target that cannot be issued
-  for (not on the manifest, unknown/inactive, has not opted in to the broker,
+  for (unknown/inactive, has not opted in to the broker, not covered by the user's grant,
   or held by another live session) returns `invalid_target`. An unsupported
   `grant_type` returns `unsupported_grant_type`. All errors are HTTP 400 with an
   `error_description`.
@@ -205,11 +180,11 @@ Per-broker, in `IdentityConfig`:
 - `token_exchange_enabled` — master switch for the capability.
 - `token_exchange_service_providers` — JSON array of issuers allowed to act as
   brokers (the login-controlled onboarding allowlist).
-- `token_exchange_manifest_urls` — `{ "<broker issuer>": "<https manifest URL>" }`
-- `token_exchange_manifest_public_keys` —
-  `{ "<broker issuer>": { "<kid>": "<PEM public key>" } }`
 
-A broker with no configured URL or key can exchange for nothing. Plain `http`
-is permitted only for loopback hosts (local development).
+Per-target, in the partner management portal (synced to `service_providers`):
+
+- `allowed_token_exchange_brokers` — the broker issuers this SP accepts
+  exchanged tokens from. A broker no target has opted in to can exchange for
+  nothing.
 
 [rfc8693]: https://datatracker.ietf.org/doc/html/rfc8693

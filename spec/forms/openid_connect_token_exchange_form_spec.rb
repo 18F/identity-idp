@@ -49,8 +49,6 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:token_exchange_service_providers)
       .and_return(['broker.gov'])
-    allow(TokenExchangeManifest).to receive(:allowed_targets)
-      .with('broker.gov').and_return(['target.gov'])
     OutOfBandSessionAccessor.new(rails_session_id).put_empty_user_session
     if grant_choice
       TokenExchangeGrant.record!(
@@ -141,15 +139,16 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
 
       it 'maps an unusable audience to invalid_target' do
-        allow(TokenExchangeManifest).to receive(:allowed_targets)
-          .with('broker.gov').and_return([])
+        target_sp.update!(allowed_token_exchange_brokers: [])
         expect(form.submit.success?).to eq(false)
         expect(form.response[:error]).to eq('invalid_target')
       end
 
       it 'refuses a broker exchanging for itself' do
-        allow(TokenExchangeManifest).to receive(:allowed_targets)
-          .with('broker.gov').and_return(['broker.gov'])
+        broker_sp.update!(ial: 2, allowed_token_exchange_brokers: ['broker.gov'])
+        TokenExchangeGrant.record!(
+          user: user, broker_issuer: 'broker.gov', choice: :all_and_future, targets: [],
+        )
         form = described_class.new(params.merge(audience: 'broker.gov'))
         expect(form.submit.success?).to eq(false)
         expect(form.response[:error]).to eq('invalid_target')
@@ -231,18 +230,6 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         TokenExchangeGrant.where(user: user).update_all(
           expires_at: 1.day.ago, granted_at: (TokenExchangeGrant::GRANT_DURATION + 1.day).ago,
         )
-      end
-
-      it 'fails and mints nothing' do
-        expect(form.submit.success?).to eq(false)
-        expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
-      end
-    end
-
-    context 'when audience is not on the broker allowlist' do
-      before do
-        allow(TokenExchangeManifest).to receive(:allowed_targets)
-          .with('broker.gov').and_return(['other.gov'])
       end
 
       it 'fails and mints nothing' do
@@ -500,11 +487,6 @@ RSpec.describe OpenidConnectTokenExchangeForm do
           issuer: 'other.gov', ial: 2, attribute_bundle: %w[email],
           allowed_token_exchange_brokers: ['broker.gov']
         )
-      end
-
-      before do
-        allow(TokenExchangeManifest).to receive(:allowed_targets)
-          .with('broker.gov').and_return(%w[target.gov other.gov])
       end
 
       context 'with a grant for specific applications only' do

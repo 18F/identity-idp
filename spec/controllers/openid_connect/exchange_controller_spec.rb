@@ -43,8 +43,6 @@ RSpec.describe OpenidConnect::ExchangeController do
       allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:token_exchange_service_providers)
         .and_return(['broker.gov'])
-      allow(TokenExchangeManifest).to receive(:allowed_targets)
-        .with('broker.gov').and_return(['target.gov'])
       OutOfBandSessionAccessor.new(rails_session_id).put_empty_user_session
       if grant_choice
         TokenExchangeGrant.record!(
@@ -64,7 +62,7 @@ RSpec.describe OpenidConnect::ExchangeController do
 
     context 'when audience is not allowlisted' do
       before do
-        allow(TokenExchangeManifest).to receive(:allowed_targets).and_return([])
+        target_sp.update!(allowed_token_exchange_brokers: [])
       end
 
       it 'returns bad_request' do
