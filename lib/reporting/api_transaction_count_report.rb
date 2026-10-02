@@ -282,6 +282,7 @@ module Reporting
 
     def instant_verify_query
       <<~QUERY
+
         fields @timestamp, @message, id
         | filter name in ['IdV: doc auth verify proofing results']
         | fields jsonParse(@message) as message
@@ -373,9 +374,10 @@ module Reporting
 
     def ln_phonefinder_query
       <<~QUERY
+
         fields @timestamp, @message, id
         | filter name = 'IdV: phone confirmation vendor'
-        | filter properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder" or properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder_ddp"  or  properties.event_properties.alternate_result.vendor.vendor_name = "lexisnexis:phone_finder_ddp"
+        | filter properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder" or properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder_ddp" or  properties.event_properties.alternate_result.vendor.vendor_name = "lexisnexis:phone_finder_ddp"
         | display id
         | limit 10000
       QUERY
