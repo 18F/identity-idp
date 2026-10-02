@@ -220,24 +220,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
         let(:acr_values) { facial_match_ial }
 
         context "when the IAL requested is #{facial_match_ial}" do
-          context 'when facial match general availability is turned off' do
-            before do
-              allow(IdentityConfig.store).to receive(
-                :facial_match_general_availability_enabled,
-              ).and_return(false)
-            end
-
-            it 'fails with a not authorized error' do
-              expect(form).not_to be_valid
-              expect(form.errors[:acr_values])
-                .to include(t('openid_connect.authorization.errors.no_auth'))
-            end
-          end
-
-          context 'when facial match general availability is turned on' do
-            it 'succeeds validation' do
-              expect(form).to be_valid
-            end
+          it 'succeeds validation' do
+            expect(form).to be_valid
           end
         end
       end

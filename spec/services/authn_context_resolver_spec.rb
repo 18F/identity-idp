@@ -623,12 +623,6 @@ RSpec.describe AuthnContextResolver do
           ]
         end
 
-        before do
-          allow_any_instance_of(ServiceProvider)
-            .to receive(:facial_match_ial_allowed?)
-            .and_return(true)
-        end
-
         context 'with facial match comparison is required' do
           context 'when user is not verified' do
             it "asserts the resolved IAL as #{Saml::Idp::Constants::IAL_AUTH_ONLY_ACR}" do

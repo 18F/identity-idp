@@ -62,7 +62,7 @@ class SamlRequestValidator
     if !valid_authn_context? ||
        (identity_proofing_requested? && !service_provider.identity_proofing_allowed?) ||
        (ial_max_requested? && !service_provider.ialmax_allowed?) ||
-       (facial_match_ial_requested? && !service_provider.facial_match_ial_allowed?)
+       (facial_match_ial_requested? && !service_provider.identity_proofing_allowed?)
       errors.add(:authn_context, :unauthorized_authn_context)
     end
   end

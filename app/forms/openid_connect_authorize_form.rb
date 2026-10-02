@@ -330,7 +330,7 @@ class OpenidConnectAuthorizeForm
   def validate_privileges
     if (identity_proofing_requested? && !identity_proofing_service_provider?) ||
        (ialmax_requested? && !ialmax_allowed_for_sp?) ||
-       (facial_match_ial_requested? && !service_provider.facial_match_ial_allowed?)
+       (facial_match_ial_requested? && !identity_proofing_service_provider?)
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_auth'),
         type: :no_auth
