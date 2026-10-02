@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_24_000100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -330,6 +330,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
     t.string "scope", comment: "sensitive=false"
     t.string "service_provider", limit: 255, comment: "sensitive=false"
     t.string "session_uuid", limit: 255, comment: "sensitive=true"
+    t.datetime "token_exchange_consent_at", comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, comment: "sensitive=false"
     t.integer "user_id", comment: "sensitive=false"
     t.string "uuid", null: false, comment: "sensitive=false"
@@ -541,6 +542,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
     t.boolean "active", default: false, null: false, comment: "sensitive=false"
     t.integer "agency_id", comment: "sensitive=false"
     t.boolean "allow_prompt_login", default: false, comment: "sensitive=false"
+    t.string "allowed_token_exchange_brokers", default: [], comment: "sensitive=false", array: true
     t.string "app_id", comment: "sensitive=false"
     t.boolean "approved", default: false, null: false, comment: "sensitive=false"
     t.text "assertion_consumer_logout_service_url", comment: "sensitive=false"

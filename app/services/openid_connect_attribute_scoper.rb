@@ -15,6 +15,7 @@ class OpenidConnectAttributeScoper
     profile:name
     profile:birthdate
     social_security_number
+    token_exchange
   ].freeze
 
   VALID_SCOPES = (%w[
@@ -49,6 +50,7 @@ class OpenidConnectAttributeScoper
     x509_subject: %w[x509 x509:subject],
     x509_presented: %w[x509 x509:presented],
     x509_issuer: %w[x509 x509:issuer],
+    token_exchange: %w[token_exchange],
   }.with_indifferent_access.freeze
 
   SCOPE_ATTRIBUTE_MAP = {}.tap do |scope_attribute_map|
@@ -61,7 +63,12 @@ class OpenidConnectAttributeScoper
     end
   end.with_indifferent_access.freeze
 
-  CLAIMS = ATTRIBUTE_SCOPES_MAP.keys.freeze
+  # Scopes that grant a capability rather than release a claim. They flow through
+  # requested_attributes so consent can be captured, but are not identity claims
+  # and must not be advertised as such.
+  CAPABILITY_SCOPES = %w[token_exchange].freeze
+
+  CLAIMS = (ATTRIBUTE_SCOPES_MAP.keys - CAPABILITY_SCOPES).freeze
   UNSCOPED_CLAIMS = %w[auth_time iss sub].freeze
 
   attr_reader :scopes
@@ -84,6 +91,10 @@ class OpenidConnectAttributeScoper
 
   def all_emails_requested?
     scopes.include?('all_emails')
+  end
+
+  def token_exchange_requested?
+    scopes.include?('token_exchange')
   end
 
   def locale_requested?

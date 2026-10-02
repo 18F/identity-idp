@@ -105,6 +105,15 @@ class CompletionsPresenter
     end
   end
 
+  def token_exchange_sharing?
+    current_sp.token_exchange_broker_allowed? &&
+      requested_attributes.map(&:to_s).include?('token_exchange')
+  end
+
+  def token_exchange_sharing_disclosure
+    t('help_text.requested_attributes.token_exchange_html', sp_html: content_tag(:strong, sp_name))
+  end
+
   private
 
   def first_time_signing_in?

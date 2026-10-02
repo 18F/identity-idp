@@ -194,4 +194,50 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
       expect(rendered).to have_css("img[src*='nist'][alt='#{t('nds.completions.nist_alt')}']")
     end
   end
+
+  describe 'token-exchange consent' do
+    let(:idv_requested) { true }
+    let(:requested_attributes) { %i[email token_exchange] }
+
+    context 'when the SP is an allow-listed broker requesting token_exchange' do
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_service_providers)
+          .and_return([service_provider.issuer])
+      end
+
+      shared_examples 'renders the required consent control' do
+        it 'renders the disclosure and a required consent checkbox inside the form' do
+          render
+
+          expect(rendered).to have_css(
+            "form[action='#{sign_up_completed_path}'] " \
+            "input[type=checkbox][name='idv_form[token_exchange_consent]'][required]",
+          )
+          expect(rendered).to have_content(
+            t('sign_up.token_exchange_consent_label', sp: service_provider.friendly_name),
+          )
+        end
+      end
+
+      context 'in the legacy layout' do
+        let(:nds_layout) { false }
+        it_behaves_like 'renders the required consent control'
+      end
+
+      context 'in the NDS layout' do
+        let(:nds_layout) { true }
+        it_behaves_like 'renders the required consent control'
+      end
+    end
+
+    context 'when the SP is not a broker' do
+      let(:nds_layout) { true }
+
+      it 'renders no consent control' do
+        render
+        expect(rendered).not_to have_css("input[name='idv_form[token_exchange_consent]']")
+      end
+    end
+  end
 end

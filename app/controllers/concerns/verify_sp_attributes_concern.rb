@@ -20,7 +20,7 @@ module VerifySpAttributesConcern
   end
 
   def update_verified_attributes
-    IdentityLinker.new(
+    identity = IdentityLinker.new(
       current_user,
       current_sp,
     ).link_identity(
@@ -29,6 +29,35 @@ module VerifySpAttributesConcern
       last_consented_at: Time.zone.now,
       clear_deleted_at: true,
     )
+
+    # Record token-exchange consent as a distinct, purpose-specific decision;
+    # only touched for allow-listed brokers, and set-or-cleared whenever this
+    # screen runs so a dropped scope or new proofing session does not carry
+    # stale consent forward. (The exchange endpoint additionally requires the
+    # presented token's own scope to include token_exchange, so consent can
+    # never outlive the grant it was given for.)
+    if current_sp&.token_exchange_broker_allowed?
+      identity&.update!(
+        token_exchange_consent_at: (Time.zone.now if token_exchange_consent_granted?),
+      )
+    end
+  end
+
+  # True only when the SP is an allow-listed broker, requested the
+  # token_exchange scope, and the user affirmatively checked the consent box.
+  def token_exchange_consent_granted?
+    token_exchange_consent_requested? && token_exchange_consent_checked?
+  end
+
+  def token_exchange_consent_requested?
+    current_sp&.token_exchange_broker_allowed? &&
+      decorated_sp_session.requested_attributes.map(&:to_s).include?('token_exchange')
+  end
+
+  def token_exchange_consent_checked?
+    form = params[:idv_form]
+    return false unless form.respond_to?(:[]) && !form.is_a?(String)
+    ActiveModel::Type::Boolean.new.cast(form[:token_exchange_consent])
   end
 
   def consent_has_expired?(sp_session_identity)

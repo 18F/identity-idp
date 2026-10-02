@@ -21,8 +21,17 @@ module SignUp
     end
 
     def update
+      if token_exchange_consent_requested? && !token_exchange_consent_checked?
+        @multiple_factors_enabled = MfaPolicy.new(current_user).multiple_factors_enabled?
+        @presenter = completions_presenter
+        flash.now[:error] = t('sign_up.token_exchange_consent_required', sp: @presenter.sp_name)
+        return render :show
+      end
       track_completion_event('agency-page')
       update_verified_attributes
+      if token_exchange_consent_granted?
+        analytics.token_exchange_consent_granted(issuer: current_sp.issuer)
+      end
       send_in_person_completion_survey
       notify_user_of_connected_sp
       send_historical_events

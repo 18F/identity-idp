@@ -78,6 +78,22 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.allowed_ialmax_providers.include?(issuer)
   end
 
+  # Whether this SP is onboarded as a token-exchange broker: login controls the
+  # capability via a per-SP allowlist, independent of the broker's own signed
+  # target manifest.
+  def token_exchange_broker_allowed?
+    IdentityConfig.store.token_exchange_enabled &&
+      IdentityConfig.store.token_exchange_service_providers.include?(issuer)
+  end
+
+  # Whether this SP (as a token-exchange TARGET) has opted in to accepting
+  # exchanged tokens minted by the given broker. The target sets this allowlist
+  # in its own partner management portal configuration, so a broker can never
+  # mint for a target that has not agreed to it.
+  def allows_token_exchange_broker?(broker_issuer)
+    Array(allowed_token_exchange_brokers).map(&:to_s).include?(broker_issuer.to_s)
+  end
+
   def attempts_api_enabled?
     IdentityConfig.store.attempts_api_enabled && attempts_config.present?
   end

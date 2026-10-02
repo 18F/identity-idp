@@ -70,6 +70,19 @@
                 <% end %>
               </dl>
 
+              <% if @presenter.token_exchange_sharing? %>
+                <%= render(AlertComponent.new(type: :info)) do %>
+                  <%= @presenter.token_exchange_sharing_disclosure.html_safe %>
+                <% end %>
+                <%= render ValidatedFieldComponent.new(
+                      form: f,
+                      name: :token_exchange_consent,
+                      as: :boolean,
+                      label: t('sign_up.token_exchange_consent_label', sp: @presenter.sp_name),
+                      required: true,
+                    ) %>
+              <% end %>
+
               <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
                 <%= render ButtonComponent.new(type: :submit, full_width: true)
                       .with_content(t('forms.buttons.continue')) %>
@@ -179,6 +192,20 @@
 </p>
 
 <%= simple_form_for(:idv_form, url: sign_up_completed_path, html: { class: 'margin-y-5' }) do |f| %>
+  <% if @presenter.token_exchange_sharing? %>
+    <%= render(AlertComponent.new(type: :info, class: 'margin-bottom-4')) do %>
+      <%= @presenter.token_exchange_sharing_disclosure.html_safe %>
+    <% end %>
+    <%= render ValidatedFieldComponent.new(
+          form: f,
+          name: :token_exchange_consent,
+          as: :boolean,
+          label: t('sign_up.token_exchange_consent_label', sp: @presenter.sp_name),
+          label_html: { class: 'margin-bottom-105' },
+          required: true,
+          wrapper_html: { class: 'margin-bottom-4' },
+        ) %>
+  <% end %>
   <%= f.submit t('sign_up.agree_and_continue') %>
 <% end %>
 

@@ -1100,6 +1100,7 @@ help_text.requested_attributes.intro_html: 我们会与 %{sp_html} 分享这些�
 help_text.requested_attributes.phone: 电话号码
 help_text.requested_attributes.select_email_link: 选择电邮
 help_text.requested_attributes.social_security_number: 社会保障号码
+help_text.requested_attributes.token_exchange_html: '为将你连接到其他政府服务，%{sp_html} 将能够与你选择访问的机构共享你已验证的身份，这样你就无需再次验证身份。仅共享每个机构获准接收的信息。'
 help_text.requested_attributes.verified_at: 更新是在
 help_text.requested_attributes.x509_issuer: PIV/CAC 发放方
 help_text.requested_attributes.x509_subject: PIV/CAC 身份
@@ -1864,6 +1865,8 @@ sign_up.completed.smiling_image_alt: 面带笑容的一个人加上绿勾说明�
 sign_up.information_sharing_html: 如需了解 %{app_name} 如何共享您的信息，请查阅我们的《%{link_html}》。
 sign_up.nds_terms_intro: 继续即表示您接受
 sign_up.terms: 我已阅读并接受 %{app_name}
+sign_up.token_exchange_consent_label: 我允许 %{sp} 与我选择访问的其他政府服务共享我已验证的身份。
+sign_up.token_exchange_consent_required: 你必须授权此项才能继续前往 %{sp}。
 simple_form.error_notification.default_message: 请仔细阅读以下问题：
 simple_form.no: 不
 simple_form.required.html: ''
