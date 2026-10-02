@@ -44,7 +44,7 @@ RSpec.feature 'document capture step', :js do
 
   context 'standard desktop flow' do
     before do
-      visit_idp_from_oidc_sp_with_ial2
+      visit_idp_from_oidc_sp_with_basic
       sign_in_and_2fa_user(@user)
       complete_doc_auth_steps_before_document_capture_step
     end
@@ -144,7 +144,7 @@ RSpec.feature 'document capture step', :js do
   context 'standard mobile flow' do
     it 'proceeds to the next page with valid info' do
       perform_in_browser(:mobile) do
-        visit_idp_from_oidc_sp_with_ial2
+        visit_idp_from_oidc_sp_with_basic
         sign_in_and_2fa_user(@user)
         complete_doc_auth_steps_before_document_capture_step
 
@@ -171,7 +171,7 @@ RSpec.feature 'document capture step', :js do
   context 'facial match is required', allow_browser_log: true do
     before do
       allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-      visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+      visit_idp_from_oidc_sp_with_enhanced
       sign_in_and_2fa_user(@user)
       complete_doc_auth_steps_before_document_capture_step
     end
@@ -426,7 +426,7 @@ RSpec.feature 'document capture step', :js do
 
   context 'standard desktop flow' do
     before do
-      visit_idp_from_oidc_sp_with_ial2
+      visit_idp_from_oidc_sp_with_basic
       sign_in_and_2fa_user(@user)
       complete_doc_auth_steps_before_document_capture_step
     end
@@ -515,7 +515,7 @@ RSpec.feature 'document capture step', :js do
   context 'standard mobile flow' do
     it 'proceeds to the next page with valid info' do
       perform_in_browser(:mobile) do
-        visit_idp_from_oidc_sp_with_ial2
+        visit_idp_from_oidc_sp_with_basic
         sign_in_and_2fa_user(@user)
         complete_doc_auth_steps_before_document_capture_step
 
@@ -547,7 +547,7 @@ RSpec.feature 'document capture step', :js do
     context 'when a selfie is not requested by SP' do
       it 'proceeds to the next page with valid info, excluding a selfie image' do
         perform_in_browser(:mobile) do
-          visit_idp_from_oidc_sp_with_ial2
+          visit_idp_from_oidc_sp_with_basic
           sign_in_and_2fa_user(@user)
           complete_doc_auth_steps_before_document_capture_step
 
@@ -624,7 +624,7 @@ RSpec.feature 'document capture step', :js do
           context 'with a passing selfie' do
             it 'proceeds to the next page with valid info, including a selfie image' do
               perform_in_browser(:mobile) do
-                visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+                visit_idp_from_oidc_sp_with_enhanced
                 sign_in_and_2fa_user(@user)
                 complete_doc_auth_steps_before_document_capture_step
 
@@ -683,7 +683,7 @@ RSpec.feature 'document capture step', :js do
 
               it 'proceeds to the next page with valid info, including a selfie image' do
                 perform_in_browser(:mobile) do
-                  visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+                  visit_idp_from_oidc_sp_with_enhanced
                   sign_in_and_2fa_user(@user)
                   complete_doc_auth_steps_before_hybrid_handoff_step
                   choose(t('doc_auth.forms.id_type_preference.passport'))
@@ -879,7 +879,7 @@ RSpec.feature 'document capture step', :js do
               before do
                 allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
                 perform_in_browser(:mobile) do
-                  visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+                  visit_idp_from_oidc_sp_with_enhanced
                   sign_in_and_2fa_user(@user)
                   complete_doc_auth_steps_before_document_capture_step
                 end
@@ -892,7 +892,7 @@ RSpec.feature 'document capture step', :js do
           context 'when selfie check is not enabled (flag off, and/or in production)' do
             it 'proceeds to the next page with valid info, excluding a selfie image' do
               perform_in_browser(:mobile) do
-                visit_idp_from_oidc_sp_with_ial2
+                visit_idp_from_oidc_sp_with_basic
                 sign_in_and_2fa_user(@user)
                 complete_doc_auth_steps_before_document_capture_step
 
@@ -935,7 +935,7 @@ RSpec.feature 'document capture step', :js do
         describe 'when desktop selfie not allowed' do
           it 'can only proceed to link sent page' do
             perform_in_browser(:desktop) do
-              visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+              visit_idp_from_oidc_sp_with_enhanced
               sign_in_and_2fa_user(@user)
               complete_doc_auth_steps_before_hybrid_handoff_step
               # we still have option to continue
@@ -953,7 +953,7 @@ RSpec.feature 'document capture step', :js do
 
           it 'proceed to the next page with valid info, including a selfie image' do
             perform_in_browser(:desktop) do
-              visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+              visit_idp_from_oidc_sp_with_enhanced
               sign_in_and_2fa_user(@user)
               complete_doc_auth_steps_before_hybrid_handoff_step
               # we still have option to continue on handoff, since it's desktop no skip_hand_off
@@ -999,7 +999,7 @@ RSpec.feature 'document capture step', :js do
             describe 'when ipp is selected' do
               it 'proceed to the next page and start ipp' do
                 perform_in_browser(:desktop) do
-                  visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+                  visit_idp_from_oidc_sp_with_enhanced
                   sign_in_and_2fa_user(@user)
                   complete_doc_auth_steps_before_hybrid_handoff_step
                   # still have option to continue handoff, since it's desktop no skip_hand_off
@@ -1027,7 +1027,7 @@ RSpec.feature 'document capture step', :js do
       allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
       stub_health_check_settings
       stub_health_check_endpoints_success
-      visit_idp_from_oidc_sp_with_ial2
+      visit_idp_from_oidc_sp_with_basic
       sign_in_and_2fa_user(@user)
       complete_doc_auth_steps_before_hybrid_handoff_step
       click_on t('forms.buttons.upload_photos')
