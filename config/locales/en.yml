@@ -1856,6 +1856,7 @@ sign_up.token_exchange_grant.all: All services %{sp} currently offers
 sign_up.token_exchange_grant.all_and_future: All services %{sp} offers now or adds in the next 12 months
 sign_up.token_exchange_grant.legend: Choose which government services %{sp} may connect you to
 sign_up.token_exchange_grant.no_targets: No services are available to choose yet.
+sign_up.token_exchange_grant.none_reachable: '%{sp} has no services available to connect you to right now. Choose a different option or try again later.'
 sign_up.token_exchange_grant.required: Choose which services %{sp} may connect you to before continuing.
 sign_up.token_exchange_grant.required_specific: Select at least one service, or choose a different option.
 sign_up.token_exchange_grant.specific: Only the services I choose

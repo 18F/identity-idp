@@ -7554,6 +7554,7 @@ module AnalyticsEvents
   # @param [Integer] minted_ial IAL of the minted target identity
   # @param [String] minted_scope Scope granted to the minted target identity
   # @param [Boolean] billable Whether the target was billed for this return
+  # @param [Boolean] fraud_signalled Whether the fraud signal was delivered to the target
   def openid_connect_token_exchange(
     success:,
     broker_issuer: nil,
@@ -7561,6 +7562,7 @@ module AnalyticsEvents
     minted_ial: nil,
     minted_scope: nil,
     billable: nil,
+    fraud_signalled: nil,
     error_details: nil,
     **extra
   )
@@ -7573,6 +7575,7 @@ module AnalyticsEvents
       minted_ial:,
       minted_scope:,
       billable:,
+      fraud_signalled:,
       **extra,
     )
   end

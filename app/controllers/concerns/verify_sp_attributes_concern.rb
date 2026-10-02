@@ -65,11 +65,17 @@ module VerifySpAttributesConcern
       decorated_sp_session.requested_attributes.map(&:to_s).include?('token_exchange')
   end
 
+  # A grant is only valid when it will authorize something: a per-application
+  # grant needs at least one chosen application, and an all-current-services
+  # grant needs at least one reachable application (otherwise -- e.g. the broker
+  # manifest was unavailable -- the user would be left with a 12-month grant that
+  # covers nothing). All-and-future may be granted with no current targets since
+  # it covers whatever the broker adds.
   def token_exchange_consent_checked?
     choice = token_exchange_grant_choice
     return false unless TOKEN_EXCHANGE_GRANT_CHOICES.include?(choice)
-    return token_exchange_grant_targets.any? if choice == 'specific'
-    true
+    return true if choice == 'all_and_future'
+    token_exchange_grant_targets.any?
   end
 
   def token_exchange_grant_choice
@@ -83,7 +89,7 @@ module VerifySpAttributesConcern
   def token_exchange_grant_targets
     return @token_exchange_grant_targets if defined?(@token_exchange_grant_targets)
 
-    reachable = completions_presenter.token_exchange_targets.map(&:issuer)
+    reachable = TokenExchangeReachableTargets.for_broker(current_sp.issuer).map(&:issuer)
     @token_exchange_grant_targets =
       if token_exchange_grant_choice == 'specific'
         Array(token_exchange_form_params[:token_exchange_targets]).map(&:to_s) & reachable
@@ -94,8 +100,7 @@ module VerifySpAttributesConcern
 
   def token_exchange_form_params
     form = params[:idv_form]
-    return {} unless form.respond_to?(:[]) && !form.is_a?(String)
-    form
+    form.is_a?(ActionController::Parameters) ? form : {}
   end
 
   def consent_has_expired?(sp_session_identity)

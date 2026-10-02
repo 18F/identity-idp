@@ -1869,6 +1869,7 @@ sign_up.token_exchange_grant.all: '%{sp} 目前提供的所有服务'
 sign_up.token_exchange_grant.all_and_future: '%{sp} 现在提供或在未来 12 个月内新增的所有服务'
 sign_up.token_exchange_grant.legend: 选择 %{sp} 可以将你连接到哪些政府服务
 sign_up.token_exchange_grant.no_targets: 目前还没有可供选择的服务。
+sign_up.token_exchange_grant.none_reachable: '%{sp} 目前没有可将你连接到的服务。请选择其他选项或稍后重试。'
 sign_up.token_exchange_grant.required: 继续之前，请选择 %{sp} 可以将你连接到哪些服务。
 sign_up.token_exchange_grant.required_specific: 请至少选择一项服务，或选择其他选项。
 sign_up.token_exchange_grant.specific: 仅我选择的服务

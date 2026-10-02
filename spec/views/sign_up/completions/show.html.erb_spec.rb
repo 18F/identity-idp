@@ -234,15 +234,17 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
             t('sign_up.token_exchange_grant.all_and_future', sp: service_provider.friendly_name),
           )
           # per-application tree is present but collapsed by default
+          expect(rendered).to have_css("#{form} details[data-token-exchange-targets]:not([open])")
           expect(rendered).to have_css(
-            "#{form} .usa-accordion__button[aria-expanded='false']",
+            "#{form} details summary",
             text: t('sign_up.token_exchange_grant.specific_heading'),
           )
           expect(rendered).to have_css(
             "#{form} input[type=checkbox][name='idv_form[token_exchange_targets][]']" \
             "[value='target.gov']",
+            visible: false,
           )
-          expect(rendered).to have_content('Benefits Portal')
+          expect(rendered).to have_css('label', text: 'Benefits Portal', visible: false)
         end
       end
 

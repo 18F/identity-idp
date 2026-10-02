@@ -162,10 +162,13 @@ exactly as if the user had completed a direct sign-in there.
   `token-exchange-login-completed` event to the **target's** Attempts API stream
   (only when the target has the Attempts API enabled). The tracker is built for
   the target explicitly: it encrypts to the target's key and writes under the
-  target's issuer, so device, network and agency-scoped-identifier metadata for
-  this return reach the target and never the broker's stream. The event carries
-  `broker_issuer` so the target can see it was brokered and by whom — the same
-  fact the id_token's `act` claim conveys.
+  target's issuer, so nothing about this return reaches the broker's stream. The
+  event carries `broker_issuer` so the target can see it was brokered and by
+  whom — the same fact the id_token's `act` claim conveys. Because the exchange
+  is a server-to-server call from the broker's backend, the inbound request's IP,
+  user agent and cookies describe the broker's infrastructure, not the user's
+  device; they are deliberately **not** forwarded, and the event's session
+  identifier is an opaque hash, never the IdP session id.
 
 ## RFC 8693 conformance notes
 

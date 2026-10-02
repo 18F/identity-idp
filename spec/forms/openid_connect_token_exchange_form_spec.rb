@@ -572,11 +572,24 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         expect(form.submit.to_h[:billable]).to eq(true)
       end
 
-      it 'bills once per broker session even if the exchange is repeated' do
+      it 'bills once per broker session, recording a repeat as non-billable' do
         form.submit
         second = described_class.new(params)
         expect { second.submit }.not_to(change { SpReturnLog.where(billable: true).count })
         expect(second.submit.to_h[:billable]).to eq(false)
+        expect(SpReturnLog.where(issuer: 'target.gov', billable: false).count).to eq(1)
+      end
+
+      it 'bills a fresh return in a new broker session' do
+        form.submit
+        # The user signs in to the broker again: a new session, and the target
+        # identity from the first exchange is no longer bound to a live session.
+        OutOfBandSessionAccessor.new(rails_session_id).destroy
+        new_session = SecureRandom.uuid
+        OutOfBandSessionAccessor.new(new_session).put_empty_user_session
+        broker_identity.update!(rails_session_id: new_session)
+        second = described_class.new(params)
+        expect { second.submit }.to(change { SpReturnLog.where(billable: true).count }.by(1))
       end
 
       it 'bills an IALMax broker token as IAL2' do
@@ -600,14 +613,32 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
 
       it 'sends the login-completed signal to the TARGET service provider' do
-        request = instance_double(ActionDispatch::Request, cookies: {})
-        described_class.new(params, request: request).submit
+        described_class.new(params, request: instance_double(ActionDispatch::Request)).submit
 
         expect(AttemptsApi::Tracker).to have_received(:new).with(
-          hash_including(sp: target_sp, user: user, request: request, enabled_for_session: true),
+          hash_including(sp: target_sp, user: user, enabled_for_session: true),
         )
         expect(target_tracker).to have_received(:token_exchange_login_completed)
           .with(broker_issuer: 'broker.gov')
+      end
+
+      it "never forwards the broker's request (IP, UA, cookies) or the raw IdP session id" do
+        request = instance_double(ActionDispatch::Request)
+        described_class.new(params, request: request).submit
+
+        expect(AttemptsApi::Tracker).to have_received(:new).with(
+          hash_including(request: nil, cookie_device_uuid: nil),
+        )
+        expect(AttemptsApi::Tracker).not_to have_received(:new).with(
+          hash_including(session_id: rails_session_id),
+        )
+        expect(AttemptsApi::Tracker).to have_received(:new).with(
+          hash_including(session_id: a_string_matching(/\A[0-9a-f]{64}\z/)),
+        )
+      end
+
+      it 'reports fraud_signalled in the result' do
+        expect(form.submit.to_h[:fraud_signalled]).to eq(true)
       end
 
       it 'never builds a tracker for the broker' do

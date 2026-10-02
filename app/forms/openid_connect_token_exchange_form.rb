@@ -113,6 +113,7 @@ class OpenidConnectTokenExchangeForm
         minted_ial: @link_target_identity&.ial,
         minted_scope: target_scope.presence,
         billable: @billable,
+        fraud_signalled: @fraud_signalled,
       },
     )
   end
@@ -205,29 +206,44 @@ class OpenidConnectTokenExchangeForm
   def bill_target
     return if @link_target_identity.blank?
 
+    attrs = sp_return_log_attributes
+    begin
+      SpReturnLog.create!(attrs.merge(request_id: billing_request_id, billable: true))
+      @billable = true
+    rescue ActiveRecord::RecordNotUnique
+      # Already billed this (user, target, broker session): record the repeat as
+      # a non-billable return, exactly as BillableEventTrackable does for a
+      # repeat visit within a session.
+      SpReturnLog.create!(attrs.merge(request_id: SecureRandom.uuid, billable: false))
+      @billable = false
+    end
+  end
+
+  def sp_return_log_attributes
     ial = @link_target_identity.ial.to_i
     billed_ial = ial == Idp::Constants::IAL_MAX ? Idp::Constants::IAL2 : ial
     profile = billed_ial > 1 ? broker_identity.user.active_profile : nil
 
-    log = SpReturnLog.create(
-      request_id: billing_request_id,
+    {
       user: broker_identity.user,
-      billable: true,
       ial: billed_ial,
       issuer: target_service_provider.issuer,
       profile_id: profile&.id,
       profile_verified_at: profile&.verified_at,
       profile_requested_issuer: profile&.initiating_service_provider_issuer,
       returned_at: Time.zone.now,
-    )
-    @billable = log.persisted?
-  rescue ActiveRecord::RecordNotUnique
-    @billable = false
+    }
   end
 
-  # Deterministic per (user, target, broker session): the second exchange in a
-  # session collides on the unique index and is recorded as non-billable.
+  # Deterministic per (user, target, broker session) so the second exchange in
+  # a session collides on the unique request_id index. A broker identity with no
+  # bound session cannot be deduped per session, so each mint is billed; the
+  # session liveness check (#broker_session_live?) means this cannot occur for a
+  # successfully validated exchange, but the fallback keeps billing correct
+  # rather than collapsing every mint for that user into one.
   def billing_request_id
+    return SecureRandom.uuid if broker_identity.rails_session_id.blank?
+
     Digest::SHA256.hexdigest(
       [
         'token-exchange',
@@ -240,26 +256,42 @@ class OpenidConnectTokenExchangeForm
 
   # Delivers the fraud / Attempts API signal to the TARGET service provider.
   # The target is the relying party that will act on this credential, so it --
-  # not the broker -- must see the login-completed event, device and network
-  # metadata, and the agency-scoped user identifier. The tracker is built for
-  # the target SP explicitly; it encrypts to the target's key and writes under
-  # the target's issuer, so nothing about this return reaches the broker's
-  # event stream.
+  # not the broker -- must see the login-completed event and the agency-scoped
+  # user identifier. The tracker is built for the target SP explicitly; it
+  # encrypts to the target's key and writes under the target's issuer, so
+  # nothing about this return reaches the broker's event stream.
+  #
+  # The inbound request is a server-to-server call from the broker's backend,
+  # so its IP, user agent and cookies describe the broker's infrastructure, not
+  # the user's device. They are deliberately NOT forwarded: attributing the
+  # broker's egress address to the user would poison the target's fraud model.
+  # The raw IdP session id is likewise never released; the event's session
+  # identifier is an opaque per-session hash.
   def signal_target
     return if @link_target_identity.blank?
     return unless target_service_provider.attempts_api_enabled?
 
     AttemptsApi::Tracker.new(
-      session_id: broker_identity.rails_session_id,
-      request: @request,
+      session_id: fraud_session_id,
+      request: nil,
       user: broker_identity.user,
       sp: target_service_provider,
-      cookie_device_uuid: @request&.cookies&.[](:browser_id),
+      cookie_device_uuid: nil,
       sp_redirect_uri: nil,
       enabled_for_session: true,
     ).token_exchange_login_completed(broker_issuer: broker_identity.service_provider)
+    @fraud_signalled = true
   rescue StandardError => err
     NewRelic::Agent.notice_error(err)
+    @fraud_signalled = false
+  end
+
+  # Opaque, stable within a broker session, and not reversible to the IdP
+  # session id (which must never leave the IdP).
+  def fraud_session_id
+    Digest::SHA256.hexdigest(
+      ['token-exchange-session', broker_identity.rails_session_id].join(':'),
+    )
   end
 
   def link_target_identity

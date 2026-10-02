@@ -27,6 +27,8 @@ module SignUp
         flash.now[:error] =
           if token_exchange_grant_choice == 'specific'
             t('sign_up.token_exchange_grant.required_specific')
+          elsif token_exchange_grant_choice == 'all'
+            t('sign_up.token_exchange_grant.none_reachable', sp: @presenter.sp_name)
           else
             t('sign_up.token_exchange_grant.required', sp: @presenter.sp_name)
           end

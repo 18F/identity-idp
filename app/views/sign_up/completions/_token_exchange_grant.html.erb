@@ -1,6 +1,7 @@
 <%#
 Token-exchange grant control, rendered inside the completions form in both
-layouts.
+layouts. The user must choose the breadth of the grant; the per-application
+list is collapsed by default and only needed for the "specific" choice.
 
 locals:
 * form: the simple_form_for builder for :idv_form
@@ -8,60 +9,49 @@ locals:
 * compact: when true, omit outer spacing classes (NDS card layout)
 %>
 <% spacing = local_assigns[:compact] ? '' : 'margin-bottom-4' %>
+<% targets = presenter.token_exchange_targets %>
+<% submitted = params[:idv_form].is_a?(ActionController::Parameters) ? params[:idv_form] : {} %>
+<% choice = submitted[:token_exchange_grant].to_s %>
+<% chosen = Array(submitted[:token_exchange_targets]).map(&:to_s) %>
 
 <%= render(AlertComponent.new(type: :info, class: spacing)) do %>
   <%= presenter.token_exchange_sharing_disclosure.html_safe %>
 <% end %>
 
-<fieldset class="usa-fieldset <%= spacing %>" data-token-exchange-grant>
-  <legend class="usa-legend">
-    <%= t('sign_up.token_exchange_grant.legend', sp: presenter.sp_name) %>
-  </legend>
+<%= form.input(
+      :token_exchange_grant,
+      as: :radio_buttons,
+      wrapper: :uswds_radio_buttons,
+      wrapper_html: { class: spacing, 'data-token-exchange-grant': true },
+      label: t('sign_up.token_exchange_grant.legend', sp: presenter.sp_name),
+      required: true,
+      checked: choice.presence,
+      collection: [
+        [t('sign_up.token_exchange_grant.all', sp: presenter.sp_name), 'all'],
+        [t('sign_up.token_exchange_grant.all_and_future', sp: presenter.sp_name), 'all_and_future'],
+        [t('sign_up.token_exchange_grant.specific'), 'specific'],
+      ],
+    ) %>
 
-  <%= form.input(
-        :token_exchange_grant,
-        as: :radio_buttons,
-        label: false,
-        required: true,
-        collection: [
-          [
-            t('sign_up.token_exchange_grant.all', sp: presenter.sp_name),
-            'all',
-            { 'data-token-exchange-choice': 'all' },
-          ],
-          [
-            t('sign_up.token_exchange_grant.all_and_future', sp: presenter.sp_name),
-            'all_and_future',
-            { 'data-token-exchange-choice': 'all_and_future' },
-          ],
-          [
-            t('sign_up.token_exchange_grant.specific'),
-            'specific',
-            { 'data-token-exchange-choice': 'specific' },
-          ],
-        ],
-        item_wrapper_class: 'usa-radio',
-        item_label_class: 'usa-radio__label',
-        input_html: { class: 'usa-radio__input' },
-      ) %>
-
-  <%= render AccordionComponent.new(bordered: false, class: 'margin-top-2') do |c| %>
-    <% c.with_header { t('sign_up.token_exchange_grant.specific_heading') } %>
+<details class="usa-accordion <%= spacing %>" data-token-exchange-targets <%= 'open' if choice == 'specific' %>>
+  <summary class="usa-accordion__button padding-y-105">
+    <%= t('sign_up.token_exchange_grant.specific_heading') %>
+  </summary>
+  <div class="usa-accordion__content padding-top-1">
     <p class="margin-top-0">
       <%= t('sign_up.token_exchange_grant.specific_hint', sp: presenter.sp_name) %>
     </p>
-    <% if presenter.token_exchange_targets.empty? %>
+    <% if targets.empty? %>
       <p class="text-base"><%= t('sign_up.token_exchange_grant.no_targets') %></p>
     <% else %>
-      <% presenter.token_exchange_targets.each do |target| %>
+      <% targets.each do |target| %>
         <div class="usa-checkbox">
           <%= check_box_tag(
                 'idv_form[token_exchange_targets][]',
                 target.issuer,
-                false,
+                chosen.include?(target.issuer),
                 id: "token-exchange-target-#{target.id}",
                 class: 'usa-checkbox__input',
-                'data-token-exchange-target': true,
               ) %>
           <%= label_tag(
                 "token-exchange-target-#{target.id}",
@@ -71,5 +61,5 @@ locals:
         </div>
       <% end %>
     <% end %>
-  <% end %>
-</fieldset>
+  </div>
+</details>

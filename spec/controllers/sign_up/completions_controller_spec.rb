@@ -712,6 +712,30 @@ RSpec.describe SignUp::CompletionsController do
       it 'treats a malformed idv_form param as no choice rather than raising' do
         expect { patch :update, params: { idv_form: 'x' } }.not_to raise_error
         expect(response).to render_template(:show)
+        expect { patch :update, params: { idv_form: ['x'] } }.not_to raise_error
+      end
+
+      it 're-renders when "all" is chosen but the broker currently reaches nothing' do
+        allow(TokenExchangeManifest).to receive(:allowed_targets)
+          .with(current_sp.issuer).and_return([])
+
+        patch :update, params: { idv_form: { token_exchange_grant: 'all' } }
+
+        expect(response).to render_template(:show)
+        expect(flash.now[:error]).to eq(
+          t('sign_up.token_exchange_grant.none_reachable', sp: current_sp.friendly_name),
+        )
+        expect(grants).to be_empty
+      end
+
+      it 'allows "all and future" even when the broker currently reaches nothing' do
+        allow(TokenExchangeManifest).to receive(:allowed_targets)
+          .with(current_sp.issuer).and_return([])
+
+        patch :update, params: { idv_form: { token_exchange_grant: 'all_and_future' } }
+
+        expect(response).to_not render_template(:show)
+        expect(grants.active.pluck(:target_issuer)).to eq([TokenExchangeGrant::ALL_TARGETS])
       end
 
       it 'records an all-applications grant snapshotting every reachable target' do
@@ -761,7 +785,7 @@ RSpec.describe SignUp::CompletionsController do
           idv_form: { token_exchange_grant: 'specific', token_exchange_targets: ['target-b.gov'] },
         }
 
-        expect(grants.pluck(:target_issuer)).to eq(['target-b.gov'])
+        expect(grants.active.pluck(:target_issuer)).to eq(['target-b.gov'])
       end
     end
   end

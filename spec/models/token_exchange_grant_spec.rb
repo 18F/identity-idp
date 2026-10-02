@@ -38,14 +38,30 @@ RSpec.describe TokenExchangeGrant do
       expect(described_class.where(user:).pluck(:target_issuer)).to eq(['a.gov'])
     end
 
-    it 'replaces prior grants for the broker' do
-      described_class.record!(
-        user:, broker_issuer: broker, choice: :all_and_future,
-        targets: ['a.gov']
-      )
+    it 'revokes rather than deletes superseded grants, preserving the audit trail' do
+      described_class.record!(user:, broker_issuer: broker, choice: :specific, targets: ['a.gov'])
       described_class.record!(user:, broker_issuer: broker, choice: :specific, targets: ['b.gov'])
 
-      expect(described_class.where(user:).pluck(:target_issuer)).to eq(['b.gov'])
+      expect(described_class.where(user:).count).to eq(2)
+      expect(described_class.active.where(user:).pluck(:target_issuer)).to eq(['b.gov'])
+    end
+
+    it 'refuses an all-current grant that would cover nothing' do
+      expect do
+        described_class.record!(user:, broker_issuer: broker, choice: :all, targets: [])
+      end.to raise_error(described_class::InvalidGrant)
+    end
+
+    it 'allows an all-and-future grant with no current targets' do
+      described_class.record!(user:, broker_issuer: broker, choice: :all_and_future, targets: [])
+      expect(described_class.authorizes?(user:, broker_issuer: broker, target_issuer: 'later.gov'))
+        .to eq(true)
+    end
+
+    it 'refuses the sentinel as a target' do
+      expect do
+        described_class.record!(user:, broker_issuer: broker, choice: :specific, targets: ['*'])
+      end.to raise_error(described_class::InvalidGrant)
     end
 
     it 'does not touch grants for a different broker' do
@@ -128,6 +144,16 @@ RSpec.describe TokenExchangeGrant do
         described_class.authorizes?(
           user:, broker_issuer: broker,
           target_issuer: 'a.gov'
+        ),
+      ).to eq(false)
+    end
+
+    it 'never authorizes the sentinel itself as a target' do
+      described_class.record!(user:, broker_issuer: broker, choice: :all, targets: ['a.gov'])
+      expect(
+        described_class.authorizes?(
+          user:, broker_issuer: broker,
+          target_issuer: '*'
         ),
       ).to eq(false)
     end
