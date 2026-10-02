@@ -97,7 +97,7 @@ module DocAuth
           selfie_status != :not_processed
         end
 
-        def mdl?
+        def document_type_mdl?
           document_capture_session&.mdl_requested? ||
             document_type_received == Idp::Constants::DocumentTypes::MDL
         end

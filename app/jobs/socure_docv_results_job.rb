@@ -128,7 +128,7 @@ class SocureDocvResultsJob < ApplicationJob
 
     if doc_escrow_enabled? &&
        docv_result_response.instance_of?(DocAuth::Socure::Responses::DocvResultResponse) &&
-       !mdl?(docv_result_response)
+       !docv_result_response.document_type_mdl?
 
       job_data = {
         document_capture_session_uuid:,
@@ -203,13 +203,6 @@ class SocureDocvResultsJob < ApplicationJob
 
   def passport_book?(id_type)
     id_type == Idp::Constants::DocumentTypes::PASSPORT
-  end
-
-  def mdl?(docv_result_response)
-    document_capture_session.mdl_requested? ||
-      docv_result_response&.mdl? ||
-      docv_result_response&.extra&.dig(:document_type_received) ==
-        Idp::Constants::DocumentTypes::MDL
   end
 
   def aamva_proofer
