@@ -56,7 +56,7 @@ module Idv
         controller: self,
         next_steps: [FlowPolicy::FINAL],
         preconditions: ->(idv_session:, user:) do
-          idv_session.phone_or_address_step_complete? &&
+          (idv_session.phone_or_address_step_complete? || idv_session.inherited_proofed?) &&
             user.active_or_pending_profile &&
             !idv_session.personal_key_acknowledged
         end,

@@ -40,6 +40,7 @@ module Idv
       create_document_capture_session
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
       idv_session.welcome_visited = true
+      idv_session.clear1_allowed = clear1_allowed?
 
       redirect_to idv_agreement_url
     end
@@ -139,6 +140,14 @@ module Idv
       return false if IdentityConfig.store.idv_doc_auth_mdl_enabled_percent.zero?
 
       ab_test_bucket(:DOC_AUTH_MDL, user: current_user) == :mdl_enabled
+    end
+
+    def clear1_allowed?
+      @clear1_allowed ||= begin
+        return false unless IdentityConfig.store.idv_clear1_enabled
+
+        ab_test_bucket(:CLEAR1_ALLOWED) == :idv_clear1_allowed
+      end
     end
   end
 end
