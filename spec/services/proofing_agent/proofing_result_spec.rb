@@ -319,4 +319,35 @@ RSpec.describe ProofingAgent::ProofingResult do
       )
     end
   end
+
+  context 'when state_id expiration is 3 days away' do
+    let(:aamva_result) { { success: true, vendor_name: 'TestVendor' } }
+    let(:pii) { { state_id_expiration: (Time.zone.today + 3.days).to_s } }
+
+    it 'does not fail with expiration_date_near reason' do
+      expect(subject.combined_result[:reason]).not_to eq('expiration_date_near')
+    end
+  end
+
+  context 'when system_error is provided and expiration is near' do
+    subject do
+      described_class.new(
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+        transaction_id:,
+        pii: { state_id_expiration: (Time.zone.today + 1.day).to_s },
+        service_provider_issuer:,
+        resolution_result:,
+        system_error: 'database_unavailable',
+      )
+    end
+
+    it 'returns failure with system_error reason' do
+      expect(subject.combined_result).to include(
+        success: false,
+        reason: 'system_error',
+      )
+    end
+  end
 end
