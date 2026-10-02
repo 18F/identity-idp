@@ -123,6 +123,13 @@ class CompletionsPresenter
     t('help_text.requested_attributes.document_images_html', sp_html: content_tag(:strong, sp_name))
   end
 
+  # The applications the broker may currently reach, for the per-application
+  # grant tree. See TokenExchangeReachableTargets.
+  # @return [Array<ServiceProvider>]
+  def token_exchange_targets
+    @token_exchange_targets ||= TokenExchangeReachableTargets.for_broker(current_sp.issuer)
+  end
+
   private
 
   def first_time_signing_in?

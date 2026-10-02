@@ -21,3 +21,5 @@ properties:
     $ref: './sign-in/MfaSubmissionCodeRateLimited.yml'
   session-timeout:
     $ref: './sign-in/SessionTimeout.yml'
+  token-exchange-login-completed:
+    $ref: './sign-in/TokenExchangeLoginCompleted.yml'

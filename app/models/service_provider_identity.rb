@@ -85,13 +85,6 @@ class ServiceProviderIdentity < ApplicationRecord
     user.last_sign_in_email_address
   end
 
-  # Token-exchange consent is only valid when it is present, not revoked, and
-  # not expired -- so a broker can only exchange for a user who affirmatively
-  # granted the capability during proofing and whose consent still stands.
-  def token_exchange_consented?
-    return false if token_exchange_consent_at.blank? || deleted_at.present?
-    token_exchange_consent_at >= CONSENT_EXPIRATION.ago
-  end
 
   # Biometric (document image) sharing consent is only valid when it is present,
   # not revoked, not expired, and not older than the user's most recent proofing

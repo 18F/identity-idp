@@ -753,30 +753,123 @@ RSpec.describe SignUp::CompletionsController do
         }
       end
 
-      it 're-renders the consent screen and mints no consent when the box is unchecked' do
+      let!(:target_a) do
+        create(
+          :service_provider, :active, issuer: 'target-a.gov', ial: 2,
+                                      allowed_token_exchange_brokers: [current_sp.issuer]
+        )
+      end
+      let!(:target_b) do
+        create(
+          :service_provider, :active, issuer: 'target-b.gov', ial: 2,
+                                      allowed_token_exchange_brokers: [current_sp.issuer]
+        )
+      end
+
+      before do
+        allow(TokenExchangeManifest).to receive(:allowed_targets)
+          .with(current_sp.issuer).and_return(%w[target-a.gov target-b.gov])
+      end
+
+      def grants
+        TokenExchangeGrant.where(user: user, broker_issuer: current_sp.issuer)
+      end
+
+      it 're-renders the consent screen and records no grant when no choice is made' do
         expect(@linker).not_to receive(:link_identity)
 
         patch :update
 
         expect(response).to render_template(:show)
         expect(@analytics).to_not have_logged_event(:token_exchange_consent_granted)
-        expect(broker_identity.reload.token_exchange_consent_at).to be_nil
+        expect(grants).to be_empty
       end
 
-      it 'treats a malformed idv_form param as unchecked rather than raising' do
+      it 're-renders when "specific" is chosen with no applications selected' do
+        patch :update, params: { idv_form: { token_exchange_grant: 'specific' } }
+
+        expect(response).to render_template(:show)
+        expect(flash.now[:error]).to eq(t('sign_up.token_exchange_grant.required_specific'))
+        expect(grants).to be_empty
+      end
+
+      it 'treats a malformed idv_form param as no choice rather than raising' do
         expect { patch :update, params: { idv_form: 'x' } }.not_to raise_error
         expect(response).to render_template(:show)
+        expect { patch :update, params: { idv_form: ['x'] } }.not_to raise_error
       end
 
-      it 'proceeds, records consent, and logs it when the box is checked' do
-        patch :update, params: { idv_form: { token_exchange_consent: '1' } }
+      it 're-renders when "all" is chosen but the broker currently reaches nothing' do
+        allow(TokenExchangeManifest).to receive(:allowed_targets)
+          .with(current_sp.issuer).and_return([])
+
+        patch :update, params: { idv_form: { token_exchange_grant: 'all' } }
+
+        expect(response).to render_template(:show)
+        expect(flash.now[:error]).to eq(
+          t('sign_up.token_exchange_grant.none_reachable', sp: current_sp.friendly_name),
+        )
+        expect(grants).to be_empty
+      end
+
+      it 'allows "all and future" even when the broker currently reaches nothing' do
+        allow(TokenExchangeManifest).to receive(:allowed_targets)
+          .with(current_sp.issuer).and_return([])
+
+        patch :update, params: { idv_form: { token_exchange_grant: 'all_and_future' } }
 
         expect(response).to_not render_template(:show)
-        expect(broker_identity.reload.token_exchange_consent_at).to be_present
+        expect(grants.active.pluck(:target_issuer)).to eq([TokenExchangeGrant::ALL_TARGETS])
+      end
+
+      it 'records an all-applications grant snapshotting every reachable target' do
+        patch :update, params: { idv_form: { token_exchange_grant: 'all' } }
+
+        expect(response).to_not render_template(:show)
+        expect(grants.pluck(:target_issuer)).to match_array(
+          [TokenExchangeGrant::ALL_TARGETS, 'target-a.gov', 'target-b.gov'],
+        )
+        expect(grants.find_by(target_issuer: TokenExchangeGrant::ALL_TARGETS).includes_future)
+          .to eq(false)
         expect(@analytics).to have_logged_event(
           :token_exchange_consent_granted,
-          issuer: current_sp.issuer,
+          issuer: current_sp.issuer, grant_choice: 'all', target_count: 2,
         )
+      end
+
+      it 'records an all-and-future grant' do
+        patch :update, params: { idv_form: { token_exchange_grant: 'all_and_future' } }
+
+        expect(grants.find_by(target_issuer: TokenExchangeGrant::ALL_TARGETS).includes_future)
+          .to eq(true)
+      end
+
+      it 'records a per-application grant for only the chosen, reachable targets' do
+        patch :update, params: {
+          idv_form: {
+            token_exchange_grant: 'specific',
+            token_exchange_targets: ['target-a.gov', 'not-reachable.gov'],
+          },
+        }
+
+        expect(response).to_not render_template(:show)
+        expect(grants.pluck(:target_issuer)).to eq(['target-a.gov'])
+        expect(grants.first.granted_at).to be_present
+        expect(grants.first.expires_at).to be_within(1.minute)
+          .of(TokenExchangeGrant::GRANT_DURATION.from_now)
+      end
+
+      it 'replaces a prior grant when the user changes their choice' do
+        TokenExchangeGrant.record!(
+          user: user, broker_issuer: current_sp.issuer, choice: :all_and_future,
+          targets: %w[target-a.gov target-b.gov]
+        )
+
+        patch :update, params: {
+          idv_form: { token_exchange_grant: 'specific', token_exchange_targets: ['target-b.gov'] },
+        }
+
+        expect(grants.active.pluck(:target_issuer)).to eq(['target-b.gov'])
       end
     end
   end

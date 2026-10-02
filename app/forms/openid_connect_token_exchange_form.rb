@@ -44,6 +44,7 @@ class OpenidConnectTokenExchangeForm
     self_exchange: ['invalid_target', :bad_request],
     unknown_target: ['invalid_target', :bad_request],
     target_forbids_broker: ['invalid_target', :bad_request],
+    target_not_granted: ['invalid_target', :bad_request],
     target_revoked: ['invalid_target', :bad_request],
     target_in_use: ['invalid_target', :bad_request],
   }.freeze
@@ -76,19 +77,34 @@ class OpenidConnectTokenExchangeForm
   validate :validate_audience_allowed
   validate :validate_target_service_provider
   validate :validate_target_allows_broker
+  validate :validate_target_granted
   validate :validate_broker_ial
   validate :validate_target_not_in_use
 
-  def initialize(params)
+  # @param params [Hash] RFC 8693 request parameters
+  # @param request [ActionDispatch::Request, nil] the inbound request, used only
+  #   to attribute fraud signals (IP, user agent) to the TARGET service provider
+  def initialize(params, request: nil)
     ATTRS.each { |key| instance_variable_set(:"@#{key}", params[key]) }
+    @request = request
   end
 
-  # Runs validations and mints the target identity exactly once.
+  # Runs validations and mints the target identity exactly once. On a
+  # successful mint the TARGET service provider -- the party receiving a
+  # credential for this user -- is billed and receives the fraud signal, exactly
+  # as if the user had completed a direct sign-in there. The broker is neither
+  # billed nor signalled for the target's return.
   def submit
-    @success = valid?
-    link_target_identity if @success
+    return @submit if defined?(@submit)
 
-    FormResponse.new(
+    @success = valid?
+    if @success
+      link_target_identity
+      bill_target
+      signal_target
+    end
+
+    @submit = FormResponse.new(
       success: @success,
       errors: errors,
       extra: {
@@ -96,6 +112,8 @@ class OpenidConnectTokenExchangeForm
         target_issuer: audience,
         minted_ial: @link_target_identity&.ial,
         minted_scope: target_scope.presence,
+        billable: @billable,
+        fraud_signalled: @fraud_signalled,
       },
     )
   end
@@ -158,14 +176,122 @@ class OpenidConnectTokenExchangeForm
     return false if broker_identity.blank? || broker_identity.user.blank?
     broker_service_provider&.active? &&
       broker_service_provider.token_exchange_broker_allowed? &&
-      broker_identity.token_exchange_consented? &&
+      broker_has_any_grant? &&
       OpenidConnectAttributeScoper.new(broker_identity.scope).token_exchange_requested? &&
       broker_asserted_ial2?
+  end
+
+  # The user has at least one active token-exchange grant for this broker.
+  # Which TARGETS it covers is checked separately (#validate_target_granted),
+  # after the broker gates, so an unauthorized caller learns nothing about
+  # which applications the user chose.
+  def broker_has_any_grant?
+    TokenExchangeGrant.active.exists?(
+      user: broker_identity.user, broker_issuer: broker_identity.service_provider,
+    )
   end
 
   def first_error_type
     present = errors.details.values.flatten.filter_map { |detail| detail[:type] }
     ERROR_CODES.keys.find { |type| present.include?(type) } || present.first
+  end
+
+  # Bills the TARGET service provider for the authentication it is receiving.
+  # Mirrors BillableEventTrackable#create_sp_return_log for a direct sign-in:
+  # same table, same IAL/profile attribution, issuer = the target. Billed once
+  # per (user, target, broker session) -- re-exchanging within the same session
+  # only rotates the token and is not a second billable return, matching the
+  # per-session dedupe of the direct path. The unique request_id index makes
+  # this atomic across concurrent exchanges.
+  def bill_target
+    return if @link_target_identity.blank?
+
+    attrs = sp_return_log_attributes
+    begin
+      SpReturnLog.create!(attrs.merge(request_id: billing_request_id, billable: true))
+      @billable = true
+    rescue ActiveRecord::RecordNotUnique
+      # Already billed this (user, target, broker session): record the repeat as
+      # a non-billable return, exactly as BillableEventTrackable does for a
+      # repeat visit within a session.
+      SpReturnLog.create!(attrs.merge(request_id: SecureRandom.uuid, billable: false))
+      @billable = false
+    end
+  end
+
+  def sp_return_log_attributes
+    ial = @link_target_identity.ial.to_i
+    billed_ial = ial == Idp::Constants::IAL_MAX ? Idp::Constants::IAL2 : ial
+    profile = billed_ial > 1 ? broker_identity.user.active_profile : nil
+
+    {
+      user: broker_identity.user,
+      ial: billed_ial,
+      issuer: target_service_provider.issuer,
+      profile_id: profile&.id,
+      profile_verified_at: profile&.verified_at,
+      profile_requested_issuer: profile&.initiating_service_provider_issuer,
+      returned_at: Time.zone.now,
+    }
+  end
+
+  # Deterministic per (user, target, broker session) so the second exchange in
+  # a session collides on the unique request_id index. A broker identity with no
+  # bound session cannot be deduped per session, so each mint is billed; the
+  # session liveness check (#broker_session_live?) means this cannot occur for a
+  # successfully validated exchange, but the fallback keeps billing correct
+  # rather than collapsing every mint for that user into one.
+  def billing_request_id
+    return SecureRandom.uuid if broker_identity.rails_session_id.blank?
+
+    Digest::SHA256.hexdigest(
+      [
+        'token-exchange',
+        broker_identity.user.id,
+        target_service_provider.issuer,
+        broker_identity.rails_session_id,
+      ].join(':'),
+    )
+  end
+
+  # Delivers the fraud / Attempts API signal to the TARGET service provider.
+  # The target is the relying party that will act on this credential, so it --
+  # not the broker -- must see the login-completed event and the agency-scoped
+  # user identifier. The tracker is built for the target SP explicitly; it
+  # encrypts to the target's key and writes under the target's issuer, so
+  # nothing about this return reaches the broker's event stream.
+  #
+  # The inbound request is a server-to-server call from the broker's backend,
+  # so its IP, user agent and cookies describe the broker's infrastructure, not
+  # the user's device. They are deliberately NOT forwarded: attributing the
+  # broker's egress address to the user would poison the target's fraud model.
+  # The raw IdP session id is likewise never released; the event's session
+  # identifier is an opaque per-session hash.
+  def signal_target
+    return if @link_target_identity.blank?
+    return unless target_service_provider.attempts_api_enabled?
+
+    AttemptsApi::Tracker.new(
+      session_id: fraud_session_id,
+      request: nil,
+      user: broker_identity.user,
+      sp: target_service_provider,
+      cookie_device_uuid: nil,
+      sp_redirect_uri: nil,
+      enabled_for_session: true,
+    ).token_exchange_login_completed(broker_issuer: broker_identity.service_provider)
+    @fraud_signalled = true
+  rescue StandardError => err
+    NewRelic::Agent.notice_error(err)
+    @fraud_signalled = false
+  end
+
+  # Opaque, stable within a broker session, and not reversible to the IdP
+  # session id (which must never leave the IdP).
+  def fraud_session_id
+    Digest::SHA256.hexdigest(
+      ['token-exchange-session', broker_identity.rails_session_id].join(':'),
+    )
   end
 
   def link_target_identity
@@ -334,17 +460,31 @@ class OpenidConnectTokenExchangeForm
     errors.add(:subject_token, 'broker_not_allowed', type: :broker_not_allowed)
   end
 
-  # The user must have granted the broker the token-exchange consent, AND the
+  # The user must have granted the broker a token-exchange grant, AND the
   # subject token being presented must itself have been issued with the
   # `token_exchange` scope. Checking the presented token's scope (not just the
-  # stored consent timestamp) means a later broker authorization that dropped
-  # the scope cannot reuse an earlier consent -- the consent travels with the
-  # grant it was given for.
+  # stored grant) means a later broker authorization that dropped the scope
+  # cannot reuse an earlier grant -- the consent travels with the grant it was
+  # given for.
   def validate_broker_consent
     return if broker_identity.blank? || broker_identity.user.blank?
-    return if broker_identity.token_exchange_consented? &&
+    return if broker_has_any_grant? &&
               OpenidConnectAttributeScoper.new(broker_identity.scope).token_exchange_requested?
     errors.add(:subject_token, 'consent_required', type: :consent_required)
+  end
+
+  # The user's grant must cover THIS target: either chosen explicitly, included
+  # in an all-targets grant, or covered by an all-and-future grant. A target the
+  # broker added after an all-targets (non-future) grant is not covered.
+  def validate_target_granted
+    return unless broker_authorized?
+    return if target_service_provider.blank?
+    return if TokenExchangeGrant.authorizes?(
+      user: broker_identity.user,
+      broker_issuer: broker_identity.service_provider,
+      target_issuer: audience,
+    )
+    errors.add(:audience, 'target_not_granted', type: :target_not_granted)
   end
 
   def validate_audience_allowed

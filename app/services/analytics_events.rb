@@ -7553,12 +7553,16 @@ module AnalyticsEvents
   # @param [String] target_issuer Issuer the token was exchanged for
   # @param [Integer] minted_ial IAL of the minted target identity
   # @param [String] minted_scope Scope granted to the minted target identity
+  # @param [Boolean] billable Whether the target was billed for this return
+  # @param [Boolean] fraud_signalled Whether the fraud signal was delivered to the target
   def openid_connect_token_exchange(
     success:,
     broker_issuer: nil,
     target_issuer: nil,
     minted_ial: nil,
     minted_scope: nil,
+    billable: nil,
+    fraud_signalled: nil,
     error_details: nil,
     **extra
   )
@@ -7570,16 +7574,22 @@ module AnalyticsEvents
       target_issuer:,
       minted_ial:,
       minted_scope:,
+      billable:,
+      fraud_signalled:,
       **extra,
     )
   end
 
   # Tracks when a user grants a broker SP consent to perform token exchange.
   # @param [String] issuer Issuer of the broker SP the consent was granted to
-  def token_exchange_consent_granted(issuer:, **extra)
+  # @param ["all","all_and_future","specific"] grant_choice Breadth of the grant
+  # @param [Integer] target_count Number of target applications the grant covers
+  def token_exchange_consent_granted(issuer:, grant_choice:, target_count:, **extra)
     track_event(
       :token_exchange_consent_granted,
       issuer:,
+      grant_choice:,
+      target_count:,
       **extra,
     )
   end

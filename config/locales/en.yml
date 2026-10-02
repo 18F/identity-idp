@@ -1088,7 +1088,7 @@ help_text.requested_attributes.intro_html: 'We’ll share this information with 
 help_text.requested_attributes.phone: Phone number
 help_text.requested_attributes.select_email_link: Select email
 help_text.requested_attributes.social_security_number: Social Security number
-help_text.requested_attributes.token_exchange_html: 'To connect you to other government services, %{sp_html} will be able to share your verified identity with agencies you choose to access, so you don’t have to verify your identity again. Only the information each agency is approved to receive is shared.'
+help_text.requested_attributes.token_exchange_html: '%{sp_html} can sign you in to other government services you choose, using your verified identity, so you don’t have to verify again. Each service receives only the information it is approved for and can see that you were connected through %{sp_html}.'
 help_text.requested_attributes.verified_at: Updated on
 help_text.requested_attributes.x509_issuer: PIV/CAC Issuer
 help_text.requested_attributes.x509_subject: PIV/CAC Identity
@@ -1855,8 +1855,16 @@ sign_up.document_images_sharing_consent_required: You must consent to sharing yo
 sign_up.information_sharing_html: To learn how %{app_name} shares your information, review our %{link_html}.
 sign_up.nds_terms_intro: By continuing, you accept the
 sign_up.terms: I read and accept the %{app_name}
-sign_up.token_exchange_consent_label: I allow %{sp} to share my verified identity with other government services I choose to access.
-sign_up.token_exchange_consent_required: You must allow this to continue to %{sp}.
+sign_up.token_exchange_grant.all: All services %{sp} currently offers
+sign_up.token_exchange_grant.all_and_future: All services %{sp} offers now or adds in the next 12 months
+sign_up.token_exchange_grant.legend: Choose which government services %{sp} may connect you to
+sign_up.token_exchange_grant.no_targets: No services are available to choose yet.
+sign_up.token_exchange_grant.none_reachable: '%{sp} has no services available to connect you to right now. Choose a different option or try again later.'
+sign_up.token_exchange_grant.required: Choose which services %{sp} may connect you to before continuing.
+sign_up.token_exchange_grant.required_specific: Select at least one service, or choose a different option.
+sign_up.token_exchange_grant.specific: Only the services I choose
+sign_up.token_exchange_grant.specific_heading: Choose specific services
+sign_up.token_exchange_grant.specific_hint: Select the services %{sp} may connect you to. You can change this later from your account.
 simple_form.error_notification.default_message: 'Please review the problems below:'
 simple_form.no: 'No'
 simple_form.required.html: ''

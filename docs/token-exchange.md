@@ -59,19 +59,30 @@ existing OIDC consent (grant) flow rather than granted silently.
 - Because it is an IAL2-gated scope, it is only grantable in an identity-proofed
   context — consistent with the exchange itself requiring IAL2.
 - On the agency handoff (completions) screen the user sees a plain-language
-  disclosure and must affirmatively check the token-exchange consent box to
-  continue to the broker. Consent is **required** for a broker that requests the
-  scope: submitting without checking it re-renders the screen with an error and
-  proceeds no further. The decision is recorded on the broker identity as
-  `token_exchange_consent_at`, set-or-cleared each time so a dropped scope or a
-  new proofing session never carries stale consent forward.
-- The exchange endpoint mints **only** when the broker identity has a valid
-  recorded consent (`ServiceProviderIdentity#token_exchange_consented?`, subject
-  to the same one-year `CONSENT_EXPIRATION` as other SP consent) **and** the
+  disclosure and must choose the **breadth of the grant** before continuing to
+  the broker. A choice is **required**; submitting without one re-renders the
+  screen with an error. The options are:
+  - **All services the broker currently offers** — covers exactly the targets on
+    the broker's manifest at the moment of consent. Each is snapshotted as its
+    own grant row, so a target the broker adds *later* is **not** covered.
+  - **All services now or added in the next 12 months** — additionally covers
+    targets the broker adds during the grant period.
+  - **Only the services I choose** — a collapsed-by-default list of the broker's
+    reachable applications (manifest ∩ active ∩ opted-in to this broker); the
+    user picks one or more. At least one is required for this option.
+- Grants are stored in `token_exchange_grants`, **one row per (user, broker,
+  target)** with its own `granted_at` / `expires_at` (12 months) / `revoked_at`,
+  so every application the user authorized is independently recorded and
+  expirable. An all-targets row uses the `*` sentinel; `includes_future`
+  distinguishes the two "all" choices. Re-submitting the screen replaces the
+  prior grants for that broker, so a changed decision never leaves stale rows.
+- The exchange endpoint mints **only** when the user holds an active grant that
+  **covers the requested target** (`TokenExchangeGrant.authorizes?`) **and** the
   subject token being presented was itself issued with the `token_exchange`
   scope. Consent travels with the grant it was given for: a later broker
-  authorization that dropped the scope cannot reuse an earlier consent. Absent
-  or expired consent fails closed with `invalid_request`.
+  authorization that dropped the scope cannot reuse an earlier grant. A target
+  outside the grant fails with `invalid_target`; a broker with no grant at all
+  fails with `invalid_request`.
 
 This reuses login's established model: an SP's accessible attributes are fixed at
 onboarding (its `attribute_bundle`), the SP may request a subset per grant, and
@@ -134,6 +145,30 @@ cached list). If the broker is unreachable past that window, login.gov **fails
 closed** — it returns an empty allowlist rather than serving a stale, possibly
 revoked one. So a broker's revocation always takes effect within the cache
 window even if its manifest host is down.
+
+## Billing and fraud signals go to the target
+
+A minted token is a credential the **target** relying party will act on, so the
+target — not the broker — is treated as the party receiving an authentication,
+exactly as if the user had completed a direct sign-in there.
+
+- **Billing.** Each successful mint writes an `SpReturnLog` row for the
+  **target issuer**, with the same IAL and profile attribution the direct
+  sign-in path records. It is billable once per (user, target, broker session);
+  a repeated exchange within the same session only rotates the token and is
+  recorded as non-billable, mirroring the per-session dedupe of the direct path.
+  The broker is never billed for the target's return.
+- **Fraud / Attempts API.** Each successful mint delivers a
+  `token-exchange-login-completed` event to the **target's** Attempts API stream
+  (only when the target has the Attempts API enabled). The tracker is built for
+  the target explicitly: it encrypts to the target's key and writes under the
+  target's issuer, so nothing about this return reaches the broker's stream. The
+  event carries `broker_issuer` so the target can see it was brokered and by
+  whom — the same fact the id_token's `act` claim conveys. Because the exchange
+  is a server-to-server call from the broker's backend, the inbound request's IP,
+  user agent and cookies describe the broker's infrastructure, not the user's
+  device; they are deliberately **not** forwarded, and the event's session
+  identifier is an opaque hash, never the IdP session id.
 
 ## RFC 8693 conformance notes
 
