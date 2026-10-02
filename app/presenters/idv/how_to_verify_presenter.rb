@@ -4,7 +4,7 @@ class Idv::HowToVerifyPresenter
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :selfie_required, :mdl_enabled, :clear1_allowed
+  attr_reader :selfie_required, :mdl_enabled
 
   def initialize(selfie_check_required:, mdl_enabled: false, clear1_allowed: false)
     @selfie_required = selfie_check_required
