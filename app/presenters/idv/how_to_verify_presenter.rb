@@ -91,6 +91,6 @@ class Idv::HowToVerifyPresenter
   end
 
   def clear1_allowed?
-    clear1_allowed
+    @clear1_allowed
   end
 end

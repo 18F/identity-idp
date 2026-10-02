@@ -147,8 +147,8 @@ RSpec.describe Idv::PersonalKeyController do
             idv_session.clear1_verified = true
           end
 
-          it 'returns a truthy result' do
-            expect(preconditions).to be_truthy
+          it 'returns true' do
+            expect(preconditions).to eq(true)
           end
         end
       end

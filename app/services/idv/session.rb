@@ -477,6 +477,12 @@ module Idv
         (skip_hybrid_handoff || desktop_test_mode_enabled?)
     end
 
+    def gpo_verification_needed?
+      return false if clear1_allowed && clear1_verified
+
+      !phone_confirmed? || verify_by_mail?
+    end
+
     private
 
     attr_reader :user_session
@@ -520,12 +526,6 @@ module Idv
       elsif review_statuses.include?('review')
         'threatmetrix_review'
       end
-    end
-
-    def gpo_verification_needed?
-      return false if clear1_allowed && clear1_verified
-
-      !phone_confirmed? || verify_by_mail?
     end
   end
 end

@@ -52,12 +52,12 @@ module Idv
 
         if result.success?
           idv_session.clear1_verified = true
+          # TODO: validate_pii_from_result(pii)
           pii = extract_pii_from_result(result)
-          # todo: validate_pii_from_result(pii)
           idv_session.applicant = pii
           redirect_to idv_enter_password_url
         else
-          # todo: redirect_to clear1 failure page
+          # TODO: redirect_to clear1 failure page
           idv_session.clear1_verified = false
           redirect_to idv_clear1_session_url
         end
@@ -79,6 +79,7 @@ module Idv
             idv_session.clear1_verification_token = nil
             idv_session.clear1_verification_session_id = nil
             idv_session.clear1_verification_state = nil
+            idv_session.clear1_verified = nil
           end,
         )
       end
@@ -94,7 +95,7 @@ module Idv
       end
 
       def fetch_synchronous_verification_result
-        # todo: make async
+        # TODO: make async
         timer = JobHelpers::Timer.new
         timer.time('vendor_request') do
           Proofing::Clear1::Requests::ResultRequest.new(
