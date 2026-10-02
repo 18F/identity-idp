@@ -19,9 +19,9 @@ RSpec.describe Users::WebauthnSetupController do
     )
   end
 
-  def expect_multi_factor_authentication_setup(attributes)
-    attributes = if attributes.instance_of?(Hash)
-                   { auto_passkey_prompted: false }.merge(attributes)
+  def with_auto_passkey_prompted_default(attributes)
+    if attributes.instance_of?(Hash)
+      { auto_passkey_prompted: false }.merge(attributes)
     elsif attributes.instance_of?(RSpec::Matchers::BuiltIn::Include)
       include(auto_passkey_prompted: false, **attributes.expecteds.first)
     elsif attributes.instance_of?(RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher)
@@ -29,17 +29,19 @@ RSpec.describe Users::WebauthnSetupController do
     else
       attributes
     end
+  end
 
+  def expect_multi_factor_authentication_setup(attributes)
     expect(@analytics).to have_logged_event(
       'Multi-Factor Authentication Setup',
-      attributes,
+      with_auto_passkey_prompted_default(attributes),
     )
   end
 
   def expect_webauthn_setup_submitted(attributes)
     expect(@analytics).to have_logged_event(
       :webauthn_setup_submitted,
-      attributes,
+      with_auto_passkey_prompted_default(attributes),
     )
   end
 
@@ -99,7 +101,6 @@ RSpec.describe Users::WebauthnSetupController do
           enabled_mfa_methods_count: 0,
           in_account_creation_flow: false,
           auto_passkey_prompted: false,
-          webauthn_platform_signup_recommended: false,
         )
       end
 
@@ -363,6 +364,7 @@ RSpec.describe Users::WebauthnSetupController do
 
       context 'auto_trigger for account creation passkey prompt' do
         before do
+          request.headers['User-Agent'] = mobile_user_agent
           controller.user_session[:in_account_creation_flow] = true
         end
 
@@ -398,6 +400,7 @@ RSpec.describe Users::WebauthnSetupController do
 
         context 'when auto prompt is requested and platform authenticator is used' do
           before do
+            controller.user_session[:auto_passkey_prompted] = true
             controller.user_session[:auto_passkey_prompt_pending] = true
           end
 
@@ -406,6 +409,27 @@ RSpec.describe Users::WebauthnSetupController do
 
             expect(assigns(:auto_trigger)).to eq(true)
             expect(controller.user_session[:auto_passkey_prompt_pending]).to be_nil
+          end
+
+          it 'logs the visit as having prompted the user' do
+            get :new, params: { platform: true, auto_trigger: true }
+
+            expect(@analytics).to have_logged_event(
+              'WebAuthn Setup Visited',
+              platform_authenticator: true,
+              enabled_mfa_methods_count: 0,
+              in_account_creation_flow: true,
+              auto_passkey_prompted: true,
+            )
+          end
+
+          it 'still logs the prompt after the browser prompt is canceled' do
+            get :new, params: { platform: true, auto_trigger: true, error: 'NotAllowedError' }
+
+            expect(@analytics).to have_logged_event(
+              :webauthn_setup_submitted,
+              hash_including(success: false, auto_passkey_prompted: true),
+            )
           end
 
           it 'does not auto-trigger again after the pending prompt is consumed' do
@@ -427,6 +451,38 @@ RSpec.describe Users::WebauthnSetupController do
           it 'sets auto_trigger to false' do
             get :new, params: { platform: true }
             expect(assigns(:auto_trigger)).to eq(false)
+          end
+
+          it 'logs the visit as not having prompted the user' do
+            get :new, params: { platform: true }
+
+            expect(@analytics).to have_logged_event(
+              'WebAuthn Setup Visited',
+              platform_authenticator: true,
+              enabled_mfa_methods_count: 0,
+              in_account_creation_flow: true,
+              auto_passkey_prompted: false,
+            )
+          end
+        end
+
+        context 'when the request is not from a mobile device' do
+          before do
+            request.headers['User-Agent'] = desktop_user_agent
+            controller.user_session[:auto_passkey_prompted] = true
+            controller.user_session[:auto_passkey_prompt_pending] = true
+          end
+
+          it 'logs the visit as not having prompted the user' do
+            get :new, params: { platform: true, auto_trigger: true }
+
+            expect(@analytics).to have_logged_event(
+              'WebAuthn Setup Visited',
+              platform_authenticator: true,
+              enabled_mfa_methods_count: 0,
+              in_account_creation_flow: true,
+              auto_passkey_prompted: false,
+            )
           end
         end
 
@@ -479,7 +535,6 @@ RSpec.describe Users::WebauthnSetupController do
         controller.user_session[:webauthn_challenge] = webauthn_challenge
         controller.user_session[:in_account_creation_flow] = true
         controller.user_session[:auto_passkey_prompted] = true
-        controller.user_session[:webauthn_platform_signup_setup_recommended]
       end
 
       context 'when auto_passkey_prompted is set and no mfa_selections queued' do
@@ -647,6 +702,42 @@ RSpec.describe Users::WebauthnSetupController do
               success: false,
               platform_authenticator: true,
             ),
+          )
+        end
+
+        it 'logs that setup came from the automatic passkey prompt' do
+          request.headers['User-Agent'] = mobile_user_agent
+          controller.user_session[:auto_passkey_prompted] = true
+          expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn_platform')
+
+          patch :confirm, params: params
+
+          expect(@analytics).to have_logged_event(
+            :webauthn_setup_submitted,
+            platform_authenticator: true,
+            in_account_creation_flow: true,
+            success: true,
+            auto_passkey_prompted: true,
+          )
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication Setup',
+            hash_including(auto_passkey_prompted: true),
+          )
+        end
+
+        it 'logs setup as not prompted for a desktop user' do
+          request.headers['User-Agent'] = desktop_user_agent
+          controller.user_session[:auto_passkey_prompted] = true
+          expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn_platform')
+
+          patch :confirm, params: params
+
+          expect(@analytics).to have_logged_event(
+            :webauthn_setup_submitted,
+            platform_authenticator: true,
+            in_account_creation_flow: true,
+            success: true,
+            auto_passkey_prompted: false,
           )
         end
       end

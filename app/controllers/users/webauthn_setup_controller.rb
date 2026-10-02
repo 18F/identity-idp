@@ -31,7 +31,7 @@ module Users
       )
       result = form.submit(new_params)
       @platform_authenticator = form.platform_authenticator?
-      log_passkey_upsell_visit if passkey_upsell_request?
+      record_auto_passkey_prompt if passkey_upsell_request?
       @presenter = build_webauthn_setup_presenter(
         platform_authenticator: @platform_authenticator,
         passkey_upsell: passkey_upsell_request?,
@@ -40,9 +40,7 @@ module Users
         platform_authenticator: result.extra[:platform_authenticator],
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: result.extra[:enabled_mfa_methods_count],
-        auto_passkey_prompted: auto_trigger_request?,
-        webauthn_platform_signup_recommended:
-          user_session[:webauthn_platform_signup_setup_recommended] || false,
+        auto_passkey_prompted:,
       )
       prepare_webauthn_setup_form(
         platform_authenticator: @platform_authenticator,
@@ -66,6 +64,7 @@ module Users
           in_account_creation_flow: user_session[:in_account_creation_flow] || false,
           errors: result.errors,
           success: false,
+          auto_passkey_prompted:,
         )
 
         mfa_device_type = @platform_authenticator.present? ?
@@ -122,26 +121,14 @@ module Users
 
     private
 
-    def log_passkey_upsell_visit
-      analytics.webauthn_platform_signup_setup_ab_test_visited(
-        upsell_bucket: passkey_upsell_bucket,
-      )
-      user_session[:auto_passkey_prompted] = true if passkey_upsell_bucket.present?
-      user_session[:webauthn_platform_signup_setup_recommended] = true
-    end
-
-    def log_passkey_upsell_submitted
-      analytics.webauthn_platform_signup_setup_ab_test_submitted(
-        upsell_bucket: passkey_upsell_bucket,
-      )
+    # Marks the session as having been automatically prompted, so that later steps can both avoid
+    # re-prompting and attribute the resulting setup to the prompt.
+    def record_auto_passkey_prompt
+      user_session[:auto_passkey_prompted] = true
     end
 
     def passkey_upsell_request?
       params[:passkey_upsell] == 'true' && in_account_creation_flow?
-    end
-
-    def passkey_upsell_bucket
-      @passkey_upsell_bucket ||= ab_test_bucket(:PASSKEY_UPSELL)
     end
 
     def validate_existing_platform_authenticator
@@ -186,8 +173,8 @@ module Users
         platform_authenticator: form.platform_authenticator?,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         success: true,
+        auto_passkey_prompted:,
       )
-      log_passkey_upsell_submitted if passkey_upsell_request?
       handle_remember_device_preference(params[:remember_device])
       if form.setup_as_platform_authenticator?
         handle_valid_verification_for_confirmation_context(
@@ -225,9 +212,13 @@ module Users
       {
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         webauthn_platform_recommended: user_session[:webauthn_platform_recommended],
-        auto_passkey_prompted: auto_trigger_request?,
+        auto_passkey_prompted:,
         attempts: mfa_attempts_count,
       }
+    end
+
+    def auto_passkey_prompted
+      user_session[:auto_passkey_prompted] == true && mobile? && in_account_creation_flow?
     end
 
     def auto_trigger_request?
@@ -250,10 +241,7 @@ module Users
     end
 
     def next_setup_path
-      if @platform_authenticator &&
-         (user_session[:auto_passkey_prompted] ||
-          user_session[:webauthn_platform_signup_setup_recommended])
-
+      if @platform_authenticator && user_session[:auto_passkey_prompted]
         return super || authentication_methods_setup_path
       end
 
