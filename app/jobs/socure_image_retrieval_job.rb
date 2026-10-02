@@ -13,6 +13,8 @@ class SocureImageRetrievalJob < ApplicationJob
   )
     @document_capture_session_uuid = document_capture_session_uuid
 
+    return if document_capture_session&.mdl_requested?
+
     result = fetch_images(reference_id, passport_book:)
     if result.is_a?(Idv::IdvImages)
       result.write_with_data(image_storage_data:)
