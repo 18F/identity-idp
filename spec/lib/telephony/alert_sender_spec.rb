@@ -110,6 +110,24 @@ RSpec.describe Telephony::AlertSender do
         sp_or_app_name: sp_or_app_name,
       )
     end
+
+    it 'logs the response including the country_code' do
+      expect(Telephony).to receive(:log_info).with(
+        event: hash_including(
+          adapter: :test,
+          channel: :sms,
+          context: 'doc_auth_link',
+          country_code: 'GB',
+        ),
+      )
+
+      subject.send_doc_auth_link(
+        to: '+44 20 7946 0000',
+        link: link,
+        country_code: 'GB',
+        sp_or_app_name: sp_or_app_name,
+      )
+    end
   end
 
   describe 'send_personal_key_regeneration_notice' do
