@@ -548,8 +548,6 @@ team_ursula_email: ''
 telephony_adapter: test
 test_ssn_allowed_list: ''
 token_exchange_enabled: false
-token_exchange_manifest_public_keys: '{}'
-token_exchange_manifest_urls: '{}'
 token_exchange_service_providers: '[]'
 totp_code_interval: 30
 ui_test_bucket_params_enabled: true

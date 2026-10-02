@@ -212,8 +212,6 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
         allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:token_exchange_service_providers)
           .and_return([service_provider.issuer])
-        allow(TokenExchangeManifest).to receive(:allowed_targets)
-          .with(service_provider.issuer).and_return(['target.gov'])
       end
 
       shared_examples 'renders the grant control' do
