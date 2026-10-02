@@ -285,7 +285,7 @@ class ProofingAgentJob < ApplicationJob
         analytics.idv_phone_confirmation_vendor_submitted(
           **{
             success: phone_precheck_body&.dig(:success),
-            vendor: phone_precheck_body&.dig(:vendor_name),
+            vendor: phone_precheck_body,
             area_code: phone_info&.dig(:area_code),
             country_code: phone_info&.dig(:country_code),
             phone_fingerprint: phone_info&.dig(:phone_fingerprint),
