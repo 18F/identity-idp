@@ -114,6 +114,21 @@ class CompletionsPresenter
     t('help_text.requested_attributes.token_exchange_html', sp_html: content_tag(:strong, sp_name))
   end
 
+  # The applications the broker may currently reach, resolved to active service
+  # providers with display names, for the per-application grant tree. Sourced
+  # from the broker's signed manifest so the user sees exactly what the grant
+  # covers today; a target not yet onboarded (or not opted in to this broker) is
+  # omitted because no grant for it could ever be honored.
+  # @return [Array<ServiceProvider>]
+  def token_exchange_targets
+    return @token_exchange_targets if defined?(@token_exchange_targets)
+
+    issuers = TokenExchangeManifest.allowed_targets(current_sp.issuer)
+    @token_exchange_targets = ServiceProvider.active.where(issuer: issuers)
+      .select { |sp| sp.allows_token_exchange_broker?(current_sp.issuer) }
+      .sort_by { |sp| sp.display_name.to_s.downcase }
+  end
+
   private
 
   def first_time_signing_in?

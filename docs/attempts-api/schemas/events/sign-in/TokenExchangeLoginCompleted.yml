@@ -1,0 +1,10 @@
+description: |
+  A credential for this user was minted for the service provider through a token exchange initiated by a broker, rather than through a direct sign-in. The service provider receives this event in place of login-completed so it can see that the user was brokered and by whom.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      broker_issuer:
+        type: string
+        description: |
+          The issuer of the broker service provider that initiated the token exchange on the user's behalf.

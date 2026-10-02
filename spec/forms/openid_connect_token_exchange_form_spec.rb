@@ -26,11 +26,13 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       ial: broker_ial,
       verified_attributes: %w[email],
       scope: 'openid email token_exchange',
-      token_exchange_consent_at: consent_at,
     )
   end
   let(:broker_ial) { Idp::Constants::IAL2 }
-  let(:consent_at) { Time.zone.now }
+  # The user's token-exchange grant for the broker. Defaults to an all-targets
+  # grant that covers target.gov; override to nil for "never consented".
+  let(:grant_choice) { :all }
+  let(:grant_targets) { ['target.gov'] }
 
   let(:params) do
     {
@@ -50,6 +52,11 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     allow(TokenExchangeManifest).to receive(:allowed_targets)
       .with('broker.gov').and_return(['target.gov'])
     OutOfBandSessionAccessor.new(rails_session_id).put_empty_user_session
+    if grant_choice
+      TokenExchangeGrant.record!(
+        user: user, broker_issuer: 'broker.gov', choice: grant_choice, targets: grant_targets,
+      )
+    end
   end
 
   describe '#submit' do
@@ -169,7 +176,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     end
 
     context 'when an unauthorized token holder probes audiences' do
-      let(:consent_at) { nil }
+      let(:grant_choice) { nil }
       let!(:revoked_target_identity) do
         create(
           :service_provider_identity,
@@ -211,7 +218,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     end
 
     context 'when the user never granted token-exchange consent' do
-      let(:consent_at) { nil }
+      let(:grant_choice) { nil }
 
       it 'fails and mints nothing' do
         expect(form.submit.success?).to eq(false)
@@ -219,8 +226,12 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when the token-exchange consent has expired' do
-      let(:consent_at) { (ServiceProviderIdentity::CONSENT_EXPIRATION + 1.day).ago }
+    context 'when the token-exchange grant has expired' do
+      before do
+        TokenExchangeGrant.where(user: user).update_all(
+          expires_at: 1.day.ago, granted_at: (TokenExchangeGrant::GRANT_DURATION + 1.day).ago,
+        )
+      end
 
       it 'fails and mints nothing' do
         expect(form.submit.success?).to eq(false)
@@ -321,7 +332,6 @@ RSpec.describe OpenidConnectTokenExchangeForm do
           ial: Idp::Constants::IAL2,
           verified_attributes: %w[email phone address],
           scope: 'openid email phone address token_exchange',
-          token_exchange_consent_at: Time.zone.now,
         )
       end
 
@@ -348,7 +358,6 @@ RSpec.describe OpenidConnectTokenExchangeForm do
             ial: Idp::Constants::IAL2,
             verified_attributes: %w[email given_name birthdate phone],
             scope: 'openid email profile phone token_exchange',
-            token_exchange_consent_at: Time.zone.now,
           )
         end
 
@@ -379,7 +388,6 @@ RSpec.describe OpenidConnectTokenExchangeForm do
             ial: Idp::Constants::IAL2,
             verified_attributes: %w[email given_name family_name birthdate verified_at],
             scope: 'openid email profile token_exchange',
-            token_exchange_consent_at: Time.zone.now,
           )
         end
 
@@ -421,7 +429,6 @@ RSpec.describe OpenidConnectTokenExchangeForm do
             ial: Idp::Constants::IAL2,
             verified_attributes: %w[email address],
             scope: 'openid email address token_exchange',
-            token_exchange_consent_at: Time.zone.now,
           )
         end
 
@@ -446,7 +453,6 @@ RSpec.describe OpenidConnectTokenExchangeForm do
             ial: Idp::Constants::IAL2,
             verified_attributes: %w[email social_security_number],
             scope: 'openid email token_exchange',
-            token_exchange_consent_at: Time.zone.now,
           )
         end
 
@@ -487,6 +493,136 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
+    context 'per-application grant semantics' do
+      let!(:other_target) do
+        create(
+          :service_provider, :active,
+          issuer: 'other.gov', ial: 2, attribute_bundle: %w[email],
+          allowed_token_exchange_brokers: ['broker.gov']
+        )
+      end
+
+      before do
+        allow(TokenExchangeManifest).to receive(:allowed_targets)
+          .with('broker.gov').and_return(%w[target.gov other.gov])
+      end
+
+      context 'with a grant for specific applications only' do
+        let(:grant_choice) { :specific }
+        let(:grant_targets) { ['target.gov'] }
+
+        it 'mints for a chosen application' do
+          expect(form.submit.success?).to eq(true)
+        end
+
+        it 'refuses an application the user did not choose, with invalid_target' do
+          form = described_class.new(params.merge(audience: 'other.gov'))
+          expect(form.submit.success?).to eq(false)
+          expect(form.response[:error]).to eq('invalid_target')
+          expect(user.identities.find_by(service_provider: 'other.gov')).to be_nil
+        end
+      end
+
+      context 'with an all-applications grant (no future)' do
+        let(:grant_choice) { :all }
+        let(:grant_targets) { ['target.gov'] }
+
+        it 'mints for an application that existed at consent time' do
+          expect(form.submit.success?).to eq(true)
+        end
+
+        it 'does not cover an application the broker added after consent' do
+          form = described_class.new(params.merge(audience: 'other.gov'))
+          expect(form.submit.success?).to eq(false)
+          expect(form.response[:error]).to eq('invalid_target')
+        end
+      end
+
+      context 'with an all-and-future grant' do
+        let(:grant_choice) { :all_and_future }
+        let(:grant_targets) { ['target.gov'] }
+
+        it 'covers an application the broker added after consent' do
+          form = described_class.new(params.merge(audience: 'other.gov'))
+          expect(form.submit.success?).to eq(true)
+        end
+
+        it 'records an independent timestamp per application' do
+          rows = TokenExchangeGrant.where(user: user, broker_issuer: 'broker.gov')
+          expect(rows.pluck(:target_issuer)).to match_array(
+            [TokenExchangeGrant::ALL_TARGETS,
+             'target.gov'],
+          )
+          expect(rows.pluck(:granted_at, :expires_at).flatten).to all(be_present)
+        end
+      end
+    end
+
+    context 'billing the target on mint' do
+      it 'records a billable return for the TARGET issuer, not the broker' do
+        expect { form.submit }.to change { SpReturnLog.count }.by(1)
+
+        log = SpReturnLog.last
+        expect(log.issuer).to eq('target.gov')
+        expect(log.billable).to eq(true)
+        expect(log.user).to eq(user)
+        expect(log.ial).to eq(Idp::Constants::IAL2)
+        expect(log.profile_id).to eq(user.active_profile.id)
+        expect(SpReturnLog.where(issuer: 'broker.gov')).to be_empty
+        expect(form.submit.to_h[:billable]).to eq(true)
+      end
+
+      it 'bills once per broker session even if the exchange is repeated' do
+        form.submit
+        second = described_class.new(params)
+        expect { second.submit }.not_to(change { SpReturnLog.where(billable: true).count })
+        expect(second.submit.to_h[:billable]).to eq(false)
+      end
+
+      it 'bills an IALMax broker token as IAL2' do
+        broker_identity.update!(ial: Idp::Constants::IAL_MAX)
+        form.submit
+        expect(SpReturnLog.last.ial).to eq(Idp::Constants::IAL2)
+      end
+    end
+
+    context 'fraud signal routing on mint' do
+      let(:target_tracker) { instance_double(AttemptsApi::Tracker) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:attempts_api_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
+          [{ 'issuer' => 'target.gov',
+             'keys' => [OpenSSL::PKey::RSA.new(2048).public_key.to_pem] }],
+        )
+        allow(AttemptsApi::Tracker).to receive(:new).and_return(target_tracker)
+        allow(target_tracker).to receive(:token_exchange_login_completed)
+      end
+
+      it 'sends the login-completed signal to the TARGET service provider' do
+        request = instance_double(ActionDispatch::Request, cookies: {})
+        described_class.new(params, request: request).submit
+
+        expect(AttemptsApi::Tracker).to have_received(:new).with(
+          hash_including(sp: target_sp, user: user, request: request, enabled_for_session: true),
+        )
+        expect(target_tracker).to have_received(:token_exchange_login_completed)
+          .with(broker_issuer: 'broker.gov')
+      end
+
+      it 'never builds a tracker for the broker' do
+        form.submit
+        expect(AttemptsApi::Tracker).not_to have_received(:new)
+          .with(hash_including(sp: broker_sp))
+      end
+
+      it 'sends nothing when the target has not enabled the Attempts API' do
+        allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return([])
+        form.submit
+        expect(AttemptsApi::Tracker).not_to have_received(:new)
+      end
+    end
+
     context 'when the presented broker token was not issued with token_exchange' do
       let(:broker_identity) do
         create(
@@ -498,7 +634,6 @@ RSpec.describe OpenidConnectTokenExchangeForm do
           ial: Idp::Constants::IAL2,
           verified_attributes: %w[email],
           scope: 'openid email',
-          token_exchange_consent_at: Time.zone.now,
         )
       end
 

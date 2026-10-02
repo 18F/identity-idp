@@ -34,10 +34,10 @@ RSpec.describe OpenidConnect::ExchangeController do
         ial: 2,
         verified_attributes: %w[email],
         scope: 'openid email token_exchange',
-        token_exchange_consent_at: Time.zone.now,
       )
     end
     let(:subject_token) { broker_identity.access_token }
+    let(:grant_choice) { :all }
 
     before do
       allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
@@ -46,6 +46,11 @@ RSpec.describe OpenidConnect::ExchangeController do
       allow(TokenExchangeManifest).to receive(:allowed_targets)
         .with('broker.gov').and_return(['target.gov'])
       OutOfBandSessionAccessor.new(rails_session_id).put_empty_user_session
+      if grant_choice
+        TokenExchangeGrant.record!(
+          user: user, broker_issuer: 'broker.gov', choice: grant_choice, targets: ['target.gov'],
+        )
+      end
     end
 
     it 'returns a target access token' do
@@ -69,19 +74,7 @@ RSpec.describe OpenidConnect::ExchangeController do
     end
 
     context 'when the user never granted token-exchange consent' do
-      let!(:broker_identity) do
-        create(
-          :service_provider_identity,
-          user: user,
-          service_provider: 'broker.gov',
-          access_token: SecureRandom.urlsafe_base64,
-          rails_session_id: rails_session_id,
-          ial: 2,
-          verified_attributes: %w[email],
-          scope: 'openid email token_exchange',
-          token_exchange_consent_at: nil,
-        )
-      end
+      let(:grant_choice) { nil }
 
       it 'returns invalid_request (RFC 8693 §2.2.2) and mints nothing' do
         action

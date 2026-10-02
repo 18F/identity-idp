@@ -1,0 +1,75 @@
+<%#
+Token-exchange grant control, rendered inside the completions form in both
+layouts.
+
+locals:
+* form: the simple_form_for builder for :idv_form
+* presenter: CompletionsPresenter
+* compact: when true, omit outer spacing classes (NDS card layout)
+%>
+<% spacing = local_assigns[:compact] ? '' : 'margin-bottom-4' %>
+
+<%= render(AlertComponent.new(type: :info, class: spacing)) do %>
+  <%= presenter.token_exchange_sharing_disclosure.html_safe %>
+<% end %>
+
+<fieldset class="usa-fieldset <%= spacing %>" data-token-exchange-grant>
+  <legend class="usa-legend">
+    <%= t('sign_up.token_exchange_grant.legend', sp: presenter.sp_name) %>
+  </legend>
+
+  <%= form.input(
+        :token_exchange_grant,
+        as: :radio_buttons,
+        label: false,
+        required: true,
+        collection: [
+          [
+            t('sign_up.token_exchange_grant.all', sp: presenter.sp_name),
+            'all',
+            { 'data-token-exchange-choice': 'all' },
+          ],
+          [
+            t('sign_up.token_exchange_grant.all_and_future', sp: presenter.sp_name),
+            'all_and_future',
+            { 'data-token-exchange-choice': 'all_and_future' },
+          ],
+          [
+            t('sign_up.token_exchange_grant.specific'),
+            'specific',
+            { 'data-token-exchange-choice': 'specific' },
+          ],
+        ],
+        item_wrapper_class: 'usa-radio',
+        item_label_class: 'usa-radio__label',
+        input_html: { class: 'usa-radio__input' },
+      ) %>
+
+  <%= render AccordionComponent.new(bordered: false, class: 'margin-top-2') do |c| %>
+    <% c.with_header { t('sign_up.token_exchange_grant.specific_heading') } %>
+    <p class="margin-top-0">
+      <%= t('sign_up.token_exchange_grant.specific_hint', sp: presenter.sp_name) %>
+    </p>
+    <% if presenter.token_exchange_targets.empty? %>
+      <p class="text-base"><%= t('sign_up.token_exchange_grant.no_targets') %></p>
+    <% else %>
+      <% presenter.token_exchange_targets.each do |target| %>
+        <div class="usa-checkbox">
+          <%= check_box_tag(
+                'idv_form[token_exchange_targets][]',
+                target.issuer,
+                false,
+                id: "token-exchange-target-#{target.id}",
+                class: 'usa-checkbox__input',
+                'data-token-exchange-target': true,
+              ) %>
+          <%= label_tag(
+                "token-exchange-target-#{target.id}",
+                target.display_name,
+                class: 'usa-checkbox__label',
+              ) %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+</fieldset>

@@ -195,48 +195,74 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
     end
   end
 
-  describe 'token-exchange consent' do
+  describe 'token-exchange grant' do
     let(:idv_requested) { true }
     let(:requested_attributes) { %i[email token_exchange] }
 
     context 'when the SP is an allow-listed broker requesting token_exchange' do
+      let!(:target) do
+        create(
+          :service_provider, :active, issuer: 'target.gov', ial: 2,
+                                      friendly_name: 'Benefits Portal',
+                                      allowed_token_exchange_brokers: [service_provider.issuer]
+        )
+      end
+
       before do
         allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:token_exchange_service_providers)
           .and_return([service_provider.issuer])
+        allow(TokenExchangeManifest).to receive(:allowed_targets)
+          .with(service_provider.issuer).and_return(['target.gov'])
       end
 
-      shared_examples 'renders the required consent control' do
-        it 'renders the disclosure and a required consent checkbox inside the form' do
+      shared_examples 'renders the grant control' do
+        it 'renders the disclosure, three required grant choices, and a collapsed per-app tree' do
           render
 
-          expect(rendered).to have_css(
-            "form[action='#{sign_up_completed_path}'] " \
-            "input[type=checkbox][name='idv_form[token_exchange_consent]'][required]",
+          form = "form[action='#{sign_up_completed_path}']"
+          %w[all all_and_future specific].each do |choice|
+            expect(rendered).to have_css(
+              "#{form} input[type=radio][name='idv_form[token_exchange_grant]']" \
+              "[value='#{choice}'][required]",
+            )
+          end
+          expect(rendered).to have_content(
+            t('sign_up.token_exchange_grant.all', sp: service_provider.friendly_name),
           )
           expect(rendered).to have_content(
-            t('sign_up.token_exchange_consent_label', sp: service_provider.friendly_name),
+            t('sign_up.token_exchange_grant.all_and_future', sp: service_provider.friendly_name),
           )
+          # per-application tree is present but collapsed by default
+          expect(rendered).to have_css(
+            "#{form} .usa-accordion__button[aria-expanded='false']",
+            text: t('sign_up.token_exchange_grant.specific_heading'),
+          )
+          expect(rendered).to have_css(
+            "#{form} input[type=checkbox][name='idv_form[token_exchange_targets][]']" \
+            "[value='target.gov']",
+          )
+          expect(rendered).to have_content('Benefits Portal')
         end
       end
 
       context 'in the legacy layout' do
         let(:nds_layout) { false }
-        it_behaves_like 'renders the required consent control'
+        it_behaves_like 'renders the grant control'
       end
 
       context 'in the NDS layout' do
         let(:nds_layout) { true }
-        it_behaves_like 'renders the required consent control'
+        it_behaves_like 'renders the grant control'
       end
     end
 
     context 'when the SP is not a broker' do
       let(:nds_layout) { true }
 
-      it 'renders no consent control' do
+      it 'renders no grant control' do
         render
-        expect(rendered).not_to have_css("input[name='idv_form[token_exchange_consent]']")
+        expect(rendered).not_to have_css("input[name='idv_form[token_exchange_grant]']")
       end
     end
   end

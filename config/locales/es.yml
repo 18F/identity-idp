@@ -1098,7 +1098,7 @@ help_text.requested_attributes.intro_html: 'Divulgaremos esta información a %{s
 help_text.requested_attributes.phone: Número de teléfono
 help_text.requested_attributes.select_email_link: Seleccionar correo electrónico
 help_text.requested_attributes.social_security_number: Número de Seguro Social
-help_text.requested_attributes.token_exchange_html: 'Para conectarlo con otros servicios gubernamentales, %{sp_html} podrá compartir su identidad verificada con las agencias a las que elija acceder, para que no tenga que verificar su identidad nuevamente. Solo se comparte la información que cada agencia está autorizada a recibir.'
+help_text.requested_attributes.token_exchange_html: '%{sp_html} puede iniciar su sesión en otros servicios gubernamentales que usted elija, usando su identidad verificada, para que no tenga que verificarla de nuevo. Cada servicio recibe únicamente la información para la que está autorizado y puede ver que usted se conectó a través de %{sp_html}.'
 help_text.requested_attributes.verified_at: Actualizado en
 help_text.requested_attributes.x509_issuer: Emisor de la tarjeta PIV o CAC
 help_text.requested_attributes.x509_subject: Identidad de la tarjeta PIV o CAC
@@ -1864,8 +1864,15 @@ sign_up.completed.smiling_image_alt: Una persona sonriente con una marca de veri
 sign_up.information_sharing_html: Para saber cómo %{app_name} comparte su información, consulte nuestra %{link_html}.
 sign_up.nds_terms_intro: Al continuar, acepta las
 sign_up.terms: Leí y acepto %{app_name}
-sign_up.token_exchange_consent_label: Permito que %{sp} comparta mi identidad verificada con otros servicios gubernamentales a los que elija acceder.
-sign_up.token_exchange_consent_required: Debe autorizar esto para continuar a %{sp}.
+sign_up.token_exchange_grant.all: Todos los servicios que %{sp} ofrece actualmente
+sign_up.token_exchange_grant.all_and_future: Todos los servicios que %{sp} ofrece ahora o agregue en los próximos 12 meses
+sign_up.token_exchange_grant.legend: Elija a qué servicios gubernamentales puede conectarlo %{sp}
+sign_up.token_exchange_grant.no_targets: Aún no hay servicios disponibles para elegir.
+sign_up.token_exchange_grant.required: Elija a qué servicios puede conectarlo %{sp} antes de continuar.
+sign_up.token_exchange_grant.required_specific: Seleccione al menos un servicio o elija otra opción.
+sign_up.token_exchange_grant.specific: Solo los servicios que yo elija
+sign_up.token_exchange_grant.specific_heading: Elegir servicios específicos
+sign_up.token_exchange_grant.specific_hint: Seleccione los servicios a los que %{sp} puede conectarlo. Puede cambiar esto más adelante desde su cuenta.
 simple_form.error_notification.default_message: 'Revise los siguientes problemas:'
 simple_form.no: 'No'
 simple_form.required.html: ''

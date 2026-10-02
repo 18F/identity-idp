@@ -448,6 +448,18 @@ module AttemptsApi
       track_event('login-completed')
     end
 
+    # A credential for this user was minted for the service provider through a
+    # token exchange initiated by a broker, rather than a direct sign-in. The
+    # receiving service provider gets this in place of login-completed so it can
+    # see the user was brokered and by whom.
+    # @param [String] broker_issuer Issuer of the broker that initiated the exchange
+    def token_exchange_login_completed(broker_issuer:)
+      track_event(
+        'token-exchange-login-completed',
+        broker_issuer:,
+      )
+    end
+
     # @param [String] email
     # Tracks when user is rate limited for inputting bad password
     def login_rate_limited(email:)

@@ -1087,7 +1087,7 @@ help_text.requested_attributes.intro_html: 'Nous partagerons ces informations av
 help_text.requested_attributes.phone: Numéro de téléphone
 help_text.requested_attributes.select_email_link: Sélectionner l’adresse e-mail
 help_text.requested_attributes.social_security_number: Numéro de sécurité sociale
-help_text.requested_attributes.token_exchange_html: 'Pour vous connecter à d’autres services gouvernementaux, %{sp_html} pourra partager votre identité vérifiée avec les organismes auxquels vous choisissez d’accéder, afin que vous n’ayez pas à vérifier de nouveau votre identité. Seules les informations que chaque organisme est autorisé à recevoir sont partagées.'
+help_text.requested_attributes.token_exchange_html: '%{sp_html} peut vous connecter à d’autres services gouvernementaux de votre choix à l’aide de votre identité vérifiée, afin que vous n’ayez pas à la vérifier de nouveau. Chaque service ne reçoit que les informations auxquelles il est autorisé et peut voir que vous avez été connecté par l’intermédiaire de %{sp_html}.'
 help_text.requested_attributes.verified_at: Mis à jour le
 help_text.requested_attributes.x509_issuer: Émetteur PIV/CAC
 help_text.requested_attributes.x509_subject: Identité PIV/CAC
@@ -1853,8 +1853,15 @@ sign_up.completed.smiling_image_alt: Une personne souriante avec une coche verte
 sign_up.information_sharing_html: Pour savoir comment %{app_name} partage vos informations, consultez notre déclaration relative à la %{link_html}.
 sign_up.nds_terms_intro: En continuant, vous acceptez les
 sign_up.terms: J’ai lu et j’accepte les %{app_name}
-sign_up.token_exchange_consent_label: J’autorise %{sp} à partager mon identité vérifiée avec d’autres services gouvernementaux auxquels je choisis d’accéder.
-sign_up.token_exchange_consent_required: Vous devez l’autoriser pour continuer vers %{sp}.
+sign_up.token_exchange_grant.all: Tous les services que %{sp} offre actuellement
+sign_up.token_exchange_grant.all_and_future: Tous les services que %{sp} offre maintenant ou ajoutera dans les 12 prochains mois
+sign_up.token_exchange_grant.legend: Choisissez les services gouvernementaux auxquels %{sp} peut vous connecter
+sign_up.token_exchange_grant.no_targets: Aucun service n’est encore disponible.
+sign_up.token_exchange_grant.required: Choisissez les services auxquels %{sp} peut vous connecter avant de continuer.
+sign_up.token_exchange_grant.required_specific: Sélectionnez au moins un service ou choisissez une autre option.
+sign_up.token_exchange_grant.specific: Seulement les services que je choisis
+sign_up.token_exchange_grant.specific_heading: Choisir des services précis
+sign_up.token_exchange_grant.specific_hint: Sélectionnez les services auxquels %{sp} peut vous connecter. Vous pourrez modifier ce choix plus tard depuis votre compte.
 simple_form.error_notification.default_message: 'Veuillez examiner les problèmes ci-dessous :'
 simple_form.no: Non
 simple_form.required.html: ''

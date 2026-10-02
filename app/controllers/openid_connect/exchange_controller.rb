@@ -12,7 +12,7 @@ module OpenidConnect
     skip_before_action :verify_authenticity_token
 
     def create
-      form = OpenidConnectTokenExchangeForm.new(exchange_params)
+      form = OpenidConnectTokenExchangeForm.new(exchange_params, request: request)
       result = form.submit
 
       analytics.openid_connect_token_exchange(**result.to_h)

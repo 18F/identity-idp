@@ -330,7 +330,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_24_000100) do
     t.string "scope", comment: "sensitive=false"
     t.string "service_provider", limit: 255, comment: "sensitive=false"
     t.string "session_uuid", limit: 255, comment: "sensitive=true"
-    t.datetime "token_exchange_consent_at", comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, comment: "sensitive=false"
     t.integer "user_id", comment: "sensitive=false"
     t.string "uuid", null: false, comment: "sensitive=false"
@@ -649,6 +648,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_24_000100) do
     t.index ["email_address_id"], name: "index_suspended_emails_on_email_address_id"
   end
 
+  create_table "token_exchange_grants", comment: "sensitive=false", force: :cascade do |t|
+    t.string "broker_issuer", null: false, comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "expires_at", null: false, comment: "sensitive=false"
+    t.datetime "granted_at", null: false, comment: "sensitive=false"
+    t.boolean "includes_future", default: false, null: false, comment: "sensitive=false"
+    t.datetime "revoked_at", comment: "sensitive=false"
+    t.string "target_issuer", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.bigint "user_id", null: false, comment: "sensitive=false"
+    t.index ["user_id", "broker_issuer", "target_issuer"], name: "index_token_exchange_grants_on_user_broker_target", unique: true
+    t.index ["user_id"], name: "index_token_exchange_grants_on_user_id"
+  end
+
   create_table "user_proofing_events", id: :serial, force: :cascade do |t|
     t.string "cost", comment: "sensitive=true"
     t.datetime "created_at", null: false, comment: "sensitive=false"
@@ -744,4 +757,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_24_000100) do
   add_foreign_key "integrations", "service_providers"
   add_foreign_key "partner_accounts", "agencies"
   add_foreign_key "partner_accounts", "partner_account_statuses"
+  add_foreign_key "token_exchange_grants", "users"
 end
