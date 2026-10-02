@@ -142,10 +142,12 @@ module Idv
       ab_test_bucket(:DOC_AUTH_MDL, user: current_user) == :mdl_enabled
     end
 
-    def passport_cards_supported?
-      return false unless FeatureManagement.doc_auth_passport_cards_enabled?
+    def clear1_allowed?
+      @clear1_allowed ||= begin
+        return false unless IdentityConfig.store.idv_clear1_enabled
 
-      ab_test_bucket(:DOC_AUTH_PASSPORT_CARDS_ALLOWED) == :doc_auth_passport_cards_allowed
+        ab_test_bucket(:CLEAR1_ALLOWED) == :idv_clear1_allowed
+      end
     end
   end
 end
