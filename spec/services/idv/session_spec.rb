@@ -130,6 +130,54 @@ RSpec.describe Idv::Session do
       subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
     end
 
+    context 'when escrowed document artifacts exist for the capture session' do
+      let(:document_capture_session) { create(:document_capture_session, user:) }
+      let!(:artifact) do
+        create(:document_artifact, document_capture_session:, image_type: 'front')
+      end
+
+      before { subject.document_capture_session_uuid = document_capture_session.uuid }
+
+      it 'associates the artifacts with the newly created profile' do
+        subject.create_profile_from_applicant_with_password(
+          user.password, is_enhanced_ipp:, proofing_components:
+        )
+
+        expect(artifact.reload.profile_id).to eq(subject.profile.id)
+      end
+
+      it 'stamps the capture session with the profile it produced, for late-arriving jobs' do
+        subject.create_profile_from_applicant_with_password(
+          user.password, is_enhanced_ipp:, proofing_components:
+        )
+
+        expect(document_capture_session.reload.profile_id).to eq(subject.profile.id)
+      end
+
+      context 'when the user abandoned remote proofing and is verifying in person instead' do
+        let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user) }
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.with_indifferent_access
+          allow(UspsInPersonProofing::EnrollmentHelper)
+            .to receive(:schedule_in_person_enrollment) do
+              user.establishing_in_person_enrollment.update!(status: :pending)
+            end
+        end
+
+        it 'does not stamp or link the remote images to the in-person profile' do
+          subject.create_profile_from_applicant_with_password(
+            user.password, is_enhanced_ipp:, proofing_components:
+          )
+
+          expect(subject.profile.in_person_verification_pending?).to eq(true)
+          expect(artifact.reload.profile_id).to be_nil
+          expect(document_capture_session.reload.profile_id).to be_nil
+        end
+      end
+    end
+
     context 'with phone verifed by vendor' do
       before do
         subject.address_verification_mechanism = 'phone'

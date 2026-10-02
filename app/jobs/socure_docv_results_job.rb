@@ -136,13 +136,16 @@ class SocureDocvResultsJob < ApplicationJob
           ial2: docv_result_response.liveness_enabled,
           passport_book:,
         ),
+        passport_book:,
+        persist_artifacts: success,
+        docv_transaction_token: document_capture_session.socure_docv_transaction_token,
       }
 
       image_data = job_data[:image_storage_data].values.reduce(:merge)
       if IdentityConfig.store.ruby_workers_idv_enabled
-        SocureImageRetrievalJob.perform_later(**job_data, passport_book:)
+        SocureImageRetrievalJob.perform_later(**job_data)
       else
-        SocureImageRetrievalJob.perform_now(**job_data, passport_book:)
+        SocureImageRetrievalJob.perform_now(**job_data)
       end
     end
 

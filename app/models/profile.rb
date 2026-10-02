@@ -25,6 +25,8 @@ class Profile < ApplicationRecord
              optional: true
   # rubocop:enable Rails/InverseOf
   has_many :gpo_confirmation_codes, dependent: :destroy
+  has_many :document_artifacts, dependent: :destroy
+  has_many :document_capture_sessions, dependent: :nullify
   has_one :in_person_enrollment, dependent: :destroy
   has_one :user_proofing_event, dependent: :destroy
 

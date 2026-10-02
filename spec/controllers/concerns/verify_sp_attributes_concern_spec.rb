@@ -192,6 +192,100 @@ RSpec.describe VerifySpAttributesConcern do
             expect(needs_completion_screen_reason).to eq(:reverified_after_consent)
           end
         end
+
+        context 'when an allow-listed SP requests document_images' do
+          let(:requested_attributes) { %w[email document_images] }
+          let(:verified_attributes) { %w[email document_images] }
+          let(:service_provider) { create(:service_provider) }
+          let(:sp_session_identity) do
+            build(
+              :service_provider_identity,
+              user: user,
+              service_provider: service_provider.issuer,
+              verified_attributes: verified_attributes,
+              last_consented_at: 3.days.ago,
+              biometric_sharing_consent_at: biometric_sharing_consent_at,
+            )
+          end
+
+          before do
+            allow(controller).to receive(:current_sp).and_return(service_provider)
+            allow(IdentityConfig.store).to receive(:document_images_sharing_enabled)
+              .and_return(true)
+            allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+              .and_return([service_provider.issuer])
+          end
+
+          context 'and the user has never granted biometric consent' do
+            let(:biometric_sharing_consent_at) { nil }
+
+            before { create(:profile, :active, verified_at: 5.days.ago, user: user) }
+
+            it 'is :biometric_consent_needed' do
+              expect(needs_completion_screen_reason).to eq(:biometric_consent_needed)
+            end
+          end
+
+          context 'and the user has no verified profile (e.g. IALmax request, unverified)' do
+            let(:biometric_sharing_consent_at) { nil }
+
+            it 'is nil — never prompts for consent that could not be satisfied' do
+              expect(needs_completion_screen_reason).to be_nil
+            end
+          end
+
+          context 'and the user re-proofed after granting biometric consent' do
+            let(:biometric_sharing_consent_at) { 2.days.ago }
+
+            before { create(:profile, :active, verified_at: 1.day.ago, user: user) }
+
+            it 'is :reverified_after_consent (takes precedence; screen re-collects consent)' do
+              expect(needs_completion_screen_reason).to eq(:reverified_after_consent)
+            end
+          end
+
+          context 'and biometric consent has expired while annual consent is still fresh' do
+            let(:biometric_sharing_consent_at) do
+              (ServiceProviderIdentity::CONSENT_EXPIRATION + 1.day).ago
+            end
+            let(:sp_session_identity) do
+              build(
+                :service_provider_identity,
+                user: user,
+                service_provider: service_provider.issuer,
+                verified_attributes: verified_attributes,
+                last_consented_at: 1.hour.ago,
+                biometric_sharing_consent_at: biometric_sharing_consent_at,
+              )
+            end
+
+            before { create(:profile, :active, verified_at: 2.years.ago, user: user) }
+
+            it 'is :biometric_consent_needed' do
+              expect(needs_completion_screen_reason).to eq(:biometric_consent_needed)
+            end
+          end
+
+          context 'and the user has fresh biometric consent' do
+            let(:biometric_sharing_consent_at) { 1.hour.ago }
+            let(:sp_session_identity) do
+              build(
+                :service_provider_identity,
+                user: user,
+                service_provider: service_provider.issuer,
+                verified_attributes: verified_attributes,
+                last_consented_at: 1.hour.ago,
+                biometric_sharing_consent_at: biometric_sharing_consent_at,
+              )
+            end
+
+            before { create(:profile, :active, verified_at: 1.day.ago, user: user) }
+
+            it 'is nil' do
+              expect(needs_completion_screen_reason).to be_nil
+            end
+          end
+        end
       end
     end
 

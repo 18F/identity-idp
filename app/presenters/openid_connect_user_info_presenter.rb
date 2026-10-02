@@ -22,6 +22,12 @@ class OpenidConnectUserInfoPresenter
     info[:all_emails] = all_emails_from_sp_identity(identity) if scoper.all_emails_requested?
     info[:locale] = web_locale if scoper.locale_requested?
     info.merge!(ial2_attributes) if identity_proofing_requested_for_verified_user?
+    # Emitted whenever sharing is authorized, even if empty: an empty hash tells
+    # the RP "authorized, but the artifacts have not landed yet, retry", whereas
+    # omitting the claim means sharing is not authorized for this identity.
+    if scoper.document_images_requested? && document_images_shareable?
+      info[:document_images] = document_images
+    end
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
     info[:ial] = authn_context_resolver.asserted_ial_acr
@@ -83,6 +89,33 @@ class OpenidConnectUserInfoPresenter
       x509_issuer: stringify_attr(x509_data.issuer),
       x509_presented: !!x509_data.presented.raw,
     }
+  end
+
+  # Signed-in RP fetches each URL with the same bearer access token; the proxy
+  # endpoint enforces scope + ownership. mDL profiles have no artifacts.
+  # Only released when the SP is allow-listed and the user granted biometric
+  # sharing consent on the agency handoff screen.
+  def document_images
+    return @document_images if defined?(@document_images)
+
+    @document_images =
+      if document_images_shareable?
+        active_profile.document_artifacts.retained.order(:image_type)
+          .each_with_object({}) do |a, hash|
+          hash[a.image_type.to_sym] = api_openid_connect_document_image_url(
+            image_type: a.image_type,
+          )
+        end
+      else
+        {}
+      end
+  end
+
+  def document_images_shareable?
+    identity_proofing_requested_for_verified_user? &&
+      active_profile.present? &&
+      identity.service_provider_record&.document_images_sharing_allowed? &&
+      identity.biometric_sharing_consented?(active_profile)
   end
 
   def phone

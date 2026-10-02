@@ -13,6 +13,10 @@ Rails.application.routes.draw do
   post '/api/openid_connect/token' => 'openid_connect/token#create'
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
+  get '/api/openid_connect/document_images/:image_type' =>
+    'openid_connect/document_images#show',
+      as: :api_openid_connect_document_image,
+      constraints: { image_type: /(?:front|back|passport|selfie)/ }
   post '/api/risc/security_events' => 'risc/security_events#create'
 
   post '/api/usps_locations' => 'idv/in_person/public/usps_locations#index'

@@ -179,6 +179,37 @@ RSpec.describe OpenidConnect::UserInfoController do
         expect(request.session.to_h).to eq(session_hash)
       end
 
+      context 'when document image sharing is authorized but artifacts have not landed' do
+        let(:user) { create(:user) }
+        let(:identity) do
+          create(
+            :service_provider_identity,
+            rails_session_id: SecureRandom.hex,
+            access_token:,
+            user:,
+            scope: 'openid document_images',
+            acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+            biometric_sharing_consent_at: Time.zone.now,
+          )
+        end
+
+        before do
+          create(:profile, :active, user:, verified_at: 1.hour.ago)
+          allow(IdentityConfig.store).to receive(:document_images_sharing_enabled)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+            .and_return([identity.service_provider])
+        end
+
+        it 'serializes an empty document_images object through to the JSON response' do
+          action
+
+          expect(response).to be_ok
+          expect(json_response).to have_key(:document_images)
+          expect(json_response[:document_images]).to eq({})
+        end
+      end
+
       context 'with an authentication event' do
         let(:authentication_event_at) { Time.zone.parse('2026-07-01 12:00:00 UTC') }
         let(:remember_device_at) { Time.zone.parse('2026-07-01 12:30:00 UTC') }

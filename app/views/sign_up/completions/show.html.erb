@@ -82,6 +82,9 @@
                       required: true,
                     ) %>
               <% end %>
+              <% if @presenter.document_images_sharing? %>
+                <%= render 'sign_up/completions/biometric_sharing_consent', form: f, presenter: @presenter %>
+              <% end %>
 
               <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
                 <%= render ButtonComponent.new(type: :submit, full_width: true)
@@ -205,6 +208,9 @@
           required: true,
           wrapper_html: { class: 'margin-bottom-4' },
         ) %>
+  <% end %>
+  <% if @presenter.document_images_sharing? %>
+    <%= render 'sign_up/completions/biometric_sharing_consent', form: f, presenter: @presenter %>
   <% end %>
   <%= f.submit t('sign_up.agree_and_continue') %>
 <% end %>

@@ -92,4 +92,18 @@ class ServiceProviderIdentity < ApplicationRecord
     return false if token_exchange_consent_at.blank? || deleted_at.present?
     token_exchange_consent_at >= CONSENT_EXPIRATION.ago
   end
+
+  # Biometric (document image) sharing consent is only valid when it is present,
+  # not revoked, not expired, and not older than the user's most recent proofing
+  # (so re-proofing forces fresh, purpose-specific re-consent). Fails closed if
+  # the profile's verification time is unknown.
+  def biometric_sharing_consented?(active_profile = nil)
+    return false if biometric_sharing_consent_at.blank? || deleted_at.present?
+    return false if biometric_sharing_consent_at < CONSENT_EXPIRATION.ago
+
+    verified_at = active_profile&.verified_at
+    return false if verified_at.blank?
+
+    biometric_sharing_consent_at >= verified_at
+  end
 end

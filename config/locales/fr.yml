@@ -1080,6 +1080,7 @@ help_text.requested_attributes.all_emails: Adresses e-mail sur votre compte
 help_text.requested_attributes.birthdate: Date de naissance
 help_text.requested_attributes.change_email_link: Modifier
 help_text.requested_attributes.consent_reminder_html: Vous devez consentir chaque année au partage de vos informations avec %{sp_html}.
+help_text.requested_attributes.document_images_html: 'Pour appuyer votre demande, %{sp_html} recevra également les photos de vos pièces d’identité et le selfie que vous avez pris lors de la vérification de votre identité. Ces images ne sont partagées qu’à des fins de décision d’identité.'
 help_text.requested_attributes.email: Adresse e-mail
 help_text.requested_attributes.full_name: Nom complet
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Étant donné que vous avez revérifié votre identité, nous avons besoin de votre autorisation pour partager ces informations avec %{sp_html} :'
@@ -1850,6 +1851,8 @@ sign_up.agree_and_continue: Accepter et continuer
 sign_up.cancel.success: Votre compte a été supprimé. Nous n’avons pas sauvegardé vos informations.
 sign_up.cancel.warning_header: 'Si vous annulez maintenant :'
 sign_up.completed.smiling_image_alt: Une personne souriante avec une coche verte indiquant la réussite de la procédure
+sign_up.document_images_sharing_consent_label: Je consens à partager les photos de mes pièces d’identité et mon selfie de vérification d’identité avec %{sp} à des fins de décision d’identité.
+sign_up.document_images_sharing_consent_required: Vous devez consentir au partage des photos de vos pièces d’identité et de votre selfie pour continuer, ou annuler.
 sign_up.information_sharing_html: Pour savoir comment %{app_name} partage vos informations, consultez notre déclaration relative à la %{link_html}.
 sign_up.nds_terms_intro: En continuant, vous acceptez les
 sign_up.terms: J’ai lu et j’accepte les %{app_name}

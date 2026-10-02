@@ -94,6 +94,11 @@ class ServiceProvider < ApplicationRecord
     Array(allowed_token_exchange_brokers).map(&:to_s).include?(broker_issuer.to_s)
   end
 
+  def document_images_sharing_allowed?
+    IdentityConfig.store.document_images_sharing_enabled &&
+      IdentityConfig.store.document_images_sharing_service_providers.include?(issuer)
+  end
+
   def attempts_api_enabled?
     IdentityConfig.store.attempts_api_enabled && attempts_config.present?
   end

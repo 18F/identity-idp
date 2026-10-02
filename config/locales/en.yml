@@ -1080,6 +1080,7 @@ help_text.requested_attributes.all_emails: Email addresses on your account
 help_text.requested_attributes.birthdate: Date of birth
 help_text.requested_attributes.change_email_link: Change
 help_text.requested_attributes.consent_reminder_html: You must consent each year to share your information with %{sp_html}.
+help_text.requested_attributes.document_images_html: 'To support your application, %{sp_html} will also receive the photos of your identity documents and the selfie you took while verifying your identity. These images are shared only for identity adjudication.'
 help_text.requested_attributes.email: Email address
 help_text.requested_attributes.full_name: Full name
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Because you verified your identity again, we need your permission to share this information with %{sp_html}:'
@@ -1849,6 +1850,8 @@ sign_up.agree_and_continue: Agree and continue
 sign_up.cancel.success: Your account has been deleted. We did not save your information.
 sign_up.cancel.warning_header: 'If you cancel now:'
 sign_up.completed.smiling_image_alt: A smiling person with a green checkmark indicating success
+sign_up.document_images_sharing_consent_label: I consent to share the photos of my identity documents and my identity verification selfie with %{sp} for identity adjudication.
+sign_up.document_images_sharing_consent_required: You must consent to sharing your identity document photos and selfie to continue, or cancel.
 sign_up.information_sharing_html: To learn how %{app_name} shares your information, review our %{link_html}.
 sign_up.nds_terms_intro: By continuing, you accept the
 sign_up.terms: I read and accept the %{app_name}

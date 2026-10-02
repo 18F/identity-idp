@@ -27,10 +27,21 @@ module SignUp
         flash.now[:error] = t('sign_up.token_exchange_consent_required', sp: @presenter.sp_name)
         return render :show
       end
+      if biometric_sharing_consent_requested? && !biometric_sharing_consent_checked?
+        analytics.biometric_sharing_consent_declined(issuer: current_sp.issuer)
+        flash.now[:error] = t('sign_up.document_images_sharing_consent_required')
+        @multiple_factors_enabled = MfaPolicy.new(current_user).multiple_factors_enabled?
+        @presenter = completions_presenter
+        return render :show, status: :unprocessable_content
+      end
+
       track_completion_event('agency-page')
       update_verified_attributes
       if token_exchange_consent_granted?
         analytics.token_exchange_consent_granted(issuer: current_sp.issuer)
+      end
+      if biometric_sharing_consent_granted?
+        analytics.biometric_sharing_consent_granted(issuer: current_sp.issuer)
       end
       send_in_person_completion_survey
       notify_user_of_connected_sp
