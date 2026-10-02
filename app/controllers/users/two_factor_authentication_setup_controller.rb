@@ -116,8 +116,6 @@ module Users
         !auto_passkey_prompted?
     end
 
-    # Deterministic percentage rollout keyed on the user's UUID, so a user who is eligible is
-    # prompted consistently rather than only on some visits to this page.
     def in_auto_passkey_prompt_rollout?
       ab_test_bucket(:PASSKEY_AUTO_PROMPT) == :auto_passkey_prompt
     end

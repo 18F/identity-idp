@@ -217,11 +217,6 @@ module Users
       }
     end
 
-    # Whether the user arrived at setup via the automatic passkey prompt rather than by selecting
-    # passkey from the MFA options. Logged explicitly as true or false so the two paths can be
-    # compared without relying on the property being absent. Read from the session rather than the
-    # `auto_trigger` param so that a user who cancels the browser prompt and completes setup
-    # manually is still counted as prompted.
     def auto_passkey_prompted
       user_session[:auto_passkey_prompted] == true && mobile? && in_account_creation_flow?
     end
@@ -245,8 +240,6 @@ module Users
       (Time.zone.now.to_f - started_at.to_f)
     end
 
-    # A user who was automatically prompted never chose a set of MFA methods, so there is no queued
-    # selection to fall back on. Send them to MFA selection to pick a second method.
     def next_setup_path
       if @platform_authenticator && user_session[:auto_passkey_prompted]
         return super || authentication_methods_setup_path
