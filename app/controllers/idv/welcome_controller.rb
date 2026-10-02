@@ -40,6 +40,7 @@ module Idv
       create_document_capture_session
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
       idv_session.welcome_visited = true
+      idv_session.clear1_allowed = clear1_allowed?
 
       redirect_to idv_agreement_url
     end
@@ -139,6 +140,12 @@ module Idv
       return false if IdentityConfig.store.idv_doc_auth_mdl_enabled_percent.zero?
 
       ab_test_bucket(:DOC_AUTH_MDL, user: current_user) == :mdl_enabled
+    end
+
+    def passport_cards_supported?
+      return false unless FeatureManagement.doc_auth_passport_cards_enabled?
+
+      ab_test_bucket(:DOC_AUTH_PASSPORT_CARDS_ALLOWED) == :doc_auth_passport_cards_allowed
     end
   end
 end

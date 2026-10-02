@@ -7,7 +7,7 @@ module Idv
       include IdvStepConcern
       include RenderConditionConcern
 
-      check_or_render_not_found -> { clear1_enabled? }
+      check_or_render_not_found -> { IdentityConfig.store.idv_clear1_enabled }
 
       before_action :confirm_not_rate_limited, except: :update
       before_action :confirm_step_allowed
@@ -70,7 +70,7 @@ module Idv
           next_steps: [:enter_password],
           preconditions: ->(idv_session:, user:) {
             idv_session.flow_path == 'standard' &&
-            idv_session.clear1_enabled
+            idv_session.clear1_allowed
           },
           undo_step: ->(idv_session:, user:) do
             idv_session.pii_from_doc = nil

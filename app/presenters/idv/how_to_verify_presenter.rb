@@ -4,12 +4,12 @@ class Idv::HowToVerifyPresenter
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :selfie_required, :mdl_enabled, :clear1_enabled
+  attr_reader :selfie_required, :mdl_enabled, :clear1_allowed
 
-  def initialize(selfie_check_required:, mdl_enabled: false, clear1_enabled: false)
+  def initialize(selfie_check_required:, mdl_enabled: false, clear1_allowed: false)
     @selfie_required = selfie_check_required
     @mdl_enabled = mdl_enabled
-    @clear1_enabled = clear1_enabled
+    @clear1_allowed = clear1_allowed
   end
 
   def how_to_verify_info
@@ -90,7 +90,7 @@ class Idv::HowToVerifyPresenter
     t('forms.buttons.continue_ipp')
   end
 
-  def clear1_enabled?
-    clear1_enabled
+  def clear1_allowed?
+    clear1_allowed
   end
 end
