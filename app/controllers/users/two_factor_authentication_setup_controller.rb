@@ -20,13 +20,15 @@ module Users
 
     def index
       two_factor_options_form
+      prompt_passkey_setup = auto_passkey_prompt_eligible?
       analytics.user_registration_2fa_setup_visit(
         enabled_mfa_methods_count:,
         gov_or_mil_email: fed_or_mil_email?,
         in_account_creation_flow: in_account_creation_flow?,
-        auto_passkey_prompted: auto_passkey_prompted?,
+        auto_passkey_prompted: prompt_passkey_setup,
       )
-      if auto_passkey_prompt_eligible?
+
+      if prompt_passkey_setup
         trigger_auto_passkey_setup
       else
         render_index
@@ -103,12 +105,7 @@ module Users
     end
 
     def auto_passkey_prompt_eligible?
-      auto_passkey_prompt_available? &&
-        auto_passkey_prompt_bucket == :auto_passkey_prompt
-    end
-
-    def auto_passkey_prompted?
-      user_session[:auto_passkey_prompted] == true
+      auto_passkey_prompt_available? && in_auto_passkey_prompt_rollout?
     end
 
     def auto_passkey_prompt_available?
@@ -119,10 +116,14 @@ module Users
         !auto_passkey_prompted?
     end
 
-    # Only read the bucket once the user is otherwise eligible, since reading it
-    # persists a rollout assignment for the user.
-    def auto_passkey_prompt_bucket
-      @auto_passkey_prompt_bucket ||= ab_test_bucket(:PASSKEY_UPSELL)
+    # Deterministic percentage rollout keyed on the user's UUID, so a user who is eligible is
+    # prompted consistently rather than only on some visits to this page.
+    def in_auto_passkey_prompt_rollout?
+      ab_test_bucket(:PASSKEY_AUTO_PROMPT) == :auto_passkey_prompt
+    end
+
+    def auto_passkey_prompted?
+      user_session[:auto_passkey_prompted] == true
     end
 
     def platform_authenticator_available?

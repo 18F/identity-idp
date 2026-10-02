@@ -161,12 +161,17 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
     end
 
     context 'when account creation passkey prompt is enabled' do
+      let(:rollout_bucket) { :auto_passkey_prompt }
+
       before do
         allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
           .and_return(true)
         controller.user_session[:in_account_creation_flow] = true
         allow(controller).to receive(:ab_test_bucket)
           .with(:NDS_LOOK_AND_FEEL, any_args)
+        allow(controller).to receive(:ab_test_bucket)
+          .with(:PASSKEY_AUTO_PROMPT)
+          .and_return(rollout_bucket)
       end
 
       context 'when the user is on a mobile device' do
@@ -179,50 +184,75 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
             controller.user_session[:platform_authenticator_available] = true
           end
 
-          context 'when user is in the auto prompt bucket' do
-            before do
-              allow(controller).to receive(:ab_test_bucket)
-                .with(:PASSKEY_UPSELL)
-                .and_return(:auto_passkey_prompt)
-            end
+          it 'redirects to platform webauthn setup' do
+            expect { response }
+              .to change { controller.user_session[:auto_passkey_prompted] }
+              .from(nil)
+              .to(true)
+            expect(controller.user_session[:auto_passkey_prompt_pending]).to eq(true)
 
-            it 'redirects to platform webauthn setup' do
-              expect { response }
-                .to change { controller.user_session[:auto_passkey_prompted] }
-                .from(nil)
-                .to(true)
-              expect(controller.user_session[:auto_passkey_prompt_pending]).to eq(true)
-
-              expect(response).to redirect_to(
-                webauthn_setup_url(platform: true, passkey_upsell: true, auto_trigger: true),
-              )
-            end
-
-            context 'when the passkey has already been prompted' do
-              before do
-                controller.user_session[:auto_passkey_prompted] = true
-              end
-
-              it 'renders the mfa selection page without prompting again' do
-                get :index
-
-                expect(response).to render_template(:index)
-                expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
-              end
-            end
+            expect(response).to redirect_to(
+              webauthn_setup_url(platform: true, passkey_upsell: true, auto_trigger: true),
+            )
           end
 
-          context 'when user is in the control bucket' do
-            before do
-              allow(controller).to receive(:ab_test_bucket)
-                .with(:PASSKEY_UPSELL)
-                .and_return(:mfa_selection)
-            end
+          it 'logs the visit as having prompted the user' do
+            get :index
+
+            expect(@analytics).to have_logged_event(
+              'User Registration: 2FA Setup visited',
+              enabled_mfa_methods_count: 0,
+              gov_or_mil_email: false,
+              in_account_creation_flow: true,
+              auto_passkey_prompted: true,
+            )
+          end
+
+          context 'when the user is not in the rollout' do
+            let(:rollout_bucket) { :default }
 
             it 'renders the mfa selection page' do
               get :index
 
               expect(response).to render_template(:index)
+              expect(controller.user_session[:auto_passkey_prompted]).to be_nil
+            end
+
+            it 'logs the visit as not having prompted the user' do
+              get :index
+
+              expect(@analytics).to have_logged_event(
+                'User Registration: 2FA Setup visited',
+                enabled_mfa_methods_count: 0,
+                gov_or_mil_email: false,
+                in_account_creation_flow: true,
+                auto_passkey_prompted: false,
+              )
+            end
+          end
+
+          context 'when the passkey has already been prompted' do
+            before do
+              controller.user_session[:auto_passkey_prompted] = true
+            end
+
+            it 'renders the mfa selection page without prompting again' do
+              get :index
+
+              expect(response).to render_template(:index)
+              expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
+            end
+
+            it 'logs the visit as not having prompted the user' do
+              get :index
+
+              expect(@analytics).to have_logged_event(
+                'User Registration: 2FA Setup visited',
+                enabled_mfa_methods_count: 0,
+                gov_or_mil_email: false,
+                in_account_creation_flow: true,
+                auto_passkey_prompted: false,
+              )
             end
           end
         end
@@ -230,15 +260,31 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         context 'when platform authenticator is not available' do
           before do
             controller.user_session[:platform_authenticator_available] = false
-            allow(controller).to receive(:ab_test_bucket)
-              .with(:PASSKEY_UPSELL)
-              .and_return(:auto_passkey_prompt)
           end
 
           it 'does not redirect to platform webauthn setup' do
             get :index
 
             expect(response).to render_template(:index)
+          end
+
+          it 'logs the visit as not having prompted the user' do
+            get :index
+
+            expect(@analytics).to have_logged_event(
+              'User Registration: 2FA Setup visited',
+              enabled_mfa_methods_count: 0,
+              gov_or_mil_email: false,
+              in_account_creation_flow: true,
+              auto_passkey_prompted: false,
+            )
+          end
+
+          it 'does not consult the rollout' do
+            get :index
+
+            expect(controller).to_not have_received(:ab_test_bucket)
+              .with(:PASSKEY_AUTO_PROMPT)
           end
         end
       end
@@ -247,15 +293,31 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         before do
           allow(controller).to receive(:mobile?).and_return(false)
           controller.user_session[:platform_authenticator_available] = true
-          allow(controller).to receive(:ab_test_bucket)
-            .with(:PASSKEY_UPSELL)
-            .and_return(:auto_passkey_prompt)
         end
 
         it 'renders the mfa selection page' do
           get :index
 
           expect(response).to render_template(:index)
+        end
+
+        it 'logs the visit as not having prompted the user' do
+          get :index
+
+          expect(@analytics).to have_logged_event(
+            'User Registration: 2FA Setup visited',
+            enabled_mfa_methods_count: 0,
+            gov_or_mil_email: false,
+            in_account_creation_flow: true,
+            auto_passkey_prompted: false,
+          )
+        end
+
+        it 'does not consult the rollout' do
+          get :index
+
+          expect(controller).to_not have_received(:ab_test_bucket)
+            .with(:PASSKEY_AUTO_PROMPT)
         end
       end
     end
