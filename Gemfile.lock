@@ -630,7 +630,7 @@ GEM
     pg (1.6.3-x86_64-linux-musl)
     pg_query (6.2.2)
       google-protobuf (>= 3.25.3)
-    phonelib (0.10.15)
+    phonelib (0.10.27)
     pkcs11 (0.3.4)
     pp (0.6.4)
       prettyprint
@@ -1029,7 +1029,7 @@ DEPENDENCIES
   openapi3_parser (~> 0.10.0)
   pg (~> 1.6.0)
   pg_query
-  phonelib (= 0.10.15)
+  phonelib (= 0.10.27)
   premailer-rails (>= 1.12.0)
   prism
   profanity_filter
