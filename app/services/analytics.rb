@@ -168,15 +168,8 @@ class Analytics
     { sp_request: attributes }
   end
 
-  # The SP request_id stored in the session, if any. This is the same identifier
-  # used as the unique key on SpReturnLog, which lets downstream consumers join
-  # analytics events to the service provider request that started the journey.
-  # Not present for flows without an inbound SP request (e.g. session-less API
-  # requests, or sessions where session[:sp] was never populated).
-  #
-  # Emitted as +sp_request_id+, not +request_id+, to avoid colliding with the
-  # unrelated per-event +request_id+ properties already emitted by the Pinpoint
-  # SMS and TrueID events.
+  # The SP request_id stored in the session.
+  # Not present for flows without an inbound SP request
   def sp_request_id
     session&.dig(:sp, :request_id).presence
   end
