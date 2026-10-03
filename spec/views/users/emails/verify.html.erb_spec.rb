@@ -70,8 +70,10 @@ RSpec.describe 'users/emails/verify.html.erb' do
 
     before do
       allow(FeatureManagement).to receive(:enable_load_testing_mode?).and_return(true)
-      create(:email_address, :unconfirmed, user: other_user, confirmation_token: 'other_token',
-                                           email:)
+      create(
+        :email_address, :unconfirmed, user: other_user, confirmation_token: 'other_token',
+                                      email:
+      )
 
       render
     end
