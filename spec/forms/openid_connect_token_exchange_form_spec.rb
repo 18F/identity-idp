@@ -29,9 +29,8 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     )
   end
   let(:broker_ial) { Idp::Constants::IAL2 }
-  # The user's token-exchange grant for the broker. Defaults to an all-targets
-  # grant that covers target.gov; override to nil for "never consented".
-  let(:grant_choice) { :all }
+  # The user's per-application token-exchange grants for the broker. Defaults to
+  # a grant covering target.gov; override to nil for "never consented".
   let(:grant_targets) { ['target.gov'] }
 
   let(:params) do
@@ -50,10 +49,8 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     allow(IdentityConfig.store).to receive(:token_exchange_service_providers)
       .and_return(['broker.gov'])
     OutOfBandSessionAccessor.new(rails_session_id).put_empty_user_session
-    if grant_choice
-      TokenExchangeGrant.record!(
-        user: user, broker_issuer: 'broker.gov', choice: grant_choice, targets: grant_targets,
-      )
+    if grant_targets
+      TokenExchangeGrant.grant!(user: user, broker_issuer: 'broker.gov', targets: grant_targets)
     end
   end
 
@@ -146,8 +143,8 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
       it 'refuses a broker exchanging for itself' do
         broker_sp.update!(ial: 2, allowed_token_exchange_brokers: ['broker.gov'])
-        TokenExchangeGrant.record!(
-          user: user, broker_issuer: 'broker.gov', choice: :all_and_future, targets: [],
+        TokenExchangeGrant.grant_one!(
+          user: user, broker_issuer: 'broker.gov', target_issuer: 'broker.gov',
         )
         form = described_class.new(params.merge(audience: 'broker.gov'))
         expect(form.submit.success?).to eq(false)
@@ -175,7 +172,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     end
 
     context 'when an unauthorized token holder probes audiences' do
-      let(:grant_choice) { nil }
+      let(:grant_targets) { nil }
       let!(:revoked_target_identity) do
         create(
           :service_provider_identity,
@@ -217,7 +214,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     end
 
     context 'when the user never granted token-exchange consent' do
-      let(:grant_choice) { nil }
+      let(:grant_targets) { nil }
 
       it 'fails and mints nothing' do
         expect(form.submit.success?).to eq(false)
@@ -489,15 +486,14 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         )
       end
 
-      context 'with a grant for specific applications only' do
-        let(:grant_choice) { :specific }
+      context 'when only target.gov was granted' do
         let(:grant_targets) { ['target.gov'] }
 
-        it 'mints for a chosen application' do
+        it 'mints for the granted application' do
           expect(form.submit.success?).to eq(true)
         end
 
-        it 'refuses an application the user did not choose, with invalid_target' do
+        it 'refuses an application the user did not grant, with invalid_target' do
           form = described_class.new(params.merge(audience: 'other.gov'))
           expect(form.submit.success?).to eq(false)
           expect(form.response[:error]).to eq('invalid_target')
@@ -505,38 +501,29 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         end
       end
 
-      context 'with an all-applications grant (no future)' do
-        let(:grant_choice) { :all }
+      context 'when auto-enrollment is on but the target was never enrolled' do
         let(:grant_targets) { ['target.gov'] }
 
-        it 'mints for an application that existed at consent time' do
-          expect(form.submit.success?).to eq(true)
+        before do
+          TokenExchangeBrokerSetting.for(user: user, broker_issuer: 'broker.gov')
+            .enable_auto_enroll!
         end
 
-        it 'does not cover an application the broker added after consent' do
+        it 'still refuses: auto-enrollment grants when the user connects, not at exchange' do
           form = described_class.new(params.merge(audience: 'other.gov'))
           expect(form.submit.success?).to eq(false)
           expect(form.response[:error]).to eq('invalid_target')
         end
       end
 
-      context 'with an all-and-future grant' do
-        let(:grant_choice) { :all_and_future }
-        let(:grant_targets) { ['target.gov'] }
-
-        it 'covers an application the broker added after consent' do
-          form = described_class.new(params.merge(audience: 'other.gov'))
-          expect(form.submit.success?).to eq(true)
-        end
-
-        it 'records an independent timestamp per application' do
-          rows = TokenExchangeGrant.where(user: user, broker_issuer: 'broker.gov')
-          expect(rows.pluck(:target_issuer)).to match_array(
-            [TokenExchangeGrant::ALL_TARGETS,
-             'target.gov'],
-          )
-          expect(rows.pluck(:granted_at, :expires_at).flatten).to all(be_present)
-        end
+      it 'records an independent timestamp per application' do
+        TokenExchangeGrant.grant_one!(
+          user: user, broker_issuer: 'broker.gov', target_issuer: 'other.gov',
+          granted_at: 1.month.ago
+        )
+        rows = TokenExchangeGrant.active.where(user: user, broker_issuer: 'broker.gov')
+        expect(rows.pluck(:target_issuer)).to match_array(%w[target.gov other.gov])
+        expect(rows.pluck(:granted_at).uniq.size).to eq(2)
       end
     end
 

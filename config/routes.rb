@@ -251,6 +251,8 @@ Rails.application.routes.draw do
         as: :edit_connected_service_selected_email
     patch '/account/connected_services/:identity_id/selected_email' => 'accounts/connected_services/selected_email#update',
           as: :connected_services_selected_email
+    patch '/account/connected_services/:identity_id/token_exchange_grant' => 'accounts/connected_services/token_exchange_grants#update',
+          as: :connected_services_token_exchange_grant
     # old routes kept alive for redirects (connected accounts)
     get '/account/connected_accounts', to: redirect('/account/connected_services')
     get '/account/connected_accounts/:identity_id/selected_email', to: redirect { |params, _req| "/account/connected_services/#{params[:identity_id]}/selected_email" }

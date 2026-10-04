@@ -200,9 +200,10 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
     let(:requested_attributes) { %i[email token_exchange] }
 
     context 'when the SP is an allow-listed broker requesting token_exchange' do
+      let(:agency) { create(:agency, name: 'Department of Benefits') }
       let!(:target) do
         create(
-          :service_provider, :active, issuer: 'target.gov', ial: 2,
+          :service_provider, :active, issuer: 'target.gov', ial: 2, agency: agency,
                                       friendly_name: 'Benefits Portal',
                                       allowed_token_exchange_brokers: [service_provider.issuer]
         )
@@ -214,46 +215,91 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
           .and_return([service_provider.issuer])
       end
 
-      shared_examples 'renders the grant control' do
-        it 'renders the disclosure, three required grant choices, and a collapsed per-app tree' do
-          render
+      context 'with linked agencies' do
+        before { create(:service_provider_identity, user: user, service_provider: 'target.gov') }
 
-          form = "form[action='#{sign_up_completed_path}']"
-          %w[all all_and_future specific].each do |choice|
+        shared_examples 'renders the full grant control' do
+          it 'renders allow-all, a dependent (disabled) auto-enroll, and an agency-grouped list' do
+            render
+
+            form = "form[action='#{sign_up_completed_path}']"
             expect(rendered).to have_css(
-              "#{form} input[type=radio][name='idv_form[token_exchange_grant]']" \
-              "[value='#{choice}'][required]",
+              "#{form} input[type=checkbox][name='idv_form[token_exchange_all]']:not([checked])",
             )
+            expect(rendered).to have_css(
+              "#{form} input[type=checkbox][name='idv_form[token_exchange_auto_enroll]'][disabled]",
+            )
+            expect(rendered).to have_content(t('sign_up.token_exchange_grant.or'))
+            expect(rendered).to have_css(
+              '[data-token-exchange-agency] h3',
+              text: 'Department of Benefits',
+            )
+            expect(rendered).to have_css(
+              "#{form} input[type=checkbox][name='idv_form[token_exchange_targets][]']" \
+              "[value='target.gov']",
+            )
+            expect(rendered).to have_css('label', text: 'Benefits Portal')
+            expect(rendered).to have_css('[data-token-exchange-pager]', visible: false)
           end
-          expect(rendered).to have_content(
-            t('sign_up.token_exchange_grant.all', sp: service_provider.friendly_name),
-          )
-          expect(rendered).to have_content(
-            t('sign_up.token_exchange_grant.all_and_future', sp: service_provider.friendly_name),
-          )
-          # per-application tree is present but collapsed by default
-          expect(rendered).to have_css("#{form} details[data-token-exchange-targets]:not([open])")
-          expect(rendered).to have_css(
-            "#{form} details summary",
-            text: t('sign_up.token_exchange_grant.specific_heading'),
-          )
-          expect(rendered).to have_css(
-            "#{form} input[type=checkbox][name='idv_form[token_exchange_targets][]']" \
-            "[value='target.gov']",
-            visible: false,
-          )
-          expect(rendered).to have_css('label', text: 'Benefits Portal', visible: false)
+        end
+
+        context 'in the legacy layout' do
+          let(:nds_layout) { false }
+          it_behaves_like 'renders the full grant control'
+        end
+
+        context 'in the NDS layout' do
+          let(:nds_layout) { true }
+          it_behaves_like 'renders the full grant control'
         end
       end
 
-      context 'in the legacy layout' do
+      context 'with linked agencies and existing grants (return visit)' do
         let(:nds_layout) { false }
-        it_behaves_like 'renders the grant control'
+        before do
+          create(:service_provider_identity, user: user, service_provider: 'target.gov')
+          TokenExchangeGrant.grant!(
+            user: user, broker_issuer: service_provider.issuer,
+            targets: ['target.gov']
+          )
+        end
+
+        it 'pre-checks the current grants so continuing preserves them' do
+          render
+          # every linked target is granted => rendered as "allow all"
+          expect(rendered).to have_css("input[name='idv_form[token_exchange_all]'][checked]")
+        end
       end
 
-      context 'in the NDS layout' do
-        let(:nds_layout) { true }
-        it_behaves_like 'renders the grant control'
+      context 'with a linked agency that has no agency record' do
+        let(:nds_layout) { false }
+        before do
+          create(:service_provider_identity, user: user, service_provider: 'target.gov')
+          orphan = create(
+            :service_provider, :active,
+            issuer: 'orphan.gov', agency: nil, friendly_name: 'Orphan App',
+            allowed_token_exchange_brokers: [service_provider.issuer]
+          )
+          create(:service_provider_identity, user: user, service_provider: orphan.issuer)
+        end
+
+        it 'groups it under Other without raising' do
+          expect { render }.not_to raise_error
+          expect(rendered).to have_content(t('sign_up.token_exchange_grant.other_agency'))
+        end
+      end
+
+      context 'with no linked agencies' do
+        it 'offers only the (enabled, optional) auto-enroll choice' do
+          render
+
+          expect(rendered).not_to have_css("input[name='idv_form[token_exchange_all]']")
+          expect(rendered).not_to have_css("input[name='idv_form[token_exchange_targets][]']")
+          expect(rendered).to have_css(
+            "input[type=checkbox][name='idv_form[token_exchange_auto_enroll]']:not([disabled])",
+          )
+          expect(rendered).not_to have_content(t('sign_up.token_exchange_grant.or'))
+        end
       end
     end
 
@@ -262,7 +308,7 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
 
       it 'renders no grant control' do
         render
-        expect(rendered).not_to have_css("input[name='idv_form[token_exchange_grant]']")
+        expect(rendered).not_to have_css('[data-token-exchange-grant]')
       end
     end
   end

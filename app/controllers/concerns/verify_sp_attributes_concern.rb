@@ -30,34 +30,57 @@ module VerifySpAttributesConcern
       clear_deleted_at: true,
     )
 
-    # Record the user's token-exchange grant as a distinct, purpose-specific
-    # decision, replacing any prior grants for this broker whenever this screen
-    # runs so a changed choice, dropped scope, or new proofing session never
-    # carries stale per-application grants forward. (The exchange endpoint
-    # additionally requires the presented token's own scope to include
-    # token_exchange, so a grant can never outlive the authorization it was
-    # given with.)
-    if current_sp&.token_exchange_broker_allowed?
-      if token_exchange_consent_granted?
-        TokenExchangeGrant.record!(
-          user: current_user,
-          broker_issuer: current_sp.issuer,
-          choice: token_exchange_grant_choice,
-          targets: token_exchange_grant_targets,
-        )
-      else
-        TokenExchangeGrant.revoke_all!(user: current_user, broker_issuer: current_sp.issuer)
-      end
+    # Record the user's token-exchange decision whenever this screen runs. The
+    # grant is per application: "allow all" materializes one row per currently
+    # connected application rather than a wildcard, so each has its own
+    # timestamp and later per-application toggles never fight an "all" state.
+    # Applications the user did not choose this time are revoked (not deleted),
+    # so a changed decision never leaves stale authorizations behind.
+    #
+    # Auto-enrollment is a separate per-broker setting: when on, applications
+    # the user connects LATER are granted with a timestamp of this consent
+    # moment, not of first use. (The exchange endpoint additionally requires the
+    # presented token's own scope to include token_exchange.)
+    record_token_exchange_decision if token_exchange_consent_requested?
+
+    # When the user connects a new application, auto-enroll it for every broker
+    # the user has opted into auto-enrollment for.
+    auto_enroll_token_exchange
+  end
+
+  def record_token_exchange_decision
+    broker = current_sp.issuer
+    now = Time.zone.now
+
+    TokenExchangeGrant.grant!(
+      user: current_user, broker_issuer: broker, targets: token_exchange_grant_targets,
+      granted_at: now
+    )
+
+    setting = TokenExchangeBrokerSetting.for(user: current_user, broker_issuer: broker)
+    if token_exchange_auto_enroll?
+      setting.enable_auto_enroll!(now: now)
+    elsif setting.persisted?
+      setting.disable_auto_enroll!(now: now)
     end
   end
 
-  TOKEN_EXCHANGE_GRANT_CHOICES = %w[all all_and_future specific].freeze
+  def auto_enroll_token_exchange
+    target = current_sp
+    return if target.blank? || target.allowed_token_exchange_brokers.blank?
 
-  # True only when the SP is an allow-listed broker, requested the
-  # token_exchange scope, and the user made a valid grant choice (for a
-  # per-application grant, at least one application must be chosen).
+    TokenExchangeBrokerSetting.where(user: current_user)
+      .where.not(broker_issuer: target.issuer)
+      .find_each { |setting| setting.auto_enroll!(target) }
+  end
+
+  # True when the SP is an allow-listed broker, requested the token_exchange
+  # scope, and the user granted at least one application or auto-enrollment.
+  # Consent to token exchange is optional: declining still completes the
+  # broker's own sign-in.
   def token_exchange_consent_granted?
-    token_exchange_consent_requested? && token_exchange_consent_checked?
+    token_exchange_consent_requested? &&
+      (token_exchange_grant_targets.any? || token_exchange_auto_enroll?)
   end
 
   def token_exchange_consent_requested?
@@ -65,36 +88,42 @@ module VerifySpAttributesConcern
       decorated_sp_session.requested_attributes.map(&:to_s).include?('token_exchange')
   end
 
-  # A grant is only valid when it will authorize something: a per-application
-  # grant needs at least one chosen application, and an all-current-services
-  # grant needs at least one reachable application (otherwise -- e.g. the broker
-  # manifest was unavailable -- the user would be left with a 12-month grant that
-  # covers nothing). All-and-future may be granted with no current targets since
-  # it covers whatever the broker adds.
-  def token_exchange_consent_checked?
-    choice = token_exchange_grant_choice
-    return false unless TOKEN_EXCHANGE_GRANT_CHOICES.include?(choice)
-    return true if choice == 'all_and_future'
-    token_exchange_grant_targets.any?
+  # The user chose "allow all currently linked agencies".
+  def token_exchange_all?
+    ActiveModel::Type::Boolean.new.cast(token_exchange_form_params[:token_exchange_all]) == true
   end
 
-  def token_exchange_grant_choice
-    token_exchange_form_params[:token_exchange_grant].to_s
+  # The user chose auto-enrollment. It depends on "allow all" when the user has
+  # linked agencies (enforced here, not just in the UI); offered on its own when
+  # they have none.
+  def token_exchange_auto_enroll?
+    checked = ActiveModel::Type::Boolean.new.cast(
+      token_exchange_form_params[:token_exchange_auto_enroll],
+    ) == true
+    return checked if token_exchange_linked_targets.empty?
+
+    checked && token_exchange_all?
   end
 
-  # Issuers the user chose, restricted to the applications the broker may
-  # actually reach for this SP -- a submitted issuer outside that set is ignored
-  # rather than granted. For an all-targets choice the full reachable set is
-  # snapshotted so the grant records exactly what the user saw.
+  def token_exchange_linked_targets
+    @token_exchange_linked_targets ||= TokenExchangeReachableTargets.linked_for(
+      user: current_user, broker_issuer: current_sp.issuer,
+    )
+  end
+
+  # Target issuers to grant. "Allow all" covers every application the user has
+  # ALREADY linked to their account that has opted in to the broker; otherwise
+  # the specific applications chosen. Submitted issuers outside the user's
+  # linked, opted-in set are ignored rather than granted.
   def token_exchange_grant_targets
     return @token_exchange_grant_targets if defined?(@token_exchange_grant_targets)
 
-    reachable = TokenExchangeReachableTargets.for_broker(current_sp.issuer).map(&:issuer)
+    linked = token_exchange_linked_targets.map(&:issuer)
     @token_exchange_grant_targets =
-      if token_exchange_grant_choice == 'specific'
-        Array(token_exchange_form_params[:token_exchange_targets]).map(&:to_s) & reachable
+      if token_exchange_all?
+        linked
       else
-        reachable
+        Array(token_exchange_form_params[:token_exchange_targets]).map(&:to_s) & linked
       end
   end
 

@@ -50,6 +50,20 @@ account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用您的 %{app_name} 帐户，您可以安全地在线连接到多个政府服务。以下是您当前已连接的所有服务列表。
 account.connected_apps.email_not_selected: 尚未选择电邮
 account.connected_apps.email_update_success_html: 你给<strong>%{sp_name}</strong>的电邮更新成功了。
+account.connected_apps.token_exchange.auto_enroll_toggle_label: 自动允许 %{sp} 访问我之后连接的新机构
+account.connected_apps.token_exchange.description: 为你希望 %{sp} 能够登录的每个机构开启此选项。你可以随时更改。
+account.connected_apps.token_exchange.granted_html: 自 %{timestamp_html} 起允许
+account.connected_apps.token_exchange.heading: '%{sp} 可以代表你行事的机构'
+account.connected_apps.token_exchange.modal.auto_enroll_body_html: '%{sp_html} 将自动获准使用你已验证的身份，让你登录你之后连接到 %{app_name} 且可与 %{sp_html} 配合使用的任何新机构。'
+account.connected_apps.token_exchange.modal.auto_enroll_duration: 新机构自今日起生效，有效期 12 个月。你可以随时在此页面将其关闭。
+account.connected_apps.token_exchange.modal.body_html: '%{sp_html} 将能够使用你已验证的身份让你登录 %{target_html}，而无需你再次验证。它仅会收到其获准接收的信息，并且能够看到你是通过 %{sp_html} 连接的。'
+account.connected_apps.token_exchange.modal.confirm: 允许
+account.connected_apps.token_exchange.modal.duration: 此权限有效期为 12 个月。你可以随时在此页面将其关闭。
+account.connected_apps.token_exchange.modal.heading: 允许 %{sp} 代表你行事？
+account.connected_apps.token_exchange.no_linked: 你尚未连接任何可与此服务配合使用的机构。
+account.connected_apps.token_exchange.off: '关'
+account.connected_apps.token_exchange.on: '开'
+account.connected_apps.token_exchange.toggle_label: 允许 %{sp} 在 %{target} 代表我行事
 account.email_language.default: '%{language}（默认）'
 account.email_language.edit_title: 编辑电邮语言选择
 account.email_language.languages_list: 您将收到%{app_name}用您选择的语言发送的电子邮件。
@@ -1865,16 +1879,16 @@ sign_up.completed.smiling_image_alt: 面带笑容的一个人加上绿勾说明�
 sign_up.information_sharing_html: 如需了解 %{app_name} 如何共享您的信息，请查阅我们的《%{link_html}》。
 sign_up.nds_terms_intro: 继续即表示您接受
 sign_up.terms: 我已阅读并接受 %{app_name}
-sign_up.token_exchange_grant.all: '%{sp} 目前提供的所有服务'
-sign_up.token_exchange_grant.all_and_future: '%{sp} 现在提供或在未来 12 个月内新增的所有服务'
-sign_up.token_exchange_grant.legend: 选择 %{sp} 可以将你连接到哪些政府服务
-sign_up.token_exchange_grant.no_targets: 目前还没有可供选择的服务。
-sign_up.token_exchange_grant.none_reachable: '%{sp} 目前没有可将你连接到的服务。请选择其他选项或稍后重试。'
-sign_up.token_exchange_grant.required: 继续之前，请选择 %{sp} 可以将你连接到哪些服务。
-sign_up.token_exchange_grant.required_specific: 请至少选择一项服务，或选择其他选项。
-sign_up.token_exchange_grant.specific: 仅我选择的服务
-sign_up.token_exchange_grant.specific_heading: 选择特定服务
-sign_up.token_exchange_grant.specific_hint: 选择 %{sp} 可以将你连接到的服务。你以后可以在账户中更改此设置。
+sign_up.token_exchange_grant.all: 允许 %{sp} 在与我的 %{app_name} 账户关联的所有联邦机构中代表我行事
+sign_up.token_exchange_grant.auto_enroll: 自动注册我之后连接到 %{app_name} 的新机构
+sign_up.token_exchange_grant.auto_enroll_hint: 新机构自你首次同意之日起生效，有效期 12 个月。
+sign_up.token_exchange_grant.legend: 选择 %{sp} 可以如何代表你行事
+sign_up.token_exchange_grant.next: 下一页
+sign_up.token_exchange_grant.or: 或
+sign_up.token_exchange_grant.other_agency: 其他
+sign_up.token_exchange_grant.pagination: 机构
+sign_up.token_exchange_grant.previous: 上一页
+sign_up.token_exchange_grant.specific: 仅允许访问以下机构：
 simple_form.error_notification.default_message: 请仔细阅读以下问题：
 simple_form.no: 不
 simple_form.required.html: ''
