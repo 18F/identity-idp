@@ -123,11 +123,45 @@ class CompletionsPresenter
     t('help_text.requested_attributes.document_images_html', sp_html: content_tag(:strong, sp_name))
   end
 
-  # The applications the broker may currently reach, for the per-application
-  # grant tree. See TokenExchangeReachableTargets.
+  # The applications the user has already linked to their account that the
+  # broker may reach, grouped by agency for the per-application chooser.
+  # @return [Array<[Agency, Array<ServiceProvider>]>]
+  def token_exchange_linked_targets_by_agency
+    @token_exchange_linked_targets_by_agency ||=
+      TokenExchangeReachableTargets.grouped_by_agency(token_exchange_linked_targets)
+  end
+
   # @return [Array<ServiceProvider>]
-  def token_exchange_targets
-    @token_exchange_targets ||= TokenExchangeReachableTargets.for_broker(current_sp.issuer)
+  def token_exchange_linked_targets
+    @token_exchange_linked_targets ||= TokenExchangeReachableTargets.linked_for(
+      user: current_user, broker_issuer: current_sp.issuer,
+    )
+  end
+
+  # With no linked agencies there is nothing to "allow all" for; only the
+  # auto-enrollment option is offered.
+  def token_exchange_has_linked_targets?
+    token_exchange_linked_targets.any?
+  end
+
+  # The user's CURRENT token-exchange state for this broker, used to pre-populate
+  # the control on a return visit so that simply continuing preserves (rather
+  # than silently revokes) grants the user already made here or on the account
+  # page. Nothing is pre-checked for a first-time grant.
+  def token_exchange_current_targets
+    @token_exchange_current_targets ||= TokenExchangeGrant.active
+      .where(user: current_user, broker_issuer: current_sp.issuer)
+      .pluck(:target_issuer)
+  end
+
+  def token_exchange_currently_all?
+    token_exchange_has_linked_targets? &&
+      (token_exchange_linked_targets.map(&:issuer) - token_exchange_current_targets).empty?
+  end
+
+  def token_exchange_currently_auto_enroll?
+    TokenExchangeBrokerSetting.for(user: current_user, broker_issuer: current_sp.issuer)
+      .auto_enroll_enabled?
   end
 
   private

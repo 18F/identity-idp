@@ -50,6 +50,20 @@ account.connected_apps.associated_html: Connected %{timestamp_html}
 account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government services online. Below is a list of all the services you currently have connected.
 account.connected_apps.email_not_selected: Email not yet selected
 account.connected_apps.email_update_success_html: Your email for <strong>%{sp_name}</strong> was updated successfully.
+account.connected_apps.token_exchange.auto_enroll_toggle_label: Automatically allow %{sp} at new agencies you connect
+account.connected_apps.token_exchange.description: Turn on each agency you want %{sp} to be able to sign you in to. You can change this at any time.
+account.connected_apps.token_exchange.granted_html: Allowed since %{timestamp_html}
+account.connected_apps.token_exchange.heading: Agencies %{sp} may act at on your behalf
+account.connected_apps.token_exchange.modal.auto_enroll_body_html: '%{sp_html} will automatically be allowed to sign you in to any new agency you connect to %{app_name} that works with %{sp_html}, using your verified identity.'
+account.connected_apps.token_exchange.modal.auto_enroll_duration: New agencies are covered from today for 12 months. You can turn this off at any time from this page.
+account.connected_apps.token_exchange.modal.body_html: '%{sp_html} will be able to sign you in to %{target_html} using your verified identity, without asking you to verify again. It will receive only the information it is approved for and can see that you were connected through %{sp_html}.'
+account.connected_apps.token_exchange.modal.confirm: Allow
+account.connected_apps.token_exchange.modal.duration: This permission lasts 12 months. You can turn it off at any time from this page.
+account.connected_apps.token_exchange.modal.heading: Allow %{sp} to act on your behalf?
+account.connected_apps.token_exchange.no_linked: You have not connected any agencies that work with this service yet.
+account.connected_apps.token_exchange.off: 'Off'
+account.connected_apps.token_exchange.on: 'On'
+account.connected_apps.token_exchange.toggle_label: Allow %{sp} to act on your behalf at %{target}
 account.email_language.default: '%{language} (default)'
 account.email_language.edit_title: Edit email language preference
 account.email_language.languages_list: You will receive emails from %{app_name} in the language you choose.
@@ -1855,16 +1869,16 @@ sign_up.document_images_sharing_consent_required: You must consent to sharing yo
 sign_up.information_sharing_html: To learn how %{app_name} shares your information, review our %{link_html}.
 sign_up.nds_terms_intro: By continuing, you accept the
 sign_up.terms: I read and accept the %{app_name}
-sign_up.token_exchange_grant.all: All services %{sp} currently offers
-sign_up.token_exchange_grant.all_and_future: All services %{sp} offers now or adds in the next 12 months
-sign_up.token_exchange_grant.legend: Choose which government services %{sp} may connect you to
-sign_up.token_exchange_grant.no_targets: No services are available to choose yet.
-sign_up.token_exchange_grant.none_reachable: '%{sp} has no services available to connect you to right now. Choose a different option or try again later.'
-sign_up.token_exchange_grant.required: Choose which services %{sp} may connect you to before continuing.
-sign_up.token_exchange_grant.required_specific: Select at least one service, or choose a different option.
-sign_up.token_exchange_grant.specific: Only the services I choose
-sign_up.token_exchange_grant.specific_heading: Choose specific services
-sign_up.token_exchange_grant.specific_hint: Select the services %{sp} may connect you to. You can change this later from your account.
+sign_up.token_exchange_grant.all: Allow %{sp} to act on your behalf across all federal agencies linked to your %{app_name} account
+sign_up.token_exchange_grant.auto_enroll: Automatically enroll new agencies you connect to %{app_name}
+sign_up.token_exchange_grant.auto_enroll_hint: New agencies will be covered from the date you first agree, for 12 months.
+sign_up.token_exchange_grant.legend: Choose how %{sp} may act on your behalf
+sign_up.token_exchange_grant.next: Next
+sign_up.token_exchange_grant.or: OR
+sign_up.token_exchange_grant.other_agency: Other
+sign_up.token_exchange_grant.pagination: Agencies
+sign_up.token_exchange_grant.previous: Previous
+sign_up.token_exchange_grant.specific: 'Allow access only for the following agencies:'
 simple_form.error_notification.default_message: 'Please review the problems below:'
 simple_form.no: 'No'
 simple_form.required.html: ''

@@ -1,7 +1,11 @@
 <%#
 Token-exchange grant control, rendered inside the completions form in both
-layouts. The user must choose the breadth of the grant; the per-application
-list is collapsed by default and only needed for the "specific" choice.
+layouts. Consent is optional; the user may:
+  * allow the broker across every agency already linked to their account
+    (with a dependent option to auto-enroll agencies they connect later), OR
+  * allow only specific applications, chosen from a client-side-paginated list
+    grouped by agency.
+With no linked agencies, only the auto-enrollment option is offered.
 
 locals:
 * form: the simple_form_for builder for :idv_form
@@ -9,57 +13,100 @@ locals:
 * compact: when true, omit outer spacing classes (NDS card layout)
 %>
 <% spacing = local_assigns[:compact] ? '' : 'margin-bottom-4' %>
-<% targets = presenter.token_exchange_targets %>
-<% submitted = params[:idv_form].is_a?(ActionController::Parameters) ? params[:idv_form] : {} %>
-<% choice = submitted[:token_exchange_grant].to_s %>
-<% chosen = Array(submitted[:token_exchange_targets]).map(&:to_s) %>
+<%# Reflect a failed submission if present; otherwise the user's current grants
+    (so a return visit that simply continues preserves them). First-time: blank. %>
+<% submitted = params[:idv_form].is_a?(ActionController::Parameters) ? params[:idv_form] : nil %>
+<% if submitted %>
+  <% all_checked = ActiveModel::Type::Boolean.new.cast(submitted[:token_exchange_all]) == true %>
+  <% auto_checked = ActiveModel::Type::Boolean.new.cast(submitted[:token_exchange_auto_enroll]) == true %>
+  <% chosen = Array(submitted[:token_exchange_targets]).map(&:to_s) %>
+<% else %>
+  <% all_checked = presenter.token_exchange_currently_all? %>
+  <% auto_checked = presenter.token_exchange_currently_auto_enroll? %>
+  <% chosen = all_checked ? [] : presenter.token_exchange_current_targets %>
+<% end %>
+<% has_linked = presenter.token_exchange_has_linked_targets? %>
 
 <%= render(AlertComponent.new(type: :info, class: spacing)) do %>
   <%= presenter.token_exchange_sharing_disclosure.html_safe %>
 <% end %>
 
-<%= form.input(
-      :token_exchange_grant,
-      as: :radio_buttons,
-      wrapper: :uswds_radio_buttons,
-      wrapper_html: { class: spacing, 'data-token-exchange-grant': true },
-      label: t('sign_up.token_exchange_grant.legend', sp: presenter.sp_name),
-      required: true,
-      checked: choice.presence,
-      collection: [
-        [t('sign_up.token_exchange_grant.all', sp: presenter.sp_name), 'all'],
-        [t('sign_up.token_exchange_grant.all_and_future', sp: presenter.sp_name), 'all_and_future'],
-        [t('sign_up.token_exchange_grant.specific'), 'specific'],
-      ],
-    ) %>
+<fieldset class="usa-fieldset <%= spacing %>" data-token-exchange-grant>
+  <legend class="usa-legend">
+    <%= t('sign_up.token_exchange_grant.legend', sp: presenter.sp_name) %>
+  </legend>
 
-<details class="usa-accordion <%= spacing %>" data-token-exchange-targets <%= 'open' if choice == 'specific' %>>
-  <summary class="usa-accordion__button padding-y-105">
-    <%= t('sign_up.token_exchange_grant.specific_heading') %>
-  </summary>
-  <div class="usa-accordion__content padding-top-1">
-    <p class="margin-top-0">
-      <%= t('sign_up.token_exchange_grant.specific_hint', sp: presenter.sp_name) %>
-    </p>
-    <% if targets.empty? %>
-      <p class="text-base"><%= t('sign_up.token_exchange_grant.no_targets') %></p>
-    <% else %>
-      <% targets.each do |target| %>
-        <div class="usa-checkbox">
-          <%= check_box_tag(
-                'idv_form[token_exchange_targets][]',
-                target.issuer,
-                chosen.include?(target.issuer),
-                id: "token-exchange-target-#{target.id}",
-                class: 'usa-checkbox__input',
-              ) %>
-          <%= label_tag(
-                "token-exchange-target-#{target.id}",
-                target.display_name,
-                class: 'usa-checkbox__label',
-              ) %>
+  <% if has_linked %>
+    <div class="usa-checkbox">
+      <%= check_box_tag(
+            'idv_form[token_exchange_all]',
+            '1',
+            all_checked,
+            id: 'token-exchange-all',
+            class: 'usa-checkbox__input',
+            data: { token_exchange_all: true },
+          ) %>
+      <%= label_tag(
+            'token-exchange-all',
+            t('sign_up.token_exchange_grant.all', sp: presenter.sp_name, app_name: APP_NAME),
+            class: 'usa-checkbox__label',
+          ) %>
+    </div>
+  <% end %>
+
+  <div class="usa-checkbox <%= 'margin-left-4' if has_linked %>">
+    <%= check_box_tag(
+          'idv_form[token_exchange_auto_enroll]',
+          '1',
+          auto_checked,
+          id: 'token-exchange-auto-enroll',
+          class: 'usa-checkbox__input',
+          disabled: has_linked && !all_checked,
+          data: { token_exchange_auto_enroll: true },
+        ) %>
+    <%= label_tag(
+          'token-exchange-auto-enroll',
+          t('sign_up.token_exchange_grant.auto_enroll', app_name: APP_NAME),
+          class: 'usa-checkbox__label',
+        ) %>
+    <span class="usa-hint display-block margin-left-5">
+      <%= t('sign_up.token_exchange_grant.auto_enroll_hint') %>
+    </span>
+  </div>
+
+  <% if has_linked %>
+    <p class="text-bold text-center margin-y-2"><%= t('sign_up.token_exchange_grant.or') %></p>
+
+    <p class="margin-bottom-1"><%= t('sign_up.token_exchange_grant.specific', sp: presenter.sp_name) %></p>
+
+    <div data-token-exchange-targets data-page-size="5">
+      <% presenter.token_exchange_linked_targets_by_agency.each do |agency, providers| %>
+        <div data-token-exchange-agency>
+          <h3 class="h4 margin-top-2 margin-bottom-1"><%= agency&.name || t('sign_up.token_exchange_grant.other_agency') %></h3>
+          <% providers.each do |target| %>
+            <div class="usa-checkbox" data-token-exchange-target>
+              <%= check_box_tag(
+                    'idv_form[token_exchange_targets][]',
+                    target.issuer,
+                    chosen.include?(target.issuer),
+                    id: "token-exchange-target-#{target.id}",
+                    class: 'usa-checkbox__input',
+                  ) %>
+              <%= label_tag(
+                    "token-exchange-target-#{target.id}",
+                    target.display_name,
+                    class: 'usa-checkbox__label',
+                  ) %>
+            </div>
+          <% end %>
         </div>
       <% end %>
-    <% end %>
-  </div>
-</details>
+      <nav class="display-flex flex-justify flex-align-center margin-top-2" aria-label="<%= t('sign_up.token_exchange_grant.pagination') %>" data-token-exchange-pager hidden>
+        <%= render ButtonComponent.new(type: :button, outline: true, size: :sm, data: { token_exchange_prev: true }).with_content(t('sign_up.token_exchange_grant.previous')) %>
+        <span class="text-base" data-token-exchange-page-status></span>
+        <%= render ButtonComponent.new(type: :button, outline: true, size: :sm, data: { token_exchange_next: true }).with_content(t('sign_up.token_exchange_grant.next')) %>
+      </nav>
+    </div>
+  <% end %>
+</fieldset>
+<%= javascript_packs_tag_once('token-exchange-grant', preload_links_header: false) %>

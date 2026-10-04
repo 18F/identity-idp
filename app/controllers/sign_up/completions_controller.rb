@@ -21,19 +21,6 @@ module SignUp
     end
 
     def update
-      if token_exchange_consent_requested? && !token_exchange_consent_checked?
-        @multiple_factors_enabled = MfaPolicy.new(current_user).multiple_factors_enabled?
-        @presenter = completions_presenter
-        flash.now[:error] =
-          if token_exchange_grant_choice == 'specific'
-            t('sign_up.token_exchange_grant.required_specific')
-          elsif token_exchange_grant_choice == 'all'
-            t('sign_up.token_exchange_grant.none_reachable', sp: @presenter.sp_name)
-          else
-            t('sign_up.token_exchange_grant.required', sp: @presenter.sp_name)
-          end
-        return render :show
-      end
       if biometric_sharing_consent_requested? && !biometric_sharing_consent_checked?
         analytics.biometric_sharing_consent_declined(issuer: current_sp.issuer)
         flash.now[:error] = t('sign_up.document_images_sharing_consent_required')
@@ -44,10 +31,12 @@ module SignUp
 
       track_completion_event('agency-page')
       update_verified_attributes
-      if token_exchange_consent_granted?
-        analytics.token_exchange_consent_granted(
+      if token_exchange_consent_requested?
+        analytics.token_exchange_consent_decided(
           issuer: current_sp.issuer,
-          grant_choice: token_exchange_grant_choice,
+          granted: token_exchange_consent_granted?,
+          all_linked: token_exchange_all?,
+          auto_enroll: token_exchange_auto_enroll?,
           target_count: token_exchange_grant_targets.size,
         )
       end

@@ -50,6 +50,20 @@ account.connected_apps.associated_html: 'Conectado: %{timestamp_html}'
 account.connected_apps.description: Con tu cuenta de %{app_name}, puedes conectarte de forma segura a múltiples servicios gubernamentales en línea. A continuación, encontrarás una lista de todos los servicios a los que estás conectado actualmente.
 account.connected_apps.email_not_selected: No se ha seleccionado aún una dirección de correo electrónico
 account.connected_apps.email_update_success_html: Se actualizó su correo electrónico para la <strong>%{sp_name}</strong>.
+account.connected_apps.token_exchange.auto_enroll_toggle_label: Permitir automáticamente a %{sp} en las nuevas agencias que conecte
+account.connected_apps.token_exchange.description: Active cada agencia en la que desea que %{sp} pueda iniciar su sesión. Puede cambiarlo en cualquier momento.
+account.connected_apps.token_exchange.granted_html: Permitido desde %{timestamp_html}
+account.connected_apps.token_exchange.heading: Agencias en las que %{sp} puede actuar en su nombre
+account.connected_apps.token_exchange.modal.auto_enroll_body_html: '%{sp_html} podrá iniciar su sesión automáticamente en cualquier agencia nueva que conecte a %{app_name} y que funcione con %{sp_html}, usando su identidad verificada.'
+account.connected_apps.token_exchange.modal.auto_enroll_duration: Las nuevas agencias quedan cubiertas desde hoy durante 12 meses. Puede desactivarlo en cualquier momento desde esta página.
+account.connected_apps.token_exchange.modal.body_html: '%{sp_html} podrá iniciar su sesión en %{target_html} usando su identidad verificada, sin pedirle que la verifique de nuevo. Recibirá únicamente la información para la que está autorizado y podrá ver que usted se conectó a través de %{sp_html}.'
+account.connected_apps.token_exchange.modal.confirm: Permitir
+account.connected_apps.token_exchange.modal.duration: Este permiso dura 12 meses. Puede desactivarlo en cualquier momento desde esta página.
+account.connected_apps.token_exchange.modal.heading: '¿Permitir que %{sp} actúe en su nombre?'
+account.connected_apps.token_exchange.no_linked: Aún no ha conectado ninguna agencia que funcione con este servicio.
+account.connected_apps.token_exchange.off: 'Desactivado'
+account.connected_apps.token_exchange.on: 'Activado'
+account.connected_apps.token_exchange.toggle_label: Permitir que %{sp} actúe en mi nombre en %{target}
 account.email_language.default: '%{language} (predeterminado)'
 account.email_language.edit_title: Editar la preferencia de idioma del correo electrónico
 account.email_language.languages_list: Recibirá mensajes de correo electrónico de %{app_name} en el idioma que elija.
@@ -1867,16 +1881,16 @@ sign_up.document_images_sharing_consent_required: Debe dar su consentimiento par
 sign_up.information_sharing_html: Para saber cómo %{app_name} comparte su información, consulte nuestra %{link_html}.
 sign_up.nds_terms_intro: Al continuar, acepta las
 sign_up.terms: Leí y acepto %{app_name}
-sign_up.token_exchange_grant.all: Todos los servicios que %{sp} ofrece actualmente
-sign_up.token_exchange_grant.all_and_future: Todos los servicios que %{sp} ofrece ahora o agregue en los próximos 12 meses
-sign_up.token_exchange_grant.legend: Elija a qué servicios gubernamentales puede conectarlo %{sp}
-sign_up.token_exchange_grant.no_targets: Aún no hay servicios disponibles para elegir.
-sign_up.token_exchange_grant.none_reachable: '%{sp} no tiene servicios disponibles para conectarlo en este momento. Elija otra opción o inténtelo más tarde.'
-sign_up.token_exchange_grant.required: Elija a qué servicios puede conectarlo %{sp} antes de continuar.
-sign_up.token_exchange_grant.required_specific: Seleccione al menos un servicio o elija otra opción.
-sign_up.token_exchange_grant.specific: Solo los servicios que yo elija
-sign_up.token_exchange_grant.specific_heading: Elegir servicios específicos
-sign_up.token_exchange_grant.specific_hint: Seleccione los servicios a los que %{sp} puede conectarlo. Puede cambiar esto más adelante desde su cuenta.
+sign_up.token_exchange_grant.all: Permitir que %{sp} actúe en mi nombre en todas las agencias federales vinculadas a mi cuenta de %{app_name}
+sign_up.token_exchange_grant.auto_enroll: Inscribir automáticamente las nuevas agencias que conecte a %{app_name}
+sign_up.token_exchange_grant.auto_enroll_hint: Las nuevas agencias quedarán cubiertas desde la fecha en que acepte por primera vez, durante 12 meses.
+sign_up.token_exchange_grant.legend: Elija cómo %{sp} puede actuar en su nombre
+sign_up.token_exchange_grant.next: Siguiente
+sign_up.token_exchange_grant.or: O
+sign_up.token_exchange_grant.other_agency: Otras
+sign_up.token_exchange_grant.pagination: Agencias
+sign_up.token_exchange_grant.previous: Anterior
+sign_up.token_exchange_grant.specific: 'Permitir el acceso solo a las siguientes agencias:'
 simple_form.error_notification.default_message: 'Revise los siguientes problemas:'
 simple_form.no: 'No'
 simple_form.required.html: ''

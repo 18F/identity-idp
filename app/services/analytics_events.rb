@@ -7580,16 +7580,56 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when a user grants a broker SP consent to perform token exchange.
-  # @param [String] issuer Issuer of the broker SP the consent was granted to
-  # @param ["all","all_and_future","specific"] grant_choice Breadth of the grant
-  # @param [Integer] target_count Number of target applications the grant covers
-  def token_exchange_consent_granted(issuer:, grant_choice:, target_count:, **extra)
+  # Tracks a user toggling auto-enrollment of new agencies for a broker on the
+  # account page.
+  # @param [String] issuer Issuer of the broker SP
+  # @param [Boolean] enabled Whether auto-enrollment is now on
+  def token_exchange_auto_enroll_toggled(issuer:, enabled:, **extra)
     track_event(
-      :token_exchange_consent_granted,
+      :token_exchange_auto_enroll_toggled,
       issuer:,
-      grant_choice:,
+      enabled:,
+      **extra,
+    )
+  end
+
+  # Tracks the user's token-exchange decision on the agency handoff screen for a
+  # broker SP. Consent is optional; this fires whether or not anything was granted.
+  # @param [String] issuer Issuer of the broker SP
+  # @param [Boolean] granted Whether any application or auto-enrollment was granted
+  # @param [Boolean] all_linked Whether the user allowed every currently linked agency
+  # @param [Boolean] auto_enroll Whether the user enabled auto-enrollment of new agencies
+  # @param [Integer] target_count Number of applications granted
+  def token_exchange_consent_decided(
+    issuer:,
+    granted:,
+    all_linked:,
+    auto_enroll:,
+    target_count:,
+    **extra
+  )
+    track_event(
+      :token_exchange_consent_decided,
+      issuer:,
+      granted:,
+      all_linked:,
+      auto_enroll:,
       target_count:,
+      **extra,
+    )
+  end
+
+  # Tracks a user toggling a broker's access to one application on the account
+  # page. Each application is its own grant.
+  # @param [String] issuer Issuer of the broker SP
+  # @param [String] target_issuer Issuer of the application toggled
+  # @param [Boolean] enabled Whether the broker may now act at that application
+  def token_exchange_grant_toggled(issuer:, target_issuer:, enabled:, **extra)
+    track_event(
+      :token_exchange_grant_toggled,
+      issuer:,
+      target_issuer:,
+      enabled:,
       **extra,
     )
   end

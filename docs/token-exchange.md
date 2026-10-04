@@ -59,30 +59,42 @@ existing OIDC consent (grant) flow rather than granted silently.
 - Because it is an IAL2-gated scope, it is only grantable in an identity-proofed
   context — consistent with the exchange itself requiring IAL2.
 - On the agency handoff (completions) screen the user sees a plain-language
-  disclosure and must choose the **breadth of the grant** before continuing to
-  the broker. A choice is **required**; submitting without one re-renders the
-  screen with an error. The options are:
-  - **All services the broker currently offers** — covers exactly the targets on
-    the broker's reachable set at the moment of consent. Each is snapshotted as its
-    own grant row, so a target the broker adds *later* is **not** covered.
-  - **All services now or added in the next 12 months** — additionally covers
-    targets the broker adds during the grant period.
-  - **Only the services I choose** — a collapsed-by-default list of the broker's
-    reachable applications (every active target opted in to this broker); the
-    user picks one or more. At least one is required for this option.
-- Grants are stored in `token_exchange_grants`, **one row per (user, broker,
-  target)** with its own `granted_at` / `expires_at` (12 months) / `revoked_at`,
-  so every application the user authorized is independently recorded and
-  expirable. An all-targets row uses the `*` sentinel; `includes_future`
-  distinguishes the two "all" choices. Re-submitting the screen replaces the
-  prior grants for that broker, so a changed decision never leaves stale rows.
-- The exchange endpoint mints **only** when the user holds an active grant that
-  **covers the requested target** (`TokenExchangeGrant.authorizes?`) **and** the
-  subject token being presented was itself issued with the `token_exchange`
-  scope. Consent travels with the grant it was given for: a later broker
-  authorization that dropped the scope cannot reuse an earlier grant. A target
-  outside the grant fails with `invalid_target`; a broker with no grant at all
-  fails with `invalid_request`.
+  disclosure and may choose how the broker is allowed to act for them. Consent
+  is **optional** — declining still completes the broker's own sign-in — and
+  nothing is pre-checked. The options are:
+  - **Allow the broker to act on your behalf across all federal agencies linked
+    to your account** — covers every application the user has *already*
+    connected (a live identity) that has opted in to the broker. This is
+    materialized as **one grant row per application**, never a wildcard.
+  - **Automatically enroll new agencies you connect** (dependent on the above
+    when the user has linked agencies; offered on its own when they have none)
+    — a per-broker setting. When the user later connects a new application that
+    has opted in to the broker, its grant is created then, but stamped with the
+    time auto-enrollment was **originally** consented to, not the time of first
+    use.
+  - **— OR — allow access only for the following agencies:** a client-side
+    paginated list of the user's linked, opted-in applications grouped by
+    agency; the user picks any number.
+- Grants live in `token_exchange_grants`, **one row per (user, broker, target)**
+  with its own `granted_at` / `expires_at` (12 months) / `revoked_at`, so every
+  application has an independently recorded, revocable, expirable timestamp and
+  later per-application toggles never have to fight an overriding "all" state.
+  Auto-enrollment lives in `token_exchange_broker_settings` as
+  `auto_enroll_granted_at` / `auto_enroll_revoked_at`. Re-submitting the screen
+  revokes (not deletes) applications the user no longer chose, preserving the
+  audit trail.
+- On the **account page** (Connected services), each broker shows a toggle per
+  linked application and an auto-enroll toggle. Turning a toggle on opens a
+  consent modal first; turning it off applies immediately. Each toggle is its own
+  grant row or the per-broker setting, so the account page and the handoff
+  screen read and write the same state.
+- The exchange endpoint mints **only** when the user holds an active grant for
+  **the requested target** (`TokenExchangeGrant.authorizes?`) **and** the subject
+  token being presented was itself issued with the `token_exchange` scope.
+  Consent travels with the grant it was given for: a later broker authorization
+  that dropped the scope cannot reuse an earlier grant. A target outside the
+  grant fails with `invalid_target`; a broker with no grant at all fails with
+  `invalid_request`.
 
 This reuses login's established model: an SP's accessible attributes are fixed at
 onboarding (its `attribute_bundle`), the SP may request a subset per grant, and
