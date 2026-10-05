@@ -126,5 +126,10 @@ class PwnedPasswordDownloader
 end
 
 if __FILE__ == $PROGRAM_NAME
-  PwnedPasswordDownloader.new.run!
+  # Range defaults to the full hash-prefix space (00000..FFFFF, ~1M requests).
+  # For a smaller/faster run (e.g. prototyping), set PWNED_RANGE_START and/or
+  # PWNED_RANGE_FINISH to narrow the range. Values are 5-char hex prefixes.
+  start = ENV.fetch('PWNED_RANGE_START', '00000')
+  finish = ENV.fetch('PWNED_RANGE_FINISH', 'FFFFF')
+  PwnedPasswordDownloader.new.run!(start:, finish:)
 end
