@@ -15,4 +15,16 @@ class CloudFrontHeaderParser
     return nil unless @request&.headers
     @request.headers['CloudFront-Viewer-Address']
   end
+
+  # JA3 TLS fingerprint for the viewer's connection to CloudFront
+  def ja3_fingerprint
+    return nil unless @request&.headers
+    @request.headers['CloudFront-Viewer-JA3-Fingerprint']
+  end
+
+  # JA4 TLS fingerprint for the viewer's connection to CloudFront
+  def ja4_fingerprint
+    return nil unless @request&.headers
+    @request.headers['CloudFront-Viewer-JA4-Fingerprint']
+  end
 end

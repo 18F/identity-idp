@@ -8,12 +8,16 @@ RSpec.describe RecaptchaService do
     let(:recaptcha_action) { 'ACTION' }
     let(:user_agent) { 'Example/1.0' }
     let(:user_ip_address) { '127.0.0.1' }
+    let(:ja3_fingerprint) { 'e7d705a3286e19ea42f587b344ee6865' }
+    let(:ja4_fingerprint) { 't13d1516h2_8daaf6152771_b186095e22b6' }
     subject(:create_assessment) do
       RecaptchaService.new.create_assessment(
         recaptcha_token:,
         recaptcha_action:,
         user_agent:,
         user_ip_address:,
+        ja3_fingerprint:,
+        ja4_fingerprint:,
       )
     end
     let(:recaptcha_client) { instance_double('Google::Cloud::RecaptchaEnterprise::RecaptchaEnterpriseService::Client') }
@@ -101,6 +105,20 @@ RSpec.describe RecaptchaService do
           create_assessment
         end
 
+        it 'includes the JA3 and JA4 fingerprints in the assessment event' do
+          allow(FeatureManagement).to receive(:recaptcha_enterprise_additional_context_enabled?)
+            .and_return(true)
+
+          expect(recaptcha_client).to receive(:create_assessment) do |request|
+            event = request[:assessment][:event]
+            expect(event[:ja3]).to eq(ja3_fingerprint)
+            expect(event[:ja4]).to eq(ja4_fingerprint)
+            recaptcha_assessment
+          end
+
+          create_assessment
+        end
+
         context 'when additional context is enabled' do
           before do
             allow(FeatureManagement).to receive(:recaptcha_enterprise_additional_context_enabled?)
@@ -124,6 +142,23 @@ RSpec.describe RecaptchaService do
             end
           end
 
+          context 'when the JA3 and JA4 fingerprints are not provided' do
+            subject(:create_assessment) do
+              RecaptchaService.new.create_assessment(recaptcha_token:, recaptcha_action:)
+            end
+
+            it 'omits them from the assessment event' do
+              expect(recaptcha_client).to receive(:create_assessment) do |request|
+                event = request[:assessment][:event]
+                expect(event).not_to have_key(:ja3)
+                expect(event).not_to have_key(:ja4)
+                recaptcha_assessment
+              end
+
+              create_assessment
+            end
+          end
+
           context 'when the user agent and user ip address are blank' do
             let(:user_agent) { '' }
             let(:user_ip_address) { '' }
@@ -139,6 +174,22 @@ RSpec.describe RecaptchaService do
               create_assessment
             end
           end
+
+          context 'when the JA3 and JA4 fingerprints are blank' do
+            let(:ja3_fingerprint) { '' }
+            let(:ja4_fingerprint) { '' }
+
+            it 'omits them from the assessment event' do
+              expect(recaptcha_client).to receive(:create_assessment) do |request|
+                event = request[:assessment][:event]
+                expect(event).not_to have_key(:ja3)
+                expect(event).not_to have_key(:ja4)
+                recaptcha_assessment
+              end
+
+              create_assessment
+            end
+          end
         end
 
         context 'when additional context is disabled' do
@@ -147,7 +198,7 @@ RSpec.describe RecaptchaService do
               .and_return(false)
           end
 
-          it 'omits the user agent and user ip address from the assessment event' do
+          it 'omits the user agent, user ip address, and fingerprints from the event' do
             expect(recaptcha_client).to receive(:create_assessment) do |request|
               event = request[:assessment][:event]
               expect(event.keys).to contain_exactly(:site_key, :token)
