@@ -51,6 +51,11 @@ class PwnedPasswordDownloader
     [num_threads, queue.size].min.times do
       Thread.new do |thread_id|
         net_http = Net::HTTP::Persistent.new(name: "thread_id_#{thread_id}")
+        # Honor http_proxy/https_proxy/no_proxy from the environment so the
+        # downloader works behind an outbound proxy (e.g. in CI). Without this,
+        # Net::HTTP::Persistent connects directly and hangs when egress is only
+        # permitted via the proxy.
+        net_http.proxy = :ENV
 
         while (prefix = queue.pop)
           if already_downloaded?(prefix)
