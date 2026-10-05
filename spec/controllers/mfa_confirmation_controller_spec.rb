@@ -28,8 +28,6 @@ RSpec.describe MfaConfirmationController do
         mfa_method_counts: { webauthn_platform: 1 },
         enabled_mfa_methods_count: 1,
         auto_passkey_prompted: false,
-        in_account_creation_flow: nil,
-        second_mfa_reminder_conversion: nil,
       )
     end
 

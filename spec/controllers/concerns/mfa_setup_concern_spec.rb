@@ -143,7 +143,6 @@ RSpec.describe MfaSetupConcern do
           success: true,
           mfa_method_counts: { webauthn_platform: 1 },
           enabled_mfa_methods_count: 1,
-          second_mfa_reminder_conversion: nil,
           in_account_creation_flow: true,
           auto_passkey_prompted: true,
         )
