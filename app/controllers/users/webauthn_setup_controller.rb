@@ -121,8 +121,6 @@ module Users
 
     private
 
-    # Marks the session as having been automatically prompted, so that later steps can both avoid
-    # re-prompting and attribute the resulting setup to the prompt.
     def record_auto_passkey_prompt
       user_session[:auto_passkey_prompted] = true
     end
@@ -215,10 +213,6 @@ module Users
         auto_passkey_prompted:,
         attempts: mfa_attempts_count,
       }
-    end
-
-    def auto_passkey_prompted
-      user_session[:auto_passkey_prompted] == true && mobile? && in_account_creation_flow?
     end
 
     def auto_trigger_request?

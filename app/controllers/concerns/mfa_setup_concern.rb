@@ -139,12 +139,17 @@ module MfaSetupConcern
       enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
       second_mfa_reminder_conversion: user_session.delete(:second_mfa_reminder_conversion),
+      auto_passkey_prompted:,
       success: true,
     )
   end
 
   def in_tmx_ab_test_bucket?
     ab_test_bucket(:ACCOUNT_CREATION_TMX_PROCESSED) == :account_creation_tmx_processed
+  end
+
+  def auto_passkey_prompted
+    user_session[:auto_passkey_prompted] == true && mobile? && in_account_creation_flow?
   end
 
   def determine_next_mfa

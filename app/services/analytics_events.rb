@@ -9012,13 +9012,15 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] second_mfa_reminder_conversion Whether it is a result of second MFA reminder.
   # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
-  # Tracks when a user has completed MFA setup
+  # @param [Boolean, nil] auto_passkey_prompted Whether the user was prompted to set up passkey
+  # # Tracks when a user has completed MFA setup
   def user_registration_mfa_setup_complete(
     success:,
     mfa_method_counts:,
     enabled_mfa_methods_count:,
     in_account_creation_flow: nil,
     second_mfa_reminder_conversion: nil,
+    auto_passkey_prompted: nil,
     **extra
   )
     track_event(
@@ -9028,6 +9030,7 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       in_account_creation_flow:,
       second_mfa_reminder_conversion:,
+      auto_passkey_prompted:,
       **extra,
     )
   end
