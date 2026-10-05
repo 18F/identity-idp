@@ -59,7 +59,8 @@ process_pwned_download() {
 
 check_passwords() {
   echo "Checking if 'password' is in ${pwned_file}..."
-  check="grep -i $(echo -n "password" | openssl dgst -sha1 -binary | xxd -p) -- $pwned_file"
+  password_sha1=$(echo -n "password" | openssl dgst -sha1 | sed 's/^.*= //')
+  check="grep -i ${password_sha1} -- $pwned_file"
   if [ -z $(eval $check) ]; then
     echo "SHA-1 check for 'password' came up empty. Please redownload the pwned passwords zip"
     exit 1
