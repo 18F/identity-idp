@@ -47,7 +47,7 @@ module Proofing
           end.tap do |result|
             Db::SpCost::AddSpCost.call(
               current_sp,
-              :lexis_nexis_resolution,
+              sp_cost_token,
               transaction_id: result.transaction_id,
             )
           end
