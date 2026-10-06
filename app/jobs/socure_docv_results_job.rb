@@ -127,7 +127,8 @@ class SocureDocvResultsJob < ApplicationJob
     image_data = {}
 
     if doc_escrow_enabled? &&
-       docv_result_response.instance_of?(DocAuth::Socure::Responses::DocvResultResponse)
+       docv_result_response.instance_of?(DocAuth::Socure::Responses::DocvResultResponse) &&
+       !docv_result_response.document_type_mdl?
 
       job_data = {
         document_capture_session_uuid:,

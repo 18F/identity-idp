@@ -88,6 +88,21 @@ RSpec.describe SocureImageRetrievalJob do
       end
     end
 
+    context 'when document_capture_session has mdl_requested?' do
+      before do
+        document_capture_session.update(
+          document_type_requested: Idp::Constants::DocumentTypes::MDL,
+        )
+      end
+
+      it 'returns early without fetching images or writing to storage' do
+        expect(DocAuth::Socure::Requests::ImagesRequest).not_to receive(:new)
+        expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+
+        perform
+      end
+    end
+
     context 'when we get a non-200 HTTP response back from the image endpoint' do
       let(:referenceId) { '360ae43f-123f-47ab-8e05-6af79752e76c' }
 

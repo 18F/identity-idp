@@ -847,8 +847,6 @@ RSpec.describe SamlIdpController do
           allow(IdentityConfig.store)
             .to receive(:eligible_one_account_providers)
             .and_return([service_provider.issuer])
-          allow(IdentityConfig.store).to receive(:facial_match_general_availability_enabled)
-            .and_return(true)
           allow_any_instance_of(DuplicateProfileChecker)
             .to receive(:dupe_profile_set_for_user).and_return(duplicate_profile_set)
           allow(controller).to receive(:current_user).and_return(user)

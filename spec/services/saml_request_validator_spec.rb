@@ -266,24 +266,15 @@ RSpec.describe SamlRequestValidator do
         let(:authn_context) { [facial_match_ial] }
 
         context "when the IAL requested is #{facial_match_ial}" do
-          context 'when the service provider is allowed to use facial match ials' do
-            before do
-              sp.update(ial: 2)
-              allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?)
-                .and_return(true)
-            end
+          context 'when the service provider is allowed identity proofing' do
+            before { sp.update(ial: 2) }
 
             it 'returns a successful response' do
               expect(response.to_h).to eq(success: true, **extra)
             end
           end
 
-          context 'when the service provider is not allowed to use facial match ials' do
-            before do
-              allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?)
-                .and_return(false)
-            end
-
+          context 'when the service provider is not allowed to use identity proofing' do
             it 'fails with an unauthorized error' do
               expect(response.to_h).to eq(
                 success: false,

@@ -341,6 +341,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
       it 'excludes unnecessary raw Alert data from logging' do
         expect(response.extra_attributes.keys.any? { |key| key.start_with?('Alert_') }).to eq(false)
       end
+
+      it 'does not include Back classification info' do
+        expect(response.extra_attributes[:classification_info]).not_to include(:Back)
+      end
     end
 
     context 'when the received document type is a supported state ID type' do
@@ -372,6 +376,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
 
       it 'does not have passport card error messages' do
         expect(response.error_messages[:passport_card]).to eq(nil)
+      end
+
+      it 'includes Back classification info' do
+        expect(response.extra_attributes[:classification_info]).to include(:Front, :Back)
       end
     end
   end
