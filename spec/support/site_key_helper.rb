@@ -35,4 +35,9 @@ module SiteKeyHelper
     cipher.auth_data = "#{SITE_KEY_WRAP_INFO}\n#{issuer}"
     JSON.parse(cipher.update(raw[0...-16]) + cipher.final)
   end
+
+  def site_key_jwk_param(key)
+    jwk = JWT::JWK.new(key).export.slice(:kty, :crv, :x, :y)
+    Base64.urlsafe_encode64(jwk.to_json, padding: false)
+  end
 end

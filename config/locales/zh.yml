@@ -1836,6 +1836,9 @@ openid_connect.authorization.errors.pkce_parameter_pair: code_challenge 和 code
 openid_connect.authorization.errors.prompt_invalid: 未找到有效的提示值。请参阅我们的文档：https://developers.login.gov/support/#oidc-no-prompt
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri 有误。请参阅我们的文档：https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri 与注册的 redirect_uri 不匹配。请参阅我们的文档：https://developers.login.gov/support/#oidc-redirect-match
+openid_connect.authorization.errors.site_key_jwk_invalid: site_key_jwk 不是有效的 P-256 公钥 JWK。
+openid_connect.authorization.errors.site_key_jwk_not_allowed: 此 client_id 未启用 site_key_jwk。
+openid_connect.authorization.errors.site_key_unavailable: 此账户的站点密钥暂时不可用。请稍后再试。
 openid_connect.authorization.errors.unauthorized_scope: 未经授权的范围。请参阅我们的文档：https://developers.login.gov/support/#oidc-unauthotized-scope
 openid_connect.authorization.errors.unknown_delegation_scope: 未知的委托范围：%{scopes}。请参阅我们的文档：https://developers.login.gov/support/#oidc-delegation
 openid_connect.logout.confirm: 是的，登出 %{app_name}

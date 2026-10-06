@@ -14,6 +14,7 @@ class OpenidConnectAuthorizeForm
     prompt
     redirect_uri
     response_type
+    site_key_jwk
     state
   ].freeze
 
@@ -71,6 +72,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_privileges
   validate :validate_delegation_scopes
   validate :validate_document_images_scope
+  validate :validate_site_key_jwk
   validate :validate_prompt
   validate :validate_verified_within_format, if: :verified_within_allowed?
   validate :validate_verified_within_duration, if: :verified_within_allowed?
@@ -126,7 +128,7 @@ class OpenidConnectAuthorizeForm
       ial: ial,
       acr_values: acr_values&.join(' '),
       requested_aal_value: requested_aal_value,
-      scope: scope.join(' '),
+      scope: server_scope.join(' '),
       code_challenge: code_challenge,
       private_key_jwt_pkce: private_key_jwt_pkce_requested?,
       email_address_id: email_address_id,
@@ -165,6 +167,16 @@ class OpenidConnectAuthorizeForm
 
   def delegation_requested?
     requested_delegation_scopes.any?
+  end
+
+  # With a site key, email is sealed into the browser-only fragment instead, so the identity
+  # (and therefore the ID token and userinfo the RP server reads) never carries it.
+  def server_scope
+    site_key_requested? ? scope - %w[email all_emails] : scope
+  end
+
+  def site_key_requested?
+    site_key_jwk.present? && service_provider&.site_key_allowed?
   end
 
   private
@@ -304,6 +316,24 @@ class OpenidConnectAuthorizeForm
     errors.add(
       :scope, t('openid_connect.authorization.errors.no_valid_scope'),
       type: :no_valid_scope
+    )
+  end
+
+  def validate_site_key_jwk
+    return if site_key_jwk.blank?
+
+    unless service_provider&.site_key_allowed?
+      return errors.add(
+        :site_key_jwk, t('openid_connect.authorization.errors.site_key_jwk_not_allowed'),
+        type: :site_key_jwk_not_allowed
+      )
+    end
+
+    SiteKeys::RecipientJwk.parse(site_key_jwk)
+  rescue SiteKeys::SealError
+    errors.add(
+      :site_key_jwk, t('openid_connect.authorization.errors.site_key_jwk_invalid'),
+      type: :site_key_jwk_invalid
     )
   end
 

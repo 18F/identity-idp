@@ -15,6 +15,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       code_challenge: code_challenge,
       code_challenge_method: code_challenge_method,
       verified_within: verified_within,
+      site_key_jwk: site_key_jwk,
     )
   end
 
@@ -30,6 +31,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
   let(:code_challenge) { nil }
   let(:code_challenge_method) { nil }
   let(:verified_within) { nil }
+  let(:site_key_jwk) { nil }
 
   before do
     allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
@@ -898,6 +900,51 @@ RSpec.describe OpenidConnectAuthorizeForm do
       form = OpenidConnectAuthorizeForm.new(client_id: 'foobar')
 
       expect(form.client_id).to eq 'foobar'
+    end
+  end
+
+  describe 'site_key_jwk' do
+    let(:scope) { 'openid email' }
+    let(:site_key_jwk) { site_key_jwk_param(OpenSSL::PKey::EC.generate('prime256v1')) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+      form.service_provider.update!(site_key_allowed: true)
+    end
+
+    it 'is valid for an SP that uses site keys' do
+      expect(form.submit.success?).to eq(true)
+      expect(form.site_key_requested?).to eq(true)
+    end
+
+    it 'keeps email out of the scope stored for the identity' do
+      expect(form.server_scope).to eq(['openid'])
+    end
+
+    context 'for an SP that does not use site keys' do
+      before { form.service_provider.update!(site_key_allowed: false) }
+
+      it 'is invalid' do
+        expect(form.submit.to_h[:error_details])
+          .to include(site_key_jwk: { site_key_jwk_not_allowed: true })
+      end
+    end
+
+    context 'with a malformed key' do
+      let(:site_key_jwk) { Base64.urlsafe_encode64({ kty: 'oct' }.to_json) }
+
+      it 'is invalid' do
+        expect(form.submit.to_h[:error_details])
+          .to include(site_key_jwk: { site_key_jwk_invalid: true })
+      end
+    end
+
+    context 'without a key' do
+      let(:site_key_jwk) { nil }
+
+      it 'keeps email in the scope' do
+        expect(form.server_scope).to eq(%w[openid email])
+      end
     end
   end
 
