@@ -40,6 +40,11 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
     expect(rendered).to have_css('input#platform_authenticator_available', visible: false)
   end
 
+  it 'renders the platform authenticator hidden input with no preset value' do
+    field = Nokogiri::HTML(rendered).at_css('input#platform_authenticator_available')
+    expect(field['value'].to_s).to eq('')
+  end
+
   context 'with configured mfa methods' do
     let(:user) { build(:user, :with_phone) }
 
@@ -176,6 +181,11 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
 
     it 'renders the platform authenticator hidden field' do
       expect(rendered).to have_css('input#platform_authenticator_available', visible: false)
+    end
+
+    it 'renders the platform authenticator hidden field with no preset value' do
+      field = Nokogiri::HTML(rendered).at_css('input#platform_authenticator_available')
+      expect(field['value'].to_s).to eq('')
     end
 
     it 'does not render a cancel account creation link for a new user' do
