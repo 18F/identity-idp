@@ -1049,10 +1049,10 @@ forms.site_key_recovery_code.get_new: Get a new site key recovery code
 forms.site_key_recovery_code.get_new_description: Your old recovery code will stop working. You’ll see the new code on the next page; save it somewhere safe.
 forms.site_key_recovery_code.header: Save your site key recovery code
 forms.site_key_recovery_code.required_checkbox: I saved my site key recovery code with the date it was generated.
-forms.site_key_recovery.alternative: Don’t have your recovery code?
-forms.site_key_recovery.code_label: Recovery code
+forms.site_key_recovery.alternative: Don’t have your recovery code or personal key?
+forms.site_key_recovery.code_label: Recovery code or personal key
 forms.site_key_recovery.header: Enter your site key recovery code
-forms.site_key_recovery.instructions: You reset your password, so this site’s encrypted data is locked. Enter the site key recovery code you saved to keep it.
+forms.site_key_recovery.instructions: You reset your password, so this site’s encrypted data is locked. Enter the site key recovery code you saved (or your personal key, if you have one) to keep it.
 forms.site_key_recovery.start_over: Start over without my old data
 forms.site_key_recovery.start_over_description: Any data this site encrypted for you before you reset your password will be permanently unreadable. You can’t undo this.
 forms.site_key_recovery.start_over_title: Start over without your old data?

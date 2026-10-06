@@ -102,6 +102,41 @@ module SiteKeys
       fingerprint
     end
 
+    # Keeps the personal key wrap in step with a newly minted personal key. While the root is
+    # locked the previous key's wrap is dropped instead, unless nothing else could open the
+    # root. Runs in a savepoint and never raises, so site keys cannot break identity
+    # verification.
+    def wrap_personal_key(personal_key, password: nil)
+      return unless enabled? && record
+
+      secret = RecoveryCode.normalize(personal_key)
+      return if secret.nil?
+
+      SiteKeyRoot.transaction(requires_new: true) do
+        root = unlock(password, show_recovery_code: false) if password.present?
+        root ||= cached_root
+        if root
+          store_wrap!(:encrypted_root_personal_key, cipher.wrap(root, secret))
+        elsif record.encrypted_root.present? || record.recovery_code_usable?
+          clear_personal_key_wrap
+        end
+      end
+    rescue Encryption::EncryptionError, ActiveRecord::ActiveRecordError
+      nil
+    end
+
+    # A personal key used as a second factor is retired and its replacement is never shown.
+    # Opens the root with it while possible, then drops its wrap unless nothing else would be
+    # left to open the root.
+    def consume_personal_key(personal_key)
+      return unless enabled? && record
+
+      open_with_personal_key(personal_key) if !unlocked? && record.encrypted_root.nil?
+      clear_personal_key_wrap if record.encrypted_root.present? || record.recovery_code_usable?
+    rescue ActiveRecord::ActiveRecordError
+      nil
+    end
+
     # Drops a password wrap that failed to authenticate, unless another session has changed the
     # root since.
     def forget_dead_password_wrap!(expected_fingerprint:)
@@ -156,7 +191,7 @@ module SiteKeys
       locked? && !unavailable?
     end
 
-    # The password wrap was dropped by a reset; the recovery code is needed.
+    # The password wrap was dropped by a reset; the recovery code or personal key is needed.
     def recoverable?
       enabled? && !unlocked? && record.present? && record.encrypted_root.nil? &&
         record.recoverable?
@@ -214,6 +249,22 @@ module SiteKeys
       @cipher ||= RootCipher.new(user)
     end
 
+    def open_with_personal_key(personal_key)
+      secret = RecoveryCode.normalize(personal_key)
+      root = cipher.try_unwrap(record.encrypted_root_personal_key, secret)
+      cache(root) if root
+    rescue Encryption::EncryptionError
+      nil
+    end
+
+    def clear_personal_key_wrap
+      return if record.encrypted_root_personal_key.nil? || record.wraps.size == 1
+
+      was_unlocked = unlocked?
+      record.update!(encrypted_root_personal_key: nil)
+      remember_fingerprint if was_unlocked
+    end
+
     def rewrap_recovered_root(password)
       root = cached_root
       return if root.nil?
@@ -239,6 +290,7 @@ module SiteKeys
       code = RecoveryCode.generate
       attributes = {
         encrypted_root: cipher.wrap(root, password),
+        encrypted_root_personal_key: nil,
         **recovery_code_attributes(root, code),
       }
       if replace
