@@ -8740,6 +8740,21 @@ module AnalyticsEvents
     track_event(:sign_in_security_check_failed_visited)
   end
 
+  # @param [String] client_id Service provider issuer
+  # @param [String] error
+  # A sealed per-site key could not be released to the service provider
+  def site_key_release_failed(client_id:, error:, **extra)
+    track_event(:site_key_release_failed, client_id:, error:, **extra)
+  end
+
+  # @param [String] client_id Service provider issuer
+  # @param [Boolean] email_sealed Whether the `email` scope was delivered inside the sealed key
+  # @param [Boolean] all_emails_sealed Whether `all_emails` was delivered inside the sealed key
+  # A sealed per-site key was released to the service provider's browser
+  def site_key_released(client_id:, email_sealed:, all_emails_sealed:, **extra)
+    track_event(:site_key_released, client_id:, email_sealed:, all_emails_sealed:, **extra)
+  end
+
   # @param [Boolean] replaced Whether an existing root was replaced rather than created fresh
   # A per-site key root was created for the user
   def site_key_root_created(replaced:, **extra)

@@ -1823,6 +1823,9 @@ openid_connect.authorization.errors.pkce_parameter_pair: code_challenge et code_
 openid_connect.authorization.errors.prompt_invalid: prompt est non valide. Veuillez consulter notre documentation à https://developers.login.gov/support/#oidc-no-prompt
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri est non valide. Veuillez consulter notre documentation à https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri ne correspond pas au redirect_uri enregistré. Veuillez consulter notre documentation à https://developers.login.gov/support/#oidc-redirect-match
+openid_connect.authorization.errors.site_key_jwk_invalid: site_key_jwk n’est pas une JWK publique P-256 valide.
+openid_connect.authorization.errors.site_key_jwk_not_allowed: site_key_jwk n’est pas activé pour ce client_id.
+openid_connect.authorization.errors.site_key_unavailable: Les clés de site sont temporairement indisponibles pour ce compte. Veuillez réessayer plus tard.
 openid_connect.authorization.errors.unauthorized_scope: Portée non autorisée. Veuillez consulter notre documentation à https://developers.login.gov/support/#oidc-unauthotized-scope
 openid_connect.authorization.errors.unknown_delegation_scope: 'Portée de délégation inconnue : %{scopes}. Veuillez consulter notre documentation à https://developers.login.gov/support/#oidc-delegation'
 openid_connect.logout.confirm: Oui, déconnectez-vous de %{app_name}
