@@ -51,27 +51,6 @@ module Idv
     end
 
     def locals_attrs(presenter:, form_submit_url: nil, show_verify_in_person: false)
-      auto_check_value = case document_capture_session.document_type_requested
-                        when Idp::Constants::DocumentTypes::MDL
-                          :mobile_drivers_license
-                        when *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
-                          :state_id_card
-                        when Idp::Constants::DocumentTypes::PASSPORT
-                          if disable_passports?
-                            :state_id_card
-                          else
-                            :passport
-                          end
-                        when Idp::Constants::DocumentTypes::PASSPORT_CARD
-                          if disable_passports?
-                            :state_id_card
-                          else
-                            :passport_card
-                          end
-                        else
-                          :state_id_card
-                        end
-
       {
         presenter:,
         form_submit_url:,
@@ -79,8 +58,36 @@ module Idv
         auto_check_value:,
         passport_cards_enabled: true,
         mdl_enabled: mdl_enabled?,
+        disable_mdl: mdl_disabled?,
         show_verify_in_person:,
       }
+    end
+
+    def auto_check_value
+      case document_capture_session.document_type_requested
+      when Idp::Constants::DocumentTypes::MDL
+        if mdl_disabled?
+          :state_id_card
+        else
+          :mobile_drivers_license
+        end
+      when *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
+        :state_id_card
+      when Idp::Constants::DocumentTypes::PASSPORT
+        if disable_passports?
+          :state_id_card
+        else
+          :passport
+        end
+      when Idp::Constants::DocumentTypes::PASSPORT_CARD
+        if disable_passports?
+          :state_id_card
+        else
+          :passport_card
+        end
+      else
+        :state_id_card
+      end
     end
 
     def disable_passports?
@@ -94,6 +101,10 @@ module Idv
 
     def mdl_enabled?
       document_capture_session.mdl_enabled
+    end
+
+    def mdl_disabled?
+      params.permit(:disable_mdl)[:disable_mdl].present?
     end
   end
 end

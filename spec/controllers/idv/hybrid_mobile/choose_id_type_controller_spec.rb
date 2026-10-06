@@ -123,6 +123,26 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
     end
+
+    context 'when redirected after mDL was not detected (with disable_mdl param)' do
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+
+      before do
+        document_capture_session.update!(mdl_enabled: false)
+      end
+
+      it 'renders the choose_id_type template with disable_mdl and auto_check_value' do
+        expect(controller).to receive(:render).with(
+          'idv/shared/choose_id_type',
+          locals: hash_including(
+            disable_mdl: true,
+            auto_check_value: :state_id_card,
+          ),
+        ).and_call_original
+
+        get :show, params: { disable_mdl: true }
+      end
+    end
   end
 
   describe '#update' do

@@ -226,6 +226,7 @@ module Test
           Permutation.new(label: 'Default', params: {}),
           Permutation.new(label: 'With passport card', params: { passport_card: '1' }),
           Permutation.new(label: 'With mDL', params: { mdl: '1' }),
+          Permutation.new(label: 'With mDL disabled', params: { disable_mdl: '1' }),
           Permutation.new(label: 'Verify in person', params: { ipp: '1' }),
           Permutation.new(label: 'Passports disabled', params: { no_passport: '1' }),
         ],
