@@ -133,6 +133,20 @@ RSpec.describe ResetPasswordForm, type: :model do
       end
     end
 
+    context 'when the user has a site key root' do
+      let(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+        create_site_key_root(user)
+      end
+
+      it 'deletes the root, which cannot be re-wrapped without the old password' do
+        expect(result.success?).to eq(true)
+        expect(user.reload.site_key_root).to be_nil
+      end
+    end
+
     context 'when the user has a pending profile' do
       context 'when the profile is pending gpo verification' do
         let!(:user) { create(:user, reset_password_sent_at: Time.zone.now) }

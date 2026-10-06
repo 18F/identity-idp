@@ -42,10 +42,18 @@ module Users
     private
 
     def capture_password_if_pii_present_but_locked
-      return unless current_user.identity_verified? &&
-                    !Pii::Cacher.new(current_user, user_session).exists_in_session?
+      return unless pii_locked? || site_key_root_locked?
       user_session[:stored_location] = request.url
       redirect_to capture_password_url
+    end
+
+    def pii_locked?
+      current_user.identity_verified? &&
+        !Pii::Cacher.new(current_user, user_session).exists_in_session?
+    end
+
+    def site_key_root_locked?
+      SiteKeys::Vault.new(user: current_user, user_session:).needs_password?
     end
 
     def required_password_change?

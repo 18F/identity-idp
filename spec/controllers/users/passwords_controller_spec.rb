@@ -33,6 +33,39 @@ RSpec.describe Users::PasswordsController do
     end
   end
 
+  context 'user has a site key root that is locked in this session' do
+    let(:user) { create(:user) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+      create_site_key_root(user)
+      stub_sign_in(user)
+    end
+
+    it 'asks for the password first so the root can be re-wrapped' do
+      get :edit
+
+      expect(response).to redirect_to capture_password_url
+      expect(controller.user_session[:stored_location]).to eq(manage_password_url)
+    end
+
+    it 'does not ask again when the root already failed to unlock in this session' do
+      controller.user_session[SiteKeys::Vault::UNAVAILABLE_SESSION_KEY] = true
+
+      get :edit
+
+      expect(response).to render_template(:edit)
+    end
+
+    it 'renders the page once the root is unlocked' do
+      SiteKeys::Vault.new(user:, user_session: controller.user_session).unlock(user.password)
+
+      get :edit
+
+      expect(response).to render_template(:edit)
+    end
+  end
+
   describe '#update' do
     context 'form returns success' do
       it 'redirects to profile and sends a password change email' do

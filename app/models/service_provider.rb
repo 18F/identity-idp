@@ -137,6 +137,11 @@ class ServiceProvider < ApplicationRecord
       IdentityConfig.store.document_images_sharing_service_providers.include?(issuer)
   end
 
+  # Whether this SP may request a sealed per-site key (`site_key_jwk`).
+  def site_key_allowed?
+    IdentityConfig.store.site_key_enabled && site_key_allowed
+  end
+
   def attempts_api_enabled?
     IdentityConfig.store.attempts_api_enabled && attempts_config.present?
   end
