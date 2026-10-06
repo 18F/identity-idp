@@ -49,6 +49,14 @@ RSpec.describe Users::PasswordsController do
       expect(controller.user_session[:stored_location]).to eq(manage_password_url)
     end
 
+    it 'lets a user whose root awaits recovery change their password without a loop' do
+      user.site_key_root.forget_password!
+
+      get :edit
+
+      expect(response).to render_template(:edit)
+    end
+
     it 'does not ask again when the root already failed to unlock in this session' do
       controller.user_session[SiteKeys::Vault::UNAVAILABLE_SESSION_KEY] = true
 
