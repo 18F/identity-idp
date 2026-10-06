@@ -106,6 +106,28 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
       end
     end
 
+    context 'when the user has an active profile and an unlocked site key root' do
+      let(:profile) { create(:profile, :active, :verified, pii: { ssn: '1234' }) }
+      let(:user) { profile.user }
+
+      before do
+        allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+        Pii::Cacher.new(user, user_session).save_decrypted_pii({ ssn: '1234' }, profile.id)
+        SiteKeys::Vault.new(user:, user_session:).unlock(user.password, create: true)
+      end
+
+      it 'wraps the root under the newly minted personal key' do
+        root = SiteKeys::Vault.new(user:, user_session:).site_key('urn:sp')
+        result = subject.submit(params)
+        expect(result.success?).to eq(true)
+
+        user.reload.site_key_root.forget_password!
+        recovered = SiteKeys::Vault.new(user: user.reload, user_session: {})
+        expect(recovered.recover(subject.personal_key)).to be_present
+        expect(recovered.site_key('urn:sp')).to eq(root)
+      end
+    end
+
     context 'when the user has a locked site key root' do
       let(:user) { create(:user, password: 'old strong password') }
 
