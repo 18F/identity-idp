@@ -16,6 +16,10 @@ module Accounts
 
     def create
       user_session[:personal_key] = create_new_code
+      if current_user.active_profile.present?
+        SiteKeys::Vault.new(user: current_user, user_session:)
+          .wrap_personal_key(user_session[:personal_key])
+      end
       analytics.profile_personal_key_create
       create_user_event(:new_personal_key)
       result = send_new_personal_key_notifications
@@ -29,12 +33,19 @@ module Accounts
 
     def prompt_for_password_if_pii_locked
       return unless pii_locked?
+      user_session[:stored_location] = create_new_personal_key_url
       redirect_to capture_password_url
     end
 
     def pii_locked?
-      current_user.identity_verified? &&
-        !Pii::Cacher.new(current_user, user_session).exists_in_session?
+      (current_user.identity_verified? &&
+        !Pii::Cacher.new(current_user, user_session).exists_in_session?) ||
+        site_key_root_locked?
+    end
+
+    def site_key_root_locked?
+      current_user.active_profile.present? &&
+        SiteKeys::Vault.new(user: current_user, user_session:).needs_password?
     end
 
     # @return [FormResponse]

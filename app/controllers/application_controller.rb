@@ -321,6 +321,8 @@ class ApplicationController < ActionController::Base
       end
 
       profile.save!
+      SiteKeys::Vault.new(user: current_user, user_session:)
+        .wrap_personal_key(user_session[:personal_key])
 
       analytics.broken_personal_key_regenerated
 

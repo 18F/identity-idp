@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SiteKeys
-  # After a password reset, opens the site key root with the recovery code.
+  # After a password reset, opens the site key root with a recovery code or personal key.
   class RecoveriesController < ApplicationController
     include ReauthenticationRequiredConcern
     include SiteKeyConcern
