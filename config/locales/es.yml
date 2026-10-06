@@ -113,8 +113,10 @@ account.index.webauthn_platform: Desbloqueo facial o táctil
 account.index.webauthn_platform_add: Agregar desbloqueo facial o táctil
 account.items.delete_your_account: Elimine su cuenta
 account.items.personal_key: Clave personal
+account.items.site_key_recovery_code: Código de recuperación de clave de sitio
 account.links.delete_account: Eliminar
 account.links.regenerate_personal_key: Restablecer
+account.links.regenerate_site_key_recovery_code: Restablecer
 account.login.forced_reauthentication_notice_html: '<strong>%{sp_name}</strong> requiere que vuelva a ingresar su correo electrónico y contraseña.'
 account.login.forgot_password: ¿Olvidó su contraseña?
 account.login.piv_cac: Inicie sesión con su identificación de empleado gubernamental
@@ -151,6 +153,8 @@ account.revoke_consent.link_title: Desconectar
 account.revoke_consent.longer_description_html: Su información ya no se divulgará a %{service_provider_html}. Para acceder a %{service_provider_html} en el futuro, debe dar su consentimiento para divulgar su información. Puede dar su consentimiento iniciando sesión en el sitio %{service_provider_html}.
 account.security.link: Obtenga más información en el Centro de ayuda
 account.security.text: Para su seguridad, la información de su perfil está bloqueada.
+account.site_key_recovery_code.instructions: Algunos sitios en los que inicia sesión cifran sus datos con una clave que solo su navegador puede leer. Si restablece su contraseña, este código es la única manera de conservar esos datos. Restablézcalo si no lo tiene.
+account.site_key_recovery_code.last_generated: Generado por última vez el %{timestamp}
 account.verified_information.address: Dirección
 account.verified_information.dob: Fecha de nacimiento
 account.verified_information.full_name: Nombre completo
@@ -877,6 +881,8 @@ errors.messages.phone_required: Se requiere un número de teléfono.
 errors.messages.phone_unsupported_html: No podemos enviarle un código único en este momento. Inténtalo de nuevo haciendo clic en “Enviar otro código” a continuación o %{link_html}.
 errors.messages.premium_rate_phone: Parece que se trata de un número de teléfono de tarifa especial. Seleccione un número diferente e inténtelo de nuevo.
 errors.messages.pwned_password: La contraseña que ingresó no es segura. Está en una lista de contraseñas conocidas expuestas a filtraciones de datos.
+errors.messages.site_key_recovery_code_incorrect: Código de recuperación incorrecto
+errors.messages.site_key_recovery_unavailable: No podemos verificar su código de recuperación en este momento. Inténtelo de nuevo más tarde.
 errors.messages.stronger_password: Introduzca una contraseña más segura
 errors.messages.too_long.one: es demasiado larga (el máximo es 1 carácter)
 errors.messages.too_long.other: es demasiado larga (el máximo es %{count} caracteres)
@@ -894,6 +900,7 @@ errors.messages.wrong_length.other: tiene la longitud incorrecta (debe ser de %{
 errors.piv_cac_setup.unique_name: Ese nombre ya fue seleccionado. Elija un nombre diferente.
 errors.registration.terms: Antes de continuar, debe darnos permiso. Marque la casilla a continuación y luego haga clic en continuar.
 errors.sign_in.sign_in_failure_limit: Superó el número máximo de intentos de inicio de sesión. Debe esperar %{time_left} antes de volver a intentarlo.
+errors.site_key_recovery.rate_limited: Lo intentó demasiadas veces. Vuelva a intentarlo en %{timeout}. También puede volver y elegir empezar de nuevo.
 errors.two_factor_auth_setup.must_select_additional_option: Seleccione un método de autenticación adicional.
 errors.two_factor_auth_setup.must_select_option: Seleccione un método de autenticación.
 errors.verify_personal_key.rate_limited: Lo intentó demasiadas veces; vuelva a intentarlo en %{timeout}.
@@ -1008,6 +1015,19 @@ forms.piv_cac_setup.submit: Inserte su tarjeta PIV o CAC
 forms.piv_cac_setup.try_again: Vuelva a intentarlo
 forms.registration.labels.email: Ingrese su dirección de correo electrónico
 forms.registration.labels.email_language: Seleccione su preferencia de idioma del correo electrónico
+forms.site_key_recovery_code.acknowledgement.header: Este código es la única manera de conservar los datos cifrados del sitio si restablece su contraseña.
+forms.site_key_recovery_code.acknowledgement.text: Trátelo como una segunda contraseña. Guárdelo en un lugar seguro y no lo comparta con nadie.
+forms.site_key_recovery_code.get_new: Obtener un nuevo código de recuperación de clave de sitio
+forms.site_key_recovery_code.get_new_description: Su código de recuperación anterior dejará de funcionar. Verá el nuevo código en la siguiente página; guárdelo en un lugar seguro.
+forms.site_key_recovery_code.header: Guarde su código de recuperación de clave de sitio
+forms.site_key_recovery_code.required_checkbox: Guardé mi código de recuperación de clave de sitio con la fecha en que se generó.
+forms.site_key_recovery.alternative: ¿No tiene su código de recuperación?
+forms.site_key_recovery.code_label: Código de recuperación
+forms.site_key_recovery.header: Ingrese su código de recuperación de clave de sitio
+forms.site_key_recovery.instructions: Restableció su contraseña, por lo que los datos cifrados de este sitio están bloqueados. Ingrese el código de recuperación de clave de sitio que guardó para conservarlos.
+forms.site_key_recovery.start_over: Empezar de nuevo sin mis datos anteriores
+forms.site_key_recovery.start_over_description: Los datos que este sitio cifró para usted antes de restablecer su contraseña quedarán ilegibles de forma permanente. Esto no se puede deshacer.
+forms.site_key_recovery.start_over_title: ¿Empezar de nuevo sin sus datos anteriores?
 forms.ssn.show: Mostrar número de Seguro Social
 forms.totp_setup.totp_intro: Configure una aplicación de autenticación para iniciar sesión con códigos de seguridad temporales.
 forms.totp_setup.totp_step_1: Asígnele un alias.
@@ -1968,6 +1988,8 @@ titles.sign_up.completion_new_attributes: '%{sp} está solicitando nueva informa
 titles.sign_up.completion_new_sp: Está iniciando sesión por primera vez
 titles.sign_up.completion_reverified_consent: Comunique su información actualizada a %{sp}
 titles.sign_up.confirmation: Continuar para iniciar sesión
+titles.site_key_recovery: Ingrese su código de recuperación
+titles.site_key_recovery_code: Guarde su código de recuperación
 titles.totp_setup.new: Agregar aplicación de autenticación
 titles.two_factor_setup: Configuración de autenticación de dos factores
 titles.verify_email: Revise su correo electrónico

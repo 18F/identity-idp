@@ -39,6 +39,18 @@ class AccountShowPresenter
     user.has_recovery_code? && user.password_reset_profile.blank?
   end
 
+  def show_site_key_recovery_code_partial?
+    IdentityConfig.store.site_key_enabled && user.site_key_root.present?
+  end
+
+  def site_key_recovery_code_generated_at
+    user.site_key_root&.recovery_code_generated_at
+  end
+
+  def site_key_recovery_needed?
+    user.site_key_root&.encrypted_root.nil?
+  end
+
   def show_service_provider_continue_partial?
     sp_name.present? && sp_session_request_url.present? && !sp_handoff_already_occurred
   end

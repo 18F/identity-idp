@@ -3,12 +3,15 @@ module SiteKeyHelper
   # party's browser implements.
   SITE_KEY_WRAP_INFO = 'login.gov site key wrap v1'.freeze
 
-  CreatedSiteKeyRoot = Struct.new(:root, keyword_init: true)
+  CreatedSiteKeyRoot = Struct.new(:root, :recovery_code, keyword_init: true)
 
-  def create_site_key_root(user, password: user.password)
-    root = SiteKeys::Vault.new(user:, user_session: {}).unlock(password, create: true)
+  def create_site_key_root(user, password: user.password, acknowledge: true)
+    vault = SiteKeys::Vault.new(user:, user_session: {})
+    root = vault.unlock(password, create: true)
+    recovery_code = vault.pending_recovery_code
+    vault.acknowledge_recovery_code if acknowledge
     user.reload
-    CreatedSiteKeyRoot.new(root:)
+    CreatedSiteKeyRoot.new(root:, recovery_code:)
   end
 
   def derive_site_key(root, issuer)

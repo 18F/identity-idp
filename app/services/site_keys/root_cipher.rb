@@ -22,6 +22,21 @@ module SiteKeys
       raise Encryption::EncryptionError, "site key root is malformed: #{err.class}"
     end
 
+    # Opens the root with a recovery code.
+    # @return [String, nil] the root, or nil when the code does not open it
+    def recover(record, code)
+      secret = RecoveryCode.normalize(code)
+      try_unwrap(record.encrypted_root_recovery_code, secret) if secret
+    end
+
+    def try_unwrap(encrypted_root, secret)
+      return if encrypted_root.blank? || secret.blank?
+
+      unwrap(encrypted_root, secret)
+    rescue RootMismatchError
+      nil
+    end
+
     private
 
     attr_reader :user

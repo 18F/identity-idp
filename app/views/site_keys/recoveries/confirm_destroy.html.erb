@@ -1,0 +1,16 @@
+<% self.title = t('forms.site_key_recovery.start_over_title') %>
+
+<%= render PageHeadingComponent.new.with_content(t('forms.site_key_recovery.start_over_title')) %>
+
+<p><%= t('forms.site_key_recovery.start_over_description') %></p>
+
+<%= button_to(
+      site_key_recovery_path,
+      method: 'delete',
+      class: 'usa-button usa-button--wide usa-button--big',
+      form_class: 'margin-y-5',
+    ) do %>
+  <%= t('forms.site_key_recovery.start_over') %>
+<% end %>
+
+<%= render 'shared/cancel', link: site_key_recovery_path %>

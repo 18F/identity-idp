@@ -1,0 +1,26 @@
+<div class="grid-row margin-bottom-1 margin-top-0">
+  <h2 class="grid-col-6 margin-0">
+    <%= t('account.items.site_key_recovery_code') %>
+  </h2>
+</div>
+<p>
+  <%= t('account.site_key_recovery_code.instructions') %>
+</p>
+<div class="grid-row padding-1 border border-primary-light">
+  <div class="grid-col-7">
+    ************
+  </div>
+  <div class="grid-col-5 text-right">
+    <%= render 'accounts/actions/manage_site_key_recovery_code' %>
+  </div>
+</div>
+<% if @presenter.site_key_recovery_code_generated_at %>
+  <p class="margin-top-1 margin-bottom-0 font-body-2xs">
+    <em>
+      <%= t(
+            'account.site_key_recovery_code.last_generated',
+            timestamp: I18n.l(@presenter.site_key_recovery_code_generated_at, format: :event_date),
+          ) %>
+    </em>
+  </p>
+<% end %>

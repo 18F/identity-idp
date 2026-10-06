@@ -8540,6 +8540,51 @@ module AnalyticsEvents
     track_event(:sign_in_security_check_failed_visited)
   end
 
+  # The user gave up on a site key root that could only be opened with a recovery code
+  def site_key_recovery_abandoned
+    track_event(:site_key_recovery_abandoned)
+  end
+
+  # @param [Boolean] matched Whether the acknowledged code is the one currently stored
+  # The user acknowledged saving their site key recovery code
+  def site_key_recovery_code_acknowledged(matched:, **extra)
+    track_event(:site_key_recovery_code_acknowledged, matched:, **extra)
+  end
+
+  # The user downloaded their site key recovery code
+  def site_key_recovery_code_downloaded
+    track_event(:site_key_recovery_code_downloaded)
+  end
+
+  # The user visited the page to generate a new site key recovery code
+  def site_key_recovery_code_new_visited
+    track_event(:site_key_recovery_code_new_visited)
+  end
+
+  # The user generated a new site key recovery code
+  def site_key_recovery_code_regenerated
+    track_event(:site_key_recovery_code_regenerated)
+  end
+
+  # @param [Boolean] present Whether a freshly minted recovery code was available to show
+  # The site key recovery code page was viewed
+  def site_key_recovery_code_viewed(present:, **extra)
+    track_event(:site_key_recovery_code_viewed, present:, **extra)
+  end
+
+  # @param [Boolean] success Whether the code opened the site key root
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # The user submitted a site key recovery code after a password reset
+  def site_key_recovery_submitted(success:, errors: nil, error_details: nil, **extra)
+    track_event(:site_key_recovery_submitted, success:, errors:, error_details:, **extra)
+  end
+
+  # The site key recovery page was visited after a password reset
+  def site_key_recovery_visited
+    track_event(:site_key_recovery_visited)
+  end
+
   # @param [String] client_id Service provider issuer
   # @param [String] error
   # A sealed per-site key could not be released to the service provider
