@@ -29,6 +29,22 @@ RSpec.describe PasswordCaptureController do
       end
     end
 
+    context 'with a locked site key root' do
+      before do
+        allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+        create_site_key_root(user)
+        stub_sign_in(user)
+      end
+
+      it 'unlocks the root' do
+        get :new
+        patch :create, params: { user: { password: 'a really long sekrit' } }
+
+        expect(SiteKeys::Vault.new(user:, user_session: controller.user_session).unlocked?)
+          .to eq(true)
+      end
+    end
+
     context 'form errors' do
       it 'increases password attempts' do
         stub_sign_in(user)

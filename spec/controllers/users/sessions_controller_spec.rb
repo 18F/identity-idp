@@ -83,6 +83,52 @@ RSpec.describe Users::SessionsController, devise: true do
         post :create, params: { user: { email: user.email, password: user.password } }
       end
 
+      context 'with site keys enabled' do
+        let(:service_provider) { create(:service_provider, site_key_allowed:) }
+
+        before do
+          allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+          session[:sp] = { issuer: service_provider.issuer }
+        end
+
+        context 'signing in to an SP that uses site keys' do
+          let(:site_key_allowed) { true }
+
+          it 'creates and unlocks a site key root' do
+            response
+
+            expect(user.reload.site_key_root).to be_present
+            expect(controller.user_session[:encrypted_site_key_root]).to be_present
+          end
+        end
+
+        context 'with a password wrap that no longer opens the root' do
+          let(:site_key_allowed) { true }
+
+          before { create_site_key_root(user, password: 'some other password') }
+
+          it 'leaves the root alone until the second factor' do
+            encrypted_root = user.site_key_root.encrypted_root
+
+            response
+
+            expect(user.reload.site_key_root.encrypted_root).to eq(encrypted_root)
+          end
+        end
+
+        context 'signing in to an SP that does not use site keys' do
+          let(:site_key_allowed) { false }
+
+          it 'does not touch site keys' do
+            create_site_key_root(user)
+
+            response
+
+            expect(controller.user_session[:encrypted_site_key_root]).to be_nil
+          end
+        end
+      end
+
       it 'tracks the successful authentication for existing user' do
         stub_analytics(user:)
         expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(

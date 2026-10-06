@@ -26,8 +26,22 @@ class UpdateUserPasswordForm
   attr_reader :user, :user_session, :required_password_change
 
   def process_valid_submission
-    user.update!(password: password)
+    vault = SiteKeys::Vault.new(user:, user_session: user_session || {})
+    expected_fingerprint = vault.stored_fingerprint
+    rewrapped_root = rewrap_site_key_root(vault)
+    ActiveRecord::Base.transaction do
+      user.update!(password: password)
+      vault.store_root_or_forget!(rewrapped_root, expected_fingerprint:)
+    end
     encrypt_user_profiles
+  end
+
+  # A root that cannot be re-wrapped right now is deleted rather than left behind wrapped under
+  # the old password.
+  def rewrap_site_key_root(vault)
+    vault.wrap_cached_root(password)
+  rescue Encryption::EncryptionError
+    nil
   end
 
   def encrypt_user_profiles
