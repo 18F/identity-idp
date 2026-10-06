@@ -11,6 +11,7 @@ module OpenidConnect
     include ForcedReauthenticationConcern
     include OpenidConnectRedirectConcern
     include SignInDurationConcern
+    include SiteKeyConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :set_devise_failure_redirect_for_concurrent_session_logout
@@ -28,6 +29,7 @@ module OpenidConnect
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
     before_action :confirm_user_is_not_suspended, only: :index
     before_action :confirm_password_change_not_required, only: :index
+    before_action :confirm_site_key_available, only: :index
 
     def index
       if resolved_authn_context_result.identity_proofing?
@@ -42,6 +44,7 @@ module OpenidConnect
         end
       end
       return redirect_to sign_up_completed_url if needs_completion_screen_reason
+      return redirect_user(site_key_error_redirect_uri) unless prepare_site_key
       link_identity_to_service_provider
 
       result = @authorize_form.submit
@@ -129,10 +132,14 @@ module OpenidConnect
     end
 
     def handle_successful_handoff
+      redirect_uri = @authorize_form.success_redirect_uri
+      redirect_uri = with_sealed_site_key(redirect_uri) if @authorize_form.site_key_requested?
+
       track_events
       sp_handoff_bouncer.add_handoff_time!
 
-      redirect_user(@authorize_form.success_redirect_uri)
+      # A site key in the fragment must never appear in a Location header or request log.
+      redirect_user(redirect_uri, client_side: @authorize_form.site_key_requested?)
 
       sp_session[:successful_handoff] = true
 
@@ -224,8 +231,89 @@ module OpenidConnect
       end
     end
 
+    # Sends the user through the password prompt once per authorization request; if the root is
+    # still not available after that, answers the SP with an error rather than prompting again.
+    def confirm_site_key_available
+      return unless @authorize_form.site_key_requested?
+
+      if site_key_vault.status == :ready
+        user_session.delete(:site_key_password_prompt)
+      elsif user_session.delete(:site_key_password_prompt) == site_key_request_digest
+        redirect_user(site_key_error_redirect_uri)
+      else
+        remember_site_key_password_prompt
+        redirect_to capture_password_url
+      end
+    end
+
+    def remember_site_key_password_prompt
+      return unless @authorize_form.site_key_requested?
+
+      user_session[:site_key_password_prompt] = site_key_request_digest
+    end
+
+    def site_key_request_digest
+      Digest::SHA256.hexdigest(
+        [@authorize_form.client_id, @authorize_form.state, @authorize_form.site_key_jwk].join("\n"),
+      )
+    end
+
+    # Seals the site key before the identity is linked, so a failure leaves no authorization
+    # code or successful handoff behind.
+    # @return [Boolean]
+    def prepare_site_key
+      return true unless @authorize_form.site_key_requested?
+
+      URI(@authorize_form.redirect_uri)
+      @site_key_emails = site_key_emails
+      sealed = SiteKeys::Sealer.new(
+        issuer: @authorize_form.client_id,
+        recipient: SiteKeys::RecipientJwk.parse(@authorize_form.site_key_jwk),
+      ).seal(key: site_key_vault.site_key(@authorize_form.client_id), **@site_key_emails)
+      @site_key_fragment = URI.encode_www_form(site_key: sealed)
+      true
+    rescue SiteKeys::SealError, Encryption::EncryptionError, OpenSSL::OpenSSLError,
+           URI::InvalidURIError => err
+      analytics.site_key_release_failed(client_id: @authorize_form.client_id, error: err.message)
+      false
+    end
+
+    def with_sealed_site_key(redirect_uri)
+      analytics.site_key_released(
+        client_id: @authorize_form.client_id,
+        email_sealed: @site_key_emails[:email].present?,
+        all_emails_sealed: @site_key_emails[:emails].present?,
+      )
+      uri = URI(redirect_uri)
+      uri.fragment = @site_key_fragment
+      uri.to_s
+    end
+
+    def site_key_error_redirect_uri
+      UriService.add_params(
+        @authorize_form.redirect_uri,
+        error: 'temporarily_unavailable',
+        error_description: t('openid_connect.authorization.errors.site_key_unavailable'),
+        state: @authorize_form.state,
+      )
+    end
+
+    # The addresses the userinfo endpoint would share for the `email` and `all_emails` scopes.
+    def site_key_emails
+      emails = {}
+      if @authorize_form.scope.include?('all_emails')
+        emails[:emails] = current_user.confirmed_email_addresses.map(&:email)
+      end
+      if @authorize_form.scope.include?('email')
+        selected = current_user.email_addresses.find_by(id: email_address_id) if email_address_id
+        emails[:email] = (selected || current_user.last_sign_in_email_address)&.email
+      end
+      emails
+    end
+
     def prompt_for_password_if_ial2_request_and_pii_locked
       return unless pii_requested_but_locked?
+      remember_site_key_password_prompt
       redirect_to capture_password_url
     end
 
@@ -251,9 +339,11 @@ module OpenidConnect
       track_billing_events
     end
 
-    def redirect_user(redirect_uri)
-      case IdentityConfig.store.openid_connect_redirect
+    def redirect_user(redirect_uri, client_side: false)
+      redirect = client_side ? 'client_side_js' : IdentityConfig.store.openid_connect_redirect
+      case redirect
       when 'client_side_js'
+        response.headers['Cache-Control'] = 'no-store' if client_side
         @oidc_redirect_uri = redirect_uri
         render(
           'openid_connect/shared/redirect_js',
