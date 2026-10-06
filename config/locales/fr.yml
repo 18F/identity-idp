@@ -150,8 +150,10 @@ account.index.webauthn_platform: Déverrouillage facial ou tactile
 account.index.webauthn_platform_add: Ajouter le déverrouillage facial ou tactile
 account.items.delete_your_account: Supprimer votre compte
 account.items.personal_key: Clé personnelle
+account.items.site_key_recovery_code: Code de récupération de clé de site
 account.links.delete_account: Supprimer
 account.links.regenerate_personal_key: Réinitialiser
+account.links.regenerate_site_key_recovery_code: Réinitialiser
 account.login.forced_reauthentication_notice_html: '<strong>%{sp_name}</strong> nécessite que vous saisissiez à nouveau votre adresse e-mail et votre mot de passe.'
 account.login.forgot_password: Mot de passe oublié ?
 account.login.piv_cac: Connectez-vous avec votre identifiant d’employé.
@@ -188,6 +190,8 @@ account.revoke_consent.link_title: Déconnexion
 account.revoke_consent.longer_description_html: Vos informations ne seront plus partagées avec %{service_provider_html}. Pour accéder à %{service_provider_html} à l’avenir, vous devrez donner votre consentement pour partager vos informations. Vous pouvez donner votre consentement en allant sur le site %{service_provider_html} et en vous connectant.
 account.security.link: En savoir plus dans le Centre d’aide
 account.security.text: Les informations de votre profil sont verrouillées pour votre sécurité.
+account.site_key_recovery_code.instructions: Certains sites auxquels vous vous connectez chiffrent vos données avec une clé que seul votre navigateur peut lire. Si vous réinitialisez votre mot de passe, ce code est le seul moyen de conserver ces données. Réinitialisez-le si vous ne l’avez pas.
+account.site_key_recovery_code.last_generated: Dernière génération le %{timestamp}
 account.verified_information.address: Adresse
 account.verified_information.dob: Date de naissance
 account.verified_information.full_name: Nom complet
@@ -903,6 +907,8 @@ errors.messages.phone_required: Le numéro de téléphone est obligatoire
 errors.messages.phone_unsupported_html: Nous ne pouvons pas vous envoyer de code à usage unique pour le moment. Veuillez réessayer en cliquant sur « Envoyer un autre code » ci-dessous ou %{link_html}.
 errors.messages.premium_rate_phone: Il semble s’agir d’un numéro de téléphone surtaxé. Veuillez sélectionner un autre numéro et réessayer.
 errors.messages.pwned_password: Le mot de passe que vous avez saisi n’est pas sécurisé. Il figure sur une liste de mots de passe connus exposés au cours de violations de données.
+errors.messages.site_key_recovery_code_incorrect: Code de récupération incorrect
+errors.messages.site_key_recovery_unavailable: Nous ne pouvons pas vérifier votre code de récupération pour le moment. Veuillez réessayer plus tard.
 errors.messages.stronger_password: Saisissez un mot de passe plus fort
 errors.messages.too_long.one: est trop long (1 caractère maximum)
 errors.messages.too_long.other: est trop long (%{count} caractères maximum)
@@ -920,6 +926,7 @@ errors.messages.wrong_length.other: n’est pas de la bonne longueur (devrait ê
 errors.piv_cac_setup.unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.
 errors.registration.terms: Avant de pouvoir continuer, vous devez nous donner la permission. Veuillez cocher la case ci-dessous, puis cliquez sur Suite.
 errors.sign_in.sign_in_failure_limit: Vous avez dépassé le nombre maximal de tentatives de connexion. Vous devez attendre %{time_left} avant de réessayer.
+errors.site_key_recovery.rate_limited: Vous avez essayé trop de fois. Veuillez réessayer dans %{timeout}. Vous pouvez aussi revenir en arrière et choisir de recommencer.
 errors.two_factor_auth_setup.must_select_additional_option: Sélectionnez une méthode d’authentification supplémentaire.
 errors.two_factor_auth_setup.must_select_option: Sélectionnez une méthode d’authentification.
 errors.verify_personal_key.rate_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}.
@@ -1036,6 +1043,19 @@ forms.piv_cac_setup.submit: Insérer la carte PIV/CAC
 forms.piv_cac_setup.try_again: Réessayer
 forms.registration.labels.email: Saisissez votre adresse e-mail
 forms.registration.labels.email_language: Sélectionnez votre langue de préférence pour les e-mails
+forms.site_key_recovery_code.acknowledgement.header: Ce code est le seul moyen de conserver les données chiffrées du site si vous réinitialisez votre mot de passe.
+forms.site_key_recovery_code.acknowledgement.text: Traitez-le comme un second mot de passe. Conservez-le en lieu sûr et ne le partagez avec personne.
+forms.site_key_recovery_code.get_new: Obtenir un nouveau code de récupération de clé de site
+forms.site_key_recovery_code.get_new_description: Votre ancien code de récupération cessera de fonctionner. Le nouveau code s’affichera sur la page suivante ; conservez-le en lieu sûr.
+forms.site_key_recovery_code.header: Enregistrez votre code de récupération de clé de site
+forms.site_key_recovery_code.required_checkbox: J’ai enregistré mon code de récupération de clé de site avec la date à laquelle il a été généré.
+forms.site_key_recovery.alternative: Vous n’avez pas votre code de récupération ?
+forms.site_key_recovery.code_label: Code de récupération
+forms.site_key_recovery.header: Saisissez votre code de récupération de clé de site
+forms.site_key_recovery.instructions: Vous avez réinitialisé votre mot de passe ; les données chiffrées de ce site sont donc verrouillées. Saisissez le code de récupération de clé de site que vous avez enregistré pour les conserver.
+forms.site_key_recovery.start_over: Recommencer sans mes anciennes données
+forms.site_key_recovery.start_over_description: Les données que ce site a chiffrées pour vous avant la réinitialisation de votre mot de passe deviendront définitivement illisibles. Cette action est irréversible.
+forms.site_key_recovery.start_over_title: Recommencer sans vos anciennes données ?
 forms.ssn.show: Afficher le numéro de sécurité sociale
 forms.totp_setup.totp_intro: Configurer une appli d’authentification pour vous connecter à l’aide de codes de sécurité temporaires.
 forms.totp_setup.totp_step_1: Donnez-lui un surnom
@@ -2039,6 +2059,8 @@ titles.sign_up.completion_new_attributes: '%{sp} demande de nouvelles informatio
 titles.sign_up.completion_new_sp: Vous vous connectez pour la première fois
 titles.sign_up.completion_reverified_consent: Partager vos informations mises à jour avec %{sp}
 titles.sign_up.confirmation: Continuer à vous connecter
+titles.site_key_recovery: Saisissez votre code de récupération
+titles.site_key_recovery_code: Enregistrez votre code de récupération
 titles.totp_setup.new: Ajouter une appli d’authentification
 titles.two_factor_setup: Configuration de l’authentification à deux facteurs
 titles.verify_email: Consulter vos e-mails

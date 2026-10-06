@@ -150,8 +150,10 @@ account.index.webauthn_platform: Face or touch unlock
 account.index.webauthn_platform_add: Add face or touch unlock
 account.items.delete_your_account: Delete your account
 account.items.personal_key: Personal key
+account.items.site_key_recovery_code: Site key recovery code
 account.links.delete_account: Delete
 account.links.regenerate_personal_key: Reset
+account.links.regenerate_site_key_recovery_code: Reset
 account.login.forced_reauthentication_notice_html: '<strong>%{sp_name}</strong> needs you to enter your email and password again.'
 account.login.forgot_password: Forgot password?
 account.login.piv_cac: Sign in with your government employee ID
@@ -188,6 +190,8 @@ account.revoke_consent.link_title: Disconnect
 account.revoke_consent.longer_description_html: Your information will no longer be shared with %{service_provider_html}. To access %{service_provider_html} in the future, you must give your consent to share your information. You can give consent by going to the %{service_provider_html} site and logging in.
 account.security.link: Learn more at the Help Center
 account.security.text: Your profile information is locked for your security.
+account.site_key_recovery_code.instructions: Some sites you sign in to encrypt your data with a key only your browser can read. If you reset your password, this code is the only way to keep that data. Reset it if you don’t have it.
+account.site_key_recovery_code.last_generated: Last generated on %{timestamp}
 account.verified_information.address: Address
 account.verified_information.dob: Date of birth
 account.verified_information.full_name: Full name
@@ -903,6 +907,8 @@ errors.messages.phone_required: Phone number is required
 errors.messages.phone_unsupported_html: We can’t send you a one-time code right now. Please try again by clicking “Send another code” below or %{link_html}.
 errors.messages.premium_rate_phone: This appears to be a premium rate phone number. Please select a different number and try again.
 errors.messages.pwned_password: The password you entered is not safe. It’s in a list of known passwords exposed in data breaches.
+errors.messages.site_key_recovery_code_incorrect: Incorrect recovery code
+errors.messages.site_key_recovery_unavailable: We can’t check your recovery code right now. Please try again later.
 errors.messages.stronger_password: Enter a stronger password
 errors.messages.too_long.one: is too long (maximum is 1 character)
 errors.messages.too_long.other: is too long (maximum is %{count} characters)
@@ -920,6 +926,7 @@ errors.messages.wrong_length.other: is the wrong length (should be %{count} char
 errors.piv_cac_setup.unique_name: That name is already taken. Please choose a different name.
 errors.registration.terms: Before you can continue, you must give us permission. Please check the box below and then click continue.
 errors.sign_in.sign_in_failure_limit: You have exceeded the maximum sign in attempts. You must wait %{time_left} before trying again.
+errors.site_key_recovery.rate_limited: You tried too many times, please try again in %{timeout}. You can also go back and choose to start over.
 errors.two_factor_auth_setup.must_select_additional_option: Select an additional authentication method.
 errors.two_factor_auth_setup.must_select_option: Select an authentication method.
 errors.verify_personal_key.rate_limited: You tried too many times, please try again in %{timeout}.
@@ -1036,6 +1043,19 @@ forms.piv_cac_setup.submit: Insert PIV/CAC
 forms.piv_cac_setup.try_again: Try again
 forms.registration.labels.email: Enter your email address
 forms.registration.labels.email_language: Select your email language preference
+forms.site_key_recovery_code.acknowledgement.header: This code is the only way to keep encrypted site data if you reset your password.
+forms.site_key_recovery_code.acknowledgement.text: Treat it like a second password. Keep it safe and don’t share it with anyone.
+forms.site_key_recovery_code.get_new: Get a new site key recovery code
+forms.site_key_recovery_code.get_new_description: Your old recovery code will stop working. You’ll see the new code on the next page; save it somewhere safe.
+forms.site_key_recovery_code.header: Save your site key recovery code
+forms.site_key_recovery_code.required_checkbox: I saved my site key recovery code with the date it was generated.
+forms.site_key_recovery.alternative: Don’t have your recovery code?
+forms.site_key_recovery.code_label: Recovery code
+forms.site_key_recovery.header: Enter your site key recovery code
+forms.site_key_recovery.instructions: You reset your password, so this site’s encrypted data is locked. Enter the site key recovery code you saved to keep it.
+forms.site_key_recovery.start_over: Start over without my old data
+forms.site_key_recovery.start_over_description: Any data this site encrypted for you before you reset your password will be permanently unreadable. You can’t undo this.
+forms.site_key_recovery.start_over_title: Start over without your old data?
 forms.ssn.show: Show Social Security number
 forms.totp_setup.totp_intro: Set up an authentication app to sign in using temporary security codes.
 forms.totp_setup.totp_step_1: Give it a nickname
@@ -2038,6 +2058,8 @@ titles.sign_up.completion_new_attributes: '%{sp} is requesting new information'
 titles.sign_up.completion_new_sp: You are now signing in for the first time
 titles.sign_up.completion_reverified_consent: Share your updated information with %{sp}
 titles.sign_up.confirmation: Continue to sign in
+titles.site_key_recovery: Enter your recovery code
+titles.site_key_recovery_code: Save your recovery code
 titles.totp_setup.new: Add authentication app
 titles.two_factor_setup: Two-factor authentication setup
 titles.verify_email: Check your email

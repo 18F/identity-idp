@@ -251,6 +251,10 @@ class RateLimiter
         max_attempts: IdentityConfig.store.verify_personal_key_max_attempts,
         attempt_window: IdentityConfig.store.verify_personal_key_attempt_window_in_minutes,
       },
+      site_key_recovery: {
+        max_attempts: IdentityConfig.store.site_key_recovery_max_attempts,
+        attempt_window: IdentityConfig.store.site_key_recovery_attempt_window_in_minutes,
+      },
       verify_gpo_key: {
         max_attempts: IdentityConfig.store.verify_gpo_key_max_attempts,
         attempt_window: IdentityConfig.store.verify_gpo_key_attempt_window_in_minutes,
