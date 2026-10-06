@@ -40,6 +40,8 @@ module Users
         analytics: analytics,
         request_ip: request.remote_ip,
         request_user_agent: request.user_agent,
+        ja3_fingerprint: cloud_front_header_parser.ja3_fingerprint,
+        ja4_fingerprint: cloud_front_header_parser.ja4_fingerprint,
       )
       result = @new_phone_form.submit(new_phone_form_params)
       analytics.multi_factor_auth_phone_setup(**result)

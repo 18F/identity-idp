@@ -16,6 +16,57 @@ RSpec.describe ApplicationController do
     end
   end
 
+  describe '#cloud_front_header_parser' do
+    controller do
+      def index
+        render json: {
+          ja3: cloud_front_header_parser.ja3_fingerprint,
+          ja4: cloud_front_header_parser.ja4_fingerprint,
+        }
+      end
+    end
+
+    let(:ja3_fingerprint) { 'e7d705a3286e19ea42f587b344ee6865' }
+    let(:ja4_fingerprint) { 't13d1516h2_8daaf6152771_b186095e22b6' }
+
+    it 'returns a CloudFrontHeaderParser for the current request' do
+      get :index
+
+      expect(controller.send(:cloud_front_header_parser)).to be_a(CloudFrontHeaderParser)
+    end
+
+    it 'memoizes the parser across calls' do
+      get :index
+
+      expect(controller.send(:cloud_front_header_parser))
+        .to equal(controller.send(:cloud_front_header_parser))
+    end
+
+    context 'with the CloudFront JA3/JA4 headers present' do
+      before do
+        request.headers['CloudFront-Viewer-JA3-Fingerprint'] = ja3_fingerprint
+        request.headers['CloudFront-Viewer-JA4-Fingerprint'] = ja4_fingerprint
+      end
+
+      it 'parses the fingerprints from the CloudFront headers' do
+        get :index
+
+        expect(response.parsed_body).to eq(
+          'ja3' => ja3_fingerprint,
+          'ja4' => ja4_fingerprint,
+        )
+      end
+    end
+
+    context 'without the CloudFront JA3/JA4 headers' do
+      it 'returns nil for both fingerprints' do
+        get :index
+
+        expect(response.parsed_body).to eq('ja3' => nil, 'ja4' => nil)
+      end
+    end
+  end
+
   describe '#cache_issuer_in_cookie' do
     controller do
       def index
