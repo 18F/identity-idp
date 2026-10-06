@@ -365,6 +365,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   state: applicant_pii[:state],
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
+                  document_type_received: applicant_pii[:document_type_received],
                   user_id: user_uuid,
                   aamva_checked: true,
                 }
@@ -450,6 +451,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   state: applicant_pii[:state],
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
+                  document_type_received: applicant_pii[:document_type_received],
                   user_id: user_uuid,
                   aamva_checked: true,
                 }
@@ -501,6 +503,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   state: applicant_pii[:state],
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
+                  document_type_received: applicant_pii[:document_type_received],
                   user_id: user_uuid,
                   aamva_checked: false,
                   bypass_exception: false,
@@ -714,8 +717,65 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
     end
   end
 
+  describe '#biographical_info' do
+    subject(:biographical_info) do
+      plugin.send(:biographical_info, applicant_pii)
+    end
+
+    context 'when the applicant has a document type' do
+      let(:applicant_pii) do
+        Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(uuid: user_uuid)
+      end
+
+      it 'reports the document type' do
+        expect(biographical_info[:document_type_received]).to eq('drivers_license')
+      end
+    end
+
+    context 'when the applicant has a non-driver state ID' do
+      let(:applicant_pii) do
+        Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
+          uuid: user_uuid,
+          document_type_received: Idp::Constants::DocumentTypes::STATE_ID_CARD,
+        )
+      end
+
+      it 'distinguishes it from a drivers license' do
+        expect(biographical_info[:document_type_received]).to eq('state_id_card')
+      end
+    end
+
+    context 'when the applicant presented a passport card' do
+      let(:applicant_pii) do
+        {
+          uuid: user_uuid,
+          dob: '1990-10-06',
+          document_type_received: Idp::Constants::DocumentTypes::PASSPORT_CARD,
+        }
+      end
+
+      it 'reports the passport card without a jurisdiction or ID number' do
+        expect(biographical_info).to include(
+          document_type_received: 'passport_card',
+          state_id_jurisdiction: nil,
+          state_id_number: nil,
+        )
+      end
+    end
+
+    context 'when the applicant has no document type' do
+      let(:applicant_pii) { { uuid: user_uuid, dob: '1990-10-06' } }
+
+      it 'reports nil rather than omitting the key' do
+        expect(biographical_info).to have_key(:document_type_received)
+        expect(biographical_info[:document_type_received]).to be_nil
+      end
+    end
+  end
+
   context 'when already_proofed is true' do
     let(:already_proofed) { true }
+
     it 'returns a skipped result without calling the proofer' do
       expect(plugin.proofer).not_to receive(:proof)
       plugin.call(
