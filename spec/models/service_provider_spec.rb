@@ -81,6 +81,34 @@ RSpec.describe ServiceProvider do
     end
   end
 
+  describe '#site_key_allowed?' do
+    context 'when site keys are disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(false)
+        service_provider.update!(site_key_allowed: true)
+      end
+
+      it 'returns false even for an SP configured to use them' do
+        expect(service_provider.site_key_allowed?).to be(false)
+      end
+    end
+
+    context 'when site keys are enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+      end
+
+      it 'returns false for an SP that is not configured to use them' do
+        expect(service_provider.site_key_allowed?).to be(false)
+      end
+
+      it 'returns true for an SP configured to use them' do
+        service_provider.update!(site_key_allowed: true)
+        expect(service_provider.site_key_allowed?).to be(true)
+      end
+    end
+  end
+
   describe '#attempts_api_enabled?' do
     context 'when attempts api is enabled' do
       before do
