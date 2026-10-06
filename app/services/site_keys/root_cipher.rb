@@ -22,11 +22,21 @@ module SiteKeys
       raise Encryption::EncryptionError, "site key root is malformed: #{err.class}"
     end
 
-    # Opens the root with a recovery code.
-    # @return [String, nil] the root, or nil when the code does not open it
+    # Opens the root with a recovery code or a personal key. A transient failure on one wrap does
+    # not stop the other from being tried.
+    # @return [String, nil] the root, or nil when the code opens neither wrap
     def recover(record, code)
       secret = RecoveryCode.normalize(code)
-      try_unwrap(record.encrypted_root_recovery_code, secret) if secret
+      return if secret.nil?
+
+      begin
+        root = try_unwrap(record.encrypted_root_recovery_code, secret)
+      rescue Encryption::EncryptionError => err
+        transient_error = err
+      end
+      root ||= try_unwrap(record.encrypted_root_personal_key, secret)
+      raise transient_error if root.nil? && transient_error
+      root
     end
 
     def try_unwrap(encrypted_root, secret)

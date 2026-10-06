@@ -56,6 +56,20 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       end
     end
 
+    it 'stops a consumed personal key from opening the site key root' do
+      allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+      user = create(:user)
+      raw_key = PersonalKeyGenerator.new(user).generate!
+      create_site_key_root(user)
+      SiteKeys::Vault.new(user:, user_session: {})
+        .wrap_personal_key(raw_key, password: user.password)
+      stub_sign_in_before_2fa(user)
+
+      post :create, params: { personal_key_form: { personal_key: raw_key } }
+
+      expect(user.reload.site_key_root.encrypted_root_personal_key).to be_nil
+    end
+
     it 'redirects to the two_factor_options page if user is IAL2' do
       profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
       user = profile.user

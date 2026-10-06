@@ -123,6 +123,14 @@ RSpec.describe SiteKeys::Vault do
   describe '#replace!' do
     let!(:created) { create_site_key_root(user) }
 
+    it 'drops the old personal key wrap' do
+      vault.wrap_personal_key(PersonalKeyGenerator.new(user).generate!, password:)
+
+      vault.replace!(password)
+
+      expect(user.reload.site_key_root.encrypted_root_personal_key).to be_nil
+    end
+
     it 'starts a new root' do
       expect(vault.replace!(password)).not_to eq(created.root)
       expect(analytics).to have_logged_event(:site_key_root_created, replaced: true)
@@ -191,6 +199,108 @@ RSpec.describe SiteKeys::Vault do
 
     it 'returns nil while the root is locked' do
       expect(vault.wrap_cached_root('a brand new password')).to be_nil
+    end
+  end
+
+  describe '#wrap_personal_key' do
+    let!(:created) { create_site_key_root(user) }
+    let(:personal_key) { PersonalKeyGenerator.new(user).generate! }
+
+    it 'lets the personal key recover the root after a password reset' do
+      vault.unlock(password)
+      vault.wrap_personal_key(personal_key)
+      user.site_key_root.forget_password!
+
+      fresh = described_class.new(user: user.reload, user_session: {})
+      expect(fresh.recover(personal_key)).to eq(created.root)
+    end
+
+    it 'unlocks with the password when the session is locked' do
+      vault.wrap_personal_key(personal_key, password:)
+
+      expect(user.reload.site_key_root.encrypted_root_personal_key).to be_present
+    end
+
+    it 'drops the previous key wrap while the session is locked and no password is given' do
+      vault.wrap_personal_key(personal_key, password:)
+      locked = described_class.new(user: user.reload, user_session: {})
+
+      locked.wrap_personal_key(PersonalKeyGenerator.new(user).generate!)
+
+      expect(user.reload.site_key_root.encrypted_root_personal_key).to be_nil
+    end
+
+    it 'drops the previous key wrap when regenerating after a password reset' do
+      vault.wrap_personal_key(personal_key, password:)
+      user.reload.site_key_root.forget_password!
+      recoverable = described_class.new(user: user.reload, user_session: {})
+
+      recoverable.wrap_personal_key(PersonalKeyGenerator.new(user).generate!)
+
+      expect(recoverable.recover(personal_key)).to be_nil
+      expect(recoverable.recover(created.recovery_code)).to eq(created.root)
+    end
+
+    it 'does not abort an enclosing transaction when the write fails' do
+      vault.unlock(password)
+      allow_any_instance_of(SiteKeyRoot).to receive(:update!)
+        .and_raise(ActiveRecord::StatementInvalid)
+
+      ActiveRecord::Base.transaction do
+        vault.wrap_personal_key(personal_key)
+        expect { User.find(user.id) }.not_to raise_error
+      end
+    end
+
+    it 'never wraps under a malformed personal key' do
+      vault.unlock(password)
+      vault.wrap_personal_key('too short')
+
+      expect(user.reload.site_key_root.encrypted_root_personal_key).to be_nil
+    end
+  end
+
+  describe '#consume_personal_key' do
+    let!(:created) { create_site_key_root(user) }
+    let(:personal_key) { PersonalKeyGenerator.new(user).generate! }
+
+    before do
+      described_class.new(user:, user_session: {}).wrap_personal_key(personal_key, password:)
+      user.reload.site_key_root.forget_password!
+    end
+
+    it 'opens a post-reset root with the key being retired' do
+      vault.consume_personal_key(personal_key)
+
+      expect(vault.site_key(issuer)).to eq(derive_site_key(created.root, issuer))
+    end
+
+    it 'drops the personal key wrap' do
+      vault.consume_personal_key(personal_key)
+
+      expect(user.reload.site_key_root.encrypted_root_personal_key).to be_nil
+    end
+
+    context 'when the personal key wrap cannot be decrypted' do
+      before { user.site_key_root.update!(encrypted_root_personal_key: 'not json') }
+
+      it 'still drops the personal key wrap' do
+        vault.consume_personal_key(personal_key)
+
+        expect(user.reload.site_key_root.encrypted_root_personal_key).to be_nil
+      end
+    end
+
+    context 'when the personal key wrap is the only usable one' do
+      before { user.site_key_root.update!(recovery_code_acknowledged_at: nil) }
+
+      it 'keeps the personal key wrap so the root stays openable' do
+        vault.consume_personal_key(personal_key)
+
+        expect(user.reload.site_key_root.encrypted_root_personal_key).to be_present
+        expect(described_class.new(user:, user_session: {}).recover(personal_key))
+          .to eq(created.root)
+      end
     end
   end
 

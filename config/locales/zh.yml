@@ -1023,10 +1023,10 @@ forms.site_key_recovery_code.get_new: 获取新的站点密钥恢复代码
 forms.site_key_recovery_code.get_new_description: 你的旧恢复代码将失效。新代码会显示在下一页，请妥善保存。
 forms.site_key_recovery_code.header: 保存你的站点密钥恢复代码
 forms.site_key_recovery_code.required_checkbox: 我已保存站点密钥恢复代码及其生成日期。
-forms.site_key_recovery.alternative: 没有恢复代码？
-forms.site_key_recovery.code_label: 恢复代码
+forms.site_key_recovery.alternative: 没有恢复代码或个人密钥？
+forms.site_key_recovery.code_label: 恢复代码或个人密钥
 forms.site_key_recovery.header: 输入你的站点密钥恢复代码
-forms.site_key_recovery.instructions: 你重设了密码，因此该网站的加密数据已被锁定。输入你保存的站点密钥恢复代码以保留这些数据。
+forms.site_key_recovery.instructions: 你重设了密码，因此该网站的加密数据已被锁定。输入你保存的站点密钥恢复代码（如有个人密钥也可输入）以保留这些数据。
 forms.site_key_recovery.start_over: 放弃旧数据重新开始
 forms.site_key_recovery.start_over_description: 此网站在你重设密码之前为你加密的所有数据将永久无法读取。此操作无法撤销。
 forms.site_key_recovery.start_over_title: 放弃旧数据重新开始？
