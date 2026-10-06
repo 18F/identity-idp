@@ -7,9 +7,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
   let(:already_proofed) { false }
   let(:current_sp) { build(:service_provider) }
   let(:ipp_enrollment_in_progress) { false }
-  let(:analytics_arguments) do
-    {}
-  end
+  let(:analytics_arguments) { {} }
   let(:proofing_agent_id) { 'test-agent-id' }
   let(:proofing_location_id) { 'test-location-id' }
   let(:correlation_id) { 'test-correlation-id' }
@@ -721,7 +719,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
   describe '#biographical_info' do
     subject(:biographical_info) do
-      plugin.send(:biographical_info, applicant_pii)
+      plugin.biographical_info(applicant_pii)
     end
 
     context 'when the applicant has a document type' do
