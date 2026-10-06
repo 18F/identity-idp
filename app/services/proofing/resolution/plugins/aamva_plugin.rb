@@ -167,6 +167,7 @@ module Proofing
             state: applicant_pii[:state],
             state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
             state_id_number: redacted_state_id_number,
+            document_type_received: applicant_pii[:document_type_received],
           }
         end
 
