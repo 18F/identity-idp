@@ -532,6 +532,7 @@ module Idv
         user: current_user,
         user_password: user_password,
         initiating_service_provider: service_provider,
+        user_session: user_session,
       )
     end
 

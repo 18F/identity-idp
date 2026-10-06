@@ -32,13 +32,13 @@ RSpec.describe SiteKeys::RootCipher do
 
   describe '#recover' do
     let(:recovery_code) { SiteKeys::RecoveryCode.generate }
+    let(:personal_key) { PersonalKeyGenerator.new(user).generate! }
     let(:record) do
       build(
         :site_key_root,
         user:,
-        encrypted_root_recovery_code: cipher.wrap(
-          root, SiteKeys::RecoveryCode.normalize(recovery_code)
-        ),
+        encrypted_root_recovery_code: cipher.wrap(root, SiteKeys::RecoveryCode.normalize(recovery_code)),
+        encrypted_root_personal_key: cipher.wrap(root, SiteKeys::RecoveryCode.normalize(personal_key)),
       )
     end
 
@@ -46,12 +46,29 @@ RSpec.describe SiteKeys::RootCipher do
       expect(cipher.recover(record, recovery_code.downcase)).to eq(root)
     end
 
-    it 'returns nil for another code' do
+    it 'opens the root with the personal key' do
+      expect(cipher.recover(record, personal_key)).to eq(root)
+    end
+
+    it 'returns nil for a code that opens neither wrap' do
       expect(cipher.recover(record, SiteKeys::RecoveryCode.generate)).to be_nil
     end
 
     it 'returns nil for a malformed code' do
       expect(cipher.recover(record, 'UUUU-UUUU-UUUU-UUUU')).to be_nil
+    end
+
+    it 'tries the personal key when the recovery code wrap cannot be decrypted' do
+      record.encrypted_root_recovery_code = 'not json'
+
+      expect(cipher.recover(record, personal_key)).to eq(root)
+    end
+
+    it 'raises when no wrap opens and one could not be decrypted' do
+      record.encrypted_root_recovery_code = 'not json'
+
+      expect { cipher.recover(record, SiteKeys::RecoveryCode.generate) }
+        .to raise_error(Encryption::EncryptionError)
     end
   end
 end

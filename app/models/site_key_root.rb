@@ -2,7 +2,7 @@
 
 # A user's per-site key root, wrapped under secrets only the user holds.
 class SiteKeyRoot < ApplicationRecord
-  WRAP_COLUMNS = %w[encrypted_root encrypted_root_recovery_code].freeze
+  WRAP_COLUMNS = %w[encrypted_root encrypted_root_recovery_code encrypted_root_personal_key].freeze
 
   belongs_to :user
 
@@ -12,8 +12,11 @@ class SiteKeyRoot < ApplicationRecord
     slice(*WRAP_COLUMNS).compact
   end
 
-  # A recovery code the user never confirmed saving cannot be counted on to open the root.
   def recoverable?
+    recovery_code_usable? || encrypted_root_personal_key.present?
+  end
+
+  def recovery_code_usable?
     encrypted_root_recovery_code.present? && recovery_code_acknowledged_at.present?
   end
 
