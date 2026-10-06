@@ -49,6 +49,7 @@ RSpec.configure do |config|
   config.include DiffHelper
   config.include KeyRotationHelper
   config.include OtpHelper
+  config.include SiteKeyHelper
   config.include XmlHelper
 
   config.before(:suite) do
