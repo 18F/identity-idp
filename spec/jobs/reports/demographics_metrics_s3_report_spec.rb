@@ -570,9 +570,21 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         )
       end
 
-      it 'falls back to current date if S3 file access fails' do
+      it 'falls back to current date if S3 raises NoSuchKey' do
         allow(report_reader).to receive(:get_file_last_modified)
           .and_raise(Aws::S3::Errors::NoSuchKey.new('', ''))
+
+        expect(Rails.logger).to receive(:warn)
+          .with('Unexpected S3 file access issue when getting '\
+                'modified date, using today for email subject')
+
+        subject_line = job.send(:demographics_email_subject, 'IRS', report_reader)
+        expect(subject_line).to include(Date.current.strftime('%Y-%m-%d'))
+      end
+
+      it 'falls back to current date if S3 file access fails' do
+        allow(report_reader).to receive(:get_file_last_modified)
+          .and_raise(Aws::S3::Errors::NotFound.new('', ''))
 
         expect(Rails.logger).to receive(:warn)
           .with('Unexpected S3 file access issue when getting '\
@@ -595,7 +607,8 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
   # Sets up S3 client stub responses for testing different file states
   #
   # @param config [Hash] Configuration for different SP file states:
-  #   - :missing [Array<Integer>] SP IDs that should have missing files (returns NoSuchKey)
+  #   - :missing [Array<Integer>] SP IDs that should have missing files
+  #     (head_object -> NotFound, get_object -> NoSuchKey)
   #   - :old [Array<Integer>] SP IDs that should have old files (returns files with old timestamps)
   #   - :fresh [Array<Integer>] SP IDs that should have fresh files (returns recent files)
   #   - Files not specified in any category default to fresh
@@ -612,12 +625,12 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
 
       # Extract SP ID from the S3 key path
       sp_match = key.match(/SP(\d+)/)
-      return 'NoSuchKey' unless sp_match
+      return missing_error_for(context) unless sp_match
       sp_id = sp_match[1].to_i
 
       # Extract report type from filename
       file_match = key.match(/_(definitions|overview|age_metrics|state_metrics)\.csv$/)
-      return 'NoSuchKey' unless file_match
+      return missing_error_for(context) unless file_match
       report_type = file_match[1]
 
       # Determine which category this SP falls into
@@ -632,7 +645,7 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
       # Return appropriate response based on file state and operation
       case file_state
       when :missing
-        'NoSuchKey'
+        missing_error_for(context)
       when :old
         if context.operation_name == :get_object
           { body: StringIO.new(csv_data[report_type] || '') }
@@ -650,5 +663,11 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
 
     s3_client.stub_responses(:get_object, stub_response)
     s3_client.stub_responses(:head_object, stub_response)
+  end
+
+  # Real S3 raises NotFound for head_object (bodyless 404) and NoSuchKey for
+  # get_object
+  def missing_error_for(context)
+    context.operation_name == :head_object ? 'NotFound' : 'NoSuchKey'
   end
 end

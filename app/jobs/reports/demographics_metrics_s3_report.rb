@@ -146,7 +146,7 @@ module Reports
       report_reader.csv_file_names.each do |file_name|
         begin
           report_reader.get_file_last_modified(file_name)
-        rescue Aws::S3::Errors::NoSuchKey
+        rescue Aws::S3::Errors::NotFound, Aws::S3::Errors::NoSuchKey
           missing_files << file_name
         end
       end
@@ -172,7 +172,7 @@ module Reports
         begin
           last_modified = report_reader.get_file_last_modified(file_name)
           last_modified > cutoff_time
-        rescue Aws::S3::Errors::NoSuchKey
+        rescue Aws::S3::Errors::NotFound, Aws::S3::Errors::NoSuchKey
           # Shouldn't happen if validate_all_files_exist passed, but just in case
           Rails.logger.error "Unexpected file access issue during freshness check despite"\
           " validate_all_files_exist passing for file: #{file_name}"
@@ -238,7 +238,7 @@ module Reports
       begin
         last_modified = report_reader.get_file_last_modified(file_name)
         last_modified.strftime('%Y-%m-%d')
-      rescue Aws::S3::Errors::NoSuchKey
+      rescue Aws::S3::Errors::NotFound, Aws::S3::Errors::NoSuchKey
         # Shouldn't happen, but fallback gracefully
         Rails.logger.warn 'Unexpected S3 file access issue when getting modified date'\
                           ', using today for email subject'
