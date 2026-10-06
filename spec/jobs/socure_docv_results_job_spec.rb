@@ -94,7 +94,7 @@ RSpec.describe SocureDocvResultsJob do
     allow(FraudOps::Tracker).to receive(:new).and_return(fraud_opt_tracker)
     allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new).and_return(aamva_proofer)
     allow(aamva_proofer).to receive(:call).and_return(
-      Proofing::StateIdResult.new(success: true, vendor_name: 'state_id:aamva'),
+      DocAuth::StateIdResult.new(success: true, vendor_name: 'state_id:aamva'),
     )
 
     rate_limiter.increment!
@@ -1162,7 +1162,7 @@ RSpec.describe SocureDocvResultsJob do
         let(:aamva_success) { true }
         let(:aamva_errors) { {} }
         let(:aamva_proofing_result) do
-          Proofing::StateIdResult.new(
+          DocAuth::StateIdResult.new(
             success: aamva_success,
             errors: aamva_errors,
           )
@@ -1197,7 +1197,6 @@ RSpec.describe SocureDocvResultsJob do
             current_sp: sp,
             ipp_enrollment_in_progress: false,
             timer: an_instance_of(JobHelpers::Timer),
-            doc_auth_flow: true,
             analytics: @analytics,
           ).and_return(aamva_proofing_result)
         end

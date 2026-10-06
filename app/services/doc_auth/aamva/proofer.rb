@@ -58,7 +58,7 @@ module DocAuth
 
         build_result(verification_request:, verification_response:, jurisdiction:)
       rescue => exception
-        Proofing::StateIdResult.new(
+        DocAuth::StateIdResult.new(
           success: false,
           errors: {},
           exception: exception,
@@ -78,7 +78,7 @@ module DocAuth
       end
 
       def build_result(verification_request:, verification_response:, jurisdiction:)
-        Proofing::StateIdResult.new(
+        DocAuth::StateIdResult.new(
           success: successful?(verification_response),
           errors: parse_verification_errors(verification_response),
           exception: nil,
@@ -104,7 +104,7 @@ module DocAuth
         errors
       end
 
-      # @param verification_request [Proofing::Aamva::Request::VerificationRequest]
+      # @param verification_request [DocAuth::Aamva::Request::VerificationRequest]
       def requested_attributes(verification_request)
         return if verification_request.nil?
         present_attributes = verification_request

@@ -360,7 +360,6 @@ class ProofingAgentJob < ApplicationJob
       current_sp:,
       ipp_enrollment_in_progress: PA_BEHAVES_LIKE_IPP,
       timer:,
-      doc_auth_flow: true,
       analytics:,
       analytics_arguments: {
         proofing_agent:,

@@ -235,7 +235,7 @@ RSpec.describe Idv::ApiImageUploadForm do
     before do
       allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new).and_return(aamva_proofer)
       allow(aamva_proofer).to receive(:call).and_return(
-        Proofing::StateIdResult.new(
+        DocAuth::StateIdResult.new(
           success: true,
           vendor_name: Idp::Constants::Vendors::AAMVA,
         ),
@@ -274,7 +274,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       context 'when all checks are successful' do
         let(:aamva_result) do
-          Proofing::StateIdResult.new(
+          DocAuth::StateIdResult.new(
             success: true,
             vendor_name: 'state_id:aamva',
           )
@@ -287,7 +287,6 @@ RSpec.describe Idv::ApiImageUploadForm do
             ipp_enrollment_in_progress: false,
             timer: instance_of(JobHelpers::Timer),
             analytics: fake_analytics,
-            doc_auth_flow: true,
           ).and_return(aamva_result)
           form.submit
         end
@@ -307,7 +306,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
 
       context 'when the aamva check is unsuccessful' do
-        let(:aamva_state_id_result) { instance_double(Proofing::StateIdResult) }
+        let(:aamva_state_id_result) { instance_double(DocAuth::StateIdResult) }
         let(:aamva_doc_auth_response) do
           DocAuth::Response.new(
             success: false,
@@ -322,7 +321,6 @@ RSpec.describe Idv::ApiImageUploadForm do
             ipp_enrollment_in_progress: false,
             timer: instance_of(JobHelpers::Timer),
             analytics: fake_analytics,
-            doc_auth_flow: true,
           ).and_return(aamva_state_id_result)
           allow(aamva_state_id_result).to receive(:to_doc_auth_response).and_return(
             aamva_doc_auth_response,

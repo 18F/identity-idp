@@ -459,7 +459,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     context 'when aamva check completed' do
       let(:result_id) { SecureRandom.uuid }
       let(:aamva_result) do
-        Proofing::StateIdResult.new(
+        DocAuth::StateIdResult.new(
           success: true,
           errors: {},
           exception: nil,

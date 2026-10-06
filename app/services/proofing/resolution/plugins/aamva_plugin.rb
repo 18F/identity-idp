@@ -20,7 +20,6 @@ module Proofing
           ipp_enrollment_in_progress:,
           timer:,
           analytics: nil,
-          doc_auth_flow: false,
           already_proofed: false,
           analytics_arguments: {}
         )
@@ -29,7 +28,7 @@ module Proofing
 
           if !aamva_supports_state_id_jurisdiction?(applicant_pii)
             return process_unsupported_jurisdiction_result(
-              analytics:, applicant_pii:, ipp_enrollment_in_progress:, log_result: doc_auth_flow,
+              analytics:, applicant_pii:, ipp_enrollment_in_progress:,
             )
           end
 
@@ -80,7 +79,7 @@ module Proofing
         end
 
         def unsupported_jurisdiction_result
-          Proofing::StateIdResult.new(
+          DocAuth::StateIdResult.new(
             errors: {},
             exception: nil,
             success: true,
@@ -88,9 +87,9 @@ module Proofing
           )
         end
 
-        # @return [Proofing::StateIdResult] A result signifying that the AAMVA plugin was skipped.
+        # @return [DocAuth::StateIdResult] A result signifying that the AAMVA plugin was skipped.
         def skipped_result(exception: nil)
-          Proofing::StateIdResult.new(
+          DocAuth::StateIdResult.new(
             errors: {},
             exception: exception,
             success: true,
@@ -103,7 +102,7 @@ module Proofing
             if IdentityConfig.store.proofer_mock_fallback
               Proofing::Mock::IdMockClient.new
             else
-              Proofing::Aamva::Proofer.new(
+              DocAuth::Aamva::Proofer.new(
                 auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
                 auth_url: IdentityConfig.store.aamva_auth_url,
                 cert_enabled: IdentityConfig.store.aamva_cert_enabled,
@@ -174,14 +173,13 @@ module Proofing
         private
 
         def process_unsupported_jurisdiction_result(analytics:, applicant_pii:,
-                                                    ipp_enrollment_in_progress:, log_result:)
+                                                    ipp_enrollment_in_progress:)
           result = unsupported_jurisdiction_result
-          if log_result
-            log_state_id_validation(
-              analytics:, result: result.to_h, applicant_pii:, ipp_enrollment_in_progress:,
-              aamva_checked: false
-            )
-          end
+
+          log_state_id_validation(
+            analytics:, result: result.to_h, applicant_pii:, ipp_enrollment_in_progress:,
+            aamva_checked: false
+          )
           return result
         end
       end

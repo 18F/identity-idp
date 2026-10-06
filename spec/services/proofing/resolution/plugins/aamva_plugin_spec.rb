@@ -12,9 +12,9 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
   let(:proofing_location_id) { 'test-location-id' }
   let(:correlation_id) { 'test-correlation-id' }
   let(:transaction_id) { 'test-transaction-id' }
-  let(:proofer) { instance_double(Proofing::Aamva::Proofer, proof: proofer_result) }
+  let(:proofer) { instance_double(DocAuth::Aamva::Proofer, proof: proofer_result) }
   let(:proofer_result) do
-    Proofing::StateIdResult.new(
+    DocAuth::StateIdResult.new(
       success: true,
       vendor_name: 'state_id:aamva',
       transaction_id: proofer_transaction_id,
@@ -44,8 +44,6 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
     end
 
     context 'document authentication flow' do
-      let(:doc_auth_flow) { true }
-
       subject(:call) do
         plugin.call(
           applicant_pii:,
@@ -53,7 +51,6 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
           ipp_enrollment_in_progress:,
           timer: JobHelpers::Timer.new,
           analytics:,
-          doc_auth_flow:,
           analytics_arguments:,
         )
       end
@@ -93,7 +90,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
           context 'when the aamva request is successful' do
             let(:proofer_result) do
-              Proofing::StateIdResult.new(
+              DocAuth::StateIdResult.new(
                 success: true,
                 vendor_name: 'state_id:aamva',
                 transaction_id: proofer_transaction_id,
@@ -133,7 +130,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
             it 'returns a successful result', :aggregate_failures do
               call.tap do |result|
-                expect(result).to be_an_instance_of(Proofing::StateIdResult)
+                expect(result).to be_an_instance_of(DocAuth::StateIdResult)
                 expect(result.success?).to eq(true)
               end
             end
@@ -173,7 +170,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
           context 'when the aamva response is unsuccessful' do
             let(:proofer_result) do
-              Proofing::StateIdResult.new(
+              DocAuth::StateIdResult.new(
                 success: false,
                 vendor_name: 'state_id:aamva',
                 transaction_id: proofer_transaction_id,
@@ -217,7 +214,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
             it 'returns a unsuccessful result', :aggregate_failures do
               call.tap do |result|
-                expect(result).to be_an_instance_of(Proofing::StateIdResult)
+                expect(result).to be_an_instance_of(DocAuth::StateIdResult)
                 expect(result.success?).to eq(false)
                 expect(result.vendor_name).to eq('state_id:aamva')
               end
@@ -258,7 +255,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
           context 'when the aamva response has an exception' do
             let(:proofer_result) do
-              Proofing::StateIdResult.new(
+              DocAuth::StateIdResult.new(
                 success: false,
                 vendor_name: 'state_id:aamva',
                 transaction_id: proofer_transaction_id,
@@ -269,7 +266,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
             it 'returns a unsuccessful result', :aggregate_failures do
               call.tap do |result|
-                expect(result).to be_an_instance_of(Proofing::StateIdResult)
+                expect(result).to be_an_instance_of(DocAuth::StateIdResult)
                 expect(result.success?).to eq(false)
                 expect(result.vendor_name).to eq('state_id:aamva')
               end
@@ -324,7 +321,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
           context 'when the aamva response is successful' do
             let(:proofer_result) do
-              Proofing::StateIdResult.new(
+              DocAuth::StateIdResult.new(
                 success: true,
                 vendor_name: 'state_id:aamva',
                 transaction_id: proofer_transaction_id,
@@ -334,7 +331,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
             it 'returns a successful result', :aggregate_failures do
               call.tap do |result|
-                expect(result).to be_an_instance_of(Proofing::StateIdResult)
+                expect(result).to be_an_instance_of(DocAuth::StateIdResult)
                 expect(result.success?).to eq(true)
               end
             end
@@ -375,7 +372,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
           context 'when the aamva response is unsuccessful' do
             let(:proofer_result) do
-              Proofing::StateIdResult.new(
+              DocAuth::StateIdResult.new(
                 success: false,
                 vendor_name: 'state_id:aamva',
                 transaction_id: proofer_transaction_id,
@@ -419,7 +416,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
             it 'returns a unsuccessful result', :aggregate_failures do
               call.tap do |result|
-                expect(result).to be_an_instance_of(Proofing::StateIdResult)
+                expect(result).to be_an_instance_of(DocAuth::StateIdResult)
                 expect(result.success?).to eq(false)
                 expect(result.vendor_name).to eq('state_id:aamva')
               end
@@ -461,7 +458,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
           context 'when the aamva response has an exception' do
             let(:proofer_result) do
-              Proofing::StateIdResult.new(
+              DocAuth::StateIdResult.new(
                 success: false,
                 vendor_name: 'state_id:aamva',
                 transaction_id: proofer_transaction_id,
@@ -472,7 +469,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
             it 'returns a unsuccessful result', :aggregate_failures do
               call.tap do |result|
-                expect(result).to be_an_instance_of(Proofing::StateIdResult)
+                expect(result).to be_an_instance_of(DocAuth::StateIdResult)
                 expect(result.success?).to eq(false)
                 expect(result.vendor_name).to eq('state_id:aamva')
               end
@@ -514,7 +511,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
           context 'when aamva returns a bypassed exception' do
             let(:proofer_result) do
-              Proofing::StateIdResult.new(
+              DocAuth::StateIdResult.new(
                 success: false,
                 vendor_name: 'state_id:aamva',
                 transaction_id: proofer_transaction_id,
@@ -573,7 +570,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
           )
         end
         let(:proofer_result_hash) do
-          Proofing::StateIdResult.new(
+          DocAuth::StateIdResult.new(
             success: true,
             vendor_name: Idp::Constants::Vendors::AAMVA_UNSUPPORTED_JURISDICTION,
           ).to_h
@@ -581,7 +578,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
         it 'returns an unsupported jurisdiction result' do
           call.tap do |result|
-            expect(result).to be_an_instance_of(Proofing::StateIdResult)
+            expect(result).to be_an_instance_of(DocAuth::StateIdResult)
             expect(result.success?).to eq(true)
             expect(result.vendor_name).to eq(
               Idp::Constants::Vendors::AAMVA_UNSUPPORTED_JURISDICTION,

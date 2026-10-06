@@ -25,7 +25,7 @@ module Proofing
 
         return unverifiable_result(errors) if errors.any?
 
-        StateIdResult.new(
+        DocAuth::StateIdResult.new(
           success: true,
           errors: {},
           exception: nil,
@@ -38,7 +38,7 @@ module Proofing
       private
 
       def mva_timeout_result
-        StateIdResult.new(
+        DocAuth::StateIdResult.new(
           success: false,
           errors: {},
           exception: Proofing::TimeoutError.new(
@@ -50,7 +50,7 @@ module Proofing
       end
 
       def unverifiable_result(errors)
-        StateIdResult.new(
+        DocAuth::StateIdResult.new(
           success: false,
           errors: errors,
           exception: nil,

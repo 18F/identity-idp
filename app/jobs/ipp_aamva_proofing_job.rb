@@ -63,7 +63,6 @@ class IppAamvaProofingJob < ApplicationJob
       current_sp:,
       ipp_enrollment_in_progress: true,
       timer:,
-      doc_auth_flow: true,
       analytics:,
     )
   end

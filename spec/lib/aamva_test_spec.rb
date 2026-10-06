@@ -50,11 +50,11 @@ RSpec.describe AamvaTest do
     end
 
     it 'clears the auth token cache after' do
-      Rails.cache.write(Proofing::Aamva::AuthenticationClient::AUTH_TOKEN_CACHE_KEY, 'aaa')
+      Rails.cache.write(DocAuth::Aamva::AuthenticationClient::AUTH_TOKEN_CACHE_KEY, 'aaa')
 
       tester.test_cert(auth_url:, verification_url:)
 
-      expect(Rails.cache.read(Proofing::Aamva::AuthenticationClient::AUTH_TOKEN_CACHE_KEY))
+      expect(Rails.cache.read(DocAuth::Aamva::AuthenticationClient::AUTH_TOKEN_CACHE_KEY))
         .to be_nil
     end
   end

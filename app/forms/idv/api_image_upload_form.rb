@@ -736,7 +736,6 @@ module Idv
         current_sp: service_provider,
         ipp_enrollment_in_progress: false,
         timer: JobHelpers::Timer.new,
-        doc_auth_flow: true,
         analytics:,
       ).to_doc_auth_response
     end
