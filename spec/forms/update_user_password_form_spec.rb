@@ -62,6 +62,64 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
       end
     end
 
+    context 'when the user has an unlocked site key root' do
+      let(:user) { create(:user, password: 'old strong password') }
+
+      before do
+        allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+        SiteKeys::Vault.new(user:, user_session:).unlock('old strong password', create: true)
+      end
+
+      it 're-wraps the same root under the new password' do
+        root = SiteKeys::Vault.new(user:, user_session:).site_key('urn:sp')
+
+        expect(subject.submit(params).success?).to eq(true)
+
+        reopened = SiteKeys::Vault.new(user: user.reload, user_session: {})
+        reopened.unlock(password)
+        expect(reopened.site_key('urn:sp')).to eq(root)
+      end
+
+      it 'does not change the password when the root cannot be stored' do
+        allow_any_instance_of(SiteKeyRoot).to receive(:update!)
+          .and_raise(ActiveRecord::ActiveRecordError)
+
+        expect { subject.submit(params) }.to raise_error(ActiveRecord::ActiveRecordError)
+        expect(user.reload.valid_password?('old strong password')).to eq(true)
+      end
+
+      it 'deletes the root when the session copy cannot be decrypted' do
+        allow_any_instance_of(SessionEncryptor).to receive(:kms_decrypt)
+          .and_raise(Encryption::EncryptionError)
+
+        expect(subject.submit(params).success?).to eq(true)
+        expect(user.reload.site_key_root).to be_nil
+      end
+
+      it 'deletes the root when another session changed it in the meantime' do
+        SiteKeys::Vault.new(user: User.find(user.id), user_session: {})
+          .replace!('old strong password')
+        user.reload
+
+        expect(subject.submit(params).success?).to eq(true)
+        expect(user.reload.site_key_root).to be_nil
+      end
+    end
+
+    context 'when the user has a locked site key root' do
+      let(:user) { create(:user, password: 'old strong password') }
+
+      before do
+        allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+        create_site_key_root(user, password: 'old strong password')
+      end
+
+      it 'changes the password and deletes the root it cannot re-wrap' do
+        expect(subject.submit(params).success?).to eq(true)
+        expect(user.reload.site_key_root).to be_nil
+      end
+    end
+
     context 'when the user has an active profile' do
       let(:profile) { create(:profile, :active, :verified, pii: { ssn: '1234' }) }
       let(:user) { profile.user }
