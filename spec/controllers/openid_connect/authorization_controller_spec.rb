@@ -1427,5 +1427,297 @@ RSpec.describe OpenidConnect::AuthorizationController do
       end
     end
   end
+  describe '#index with site_key_jwk' do
+    let(:user) { create(:user, :fully_registered) }
+    let(:recipient) { OpenSSL::PKey::EC.generate('prime256v1') }
+    let(:site_key_allowed) { true }
+    let(:scope) { 'openid' }
+    let(:params) do
+      {
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        client_id:,
+        nonce: SecureRandom.hex,
+        prompt: 'select_account',
+        redirect_uri: 'gov.gsa.openidconnect.test://result',
+        response_type: 'code',
+        scope:,
+        state: SecureRandom.hex,
+        site_key_jwk: site_key_jwk_param(recipient),
+      }
+    end
+    let(:redirect_target) do
+      response.headers['Location'] || controller.view_assigns['oidc_redirect_uri'].to_s
+    end
+    let(:vault) { SiteKeys::Vault.new(user:, user_session: controller.user_session) }
+
+    subject(:action) { get :index, params: }
+
+    before do
+      allow(controller).to receive(:auth_count).and_return(2)
+      allow(controller).to receive(:needs_completion_screen_reason).and_return(nil)
+      allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+      ServiceProvider.find_by(issuer: client_id).update!(site_key_allowed:)
+      stub_sign_in user
+      stub_analytics
+      session[:sign_in_flow] = :sign_in
+      session[:sign_in_page_visited_at] = Time.zone.now.to_s
+      IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+    end
+
+    context 'when the site key root is unlocked' do
+      before do
+        vault.unlock(user.password, create: true)
+      end
+
+      it 'renders the client-side redirect even when server-side redirects are configured' do
+        allow(IdentityConfig.store).to receive(:openid_connect_redirect).and_return('server_side')
+
+        action
+
+        expect(response).to render_template('openid_connect/shared/redirect_js')
+        expect(response.headers['Location']).to be_nil
+      end
+
+      it 'delivers the sealed site key only in the fragment' do
+        action
+
+        uri = URI(redirect_target)
+        sealed = Rack::Utils.parse_query(uri.fragment)['site_key']
+        expect(Rack::Utils.parse_query(uri.query).keys).to contain_exactly('code', 'state')
+        expect(open_sealed_site_key(sealed, recipient:, issuer: client_id)).to eq(
+          'k' => Base64.urlsafe_encode64(vault.site_key(client_id), padding: false),
+        )
+      end
+
+      it 'logs the release' do
+        action
+
+        expect(@analytics).to have_logged_event(
+          :site_key_released, client_id:, email_sealed: false, all_emails_sealed: false
+        )
+      end
+
+      context 'with the email scope' do
+        let(:scope) { 'openid email' }
+
+        it 'seals the email into the fragment' do
+          action
+
+          sealed = Rack::Utils.parse_query(URI(redirect_target).fragment)['site_key']
+          expect(open_sealed_site_key(sealed, recipient:, issuer: client_id)['email'])
+            .to eq(user.email_addresses.first.email)
+        end
+
+        it 'keeps the email out of the ID token and userinfo' do
+          action
+
+          identity = user.identities.find_by(service_provider: client_id)
+          expect(identity.scope.split).not_to include('email')
+          expect(OpenidConnectUserInfoPresenter.new(identity).user_info)
+            .not_to include(:email, :email_verified)
+        end
+      end
+
+      context 'with the all_emails scope' do
+        let(:scope) { 'openid all_emails' }
+
+        before { create(:email_address, user:) }
+
+        it 'seals every confirmed email into the fragment' do
+          action
+
+          sealed = Rack::Utils.parse_query(URI(redirect_target).fragment)['site_key']
+          expect(open_sealed_site_key(sealed, recipient:, issuer: client_id)['emails'])
+            .to match_array(user.confirmed_email_addresses.map(&:email))
+        end
+
+        it 'keeps the emails out of userinfo' do
+          action
+
+          identity = user.identities.find_by(service_provider: client_id)
+          expect(OpenidConnectUserInfoPresenter.new(identity).user_info).not_to include(:all_emails)
+        end
+      end
+
+      context 'on the first visit to the SP' do
+        before do
+          allow(controller).to receive(:auth_count).and_return(1)
+          user.identities.destroy_all
+        end
+
+        it 'asks for consent before releasing the key' do
+          action
+
+          expect(response).to redirect_to(user_authorization_confirmation_url)
+          expect(@analytics).not_to have_logged_event(:site_key_released)
+        end
+      end
+
+      it 'tells the browser not to cache the page holding the sealed key' do
+        action
+
+        expect(response.headers['Cache-Control']).to eq('no-store')
+      end
+
+      context 'with several email addresses and one selected for the SP' do
+        let(:scope) { 'openid email' }
+        let!(:selected) { create(:email_address, user:, email: 'selected@example.com') }
+
+        before do
+          user.identities.find_by(service_provider: client_id)
+            .update!(email_address_id: selected.id, verified_attributes: ['email'])
+        end
+
+        it 'seals the selected address' do
+          action
+
+          sealed = Rack::Utils.parse_query(URI(redirect_target).fragment)['site_key']
+          expect(open_sealed_site_key(sealed, recipient:, issuer: client_id)['email'])
+            .to eq('selected@example.com')
+        end
+      end
+
+      context 'when the key cannot be sealed' do
+        before do
+          allow_any_instance_of(SiteKeys::Sealer).to receive(:seal)
+            .and_raise(OpenSSL::PKey::PKeyError, 'bad point')
+        end
+
+        it 'returns an OIDC error without recording a handoff' do
+          action
+
+          expect(Rack::Utils.parse_query(URI(redirect_target).query))
+            .to include('error' => 'temporarily_unavailable')
+          expect(@analytics).not_to have_logged_event('OpenID Connect: authorization request handoff')
+        end
+      end
+
+      context 'when the key cannot be derived' do
+        before do
+          allow(controller.site_key_vault).to receive(:site_key)
+            .and_raise(Encryption::EncryptionError, 'kms down')
+        end
+
+        it 'returns an OIDC error' do
+          action
+
+          expect(Rack::Utils.parse_query(URI(redirect_target).query))
+            .to include('error' => 'temporarily_unavailable')
+          expect(@analytics).to have_logged_event(
+            :site_key_release_failed, client_id:, error: 'kms down'
+          )
+        end
+
+        it 'does not bill or record a handoff' do
+          expect { action }.not_to change { SpReturnLog.count }
+
+          expect(controller.session[:sp]).not_to include(successful_handoff: true)
+          expect(@analytics).not_to have_logged_event('OpenID Connect: authorization request handoff')
+        end
+      end
+    end
+
+    context 'when the site key root is locked' do
+      before { create_site_key_root(user) }
+
+      it 'asks for the password' do
+        action
+
+        expect(response).to redirect_to(capture_password_url)
+      end
+
+      it 'answers with an error instead of asking again when still locked after the prompt' do
+        action
+        get(:index, params:)
+
+        expect(Rack::Utils.parse_query(URI(redirect_target).query))
+          .to include('error' => 'temporarily_unavailable')
+      end
+
+      it 'asks again for a different authorization request' do
+        action
+        get :index, params: params.merge(state: SecureRandom.hex)
+
+        expect(response).to redirect_to(capture_password_url)
+      end
+    end
+
+    context 'when another session re-wrapped the root' do
+      before do
+        vault.unlock(user.password, create: true)
+        other = SiteKeys::Vault.new(user: User.find(user.id), user_session: {})
+        other.unlock(user.password)
+        other.store_root!(other.wrap_cached_root('a brand new password'))
+        user.reload
+      end
+
+      it 'asks for the password' do
+        action
+
+        expect(response).to redirect_to(capture_password_url)
+      end
+    end
+
+    context 'when the root could not be decrypted for a transient reason' do
+      before do
+        create_site_key_root(user)
+        vault.mark_unavailable
+      end
+
+      it 'retries through the password prompt once' do
+        action
+
+        expect(response).to redirect_to(capture_password_url)
+      end
+
+      it 'returns an OIDC error after the retry' do
+        action
+        get(:index, params:)
+
+        expect(Rack::Utils.parse_query(URI(redirect_target).query))
+          .to include('error' => 'temporarily_unavailable', 'state' => params[:state])
+      end
+    end
+
+    context 'when the client is not allowed to request site keys' do
+      let(:site_key_allowed) { false }
+
+      it 'rejects the request' do
+        action
+
+        expect(redirect_target).to include('error=invalid_request')
+      end
+    end
+
+    context 'when site keys are disabled' do
+      before { allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(false) }
+
+      it 'rejects the request' do
+        action
+
+        expect(redirect_target).to include('error=invalid_request')
+      end
+    end
+
+    context 'with a site_key_jwk that is not base64' do
+      before { params[:site_key_jwk] = 'not base64!!' }
+
+      it 'rejects the request' do
+        action
+
+        expect(redirect_target).to include('error=invalid_request')
+      end
+    end
+
+    context 'with a malformed site_key_jwk' do
+      before { params[:site_key_jwk] = Base64.urlsafe_encode64({ kty: 'oct' }.to_json) }
+
+      it 'rejects the request' do
+        action
+
+        expect(redirect_target).to include('error=invalid_request')
+      end
+    end
+  end
 end
 # rubocop:enable Layout/LineLength
