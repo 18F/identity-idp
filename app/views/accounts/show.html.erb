@@ -55,6 +55,12 @@
   </div>
 <% end %>
 
+<% if @presenter.show_site_key_recovery_code_partial? %>
+  <div class="card">
+    <%= render 'accounts/site_key_recovery_code' %>
+  </div>
+<% end %>
+
 <% if TwoFactorAuthentication::PhonePolicy.new(current_user).configured? %>
   <div class="card">
     <%= render 'phone' %>
