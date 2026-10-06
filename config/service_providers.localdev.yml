@@ -178,6 +178,7 @@ test:
     ial: 2
     push_notification_url: http://localhost/push_notifications
     allow_prompt_login: true
+    site_key_allowed: true
 
   'urn:gov:gsa:openidconnect:test_prompt_login_banned':
     redirect_uris:
