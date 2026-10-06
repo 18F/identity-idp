@@ -47,7 +47,7 @@ RSpec.describe Idv::ProofingAgent::AgentPiiForm do
       dob: valid_dob,
       email: 'jane@example.com',
       phone: '5555551212',
-      ssn: '123-45-6789',
+      ssn: '123456789',
       id_type: 'drivers_license',
       state_id: valid_state_id,
     }
@@ -60,7 +60,7 @@ RSpec.describe Idv::ProofingAgent::AgentPiiForm do
       dob: valid_dob,
       email: 'jane@example.com',
       phone: '5555551212',
-      ssn: '123-45-6789',
+      ssn: '123456789',
       id_type: 'passport',
       passport: valid_passport,
       residential_address: valid_address,
@@ -218,6 +218,70 @@ RSpec.describe Idv::ProofingAgent::AgentPiiForm do
         expect(result.errors[:city].join).to match(/has invalid characters/)
         expect(result.errors[:address1].join).to match(/has invalid characters/)
       end
+    end
+  end
+
+  describe 'field rules' do
+    def submit_with(**overrides)
+      described_class.new(pii: state_id_pii.merge(overrides)).submit
+    end
+
+    it 'accepts values at the max length' do
+      result = submit_with(first_name: 'a' * 128, last_name: 'a' * 128, phone: '1' * 20)
+      expect(result.success?).to eq(true)
+    end
+
+    it 'reports values over the max length' do
+      result = submit_with(first_name: 'a' * 129, email: "#{'a' * 244}@example.com")
+      expect(result.success?).to eq(false)
+      expect(result.errors[:first_name]).to eq(['is too long (maximum is 128 characters)'])
+      expect(result.errors[:email]).to eq(['is too long (maximum is 255 characters)'])
+    end
+
+    it 'reports non-string values' do
+      expect(submit_with(phone: 5555551212).errors[:phone]).to eq(['must be a string'])
+    end
+
+    it 'reports an ssn that contains dashes' do
+      expect(submit_with(ssn: '123-45-6789').errors[:ssn]).to eq(
+        ['is too long (maximum is 9 characters)', 'must contain only digits'],
+      )
+    end
+
+    context 'with an invalid dob' do
+      %w[04-04-1990 1990-02-30 19900404].each do |bad_dob|
+        it "reports a format error for #{bad_dob} without checking minimum age" do
+          result = submit_with(dob: bad_dob)
+          expect(result.errors[:dob]).to include('must be in YYYY-MM-DD format')
+          expect(result.errors[:dob_min_age]).to be_blank
+        end
+      end
+
+      it 'reports a non-string dob without raising' do
+        expect(submit_with(dob: 19900404).errors[:dob]).to eq(['must be a string'])
+      end
+    end
+
+    it 'reports nested state_id violations under the nested key' do
+      result = submit_with(
+        state_id: valid_state_id.merge(document_number: '1' * 65, issue_date: '2020/01/01'),
+      )
+      expect(result.errors[:'state_id.document_number'])
+        .to eq(['is too long (maximum is 64 characters)'])
+      expect(result.errors[:'state_id.issue_date']).to eq(['must be in YYYY-MM-DD format'])
+    end
+
+    it 'reports nested residential_address violations under the nested key' do
+      result = submit_with(residential_address: valid_address.merge(state: 'a' * 65))
+      expect(result.errors[:'residential_address.state'])
+        .to eq(['is too long (maximum is 64 characters)'])
+    end
+
+    it 'skips blank optional fields' do
+      result = submit_with(
+        state_id: valid_state_id.merge(issue_date: nil, expiration_date: '', address2: nil),
+      )
+      expect(result.success?).to eq(true)
     end
   end
 
