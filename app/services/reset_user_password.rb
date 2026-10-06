@@ -18,7 +18,10 @@ class ResetUserPassword
   attr_reader :user, :remember_device_revoked_at
 
   def reset_user_password
-    user.update!(password: SecureRandom.hex(8))
+    ActiveRecord::Base.transaction do
+      user.update!(password: SecureRandom.hex(8))
+      user.site_key_root&.forget_password!
+    end
   end
 
   def forget_all_browsers

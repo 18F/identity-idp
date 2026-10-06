@@ -66,7 +66,10 @@ class ResetPasswordForm
       end
     end
 
-    user.update!(attributes)
+    ActiveRecord::Base.transaction do
+      user.update!(attributes)
+      user.site_key_root&.forget_password!
+    end
   end
 
   def mark_profile_as_password_reset
