@@ -7,7 +7,9 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
   let(:already_proofed) { false }
   let(:current_sp) { build(:service_provider) }
   let(:ipp_enrollment_in_progress) { false }
-  let(:analytics_arguments) { {} }
+  let(:analytics_arguments) do
+    {}
+  end
   let(:proofing_agent_id) { 'test-agent-id' }
   let(:proofing_location_id) { 'test-location-id' }
   let(:correlation_id) { 'test-correlation-id' }
@@ -764,7 +766,9 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
     end
 
     context 'when the applicant has no document type' do
-      let(:applicant_pii) { { uuid: user_uuid, dob: '1990-10-06' } }
+      let(:applicant_pii) do
+        { uuid: user_uuid, dob: '1990-10-06' }
+      end
 
       it 'reports nil rather than omitting the key' do
         expect(biographical_info).to have_key(:document_type_received)
