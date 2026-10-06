@@ -650,7 +650,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_100400) do
 
   create_table "site_key_roots", force: :cascade do |t|
     t.datetime "created_at", null: false, comment: "sensitive=false"
-    t.text "encrypted_root", null: false, comment: "sensitive=true"
+    t.text "encrypted_root", comment: "sensitive=true"
+    t.text "encrypted_root_recovery_code", comment: "sensitive=true"
+    t.datetime "recovery_code_acknowledged_at", comment: "sensitive=false"
+    t.datetime "recovery_code_generated_at", comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.bigint "user_id", null: false, comment: "sensitive=false"
     t.index ["user_id"], name: "index_site_key_roots_on_user_id", unique: true

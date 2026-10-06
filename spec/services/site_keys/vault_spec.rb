@@ -28,6 +28,12 @@ RSpec.describe SiteKeys::Vault do
         expect(analytics).to have_logged_event(:site_key_root_created, replaced: false)
       end
 
+      it 'stages a recovery code for display' do
+        vault.unlock(password, create: true)
+
+        expect(vault.pending_recovery_code).to match(/\A[0-9A-Z]{4}(-[0-9A-Z]{4}){3}\z/)
+      end
+
       it 'does not keep the plaintext root in the session' do
         root = vault.unlock(password, create: true)
 
@@ -60,6 +66,56 @@ RSpec.describe SiteKeys::Vault do
       it 'does not create a second root' do
         expect(vault.unlock(password, create: true)).to eq(created.root)
         expect(SiteKeyRoot.where(user:).count).to eq(1)
+      end
+    end
+
+    context 'when the recovery code was never acknowledged' do
+      let!(:created) { create_site_key_root(user, acknowledge: false) }
+
+      it 'mints a fresh code to show' do
+        vault.unlock(password)
+
+        expect(vault.pending_recovery_code).to be_present
+        expect(vault.pending_recovery_code).not_to eq(created.recovery_code)
+      end
+    end
+
+    context 'when the root was recovered in this session' do
+      let!(:created) { create_site_key_root(user) }
+
+      before do
+        user.site_key_root.forget_password!
+        vault.recover(created.recovery_code)
+      end
+
+      it 'wraps the root under the new password' do
+        vault.unlock('a brand new password')
+
+        fresh = described_class.new(user: user.reload, user_session: {})
+        expect(fresh.unlock('a brand new password')).to eq(created.root)
+      end
+    end
+
+    context 'when nothing can open the root any more' do
+      before do
+        create_site_key_root(user, acknowledge: false)
+        user.site_key_root.update_columns(encrypted_root: nil)
+      end
+
+      it 'replaces it when creating' do
+        expect(vault.unlock(password, create: true)).to be_present
+        expect(user.reload.site_key_root.encrypted_root).to be_present
+      end
+
+      it 'leaves it alone before the second factor' do
+        expect(vault.unlock(password, create: true, repair: false)).to be_nil
+        expect(user.reload.site_key_root.encrypted_root).to be_nil
+      end
+
+      it 'leaves it alone when another session made it recoverable first' do
+        SiteKeyRoot.where(user:).update_all(recovery_code_acknowledged_at: Time.zone.now)
+
+        expect(vault.unlock(password, create: true)).to be_nil
       end
     end
   end
@@ -106,6 +162,22 @@ RSpec.describe SiteKeys::Vault do
     end
   end
 
+  describe '#recover' do
+    let!(:created) { create_site_key_root(user) }
+
+    before { user.site_key_root.forget_password! }
+
+    it 'opens the root with the recovery code' do
+      expect(vault.recover(created.recovery_code)).to eq(created.root)
+      expect(vault.unlocked?).to eq(true)
+    end
+
+    it 'returns nil for a wrong code' do
+      expect(vault.recover(SiteKeys::RecoveryCode.generate)).to be_nil
+      expect(vault.unlocked?).to eq(false)
+    end
+  end
+
   describe '#wrap_cached_root' do
     let!(:created) { create_site_key_root(user) }
 
@@ -122,6 +194,57 @@ RSpec.describe SiteKeys::Vault do
     end
   end
 
+  describe '#acknowledge_recovery_code' do
+    before { vault.unlock(password, create: true) }
+
+    it 'records the acknowledgement' do
+      expect(vault.acknowledge_recovery_code).to eq(true)
+      expect(user.site_key_root.recovery_code_acknowledged_at).to be_present
+      expect(vault.pending_recovery_code).to be_nil
+    end
+
+    context 'when no code is pending in this session' do
+      before { vault.acknowledge_recovery_code }
+
+      it 'refuses the acknowledgement' do
+        user.site_key_root.update!(recovery_code_acknowledged_at: nil)
+
+        expect(vault.acknowledge_recovery_code).to eq(false)
+      end
+    end
+
+    context 'when another session has replaced the code' do
+      before do
+        described_class.new(user: User.find(user.id), user_session: {}).unlock(password)
+        user.reload
+      end
+
+      it 'refuses the acknowledgement' do
+        expect(vault.acknowledge_recovery_code).to eq(false)
+        expect(user.site_key_root.recovery_code_acknowledged_at).to be_nil
+      end
+    end
+  end
+
+  describe '#regenerate_recovery_code' do
+    let!(:created) { create_site_key_root(user) }
+
+    it 'invalidates the previous code' do
+      vault.unlock(password)
+      new_code = vault.regenerate_recovery_code
+      vault.acknowledge_recovery_code
+      user.site_key_root.forget_password!
+
+      fresh = described_class.new(user: user.reload, user_session: {})
+      expect(fresh.recover(created.recovery_code)).to be_nil
+      expect(fresh.recover(new_code)).to eq(created.root)
+    end
+
+    it 'returns nil while the root is locked' do
+      expect(vault.regenerate_recovery_code).to be_nil
+    end
+  end
+
   describe '#unlocked?' do
     before { create_site_key_root(user) }
 
@@ -133,6 +256,48 @@ RSpec.describe SiteKeys::Vault do
       user.reload
 
       expect(vault.unlocked?).to eq(false)
+    end
+  end
+
+  describe '#status' do
+    it 'needs the password when the root is locked' do
+      create_site_key_root(user)
+
+      expect(vault.status).to eq(:needs_password)
+    end
+
+    it 'needs acknowledgement when a code is pending' do
+      vault.unlock(password, create: true)
+
+      expect(vault.status).to eq(:needs_acknowledgement)
+    end
+
+    it 'needs acknowledgement when the stored code was never acknowledged' do
+      create_site_key_root(user, acknowledge: false)
+      vault.unlock(password, show_recovery_code: false)
+
+      expect(vault.status).to eq(:needs_acknowledgement)
+    end
+
+    it 'is ready when unlocked and acknowledged' do
+      vault.unlock(password, create: true)
+      vault.acknowledge_recovery_code
+
+      expect(vault.status).to eq(:ready)
+    end
+
+    it 'needs recovery after a password reset' do
+      create_site_key_root(user)
+      user.site_key_root.forget_password!
+
+      expect(vault.status).to eq(:needs_recovery)
+    end
+
+    it 'is unavailable after a transient failure' do
+      create_site_key_root(user)
+      vault.mark_unavailable
+
+      expect(vault.status).to eq(:unavailable)
     end
   end
 

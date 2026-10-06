@@ -150,8 +150,10 @@ account.index.webauthn_platform: 人脸或触摸解锁
 account.index.webauthn_platform_add: 添加人脸或触摸解锁
 account.items.delete_your_account: 删除你的账户
 account.items.personal_key: 个人密钥
+account.items.site_key_recovery_code: 站点密钥恢复代码
 account.links.delete_account: 删除
 account.links.regenerate_personal_key: 重设
+account.links.regenerate_site_key_recovery_code: 重设
 account.login.forced_reauthentication_notice_html: '<strong>%{sp_name}</strong> 需要你再次输入你的电邮和密码。'
 account.login.forgot_password: 忘记密码？
 account.login.piv_cac: 使用你的政府雇员身份证件登录
@@ -188,6 +190,8 @@ account.revoke_consent.link_title: 切断连接
 account.revoke_consent.longer_description_html: 你的信息将不再与 %{service_provider_html} 分享。以后要访问 %{service_provider_html}，你必须授权同意分享你的信息。授权同意请到 %{service_provider_html} 网站并登录。
 account.security.link: 请到帮助中心了解更多信息
 account.security.text: 出于安全考虑，你的用户资料已被锁住。
+account.site_key_recovery_code.instructions: 你登录的某些网站会用只有你的浏览器才能读取的密钥加密你的数据。如果你重设密码，此代码是保留这些数据的唯一方法。如果你没有该代码，请重设。
+account.site_key_recovery_code.last_generated: 上次生成于 %{timestamp}
 account.verified_information.address: 地址
 account.verified_information.dob: 生日
 account.verified_information.full_name: 姓名
@@ -914,6 +918,8 @@ errors.messages.phone_required: 电话号码是必需的。
 errors.messages.phone_unsupported_html: 我们目前无法向您发送一次性验证码。请点击下方“发送另一个验证码”重试，或%{link_html}。
 errors.messages.premium_rate_phone: 这好像是一个高价电话号码。请选择一个不同的号码再试一次。
 errors.messages.pwned_password: 你输入的密码不安全。名列因数据泄露而被暴露的已知密码清单上。
+errors.messages.site_key_recovery_code_incorrect: 恢复代码不正确
+errors.messages.site_key_recovery_unavailable: 我们目前无法核对你的恢复代码。请稍后再试。
 errors.messages.stronger_password: 输入一个强密码
 errors.messages.too_long.one: 太长（最多 1 个字符）
 errors.messages.too_long.other: 太长（最多 %{count}个字符）
@@ -931,6 +937,7 @@ errors.messages.wrong_length.other: 长度不对（应当是 %{count} 个字符�
 errors.piv_cac_setup.unique_name: 这个名字已被使用。请选择一个不同的名字。
 errors.registration.terms: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
 errors.sign_in.sign_in_failure_limit: 你已超出登录尝试允许最多次数。你必须等待 %{time_left} 才能重试。
+errors.site_key_recovery.rate_limited: 你尝试的次数太多了，请在 %{timeout} 后再试。你也可以返回并选择重新开始。
 errors.two_factor_auth_setup.must_select_additional_option: 请选择一个额外的身份证实方法。
 errors.two_factor_auth_setup.must_select_option: 选择一个身份证实方法。
 errors.verify_personal_key.rate_limited: 你尝试了太多次。请在 %{timeout}后再试。
@@ -1049,6 +1056,19 @@ forms.piv_cac_setup.submit: 插入 PIV/CAC
 forms.piv_cac_setup.try_again: 然后重试
 forms.registration.labels.email: 输入你的电邮地址
 forms.registration.labels.email_language: 选择你的电邮语言偏好
+forms.site_key_recovery_code.acknowledgement.header: 如果你重设密码，此代码是保留加密站点数据的唯一方法。
+forms.site_key_recovery_code.acknowledgement.text: 请像第二个密码一样对待它。妥善保管，不要与任何人分享。
+forms.site_key_recovery_code.get_new: 获取新的站点密钥恢复代码
+forms.site_key_recovery_code.get_new_description: 你的旧恢复代码将失效。新代码会显示在下一页，请妥善保存。
+forms.site_key_recovery_code.header: 保存你的站点密钥恢复代码
+forms.site_key_recovery_code.required_checkbox: 我已保存站点密钥恢复代码及其生成日期。
+forms.site_key_recovery.alternative: 没有恢复代码？
+forms.site_key_recovery.code_label: 恢复代码
+forms.site_key_recovery.header: 输入你的站点密钥恢复代码
+forms.site_key_recovery.instructions: 你重设了密码，因此该网站的加密数据已被锁定。输入你保存的站点密钥恢复代码以保留这些数据。
+forms.site_key_recovery.start_over: 放弃旧数据重新开始
+forms.site_key_recovery.start_over_description: 此网站在你重设密码之前为你加密的所有数据将永久无法读取。此操作无法撤销。
+forms.site_key_recovery.start_over_title: 放弃旧数据重新开始？
 forms.ssn.show: 显示社会保障号码
 forms.totp_setup.totp_intro: 设立一个身份证实应用程序，以使用临时安全代码登录。
 forms.totp_setup.totp_step_1: 给其一个昵称
@@ -2051,6 +2071,8 @@ titles.sign_up.completion_new_attributes: '%{sp} 在要求新信息'
 titles.sign_up.completion_new_sp: 你现在正在首次登入
 titles.sign_up.completion_reverified_consent: 与 %{sp}分享你更新后的信息
 titles.sign_up.confirmation: 继续登录
+titles.site_key_recovery: 输入你的恢复代码
+titles.site_key_recovery_code: 保存你的恢复代码
 titles.totp_setup.new: 添加身份证实应用程序
 titles.two_factor_setup: 设立双因素身份证实
 titles.verify_email: 检查你的电邮
