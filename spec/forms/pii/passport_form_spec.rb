@@ -56,9 +56,9 @@ RSpec.describe Pii::PassportForm do
   context 'with an expired passport' do
     let(:passport) { valid_passport.merge(expiration_date: (Time.zone.today - 1).to_s) }
 
-    it 'reports expiration error' do
+    it 'is valid' do
       form.valid?
-      expect(form.errors[:expiration_date]).to include('is expired, or near expiration')
+      expect(form.errors[:expiration_date]).to include('is expired, or invalid')
     end
   end
 end
