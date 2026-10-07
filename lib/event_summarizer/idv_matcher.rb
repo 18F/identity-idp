@@ -97,12 +97,12 @@ module EventSummarizer
         type: :residential_address_not_required_skipped,
         description: 'Residential address verification was not required',
       },
-      # aamva_plugin.rb
+      # doc_auth/aamva/verifier.rb
       'UnsupportedJurisdiction' => {
         type: :unsupported_jurisdiction_skipped,
         description: 'State ID check was skipped for an unsupported jurisdiction',
       },
-      # aamva_plugin.rb
+      # doc_auth/aamva/verifier.rb
       'AamvaCheckSkipped' => {
         type: :aamva_check_skipped,
         description: 'State ID (AAMVA) check was skipped',

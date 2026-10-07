@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
+RSpec.describe DocAuth::Aamva::Verifier do
   let(:analytics) { FakeAnalytics.new }
   let(:user_uuid) { 'abcd-1234' }
   let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(uuid: user_uuid) }
@@ -22,12 +22,12 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
   end
   let(:proofer_transaction_id) { 'abcd-123' }
 
-  subject(:plugin) do
+  subject(:verifier) do
     described_class.new
   end
 
   before do
-    allow(plugin).to receive(:proofer).and_return(proofer)
+    allow(verifier).to receive(:proofer).and_return(proofer)
   end
 
   describe '#call' do
@@ -45,7 +45,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
     context 'document authentication flow' do
       subject(:call) do
-        plugin.call(
+        verifier.call(
           applicant_pii:,
           current_sp:,
           ipp_enrollment_in_progress:,
@@ -664,7 +664,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
   describe '#skipped_result' do
     it 'returns a check skipped result' do
-      plugin.skipped_result.tap do |result|
+      verifier.skipped_result.tap do |result|
         expect(result.success?).to eql(true)
         expect(result.vendor_name).to eql(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
       end
@@ -776,8 +776,8 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
     let(:already_proofed) { true }
 
     it 'returns a skipped result without calling the proofer' do
-      expect(plugin.proofer).not_to receive(:proof)
-      plugin.call(
+      expect(verifier.proofer).not_to receive(:proof)
+      verifier.call(
         applicant_pii:,
         current_sp:,
         ipp_enrollment_in_progress:,

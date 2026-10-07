@@ -45,6 +45,6 @@ class AamvaTest
   end
 
   def build_proofer
-    Proofing::Resolution::Plugins::AamvaPlugin.new.send(:proofer)
+    DocAuth::Aamva::Verifier.new.send(:proofer)
   end
 end

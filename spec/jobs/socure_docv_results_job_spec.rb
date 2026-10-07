@@ -28,7 +28,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:historical_attempts_api_enabled) { false }
   let(:selfie) { false }
   let(:mrz_response) { 'YES' }
-  let(:aamva_proofer) { instance_double(Proofing::Resolution::Plugins::AamvaPlugin) }
+  let(:aamva_verifier) { instance_double(DocAuth::Aamva::Verifier) }
   let(:rate_limiter) do
     RateLimiter.new(user: document_capture_session.user, rate_limit_type: :idv_doc_auth)
   end
@@ -92,8 +92,8 @@ RSpec.describe SocureDocvResultsJob do
       .to_return_json({ status: 200, body: { response: mrz_response } })
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
     allow(FraudOps::Tracker).to receive(:new).and_return(fraud_opt_tracker)
-    allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new).and_return(aamva_proofer)
-    allow(aamva_proofer).to receive(:call).and_return(
+    allow(DocAuth::Aamva::Verifier).to receive(:new).and_return(aamva_verifier)
+    allow(aamva_verifier).to receive(:call).and_return(
       DocAuth::StateIdResult.new(success: true, vendor_name: 'state_id:aamva'),
     )
 
@@ -296,7 +296,7 @@ RSpec.describe SocureDocvResultsJob do
           let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
 
           it 'doc auth fails' do
-            expect(Proofing::Resolution::Plugins::AamvaPlugin).not_to receive(:new)
+            expect(DocAuth::Aamva::Verifier).not_to receive(:new)
             perform
 
             document_capture_session.reload
@@ -1169,7 +1169,7 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         before do
-          allow(aamva_proofer).to receive(:call).with(
+          allow(aamva_verifier).to receive(:call).with(
             applicant_pii: {
               address1: '123 Example Street',
               address2: 'Apt 4',
@@ -1203,7 +1203,7 @@ RSpec.describe SocureDocvResultsJob do
 
         context 'when aamva check is successful' do
           it 'doc auth succeeds' do
-            expect(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new).and_call_original
+            expect(DocAuth::Aamva::Verifier).to receive(:new).and_call_original
             perform
 
             document_capture_session.reload
@@ -1308,7 +1308,7 @@ RSpec.describe SocureDocvResultsJob do
           let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
           let(:reason_codes) { ['mdl_pass'] }
           it 'stores the result from the Socure DocV request' do
-            expect(Proofing::Resolution::Plugins::AamvaPlugin).not_to receive(:new)
+            expect(DocAuth::Aamva::Verifier).not_to receive(:new)
 
             perform
 

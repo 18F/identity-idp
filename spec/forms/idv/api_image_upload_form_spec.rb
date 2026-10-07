@@ -230,11 +230,11 @@ RSpec.describe Idv::ApiImageUploadForm do
   end
 
   describe '#submit' do
-    let(:aamva_proofer) { instance_double(Proofing::Resolution::Plugins::AamvaPlugin) }
+    let(:aamva_verifier) { instance_double(DocAuth::Aamva::Verifier) }
 
     before do
-      allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new).and_return(aamva_proofer)
-      allow(aamva_proofer).to receive(:call).and_return(
+      allow(DocAuth::Aamva::Verifier).to receive(:new).and_return(aamva_verifier)
+      allow(aamva_verifier).to receive(:call).and_return(
         DocAuth::StateIdResult.new(
           success: true,
           vendor_name: Idp::Constants::Vendors::AAMVA,
@@ -281,7 +281,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         end
 
         before do
-          allow(aamva_proofer).to receive(:call).with(
+          allow(aamva_verifier).to receive(:call).with(
             applicant_pii:,
             current_sp: service_provider,
             ipp_enrollment_in_progress: false,
@@ -315,7 +315,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         end
 
         before do
-          allow(aamva_proofer).to receive(:call).with(
+          allow(aamva_verifier).to receive(:call).with(
             applicant_pii:,
             current_sp: service_provider,
             ipp_enrollment_in_progress: false,

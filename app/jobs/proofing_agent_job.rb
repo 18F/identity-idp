@@ -355,7 +355,7 @@ class ProofingAgentJob < ApplicationJob
   end
 
   def call_aamva_verification(applicant_pii:, current_sp:, timer:)
-    aamva_plugin.call(
+    aamva_verifier.call(
       applicant_pii:,
       current_sp:,
       ipp_enrollment_in_progress: PA_BEHAVES_LIKE_IPP,
@@ -398,8 +398,8 @@ class ProofingAgentJob < ApplicationJob
     end
   end
 
-  def aamva_plugin
-    @aamva_plugin ||= Proofing::Resolution::Plugins::AamvaPlugin.new
+  def aamva_verifier
+    @aamva_verifier ||= DocAuth::Aamva::Verifier.new
   end
 
   def analytics
