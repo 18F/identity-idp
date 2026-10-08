@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Proofing
+module DocAuth
   module Mock
     class IdMockClient
       SUPPORTED_DOCUMENT_TYPES_RECEIVED = %w[

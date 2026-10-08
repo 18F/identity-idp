@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::Mock::IdMockClient do
+RSpec.describe DocAuth::Mock::IdMockClient do
   let(:transaction_id) { 'state-id-mock-transaction-id-456' }
 
   describe '#proof' do

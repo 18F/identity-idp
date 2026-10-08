@@ -98,7 +98,7 @@ module DocAuth
       def proofer
         @proofer ||=
           if IdentityConfig.store.proofer_mock_fallback
-            Proofing::Mock::IdMockClient.new
+            DocAuth::Mock::IdMockClient.new
           else
             DocAuth::Aamva::Proofer.new(
               auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,

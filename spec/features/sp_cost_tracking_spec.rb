@@ -27,7 +27,7 @@ RSpec.feature 'SP Costing', :email do
     expect_sp_cost_type(2, 2, 'acuant_result')
     expect_sp_cost_type(
       3, 2, 'aamva',
-      transaction_id: Proofing::Mock::IdMockClient::TRANSACTION_ID
+      transaction_id: DocAuth::Mock::IdMockClient::TRANSACTION_ID
     )
     expect_sp_cost_type(4, 2, 'threatmetrix')
     expect_sp_cost_type(
