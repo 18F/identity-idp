@@ -48,7 +48,7 @@ module NDS
           value: MarketingSite.privacy_act_statement_url,
         },
         {
-          label: t('links.accessibility_statement'),
+          label: t('links.accessibility_and_languages'),
           value: MarketingSite.accessibility_statement_url,
         },
       ]
