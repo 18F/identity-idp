@@ -4,7 +4,6 @@ RSpec.describe DocAuth::Aamva::Verifier do
   let(:analytics) { FakeAnalytics.new }
   let(:user_uuid) { 'abcd-1234' }
   let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(uuid: user_uuid) }
-  let(:already_proofed) { false }
   let(:current_sp) { build(:service_provider) }
   let(:ipp_enrollment_in_progress) { false }
   let(:analytics_arguments) { {} }
@@ -716,7 +715,7 @@ RSpec.describe DocAuth::Aamva::Verifier do
 
   describe '#biographical_info' do
     subject(:biographical_info) do
-      plugin.biographical_info(applicant_pii)
+      described_class.new.biographical_info(applicant_pii)
     end
 
     context 'when the applicant has a document type' do
@@ -768,24 +767,6 @@ RSpec.describe DocAuth::Aamva::Verifier do
       it 'reports nil rather than omitting the key' do
         expect(biographical_info).to have_key(:document_type_received)
         expect(biographical_info[:document_type_received]).to be_nil
-      end
-    end
-  end
-
-  context 'when already_proofed is true' do
-    let(:already_proofed) { true }
-
-    it 'returns a skipped result without calling the proofer' do
-      expect(verifier.proofer).not_to receive(:proof)
-      verifier.call(
-        applicant_pii:,
-        current_sp:,
-        ipp_enrollment_in_progress:,
-        timer: JobHelpers::Timer.new,
-        already_proofed:,
-      ).tap do |result|
-        expect(result.success?).to eql(true)
-        expect(result.vendor_name).to eql(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
       end
     end
   end

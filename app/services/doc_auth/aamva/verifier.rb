@@ -19,11 +19,10 @@ module DocAuth
         ipp_enrollment_in_progress:,
         timer:,
         analytics: nil,
-        already_proofed: false,
         analytics_arguments: {}
       )
         @analytics_arguments = analytics_arguments
-        return skipped_result if passport_applicant?(applicant_pii) || already_proofed
+        return skipped_result if passport_applicant?(applicant_pii)
 
         if !aamva_supports_state_id_jurisdiction?(applicant_pii)
           return process_unsupported_jurisdiction_result(
