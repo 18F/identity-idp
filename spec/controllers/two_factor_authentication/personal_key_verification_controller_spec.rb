@@ -230,13 +230,16 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       it 'does not issue a new personal key for a personal key MFA user' do
         user = create(:user, :with_phone)
         raw_key = PersonalKeyGenerator.new(user).generate!
-        old_key = user.reload.encrypted_recovery_code_digest_multi_region
         stub_sign_in_before_2fa(user)
 
         post :create, params: { personal_key_form: { personal_key: raw_key } }
         user.reload
 
-        expect(user.encrypted_recovery_code_digest_multi_region).to eq old_key
+        # The personal key is consumed on use: no new key is issued and the
+        # existing recovery code is cleared.
+        expect(user.has_recovery_code?).to eq(false)
+        expect(user.encrypted_recovery_code_digest).to be_blank
+        expect(user.encrypted_recovery_code_digest_multi_region).to be_blank
       end
 
       it 'redirects a personal key MFA user to authentication method setup' do

@@ -76,8 +76,13 @@ module TwoFactorAuthentication
     end
 
     def remove_personal_key
-      # for now we will regenerate a key and not show it to them so retire personal key page shows
-      unless skip_personal_key_regeneration?
+      if skip_personal_key_regeneration?
+        # During Phase 1 of personal key MFA deprecation we consume the personal
+        # key on use: it is neither shown again nor regenerated, and the existing
+        # recovery code is cleared so the user can no longer use or manage it.
+        current_user.remove_recovery_code
+      else
+        # for now we will regenerate a key and not show it to them so retire personal key page shows
         PersonalKeyGenerator.new(current_user).generate!
       end
       user_session.delete(:personal_key)
