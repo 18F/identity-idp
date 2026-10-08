@@ -31,6 +31,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       selfie_status: :none,
       pii: { first_name: 'Testy', last_name: 'Testerson', document_type_received: },
       attention_with_barcode: false,
+      aamva_status: doc_auth_success ? :passed : :not_processed,
     )
   end
 
@@ -190,6 +191,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
               redirect_url: idv_socure_document_capture_update_url,
               language: expected_language,
               liveness_checking_required: false,
+              error_redirect_url: nil,
             )
         end
 
@@ -281,6 +283,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                 redirect_url: idv_socure_document_capture_update_url,
                 language: expected_language,
                 liveness_checking_required: false,
+                error_redirect_url: nil,
               )
           end
 
@@ -316,6 +319,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                 redirect_url: idv_socure_document_capture_update_url,
                 language: expected_language,
                 liveness_checking_required: false,
+                error_redirect_url: nil,
               )
           end
 
@@ -351,6 +355,9 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                 redirect_url: idv_socure_document_capture_update_url,
                 language: expected_language,
                 liveness_checking_required: false,
+                error_redirect_url: idv_socure_document_capture_errors_url(
+                  error_code: :mdl_not_found,
+                ),
               )
           end
 
@@ -367,6 +374,12 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                       },
                       language: :en,
                       useCaseKey: idv_socure_docv_flow_id_only,
+                      errorRedirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_errors_url(
+                          error_code: :mdl_not_found,
+                        ),
+                      },
                     },
                     customerUserId: user.uuid,
                   },
@@ -393,6 +406,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
               redirect_url: idv_socure_document_capture_update_url,
               language: expected_language,
               liveness_checking_required: true,
+              error_redirect_url: nil,
             )
         end
 
@@ -427,6 +441,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                 redirect_url: idv_socure_document_capture_update_url,
                 language: expected_language,
                 liveness_checking_required: true,
+                error_redirect_url: nil,
               )
           end
 
@@ -462,6 +477,9 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                 redirect_url: idv_socure_document_capture_update_url,
                 language: expected_language,
                 liveness_checking_required: true,
+                error_redirect_url: idv_socure_document_capture_errors_url(
+                  error_code: :mdl_not_found,
+                ),
               )
           end
 
@@ -478,6 +496,12 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                       },
                       language: :en,
                       useCaseKey: idv_socure_docv_flow_id_only,
+                      errorRedirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_errors_url(
+                          error_code: :mdl_not_found,
+                        ),
+                      },
                     },
                     customerUserId: user.uuid,
                   },

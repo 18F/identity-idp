@@ -32,6 +32,7 @@ RSpec.describe OpenidConnectTokenForm do
 
   let(:nonce) { SecureRandom.hex }
   let(:code_challenge) { nil }
+  let(:private_key_jwt_pkce) { false }
   let(:jwt_payload) do
     {
       iss: client_id,
@@ -58,6 +59,7 @@ RSpec.describe OpenidConnectTokenForm do
         rails_session_id: SecureRandom.hex,
         ial: 1,
         code_challenge: code_challenge,
+        private_key_jwt_pkce: private_key_jwt_pkce,
       )
   end
 
@@ -310,12 +312,52 @@ RSpec.describe OpenidConnectTokenForm do
       end
     end
 
+    context 'with existing private_key_jwt challenge behavior' do
+      let(:code_challenge) { 'previously-ignored-challenge' }
+
+      before { service_provider.update!(pkce: false) }
+
+      [nil, '', 'unrelated-verifier'].each do |verifier|
+        context "with verifier #{verifier.inspect}" do
+          let(:code_verifier) { verifier }
+
+          it 'accepts the client assertion without enforcing the challenge' do
+            expect(form.submit.success?).to eq(true)
+          end
+        end
+      end
+    end
+
+    context 'with a legacy private_key_jwt code after enabling the flag' do
+      let(:code_challenge) { 'previously-ignored-challenge' }
+
+      before do
+        service_provider.update!(pkce: false)
+        allow(IdentityConfig.store).to receive(
+          :openid_connect_private_key_jwt_pkce_enabled,
+        ).and_return(true)
+      end
+
+      it 'does not require a verifier for a code issued without combined PKCE' do
+        expect(form.submit.success?).to eq(true)
+      end
+    end
+
+    context 'when a prefix is added to a legacy code' do
+      let(:code) { 'pkce_' + identity.session_uuid }
+
+      it 'rejects the altered code' do
+        expect(valid?).to eq(false)
+        expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+      end
+    end
+
     context 'PKCE' do
       let(:client_assertion) { nil }
       let(:client_assertion_type) { nil }
 
       let(:code_challenge) { Digest::SHA256.urlsafe_base64digest(code_verifier) }
-      let(:code_verifier) { SecureRandom.urlsafe_base64(32) }
+      let(:code_verifier) { SecureRandom.hex }
 
       context 'with valid params' do
         it 'is true, and has no errors' do
@@ -360,7 +402,7 @@ RSpec.describe OpenidConnectTokenForm do
       end
 
       context 'with a code_challenge does not have base64 padding' do
-        let(:code_verifier) { SecureRandom.urlsafe_base64(32) }
+        let(:code_verifier) { SecureRandom.uuid }
         let(:code_challenge) { Digest::SHA256.urlsafe_base64digest(code_verifier) }
 
         it 'is valid' do
@@ -374,6 +416,7 @@ RSpec.describe OpenidConnectTokenForm do
     end
 
     context 'private_key_jwt with PKCE' do
+      let(:private_key_jwt_pkce) { true }
       let(:code_verifier) { SecureRandom.urlsafe_base64(32) }
       let(:code_challenge) { Digest::SHA256.urlsafe_base64digest(code_verifier) }
 
@@ -382,6 +425,27 @@ RSpec.describe OpenidConnectTokenForm do
       it 'requires both proofs and succeeds even with admission disabled' do
         expect(IdentityConfig.store.openid_connect_private_key_jwt_pkce_enabled).to eq(false)
         expect(valid?).to eq(true)
+      end
+
+      context 'when the code prefix is removed' do
+        let(:code) { identity.session_uuid.delete_prefix('pkce_') }
+
+        it 'rejects the altered code without consuming the original' do
+          original_code = identity.session_uuid
+          expect(form.submit.success?).to eq(false)
+          expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+          expect(form.response).not_to have_key(:access_token)
+          expect(identity.reload.session_uuid).to eq(original_code)
+        end
+      end
+
+      context 'when the code prefix is changed' do
+        let(:code) { identity.session_uuid.sub('pkce_', 'changed_') }
+
+        it 'rejects the altered code' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+        end
       end
 
       context 'without an assertion' do
@@ -449,6 +513,7 @@ RSpec.describe OpenidConnectTokenForm do
       end
 
       context 'with a legacy integration and no assertion' do
+        let(:private_key_jwt_pkce) { false }
         before { service_provider.update!(pkce: nil) }
         let(:client_assertion) { nil }
         let(:client_assertion_type) { nil }
@@ -459,6 +524,7 @@ RSpec.describe OpenidConnectTokenForm do
       end
 
       context 'with a legacy integration and an invalid assertion' do
+        let(:private_key_jwt_pkce) { false }
         before { service_provider.update!(pkce: nil) }
         let(:client_assertion) { 'invalid' }
 
@@ -479,7 +545,7 @@ RSpec.describe OpenidConnectTokenForm do
       context 'with no stored challenge' do
         let(:code_challenge) { nil }
 
-        it 'rejects an unsolicited verifier to prevent downgrade' do
+        it 'rejects a marked transaction whose challenge is missing' do
           expect(valid?).to eq(false)
           expect(form.response).to include(error: 'invalid_grant')
         end
@@ -527,7 +593,6 @@ RSpec.describe OpenidConnectTokenForm do
           user_id: user.uuid,
           code_digest: Digest::SHA256.hexdigest(code),
           code_verifier_present: false,
-          code_challenge_present: false,
           service_provider_pkce: nil,
           ial: 1,
           integration_errors: nil,
@@ -564,7 +629,6 @@ RSpec.describe OpenidConnectTokenForm do
           user_id: user.uuid,
           code_digest: Digest::SHA256.hexdigest(code),
           code_verifier_present: false,
-          code_challenge_present: false,
           service_provider_pkce: nil,
           ial: 1,
           integration_errors: {

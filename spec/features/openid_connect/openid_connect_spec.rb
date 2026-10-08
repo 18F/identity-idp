@@ -626,7 +626,7 @@ RSpec.describe 'OpenID Connect' do
       .and_return([client_id])
     state = SecureRandom.hex
     nonce = SecureRandom.hex
-    code_verifier = SecureRandom.urlsafe_base64(32)
+    code_verifier = SecureRandom.hex
     code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier)
 
     _user = user_with_2fa
@@ -752,61 +752,7 @@ RSpec.describe 'OpenID Connect' do
       client_id = 'urn:gov:gsa:openidconnect:test'
       state = SecureRandom.hex
       nonce = SecureRandom.hex
-      code_verifier = SecureRandom.urlsafe_base64(32)
-      code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier)
-      user = user_with_2fa
-
-      link_identity(user, build(:service_provider, issuer: client_id))
-      user.identities.last.update!(verified_attributes: ['email'])
-
-      visit openid_connect_authorize_path(
-        client_id: client_id,
-        response_type: 'code',
-        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-        scope: 'openid email',
-        redirect_uri: 'gov.gsa.openidconnect.test://result',
-        state: state,
-        prompt: 'select_account',
-        nonce: nonce,
-        code_challenge: code_challenge,
-        code_challenge_method: 'S256',
-      )
-
-      _user = sign_in_live_with_2fa(user)
-      expect(page.html).to_not include(code_challenge)
-
-      click_button t('webauthn_platform_recommended.skip')
-
-      redirect_uri = URI(oidc_redirect_url)
-      redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
-
-      expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
-      expect(redirect_params[:state]).to eq(state)
-
-      code = redirect_params[:code]
-      expect(code).to be_present
-
-      page.driver.post api_openid_connect_token_path,
-                       grant_type: 'authorization_code',
-                       code: code,
-                       code_verifier: code_verifier
-
-      expect(page.status_code).to eq(200)
-      token_response = JSON.parse(page.body).with_indifferent_access
-
-      id_token = token_response[:id_token]
-      expect(id_token).to be_present
-    end
-
-    it 'requires both proofs for private_key_jwt and PKCE, including after rollback' do
-      client_id = 'urn:gov:gsa:openidconnect:test'
-      ServiceProvider.find_by!(issuer: client_id).update!(pkce: false)
-      allow(IdentityConfig.store).to receive(
-        :openid_connect_private_key_jwt_pkce_enabled,
-      ).and_return(true)
-      state = SecureRandom.hex
-      nonce = SecureRandom.hex
-      code_verifier = SecureRandom.urlsafe_base64(32)
+      code_verifier = SecureRandom.hex
       code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier)
       user = user_with_2fa
 
@@ -840,40 +786,101 @@ RSpec.describe 'OpenID Connect' do
       code = redirect_params[:code]
       expect(code).to be_present
 
-      expect(user.identities.last.code_challenge).to eq(code_challenge)
-      allow(IdentityConfig.store).to receive(
-        :openid_connect_private_key_jwt_pkce_enabled,
-      ).and_return(false)
-
-      private_key = OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read)
-      assertion = JWT.encode(
-        { iss: client_id,
-          sub: client_id,
-          aud: api_openid_connect_token_url,
-          exp: 5.minutes.from_now.to_i,
-          jti: SecureRandom.hex },
-        private_key,
-        'RS256',
-      )
-      token_params = {
-        grant_type: 'authorization_code',
-        code: code,
-        client_assertion: assertion,
-        client_assertion_type: OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE,
-      }
-
-      page.driver.post api_openid_connect_token_path, token_params
-      expect(page.status_code).to eq(400)
-      expect(JSON.parse(page.body)).to include('error' => 'invalid_grant')
-
       page.driver.post api_openid_connect_token_path,
-                       token_params.merge(code_verifier: code_verifier)
+                       grant_type: 'authorization_code',
+                       code: code,
+                       code_verifier: code_verifier
 
       expect(page.status_code).to eq(200)
       token_response = JSON.parse(page.body).with_indifferent_access
 
       id_token = token_response[:id_token]
       expect(id_token).to be_present
+    end
+
+    [[false, false], [false, true], [true, true], [true, false]].each do |enabled, token_enabled|
+      context "with optional PKCE flag #{enabled} at authorization and #{token_enabled} at token" do
+        it 'preserves the issued authentication requirements across flag changes' do
+          client_id = 'urn:gov:gsa:openidconnect:test'
+          ServiceProvider.find_by!(issuer: client_id).update!(pkce: false)
+          allow(IdentityConfig.store).to receive(
+            :openid_connect_private_key_jwt_pkce_enabled,
+          ).and_return(enabled)
+          state = SecureRandom.hex
+          nonce = SecureRandom.hex
+          code_verifier = SecureRandom.urlsafe_base64(32)
+          code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier)
+          user = user_with_2fa
+
+          link_identity(user, build(:service_provider, issuer: client_id))
+          user.identities.last.update!(verified_attributes: ['email'])
+
+          visit openid_connect_authorize_path(
+            client_id: client_id,
+            response_type: 'code',
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            scope: 'openid email',
+            redirect_uri: 'gov.gsa.openidconnect.test://result',
+            state: state,
+            prompt: 'select_account',
+            nonce: nonce,
+            code_challenge: code_challenge,
+            code_challenge_method: 'S256',
+          )
+
+          sign_in_live_with_2fa(user)
+          expect(page.html).to_not include(code_challenge)
+
+          click_button t('webauthn_platform_recommended.skip')
+
+          redirect_uri = URI(oidc_redirect_url)
+          redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
+
+          expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
+          expect(redirect_params[:state]).to eq(state)
+
+          code = redirect_params[:code]
+          expect(code).to be_present
+
+          expect(user.identities.last.code_challenge).to eq(code_challenge)
+          expect(code.start_with?('pkce_')).to eq(enabled)
+          allow(IdentityConfig.store).to receive(
+            :openid_connect_private_key_jwt_pkce_enabled,
+          ).and_return(token_enabled)
+
+          private_key = OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read)
+          assertion = JWT.encode(
+            { iss: client_id,
+              sub: client_id,
+              aud: api_openid_connect_token_url,
+              exp: 5.minutes.from_now.to_i,
+              jti: SecureRandom.hex },
+            private_key,
+            'RS256',
+          )
+          token_params = {
+            grant_type: 'authorization_code',
+            code: code,
+            client_assertion: assertion,
+            client_assertion_type: OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE,
+          }
+
+          page.driver.post api_openid_connect_token_path, token_params
+          if enabled
+            expect(page.status_code).to eq(400)
+            expect(JSON.parse(page.body)).to include('error' => 'invalid_grant')
+
+            page.driver.post api_openid_connect_token_path,
+                             token_params.merge(code_verifier: code_verifier)
+          end
+
+          expect(page.status_code).to eq(200)
+          token_response = JSON.parse(page.body).with_indifferent_access
+
+          id_token = token_response[:id_token]
+          expect(id_token).to be_present
+        end
+      end
     end
 
     it 'returns the most recent nonce when there are multiple authorize calls' do
@@ -885,7 +892,7 @@ RSpec.describe 'OpenID Connect' do
 
       state1 = SecureRandom.hex
       nonce1 = SecureRandom.hex
-      code_verifier1 = SecureRandom.urlsafe_base64(32)
+      code_verifier1 = SecureRandom.hex
       code_challenge1 = Digest::SHA256.urlsafe_base64digest(code_verifier1)
 
       visit openid_connect_authorize_path(
@@ -903,7 +910,7 @@ RSpec.describe 'OpenID Connect' do
 
       state2 = SecureRandom.hex
       nonce2 = SecureRandom.hex
-      code_verifier2 = SecureRandom.urlsafe_base64(32)
+      code_verifier2 = SecureRandom.hex
       code_challenge2 = Digest::SHA256.urlsafe_base64digest(code_verifier2)
 
       visit openid_connect_authorize_path(
@@ -1241,7 +1248,7 @@ RSpec.describe 'OpenID Connect' do
   )
     state = SecureRandom.hex
     nonce = SecureRandom.hex
-    code_verifier = SecureRandom.urlsafe_base64(32)
+    code_verifier = SecureRandom.hex
     code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier)
 
     link_identity(user, build(:service_provider, issuer: client_id))

@@ -212,6 +212,8 @@ RSpec.describe SignUp::EmailConfirmationsController do
 
       get :create, params: { confirmation_token: 'foo' }
 
+      expect(subject.session[:sign_in_flow]).to eq(:create_account)
+
       expect(@analytics).to have_logged_event(
         'User Registration: Email Confirmation',
         success: true,

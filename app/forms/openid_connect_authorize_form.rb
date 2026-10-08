@@ -58,11 +58,11 @@ class OpenidConnectAuthorizeForm
 
   validates :response_type, inclusion: { in: %w[code] }
   validates :prompt, presence: true, inclusion: { in: %w[create login select_account] }
-  validate :validate_pkce_parameter_pair
-  validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :pkce_requested?
+  validates :code_challenge_method, inclusion: { in: %w[S256] },
+                                    if: :validate_code_challenge_method?
+  validate :validate_pkce_parameter_pair, if: :private_key_jwt_pkce_enabled?
   validates :code_challenge, format: { with: /\A[A-Za-z0-9_-]{43}\z/ },
-                             if: :pkce_requested?
-  validate :validate_private_key_jwt_pkce_enabled
+                             if: :private_key_jwt_pkce_requested?
 
   validate :validate_acr_values
   validate :validate_client_id
@@ -125,6 +125,7 @@ class OpenidConnectAuthorizeForm
       requested_aal_value: requested_aal_value,
       scope: scope.join(' '),
       code_challenge: code_challenge,
+      private_key_jwt_pkce: private_key_jwt_pkce_requested?,
       email_address_id: email_address_id,
     )
   end
@@ -157,6 +158,15 @@ class OpenidConnectAuthorizeForm
 
   attr_reader :identity, :success
 
+  def private_key_jwt_sp?
+    # Missing service providers are rejected by validate_client_id.
+    service_provider&.pkce == false
+  end
+
+  def private_key_jwt_pkce_enabled?
+    IdentityConfig.store.openid_connect_private_key_jwt_pkce_enabled && private_key_jwt_sp?
+  end
+
   def pkce_parameters_provided?
     [code_challenge, code_challenge_method].compact.present?
   end
@@ -165,9 +175,13 @@ class OpenidConnectAuthorizeForm
     code_challenge.present? && code_challenge_method.present?
   end
 
-  def private_key_jwt_sp?
-    # Missing service providers are rejected by validate_client_id.
-    service_provider&.pkce == false
+  def private_key_jwt_pkce_requested?
+    private_key_jwt_pkce_enabled? && pkce_requested?
+  end
+
+  def validate_code_challenge_method?
+    # Preserve the original truthiness check for disabled and legacy flows, including empty strings.
+    private_key_jwt_pkce_enabled? ? pkce_requested? : !!code_challenge
   end
 
   def validate_pkce_parameter_pair
@@ -178,18 +192,6 @@ class OpenidConnectAuthorizeForm
       :base,
       t('openid_connect.authorization.errors.pkce_parameter_pair'),
       type: :pkce_parameter_pair,
-    )
-  end
-
-  def validate_private_key_jwt_pkce_enabled
-    return unless private_key_jwt_sp?
-    return unless pkce_requested?
-    return if IdentityConfig.store.openid_connect_private_key_jwt_pkce_enabled
-
-    errors.add(
-      :code_challenge,
-      t('openid_connect.authorization.errors.pkce_not_enabled'),
-      type: :pkce_not_enabled,
     )
   end
 
@@ -328,7 +330,7 @@ class OpenidConnectAuthorizeForm
   def validate_privileges
     if (identity_proofing_requested? && !identity_proofing_service_provider?) ||
        (ialmax_requested? && !ialmax_allowed_for_sp?) ||
-       (facial_match_ial_requested? && !service_provider.facial_match_ial_allowed?)
+       (facial_match_ial_requested? && !identity_proofing_service_provider?)
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_auth'),
         type: :no_auth

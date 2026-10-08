@@ -58,8 +58,9 @@ class OpenidConnectTokenForm
         expires_in: @ttl,
         id_token: id_token_builder.id_token,
       }
-    elsif errors.include?(:code_verifier)
-      { error: 'invalid_grant', error_description: errors.to_a.join(' ') }
+    elsif private_key_jwt_pkce? && errors.include?(:code_verifier)
+      { error: 'invalid_grant',
+        error_description: t('openid_connect.token.errors.invalid_code_verifier') }
     else
       { error: errors.to_a.join(' ') }
     end
@@ -81,15 +82,20 @@ class OpenidConnectTokenForm
       .order(updated_at: :desc).first
   end
 
+  def private_key_jwt_pkce?
+    # Match the complete code before interpreting its prefix; never strip it for lookup.
+    # Use the submitted code because successful redemption clears identity.session_uuid.
+    identity.present? && code.start_with?(IdentityLinker::PRIVATE_KEY_JWT_PKCE_CODE_PREFIX)
+  end
+
   def pkce_verification_required?
-    # Enforce previously issued challenges even when admission of new PKCE requests is disabled.
-    !code_verifier.nil? || identity&.code_challenge.present?
+    private_key_jwt_pkce? ||
+      (pkce_authentication_allowed? &&
+        (code_verifier.present? || identity.try(:code_challenge).present?))
   end
 
   def client_assertion_required?
-    service_provider&.pkce == false ||
-      (service_provider&.pkce.nil? &&
-        client_assertion_provided?)
+    private_key_jwt_pkce? || (!service_provider&.pkce && client_assertion_provided?)
   end
 
   def client_assertion_provided?
@@ -124,7 +130,7 @@ class OpenidConnectTokenForm
   end
 
   def validate_code_verifier
-    if valid_code_verifier? && valid_code_challenge? && code_verifier_matches_challenge?
+    if valid_code_verifier? && expected_code_challenge && code_verifier_matches_challenge?
       return
     end
 
@@ -134,19 +140,17 @@ class OpenidConnectTokenForm
   end
 
   def valid_code_verifier?
+    # Existing PKCE integrations retain their previous verifier validation.
+    return true unless private_key_jwt_pkce?
     code_verifier.is_a?(String) && code_verifier.match?(/\A[A-Za-z0-9._~-]{43,128}\z/)
   end
 
-  def valid_code_challenge?
-    identity&.code_challenge.present? && expected_code_challenge.present?
-  end
-
   def expected_code_challenge
-    remove_base64_padding(identity&.code_challenge)
+    remove_base64_padding(identity.try(:code_challenge))
   end
 
   def code_verifier_matches_challenge?
-    given_code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier)
+    given_code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier.to_s)
     ActiveSupport::SecurityUtils.secure_compare(expected_code_challenge, given_code_challenge)
   end
 
@@ -224,7 +228,6 @@ class OpenidConnectTokenForm
       user_id: identity&.user&.uuid,
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
       code_verifier_present: code_verifier.present?,
-      code_challenge_present: identity&.code_challenge.present?,
       service_provider_pkce: service_provider&.pkce,
       ial: identity&.ial,
       integration_errors:,

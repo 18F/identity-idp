@@ -2299,7 +2299,6 @@ module AnalyticsEvents
   # @option proofing_results [Hash] context Full context of the proofing process
   # @option proofing_results [String] context.device_profiling_adjudication_reason Reason code describing how we arrived at the device profiling result
   # @option proofing_results [String] context.resolution_adjudication_reason Reason code describing how we arrived at the identity resolution result
-  # @option proofing_results [Boolean] context.should_proof_state_id Whether we need to verify the user's PII with AAMVA. False if the user is using a document from a non-AAMVA jurisdiction
   # @option proofing_results [Hash] context.stages Object holding details about each stage of the proofing process
   # @option proofing_results [Hash] context.stages.resolution Object holding details about the call made to the identity resolution vendor
   # @option proofing_results [Boolean] context.stages.resolution.success Whether identity resolution proofing was successful
@@ -6067,6 +6066,7 @@ module AnalyticsEvents
   # @param [String] socure_status Socure's status value for internal errors on their side.
   # @param [String] socure_msg Socure's status message for interal errors on their side.
   # @param [String] use_case_key name of requested DocV flow
+  # @param [Hash] error_redirect hash for error redirect (url and method)
   # The request for socure verification was sent
   def idv_socure_document_request_submitted(
     success:,
@@ -6093,6 +6093,7 @@ module AnalyticsEvents
     socure_status: nil,
     socure_msg: nil,
     use_case_key: nil,
+    error_redirect: nil,
     **extra
   )
     track_event(
@@ -6121,6 +6122,7 @@ module AnalyticsEvents
       socure_status:,
       socure_msg:,
       use_case_key:,
+      error_redirect:,
       **extra,
     )
   end
@@ -6423,6 +6425,8 @@ module AnalyticsEvents
   # @param [Boolean] aamva_checked Whether the aamva API request evaluated a state ID.
   # @param [Integer, nil] birth_year The birth year listed on the ID.
   # @param [Boolean, nil] bypass_exception Whether the aamva exception was bypassed
+  # @param [String, nil] document_type_received The document type the AAMVA skip guard
+  #   evaluated, e.g. "drivers_license", "state_id_card", "passport".
   # @param [String, nil] state The state on the ID.
   # @param [String, nil] state_id_jurisdiction The state that issued the ID.
   # @param [String, nil] state_id_number A string describing the format of the ID number.
@@ -6444,6 +6448,7 @@ module AnalyticsEvents
     aamva_checked:,
     birth_year: nil,
     bypass_exception: nil,
+    document_type_received: nil,
     state: nil,
     state_id_jurisdiction: nil,
     state_id_number: nil,
@@ -6467,6 +6472,7 @@ module AnalyticsEvents
       aamva_checked:,
       birth_year:,
       bypass_exception:,
+      document_type_received:,
       state:,
       state_id_jurisdiction:,
       state_id_number:,
@@ -7516,7 +7522,6 @@ module AnalyticsEvents
   # @param [String] code_digest hash of "code" param
   # @param [Integer, nil] expires_in time to expiration of token
   # @param [Integer, nil] ial ial level of identity
-  # @param [Boolean] code_challenge_present Whether the authorization code is bound to PKCE
   # @param [Boolean] code_verifier_present Whether code verifier parameter was present
   # @param [Boolean, nil] service_provider_pkce Whether service provider is configured for PKCE. Nil
   # if the service provider is unknown.
@@ -7529,7 +7534,6 @@ module AnalyticsEvents
     ial:,
     code_verifier_present:,
     service_provider_pkce:,
-    code_challenge_present: false,
     error_details: nil,
     **extra
   )
@@ -7543,7 +7547,6 @@ module AnalyticsEvents
       expires_in:,
       ial:,
       code_verifier_present:,
-      code_challenge_present:,
       service_provider_pkce:,
       **extra,
     )
@@ -8060,6 +8063,28 @@ module AnalyticsEvents
   # place during the expected time frame
   def proofing_address_result_missing
     track_event('Proofing Address Result Missing')
+  end
+
+  # Signifies the completion of the proofing agent failure email job
+  # @param [Integer] processed_count The number of items processed during the job
+  # @param [Float] duration_sec The duration of the job in seconds
+  def proofing_agent_failure_email_job_completed(processed_count:, duration_sec:, **extra)
+    track_event(
+      :proofing_agent_failure_email_job_completed,
+      processed_count:,
+      duration_sec:,
+      **extra,
+    )
+  end
+
+  # Logs the error received when during processing
+  # @param [String] exception The message from the exception raised.
+  def proofing_agent_failure_email_job_error(exception:, **extra)
+    track_event(
+      :proofing_agent_failure_email_job_error,
+      exception:,
+      **extra,
+    )
   end
 
   # Tracks when a user triggered a rate limiter

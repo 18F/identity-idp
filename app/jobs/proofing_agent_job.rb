@@ -17,7 +17,7 @@ class ProofingAgentJob < ApplicationJob
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
-  attr_reader :document_capture_session, :proofing_components, :proofing_agent
+  attr_reader :document_capture_session, :proofing_components, :proofing_agent, :failure_email_users
 
   def perform(
     encrypted_arguments:,
@@ -39,6 +39,7 @@ class ProofingAgentJob < ApplicationJob
       transaction_id: transaction_id,
     }
     @proofing_components = {}
+    @failure_email_users = Idv::ProofingAgent::FailureEmailUserSet.new
     webhook_enqueued = false
 
     @document_capture_session = DocumentCaptureSession.find_by(uuid: transaction_id)
@@ -85,6 +86,7 @@ class ProofingAgentJob < ApplicationJob
     reason = combined_result[:reason]
 
     if success
+      failure_email_users.remove(user.uuid)
       ProofingAgent::SuccessEmailSender.new(
         user: user, analytics: analytics,
         service_provider: current_sp
@@ -95,6 +97,18 @@ class ProofingAgentJob < ApplicationJob
         correlation_id: correlation_id,
         transaction_id: transaction_id,
       )
+    elsif final_attempt
+      failure_email_users.remove(user.uuid)
+      ProofingAgent::FailureEmailSender.new(user: user, analytics: analytics).call(
+        visited_at: (document_capture_session.requested_at || Time.zone.now).iso8601,
+        reason: reason,
+        proofing_agent_id: proofing_agent_id,
+        proofing_location_id: proofing_location_id,
+        correlation_id: correlation_id,
+        transaction_id: transaction_id,
+      )
+    else
+      failure_email_users.add(user.uuid)
     end
     if webhook_url.present?
       ProofingAgentWebhookJob.perform_later(
@@ -108,17 +122,6 @@ class ProofingAgentJob < ApplicationJob
         },
       )
       webhook_enqueued = true
-    end
-
-    if !success && final_attempt
-      ProofingAgent::FailureEmailSender.new(user: user, analytics: analytics).call(
-        visited_at: (document_capture_session.requested_at || Time.zone.now).iso8601,
-        reason: reason,
-        proofing_agent_id: proofing_agent_id,
-        proofing_location_id: proofing_location_id,
-        correlation_id: correlation_id,
-        transaction_id: transaction_id,
-      )
     end
   rescue StandardError => e
     unless STORAGE_CONNECTION_ERRORS.include?(e.class)
@@ -282,7 +285,7 @@ class ProofingAgentJob < ApplicationJob
         analytics.idv_phone_confirmation_vendor_submitted(
           **{
             success: phone_precheck_body&.dig(:success),
-            vendor: phone_precheck_body&.dig(:vendor_name),
+            vendor: phone_precheck_body,
             area_code: phone_info&.dig(:area_code),
             country_code: phone_info&.dig(:country_code),
             phone_fingerprint: phone_info&.dig(:phone_fingerprint),
@@ -355,7 +358,6 @@ class ProofingAgentJob < ApplicationJob
     aamva_plugin.call(
       applicant_pii:,
       current_sp:,
-      state_id_address_resolution_result: nil,
       ipp_enrollment_in_progress: PA_BEHAVES_LIKE_IPP,
       timer:,
       doc_auth_flow: true,

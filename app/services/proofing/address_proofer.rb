@@ -4,7 +4,7 @@ module Proofing
   class AddressProofer
     class InvalidAddressVendorError < StandardError; end
 
-    attr_reader :user_uuid, :user_email
+    attr_reader :user_uuid, :user_email, :is_proofing_agent
 
     ADDRESS_VENDOR_SP_COST_TOKENS = {
       mock: :mock_address,
@@ -20,9 +20,10 @@ module Proofing
       mock: [:mock],
     }.freeze
 
-    def initialize(user_uuid:, user_email:)
+    def initialize(user_uuid:, user_email:, is_proofing_agent: false)
       @user_uuid = user_uuid
       @user_email = user_email
+      @is_proofing_agent = is_proofing_agent
     end
 
     def proof(
@@ -111,7 +112,9 @@ module Proofing
     end
 
     def address_vendors
-      if FeatureManagement.dual_vendor_check_enabled?
+      if is_proofing_agent && !FeatureManagement.dual_vendor_check_enabled?
+        [IdentityConfig.store.idv_proofing_agent_phone_vendor]
+      elsif FeatureManagement.dual_vendor_check_enabled?
         determine_dual_vendors(primary_vendor)
       else
         [primary_vendor, secondary_vendor].uniq.compact

@@ -25,6 +25,7 @@ aamva_verification_url: https://example.org:12345/verification/url
 account_creation_device_profiling: disabled
 account_creation_passkey_auto_prompt_percent: 0
 account_creation_passkey_setup_after_password_percent: 0
+account_creation_recaptcha_score_threshold: 0.0
 account_creation_tmx_processed_percent: 0
 account_reset_attempt_window_in_minutes: 1_440
 account_reset_fraud_user_wait_period_days:
@@ -46,7 +47,8 @@ allowed_client_id_in_risc_service_providers: '[]'
 allowed_create_prompt_providers: '[]'
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
-api_transaction_count_report_config: '[]'
+api_transaction_count_external_emails: '[]'
+api_transaction_count_internal_emails: '[]'
 asset_host: ''
 async_stale_job_timeout_seconds: 300
 async_wait_timeout_seconds: 60
@@ -122,8 +124,6 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_mock_dos_api: false
-doc_auth_passport_cards_enabled: false
-doc_auth_passport_cards_enabled_percent: 0
 doc_auth_passport_selfie_vendor_default: 'mock'
 doc_auth_passport_selfie_vendor_lexis_nexis_ddp_percent: 0
 doc_auth_passport_selfie_vendor_lexis_nexis_percent: 100
@@ -179,7 +179,6 @@ enable_rate_limiting: true
 enable_test_routes: true
 encrypted_document_storage_s3_bucket: 'test-bucket'
 event_disavowal_expiration_hours: 240
-facial_match_general_availability_enabled: true
 facial_match_preferred_on_connected_accounts: false
 feature_account_creation_passkey_auto_prompt: false
 feature_idv_force_gpo_verification_enabled: false
@@ -212,10 +211,9 @@ identity_pki_disabled: false
 identity_pki_local_dev: false
 identity_verification_outcomes_report_emails: '[]'
 identity_verification_outcomes_report_issuers: '[]'
-idv_aamva_at_doc_auth_enabled: false
-idv_aamva_at_doc_auth_ipp_enabled: false
 idv_aamva_bypass_exception_ids: '[]'
 idv_aamva_get_to_yes_enabled_vendors: '[]'
+idv_aamva_get_to_yes_socure_kyc_blocking_reason_codes: '[]'
 idv_aamva_split_last_name_states: '[]'
 idv_account_verified_email_campaign_id: '20241028'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
@@ -232,6 +230,7 @@ idv_clear1_api_key: ''
 idv_clear1_enabled: false
 idv_clear1_enabled_percent: 0
 idv_clear1_project_id: ''
+idv_clear1_wait_polling_timeout_seconds: 30
 idv_contact_phone_number: (844) 555-5555
 idv_doc_auth_mdl_enabled_percent: 0
 idv_failure_to_proof_oidc_state_enabled: false
@@ -247,8 +246,11 @@ idv_phone_verification_dual_vendor_check_socure_reason_codes: '[]'
 idv_proofing_agent_config: '[]'
 idv_proofing_agent_enabled: false
 idv_proofing_agent_passport_enabled: false
+idv_proofing_agent_phone_vendor: mock
 idv_proofing_agent_proof_user_with_enhanced_profile: false
 idv_proofing_agent_result_expiration_seconds: 10
+idv_proofing_agent_send_failure_email_after_min: 30
+idv_proofing_agent_send_failure_emails_cron: '*/30 * * * *'
 idv_rdp_version_default: rdp_v2
 idv_rdp_version_switching_enabled: false
 idv_rdp_version_v2_percent: 100
@@ -303,6 +305,10 @@ in_person_results_delay_in_hours: 1
 in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
 invalid_gpo_confirmation_zipcode: '00001'
+key_metrics_external_emails: '[]'
+key_metrics_internal_emails: '[]'
+key_metrics_original_external_emails: '[]'
+key_metrics_original_internal_emails: '[]'
 
 # LexisNexis #####################################################
 # Instant Verify and Phone Finder Integrations
@@ -392,6 +398,7 @@ participate_in_dap: false
 passkey_auth_ab_test_percentage: 0
 password_max_attempts: 3
 password_pepper:
+password_reset_recaptcha_score_threshold: 0.0
 personal_key_as_mfa_active: true
 phone_carrier_registration_blocklist_array: '[]'
 phone_confirmation_max_attempt_window_in_minutes: 1_440
@@ -533,9 +540,7 @@ sp_verification_demographics_report_configs: '[]'
 sp_verification_report_configs: '[]'
 state_tracking_enabled: true
 team_ada_email: ''
-team_all_login_emails: '[]'
 team_daily_fraud_metrics_emails: '[]'
-team_daily_reports_emails: '[]'
 team_monthly_fraud_metrics_emails: '[]'
 team_ursula_email: ''
 telephony_adapter: test
@@ -588,6 +593,7 @@ development:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   account_creation_device_profiling: collect_only
+  account_creation_recaptcha_score_threshold: 0.3
   account_creation_tmx_processed_percent: 100
   attribute_encryption_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
@@ -615,6 +621,7 @@ development:
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   password_pepper: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  password_reset_recaptcha_score_threshold: 0.3
   phone_recaptcha_score_threshold: 0.5
   piv_cac_verify_token_secret: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   push_notifications_enabled: true
@@ -651,7 +658,6 @@ production:
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   encrypted_document_storage_s3_bucket: ''
-  facial_match_general_availability_enabled: false
   idv_gpo_verification_enabled: false
   idv_sp_required: true
   invalid_gpo_confirmation_zipcode: ''
@@ -682,6 +688,8 @@ test:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   account_reset_fraud_user_wait_period_days: 30
+  api_transaction_count_external_emails: '["mock_api_transaction_ext@example.com"]'
+  api_transaction_count_internal_emails: '["mock_api_transaction_int@example.com"]'
   attribute_encryption_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   dashboard_api_token: 123ABC
@@ -702,6 +710,10 @@ test:
   idv_clear1_project_id: 'test-project-id'
   idv_socure_phonerisk_name_correlation_score_threshold: 0.5
   idv_socure_phonerisk_score_threshold: 0.5
+  key_metrics_external_emails: '["mock_key_metrics_ext@example.com"]'
+  key_metrics_internal_emails: '["mock_key_metrics_int@example.com"]'
+  key_metrics_original_external_emails: '["mock_key_metrics_org_ext@example.com"]'
+  key_metrics_original_internal_emails: '["mock_key_metrics_org_int@example.com"]'
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2
@@ -743,9 +755,7 @@ test:
   socure_docv_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'
   socure_idplus_base_url: 'https://sandbox.socure.test'
   team_ada_email: 'ada@example.com'
-  team_all_login_emails: '["b@example.com", "c@example.com"]'
   team_daily_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
-  team_daily_reports_emails: '["a@example.com", "d@example.com"]'
   team_monthly_fraud_metrics_emails: '["e@example.com", "f@example.com"]'
   test_ssn_allowed_list: '999999999'
   totp_code_interval: 3

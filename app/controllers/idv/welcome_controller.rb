@@ -20,7 +20,6 @@ module Idv
       @presenter = Idv::WelcomePresenter.new(
         decorated_sp_session:,
         show_sp_reproof_banner: show_sp_reproof_banner?,
-        passport_cards_supported: passport_cards_supported?,
         mdl_enabled: mdl_enabled?,
       )
       # NDS merges the agreement consent checkbox onto the welcome screen; the
@@ -41,6 +40,7 @@ module Idv
       create_document_capture_session
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
       idv_session.welcome_visited = true
+      idv_session.clear1_allowed = clear1_allowed?
 
       redirect_to idv_agreement_url
     end
@@ -70,7 +70,6 @@ module Idv
         @presenter = Idv::WelcomePresenter.new(
           decorated_sp_session:,
           show_sp_reproof_banner: show_sp_reproof_banner?,
-          passport_cards_supported: passport_cards_supported?,
           mdl_enabled: mdl_enabled?,
         )
         return render :show
@@ -123,7 +122,6 @@ module Idv
         user_id: current_user.id,
         issuer: sp_session[:issuer],
         mdl_enabled: mdl_enabled?,
-        passport_cards_supported: passport_cards_supported?,
       )
       idv_session.document_capture_session_uuid = document_capture_session.uuid
     end
@@ -144,10 +142,12 @@ module Idv
       ab_test_bucket(:DOC_AUTH_MDL, user: current_user) == :mdl_enabled
     end
 
-    def passport_cards_supported?
-      return false unless FeatureManagement.doc_auth_passport_cards_enabled?
+    def clear1_allowed?
+      @clear1_allowed ||= begin
+        return false unless IdentityConfig.store.idv_clear1_enabled
 
-      ab_test_bucket(:DOC_AUTH_PASSPORT_CARDS_ALLOWED) == :doc_auth_passport_cards_allowed
+        ab_test_bucket(:CLEAR1_ALLOWED) == :idv_clear1_allowed
+      end
     end
   end
 end

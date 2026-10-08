@@ -16,8 +16,6 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
   let(:socure_docv_webhook_repeat_endpoints) { [] }
   let(:idv_socure_reason_codes_docv_mdl) { ['mdl_code1', 'mdl_code2'] }
   let(:idv_doc_auth_mdl_enabled_percent) { 0 }
-  let(:doc_auth_passport_cards_enabled) { false }
-  let(:doc_auth_passport_cards_enabled_percent) { 0 }
 
   before do
     allow(IdentityConfig.store).to receive_messages(
@@ -41,8 +39,6 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       socure_docv_webhook_repeat_endpoints:,
       socure_docv_webhook_secret_key:,
       idv_doc_auth_mdl_enabled_percent:,
-      doc_auth_passport_cards_enabled:,
-      doc_auth_passport_cards_enabled_percent:,
     )
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return('Test SP')
     socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
@@ -416,7 +412,6 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
     context 'standard flow with aamva check enabled' do
       before do
         allow(IdentityConfig.store).to receive_messages(
-          idv_aamva_at_doc_auth_enabled: true,
           proofer_mock_fallback: false,
         )
         visit_idp_from_oidc_sp_with_ial2
@@ -726,8 +721,6 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         end
 
         context 'when passport card is submitted' do
-          let(:doc_auth_passport_cards_enabled) { true }
-          let(:doc_auth_passport_cards_enabled_percent) { 100 }
           let(:docv_verifiction_document_type) { :passport_card }
 
           it 'proceeds to the next page with valid info' do

@@ -17,7 +17,15 @@
         input_html: { autocorrect: 'off',
                       aria: { describedby: 'email-description' } },
       ) %>
-  <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
+  <% if FeatureManagement.password_reset_recaptcha_enabled? || IdentityConfig.store.recaptcha_mock_validator %>
+    <%= render CaptchaSubmitButtonComponent.new(
+          form: f,
+          action: PasswordResetRecaptchaForm::RECAPTCHA_ACTION,
+          class: 'display-block margin-y-5',
+        ).with_content(t('forms.buttons.continue')) %>
+  <% else %>
+    <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
+  <% end %>
 <% end %>
 
 <%= render TroubleshootingOptionsComponent.new do |c| %>

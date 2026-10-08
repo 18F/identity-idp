@@ -12,15 +12,16 @@ RSpec.feature 'SP Costing', :email do
   let(:email) { 'test@test.com' }
   let(:password) { Features::SessionHelper::VALID_PASSWORD }
 
+  let(:mock_address_cost_error) { Db::SpCost::AddSpCost::SpCostTypeError.new('mock_address') }
+  let(:mock_resolution_cost_error) { Db::SpCost::AddSpCost::SpCostTypeError.new('mock_resolution') }
+
   before do
     allow(IdentityConfig.store).to receive(:allowed_verified_within_providers)
       .and_return([issuer])
-    allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
+    allow(NewRelic::Agent).to receive(:notice_error)
   end
 
   it 'logs the correct costs for an ial2 user creation from sp with oidc', js: true do
-    expect(NewRelic::Agent).to receive(:notice_error)
-      .with(Db::SpCost::AddSpCost::SpCostTypeError.new('mock_address'))
     create_ial2_user_from_sp(email)
 
     expect_sp_cost_type(0, 2, 'acuant_front_image')
@@ -31,15 +32,17 @@ RSpec.feature 'SP Costing', :email do
       transaction_id: Proofing::Mock::IdMockClient::TRANSACTION_ID
     )
     expect_sp_cost_type(4, 2, 'threatmetrix')
-    expect_sp_cost_type(
-      5, 2, 'lexis_nexis_resolution',
-      transaction_id: Proofing::Mock::ResolutionMockClient::TRANSACTION_ID
-    )
+
+    expect(NewRelic::Agent).to have_received(:notice_error)
+      .with(mock_address_cost_error).once
+    expect(NewRelic::Agent).to have_received(:notice_error)
+      .with(mock_resolution_cost_error).once
+
+    expect(SpCost.where(cost_type: 'mock_resolution')).to be_empty
+    expect(SpCost.where(cost_type: 'lexis_nexis_resolution')).to be_empty
   end
 
   it 'logs the cost to the SP for reproofing', js: true do
-    expect(NewRelic::Agent).to receive(:notice_error).twice
-      .with(Db::SpCost::AddSpCost::SpCostTypeError.new('mock_address'))
     create_ial2_user_from_sp(email)
 
     # track costs without dealing with 'remember device'
@@ -62,7 +65,6 @@ RSpec.feature 'SP Costing', :email do
       acuant_front_image
       acuant_back_image
       aamva
-      lexis_nexis_resolution
     ].each do |cost_type|
       sp_costs = SpCost.where(cost_type: cost_type)
       expect(sp_costs.count).to eq(2)
@@ -72,6 +74,14 @@ RSpec.feature 'SP Costing', :email do
         expect(sp_cost.agency_id).to eq(agency_id)
       end
     end
+
+    expect(NewRelic::Agent).to have_received(:notice_error)
+      .with(mock_address_cost_error).twice
+    expect(NewRelic::Agent).to have_received(:notice_error)
+      .with(mock_resolution_cost_error).twice
+
+    expect(SpCost.where(cost_type: 'mock_resolution')).to be_empty
+    expect(SpCost.where(cost_type: 'lexis_nexis_resolution')).to be_empty
   end
 
   def expect_sp_cost_type(sp_cost_index, ial, token, transaction_id: nil)

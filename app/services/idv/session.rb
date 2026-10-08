@@ -7,9 +7,11 @@ module Idv
   # @attr address_verification_mechanism [String, nil]
   # @attr agent_proofed [Boolean, nil]
   # @attr applicant [Struct, nil]
-  # @attr clear1_enabled [Boolean, nil]
+  # @attr clear1_allowed [Boolean, nil]
+  # @attr clear1_verification_session_id [String, nil]
   # @attr clear1_verification_state [String, nil]
   # @attr clear1_verification_token [String, nil]
+  # @attr clear1_verified [Boolean, nil]
   # @attr doc_auth_vendor [String, nil]
   # @attr document_capture_session_uuid [String, nil]
   # @attr flow_path [String, nil]
@@ -67,9 +69,11 @@ module Idv
       address_verification_mechanism
       agent_proofed
       applicant
-      clear1_enabled
+      clear1_allowed
+      clear1_verification_session_id
       clear1_verification_state
       clear1_verification_token
+      clear1_verified
       doc_auth_vendor
       document_capture_session_uuid
       flow_path
@@ -168,7 +172,7 @@ module Idv
       profile = ActiveRecord::Base.transaction do
         profile = profile_maker.save_profile(
           fraud_pending_reason: threatmetrix_fraud_pending_reason,
-          gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
+          gpo_verification_needed: gpo_verification_needed?,
           in_person_verification_needed: user_has_pending_enrollment,
           selfie_check_performed: session[:selfie_check_performed],
           proofing_components:,
@@ -387,6 +391,10 @@ module Idv
       verify_by_mail? || phone_confirmed?
     end
 
+    def inherited_proofed?
+      !!clear1_allowed && !!clear1_verified
+    end
+
     def address_mechanism_chosen?
       vendor_phone_confirmation == true || verify_by_mail?
     end
@@ -451,9 +459,28 @@ module Idv
       IdentityConfig.store.in_person_passports_enabled
     end
 
+    def ipp_passport_requested?
+      !!DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)&.passport_requested?
+    end
+
+    # Confirms the enrollment's document has been verified for its type. In-person
+    # AAMVA only runs on the state ID path, so a passport enrollment never produces
+    # an ipp_aamva_result and is considered complete once requested (a passport
+    # validity check will be added later), while a state ID enrollment must have a
+    # completed AAMVA check.
+    def ipp_document_verification_complete?
+      ipp_passport_requested? || ipp_aamva_result.present?
+    end
+
     def standard_flow_document_capture_eligible?
       flow_path == 'standard' &&
         (skip_hybrid_handoff || desktop_test_mode_enabled?)
+    end
+
+    def gpo_verification_needed?
+      return false if clear1_allowed && clear1_verified
+
+      !phone_confirmed? || verify_by_mail?
     end
 
     private
