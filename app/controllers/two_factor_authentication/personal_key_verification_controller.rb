@@ -86,6 +86,10 @@ module TwoFactorAuthentication
         # key on use: it is neither shown again nor regenerated, and the existing
         # recovery code is cleared so the user can no longer use or manage it.
         current_user.remove_recovery_code
+        # Record that the key was just consumed so the add-MFA setup page can still
+        # show the Phase 1 deprecation warning, even though the user no longer has
+        # a recovery code (PersonalKeyPolicy#enabled? is now false).
+        user_session[:personal_key_mfa_deprecated] = true
       else
         # for now we will regenerate a key and not show it to them so retire personal key page shows
         PersonalKeyGenerator.new(current_user).generate!
