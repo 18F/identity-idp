@@ -60,6 +60,11 @@ module TwoFactorAuthentication
       )
 
       if result.success?
+        # Capture the deprecation state before consuming the personal key, since
+        # removing the recovery code changes PersonalKeyPolicy#enabled? and would
+        # otherwise skip the Phase 1 add-MFA redirect below.
+        @personal_key_mfa_deprecated = skip_personal_key_regeneration?
+
         _event, disavowal_token = create_user_event_with_disavowal(:personal_key_used)
         alert_user_about_personal_key_sign_in(disavowal_token)
         remove_personal_key
@@ -115,10 +120,11 @@ module TwoFactorAuthentication
 
     # Route personal key MFA users to the authentication method setup page so they
     # see the Phase 1 deprecation warning and are prompted to add another method.
+    # Uses the state captured before the personal key was consumed, because
+    # removing the recovery code flips PersonalKeyPolicy#enabled? to false.
     def redirect_to_add_mfa_after_personal_key?
       FeatureManagement.enable_additional_mfa_redirect_for_personal_key_mfa? ||
-        (FeatureManagement.personal_key_mfa_deprecation_phase_1_enabled? &&
-          TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled?)
+        !!@personal_key_mfa_deprecated
     end
   end
 end
