@@ -7121,8 +7121,8 @@ module AnalyticsEvents
   #   set up a platform authenticator through the Security Key setup flow.
   # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
   # @param [Integer, nil] webauthn_setup_duration Duration of webauthn setup in seconds
-  # @param [Boolean, nil] auto_passkey_prompted Whether the WebAuthn setup came from the auto prompt
-  # @param [Boolean, nil] passkey_signup_setup_recommended user is recommended to add passkey
+  # @param [Boolean, nil] auto_passkey_prompted Whether the user arrived at setup via the automatic
+  #   passkey prompt rather than selecting passkey from the MFA options
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -7150,7 +7150,6 @@ module AnalyticsEvents
     webauthn_platform_recommended: nil,
     webauthn_setup_duration: nil,
     auto_passkey_prompted: nil,
-    passkey_signup_setup_recommended: nil,
     **extra
   )
     track_event(
@@ -7181,7 +7180,6 @@ module AnalyticsEvents
       webauthn_platform_recommended:,
       webauthn_setup_duration:,
       auto_passkey_prompted:,
-      passkey_signup_setup_recommended:,
       **extra,
     )
   end
@@ -8849,7 +8847,8 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] gov_or_mil_email Whether registered user has government email
   # @param [Boolean, nil] in_account_creation_flow Whether user is going through account creation
-  # @param [Boolean, nil] auto_passkey_prompted Whether the user was auto-redirected to WebAuthn
+  # @param [Boolean, nil] auto_passkey_prompted Whether this visit automatically prompted the user
+  #   to set up a passkey
   def user_registration_2fa_setup_visit(
     enabled_mfa_methods_count:,
     gov_or_mil_email:,
@@ -9019,6 +9018,7 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] second_mfa_reminder_conversion Whether it is a result of second MFA reminder.
   # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
+  # @param [Boolean, nil] auto_passkey_prompted Whether the user was prompted to set up passkey
   # Tracks when a user has completed MFA setup
   def user_registration_mfa_setup_complete(
     success:,
@@ -9026,6 +9026,7 @@ module AnalyticsEvents
     enabled_mfa_methods_count:,
     in_account_creation_flow: nil,
     second_mfa_reminder_conversion: nil,
+    auto_passkey_prompted: nil,
     **extra
   )
     track_event(
@@ -9035,6 +9036,7 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       in_account_creation_flow:,
       second_mfa_reminder_conversion:,
+      auto_passkey_prompted:,
       **extra,
     )
   end
@@ -9173,24 +9175,6 @@ module AnalyticsEvents
     track_event(:webauthn_platform_recommended_visited)
   end
 
-  # User submits form to add passkey to account during account creation
-  # @param [String] upsell_bucket Which bucket user landed on or submitted with
-  def webauthn_platform_signup_setup_ab_test_submitted(upsell_bucket:, **extra)
-    track_event(
-      :webauthn_platform_signup_setup_ab_test_submitted, upsell_bucket: upsell_bucket,
-                                                         **extra
-    )
-  end
-
-  # User visits webauthn platform upsell after sign up
-  # @param [String] upsell_bucket Which bucket user landed on
-  def webauthn_platform_signup_setup_ab_test_visited(upsell_bucket:, **extra)
-    track_event(
-      :webauthn_platform_signup_setup_ab_test_visited, upsell_bucket: upsell_bucket,
-                                                       **extra
-    )
-  end
-
   # @param [Boolean] platform_authenticator Whether authentication method was registered as platform
   #   authenticator
   # @param [Number] configuration_id Database ID of WebAuthn configuration
@@ -9245,12 +9229,15 @@ module AnalyticsEvents
   # @param [Boolean] success Whether the submission was successful
   # @param [Hash, nil] errors Errors resulting from form validation, or nil if successful.
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
+  # @param [Boolean, nil] auto_passkey_prompted Whether the submission came from the automatic
+  #   passkey prompt rather than the user selecting passkey from the MFA options
   # Tracks whether or not Webauthn setup was successful
   def webauthn_setup_submitted(
     platform_authenticator:,
     success:,
     in_account_creation_flow: nil,
     errors: nil,
+    auto_passkey_prompted: nil,
     **extra
   )
     track_event(
@@ -9259,6 +9246,7 @@ module AnalyticsEvents
       success:,
       errors:,
       in_account_creation_flow:,
+      auto_passkey_prompted:,
       **extra,
     )
   end
@@ -9266,15 +9254,14 @@ module AnalyticsEvents
   # @param [Boolean] platform_authenticator Whether setup is for platform authenticator
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
-  # @param [Boolean, nil] auto_passkey_prompted Whether the user was auto-redirected to setup
-  # @param [Boolean, nil] webauthn_platform_signup_recommended passkey setup after password creation
+  # @param [Boolean, nil] auto_passkey_prompted Whether the user arrived at setup via the automatic
+  #   passkey prompt rather than selecting passkey from the MFA options
   # Tracks when WebAuthn setup is visited
   def webauthn_setup_visit(
     platform_authenticator:,
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
     auto_passkey_prompted: nil,
-    webauthn_platform_signup_recommended: nil,
     **extra
   )
     track_event(
@@ -9283,7 +9270,6 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       in_account_creation_flow:,
       auto_passkey_prompted:,
-      webauthn_platform_signup_recommended:,
       **extra,
     )
   end

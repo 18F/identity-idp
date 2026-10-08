@@ -66,10 +66,37 @@ RSpec.describe MfaSetupConcern do
       end
 
       let(:user) { create(:user, :fully_registered) }
-      let(:recommend_webauthn_platform_for_sms_user?) { true }
 
       it 'redirects to webauthn recommendation screen' do
         expect(next_setup_path).to eq(webauthn_platform_recommended_path)
+      end
+
+      context 'when the user set up their phone with voice delivery' do
+        let(:user) { create(:user, :fully_registered, with: { delivery_preference: :voice }) }
+
+        it 'does not redirect to webauthn recommendation screen' do
+          expect(next_setup_path).to_not eq(webauthn_platform_recommended_path)
+        end
+      end
+
+      context 'when the user was already auto prompted to set up a passkey' do
+        before do
+          controller.user_session[:auto_passkey_prompted] = true
+        end
+
+        it 'does not redirect to webauthn recommendation screen' do
+          expect(next_setup_path).to_not eq(webauthn_platform_recommended_path)
+        end
+      end
+
+      context 'when the user is not in the account creation flow' do
+        before do
+          controller.user_session[:in_account_creation_flow] = false
+        end
+
+        it 'does not redirect to webauthn recommendation screen' do
+          expect(next_setup_path).to_not eq(webauthn_platform_recommended_path)
+        end
       end
     end
 
@@ -92,7 +119,63 @@ RSpec.describe MfaSetupConcern do
           enabled_mfa_methods_count: 2,
           second_mfa_reminder_conversion: true,
           in_account_creation_flow: false,
+          auto_passkey_prompted: false,
         )
+      end
+    end
+
+    context 'when the user was automatically prompted to set up a passkey' do
+      let(:user) { create(:user, :with_webauthn_platform) }
+
+      before do
+        stub_analytics
+        allow(controller).to receive(:mobile?).and_return(true)
+        controller.user_session[:auto_passkey_prompted] = true
+        controller.user_session[:in_account_creation_flow] = true
+        controller.user_session[:mfa_selections] = []
+      end
+
+      it 'logs the completion as attributable to the automatic prompt' do
+        next_setup_path
+
+        expect(@analytics).to have_logged_event(
+          'User Registration: MFA Setup Complete',
+          success: true,
+          mfa_method_counts: { webauthn_platform: 1 },
+          enabled_mfa_methods_count: 1,
+          in_account_creation_flow: true,
+          auto_passkey_prompted: true,
+        )
+      end
+
+      context 'when the user is not on a mobile device' do
+        before do
+          allow(controller).to receive(:mobile?).and_return(false)
+        end
+
+        it 'does not attribute the completion to the automatic prompt' do
+          next_setup_path
+
+          expect(@analytics).to have_logged_event(
+            'User Registration: MFA Setup Complete',
+            hash_including(auto_passkey_prompted: false),
+          )
+        end
+      end
+
+      context 'when the user is not in the account creation flow' do
+        before do
+          controller.user_session[:in_account_creation_flow] = false
+        end
+
+        it 'does not attribute the completion to the automatic prompt' do
+          next_setup_path
+
+          expect(@analytics).to have_logged_event(
+            'User Registration: MFA Setup Complete',
+            hash_including(auto_passkey_prompted: false),
+          )
+        end
       end
     end
   end

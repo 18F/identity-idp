@@ -46,7 +46,6 @@ RSpec.shared_examples 'webauthn setup' do
     before do
       allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
         .and_return(false)
-      allow(IdentityConfig.store)
       allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       mock_webauthn_setup_challenge
@@ -75,6 +74,7 @@ RSpec.shared_examples 'webauthn setup' do
         platform_authenticator: false,
         in_account_creation_flow: true,
         success: false,
+        auto_passkey_prompted: false,
       )
     end
 
@@ -89,6 +89,7 @@ RSpec.shared_examples 'webauthn setup' do
         success: true,
         in_account_creation_flow: true,
         platform_authenticator: false,
+        auto_passkey_prompted: false,
       )
     end
   end
