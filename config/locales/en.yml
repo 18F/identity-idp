@@ -1565,7 +1565,7 @@ instructions.password.strength.strong: Strong
 instructions.password.strength.too_common: Too common
 instructions.sp_handoff_bounced: Your sign in was successful, but %{sp_name} sent you back to %{app_name}. Please contact %{sp_link} for help.
 instructions.sp_handoff_bounced_with_no_sp: your service provider
-links.accessibility_statement: Accessibility statement
+links.accessibility_and_languages: Accessibility & languages
 links.account.reactivate.with_key: I have my key
 links.account.reactivate.without_key: I don’t have my key
 links.back_to_sp: Back to %{sp}
