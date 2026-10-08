@@ -9,14 +9,6 @@ module Idv
       REQUIRED_ATTRIBUTES = %i[first_name last_name dob email phone ssn id_type].freeze
       ATTRIBUTES = (%i[state_id residential_address passport] + REQUIRED_ATTRIBUTES).freeze
 
-      ADDRESS_FIELD_RULES = {
-        address1: { max: 255 },
-        address2: { max: 255 },
-        city: { max: 255 },
-        state: { max: 64 },
-        zip_code: { max: 10 },
-      }.freeze
-
       FIELD_RULES = {
         email: { max: 255 },
         first_name: { max: 128 },
@@ -27,14 +19,14 @@ module Idv
         id_type: { max: 20 },
       }.freeze
 
+      # Address fields are already validated by Pii::StateIdForm and
+      # Pii::UspsStrictAddressForm, so they are not repeated here.
       NESTED_FIELD_RULES = {
-        residential_address: ADDRESS_FIELD_RULES,
         state_id: {
           document_number: { max: 64 },
           jurisdiction: { max: 64 },
           expiration_date: { max: 10, date: true },
           issue_date: { max: 10, date: true },
-          **ADDRESS_FIELD_RULES,
         },
       }.freeze
 

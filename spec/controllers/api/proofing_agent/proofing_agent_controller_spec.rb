@@ -1012,16 +1012,19 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             end
           end
 
-          context 'residential_address fields are invalid' do
+          context 'residential_address zip_code is too long' do
             let(:residential_address) do
               valid_residential_address.merge(zip_code: '12345-67890')
             end
+            let(:body_errors) { { zip_code: ['is invalid'] } }
 
-            it 'returns 400 with errors keyed by the nested path' do
+            it 'returns 400 with the address form error' do
               expect(action.status).to eq(400)
-              expect(JSON.parse(response.body, symbolize_names: true)).to include(
-                'residential_address.zip_code': ['is too long (maximum is 10 characters)'],
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
               )
+              expect(JSON.parse(response.body, symbolize_names: true)).to eq(body_errors)
             end
           end
 

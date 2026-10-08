@@ -271,10 +271,10 @@ RSpec.describe Idv::ProofingAgent::AgentPiiForm do
       expect(result.errors[:'state_id.issue_date']).to eq(['must be in YYYY-MM-DD format'])
     end
 
-    it 'reports nested residential_address violations under the nested key' do
+    it 'leaves address field checks to the address form' do
       result = submit_with(residential_address: valid_address.merge(state: 'a' * 65))
-      expect(result.errors[:'residential_address.state'])
-        .to eq(['is too long (maximum is 64 characters)'])
+      expect(result.errors.keys).to eq([:state])
+      expect(result.errors[:state]).to eq(['is not a valid state code'])
     end
 
     it 'skips blank optional fields' do
