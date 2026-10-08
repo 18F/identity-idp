@@ -496,6 +496,7 @@ module Idv
       # rubocop:disable Rails/SkipsModelValidations
       document_capture_session.update_column(:profile_id, profile.id)
       document_capture_session.document_artifacts.update_all(profile_id: profile.id)
+      document_capture_session.document_metadata&.update_column(:profile_id, profile.id)
       # rubocop:enable Rails/SkipsModelValidations
     end
 

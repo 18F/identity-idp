@@ -1,15 +1,19 @@
 # frozen_string_literal: true
 
-# Deletes document_artifacts rows (and their wrapped AES keys) once the
-# underlying escrow objects have aged past the S3 lifecycle, so the DB never
-# holds key material for images that no longer exist.
+# Deletes document_artifacts and document_metadata rows (and their encrypted
+# key material / identifiers) once they have aged past the escrow retention
+# window, so the DB never holds data for images that no longer exist.
 class ExpireDocumentArtifactsJob < ApplicationJob
   queue_as :low
 
   def perform(_now)
     deleted_count = DocumentArtifact.expired.in_batches.delete_all
+    deleted_metadata_count = DocumentMetadata.expired.in_batches.delete_all
 
-    analytics.document_artifacts_expired(deleted_count:)
+    analytics.document_artifacts_expired(
+      deleted_count:,
+      deleted_metadata_count:,
+    )
   end
 
   private

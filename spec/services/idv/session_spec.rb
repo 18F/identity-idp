@@ -135,6 +135,9 @@ RSpec.describe Idv::Session do
       let!(:artifact) do
         create(:document_artifact, document_capture_session:, image_type: 'front')
       end
+      let!(:metadata) do
+        create(:document_metadata, document_capture_session:)
+      end
 
       before { subject.document_capture_session_uuid = document_capture_session.uuid }
 
@@ -144,6 +147,14 @@ RSpec.describe Idv::Session do
         )
 
         expect(artifact.reload.profile_id).to eq(subject.profile.id)
+      end
+
+      it 'associates the document metadata with the newly created profile' do
+        subject.create_profile_from_applicant_with_password(
+          user.password, is_enhanced_ipp:, proofing_components:
+        )
+
+        expect(metadata.reload.profile_id).to eq(subject.profile.id)
       end
 
       it 'stamps the capture session with the profile it produced, for late-arriving jobs' do
@@ -173,6 +184,7 @@ RSpec.describe Idv::Session do
 
           expect(subject.profile.in_person_verification_pending?).to eq(true)
           expect(artifact.reload.profile_id).to be_nil
+          expect(metadata.reload.profile_id).to be_nil
           expect(document_capture_session.reload.profile_id).to be_nil
         end
       end

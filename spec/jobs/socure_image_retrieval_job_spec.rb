@@ -70,6 +70,13 @@ RSpec.describe SocureImageRetrievalJob do
   describe '#perform' do
     let(:persist_artifacts) { false }
     let(:docv_transaction_token) { document_capture_session.socure_docv_transaction_token }
+    let(:document_metadata) do
+      {
+        document_number: 'D-9988',
+        document_issued: '2022-02-02',
+        document_expiration: '2032-02-02',
+      }
+    end
 
     subject(:perform) do
       job.perform(
@@ -79,6 +86,7 @@ RSpec.describe SocureImageRetrievalJob do
         passport_book:,
         persist_artifacts:,
         docv_transaction_token:,
+        document_metadata:,
       )
     end
 
@@ -113,6 +121,12 @@ RSpec.describe SocureImageRetrievalJob do
         expect(artifact.profile_id).to be_nil
       end
 
+      it 'persists the document metadata encrypted, one row per capture session' do
+        expect { perform }.to change { DocumentMetadata.count }.by(1)
+
+        expect(document_capture_session.document_metadata.document_data).to eq(document_metadata)
+      end
+
       context 'when the initiating SP is not allow-listed for image sharing' do
         before do
           allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
@@ -121,6 +135,10 @@ RSpec.describe SocureImageRetrievalJob do
 
         it 'does not persist any key material' do
           expect { perform }.not_to change { DocumentArtifact.count }
+        end
+
+        it 'does not persist document metadata either' do
+          expect { perform }.not_to change { DocumentMetadata.count }
         end
       end
 
@@ -199,6 +217,12 @@ RSpec.describe SocureImageRetrievalJob do
 
           expect(document_capture_session.document_artifacts.pluck(:profile_id).uniq)
             .to eq([profile.id])
+        end
+
+        it 'links the document metadata to that profile too' do
+          perform
+
+          expect(document_capture_session.document_metadata.profile_id).to eq(profile.id)
         end
       end
 

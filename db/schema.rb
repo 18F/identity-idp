@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_24_100400) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_24_100500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -241,6 +241,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_24_100400) do
     t.index ["user_id", "pending_agent_proofed_user_at"], name: "idx_on_user_id_pending_agent_proofed_user_at_9c062ecb7b"
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
+  end
+
+  create_table "document_metadata", force: :cascade do |t|
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.bigint "document_capture_session_id", null: false, comment: "sensitive=false"
+    t.string "encrypted_document_data", null: false, comment: "sensitive=true"
+    t.bigint "profile_id", comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.index ["document_capture_session_id"], name: "index_document_metadata_on_document_capture_session_id", unique: true
+    t.index ["profile_id"], name: "index_document_metadata_on_profile_id", unique: true
   end
 
   create_table "duplicate_profile_sets", force: :cascade do |t|
@@ -776,6 +786,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_24_100400) do
   add_foreign_key "document_artifacts", "profiles"
   add_foreign_key "document_capture_sessions", "profiles", on_delete: :nullify
   add_foreign_key "document_capture_sessions", "users"
+  add_foreign_key "document_metadata", "document_capture_sessions"
+  add_foreign_key "document_metadata", "profiles", on_delete: :nullify
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"
   add_foreign_key "in_person_enrollments", "profiles"

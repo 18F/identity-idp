@@ -461,12 +461,36 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             selfie: api_openid_connect_document_image_url(image_type: 'selfie'),
           )
         end
+
+        it 'returns the document metadata inline when present' do
+          create(
+            :document_metadata,
+            profile:,
+            document_capture_session: create(:document_capture_session, user: identity.user),
+            document_data: {
+              document_number: 'D-5',
+              document_issued: '2020-03-03',
+              document_expiration: '2030-03-03',
+            },
+          )
+
+          expect(user_info[:document_metadata]).to eq(
+            document_number: 'D-5',
+            document_issued: '2020-03-03',
+            document_expiration: '2030-03-03',
+          )
+        end
       end
 
       context 'when sharing is authorized but no artifacts exist yet (mDL, or job not landed)' do
         it 'emits an empty hash so the RP can distinguish "retry" from "not authorized"' do
           expect(user_info).to have_key(:document_images)
           expect(user_info[:document_images]).to eq({})
+        end
+
+        it 'emits empty document_metadata too' do
+          expect(user_info).to have_key(:document_metadata)
+          expect(user_info[:document_metadata]).to eq({})
         end
       end
 

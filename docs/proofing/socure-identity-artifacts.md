@@ -134,6 +134,16 @@ RP an **access-token-authenticated download endpoint**, not inline claims.
     mDL, which produces no shareable artifacts.
   - **`document_images: { <type>: <url>, ... }`** — artifacts are available;
     fetch each URL with the bearer access token.
+- Alongside the images, userinfo returns a `document_metadata` claim with the
+  document identifiers Socure captured — `document_number`, `document_issued`,
+  `document_expiration` — released under the identical gate (same scope, consent,
+  allow-list, ACR). These are small scalars so they are returned **inline** in
+  userinfo (like SSN), not via the proxy. Same three-state contract: absent =
+  not authorized, `{}` = authorized but not yet landed / mDL, populated = ready.
+  These fields are **not** persisted into the core `Pii::Attributes` bundle
+  (which would leak them to every proofing SP); they live in an encrypted
+  `document_metadata` row on the same success-only, profile-linked, 90-day
+  retention lifecycle as the images.
 - The controller reads from the existing `EncryptedDocStorage` escrow (decrypt
   with the stored per-image AES key referenced by the profile/capture session),
   streams bytes, and audits every access.

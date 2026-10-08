@@ -129,6 +129,7 @@ class SocureDocvResultsJob < ApplicationJob
     if doc_escrow_enabled? &&
        docv_result_response.instance_of?(DocAuth::Socure::Responses::DocvResultResponse)
 
+      pii = docv_result_response.pii_from_doc.to_h || {}
       job_data = {
         document_capture_session_uuid:,
         reference_id: docv_result_response.to_h[:reference_id],
@@ -139,6 +140,11 @@ class SocureDocvResultsJob < ApplicationJob
         passport_book:,
         persist_artifacts: success,
         docv_transaction_token: document_capture_session.socure_docv_transaction_token,
+        document_metadata: {
+          document_number: pii[:state_id_number] || pii[:document_number],
+          document_issued: pii[:state_id_issued] || pii[:passport_issued],
+          document_expiration: pii[:state_id_expiration] || pii[:passport_expiration],
+        },
       }
 
       image_data = job_data[:image_storage_data].values.reduce(:merge)

@@ -1615,11 +1615,15 @@ RSpec.describe Profile do
     let!(:artifact) do
       create(:document_artifact, document_capture_session: capture_session, profile:)
     end
+    let!(:metadata) do
+      create(:document_metadata, document_capture_session: capture_session, profile:)
+    end
 
     it 'destroys artifacts and nullifies the producing capture session on profile destroy' do
       profile.destroy!
 
       expect(DocumentArtifact.exists?(artifact.id)).to eq(false)
+      expect(DocumentMetadata.exists?(metadata.id)).to eq(false)
       expect(capture_session.reload.profile_id).to be_nil
     end
 

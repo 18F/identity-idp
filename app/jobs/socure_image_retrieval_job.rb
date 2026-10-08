@@ -11,10 +11,12 @@ class SocureImageRetrievalJob < ApplicationJob
     image_storage_data:,
     passport_book:,
     persist_artifacts: false,
-    docv_transaction_token: nil
+    docv_transaction_token: nil,
+    document_metadata: nil
   )
     @document_capture_session_uuid = document_capture_session_uuid
     @docv_transaction_token = docv_transaction_token
+    @document_metadata = document_metadata
 
     result = fetch_images(reference_id, passport_book:)
     if result.is_a?(Idv::IdvImages)
@@ -131,8 +133,22 @@ class SocureImageRetrievalJob < ApplicationJob
         )
       end
 
+      persist_document_metadata(locked_session)
       associate_artifacts_with_producing_profile(locked_session)
     end
+  end
+
+  # Document identifiers (number, issue/expiration dates) accompany the images
+  # for adjudication. Stored encrypted, one row per capture session, refreshed on
+  # each successful attempt so it always reflects the document that passed.
+  def persist_document_metadata(locked_session)
+    return if @document_metadata.blank?
+
+    metadata = locked_session.document_metadata ||
+               locked_session.build_document_metadata
+    metadata.document_data = @document_metadata
+    metadata.created_at = Time.zone.now
+    metadata.save!
   end
 
   # Normally Idv::Session links artifacts when it creates the profile, but under
@@ -147,6 +163,8 @@ class SocureImageRetrievalJob < ApplicationJob
 
     # rubocop:disable Rails/SkipsModelValidations
     locked_session.document_artifacts.where(profile_id: nil).update_all(profile_id:)
+    locked_session.document_metadata&.update_column(:profile_id, profile_id) if
+      locked_session.document_metadata&.profile_id.nil?
     # rubocop:enable Rails/SkipsModelValidations
   end
 

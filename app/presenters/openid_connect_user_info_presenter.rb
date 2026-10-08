@@ -27,6 +27,7 @@ class OpenidConnectUserInfoPresenter
     # omitting the claim means sharing is not authorized for this identity.
     if scoper.document_images_requested? && document_images_shareable?
       info[:document_images] = document_images
+      info[:document_metadata] = document_metadata
     end
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
@@ -116,6 +117,16 @@ class OpenidConnectUserInfoPresenter
       active_profile.present? &&
       identity.service_provider_record&.document_images_sharing_allowed? &&
       identity.biometric_sharing_consented?(active_profile)
+  end
+
+  # Document identifiers (number, issue/expiration dates) released inline
+  # alongside the images, under the same sharing gate. Empty until the retrieval
+  # job has persisted them (same async window as the images). mDL has none.
+  def document_metadata
+    return {} unless document_images_shareable?
+
+    metadata = active_profile.document_metadata
+    metadata&.retained? ? metadata.document_data : {}
   end
 
   def phone

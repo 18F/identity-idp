@@ -67,6 +67,14 @@ RSpec.describe OpenidConnect::DocumentImagesController do
           expect(response.body).to eq(image)
         end
 
+        it 'forbids caching of the biometric image anywhere downstream' do
+          action
+
+          expect(response.headers['Cache-Control']).to eq('no-store')
+          expect(response.headers['Pragma']).to eq('no-cache')
+          expect(response.headers['X-Content-Type-Options']).to eq('nosniff')
+        end
+
         it 'writes an audit event recording the release' do
           stub_analytics
 

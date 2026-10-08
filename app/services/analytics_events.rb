@@ -8789,10 +8789,12 @@ module AnalyticsEvents
   # Emitted by the daily job that removes document_artifacts rows whose escrow
   # objects have aged past the retention window.
   # @param [Integer] deleted_count number of artifact rows removed
-  def document_artifacts_expired(deleted_count:, **extra)
+  # @param [Integer] deleted_metadata_count number of document metadata rows removed
+  def document_artifacts_expired(deleted_count:, deleted_metadata_count: 0, **extra)
     track_event(
       :document_artifacts_expired,
       deleted_count:,
+      deleted_metadata_count:,
       **extra,
     )
   end
