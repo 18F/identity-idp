@@ -139,6 +139,12 @@ module Users
     end
 
     def process_failed_captcha
+      analytics.password_reset_recaptcha_failed(
+        **recaptcha_response,
+        success: false,
+        valid_captcha_result: recaptcha_response.success?,
+        captcha_validation_performed: captcha_validation_performed?,
+      )
       redirect_to sign_in_security_check_failed_url
     end
 

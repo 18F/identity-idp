@@ -25,4 +25,10 @@ module RecaptchaConcern
     policy.frame_src(*policy.frame_src, *RECAPTCHA_FRAME_SRC)
     request.content_security_policy = policy
   end
+
+  # Whether a reCAPTCHA check was actually performed for this request (i.e. the
+  # flow was not exempt). Including controllers must define `recaptcha_form`.
+  def captcha_validation_performed?
+    !recaptcha_form.exempt?
+  end
 end

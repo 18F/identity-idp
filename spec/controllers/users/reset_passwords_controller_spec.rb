@@ -815,6 +815,18 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           expect { response }.to change { ActionMailer::Base.deliveries.count }.by(0)
           expect(response).to redirect_to(sign_in_security_check_failed_url)
         end
+
+        it 'logs a password reset reCAPTCHA failure event' do
+          response
+
+          expect(@analytics).to have_logged_event(
+            :password_reset_recaptcha_failed,
+            success: false,
+            error_details: { recaptcha_token: { invalid: true } },
+            valid_captcha_result: false,
+            captcha_validation_performed: true,
+          )
+        end
       end
     end
   end
