@@ -47,7 +47,11 @@
   <% if FeatureManagement.enable_load_testing_mode? && EmailAddress.find_with_email(email) %>
     <%= link_to(
           'CONFIRM NOW',
-          sign_up_create_email_confirmation_url(confirmation_token: EmailAddress.find_with_email(email).confirmation_token),
+          sign_up_create_email_confirmation_url(
+            _request_id: sp_session[:request_id],
+            confirmation_token: EmailAddress.find_with_email(email).confirmation_token,
+            locale: locale_url_param,
+          ),
           id: 'confirm-now',
         ) %>
   <% end %>
@@ -90,7 +94,11 @@
 <% if FeatureManagement.enable_load_testing_mode? && EmailAddress.find_with_email(email) %>
   <%= link_to(
         'CONFIRM NOW',
-        sign_up_create_email_confirmation_url(confirmation_token: EmailAddress.find_with_email(email).confirmation_token),
+        sign_up_create_email_confirmation_url(
+          _request_id: sp_session[:request_id],
+          confirmation_token: EmailAddress.find_with_email(email).confirmation_token,
+          locale: locale_url_param,
+        ),
         id: 'confirm-now',
       ) %>
 <% end %>

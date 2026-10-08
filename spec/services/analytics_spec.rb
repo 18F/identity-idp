@@ -319,6 +319,44 @@ RSpec.describe Analytics do
       end
     end
 
+    context 'with an SP request_id in the session' do
+      let(:request_id) { SecureRandom.uuid }
+      let(:session) { { sp: { request_id: request_id } } }
+
+      it 'includes it as the top-level sp_request_id attribute' do
+        expect(ahoy).to receive(:track).with(
+          'Trackable Event',
+          analytics_attributes.merge(sp_request_id: request_id),
+        )
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'without an SP request_id in the session' do
+      it 'omits the sp_request_id attribute' do
+        expect(ahoy).to receive(:track).with(
+          'Trackable Event',
+          hash_excluding(:sp_request_id),
+        )
+
+        analytics.track_event('Trackable Event')
+      end
+
+      context 'when session[:sp] exists with a blank request_id' do
+        let(:session) { { sp: { request_id: '' } } }
+
+        it 'omits the sp_request_id attribute' do
+          expect(ahoy).to receive(:track).with(
+            'Trackable Event',
+            hash_excluding(:sp_request_id),
+          )
+
+          analytics.track_event('Trackable Event')
+        end
+      end
+    end
+
     context 'when no request specified' do
       let(:request) { nil }
       context 'but an SP was specified via initializer' do

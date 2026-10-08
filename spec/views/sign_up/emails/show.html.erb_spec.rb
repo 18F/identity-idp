@@ -105,28 +105,66 @@ RSpec.describe 'sign_up/emails/show.html.erb' do
     before do
       allow(FeatureManagement).to receive(:enable_load_testing_mode?).and_return(true)
       create(:email_address, confirmation_token: 'some_token', email: email)
-
-      render
     end
 
     it 'generates the correct link' do
+      render
+
       expect(rendered).to have_link(
         'CONFIRM NOW',
         href: sign_up_create_email_confirmation_url(confirmation_token: 'some_token'),
         id: 'confirm-now',
       )
     end
+
+    context 'with an SP request in the session' do
+      before { session[:sp] = { request_id: 'sp-request-id' } }
+
+      it 'carries _request_id, as the real confirmation email does' do
+        render
+
+        expect(rendered).to have_link(
+          'CONFIRM NOW',
+          href: sign_up_create_email_confirmation_url(
+            _request_id: 'sp-request-id',
+            confirmation_token: 'some_token',
+          ),
+          id: 'confirm-now',
+        )
+      end
+    end
+
+    context 'in the NDS layout' do
+      before do
+        allow(view).to receive(:nds_layout?).and_return(true)
+        session[:sp] = { request_id: 'sp-request-id' }
+      end
+
+      it 'carries _request_id, as the real confirmation email does' do
+        render
+
+        expect(rendered).to have_link(
+          'CONFIRM NOW',
+          href: sign_up_create_email_confirmation_url(
+            _request_id: 'sp-request-id',
+            confirmation_token: 'some_token',
+          ),
+          id: 'confirm-now',
+        )
+      end
+    end
   end
 
   context 'when enable_load_testing_mode? is false' do
     before do
       allow(FeatureManagement).to receive(:enable_load_testing_mode?).and_return(false)
+      create(:email_address, confirmation_token: 'some_token', email: email)
 
       render
     end
 
     it 'does not generate the link' do
-      expect(rendered).not_to have_link('CONFIRM NOW', href: sign_up_create_email_confirmation_url)
+      expect(rendered).not_to have_link('CONFIRM NOW')
     end
   end
 
@@ -138,7 +176,7 @@ RSpec.describe 'sign_up/emails/show.html.erb' do
     end
 
     it 'does not generate the link' do
-      expect(rendered).not_to have_link('CONFIRM NOW', href: sign_up_create_email_confirmation_url)
+      expect(rendered).not_to have_link('CONFIRM NOW')
     end
   end
 end

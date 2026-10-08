@@ -2299,7 +2299,6 @@ module AnalyticsEvents
   # @option proofing_results [Hash] context Full context of the proofing process
   # @option proofing_results [String] context.device_profiling_adjudication_reason Reason code describing how we arrived at the device profiling result
   # @option proofing_results [String] context.resolution_adjudication_reason Reason code describing how we arrived at the identity resolution result
-  # @option proofing_results [Boolean] context.should_proof_state_id Whether we need to verify the user's PII with AAMVA. False if the user is using a document from a non-AAMVA jurisdiction
   # @option proofing_results [Hash] context.stages Object holding details about each stage of the proofing process
   # @option proofing_results [Hash] context.stages.resolution Object holding details about the call made to the identity resolution vendor
   # @option proofing_results [Boolean] context.stages.resolution.success Whether identity resolution proofing was successful
@@ -6067,6 +6066,7 @@ module AnalyticsEvents
   # @param [String] socure_status Socure's status value for internal errors on their side.
   # @param [String] socure_msg Socure's status message for interal errors on their side.
   # @param [String] use_case_key name of requested DocV flow
+  # @param [Hash] error_redirect hash for error redirect (url and method)
   # The request for socure verification was sent
   def idv_socure_document_request_submitted(
     success:,
@@ -6093,6 +6093,7 @@ module AnalyticsEvents
     socure_status: nil,
     socure_msg: nil,
     use_case_key: nil,
+    error_redirect: nil,
     **extra
   )
     track_event(
@@ -6121,6 +6122,7 @@ module AnalyticsEvents
       socure_status:,
       socure_msg:,
       use_case_key:,
+      error_redirect:,
       **extra,
     )
   end
@@ -6423,6 +6425,8 @@ module AnalyticsEvents
   # @param [Boolean] aamva_checked Whether the aamva API request evaluated a state ID.
   # @param [Integer, nil] birth_year The birth year listed on the ID.
   # @param [Boolean, nil] bypass_exception Whether the aamva exception was bypassed
+  # @param [String, nil] document_type_received The document type the AAMVA skip guard
+  #   evaluated, e.g. "drivers_license", "state_id_card", "passport".
   # @param [String, nil] state The state on the ID.
   # @param [String, nil] state_id_jurisdiction The state that issued the ID.
   # @param [String, nil] state_id_number A string describing the format of the ID number.
@@ -6444,6 +6448,7 @@ module AnalyticsEvents
     aamva_checked:,
     birth_year: nil,
     bypass_exception: nil,
+    document_type_received: nil,
     state: nil,
     state_id_jurisdiction: nil,
     state_id_number: nil,
@@ -6467,6 +6472,7 @@ module AnalyticsEvents
       aamva_checked:,
       birth_year:,
       bypass_exception:,
+      document_type_received:,
       state:,
       state_id_jurisdiction:,
       state_id_number:,

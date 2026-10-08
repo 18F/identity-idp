@@ -994,6 +994,7 @@ module Test
         auto_check_value: :state_id_card,
         passport_cards_enabled: params[:passport_card].present?,
         mdl_enabled: params[:mdl].present?,
+        disable_mdl: params[:disable_mdl].present?,
         show_verify_in_person: params[:ipp].present?,
       }
     end
