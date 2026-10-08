@@ -27,8 +27,8 @@ module SignUp
       notify_user_of_connected_sp
       send_historical_events
       if selected_email_id_for_linked_identity.nil?
-        user_session[:selected_email_id_for_linked_identity] = current_user
-          .last_sign_in_email_address.id
+        user_session[:selected_email_id_for_linked_identity] =
+          sp_session_identity_email_id || current_user.last_sign_in_email_address.id
       end
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
@@ -63,7 +63,7 @@ module SignUp
         requested_attributes: decorated_sp_session.requested_attributes.map(&:to_sym),
         idv_requested: idv_requested?,
         completion_context: needs_completion_screen_reason,
-        selected_email_id: selected_email_id_for_linked_identity,
+        selected_email_id: selected_email_id_for_linked_identity || sp_session_identity_email_id,
       )
     end
 

@@ -28,6 +28,7 @@ module VerifySpAttributesConcern
       verified_attributes: sp_session[:requested_attributes],
       last_consented_at: Time.zone.now,
       clear_deleted_at: true,
+      email_address_id: selected_email_id_for_linked_identity || sp_session_identity_email_id,
     )
   end
 
@@ -76,6 +77,10 @@ module VerifySpAttributesConcern
 
   def find_sp_session_identity
     current_user&.identities&.find_by(service_provider: sp_session[:issuer])
+  end
+
+  def sp_session_identity_email_id
+    find_sp_session_identity&.email_address&.id
   end
 
   def requested_attributes_verified?(sp_session_identity)

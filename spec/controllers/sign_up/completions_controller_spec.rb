@@ -54,6 +54,48 @@ RSpec.describe SignUp::CompletionsController do
         end
       end
 
+      context 'auth only with a previously selected email (re-consent)' do
+        let(:user) { create(:user, :fully_registered, :with_multiple_emails) }
+        let(:previously_selected_email) do
+          create(:email_address, user: user, email: 'previously-selected@example.com')
+        end
+        let(:newly_selected_email) do
+          create(:email_address, user: user, email: 'newly-selected@example.com')
+        end
+
+        before do
+          create(
+            :service_provider_identity,
+            user: user,
+            service_provider: current_sp.issuer,
+            email_address: previously_selected_email,
+            verified_attributes: ['email'],
+            last_consented_at: 2.years.ago,
+          )
+          stub_sign_in(user)
+          subject.session[:sp] = {
+            issuer: current_sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            requested_attributes: [:email],
+            request_url: 'http://localhost:3000',
+          }
+        end
+
+        it 'displays the stored preferred email when there is no session selection' do
+          get :show
+
+          expect(assigns(:presenter).selected_email_id).to eq(previously_selected_email.id)
+        end
+
+        it 'displays the newly selected email over the stored one' do
+          subject.user_session[:selected_email_id_for_linked_identity] = newly_selected_email.id
+
+          get :show
+
+          expect(assigns(:presenter).selected_email_id).to eq(newly_selected_email.id)
+        end
+      end
+
       context 'identity verification' do
         let(:user) do
           create(:user, :fully_registered, profiles: [create(:profile, :verified, :active)])
@@ -247,6 +289,7 @@ RSpec.describe SignUp::CompletionsController do
           verified_attributes: ['email'],
           last_consented_at: now,
           clear_deleted_at: true,
+          email_address_id: nil,
         )
         freeze_time do
           travel_to(now)
@@ -281,6 +324,32 @@ RSpec.describe SignUp::CompletionsController do
 
         expect(subject.user_session[:selected_email_id_for_linked_identity].to_i).to eq(
           user.last_sign_in_email_address.id,
+        )
+      end
+
+      it 'falls back to the identity\'s stored email when there is no session selection' do
+        preferred_email = create(:email_address, user: user, email: 'preferred@example.com')
+        create(
+          :service_provider_identity,
+          user: user,
+          service_provider: current_sp.issuer,
+          email_address: preferred_email,
+          verified_attributes: ['email'],
+          last_consented_at: 2.years.ago,
+        )
+
+        stub_sign_in(user)
+        subject.session[:sp] = {
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          issuer: current_sp.issuer,
+          request_url: 'http://example.com',
+          requested_attributes: ['email'],
+        }
+
+        patch :update
+
+        expect(subject.user_session[:selected_email_id_for_linked_identity].to_i).to eq(
+          preferred_email.id,
         )
       end
 
@@ -354,6 +423,7 @@ RSpec.describe SignUp::CompletionsController do
           verified_attributes: %w[email first_name verified_at],
           last_consented_at: now,
           clear_deleted_at: true,
+          email_address_id: nil,
         )
         allow(Idv::InPerson::CompletionSurveySender).to receive(:send_completion_survey)
           .with(user, sp.issuer)
