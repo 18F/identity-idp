@@ -61,7 +61,7 @@ module Telephony
       if link.length > SMS_MAX_LENGTH
         log_warning("link longer than #{SMS_MAX_LENGTH} characters", context: context)
       end
-      log_response(response, context: context)
+      log_response(response, context: context, country_code: country_code)
       response
     end
 
@@ -112,11 +112,12 @@ module Telephony
       end
     end
 
-    def log_response(response, context:)
+    def log_response(response, context:, country_code: nil)
       extra = {
         adapter: Telephony.config.adapter,
         channel: :sms,
         context: context,
+        country_code: country_code,
       }
       output = response.to_h.merge(extra)
       Telephony.log_info(event: output)
