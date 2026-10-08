@@ -28,6 +28,8 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
     )
   end
 
+  let(:description) { evaluation[:description] }
+
   context 'successful result' do
     it 'looks correct' do
       expect(evaluation).to eql(
@@ -81,10 +83,43 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
 
       it 'says the ID number was invalid according to the state' do
         expect(evaluation[:type]).to eql(:aamva_error)
-        expect(evaluation[:description]).to eql(
+        expect(description).to eql(
           "AAMVA request failed. The ID # from the user's drivers' license was invalid " \
           "according to the state of MD",
         )
+      end
+
+      context 'when the document was a non-driving state ID card' do
+        let(:document_type_received) { 'state_id_card' }
+
+        it 'names the ID card instead of a drivers license' do
+          expect(description).to eql(
+            "AAMVA request failed. The ID # from the user's non-driving ID card was invalid " \
+            "according to the state of MD",
+          )
+        end
+      end
+
+      context 'when the document type is absent from the logged event' do
+        let(:document_type_received) { nil }
+
+        it 'falls back to a generic ID card rather than naming a document' do
+          expect(description).to eql(
+            "AAMVA request failed. The ID # from the user's id card was invalid " \
+            "according to the state of MD",
+          )
+        end
+      end
+
+      context 'when the document type has no display name mapping' do
+        let(:document_type_received) { 'identification_card' }
+
+        it 'falls back to a generic ID card' do
+          expect(description).to eql(
+            "AAMVA request failed. The ID # from the user's id card was invalid " \
+            "according to the state of MD",
+          )
+        end
       end
     end
 
@@ -100,15 +135,15 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
       end
 
       it 'reports every mismatched attribute, blocking ones first' do
-        expect(evaluation[:description]).to eql(
+        expect(description).to eql(
           'AAMVA request failed. 3 attributes failed to validate: ' \
           'state_id_number, state_id_issued, address1',
         )
       end
 
       it 'does not report MISSING attributes that were never sent' do
-        expect(evaluation[:description]).not_to include('height')
-        expect(evaluation[:description]).not_to include('sex')
+        expect(description).not_to include('height')
+        expect(description).not_to include('sex')
       end
     end
 
@@ -121,7 +156,7 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
       end
 
       it 'lists the expiration ahead of attributes that cannot fail the request' do
-        expect(evaluation[:description]).to eql(
+        expect(description).to eql(
           'AAMVA request failed. 2 attributes failed to validate: ' \
           'state_id_expiration, address1',
         )
@@ -137,7 +172,7 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
       end
 
       it 'leaves it out, because #successful? accepts it MISSING' do
-        expect(evaluation[:description]).to eql(
+        expect(description).to eql(
           'AAMVA request failed. 1 attribute failed to validate: address1',
         )
       end
@@ -152,7 +187,7 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
       end
 
       it 'reports the required attribute and not the optional one' do
-        expect(evaluation[:description]).to eql(
+        expect(description).to eql(
           'AAMVA request failed. 1 attribute failed to validate: first_name',
         )
       end
@@ -164,7 +199,7 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::Aamva do
       end
 
       it 'uses the singular' do
-        expect(evaluation[:description]).to eql(
+        expect(description).to eql(
           'AAMVA request failed. 1 attribute failed to validate: dob',
         )
       end
