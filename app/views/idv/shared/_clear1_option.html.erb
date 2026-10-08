@@ -43,7 +43,7 @@
       <%= render ButtonComponent.new(
             type: :submit,
             big: true,
-            class: 'clear1-button margin-top-4 margin-bottom-5',
+            class: "clear1-button margin-top-4 #{local_assigns.fetch(:button_margin_bottom, 'margin-bottom-5')}",
             'aria-label': presenter.clear1_submit,
           ) do %>
         <span><%= presenter.clear1_submit_prefix %></span>
