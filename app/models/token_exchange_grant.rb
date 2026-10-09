@@ -122,10 +122,17 @@ class TokenExchangeGrant < ApplicationRecord
   )
     transaction do
       user.lock!
-      live.where(user:, service_provider_issuer: service_provider.issuer, application:)
-        .find_each { |earlier| earlier.revoke!(reason: 'superseded_by_new_consent', now:) }
+      # Exactly one live row may exist per key (a partial unique index enforces it), so the rows
+      # being replaced are closed before the replacement is written; their live tokens follow it
+      # once it exists.
+      earlier_rows = live.where(
+        user:, service_provider_issuer: service_provider.issuer, application:,
+      ).to_a
+      earlier_rows.each do |earlier|
+        earlier.update!(revoked_at: now, revocation_reason: 'superseded_by_new_consent')
+      end
 
-      create!(
+      replacement = create!(
         user:,
         service_provider_issuer: service_provider.issuer,
         application:,
@@ -140,6 +147,9 @@ class TokenExchangeGrant < ApplicationRecord
         sp_content_version: service_provider.sp_content_version,
         proofed_in_session:,
       )
+
+      earlier_rows.each { |earlier| earlier.transfer_live_tokens_to!(replacement, now:) }
+      replacement
     end
   end
 
@@ -220,6 +230,18 @@ class TokenExchangeGrant < ApplicationRecord
     agency_content_version >= (application.agency&.consent_material_version || 1) &&
       application_content_version >= application.consent_material_version &&
       sp_content_version >= (service_provider_record&.sp_material_version || 1)
+  end
+
+  # Hands this approval's live delegated tokens to the row that replaced it. A re-approval of the
+  # same application is a replacement, not a withdrawal: the tokens keep working and are
+  # re-pointed at the new row, in Redis and on their issuance records, so a later revocation of
+  # the new row ends them.
+  def transfer_live_tokens_to!(replacement, now: Time.zone.now)
+    DelegatedTokenStore.move_grant(id, replacement.id)
+    # rubocop:disable Rails/SkipsModelValidations
+    token_exchange_tokens.where(revoked_at: nil)
+      .update_all(grant_id: replacement.id, updated_at: now)
+    # rubocop:enable Rails/SkipsModelValidations
   end
 
   # Ends this approval; the row is kept for the record. Every delegated token still live under
