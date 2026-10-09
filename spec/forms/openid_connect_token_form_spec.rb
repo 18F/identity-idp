@@ -582,6 +582,94 @@ RSpec.describe OpenidConnectTokenForm do
     end
   end
 
+  describe '#response' do
+    context 'without delegation scopes in the request' do
+      let(:code_verifier) { SecureRandom.hex }
+      let(:code_challenge) { Digest::SHA256.urlsafe_base64digest(code_verifier) }
+      let(:client_assertion) { nil }
+      let(:client_assertion_type) { nil }
+
+      it 'has no scope member' do
+        expect(form.response.keys).to contain_exactly(
+          :access_token, :token_type, :expires_in, :id_token
+        )
+      end
+    end
+
+    context 'when the request named applications for delegated access' do
+      let(:code_verifier) { SecureRandom.hex }
+      let(:code_challenge) { Digest::SHA256.urlsafe_base64digest(code_verifier) }
+      let(:client_assertion) { nil }
+      let(:client_assertion_type) { nil }
+      let(:service_provider) { create(:service_provider, :delegation_service_provider, pkce: true) }
+      let(:user) { create(:user, :proofed) }
+      let(:rails_session_id) { SecureRandom.hex }
+      let!(:housing) do
+        create(
+          :service_provider, :delegation_application, delegation_scope_value: 'housing_records'
+        )
+      end
+      let!(:retirement) do
+        create(
+          :service_provider, :delegation_application,
+          delegation_scope_value: 'retirement_benefits'
+        )
+      end
+      let!(:identity) do
+        IdentityLinker.new(user, service_provider).link_identity(
+          acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+          nonce: nonce,
+          rails_session_id: rails_session_id,
+          ial: 2,
+          code_challenge: code_challenge,
+          scope: 'openid email token_exchange:housing_records token_exchange:retirement_benefits',
+        )
+      end
+
+      before { allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true) }
+
+      def approve(application, remember:, rails_session_id: nil)
+        TokenExchangeGrant.approve!(
+          user:, service_provider:, application:, source: 'consent_screen', remember:,
+          rails_session_id:
+        )
+      end
+
+      it 'lists the attribute scopes and the approved delegation scopes, in request order' do
+        approve(housing, remember: true)
+        approve(retirement, remember: false, rails_session_id: rails_session_id)
+
+        expect(form.response[:scope])
+          .to eq('openid email token_exchange:housing_records token_exchange:retirement_benefits')
+      end
+
+      it 'omits an application the person did not approve' do
+        approve(retirement, remember: true)
+
+        expect(form.response[:scope]).to eq('openid email token_exchange:retirement_benefits')
+      end
+
+      it 'omits a single-authorization approval given in a different sign-in' do
+        approve(housing, remember: false, rails_session_id: 'another-browser-session')
+
+        expect(form.response[:scope]).to eq('openid email')
+      end
+
+      it 'omits an approval revoked after the consent screen' do
+        approve(housing, remember: true).revoke!(reason: 'user_revoked')
+
+        expect(form.response[:scope]).to eq('openid email')
+      end
+
+      it 'omits an approval made stale by a material content change' do
+        approve(housing, remember: true)
+        housing.update!(consent_content_version: 2, consent_material_version: 2)
+
+        expect(form.response[:scope]).to eq('openid email')
+      end
+    end
+  end
+
   describe '#submit' do
     context 'with valid params' do
       it 'returns FormResponse with success: true' do
