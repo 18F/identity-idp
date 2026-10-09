@@ -166,6 +166,65 @@ RSpec.describe ServiceProviderUpdater do
       end
     end
 
+    context 'dashboard payload carries delegated-access fields and API URLs' do
+      let(:application_payload) do
+        openid_connect_sp.merge(
+          delegation_application: true,
+          delegation_scope_value: 'housing_records',
+          delegation_display_name: { en: 'Housing Assistance Records' },
+          delegation_description: { en: 'check your housing application.' },
+          allowed_delegation_service_providers: ['urn:mybenefits'],
+          token_exchange_resource_servers: [
+            {
+              identifier: 'https://records-api.housing.example.gov',
+              certs: [saml_test_sp_cert],
+              token_format: 'oauth',
+              dpop_required: true,
+            },
+            {
+              identifier: 'https://documents-api.housing.example.gov',
+              certs: [saml_test_sp_cert],
+              token_format: 'saml2',
+            },
+          ],
+        )
+      end
+
+      it 'writes the application fields and upserts its API URLs, deactivating ones dropped' do
+        stub_request(:get, fake_dashboard_url)
+          .to_return(status: 200, body: [application_payload].to_json)
+        subject.run
+
+        application = ServiceProvider.find_by(issuer: oidc_issuer)
+        expect(application.delegation_application).to eq(true)
+        expect(application.delegation_scope).to eq('token_exchange:housing_records')
+        expect(application.accepts_delegation_from?('urn:mybenefits')).to eq(true)
+        expect(application.token_exchange_resource_servers.active.pluck(:identifier))
+          .to contain_exactly(
+            'https://records-api.housing.example.gov',
+            'https://documents-api.housing.example.gov',
+          )
+        records_api = application.token_exchange_resource_servers
+          .find_by(identifier: 'https://records-api.housing.example.gov')
+        expect(records_api.certs).to eq([saml_test_sp_cert])
+        expect(records_api.dpop_required).to eq(true)
+
+        # The Dashboard drops one URL: it is deactivated, not deleted, so approvals and tokens
+        # that reference it keep their foreign keys.
+        application_payload[:token_exchange_resource_servers].pop
+        stub_request(:get, fake_dashboard_url)
+          .to_return(status: 200, body: [application_payload].to_json)
+        ServiceProviderUpdater.new.run
+
+        expect(application.token_exchange_resource_servers.active.pluck(:identifier))
+          .to eq(['https://records-api.housing.example.gov'])
+        expect(
+          application.token_exchange_resource_servers
+            .find_by(identifier: 'https://documents-api.housing.example.gov').active,
+        ).to eq(false)
+      end
+    end
+
     context 'dashboard is not available' do
       it 'logs error and does not affect registry' do
         allow(Rails.logger).to receive(:error)
