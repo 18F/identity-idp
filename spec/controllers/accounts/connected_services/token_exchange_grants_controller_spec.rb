@@ -2,7 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Accounts::ConnectedServices::TokenExchangeGrantsController do
   let(:user) { create(:user, :fully_registered) }
-  let(:broker) { create(:service_provider, :active, issuer: 'broker.gov') }
+  let(:broker) do
+    create(:service_provider, :active, issuer: 'broker.gov', token_exchange_enabled_sp: true)
+  end
   let(:target) do
     create(
       :service_provider, :active, issuer: 'target.gov', delegation_application: true,
@@ -20,8 +22,6 @@ RSpec.describe Accounts::ConnectedServices::TokenExchangeGrantsController do
     stub_analytics
     stub_sign_in(user)
     allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:token_exchange_service_providers)
-      .and_return(['broker.gov'])
   end
 
   def grant
@@ -96,7 +96,7 @@ RSpec.describe Accounts::ConnectedServices::TokenExchangeGrantsController do
     end
 
     it 'refuses when the identity is not an allow-listed broker' do
-      allow(IdentityConfig.store).to receive(:token_exchange_service_providers).and_return([])
+      broker.update!(token_exchange_enabled_sp: false)
       patch :update, params: {
         identity_id: broker_identity.id,
         grant_type: 'target',

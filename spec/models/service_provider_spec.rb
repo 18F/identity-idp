@@ -398,4 +398,25 @@ RSpec.describe ServiceProvider do
       expect(application.delegation_description_for(:zh)).to eq('check your housing application.')
     end
   end
+
+  describe '#delegation_service_provider?' do
+    before { allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true) }
+
+    it 'is true for an active, approved service provider' do
+      expect(create(:service_provider, :delegation_service_provider).delegation_service_provider?)
+        .to eq(true)
+    end
+
+    it 'is false without approval, when inactive, or when the capability is off' do
+      expect(create(:service_provider, :active).delegation_service_provider?).to eq(false)
+      expect(
+        create(:service_provider, :delegation_service_provider, active: false)
+                .delegation_service_provider?,
+      ).to eq(false)
+
+      allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(false)
+      expect(create(:service_provider, :delegation_service_provider).delegation_service_provider?)
+        .to eq(false)
+    end
+  end
 end

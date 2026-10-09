@@ -122,7 +122,10 @@ RSpec.describe 'accounts/connected_services/show.html.erb' do
 
   context 'with a connected broker' do
     let(:broker) do
-      create(:service_provider, :active, issuer: 'broker.gov', friendly_name: 'Broker')
+      create(
+        :service_provider, :active, issuer: 'broker.gov', friendly_name: 'Broker',
+                                    token_exchange_enabled_sp: true
+      )
     end
     let(:agency) { create(:agency, name: 'Department of Benefits') }
     let(:target) do
@@ -147,8 +150,6 @@ RSpec.describe 'accounts/connected_services/show.html.erb' do
 
     before do
       allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
-      allow(IdentityConfig.store).to receive(:token_exchange_service_providers)
-        .and_return(['broker.gov'])
     end
 
     it 'renders per-application toggles by agency, an auto-enroll toggle, and a consent modal' do
@@ -198,7 +199,7 @@ RSpec.describe 'accounts/connected_services/show.html.erb' do
     end
 
     it 'renders no management block for a connected app that is not a broker' do
-      allow(IdentityConfig.store).to receive(:token_exchange_service_providers).and_return([])
+      broker.update!(token_exchange_enabled_sp: false)
       render
       expect(rendered).not_to have_css('[data-token-exchange-manage]')
     end

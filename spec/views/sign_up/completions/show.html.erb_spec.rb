@@ -214,8 +214,8 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
 
       before do
         allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
-        allow(IdentityConfig.store).to receive(:token_exchange_service_providers)
-          .and_return([service_provider.issuer])
+        # Approval now lives on the record and requires an active service provider.
+        service_provider.update!(active: true, token_exchange_enabled_sp: true)
       end
 
       context 'with linked agencies' do

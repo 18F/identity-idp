@@ -92,7 +92,7 @@ module VerifySpAttributesConcern
   end
 
   def token_exchange_consent_requested?
-    current_sp&.token_exchange_broker_allowed? &&
+    current_sp&.delegation_service_provider? &&
       decorated_sp_session.requested_attributes.map(&:to_s).include?('token_exchange')
   end
 

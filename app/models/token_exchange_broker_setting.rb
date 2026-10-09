@@ -61,7 +61,7 @@ class TokenExchangeBrokerSetting < ApplicationRecord
 
   def broker_still_connected?
     broker = ServiceProvider.find_by(issuer: broker_issuer)
-    broker&.token_exchange_broker_allowed? &&
+    broker&.delegation_service_provider? &&
       user.connected_apps.exists?(service_provider: broker_issuer)
   end
 end

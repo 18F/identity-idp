@@ -173,7 +173,7 @@ class OpenidConnectTokenExchangeForm
   def broker_authorized?
     return false if broker_identity.blank? || broker_identity.user.blank?
     broker_service_provider&.active? &&
-      broker_service_provider.token_exchange_broker_allowed? &&
+      broker_service_provider.delegation_service_provider? &&
       broker_has_any_grant? &&
       OpenidConnectAttributeScoper.new(broker_identity.scope).token_exchange_requested? &&
       broker_asserted_ial2?
@@ -449,7 +449,7 @@ class OpenidConnectTokenExchangeForm
   def validate_broker_allowed
     return if broker_identity.blank? || broker_identity.user.blank?
     return if broker_service_provider&.active? &&
-              broker_service_provider.token_exchange_broker_allowed?
+              broker_service_provider.delegation_service_provider?
     errors.add(:subject_token, 'broker_not_allowed', type: :broker_not_allowed)
   end
 

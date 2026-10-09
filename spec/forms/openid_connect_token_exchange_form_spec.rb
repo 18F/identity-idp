@@ -4,7 +4,9 @@ RSpec.describe OpenidConnectTokenExchangeForm do
   subject(:form) { described_class.new(params) }
 
   let(:user) { create(:user, :proofed) }
-  let(:broker_sp) { create(:service_provider, :active, issuer: 'broker.gov') }
+  let(:broker_sp) do
+    create(:service_provider, :active, issuer: 'broker.gov', token_exchange_enabled_sp: true)
+  end
   let(:target_sp) do
     create(
       :service_provider, :active,
@@ -46,8 +48,6 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     broker_sp
     target_sp
     allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:token_exchange_service_providers)
-      .and_return(['broker.gov'])
     OutOfBandSessionAccessor.new(rails_session_id).put_empty_user_session
     if grant_targets
       TokenExchangeGrant.grant!(user: user, broker_issuer: 'broker.gov', targets: grant_targets)
@@ -195,8 +195,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
     context 'when the broker SP is not an allow-listed broker' do
       before do
-        allow(IdentityConfig.store).to receive(:token_exchange_service_providers)
-          .and_return([])
+        broker_sp.update!(token_exchange_enabled_sp: false)
       end
 
       it 'fails and mints nothing' do

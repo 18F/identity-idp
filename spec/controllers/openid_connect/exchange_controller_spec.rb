@@ -14,7 +14,9 @@ RSpec.describe OpenidConnect::ExchangeController do
 
     let(:user) { create(:user, :proofed) }
     let(:rails_session_id) { SecureRandom.uuid }
-    let!(:broker_sp) { create(:service_provider, :active, issuer: 'broker.gov') }
+    let!(:broker_sp) do
+      create(:service_provider, :active, issuer: 'broker.gov', token_exchange_enabled_sp: true)
+    end
     let!(:target_sp) do
       create(
         :service_provider, :active,
@@ -41,8 +43,6 @@ RSpec.describe OpenidConnect::ExchangeController do
 
     before do
       allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
-      allow(IdentityConfig.store).to receive(:token_exchange_service_providers)
-        .and_return(['broker.gov'])
       OutOfBandSessionAccessor.new(rails_session_id).put_empty_user_session
       if grant_targets
         TokenExchangeGrant.grant!(user: user, broker_issuer: 'broker.gov', targets: grant_targets)

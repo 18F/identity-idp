@@ -152,7 +152,7 @@ class AccountShowPresenter
   # @return [TokenExchangeBrokerPresenter, nil]
   def token_exchange_for(identity)
     sp = identity.service_provider_record
-    return nil unless sp&.token_exchange_broker_allowed?
+    return nil unless sp&.delegation_service_provider?
 
     TokenExchangeBrokerPresenter.new(user: user, broker: sp)
   end

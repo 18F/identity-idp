@@ -733,7 +733,7 @@ RSpec.describe SignUp::CompletionsController do
     end
 
     context 'when the broker SP offers token-exchange consent' do
-      let(:current_sp) { create(:service_provider, :idv, :active) }
+      let(:current_sp) { create(:service_provider, :idv, :active, token_exchange_enabled_sp: true) }
       let(:user) { create(:user, :proofed) }
       let(:broker_identity) do
         create(:service_provider_identity, user: user, service_provider: current_sp.issuer)
@@ -760,8 +760,6 @@ RSpec.describe SignUp::CompletionsController do
 
       before do
         allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
-        allow(IdentityConfig.store).to receive(:token_exchange_service_providers)
-          .and_return([current_sp.issuer])
         allow(@linker).to receive(:link_identity).and_return(broker_identity)
         stub_sign_in(user)
         subject.session[:sp] = {
@@ -888,7 +886,12 @@ RSpec.describe SignUp::CompletionsController do
     end
 
     context 'auto-enrolling a newly connected agency' do
-      let(:broker) { create(:service_provider, :idv, :active, issuer: 'broker.gov') }
+      let(:broker) do
+        create(
+          :service_provider, :idv, :active, issuer: 'broker.gov',
+                                            token_exchange_enabled_sp: true
+        )
+      end
       let(:current_sp) do
         create(
           :service_provider, :idv, :active, delegation_application: true,
@@ -903,8 +906,6 @@ RSpec.describe SignUp::CompletionsController do
       before do
         broker
         allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
-        allow(IdentityConfig.store).to receive(:token_exchange_service_providers)
-          .and_return(['broker.gov'])
         allow(@linker).to receive(:link_identity).and_return(new_identity)
         stub_sign_in(user)
         subject.session[:sp] = {
