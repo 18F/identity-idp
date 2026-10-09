@@ -36,6 +36,25 @@ RSpec.describe SessionEncryptor do
       )
     end
 
+    it 'KMS encrypts the site key recovery code' do
+      session = {
+        'warden.user.user.session' => { 'site_key_recovery_code' => 'AAAA-BBBB-CCCC-DDDD' },
+      }
+      ciphertext = subject.dump(session)
+
+      partially_decrypted = JSON.parse(
+        Zlib.gunzip(
+          subject.outer_decrypt(MessagePack.unpack(ciphertext)[SessionEncryptor::CIPHERTEXT_KEY]),
+        ),
+      )
+      expect(partially_decrypted.fetch('warden.user.user.session')['site_key_recovery_code'])
+        .to be_nil
+      expect(partially_decrypted.to_json).not_to include('AAAA-BBBB-CCCC-DDDD')
+      expect(subject.load(ciphertext)).to eq(
+        { 'warden.user.user.session' => { 'site_key_recovery_code' => 'AAAA-BBBB-CCCC-DDDD' } },
+      )
+    end
+
     it 'KMS encrypts/decrypts doc auth elements of the session' do
       session = { 'warden.user.user.session' => {
         'idv' => { 'ssn' => '666-66-6666' },

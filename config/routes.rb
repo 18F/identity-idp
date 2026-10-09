@@ -116,6 +116,19 @@ Rails.application.routes.draw do
       get '/login/password' => 'password_capture#new', as: :capture_password
       post '/login/password' => 'password_capture#create'
 
+      get '/account/site_key/recovery_code' => 'site_keys/recovery_codes#show',
+          as: :site_key_recovery_code
+      put '/account/site_key/recovery_code' => 'site_keys/recovery_codes#update'
+      get '/account/site_key/recovery_code/new' => 'site_keys/recovery_codes#new',
+          as: :new_site_key_recovery_code
+      post '/account/site_key/recovery_code' => 'site_keys/recovery_codes#create',
+           as: :site_key_recovery_code_regenerate
+      get '/account/site_key/recover' => 'site_keys/recoveries#new', as: :site_key_recovery
+      post '/account/site_key/recover' => 'site_keys/recoveries#create'
+      get '/account/site_key/recover/start_over' => 'site_keys/recoveries#confirm_destroy',
+          as: :start_over_site_key_recovery
+      delete '/account/site_key/recover' => 'site_keys/recoveries#destroy'
+
       get '/account_reset/recovery_options' => 'account_reset/recovery_options#show'
       post '/account_reset/recovery_options/cancel' => 'account_reset/recovery_options#cancel'
       get '/account_reset/request' => 'account_reset/request#show'

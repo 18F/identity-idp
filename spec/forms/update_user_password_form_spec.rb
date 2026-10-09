@@ -114,9 +114,9 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
         create_site_key_root(user, password: 'old strong password')
       end
 
-      it 'changes the password and deletes the root it cannot re-wrap' do
+      it 'changes the password and drops the password wrap it cannot re-wrap' do
         expect(subject.submit(params).success?).to eq(true)
-        expect(user.reload.site_key_root).to be_nil
+        expect(user.reload.site_key_root.encrypted_root).to be_nil
       end
     end
 

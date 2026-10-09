@@ -27,6 +27,7 @@ class SessionEncryptor
     ['warden.user.user.session', 'idv/in_person'],
     ['warden.user.user.session', 'idv'],
     ['warden.user.user.session', 'personal_key'],
+    ['warden.user.user.session', 'site_key_recovery_code'],
     ['warden.user.user.session', 'unconfirmed_phone'],
     ['flash', 'flashes', 'personal_key'],
     ['flash', 'flashes', 'email'],
