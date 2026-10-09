@@ -67,6 +67,17 @@ RSpec.describe Users::DeleteController do
       expect(User.where(id: user.id).length).to eq(0)
     end
 
+    it 'deletes the site key root with the user' do
+      allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+      user = stub_signed_in_user
+      create_site_key_root(user, password:)
+      expect(SiteKeyRoot.where(user_id: user.id).count).to eq(1)
+
+      delete
+
+      expect(SiteKeyRoot.where(user_id: user.id).count).to eq(0)
+    end
+
     it 'emails user of account deletion' do
       allow(UserMailer).to receive(:account_delete_submitted).and_call_original
       stub_signed_in_user

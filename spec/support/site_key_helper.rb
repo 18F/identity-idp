@@ -3,6 +3,20 @@ module SiteKeyHelper
   # party's browser implements.
   SITE_KEY_WRAP_INFO = 'login.gov site key wrap v1'.freeze
 
+  CreatedSiteKeyRoot = Struct.new(:root, keyword_init: true)
+
+  def create_site_key_root(user, password: user.password)
+    root = SiteKeys::Vault.new(user:, user_session: {}).unlock(password, create: true)
+    user.reload
+    CreatedSiteKeyRoot.new(root:)
+  end
+
+  def derive_site_key(root, issuer)
+    OpenSSL::KDF.hkdf(
+      root, salt: SiteKeys::Vault::SITE_KEY_SALT, info: issuer, length: 32, hash: 'SHA256'
+    )
+  end
+
   def open_sealed_site_key(sealed, recipient:, issuer:)
     payload = JSON.parse(Base64.urlsafe_decode64(sealed))
     epk = JWT::JWK.import(payload['epk'].transform_keys(&:to_sym)).public_key

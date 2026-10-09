@@ -18,6 +18,15 @@ RSpec.describe ServiceProviderSeeder do
       expect { run }.to change(ServiceProvider, :count)
     end
 
+    it 'sets site_key_allowed from the yaml' do
+      run
+
+      expect(ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:test').site_key_allowed)
+        .to eq(true)
+      expect(ServiceProvider.find_by(issuer: 'http://localhost:3000').site_key_allowed)
+        .to eq(false)
+    end
+
     it 'updates the plural certs column with the PEM content of certs' do
       cert_names = ['saml_test_sp', 'saml_test_sp2']
       pems = cert_names.map { |cert| Rails.root.join('certs', 'sp', "#{cert}.crt").read }

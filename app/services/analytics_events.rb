@@ -8587,6 +8587,19 @@ module AnalyticsEvents
     track_event(:sign_in_security_check_failed_visited)
   end
 
+  # @param [Boolean] replaced Whether an existing root was replaced rather than created fresh
+  # A per-site key root was created for the user
+  def site_key_root_created(replaced:, **extra)
+    track_event(:site_key_root_created, replaced:, **extra)
+  end
+
+  # @param [String] error
+  # @param [Boolean] root_replaced Whether the unrecoverable root was replaced with a new one
+  # The user's per-site key root could not be unwrapped with the password they entered
+  def site_key_root_unlock_failed(error:, root_replaced:, **extra)
+    track_event(:site_key_root_unlock_failed, error:, root_replaced:, **extra)
+  end
+
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission

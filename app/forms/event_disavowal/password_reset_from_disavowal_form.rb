@@ -28,7 +28,10 @@ module EventDisavowal
     end
 
     def update_user
-      user.update!(password: password)
+      ActiveRecord::Base.transaction do
+        user.update!(password: password)
+        user.site_key_root&.forget_password!
+      end
     end
 
     def mark_profile_inactive

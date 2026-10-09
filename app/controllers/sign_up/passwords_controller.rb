@@ -4,6 +4,7 @@ module SignUp
   class PasswordsController < ApplicationController
     include UnconfirmedUserConcern
     include NewDeviceConcern
+    include SiteKeyConcern
 
     before_action :find_user_with_confirmation_token
     before_action :confirm_user_needs_sign_up_confirmation
@@ -78,6 +79,7 @@ module SignUp
 
     def sign_in_and_redirect_user
       sign_in @user
+      unlock_site_key_root(permitted_params[:password])
       set_new_device_session(false)
       user_session[:in_account_creation_flow] = true
       user_session[:platform_authenticator_available] =
