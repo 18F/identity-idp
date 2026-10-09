@@ -1893,12 +1893,17 @@ openid_connect.token.errors.invalid_authentication: 客户必须通过 PKCE 或 
 openid_connect.token.errors.invalid_code: 无效，因为与任何用户都匹配不上。请参阅我们的文档： https://developers.login.gov/support/#invalid-code
 openid_connect.token.errors.invalid_code_verifier: code_verifier 与 code_challenge 不匹配。请参阅我们的文档：https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat 必须是整数或者浮动点 Unix 时间印章来代表过去的一个时间。请参阅我们的文档：https://developers.login.gov/support/#invalid-iat
+openid_connect.token.errors.invalid_refresh_token: refresh_token 不是签发给此客户端的有效刷新令牌。
 openid_connect.token.errors.invalid_requested_token_type: 'requested_token_type 必须是 urn:ietf:params:oauth:token-type:access_token 或 urn:ietf:params:oauth:token-type:saml2。'
 openid_connect.token.errors.invalid_signature: 无法根据任何已注册的公钥验证这个说法。请参阅我们的文档：https://developers.login.gov/support/#invalid-token-signature
 openid_connect.token.errors.invalid_subject_token: subject_token 不是为当前连接签发给此客户端的访问令牌。
 openid_connect.token.errors.invalid_subject_token_type: 'subject_token_type 必须是 urn:ietf:params:oauth:token-type:access_token。'
 openid_connect.token.errors.multiple_resources: resource 必须且只能指明一个已注册的 API；一个令牌只有一个受众。
+openid_connect.token.errors.refresh_scope_mismatch: scope 若提供，必须与签发刷新令牌时的范围完全一致。
+openid_connect.token.errors.refresh_token_missing: refresh_token 为必填项。
+openid_connect.token.errors.refresh_token_reused: 此刷新令牌已被使用，因此其所属系列中的所有令牌均已被撤销。请重新发起交换以继续。
 openid_connect.token.errors.resource_missing: resource 为必填项，且必须指明一个已注册的 API。
+openid_connect.token.errors.resource_not_allowed_on_refresh: 刷新时不接受 resource；API 由刷新令牌确定。如需获取其他 API 的令牌，请重新交换。
 openid_connect.token.errors.saml_not_available: '此 API 已注册为使用 SAML 断言，但目前无法提供。'
 openid_connect.token.errors.subject_token_missing: subject_token 为必填项。
 openid_connect.token.errors.subject_token_session_ended: 签发 subject_token 的登录会话已结束；用户必须重新登录后才能开始新的委托。
