@@ -1,0 +1,37 @@
+<%#
+What an agency says about one of its applications, in the agency's own registry content: what the
+application does, what it receives, which agency APIs it uses, whether it can make changes, and
+where to learn more. Shared by the consent screen and the account page; every string is escaped.
+
+locals:
+* application: ServiceProvider (an application registered for delegated access)
+* agency_name: the owning agency's public name, for the learn-more link
+%>
+<span class="display-block">
+  <% if application.delegation_description_for.present? %>
+    <%= t('sign_up.delegation.description', description: application.delegation_description_for) %>
+  <% end %>
+  <% if application.delegation_data_provided_for.present? %>
+    <span class="display-block text-base margin-top-05">
+      <%= t('sign_up.delegation.will_receive', data: Array(application.delegation_data_provided_for).join(', ')) %>
+    </span>
+  <% end %>
+  <% if application.token_exchange_resource_servers.any? %>
+    <span class="display-block text-base margin-top-05"><%= t('sign_up.delegation.services_used') %></span>
+    <ul class="usa-list usa-list--unstyled margin-top-0 font-mono-2xs">
+      <% application.token_exchange_resource_servers.active.each do |resource_server| %>
+        <li><%= resource_server.identifier %></li>
+      <% end %>
+    </ul>
+  <% end %>
+</span>
+<span class="display-flex flex-align-center flex-justify margin-top-1">
+  <span class="usa-tag <%= application.delegation_read_write? ? 'bg-accent-warm-dark' : 'bg-base' %>">
+    <%= application.delegation_read_write? ? t('sign_up.delegation.access_read_write') : t('sign_up.delegation.access_read') %>
+  </span>
+  <% if application.delegation_learn_more_url.present? %>
+    <span class="font-body-2xs">
+      <%= new_tab_link_to(t('sign_up.delegation.learn_more_agency', agency: agency_name), application.delegation_learn_more_url) %>
+    </span>
+  <% end %>
+</span>

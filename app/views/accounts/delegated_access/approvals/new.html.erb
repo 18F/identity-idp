@@ -1,0 +1,37 @@
+<% self.title = t('account.delegated_access.approve.title', sp: @presenter.sp_name) %>
+
+<%= render PageHeadingComponent.new.with_content(t('account.delegated_access.approve.heading', sp: @presenter.sp_name)) %>
+
+<p><%= t('account.delegated_access.approve.description', sp: @presenter.sp_name, months: @presenter.remember_months) %></p>
+
+<%= render 'shared/delegation_service_provider_card', card: @presenter.card %>
+
+<%# The same registry content the consent screen shows, so the person decides on the same
+    information whether they approve here or at sign-in. Nothing here is a choice: the selection
+    was made on the previous page, and this page records it as given. %>
+<% @presenter.agency_groups.each do |agency, applications| %>
+  <% agency_name = agency&.name || t('account.delegated_access.other_agency') %>
+  <section class="margin-bottom-3" data-delegation-agency>
+    <h2 class="h3 margin-bottom-1"><%= agency_name %></h2>
+    <% if agency&.delegation_description_for.present? %>
+      <p class="margin-top-0 margin-bottom-1 text-base-dark"><%= agency.delegation_description_for %></p>
+    <% end %>
+    <% applications.each do |application| %>
+      <div class="border border-primary-light radius-lg padding-2 margin-bottom-2" data-delegation-application>
+        <strong class="display-block"><%= application.delegation_display_name_for.presence || application.display_name %></strong>
+        <%= render 'shared/delegation_application_content', application: application, agency_name: agency_name %>
+      </div>
+    <% end %>
+  </section>
+<% end %>
+
+<%= form_with(url: account_delegated_access_approval_path(service_provider_id: @presenter.service_provider.id), method: :post, local: true) do |f| %>
+  <% @presenter.applications.each do |application| %>
+    <%= hidden_field_tag('application_ids[]', application.id, id: nil) %>
+  <% end %>
+  <%= f.submit(t('account.delegated_access.approve.confirm'), class: 'usa-button usa-button--big usa-button--wide margin-top-2') %>
+<% end %>
+
+<%= render PageFooterComponent.new do %>
+  <%= link_to(t('links.cancel'), account_delegated_access_path) %>
+<% end %>

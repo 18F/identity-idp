@@ -13,61 +13,16 @@ locals:
 %>
 <% spacing = local_assigns[:compact] ? '' : 'margin-bottom-4' %>
 <section class="<%= spacing %>" data-delegation-consent>
-  <% if presenter.delegation_service_description.present? %>
+  <% if presenter.delegation_card.service_description.present? %>
     <p class="margin-top-0 margin-bottom-3">
       <strong><%= presenter.sp_name %></strong>
-      <%= t('sign_up.delegation.service_description', description: presenter.delegation_service_description) %>
+      <%= t('sign_up.delegation.service_description', description: presenter.delegation_card.service_description) %>
     </p>
   <% end %>
 
-  <div class="border border-primary-light radius-lg padding-2 margin-bottom-4" data-delegation-about>
-    <h2 class="h3 margin-top-0 margin-bottom-2"><%= t('sign_up.delegation.about_heading') %></h2>
-    <dl class="margin-0">
-      <div class="padding-bottom-1 border-bottom border-primary-light margin-bottom-1">
-        <dt class="text-bold font-body-2xs text-base-dark"><%= t('sign_up.delegation.run_by', sp: presenter.sp_name) %></dt>
-        <dd class="margin-left-0 display-flex flex-align-center">
-          <% if presenter.delegation_logo_url %>
-            <%= image_tag(presenter.delegation_logo_url, width: 28, height: 28, alt: '', class: 'margin-right-1') %>
-          <% end %>
-          <%= presenter.delegation_operator_name %>
-        </dd>
-      </div>
-      <div class="padding-bottom-1 border-bottom border-primary-light margin-bottom-1">
-        <dt class="text-bold font-body-2xs text-base-dark">
-          <%= presenter.delegation_uses_ai? ? t('sign_up.delegation.uses_ai') : t('sign_up.delegation.does_not_use_ai') %>
-          <% if presenter.delegation_uses_ai? %>
-            <span class="usa-tag bg-primary-lighter text-primary-darker margin-left-05"><%= t('sign_up.delegation.ai_badge') %></span>
-          <% end %>
-        </dt>
-        <% if presenter.delegation_uses_ai? && presenter.delegation_ai_description.present? %>
-          <dd class="margin-left-0">
-            <%= t('sign_up.delegation.uses_ai_description', description: presenter.delegation_ai_description) %>
-          </dd>
-        <% end %>
-      </div>
-      <% if presenter.delegation_data_handling_statement.present? %>
-        <div class="padding-bottom-1 border-bottom border-primary-light margin-bottom-1">
-          <dt class="text-bold font-body-2xs text-base-dark"><%= t('sign_up.delegation.your_information') %></dt>
-          <dd class="margin-left-0">
-            <%= t('sign_up.delegation.data_handling', statement: presenter.delegation_data_handling_statement) %>
-          </dd>
-        </div>
-      <% end %>
-      <%# How long the service provider can act after this sign-in: the delegated tokens it obtains
-          are renewable for at most this long, whatever the person chooses about remembering. %>
-      <div class="padding-bottom-1 margin-bottom-1" data-delegation-access-duration>
-        <dt class="text-bold font-body-2xs text-base-dark"><%= t('sign_up.delegation.access_duration_heading') %></dt>
-        <dd class="margin-left-0">
-          <%= t('sign_up.delegation.access_duration', sp: presenter.sp_name, hours: presenter.delegation_access_hours) %>
-        </dd>
-      </div>
-    </dl>
-    <% if presenter.delegation_learn_more_url %>
-      <p class="margin-bottom-0 margin-top-1">
-        <%= new_tab_link_to(t('sign_up.delegation.learn_more', sp: presenter.sp_name), presenter.delegation_learn_more_url) %>
-      </p>
-    <% end %>
-  </div>
+  <%= render 'shared/delegation_service_provider_card',
+             card: presenter.delegation_card,
+             access_hours: presenter.delegation_access_hours %>
 
   <h2 class="h3 margin-bottom-1"><%= t('sign_up.delegation.requesting_access', sp: presenter.sp_name) %></h2>
   <p class="margin-top-0 margin-bottom-3 text-base-dark" id="delegation-required-explanation">
@@ -133,34 +88,9 @@ locals:
               <% end %>
             </span>
             <span class="usa-checkbox__label-description display-block">
-              <% if application.delegation_description_for.present? %>
-                <%= t('sign_up.delegation.description', description: application.delegation_description_for) %>
-              <% end %>
-              <% if application.delegation_data_provided_for.present? %>
-                <span class="display-block text-base margin-top-05">
-                  <%= t('sign_up.delegation.will_receive', data: Array(application.delegation_data_provided_for).join(', ')) %>
-                </span>
-              <% end %>
-              <% if application.token_exchange_resource_servers.any? %>
-                <span class="display-block text-base margin-top-05"><%= t('sign_up.delegation.services_used') %></span>
-                <ul class="usa-list usa-list--unstyled margin-top-0 font-mono-2xs">
-                  <% application.token_exchange_resource_servers.active.each do |resource_server| %>
-                    <li><%= resource_server.identifier %></li>
-                  <% end %>
-                </ul>
-              <% end %>
+              <%= render 'shared/delegation_application_content', application: application, agency_name: agency_name %>
             </span>
           </label>
-          <div class="display-flex flex-align-center flex-justify margin-top-1 padding-left-4">
-            <span class="usa-tag <%= application.delegation_read_write? ? 'bg-accent-warm-dark' : 'bg-base' %>">
-              <%= application.delegation_read_write? ? t('sign_up.delegation.access_read_write') : t('sign_up.delegation.access_read') %>
-            </span>
-            <% if application.delegation_learn_more_url.present? %>
-              <span class="font-body-2xs">
-                <%= new_tab_link_to(t('sign_up.delegation.learn_more_agency', agency: agency_name), application.delegation_learn_more_url) %>
-              </span>
-            <% end %>
-          </div>
         </div>
       <% end %>
     </fieldset>

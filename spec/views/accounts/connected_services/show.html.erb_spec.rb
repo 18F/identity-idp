@@ -155,52 +155,21 @@ RSpec.describe 'accounts/connected_services/show.html.erb' do
       allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
     end
 
-    it 'renders a toggle per application grouped by agency and a confirmation modal' do
-      toggle_path = connected_services_token_exchange_grant_path(
-        identity_id: service_provider_identity.id,
-      )
+    it 'links to the delegated access page for that service provider' do
       render
 
-      page = Capybara.string(rendered.html)
-      expect(page.find_css('[data-delegation-manage]').size).to eq(1)
-
-      expect(rendered).to have_content(
-        t('account.connected_apps.token_exchange.heading', sp: 'MyBenefits Assistant'),
+      expect(rendered).to have_link(
+        t('account.connected_apps.manage_delegated_access', sp: 'MyBenefits Assistant'),
+        href: account_delegated_access_path(anchor: "delegated-access-#{service_provider.id}"),
       )
-      expect(rendered).to have_content('Department of Housing Support')
-      expect(rendered).to have_css(
-        "form[action='#{toggle_path}'] " \
-        "input[name='application_issuer'][value='urn:housing-records']",
-        visible: false,
-      )
-      expect(rendered).to have_css("[data-delegation-toggle][aria-checked='false']")
-      expect(rendered).to have_css('lg-modal.delegation-consent-modal', visible: false)
-      expect(rendered).to have_content(t('account.connected_apps.token_exchange.modal.confirm'))
     end
 
-    it 'shows an existing approval as on, with the date it was given' do
-      TokenExchangeGrant.approve!(
-        user:, service_provider:, application:, source: 'account_page', remember: true,
-        now: 2.months.ago
-      )
-
-      render
-
-      expect(rendered).to have_css("[data-delegation-toggle][aria-checked='true']")
-      expect(rendered).to have_content(t('account.connected_apps.token_exchange.on'))
-    end
-
-    it 'renders the confirmation modal inside the block in the NDS layout too' do
-      allow(view).to receive(:nds_layout?).and_return(true)
-      render
-      page = Capybara.string(rendered.html)
-      expect(page.find_css('[data-delegation-manage] lg-modal').size).to eq(1)
-    end
-
-    it 'renders no management block for a connected app not approved for delegation' do
+    it 'renders no link for a connected app not approved for delegation' do
       service_provider.update!(token_exchange_enabled_sp: false)
       render
-      expect(rendered).not_to have_css('[data-delegation-manage]')
+      expect(rendered).not_to have_content(
+        t('account.connected_apps.manage_delegated_access', sp: 'MyBenefits Assistant'),
+      )
     end
   end
 end
