@@ -1796,6 +1796,7 @@ notices.verify_email.use_different_email: 使用其他电子邮件
 notices.webauthn_configured: 你账户添加了一个安全密钥。
 notices.webauthn_platform_configured: 你用了自己设备的屏幕锁定给账户添加了人脸或触摸解锁。
 openid_connect.authorization.errors.bad_client_id: 坏的client_id。请参阅我们的文档：https://developers.login.gov/support/#bad-client-id
+openid_connect.authorization.errors.delegation_not_allowed: 委托范围（token_exchange:*）需要来自已获批准进行委托访问的服务提供商的身份已验证请求。请参阅我们的文档：https://developers.login.gov/support/#oidc-delegation
 openid_connect.authorization.errors.invalid_verified_within_duration.one: 值必须至少为 %{count} 天或以上
 openid_connect.authorization.errors.invalid_verified_within_duration.other: 值必须至少为 %{count} 天或以上
 openid_connect.authorization.errors.invalid_verified_within_format: verified_within 格式无法识别
@@ -1808,6 +1809,7 @@ openid_connect.authorization.errors.prompt_invalid: 未找到有效的提示值�
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri 有误。请参阅我们的文档：https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri 与注册的 redirect_uri 不匹配。请参阅我们的文档：https://developers.login.gov/support/#oidc-redirect-match
 openid_connect.authorization.errors.unauthorized_scope: 未经授权的范围。请参阅我们的文档：https://developers.login.gov/support/#oidc-unauthotized-scope
+openid_connect.authorization.errors.unknown_delegation_scope: 未知的委托范围：%{scopes}。请参阅我们的文档：https://developers.login.gov/support/#oidc-delegation
 openid_connect.logout.confirm: 是的，登出 %{app_name}
 openid_connect.logout.deny: 不，到我的账户页面
 openid_connect.logout.errors.client_id_invalid: client_id 不认识。请参阅我们的文档：https://developers.login.gov/support/#client-id-not-recognized

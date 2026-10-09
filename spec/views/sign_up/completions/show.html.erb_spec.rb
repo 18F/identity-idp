@@ -31,8 +31,10 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
       idv_requested:,
       completion_context:,
       selected_email_id:,
+      requested_delegation_scopes:,
     )
   end
+  let(:requested_delegation_scopes) { [] }
 
   before do
     allow(view).to receive(:nds_layout?).and_return(nds_layout)
@@ -197,7 +199,8 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
 
   describe 'delegated-access consent' do
     let(:idv_requested) { true }
-    let(:requested_attributes) { %i[email token_exchange] }
+    let(:requested_attributes) { %i[email] }
+    let(:requested_delegation_scopes) { %w[housing_records] }
 
     context 'when a service provider approved for delegation requests it' do
       let(:agency) { create(:agency, name: 'Department of Housing Support') }

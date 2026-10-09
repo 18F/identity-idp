@@ -770,7 +770,8 @@ RSpec.describe SignUp::CompletionsController do
           issuer: current_sp.issuer,
           acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
           request_url: 'http://example.com',
-          requested_attributes: %w[email token_exchange],
+          requested_attributes: %w[email],
+          requested_delegation_scopes: %w[housing_records],
         }
       end
 

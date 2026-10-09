@@ -174,7 +174,7 @@ class OpenidConnectTokenExchangeForm
     service_provider_record&.active? &&
       service_provider_record.delegation_service_provider? &&
       service_provider_has_any_grant? &&
-      OpenidConnectAttributeScoper.new(service_provider_identity.scope).token_exchange_requested? &&
+      OpenidConnectAttributeScoper.new(service_provider_identity.scope).delegation_requested? &&
       service_provider_asserted_ial2?
   end
 
@@ -339,7 +339,7 @@ class OpenidConnectTokenExchangeForm
     return @application_scope if defined?(@application_scope)
     return @application_scope = nil if service_provider_identity.blank? || application.blank?
 
-    candidates = OpenidConnectAttributeScoper::VALID_SCOPES - %w[openid token_exchange]
+    candidates = OpenidConnectAttributeScoper::VALID_SCOPES - %w[openid]
     if scope.present?
       candidates &= OpenidConnectAttributeScoper.new(scope).scopes
     end
@@ -468,7 +468,7 @@ class OpenidConnectTokenExchangeForm
     return if service_provider_identity.blank? || service_provider_identity.user.blank?
     return if service_provider_has_any_grant? &&
               OpenidConnectAttributeScoper.new(service_provider_identity.scope)
-                .token_exchange_requested?
+                .delegation_requested?
     errors.add(:subject_token, 'consent_required', type: :consent_required)
   end
 

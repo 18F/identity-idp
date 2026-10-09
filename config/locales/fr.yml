@@ -1783,6 +1783,7 @@ notices.verify_email.use_different_email: Utiliser une autre adresse e-mail
 notices.webauthn_configured: Une clé de sécurité a été ajoutée à votre compte.
 notices.webauthn_platform_configured: Vous avez utilisé le verrouillage de l’écran de votre appareil pour ajouter le déverrouillage facial ou tactile à votre compte.
 openid_connect.authorization.errors.bad_client_id: Mauvaise client_id. Veuillez consulter notre documentation à https://developers.login.gov/support/#bad-client-id
+openid_connect.authorization.errors.delegation_not_allowed: Les portées de délégation (token_exchange:*) exigent une demande à identité vérifiée provenant d’un fournisseur de services approuvé pour l’accès délégué. Veuillez consulter notre documentation à https://developers.login.gov/support/#oidc-delegation
 openid_connect.authorization.errors.invalid_verified_within_duration.one: la valeur doit être d’au moins %{count} jour ou plus
 openid_connect.authorization.errors.invalid_verified_within_duration.other: la valeur doit être d’au moins %{count} jours ou plus
 openid_connect.authorization.errors.invalid_verified_within_format: Format non reconnu pour verified_within
@@ -1795,6 +1796,7 @@ openid_connect.authorization.errors.prompt_invalid: prompt est non valide. Veuil
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri est non valide. Veuillez consulter notre documentation à https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri ne correspond pas au redirect_uri enregistré. Veuillez consulter notre documentation à https://developers.login.gov/support/#oidc-redirect-match
 openid_connect.authorization.errors.unauthorized_scope: Portée non autorisée. Veuillez consulter notre documentation à https://developers.login.gov/support/#oidc-unauthotized-scope
+openid_connect.authorization.errors.unknown_delegation_scope: 'Portée de délégation inconnue : %{scopes}. Veuillez consulter notre documentation à https://developers.login.gov/support/#oidc-delegation'
 openid_connect.logout.confirm: Oui, déconnectez-vous de %{app_name}
 openid_connect.logout.deny: Non, allez sur la page de mon compte
 openid_connect.logout.errors.client_id_invalid: client_id n’a pas été reconnu. Veuillez consulter notre documentation à https://developers.login.gov/support/#client-id-not-recognized

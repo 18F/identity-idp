@@ -35,7 +35,8 @@ class CompletionsPresenter
     requested_attributes:,
     idv_requested:,
     completion_context:,
-    selected_email_id:
+    selected_email_id:,
+    requested_delegation_scopes: []
   )
     @current_user = current_user
     @current_sp = current_sp
@@ -44,6 +45,7 @@ class CompletionsPresenter
     @idv_requested = idv_requested
     @completion_context = completion_context
     @selected_email_id = selected_email_id
+    @requested_delegation_scopes = Array(requested_delegation_scopes).map(&:to_s)
   end
 
   def idv_requested?
@@ -108,8 +110,7 @@ class CompletionsPresenter
   # Whether this screen collects delegated-access consent: the service provider is approved for
   # delegation and asked for it in this sign-in.
   def delegation_requested?
-    current_sp.delegation_service_provider? &&
-      requested_attributes.map(&:to_s).include?('token_exchange')
+    current_sp.delegation_service_provider? && @requested_delegation_scopes.any?
   end
 
   def delegation_disclosure
