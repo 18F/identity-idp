@@ -68,6 +68,30 @@ RSpec.describe BillableEventTrackable do
       end.to_not(change { SpReturnLog.count }.from(1))
     end
 
+    it 'writes the same row as before through the shared writer, billable once per session' do
+      expect(Billing::SpReturnLogWriter).to receive(:write).twice.and_call_original
+
+      instance.track_billing_events
+      first = SpReturnLog.last
+      expect(first).to have_attributes(
+        request_id:, user_id: current_user.id, billable: true, ial: 1,
+        issuer: current_sp.issuer, profile_id: nil, profile_verified_at: nil,
+        profile_requested_issuer: nil, returned_at: Time.zone.now, access_type: 'direct'
+      )
+      expect(instance.user_session["auth_counted_#{current_sp.issuer}ial1"]).to eq(true)
+
+      # A later handoff in the same session writes nothing: the row for this request id exists.
+      expect { instance.track_billing_events }.not_to(change { SpReturnLog.count })
+    end
+
+    it 'writes a non-billable row for a later handoff with a new request id' do
+      instance.track_billing_events
+      later = fake_controller_class.new(**instance.to_h, request_id: SecureRandom.hex)
+
+      expect { later.track_billing_events }.to change { SpReturnLog.count }.by(1)
+      expect(SpReturnLog.last).to have_attributes(billable: false, access_type: 'direct')
+    end
+
     context 'with an IAL 1 event' do
       let(:ial_context) { IalContext.new(ial: 1, service_provider: current_sp) }
 

@@ -12,22 +12,17 @@ module BillableEventTrackable
 
   private
 
+  # The direct sign-in row, written through the shared writer so its columns are computed the
+  # same way as a delegated row's. A repeat of the same request id is dropped silently.
   def create_sp_return_log(billable:)
-    SpReturnLog.create(
-      request_id: request_id,
+    Billing::SpReturnLogWriter.write(
       user: current_user,
-      billable: billable,
-      ial: ial_context.bill_for_ial_1_or_2,
       issuer: current_sp.issuer,
-      profile_id: ial_context.bill_for_ial_1_or_2 > 1 ? current_user.active_profile&.id : nil,
-      profile_verified_at: ial_context.bill_for_ial_1_or_2 > 1 ?
-        current_user.active_profile&.verified_at : nil,
-      profile_requested_issuer: ial_context.bill_for_ial_1_or_2 > 1 ?
-        current_user.active_profile&.initiating_service_provider_issuer : nil,
-      returned_at: Time.zone.now,
+      ial: ial_context.bill_for_ial_1_or_2,
+      request_id: request_id,
+      billable: billable,
+      access_type: SpReturnLog::ACCESS_TYPE_DIRECT,
     )
-  rescue ActiveRecord::RecordNotUnique
-    nil
   end
 
   def current_session_has_been_billed?
