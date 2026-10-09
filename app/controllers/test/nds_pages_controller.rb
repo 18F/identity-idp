@@ -932,6 +932,32 @@ module Test
       {}
     end
 
+    def setup_confirm_backup_codes
+      {}
+    end
+
+    def setup_backup_code_reminder
+      flash.now[:success] = t('notices.authenticated_successfully')
+      {}
+    end
+
+    def setup_backup_code_regenerate
+      {}
+    end
+
+    def setup_backup_codes
+      user = build_mfa_user(configured: params[:second].present?)
+      @nds_current_user = user
+      @in_account_creation_flow = params[:account_creation].present?
+      @in_multi_mfa_selection_flow = params[:multi].present?
+      @codes = BackupCodeGenerator.new(user).send(:generate_new_codes)
+      {}
+    end
+
+    def setup_backup_code_confirm_setup
+      {}
+    end
+
     def setup_backup_code_delete
       {}
     end
@@ -954,7 +980,6 @@ module Test
       @presenter = Idv::WelcomePresenter.new(
         decorated_sp_session:,
         show_sp_reproof_banner: params[:reproof].present?,
-        passport_cards_supported: true,
         mdl_enabled: true,
       )
       @consent_form = Idv::ConsentForm.new(idv_consent_given: false)
@@ -969,6 +994,7 @@ module Test
         auto_check_value: :state_id_card,
         passport_cards_enabled: params[:passport_card].present?,
         mdl_enabled: params[:mdl].present?,
+        disable_mdl: params[:disable_mdl].present?,
         show_verify_in_person: params[:ipp].present?,
       }
     end
@@ -1179,7 +1205,7 @@ module Test
     def setup_hybrid_handoff
       @upload_enabled = params[:upload].present?
       @presenter = Idv::HowToVerifyPresenter.new(
-        selfie_check_required: false, mdl_enabled: false, clear1_enabled: false,
+        selfie_check_required: false, mdl_enabled: false, clear1_allowed: false,
       )
       form = Idv::PhoneForm.new(
         previous_params: { phone: '2025551212' }, user: User.new, delivery_methods: [:sms],
@@ -1263,6 +1289,22 @@ module Test
       @code = '0193-0039-4739-9920'
       @personal_key_generated_at = Time.zone.today
       flash.now[:success] = t('idv.messages.confirm') if params[:toast].present?
+      {}
+    end
+
+    def setup_email_language
+      user = User.new(email_language: params[:language].presence)
+      @nds_current_user = user
+      {}
+    end
+
+    def setup_account_delete
+      user = User.new
+      if params[:verified].present?
+        user.define_singleton_method(:identity_verified?) { true }
+      end
+      @nds_current_user = user
+      flash.now[:error] = t('idv.errors.incorrect_password') if params[:error].present?
       {}
     end
 

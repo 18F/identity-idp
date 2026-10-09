@@ -37,6 +37,7 @@ module SignUp
 
     def process_successful_confirmation
       process_valid_confirmation_token
+      session[:sign_in_flow] ||= :create_account
       redirect_to sign_up_enter_password_url(confirmation_token: @confirmation_token)
     end
 

@@ -141,6 +141,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:dob) do
     (Time.zone.today - (IdentityConfig.store.idv_min_age_years + 1).years).strftime('%Y-%m-%d')
   end
+  let(:ssn) { '111223333' }
   let(:document_number) { '123' }
   let(:jurisdiction) { 'MD' }
   let(:address1) { '123 Main' }
@@ -218,7 +219,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       last_name:,
       dob:,
       phone: '555-555-5555',
-      ssn: '111223333',
+      ssn:,
       id_type:,
       residential_address:,
       state_id:,
@@ -920,8 +921,115 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             end
           end
 
+          context 'ssn data format is invalid' do
+            let(:ssn) { '123-45-6789' }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'dob data format is invalid' do
+            let(:dob) { '04-04-1990' }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'dob is formatted correctly but is not a real date' do
+            let(:dob) { '1990-02-30' }
+            let(:body_errors) { { dob: ['must be in YYYY-MM-DD format'] } }
+
+            it 'returns 400 with a date format error' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              expect(JSON.parse(response.body, symbolize_names: true)).to eq(body_errors)
+            end
+          end
+
+          context 'ssn is too short and contains non-digits' do
+            let(:ssn) { '12-345' }
+            let(:body_errors) do
+              {
+                ssn: [
+                  'Enter a nine-digit Social Security number',
+                  'is too short (minimum is 9 characters)',
+                  'must contain only digits',
+                ],
+              }
+            end
+
+            it 'returns 400 with every ssn error' do
+              expect(action.status).to eq(400)
+              expect(JSON.parse(response.body, symbolize_names: true)).to eq(body_errors)
+            end
+          end
+
+          context 'top-level fields exceed their max length' do
+            let(:first_name) { 'a' * 129 }
+            let(:last_name) { 'a' * 128 }
+            let(:body_errors) { { first_name: ['is too long (maximum is 128 characters)'] } }
+
+            it 'returns 400 only for the fields over the limit' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              expect(JSON.parse(response.body, symbolize_names: true)).to eq(body_errors)
+            end
+          end
+
+          context 'a field is not a string' do
+            let(:first_name) { 12345 }
+            let(:body_errors) { { first_name: ['must be a string'] } }
+
+            it 'returns 400 with a type error' do
+              expect(action.status).to eq(400)
+              expect(JSON.parse(response.body, symbolize_names: true)).to eq(body_errors)
+            end
+          end
+
+          context 'state_id fields are invalid' do
+            let(:document_number) { '1' * 65 }
+            let(:issue_date) { '01/01/2025' }
+            let(:body_errors) do
+              {
+                'state_id.document_number': ['is too long (maximum is 64 characters)'],
+                'state_id.issue_date': [
+                  'must be in YYYY-MM-DD format',
+                ],
+              }
+            end
+
+            it 'returns 400 with errors keyed by the nested path' do
+              expect(action.status).to eq(400)
+              expect(JSON.parse(response.body, symbolize_names: true)).to eq(body_errors)
+            end
+          end
+
+          context 'residential_address zip_code is too long' do
+            let(:residential_address) do
+              valid_residential_address.merge(zip_code: '12345-67890')
+            end
+            let(:body_errors) { { zip_code: ['is invalid'] } }
+
+            it 'returns 400 with the address form error' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              expect(JSON.parse(response.body, symbolize_names: true)).to eq(body_errors)
+            end
+          end
+
           context 'user already has an enhanced profile' do
-            let(:ssn) { '111-22-3333' }
+            let(:ssn) { '111223333' }
             before do
               Profile.create!(
                 user_id: user.id,

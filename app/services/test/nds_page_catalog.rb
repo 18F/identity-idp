@@ -15,6 +15,7 @@ module Test
     OTP = 'OTP'
     IDV = 'Identity verification'
     ERRORS = 'Errors'
+    ACCOUNT = 'Account'
 
     PAGES = [
       Page.new(
@@ -130,6 +131,57 @@ module Test
         ],
       ),
       Page.new(
+        key: 'confirm-backup-codes',
+        title: 'Backup codes confirmation (add another method)',
+        flow: MFA,
+        template: 'users/backup_code_setup/confirm_backup_codes',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'backup-code-reminder',
+        title: 'Backup codes reminder',
+        flow: MFA,
+        template: 'users/backup_code_reminder/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'backup-code-regenerate',
+        title: 'Regenerate backup codes',
+        flow: MFA,
+        template: 'users/backup_code_setup/edit',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'backup-codes',
+        title: 'Save your backup codes',
+        flow: MFA,
+        template: 'users/backup_code_setup/create',
+        permutations: [
+          Permutation.new(label: 'Account creation (first MFA)', params: { account_creation: '1' }),
+          Permutation.new(
+            label: 'Account creation (second MFA)',
+            params: { account_creation: '1', second: '1' },
+          ),
+          Permutation.new(label: 'Multi-MFA selection (choose another)', params: { multi: '1' }),
+          Permutation.new(label: 'Regenerated (no stepper)', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'backup-code-confirm-setup',
+        title: 'Backup codes setup (confirm)',
+        flow: MFA,
+        template: 'users/backup_code_setup/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
         key: 'backup-code-delete',
         title: 'Delete backup codes',
         flow: MFA,
@@ -174,6 +226,7 @@ module Test
           Permutation.new(label: 'Default', params: {}),
           Permutation.new(label: 'With passport card', params: { passport_card: '1' }),
           Permutation.new(label: 'With mDL', params: { mdl: '1' }),
+          Permutation.new(label: 'With mDL disabled', params: { disable_mdl: '1' }),
           Permutation.new(label: 'Verify in person', params: { ipp: '1' }),
           Permutation.new(label: 'Passports disabled', params: { no_passport: '1' }),
         ],
@@ -562,6 +615,27 @@ module Test
           Permutation.new(label: 'Verified identity', params: {}),
           Permutation.new(label: 'Auth only (new SP)', params: { auth: '1' }),
           Permutation.new(label: 'Single MFA warning', params: { single: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'email-language',
+        title: 'Email language preference',
+        flow: ACCOUNT,
+        template: 'users/email_language/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Spanish selected', params: { language: 'es' }),
+        ],
+      ),
+      Page.new(
+        key: 'account-delete',
+        title: 'Delete account',
+        flow: ACCOUNT,
+        template: 'users/delete/show',
+        permutations: [
+          Permutation.new(label: 'Unverified', params: {}),
+          Permutation.new(label: 'Verified identity', params: { verified: '1' }),
+          Permutation.new(label: 'Incorrect password', params: { error: '1' }),
         ],
       ),
     ].freeze

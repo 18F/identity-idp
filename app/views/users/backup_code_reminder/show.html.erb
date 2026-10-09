@@ -1,5 +1,35 @@
 <% self.title = t('forms.backup_code_reminder.heading') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(title: t('forms.backup_code_reminder.heading')) do |page| %>
+    <% page.with_media do %>
+      <%= image_tag asset_url('user-signup.svg'), width: 107, height: 119, alt: '', class: 'auth__media', aria: { hidden: true } %>
+    <% end %>
+
+    <% page.with_body do %>
+      <div class="copy copy--muted">
+        <p><%= t('forms.backup_code_reminder.body_info') %></p>
+      </div>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: backup_code_reminder_path,
+              method: :post,
+              params: { has_codes: true },
+              full_width: true,
+            ).with_content(t('forms.backup_code_reminder.have_codes')) %>
+        <%= render ButtonComponent.new(
+              url: backup_code_reminder_path,
+              method: :post,
+              variant: :secondary,
+              full_width: true,
+            ).with_content(t('forms.backup_code_reminder.need_new_codes')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= image_tag asset_url('user-signup.svg'), width: 107, height: 119, alt: '', class: 'margin-bottom-4', aria: { hidden: true } %>
 
 <%= render PageHeadingComponent.new.with_content(t('forms.backup_code_reminder.heading')) %>
@@ -24,3 +54,4 @@
       variant: :quaternary,
       unstyled: true,
     ).with_content(t('forms.backup_code_reminder.need_new_codes')) %>
+<% end %>

@@ -182,15 +182,8 @@ class DocumentCaptureSession < ApplicationRecord
     document_type_requested == Idp::Constants::DocumentTypes::PASSPORT_CARD
   end
 
-  def passport_cards_supported?
-    !!passport_cards_supported
-  end
-
   def in_supported_passport_types?(id_type)
-    return true if id_type == Idp::Constants::DocumentTypes::PASSPORT
-    return id_type == Idp::Constants::DocumentTypes::PASSPORT_CARD if passport_cards_supported?
-
-    false
+    Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES.include?(id_type)
   end
 
   def request_passport_book!

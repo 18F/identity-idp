@@ -102,10 +102,6 @@ class FeatureManagement
     IdentityConfig.store.check_user_password_compromised_enabled
   end
 
-  def self.doc_auth_passport_cards_enabled?
-    IdentityConfig.store.doc_auth_passport_cards_enabled
-  end
-
   def self.doc_capture_polling_enabled?
     IdentityConfig.store.doc_capture_polling_enabled
   end
@@ -124,6 +120,14 @@ class FeatureManagement
 
   def self.sign_in_recaptcha_enabled?
     IdentityConfig.store.sign_in_recaptcha_score_threshold.positive? && recaptcha_enabled?
+  end
+
+  def self.account_creation_recaptcha_enabled?
+    IdentityConfig.store.account_creation_recaptcha_score_threshold.positive? && recaptcha_enabled?
+  end
+
+  def self.password_reset_recaptcha_enabled?
+    IdentityConfig.store.password_reset_recaptcha_score_threshold.positive? && recaptcha_enabled?
   end
 
   def self.recaptcha_enabled?

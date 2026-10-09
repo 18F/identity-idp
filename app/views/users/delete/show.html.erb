@@ -1,5 +1,52 @@
 <% self.title = t('titles.confirmations.delete') %>
 
+<% if nds_layout? %>
+  <%= simple_form_for(current_user, url: account_delete_path, method: :post) do |f| %>
+    <%= render NDS::FormPageComponent.new(title: t('users.delete.heading')) do |page| %>
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <p class="auth__intro-description"><%= t('users.delete.subheading') %></p>
+
+          <ul class="list">
+            <li><%= t('users.delete.bullet_1', app_name: APP_NAME) %></li>
+            <li><%= current_user.delete_account_bullet_key %></li>
+            <li><%= t('users.delete.bullet_3', app_name: APP_NAME) %></li>
+            <li><%= t('users.delete.bullet_4', app_name: APP_NAME) %></li>
+          </ul>
+
+          <%= render NDS::StackComponent.new(align: :stretch) do %>
+            <div class="copy copy--muted">
+              <p><%= t('users.delete.instructions') %></p>
+            </div>
+            <%= render NDS::InputComponent.new(
+                  form: f,
+                  attribute: :password,
+                  type: :password,
+                  label: t('idv.form.password'),
+                  required: true,
+                  autocomplete: 'current-password',
+                ) %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+                variant: :destructive,
+                full_width: true,
+              ).with_content(t('users.delete.actions.delete')) %>
+          <%= render ButtonComponent.new(
+                url: account_path,
+                variant: :secondary,
+                full_width: true,
+              ).with_content(t('users.delete.actions.cancel')) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('users.delete.heading')) %>
 
 <p class="margin-bottom-1">
@@ -38,3 +85,4 @@
       account_path,
       class: 'usa-button usa-button--big usa-button--wide usa-button--outline',
     ) %>
+<% end %>

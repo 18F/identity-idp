@@ -96,6 +96,7 @@ module DocAuth
         error_reason: nil,
         correlation_id_received: nil
       )
+        NewRelic::Agent.notice_error(exception)
         DocAuth::Response.new(
           success: false,
           errors: { network: true, passport: true },

@@ -1,11 +1,10 @@
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { promisify } from 'node:util';
 import { stat } from 'node:fs/promises';
 import { exec as execCallback } from 'node:child_process';
 
 const exec = promisify(execCallback);
-const cwd = dirname(fileURLToPath(import.meta.url));
+const cwd = __dirname;
 
 describe('cli', () => {
   context('with missing output directory', () => {

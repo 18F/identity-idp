@@ -26,6 +26,7 @@ RSpec.describe ProofingAgentJob, type: :job do
   let(:webhook_secret) { 'webhook-secret' }
   let(:webhook_status) { 200 }
   let(:webhook_headers) { nil }
+  let(:failure_email_users) { instance_double(Idv::ProofingAgent::FailureEmailUserSet) }
   let(:idv_proofing_agent_config) do
     [
       {
@@ -50,8 +51,14 @@ RSpec.describe ProofingAgentJob, type: :job do
       ActiveJob::Base.queue_adapter = :test
       ActiveJob::Base.queue_adapter.enqueued_jobs.clear
       ActiveJob::Base.queue_adapter.performed_jobs.clear
+      allow(Idv::ProofingAgent::FailureEmailUserSet).to receive(:new).and_return(
+        failure_email_users,
+      )
+      allow(failure_email_users).to receive(:add)
+      allow(failure_email_users).to receive(:remove)
       allow(IdentityConfig.store).to receive(:idv_proofing_agent_config)
         .and_return(idv_proofing_agent_config)
+      allow(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor).and_return(:mock)
       allow(Db::SpCost::AddSpCost).to receive(:call)
       stub_analytics
       allow(Analytics).to receive(:new).and_return(@analytics)
@@ -104,6 +111,12 @@ RSpec.describe ProofingAgentJob, type: :job do
             },
           },
         )
+      end
+
+      it 'removes the user uuid from the failure email users' do
+        perform
+
+        expect(failure_email_users).to have_received(:remove).with(user.uuid)
       end
 
       it 'sends a profile confirmation email to the user' do
@@ -364,6 +377,11 @@ RSpec.describe ProofingAgentJob, type: :job do
         expect { perform }.not_to change { ActionMailer::Base.deliveries.count }
       end
 
+      it 'adds the user to the failure email users' do
+        perform
+        expect(failure_email_users).to have_received(:add).with(user.uuid)
+      end
+
       it 'does not log the profile confirmation email analytics event' do
         perform
 
@@ -419,7 +437,7 @@ RSpec.describe ProofingAgentJob, type: :job do
     context 'when AAMVA verification throws an unexpected exception' do
       before do
         allow(NewRelic::Agent).to receive(:notice_error)
-        allow_any_instance_of(Proofing::Resolution::Plugins::AamvaPlugin)
+        allow_any_instance_of(DocAuth::Aamva::Verifier)
           .to receive(:call).and_raise('AAMVA IS DOWN')
       end
 
@@ -558,7 +576,16 @@ RSpec.describe ProofingAgentJob, type: :job do
           'IdV: phone confirmation vendor',
           success: true,
           errors: {},
-          vendor: 'AddressMock',
+          vendor: {
+            errors: {},
+            exception: nil,
+            reference: '',
+            result: nil,
+            success: true,
+            timed_out: false,
+            transaction_id: an_instance_of(String),
+            vendor_name: 'AddressMock',
+          },
           area_code: '202',
           country_code: 'US',
           phone_fingerprint: an_instance_of(String),
@@ -588,15 +615,15 @@ RSpec.describe ProofingAgentJob, type: :job do
       end
 
       context 'AAMVA and resolution use the same address selection (dual address verification)' do
-        let(:aamva_plugin) { Proofing::Resolution::Plugins::AamvaPlugin.new }
+        let(:aamva_verifier) { DocAuth::Aamva::Verifier.new }
 
         before do
-          allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new)
-            .and_return(aamva_plugin)
+          allow(DocAuth::Aamva::Verifier).to receive(:new)
+            .and_return(aamva_verifier)
         end
 
         it 'verifies AAMVA with ipp_enrollment_in_progress: true' do
-          expect(aamva_plugin).to receive(:call)
+          expect(aamva_verifier).to receive(:call)
             .with(hash_including(ipp_enrollment_in_progress: true))
             .and_call_original
 
@@ -914,6 +941,12 @@ RSpec.describe ProofingAgentJob, type: :job do
         let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.merge(zipcode: '00000') }
         let(:final_attempt) { true }
 
+        it 'removes the user uuid from the failure email users' do
+          perform
+
+          expect(failure_email_users).to have_received(:remove).with(user.uuid)
+        end
+
         it 'sends a failure email to the user' do
           expect { perform }.to change { ActionMailer::Base.deliveries.count }.by(1)
           expect(ActionMailer::Base.deliveries.last.to)
@@ -956,6 +989,12 @@ RSpec.describe ProofingAgentJob, type: :job do
           allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
         end
 
+        it 'removes the user uuid from the failure email users' do
+          perform
+
+          expect(failure_email_users).to have_received(:remove).with(user.uuid)
+        end
+
         it 'does not send a failure email' do
           perform
           expect(job_analytics).to_not have_logged_event(
@@ -966,6 +1005,12 @@ RSpec.describe ProofingAgentJob, type: :job do
 
       context 'when final_attempt is false and proofing fails' do
         let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.merge(zipcode: '00000') }
+
+        it 'adds the user uuid from the failure email users' do
+          perform
+
+          expect(failure_email_users).to have_received(:add).with(user.uuid)
+        end
 
         it 'does not send a failure email' do
           expect { perform }.not_to change { ActionMailer::Base.deliveries.count }

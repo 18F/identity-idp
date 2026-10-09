@@ -413,6 +413,121 @@ RSpec.describe Idv::Session do
     end
   end
 
+  describe '#verification_phone_number' do
+    let(:confirmation_session) do
+      Idv::PhoneConfirmationSession.new(
+        code: '123456',
+        phone: '+1 202-555-1212',
+        delivery_method: :sms,
+        user:,
+        sent_at: Time.zone.now,
+      )
+    end
+
+    context 'with a phone confirmation session' do
+      before { subject.user_phone_confirmation_session = confirmation_session }
+
+      it 'returns the confirmed phone' do
+        expect(subject.verification_phone_number).to eq('+1 202-555-1212')
+      end
+
+      context 'with a successful precheck as well' do
+        before do
+          subject.phone_precheck_successful = true
+          subject.precheck_phone = { source: :mfa, phone: '+1 202-555-1313' }
+        end
+
+        it 'prefers the confirmed phone' do
+          expect(subject.verification_phone_number).to eq('+1 202-555-1212')
+        end
+      end
+    end
+
+    context 'without a phone confirmation session' do
+      before { subject.user_phone_confirmation_session = nil }
+
+      context 'with a successful precheck' do
+        before do
+          subject.phone_precheck_successful = true
+          subject.precheck_phone = { source: :mfa, phone: '+1 202-555-1313' }
+        end
+
+        it 'returns the precheck phone' do
+          expect(subject.verification_phone_number).to eq('+1 202-555-1313')
+        end
+
+        context 'with a mobile flow phone as well' do
+          before { subject.phone_for_mobile_flow = '+1 202-555-1414' }
+
+          it 'prefers the precheck phone over the mobile flow phone' do
+            expect(subject.verification_phone_number).to eq('+1 202-555-1313')
+          end
+        end
+      end
+
+      context 'without a successful precheck' do
+        before do
+          subject.phone_precheck_successful = false
+          subject.precheck_phone = { source: :mfa, phone: '+1 202-555-1313' }
+        end
+
+        context 'with a mobile flow phone' do
+          before { subject.phone_for_mobile_flow = '+1 202-555-1414' }
+
+          it 'returns the mobile flow phone' do
+            expect(subject.verification_phone_number).to eq('+1 202-555-1414')
+          end
+        end
+
+        context 'without a mobile flow phone' do
+          before { subject.phone_for_mobile_flow = nil }
+
+          it 'returns nil' do
+            expect(subject.verification_phone_number).to be_nil
+          end
+        end
+      end
+    end
+  end
+
+  describe '#precheck_phone_number' do
+    context 'when the precheck succeeded' do
+      before { subject.phone_precheck_successful = true }
+
+      it 'returns the precheck phone' do
+        subject.precheck_phone = { source: :mfa, phone: '+1 202-555-1313' }
+
+        expect(subject.precheck_phone_number).to eq('+1 202-555-1313')
+      end
+
+      it 'reads a precheck phone rehydrated with string keys' do
+        subject.precheck_phone =
+          { 'source' => 'mfa', 'phone' => '+1 202-555-1313' }.with_indifferent_access
+
+        expect(subject.precheck_phone_number).to eq('+1 202-555-1313')
+      end
+
+      it 'returns nil without a precheck phone' do
+        subject.precheck_phone = nil
+
+        expect(subject.precheck_phone_number).to be_nil
+      end
+    end
+
+    [false, nil].each do |precheck_result|
+      context "when the precheck result is #{precheck_result.inspect}" do
+        before do
+          subject.phone_precheck_successful = precheck_result
+          subject.precheck_phone = { source: :mfa, phone: '+1 202-555-1313' }
+        end
+
+        it 'returns nil' do
+          expect(subject.precheck_phone_number).to be_nil
+        end
+      end
+    end
+  end
+
   describe '#profile' do
     it 'is nil by default' do
       expect(subject.profile).to eql(nil)
@@ -486,6 +601,85 @@ RSpec.describe Idv::Session do
 
       it 'returns false' do
         expect(subject.in_person_passports_allowed?).to be(false)
+      end
+    end
+  end
+
+  describe '#inherited_proofed?' do
+    context 'when clear1 is not allowed and not verified' do
+      it 'returns false' do
+        expect(subject.inherited_proofed?).to be(false)
+      end
+    end
+
+    context 'when clear1 allowed' do
+      before do
+        subject.clear1_allowed = true
+      end
+
+      it 'returns false' do
+        expect(subject.inherited_proofed?).to be(false)
+      end
+
+      context 'when clear1 verified' do
+        before do
+          subject.clear1_verified = true
+        end
+
+        it 'returns true' do
+          expect(subject.inherited_proofed?).to be(true)
+        end
+      end
+    end
+
+    context 'when clear1 is not allowed but verified' do
+      before do
+        subject.clear1_allowed = false
+        subject.clear1_verified = true
+      end
+
+      it 'returns false' do
+        expect(subject.inherited_proofed?).to be(false)
+      end
+    end
+  end
+
+  describe '#gpo_verifcation_needed?' do
+    context 'when phone unverified' do
+      it 'returns false' do
+        expect(subject.gpo_verification_needed?).to eq(true)
+      end
+    end
+
+    context 'when phone verified' do
+      before do
+        subject.vendor_phone_confirmation = true
+        subject.user_phone_confirmation = true
+      end
+
+      it 'returns false' do
+        expect(subject.gpo_verification_needed?).to eq(false)
+      end
+
+      context 'when gpo requested' do
+        before do
+          subject.address_verification_mechanism = 'gpo'
+        end
+
+        it 'returns true' do
+          expect(subject.gpo_verification_needed?).to eq(true)
+        end
+      end
+    end
+
+    context 'when clear1 verified' do
+      before do
+        subject.clear1_allowed = true
+        subject.clear1_verified = true
+      end
+
+      it 'returns false' do
+        expect(subject.gpo_verification_needed?).to eq(false)
       end
     end
   end

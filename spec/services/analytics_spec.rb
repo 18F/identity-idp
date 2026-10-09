@@ -63,6 +63,12 @@ RSpec.describe Analytics do
       analytics.track_event('Trackable Event')
     end
 
+    it 'tracks NDS opt out' do
+      expect(ahoy).to receive(:track).with(:nds_look_and_feel_opted_out, anything)
+
+      analytics.nds_look_and_feel_opted_out(previous_bucket: 'nds')
+    end
+
     it 'does not track nil values' do
       expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
 
@@ -309,6 +315,44 @@ RSpec.describe Analytics do
             expect { analytics.track_event('Trackable Event') }
               .not_to change { AbTestAssignment.count }
           end
+        end
+      end
+    end
+
+    context 'with an SP request_id in the session' do
+      let(:request_id) { SecureRandom.uuid }
+      let(:session) { { sp: { request_id: request_id } } }
+
+      it 'includes it as the top-level sp_request_id attribute' do
+        expect(ahoy).to receive(:track).with(
+          'Trackable Event',
+          analytics_attributes.merge(sp_request_id: request_id),
+        )
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'without an SP request_id in the session' do
+      it 'omits the sp_request_id attribute' do
+        expect(ahoy).to receive(:track).with(
+          'Trackable Event',
+          hash_excluding(:sp_request_id),
+        )
+
+        analytics.track_event('Trackable Event')
+      end
+
+      context 'when session[:sp] exists with a blank request_id' do
+        let(:session) { { sp: { request_id: '' } } }
+
+        it 'omits the sp_request_id attribute' do
+          expect(ahoy).to receive(:track).with(
+            'Trackable Event',
+            hash_excluding(:sp_request_id),
+          )
+
+          analytics.track_event('Trackable Event')
         end
       end
     end

@@ -76,8 +76,6 @@ module Idv
     end
 
     def aamva_requirement_met?
-      return true unless IdentityConfig.store.idv_aamva_at_doc_auth_enabled
-
       if [*Idp::Constants::DocumentTypes::PASSPORT_TYPES, Idp::Constants::DocumentTypes::MDL]
           .include?(document_type_received)
         return true
@@ -138,6 +136,7 @@ module Idv
         customer_user_id: document_request_body[:customerUserId],
         document_type_requested: document_request_body[:documentType],
         use_case_key: document_request_body[:useCaseKey],
+        error_redirect: document_request_body[:errorRedirect],
         docv_transaction_token: response_hash.dig(:data, :docvTransactionToken),
         socure_status: response_hash[:status],
         socure_msg: response_hash[:msg],
@@ -147,6 +146,7 @@ module Idv
         .merge(document_request_body).except(
           :documentType, # requested document type
           :useCaseKey,
+          :errorRedirect, # logged as error_redirect
         )
         .merge(response_body: document_response.to_h)
       analytics.idv_socure_document_request_submitted(**analytics_hash)
@@ -188,8 +188,13 @@ module Idv
     end
 
     def document_type_requested
-      document_capture_session.passport_requested? ? Idp::Constants::DocumentTypes::PASSPORT :
+      if document_capture_session.passport_card_requested?
+        Idp::Constants::DocumentTypes::PASSPORT_CARD
+      elsif document_capture_session.passport_book_requested?
+        Idp::Constants::DocumentTypes::PASSPORT
+      else
         Idp::Constants::DocumentTypes::STATE_ID_CARD
+      end
     end
 
     def track_document_issuing_state(user, state)

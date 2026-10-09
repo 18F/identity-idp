@@ -96,7 +96,14 @@ module Idv
         action: :new,
         next_steps: [:personal_key],
         preconditions: ->(idv_session:, user:) do
-          idv_session.phone_or_address_step_complete?
+          if idv_session.agent_proofed
+            idv_session.proofing_agent_match? && idv_session.phone_or_address_step_complete?
+          elsif idv_session.doc_auth_vendor == Idp::Constants::Vendors::CLEAR1 &&
+                idv_session.clear1_verified
+            IdentityConfig.store.idv_clear1_enabled
+          else
+            idv_session.phone_or_address_step_complete?
+          end
         end,
         undo_step: ->(idv_session:, user:) {},
       )
@@ -178,13 +185,10 @@ module Idv
     end
 
     def proofing_completion_phone_number
-      if idv_session.address_verification_mechanism == 'phone'
-        idv_session.user_phone_confirmation_session&.phone
-      elsif idv_session.phone_for_mobile_flow.present?
-        idv_session.phone_for_mobile_flow
-      else
+      return unless idv_session.address_verification_mechanism == 'phone'
+
+      idv_session.verification_phone_number ||
         current_user.default_phone_configuration&.formatted_phone
-      end
     end
 
     def confirm_no_profile_yet
@@ -241,16 +245,19 @@ module Idv
       return unless historical_events_enabled?
       return unless idv_requested?
 
-      current_user.active_profile.create_user_proofing_event(
+      idv_session.profile.create_user_proofing_event(
         attempt_events:,
         password:,
         personal_key: idv_session.personal_key,
         sent_to_sp: attempts_api_enabled_for_session?,
       )
 
-      analytics.historic_event_data_saved(profile_id: current_user.active_profile.id)
+      analytics.historic_event_data_saved(profile_id: idv_session.profile.id)
 
-      AttemptsApi::Cacher.new(current_user, user_session).save(password:)
+      # current_user.active_profile can be stale here because and pass in
+      # the wrong profile. passing the profile in directly ensures it is cached correctly
+      AttemptsApi::Cacher.new(current_user, user_session)
+        .save(password:, profile: idv_session.profile)
 
       user_session.delete('idv/attempts')
     end

@@ -35,6 +35,7 @@ RSpec.describe Idv::DocumentCaptureController do
       id: SecureRandom.uuid,
       success: doc_auth_success,
       doc_auth_success: doc_auth_success,
+      aamva_status: doc_auth_success ? :passed : :not_processed,
       selfie_status: :none,
       pii: { first_name: 'Testy', last_name: 'Testerson', document_type_received: },
       attention_with_barcode: false,
@@ -482,6 +483,24 @@ RSpec.describe Idv::DocumentCaptureController do
         get :show, params: { step: 'hybrid_handoff' }
         expect(response).to render_template :show
         expect(subject.idv_session.skip_doc_auth_from_handoff).to eq(true)
+      end
+
+      it 'sends the in-person picker back to how to verify in the legacy flow' do
+        get :show, params: { step: 'how_to_verify' }
+
+        expect(response).to render_template :show
+        expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to eq(true)
+        expect(assigns(:how_to_verify_url)).to be_nil
+      end
+
+      it 'sends the in-person picker back to choose ID type in the phone-first flow' do
+        subject.idv_session.phone_first_flow = true
+
+        get :show, params: { step: 'how_to_verify' }
+
+        expect(response).to render_template :show
+        expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to eq(true)
+        expect(assigns(:how_to_verify_url)).to eq(idv_choose_id_type_url)
       end
     end
 

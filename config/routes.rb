@@ -381,6 +381,8 @@ Rails.application.routes.draw do
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
     delete '/sign_up/cancel' => 'sign_up/cancellations#destroy', as: :sign_up_destroy
 
+    post '/nds/opt_out' => 'nds/opt_out#create', as: :nds_opt_out
+
     get '/redirect/return_to_sp/account_verified_cta' => 'idv/account_verified_cta_visited#show', as: :account_verified_sign_in_redirect
 
     get '/redirect/return_to_sp/cancel' => 'redirect/return_to_sp#cancel', as: :return_to_sp_cancel

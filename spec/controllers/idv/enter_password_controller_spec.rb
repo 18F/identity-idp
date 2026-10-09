@@ -271,6 +271,128 @@ RSpec.describe Idv::EnterPasswordController do
 
       expect(response).to redirect_to(idv_phone_url)
     end
+
+    context 'proofing agent flow' do
+      let(:agent_proofed_user) do
+        {
+          pii: {},
+          success: true,
+          proofing_agent_id: 'agent_123',
+          proofing_location_id: 'location_456',
+          correlation_id: 'correlation_789',
+          transaction_id: document_capture_session.uuid,
+          service_provider_issuer: sp.issuer,
+        }
+      end
+      let(:document_capture_session) do
+        create(
+          :document_capture_session,
+          user:,
+          doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
+          issuer: sp.issuer,
+          pending_agent_proofed_user_at: Time.zone.now,
+        )
+      end
+      before do
+        # clear out idv_session state
+        subject.idv_session.welcome_visited = nil
+        subject.idv_session.idv_consent_given_at = nil
+        subject.idv_session.proofing_started_at = nil
+        subject.idv_session.flow_path = nil
+        subject.idv_session.pii_from_doc = nil
+        subject.idv_session.ssn = nil
+        subject.idv_session.threatmetrix_session_id = nil
+        subject.idv_session.threatmetrix_review_status = nil
+        subject.idv_session.resolution_successful = nil
+        subject.idv_session.applicant = nil
+        subject.idv_session.resolution_successful = nil
+        allow(IdentityConfig.store).to receive(:idv_proofing_agent_enabled).and_return(true)
+        document_capture_session.store_agent_proofed_user(agent_proofed_user)
+      end
+      context 'when user is agent proofed' do
+        it 'renders the enter_password page' do
+          subject.idv_session.agent_proofed = true
+          subject.idv_session.proofing_agent_match = true
+          subject.idv_session.vendor_phone_confirmation = true
+          subject.idv_session.user_phone_confirmation = true
+
+          get :new
+
+          expect(response).to render_template :new
+        end
+      end
+
+      context 'when user is not agent proofed' do
+        it 'redirects to binding step if the user has not completed it' do
+          subject.idv_session.agent_proofed = true
+          subject.idv_session.proofing_agent_match = nil
+
+          get :new
+
+          # it will redirect to welcome which will redirect to enter_dob_ssn_controller
+          expect(response).to redirect_to(idv_welcome_url)
+        end
+      end
+    end
+
+    context 'inherited proofing flow' do
+      let(:idv_clear1_enabled) { true }
+      let(:document_capture_session) do
+        create(
+          :document_capture_session,
+          user:,
+          doc_auth_vendor: Idp::Constants::Vendors::CLEAR1,
+          issuer: sp.issuer,
+          pending_agent_proofed_user_at: Time.zone.now,
+        )
+      end
+      before do
+        # clear out idv_session state
+        subject.idv_session.vendor_phone_confirmation = nil
+        subject.idv_session.welcome_visited = nil
+        subject.idv_session.idv_consent_given_at = nil
+        subject.idv_session.proofing_started_at = nil
+        subject.idv_session.flow_path = nil
+        subject.idv_session.pii_from_doc = nil
+        subject.idv_session.ssn = nil
+        subject.idv_session.threatmetrix_session_id = nil
+        subject.idv_session.threatmetrix_review_status = nil
+        subject.idv_session.resolution_successful = nil
+        subject.idv_session.applicant = nil
+        subject.idv_session.resolution_successful = nil
+        allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(idv_clear1_enabled)
+      end
+
+      context 'when user is inherited proofed' do
+        before do
+          subject.idv_session.clear1_allowed = true
+          subject.idv_session.clear1_verified = true
+          subject.idv_session.doc_auth_vendor = Idp::Constants::Vendors::CLEAR1
+        end
+        it 'renders the enter_password page' do
+          get :new
+
+          expect(response).to render_template :new
+        end
+
+        context 'when clear1 disabled' do
+          let(:idv_clear1_enabled) { false }
+          it 'renders the enter_password page' do
+            get :new
+
+            expect(response).to redirect_to(idv_welcome_url)
+          end
+        end
+      end
+
+      context 'when user is not inherited proofed' do
+        it 'redirects to welcome page' do
+          get :new
+
+          expect(response).to redirect_to(idv_welcome_url)
+        end
+      end
+    end
   end
 
   describe '#create' do
@@ -315,6 +437,12 @@ RSpec.describe Idv::EnterPasswordController do
         hash_including(success: true),
       )
       expect(response).to redirect_to idv_personal_key_path
+    end
+
+    it 'creates the profile with idv_level of legacy_unsupervised' do
+      put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+      expect(user.profiles.last.idv_level).to eq('legacy_unsupervised')
     end
 
     it 'redirects to confirmation path after user presses the back button' do
@@ -449,9 +577,118 @@ RSpec.describe Idv::EnterPasswordController do
           )
         end
 
+        context 'when the user skipped the phone step because of a phone precheck' do
+          let(:precheck_phone) { '+1 202-555-1313' }
+
+          # A successful precheck marks the phone step started and complete without ever
+          # sending an OTP, so there is no phone confirmation session in the session.
+          before do
+            subject.idv_session.user_phone_confirmation_session = nil
+            subject.idv_session.phone_precheck_successful = true
+            subject.idv_session.precheck_phone = { source: :mfa, phone: precheck_phone }
+          end
+
+          it 'dispatches account verified alert with the precheck phone' do
+            allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
+              profile: user.reload.active_profile,
+              phone: precheck_phone,
+            )
+          end
+
+          context 'when the profile is proofed at an enhanced idv level' do
+            before do
+              subject.idv_session.selfie_check_performed = true
+            end
+
+            it 'sends the proofing completion SMS to the precheck phone' do
+              allow(Telephony).to receive(:send_proofing_completion_confirmation)
+
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(user.reload.active_profile).to be_enhanced
+              expect(Telephony).to have_received(:send_proofing_completion_confirmation).with(
+                hash_including(to: precheck_phone),
+              )
+            end
+          end
+
+          context 'when the precheck phone was rehydrated from the serialized session' do
+            # Sessions round-trip through JSON and come back with indifferent access,
+            # so the precheck phone is read back with string keys.
+            before do
+              subject.idv_session.precheck_phone =
+                { 'source' => 'mfa', 'phone' => precheck_phone }.with_indifferent_access
+            end
+
+            it 'dispatches account verified alert with the precheck phone' do
+              allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
+                profile: user.reload.active_profile,
+                phone: precheck_phone,
+              )
+            end
+          end
+
+          context 'when the user confirmed a phone by OTP after the precheck' do
+            before do
+              subject.idv_session.user_phone_confirmation_session = user_phone_confirmation_session
+            end
+
+            it 'prefers the confirmed phone over the precheck phone' do
+              allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
+                profile: user.reload.active_profile,
+                phone: user_phone_confirmation_session.phone,
+              )
+            end
+          end
+
+          context 'when there is no precheck phone' do
+            before { subject.idv_session.precheck_phone = nil }
+
+            it 'falls back to the default phone configuration phone' do
+              allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
+                profile: user.reload.active_profile,
+                phone: user.default_phone_configuration.formatted_phone,
+              )
+            end
+          end
+
+          [false, nil].each do |precheck_result|
+            context "when the phone precheck result is #{precheck_result.inspect}" do
+              before { subject.idv_session.phone_precheck_successful = precheck_result }
+
+              it 'does not fall back to the unverified precheck phone' do
+                allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+
+                put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+                expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
+                  profile: user.reload.active_profile,
+                  phone: user.default_phone_configuration.formatted_phone,
+                )
+              end
+            end
+          end
+        end
+
         context 'when the user completed verification via the hybrid/mobile flow' do
           before do
-            subject.idv_session.address_verification_mechanism = nil
+            subject.idv_session.user_phone_confirmation_session = nil
             subject.idv_session.phone_for_mobile_flow = '+1 202-555-5555'
           end
 
@@ -469,7 +706,7 @@ RSpec.describe Idv::EnterPasswordController do
 
         context 'when there is no phone confirmation session or mobile flow phone' do
           before do
-            subject.idv_session.address_verification_mechanism = nil
+            subject.idv_session.user_phone_confirmation_session = nil
             subject.idv_session.phone_for_mobile_flow = nil
           end
 
@@ -481,6 +718,23 @@ RSpec.describe Idv::EnterPasswordController do
             expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
               profile: user.reload.active_profile,
               phone: user.default_phone_configuration.formatted_phone,
+            )
+          end
+        end
+
+        context 'when the address verification mechanism is not phone' do
+          before do
+            subject.idv_session.address_verification_mechanism = nil
+          end
+
+          it 'dispatches account verified alert without a phone' do
+            allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
+              profile: user.reload.active_profile,
+              phone: nil,
             )
           end
         end
@@ -552,6 +806,12 @@ RSpec.describe Idv::EnterPasswordController do
           subject.idv_session.applicant =
             Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        end
+
+        it 'creates the profile with idv_level of legacy_in_person' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+          expect(user.profiles.last.idv_level).to eq('legacy_in_person')
         end
 
         it 'redirects to personal key path' do
@@ -1177,6 +1437,48 @@ RSpec.describe Idv::EnterPasswordController do
       end
     end
 
+    context 'user submited a mobile drivers license' do
+      before do
+        subject.idv_session.pii_from_doc = Pii::StateId.new(
+          **Idp::Constants::MOCK_IDV_APPLICANT
+            .merge(document_type_received: Idp::Constants::DocumentTypes::MDL),
+        )
+      end
+
+      it 'creates the profile with idv_level of unsupervised_with_digital_id' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(user.profiles.last.idv_level).to eq('unsupervised_with_digital_id')
+      end
+    end
+
+    context 'selfie check was performed' do
+      before do
+        subject.idv_session.selfie_check_performed = true
+      end
+
+      it 'creates the profile with idv_level of unsupervised_with_selfie' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(user.profiles.last.idv_level).to eq('unsupervised_with_selfie')
+      end
+
+      context 'user submited a mobile drivers license' do
+        before do
+          subject.idv_session.pii_from_doc = Pii::StateId.new(
+            **Idp::Constants::MOCK_IDV_APPLICANT
+              .merge(document_type_received: Idp::Constants::DocumentTypes::MDL),
+          )
+        end
+
+        it 'creates the profile with idv_level of unsupervised_with_digital_id' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+          expect(user.profiles.last.idv_level).to eq('unsupervised_with_digital_id')
+        end
+      end
+    end
+
     context 'user is going through enhanced ipp',
             skip: 'VoT has been deprecated. EIPP should not be determined via acr_values' do
       let(:is_enhanced_ipp) { true }
@@ -1254,7 +1556,7 @@ RSpec.describe Idv::EnterPasswordController do
       end
 
       context 'when historical attempts api is enabled' do
-        context 'when the request requires identity verification' do
+        context 'when the request requires IAL2' do
           before do
             resolved_authn_context_result = Component::Parser.new(
               acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
@@ -1269,7 +1571,7 @@ RSpec.describe Idv::EnterPasswordController do
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
               event = UserProofingEvent.last
 
-              expect(event.profile_id).to eq(user.profiles.last.id)
+              expect(event.profile_id).to eq(user.active_profile.id)
             end
 
             it 'tracks an analytic event' do
@@ -1277,7 +1579,86 @@ RSpec.describe Idv::EnterPasswordController do
 
               expect(@analytics).to have_logged_event(
                 :historic_event_data_saved,
-                profile_id: user.profiles.last.id,
+                profile_id: user.active_profile.id,
+              )
+            end
+
+            it 'caches user proofing events' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              data = controller.user_session[:encrypted_proofing_events]
+              historical_attempts = JSON.parse(
+                SessionEncryptor.new.kms_decrypt(data),
+              )
+
+              expect(historical_attempts).to eq([idv_attempt])
+            end
+          end
+
+          context 'when a user upgrades from basic IdV to IAL2' do
+            let(:user) do
+              create(
+                :user,
+                :proofed,
+                password: ControllerHelper::VALID_PASSWORD,
+              )
+            end
+            let(:old_profile) { user.active_profile }
+
+            it 'creates a UserProofingEvent for the profile' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              updated_user = User.find(user.id)
+              event = UserProofingEvent.last
+
+              expect(event.profile_id).not_to eq(old_profile.id)
+              expect(event.profile_id).to eq(updated_user.active_profile.id)
+            end
+
+            it 'tracks an analytic event' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              updated_user = User.find(user.id)
+
+              expect(@analytics).to have_logged_event(
+                :historic_event_data_saved,
+                profile_id: updated_user.active_profile.id,
+              )
+            end
+
+            it 'caches user proofing events' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              data = controller.user_session[:encrypted_proofing_events]
+              historical_attempts = JSON.parse(
+                SessionEncryptor.new.kms_decrypt(data),
+              )
+
+              expect(historical_attempts).to eq([idv_attempt])
+            end
+          end
+        end
+
+        context 'when the request requires basic IdV' do
+          before do
+            resolved_authn_context_result = Component::Parser.new(
+              acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+            ).parse
+
+            allow(controller).to receive(:resolved_authn_context_result)
+              .and_return(resolved_authn_context_result)
+          end
+
+          context 'with a newly proofed user' do
+            it 'creates a UserProofingEvent for the profile' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              event = UserProofingEvent.last
+
+              expect(event.profile_id).to eq(user.active_profile.id)
+            end
+
+            it 'tracks an analytic event' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(@analytics).to have_logged_event(
+                :historic_event_data_saved,
+                profile_id: user.active_profile.id,
               )
             end
 

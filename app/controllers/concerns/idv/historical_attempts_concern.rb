@@ -11,7 +11,7 @@ module Idv
       return unless IdentityConfig.store.historical_attempts_api_enabled
       return unless profile.present?
 
-      AttemptsApi::Cacher.new(current_user, user_session).save(password:)
+      AttemptsApi::Cacher.new(current_user, user_session).save(password:, profile:)
     end
 
     def send_historic_events?

@@ -165,6 +165,11 @@ class ApplicationController < ActionController::Base
   end
 
   def resolve_nds_bucket
+    session[:nds_ab_test_bucket] ||= ab_test_bucket(:NDS_LOOK_AND_FEEL, request:)&.to_s
+    nds_bucket = session[:nds_ab_test_bucket]
+
+    return false if nds_bucket == AbTestAssignment::OPT_OUT_BUCKET
+
     if IdentityConfig.store.ui_test_bucket_params_enabled
       # Feature flag enabled override:
       # ?ui_test_bucket=nds|legacy selects the bucket and persists
@@ -186,7 +191,7 @@ class ApplicationController < ActionController::Base
       return false if cookies[:ui_test_bucket] == 'legacy'
     end
 
-    ab_test_bucket(:NDS_LOOK_AND_FEEL, request:) == :nds
+    nds_bucket == 'nds'
   end
 
   def attempts_api_enabled_for_session?

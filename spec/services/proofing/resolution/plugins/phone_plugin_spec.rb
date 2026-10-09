@@ -214,6 +214,11 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
           context 'when it is a proofing agent' do
             let(:is_proofing_agent) { true }
 
+            before do
+              allow(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
+                .and_return(:mock)
+            end
+
             it 'calls the proofer and returns results' do
               expect(Proofing::AddressProofer).to receive(:new).and_call_original
               result = call

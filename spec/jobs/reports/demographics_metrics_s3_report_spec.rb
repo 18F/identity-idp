@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'reporting/demographics_metrics_s3_report'
 
 RSpec.describe Reports::DemographicsMetricsS3Report do
   let(:frozen_time) { Time.zone.parse('2026-05-04 10:00:00') } # Day after reporting-rails upload

@@ -1,0 +1,773 @@
+require 'rails_helper'
+
+RSpec.describe DocAuth::Aamva::Verifier do
+  let(:analytics) { FakeAnalytics.new }
+  let(:user_uuid) { 'abcd-1234' }
+  let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(uuid: user_uuid) }
+  let(:current_sp) { build(:service_provider) }
+  let(:ipp_enrollment_in_progress) { false }
+  let(:analytics_arguments) { {} }
+  let(:proofing_agent_id) { 'test-agent-id' }
+  let(:proofing_location_id) { 'test-location-id' }
+  let(:correlation_id) { 'test-correlation-id' }
+  let(:transaction_id) { 'test-transaction-id' }
+  let(:proofer) { instance_double(DocAuth::Aamva::Proofer, proof: proofer_result) }
+  let(:proofer_result) do
+    DocAuth::StateIdResult.new(
+      success: true,
+      vendor_name: 'state_id:aamva',
+      transaction_id: proofer_transaction_id,
+    )
+  end
+  let(:proofer_transaction_id) { 'abcd-123' }
+
+  subject(:verifier) do
+    described_class.new
+  end
+
+  before do
+    allow(verifier).to receive(:proofer).and_return(proofer)
+  end
+
+  describe '#call' do
+    def sp_cost_count_for_issuer
+      SpCost.where(cost_type: :aamva, issuer: current_sp.issuer).count
+    end
+
+    def sp_cost_count_with_transaction_id
+      SpCost.where(
+        cost_type: :aamva,
+        issuer: current_sp.issuer,
+        transaction_id: proofer_transaction_id,
+      ).count
+    end
+
+    context 'document authentication flow' do
+      subject(:call) do
+        verifier.call(
+          applicant_pii:,
+          current_sp:,
+          ipp_enrollment_in_progress:,
+          timer: JobHelpers::Timer.new,
+          analytics:,
+          analytics_arguments:,
+        )
+      end
+
+      context 'when the state ID can proof' do
+        let(:state) { 'WA' }
+        let(:state_id_jurisdiction) { 'WA' }
+
+        context 'when an ipp enrollment is in progress' do
+          let(:ipp_enrollment_in_progress) { true }
+          let(:applicant_pii) do
+            Idp::Constants::MOCK_IPP_APPLICANT.merge(
+              state:, state_id_jurisdiction:,
+              uuid: user_uuid
+            )
+          end
+          let(:proofing_pii) do
+            {
+              first_name: applicant_pii[:first_name],
+              last_name: applicant_pii[:last_name],
+              dob: applicant_pii[:dob],
+              ipp_current_address_matches_id: applicant_pii[:ipp_current_address_matches_id],
+              state_id_expiration: applicant_pii[:state_id_expiration],
+              state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+              state_id_number: applicant_pii[:state_id_number],
+              address1: applicant_pii[:identity_doc_address1],
+              address2: applicant_pii[:identity_doc_address2],
+              city: applicant_pii[:identity_doc_city],
+              state: applicant_pii[:identity_doc_address_state],
+              zipcode: applicant_pii[:identity_doc_zipcode],
+            }
+          end
+
+          before do
+            allow(proofer).to receive(:proof).with(proofing_pii).and_return(proofer_result)
+          end
+
+          context 'when the aamva request is successful' do
+            let(:proofer_result) do
+              DocAuth::StateIdResult.new(
+                success: true,
+                vendor_name: 'state_id:aamva',
+                transaction_id: proofer_transaction_id,
+                requested_attributes: {
+                  first_name: 1,
+                  last_name: 1,
+                  dob: 1,
+                  state_id_number: 1,
+                  document_type_received: 1,
+                  state_id_expiration: 1,
+                  state_id_jurisdiction: 1,
+                  state_id_issued: 1,
+                  height: 1,
+                  sex: 1,
+                  address: 1,
+                },
+                verified_attributes: [
+                  'first_name',
+                  'last_name',
+                  'state_id_number',
+                  'dob',
+                  'document_type_received',
+                  'state_id_expiration',
+                  'state_id_jurisdiction',
+                  'state_id_issued',
+                  'height',
+                  'sex',
+                  'address',
+                ],
+              )
+            end
+            let(:proofer_result_hash) { proofer_result.to_h }
+
+            before do
+              allow(proofer).to receive(:proof).with(applicant_pii).and_return(proofer_result)
+            end
+
+            it 'returns a successful result', :aggregate_failures do
+              call.tap do |result|
+                expect(result).to be_an_instance_of(DocAuth::StateIdResult)
+                expect(result.success?).to eq(true)
+              end
+            end
+
+            it 'tracks an SP cost' do
+              expect { call }.to(
+                change { sp_cost_count_with_transaction_id }
+                  .to(1),
+              )
+            end
+
+            it 'logs a idv_state_id_validation event' do
+              call
+              expect(analytics).to have_logged_event(
+                :idv_state_id_validation, {
+                  success: proofer_result_hash[:success],
+                  errors: proofer_result_hash[:errors],
+                  timed_out: proofer_result_hash[:timed_out],
+                  vendor_name: proofer_result_hash[:vendor_name],
+                  transaction_id: proofer_result_hash[:transaction_id],
+                  requested_attributes: proofer_result_hash[:requested_attributes],
+                  verified_attributes: proofer_result_hash[:verified_attributes],
+                  supported_jurisdiction: true,
+                  jurisdiction_in_maintenance_window:
+                    proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: true,
+                  birth_year: applicant_pii[:dob].to_date.year,
+                  state: applicant_pii[:state],
+                  state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+                  state_id_number: '#' * applicant_pii[:state_id_number].length,
+                  user_id: user_uuid,
+                  aamva_checked: true,
+                }
+              )
+            end
+          end
+
+          context 'when the aamva response is unsuccessful' do
+            let(:proofer_result) do
+              DocAuth::StateIdResult.new(
+                success: false,
+                vendor_name: 'state_id:aamva',
+                transaction_id: proofer_transaction_id,
+                requested_attributes: {
+                  first_name: 1,
+                  last_name: 1,
+                  dob: 1,
+                  state_id_number: 1,
+                  document_type_received: 1,
+                  state_id_expiration: 1,
+                  state_id_jurisdiction: 1,
+                  state_id_issued: 1,
+                  height: 1,
+                  sex: 1,
+                  address: 1,
+                },
+                verified_attributes: [],
+                errors: {
+                  state_id_expiration: ['MISSING'],
+                  state_id_issued: ['MISSING'],
+                  state_id_number: ['UNVERIFIED'],
+                  document_type_received: ['MISSING'],
+                  dob: ['MISSING'],
+                  height: ['MISSING'],
+                  sex: ['MISSING'],
+                  weight: ['MISSING'],
+                  eye_color: ['MISSING'],
+                  last_name: ['MISSING'],
+                  first_name: ['MISSING'],
+                  middle_name: ['MISSING'],
+                  name_suffix: ['MISSING'],
+                  address1: ['MISSING'],
+                  address2: ['MISSING'],
+                  city: ['MISSING'],
+                  state: ['MISSING'],
+                  zipcode: ['MISSING'],
+                },
+              )
+            end
+            let(:proofer_result_hash) { proofer_result.to_h }
+
+            it 'returns a unsuccessful result', :aggregate_failures do
+              call.tap do |result|
+                expect(result).to be_an_instance_of(DocAuth::StateIdResult)
+                expect(result.success?).to eq(false)
+                expect(result.vendor_name).to eq('state_id:aamva')
+              end
+            end
+
+            it 'tracks an SP cost' do
+              expect { call }.to(
+                change { sp_cost_count_with_transaction_id }
+                  .to(1),
+              )
+            end
+
+            it 'logs a idv_state_id_validation event' do
+              call
+              expect(analytics).to have_logged_event(
+                :idv_state_id_validation, {
+                  success: proofer_result_hash[:success],
+                  errors: proofer_result_hash[:errors],
+                  timed_out: proofer_result_hash[:timed_out],
+                  vendor_name: proofer_result_hash[:vendor_name],
+                  transaction_id: proofer_result_hash[:transaction_id],
+                  requested_attributes: proofer_result_hash[:requested_attributes],
+                  verified_attributes: proofer_result_hash[:verified_attributes],
+                  supported_jurisdiction: true,
+                  jurisdiction_in_maintenance_window:
+                    proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: true,
+                  birth_year: applicant_pii[:dob].to_date.year,
+                  state: applicant_pii[:state],
+                  state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+                  state_id_number: '#' * applicant_pii[:state_id_number].length,
+                  user_id: user_uuid,
+                  aamva_checked: true,
+                }
+              )
+            end
+          end
+
+          context 'when the aamva response has an exception' do
+            let(:proofer_result) do
+              DocAuth::StateIdResult.new(
+                success: false,
+                vendor_name: 'state_id:aamva',
+                transaction_id: proofer_transaction_id,
+                exception: RuntimeError.new('I am error!'),
+              )
+            end
+            let(:proofer_result_hash) { proofer_result.to_h }
+
+            it 'returns a unsuccessful result', :aggregate_failures do
+              call.tap do |result|
+                expect(result).to be_an_instance_of(DocAuth::StateIdResult)
+                expect(result.success?).to eq(false)
+                expect(result.vendor_name).to eq('state_id:aamva')
+              end
+            end
+
+            it 'does not track an SP cost' do
+              expect { call }.to_not change { sp_cost_count_with_transaction_id }
+            end
+
+            it 'logs a idv_state_id_validation event' do
+              call
+              expect(analytics).to have_logged_event(
+                :idv_state_id_validation, {
+                  success: proofer_result_hash[:success],
+                  errors: proofer_result_hash[:errors],
+                  exception: proofer_result_hash[:exception],
+                  mva_exception: proofer_result_hash[:mva_exception],
+                  timed_out: proofer_result_hash[:timed_out],
+                  vendor_name: proofer_result_hash[:vendor_name],
+                  transaction_id: proofer_result_hash[:transaction_id],
+                  requested_attributes: proofer_result_hash[:requested_attributes],
+                  verified_attributes: proofer_result_hash[:verified_attributes],
+                  supported_jurisdiction: true,
+                  jurisdiction_in_maintenance_window:
+                    proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: true,
+                  birth_year: applicant_pii[:dob].to_date.year,
+                  state: applicant_pii[:state],
+                  state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+                  state_id_number: '#' * applicant_pii[:state_id_number].length,
+                  user_id: user_uuid,
+                  aamva_checked: false,
+                  bypass_exception: false,
+                }
+              )
+            end
+          end
+        end
+
+        context 'when an ipp enrollment is not in progress' do
+          let(:ipp_enrollment_in_progress) { false }
+          let(:applicant_pii) do
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
+              state:, state_id_jurisdiction:,
+              uuid: user_uuid
+            )
+          end
+
+          before do
+            allow(proofer).to receive(:proof).with(applicant_pii).and_return(proofer_result)
+          end
+
+          context 'when the aamva response is successful' do
+            let(:proofer_result) do
+              DocAuth::StateIdResult.new(
+                success: true,
+                vendor_name: 'state_id:aamva',
+                transaction_id: proofer_transaction_id,
+              )
+            end
+            let(:proofer_result_hash) { proofer_result.to_h }
+
+            it 'returns a successful result', :aggregate_failures do
+              call.tap do |result|
+                expect(result).to be_an_instance_of(DocAuth::StateIdResult)
+                expect(result.success?).to eq(true)
+              end
+            end
+
+            it 'tracks an SP cost' do
+              expect { call }.to(
+                change { sp_cost_count_with_transaction_id }
+                  .to(1),
+              )
+            end
+
+            it 'logs a idv_state_id_validation event' do
+              call
+              expect(analytics).to have_logged_event(
+                :idv_state_id_validation, {
+                  success: proofer_result_hash[:success],
+                  errors: proofer_result_hash[:errors],
+                  timed_out: proofer_result_hash[:timed_out],
+                  vendor_name: proofer_result_hash[:vendor_name],
+                  transaction_id: proofer_result_hash[:transaction_id],
+                  requested_attributes: proofer_result_hash[:requested_attributes],
+                  verified_attributes: proofer_result_hash[:verified_attributes],
+                  supported_jurisdiction: true,
+                  jurisdiction_in_maintenance_window:
+                    proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: false,
+                  birth_year: applicant_pii[:dob].to_date.year,
+                  state: applicant_pii[:state],
+                  state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+                  state_id_number: '#' * applicant_pii[:state_id_number].length,
+                  document_type_received: applicant_pii[:document_type_received],
+                  user_id: user_uuid,
+                  aamva_checked: true,
+                }
+              )
+            end
+          end
+
+          context 'when the aamva response is unsuccessful' do
+            let(:proofer_result) do
+              DocAuth::StateIdResult.new(
+                success: false,
+                vendor_name: 'state_id:aamva',
+                transaction_id: proofer_transaction_id,
+                requested_attributes: {
+                  first_name: 1,
+                  last_name: 1,
+                  dob: 1,
+                  state_id_number: 1,
+                  document_type_received: 1,
+                  state_id_expiration: 1,
+                  state_id_jurisdiction: 1,
+                  state_id_issued: 1,
+                  height: 1,
+                  sex: 1,
+                  address: 1,
+                },
+                verified_attributes: [],
+                errors: {
+                  state_id_expiration: ['MISSING'],
+                  state_id_issued: ['MISSING'],
+                  state_id_number: ['UNVERIFIED'],
+                  document_type_received: ['MISSING'],
+                  dob: ['MISSING'],
+                  height: ['MISSING'],
+                  sex: ['MISSING'],
+                  weight: ['MISSING'],
+                  eye_color: ['MISSING'],
+                  last_name: ['MISSING'],
+                  first_name: ['MISSING'],
+                  middle_name: ['MISSING'],
+                  name_suffix: ['MISSING'],
+                  address1: ['MISSING'],
+                  address2: ['MISSING'],
+                  city: ['MISSING'],
+                  state: ['MISSING'],
+                  zipcode: ['MISSING'],
+                },
+              )
+            end
+            let(:proofer_result_hash) { proofer_result.to_h }
+
+            it 'returns a unsuccessful result', :aggregate_failures do
+              call.tap do |result|
+                expect(result).to be_an_instance_of(DocAuth::StateIdResult)
+                expect(result.success?).to eq(false)
+                expect(result.vendor_name).to eq('state_id:aamva')
+              end
+            end
+
+            it 'tracks an SP cost for AAMVA' do
+              expect { call }.to(
+                change { sp_cost_count_with_transaction_id }
+                  .to(1),
+              )
+            end
+
+            it 'logs a idv_state_id_validation event' do
+              call
+              expect(analytics).to have_logged_event(
+                :idv_state_id_validation, {
+                  success: proofer_result_hash[:success],
+                  errors: proofer_result_hash[:errors],
+                  timed_out: proofer_result_hash[:timed_out],
+                  vendor_name: proofer_result_hash[:vendor_name],
+                  transaction_id: proofer_result_hash[:transaction_id],
+                  requested_attributes: proofer_result_hash[:requested_attributes],
+                  verified_attributes: proofer_result_hash[:verified_attributes],
+                  supported_jurisdiction: true,
+                  jurisdiction_in_maintenance_window:
+                    proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: false,
+                  birth_year: applicant_pii[:dob].to_date.year,
+                  state: applicant_pii[:state],
+                  state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+                  state_id_number: '#' * applicant_pii[:state_id_number].length,
+                  document_type_received: applicant_pii[:document_type_received],
+                  user_id: user_uuid,
+                  aamva_checked: true,
+                }
+              )
+            end
+          end
+
+          context 'when the aamva response has an exception' do
+            let(:proofer_result) do
+              DocAuth::StateIdResult.new(
+                success: false,
+                vendor_name: 'state_id:aamva',
+                transaction_id: proofer_transaction_id,
+                exception: RuntimeError.new('I am error!'),
+              )
+            end
+            let(:proofer_result_hash) { proofer_result.to_h }
+
+            it 'returns a unsuccessful result', :aggregate_failures do
+              call.tap do |result|
+                expect(result).to be_an_instance_of(DocAuth::StateIdResult)
+                expect(result.success?).to eq(false)
+                expect(result.vendor_name).to eq('state_id:aamva')
+              end
+            end
+
+            it 'does not track an SP cost' do
+              expect { call }.to_not change { sp_cost_count_with_transaction_id }
+            end
+
+            it 'logs a idv_state_id_validation event' do
+              call
+              expect(analytics).to have_logged_event(
+                :idv_state_id_validation, {
+                  success: proofer_result_hash[:success],
+                  errors: proofer_result_hash[:errors],
+                  exception: proofer_result_hash[:exception],
+                  mva_exception: proofer_result_hash[:mva_exception],
+                  timed_out: proofer_result_hash[:timed_out],
+                  vendor_name: proofer_result_hash[:vendor_name],
+                  transaction_id: proofer_result_hash[:transaction_id],
+                  requested_attributes: proofer_result_hash[:requested_attributes],
+                  verified_attributes: proofer_result_hash[:verified_attributes],
+                  supported_jurisdiction: true,
+                  jurisdiction_in_maintenance_window:
+                    proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: false,
+                  birth_year: applicant_pii[:dob].to_date.year,
+                  state: applicant_pii[:state],
+                  state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+                  state_id_number: '#' * applicant_pii[:state_id_number].length,
+                  document_type_received: applicant_pii[:document_type_received],
+                  user_id: user_uuid,
+                  aamva_checked: false,
+                  bypass_exception: false,
+                }
+              )
+            end
+          end
+
+          context 'when aamva returns a bypassed exception' do
+            let(:proofer_result) do
+              DocAuth::StateIdResult.new(
+                success: false,
+                vendor_name: 'state_id:aamva',
+                transaction_id: proofer_transaction_id,
+                exception: RuntimeError.new('ExceptionId: bypass_id'),
+              )
+            end
+            let(:proofer_result_hash) { proofer_result.to_h }
+            let(:analytics_arguments) do
+              {
+                proofing_agent: {
+                  agent_id: proofing_agent_id,
+                  location_id: proofing_location_id,
+                  correlation_id: correlation_id,
+                  transaction_id: transaction_id,
+                },
+              }
+            end
+
+            it 'returns a skipped result' do
+              allow(IdentityConfig.store).to receive(:idv_aamva_bypass_exception_ids).and_return(
+                ['test_id', 'bypass_id'],
+              )
+              call.tap do |result|
+                expect(result.success?).to eq(true)
+                expect(result.vendor_name).to eq(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
+                expect(analytics).to have_logged_event(
+                  :idv_state_id_validation, hash_including(
+                    bypass_exception: true,
+                    proofing_agent: analytics_arguments[:proofing_agent],
+                  )
+                )
+              end
+            end
+          end
+        end
+      end
+
+      context 'when the state ID cannot proof' do
+        let(:state) { 'NP' }
+        let(:state_id_jurisdiction) { 'NP' }
+        let(:analytics_arguments) do
+          {
+            proofing_agent: {
+              agent_id: proofing_agent_id,
+              location_id: proofing_location_id,
+              correlation_id: correlation_id,
+              transaction_id: transaction_id,
+            },
+          }
+        end
+
+        let(:applicant_pii) do
+          Idp::Constants::MOCK_IPP_APPLICANT.merge(
+            state:, state_id_jurisdiction:,
+            uuid: user_uuid
+          )
+        end
+        let(:proofer_result_hash) do
+          DocAuth::StateIdResult.new(
+            success: true,
+            vendor_name: Idp::Constants::Vendors::AAMVA_UNSUPPORTED_JURISDICTION,
+          ).to_h
+        end
+
+        it 'returns an unsupported jurisdiction result' do
+          call.tap do |result|
+            expect(result).to be_an_instance_of(DocAuth::StateIdResult)
+            expect(result.success?).to eq(true)
+            expect(result.vendor_name).to eq(
+              Idp::Constants::Vendors::AAMVA_UNSUPPORTED_JURISDICTION,
+            )
+          end
+        end
+
+        it 'logs a idv_state_id_validation event' do
+          call
+          expect(analytics).to have_logged_event(
+            :idv_state_id_validation, {
+              success: proofer_result_hash[:success],
+              errors: proofer_result_hash[:errors],
+              timed_out: proofer_result_hash[:timed_out],
+              vendor_name: proofer_result_hash[:vendor_name],
+              transaction_id: proofer_result_hash[:transaction_id],
+              requested_attributes: proofer_result_hash[:requested_attributes],
+              verified_attributes: proofer_result_hash[:verified_attributes],
+              supported_jurisdiction: false,
+              jurisdiction_in_maintenance_window:
+                proofer_result_hash[:jurisdiction_in_maintenance_window],
+              ipp_enrollment_in_progress: false,
+              birth_year: applicant_pii[:dob].to_date.year,
+              state: applicant_pii[:state],
+              state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+              state_id_number: '#' * applicant_pii[:state_id_number].length,
+              user_id: user_uuid,
+              aamva_checked: false,
+              proofing_agent: analytics_arguments[:proofing_agent],
+            }
+          )
+        end
+      end
+    end
+  end
+
+  describe '#aamva_supported_state_id_jurisdiction?' do
+    let(:applicant_pii) do
+      Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
+        state_id_jurisdiction: jurisdiction_state,
+        user_id: user_uuid,
+      )
+    end
+    let(:jurisdiction_state) { 'WA' }
+    let(:aamva_supported_jurisdictions) { ['WA'] }
+
+    subject(:supported) do
+      described_class.new.aamva_supports_state_id_jurisdiction?(applicant_pii)
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions)
+        .and_return(aamva_supported_jurisdictions)
+    end
+
+    context 'when jurisdiction is supported' do
+      it 'returns true' do
+        expect(supported).to eql(true)
+      end
+      context 'but address state is not' do
+        let(:address_state) { 'MT' }
+        it 'still returns true' do
+          expect(supported).to eql(true)
+        end
+      end
+    end
+
+    context 'when jurisdiction is not supported' do
+      let(:jurisdiction_state) { 'MT' }
+
+      it 'returns false' do
+        expect(supported).to eql(false)
+      end
+
+      context 'but address state is' do
+        let(:address_state) { 'WA' }
+        it 'still returns false' do
+          expect(supported).to eql(false)
+        end
+      end
+    end
+  end
+
+  describe '#skipped_result' do
+    it 'returns a check skipped result' do
+      verifier.skipped_result.tap do |result|
+        expect(result.success?).to eql(true)
+        expect(result.vendor_name).to eql(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
+      end
+    end
+  end
+
+  describe '#passport_applicant?' do
+    context 'with a passport document_type_received' do
+      let(:applicant_pii) do
+        {
+          document_type_received: 'passport',
+          first_name: 'Test',
+          last_name: 'User',
+        }
+      end
+
+      it 'correctly identifies passport applicant' do
+        expect(described_class.new.send(:passport_applicant?, applicant_pii)).to be true
+      end
+    end
+
+    context 'with a non-passport document_type_received' do
+      let(:applicant_pii) do
+        {
+          document_type_received: 'drivers_license',
+          first_name: 'Test',
+          last_name: 'User',
+        }
+      end
+
+      it 'correctly identifies non-passport applicant' do
+        expect(described_class.new.send(:passport_applicant?, applicant_pii)).to be false
+      end
+    end
+
+    context 'with no document_type_received' do
+      let(:applicant_pii) do
+        {
+          first_name: 'Test',
+          last_name: 'User',
+        }
+      end
+
+      it 'returns false when document type is not specified' do
+        expect(described_class.new.send(:passport_applicant?, applicant_pii)).to be false
+      end
+    end
+  end
+
+  describe '#biographical_info' do
+    subject(:biographical_info) do
+      described_class.new.biographical_info(applicant_pii)
+    end
+
+    context 'when the applicant has a document type' do
+      let(:applicant_pii) do
+        Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(uuid: user_uuid)
+      end
+
+      it 'reports the document type' do
+        expect(biographical_info[:document_type_received]).to eq('drivers_license')
+      end
+    end
+
+    context 'when the applicant has a non-driver state ID' do
+      let(:applicant_pii) do
+        Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
+          uuid: user_uuid,
+          document_type_received: Idp::Constants::DocumentTypes::STATE_ID_CARD,
+        )
+      end
+
+      it 'distinguishes it from a drivers license' do
+        expect(biographical_info[:document_type_received]).to eq('state_id_card')
+      end
+    end
+
+    context 'when the applicant presented a passport card' do
+      let(:applicant_pii) do
+        {
+          uuid: user_uuid,
+          dob: '1990-10-06',
+          document_type_received: Idp::Constants::DocumentTypes::PASSPORT_CARD,
+        }
+      end
+
+      it 'reports the passport card without a jurisdiction or ID number' do
+        expect(biographical_info).to include(
+          document_type_received: 'passport_card',
+          state_id_jurisdiction: nil,
+          state_id_number: nil,
+        )
+      end
+    end
+
+    context 'when the applicant has no document type' do
+      let(:applicant_pii) do
+        { uuid: user_uuid, dob: '1990-10-06' }
+      end
+
+      it 'reports nil rather than omitting the key' do
+        expect(biographical_info).to have_key(:document_type_received)
+        expect(biographical_info[:document_type_received]).to be_nil
+      end
+    end
+  end
+end

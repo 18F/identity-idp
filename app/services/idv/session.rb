@@ -7,9 +7,11 @@ module Idv
   # @attr address_verification_mechanism [String, nil]
   # @attr agent_proofed [Boolean, nil]
   # @attr applicant [Struct, nil]
-  # @attr clear1_enabled [Boolean, nil]
+  # @attr clear1_allowed [Boolean, nil]
+  # @attr clear1_verification_session_id [String, nil]
   # @attr clear1_verification_state [String, nil]
   # @attr clear1_verification_token [String, nil]
+  # @attr clear1_verified [Boolean, nil]
   # @attr doc_auth_vendor [String, nil]
   # @attr document_capture_session_uuid [String, nil]
   # @attr flow_path [String, nil]
@@ -32,6 +34,7 @@ module Idv
   # @attr personal_key [String, nil]
   # @attr personal_key_acknowledged [Boolean, nil]
   # @attr phone_confirmation_manually_reviewed [Boolean, nil]
+  # @attr phone_first_flow [Boolean, nil] NDS: hybrid handoff (phone) precedes document capture
   # @attr phone_for_mobile_flow [String, nil]
   # @attr previous_phone_step_params [Array]
   # @attr previous_ssn [String, nil]
@@ -66,9 +69,11 @@ module Idv
       address_verification_mechanism
       agent_proofed
       applicant
-      clear1_enabled
+      clear1_allowed
+      clear1_verification_session_id
       clear1_verification_state
       clear1_verification_token
+      clear1_verified
       doc_auth_vendor
       document_capture_session_uuid
       flow_path
@@ -90,6 +95,7 @@ module Idv
       personal_key
       phone_confirmation_manually_reviewed
       personal_key_acknowledged
+      phone_first_flow
       phone_for_mobile_flow
       phone_precheck_successful
       phone_precheck_vendor
@@ -166,7 +172,7 @@ module Idv
       profile = ActiveRecord::Base.transaction do
         profile = profile_maker.save_profile(
           fraud_pending_reason: threatmetrix_fraud_pending_reason,
-          gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
+          gpo_verification_needed: gpo_verification_needed?,
           in_person_verification_needed: user_has_pending_enrollment,
           selfie_check_performed: session[:selfie_check_performed],
           proofing_components:,
@@ -253,6 +259,21 @@ module Idv
 
     def phone_otp_sent?
       vendor_phone_confirmation && address_verification_mechanism == 'phone'
+    end
+
+    # The phone number confirmed for address verification. A successful phone precheck
+    # completes the phone step without sending an OTP, so there is no phone confirmation
+    # session to read the number from in that case.
+    def verification_phone_number
+      user_phone_confirmation_session&.phone.presence ||
+        precheck_phone_number.presence ||
+        phone_for_mobile_flow.presence
+    end
+
+    def precheck_phone_number
+      return unless phone_precheck_successful
+
+      precheck_phone&.with_indifferent_access&.dig(:phone)
     end
 
     def user_phone_confirmation_session
@@ -367,7 +388,11 @@ module Idv
     end
 
     def phone_or_address_step_complete?
-      verify_by_mail? || phone_confirmed? || proofing_agent_match?
+      verify_by_mail? || phone_confirmed?
+    end
+
+    def inherited_proofed?
+      !!clear1_allowed && !!clear1_verified
     end
 
     def address_mechanism_chosen?
@@ -414,6 +439,10 @@ module Idv
       session[:user_phone_confirmation] = nil
     end
 
+    def phone_first_flow?
+      !!session[:phone_first_flow]
+    end
+
     def skip_hybrid_handoff?
       !!session[:skip_hybrid_handoff]
     end
@@ -430,9 +459,28 @@ module Idv
       IdentityConfig.store.in_person_passports_enabled
     end
 
+    def ipp_passport_requested?
+      !!DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)&.passport_requested?
+    end
+
+    # Confirms the enrollment's document has been verified for its type. In-person
+    # AAMVA only runs on the state ID path, so a passport enrollment never produces
+    # an ipp_aamva_result and is considered complete once requested (a passport
+    # validity check will be added later), while a state ID enrollment must have a
+    # completed AAMVA check.
+    def ipp_document_verification_complete?
+      ipp_passport_requested? || ipp_aamva_result.present?
+    end
+
     def standard_flow_document_capture_eligible?
       flow_path == 'standard' &&
         (skip_hybrid_handoff || desktop_test_mode_enabled?)
+    end
+
+    def gpo_verification_needed?
+      return false if clear1_allowed && clear1_verified
+
+      !phone_confirmed? || verify_by_mail?
     end
 
     private

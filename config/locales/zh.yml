@@ -649,6 +649,8 @@ doc_auth.headings.document_capture: 添加你身份证件的照片
 doc_auth.headings.document_capture_back: 你身份证件的背面
 doc_auth.headings.document_capture_front: 你身份证件的正面
 doc_auth.headings.document_capture_passport: 你的护照
+doc_auth.headings.document_capture_passport_card: 你的护照卡
+doc_auth.headings.document_capture_passport_card_back: 护照卡的背面
 doc_auth.headings.document_capture_selfie: 自拍照
 doc_auth.headings.document_capture_subheader_selfie: 拍一张自拍照
 doc_auth.headings.document_capture_subheader_selfie_review: 自拍照
@@ -661,6 +663,9 @@ doc_auth.headings.mdl_capture: 添加您的移动驾驶证 （mDL） 信息
 doc_auth.headings.no_ssn: 没有社会保障号码？
 doc_auth.headings.passport: 你的护照
 doc_auth.headings.passport_capture: 添加一张你护照的照片
+doc_auth.headings.passport_card: 你的护照卡
+doc_auth.headings.passport_card_back: 护照卡的背面
+doc_auth.headings.passport_card_capture: 添加一张你护照卡的照片
 doc_auth.headings.passport_instructions.howto: '如何拍摄你本人的照片：'
 doc_auth.headings.review_issues: 检查一下你的图片并再试一次
 doc_auth.headings.review_issues_passport: 检查一下你的照片并再试一次
@@ -714,6 +719,7 @@ doc_auth.info.no_ssn: 你必须有社会保障号码才能完成身份验证。
 doc_auth.info.passport_capture: 拍摄一张你护照本的数据页的照片。数据页上有你的护照照片和个人信息。
 doc_auth.info.passport_capture_help_1: 将护照本的数据页与各个引导线对齐。
 doc_auth.info.passport_capture_help_2: 拿稳相机，等待工具拍照。
+doc_auth.info.passport_card_capture: 拍摄一张你护照卡的数据页的照片。数据页上有你的护照照片和个人信息。
 doc_auth.info.review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
 doc_auth.info.review_passport: 我们找不到与你护照信息匹配的记录。添加你ID的新照片，以防你护照信息没被正确读取。
 doc_auth.info.secure_account: 你重输密码时我们会对你的账户加密。加密意味着你的数据受到保护，只有你才能更改你的信息。
@@ -741,19 +747,15 @@ doc_auth.info.verify_at_post_office_description_passport_html: <strong>你只能
 doc_auth.info.verify_at_post_office_instruction: 在网上输入你的信息，然后到一个参与本项目的邮局去亲身验证你的身份。
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话号码和其他个人信息并通过与公共记录核对来验证你的身份。
-doc_auth.info.verify_online_description: 你可以使用美国护照本、美国驾照或州身份证件。
-doc_auth.info.verify_online_description_mdl: 您可以使用美国护照、驾驶执照、移动驾驶执照或州身份证。
+doc_auth.info.verify_online_description: 您可以使用的证件包括：美国护照（护照本或护照卡）、美国驾驶执照或州身份证。
 doc_auth.info.verify_online_description_mdl_and_passport_card: 您可以使用美国护照本或护照卡、驾驶执照、移动驾驶执照（mDL）或州身份证。
-doc_auth.info.verify_online_description_passport_card: 您可以使用的证件包括：美国护照（护照本或护照卡）、美国驾驶执照或州身份证。
 doc_auth.info.verify_online_instruction: 您需要拍摄身份证件照片，以便在线完成身份验证。
 doc_auth.info.verify_online_instruction_selfie: 拍一张自拍照，并拍摄你 ID的照片。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.welcome_sp_reproof_alert: 为了您的安全，%{sp_name} 要求您再次验证您的身份。
 doc_auth.info.you_entered: 你输入了：
-doc_auth.instructions.bullet1: 拥有美国护照本、美国驾照或州身份证件
-doc_auth.instructions.bullet1_mdl: 持有美国护照本、驾驶执照、移动驾驶执照 （mDL） 或州身份证
+doc_auth.instructions.bullet1: 持有美国护照（护照本或护照卡）、美国驾驶执照或州身份证
 doc_auth.instructions.bullet1_mdl_and_passport_card: 持有美国护照本或护照卡、驾驶执照、移动驾驶执照 （mDL） 或州身份证
-doc_auth.instructions.bullet1_passport_card: 持有美国护照（护照本或护照卡）、美国驾驶执照或州身份证
 doc_auth.instructions.bullet2: 输入你的社会保障号码
 doc_auth.instructions.bullet3: 与你电话号码匹配
 doc_auth.instructions.bullet4: 重新输入你 %{app_name} 密码
@@ -1625,6 +1627,9 @@ mfa.second_method_warning.link: 添加第二个身份证实方法。
 mfa.second_method_warning.text: 如果你丢失唯一的身份证实方法，就不得不删除你的账户并从头开始。
 mfa.skip: 现在先跳过
 mfa.webauthn_platform_message: 添加另一个身份证实方法，以防你无法使用第一个方法。
+nds.backup_codes.acknowledgment: 我已将备用代码保存在安全的地方
+nds.backup_codes.info: 如果您失去对手机或其他登录方式的访问权限，备用代码可让您登录。每个代码只能使用一次。请勿分享这些代码。
+nds.backup_codes.title: 保存您的备用代码
 nds.capture_complete.info: 身份证件已成功验证。请返回您的计算机以完成身份验证流程。
 nds.choose_id_type.option_drivers_license: 美国驾照或州身份证
 nds.choose_id_type.option_mdl: 移动驾照
@@ -1664,6 +1669,10 @@ nds.enter_password.info: 您的信息使用您的密码加密。这意味着只�
 nds.errors.cancel_verification: 取消验证
 nds.errors.return_home: 返回主页
 nds.errors.start_over_warning: 您需要从头开始验证您的身份
+nds.footer.experience_notice_html: You’re part of a group experiencing %{link_html}.
+nds.footer.experience_notice_label: Interface preference
+nds.footer.experience_notice_link: our refreshed interface
+nds.footer.switch_to_legacy: Switch to legacy
 nds.hybrid_handoff.heading: 输入您的电话号码
 nds.hybrid_handoff.subtitle: 我们将向您发送一个链接，以便通过可信的服务提供商验证您的身份证件。
 nds.idv_phone.info: 请输入美国电话号码。我们将通过短信或电话向您发送 6 位数验证码。仅支持标准电话线路，不支持 VoIP 或增值号码。可能产生短信和数据费用。
@@ -1782,6 +1791,7 @@ openid_connect.authorization.errors.missing_ial: 缺失有效的 IAL 级别。�
 openid_connect.authorization.errors.no_auth: Acr_values 未经授权。请参阅我们的文档：https://developers.login.gov/support/#oidc-missing-acr-values
 openid_connect.authorization.errors.no_valid_acr_values: 未找到可接受的 acr_values。请参阅我们的文档：https://developers.login.gov/support/#oidc-no-acr-values
 openid_connect.authorization.errors.no_valid_scope: 未找到有效的范围值。请参阅我们的文档：https://developers.login.gov/support/#oidc-no-scope
+openid_connect.authorization.errors.pkce_parameter_pair: code_challenge 和 code_challenge_method 必须同时提供，且不能为空。
 openid_connect.authorization.errors.prompt_invalid: 未找到有效的提示值。请参阅我们的文档：https://developers.login.gov/support/#oidc-no-prompt
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri 有误。请参阅我们的文档：https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri 与注册的 redirect_uri 不匹配。请参阅我们的文档：https://developers.login.gov/support/#oidc-redirect-match
@@ -2192,6 +2202,8 @@ user_mailer.agent_proofing_succeeded.footer_html: 如果您并未亲自尝试进
 user_mailer.agent_proofing_succeeded.header: 您已成功完成身份验证
 user_mailer.agent_proofing_succeeded.subject: 需采取行动：确认您的已验证账户
 user_mailer.contact_link_text: 联系我们
+user_mailer.device_profiling_error_cleared.info: 您的账户（LG22）错误已解决。您现在可以使用您的账户登录机构网站。
+user_mailer.device_profiling_error_cleared.subject: 您可以使用 帐户重新登录。
 user_mailer.dupe_profile.created.description: 有人使用你的个人信息验证了另一个 %{app_name} 账户。 为了你的安全，我们已限制了具有同样信息的所有账户的访问权以及对 %{sp_or_app_name} 的访问权.
 user_mailer.dupe_profile.created.description2_html: 如果另一个账户是你本人验证的，请按照这里列出的 %{steps_link_html}。如果不是你本人，请联系 %{help_center_link_html}.
 user_mailer.dupe_profile.created.heading: 你的个人信息在另一个 %{app_name} 账户上得到了验证

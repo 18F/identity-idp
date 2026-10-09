@@ -25,7 +25,7 @@ module Idv
       deactivation_reason: nil,
       proofing_agent_requested: false
     )
-      profile = Profile.new(user: user, active: false, deactivation_reason: deactivation_reason)
+      profile = Profile.new(user:, active: false, deactivation_reason:)
       profile.initiating_service_provider = initiating_service_provider
       profile.deactivate_for_in_person_verification if in_person_verification_needed
       profile.encrypt_pii(pii_attributes, user_password)
@@ -33,9 +33,10 @@ module Idv
       profile.fraud_pending_reason = fraud_pending_reason
 
       profile.idv_level = set_idv_level(
-        in_person_verification_needed: in_person_verification_needed,
-        selfie_check_performed: selfie_check_performed,
-        proofing_agent_requested: proofing_agent_requested,
+        in_person_verification_needed:,
+        selfie_check_performed:,
+        document_type_received: proofing_components[:document_type_received],
+        proofing_agent_requested:,
       )
 
       profile.save!
@@ -52,6 +53,7 @@ module Idv
     def set_idv_level(
       in_person_verification_needed:,
       selfie_check_performed:,
+      document_type_received:,
       proofing_agent_requested:
     )
       if in_person_verification_needed
@@ -61,6 +63,8 @@ module Idv
         else
           :legacy_in_person
         end
+      elsif Idp::Constants::DocumentTypes::DIGITAL_ID_TYPES.include?(document_type_received)
+        :unsupervised_with_digital_id
       elsif selfie_check_performed
         :unsupervised_with_selfie
       elsif proofing_agent_requested

@@ -92,7 +92,7 @@ module Idv
       @presenter = Idv::HowToVerifyPresenter.new(
         selfie_check_required: @selfie_required,
         mdl_enabled: document_capture_session.mdl_enabled,
-        clear1_enabled: clear1_enabled?,
+        clear1_allowed: idv_session.clear1_allowed,
       )
     end
 
@@ -182,7 +182,9 @@ module Idv
 
     def bypass_send_link_steps
       idv_session.flow_path = 'standard'
-      redirect_to idv_choose_id_type_url
+      # In the phone-first flow choose_id_type precedes this step, so continue
+      # straight to document capture instead of looping back to it.
+      redirect_to idv_session.phone_first_flow? ? idv_document_capture_url : idv_choose_id_type_url
 
       analytics.idv_doc_auth_hybrid_handoff_submitted(
         **analytics_arguments.merge(

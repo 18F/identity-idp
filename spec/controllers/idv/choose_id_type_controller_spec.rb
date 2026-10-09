@@ -58,6 +58,34 @@ RSpec.describe Idv::ChooseIdTypeController do
       end
     end
 
+    context 'when redirected after mDL was not detected (with disable_mdl param)' do
+      let(:document_capture_session) do
+        create(
+          :document_capture_session,
+          user:,
+          mdl_enabled: false,
+          document_type_requested: Idp::Constants::DocumentTypes::MDL,
+        )
+      end
+
+      before do
+        subject.idv_session.flow_path = 'standard'
+      end
+
+      it 'renders the choose_id_type template with disable_mdl and auto_check_value' do
+        expect(controller).to receive(:render).with(
+          'idv/shared/choose_id_type',
+          locals: hash_including(
+            disable_mdl: true,
+            auto_check_value: :state_id_card,
+          ),
+          layout: true,
+        ).and_call_original
+
+        get :show, params: { disable_mdl: true }
+      end
+    end
+
     context 'when the user does not have a flow path' do
       before do
         subject.idv_session.flow_path = nil
@@ -108,6 +136,38 @@ RSpec.describe Idv::ChooseIdTypeController do
         put :update, params: params
 
         expect(response).to redirect_to(idv_document_capture_url)
+      end
+    end
+
+    context 'in the phone-first (NDS) flow' do
+      before { subject.idv_session.phone_first_flow = true }
+
+      it 'redirects to hybrid handoff instead of document capture' do
+        put :update, params: params
+
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
+      end
+
+      it 'redirects to document capture when handoff is skipped on mobile' do
+        subject.idv_session.skip_hybrid_handoff = true
+        put :update, params: params
+
+        expect(response).to redirect_to(idv_document_capture_url)
+      end
+
+      context 'when the user chooses to verify in person' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
+            .and_return(true)
+          allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
+        end
+
+        it 'enters document capture as the in-person location picker' do
+          put :update, params: { verify_in_person: 'true' }
+
+          expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be true
+          expect(response).to redirect_to(idv_document_capture_url(step: :how_to_verify))
+        end
       end
     end
 

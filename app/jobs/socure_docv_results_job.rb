@@ -67,7 +67,8 @@ class SocureDocvResultsJob < ApplicationJob
       return
     end
 
-    mrz_response = validate_mrz(doc_pii_response)
+    id_type = doc_pii_response.extra[:document_type_received]
+    mrz_response = validate_mrz(id_type:, doc_pii_response:)
     if mrz_response && !mrz_response.success?
       document_capture_session.store_failed_auth_data(
         doc_auth_success: true,
@@ -82,7 +83,7 @@ class SocureDocvResultsJob < ApplicationJob
       )
       record_attempt(
         docv_result_response:,
-        passport_book: true,
+        passport_book: passport_book?(id_type),
         failure_reason: attempts_api_tracker.parse_failure_reason(mrz_response),
       )
       return
@@ -108,7 +109,8 @@ class SocureDocvResultsJob < ApplicationJob
       return
     end
 
-    record_attempt(docv_result_response:, success: true, passport_book: mrz_response.present?)
+    passport_book_checked = mrz_response.present? && passport_book?(id_type)
+    record_attempt(docv_result_response:, success: true, passport_book: passport_book_checked)
     document_capture_session.store_result_from_response(
       docv_result_response, mrz_response:, aamva_response:, attempt: submit_attempts
     )
@@ -125,7 +127,8 @@ class SocureDocvResultsJob < ApplicationJob
     image_data = {}
 
     if doc_escrow_enabled? &&
-       docv_result_response.instance_of?(DocAuth::Socure::Responses::DocvResultResponse)
+       docv_result_response.instance_of?(DocAuth::Socure::Responses::DocvResultResponse) &&
+       !docv_result_response.document_type_mdl?
 
       job_data = {
         document_capture_session_uuid:,
@@ -198,12 +201,12 @@ class SocureDocvResultsJob < ApplicationJob
     end
   end
 
-  def aamva_proofer
-    Proofing::Resolution::Plugins::AamvaPlugin.new
+  def passport_book?(id_type)
+    id_type == Idp::Constants::DocumentTypes::PASSPORT
   end
 
-  def aamva_enabled?
-    IdentityConfig.store.idv_aamva_at_doc_auth_enabled
+  def aamva_verifier
+    DocAuth::Aamva::Verifier.new
   end
 
   def analytics
@@ -304,21 +307,18 @@ class SocureDocvResultsJob < ApplicationJob
   end
 
   def validate_aamva(doc_pii_response)
-    if aamva_enabled? && document_capture_session.state_id_requested?
-      aamva_proofer.call(
+    if document_capture_session.state_id_requested?
+      aamva_verifier.call(
         applicant_pii: to_aamva_applicant_pii(doc_pii_response.pii_from_doc.to_h),
         current_sp: sp,
         ipp_enrollment_in_progress: false,
-        state_id_address_resolution_result: nil,
         timer: JobHelpers::Timer.new,
-        doc_auth_flow: true,
         analytics:,
       ).to_doc_auth_response
     end
   end
 
-  def validate_mrz(doc_pii_response)
-    id_type = doc_pii_response.extra[:document_type_received]
+  def validate_mrz(id_type:, doc_pii_response:)
     unless document_capture_session.in_supported_passport_types?(id_type)
       return unless document_capture_session.passport_requested?
     end

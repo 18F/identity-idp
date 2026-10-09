@@ -26,9 +26,9 @@ RSpec.describe IppAamvaProofingJob, type: :job do
 
   describe '#perform' do
     let(:instance) { IppAamvaProofingJob.new }
-    let(:aamva_proofer) { instance_double(Proofing::Resolution::Plugins::AamvaPlugin) }
+    let(:aamva_verifier) { instance_double(DocAuth::Aamva::Verifier) }
     let(:aamva_result) do
-      Proofing::StateIdResult.new(
+      DocAuth::StateIdResult.new(
         success: true,
         vendor_name: 'state_id:aamva',
         transaction_id: 'abc123',
@@ -49,8 +49,8 @@ RSpec.describe IppAamvaProofingJob, type: :job do
 
     before do
       stub_analytics
-      allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new).and_return(aamva_proofer)
-      allow(aamva_proofer).to receive(:call).and_return(aamva_result)
+      allow(DocAuth::Aamva::Verifier).to receive(:new).and_return(aamva_verifier)
+      allow(aamva_verifier).to receive(:call).and_return(aamva_result)
     end
 
     context 'when AAMVA verification succeeds' do
@@ -72,7 +72,7 @@ RSpec.describe IppAamvaProofingJob, type: :job do
       end
 
       it 'calls AAMVA proofer with correct parameters' do
-        expect(aamva_proofer).to receive(:call).with(
+        expect(aamva_verifier).to receive(:call).with(
           hash_including(
             applicant_pii: hash_including(
               applicant_pii.merge(
@@ -81,9 +81,7 @@ RSpec.describe IppAamvaProofingJob, type: :job do
               ),
             ),
             current_sp: service_provider,
-            state_id_address_resolution_result: nil,
             ipp_enrollment_in_progress: true,
-            doc_auth_flow: true,
             analytics: analytics_spy,
           ),
         )
@@ -94,7 +92,7 @@ RSpec.describe IppAamvaProofingJob, type: :job do
 
     context 'when AAMVA verification fails' do
       let(:aamva_result) do
-        Proofing::StateIdResult.new(
+        DocAuth::StateIdResult.new(
           success: false,
           vendor_name: 'state_id:aamva',
           transaction_id: 'abc123',
@@ -126,7 +124,7 @@ RSpec.describe IppAamvaProofingJob, type: :job do
 
     context 'when AAMVA verification times out' do
       let(:aamva_result) do
-        Proofing::StateIdResult.new(
+        DocAuth::StateIdResult.new(
           success: false,
           vendor_name: 'state_id:aamva',
           transaction_id: 'abc123',
@@ -148,12 +146,12 @@ RSpec.describe IppAamvaProofingJob, type: :job do
 
     context 'when AAMVA verification has MVA exception' do
       let(:aamva_result) do
-        Proofing::StateIdResult.new(
+        DocAuth::StateIdResult.new(
           success: false,
           vendor_name: 'state_id:aamva',
           transaction_id: 'abc123',
           errors: { exception: true },
-          exception: Proofing::Aamva::VerificationError.new('MVA service unavailable'),
+          exception: DocAuth::Aamva::VerificationError.new('MVA service unavailable'),
         )
       end
 

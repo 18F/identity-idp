@@ -1,5 +1,36 @@
 <% self.title = t('forms.backup_code_regenerate.confirm') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(title: t('forms.backup_code_regenerate.confirm')) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--warning">
+        <%= render NDS::IconComponent.new(icon: :warning, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <%= tag.hr(class: 'divider') %>
+      <div class="copy copy--muted">
+        <p><%= t('forms.backup_code_regenerate.caution') %></p>
+      </div>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: backup_code_setup_path,
+              method: :post,
+              full_width: true,
+            ).with_content(t('account.index.backup_code_confirm_regenerate')) %>
+        <%= render ButtonComponent.new(
+              url: account_path,
+              variant: :secondary,
+              full_width: true,
+            ).with_content(t('links.cancel')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render StatusPageComponent.new(status: :warning) do |c| %>
   <% c.with_header { t('forms.backup_code_regenerate.confirm') } %>
 
@@ -20,4 +51,5 @@
         wide: true,
         outline: true,
       ).with_content(t('links.cancel')) %>
+<% end %>
 <% end %>

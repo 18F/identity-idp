@@ -11,6 +11,28 @@
 #                 ||     ||
 
 module AnalyticsEvents
+  # @param [Boolean] success Whether the reCAPTCHA check passed (always false for this event)
+  # @param [Boolean] valid_captcha_result Whether the user passed the reCAPTCHA check or was exempt
+  # @param [Boolean] captcha_validation_performed Whether a reCAPTCHA check was performed
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # The account creation reCAPTCHA check failed and the request was blocked
+  def account_creation_recaptcha_failed(
+    success:,
+    valid_captcha_result:,
+    captcha_validation_performed:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :account_creation_recaptcha_failed,
+      success:,
+      error_details:,
+      valid_captcha_result:,
+      captcha_validation_performed:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success Check whether threatmetrix succeeded properly.
   # @param [String] transaction_id Vendor-specific transaction ID for the request.
   # @param [String, nil] client Client user was directed from when creating account
@@ -2299,7 +2321,6 @@ module AnalyticsEvents
   # @option proofing_results [Hash] context Full context of the proofing process
   # @option proofing_results [String] context.device_profiling_adjudication_reason Reason code describing how we arrived at the device profiling result
   # @option proofing_results [String] context.resolution_adjudication_reason Reason code describing how we arrived at the identity resolution result
-  # @option proofing_results [Boolean] context.should_proof_state_id Whether we need to verify the user's PII with AAMVA. False if the user is using a document from a non-AAMVA jurisdiction
   # @option proofing_results [Hash] context.stages Object holding details about each stage of the proofing process
   # @option proofing_results [Hash] context.stages.resolution Object holding details about the call made to the identity resolution vendor
   # @option proofing_results [Boolean] context.stages.resolution.success Whether identity resolution proofing was successful
@@ -6067,6 +6088,7 @@ module AnalyticsEvents
   # @param [String] socure_status Socure's status value for internal errors on their side.
   # @param [String] socure_msg Socure's status message for interal errors on their side.
   # @param [String] use_case_key name of requested DocV flow
+  # @param [Hash] error_redirect hash for error redirect (url and method)
   # The request for socure verification was sent
   def idv_socure_document_request_submitted(
     success:,
@@ -6093,6 +6115,7 @@ module AnalyticsEvents
     socure_status: nil,
     socure_msg: nil,
     use_case_key: nil,
+    error_redirect: nil,
     **extra
   )
     track_event(
@@ -6121,6 +6144,7 @@ module AnalyticsEvents
       socure_status:,
       socure_msg:,
       use_case_key:,
+      error_redirect:,
       **extra,
     )
   end
@@ -6423,6 +6447,8 @@ module AnalyticsEvents
   # @param [Boolean] aamva_checked Whether the aamva API request evaluated a state ID.
   # @param [Integer, nil] birth_year The birth year listed on the ID.
   # @param [Boolean, nil] bypass_exception Whether the aamva exception was bypassed
+  # @param [String, nil] document_type_received The document type the AAMVA skip guard
+  #   evaluated, e.g. "drivers_license", "state_id_card", "passport".
   # @param [String, nil] state The state on the ID.
   # @param [String, nil] state_id_jurisdiction The state that issued the ID.
   # @param [String, nil] state_id_number A string describing the format of the ID number.
@@ -6444,6 +6470,7 @@ module AnalyticsEvents
     aamva_checked:,
     birth_year: nil,
     bypass_exception: nil,
+    document_type_received: nil,
     state: nil,
     state_id_jurisdiction: nil,
     state_id_number: nil,
@@ -6467,6 +6494,7 @@ module AnalyticsEvents
       aamva_checked:,
       birth_year:,
       bypass_exception:,
+      document_type_received:,
       state:,
       state_id_jurisdiction:,
       state_id_number:,
@@ -7180,6 +7208,12 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String, nil] previous_bucket A/B bucket the user was in before opting out
+  # Records that a user opted out of the NDS interface.
+  def nds_look_and_feel_opted_out(previous_bucket:, **extra)
+    track_event(:nds_look_and_feel_opted_out, previous_bucket:, **extra)
+  end
+
   # New device alert skipped as there were no events to send
   def new_device_alert_skipped(**extra)
     track_event(:new_device_alert_skipped, **extra)
@@ -7737,6 +7771,28 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success Whether the reCAPTCHA check passed (always false for this event)
+  # @param [Boolean] valid_captcha_result Whether the user passed the reCAPTCHA check or was exempt
+  # @param [Boolean] captcha_validation_performed Whether a reCAPTCHA check was performed
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # The password reset reCAPTCHA check failed and the request was blocked
+  def password_reset_recaptcha_failed(
+    success:,
+    valid_captcha_result:,
+    captcha_validation_performed:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :password_reset_recaptcha_failed,
+      success:,
+      error_details:,
+      valid_captcha_result:,
+      captcha_validation_performed:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id UUID of the user to receive password token
@@ -8051,6 +8107,28 @@ module AnalyticsEvents
   # place during the expected time frame
   def proofing_address_result_missing
     track_event('Proofing Address Result Missing')
+  end
+
+  # Signifies the completion of the proofing agent failure email job
+  # @param [Integer] processed_count The number of items processed during the job
+  # @param [Float] duration_sec The duration of the job in seconds
+  def proofing_agent_failure_email_job_completed(processed_count:, duration_sec:, **extra)
+    track_event(
+      :proofing_agent_failure_email_job_completed,
+      processed_count:,
+      duration_sec:,
+      **extra,
+    )
+  end
+
+  # Logs the error received when during processing
+  # @param [String] exception The message from the exception raised.
+  def proofing_agent_failure_email_job_error(exception:, **extra)
+    track_event(
+      :proofing_agent_failure_email_job_error,
+      exception:,
+      **extra,
+    )
   end
 
   # Tracks when a user triggered a rate limiter

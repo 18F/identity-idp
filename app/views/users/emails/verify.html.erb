@@ -32,12 +32,21 @@
 
 <p><%= t('devise.registrations.close_window') %></p>
 
-<% if FeatureManagement.enable_load_testing_mode? && EmailAddress.find_with_email(@email) %>
-  <%= link_to(
-        'CONFIRM NOW',
-        sign_up_create_email_confirmation_url(confirmation_token: EmailAddress.find_with_email(@email).confirmation_token),
-      ) %>
-  <br />
+<% if FeatureManagement.enable_load_testing_mode? %>
+  <% email_address = EmailAddress.where(user_id: current_user.id).find_with_email(@email) %>
+  <% if email_address %>
+    <%= link_to(
+          'CONFIRM NOW',
+          add_email_confirmation_url(
+            confirmation_token: email_address.confirmation_token,
+            from_select_email_flow: @in_select_email_flow,
+            locale: locale_url_param,
+            request_id: sp_session[:request_id],
+          ),
+          id: 'confirm-now',
+        ) %>
+    <br />
+  <% end %>
 <% end %>
 
 <% if @in_select_email_flow %>

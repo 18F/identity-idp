@@ -312,29 +312,23 @@ RSpec.describe Idv::HybridHandoffController do
 
     it 'pass on correct flags and states and logs correct info' do
       get :show
-      expect(subject.idv_session.clear1_enabled).to be_nil
+      expect(subject.idv_session.clear1_allowed).to be_nil
     end
 
     context 'when clear1 is enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(true)
-        allow(IdentityConfig.store).to receive(:idv_clear1_enabled_percent).and_return(100)
-        reload_ab_tests
-      end
-
-      after do
-        reload_ab_tests
+        subject.idv_session.clear1_allowed = true
       end
 
       it 'pass on correct flags and states and logs correct info' do
         expect(Idv::HowToVerifyPresenter).to receive(:new).with(
           selfie_check_required: false,
           mdl_enabled: nil,
-          clear1_enabled: true,
+          clear1_allowed: true,
         )
         get :show
 
-        expect(subject.idv_session.clear1_enabled).to eq(true)
+        expect(subject.idv_session.clear1_allowed).to eq(true)
       end
     end
   end
@@ -389,6 +383,19 @@ RSpec.describe Idv::HybridHandoffController do
         ).and_call_original
 
         put :update, params: params
+      end
+    end
+
+    context 'phone-first (NDS) flow' do
+      before do
+        subject.idv_session.phone_first_flow = true
+        stub_up_to(:choose_id_type, idv_session: subject.idv_session)
+      end
+
+      it 'continues on this computer straight to document capture' do
+        put :update, params: { type: 'desktop' }
+
+        expect(response).to redirect_to(idv_document_capture_url)
       end
     end
 
@@ -472,13 +479,7 @@ RSpec.describe Idv::HybridHandoffController do
       end
 
       before do
-        allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(true)
-        allow(IdentityConfig.store).to receive(:idv_clear1_enabled_percent).and_return(100)
-        reload_ab_tests
-      end
-
-      after do
-        reload_ab_tests
+        subject.idv_session.clear1_allowed = true
       end
 
       it 'redirects to clear1 url' do
