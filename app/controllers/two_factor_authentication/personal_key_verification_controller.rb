@@ -102,9 +102,15 @@ module TwoFactorAuthentication
     # personal key after authenticating with the old one. Identity-verified users,
     # who use their personal key for account recovery/IDV, are unaffected because
     # PersonalKeyPolicy#enabled? is false for them (they have profiles).
+    #
+    # We additionally require the user to have another (non-personal-key) MFA
+    # method via MfaPolicy#two_factor_enabled?. Legacy users whose ONLY credential
+    # is a personal key can reach this controller via a direct URL; consuming their
+    # key would leave them with zero credentials and lock them out of their account.
     def skip_personal_key_regeneration?
       FeatureManagement.personal_key_mfa_deprecation_phase_1_enabled? &&
-        TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled?
+        TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled? &&
+        MfaPolicy.new(current_user).two_factor_enabled?
     end
 
     def personal_key_param

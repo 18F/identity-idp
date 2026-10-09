@@ -48,6 +48,18 @@ RSpec.describe Accounts::PersonalKeysController do
 
         expect(response).to_not redirect_to(account_url)
       end
+
+      it 'does not apply the phase 1 regeneration gate to a personal-key-only user' do
+        # A legacy user whose only credential is a personal key must still be able
+        # to regenerate it, or the deprecation would leave them without a credential.
+        user = create(:user)
+        PersonalKeyGenerator.new(user).generate!
+        stub_sign_in(user)
+
+        get :new
+
+        expect(response).to_not redirect_to(account_url)
+      end
     end
   end
 

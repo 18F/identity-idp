@@ -265,6 +265,28 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         # phase 1 logic can run. They are therefore unaffected by phase 1.
         expect(response).to redirect_to(authentication_methods_setup_url)
       end
+
+      # Regression: a legacy user whose ONLY credential is a personal key (no
+      # phone/TOTP/etc.) must not have that key consumed, or they would be locked
+      # out of their account. These users can reach this controller via a direct
+      # URL (see spec/features/legacy_passwords_spec.rb), so the phase 1 consume
+      # path must be guarded by MfaPolicy#two_factor_enabled?.
+      context 'when the user has only a personal key (no other MFA method)' do
+        it 'does not consume the personal key' do
+          user = create(:user)
+          raw_key = PersonalKeyGenerator.new(user).generate!
+          stub_sign_in_before_2fa(user)
+
+          expect(MfaPolicy.new(user).two_factor_enabled?).to eq(false)
+
+          post :create, params: { personal_key_form: { personal_key: raw_key } }
+          user.reload
+
+          # The personal key is preserved so the user retains a usable credential.
+          expect(user.has_recovery_code?).to eq(true)
+          expect(TwoFactorAuthentication::PersonalKeyPolicy.new(user).enabled?).to eq(true)
+        end
+      end
     end
 
     context 'when the flow feature flags are off (default configuration)' do

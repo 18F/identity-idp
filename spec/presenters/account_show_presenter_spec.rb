@@ -619,10 +619,18 @@ RSpec.describe AccountShowPresenter do
       end
 
       context 'for a personal key MFA user' do
-        let(:user) { build(:user, :with_personal_key) }
+        let(:user) { build(:user, :with_personal_key, :with_phone) }
 
         it 'hides the regenerate action' do
           expect(show_regenerate_personal_key_action?).to eq(false)
+        end
+      end
+
+      context 'for a user whose only credential is a personal key' do
+        let(:user) { build(:user, :with_personal_key) }
+
+        it 'still shows the regenerate action so they are not left without a credential' do
+          expect(show_regenerate_personal_key_action?).to eq(true)
         end
       end
 
