@@ -5,9 +5,11 @@ module BillableEventTrackable
     if current_session_has_been_billed?
       create_sp_return_log(billable: false)
     else
-      create_sp_return_log(billable: true)
+      row = create_sp_return_log(billable: true)
       mark_current_session_billed
+      remember_sign_in_row_for_delegated_billing(row)
     end
+    link_sign_in_for_delegated_billing
   end
 
   private
@@ -23,6 +25,36 @@ module BillableEventTrackable
       billable: billable,
       access_type: SpReturnLog::ACCESS_TYPE_DIRECT,
     )
+  end
+
+  # For a service provider approved for delegated access, the id of the session's billable
+  # sign-in row is kept so that a later handoff in the same session (which writes a non-billable
+  # row or nothing) still points the waiver link at the row that is actually invoiced.
+  def remember_sign_in_row_for_delegated_billing(row)
+    return unless current_sp.delegation_service_provider? && row&.persisted? && row.billable
+
+    user_session[delegated_billing_row_key] = row.id
+  end
+
+  # Links the sign-in to the access token the service provider is about to receive, so an
+  # exchange of that token can waive the sign-in's billing in favor of the agency receiving the
+  # delegated token. The token was set on the identity when it was linked just before this
+  # handoff. A failure to write the link never affects the handoff: the exchange falls back to
+  # the database to find the sign-in.
+  def link_sign_in_for_delegated_billing
+    return unless current_sp.delegation_service_provider?
+
+    identity = current_user.identities.find_by(service_provider: current_sp.issuer)
+    Billing::SignInWaiverLink.write(
+      access_token: identity&.access_token,
+      sp_return_log_id: user_session[delegated_billing_row_key],
+    )
+  rescue StandardError => error
+    NewRelic::Agent.notice_error(error)
+  end
+
+  def delegated_billing_row_key
+    "delegated_billing_return_log_#{sp_session[:issuer]}"
   end
 
   def current_session_has_been_billed?
