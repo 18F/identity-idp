@@ -321,8 +321,11 @@ Decided in the interview on the first implementation feature; rationale in Appen
 | **ONB-12** | Consent content is edited in the partner Dashboard (`identity-dashboard`) and reaches the identity provider through `ServiceProviderUpdater` (lower environments) and the seeder (production). The Dashboard MUST gain the agency, application and service provider fields of ONB-2, ONB-4, ONB-10 and nested `token_exchange_resource_servers` in its API payload. This is a dependency on a separate repository and MUST be stated in the seeder, updater and model comments. Until it is met, `config/delegated_access.localdev.yml` loaded by `rake delegated_access:seed` (which refuses `prod` and `staging`) provides the data for local, review-app and sandbox environments. |
 | **ONB-13** | Service provider approval is `service_providers.token_exchange_enabled_sp` only. No application-configuration allow-list of service providers exists; `token_exchange_enabled` remains the single master switch. |
 | **ONB-14** | The identifiers, strings, comments and analytics properties inherited from the `sbx-taigrr` branch that say "broker" are renamed to say service provider, and comments describing the exchange as browser-callable or the service provider as a public client of Login.gov are corrected, in the onboarding feature, across the whole branch. |
+| **ONB-2** (amend 2026-10-09, D47) | `token_exchange_resource_servers.dpop_required` is dropped by the DPoP feature's migration, together with the seeder and localdev fixture key of that name. Whether a token is bound follows the service provider's client type (EXC-17): public clients always, confidential clients never; an application does not require or waive binding per API. `token_format` stays, informational for now (SAML-3 as amended in §15.8). |
 
 **Why ONB-2/ONB-3 (amend).** People think in terms of the application they use, not the agency and not its individual APIs; one choice per application keeps the screen readable and the scope string meaningful to partners. The URL registry remains so each token is still issued for exactly one API (EXC-1, EXC-4).
+
+**As built, 2026-10-09 (`delegated-access-registry`).** Migrations `20261009100000`–`20261009100400`: agency content on `agencies`; application columns and `allowed_delegation_service_providers` on `service_providers` (the earlier opt-in column dropped); `token_exchange_resource_servers`; service provider approval and content on `service_providers`; `token_exchange_grants` recreated in the (user, service provider, application) shape, `token_exchange_broker_settings` dropped. Models: `TokenExchangeResourceServer`, `TokenExchangeGrant` (`approve!`, `valid_now?`, `revoke!`, version-pair check), `DelegationLocalizedContent`, `ServiceProvider#delegation_application?`/`#accepts_delegation_from?`/`#delegation_scope`/`#delegation_service_provider?`, `Agency` content accessors, `DelegationApplications` (registry query). Seeder and updater write applications and nested `token_exchange_resource_servers`; `DelegatedAccessSeeder` and `rake delegated_access:seed` load `config/delegated_access.localdev.yml` outside prod and staging. Configuration keys of §10 are added by the feature that reads each (E46).
 
 **Why ONB-11.** Content will be edited regularly; re-asking every person on every wording fix would make remembered consent meaningless, while never re-asking would let a material change slip past consent. The editor decides which it is, and the decision is recorded in the version pair.
 
@@ -408,6 +411,18 @@ end
 
 Do **not** add `token_exchange:*` values to `VALID_SCOPES`; they are not attribute scopes and
 must not flow into `verified_attributes` (CON-6).
+
+**As built, 2026-10-09 (`delegated-access-consent`).** The shape above with the decided names:
+`OpenidConnectAttributeScoper::DELEGATION_SCOPE_PREFIX` (`ServiceProvider::DELEGATION_SCOPE_PREFIX`),
+`.delegation_scope?`, `#delegation_scope_values`, `#delegation_requested?`; in the authorize form,
+`#parse_scope_param` keeps prefixed values and `#validate_delegation_scopes` adds
+`delegation_not_allowed` (service provider not approved, or the request is not identity-verified;
+CON-22) or `unknown_delegation_scope` (values not in `DelegationApplications.accepting(client_id)`,
+which already excludes inactive applications, inactive agencies and applications whose allow-list
+excludes the caller; CON-2 as amended). Both are reported to the service provider as
+`error=invalid_scope`. The bare values reach the SP session as
+`sp_session[:requested_delegation_scopes]` through `FederatedProtocols::Oidc#requested_delegation_scopes`
+(CON-21) and are logged as `delegation_scopes` on the authorize analytics event.
 
 ### 4.3 Requirements — the consent screen
 
@@ -519,6 +534,24 @@ the remember flag and writes grants (§4.5). `app/presenters/completions_present
 the service provider panel and the list of scope records (loaded by `scope_value`, with `en` fallback).
 `app/views/sign_up/completions/show.html.erb` renders them with `<%= %>` (escaped), never
 `raw` or `.html_safe`.
+
+**As built, 2026-10-09 (`delegated-access-consent`).** `delegation_consent_needed?` is the reason
+`:delegation_requested`, checked after the existing reasons (a new service provider or new attributes
+already bring the screen, which then carries the delegation section too). It reads the live approvals
+for the requested applications in one query (`TokenExchangeGrant.live_by_application`), needs the
+screen when any application has none, and otherwise when any approval fails
+`TokenExchangeGrant#remembered_and_current?` (CON-5 as amended, CON-12). The once-per-authorization
+marker is `user_session[:delegation_consent_authorization]`, a SHA-256 of `sp_session[:request_url]`
+set on submit; the SP request id was not used because it is reused across authorizations with the
+same parameters while the authorize URL carries fresh `state` and `nonce`. No subtraction from
+`verified_attributes` is needed: delegation values never enter `requested_attributes` (CON-6). The
+screen is `_delegation_consent.html.erb`, rendered from `CompletionsPresenter#delegation_groups`
+(agency-grouped rows with status `new`, `approved` or `updated` and the account-page approval time;
+CON-7, CON-25, ACC-4); the locked checkboxes submit nothing, and `CompletionsController#update`
+approves the applications recorded in the session through `TokenExchangeConsent` with the
+`idv_form[delegation_remember]` choice (CON-9, CON-24), then logs `delegation_consent_submitted`.
+Cancel is the existing `return_to_sp_cancel_path(step: :sign_up)` (CON-23). Strings are
+`sign_up.delegation.*` in all four locales.
 
 ### 4.5 Requirements — storing consent
 
@@ -651,15 +684,38 @@ Where a row below conflicts with §4.1–§4.7, this subsection governs.
 | **CON-12** (amend) | A grant is current only while `agency_content_version ≥ agencies.consent_material_version`, `application_content_version ≥ the application's consent_material_version` and `sp_content_version ≥ the service provider's sp_material_version`. Otherwise it is treated as not valid and consent is re-collected. |
 | **CON-14** (amend) | Declined requests are no longer recorded (there are none). Not-remembered grants are still recorded (`remember_until: null`) for §9.4. The outcomes report counts consent screens shown without a completed authorization from analytics rather than from grant rows. |
 | **CON-20** | `token_exchange:*` values that cannot be honored because the person cancelled MUST NOT produce any grant, Attempts delivery, billing row or agency-side record (ATT-*, BIL-*). |
-| **ACC-1** (amend) | For each service provider approved for delegation that the user has connected to, the page lists **every active application that accepts that service provider** (ONB-2 as amended), grouped by agency, each with: approval state and source, `consented_at`, time remaining, whether a delegated or refresh token is currently active, the application's resource servers and access type. |
-| **ACC-2** (amend) | Per application the page offers a toggle. Turning it on shows the application's consent content in a confirmation step and then creates a grant with `source: account_page`, `remember_until = now + 12 months`. Turning it off calls `TokenExchangeGrant#revoke!` (tokens cascade, §7.5; `delegated-access-revoked`, §8). Revoke-all per service provider remains. |
+| **ACC-1** (amend) | A dedicated page, `/account/delegated_access`, lists **every service provider approved for delegation**, connected or not, and under each **every active application that accepts that service provider** (ONB-2 as amended), grouped by agency in collapsible groups, each with: approval state and source, `consented_at`, time remaining, the application's resource servers and access type, and (from the token lifecycle feature) whether a delegated or refresh token is currently active. A service provider that is no longer approved or active keeps its section while live grants remain, offering only revocation. |
+| **ACC-2** (amend) | Unapproved applications carry a checkbox; submitting the selection leads to a confirmation page that renders the selected applications with the consent-screen content, and one confirmation creates a grant per application with `source: account_page`, `remember_until = now + 12 months`. Approved rows offer Revoke; each section offers Revoke all. Every revocation has its own confirmation page and calls `TokenExchangeGrant#revoke!` with reason `user_revoked` (tokens cascade, §7.5; `delegated-access-revoked`, §8). |
+| **CON-21** | Delegation scopes are accepted on OpenID Connect authorization requests only. A SAML AuthnRequest cannot request delegation; `requested_delegation_scopes` is set only by the OIDC authorize path. |
+| **CON-22** | A request carrying `token_exchange:*` values whose ACR does not ask for identity verification (IAL2 or IALmax) fails with `invalid_scope`, not silently. |
+| **CON-23** | Cancelling the consent screen uses the completions screen's existing cancel path: the person is returned to the service provider with `error=access_denied`, no sign-in completes, no grant, Attempts event or billing row is written. |
+| **CON-24** | The remember choice applies only to requested applications without a live remembered approval. A requested application that already has one keeps that row untouched (no supersession, no shortening); it is re-recorded only when its approval is stale (CON-12) or absent. |
+| **CON-25** | Each requested row is badged: `new` (no live approval), `already approved` (live, current approval) or `updated` (live approval made stale by a material content change). Only version numbers are stored; the updated row shows the current content. |
 | **ACC-4** | Advance approvals from the account page are honored by the consent screen: a requested application with a live `account_page` grant counts as covered for CON-5 and, when the screen is shown for another application, is rendered checked, disabled and marked already approved. |
+| **ACC-5** | Each approval and revocation made on the page writes an account history event (`delegation_approved`, `delegation_revoked`) and sends the person an email naming the service provider and the applications, with the standard disavowal link, from every confirmed email address, as `sp_user_consent_revoked` does today. |
 
 **Why CON-7/CON-9a (amend).** The service provider's request is a condition of the sign-in, as requested attributes are today; a person who does not want a requested application declines the service provider, not the application. This removes the partial-approval states the earlier design had to report on and makes the screen's outcome binary.
 
 **Why CON-10 (amend).** Advance approval happens with no service provider authorization in flight, so a grant keyed to the `identities` row or its session could not exist yet. Keying on the user, the service provider issuer and the application lets the account page and the consent screen read and write one row.
 
+### 4.9 Amendments of 2026-10-09 (consent and account page follow-ups)
+
+Where a row below conflicts with §4.3, §4.7 or §4.8, this subsection governs. Decided with the product owner on 2026-10-09 (implementation plan D52–D55).
+
+| ID | Requirement |
+|---|---|
+| **CON-9** (confirmed) | The remember period is 12 months for every application, `read_write` included; no application has a shorter maximum. Read-write risk is carried by `max_access_token_seconds` and `max_family_seconds` (REF-5 as amended), not by the remember period. |
+| **CON-26** | The service provider card (CON-7) carries one plain sentence stating how long the service provider's access lasts per sign-in (up to 12 hours, `token_exchange_refresh_token_ttl_seconds`), in every supported language. The screen says nothing about Attempts API delivery to agencies (§8); that disclosure is the privacy policy's. Added on `delegated-access-consent` as a follow-up to the consent feature. |
+| **ACC-1** (amend) | The page lists **remembered** grants only (`remember_until` present and in the future); a single-authorization grant (`rails_session_id` set, `remember_until` null) is not shown. The page shows current state only: the "token active" indicator, first or last issuance times and any history list are not shown. Past approvals and revocations are visible through the account history events of ACC-5. |
+| **ACC-2** (amend) | Revoke per application and Revoke all per service provider stand, each through its own confirmation page. The page additionally offers ACC-6. |
+| **ACC-6** | A page-level **End all delegated access** action (`/account/delegated_access/revoke`, confirmation page listing every service provider and application that will lose access) revokes every live grant of the user across every service provider with reason `user_revoked` (tokens cascade, §7.5; one `delegated-access-revoked` event per grant, §8), writes one `delegation_revoked` account history event and sends one email naming every service provider and application (ACC-5). |
+| **ACC-7** (planned) | A per-service-provider history on the page: approvals (source, remembered or not), revocations with `revocation_reason` (`user_revoked`, `sp_disconnected`, `superseded_by_new_consent`, material content change, `account_suspended`, `account_deleted`, `refresh_token_reuse`) and token issuance and refresh events, each with its date, for the last 12 months. Sourced from `token_exchange_grants` rows (never deleted; revoked and superseded rows stay) and the issuance record (§5.2 as amended); no new table. Depends on the account page and the token lifecycle feature. Planned 2026-10-09, not built this phase. |
+
+**Why ACC-1 (amend).** A single-authorization grant lasts at most one sign-in and its family; listing it would show the person items that disappear on their own within hours and invite revocation of something that is ending anyway. Usage counts are the agency's to show, not Login.gov's: Login.gov knows when tokens were issued, not what the agency returned, and showing issuance times without that context was judged more confusing than useful.
+
 ---
+
+**As built, 2026-10-09 (`delegated-access-account-page`).** Routes under `/account/delegated_access`: the page (`accounts/delegated_access#show`), `GET`/`POST …/:service_provider_id/approve` (selection then confirmation, `accounts/delegated_access/approvals`), and `GET`/`DELETE` confirmation routes for one application (`…/:service_provider_id/applications/:application_id/revoke`), one service provider (`…/:service_provider_id/revoke`) and everything (`…/revoke`) in `accounts/delegated_access/revocations`. `DelegatedAccessPresenter` builds the sections from `ServiceProvider.active.where(token_exchange_enabled_sp: true)` plus service providers named by the person's `TokenExchangeGrant.remembered` rows (ACC-1 as amended); rows pair each application with its remembered grant; single-sign-in grants are not shown (D54). `AccountDelegationApproval` writes `source: account_page` grants for the maximum period; `AccountDelegationRevocation` revokes at the three scopes with reason `user_revoked` (ACC-2, ACC-6). `DelegatedAccessNotificationConcern` records `delegation_approved`/`delegation_revoked` events and sends `UserMailer#delegation_approved`/`#delegation_revoked` (ACC-5). `RevokeServiceProviderConsent` revokes the service provider's grants with reason `sp_disconnected` (CON-13 as the companion names it, FR-CEN-14). The consent screen and the page render service provider and application content through the shared `DelegationServiceProviderCard` and partials. Token activity (ACC-1's last column) and the history view (ACC-7) are not part of this feature.
 
 ## 5. Token exchange (at the existing token endpoint)
 
@@ -727,6 +783,8 @@ lookup path.
 | `revoked_at`, `revocation_reason` | datetime, string | sensitive=false | |
 | timestamps | | sensitive=false | |
 
+**Amended 2026-10-09 (D26).** Storage is hybrid, and the live access token is **not** looked up in this table. At mint, Login.gov writes a Redis entry keyed by the token's SHA-256 digest (`delegated_token:<digest>`), with a TTL equal to the token's lifetime, holding `aud`, `scope`, `grant_id`, `delegation_id`, `user_id`, `service_provider_id`, `resource_server_id`, `ial`, `aal`, `refresh_family_id`, `dpop_jkt`, `sp_rails_session_id`, `token_format`, `expires_at` and the id of the issuance row; it adds the digest to two index sets, `delegated_tokens:grant:<grant_id>` and `delegated_tokens:family:<refresh_family_id>`, each with a TTL no shorter than the family's. Introspection (§6) and the chained-delegation check (EXC-6) read the Redis entry; an absent entry means not active. This table becomes the **issuance record**: one row per issued access token or SAML assertion, with `grant_id`, `resource_server_id`, `service_provider_id`, `user_id`, `delegation_id`, `refresh_family_id`, `token_format`, `token_type` (`Bearer`, `DPoP` or `N_A`), `dpop_jkt`, `expires_at`, `revoked_at`, `revocation_reason` and timestamps. It holds no digest and no other secret, and nothing reads it to decide validity; it serves billing (§9), the Attempts events (§8), the account page (ACC-1, "token active") and audit. The `token_digest` column above is superseded; `jti` (INT-4) is still derived from the digest, which introspection computes from the presented token. Revocation (§7.5 as amended) deletes the Redis entries listed in the grant's or family's index set and marks the issuance rows revoked; expiry needs no job. SAML-7 is read the same way: the digest of the assertion `ID` is the Redis key and the issuance row records the assertion. Refresh tokens (§7.2) stay in Postgres unchanged. Rejected: Postgres-only (table growth and purge jobs for tokens that expire on their own) and Redis-only (no durable refresh family or issuance history).
+
 ### 5.3 Where and how
 
 **Routes** (`config/routes.rb`). The exchange reuses the existing
@@ -741,6 +799,8 @@ post '/api/openid_connect/revoke'     => 'openid_connect/revoke#create'       # 
 Neither new route gets an `OPTIONS` route or a `Rack::Cors` entry in `config/application.rb`:
 both are called only by servers. The existing `/api/openid_connect/token` CORS rule stays as it
 is for PKCE clients.
+
+**Amended 2026-10-09 (D59).** Both new routes get the same `Rack::Cors` entry as `/api/openid_connect/token` (origins limited to registered redirect URIs through `IdentityCors.allowed_redirect_uri?`, any request header, `POST` and `OPTIONS`), because the public-client service provider revokes its families (REF-8) and introspects its own tokens (INT-14 as amended) from the browser. Agencies calling with `private_key_jwt` never preflight and are unaffected.
 
 **Controller** — extend `app/controllers/openid_connect/token_controller.rb#create` to dispatch on
 `grant_type`, keeping everything after form construction exactly as it is today:
@@ -918,6 +978,46 @@ end
 The Attempts API's `/.well-known/ssf-configuration` needs no change: the SSF transmitter
 metadata Login.gov publishes today has no per-event-type list.
 
+**Amended 2026-10-09 (D46, D48).** DISC-2 and DISC-5 are confirmed: `grant_types_supported` additions, `introspection_endpoint` and its two auth members, `revocation_endpoint` and its two auth members, `token_endpoint_auth_methods_supported` (`private_key_jwt` and `none`, the latter for the public-client service provider) and `dpop_signing_alg_values_supported: ["ES256", "RS256"]` appear only while `token_exchange_enabled` is true. `token_endpoint_auth_methods_supported` is the one member not listed in DISC-1; it is advertised behind the same switch because `none` is only meaningful once public clients can exchange.
+
+---
+
+### 5.5 Amendments of 2026-10-09 (public-client service provider)
+
+Where a row below conflicts with §5.1–§5.4 or §7, this subsection governs. Confirmed by the product owner on 2026-10-09.
+
+| ID | Requirement |
+|---|---|
+| **EXC-2** (amend) | Client handling at the token endpoint depends on the client type fixed at onboarding. A **confidential** service provider authenticates with `private_key_jwt` as before. A **public** service provider (`pkce: true`) sends `client_id` without a client assertion; for the token-exchange and refresh grants it MUST present a DPoP proof (RFC 9449 §4.3) whose key thumbprint equals the `cnf.jkt` of the subject or refresh token it presents, with `ath` over that token (§4.3 item 12, §7.1). `code_verifier` is still refused on these grants. |
+| **EXC-17** | For a public service provider approved for delegation, DPoP is mandatory: the authorization-code grant, the token-exchange grant, the refresh grant and `/api/openid_connect/userinfo` each require a valid proof, and a token issued to such a client carries `token_type: DPoP` and `cnf.jkt`. A request from such a client without a proof fails with `invalid_dpop_proof` (§5) or, at userinfo, `401` with `WWW-Authenticate: DPoP` (§7.1). Confidential clients and their bearer tokens are unaffected. |
+| **EXC-18** | `/api/openid_connect/userinfo` MUST verify the DPoP proof for a bound service-provider access token (`htm`, `htu`, `iat`, `jti`, `ath`, thumbprint equal to the token's `cnf.jkt`) and MUST refuse a bound token presented as a bearer token (RFC 9449 §7.1). Delegated tokens remain refused at userinfo regardless of proof (EXC-6). |
+| **EXC-19** | A public service provider approved for delegation MUST send `dpop_jkt` on the authorization request (RFC 9449 §10); Login.gov MUST bind the issued authorization code to that thumbprint and refuse a code exchange whose proof key differs. |
+| **REF-2** (amend) | Refresh tokens issued to a public service provider are bound to the DPoP key (RFC 9449 §5); the refresh grant MUST carry a proof from that key and no client assertion. Refresh tokens of confidential clients are protected by `private_key_jwt` as before. |
+
+**Why.** A browser-based service provider has no secret to keep, so client authentication cannot protect its tokens; sender constraint can. Binding every token the service provider holds, and verifying the proof wherever Login.gov accepts one of them, means a token exfiltrated from the browser is useless to the thief. Keeping delegated tokens out of userinfo keeps each agency's attributes reachable only by that agency.
+
+### 5.6 Amendments of 2026-10-09 (token exchange interview)
+
+Where a row below conflicts with §5.1–§5.5, this subsection governs. Decided with the product owner on 2026-10-09 (implementation plan D26–D31, D37).
+
+| ID | Requirement |
+|---|---|
+| **EXC-1** (confirmed) | Exactly one `resource` per exchange; a request naming two or more fails with `invalid_request`. RFC 8707 permits several values; Login.gov issues one token with one audience. |
+| **EXC-3** (amend) | When the authenticated caller names a registered, active resource whose application accepts it, and the person has no live, current grant (CON-11, CON-12) for that application, the error is `consent_required` with `error_description` naming the application's `token_exchange:<value>` scope, so the service provider can start an authorization request for it. The error is given only after the caller is authenticated and the resource found; a resource that is unknown, inactive, or whose application excludes the caller fails with `invalid_target` as before (E26 narrowed). |
+| **EXC-4** (amend) | The minted token is an opaque random reference. The live token is a Redis entry keyed by its SHA-256 digest with a TTL equal to its lifetime, and the `token_exchange_tokens` row is the secret-free issuance record (§5.2 as amended). Lifetime is `token_exchange_access_token_ttl_seconds` (default 900) or the resource server's `max_access_token_seconds` when that is lower; never higher. |
+| **EXC-8** (replace) | The exchange is not rate-limited per service provider and never refuses a request for volume. Login.gov logs every exchange and failure through analytics and monitors volume and error rate per service provider against configurable alert thresholds (§10 as amended). Runaway-caller protection is the infrastructure layer's (edge and load balancer), not the application's. |
+| **EXC-12** (confirmed) | The subject token's sign-in session must be live at the first exchange (E2 confirmed); the family it opens then runs independently of that session (REF-6). |
+| **EXC-15** (amend) | The rate-limit sentences are withdrawn with EXC-8 and INT-7; `invalid_client` for an authenticated caller not approved for delegation stands. |
+| **EXC-20** | Delegated tokens MUST NOT be JWTs or any other self-describing format; a resource server learns a token's meaning only by introspection (§6), and the service provider learns nothing from the string. |
+| **EXC-9** (amend 2026-10-09, D47) | The `dpop_required` clause is withdrawn: there is no per-resource-server requirement. A public service provider's exchange always carries a proof (EXC-17) and a confidential service provider's never does; the proof's `alg` MUST be `ES256` or `RS256` (DISC-2). |
+| **EXC-21** (D44) | `requested_token_type` is REQUIRED on every exchange; a request without it fails with `invalid_request`. The service provider chooses `urn:ietf:params:oauth:token-type:access_token` or `urn:ietf:params:oauth:token-type:saml2` (SAML-1 and SAML-3 as amended in §15.8). |
+
+**Why EXC-3 (amend).** Without a distinct error the service provider cannot tell "the person never approved this application" from "this resource does not exist"; with it, the service provider sends the person through a sign-in that requests the scope, which is the only way to obtain the approval. The detail is withheld from unauthenticated callers and for unregistered resources so the endpoint is not an oracle for the registry or for a person's approvals.
+
+**Why EXC-8 (replace).** A service provider in nationwide use acts for many people at several agencies in quick succession, and an agency gateway introspects for every one of them; any per-caller ceiling low enough to matter would refuse legitimate traffic first. Alerting on volume and error rate gives operations the same signal without the refusal.
+
+**As built, 2026-10-10 (`delegated-access-token-exchange`).** Routes: `POST /api/openid_connect/token` serves the exchange; `OpenidConnect::TokenController#build_form` dispatches on `grant_type` to `OpenidConnectTokenForm` (`authorization_code`), `OpenidConnectTokenExchangeForm` (the RFC 8693 URN while `token_exchange_enabled` is on) or `OpenidConnectUnsupportedGrantForm` (`unsupported_grant_type` for anything else); `/api/openid_connect/exchange` and its CORS rule are removed. The proof is read from the `DPoP` header only. Redis as built: `delegated_token:<hex SHA-256 of the token>` holds `aud`, `scope`, `grant_id`, `delegation_id`, `user_id`, `service_provider_id`, `resource_server_id`, `ial`, `aal`, `refresh_family_id`, `dpop_jkt`, `token_type`, `token_format`, `sp_rails_session_id`, `issued_at`, `expires_at` and `issuance_id` with TTL equal to the lifetime; `delegated_tokens:grant:<grant_id>` and `delegated_tokens:family:<refresh_family_id>` list the digests and their TTL only grows (`DelegatedTokenStore`). The issuance record `token_exchange_tokens` (migration `20261009100700`) has `grant_id`, `resource_server_id`, `service_provider_id`, `user_id`, `delegation_id`, `scope`, `ial`, `aal`, `refresh_family_id`, `token_type` (`Bearer`, `DPoP`, `N_A`), `token_format`, `dpop_jkt`, `sp_rails_session_id` (sensitive), `issued_at`, `expires_at`, `revoked_at`, `revocation_reason`; no digest column. The record is written in one transaction with the grant's `first_exchanged_at`, and the Redis entry only after commit. Lifetime is the lower of `token_exchange_access_token_ttl_seconds` (900) and `token_exchange_resource_servers.max_access_token_seconds` (migration `20261009100600`). Validation order, stopping at the first failure: client (`invalid_client`: a confidential client's assertion through `ResourceServerAuthenticator`, a public client's `client_id` naming a `pkce` record, approval for delegation), request shape (`invalid_request`: `subject_token_type`, `subject_token`, `requested_token_type` present and known, exactly one `resource`, no `code_verifier`), subject token (`invalid_grant`: the caller's own live `identities` row, bound for a public client), the public client's proof (`invalid_dpop_proof`: `ath` over the subject token, thumbprint equal to `identities.dpop_jkt`), session live and identity-verified, not suspended (`invalid_grant`), resource usable and accepting the caller (`invalid_target`, one wording), `saml2` not yet available (`invalid_target`), approval live and current (`consent_required` naming the scope). The optional narrowing `scope` of E3 and EXC-13 is not read; the issued scope is the application's. Response: `access_token`, `issued_token_type`, `token_type`, `expires_in`, `scope`; no `refresh_token` until §7 is built, no `id_token`. DPoP binding starts at the authorization request: a public client approved for delegation must send `dpop_jkt` (stored on `identities.dpop_jkt`, migration `20261009100500`), the code exchange requires a proof from that key (`OpenidConnectTokenForm#validate_dpop_proof`, no `ath`) and answers `token_type: DPoP`, and the exchange binds the delegated token to the same key. `DpopProofVerifier` accepts `iat` within `dpop_proof_max_age_seconds` (300) either side of now and keeps each `jti` per key for twice that window; no `DPoP-Nonce` (Appendix C and E57 as amended, E98). Re-approval moves live tokens to the replacement row (`TokenExchangeGrant#transfer_live_tokens_to!`, `DelegatedTokenStore.move_grant`; E97); `TokenExchangeGrant#revoke!` removes the live entries and marks the issuance rows (§7.5). The sample service provider in `config/delegated_access.localdev.yml` is a public client (`pkce: true`, no `certs`) and the records API carries `max_access_token_seconds: 300`.
+
 ---
 
 ## 6. Introspection and enforcement
@@ -1085,6 +1185,41 @@ skipping them pointless: an opaque token gives the API no user identity unless i
 *The reference resource server (§14.4) implements items 7–10;* they were found while building it and
 belong in every agency integration.
 
+**Amended 2026-10-09 (D37).** Items 3 and 9 are superseded: there is no published window and no caching
+of `active: true`. The resource server introspects on every request, so a revocation takes effect at the
+next request. Item 11's rule about verifying the proof on every request is unchanged.
+
+### 6.4 Amendments of 2026-10-09 (introspection interview)
+
+Where a row below conflicts with §6.1–§6.3, this subsection governs. Decided with the product owner on 2026-10-09 (implementation plan D26, D34–D37).
+
+| ID | Requirement |
+|---|---|
+| **INT-1** (amend) | Two kinds of caller authenticate. A **resource server** authenticates with `private_key_jwt` as before. The **public-client service provider** that holds a delegated token MAY introspect it with `client_id` and a DPoP proof (RFC 9449 §4.3) whose `ath` is the hash of the `token` parameter and whose key thumbprint equals the token's `cnf.jkt`; no client assertion. A caller that is neither, or whose assertion or proof fails, receives HTTP 401 `invalid_client`. |
+| **INT-2** (amend) | The full active response is returned only when the caller is the token's resource server. When the caller is the service provider named in `act.sub` and the proof binds to the token, the response is the limited form of INT-14, under the same validity conditions. |
+| **INT-3** (unchanged) | An authenticated caller asking about a token it is neither the audience of nor the bound holder of receives exactly `{"active": false}`. |
+| **INT-5** (amend) | `sub` is the user's `AgencyIdentity` uuid for the resource server's owning agency, created at first introspection if the user has never used that agency (`AgencyIdentityLinker` creates the `agency_identities` row only); no `identities` row for the agency SP is created or read (EXC-5). |
+| **INT-7** (replace) | Introspection is not rate-limited per resource server and never answers HTTP 429. Volume and error rate per caller are logged and monitored against configurable alert thresholds (§10 as amended); runaway-caller protection is the infrastructure layer's. |
+| **INT-8** (replace) | Login.gov publishes no cache window. The integration guide states that a resource server introspects on every request and that revocation is therefore seen at the next request. `token_exchange_introspection_cache_seconds` is not introduced. |
+| **INT-9** (amend) | The 429 clause is withdrawn with INT-7; `token_type` in the active response and HTTP 401 `invalid_client` for failed authentication stand. |
+| **INT-10** (amend) | After the service provider's session has ended, the active response to the resource server carries `sub`, `delegation_id` and `email` (with `email_verified` and `all_emails` as `userinfo` does), the token members of INT-4 and `attributes: "identifiers_only"`; no other identity claim. While the session is live the response carries the agency's bundle as written. |
+| **INT-14** | The active response to the **service provider** (INT-1 as amended) carries `active`, `exp`, `iat`, `aud`, `scope`, `delegation_id`, `token_type`, `cnf`, `iss` and the service provider's own pairwise `sub` (the value its `id_token` carries), plus any claim the application lists in `sp_shareable_attributes` (an application-level list, empty by default, maintained with the consent content). It carries no `act`, no `auth_time`, no `ial`/`aal` and no identity attribute from the agency's bundle. |
+| **INT-15** | Introspection reads the live token from Redis by the digest of the `token` parameter (§5.2 as amended); a missing entry is `active: false`. The issuance record is not consulted for validity. |
+
+**Why INT-1/INT-14.** A browser-based service provider needs to tell an expired or revoked token from a failing agency API, and the token string tells it nothing (EXC-20). Letting it introspect its own token, bound by the proof to the key only it holds, answers that without releasing the agency's attributes; a party holding the token without the key cannot use the endpoint as an oracle. The response is limited to what the service provider's own sign-in already conveys plus what the agency chooses to share.
+
+**Amended 2026-10-09 (D59).** `/api/openid_connect/introspect` carries the token endpoint's CORS treatment (§5.3 as amended) so the service provider's own introspection from the browser works; the resource server's introspection is server-to-server and unchanged.
+
+### 6.5 Amendments of 2026-10-09 (document images and encrypted userinfo)
+
+Decided with the product owner on 2026-10-09 (implementation plan D49, D50; functional requirements §11 as amended). Nothing here changes introspection.
+
+| ID | Requirement |
+|---|---|
+| **INT-16** | Document images and document metadata (the `document_images` attribute set inherited from `sbx-taigrr`) are never released by introspection or in a SAML assertion, whatever the agency's bundle says; they are reachable only at `/api/openid_connect/userinfo` with the service provider's own access token, and delegated tokens are refused there (EXC-6, EXC-18). |
+| **DOC-1** | The direct-service-provider document-images feature (`document_images` scope, `document_images_sharing_service_providers` allow-list, biometric consent checkbox on the completions screen, `document_artifacts` store, download endpoint, 90-day expiry job) is kept as built and is enabled (`document_images_sharing_enabled: true`) in the sandbox only; it is off in every other environment. The Department of State is registered there as a direct service provider on the allow-list (§14.5 as amended). No delegated channel for images is built this phase. |
+| **UINF-1** (planned) | Encrypted userinfo responses: when the service provider that the presented access token belongs to has a registered encryption certificate and `userinfo_encrypted_response_alg`/`userinfo_encrypted_response_enc` (OpenID Connect Core 5.3.2), the whole userinfo attribute bundle is returned as a JWE (RFC 7516) encrypted to that certificate. The key is selected from the token's own service provider record, never from the request. Applies to the Department of State's attributes first. Planned 2026-10-09, not built this phase; no code, migration or configuration key is added for it. |
+
 ---
 
 ## 7. Refresh tokens and revocation
@@ -1207,6 +1342,30 @@ never confirms a token's existence. A revocation of a live family emits `delegat
 scope, resource server or SP) are checked at introspection and refresh time, so no cascade is
 needed for them; flipping the flag is enough.
 
+**Amended 2026-10-09 (D26).** `TokenExchangeGrant#revoke!` reads the grant's Redis index set
+(`delegated_tokens:grant:<grant_id>`), deletes every live token entry it lists, marks the grant's issuance
+rows and refresh tokens revoked in Postgres, and removes the set. Family revocation (REF-4, REF-8) does the
+same through `delegated_tokens:family:<family_id>`. Kill switches are unchanged.
+
+### 7.6 Amendments of 2026-10-09 (token lifecycle interview)
+
+Where a row below conflicts with §7.1–§7.5, this subsection governs. Decided with the product owner on 2026-10-09 (implementation plan D26, D27, D32, D33, D37).
+
+| ID | Requirement |
+|---|---|
+| **REF-4** (amend) | Reuse of a rotated refresh token revokes the family (§7.5 as amended), emits `delegated-access-revoked` with `reason: refresh_token_reuse` to the agency (ATT-7) and logs an analytics event carrying the service provider, resource server and family id, so operations see the reuse without reading agency events (RFC 9700 §4.14.2). |
+| **REF-5** (amend) | The family's absolute lifetime is 12 hours (`token_exchange_refresh_token_ttl_seconds`) counted from the **first exchange**, for every grant whether remembered or not, and never later than the grant's `remember_until`. A non-remembered grant's family does not end with the Login.gov session. A resource server's `max_family_seconds` and a service provider's override MAY lower the family lifetime, and a resource server's `max_access_token_seconds` MAY lower the access token lifetime; none may raise them. |
+| **REF-7** (confirmed) | Refresh tokens are Postgres rows storing the SHA-256 digest only (`token_exchange_refresh_tokens`, §7.2 unchanged); the family's durability is what makes reuse detection and the account page's "token active" state reliable. |
+| **REF-13** | The refresh grant is not rate-limited per service provider (`refresh_per_sp_*` is not introduced). Refresh volume and error rate per service provider are monitored against configurable alert thresholds (§10 as amended). |
+| **REF-14** | Storage split: live access tokens and SAML assertions in Redis (keyed by digest, TTL equal to the lifetime, indexed per grant and per family); refresh tokens and issuance records in Postgres. A refresh writes a new Redis entry and a new issuance row and adds the new digest to the family's index set; the earlier access token keeps its own TTL. |
+
+**Why REF-5 (amend).** Ending a non-remembered grant's family with the Login.gov session would make the
+service provider's unattended work depend on a browser tab, the problem REF-6 exists to remove; a 4-hour
+default was considered and rejected because the 12-hour AAL2 ceiling is the bound the design already
+justifies, and agencies that need less can set it per resource server.
+
+**Amended 2026-10-09 (D59).** `/api/openid_connect/revoke` carries the token endpoint's CORS treatment (§5.3 as amended) so a public-client service provider can revoke from the browser with its DPoP proof; a confidential client's `private_key_jwt` revocation is unchanged.
+
 ---
 
 ## 8. Fraud signals: Attempts API delivery to target agencies
@@ -1297,6 +1456,13 @@ this user, so none exists.
 **Why the disclosure is not on the consent screen.** Attempts API data sharing with relying
 parties is already covered by Login.gov's Privacy Impact Assessment; the consent screen is about
 the delegation itself.
+
+**Confirmed 2026-10-09 (D38, D39).** The whole of §8 stands as written: buffering while a delegation
+request is in flight (ATT-1, ATT-11), release at consent under the agency's pairwise identifier with the
+consented event and the historical `idv-*` release (ATT-2), live forwarding (ATT-8), the token events
+(ATT-7, with `refresh_token_reuse` as a revocation reason per REF-4 as amended) and the remembered path
+with `remembered: true` on every reuse (ATT-5, ATT-13). Delivery in any shared environment stays behind
+`token_exchange_enabled` pending the privacy review.
 
 ### 8.4 Where and how
 
@@ -1498,6 +1664,22 @@ resource server, `requested`, `declined`, `consented_not_exchanged`, `exchanged`
 `proofed_in_session_not_exchanged`. The last column is the proofing cost with no billable
 agency; the service provider's IAA covers it.
 
+### 9.5 Amendments of 2026-10-09 (billing interview)
+
+Where a row below conflicts with §9.2–§9.4 or *How billing works under delegated access*, this subsection governs. Decided with the product owner on 2026-10-09 (implementation plan D40–D43), adopting the reviewer's note `docs/delegated-access-billing-strategy.md` on `token-exchange2-login`.
+
+| ID | Requirement |
+|---|---|
+| **BIL-4** (amend) | `sp_return_logs` gains one column only: `access_type` (`direct` default / `delegated`, `sensitive=false`) and a nullable `token_exchange_token_id` reference to the issuance record (§5.2 as amended). `actor_issuer`, `resource_server_identifier` and `delegated_proofing` are not added; the acting service provider, the resource server and `proofed_in_session` are read from the issuance record and its grant by join. |
+| **BIL-6** (amend) | The `access_type` breakdown stands; any report column that names the service provider, the resource server or in-session proofing joins `token_exchange_tokens` (and `token_exchange_grants`) through `token_exchange_token_id`. |
+| **BIL-8** (amend) | The proofing rule is chosen: when `proofed_in_session` is true for the grant, **every** agency that received a delegated access token in that sign-in is billed for it, proofing attribution included (`NewUniqueMonthlyUserCountsByPartner` counts the user for each such agency's partner), and the service provider's sign-in is waived (BIL-13 as replaced). `profiles.initiating_service_provider_issuer` is still not changed. |
+| **BIL-11** (amend) | `delegated_proofing` in the key-exclusion and tally rules is read from the joined grant's `proofed_in_session`, not from a return-log column. |
+| **BIL-13** (replace) | `sp_return_logs` rows are never updated. At the service provider's handoff, for a service provider approved for delegation, Login.gov writes a Redis entry `delegation_waiver:<SHA-256 of the service provider's access token>` holding the id of the sign-in's billable return-log row, with a TTL of **one hour** (`token_exchange_billing_waiver_cache_seconds`, default 3600). At the first exchange of a sign-in, inside the transaction that writes the agency's billable row (BIL-1), Login.gov reads the entry by the digest of the subject token and appends an `sp_return_log_billing_adjustments` row (`sp_return_log_id` the sign-in row, `delegated_sp_return_log_id` the agency row, `token_exchange_token_id`, `reason` integer enum `delegated_token_issued`, `effect` integer enum `exclude_from_billing`, timestamps). Invoice queries exclude a sign-in row that has an adjustment with `NOT EXISTS`; the waived count per service provider and month comes from the adjustments table. |
+| **BIL-15** | On a cache miss, the exchange falls back to the database: it finds the most recent billable `direct` return-log row for the same `user_id` and the subject token's service provider issuer whose `returned_at` is within the sign-in that produced the subject token (the `identities` row's `last_authenticated_at` or later), and writes the adjustment from it. The exchange is never refused or delayed for billing; a miss with no row found is logged and alerted (`delegation_waiver_unresolved`). **Flagged for review by the data team:** the fallback can over-bill the service provider (row not found) or under-bill it (wrong row matched when the person signed in to the service provider more than once in the window); the review decides whether the match window needs tightening before the first invoice run. |
+| **BIL-16** | Later exchanges of the same sign-in find an existing adjustment for the sign-in row and write nothing; refreshes write nothing (REF-9). A cache entry outlives nothing it needs: the subject token's sign-in must still be live at the first exchange (EXC-12), and the fallback covers an exchange made after the hour. |
+
+**Why BIL-4/BIL-13.** A return log is an append-only record of a handoff; it is not the place for facts about a later exchange, and mutating it would make the invoice depend on the order in which jobs ran. The issuance record already knows the service provider, the resource server and the grant, so the join costs one foreign key and keeps every report's history reproducible. The one-hour TTL keeps the common case (exchange seconds after the handoff) in Redis while the database fallback keeps correctness for the uncommon one.
+
 ---
 
 ## 10. Configuration and feature flags
@@ -1517,6 +1699,19 @@ New `IdentityConfig` keys (`lib/identity_config.rb`, defaults in `config/applica
 Everything else — service providers, resource servers, scopes, keys — lives in SP configuration (ONB-5),
 not in application config.
 
+**Amended 2026-10-09 (D27, D37).** `token_exchange_introspection_cache_seconds`, `token_exchange_per_sp_*`,
+`introspection_per_resource_server_*` and `refresh_per_sp_*` are not introduced (INT-8, EXC-8, INT-7 and
+REF-13 as amended). In their place, `token_exchange_alert_exchanges_per_minute`,
+`token_exchange_alert_refreshes_per_minute`, `token_exchange_alert_introspections_per_minute` and
+`token_exchange_alert_error_rate_percent` are integer thresholds read by the monitoring that raises an
+alert when one caller's volume or error rate exceeds them over a one-minute window; they refuse nothing.
+Per-resource-server `max_access_token_seconds` and `max_family_seconds` are SP-configuration fields
+(ONB-5), not application config.
+
+**Amended 2026-10-09 (D41, D47, D49).** `token_exchange_billing_waiver_cache_seconds` (integer, default `3600`, BIL-13 as replaced) is added by the billing feature. No key is added for DPoP: binding follows the client type and the per-resource-server `dpop_required` field is removed (EXC-9 as amended). `document_images_sharing_enabled` and `document_images_sharing_service_providers` (inherited from `sbx-taigrr`) keep their `false` and `[]` defaults and are set only in the sandbox's `application.yml` (DOC-1).
+
+**Amended 2026-10-09 (D56).** `site_key_enabled` (boolean, default `false`) arrives with the ported per-site keys feature (§17) and is independent of `token_exchange_enabled`; the per-service-provider `site_key_allowed` column is SP configuration set only from `service_providers.yml`.
+
 ---
 
 ## 11. Security requirements summary
@@ -1535,6 +1730,10 @@ not in application config.
 | Content injection on consent screen | DB-only content, escaped | CON-8 |
 | Agency loses fraud visibility | Attempts events delivered at consent with `delegation_id` | §8 |
 | High-volume agency callers trip per-IP limits or get allowlisted into no limits | Per-client rate limits | EXC-8, INT-7 |
+
+**Amended 2026-10-09 (D37).** The last row's control is replaced: no per-client rate limit exists. The
+control is per-client volume and error-rate alerting (EXC-8, INT-7, REF-13 as amended), with runaway-caller
+protection at the infrastructure layer.
 
 ---
 
@@ -1602,7 +1801,7 @@ New code MUST satisfy these suite conventions (learned while implementing):
    `delegation_id` across both.
 4. Turn on billing rows; reconcile one month of `DelegationOutcomesReport` against the invoice
    supplement.
-5. Confirm `dpop_required` for each onboarded API with the agency (required for any API reached from a browser-based service provider).
+5. Confirm with each agency that its API verifies the DPoP proof on every request for tokens issued to a public-client service provider (RS-DPOP-1); there is no per-API `dpop_required` setting (EXC-9 as amended, 2026-10-09).
 
 ---
 
@@ -1648,6 +1847,8 @@ The reference viewers also poll **without** acknowledging (no `ack`): an agency 
 page should keep seeing the last hour of activity, so the demo deliberately leaves events in the store.
 A production agency does the opposite and acknowledges to advance the pointer (ATT-18); the end-to-end
 harness, in turn, resets the store between scenarios rather than acknowledging.
+
+**Amended 2026-10-09 (D57, D58).** Where a row above conflicts with this paragraph, this paragraph governs. The reference **service provider** (`identity-sts-sinatra`, rewritten `main` of `https://github.com/GSA-TTS/identity-sts-sinatra`) is a standards-based browser public client: it signs in with PKCE (`pkce: true` on its SP record, no `private_key_jwt`), generates its DPoP key non-extractable with WebCrypto and keeps it in the browser as an IndexedDB `CryptoKey` (a new key per sign-in), sends `dpop_jkt` on the authorization request (EXC-19), and makes the authorization-code exchange, the token exchange, refresh, revocation and the agency API calls from the browser, each with a DPoP proof (`htm`, `htu`, `iat`, `jti`, `ath`), including the `DPoP-Nonce` retry loop of RFC 9449 §8 (on `use_dpop_nonce` or a `WWW-Authenticate: DPoP error="use_dpop_nonce"` challenge the client retries once with the returned nonce) even though Login.gov does not issue nonces (E28, E57). Its server is static hosting plus a non-secret JSON configuration (issuer, `client_id`, redirect URI, agency API origins and resource identifiers, delegation scopes); it holds no private key, no shared secret and no token. REF-IMPL-1 reads accordingly ("perform the exchange from the browser with a DPoP proof" in place of "server-side with `private_key_jwt`"); REF-IMPL-8 is withdrawn (there is no server session: tokens live in page memory for the sign-in and the DPoP key never leaves the browser, so a stolen token is unusable without it, §5.5); REF-IMPL-9's "server-side token" clause becomes "a token read from the browser". Attempts API code is removed from `identity-sts-sinatra` and from `identity-saml-sinatra`, neither of which had it upstream before this project; REF-IMPL-3 and REF-IMPL-10 apply to `identity-oidc-sinatra`, which keeps the viewer it already had. Rejected: a confidential-client reference (contradicts §5.5), and a server that signs DPoP proofs for the browser (a proof from a key the browser does not hold binds nothing to the browser).
 
 ### 14.3 Service provider reference — changes to `identity-oidc-sinatra`
 
@@ -1729,6 +1930,8 @@ never `scope` or `code_verifier`; refresh sends neither `scope` nor `resource`; 
 `token_type_hint=refresh_token`. On `invalid_grant` the family is cleared and the UI says consent is
 required again, so the "replay a rotated refresh token" demo shows the token gone rather than a
 live 401 from the API.
+
+**Amended 2026-10-09 (D57).** The code in this subsection describes the withdrawn server-side reference and is kept for the protocol steps it names. In the browser public client the same steps are: `exchange(resource)` posts `grant_type`, `subject_token` (the access token held in page memory), `subject_token_type`, `resource` and `requested_token_type` with `client_id` and a `DPoP` header whose `ath` is over the subject token, no `client_assertion`; the API call sends `Authorization: DPoP <token>` and a proof with `ath` over it; `refresh(family)` sends the rotated refresh token with a proof from the same key; `revoke(family)` posts to `/api/openid_connect/revoke` with a proof. On `use_dpop_nonce` from any of those servers the client retries once with the `DPoP-Nonce` it was given. The `TokenStore` and cookie-keyed server session described under *As built* no longer exist.
 
 ### 14.4 Resource server reference
 
@@ -1831,6 +2034,8 @@ Add to `config/service_providers.localdev.yml`, under `development`:
 Add a `bin/` or `make` target in `identity-oidc-sinatra` that generates the resource server key
 pair and prints the PEM to paste into the fixture.
 
+**Amended 2026-10-09 (D47, D51).** The fixture is `config/delegated_access.localdev.yml`, loaded by `rake delegated_access:seed` (§3.4 as built), and it is the **single contract** between the identity-idp seed task and the `identity-sts-sinatra` end-to-end harness (§14.6): one public-client service provider (`pkce: true`, DPoP, MyBenefits Assistant / Office of Benefits Coordination), two agency applications with one `oauth` API (Department of Housing Support, Housing Assistance Records) and one `saml2` API (National Retirement Administration, Retirement Benefits Portal), and the Department of State's direct-service-provider record on the document-images allow-list (DOC-1). The harness reads issuers, identifiers, scope values and hostnames from this file and from nowhere else. The sandbox seed task (`delegated_access:seed_sandbox`) reads the same file with hostnames substituted from the environment. The `dpop_required` key is removed from the file (EXC-9 as amended); the `service_providers.localdev.yml` additions described above are superseded by it.
+
 ### 14.6 End-to-end test harness
 
 - **Compose file** (`docker-compose.e2e.yml` in `identity-oidc-sinatra`): `idp` (from
@@ -1892,6 +2097,8 @@ which stops launchy from auto-opening development emails in a browser during the
 letter_opener still writes them to `tmp/letter_opener/`. Each scenario also begins by emptying the
 IdP's Attempts store (`attempts-api-events:*`) so the agency viewer reflects only that scenario, since
 the reference viewers poll without acknowledging (ATT-18).
+
+**Amended 2026-10-09 (D57).** With the service provider a browser public client there are no "server-to-server steps" on its side: the harness drives the page through sign-in, consent, exchange, API call, refresh and revocation, and reads tokens and the DPoP thumbprint from the page rather than from `E2E_RECORDS_TOKEN` / `E2E_BENEFITS_TOKEN`. Scenario 9 (wrong caller introspects) runs as a request spec against the agency reference APIs with those values. The compose file serves the service provider as static files.
 
 ### 14.7 Partner guide (`docs/delegated-access.md` in `identity-oidc-sinatra`)
 
@@ -2251,6 +2458,19 @@ Listed here so the rest of the document stays as specified until the item is sch
   SP's bundle. Resolved by INT-10: introspection returns the userinfo-shaped claims for the agency SP's
   bundle, so the two formats are equivalent for agencies.
 
+### 15.8 Amendments of 2026-10-09 (SAML interview)
+
+Where a row below conflicts with §15.3–§15.7 or the decisions of 2026-09-28, this subsection governs. Decided with the product owner on 2026-10-09 (implementation plan D44, D45).
+
+| ID | Requirement |
+|---|---|
+| **SAML-1** (amend) | `requested_token_type` is REQUIRED on every exchange (EXC-21); an absent value fails with `invalid_request`, not as an OAuth default. `urn:ietf:params:oauth:token-type:access_token` mints an OAuth token (§5), `urn:ietf:params:oauth:token-type:saml2` a SAML assertion; any other value fails with `invalid_request`. |
+| **SAML-3** (amend) | The service provider chooses the format. For now the resource server does not declare which formats it accepts: `token_format` on `token_exchange_resource_servers` is informational and a `saml2` request for an `oauth` API is honored. **Flagged for review:** keeping the choice with the service provider may be right, or Login.gov could select the format from the `token_format` of the API named in `resource` and refuse a mismatch with `invalid_target`; `token_format` is kept so that check can be added without a migration. |
+| **SAML-4** (amend) | `Conditions/@NotOnOrAfter` is issuance + **5 minutes** (not one hour), with `NotBefore` = issuance − 5 s; `SubjectConfirmationData/@NotOnOrAfter` stays issuance + 5 minutes. The two windows coincide, so no validator accepts an assertion past five minutes and the revocation delay of §15.5 is bounded by the same figure. |
+| **SAML-6** (confirmed) | Always signed; encrypted to the resource server's registered certificate when one is present (SAML-13 governs the algorithm). |
+
+**Why SAML-4 (amend).** The one-hour `Conditions` window came from the browser flow's default and only mattered for validators that ignore the subject-confirmation window; with refresh every five minutes (SAML-9) nothing legitimate needs an assertion older than that, and the shorter window means a revoked grant is dead at every validator within five minutes.
+
 ---
 
 ## 16. Third-party-initiated login (reference applications)
@@ -2306,19 +2526,70 @@ it is not required for the flow to be correct.
 | `identity-saml-sinatra` | Same, except that `POST /consume` answers with the agency's own return page (refresh plus link) instead of a redirect, because of Chrome's `form-action` handling of the SAML POST binding (E34). |
 | `identity-idp` | None. |
 
+**Amended 2026-10-09 (D57).** §16.1's "calls the agency API from its server" reads "from its browser": the service provider is a browser public client, so the STS fits when the service provider calls agency APIs from the person's browser with its own tokens, combines agencies, or continues through refresh while the person is away from the agency. In §16.3 the `identity-sts-sinatra` initiator is page code: the hand-off record of TPL-2 (`login_hint` UUID, ten-minute expiry, single use) is kept in the browser's session storage, since there is no server session, and `THIRD_PARTY_LOGIN_TARGETS` and `THIRD_PARTY_RETURN_URI` move into the non-secret JSON configuration. TPL-1 to TPL-7 are otherwise unchanged; the agency side is not affected.
+
+---
+
+## 17. Per-site keys (ported)
+
+This section mirrors implementation plan 5.16 at the design level. The feature is independent of
+§3–§9: it is ported from pull requests #13618 and #13619 of `18F/identity-idp` onto the branch
+`delegated-access-site-keys` at the top of the stack (D56), and nothing releases a site key yet. The
+release of the sealed key on OIDC authorization and the recovery paths after a password reset or with
+the personal key are the later pull requests of the same series (#13620 to #13622) and are not ported.
+
+**What a site key is.** A key unique to a user and a service provider, the same on every device, and
+delivered only to the service provider's browser: the browser generates a P-256 key pair with WebCrypto,
+sends the public JWK with the authorization request, and receives the site key sealed to that JWK. Login.gov
+derives the key from a per-user root it can open only with the user's password.
+
+### 17.1 Classes
+
+| Class | Role |
+|---|---|
+| `SiteKeys::RecipientJwk` | Parses `site_key_jwk`: base64url JSON of a P-256 public JWK. Accepts and ignores the WebCrypto `exportKey('jwk')` metadata (`ext`, `key_ops`, `alg`, `kid`, `use`); rejects any other member including a private `d`, off-curve points and coordinates that are not 32 bytes. |
+| `SiteKeys::Sealer` | Encrypts a key to the recipient JWK with ECDH-ES, HKDF-SHA256 and AES-256-GCM. HKDF info and GCM AAD are both `"login.gov site key wrap v1\n<client_id>"`; output is base64url JSON `{v, epk, iv, ct}`. Raises `SiteKeys::SealError`. |
+| `Encryption::DecipherError` | Raised by `Encryption::AesCipher` and `Encryption::AesCipherV2` when a payload fails authentication, so callers can distinguish a wrong key from other failures. |
+| `SiteKeys::RootCipher` | Wraps and unwraps the root with `Encryption::Encryptors::PiiEncryptor` (scrypt of the password + KMS), the profile-PII scheme. A wrap that fails authentication raises `SiteKeys::RootMismatchError`; any other failure raises `Encryption::EncryptionError`. |
+| `SiteKeys::Vault` | Unlocks the root with the password (`unlock`, creating one only when `create:` is set), caches it KMS-encrypted in the session (`encrypted_site_key_root`) with a fingerprint of the stored wrap (`site_key_root_fingerprint`) so the session re-locks when another session changes it; `replace!` under a row lock, `wrap_cached_root` and `store_root_or_forget!` for password change, `needs_password?` and the `site_key_root_unavailable` marker for the password page. |
+| `SiteKeyConcern` | Controller concern: `unlock_site_key_root` at password entry (sign-in, password capture, sign-up password) with `repair: false` before the second factor; after it, a wrap that fails under a just-verified password is replaced unless a concurrent password change explains it. `site_key_root_wanted?` is `current_sp.site_key_allowed?`. |
+| `SiteKeyRoot` | Model; `forget_password!` deletes the row, used by every password reset path. |
+
+### 17.2 Table and column
+
+`site_key_roots` (migration `20261003110000`): `user_id` (unique index; foreign key to `users` with `on_delete: :cascade`), `encrypted_root` (text, sensitive; the `PiiEncryptor` output of the 32-byte root), timestamps. `service_providers.site_key_allowed` (boolean, default `false`, migration `20261003110001`): set only from `service_providers.yml` (and `service_providers.localdev.yml` locally); `ServiceProviderUpdater` ignores it so the Dashboard cannot turn it on. Both migrations predate the delegation migrations (`20261009…`) in timestamp order.
+
+### 17.3 Configuration
+
+`site_key_enabled` (boolean, default `false`) gates everything: when off, no root is created, unlocked or stored and `site_key_allowed` has no effect. No other key is added.
+
+### 17.4 Lifecycle
+
+1. Sign-in to a service provider with `site_key_allowed` creates the root (32 random bytes) if the user has none, wrapped under the password just entered; sign-in to any other service provider unwraps an existing root but never creates one.
+2. The root is unwrapped before the second factor and kept KMS-encrypted in the session; it is never written to the session or logs in the clear.
+3. Password change re-wraps the cached root in the same transaction as the password update under a row lock on `site_key_roots`; if the root is locked in the session the password page asks for the current password first; a root that cannot be re-wrapped is deleted.
+4. Every password reset path (`ResetPasswordForm`, `PasswordResetFromDisavowalForm`, `ResetUserPassword`) deletes the root; user deletion cascades.
+5. Analytics: `site_key_root_created` (`replaced`) and `site_key_root_unlock_failed` (`error`, `root_replaced`); no key material is logged.
+
+Known limitation carried from the source: a transient unlock failure followed by a password change deletes the root; the follow-up pull requests change this to dropping only the password wrap.
+
+### 17.5 Relation to delegated access
+
+Independent code paths: nothing in §3–§9 reads a site key root and nothing here reads a grant, a token or a resource server. The sealed key goes only to the service provider's browser, which fits the public-client baseline (§5.5, E53): the page that holds the DPoP key would hold the site key. Whether a released site key is ever tied to a delegation is a question for the follow-up pull requests.
+
 ---
 
 ## Appendix A — Open decisions
 
 | Decision | Options | Recommendation |
 |---|---|---|
-| ~~Adopt sender-constrained tokens (DPoP)?~~ | — | **Decided 2026-10-08:** adopted (option B). Login.gov verifies proofs and binds at exchange and refresh; agencies set `dpop_required` per resource server; required for APIs reached from a browser-based service provider such as America.gov. See EXC-9, INT-4, REF-3, §6.3 item 11, Appendix C. |
+| ~~Adopt sender-constrained tokens (DPoP)?~~ | — | **Decided 2026-10-08:** adopted (option B). Login.gov verifies proofs and binds at exchange and refresh; agencies set `dpop_required` per resource server; required for APIs reached from a browser-based service provider such as America.gov. See EXC-9, INT-4, REF-3, §6.3 item 11, Appendix C. **Amended 2026-10-09:** the per-resource-server flag is removed; binding follows the client type (EXC-9 as amended, E82). |
 | ~~For SAML-consuming APIs (§15), accept the revocation delay or require introspection?~~ | — | **Decided 2026-09-28:** no introspection; one-hour `Conditions` with a five-minute subject-confirmation window; revocation at next refresh (§15.5) |
 | ~~Should introspection return identity attributes (narrowed to the owning SP's `attribute_bundle`) or only `sub`?~~ | — | **Decided 2026-09-29:** attributes, as userinfo-shaped claims limited to the agency SP's bundle (INT-10); the agency behaves as for a direct sign-in, introspection being the only added step. Was: SAML assertions (§15, SAML-5) carry the agency SP's bundle, so parity argues for returning the same from introspection |
-| Should sign-out at Login.gov revoke delegated families? | yes / no | No (REF-6); add "end all delegated access" to the account page |
-| How is proofing attributed across the service provider's and the agency's partners when both see the same proofing in one month? | service provider upfront / first agency upfront / every agency / split | Reporting rule in the invoice supplement; data in `delegated_proofing` (BIL-8) |
+| ~~Should sign-out at Login.gov revoke delegated families?~~ | — | **Decided 2026-10-09:** no (REF-6, REF-5 as amended); the family runs 12 hours from the first exchange for every grant, remembered or not; the account page offers revocation (ACC-2) |
+| ~~How is proofing attributed across the service provider's and the agency's partners when both see the same proofing in one month?~~ | — | **Decided 2026-10-09:** every agency that received a delegated token in that sign-in, proofing included; the service provider's sign-in is waived (BIL-8 as amended, E78) |
 | Should the IdV outcomes report exclude delegated rows? | yes / no | Yes |
-| Per-service provider refresh lifetime below 12 hours for `read_write` scopes? | yes / no | Yes, configurable |
+| ~~Per-service provider refresh lifetime below 12 hours for `read_write` scopes?~~ | — | **Decided 2026-10-09:** yes, configurable per resource server (`max_family_seconds`, `max_access_token_seconds`) and per service provider; never longer (REF-5 as amended) |
 | ~~Should a target agency approve specific service providers per scope?~~ | — | **Decided 2026-10-09:** `allowed_delegation_service_providers` on the application; empty means any approved service provider (ONB-2 as amended) |
 | ~~When a service provider adds a new scope and the user has remembered grants, show only the new one or the full pre-filled list?~~ | — | **Decided 2026-10-09:** full requested list, all rows checked and disabled, already-approved rows marked, new rows marked new (CON-7 as amended) |
 
@@ -2337,6 +2608,8 @@ it is not required for the flow to be correct.
 | Agency reference apps `/initiate_login` | GET | none (browser redirect; `iss` and `target_link_uri` validated) | OpenID Connect Core 1.0 §4 | §16 |
 | Reference service provider `/third_party/start`, `/third_party/return` | POST / GET | user session | OpenID Connect Core 1.0 §4 | §16 |
 | Reference service provider `/delegated/*`, reference resource server `/records` | — | see §14 | RFC 6750, 7523, 7662 | §14 |
+
+**Amended 2026-10-09 (D57, D59).** `/api/openid_connect/token`, `/api/openid_connect/introspect` and `/api/openid_connect/revoke` answer `OPTIONS` preflights for origins that match a registered redirect URI, with any request header; the public client authenticates with a DPoP proof, not `private_key_jwt`, on all three (§5.5). The reference service provider's `/delegated/*` routes no longer exist as server routes: they are page states in the browser client. The reference resource servers add CORS for the service provider's origin (allow `Authorization`, `DPoP`, `Content-Type`; expose `WWW-Authenticate`).
 
 ---
 
@@ -2360,6 +2633,10 @@ thumbprint is stored on `token_exchange_tokens.dpop_jkt`, copied forward by
 the two reference resource servers `dpop_required: true` so the end-to-end harness exercises the
 mandatory path. The reference apps generate proofs (service provider, one key per signed-in session)
 and verify them (both resource servers).
+
+**Amended 2026-10-09 (D46, D47).** Option B's per-resource-server opt-in is withdrawn. Since the service provider is a public client (§5.5), binding is a property of the client type: every token issued to a public client is bound (EXC-17) and no token issued to a confidential client is, so `dpop_required` has nothing left to decide. The DPoP feature's migration drops the column; the fixture key and the seeder support go with it, and the harness exercises the bound path because its service provider is public. Accepted proof algorithms are `ES256` and `RS256` (DISC-2). The C.5 table and the C.6 rows below are kept as the record of the analysis.
+
+**Amended 2026-10-10.** The acceptance window above is not what was built: `DpopProofVerifier` accepts `iat` within `dpop_proof_max_age_seconds` (300 by default) either side of now, so ±300 s rather than 60 s back and 10 s forward, and keeps each `jti` for twice that window, since a proof with a future `iat` at the edge of the window stays acceptable for two windows (E98). The thumbprint is stored on `identities.dpop_jkt` at the authorization request and on `token_exchange_tokens.dpop_jkt` at the exchange; `mint_from_family!` is not built yet (§7).
 
 ### C.1 What it is
 
@@ -2448,6 +2725,8 @@ If B is chosen, recommend `dpop_required: true` at onboarding for `read_write` r
 | **ONB-2** (amend) | `token_exchange_resource_servers.dpop_required` boolean, default false, `sensitive=false`. |
 | **RS-DPOP-1** (new, §6.3) | A resource server whose tokens may be key-bound MUST verify the proof on every request per RFC 9449 §4.3 and MUST refuse a bound token presented with the `Bearer` scheme (§7.1). |
 
+**Amended 2026-10-09 (D47).** The `dpop_required` clauses of EXC-9 (replace) and ONB-2 (amend) above, and the migration line below, are superseded: see §5.6 (EXC-9 as amended), §3.4 (ONB-2 as amended) and §13 item 5.
+
 **Code, by file**
 - `app/forms/openid_connect_token_exchange_form.rb`, `..._refresh_token_form.rb`: accept
   `dpop_proof:` from `request.headers['DPoP']` (passed from `TokenController#build_form`); add
@@ -2499,6 +2778,8 @@ Four repositories implement this document. Each is a copy of an existing Login.g
 | `identity-saml-sinatra` | The **SAML-consuming agency resource server** reference (§15.7): accepts delegated SAML assertions, validates locally, enforces `delegation_scopes`, runs the agency-role Attempts viewer. | `identity-saml-sinatra` `f337f22` |
 
 The two agency apps also play the agency's own sign-in application, which is what §16 (third-party-initiated login) exercises.
+
+**Amended 2026-10-09 (D57, D58).** `identity-sts-sinatra` no longer starts from `identity-oidc-sinatra` `907fc7f`: its `main` is rewritten as a browser public client (static files plus a non-secret JSON configuration; PKCE, WebCrypto DPoP key in IndexedDB, every call from the browser) and the earlier history, which committed a demo private key, is not carried over. In D.2 its §5 entry reads "performs the exchange from the browser with a DPoP proof, `resource`, `requested_token_type`" and its Appendix C entry "DPoP proof generation in the browser, one non-extractable key per sign-in"; the §8 entry of `identity-saml-sinatra` (agency-role Attempts viewer) is withdrawn, as is step 20 in D.4, and step 13 reads "tokens in page memory" in place of "server-side token storage". `identity-oidc-sinatra` keeps its viewer (step 18).
 
 ### D.2 Section-to-repository mapping
 
@@ -2683,10 +2964,10 @@ time they come up.
 | # | Decision | Specification basis | Alternatives considered | Status |
 |---|---|---|---|---|
 | E1 | Scope strings carry the `token_exchange:` prefix everywhere on the wire, including introspection `scope` and the SAML `delegation_scopes` attribute. | RFC 6749 §3.3 treats scope as opaque strings; RFC 8693 returns `scope` as granted. | Bare values (`records_read`) in tokens and assertions. | Confirmed (local contract) |
-| E2 | Exchange requires the service provider's Login.gov sign-in session to still be live (EXC-12); once minted, the family is session-independent. | RFC 8693 is silent on subject-token freshness. | Accept any unrevoked subject token, relying on the grant alone. | **Revisit:** confirm the SP may only start delegation during the sign-in session. |
+| E2 | Exchange requires the service provider's Login.gov sign-in session to still be live (EXC-12); once minted, the family is session-independent. | RFC 8693 is silent on subject-token freshness. | Accept any unrevoked subject token, relying on the grant alone. | Confirmed 2026-10-09 (E64) |
 | E3 | Exchange accepts an optional `scope` that narrows to a subset of approved values; values outside the approved set fail with `invalid_scope` (EXC-13). | RFC 8693 §2.1 `scope` OPTIONAL; RFC 6749 §5.2 `invalid_scope`. | Ignore `scope`; or reject any `scope` parameter. | Confirmed |
 | E4 | All approved scopes of one resource are exchanged into one token; the earliest grant's `delegation_id` identifies the exchange (EXC-14). | Design rule "one token per API" (EXC-4). | One token per scope; a new delegation id per exchange. | Confirmed |
-| E5 | A service provider not approved for delegation fails with `invalid_client`; a rate-limited token-endpoint call fails HTTP 400 `invalid_request`; a rate-limited introspection call fails HTTP 429 `invalid_request` (EXC-15, INT-9). | RFC 6749 §5.2 defines the token-endpoint error set (no 429); RFC 7662 leaves introspection errors to RFC 6749 §5.2 / HTTP; RFC 6585 defines 429. | HTTP 429 at the token endpoint too (common in practice, outside RFC 6749); `invalid_grant` for the unapproved SP. | **Revisit:** 400 vs 429 at the token endpoint. |
+| E5 | A service provider not approved for delegation fails with `invalid_client`; a rate-limited token-endpoint call fails HTTP 400 `invalid_request`; a rate-limited introspection call fails HTTP 429 `invalid_request` (EXC-15, INT-9). | RFC 6749 §5.2 defines the token-endpoint error set (no 429); RFC 7662 leaves introspection errors to RFC 6749 §5.2 / HTTP; RFC 6585 defines 429. | HTTP 429 at the token endpoint too (common in practice, outside RFC 6749); `invalid_grant` for the unapproved SP. | Superseded 2026-10-09 (E73): no hard rate limits, so neither error is produced; `invalid_client` for the unapproved SP stands. |
 | E6 | The token response adds `refresh_token_expires_in` (EXC-16) and, for SAML/identifiers-only cases, `attributes: "identifiers_only"` (SAML-5b, INT-10). | RFC 6749 §5.1 allows additional response parameters; neither member is standardized. | Omit and let the SP infer from `expires_in`/absent claims. | **Revisit:** keep both non-standard members? |
 | E7 | Refresh refuses a `resource` parameter with `invalid_request` (REF-11). | RFC 8707 §2.2 *permits* `resource` on refresh to down-scope the audience. | Accept `resource` only if it equals the family's resource; support audience narrowing. | **Revisit** |
 | E8 | Refresh tokens rotate on every use; a replayed (already-rotated) token revokes the whole family (REF-4/REF-10). | RFC 9700 §4.14.2 (recommended for public clients; here applied to confidential clients too). | No rotation for confidential clients (RFC 9700 allows client authentication alone). | Confirmed |
@@ -2703,13 +2984,13 @@ time they come up.
 | E19 | Whether a bearer assertion is single-use (replay-protected) or reusable within its window is the **agency's** declared choice; service providers default to single-use and refresh per call (SAML-10). | SAML Profiles §4.1.4.5 (replay protection for bearer assertions). | Mandate one behavior for all agencies. | **Revisit:** default and onboarding-form question. |
 | E20 | The `saml_idp` gem behavior change (omit `InResponseTo` when there is no request; caller-supplied subject-confirmation window) is applied as a prepended module inside `identity-idp` until it can be upstreamed and retagged. | Implementation packaging; no protocol effect. | Fork and retag the gem now. | Confirmed for now |
 | E21 | Unknown `token_exchange:*` values at authorize fail with `invalid_scope`; unknown unprefixed values keep today's silent-ignore behavior (CON-2, CON-3). | RFC 6749 §4.1.2.1 (`invalid_scope`) vs. Login.gov's existing tolerance. | Reject all unknown scopes (would break existing SPs). | Confirmed |
-| E22 | Rate limits are keyed per authenticated client (SP issuer / resource server identifier), not per IP (EXC-8, INT-7). | RFC 6749 §10 general guidance; no normative rule. | Per-IP limits (would starve busy agency gateways). | Confirmed |
+| E22 | Rate limits are keyed per authenticated client (SP issuer / resource server identifier), not per IP (EXC-8, INT-7). | RFC 6749 §10 general guidance; no normative rule. | Per-IP limits (would starve busy agency gateways). | Superseded 2026-10-09 (E73): no rate limits; monitoring is keyed per authenticated client the same way. |
 | E24 | Claim formats follow each protocol's own convention: introspection uses userinfo formats (`verified_at` epoch integer, `birthdate` ISO date, `phone` E.164, composite `address`), the SAML assertion uses the existing SAML attribute formats (ISO 8601 `verified_at`, separate address attributes). | OIDC Core §5.1 standard claims; existing Login.gov SAML attribute conventions. | One canonical format for both. | Confirmed (agencies already parse each format) |
 | E25 | The `email` claim released to an agency for a delegated token is the address the user chose to share with the **service provider**; a delegated-only user has no per-agency email choice. | OIDC Core §5.1 (`email`); Login.gov's per-SP email selection. | Ask the user to pick an email per agency on the consent screen; release the account's primary email. | **Revisit:** acceptable to agencies? |
 | E27 | "Consent already given for this authorization" is keyed on a digest of the authorize URL, not on the IdP's SP request id, because the request id is reused across authorizations of one SP within a browser session while the URL (fresh `state`/`nonce`) is not. | OIDC Core §3.1.2.1 (`state`, `nonce` per request) | Key on request id (skipped the screen when a scope was added); key on the requested scope set (would suppress a legitimate re-ask for the same set). | Confirmed 2026-09-29 |
 | E26 | An exchange for a resource the user has not delegated (no live grant for any of its scopes) fails with `invalid_target`, not `invalid_grant`: the subject token is valid, but Login.gov is "unable to issue a token for the target service indicated by resource". `invalid_grant` is reserved for a bad, foreign, expired or session-less subject token. The first implementation returned `invalid_grant` here and was corrected after the live run exposed the inconsistency with EXC-3. | RFC 8693 §2.2.2 | `invalid_grant` for every consent problem. | Confirmed 2026-09-29 |
-| E23 | Sender-constrained tokens (DPoP, RFC 9449) are adopted: Login.gov binds at exchange and refresh when a proof is present, agencies require it per resource server (`dpop_required`). | RFC 9700 §4.10.1 (SHOULD sender-constrain); RFC 9449 §5. | Defer; mandate globally (option C). | Confirmed 2026-10-08 |
-| E28 | `DPoP-Nonce` (RFC 9449 §8) is not issued; freshness relies on `iat` within 60 s past / 10 s future and single-use `jti` kept in Redis for that window. | RFC 9449 §4.3 item 10 (nonce is optional), §11.1. | Server-provided nonce (extra round trip through the service provider's relay). | **Revisit** if clock skew at partners causes rejections |
+| E23 | Sender-constrained tokens (DPoP, RFC 9449) are adopted: Login.gov binds at exchange and refresh when a proof is present, agencies require it per resource server (`dpop_required`). Amended 2026-10-09: the per-resource-server flag is removed, binding follows the client type (E82). | RFC 9700 §4.10.1 (SHOULD sender-constrain); RFC 9449 §5. | Defer; mandate globally (option C). | Confirmed 2026-10-08 |
+| E28 | `DPoP-Nonce` (RFC 9449 §8) is not issued; freshness relies on `iat` within 60 s past / 10 s future and single-use `jti` kept in Redis for that window. **Amended 2026-10-10.** As built the window is `dpop_proof_max_age_seconds` (±300 s) and the `jti` is kept for twice the window (E98). | RFC 9449 §4.3 item 10 (nonce is optional), §11.1. | Server-provided nonce (extra round trip through the service provider's relay). | **Revisit** if clock skew at partners causes rejections |
 | E29 | A proof on the refresh of an unbound family binds the refreshed access token to the proof key; the earlier bearer token keeps working until expiry. A bound family refuses a refresh without a proof from the same key. | RFC 9449 §5 (the issued token is bound to the proof key; refresh tokens of confidential clients are not themselves bound). | Refuse proofs on unbound families; ignore them. | Confirmed 2026-10-08 |
 | E30 | A key-bound SAML assertion carries the thumbprint as a plain `dpop_jkt` attribute; the SAML resource server computes `ath` over the base64url assertion exactly as presented in the Authorization header. | RFC 9449 is OAuth-specific; SAML Holder-of-Key subject confirmation would need a certificate, not a JWK. | Holder-of-Key SubjectConfirmation; no binding for SAML. | **Revisit:** confirm with the first SAML agency |
 | E32 | Introspection carries `iss`, a per-token `jti` (SHA-256 of a fixed prefix and the stored digest; never the digest or the row id) and `auth_time` (the service provider identity's `last_authenticated_at`), so the response has every element NIST IR 8587 §5.2.1.1 lists; `auth_time` was previously excluded as session-bound. | RFC 7662 §2.2 (`iss`, `jti` optional members); NIST IR 8587 §5.2.1.1. | Omit them (prior design); use the row id as `jti`. | Confirmed 2026-10-08 |
@@ -2727,3 +3008,56 @@ time they come up.
 | E43 | Consent content for agencies, applications and service providers is edited in the partner Dashboard and synced by `ServiceProviderUpdater`; production through the seeder. Dashboard fields are a dependency on `identity-dashboard`, stated in code comments. A branch seed file and env-guarded rake task cover non-production until then. | — | IdP admin page; YAML in the config repository only. | Decided 2026-10-09 |
 | E44 | Agency-level consent content lives on `agencies` (description, learn-more URL, version pair) alongside the existing name and logo. | — | Repeat agency text on each application. | Decided 2026-10-09 |
 | E45 | No application-configuration allow-list of service providers (`token_exchange_service_providers`, inherited from `sbx-taigrr`): approval is `token_exchange_enabled_sp` on the SP record; `token_exchange_enabled` is the only configuration switch. Nothing from `sbx-taigrr` is kept for compatibility; its grant tables and opt-in column are dropped and recreated in the new shape. | ONB-5 (SP configuration is the reviewed path). | Keep the config key as a sandbox convenience; rename old tables to `legacy_*`. | Decided 2026-10-09 |
+| E46 | Configuration keys (§10) are introduced by the feature that reads them (exchange TTL and rate limit with §5, refresh with §7, introspection cache and rate limit with §6, report recipients with §9), not all at once in the onboarding feature, so no key exists that nothing reads. | Operational hygiene; `config/initializers/unused_identity_config_keys.rb` reports unused keys. | Add every key in the first feature (first implementation). | Decided 2026-10-09 |
+| E47 | Code comments describe current behavior only: no design history and no references to features that will replace or widen the code. That context lives in the implementation plan and commit messages. External dependencies that exist today (the Dashboard lacks the fields; the seed task fills in) are stated in comments. | Reviewer and developer feedback: comments are read against the code, not the history. | Comments carrying "previous design" and "feature X replaces this" notes (first drafts). | Decided 2026-10-09 |
+| E48 | Cancel on the consent screen returns the person to the service provider with `error=access_denied` (OIDC Core §3.1.2.6) through the completions screen's existing cancel path; no sign-in completes. | OIDC Core §3.1.2.6 (`access_denied`). | Stay signed in on a Login.gov page; allow unchecking instead. | Decided 2026-10-09 |
+| E49 | `token_exchange:*` values on a request that does not ask for identity verification fail with `invalid_scope`. | RFC 6749 §4.1.2.1 (`invalid_scope`: requested scope is invalid, unknown, or malformed). | Drop the values and continue as IAL1. | Decided 2026-10-09 |
+| E50 | Only OpenID Connect service providers can request delegation; SAML stays a token format issued to agency APIs. | OIDC Core §3.1.2.1 (`scope`); no SAML counterpart in the reference applications. | Carry delegation on a SAML AuthnRequest extension. | Decided 2026-10-09 |
+| E51 | The remember choice on the consent screen never shortens an existing remembered approval; it applies to requested applications that lack one. | Consent stability for the person. | Re-record every requested application with the screen's choice. | Decided 2026-10-09 |
+| E52 | Rows are badged `new`, `already approved` or `updated`; a stale approval is shown locked with today's content and re-recorded on approval. No content history table; grants keep version numbers only. | — | History table of content versions (deferred). | Decided 2026-10-09 |
+| E53 | The service provider is a **public client** (PKCE, no `private_key_jwt`); all of its tokens (own access token, delegated tokens, refresh tokens) are DPoP-bound and Login.gov verifies the proof at the code exchange, the token exchange, refresh and userinfo. Confidential clients are unchanged. Replaces the confidential-client baseline recorded earlier on 2026-10-09. | RFC 9449 §5, §7; RFC 9700 §2.2.2, §4.10.1; OAuth 2.0 for Browser-Based Apps (BCP draft). | Confidential client with `private_key_jwt` (withdrawn); bearer tokens for a public client. | Decided 2026-10-09 |
+| E54 | DPoP is mandatory for every public client approved for delegation, as a property of the service provider record, not per request. | RFC 9449 §5 (`dpop_bound_access_tokens` client metadata). | Optional per request. | Decided 2026-10-09 |
+| E55 | The authorization code is bound to the DPoP key with the `dpop_jkt` authorize parameter for public clients. | RFC 9449 §10. | Rely on PKCE alone. | Decided 2026-10-09 |
+| E56 | Delegated tokens are refused at userinfo even with a valid proof; agency attributes are available only through introspection, which the agency authenticates to and after which the agency verifies the proof on the API call. | RFC 7662; RFC 9449 §7. | Allow a bound delegated token at userinfo. | Decided 2026-10-09 |
+| E57 | Server nonces (RFC 9449 §8) remain deferred for the public-client baseline. The threat a nonce addresses is a proof that is created ahead of time or captured and replayed within its validity window. The controls already in place bound that window tightly: a proof is accepted only if its `iat` is within 60 seconds past or 10 seconds future, its `jti` has not been seen at Login.gov in that window (single-use, kept in Redis), its `htm` and `htu` match the request, and its `ath` matches the token it accompanies; agencies apply the same checks on API calls. A captured proof is therefore usable only for the same method and URL, with the same token, within a minute, and only once at Login.gov. What remains is a proof pre-computed by code running in the service provider's page for a future request to a known URL; a server nonce would force that code to fetch a fresh nonce first, which it could also do if it controls the page, so the nonce raises the bar without closing the case. Against that, a nonce costs an extra round trip on every first request (`use_dpop_nonce`), nonce state and rotation at Login.gov and at every agency, and a second failure mode for partners to handle. Decision: defer; keep the 60-second window and single-use `jti`. Revisit if a partner's clock skew makes the window too tight, if a deployment shows pre-computed proofs in the wild, or if an agency asks for nonces on its API. **Amended 2026-10-10.** The window as built is `dpop_proof_max_age_seconds` either side of now (±300 s, configurable), with the `jti` kept for twice the window; the reasoning and the deferral stand (E98). | RFC 9449 §8, §11.1. | Issue `DPoP-Nonce` from the token endpoint and the agencies. | Decided 2026-10-09 (deferred); revisit on the triggers listed |
+| E58 | The account page lists service providers the person has never connected to. | Nothing in the grant model depends on an identity row (CON-10 as amended); a person who knows they will use a service can approve before the first sign-in, which the consent screen then honors (ACC-4). | List connected service providers only (earlier 5.3 finding). | Decided 2026-10-09 |
+| E59 | Advance approval is two-step: select applications, then confirm on a page that shows the consent-screen content. | FR-CUX-13 requires the same disclosure as the consent screen; a server-rendered page carries the full agency content, works without JavaScript and lets several applications be approved under one disclosure. | A per-row toggle with a JavaScript modal (5.1's inline control). | Decided 2026-10-09 |
+| E60 | Every revocation, single or whole service provider, has its own confirmation page. | Revocation ends access that other systems may be relying on mid-task; the product owner chose consistency with disconnecting a service over a one-click undo-able action. | Immediate single-application revocation. | Decided 2026-10-09 |
+| E61 | Approvals and revocations from the account page are recorded in account history and emailed. | They change what a third party may do with the person's identity; the person should be able to notice and disavow them like a connection change (`sp_user_consent_granted`/`revoked`). | Analytics only. | Decided 2026-10-09 |
+| E62 | Token storage is hybrid: live access tokens and SAML assertions are Redis entries keyed by SHA-256 digest with a TTL equal to the lifetime, indexed per grant and per refresh family for cascading revocation; refresh tokens (digest-only, rotating) and a secret-free issuance record live in Postgres (§5.2, §7.5, §7.6 as amended). | RFC 6749 §10.3 (tokens confidential at rest); RFC 9700 §4.14. Short-lived tokens expire on their own and introspection is a hot lookup; refresh families and reporting need durability. | Postgres-only (table growth, purge jobs); Redis-only (no durable refresh family or issuance history). | Decided 2026-10-09 |
+| E63 | Access token lifetime is 15 minutes by default; a resource server may set a shorter maximum (`max_access_token_seconds`), never a longer one (EXC-4, REF-5 as amended). | RFC 9700 §4.14.3 (short-lived access tokens). | One fixed lifetime; a per-service-provider lifetime. | Decided 2026-10-09 |
+| E64 | The service provider's Login.gov sign-in must be live for the first exchange; afterwards the refresh family carries access independently of the browser session (EXC-12, REF-6; E2 confirmed). | RFC 8693 is silent on subject-token freshness; RFC 6749 §6. | Accept any unrevoked subject token. | Decided 2026-10-09 |
+| E65 | Delegated tokens are opaque references (random string, stored as a digest); a resource server learns everything by introspection (EXC-20). | RFC 7662; RFC 9068 (JWT access tokens) considered and not adopted. | Signed JWT access tokens: claims readable by the service provider that carries them, and revocation would still need introspection. | Decided 2026-10-09 |
+| E66 | Exactly one `resource` per exchange; one token has one audience (EXC-1 confirmed). | RFC 8707 §2.1 permits several `resource` values; RFC 8693 §2.2.1. | Several resources yielding several tokens or one multi-audience token. | Decided 2026-10-09 |
+| E67 | A refusal because the person has not approved, or no longer approves, the application that owns the resource is `consent_required` naming the `token_exchange:<value>` scope, given only to an authenticated caller for a registered resource; other resource problems stay `invalid_target` (EXC-3 as amended, E26 narrowed). | OIDC Core §3.1.2.6 defines `consent_required`; RFC 8693 §2.2.2 permits the RFC 6749 error set and extensions. | `invalid_target` for every consent problem (E26 as first written). | Decided 2026-10-09 |
+| E68 | The refresh family's absolute lifetime is 12 hours from the first exchange for every grant, remembered or not, never past `remember_until` (REF-5 as amended). | NIST SP 800-63B §4.2.3 (AAL2 reauthentication at 12 hours). | End the family with the Login.gov session for non-remembered grants; a 4-hour default. | Decided 2026-10-09 |
+| E69 | Reuse of a rotated refresh token revokes the family, emits `delegated-access-revoked` with `reason: refresh_token_reuse` and logs an analytics event (REF-4 as amended). | RFC 9700 §4.14.2. | Revoke silently; refuse the request only. | Decided 2026-10-09 |
+| E70 | While the service provider's Login.gov session is live, introspection releases the agency's bundle in userinfo shape; after it ends, only `sub`, `delegation_id` and email, stated with `attributes: "identifiers_only"` (INT-10 as amended). | RFC 7662 §2.2 (extension members); PII is decryptable only in the live session. | Cache PII for the family's lifetime; release nothing after the session. | Decided 2026-10-09 |
+| E71 | The agency's `sub` is the agency-level pairwise identifier (`AgencyIdentity` uuid), created at first introspection if absent; no `identities` row is created (INT-5 as amended). | OIDC Core §8 (pairwise subject identifiers); Login.gov's per-agency `sub`. | A per-resource-server identifier; creating the agency SP identity. | Decided 2026-10-09 |
+| E72 | Who may introspect: the resource server in `aud` (`private_key_jwt`) gets the full response; the public-client service provider gets a limited response for its own token with a DPoP proof over the token from the bound key (INT-1, INT-2, INT-14 as amended); anyone else `{"active": false}`. | RFC 7662 §2.1 (caller authentication); RFC 9449 §4.3 (`ath`). | Resource servers only (INT-2 as first written); a separate status endpoint for service providers. | Decided 2026-10-09 |
+| E73 | No hard rate limits (no 429) on exchange, refresh or introspection for registered callers, and no published cache window: volumes and error rates are monitored against configurable alert thresholds, runaway callers are the infrastructure layer's concern, and agencies introspect on every call (EXC-8, INT-7, INT-8, REF-13 as amended; supersedes E5, E22). | RFC 6749 §10 (no normative rate-limit rule); RFC 7662 §4 (introspection per request is the baseline). | Per-caller ceilings (E22); a 60-second cache window (INT-8 as first written). | Decided 2026-10-09 |
+| E74 | The Attempts API plan of §8 stands in full (buffer, release at consent with the consented event and historical release, live forwarding, token events with `delegation_id`); delivery stays behind the master switch pending privacy review. | RFC 8936 / Shared Signals Framework (the existing Attempts API). | A single token-issued event only (`sbx-taigrr`); delivery only to agencies the person signed in to directly. | Decided 2026-10-09 |
+| E75 | A remembered approval reused on a later sign-in sends that sign-in's events and a `remembered: true` consented event to the agency every time (ATT-5, ATT-13 confirmed). | — | One consented event per remembered grant for its lifetime. | Decided 2026-10-09 |
+| E76 | `sp_return_logs` gains one marker column, `access_type`, plus a reference to the issuance record; the acting service provider, resource server and in-session proofing are read by join from `token_exchange_tokens` and the grant (BIL-4, BIL-6, BIL-11 as amended). | — (billing is outside the protocol); the reviewer's note on `token-exchange2-login`. | Three further columns on the return log (BIL-4 as first written). | Decided 2026-10-09 |
+| E77 | The sign-in waiver cache entry, keyed by the digest of the service provider's access token, lives one hour (BIL-13 as replaced). | — | A TTL equal to the 12-hour session lifetime. | Decided 2026-10-09 |
+| E78 | On a cache miss the exchange falls back to a database lookup scoped to the user's sign-in with that service provider and writes the adjustment; the exchange is never blocked. The fallback's over- or under-billing risk is flagged for the data team (BIL-15). | — | Proceed with no adjustment and alert (the reviewer's first proposal); refuse the exchange. | Decided 2026-10-09; data team review pending |
+| E79 | When the person proofed in a delegated sign-in, every agency that received a delegated token is billed for it, proofing included, and the service provider's sign-in is waived (BIL-8 as amended). | — | Service provider upfront; first agency only; a split. | Decided 2026-10-09 |
+| E80 | `requested_token_type` is REQUIRED on every exchange and the service provider chooses the format; the resource server's `token_format` is informational for now (EXC-21, SAML-1, SAML-3 as amended). Flagged for review: Login.gov could select the format from the API's registration. | RFC 8693 §2.1 makes `requested_token_type` OPTIONAL with an issuer default; Login.gov requires it so the choice is explicit. | Default to the API's `token_format` when absent; refuse a format the API did not register. | Decided 2026-10-09; review flagged |
+| E81 | SAML assertions have a five-minute `Conditions` and subject-confirmation window, are always signed, and are encrypted to the agency's registered certificate when present (SAML-4, SAML-6 as amended). | SAML Core §2.5.1; SAML Profiles §4.1.4.2 (short validity for bearer assertions). | One-hour `Conditions` with a five-minute subject-confirmation window (2026-09-28 decision). | Decided 2026-10-09 |
+| E82 | No per-resource-server `dpop_required`: binding follows the client type only (public always, confidential never); the column, seeder key and fixture key are removed (EXC-9, ONB-2 as amended; supersedes E23's per-resource-server clause). | RFC 9449 §5 (`dpop_bound_access_tokens` is client metadata). | Keep the flag as a second control. | Decided 2026-10-09 |
+| E83 | DPoP proof algorithms accepted are `ES256` and `RS256`, advertised in `dpop_signing_alg_values_supported` (DISC-2 confirmed). | RFC 9449 §5.1; RFC 7518. | `ES256` only. | Decided 2026-10-09 |
+| E84 | Delegation discovery metadata (`grant_types_supported` additions, `introspection_endpoint`, `revocation_endpoint`, `token_endpoint_auth_methods_supported`, `dpop_signing_alg_values_supported`) appears only while `token_exchange_enabled` is true (DISC-5 confirmed). | RFC 8414 §2; OIDC Discovery 1.0 §3. | Always advertise. | Decided 2026-10-09 |
+| E85 | The Department of State's selfie and document data are released only at userinfo to the direct service provider on the document-images allow-list, with the `document_images` scope and biometric consent; delegated tokens are refused at userinfo so they never fetch them; the feature and its artifact store are enabled in the sandbox only and no delegated channel is built this phase (INT-16, DOC-1). | OIDC Core §5.3 (userinfo); RFC 9449 §7 (bound token at userinfo). | An encrypted selfie member in the introspection response; a SAML assertion to State; removing the direct feature. | Decided 2026-10-09 |
+| E86 | Encrypted userinfo responses are planned, not built: the bundle as a JWE to the certificate registered for the service provider the presented token belongs to, State's attributes first (UINF-1). | OIDC Core §5.3.2 (`userinfo_encrypted_response_alg`/`enc`); RFC 7516. | Per-attribute encryption of the selfie only; no encryption. | Planned 2026-10-09 |
+| E87 | `config/delegated_access.localdev.yml` is the single fixture contract between the identity-idp seed task and the `identity-sts-sinatra` harness (one public-client service provider, two applications with one `oauth` and one `saml2` API, the Department of State direct record); the sandbox seeds the same file with environment hostnames (§14.5 as amended). | — | Separate fixtures per repository; `service_providers.localdev.yml` additions. | Decided 2026-10-09 |
+| E88 | The maximum remember period is 12 months for every application, `read_write` included (CON-9 confirmed). | — | A shorter remember period for `read_write` applications. | Decided 2026-10-09 |
+| E89 | The consent screen's service provider card states the per-sign-in access duration (up to 12 hours) in one sentence and says nothing about Attempts delivery to agencies (CON-26). | — | A fraud-signal disclosure sentence on the screen; no duration sentence. | Decided 2026-10-09 |
+| E90 | The account page lists remembered grants only, shows current state only (no usage, no history), and offers a page-level End all delegated access through a confirmation page (ACC-1, ACC-2 as amended, ACC-6). | — | Listing live single-authorization grants; issuance times per row; no end-all action. | Decided 2026-10-09 |
+| E91 | A delegated-access history view (approvals, revocations with reason, token issuance and refresh events, 12 months) is planned, sourced from the grant rows and the issuance record with no new table (ACC-7). | — | A dedicated history table; account history events only. | Planned 2026-10-09 |
+| E92 | Per-site keys are ported as their own feature (pull requests #13618, #13619): `SiteKeys::RecipientJwk` accepts only a P-256 public JWK, `SiteKeys::Sealer` uses ECDH-ES + HKDF-SHA256 + AES-256-GCM with info and AAD `"login.gov site key wrap v1\n<client_id>"`, and the per-user root is wrapped under the password with the profile-PII scheme, created only for allow-listed service providers, re-wrapped on password change and deleted on password reset; nothing releases a key yet and `site_key_enabled` defaults off (§17). | RFC 8037 and RFC 7518 §6.2 (EC public JWK members); RFC 7518 §4.6 (ECDH-ES), RFC 5869 (HKDF), NIST SP 800-38D (GCM). | Port the whole series at once; defer until release lands; a server-held per-site key with no password wrap. | Decided 2026-10-09 (D56) |
+| E93 | The service provider reference application is a browser public client: PKCE, a non-extractable WebCrypto DPoP key held as an IndexedDB `CryptoKey` (new key per sign-in), and the code exchange, token exchange, refresh, revocation and agency API calls all made from the browser with DPoP proofs, including the `DPoP-Nonce` retry of RFC 9449 §8; the server is static hosting plus a non-secret JSON configuration with no private key or shared secret (REF-IMPL-1, REF-IMPL-8 as amended). Published as the rewritten `main` of `GSA-TTS/identity-sts-sinatra`; the confidential-client history is not carried over. | RFC 7636 (PKCE); RFC 9449 §4, §5, §8, §10; RFC 9700 §2.1.1 (public clients). | A confidential-client reference; a server that proxies DPoP proofs for the browser. | Decided 2026-10-09 (D57) |
+| E94 | Attempts API code is removed from `identity-sts-sinatra` and `identity-saml-sinatra`, which did not have it upstream before this project; `identity-oidc-sinatra` keeps its viewer because upstream `main` already had one (REF-IMPL-3 as amended). | — (demonstration scope, not protocol). | Keep a viewer in every reference application; remove all three. | Decided 2026-10-09 (D58) |
+| E95 | The two agency reference APIs add CORS for browser calls (allow `Authorization`, `DPoP`, `Content-Type`; expose `WWW-Authenticate`), and `/api/openid_connect/introspect` and `/api/openid_connect/revoke` carry the same `Rack::Cors` treatment as the token endpoint so a public client can reach them (§5.3, §6.4, §7.6 as amended). | Fetch standard (CORS preflight, `Access-Control-Expose-Headers`); RFC 9449 §7.1, §8 (`WWW-Authenticate: DPoP`, `DPoP-Nonce`). | Keep the two endpoints server-only and have the browser skip revocation and self-introspection. | Decided 2026-10-09 (D59) |
+| E96 | Vulnerabilities GitHub reports on the repository are fixed on the base branch when the fix changes no behavior; a fix that would change behavior is reported to the product owner for a decision (implementation plan section 6, item 11). | — (process). | Fix everything immediately; defer everything to the end. | Decided 2026-10-09 (D60) |
+| E97 | Re-approval moves live delegated tokens to the replacement approval instead of ending them: when a new approval of the same application supersedes an earlier live row, `TokenExchangeGrant#transfer_live_tokens_to!` re-points the Redis entries and the issuance records at the new row (`DelegatedTokenStore.move_grant`), and a later revocation of that row ends them (CON-11, §7.5). | RFC 8693 is silent; RFC 6749 §4.1 treats a new authorization as a new grant. | Cascade on every revocation reason, `superseded_by_new_consent` included, so a re-approval briefly interrupts the service provider. | Decided 2026-10-10; rationale: the person has just re-approved the same application, so nothing they hold should stop working |
+| E98 | DPoP proof freshness window is ±300 s around now, configurable (`dpop_proof_max_age_seconds`), with each `jti` kept single-use in Redis for twice the window; no `DPoP-Nonce` (EXC-19, Appendix C, E28 and E57 as amended). | RFC 9449 §4.3 item 10 (acceptable window is the server's choice), §11.1. | 60 s back / 10 s forward as written in Appendix C. | Decided 2026-10-10; rationale: clock skew at partners, since the server nonce that would otherwise bound freshness is deferred (E57) |

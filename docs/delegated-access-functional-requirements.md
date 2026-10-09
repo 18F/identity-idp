@@ -1,7 +1,7 @@
 # Login STS and Dept of State Functional Requirements
 
 **Status:** Draft for review
-**Date:** 2026-10-09 (consent granularity, pre-approval and content decisions of 2026-10-09 applied; see Appendix D)
+**Date:** 2026-10-09 (consent granularity, pre-approval, content, token, verification, fraud-signal, billing, SAML, key-binding, operations, document-image and account-page decisions of 2026-10-09 applied; see Appendix D)
 **Companion document:** *Delegated Access for Login.gov — Requirements* (`delegated-access-requirements.md`), which specifies how the Secure Token Service is built. This document states *what* the capability must do and leaves *how* to the companion document.
 
 ---
@@ -112,13 +112,13 @@ The person decides, application by application, which agency applications the se
 | ID | Requirement |
 |---|---|
 | **FR-CUX-1** | Consent MUST be collected on Login.gov's existing consent screen, so the person sees one consent step at sign-in, not two. |
-| **FR-CUX-2** | The screen MUST tell the person who is asking: the service provider's name and logo, what it does, who operates it, whether it uses AI and for what, how it handles their information, and where to learn more. |
+| **FR-CUX-2** | The screen MUST tell the person who is asking: the service provider's name and logo, what it does, who operates it, whether it uses AI and for what, how it handles their information, and where to learn more. It MUST also state, in one plain sentence, how long the service provider's access lasts per sign-in (up to 12 hours). It does not describe fraud-signal delivery to agencies (section 8); that disclosure belongs to the privacy policy. (Amended 2026-10-09.) |
 | **FR-CUX-3** | The screen MUST present one row per requested application, labeled with the owning agency's public name and logo and the application's display name, grouped by agency. Under each application the screen MUST show the agency's description, the application's description, the information the service will receive, whether access is read-only or can make changes, a link to learn more, and the application's API URLs. The APIs are shown for information; the person approves the application as a whole. |
 | **FR-CUX-4** | Applications named in the service provider's request MUST be shown selected and locked: they are a condition of the sign-in, as requested attributes are today. Nothing not named in the request MAY appear selected or be approved by this screen. |
 | **FR-CUX-5** | The person declines a requested application by cancelling the sign-in. There is no partial approval of a request: the service provider either receives every application it requested or no sign-in. The screen MUST say so plainly next to the locked rows. |
-| **FR-CUX-6** | The person MUST be able to cancel and return to the service provider without approving anything. |
-| **FR-CUX-7** | The person MUST be offered the choice to have Login.gov remember the approvals given on this screen for a limited period (currently one year). The default MUST be not to remember; an approval that is not remembered is valid for this sign-in only. The screen MUST explain what remembering means and where to review or change approvals. Approvals given in advance from the account page (FR-CUX-13) are always remembered for the same period, counted from the moment they were given. |
-| **FR-CUX-8** | The screen is shown only when a requested application lacks a current remembered approval (FR-CEN-5). Requested applications the person already approved, on an earlier screen or from the account page, are shown selected and locked like the others, marked as already approved; a requested application without an approval is marked as new. |
+| **FR-CUX-6** | The person MUST be able to cancel and return to the service provider without approving anything. Cancelling returns the person to the service provider with the standard access-denied error and completes no sign-in. |
+| **FR-CUX-7** | The person MUST be offered the choice to have Login.gov remember the approvals given on this screen for a limited period (currently one year). The default MUST be not to remember; an approval that is not remembered is valid for this sign-in only. The screen MUST explain what remembering means and where to review or change approvals. Approvals given in advance from the account page (FR-CUX-13) are always remembered for the same period, counted from the moment they were given. The choice applies only to requested applications that lack a current remembered approval; an existing remembered approval is never shortened by a later screen. |
+| **FR-CUX-8** | The screen is shown only when a requested application lacks a current remembered approval (FR-CEN-5). Requested applications the person already approved, on an earlier screen or from the account page, are shown selected and locked like the others, marked as already approved; a requested application without an approval is marked as new; one whose approval lapsed because of a material content change is marked as updated and shows the current content. |
 | **FR-CUX-9** | Everything shown about a service provider or agency MUST come from content Login.gov approved at onboarding. Nothing in the service provider's request MAY alter what the person sees, and partner-written content MUST NOT be able to execute or alter the page. |
 | **FR-CUX-10** | The screen MUST meet Login.gov's accessibility and plain-language standards and MUST be available in every supported language. |
 | **FR-CUX-11** | The layout and wording MUST follow the approved consent-screen design (*Consent screen mockup*), adjusted for agency-level choices, and MUST use fictitious agency and service names in any published example. |
@@ -127,28 +127,29 @@ The person decides, application by application, which agency applications the se
 
 | ID | Requirement |
 |---|---|
-| **FR-CUX-12** | The person's Login.gov account MUST include a page that, for each service provider approved for delegation the person has connected to, lists every registered application that accepts that service provider, grouped by agency, showing for each whether it is approved, when, how long the approval remains, whether a token is active now, the APIs covered and whether each is read-only or can make changes. |
-| **FR-CUX-13** | From that page the person MUST be able to approve an application in advance (after seeing the same content the consent screen shows), revoke a single application, or revoke an entire service provider. An advance approval is a remembered approval (FR-CUX-7) and is honored by the consent screen (FR-CUX-8). |
+| **FR-CUX-12** | The person's Login.gov account MUST include a page that, for each service provider approved for delegation, lists every registered application that accepts that service provider, grouped by agency, showing for each whether it is approved, when and from where, how long the approval remains, the APIs covered and whether each is read-only or can make changes, in the agency's own words. Only remembered approvals are shown; an approval valid for one sign-in only is not listed. The page shows current state only: no history and no usage (when tokens were first or last issued); past approvals and revocations are visible in the person's account history (FR-CUX-13), and a history view is planned (FR-CUX-15). Service providers the person has not yet signed in to are included so approval can be given in advance. (Amended 2026-10-09.) |
+| **FR-CUX-13** | From that page the person MUST be able to approve one or more applications in advance (selecting them, then confirming on a page that shows the same content the consent screen shows), revoke a single application, revoke an entire service provider, or end all delegated access across every service provider in one action, each revocation after its own confirmation. An advance approval is a remembered approval (FR-CUX-7) and is honored by the consent screen (FR-CUX-8). Each approval and revocation MUST be recorded in the person's account history and MUST be reported to the person by email. |
 | **FR-CUX-14** | The page MUST be reachable from the existing list of connected services. |
+| **FR-CUX-15** (planned) | The page SHOULD offer, per service provider, a history of past approvals (with source and whether remembered), revocations (with reason: the person, service provider disconnect, material content change, account suspension or deletion) and token issuance and renewal events, each with its date, covering the last 12 months, built from the approval records and the token issuance record rather than a new store. Planned 2026-10-09; not built in this phase. |
 
 ### Questions to resolve
 
 1. **Should the screen offer "approve all"?** With one choice per agency there are few boxes; a select-all control speeds approval but is what produces consent fatigue in the first place.
 2. **Where does the information on the consent screen come from?** Service provider content comes from the Service Provider form; agency and API content comes from the Agency Resource API form; both are approved by Login.gov and stored before use. Nothing comes from the live request. Does privacy or legal need to review the forms' questions?
 3. Should "remember my approvals" apply to all approvals at once, or be offered per agency?
-4. Is one year the right maximum for a remembered approval? Should agencies whose APIs can make changes have a shorter maximum?
+4. ~~Is one year the right maximum for a remembered approval? Should agencies whose APIs can make changes have a shorter maximum?~~ Decided 2026-10-09 (D52): one year for every application, read-write included; read-write risk is handled by token and renewal lifetimes (FR-TOK-4, FR-TOK-10, FR-TOK-16).
 5. How many agencies can one screen hold before it needs paging or a summary view?
-6. Should the screen say that approving an agency also means Login.gov will send that agency the person's sign-in and fraud-signal events (section 8)? Does privacy consider that covered by the existing Privacy Impact Assessment?
+6. ~~Should the screen say that approving an agency also means Login.gov will send that agency the person's sign-in and fraud-signal events (section 8)? Does privacy consider that covered by the existing Privacy Impact Assessment?~~ Decided 2026-10-09 (D53): no sentence on the screen; the disclosure stays in the privacy policy (FR-CUX-2).
 7. Should the person be able to pick which email address each agency receives, or does each agency receive the one shared with the service provider?
-8. Should the screen show the duration of access the service provider will have (currently up to 12 hours per sign-in) in addition to the remember period?
+8. ~~Should the screen show the duration of access the service provider will have (currently up to 12 hours per sign-in) in addition to the remember period?~~ Decided 2026-10-09 (D53): yes, one plain sentence in the service provider card (FR-CUX-2).
 9. What does the person see when a requested agency is temporarily disabled: an explanation, or simply its absence?
 10. Should a "learn more" link open the agency's site in a new tab, and is leaving the consent screen acceptable mid-decision?
 11. Should Login.gov run comprehension testing of the screen with members of the public before launch, and what comprehension rate is acceptable?
 12. Should the person receive an email or account notification when a new delegation is approved or revoked, as they do for other account changes?
-13. Should the account page also show delegations that were approved for one sign-in only and are still active (up to 12 hours), or only remembered ones?
-14. Should there be a single "end all delegated access" action?
-15. Should the page show a history of past delegations and revocations, or only current ones? How long should history be kept?
-16. Should the person be able to see what the service provider actually did (number of calls, last use)? Login.gov knows when tokens were issued and renewed, not what the agency returned.
+13. ~~Should the account page also show delegations that were approved for one sign-in only and are still active (up to 12 hours), or only remembered ones?~~ Decided 2026-10-09 (D54): remembered ones only (FR-CUX-12).
+14. ~~Should there be a single "end all delegated access" action?~~ Decided 2026-10-09 (D54): yes, through its own confirmation page (FR-CUX-13).
+15. ~~Should the page show a history of past delegations and revocations, or only current ones? How long should history be kept?~~ Decided 2026-10-09 (D54, D55): current state only now, with past changes in account history; a history view with 12 months of retention is planned, not built (FR-CUX-15).
+16. ~~Should the person be able to see what the service provider actually did (number of calls, last use)? Login.gov knows when tokens were issued and renewed, not what the agency returned.~~ Decided 2026-10-09 (D54): no usage on the page; token issuance and renewal events belong to the planned history view (FR-CUX-15).
 
 ---
 
@@ -162,9 +163,9 @@ What the person approved is exactly what the service provider can do, no more, f
 
 | ID | Requirement |
 |---|---|
-| **FR-CEN-1** | A service provider MUST request delegated access as part of the person's sign-in request, naming each application it wants by that application's delegation scope value. |
+| **FR-CEN-1** | A service provider MUST request delegated access as part of the person's OpenID Connect sign-in request, naming each application it wants by that application's delegation scope value. Only OpenID Connect service providers can request delegation; SAML remains a format for tokens issued to agency APIs. |
 | **FR-CEN-2** | Login.gov MUST refuse a request that names an application that does not exist or is disabled, belongs to a disabled agency, does not accept the requesting service provider, or comes from a service provider not approved for delegation. The refusal MUST be reported to the service provider as an error, not shown to the person as a choice. |
-| **FR-CEN-3** | Delegated access MUST be available only for identity-verified sign-ins. |
+| **FR-CEN-3** | Delegated access MUST be available only for identity-verified sign-ins. A request that names applications but does not ask for identity verification MUST be refused as an error to the service provider. |
 | **FR-CEN-4** | Existing sign-in behavior for service providers that do not request delegation MUST be unchanged. |
 
 ### Functional requirements — when the person is asked
@@ -217,14 +218,15 @@ A service provider that holds a person's approval can obtain a credential for ex
 | ID | Requirement |
 |---|---|
 | **FR-TOK-1** | Token issuance MUST follow the OAuth 2.0 Token Exchange standard (RFC 8693) at Login.gov's existing token endpoint; no separate service is introduced. |
-| **FR-TOK-2** | Issuance MUST be server-to-server. The service provider MUST prove its identity with a cryptographic key it alone holds. A token obtained in a browser MUST NOT be exchangeable, so a credential stolen from a browser cannot be used to obtain delegated access. |
+| **FR-TOK-2** | A service provider that is a confidential client MUST prove its identity at issuance with a cryptographic key it alone holds. A service provider that is a public client (one whose tokens are held in the person's browser) MUST instead bind every token it receives to a key it holds (FR-TOK-22) and present a proof from that key at issuance, so a token stolen from the browser cannot be exchanged. Which of the two a service provider is MUST be fixed at onboarding. |
 | **FR-TOK-3** | Each delegated token MUST be valid for exactly one agency API, named by the service provider in the request, so a token stolen from one agency API is useless at any other. |
-| **FR-TOK-4** | Delegated tokens MUST be short-lived (currently 15 minutes). |
+| **FR-TOK-4** | Delegated tokens MUST be short-lived: 15 minutes by default. An agency MAY set a shorter maximum for one of its APIs (for example an API that makes changes); no API may have a longer one. |
 | **FR-TOK-5** | A delegated token MUST identify the person to the agency, identify the service provider as the party acting, state the approved access, and carry a delegation identifier the agency can use to join the token to fraud-signal events and billing. |
-| **FR-TOK-6** | A delegated token MUST NOT be usable to obtain further tokens, and MUST NOT be usable by the service provider to obtain the person's identity attributes from Login.gov. The service provider never receives the person's identity attributes through delegation. |
-| **FR-TOK-7** | Issuance MUST be possible only while the person's Login.gov sign-in to the service provider is still active. |
+| **FR-TOK-6** | A delegated token MUST NOT be usable to obtain further tokens, and MUST NOT be usable at Login.gov's user-information endpoint, with or without a key-possession proof. The person's identity attributes for an agency are available only through the agency's verification (section 7); the service provider never receives them through delegation. |
+| **FR-TOK-7** | Issuance MUST be possible only while the person's Login.gov sign-in to the service provider is still active. Once a token has been issued, continued access rests on renewal (FR-TOK-10), not on the sign-in. |
 | **FR-TOK-8** | Issuing a delegated token MUST NOT revive a connection the person revoked or alter a direct session the person has with the agency. |
-| **FR-TOK-9** | Login.gov MUST be able to issue a SAML 2.0 assertion instead of an OAuth token for an agency API that consumes SAML, with the same access, lifetime rules, record-keeping, and revocation behavior. |
+| **FR-TOK-9** | Login.gov MUST be able to issue a SAML 2.0 assertion instead of an OAuth token for an agency API that consumes SAML, with the same access, record-keeping, and revocation behavior. The service provider MUST name the format it wants on every issuance request; a request that names none is refused. For now the agency API's registered format is informational and does not restrict the choice (flagged for review: Login.gov could instead choose the format from the API's registration). An assertion is valid for five minutes, is always signed, and is encrypted to the agency's registered certificate when one exists. (Amended 2026-10-09.) |
+| **FR-TOK-26** | When issuance is refused because the person has not approved the application that owns the requested API, or that approval has lapsed, Login.gov MUST tell the service provider so and name the application's delegation scope, so the service provider can start a new sign-in requesting it. This MUST be told only to a service provider that has proved its identity, and only for a registered API; any other problem with the API is refused without that detail. |
 
 ### Functional requirements — renewal and ending access
 
@@ -243,21 +245,23 @@ A service provider that holds a person's approval can obtain a credential for ex
 | ID | Requirement |
 |---|---|
 | **FR-TOK-17** | A service provider MUST NOT be able to widen its own access beyond what Login.gov defined and the person approved. |
-| **FR-TOK-18** | Renewal credentials MUST be stored in a form from which the credential cannot be recovered. |
-| **FR-TOK-19** | All machine-to-machine proofs of identity, by service providers and by agencies, MUST be short-lived and protected against replay. |
-| **FR-TOK-20** | Issuance and renewal MUST be rate-limited per service provider. |
-| **FR-TOK-21** | Delegated tokens MUST be opaque to the service provider; their meaning is established only by Login.gov (section 7). |
-| **FR-TOK-22** | Login.gov MUST support binding a delegated token to a key the service provider holds (DPoP, RFC 9449): when the exchange or renewal request carries a proof signed by that key, the token MUST be usable only with a fresh proof from the same key, and renewal of a bound token MUST require the same key. An agency MUST be able to require binding for its API, in which case an exchange without a proof MUST be refused. Binding MUST be required for any API reached from a browser-based service provider, where the token is held in the user's browser; America.gov is such a service provider. |
+| **FR-TOK-18** | Renewal credentials MUST be stored in a form from which the credential cannot be recovered. Delegated tokens MUST be stored the same way and held only for their own lifetime; the renewal credentials and a record of each issuance (which contains no credential) MUST be kept durably, so that revocation, reporting and the person's account page do not depend on a token still being live. |
+| **FR-TOK-19** | All proofs of identity or possession presented to Login.gov by service providers and agencies, including key-possession proofs, MUST be short-lived and protected against replay. |
+| **FR-TOK-20** | Login.gov MUST NOT impose a hard per-service-provider ceiling on issuance or renewal that refuses requests from a registered service provider: a service provider in nationwide use acts for many people at several agencies in quick succession. Login.gov MUST instead monitor issuance and renewal volumes and error rates per service provider against configurable alert thresholds; protection against a runaway caller belongs to the infrastructure layer. |
+| **FR-TOK-21** | Delegated tokens MUST be opaque references, not signed tokens carrying claims; their meaning is established only by Login.gov (section 7). |
+| **FR-TOK-22** | Login.gov MUST support binding a delegated token to a key the service provider holds (DPoP, RFC 9449): when the exchange or renewal request carries a proof signed by that key, the token MUST be usable only with a fresh proof from the same key, and renewal of a bound token MUST require the same key. Whether binding applies follows the service provider's client type (FR-TOK-24), not a per-API setting: an agency does not require or waive binding for its API (amended 2026-10-09; the earlier per-API requirement is withdrawn). Binding MUST be required for any API reached from a browser-based service provider, where the token is held in the user's browser; America.gov is such a service provider. |
 | **FR-TOK-23** | Login.gov MUST report the binding to the agency when it verifies a token (the key thumbprint and a token type of `DPoP`), and the agency MUST verify a proof from that key on every request and refuse a bound token presented without one. A key-bound SAML assertion carries the thumbprint as an attribute. |
+| **FR-TOK-24** | For a public-client service provider approved for delegation, binding MUST be mandatory and MUST cover the service provider's own access token and renewal credential as well as the delegated tokens. Login.gov MUST verify the proof wherever it accepts one of those tokens, including its user-information endpoint, and MUST refuse a bound token presented without a proof. Service providers that are confidential clients MUST be unaffected. |
+| **FR-TOK-25** | For a public-client service provider, the authorization code MUST be bound to the same key at the authorization request (RFC 9449 §10), so an intercepted code cannot be redeemed with another key. |
 
 ### Questions to resolve
 
-1. Is 15 minutes the right token lifetime? Shorter reduces exposure; longer reduces renewal traffic.
-2. Is 12 hours the right bound for continued access? It matches the NIST SP 800-63B re-authentication limit for AAL2. Should agencies whose APIs can make changes have a shorter bound (for example, one hour)?
+1. ~~Is 15 minutes the right token lifetime? Shorter reduces exposure; longer reduces renewal traffic.~~ Decided 2026-10-09: 15 minutes by default, with a shorter maximum per API where the agency wants one (FR-TOK-4).
+2. ~~Is 12 hours the right bound for continued access? It matches the NIST SP 800-63B re-authentication limit for AAL2. Should agencies whose APIs can make changes have a shorter bound (for example, one hour)?~~ Decided 2026-10-09: 12 hours from the first issuance for every approval, remembered or not, never past the remember period; a shorter bound per service provider or per API remains available (FR-TOK-10, FR-TOK-11, FR-TOK-16).
 3. Should a service provider be able to request narrower access than it was approved for?
-4. DPoP is now required (FR-TOK-22). Remaining question: should Login.gov also issue server nonces (RFC 9449 §8) for proof freshness, at the cost of an extra round trip through the service provider's relay, or is the 60-second issued-at window enough?
-5. Is the "sign-in must still be active" rule for first issuance acceptable to America.gov, whose server may act after the person has left?
-6. Should the person be told, at consent, that the service provider may keep acting for up to 12 hours after they leave?
+4. ~~Should Login.gov also issue server nonces (RFC 9449 §8)?~~ Decided 2026-10-09: deferred, with the rationale recorded in the companion document (Appendix E row E57); the 60-second issued-at window and single-use proof identifiers are the freshness controls.
+5. ~~Is the "sign-in must still be active" rule for first issuance acceptable to America.gov, whose server may act after the person has left?~~ Decided 2026-10-09: the rule stands for the first issuance; renewal carries access afterwards (FR-TOK-7, FR-TOK-15).
+6. ~~Should the person be told, at consent, that the service provider may keep acting for up to 12 hours after they leave?~~ Decided 2026-10-09 (D53): yes, in one sentence on the consent screen (FR-CUX-2).
 7. Should the service provider be required to end access when the person's task is complete, and how would Login.gov know?
 8. Which agencies need SAML rather than OAuth, and does any need both?
 9. Should the stricter proof-of-identity rules used for delegated access also be applied to existing sign-in integrations?
@@ -275,22 +279,22 @@ For every call, the agency can confirm with Login.gov that the token is genuine,
 | ID | Requirement |
 |---|---|
 | **FR-VER-1** | A delegated token MUST be verified with Login.gov before an agency relies on it. Login.gov MUST provide the means for the agency API to do so. |
-| **FR-VER-2** | The agency MUST prove its identity to Login.gov when verifying a token. Login.gov MUST confirm a token, and release anything about the person, only to the agency API the token was issued for. Any other caller, including the service provider that holds the token, MUST learn nothing. |
-| **FR-VER-3** | A confirmed token MUST report: who issued it (Login.gov), the person's identifier for that agency (the same one a direct sign-in produces), the approved access, the acting service provider, the assurance levels of the sign-in, when the person last authenticated to the service provider, issuance and expiry times, an identifier for this one token, and the delegation identifier shared by every token under the same approval. Together these are the elements NIST IR 8587 §5.2.1.1 requires of a token an agency relies on. |
+| **FR-VER-2** | The agency MUST prove its identity to Login.gov when verifying a token. Login.gov MUST confirm a token and release the person's identity attributes only to the agency API the token was issued for. The service provider that holds the token MAY ask Login.gov about its own delegated token by proving possession of the key the token is bound to; it then learns only whether the token is valid, its validity period, its API, its access, its delegation identifier and key binding, the identifier for the person it already holds from its own sign-in, and any attribute the agency has explicitly chosen to share with the service provider, and no other identity attribute. Any other caller MUST learn nothing. |
+| **FR-VER-3** | A confirmed token MUST report: who issued it (Login.gov), the person's identifier for that agency (the same one a direct sign-in produces, assigned if the person has never used that agency, without creating any connection to it), the approved access, the acting service provider, the assurance levels of the sign-in, when the person last authenticated to the service provider, issuance and expiry times, an identifier for this one token, and the delegation identifier shared by every token under the same approval. Together these are the elements NIST IR 8587 §5.2.1.1 requires of a token an agency relies on. |
 | **FR-VER-4** | A confirmed token MUST also carry the identity attributes the agency is entitled to under its existing Login.gov agreement, in the same form a direct sign-in provides them, and nothing more. The set MUST be determined by the agency's agreement, never by the service provider. |
-| **FR-VER-5** | Identity attributes MUST be available while the person's sign-in to the service provider is active. After it ends, verification MUST still confirm the token but MUST provide identifiers and email only, and MUST say so. |
-| **FR-VER-6** | An invalid, expired, revoked, or foreign token MUST produce a plain "not valid" answer with no reason given. |
-| **FR-VER-7** | Login.gov MUST publish how long an agency may rely on a confirmation before asking again (currently 60 seconds). |
-| **FR-VER-8** | Verification MUST be rate-limited per agency API. |
+| **FR-VER-5** | Identity attributes MUST be available while the person's sign-in to the service provider is active. After it ends, verification MUST still confirm the token but MUST provide only the person's identifier, the delegation identifier and email, and MUST say so. |
+| **FR-VER-6** | An invalid, expired, revoked, or foreign token MUST produce a plain "not valid" answer with no reason given. The same answer MUST be given to any caller that is neither the agency API the token was issued for nor the service provider proving possession of its own token. |
+| **FR-VER-7** | Login.gov MUST NOT offer agencies a period during which an earlier confirmation may be relied on; an agency verifies the token on every call, so a revocation takes effect at the agency's next call. Login.gov's integration guide MUST say so. |
+| **FR-VER-8** | Login.gov MUST NOT impose a hard per-agency ceiling on verification that refuses requests from a registered agency API. Login.gov MUST monitor verification volumes and error rates per agency API against configurable alert thresholds; protection against a runaway caller belongs to the infrastructure layer. |
 | **FR-VER-9** | For SAML, the agency verifies the assertion locally against Login.gov's published signing certificate; the assertion MUST carry the same information as FR-VER-3 and FR-VER-4, and MUST be encrypted to the agency's certificate when one is registered. |
 
 ### Questions to resolve
 
-1. **Which Login.gov endpoint performs verification?** Agencies already call Login.gov's user-information endpoint after a direct sign-in. Two options meet FR-VER-1 and FR-VER-2: extend that endpoint so that, for a delegated token, it requires the agency to prove its identity and returns the delegation details alongside the attributes; or offer the standard Token Introspection endpoint (RFC 7662) alongside it. The first reuses the call agencies already make; the second uses the standard built for this purpose and the libraries that support it. Either way, the agency must authenticate, because the service provider also holds the token and a plain bearer call would hand it the agency's attributes.
+1. ~~**Which Login.gov endpoint performs verification?** Agencies already call Login.gov's user-information endpoint after a direct sign-in. Two options meet FR-VER-1 and FR-VER-2: extend that endpoint so that, for a delegated token, it requires the agency to prove its identity and returns the delegation details alongside the attributes; or offer the standard Token Introspection endpoint (RFC 7662) alongside it. The first reuses the call agencies already make; the second uses the standard built for this purpose and the libraries that support it. Either way, the agency must authenticate, because the service provider also holds the token and a plain bearer call would hand it the agency's attributes.~~ Decided 2026-10-09: Token Introspection (RFC 7662), authenticated to the agency API; the service provider may ask about its own token with a key-possession proof and receives the limited answer of FR-VER-2.
 2. Is it acceptable to agencies that identity attributes are available only while the person's sign-in to the service provider is active, and identifiers only afterwards? What will an agency do with an identifiers-only result?
 3. The agency receives the email address the person shared with the service provider. Is that acceptable, or does the agency need its own choice?
 4. Should the agency be able to require that the service provider's sign-in met a particular assurance level, or is identity-verified (IAL2) always sufficient?
-5. For SAML agencies, a revoked approval leaves an already-issued assertion usable until it expires (up to five minutes at most validators; one hour at the most lenient). Is that acceptable?
+5. ~~For SAML agencies, a revoked approval leaves an already-issued assertion usable until it expires (up to five minutes at most validators; one hour at the most lenient). Is that acceptable?~~ Decided 2026-10-09 (D45): yes; the assertion's conditions window is itself five minutes, so no validator accepts it longer (FR-TOK-9).
 6. Agencies must add verification to their APIs. Who funds and supports that work, and what is the expected lead time?
 
 ---
@@ -335,20 +339,20 @@ Delegated use is billed to the agency whose API is used, in the same way direct 
 
 | ID | Requirement |
 |---|---|
-| **FR-BIL-1** | Each delegated use MUST be attributed to the agency whose API was used, at the identity assurance level of the person's sign-in, and recorded in the same billing record as direct use, marked as delegated and naming the acting service provider and API. |
+| **FR-BIL-1** | Each delegated use MUST be attributed to the agency whose API was used, at the identity assurance level of the person's sign-in, and recorded in the same billing record as direct use, marked as delegated. The acting service provider, the API and whether the person verified identity in that sign-in are recorded on the token issuance record the billing record points to, and reports read them from there; the billing record itself carries only the delegated marker. (Amended 2026-10-09.) |
 | **FR-BIL-2** | The first use under each approval per sign-in MUST be billable; later uses and renewals MUST be recorded but not billable. |
 | **FR-BIL-3** | A person who uses an agency both directly and through delegation in one month MUST be billed to that agency once. |
 | **FR-BIL-4** | Existing invoices and reports MUST include delegated use in their totals and SHOULD add a direct/delegated breakdown. |
 | **FR-BIL-5** | Login.gov MUST produce a monthly delegation outcomes report, per service provider and agency: delegations requested and declined; approved but never used; and used. It MUST also report identity verifications that occurred in a service provider sign-in that led to no billable agency use. |
 | **FR-BIL-6** | The record of which service provider initiated a person's identity verification MUST NOT be changed by delegation. How verification cost is shared between the service provider's and the agency's agreements is a reporting rule, not runtime behavior. |
 | **FR-BIL-7** | Billing MUST NOT rely on storing token values. |
-| **FR-BIL-8** | The service provider (America.gov) is billed for its own sign-in by default, like any customer. When at least one delegated token is issued for that sign-in, the sign-in MUST become non-billable, because the agencies receiving the tokens are billed instead; this MUST happen together with the first agency charge so that no sign-in is ever billed twice or to no one. A sign-in for which no delegated token is ever issued (the person declined every agency, or the service provider never exchanged) stays billable to the service provider. A consent screen the person cancels completes no sign-in and is billed to no one, as for every service provider today. Reports MUST show, per service provider and month, how many sign-ins were billed and how many were waived because tokens were issued. |
+| **FR-BIL-8** | The service provider (America.gov) is billed for its own sign-in by default, like any customer. When at least one delegated token is issued for that sign-in, the sign-in MUST become non-billable, because the agencies receiving the tokens are billed instead; this MUST happen together with the first agency charge so that no sign-in is ever billed twice or to no one. A sign-in for which no delegated token is ever issued (the person declined every agency, or the service provider never exchanged) stays billable to the service provider. A consent screen the person cancels completes no sign-in and is billed to no one, as for every service provider today. Reports MUST show, per service provider and month, how many sign-ins were billed and how many were waived because tokens were issued. When the person verified identity during such a sign-in, every agency that received a delegated token is billed for it, the identity verification included; the service provider is not billed for that sign-in. The waiver is recorded as a separate adjustment, never by changing the sign-in's record; the link from the sign-in to the exchange is held for one hour, and when it has lapsed Login.gov MUST find the sign-in from its own records rather than refuse the issuance. (Amended 2026-10-09.) |
 | **FR-BIL-9** | Reports MUST never count a person twice for one agency in one month because they arrived both directly and by delegation, and MUST NOT treat a person already seen directly as new when they later arrive by delegation. The delegated-only share of an agency's billed users MUST be reported alongside the totals. |
 | **FR-BIL-10** | Onboarding MUST warn when an agency API's billing identity is not tied to a partner agreement, since delegated use of it would be recorded but never invoiced, and the delegation outcomes report MUST show that status per API. |
 
 ### Questions to resolve
 
-1. When a person is identity-verified at the service provider and then uses an agency API by delegation in the same month, who is billed for the verification: the service provider, the first agency, every agency, or a split? (The data to apply any rule is recorded; the rule is not chosen.)
+1. ~~When a person is identity-verified at the service provider and then uses an agency API by delegation in the same month, who is billed for the verification: the service provider, the first agency, every agency, or a split? (The data to apply any rule is recorded; the rule is not chosen.)~~ Decided 2026-10-09 (D43): every agency that received a delegated token in that sign-in, verification included; the service provider is not billed for the sign-in (FR-BIL-8).
 7. America.gov must hold a partner agreement for "billable by default" (FR-BIL-8) to be invoiced; who owns that onboarding step?
 2. Should identity-verification outcome reports exclude delegated use, since the verification happened at the service provider?
 3. Each agency API must be tied to a billable agreement. What happens to delegated use of an API whose agreement has lapsed?
@@ -374,6 +378,8 @@ The capability can be turned on, observed, and turned off by Login.gov, is revie
 | **FR-OPS-5** | Login.gov MUST provide working reference applications for both partner roles (service provider and agency API, OAuth and SAML) and an automated end-to-end test that partners can run against the sandbox. |
 | **FR-OPS-6** | Login.gov MUST publish a partner guide for each role covering the requests, responses, error handling, and a checklist of obligations. |
 
+**Amended 2026-10-09 (D57, D58, D59).** The service provider reference application of FR-OPS-4 and FR-OPS-5 is a browser-based public client: it signs in with PKCE, holds its key-possession key in the browser only (generated non-extractable, a new key per sign-in), and makes the code exchange, token issuance, renewal, revocation and the agency API calls from the browser with key-possession proofs; its server serves static files and a non-secret configuration and holds no private key or shared secret. The earlier server-side reference, which held tokens on its server, is withdrawn, together with the fraud-signal viewers that `identity-sts-sinatra` and `identity-saml-sinatra` did not have before this project; the OAuth agency reference keeps its viewer. For a browser client to reach them, the agency reference APIs and Login.gov's revocation and verification endpoints accept cross-origin browser calls (FR-TOK-14, FR-VER-6).
+
 ### Questions to resolve
 
 1. Who supports agencies during integration, and what is the support model after launch?
@@ -394,10 +400,12 @@ The *Department of State Online Passport Enrollment: Business Case Memo* (in the
 
 The Department of State case uses the STS. America.gov is the service provider; State registers its passport enrollment API as an agency API; the person approves the Department of State on the consent screen, with the passport API listed under it; America.gov obtains a delegated token for that API and calls it; State verifies the token with Login.gov and receives the person's identity attributes, including the encrypted selfie, in the verification response. America.gov never receives the biometric because the service provider cannot obtain attributes with a delegated token and verification answers only the agency the token was issued for.
 
+**Amended 2026-10-09 (D49, D50).** The delivery half of this pattern is not built in this phase. The selfie and document data are released only at Login.gov's user-information endpoint, to the Department of State signing the person in as a direct service provider on the document-images allow-list, with the document-images scope, attribute set and purpose-specific biometric consent checkbox; that feature and its artifact store are kept and enabled in the sandbox only. Delegated tokens are refused at the user-information endpoint (FR-TOK-6), so nothing obtained by delegation can fetch an image, and no delegated channel for images (verification response or SAML assertion) is built. Encrypting the user-information response to the service provider's registered certificate is planned, not built (FR-DOS-12). FR-DOS-1, FR-DOS-2, FR-DOS-10 and FR-DOS-12 are superseded as marked; FR-DOS-15 is noted as the open constraint for any release beyond the sandbox.
+
 | ID | Requirement |
 |---|---|
-| **FR-DOS-1** | The Department of State case MUST use the STS (sections 3–10). All general STS requirements apply; this section adds what is specific to State. |
-| **FR-DOS-2** | The biometric MUST reach State only through the agency verification channel (section 7) or a SAML assertion issued to State (FR-TOK-9). It MUST NOT be included in the delegated token itself, in anything returned to the service provider, or in any response to a party other than State. |
+| **FR-DOS-1** | The Department of State case MUST use the STS (sections 3–10). All general STS requirements apply; this section adds what is specific to State. *Superseded in part 2026-10-09 (D49): the STS applies to any State API the service provider uses, but the selfie and document data are not delivered through it in this phase; they are released only at Login.gov's user-information endpoint to the Department of State as a direct service provider on the document-images allow-list, with the purpose-specific biometric consent.* |
+| **FR-DOS-2** | The biometric MUST reach State only through the agency verification channel (section 7) or a SAML assertion issued to State (FR-TOK-9). It MUST NOT be included in the delegated token itself, in anything returned to the service provider, or in any response to a party other than State. *Superseded 2026-10-09 (D49): neither verification nor a SAML assertion carries the biometric; it is released only at the user-information endpoint to State's own direct sign-in. Delegated tokens are refused at that endpoint (FR-TOK-6), so a delegated token can never fetch it. The rest of the row stands.* |
 | **FR-DOS-3** | Because a delegated token never carries higher assurance than the sign-in it came from (FR-FIT-5), the person's sign-in to America.gov MUST itself include the facial-match verification State requires whenever State's passport API is requested. Login.gov MUST perform that verification during the sign-in, before consent, rather than relying on an earlier verification. |
 | **FR-DOS-4** | State's passport API MUST be registered as its own agency API whose consent content states, in State's words, that approving the Department of State releases the fresh selfie to State for passport adjudication. |
 
@@ -415,12 +423,12 @@ The Department of State case uses the STS. America.gov is the service provider; 
 
 | ID | Requirement |
 |---|---|
-| **FR-DOS-10** | Login.gov MUST release the selfie only to the Department of State's registered passport API, in response to that API's authenticated verification of a delegated token the person approved for it, or in a SAML assertion issued to that API. |
+| **FR-DOS-10** | Login.gov MUST release the selfie only to the Department of State's registered passport API, in response to that API's authenticated verification of a delegated token the person approved for it, or in a SAML assertion issued to that API. *Superseded 2026-10-09 (D49): the selfie is released only at the user-information endpoint, to the Department of State's registered direct service provider on the document-images allow-list, with the document-images scope and the person's biometric consent, and never through delegation.* |
 | **FR-DOS-11** | The selfie MUST be released only if State's Login.gov agreement includes it as an attribute State is entitled to receive (FR-VER-4). No other agency agreement MAY include it, and the service provider's own agreement MUST NOT. |
-| **FR-DOS-12** | The selfie MUST be encrypted end to end to a public key held by the Department of State, so that it is readable only by State and not by Login.gov's edge infrastructure, logs, the service provider, or any intermediary. It MUST be signed by Login.gov before encryption so State can verify its origin and integrity. The remainder of the verification response MAY stay unencrypted, as today. |
+| **FR-DOS-12** | The selfie MUST be encrypted end to end to a public key held by the Department of State, so that it is readable only by State and not by Login.gov's edge infrastructure, logs, the service provider, or any intermediary. It MUST be signed by Login.gov before encryption so State can verify its origin and integrity. The remainder of the verification response MAY stay unencrypted, as today. *Superseded for this phase 2026-10-09 (D49, D50): the user-information endpoint serves the image over TLS as the existing feature does, in the sandbox only. End-to-end encryption is planned as an encrypted user-information response (JWE) to the certificate registered for the service provider the presented token belongs to, applied to State's attributes first; it is not built this phase.* |
 | **FR-DOS-13** | The release MUST include enough context for adjudication: when the selfie was captured, the verification outcome, the assurance level, the person's identifier for State, and the delegation identifier. |
 | **FR-DOS-14** | The selfie MUST be available for release only while the person's sign-in to America.gov is active (FR-VER-5). After the sign-in ends, verification MUST still confirm the token but MUST NOT include the selfie, and MUST say so. |
-| **FR-DOS-15** | Login.gov MUST NOT retain the selfie beyond its existing identity-verification retention rules because of this release, and MUST NOT create a new store of biometric images for the purpose of release. |
+| **FR-DOS-15** | Login.gov MUST NOT retain the selfie beyond its existing identity-verification retention rules because of this release, and MUST NOT create a new store of biometric images for the purpose of release. *Noted 2026-10-09 (D49): the existing direct feature keeps its artifact store and is enabled in the sandbox only; this row is the open constraint for any wider release.* |
 | **FR-DOS-16** | State MUST be able to decrypt, verify, and view the image with tooling it controls; Login.gov SHOULD provide a reference decryption and verification example in the reference agency API (FR-OPS-5). |
 | **FR-DOS-17** | Every release MUST be logged with the person's identifier for State, the delegation identifier, the time, and the key used, without logging the image. |
 | **FR-DOS-18** | Fraud-signal delivery (section 8) and billing (section 9) for State MUST work exactly as for any other agency API; the biometric adds no exception. |
@@ -433,20 +441,45 @@ The Department of State case uses the STS. America.gov is the service provider; 
 
 ### Questions to resolve
 
-1. **Which option does State want:** the selfie from Login.gov (11.3–11.4), or its own capture (11.5)? The memo notes that a second selfie immediately after Login.gov verification is a poor experience for new users, while receiving the selfie from Login.gov creates retention, SORN, and brand exposure for Login.gov.
+1. ~~**Which option does State want:** the selfie from Login.gov (11.3–11.4), or its own capture (11.5)? The memo notes that a second selfie immediately after Login.gov verification is a poor experience for new users, while receiving the selfie from Login.gov creates retention, SORN, and brand exposure for Login.gov.~~ Decided 2026-10-09 (D49): from Login.gov, at the user-information endpoint, to State as a direct service provider; sandbox only for now.
 2. Does releasing a biometric to a partner agency require a new or amended SORN and Privacy Impact Assessment? Today Login.gov releases stored biometrics only under a manual legal process.
 3. **Who triggers the facial-match verification in the America.gov sign-in?** Options: America.gov always requests it; Login.gov requires it automatically whenever State's passport API is in the request; or State's API is only offered to people who already completed it in this sign-in. The second keeps the decision with Login.gov and State.
 4. Does "fresh" mean captured in this sign-in, or within some window (for example, 24 hours)? What if verification in this sign-in fails: is the sign-in refused, or does it continue without State?
 5. With agency-level consent, a person who approves the Department of State approves every State API in the request, including the passport API and its biometric release. Is the separate pre-capture notice (FR-DOS-6) enough, or should the biometric release be the one case that gets its own confirmation on the consent screen?
 6. What image format, resolution, and metadata does State's adjudication need? Does State need the ID document photo as well, or the selfie only?
 7. Which State key is used for encryption, how is it registered and rotated, and what happens to a release encrypted to a retired key?
-8. **Verification response or SAML assertion?** Login.gov's OAuth responses are not encrypted today; SAML assertions are encrypted by default. An encrypted field inside the verification response keeps State on the OAuth path all other agencies use; a SAML assertion reuses existing encryption but puts State on the SAML path. Preliminary engineering estimate for the encrypted field: roughly 1,000–1,400 lines of change.
+8. ~~**Verification response or SAML assertion?** Login.gov's OAuth responses are not encrypted today; SAML assertions are encrypted by default. An encrypted field inside the verification response keeps State on the OAuth path all other agencies use; a SAML assertion reuses existing encryption but puts State on the SAML path. Preliminary engineering estimate for the encrypted field: roughly 1,000–1,400 lines of change.~~ Decided 2026-10-09 (D49, D50): neither in this phase; the user-information endpoint, with an encrypted response planned.
 9. The selfie is available only while the person's sign-in to America.gov is active (FR-DOS-14). State's API must therefore verify the token and retrieve the selfie promptly after America.gov calls it, not later in adjudication. Is that acceptable to State's workflow, and what happens if the first verification misses the window?
 10. Login.gov's current rule forces one re-verification per person for a given initiating service provider. State needs a fresh capture on every application, and the initiating service provider here is America.gov, not State. Who owns that policy change, and how is it scoped to the passport API only?
 11. Who pays for the re-verification of a person who is already identity-verified? The memo notes this is a net cost to Login.gov under the current model, and under the STS the verification happens in America.gov's sign-in (section 9, question 1).
 12. What does the person see if State's comparison fails? America.gov holds the session, so America.gov must present the outcome; what does State tell America.gov, and through what channel?
 13. Does the biometric release to State need separate legal review for voluntariness, given that declining ends the online path?
 14. Does any of this change if State offers in-person enrollment through USPS as an alternative channel, as the memo favors?
+
+---
+
+## 12. Per-site keys (ported feature)
+
+### Objective
+
+A service provider that Login.gov allows can be given a key that is unique to the person and to that service provider, the same on every device the person uses, and readable only by that service provider's browser. This section states the requirements the ported building blocks meet (implementation plan 5.16, pull requests #13618 and #13619 of `18F/identity-idp`). Nothing releases a key yet; release and recovery are the later pull requests of the same series and are not part of this phase.
+
+### Functional requirements
+
+| ID | Requirement |
+|---|---|
+| **FR-KEY-1** | A per-site key MUST be unique to one person and one service provider, MUST be the same on every device the person signs in from, and MUST be delivered only to that service provider's browser, encrypted to a public key the browser generated. Login.gov MUST refuse a recipient key that carries private material, is not a valid point on the expected curve, or is malformed. (ported; see implementation plan 5.16) |
+| **FR-KEY-2** | A key sealed for one service provider MUST NOT be usable by any other service provider: the sealing MUST bind the encrypted key to the service provider's identifier, so that a sealed key presented under another identifier fails to decrypt. (ported; see implementation plan 5.16) |
+| **FR-KEY-3** | The per-person root from which site keys derive MUST be stored so that Login.gov cannot recover it without the person's password; it MUST be unlocked only when the person enters the password, and MUST be held in the session only in encrypted form. (ported; see implementation plan 5.16) |
+| **FR-KEY-4** | A root MUST be created only when the person signs in to a service provider Login.gov has allow-listed for site keys. The allow-list MUST be set by Login.gov's own configuration and MUST NOT be settable through the partner Dashboard. (ported; see implementation plan 5.16) |
+| **FR-KEY-5** | When the person changes their password, the root MUST be re-wrapped under the new password in the same operation as the password change; a root that cannot be re-wrapped MUST be deleted rather than left unreadable. (ported; see implementation plan 5.16) |
+| **FR-KEY-6** | Every password reset path MUST delete the root, and deleting the account MUST delete it. Recovery of the root after a reset is a follow-up and not part of this phase. (ported; see implementation plan 5.16) |
+| **FR-KEY-7** | The whole capability MUST be off unless Login.gov enables it; when off, no root is created, unlocked or released, and the allow-list has no effect. (ported; see implementation plan 5.16) |
+
+### Questions to resolve
+
+1. Which service providers are allow-listed first, and what each does with the key in its browser; the release on authorization and the browser-side use are the follow-up pull requests.
+2. Whether recovery after a password reset (the follow-ups) must exist before any service provider relies on a site key staying stable across resets.
 
 ---
 
@@ -459,17 +492,17 @@ The questions in this document that most affect scope or schedule, gathered in o
 | 1 | Pattern assignment for each America.gov business case | 2 | America.gov with Login.gov product |
 | 2 | ~~Whether approving an agency covers APIs it exposes later, or re-asks~~ Decided 2026-10-09: consent is per application; adding a URL to an application is a content change and re-asks only if marked material | 5 | — |
 | 3 | ~~"Approve all" on the consent screen~~ Decided 2026-10-09: not needed, requested applications are locked | 4 | — |
-| 4 | Whether the consent screen discloses fraud-signal delivery to agencies | 4, 8 | Login.gov privacy |
+| 4 | ~~Whether the consent screen discloses fraud-signal delivery to agencies~~ Decided 2026-10-09: no; the privacy policy carries it | 4, 8 | — |
 | 5 | Email address released to agencies | 4, 7 | Login.gov product, agencies |
-| 6 | Remember period and duration limits for agencies that can make changes | 4, 6 | Login.gov product and security |
-| 7 | Verification endpoint: extended user-information endpoint or Token Introspection | 7 | Login.gov engineering and security |
+| 6 | ~~Remember period and duration limits for agencies that can make changes~~ Decided 2026-10-09: one year for every application; token and renewal lifetimes carry the read-write risk | 4, 6 | — |
+| 7 | ~~Verification endpoint: extended user-information endpoint or Token Introspection~~ Decided 2026-10-09: Token Introspection (RFC 7662) | 7 | — |
 | 8 | Sender-constrained tokens before production | 6 | Login.gov security, GSA Cyber |
-| 9 | Verification cost attribution across partners | 9 | Login.gov finance |
+| 9 | ~~Verification cost attribution across partners~~ Decided 2026-10-09: every agency receiving a token is billed, verification included; the service provider is not | 9 | — |
 | 10 | ~~Agency restriction of service providers~~ Decided 2026-10-09: per application, empty list means any approved service provider | 3 | — |
-| 11 | State: selfie from Login.gov or State's own capture | 11 | Department of State, Login.gov leadership |
+| 11 | ~~State: selfie from Login.gov or State's own capture~~ Decided 2026-10-09: from Login.gov, at the user-information endpoint, to State as a direct service provider | 11 | — |
 | 12 | State: who triggers facial-match verification in the America.gov sign-in | 11 | Login.gov product, America.gov, State |
 | 13 | State: SORN and PIA for biometric release | 11 | Login.gov privacy and legal |
-| 14 | State: verification response or SAML, and encryption key management | 11 | Login.gov engineering, State |
+| 14 | ~~State: verification response or SAML, and encryption key management~~ Decided 2026-10-09: neither; user-information endpoint now, encrypted response planned to State's registered certificate | 11 | — |
 | 15 | State: fresh-capture policy and who pays for re-verification | 11 | Login.gov product and finance |
 | 16 | Hand-off and return profile ownership, if the alternative pattern is used | Appendix C | Login.gov, America.gov |
 
@@ -486,6 +519,7 @@ The questions in this document that most affect scope or schedule, gathered in o
 | 9 Billing and reporting | §9 |
 | 10 Operations and rollout | §10, §12, §13, §14 |
 | 11 Department of State | Business Case Memo; companion §6 (attribute release), §15 (SAML); initiative document, Solution Comparison |
+| 12 Per-site keys (ported) | §17; Appendix E row E92; implementation plan 5.16 |
 | Appendix C Third-party-initiated login | Companion §16 (TPL-1..7, Appendix E rows E33, E34); initiative document, Solution 2 and Fit by business case |
 | Appendix A | Companion Appendix A (open decisions) and Appendix E (protocol decisions) |
 
@@ -547,4 +581,77 @@ Decisions by the product owner, applied to the rows above and to the companion d
 9. **Only material content changes re-ask**; editorial changes do not. (FR-CEN-5, FR-CEN-8.)
 10. **Agency-level content** (description, learn more) is stored with the agency, alongside its name and logo. (FR-ONB-3.)
 
-**Still open:** whether the account page should also offer applications under service providers the person has never connected to; revision of the consent-screen mockup for locked rows (FR-CUX-11).
+**Still open:** whether the account page should also offer applications under service providers the person has never connected to.
+
+### 2026-10-09 (interview on the consent feature)
+
+11. **Cancel returns to the service provider** with the standard access-denied error; no sign-in completes (FR-CUX-6).
+12. **Delegation on a non-verified request is refused** as an error to the service provider (FR-CEN-3).
+13. **OpenID Connect service providers only** can request delegation (FR-CEN-1).
+14. **The remember choice never shortens an existing remembered approval**; it applies to applications without one (FR-CUX-7).
+15. **An approval made stale by a material content change** is shown locked and marked updated, with the current content; approving re-records it. No history of content text is kept, only version numbers (FR-CUX-8).
+
+### 2026-10-09 (interview on the account page feature)
+
+16. **A dedicated account page** lists every service provider approved for delegation, connected or not, with every registered application that accepts it, grouped by agency (FR-CUX-12).
+17. **Advance approval is select-then-confirm**: the confirmation page shows the consent-screen content for the selected applications (FR-CUX-13).
+18. **Every revocation confirms** on its own page; **each approval and revocation writes an account history event and sends an email** (FR-CUX-13).
+19. **Token activity on the page** is delivered with the token lifecycle feature, when tokens exist (FR-CUX-12).
+
+### 2026-10-09 (interview on token exchange, lifecycle, introspection and fraud signals)
+
+20. **Token storage is split**: live delegated tokens are held only for their lifetime in a fast store; renewal credentials and a credential-free record of each issuance are kept durably for revocation, reporting and the account page (FR-TOK-18).
+21. **Token lifetime is 15 minutes by default**, with a shorter maximum per API where the agency wants one (FR-TOK-4).
+22. **The sign-in must be live for the first issuance**; renewal carries access afterwards (FR-TOK-7, FR-TOK-15).
+23. **Delegated tokens are opaque references**, not signed tokens carrying claims (FR-TOK-21).
+24. **One API per issuance**; a token has one audience (FR-TOK-3).
+25. **A refusal for a missing or lapsed approval names the application's scope** to an authenticated service provider so it can ask for approval in a new sign-in (FR-TOK-26).
+26. **Continued access ends 12 hours after the first issuance** for every approval, remembered or not, never past the remember period (FR-TOK-10, FR-TOK-11).
+27. **Reuse of a retired renewal credential ends all access under the issuance** and is reported to the agency (FR-TOK-12).
+28. **Identity attributes go to the agency while the sign-in is live; identifier, delegation identifier and email only afterwards**, stated as such (FR-VER-4, FR-VER-5).
+29. **The person's identifier for the agency is the one a direct sign-in produces**, assigned if the person has never used that agency; no connection is created (FR-VER-3, FR-CEN-12).
+30. **Who may verify**: the agency API the token is for, fully; the service provider, for its own token with a key-possession proof, receiving status, the identifier it already holds and anything the agency chose to share; no one else (FR-VER-2, FR-VER-6).
+31. **No hard rate limits and no reliance period**: issuance, renewal and verification are monitored against alert thresholds rather than capped, and agencies verify on every call (FR-TOK-20, FR-VER-7, FR-VER-8).
+32. **The fraud-signal plan stands in full**, behind the master switch pending privacy review (FR-FRD-1 to FR-FRD-9).
+33. **A remembered approval reused on a later sign-in** sends the agency that sign-in's events and a consent event marked remembered, every time (FR-FRD-7).
+
+### 2026-10-09 (interview on billing, SAML, key binding, operations, document images and the consent and account follow-ups)
+
+34. **The billing record carries one delegated marker**; the acting service provider, the API and in-session verification are read from the token issuance record it points to (FR-BIL-1).
+35. **The link from a service provider's sign-in to the exchange that waives it is held for one hour**, not for the whole session (FR-BIL-8).
+36. **When that link has lapsed, Login.gov finds the sign-in from its own records and never refuses the issuance for billing**; the fallback and its over- or under-billing risk are flagged for review by the data team (FR-BIL-8).
+37. **Identity verification in a delegated sign-in is billed to every agency that received a token**; the service provider is not billed for that sign-in (FR-BIL-8).
+38. **The service provider names the token format on every issuance**; the agency API's registered format is informational for now, flagged for review (FR-TOK-9).
+39. **SAML assertions are valid for five minutes, always signed, encrypted when the agency has a certificate** (FR-TOK-9, FR-VER-9).
+40. **Key-possession proofs use ES256 or RS256**, advertised in discovery (FR-TOK-22).
+41. **Binding follows the service provider's client type, never a per-API setting**: public clients always, confidential clients never; the per-API requirement formerly in FR-TOK-22 is withdrawn (FR-TOK-22, FR-TOK-24).
+42. **Discovery advertises the delegation metadata only while the capability is on** (FR-OPS-1).
+43. **The Department of State's selfie and document data are released only at the user-information endpoint**, to State as a direct service provider with the person's biometric consent, in the sandbox only; delegated tokens can never fetch them and no delegated channel is built this phase (FR-DOS-1, FR-DOS-2, FR-DOS-10, FR-DOS-12 superseded; FR-DOS-15 noted).
+44. **An encrypted user-information response is planned, not built**: the attribute bundle encrypted to the certificate registered for the service provider the token belongs to, State's attributes first (FR-DOS-12).
+45. **One fixture file is the contract** between the identity provider's seed task and the end-to-end harness, seeded in the sandbox with the environment's hostnames (FR-OPS-4, FR-OPS-5).
+46. **The maximum remember period is one year for every application**, read-write included (FR-CUX-7).
+47. **The consent screen states how long the service provider's access lasts per sign-in** and says nothing about fraud-signal delivery (FR-CUX-2).
+48. **The account page shows remembered approvals only, current state only**, with an end-all action through a confirmation page; no history list and no usage on the page (FR-CUX-12, FR-CUX-13).
+49. **A delegated-access history view is planned, not built**: approvals, revocations with reason and token events for the last 12 months, built from existing records (FR-CUX-15).
+
+### 2026-10-09 (ported feature and reference-application decisions)
+
+50. **The per-site keys building blocks are ported as their own feature** (pull requests #13618 and #13619 of `18F/identity-idp`): sealing primitives and password-wrapped custody of the per-person root, off by default, with nothing released yet; the rest of the series is a follow-up (FR-KEY-1 to FR-KEY-7, new section 12).
+51. **The service provider reference application is a browser-based public client**: PKCE, a key-possession key generated and held in the browser only (a new key per sign-in), and every call to Login.gov and to the agency APIs made from the browser with key-possession proofs, including the retry a server may demand with a fresh nonce; its server holds no private key or shared secret. It is published as the rewritten `main` of `GSA-TTS/identity-sts-sinatra`; the earlier server-side history, which committed a demo private key, is not carried over. Rejected: a confidential-client reference, and a server that signs proofs for the browser (FR-OPS-4, FR-OPS-5, FR-TOK-24, FR-TOK-25).
+52. **Fraud-signal viewer code is removed from the reference applications that did not have it before this project** (`identity-sts-sinatra`, `identity-saml-sinatra`); the OAuth agency reference keeps its viewer, and the SAML agency's events can be observed through it (FR-OPS-5, FR-FRD-1).
+53. **The agency reference APIs, and Login.gov's revocation and verification endpoints, accept cross-origin calls from a browser client**, as the token endpoint already does, so a public-client service provider can renew, revoke and check its own tokens from the browser (FR-TOK-14, FR-VER-6).
+54. **Process: a vulnerability GitHub reports on the repository is fixed on the base branch when the fix changes no behavior; otherwise it is reported to the product owner** for a decision (implementation plan section 6, item 11).
+
+### 2026-10-09 (baseline change: the service provider is a public client)
+
+16. The service provider is a browser-based public client. It signs in with PKCE and binds every token it holds to a key it holds (DPoP); Login.gov verifies the proof at issuance, renewal and its user-information endpoint; agencies verify it on API calls. Confidential-client integrations are unchanged. (FR-TOK-2, FR-TOK-19, FR-TOK-22; FR-TOK-24 new.)
+17. Delegated tokens stay unusable at the user-information endpoint; an agency's attributes are reachable only through the agency's verification (FR-TOK-6).
+18. Binding is mandatory for public clients approved for delegation (FR-TOK-24), the authorization code is bound too (FR-TOK-25), and server nonces stay deferred with a written rationale for the risk-based decision (companion Appendix E row E57). Confirmed by the product owner on 2026-10-09.
+
+**Implemented 2026-10-09 (feature 5.1 of the implementation plan):** FR-ONB-1, FR-ONB-2, FR-ONB-3, FR-ONB-4, FR-ONB-7 and FR-ONB-9 (the Dashboard dependency stated in code, the seed task for non-production), and the approval record behind FR-CEN-11, FR-CEN-17 and FR-CUX-13. The consent-screen mockup was revised for locked rows (FR-CUX-11). Configuration for later requirements is added with those requirements.
+
+**Implemented 2026-10-09 (feature 5.2 of the implementation plan):** FR-CEN-1, FR-CEN-2, FR-CEN-3 (authorize request, OIDC only, `invalid_scope`), FR-CEN-5, FR-CEN-6, FR-CEN-7, FR-CEN-9 (`scope` in the token response), FR-CEN-10 and FR-CEN-12 (consent writes approval rows only), FR-CEN-11 and FR-CEN-17 (consent-screen approvals), and FR-CUX-1 to FR-CUX-11 (the screen, locked rows, cancel to the service provider, remember choice, badges, registry-only content, four languages). FR-CUX-8's "already approved" and "updated" states are rendered from the approval record; the account page that creates advance approvals is feature 5.3.
+
+**Implemented 2026-10-09 (feature 5.3 of the implementation plan):** FR-CUX-12 (the page: every approved service provider, every accepting application by agency, approval state, time and time remaining; token activity follows with the token lifecycle feature), FR-CUX-13 (select-then-confirm advance approval with the consent-screen content, revocation of one application, one service provider or everything, each after confirmation, with an account history event and an email), FR-CUX-14 (links from the connected services page and the account navigation), FR-CEN-14 (disconnecting a service provider revokes its approvals) and FR-CEN-15 (approvals are untouched by sign-out; suspension and deletion follow with the token lifecycle feature).
+
+**Implemented 2026-10-10 (feature 5.4 of the implementation plan):** FR-TOK-1 (RFC 8693 at the existing token endpoint, dispatched on `grant_type`; the separate exchange route is removed), FR-TOK-2 (a confidential service provider authenticates with `private_key_jwt`, a public one sends `client_id` and a DPoP proof from the key its subject token is bound to, the type fixed by the service provider record), FR-TOK-3 (exactly one `resource`, one audience per token), FR-TOK-4 (900 seconds by default, capped by the API's `max_access_token_seconds`, never lengthened), FR-TOK-5 (person, acting service provider, approved scope and delegation identifier on the live entry and the issuance record, read by the agency's verification), FR-TOK-6 (a delegated token is not an `identities` row, so it is refused at the user-information endpoint and cannot be a subject token), FR-TOK-7 (the subject token's sign-in must be live), FR-TOK-8 (nothing is written for the application or its agency), FR-TOK-17 (the issued scope is the application's registered delegation scope; nothing in the request widens it), FR-TOK-19 (five-minute client assertions and ±300 s proofs, each with a single-use `jti` kept in Redis), FR-TOK-21 (an opaque random reference whose meaning lives only at Login.gov), FR-TOK-22 (the proof verifier with the RFC 9449 §4.3 checks, every failure `invalid_dpop_proof`), FR-TOK-24 (binding is mandatory for a public-client service provider approved for delegation at the code exchange and the exchange; the user-information endpoint and renewal follow with 5.5/5.6/5.10), FR-TOK-25 (`dpop_jkt` required on the authorization request and the code redeemable only with a proof from that key), FR-TOK-26 (`consent_required` naming the application's delegation scope, only after authentication and for a registered API), FR-CEN-8 (a live, current approval of the application that owns the API is required; a re-approval of the same application carries the live tokens to the new approval), FR-CEN-10 (no record at the application, no delegated token without an approval), FR-CEN-12 (no `identities` row and no `id_token` for the application), FR-CEN-13 (revoking an approval removes its live tokens from Redis and marks their issuance records at once; the report to the agency follows with 5.7), FR-CEN-16 (an inactive API, application, agency or service provider refuses at the next exchange).
