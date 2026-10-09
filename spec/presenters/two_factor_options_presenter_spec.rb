@@ -261,6 +261,17 @@ RSpec.describe TwoFactorOptionsPresenter do
 
         expect(presenter.show_personal_key_deprecation_warning?).to eq(false)
       end
+
+      it 'returns true when the personal key was just consumed this session' do
+        # User no longer has a recovery code (it was cleared on use), but the
+        # session flag indicates they just authenticated with their personal key.
+        user = create(:user, :with_phone)
+        presenter = described_class.new(
+          user:, user_agent:, personal_key_mfa_deprecated: true,
+        )
+
+        expect(presenter.show_personal_key_deprecation_warning?).to eq(true)
+      end
     end
   end
 end

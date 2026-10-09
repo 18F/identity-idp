@@ -60,6 +60,11 @@ module TwoFactorAuthentication
       )
 
       if result.success?
+        # Capture the deprecation state before consuming the personal key, since
+        # removing the recovery code changes PersonalKeyPolicy#enabled? and would
+        # otherwise skip the Phase 1 add-MFA redirect below.
+        @personal_key_mfa_deprecated = skip_personal_key_regeneration?
+
         _event, disavowal_token = create_user_event_with_disavowal(:personal_key_used)
         alert_user_about_personal_key_sign_in(disavowal_token)
         remove_personal_key
@@ -76,8 +81,17 @@ module TwoFactorAuthentication
     end
 
     def remove_personal_key
-      # for now we will regenerate a key and not show it to them so retire personal key page shows
-      unless skip_personal_key_regeneration?
+      if skip_personal_key_regeneration?
+        # During Phase 1 of personal key MFA deprecation we consume the personal
+        # key on use: it is neither shown again nor regenerated, and the existing
+        # recovery code is cleared so the user can no longer use or manage it.
+        current_user.remove_recovery_code
+        # Record that the key was just consumed so the add-MFA setup page can still
+        # show the Phase 1 deprecation warning, even though the user no longer has
+        # a recovery code (PersonalKeyPolicy#enabled? is now false).
+        user_session[:personal_key_mfa_deprecated] = true
+      else
+        # for now we will regenerate a key and not show it to them so retire personal key page shows
         PersonalKeyGenerator.new(current_user).generate!
       end
       user_session.delete(:personal_key)
@@ -110,10 +124,11 @@ module TwoFactorAuthentication
 
     # Route personal key MFA users to the authentication method setup page so they
     # see the Phase 1 deprecation warning and are prompted to add another method.
+    # Uses the state captured before the personal key was consumed, because
+    # removing the recovery code flips PersonalKeyPolicy#enabled? to false.
     def redirect_to_add_mfa_after_personal_key?
       FeatureManagement.enable_additional_mfa_redirect_for_personal_key_mfa? ||
-        (FeatureManagement.personal_key_mfa_deprecation_phase_1_enabled? &&
-          TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled?)
+        !!@personal_key_mfa_deprecated
     end
   end
 end

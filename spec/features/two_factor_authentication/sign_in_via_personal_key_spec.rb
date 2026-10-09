@@ -48,7 +48,7 @@ RSpec.feature 'Signing in via one-time use personal key' do
         with: { phone: '+1 (202) 345-6789' }
       )
       raw_key = PersonalKeyGenerator.new(user).generate!
-      old_key = user.reload.encrypted_recovery_code_digest_multi_region
+      user.reload
 
       sign_in_before_2fa(user)
       choose_another_security_option('personal_key')
@@ -56,8 +56,11 @@ RSpec.feature 'Signing in via one-time use personal key' do
       click_submit_default
 
       user.reload
-      # No new personal key is issued for a personal key MFA user in phase 1.
-      expect(user.encrypted_recovery_code_digest_multi_region).to eq old_key
+      # The personal key MFA user's key is consumed in phase 1: no new key is
+      # issued and the existing recovery code is cleared.
+      expect(user.has_recovery_code?).to eq(false)
+      expect(user.encrypted_recovery_code_digest).to be_blank
+      expect(user.encrypted_recovery_code_digest_multi_region).to be_blank
 
       expect(page).to have_current_path authentication_methods_setup_path
       expect(page).to have_content(t('mfa.personal_key_deprecation_warning'))

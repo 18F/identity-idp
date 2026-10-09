@@ -20,6 +20,35 @@ RSpec.describe Accounts::PersonalKeysController do
 
       expect(@analytics).to have_logged_event('Profile: Visited new personal key')
     end
+
+    context 'when personal key MFA deprecation phase 1 is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:personal_key_mfa_deprecation_phase_1_enabled)
+          .and_return(true)
+      end
+
+      it 'redirects a personal key MFA user to the account page' do
+        stub_sign_in(create(:user, :with_phone, :with_personal_key))
+
+        get :new
+
+        expect(response).to redirect_to account_url
+      end
+
+      it 'does not apply the phase 1 regeneration gate to an identity-verified user' do
+        profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
+        user = profile.user
+        PersonalKeyGenerator.new(user).generate!
+        stub_sign_in(user)
+
+        # Identity-verified users have a profile, so PersonalKeyPolicy#enabled? is
+        # false and the phase 1 gate does not redirect them to the account page.
+        # (They may still be redirected elsewhere by the PII / reauthn before_actions.)
+        get :new
+
+        expect(response).to_not redirect_to(account_url)
+      end
+    end
   end
 
   describe '#create' do
@@ -78,6 +107,23 @@ RSpec.describe Accounts::PersonalKeysController do
 
       expect(response).to redirect_to manage_personal_key_path
       expect(flash[:info]).to eq(t('account.personal_key.old_key_will_not_work'))
+    end
+
+    context 'when personal key MFA deprecation phase 1 is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:personal_key_mfa_deprecation_phase_1_enabled)
+          .and_return(true)
+      end
+
+      it 'does not generate a key and redirects a personal key MFA user to the account page' do
+        stub_sign_in(create(:user, :with_phone, :with_personal_key))
+
+        expect(PersonalKeyGenerator).to_not receive(:new)
+
+        post :create
+
+        expect(response).to redirect_to account_url
+      end
     end
   end
 end
