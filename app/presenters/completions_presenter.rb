@@ -105,12 +105,14 @@ class CompletionsPresenter
     end
   end
 
-  def token_exchange_sharing?
+  # Whether this screen collects delegated-access consent: the service provider is approved for
+  # delegation and asked for it in this sign-in.
+  def delegation_requested?
     current_sp.delegation_service_provider? &&
       requested_attributes.map(&:to_s).include?('token_exchange')
   end
 
-  def token_exchange_sharing_disclosure
+  def delegation_disclosure
     t('help_text.requested_attributes.token_exchange_html', sp_html: content_tag(:strong, sp_name))
   end
 
@@ -123,45 +125,40 @@ class CompletionsPresenter
     t('help_text.requested_attributes.document_images_html', sp_html: content_tag(:strong, sp_name))
   end
 
-  # The applications the user has already linked to their account that the
-  # broker may reach, grouped by agency for the per-application chooser.
+  # The applications the user has connected to that accept this service provider, grouped by
+  # agency for the chooser.
   # @return [Array<[Agency, Array<ServiceProvider>]>]
-  def token_exchange_linked_targets_by_agency
-    @token_exchange_linked_targets_by_agency ||=
-      DelegationApplications.grouped_by_agency(token_exchange_linked_targets)
+  def delegation_applications_by_agency
+    @delegation_applications_by_agency ||=
+      DelegationApplications.grouped_by_agency(delegation_applications)
   end
 
   # @return [Array<ServiceProvider>]
-  def token_exchange_linked_targets
-    @token_exchange_linked_targets ||= DelegationApplications.connected_for(
+  def delegation_applications
+    @delegation_applications ||= DelegationApplications.connected_for(
       user: current_user, service_provider_issuer: current_sp.issuer,
     )
   end
 
-  # With no linked agencies there is nothing to "allow all" for; only the
-  # auto-enrollment option is offered.
-  def token_exchange_has_linked_targets?
-    token_exchange_linked_targets.any?
+  def delegation_has_applications?
+    delegation_applications.any?
   end
 
-  # The user's CURRENT token-exchange state for this broker, used to pre-populate
-  # the control on a return visit so that simply continuing preserves (rather
-  # than silently revokes) grants the user already made here or on the account
-  # page. Nothing is pre-checked for a first-time grant.
-  def token_exchange_current_targets
-    @token_exchange_current_targets ||= TokenExchangeGrant.active
-      .where(user: current_user, broker_issuer: current_sp.issuer)
-      .pluck(:target_issuer)
+  # The user's CURRENT approvals for this service provider, used to pre-populate the control on a
+  # return visit so that simply continuing preserves (rather than silently revokes) approvals the
+  # user already made here or on the account page. Nothing is pre-checked on a first visit.
+  # @return [Array<String>] issuers of the approved applications
+  def delegation_current_application_issuers
+    @delegation_current_application_issuers ||= TokenExchangeGrant.live
+      .where(user: current_user, service_provider_issuer: current_sp.issuer)
+      .joins(:application).pluck('service_providers.issuer')
   end
 
-  def token_exchange_currently_all?
-    token_exchange_has_linked_targets? &&
-      (token_exchange_linked_targets.map(&:issuer) - token_exchange_current_targets).empty?
-  end
-
-  def token_exchange_currently_auto_enroll?
-    TokenExchangeBrokerSetting.for(user: current_user, broker_issuer: current_sp.issuer)
-      .auto_enroll_enabled?
+  # True when every connected application is already approved, which the control renders as
+  # "allow all".
+  def delegation_currently_all?
+    delegation_has_applications? &&
+      (delegation_applications.map(&:issuer) - delegation_current_application_issuers).empty?
   end
 
   private

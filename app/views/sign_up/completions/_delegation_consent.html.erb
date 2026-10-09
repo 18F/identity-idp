@@ -1,0 +1,87 @@
+<%#
+Delegated-access consent on the agency handoff screen, rendered inside the completions form in
+both layouts. The user chooses which agency applications the service provider may act at for
+them: every application they have connected to that accepts this service provider ("allow all"),
+or specific applications from a client-side paginated list grouped by agency. Nothing is
+pre-checked on a first visit; on a return visit the current approvals are pre-checked so simply
+continuing preserves them.
+
+locals:
+* form: the simple_form_for builder for :idv_form
+* presenter: CompletionsPresenter
+* compact: when true, omit outer spacing classes (NDS card layout)
+%>
+<% spacing = local_assigns[:compact] ? '' : 'margin-bottom-4' %>
+<%# A failed submission re-renders what was submitted; otherwise the current approvals. %>
+<% submitted = params[:idv_form].is_a?(ActionController::Parameters) ? params[:idv_form] : nil %>
+<% if submitted %>
+  <% all_checked = ActiveModel::Type::Boolean.new.cast(submitted[:delegation_all]) == true %>
+  <% chosen = Array(submitted[:delegation_applications]).map(&:to_s) %>
+<% else %>
+  <% all_checked = presenter.delegation_currently_all? %>
+  <% chosen = all_checked ? [] : presenter.delegation_current_application_issuers %>
+<% end %>
+
+<%= render(AlertComponent.new(type: :info, class: spacing)) do %>
+  <%= presenter.delegation_disclosure.html_safe %>
+<% end %>
+
+<fieldset class="usa-fieldset <%= spacing %>" data-delegation-consent>
+  <legend class="usa-legend">
+    <%= t('sign_up.token_exchange_grant.legend', sp: presenter.sp_name) %>
+  </legend>
+
+  <% if presenter.delegation_has_applications? %>
+    <div class="usa-checkbox">
+      <%= check_box_tag(
+            'idv_form[delegation_all]',
+            '1',
+            all_checked,
+            id: 'delegation-all',
+            class: 'usa-checkbox__input',
+            data: { delegation_all: true },
+          ) %>
+      <%= label_tag(
+            'delegation-all',
+            t('sign_up.token_exchange_grant.all', sp: presenter.sp_name, app_name: APP_NAME),
+            class: 'usa-checkbox__label',
+          ) %>
+    </div>
+
+    <p class="text-bold text-center margin-y-2"><%= t('sign_up.token_exchange_grant.or') %></p>
+
+    <p class="margin-bottom-1"><%= t('sign_up.token_exchange_grant.specific', sp: presenter.sp_name) %></p>
+
+    <div data-delegation-applications data-page-size="5">
+      <% presenter.delegation_applications_by_agency.each do |agency, applications| %>
+        <div data-delegation-agency>
+          <h3 class="h4 margin-top-2 margin-bottom-1"><%= agency&.name || t('sign_up.token_exchange_grant.other_agency') %></h3>
+          <% applications.each do |application| %>
+            <div class="usa-checkbox" data-delegation-application>
+              <%= check_box_tag(
+                    'idv_form[delegation_applications][]',
+                    application.issuer,
+                    chosen.include?(application.issuer),
+                    id: "delegation-application-#{application.id}",
+                    class: 'usa-checkbox__input',
+                  ) %>
+              <%= label_tag(
+                    "delegation-application-#{application.id}",
+                    application.display_name,
+                    class: 'usa-checkbox__label',
+                  ) %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+      <nav class="display-flex flex-justify flex-align-center margin-top-2" aria-label="<%= t('sign_up.token_exchange_grant.pagination') %>" data-delegation-pager hidden>
+        <%= render ButtonComponent.new(type: :button, outline: true, size: :sm, data: { delegation_prev: true }).with_content(t('sign_up.token_exchange_grant.previous')) %>
+        <span class="text-base" data-delegation-page-status></span>
+        <%= render ButtonComponent.new(type: :button, outline: true, size: :sm, data: { delegation_next: true }).with_content(t('sign_up.token_exchange_grant.next')) %>
+      </nav>
+    </div>
+  <% else %>
+    <p class="text-base"><%= t('account.connected_apps.token_exchange.no_linked') %></p>
+  <% end %>
+</fieldset>
+<%= javascript_packs_tag_once('delegation-consent', preload_links_header: false) %>

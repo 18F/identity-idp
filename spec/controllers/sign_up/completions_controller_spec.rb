@@ -732,35 +732,39 @@ RSpec.describe SignUp::CompletionsController do
       end
     end
 
-    context 'when the broker SP offers token-exchange consent' do
+    context 'when a service provider approved for delegation asks for consent' do
       let(:current_sp) { create(:service_provider, :idv, :active, token_exchange_enabled_sp: true) }
       let(:user) { create(:user, :proofed) }
-      let(:broker_identity) do
+      let(:sp_identity) do
         create(:service_provider_identity, user: user, service_provider: current_sp.issuer)
       end
-      let!(:target_a) do
+      let!(:application_a) do
         create(
-          :service_provider, :active, issuer: 'target-a.gov', ial: 2, delegation_application: true,
-                                      allowed_delegation_service_providers: [current_sp.issuer]
+          :service_provider, :delegation_application, issuer: 'urn:application-a',
+                                                      allowed_delegation_service_providers: [
+                                                        current_sp.issuer,
+                                                      ]
         )
       end
-      let!(:target_b) do
+      let!(:application_b) do
         create(
-          :service_provider, :active, issuer: 'target-b.gov', ial: 2, delegation_application: true,
-                                      allowed_delegation_service_providers: [current_sp.issuer]
+          :service_provider, :delegation_application, issuer: 'urn:application-b',
+                                                      allowed_delegation_service_providers: [
+                                                        current_sp.issuer,
+                                                      ]
         )
       end
-      # Only agencies the user has ALREADY linked are coverable.
-      let!(:linked_a) do
-        create(:service_provider_identity, user: user, service_provider: 'target-a.gov')
+      # Only applications the user has connected to are offered on this screen.
+      let!(:connected_a) do
+        create(:service_provider_identity, user: user, service_provider: application_a.issuer)
       end
-      let!(:linked_b) do
-        create(:service_provider_identity, user: user, service_provider: 'target-b.gov')
+      let!(:connected_b) do
+        create(:service_provider_identity, user: user, service_provider: application_b.issuer)
       end
 
       before do
         allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
-        allow(@linker).to receive(:link_identity).and_return(broker_identity)
+        allow(@linker).to receive(:link_identity).and_return(sp_identity)
         stub_sign_in(user)
         subject.session[:sp] = {
           issuer: current_sp.issuer,
@@ -771,22 +775,21 @@ RSpec.describe SignUp::CompletionsController do
       end
 
       def grants
-        TokenExchangeGrant.active.where(user: user, broker_issuer: current_sp.issuer)
+        TokenExchangeGrant.live.where(user: user, service_provider_issuer: current_sp.issuer)
       end
 
-      def setting
-        TokenExchangeBrokerSetting.find_by(user: user, broker_issuer: current_sp.issuer)
+      def approved_issuers
+        grants.joins(:application).pluck('service_providers.issuer')
       end
 
-      it 'proceeds with nothing granted when the user declines (consent is optional)' do
+      it 'proceeds with nothing approved when the user declines (consent is optional)' do
         patch :update
 
         expect(response).to_not render_template(:show)
         expect(grants).to be_empty
         expect(@analytics).to have_logged_event(
-          :token_exchange_consent_decided,
-          issuer: current_sp.issuer, granted: false, all_linked: false, auto_enroll: false,
-          target_count: 0
+          :delegation_consent_decided,
+          issuer: current_sp.issuer, granted: false, all_connected: false, application_count: 0,
         )
       end
 
@@ -796,167 +799,60 @@ RSpec.describe SignUp::CompletionsController do
         expect(grants).to be_empty
       end
 
-      it '"allow all" materializes one grant per currently linked, opted-in agency' do
-        patch :update, params: { idv_form: { token_exchange_all: '1' } }
+      it '"allow all" approves every connected application that accepts the service provider' do
+        patch :update, params: { idv_form: { delegation_all: '1' } }
 
-        expect(grants.pluck(:target_issuer)).to match_array(%w[target-a.gov target-b.gov])
-        expect(grants.pluck(:granted_at).uniq.size).to eq(1)
-        expect(setting&.auto_enroll_enabled?).to be_falsey
+        expect(approved_issuers).to match_array(%w[urn:application-a urn:application-b])
+        expect(grants.pluck(:source).uniq).to eq(['consent_screen'])
+        expect(grants.pluck(:remember_until)).to all(be_within(1.minute).of(1.year.from_now))
         expect(@analytics).to have_logged_event(
-          :token_exchange_consent_decided,
-          issuer: current_sp.issuer, granted: true, all_linked: true, auto_enroll: false,
-          target_count: 2
+          :delegation_consent_decided,
+          issuer: current_sp.issuer, granted: true, all_connected: true, application_count: 2,
         )
       end
 
-      it '"allow all" ignores a linked agency that has not opted in to the broker' do
-        target_b.update!(allowed_delegation_service_providers: ['other-service-provider.gov'])
-        patch :update, params: { idv_form: { token_exchange_all: '1' } }
-        expect(grants.pluck(:target_issuer)).to eq(['target-a.gov'])
+      it '"allow all" skips a connected application that does not accept this service provider' do
+        application_b.update!(allowed_delegation_service_providers: ['urn:someone-else'])
+        patch :update, params: { idv_form: { delegation_all: '1' } }
+
+        expect(approved_issuers).to eq(['urn:application-a'])
       end
 
-      it 'auto-enroll records a per-broker setting stamped at consent time' do
-        freeze_time do
-          patch :update, params: {
-            idv_form: { token_exchange_all: '1', token_exchange_auto_enroll: '1' },
-          }
-          expect(setting.auto_enroll_enabled?).to eq(true)
-          expect(setting.auto_enroll_granted_at).to eq(Time.zone.now)
-        end
-      end
-
-      it 'auto-enroll alone is accepted when the user has no linked agencies' do
-        linked_a.destroy!
-        linked_b.destroy!
-        patch :update, params: { idv_form: { token_exchange_auto_enroll: '1' } }
-
-        expect(response).to_not render_template(:show)
-        expect(grants).to be_empty
-        expect(setting.auto_enroll_enabled?).to eq(true)
-      end
-
-      it 'grants only the chosen, linked, opted-in applications' do
+      it 'approves only the chosen, connected, accepting applications' do
         patch :update, params: {
-          idv_form: { token_exchange_targets: ['target-a.gov', 'not-linked.gov'] },
+          idv_form: { delegation_applications: ['urn:application-a', 'urn:not-connected'] },
         }
 
-        expect(grants.pluck(:target_issuer)).to eq(['target-a.gov'])
-        expect(grants.first.granted_at).to be_present
-        expect(grants.first.expires_at).to be_within(1.minute)
-          .of(TokenExchangeGrant::GRANT_DURATION.from_now)
+        expect(approved_issuers).to eq(['urn:application-a'])
       end
 
       it 'revokes applications dropped when the user changes their choice' do
-        TokenExchangeGrant.grant!(
-          user: user, broker_issuer: current_sp.issuer, targets: %w[target-a.gov target-b.gov],
+        [application_a, application_b].each do |application|
+          TokenExchangeGrant.approve!(
+            user:, service_provider: current_sp, application:, source: 'consent_screen',
+            remember: true
+          )
+        end
+
+        patch :update, params: { idv_form: { delegation_applications: ['urn:application-b'] } }
+
+        expect(approved_issuers).to eq(['urn:application-b'])
+        revoked = TokenExchangeGrant.where(user:, application: application_a).first
+        expect(revoked.revoked_at).to be_present
+        expect(revoked.revocation_reason).to eq('user_revoked')
+      end
+
+      it 'renews an existing approval on a return visit that submits the pre-populated form' do
+        # The view pre-checks current approvals, so a returning user who just continues
+        # re-submits them; the approval is renewed, never silently revoked.
+        TokenExchangeGrant.approve!(
+          user:, service_provider: current_sp, application: application_a,
+          source: 'consent_screen', remember: true
         )
 
-        patch :update, params: { idv_form: { token_exchange_targets: ['target-b.gov'] } }
+        patch :update, params: { idv_form: { delegation_applications: ['urn:application-a'] } }
 
-        expect(grants.pluck(:target_issuer)).to eq(['target-b.gov'])
-        expect(TokenExchangeGrant.find_by(user: user, target_issuer: 'target-a.gov').revoked_at)
-          .to be_present
-      end
-
-      it 'preserves existing grants on a return visit that submits the pre-populated form' do
-        # The view pre-checks current grants, so a returning user who just
-        # continues re-submits them; nothing is silently revoked.
-        TokenExchangeGrant.grant!(
-          user: user, broker_issuer: current_sp.issuer, targets: %w[target-a.gov],
-        )
-
-        patch :update, params: { idv_form: { token_exchange_targets: ['target-a.gov'] } }
-
-        expect(grants.pluck(:target_issuer)).to eq(['target-a.gov'])
-        expect(TokenExchangeGrant.find_by(user: user, target_issuer: 'target-a.gov').revoked_at)
-          .to be_nil
-      end
-
-      it 'ignores auto-enroll without "allow all" when the user has linked agencies' do
-        patch :update, params: { idv_form: { token_exchange_auto_enroll: '1' } }
-        expect(setting&.auto_enroll_enabled?).to be_falsey
-      end
-
-      it 'turns off a previously enabled auto-enroll when the box is left unchecked' do
-        TokenExchangeBrokerSetting.for(user: user, broker_issuer: current_sp.issuer)
-          .enable_auto_enroll!
-        patch :update, params: { idv_form: { token_exchange_all: '1' } }
-        expect(setting.auto_enroll_enabled?).to eq(false)
-      end
-    end
-
-    context 'auto-enrolling a newly connected agency' do
-      let(:broker) do
-        create(
-          :service_provider, :idv, :active, issuer: 'broker.gov',
-                                            token_exchange_enabled_sp: true
-        )
-      end
-      let(:current_sp) do
-        create(
-          :service_provider, :idv, :active, delegation_application: true,
-                                            allowed_delegation_service_providers: ['broker.gov']
-        )
-      end
-      let(:user) { create(:user, :proofed) }
-      let(:new_identity) do
-        create(:service_provider_identity, user: user, service_provider: current_sp.issuer)
-      end
-
-      before do
-        broker
-        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
-        allow(@linker).to receive(:link_identity).and_return(new_identity)
-        stub_sign_in(user)
-        subject.session[:sp] = {
-          issuer: current_sp.issuer,
-          acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
-          request_url: 'http://example.com',
-          requested_attributes: %w[email],
-        }
-      end
-
-      it 'grants the new agency to the broker, stamped at the ORIGINAL auto-enroll consent' do
-        create(:service_provider_identity, user: user, service_provider: 'broker.gov')
-        consent = 2.months.ago.change(usec: 0)
-        TokenExchangeBrokerSetting.for(user: user, broker_issuer: 'broker.gov')
-          .enable_auto_enroll!(now: consent)
-
-        patch :update
-
-        grant = TokenExchangeGrant.find_by(
-          user: user, broker_issuer: 'broker.gov', target_issuer: current_sp.issuer,
-        )
-        expect(grant).to be_present
-        expect(grant.granted_at).to eq(consent)
-      end
-
-      it 'does nothing when auto-enroll is off' do
-        patch :update
-        expect(TokenExchangeGrant.where(user: user)).to be_empty
-      end
-
-      it 'does not resurrect an application the user explicitly turned off' do
-        create(:service_provider_identity, user: user, service_provider: 'broker.gov')
-        TokenExchangeBrokerSetting.for(user: user, broker_issuer: 'broker.gov').enable_auto_enroll!
-        TokenExchangeGrant.grant_one!(
-          user: user, broker_issuer: 'broker.gov', target_issuer: current_sp.issuer,
-        )
-        TokenExchangeGrant.revoke!(
-          user: user, broker_issuer: 'broker.gov', target_issuer: current_sp.issuer,
-        )
-
-        patch :update
-
-        expect(TokenExchangeGrant.active.where(user: user, target_issuer: current_sp.issuer))
-          .to be_empty
-      end
-
-      it 'does nothing once the broker is no longer connected to the account' do
-        TokenExchangeBrokerSetting.for(user: user, broker_issuer: 'broker.gov').enable_auto_enroll!
-        # broker identity never created => not in connected_apps
-        patch :update
-        expect(TokenExchangeGrant.where(user: user)).to be_empty
+        expect(approved_issuers).to eq(['urn:application-a'])
       end
     end
   end

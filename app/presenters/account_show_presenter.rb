@@ -146,15 +146,15 @@ class AccountShowPresenter
     user.connected_apps.includes([:service_provider_record, :email_address])
   end
 
-  # Token-exchange management for a connected BROKER: the linked applications it
-  # may act at (each with its current grant), and the auto-enroll setting. Nil
-  # for a connected app that is not an allow-listed broker.
-  # @return [TokenExchangeBrokerPresenter, nil]
-  def token_exchange_for(identity)
+  # Delegated-access management for a connected service provider approved for delegation: the
+  # applications it may act at, each with the user's current approval. Nil for any other
+  # connected app.
+  # @return [DelegationServiceProviderPresenter, nil]
+  def delegation_for(identity)
     sp = identity.service_provider_record
     return nil unless sp&.delegation_service_provider?
 
-    TokenExchangeBrokerPresenter.new(user: user, broker: sp)
+    DelegationServiceProviderPresenter.new(user: user, service_provider: sp)
   end
 
   delegate :recent_events, :recent_devices, to: :user

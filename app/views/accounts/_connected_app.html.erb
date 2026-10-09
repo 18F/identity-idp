@@ -31,8 +31,8 @@
         ) %>
   <% end %>
 
-  <% if (te = @presenter.token_exchange_for(identity)) %>
-    <%= render 'accounts/token_exchange_manage', identity: identity, te: te %>
+  <% if (delegation = @presenter.delegation_for(identity)) %>
+    <%= render 'accounts/delegation_manage', identity: identity, delegation: delegation %>
   <% end %>
 
   <% if identity.service_provider_id %>

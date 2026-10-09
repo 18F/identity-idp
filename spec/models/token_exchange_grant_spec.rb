@@ -1,147 +1,189 @@
 require 'rails_helper'
 
 RSpec.describe TokenExchangeGrant do
-  let(:user) { create(:user) }
-  let(:broker) { 'broker.gov' }
+  let(:user) { create(:user, :fully_registered) }
+  let(:service_provider) { create(:service_provider, :delegation_service_provider) }
+  let(:application) { create(:service_provider, :delegation_application) }
+  let(:other_application) { create(:service_provider, :delegation_application) }
 
-  describe '.grant!' do
-    it 'materializes one row per target with its own timestamp' do
-      described_class.grant!(user:, broker_issuer: broker, targets: %w[a.gov b.gov])
+  before { allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true) }
 
-      rows = described_class.where(user:, broker_issuer: broker)
-      expect(rows.pluck(:target_issuer)).to match_array(%w[a.gov b.gov])
-      expect(rows.pluck(:expires_at)).to all(be_within(1.minute).of(12.months.from_now))
-    end
-
-    it 'never stores a wildcard row' do
-      described_class.grant!(user:, broker_issuer: broker, targets: %w[a.gov])
-      expect(described_class.where(user:).pluck(:target_issuer)).not_to include('*')
-    end
-
-    it 'revokes targets dropped from the new set and keeps original timestamps for kept ones' do
-      travel_to(3.months.ago) do
-        described_class.grant!(user:, broker_issuer: broker, targets: %w[a.gov b.gov])
-      end
-      original = described_class.find_by(user:, target_issuer: 'a.gov').granted_at
-
-      described_class.grant!(user:, broker_issuer: broker, targets: %w[a.gov c.gov])
-
-      expect(described_class.active.where(user:).pluck(:target_issuer)).to match_array(
-        %w[a.gov
-           c.gov],
-      )
-      expect(described_class.find_by(user:, target_issuer: 'b.gov').revoked_at).to be_present
-      expect(described_class.find_by(user:, target_issuer: 'a.gov').granted_at).to eq(original)
-    end
-
-    it 'revokes everything when given no targets' do
-      described_class.grant!(user:, broker_issuer: broker, targets: %w[a.gov])
-      described_class.grant!(user:, broker_issuer: broker, targets: [])
-
-      expect(described_class.active.where(user:)).to be_empty
-      expect(described_class.where(user:).count).to eq(1)
-    end
-
-    it 'stamps newly granted targets with the supplied granted_at' do
-      stamp = 2.months.ago.change(usec: 0)
-      described_class.grant!(user:, broker_issuer: broker, targets: %w[a.gov], granted_at: stamp)
-
-      grant = described_class.find_by(user:, target_issuer: 'a.gov')
-      expect(grant.granted_at).to eq(stamp)
-      expect(grant.expires_at).to eq(stamp + described_class::GRANT_DURATION)
-    end
-
-    it 'does not touch grants for a different broker' do
-      described_class.grant!(user:, broker_issuer: 'other-broker.gov', targets: %w[z.gov])
-      described_class.grant!(user:, broker_issuer: broker, targets: %w[a.gov])
-
-      expect(described_class.active.where(user:, broker_issuer: 'other-broker.gov')).to exist
-    end
+  def approve(remember: true, **options)
+    described_class.approve!(
+      user:, service_provider:, application:, source: 'consent_screen', remember:, **options,
+    )
   end
 
-  describe '.grant_one!' do
-    it 'adds a target without disturbing others, honoring the supplied timestamp' do
-      described_class.grant!(user:, broker_issuer: broker, targets: %w[a.gov])
-      stamp = 1.month.ago.change(usec: 0)
+  describe '.approve!' do
+    it 'records one remembered approval with the content versions the person saw' do
+      application.agency.update!(consent_content_version: 3, consent_material_version: 2)
+      application.update!(consent_content_version: 5, consent_material_version: 4)
+      service_provider.update!(sp_content_version: 7)
 
-      described_class.grant_one!(
-        user:, broker_issuer: broker, target_issuer: 'b.gov',
-        granted_at: stamp
-      )
+      grant = approve
 
-      expect(described_class.active.where(user:).pluck(:target_issuer)).to match_array(
-        %w[a.gov
-           b.gov],
-      )
-      expect(described_class.find_by(user:, target_issuer: 'b.gov').granted_at).to eq(stamp)
+      expect(grant.service_provider_issuer).to eq(service_provider.issuer)
+      expect(grant.application).to eq(application)
+      expect(grant.delegation_id).to start_with('dlg_')
+      expect(grant.remember_until).to be_within(1.minute).of(described_class::MAX_REMEMBER.from_now)
+      expect(grant.rails_session_id).to be_nil
+      expect(grant.agency_content_version).to eq(3)
+      expect(grant.application_content_version).to eq(5)
+      expect(grant.sp_content_version).to eq(7)
     end
 
-    it 'is idempotent for an already-active grant' do
-      described_class.grant_one!(user:, broker_issuer: broker, target_issuer: 'a.gov')
-      first = described_class.find_by(user:, target_issuer: 'a.gov').granted_at
+    it 'records a single-authorization approval with the session it was given in' do
+      grant = approve(remember: false, rails_session_id: 'session-1')
 
-      described_class.grant_one!(
-        user:, broker_issuer: broker, target_issuer: 'a.gov',
-        granted_at: 1.day.ago
+      expect(grant.remember_until).to be_nil
+      expect(grant.rails_session_id).to eq('session-1')
+    end
+
+    it 'supersedes the earlier live row for the same key, keeping it for the record' do
+      first = approve
+      second = approve
+
+      expect(first.reload.revoked_at).to be_present
+      expect(first.revocation_reason).to eq('superseded_by_new_consent')
+      expect(described_class.live.where(user:, application:)).to eq([second])
+    end
+
+    it 'does not touch approvals for other applications' do
+      other_grant = described_class.approve!(
+        user:, service_provider:, application: other_application,
+        source: 'account_page', remember: true
       )
+      approve
 
-      expect(described_class.find_by(user:, target_issuer: 'a.gov').granted_at).to eq(first)
+      expect(other_grant.reload.revoked_at).to be_nil
     end
   end
 
   describe '.authorizes?' do
-    it 'authorizes only an exact per-application row' do
-      described_class.grant!(user:, broker_issuer: broker, targets: %w[a.gov])
+    it 'is true only for a live, current approval of exactly that application' do
+      approve
 
       expect(
         described_class.authorizes?(
-          user:, broker_issuer: broker,
-          target_issuer: 'a.gov'
+          user:, service_provider_issuer: service_provider.issuer, application:,
         ),
       ).to eq(true)
       expect(
         described_class.authorizes?(
-          user:, broker_issuer: broker,
-          target_issuer: 'b.gov'
+          user:, service_provider_issuer: service_provider.issuer, application: other_application,
         ),
       ).to eq(false)
       expect(
         described_class.authorizes?(
-          user:, broker_issuer: broker,
-          target_issuer: '*'
+          user:, service_provider_issuer: 'urn:someone-else', application:,
         ),
       ).to eq(false)
     end
 
-    it 'is false once the grant has expired or been revoked' do
-      described_class.grant!(user:, broker_issuer: broker, targets: %w[a.gov])
+    it 'is false once the approval is revoked or the remember period has passed' do
+      grant = approve
 
-      travel_to(13.months.from_now) do
-        expect(
-          described_class.authorizes?(
-            user:, broker_issuer: broker,
-            target_issuer: 'a.gov'
-          ),
-        ).to eq(false)
+      travel_to(described_class::MAX_REMEMBER.from_now + 1.day) do
+        expect(grant.valid_now?).to eq(false)
       end
 
-      described_class.revoke!(user:, broker_issuer: broker, target_issuer: 'a.gov')
+      grant.revoke!(reason: 'user_revoked')
       expect(
         described_class.authorizes?(
-          user:, broker_issuer: broker,
-          target_issuer: 'a.gov'
+          user:, service_provider_issuer: service_provider.issuer, application:,
         ),
       ).to eq(false)
     end
+  end
 
-    it 'is scoped to the broker' do
-      described_class.grant!(user:, broker_issuer: broker, targets: %w[a.gov])
-      expect(
-        described_class.authorizes?(
-          user:, broker_issuer: 'other.gov',
-          target_issuer: 'a.gov'
-        ),
-      ).to eq(false)
+  describe '#valid_now?' do
+    it 'is false after a material content change by the application, its agency or the SP' do
+      grant = approve
+      expect(grant.valid_now?).to eq(true)
+
+      # An editorial edit bumps only the content version and does not re-ask.
+      application.update!(consent_content_version: 2)
+      expect(grant.reload.valid_now?).to eq(true)
+
+      # A material edit moves the material version past the version the person saw.
+      application.update!(consent_content_version: 3, consent_material_version: 3)
+      expect(grant.reload.valid_now?).to eq(false)
+
+      grant = approve
+      application.agency.update!(consent_content_version: 2, consent_material_version: 2)
+      expect(grant.reload.valid_now?).to eq(false)
+
+      grant = approve
+      service_provider.update!(sp_content_version: 2, sp_material_version: 2)
+      expect(grant.reload.valid_now?).to eq(false)
+    end
+
+    it 'is false when the application or the service provider is no longer active or approved' do
+      grant = approve
+      application.update!(active: false)
+      expect(grant.reload.valid_now?).to eq(false)
+
+      application.update!(active: true)
+      service_provider.update!(token_exchange_enabled_sp: false)
+      expect(grant.reload.valid_now?).to eq(false)
+    end
+
+    context 'for a single-authorization approval' do
+      let!(:identity) do
+        create(
+          :service_provider_identity, user:, service_provider: service_provider.issuer,
+                                      rails_session_id: 'session-1'
+        )
+      end
+
+      it 'is valid only while the service provider identity is still in that browser session' do
+        grant = approve(remember: false, rails_session_id: 'session-1')
+        expect(grant.valid_now?).to eq(true)
+
+        identity.update!(rails_session_id: 'session-2')
+        expect(grant.reload.valid_now?).to eq(false)
+      end
+
+      it 'lets the caller assert the current authorization from context' do
+        grant = approve(remember: false, rails_session_id: 'session-1')
+        identity.update!(rails_session_id: 'session-2')
+
+        expect(grant.valid_now?(current_authorization: true)).to eq(true)
+        expect(grant.valid_now?(current_authorization: false)).to eq(false)
+      end
+    end
+  end
+
+  describe '.revoke_for! and .revoke_all_for!' do
+    it 'revokes one application, or every approval given to a service provider' do
+      approve
+      described_class.approve!(
+        user:, service_provider:, application: other_application,
+        source: 'account_page', remember: true
+      )
+
+      described_class.revoke_for!(
+        user:, service_provider_issuer: service_provider.issuer, application:,
+        reason: 'user_revoked'
+      )
+      expect(described_class.live.where(user:).map(&:application)).to eq([other_application])
+
+      described_class.revoke_all_for!(
+        user:, service_provider_issuer: service_provider.issuer, reason: 'sp_disconnected',
+      )
+      expect(described_class.live.where(user:)).to be_empty
+      expect(described_class.where(user:).count).to eq(2)
+    end
+  end
+
+  describe '#time_remaining' do
+    it 'is the time left on a remembered approval, never negative, nil otherwise' do
+      grant = approve
+      expect(grant.time_remaining).to be_within(1.minute).of(grant.remember_until - Time.zone.now)
+      travel_to(described_class::MAX_REMEMBER.from_now + 1.day) do
+        expect(grant.time_remaining).to eq(0)
+      end
+      expect(approve(remember: false, rails_session_id: 's').time_remaining).to be_nil
     end
   end
 end
