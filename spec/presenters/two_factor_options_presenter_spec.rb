@@ -267,7 +267,7 @@ RSpec.describe TwoFactorOptionsPresenter do
         # session flag indicates they just authenticated with their personal key.
         user = create(:user, :with_phone)
         presenter = described_class.new(
-          user:, user_agent:, personal_key_mfa_deprecated: true
+          user:, user_agent:, personal_key_mfa_deprecated: true,
         )
 
         expect(presenter.show_personal_key_deprecation_warning?).to eq(true)
