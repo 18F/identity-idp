@@ -1,9 +1,30 @@
 # Delegated-access fixtures for local development, review apps and personal sandboxes.
 #
 # Loaded by `rake delegated_access:seed`, which refuses to run in prod and staging. Every agency,
-# service and person here is fictitious. Hosts default to the local reference applications
-# (service provider on :9292, OIDC agency application on :9393, SAML agency application on
-# :4567) and can be overridden with environment variables for a sandbox.
+# service and person here is fictitious.
+#
+# This file is the one contract between the identity-idp seed task and the three reference
+# applications with their end-to-end harness (identity-sts-sinatra, spec/e2e): the harness reads
+# issuers, API identifiers, scope values, redirect URIs and hostnames from here and from nowhere
+# else, so a change to any of them is a change to the reference applications too.
+#
+#   identity-sts-sinatra   MyBenefits Assistant, the service provider the person signs in to. A
+#                          browser public client (PKCE, DPoP, no secret), served as static files
+#                          on :9292; relocated with DELEGATION_SP_URL.
+#   identity-oidc-sinatra  Housing Assistance Records, the Department of Housing Support's
+#                          application with the OAuth API https://records-api.agency.localdev
+#                          (scope value housing_records), on :9393; relocated with
+#                          DELEGATION_OIDC_AGENCY_URL.
+#   identity-saml-sinatra  Retirement Benefits Portal, the National Retirement Administration's
+#                          application with the SAML API https://benefits-api.agency.localdev
+#                          (scope value retirement_benefits), on :4567; relocated with
+#                          DELEGATION_SAML_AGENCY_URL.
+#
+# A sandbox seeds this same file with those three variables set to its hostnames. The API
+# identifiers are RFC 8707 resource indicators and never change with the hostname.
+#
+# Whether tokens are key-bound follows each service provider's client type (a public client's
+# always, a confidential client's never); no API sets or waives it, so there is no per-API key.
 #
 # Certificates named here are read from certs/sp/<name>.crt when the file exists and skipped
 # otherwise, so a developer can generate a key pair locally without committing it. A sandbox can
