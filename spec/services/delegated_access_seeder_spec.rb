@@ -38,6 +38,7 @@ RSpec.describe DelegatedAccessSeeder do
       expect(housing.accepts_delegation_from?(sp_issuer)).to eq(true)
       records_api = housing.token_exchange_resource_servers.first
       expect(records_api.identifier).to eq('https://records-api.agency.localdev')
+      expect(records_api.max_access_token_seconds).to eq(300)
 
       retirement = ServiceProvider.find_by(issuer: saml_issuer)
       expect(retirement.delegation_scope).to eq('token_exchange:retirement_benefits')

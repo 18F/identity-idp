@@ -552,6 +552,7 @@ team_monthly_fraud_metrics_emails: '[]'
 team_ursula_email: ''
 telephony_adapter: test
 test_ssn_allowed_list: ''
+token_exchange_access_token_ttl_seconds: 900
 token_exchange_enabled: false
 totp_code_interval: 30
 ui_test_bucket_params_enabled: true

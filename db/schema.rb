@@ -748,11 +748,39 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_120000) do
     t.string "certs", default: [], null: false, comment: "sensitive=false", array: true
     t.datetime "created_at", null: false, comment: "sensitive=false"
     t.string "identifier", null: false, comment: "sensitive=false"
+    t.integer "max_access_token_seconds", comment: "sensitive=false"
     t.bigint "service_provider_id", null: false, comment: "sensitive=false"
     t.string "token_format", default: "oauth", null: false, comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.index ["identifier"], name: "index_token_exchange_resource_servers_on_identifier", unique: true
     t.index ["service_provider_id"], name: "index_token_exchange_resource_servers_on_service_provider_id"
+  end
+
+  create_table "token_exchange_tokens", force: :cascade do |t|
+    t.integer "aal", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.string "delegation_id", null: false, comment: "sensitive=false"
+    t.string "dpop_jkt", comment: "sensitive=false"
+    t.datetime "expires_at", null: false, comment: "sensitive=false"
+    t.bigint "grant_id", null: false, comment: "sensitive=false"
+    t.integer "ial", comment: "sensitive=false"
+    t.datetime "issued_at", null: false, comment: "sensitive=false"
+    t.string "refresh_family_id", null: false, comment: "sensitive=false"
+    t.bigint "resource_server_id", null: false, comment: "sensitive=false"
+    t.string "revocation_reason", comment: "sensitive=false"
+    t.datetime "revoked_at", comment: "sensitive=false"
+    t.string "scope", null: false, comment: "sensitive=false"
+    t.bigint "service_provider_id", null: false, comment: "sensitive=false"
+    t.string "sp_rails_session_id", comment: "sensitive=true"
+    t.string "token_format", default: "oauth", null: false, comment: "sensitive=false"
+    t.string "token_type", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.bigint "user_id", null: false, comment: "sensitive=false"
+    t.index ["grant_id"], name: "index_token_exchange_tokens_on_grant_id"
+    t.index ["refresh_family_id"], name: "index_token_exchange_tokens_on_refresh_family_id"
+    t.index ["resource_server_id"], name: "index_token_exchange_tokens_on_resource_server_id"
+    t.index ["service_provider_id"], name: "index_token_exchange_tokens_on_service_provider_id"
+    t.index ["user_id"], name: "index_token_exchange_tokens_on_user_id"
   end
 
   create_table "user_proofing_events", id: :serial, force: :cascade do |t|
