@@ -554,6 +554,7 @@ telephony_adapter: test
 test_ssn_allowed_list: ''
 token_exchange_access_token_ttl_seconds: 900
 token_exchange_enabled: false
+token_exchange_refresh_token_ttl_seconds: 43200
 totp_code_interval: 30
 ui_test_bucket_params_enabled: true
 unauthorized_scope_enabled: false

@@ -7,7 +7,8 @@
 # for that API in the format the API is registered for. An opaque token the API verifies by
 # introspection is issued here; `requested_token_type` is optional and never changes the format.
 #
-# How the caller proves who it is depends on its client type, fixed at onboarding:
+# How the caller proves who it is depends on its client type, fixed at onboarding
+# (DelegatedAccessClientHandling):
 #
 # * A confidential service provider authenticates with a `private_key_jwt` client assertion
 #   (RFC 7523) signed with a key on its record. It receives a bearer token.
@@ -34,13 +35,18 @@
 #
 # The exchange never touches the application's `identities` row and never returns an
 # `id_token`: the agency learns who the person is only by introspecting the token.
+#
+# Alongside the access token the response carries a refresh token, which opens a family: the
+# service provider can obtain further access tokens for the same API with it, without the person,
+# until the family's absolute end (`refresh_token_expires_in` seconds from now). Both lifetimes
+# are counted from the one instant the tokens were created.
 class OpenidConnectTokenExchangeForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
   include Rails.application.routes.url_helpers
+  include DelegatedAccessClientHandling
 
   GRANT_TYPE = 'urn:ietf:params:oauth:grant-type:token-exchange'
-  CLIENT_ASSERTION_TYPE = OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE
   ACCESS_TOKEN_TYPE = 'urn:ietf:params:oauth:token-type:access_token'
   SAML2_TOKEN_TYPE = 'urn:ietf:params:oauth:token-type:saml2'
   REQUESTED_TOKEN_TYPES = [ACCESS_TOKEN_TYPE, SAML2_TOKEN_TYPE].freeze
@@ -59,6 +65,7 @@ class OpenidConnectTokenExchangeForm
 
   attr_reader(*ATTRS)
 
+  validate :validate_code_verifier_absent
   validate :validate_client
   validate :validate_request_shape
   validate :validate_subject_token
@@ -81,8 +88,10 @@ class OpenidConnectTokenExchangeForm
     FormResponse.new(success: @success, errors:, extra: extra_analytics_attributes)
   end
 
-  # RFC 8693 §2.2.1 response or the RFC error object. No `id_token`, no `refresh_token`.
-  # `issued_token_type` names the format actually issued, which is the API's registered one.
+  # RFC 8693 §2.2.1 response or the RFC error object. No `id_token`. `issued_token_type` names
+  # the format actually issued, which is the API's registered one. `refresh_token_expires_in`
+  # is how long the family lasts, measured from the same instant as `expires_in`, so the service
+  # provider can schedule its refreshes without clock arithmetic against the response time.
   def response
     if @success
       {
@@ -91,6 +100,8 @@ class OpenidConnectTokenExchangeForm
         token_type: @issued.token_type,
         expires_in: @issued.lifetime_seconds,
         scope: @issued.scope,
+        refresh_token: @refresh_token,
+        refresh_token_expires_in: @refresh.seconds_until_family_end(now: @issued.issued_at),
       }
     else
       { error: error_code, error_description: errors.map(&:message).join(' ') }
@@ -103,7 +114,7 @@ class OpenidConnectTokenExchangeForm
 
   private
 
-  attr_reader :service_provider, :identity, :resource_server, :grant, :error_code, :client_type
+  attr_reader :identity, :resource_server, :grant, :error_code
 
   # Records an error under the RFC code the service provider should act on. Only the first code
   # is reported, since later checks are skipped once one fails.
@@ -112,99 +123,21 @@ class OpenidConnectTokenExchangeForm
     errors.add(attribute, message, type:)
   end
 
-  def public_client?
-    client_type == 'public'
+  def client_assertion_audience
+    api_openid_connect_token_url
   end
 
-  # Identifies the caller and checks that it is a client this grant is open to. A confidential
-  # client is authenticated here, by its client assertion; a public client is only identified
-  # here (by `client_id`) and is authenticated by the proof it presents with its subject token
-  # (#validate_public_client_proof). The two credentials are not interchangeable: the record says
-  # which kind of client this is, and the other kind's credential is refused. Approval for
-  # delegated access is a property of the client, so it is checked here too. PKCE never
-  # substitutes for either credential on this grant.
-  def validate_client
-    if code_verifier.present?
-      return fail_with(
-        :code_verifier, 'invalid_request',
-        t('openid_connect.token.errors.code_verifier_not_allowed'),
-        type: :code_verifier_not_allowed
-      )
-    end
-
-    if client_assertion.present? || client_assertion_type.present?
-      authenticate_confidential_client
-    elsif client_id.present?
-      identify_public_client
-    else
-      fail_with(
-        :client_id, 'invalid_client',
-        t('openid_connect.token.errors.client_authentication_required'),
-        type: :client_authentication_required
-      )
-    end
-    return if errors.any? || service_provider.delegation_service_provider?
+  # PKCE never substitutes for a client credential on this grant: a confidential client is
+  # authenticated by its client assertion and a public client by the proof it presents with its
+  # subject token (#validate_public_client_proof).
+  def validate_code_verifier_absent
+    return if code_verifier.blank?
 
     fail_with(
-      :client_id, 'invalid_client',
-      t('openid_connect.token.errors.client_not_approved'),
-      type: :client_not_approved
+      :code_verifier, 'invalid_request',
+      t('openid_connect.token.errors.code_verifier_not_allowed'),
+      type: :code_verifier_not_allowed
     )
-  end
-
-  def authenticate_confidential_client
-    unless client_assertion_type == CLIENT_ASSERTION_TYPE
-      return fail_with(
-        :client_assertion_type, 'invalid_client',
-        t('openid_connect.token.errors.client_assertion_type_invalid'),
-        type: :client_assertion_type_invalid
-      )
-    end
-
-    @auth_result = ResourceServerAuthenticator.new(
-      client_assertion:, audience: api_openid_connect_token_url, key_source: :service_provider,
-    ).call
-    unless @auth_result.success?
-      return fail_with(
-        :client_assertion, 'invalid_client', @auth_result.error_message,
-        type: @auth_result.error_type
-      )
-    end
-
-    # A public client has no secret to sign with; a client assertion from one is a client
-    # presenting the wrong kind of credential, not an authenticated public client.
-    if @auth_result.record.pkce == true
-      return fail_with(
-        :client_assertion, 'invalid_client',
-        t('openid_connect.token.errors.client_authentication_required'),
-        type: :client_type_mismatch
-      )
-    end
-
-    @service_provider = @auth_result.record
-    @client_type = 'confidential'
-  end
-
-  def identify_public_client
-    record = ServiceProvider.find_by(issuer: client_id) if client_id.exclude?("\x00")
-    if record.nil?
-      return fail_with(
-        :client_id, 'invalid_client', t('openid_connect.token.errors.unknown_client'),
-        type: :unknown_client
-      )
-    end
-
-    # A confidential client must prove possession of its key; naming itself is not enough.
-    unless record.pkce == true
-      return fail_with(
-        :client_id, 'invalid_client',
-        t('openid_connect.token.errors.client_authentication_required'),
-        type: :client_type_mismatch
-      )
-    end
-
-    @service_provider = record
-    @client_type = 'public'
   end
 
   # The parameters RFC 8693 §2.1 defines, with the restrictions Login.gov applies: the subject
@@ -417,51 +350,67 @@ class OpenidConnectTokenExchangeForm
     Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[acr]
   end
 
-  # Lifetime: the configured default, or the API's own maximum when that is lower; never longer.
-  def access_token_lifetime
-    [
-      IdentityConfig.store.token_exchange_access_token_ttl_seconds,
-      resource_server.max_access_token_seconds,
-    ].compact.min
-  end
-
-  # Issues the token: the issuance record is written first, in one transaction with the
-  # approval's first-exchange timestamp, and the live token is written to Redis only once that
-  # has committed, so a token can never be live without its record. The token string exists
-  # only in this process and in the response.
+  # Issues the tokens: the issuance record and the refresh token row are written first, in one
+  # transaction with the approval's first-exchange timestamp, and the live access token is
+  # written to Redis only once that has committed, so a token can never be live without its
+  # record. The access token string exists only in this process and in the response; the refresh
+  # token is stored as a digest. Every lifetime is counted from the one instant +now+.
   def issue!
     now = Time.zone.now
-    lifetime = access_token_lifetime
+    family_expires_at = TokenExchangeRefreshToken.family_end(
+      from: now, grant:, resource_server:, service_provider:,
+    )
+    lifetime = TokenExchangeToken.lifetime_seconds_for(now:, resource_server:, family_expires_at:)
     @access_token = TokenExchangeToken.generate_token
+    @refresh_token = TokenExchangeRefreshToken.generate_token
     dpop_jkt = identity.dpop_jkt if public_client?
 
     TokenExchangeToken.transaction do
-      @issued = TokenExchangeToken.create!(
-        grant:,
-        resource_server:,
-        service_provider:,
-        user: identity.user,
-        delegation_id: grant.delegation_id,
-        scope: application.delegation_scope,
-        ial: identity.ial,
-        aal: forwarded_aal,
-        refresh_family_id: SecureRandom.uuid,
-        token_type: public_client? ? 'DPoP' : 'Bearer',
-        token_format: resource_server.token_format,
-        dpop_jkt:,
-        sp_rails_session_id: identity.rails_session_id,
-        issued_at: now,
-        expires_at: now + lifetime.seconds,
-      )
+      @issued = create_issuance_record!(now:, lifetime:, dpop_jkt:)
+      @refresh = create_refresh_token!(family_expires_at:, dpop_jkt:)
       grant.update!(first_exchanged_at: now) if grant.first_exchanged_at.nil?
     end
 
     DelegatedTokenStore.write(@access_token, @issued.live_attributes, ttl: lifetime)
   end
 
-  # The issuer the caller claimed, authenticated or not, so failures can be attributed.
-  def claimed_issuer
-    service_provider&.issuer || @auth_result&.claimed_identifier || client_id.presence
+  # One exchange opens one family, so the family id is new here; every token the family later
+  # yields carries it.
+  def create_issuance_record!(now:, lifetime:, dpop_jkt:)
+    TokenExchangeToken.create!(
+      grant:,
+      resource_server:,
+      service_provider:,
+      user: identity.user,
+      delegation_id: grant.delegation_id,
+      scope: application.delegation_scope,
+      ial: identity.ial,
+      aal: forwarded_aal,
+      refresh_family_id: SecureRandom.uuid,
+      token_type: public_client? ? 'DPoP' : 'Bearer',
+      token_format: resource_server.token_format,
+      dpop_jkt:,
+      sp_rails_session_id: identity.rails_session_id,
+      issued_at: now,
+      expires_at: now + lifetime.seconds,
+    )
+  end
+
+  # The first refresh token of the family: its digest, the family id and end, and everything a
+  # refresh must keep unchanged (API, scope, approval, key binding).
+  def create_refresh_token!(family_expires_at:, dpop_jkt:)
+    TokenExchangeRefreshToken.create!(
+      token_digest: TokenExchangeRefreshToken.digest(@refresh_token),
+      family_id: @issued.refresh_family_id,
+      grant:,
+      token_exchange_token: @issued,
+      resource_server:,
+      service_provider:,
+      user: identity.user,
+      scope: @issued.scope,
+      dpop_jkt:,
+      expires_at: family_expires_at,
+    )
   end
 
   def extra_analytics_attributes

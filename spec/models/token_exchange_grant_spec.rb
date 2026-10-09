@@ -264,10 +264,11 @@ RSpec.describe TokenExchangeGrant do
   end
 
   describe '#revoke!' do
-    it 'ends every live delegated token issued under the approval' do
+    it 'ends every live delegated token and refresh token issued under the approval' do
       grant = approve
       plaintext = TokenExchangeToken.generate_token
       issued = create(:token_exchange_token, grant:, plaintext:)
+      refresh = create(:token_exchange_refresh_token, token_exchange_token: issued)
       already_ended = create(:token_exchange_token, :revoked, grant:)
       expect(DelegatedTokenStore.read(plaintext)).to be_present
 
@@ -277,6 +278,8 @@ RSpec.describe TokenExchangeGrant do
         expect(DelegatedTokenStore.read(plaintext)).to be_nil
         expect(issued.reload.revoked_at).to eq(Time.zone.now)
         expect(issued.revocation_reason).to eq('user_revoked')
+        expect(refresh.reload.revoked_at).to eq(Time.zone.now)
+        expect(refresh.revocation_reason).to eq('user_revoked')
         expect(already_ended.reload.revocation_reason).to eq('user_revoked')
       end
     end
@@ -288,12 +291,16 @@ RSpec.describe TokenExchangeGrant do
       plaintext = TokenExchangeToken.generate_token
       issued = create(:token_exchange_token, grant: earlier, plaintext:)
 
+      refresh = create(:token_exchange_refresh_token, token_exchange_token: issued)
+
       replacement = approve
 
       expect(earlier.reload.revocation_reason).to eq('superseded_by_new_consent')
       expect(DelegatedTokenStore.read(plaintext)[:grant_id]).to eq(replacement.id)
       expect(issued.reload.grant_id).to eq(replacement.id)
       expect(issued.revoked_at).to be_nil
+      expect(refresh.reload.grant_id).to eq(replacement.id)
+      expect(refresh.revoked_at).to be_nil
 
       replacement.revoke!(reason: 'user_revoked')
       expect(DelegatedTokenStore.read(plaintext)).to be_nil

@@ -595,6 +595,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_120000) do
     t.jsonb "delegation_description", default: {}, null: false, comment: "sensitive=false"
     t.jsonb "delegation_display_name", default: {}, null: false, comment: "sensitive=false"
     t.text "delegation_learn_more_url", comment: "sensitive=false"
+    t.integer "delegation_max_family_seconds", comment: "sensitive=false"
     t.string "delegation_operator_legal_name", comment: "sensitive=false"
     t.string "delegation_operator_type", comment: "sensitive=false"
     t.text "delegation_privacy_policy_url", comment: "sensitive=false"
@@ -741,6 +742,31 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_120000) do
     t.index ["user_id", "service_provider_issuer", "application_service_provider_id"], name: "index_token_exchange_grants_live", unique: true, where: "(revoked_at IS NULL)"
   end
 
+  create_table "token_exchange_refresh_tokens", force: :cascade do |t|
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.string "dpop_jkt", comment: "sensitive=false"
+    t.datetime "expires_at", null: false, comment: "sensitive=false"
+    t.string "family_id", null: false, comment: "sensitive=false"
+    t.bigint "grant_id", null: false, comment: "sensitive=false"
+    t.bigint "resource_server_id", null: false, comment: "sensitive=false"
+    t.string "revocation_reason", comment: "sensitive=false"
+    t.datetime "revoked_at", comment: "sensitive=false"
+    t.datetime "rotated_at", comment: "sensitive=false"
+    t.string "scope", null: false, comment: "sensitive=false"
+    t.bigint "service_provider_id", null: false, comment: "sensitive=false"
+    t.string "token_digest", null: false, comment: "sensitive=false"
+    t.bigint "token_exchange_token_id", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.datetime "used_at", comment: "sensitive=false"
+    t.bigint "user_id", null: false, comment: "sensitive=false"
+    t.index ["family_id"], name: "index_token_exchange_refresh_tokens_on_family_id"
+    t.index ["grant_id"], name: "index_token_exchange_refresh_tokens_on_grant_id"
+    t.index ["service_provider_id"], name: "index_token_exchange_refresh_tokens_on_service_provider_id"
+    t.index ["token_digest"], name: "index_token_exchange_refresh_tokens_on_token_digest", unique: true
+    t.index ["token_exchange_token_id"], name: "index_token_exchange_refresh_tokens_on_token_exchange_token_id"
+    t.index ["user_id"], name: "index_token_exchange_refresh_tokens_on_user_id"
+  end
+
   create_table "token_exchange_resource_servers", force: :cascade do |t|
     t.boolean "active", default: true, null: false, comment: "sensitive=false"
     t.bigint "attempts_service_provider_id", comment: "sensitive=false"
@@ -749,6 +775,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_120000) do
     t.datetime "created_at", null: false, comment: "sensitive=false"
     t.string "identifier", null: false, comment: "sensitive=false"
     t.integer "max_access_token_seconds", comment: "sensitive=false"
+    t.integer "max_family_seconds", comment: "sensitive=false"
     t.bigint "service_provider_id", null: false, comment: "sensitive=false"
     t.string "token_format", default: "oauth", null: false, comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"

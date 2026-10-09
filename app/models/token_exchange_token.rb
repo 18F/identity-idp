@@ -33,6 +33,19 @@ class TokenExchangeToken < ApplicationRecord
     DelegatedAccess::OpaqueToken.generate
   end
 
+  # Lifetime in seconds of an access token issued at +now+ for +resource_server+ within a family
+  # that ends at +family_expires_at+: the configured default, or the API's own maximum when that
+  # is lower, and never past the family's end, so no access token outlives the family it belongs
+  # to. At least one second, the smallest lifetime a live entry can be stored with.
+  def self.lifetime_seconds_for(now:, resource_server:, family_expires_at:)
+    lifetime = [
+      IdentityConfig.store.token_exchange_access_token_ttl_seconds,
+      resource_server.max_access_token_seconds,
+      (family_expires_at - now).floor,
+    ].compact.min
+    [lifetime, 1].max
+  end
+
   def saml?
     token_format == 'saml2'
   end

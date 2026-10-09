@@ -95,8 +95,11 @@ service_providers:
     token_exchange_resource_servers:
       - identifier: 'https://records-api.agency.localdev'
         token_format: 'oauth'
-        # A read-write API: delegated tokens for it live five minutes instead of the default.
+        # A read-write API: delegated tokens for it live five minutes instead of the default, and
+        # a service provider's unattended access ends four hours after the exchange instead of
+        # twelve.
         max_access_token_seconds: 300
+        max_family_seconds: 14400
         certs:
           - 'rs_records_demo'
 
