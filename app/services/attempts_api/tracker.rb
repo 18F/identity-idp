@@ -54,6 +54,7 @@ module AttemptsApi
       )
 
       log_history(event) if should_log_history?(event_type)
+      capture_for_delegation(event)
 
       return unless should_send_event?
 
@@ -80,6 +81,25 @@ module AttemptsApi
     end
 
     private
+
+    # While a delegated-access authorization is in flight, every event is copied into the session
+    # buffer for the agencies the person may approve, whether or not the service provider itself
+    # is enrolled in the Attempts API. The service provider's own event is unaffected.
+    def capture_for_delegation(event)
+      return unless delegation_context.active?
+
+      delegation_context.push_buffered_event(event)
+    end
+
+    def delegation_context
+      @delegation_context ||= DelegationContext.from_session(session)
+    end
+
+    # True when this event is being recorded only for the delegation buffer: the service provider
+    # is not receiving it and it is not being kept as proofing history.
+    def buffer_only?(event_type)
+      !should_send_event? && !should_log_history?(event_type)
+    end
 
     def log_history(event)
       return unless session && session['warden.user.user.session']
@@ -164,9 +184,12 @@ module AttemptsApi
       end
     end
 
+    # The buffer never carries the service provider's pairwise identifier, so buffering alone must
+    # not create the person's identity at the service provider's agency ahead of the handoff.
     def agency_uuid(event_type:)
       return nil unless user&.id && sp
-      skip_create = SKIP_AGENCY_UUID_CREATION_EVENT_TYPES.include?(event_type)
+      skip_create = SKIP_AGENCY_UUID_CREATION_EVENT_TYPES.include?(event_type) ||
+                    buffer_only?(event_type)
 
       if skip_create
         AgencyIdentityLinker.for(user: user, service_provider: sp, skip_create: true)&.uuid
@@ -185,7 +208,7 @@ module AttemptsApi
       # Historical Attempts feature requires the Attempts API to be enabled globally
       return false unless IdentityConfig.store.attempts_api_enabled
 
-      should_send_event? || should_log_history?(event_type)
+      should_send_event? || should_log_history?(event_type) || delegation_context.active?
     end
 
     def should_log_history?(event_type)

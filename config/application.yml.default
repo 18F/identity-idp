@@ -554,6 +554,7 @@ team_ursula_email: ''
 telephony_adapter: test
 test_ssn_allowed_list: ''
 token_exchange_access_token_ttl_seconds: 900
+token_exchange_attempts_delivery_enabled: false
 token_exchange_billing_waiver_cache_seconds: 3600
 token_exchange_enabled: false
 token_exchange_refresh_token_ttl_seconds: 43200

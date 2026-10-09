@@ -1307,6 +1307,75 @@ RSpec.describe OpenidConnect::AuthorizationController do
       end
     end
 
+    context 'delegation scopes requested' do
+      let(:client_id) { 'urn:gov:gsa:openidconnect:sp:mybenefits' }
+      let!(:service_provider) do
+        create(
+          :service_provider, :delegation_service_provider, issuer: client_id,
+                                                           redirect_uris: [params[:redirect_uri]]
+        )
+      end
+      let!(:application) do
+        create(:service_provider, :delegation_application, delegation_scope_value: 'housing_records')
+      end
+      let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
+      let(:user) { create(:profile, :active, :verified).user }
+      let(:params) { super().merge(scope: 'openid email token_exchange:housing_records') }
+      let(:allowed_attempts_providers) { [{ 'issuer' => application.issuer, 'keys' => [] }] }
+      let(:delivery_enabled) { true }
+
+      before do
+        stub_sign_in user
+        allow(IdentityConfig.store).to receive_messages(
+          token_exchange_enabled: true,
+          token_exchange_attempts_delivery_enabled: delivery_enabled,
+          attempts_api_enabled: true,
+          allowed_attempts_providers:,
+        )
+      end
+
+      it 'starts a delegation context naming the enrolled recipients as candidates' do
+        action
+
+        context = AttemptsApi::DelegationContext.from_session(session)
+        expect(context.active?).to eq(true)
+        expect(context.candidate_issuers).to eq([application.issuer])
+        expect(context.sp_issuer).to eq(client_id)
+        expect(context.request_id).to eq(session[:sp][:request_id])
+        expect(context.approved).to eq({})
+      end
+
+      context 'when no recipient is enrolled in the Attempts API' do
+        let(:allowed_attempts_providers) { [] }
+
+        it 'starts a context with no candidates, so nothing is captured' do
+          action
+
+          context = AttemptsApi::DelegationContext.from_session(session)
+          expect(context.present?).to eq(true)
+          expect(context.active?).to eq(false)
+        end
+      end
+
+      context 'when delivery to agencies is switched off' do
+        let(:delivery_enabled) { false }
+
+        it 'does not start a delegation context' do
+          action
+          expect(AttemptsApi::DelegationContext.from_session(session).present?).to eq(false)
+        end
+      end
+
+      context 'without delegation scopes' do
+        let(:params) { super().merge(scope: 'openid email') }
+
+        it 'does not start a delegation context' do
+          action
+          expect(AttemptsApi::DelegationContext.from_session(session).present?).to eq(false)
+        end
+      end
+    end
+
     context 'user is suspended' do
       let(:user) { create(:user, :fully_registered, :suspended) }
       let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
