@@ -1,17 +1,25 @@
 # frozen_string_literal: true
 
+# The OpenID Connect Discovery 1.0 document served at /.well-known/openid-configuration.
+#
+# The delegated-access metadata (RFC 8414 §2 member names) is advertised only while delegated
+# access is switched on, so the document never names a grant type the token endpoint answers with
+# `unsupported_grant_type` or an endpoint that is not found. With the switch off the document is
+# exactly what Login.gov has always published.
 class OpenidConnectConfigurationPresenter
   include Rails.application.routes.url_helpers
+
+  TOKEN_EXCHANGE_GRANT_TYPE = 'urn:ietf:params:oauth:grant-type:token-exchange'
 
   def configuration
     {
       acr_values_supported: Saml::Idp::Constants::VALID_AUTHN_CONTEXTS,
       claims_supported: claims_supported,
-      grant_types_supported: %w[authorization_code],
+      grant_types_supported: grant_types_supported,
       response_types_supported: %w[code],
       scopes_supported: OpenidConnectAttributeScoper::VALID_SCOPES,
       subject_types_supported: %w[pairwise],
-    }.merge(url_configuration).merge(crypto_configuration)
+    }.merge(url_configuration).merge(crypto_configuration).merge(delegated_access_configuration)
   end
 
   def url_options
@@ -32,12 +40,52 @@ class OpenidConnectConfigurationPresenter
     }
   end
 
+  # `none` (RFC 8414 §2, RFC 7591 §2) is listed only with delegated access on: a public client
+  # identifies itself with `client_id` alone and binds its tokens to a key instead, which the
+  # token endpoint accepts only for the delegated-access grants.
   def crypto_configuration
     {
       id_token_signing_alg_values_supported: %w[RS256],
-      token_endpoint_auth_methods_supported: %w[private_key_jwt],
+      token_endpoint_auth_methods_supported: token_endpoint_auth_methods_supported,
       token_endpoint_auth_signing_alg_values_supported: %w[RS256],
     }
+  end
+
+  # RFC 8693 token exchange and the RFC 6749 §6 refresh grant are served at the token endpoint,
+  # which is already advertised; RFC 8693 defines no endpoint of its own.
+  def grant_types_supported
+    return %w[authorization_code] unless delegated_access_enabled?
+
+    %W[authorization_code refresh_token #{TOKEN_EXCHANGE_GRANT_TYPE}]
+  end
+
+  def token_endpoint_auth_methods_supported
+    return %w[private_key_jwt] unless delegated_access_enabled?
+
+    %w[private_key_jwt none]
+  end
+
+  # RFC 8414 §2 members for the RFC 7662 introspection and RFC 7009 revocation endpoints, and the
+  # RFC 9449 §5.1 list of proof algorithms. Introspection is for agency APIs with `private_key_jwt`
+  # and for the public-client service provider asking about its own token with a DPoP proof;
+  # revocation likewise serves both client types. `token_exchange:*` scope values are per partner
+  # and are not enumerated in `scopes_supported`.
+  def delegated_access_configuration
+    return {} unless delegated_access_enabled?
+
+    {
+      introspection_endpoint: api_openid_connect_introspect_url,
+      introspection_endpoint_auth_methods_supported: %w[private_key_jwt none],
+      introspection_endpoint_auth_signing_alg_values_supported: %w[RS256],
+      revocation_endpoint: api_openid_connect_revoke_url,
+      revocation_endpoint_auth_methods_supported: %w[private_key_jwt none],
+      revocation_endpoint_auth_signing_alg_values_supported: %w[RS256],
+      dpop_signing_alg_values_supported: DpopProofVerifier::ALLOWED_ALGORITHMS,
+    }
+  end
+
+  def delegated_access_enabled?
+    IdentityConfig.store.token_exchange_enabled
   end
 
   def claims_supported
