@@ -1883,9 +1883,11 @@ openid_connect.token.errors.invalid_code: no es válido porque no coincide con n
 openid_connect.token.errors.invalid_code_verifier: code_verifier no coincide con code_challenge. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat debe ser una marca de tiempo Unix de punto flotante o un entero que represente un momento en el pasado. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: No se pudo validar la afirmación contra ninguna clave pública registrada. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-token-signature
+openid_connect.user_info.errors.bound_token_requires_dpop: 'Este token de acceso está vinculado a una clave: preséntelo con el esquema de autorización DPoP y una prueba DPoP firmada con esa clave (RFC 9449).'
 openid_connect.user_info.errors.malformed_authorization: Encabezado de autorización mal formado. Consulte nuestra documentación en https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No se proporcionó ningún encabezado de autorización. Consulte nuestra documentación en https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: No se pudo encontrar la autorización para el contenido del access_token proporcionado o puede ser que este haya vencido. Consulte nuestra documentación en https://developers.login.gov/support/#auth-header-contents-not-found
+openid_connect.user_info.errors.token_not_bound: 'Este token de acceso no está vinculado a una clave: preséntelo con el esquema de autorización Bearer.'
 pages.page_took_too_long.body: Es conveniente que espere unos minutos y vuelva a intentarlo. (503)
 pages.page_took_too_long.header: El servidor tardó demasiado en procesar su solicitud.
 profiling_failed.details_html: 'Llame a nuestro centro de contacto al <strong>(844) 875-6446</strong> y mencione el código de error <strong>LG22</strong>.'

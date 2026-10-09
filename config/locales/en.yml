@@ -1871,9 +1871,11 @@ openid_connect.token.errors.invalid_code: is invalid because doesn’t match any
 openid_connect.token.errors.invalid_code_verifier: code_verifier did not match code_challenge. Please see our documentation at https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat must be an integer or floating point Unix timestamp representing a time in the past. Please see our documentation at https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: Could not validate assertion against any registered public keys. Please see our documentation at https://developers.login.gov/support/#invalid-token-signature
+openid_connect.user_info.errors.bound_token_requires_dpop: 'This access token is bound to a key: present it with the DPoP authorization scheme and a DPoP proof signed by that key (RFC 9449).'
 openid_connect.user_info.errors.malformed_authorization: Malformed Authorization header. Please see our documentation at https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No Authorization header provided. Please see our documentation at https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: Could not find authorization for the contents of the provided access_token or it may have expired. Please see our documentation at https://developers.login.gov/support/#auth-header-contents-not-found
+openid_connect.user_info.errors.token_not_bound: 'This access token is not bound to a key: present it with the Bearer authorization scheme.'
 pages.page_took_too_long.body: You might want to wait a few minutes and try again. (503)
 pages.page_took_too_long.header: The server took too long to process your request.
 profiling_failed.details_html: 'Call our contact center at <strong>(844) 875-6446</strong> and provide them with the error code <strong>LG22</strong>.'

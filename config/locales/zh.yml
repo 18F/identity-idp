@@ -1884,9 +1884,11 @@ openid_connect.token.errors.invalid_code: 无效，因为与任何用户都匹�
 openid_connect.token.errors.invalid_code_verifier: code_verifier 与 code_challenge 不匹配。请参阅我们的文档：https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat 必须是整数或者浮动点 Unix 时间印章来代表过去的一个时间。请参阅我们的文档：https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: 无法根据任何已注册的公钥验证这个说法。请参阅我们的文档：https://developers.login.gov/support/#invalid-token-signature
+openid_connect.user_info.errors.bound_token_requires_dpop: '此访问令牌已绑定到一个密钥：请使用 DPoP 授权方案并附带由该密钥签名的 DPoP 证明来提交（RFC 9449）。'
 openid_connect.user_info.errors.malformed_authorization: 授权标头畸形。请参阅我们的文档：https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: 未提供授权标头。请参阅我们的文档：https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: 就提供的 access_token 内容找不到授权或者授权已过期。请参阅我们的文档：https://developers.login.gov/support/#auth-header-contents-not-found
+openid_connect.user_info.errors.token_not_bound: '此访问令牌未绑定到任何密钥：请使用 Bearer 授权方案提交。'
 pages.page_took_too_long.body: 你也许想等几分钟后再试。（503）
 pages.page_took_too_long.header: 服务器处理你请求的时间过长。
 profiling_failed.details_html: '请拨打<strong>（844）875-6446</strong> 致电我们的联系中心并提供出错代码 <strong>LG22</strong>。'

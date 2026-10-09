@@ -1872,9 +1872,11 @@ openid_connect.token.errors.invalid_code: n’est pas valide, car il ne correspo
 openid_connect.token.errors.invalid_code_verifier: code_verifier ne correspondait pas à code_challenge. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat doit être un horodatage Unix entier ou à virgule flottante représentant une heure dans le passé. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: Impossible de valider l’assertion contre les clés publiques enregistrées. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-token-signature
+openid_connect.user_info.errors.bound_token_requires_dpop: 'Ce jeton d’accès est lié à une clé : présentez-le avec le schéma d’autorisation DPoP et une preuve DPoP signée avec cette clé (RFC 9449).'
 openid_connect.user_info.errors.malformed_authorization: Forme de l’en-tête d’autorisation non valide. Veuillez consulter notre documentation à https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: Aucune en-tête d’autorisation fournie. Veuillez consulter notre documentation à https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: L’autorisation pour le contenu du access_token fourni introuvable ou il peut être expiré. Veuillez consulter notre documentation à https://developers.login.gov/support/#auth-header-contents-not-found
+openid_connect.user_info.errors.token_not_bound: 'Ce jeton d’accès n’est pas lié à une clé : présentez-le avec le schéma d’autorisation Bearer.'
 pages.page_took_too_long.body: Nous vous recommandons de patienter quelques minutes, puis de réessayer. (503)
 pages.page_took_too_long.header: Le serveur a mis trop de temps à traiter votre demande.
 profiling_failed.details_html: 'Appelez notre centre de contact au <strong>(844) 875-6446</strong> en fournissant le code d’erreur <strong>LG22</strong>.'

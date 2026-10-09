@@ -86,16 +86,25 @@ module OpenidConnect
       )
     end
 
+    # The same access token the client used at userinfo, under the same rules: Bearer, or DPoP
+    # with a proof for this method and URL when the token is bound to the client's key.
     def authenticate_identity_via_bearer_token
-      verifier = AccessTokenVerifier.new(request.env['HTTP_AUTHORIZATION'])
-      response, identity = verifier.submit
-      attributes = response.to_h
+      verifier = AccessTokenVerifier.new(
+        request.env['HTTP_AUTHORIZATION'],
+        dpop_proof: request.headers['DPoP'].presence,
+        http_method: request.request_method,
+        http_url: api_openid_connect_document_image_url(image_type: params[:image_type]),
+      )
+      result, identity = verifier.submit
+      attributes = result.to_h
       analytics.openid_connect_bearer_token(**attributes.except(:integration_errors))
 
-      if response.success?
+      if result.success?
         @current_identity = identity
       else
         analytics.sp_integration_errors_present(**attributes[:integration_errors])
+        challenge = verifier.www_authenticate
+        response.headers['WWW-Authenticate'] = challenge if challenge
         render json: { error: verifier.errors[:access_token].join(' ') },
                status: :unauthorized
       end
