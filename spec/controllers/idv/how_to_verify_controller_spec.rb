@@ -135,6 +135,82 @@ RSpec.describe Idv::HowToVerifyController do
         expect(response).to redirect_to idv_agreement_path
       end
     end
+
+    context 'when clear1 is enabled for the user' do
+      let(:idv_clear1_api_base_url) { 'https://fake-clear1.test' }
+
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          idv_clear1_enabled: true,
+          idv_clear1_enabled_percent: 100,
+          idv_clear1_api_base_url:,
+        )
+        reload_ab_tests
+      end
+
+      after do
+        reload_ab_tests
+      end
+
+      it 'passes clear1_enabled to the presenter' do
+        expect(Idv::HowToVerifyPresenter).to receive(:new).with(
+          hash_including(clear1_enabled: true),
+        ).and_call_original
+
+        get :show
+
+        expect(subject.idv_session.clear1_enabled).to eq(true)
+      end
+
+      it 'allows the clear1 origin as a form action so the redirect is not blocked' do
+        get :show
+
+        expect(response.request.content_security_policy.form_action)
+          .to match_array(["'self'", idv_clear1_api_base_url])
+      end
+
+      context 'when in person proofing is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
+          subject.idv_session.clear1_enabled = true
+        end
+
+        it 'still renders the show template' do
+          get :show
+
+          expect(response).to render_template :show
+        end
+      end
+    end
+
+    it 'does not override the form action when clear1 is disabled' do
+      get :show
+
+      expect(response.request.content_security_policy.form_action).to eq(["'self'"])
+    end
+
+    context 'when clear1 is enabled but the api base url is not configured' do
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          idv_clear1_enabled: true,
+          idv_clear1_enabled_percent: 100,
+          idv_clear1_api_base_url: '',
+        )
+        reload_ab_tests
+      end
+
+      after do
+        reload_ab_tests
+      end
+
+      it 'leaves the form action untouched' do
+        expect(subject).not_to receive(:override_form_action_csp)
+
+        get :show
+
+        expect(response).to render_template :show
+      end
+    end
   end
 
   describe '#update' do
@@ -257,6 +333,120 @@ RSpec.describe Idv::HowToVerifyController do
         put :update, params: params
 
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      end
+    end
+
+    context 'clear1' do
+      let(:selection) { Idv::HowToVerifyForm::CLEAR1 }
+      let(:analytics_args) do
+        {
+          analytics_id: 'Doc Auth',
+          step: 'how_to_verify',
+          success: true,
+          selection:,
+        }
+      end
+
+      context 'when clear1 is enabled for the user' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:idv_clear1_enabled_percent).and_return(100)
+          reload_ab_tests
+        end
+
+        after do
+          reload_ab_tests
+        end
+
+        it 'redirects to the clear1 session step' do
+          put :update, params: params
+
+          expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be false
+          expect(subject.idv_session.opted_in_to_in_person_proofing).to be false
+          expect(subject.idv_session.flow_path).to eq('standard')
+          expect(response).to redirect_to(idv_clear1_session_url)
+        end
+
+        it 'sends analytics_submitted event with the clear1 selection' do
+          put :update, params: params
+
+          expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+        end
+
+        context 'the user has an establishing in-person enrollment' do
+          let(:user) { create(:user, :with_establishing_in_person_enrollment) }
+
+          it 'cancels the in-person enrollment' do
+            expect { put :update, params: params }.to change {
+              user.in_person_enrollments.first.status
+            }
+              .from('establishing')
+              .to('cancelled')
+          end
+        end
+      end
+
+      context 'when clear1 is not enabled for the user' do
+        it 'renders not found' do
+          put :update, params: params
+
+          expect(response).to be_not_found
+        end
+      end
+
+      context 'when clear1 was enabled for the user but the feature has been turned off' do
+        before do
+          subject.idv_session.clear1_enabled = true
+          allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(false)
+        end
+
+        it 'renders not found' do
+          put :update, params: params
+
+          expect(response).to be_not_found
+        end
+      end
+    end
+
+    context 'ipp selected while in person proofing is not offered' do
+      let(:selection) { 'ipp' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
+        subject.idv_session.clear1_enabled = true
+      end
+
+      it 'renders not found and does not opt the user into in person proofing' do
+        put :update, params: params
+
+        expect(response).to be_not_found
+        expect(subject.idv_session.opted_in_to_in_person_proofing).to be_nil
+      end
+    end
+
+    context 'invalid submission while clear1 is enabled' do
+      let(:selection) { 'carrier_pigeon' }
+      let(:idv_clear1_api_base_url) { 'https://fake-clear1.test' }
+
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          idv_clear1_enabled: true,
+          idv_clear1_enabled_percent: 100,
+          idv_clear1_api_base_url:,
+        )
+        reload_ab_tests
+      end
+
+      after do
+        reload_ab_tests
+      end
+
+      it 're-renders the page with the clear1 form action allowed' do
+        put :update, params: params
+
+        expect(response).to render_template :show
+        expect(response.request.content_security_policy.form_action)
+          .to match_array(["'self'", idv_clear1_api_base_url])
       end
     end
   end

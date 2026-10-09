@@ -135,13 +135,10 @@ RSpec.describe Idv::Clear1::SessionController do
           .to eq(Idp::Constants::Vendors::CLEAR1)
       end
 
-      context 'renders the interstital page' do
-        render_views
+      it 'redirects straight to the clear1 app without an interstitial page' do
+        get(:show)
 
-        it 'response includes the clear1 app url' do
-          get(:show)
-          expect(response).to have_http_status 200
-        end
+        expect(response).to redirect_to(clear1_app_url)
       end
     end
 

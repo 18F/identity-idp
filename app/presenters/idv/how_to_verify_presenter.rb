@@ -6,10 +6,15 @@ class Idv::HowToVerifyPresenter
 
   attr_reader :selfie_required, :mdl_enabled
 
-  def initialize(selfie_check_required:, mdl_enabled: false, clear1_allowed: false)
+  def initialize(
+    selfie_check_required:,
+    mdl_enabled: false,
+    clear1_allowed: false,
+    clear1_enabled: clear1_allowed
+  )
     @selfie_required = selfie_check_required
     @mdl_enabled = mdl_enabled
-    @clear1_allowed = clear1_allowed
+    @clear1_allowed = clear1_allowed || clear1_enabled
   end
 
   def how_to_verify_info
@@ -92,5 +97,34 @@ class Idv::HowToVerifyPresenter
 
   def clear1_allowed?
     @clear1_allowed
+  end
+  alias_method :clear1_enabled?, :clear1_allowed?
+
+  def verify_with_existing_account_text
+    t('doc_auth.headings.verify_with_existing_account')
+  end
+
+  def clear1_description
+    t('doc_auth.info.verify_with_clear1')
+  end
+
+  def clear1_link_text
+    t('doc_auth.info.verify_with_clear1_link_text')
+  end
+
+  def clear1_submit
+    t('forms.buttons.verify_with_clear1')
+  end
+
+  def clear1_submit_prefix
+    t('forms.buttons.verify_with')
+  end
+
+  def clear1_logo_url
+    'idv/clear-logo.svg'
+  end
+
+  def clear1_asset_url
+    'idv/clear-placeholder.svg'
   end
 end
