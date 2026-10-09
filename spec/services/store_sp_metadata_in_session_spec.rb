@@ -42,7 +42,6 @@ RSpec.describe StoreSpMetadataInSession do
             request_url: request_url,
             request_id: request_id,
             requested_attributes: requested_attributes,
-            requested_delegation_scopes: [],
             vtr: nil,
           },
         )
