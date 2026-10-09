@@ -1,6 +1,18 @@
 # frozen_string_literal: true
 
 # Update ServiceProvider from config/service_providers.yml (all environments in rake db:seed)
+#
+# Delegated access adds two kinds of data to a service provider entry, both passed straight
+# through to the record: the service provider fields (token_exchange_enabled_sp and the
+# delegation_* content) and, for an agency application, delegation_application,
+# delegation_scope_value, the consent content, allowed_delegation_service_providers and a nested
+# token_exchange_resource_servers list (the application's API URLs), written by
+# #write_resource_servers.
+#
+# Dependency: in production this YAML comes from the identity-idp-config repository, and in lower
+# environments the same records are synced from the partner Dashboard (identity-dashboard) by
+# ServiceProviderUpdater. The Dashboard does not have the delegated-access fields yet; until it
+# does, `rake delegated_access:seed` loads them in non-production environments.
 class ServiceProviderSeeder
   class ExtraServiceProviderError < StandardError; end
 
@@ -109,19 +121,66 @@ class ServiceProviderSeeder
       cert_path.read if cert_path.exist?
     end.compact
 
-    ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
+    service_provider = ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
       sp.update(
         approved: true,
         active: true,
         native: true,
         friendly_name: config['friendly_name'],
       )
-    end.update!(config.except(
-      'agency',
-      'certs',
-      'restrict_to_deploy_env',
-      'protocol',
-      'native',
-    ).merge(certs: cert_pems))
+    end
+    service_provider.update!(
+      config.except(
+        'agency',
+        'certs',
+        'restrict_to_deploy_env',
+        'protocol',
+        'native',
+        'token_exchange_resource_servers',
+      ).merge(certs: cert_pems),
+    )
+
+    write_resource_servers(service_provider, config['token_exchange_resource_servers'])
+  end
+
+  # The API URLs of an application, nested under its entry as token_exchange_resource_servers and
+  # upserted by identifier so re-running the seeder is idempotent. Each entry carries the columns
+  # of TokenExchangeResourceServer; `certs` are resolved like service provider certs (a name under
+  # certs/sp, or an inline PEM), and `attempts_service_provider` names the record whose Attempts
+  # API credentials receive fraud-signal events for the URL.
+  def write_resource_servers(service_provider, resource_server_configs)
+    return if resource_server_configs.nil?
+
+    Array(resource_server_configs).each do |rs_config|
+      rs_config = rs_config.stringify_keys
+      resource_server = service_provider.token_exchange_resource_servers
+        .find_or_initialize_by(identifier: rs_config.fetch('identifier'))
+      resource_server.update!(
+        rs_config
+          .except('identifier', 'certs', 'attempts_service_provider')
+          .merge(
+            certs: load_cert_pems(rs_config['certs']),
+            attempts_service_provider:
+              lookup_service_provider(rs_config['attempts_service_provider']),
+          ),
+      )
+    end
+  end
+
+  def lookup_service_provider(issuer)
+    return nil if issuer.blank?
+
+    ServiceProvider.find_by(issuer: issuer)
+  end
+
+  # A certificate given by name is read from certs/sp/<name>.crt; an inline PEM is kept as is. A
+  # missing file is skipped so a fixture may name a certificate each developer generates locally.
+  def load_cert_pems(cert_names)
+    Array(cert_names).map do |cert|
+      next cert if cert.to_s.include?('-----BEGIN CERTIFICATE-----')
+
+      cert_path = Rails.root.join('certs', 'sp', "#{cert}.crt")
+      cert_path.read if cert_path.exist?
+    end.compact
   end
 end

@@ -28,6 +28,95 @@ RSpec.describe ServiceProviderSeeder do
       expect(sp.certs).to eq(pems)
     end
 
+    context 'with a delegated-access application and its API URLs in the yaml' do
+      let(:inline_pem) { Rails.root.join('certs', 'sp', 'saml_test_sp2.crt').read }
+      let(:sp_yaml) do
+        <<~SP_YAML
+          test:
+            'urn:gov:gsa:openidconnect:sp:mybenefits':
+              agency_id: 2
+              friendly_name: 'MyBenefits Assistant'
+              ial: 2
+              certs:
+                - 'saml_test_sp'
+              token_exchange_enabled_sp: true
+              delegation_operator_legal_name: 'Office of Benefits Coordination'
+              delegation_service_description:
+                en: 'helps you find benefits you may qualify for.'
+            'urn:gov:gsa:openidconnect:sp:housing_records':
+              agency_id: 2
+              friendly_name: 'Housing Assistance Records'
+              ial: 2
+              certs:
+                - 'saml_test_sp'
+              delegation_application: true
+              delegation_scope_value: 'housing_records'
+              delegation_display_name:
+                en: 'Housing Assistance Records'
+              delegation_description:
+                en: 'check where your housing application is in review.'
+              delegation_data_provided:
+                en: ['Case number', 'Current status']
+              delegation_access_type: 'read'
+              allowed_delegation_service_providers:
+                - 'urn:gov:gsa:openidconnect:sp:mybenefits'
+              token_exchange_resource_servers:
+                - identifier: 'https://records-api.housing.example.gov'
+                  certs:
+                    - 'saml_test_sp'
+                  token_format: 'oauth'
+                  dpop_required: true
+                - identifier: 'https://documents-api.housing.example.gov'
+                  certs:
+                    - |
+          #{inline_pem.gsub(/^/, '            ')}
+                  token_format: 'saml2'
+                  attempts_service_provider: 'urn:gov:gsa:openidconnect:sp:mybenefits'
+        SP_YAML
+      end
+
+      before do
+        allow(instance).to receive(:service_provider_data).and_return(sp_yaml)
+      end
+
+      it 'writes the service provider and application fields through to the records' do
+        run
+
+        sp = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:mybenefits')
+        expect(sp.token_exchange_enabled_sp).to eq(true)
+        expect(sp.delegation_service_description_for(:en))
+          .to eq('helps you find benefits you may qualify for.')
+
+        app = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:housing_records')
+        expect(app.delegation_application).to eq(true)
+        expect(app.delegation_scope).to eq('token_exchange:housing_records')
+        expect(app.delegation_display_name_for(:en)).to eq('Housing Assistance Records')
+        expect(app.delegation_data_provided_for(:en)).to eq(['Case number', 'Current status'])
+        expect(app.accepts_delegation_from?('urn:gov:gsa:openidconnect:sp:mybenefits')).to eq(true)
+      end
+
+      it 'upserts the API URLs by identifier, with certificates by name or inline, idempotently' do
+        run
+        run
+
+        app = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:housing_records')
+        expect(app.token_exchange_resource_servers.count).to eq(2)
+
+        records_api = app.token_exchange_resource_servers
+          .find_by(identifier: 'https://records-api.housing.example.gov')
+        expect(records_api.certs).to eq([Rails.root.join('certs', 'sp', 'saml_test_sp.crt').read])
+        expect(records_api.dpop_required).to eq(true)
+        expect(records_api.token_format).to eq('oauth')
+
+        documents_api = app.token_exchange_resource_servers
+          .find_by(identifier: 'https://documents-api.housing.example.gov')
+        expect(documents_api.certs.first.strip).to eq(inline_pem.strip)
+        expect(documents_api.token_format).to eq('saml2')
+        expect(documents_api.attempts_recipient.issuer)
+          .to eq('urn:gov:gsa:openidconnect:sp:mybenefits')
+      end
+    end
+
     context 'with other existing service providers in the database' do
       let!(:existing_provider) { create(:service_provider) }
 
