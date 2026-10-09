@@ -1010,10 +1010,10 @@ forms.site_key_recovery_code.get_new: Obtenir un nouveau code de récupération 
 forms.site_key_recovery_code.get_new_description: Votre ancien code de récupération cessera de fonctionner. Le nouveau code s’affichera sur la page suivante ; conservez-le en lieu sûr.
 forms.site_key_recovery_code.header: Enregistrez votre code de récupération de clé de site
 forms.site_key_recovery_code.required_checkbox: J’ai enregistré mon code de récupération de clé de site avec la date à laquelle il a été généré.
-forms.site_key_recovery.alternative: Vous n’avez pas votre code de récupération ?
-forms.site_key_recovery.code_label: Code de récupération
+forms.site_key_recovery.alternative: Vous n’avez ni votre code de récupération ni votre clé personnelle ?
+forms.site_key_recovery.code_label: Code de récupération ou clé personnelle
 forms.site_key_recovery.header: Saisissez votre code de récupération de clé de site
-forms.site_key_recovery.instructions: Vous avez réinitialisé votre mot de passe ; les données chiffrées de ce site sont donc verrouillées. Saisissez le code de récupération de clé de site que vous avez enregistré pour les conserver.
+forms.site_key_recovery.instructions: Vous avez réinitialisé votre mot de passe ; les données chiffrées de ce site sont donc verrouillées. Saisissez le code de récupération de clé de site que vous avez enregistré (ou votre clé personnelle, si vous en avez une) pour les conserver.
 forms.site_key_recovery.start_over: Recommencer sans mes anciennes données
 forms.site_key_recovery.start_over_description: Les données que ce site a chiffrées pour vous avant la réinitialisation de votre mot de passe deviendront définitivement illisibles. Cette action est irréversible.
 forms.site_key_recovery.start_over_title: Recommencer sans vos anciennes données ?

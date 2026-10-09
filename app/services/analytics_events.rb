@@ -8622,7 +8622,7 @@ module AnalyticsEvents
   # @param [Boolean] success Whether the code opened the site key root
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # The user submitted a site key recovery code after a password reset
+  # The user submitted a site key recovery code (or personal key) after a password reset
   def site_key_recovery_submitted(success:, errors: nil, error_details: nil, **extra)
     track_event(:site_key_recovery_submitted, success:, errors:, error_details:, **extra)
   end

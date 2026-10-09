@@ -37,5 +37,7 @@ class UserProfilesEncryptor
 
     @personal_key = profile.encrypt_pii(pii, password)
     profile.save!
+    SiteKeys::Vault.new(user:, user_session: user_session || {})
+      .wrap_personal_key(personal_key, password:)
   end
 end

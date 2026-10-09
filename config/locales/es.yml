@@ -1021,10 +1021,10 @@ forms.site_key_recovery_code.get_new: Obtener un nuevo código de recuperación 
 forms.site_key_recovery_code.get_new_description: Su código de recuperación anterior dejará de funcionar. Verá el nuevo código en la siguiente página; guárdelo en un lugar seguro.
 forms.site_key_recovery_code.header: Guarde su código de recuperación de clave de sitio
 forms.site_key_recovery_code.required_checkbox: Guardé mi código de recuperación de clave de sitio con la fecha en que se generó.
-forms.site_key_recovery.alternative: ¿No tiene su código de recuperación?
-forms.site_key_recovery.code_label: Código de recuperación
+forms.site_key_recovery.alternative: ¿No tiene su código de recuperación ni su clave personal?
+forms.site_key_recovery.code_label: Código de recuperación o clave personal
 forms.site_key_recovery.header: Ingrese su código de recuperación de clave de sitio
-forms.site_key_recovery.instructions: Restableció su contraseña, por lo que los datos cifrados de este sitio están bloqueados. Ingrese el código de recuperación de clave de sitio que guardó para conservarlos.
+forms.site_key_recovery.instructions: Restableció su contraseña, por lo que los datos cifrados de este sitio están bloqueados. Ingrese el código de recuperación de clave de sitio que guardó (o su clave personal, si tiene una) para conservarlos.
 forms.site_key_recovery.start_over: Empezar de nuevo sin mis datos anteriores
 forms.site_key_recovery.start_over_description: Los datos que este sitio cifró para usted antes de restablecer su contraseña quedarán ilegibles de forma permanente. Esto no se puede deshacer.
 forms.site_key_recovery.start_over_title: ¿Empezar de nuevo sin sus datos anteriores?
