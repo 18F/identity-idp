@@ -1883,6 +1883,8 @@ sign_up.cancel.warning_header: 'Si cancela ahora:'
 sign_up.completed.smiling_image_alt: Una persona sonriente con una marca de verificación verde
 sign_up.delegation.about_agency: Acerca de %{agency}
 sign_up.delegation.about_heading: Acerca de este servicio
+sign_up.delegation.access_duration: Después de este inicio de sesión, %{sp} puede actuar en su nombre durante un máximo de %{hours} horas, a menos que usted lo termine antes desde su cuenta.
+sign_up.delegation.access_duration_heading: Cuánto dura el acceso
 sign_up.delegation.access_read: Solo lectura
 sign_up.delegation.access_read_write: Puede hacer cambios
 sign_up.delegation.account_link: Cuenta → Cuentas conectadas

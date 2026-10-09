@@ -46,13 +46,21 @@ locals:
         <% end %>
       </div>
       <% if presenter.delegation_data_handling_statement.present? %>
-        <div class="padding-bottom-1 margin-bottom-1">
+        <div class="padding-bottom-1 border-bottom border-primary-light margin-bottom-1">
           <dt class="text-bold font-body-2xs text-base-dark"><%= t('sign_up.delegation.your_information') %></dt>
           <dd class="margin-left-0">
             <%= t('sign_up.delegation.data_handling', statement: presenter.delegation_data_handling_statement) %>
           </dd>
         </div>
       <% end %>
+      <%# How long the service provider can act after this sign-in: the delegated tokens it obtains
+          are renewable for at most this long, whatever the person chooses about remembering. %>
+      <div class="padding-bottom-1 margin-bottom-1" data-delegation-access-duration>
+        <dt class="text-bold font-body-2xs text-base-dark"><%= t('sign_up.delegation.access_duration_heading') %></dt>
+        <dd class="margin-left-0">
+          <%= t('sign_up.delegation.access_duration', sp: presenter.sp_name, hours: presenter.delegation_access_hours) %>
+        </dd>
+      </div>
     </dl>
     <% if presenter.delegation_learn_more_url %>
       <p class="margin-bottom-0 margin-top-1">

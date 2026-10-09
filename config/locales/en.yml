@@ -1871,6 +1871,8 @@ sign_up.cancel.warning_header: 'If you cancel now:'
 sign_up.completed.smiling_image_alt: A smiling person with a green checkmark indicating success
 sign_up.delegation.about_agency: About the %{agency}
 sign_up.delegation.about_heading: About this service
+sign_up.delegation.access_duration: After this sign-in, %{sp} can act for you for up to %{hours} hours, unless you end it sooner from your account.
+sign_up.delegation.access_duration_heading: How long access lasts
 sign_up.delegation.access_read: Read only
 sign_up.delegation.access_read_write: Can make changes
 sign_up.delegation.account_link: Account → Connected accounts
