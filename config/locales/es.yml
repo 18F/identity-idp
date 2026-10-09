@@ -1871,6 +1871,7 @@ openid_connect.logout.errors.no_client_id_or_id_token_hint: Esta aplicación est
 openid_connect.logout.heading: ¿Desea cerrar sesión en %{app_name}?
 openid_connect.logout.heading_with_sp: ¿Desea cerrar sesión en %{app_name} y volver a %{service_provider_name}?
 
+openid_connect.revoke.errors.token_missing: token es obligatorio.
 openid_connect.token.errors.client_assertion_lifetime: exp debe ser una marca de tiempo Unix entera, como máximo 5 minutos después de iat.
 openid_connect.token.errors.client_assertion_malformed: client_assertion no pudo interpretarse como un JWT cuyas notificaciones iss y sub coincidan.
 openid_connect.token.errors.client_assertion_missing: client_assertion es obligatorio para este tipo de concesión.

@@ -62,6 +62,28 @@ RSpec.describe DelegatedTokenStore do
     end
   end
 
+  describe '.revoke_token' do
+    it 'removes one live entry and its index listings, leaving the rest of the family' do
+      sibling = TokenExchangeToken.generate_token
+      described_class.write(token, attributes, ttl: 600)
+      described_class.write(sibling, attributes, ttl: 600)
+
+      expect(described_class.revoke_token(token)).to eq(true)
+      expect(described_class.read(token)).to be_nil
+      expect(described_class.read(sibling)).to eq(attributes)
+      REDIS_POOL.with do |client|
+        grant_set = client.smembers(described_class::GRANT_INDEX_PREFIX + grant_id.to_s)
+        family_set = client.smembers(described_class::FAMILY_INDEX_PREFIX + family_id.to_s)
+        expect(grant_set).to eq([described_class.digest(sibling)])
+        expect(family_set).to eq([described_class.digest(sibling)])
+      end
+    end
+
+    it 'reports false for a token that is not live' do
+      expect(described_class.revoke_token(TokenExchangeToken.generate_token)).to eq(false)
+    end
+  end
+
   describe '.move_grant' do
     let(:new_grant_id) { grant_id + 1 }
 

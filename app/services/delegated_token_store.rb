@@ -62,6 +62,25 @@ class DelegatedTokenStore
     JSON.parse(raw, symbolize_names: true)
   end
 
+  # Removes one live token: its entry and its listing in both index sets. The sets are left in
+  # place for the other tokens they list.
+  # @param token [String] the token string as presented by a caller
+  # @return [Boolean] whether a live entry was removed
+  def self.revoke_token(token)
+    attributes = read(token)
+    return false if attributes.nil?
+
+    digest = digest(token)
+    REDIS_POOL.with do |client|
+      client.multi do |multi|
+        multi.del(TOKEN_KEY_PREFIX + digest)
+        multi.srem(GRANT_INDEX_PREFIX + attributes[:grant_id].to_s, digest)
+        multi.srem(FAMILY_INDEX_PREFIX + attributes[:refresh_family_id].to_s, digest)
+      end
+    end
+    true
+  end
+
   # Removes every live token issued under one approval.
   # @return [Integer] how many token entries were removed
   def self.revoke_grant(grant_id)

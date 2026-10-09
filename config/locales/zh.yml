@@ -1872,6 +1872,7 @@ openid_connect.logout.errors.id_token_hint_present: 本应用程序配置错误�
 openid_connect.logout.errors.no_client_id_or_id_token_hint: 本应用程序配置错误，必须发送 client_id 或者 id_token_hint。请参阅我们的文档：https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: 你想登出 %{app_name} 吗？
 openid_connect.logout.heading_with_sp: 你想登出 %{app_name} 并回到 %{service_provider_name} 吗？
+openid_connect.revoke.errors.token_missing: token 为必填项。
 openid_connect.token.errors.client_assertion_lifetime: exp 必须是整数 Unix 时间戳，且不得晚于 iat 之后 5 分钟。
 openid_connect.token.errors.client_assertion_malformed: client_assertion 无法解析为 iss 与 sub 声明一致的 JWT。
 openid_connect.token.errors.client_assertion_missing: 此授权类型需要 client_assertion。

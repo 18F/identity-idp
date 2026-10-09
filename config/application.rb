@@ -151,6 +151,14 @@ module Identity
                  credentials: true,
                  headers: :any,
                  methods: %i[post options]
+
+        # RFC 7009 revocation, called from the browser by a public-client service provider that
+        # ends its delegated access, so it carries the token endpoint's treatment.
+        resource '/api/openid_connect/revoke',
+                 credentials: true,
+                 headers: :any,
+                 methods: %i[post options]
+
         resource '/api/openid_connect/userinfo', headers: :any, methods: [:get]
       end
 
