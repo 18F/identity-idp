@@ -12,6 +12,8 @@ Rails.application.routes.draw do
   match '/api/openid_connect/revoke' => 'openid_connect/revoke#options', via: :options
   post '/api/openid_connect/token' => 'openid_connect/token#create'
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
+  post '/api/openid_connect/introspect' => 'openid_connect/introspect#create'
+  match '/api/openid_connect/introspect' => 'openid_connect/introspect#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   get '/api/openid_connect/document_images/:image_type' =>
     'openid_connect/document_images#show',

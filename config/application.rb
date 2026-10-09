@@ -159,6 +159,13 @@ module Identity
                  headers: :any,
                  methods: %i[post options]
 
+        # RFC 7662 introspection, called from the browser by a public-client service provider
+        # asking about its own delegated token (the DPoP proof travels in a request header).
+        resource '/api/openid_connect/introspect',
+                 credentials: true,
+                 headers: :any,
+                 methods: %i[post options]
+
         resource '/api/openid_connect/userinfo', headers: :any, methods: [:get]
       end
 

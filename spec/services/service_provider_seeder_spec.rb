@@ -69,6 +69,11 @@ RSpec.describe ServiceProviderSeeder do
               delegation_access_type: 'read'
               allowed_delegation_service_providers:
                 - 'urn:gov:gsa:openidconnect:sp:mybenefits'
+              attribute_bundle:
+                - email
+                - first_name
+              delegation_sp_shareable_attributes:
+                - first_name
               token_exchange_resource_servers:
                 - identifier: 'https://records-api.housing.example.gov'
                   certs:
@@ -101,6 +106,14 @@ RSpec.describe ServiceProviderSeeder do
         expect(app.delegation_display_name_for(:en)).to eq('Housing Assistance Records')
         expect(app.delegation_data_provided_for(:en)).to eq(['Case number', 'Current status'])
         expect(app.accepts_delegation_from?('urn:gov:gsa:openidconnect:sp:mybenefits')).to eq(true)
+        expect(app.attribute_bundle).to eq(%w[email first_name])
+        expect(app.delegation_sp_shareable_attributes).to eq(%w[first_name])
+      end
+
+      it 'leaves the shareable attribute list empty for an application that names none' do
+        run
+        sp = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:mybenefits')
+        expect(sp.delegation_sp_shareable_attributes).to eq([])
       end
 
       it 'upserts the API URLs by identifier, with certificates by name or inline, idempotently' do

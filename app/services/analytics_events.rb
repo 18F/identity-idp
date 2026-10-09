@@ -7620,6 +7620,37 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks a token introspection request (RFC 7662) about a delegated token
+  # @param [Boolean] success Whether the credential the caller presented, if any, verified
+  # @param ["resource_server","service_provider","none"] caller_type Kind of caller identified
+  # @param [String, nil] resource_server_identifier Resource server that authenticated or claimed to
+  # @param [String, nil] service_provider_issuer Public-client service provider named as the caller
+  # @param [Boolean, nil] active Whether the token was reported active; nil if the credential failed
+  # @param [String, nil] error_code RFC error code when the credential failed
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  def openid_connect_introspect(
+    success:,
+    caller_type:,
+    resource_server_identifier: nil,
+    service_provider_issuer: nil,
+    active: nil,
+    error_code: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :openid_connect_introspect,
+      success:,
+      caller_type:,
+      resource_server_identifier:,
+      service_provider_issuer:,
+      active:,
+      error_code:,
+      error_details:,
+      **extra,
+    )
+  end
+
   # Tracks when openid authorization request is made
   # @param [Boolean] success Whether form validations were succcessful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission

@@ -601,6 +601,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_10_100100) do
     t.text "delegation_privacy_policy_url", comment: "sensitive=false"
     t.string "delegation_scope_value", comment: "sensitive=false"
     t.jsonb "delegation_service_description", default: {}, null: false, comment: "sensitive=false"
+    t.string "delegation_sp_shareable_attributes", default: [], null: false, comment: "sensitive=false", array: true
     t.text "delegation_support_contact", comment: "sensitive=false"
     t.text "delegation_terms_of_service_url", comment: "sensitive=false"
     t.boolean "delegation_uses_ai", default: false, null: false, comment: "sensitive=false"

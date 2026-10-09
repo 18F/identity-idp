@@ -92,6 +92,10 @@ service_providers:
     delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/'
     # Empty: accepts any service provider Login.gov has approved for delegation.
     allowed_delegation_service_providers: []
+    # What the service provider learns about the person when it checks its own delegated token,
+    # beyond the identifier its own sign-in already gives it. Names from the attribute bundle
+    # above; an attribute outside the bundle is never shared. Empty: nothing further.
+    delegation_sp_shareable_attributes: []
     token_exchange_resource_servers:
       - identifier: 'https://records-api.agency.localdev'
         token_format: 'oauth'

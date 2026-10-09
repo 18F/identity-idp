@@ -44,6 +44,8 @@ RSpec.describe DelegatedAccessSeeder do
       expect(housing.delegation_scope).to eq('token_exchange:housing_records')
       expect(housing.delegation_read_write?).to eq(true)
       expect(housing.accepts_delegation_from?(sp_issuer)).to eq(true)
+      expect(housing.attribute_bundle).to eq(%w[email])
+      expect(housing.delegation_sp_shareable_attributes).to eq([])
       records_api = housing.token_exchange_resource_servers.first
       expect(records_api.identifier).to eq('https://records-api.agency.localdev')
       expect(records_api.max_access_token_seconds).to eq(300)
