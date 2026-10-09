@@ -28,6 +28,16 @@ RSpec.describe DelegatedAccessSeeder do
       expect(sp.redirect_uris).to include('http://localhost:9292/auth/result')
     end
 
+    it 'registers the service provider as a key-bound public client with no signing certificate' do
+      seeder.run
+
+      sp = ServiceProvider.find_by(issuer: sp_issuer)
+      expect(sp.pkce).to eq(true)
+      expect(sp.certs).to be_blank
+      expect(sp.dpop_required).to eq(true)
+      expect(sp.dpop_bound?).to eq(true)
+    end
+
     it 'loads the applications with their scope values, content and API URLs' do
       seeder.run
 
