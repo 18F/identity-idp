@@ -57,6 +57,7 @@ class OpenidConnectTokenForm
         token_type: 'Bearer',
         expires_in: @ttl,
         id_token: id_token_builder.id_token,
+        **granted_scope,
       }
     elsif private_key_jwt_pkce? && errors.include?(:code_verifier)
       { error: 'invalid_grant',
@@ -80,6 +81,43 @@ class OpenidConnectTokenForm
     @identity = ServiceProviderIdentity
       .where(session_uuid: code)
       .order(updated_at: :desc).first
+  end
+
+  # The `scope` member of the token response (RFC 6749 section 5.1), present only when the request
+  # named applications for delegated access. The response then lists the scope actually granted:
+  # the attribute scopes as requested, plus the `token_exchange:<value>` scopes the person
+  # approved, in request order. Approval is read now, from the live approvals that are valid for
+  # this authorization (remembered ones, or ones given in the sign-in that produced this code),
+  # so an approval revoked between the consent screen and code redemption is not reported as
+  # granted. Requests without delegation scopes keep their response unchanged.
+  # @return [Hash] `{ scope: String }` or `{}`
+  def granted_scope
+    scoper = OpenidConnectAttributeScoper.new(identity.scope)
+    return {} unless scoper.delegation_requested?
+
+    applications = DelegationApplications.requested(
+      identity.service_provider, scoper.delegation_scope_values
+    )
+    ActiveRecord::Associations::Preloader.new(records: applications, associations: :agency).call
+    grants = TokenExchangeGrant.live_by_application(
+      user: identity.user, service_provider_issuer: identity.service_provider, applications:,
+    )
+    approved = applications.select do |application|
+      grant = grants[application.id]
+      next false if grant.nil?
+
+      # A single-authorization approval counts only when it was given in the sign-in that
+      # produced this code, which the identity's browser session identifies.
+      grant.valid_now?(
+        current_authorization: grant.rails_session_id.present? &&
+                               grant.rails_session_id == identity.rails_session_id,
+      )
+    end
+
+    granted = scoper.scopes.reject do |value|
+      OpenidConnectAttributeScoper.delegation_scope?(value)
+    end + approved.map(&:delegation_scope)
+    { scope: granted.join(' ') }
   end
 
   def private_key_jwt_pkce?
