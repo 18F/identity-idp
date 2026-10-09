@@ -69,7 +69,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_scope
   validate :validate_unauthorized_scope
   validate :validate_privileges
-  validate :validate_token_exchange_scope
+  validate :validate_delegation_scopes
   validate :validate_document_images_scope
   validate :validate_prompt
   validate :validate_verified_within_format, if: :verified_within_allowed?
@@ -79,7 +79,7 @@ class OpenidConnectAuthorizeForm
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
     SIMPLE_ATTRS.each { |key| instance_variable_set(:"@#{key}", params[key]) }
     @prompt ||= 'select_account'
-    @scope = parse_to_values(params[:scope], scopes)
+    @scope = parse_scope_param(params[:scope])
     @unauthorized_scope = check_for_unauthorized_scope(params)
 
     if verified_within_allowed?
@@ -156,6 +156,17 @@ class OpenidConnectAuthorizeForm
     prompt == 'create'
   end
 
+  # Bare delegation scope values: the applications the service provider asks to act at for the
+  # user, requested as `token_exchange:<value>` in the OIDC scope parameter.
+  def requested_delegation_scopes
+    scope.select { |value| OpenidConnectAttributeScoper.delegation_scope?(value) }
+      .map { |value| value.delete_prefix(ServiceProvider::DELEGATION_SCOPE_PREFIX) }
+  end
+
+  def delegation_requested?
+    requested_delegation_scopes.any?
+  end
+
   private
 
   attr_reader :identity, :success
@@ -213,6 +224,51 @@ class OpenidConnectAuthorizeForm
     param_value.split(' ').compact & possible_values
   end
 
+  # Attribute scopes are intersected with the fixed list as before, so unknown values without the
+  # delegation prefix stay silently ignored (existing integrations, including Login.gov's own
+  # sample applications, send non-scope values and rely on that). Delegation scopes are kept so
+  # #validate_delegation_scopes can reject unknown ones explicitly.
+  def parse_scope_param(param_value)
+    return [] if param_value.blank?
+
+    values = param_value.split(' ').compact
+    (values & scopes) +
+      values.select { |value| OpenidConnectAttributeScoper.delegation_scope?(value) }.uniq
+  end
+
+  # Delegation may be requested only by a service provider approved for it, only on an
+  # identity-verified request, and only for registered, active applications that accept this
+  # service provider. Anything else is reported to the service provider as invalid_scope so the
+  # person never sees a choice that cannot be honored.
+  def validate_delegation_scopes
+    requested = requested_delegation_scopes
+    return if requested.empty?
+
+    unless service_provider&.delegation_service_provider? && identity_proofing_requested_or_default?
+      errors.add(
+        :scope, t('openid_connect.authorization.errors.delegation_not_allowed'),
+        type: :delegation_not_allowed
+      )
+      return
+    end
+
+    known = DelegationApplications.accepting(client_id).map(&:delegation_scope_value)
+    unknown = requested - known
+    return if unknown.empty?
+
+    errors.add(
+      :scope,
+      t('openid_connect.authorization.errors.unknown_delegation_scope', scopes: unknown.join(', ')),
+      type: :unknown_delegation_scope,
+    )
+  end
+
+  def delegation_scope_error?
+    errors.details[:scope].to_a.any? do |detail|
+      %i[delegation_not_allowed unknown_delegation_scope].include?(detail[:type])
+    end
+  end
+
   def validate_acr_values
     if acr_values.empty?
       errors.add(
@@ -250,16 +306,6 @@ class OpenidConnectAuthorizeForm
     errors.add(
       :scope, t('openid_connect.authorization.errors.unauthorized_scope'),
       type: :unauthorized_scope
-    )
-  end
-
-  def validate_token_exchange_scope
-    return unless scope.include?('token_exchange')
-    return if service_provider&.delegation_service_provider?
-
-    errors.add(
-      :scope, t('openid_connect.authorization.errors.no_valid_scope'),
-      type: :no_valid_scope
     )
   end
 
@@ -320,6 +366,7 @@ class OpenidConnectAuthorizeForm
       scope: scope&.sort&.join(' '),
       acr_values: acr_values&.sort&.join(' '),
       unauthorized_scope: @unauthorized_scope,
+      delegation_scopes: requested_delegation_scopes.presence,
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
       code_challenge_present: code_challenge.present?,
       service_provider_pkce: service_provider&.pkce,
@@ -336,7 +383,8 @@ class OpenidConnectAuthorizeForm
 
     UriService.add_params(
       redirect_uri,
-      error: 'invalid_request',
+      # RFC 6749 §4.1.2.1: a bad or unauthorized scope value is invalid_scope, not invalid_request.
+      error: delegation_scope_error? ? 'invalid_scope' : 'invalid_request',
       error_description: errors.full_messages.join(' '),
       state: state,
     )

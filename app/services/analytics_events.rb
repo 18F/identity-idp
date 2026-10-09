@@ -7594,6 +7594,8 @@ module AnalyticsEvents
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
+  # @param [Array<String>, nil] delegation_scopes Bare delegation scope values (the applications
+  #   requested with token_exchange:* scopes), when any were requested
   def openid_connect_request_authorization(
     success:,
     prompt:,
@@ -7609,6 +7611,7 @@ module AnalyticsEvents
     user_fully_authenticated:,
     error_details: nil,
     unknown_authn_contexts: nil,
+    delegation_scopes: nil,
     **extra
   )
     track_event(
@@ -7625,6 +7628,7 @@ module AnalyticsEvents
       scope:,
       acr_values:,
       unauthorized_scope:,
+      delegation_scopes:,
       user_fully_authenticated:,
       unknown_authn_contexts:,
       **extra,

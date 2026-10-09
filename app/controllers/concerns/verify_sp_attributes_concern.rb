@@ -73,7 +73,7 @@ module VerifySpAttributesConcern
 
   def delegation_consent_requested?
     current_sp&.delegation_service_provider? &&
-      decorated_sp_session.requested_attributes.map(&:to_s).include?('token_exchange')
+      decorated_sp_session.requested_delegation_scopes.any?
   end
 
   # The user chose "allow all connected applications".

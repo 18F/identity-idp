@@ -50,6 +50,11 @@ module FederatedProtocols
       current_service_provider
     end
 
+    # Delegation is requested through OpenID Connect scopes only; a SAML sign-in never requests it.
+    def requested_delegation_scopes
+      []
+    end
+
     private
 
     attr_reader :request

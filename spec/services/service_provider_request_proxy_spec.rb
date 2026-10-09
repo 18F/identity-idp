@@ -17,6 +17,17 @@ RSpec.describe ServiceProviderRequestProxy do
       end
     end
 
+    context 'when the record carries requested delegation scopes' do
+      it 'round-trips them through Redis as strings' do
+        ServiceProviderRequestProxy.create(
+          uuid: '456', issuer: 'foo', url: 'http://bar.com',
+          requested_delegation_scopes: %w[housing_records retirement_benefits]
+        )
+        expect(ServiceProviderRequestProxy.from_uuid('456').requested_delegation_scopes)
+          .to eq(%w[housing_records retirement_benefits])
+      end
+    end
+
     context 'when the record does not exist' do
       it 'returns an instance of NullServiceProviderRequest' do
         expect(ServiceProviderRequestProxy.from_uuid('123'))

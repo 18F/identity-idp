@@ -35,6 +35,14 @@ class ServiceProviderSession
     (sp_session[:requested_attributes] || service_provider_request.requested_attributes).sort
   end
 
+  # Bare delegation scope values the service provider asked for with `token_exchange:*` scopes.
+  def requested_delegation_scopes
+    Array(
+      sp_session[:requested_delegation_scopes] ||
+        service_provider_request.requested_delegation_scopes,
+    )
+  end
+
   def successful_handoff?
     sp_session[:successful_handoff] || false
   end

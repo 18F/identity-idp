@@ -27,7 +27,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       rails_session_id: rails_session_id,
       ial: delegating_ial,
       verified_attributes: %w[email],
-      scope: 'openid email token_exchange',
+      scope: 'openid email token_exchange:application',
     )
   end
   let(:delegating_ial) { Idp::Constants::IAL2 }
@@ -113,7 +113,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
       it 'further narrows the issued scope to an explicitly requested scope' do
         delegating_identity.update!(
-          scope: 'openid email phone token_exchange',
+          scope: 'openid email phone token_exchange:application',
           verified_attributes: %w[email phone],
         )
         application_sp.update!(attribute_bundle: %w[email phone])
@@ -322,7 +322,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
           rails_session_id: rails_session_id,
           ial: Idp::Constants::IAL2,
           verified_attributes: %w[email phone address],
-          scope: 'openid email phone address token_exchange',
+          scope: 'openid email phone address token_exchange:application',
         )
       end
 
@@ -348,7 +348,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
             rails_session_id: rails_session_id,
             ial: Idp::Constants::IAL2,
             verified_attributes: %w[email given_name birthdate phone],
-            scope: 'openid email profile phone token_exchange',
+            scope: 'openid email profile phone token_exchange:application',
           )
         end
 
@@ -378,7 +378,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
             rails_session_id: rails_session_id,
             ial: Idp::Constants::IAL2,
             verified_attributes: %w[email given_name family_name birthdate verified_at],
-            scope: 'openid email profile token_exchange',
+            scope: 'openid email profile token_exchange:application',
           )
         end
 
@@ -419,7 +419,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
             rails_session_id: rails_session_id,
             ial: Idp::Constants::IAL2,
             verified_attributes: %w[email address],
-            scope: 'openid email address token_exchange',
+            scope: 'openid email address token_exchange:application',
           )
         end
 
@@ -443,7 +443,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
             rails_session_id: rails_session_id,
             ial: Idp::Constants::IAL2,
             verified_attributes: %w[email social_security_number],
-            scope: 'openid email token_exchange',
+            scope: 'openid email token_exchange:application',
           )
         end
 
@@ -616,7 +616,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when the presented service provider token was not issued with token_exchange' do
+    context 'when the presented service provider token carries no delegation scope' do
       let(:delegating_identity) do
         create(
           :service_provider_identity,

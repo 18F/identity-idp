@@ -1794,6 +1794,7 @@ notices.verify_email.use_different_email: Usar un correo electrónico diferente
 notices.webauthn_configured: Se agregó una clave de seguridad a su cuenta.
 notices.webauthn_platform_configured: Usó el bloqueo de pantalla de su dispositivo para agregar el desbloqueo facial o táctil a su cuenta.
 openid_connect.authorization.errors.bad_client_id: client_id incorrecto. Consulte nuestra documentación en https://developers.login.gov/support/#bad-client-id
+openid_connect.authorization.errors.delegation_not_allowed: Los ámbitos de delegación (token_exchange:*) requieren una solicitud con identidad verificada de un proveedor de servicios aprobado para el acceso delegado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-delegation
 openid_connect.authorization.errors.invalid_verified_within_duration.one: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_duration.other: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_format: Formato no reconocido de verified_within
@@ -1806,6 +1807,7 @@ openid_connect.authorization.errors.prompt_invalid: No se encontraron valores de
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri no es válido. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri no coincide con el redirect_uri registrado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-redirect-match
 openid_connect.authorization.errors.unauthorized_scope: Ámbito no autorizado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-unauthotized-scope
+openid_connect.authorization.errors.unknown_delegation_scope: 'Ámbito de delegación desconocido: %{scopes}. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-delegation'
 openid_connect.logout.confirm: Sí, cerrar sesión en %{app_name}
 openid_connect.logout.deny: No, ir a la página de mi cuenta
 openid_connect.logout.errors.client_id_invalid: No se reconoció client_id. Consulte nuestra documentación en https://developers.login.gov/support/#client-id-not-recognized

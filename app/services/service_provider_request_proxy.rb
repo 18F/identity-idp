@@ -39,6 +39,7 @@ class ServiceProviderRequestProxy
       url: nil,
       requested_attributes: nil,
       acr_values: nil,
+      requested_delegation_scopes: nil,
     )
 
     yield(spr)
@@ -48,6 +49,7 @@ class ServiceProviderRequestProxy
       url: spr.url,
       requested_attributes: spr.requested_attributes,
       acr_values: spr.acr_values,
+      requested_delegation_scopes: spr.requested_delegation_scopes,
     )
   end
 
@@ -58,6 +60,7 @@ class ServiceProviderRequestProxy
       :url,
       :requested_attributes,
       :acr_values,
+      :requested_delegation_scopes,
     )
     write(obj, uuid)
     hash_to_spr(obj, uuid)

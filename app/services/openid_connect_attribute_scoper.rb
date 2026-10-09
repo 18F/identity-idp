@@ -15,7 +15,6 @@ class OpenidConnectAttributeScoper
     profile:name
     profile:birthdate
     social_security_number
-    token_exchange
     document_images
   ].freeze
 
@@ -51,7 +50,6 @@ class OpenidConnectAttributeScoper
     x509_subject: %w[x509 x509:subject],
     x509_presented: %w[x509 x509:presented],
     x509_issuer: %w[x509 x509:issuer],
-    token_exchange: %w[token_exchange],
     document_images: %w[document_images],
     document_metadata: %w[document_images],
   }.with_indifferent_access.freeze
@@ -66,13 +64,19 @@ class OpenidConnectAttributeScoper
     end
   end.with_indifferent_access.freeze
 
-  # Scopes that grant a capability rather than release a claim. They flow through
-  # requested_attributes so consent can be captured, but are not identity claims
-  # and must not be advertised as such.
-  CAPABILITY_SCOPES = %w[token_exchange].freeze
-
-  CLAIMS = (ATTRIBUTE_SCOPES_MAP.keys - CAPABILITY_SCOPES).freeze
+  CLAIMS = ATTRIBUTE_SCOPES_MAP.keys.freeze
   UNSCOPED_CLAIMS = %w[auth_time iss sub].freeze
+
+  # Delegation scopes name an agency application the service provider wants to act at for the
+  # user: `token_exchange:<delegation_scope_value>`. The values are defined by the application
+  # registry, not by this list, so they are kept through parsing and validated against the
+  # registry by OpenidConnectAuthorizeForm. They are never attribute scopes: they release no
+  # claim and never reach requested_attributes or verified_attributes.
+  DELEGATION_SCOPE_PREFIX = ServiceProvider::DELEGATION_SCOPE_PREFIX
+
+  def self.delegation_scope?(value)
+    value.to_s.start_with?(DELEGATION_SCOPE_PREFIX)
+  end
 
   attr_reader :scopes
 
@@ -96,10 +100,6 @@ class OpenidConnectAttributeScoper
     scopes.include?('all_emails')
   end
 
-  def token_exchange_requested?
-    scopes.include?('token_exchange')
-  end
-
   def document_images_requested?
     scopes.include?('document_images')
   end
@@ -118,10 +118,25 @@ class OpenidConnectAttributeScoper
     scopes.map { |scope| SCOPE_ATTRIBUTE_MAP[scope] }.flatten.compact
   end
 
+  # Bare delegation scope values ("housing_records" for "token_exchange:housing_records"), in the
+  # order requested.
+  def delegation_scope_values
+    scopes.select { |value| self.class.delegation_scope?(value) }
+      .map { |value| value.delete_prefix(DELEGATION_SCOPE_PREFIX) }
+  end
+
+  def delegation_requested?
+    delegation_scope_values.any?
+  end
+
   private
 
+  # Attribute scopes are intersected with the fixed list, so an unknown value is silently
+  # ignored as it always has been (existing integrations send values that are not scopes).
+  # Delegation scopes are kept as given; the authorize form validates them against the registry.
   def parse_scope(scope)
     return [] if scope.blank?
-    scope.split(' ').flatten.compact & VALID_SCOPES
+    values = scope.split(' ').flatten.compact
+    (values & VALID_SCOPES) + values.select { |value| self.class.delegation_scope?(value) }.uniq
   end
 end

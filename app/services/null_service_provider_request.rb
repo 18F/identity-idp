@@ -14,4 +14,6 @@ class NullServiceProviderRequest
   def ial; end
 
   def requested_attributes; end
+
+  def requested_delegation_scopes; end
 end

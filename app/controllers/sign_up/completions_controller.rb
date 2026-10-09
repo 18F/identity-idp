@@ -83,6 +83,7 @@ module SignUp
         idv_requested: idv_requested?,
         completion_context: needs_completion_screen_reason,
         selected_email_id: selected_email_id_for_linked_identity,
+        requested_delegation_scopes: decorated_sp_session.requested_delegation_scopes,
       )
     end
 

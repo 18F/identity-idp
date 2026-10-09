@@ -1783,6 +1783,7 @@ notices.verify_email.use_different_email: Use a different email
 notices.webauthn_configured: A security key was added to your account.
 notices.webauthn_platform_configured: You used your device’s screen lock to add face or touch unlock to your account.
 openid_connect.authorization.errors.bad_client_id: Bad client_id. Please see our documentation at https://developers.login.gov/support/#bad-client-id
+openid_connect.authorization.errors.delegation_not_allowed: Delegation scopes (token_exchange:*) require an identity-verified request from a service provider approved for delegated access. Please see our documentation at https://developers.login.gov/support/#oidc-delegation
 openid_connect.authorization.errors.invalid_verified_within_duration.one: value must be at least %{count} day or older
 openid_connect.authorization.errors.invalid_verified_within_duration.other: value must be at least %{count} days or older
 openid_connect.authorization.errors.invalid_verified_within_format: Unrecognized format for verified_within
@@ -1795,6 +1796,7 @@ openid_connect.authorization.errors.prompt_invalid: No valid prompt values found
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri is invalid. Please see our documentation at https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri does not match registered redirect_uri. Please see our documentation at https://developers.login.gov/support/#oidc-redirect-match
 openid_connect.authorization.errors.unauthorized_scope: Unauthorized scope. Please see our documentation at https://developers.login.gov/support/#oidc-unauthotized-scope
+openid_connect.authorization.errors.unknown_delegation_scope: 'Unknown delegation scope: %{scopes}. Please see our documentation at https://developers.login.gov/support/#oidc-delegation'
 openid_connect.logout.confirm: Yes, sign out of %{app_name}
 openid_connect.logout.deny: No, go to my account page
 openid_connect.logout.errors.client_id_invalid: client_id was not recognized. Please see our documentation at https://developers.login.gov/support/#client-id-not-recognized
