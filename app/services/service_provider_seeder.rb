@@ -53,6 +53,38 @@ class ServiceProviderSeeder
     write_service_provider(issuer: issuer, config: config)
   end
 
+  # Upserts one service provider entry (one key of service_providers.yml and its nested API URLs).
+  # Public so DelegatedAccessSeeder can load its fixtures through the same code path.
+  def write_service_provider(issuer:, config:)
+    return unless write_service_provider?(config)
+
+    cert_pems = Array(config['certs']).map do |cert|
+      cert_path = Rails.root.join('certs', 'sp', "#{cert}.crt")
+      cert_path.read if cert_path.exist?
+    end.compact
+
+    service_provider = ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
+      sp.update(
+        approved: true,
+        active: true,
+        native: true,
+        friendly_name: config['friendly_name'],
+      )
+    end
+    service_provider.update!(
+      config.except(
+        'agency',
+        'certs',
+        'restrict_to_deploy_env',
+        'protocol',
+        'native',
+        'token_exchange_resource_servers',
+      ).merge(certs: cert_pems),
+    )
+
+    write_resource_servers(service_provider, config['token_exchange_resource_servers'])
+  end
+
   private
 
   attr_reader :rails_env, :deploy_env
@@ -111,36 +143,6 @@ class ServiceProviderSeeder
         error: extra_sp_error,
       ).deliver_now
     end
-  end
-
-  def write_service_provider(issuer:, config:)
-    return unless write_service_provider?(config)
-
-    cert_pems = Array(config['certs']).map do |cert|
-      cert_path = Rails.root.join('certs', 'sp', "#{cert}.crt")
-      cert_path.read if cert_path.exist?
-    end.compact
-
-    service_provider = ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
-      sp.update(
-        approved: true,
-        active: true,
-        native: true,
-        friendly_name: config['friendly_name'],
-      )
-    end
-    service_provider.update!(
-      config.except(
-        'agency',
-        'certs',
-        'restrict_to_deploy_env',
-        'protocol',
-        'native',
-        'token_exchange_resource_servers',
-      ).merge(certs: cert_pems),
-    )
-
-    write_resource_servers(service_provider, config['token_exchange_resource_servers'])
   end
 
   # The API URLs of an application, nested under its entry as token_exchange_resource_servers and
