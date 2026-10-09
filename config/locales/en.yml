@@ -1880,12 +1880,17 @@ openid_connect.token.errors.invalid_authentication: Client must authenticate via
 openid_connect.token.errors.invalid_code: is invalid because doesn’t match any user. Please see our documentation at https://developers.login.gov/support/#invalid-code
 openid_connect.token.errors.invalid_code_verifier: code_verifier did not match code_challenge. Please see our documentation at https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat must be an integer or floating point Unix timestamp representing a time in the past. Please see our documentation at https://developers.login.gov/support/#invalid-iat
+openid_connect.token.errors.invalid_refresh_token: refresh_token is not a live refresh token issued to this client.
 openid_connect.token.errors.invalid_requested_token_type: 'requested_token_type must be urn:ietf:params:oauth:token-type:access_token or urn:ietf:params:oauth:token-type:saml2.'
 openid_connect.token.errors.invalid_signature: Could not validate assertion against any registered public keys. Please see our documentation at https://developers.login.gov/support/#invalid-token-signature
 openid_connect.token.errors.invalid_subject_token: subject_token is not an access token issued to this client for a current connection.
 openid_connect.token.errors.invalid_subject_token_type: 'subject_token_type must be urn:ietf:params:oauth:token-type:access_token.'
 openid_connect.token.errors.multiple_resources: resource must name exactly one registered API; a token has one audience.
+openid_connect.token.errors.refresh_scope_mismatch: scope, when given, must be exactly the scope the refresh token was issued with.
+openid_connect.token.errors.refresh_token_missing: refresh_token is required.
+openid_connect.token.errors.refresh_token_reused: This refresh token was already used, so every token in its family has been revoked. Start a new exchange to continue.
 openid_connect.token.errors.resource_missing: resource is required and must name one registered API.
+openid_connect.token.errors.resource_not_allowed_on_refresh: resource is not accepted on a refresh; the API is fixed by the refresh token. Exchange again to obtain a token for another API.
 openid_connect.token.errors.saml_not_available: 'This API is registered for SAML assertions, which are not available.'
 openid_connect.token.errors.subject_token_missing: subject_token is required.
 openid_connect.token.errors.subject_token_session_ended: The sign-in that issued subject_token has ended; the user must sign in again before a new delegation can start.
