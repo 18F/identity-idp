@@ -68,7 +68,7 @@ class AccessTokenVerifier
 
   # A token is accepted only if it is a service provider's own access token: the lookup is
   # against `identities` and nothing else. Delegated tokens issued by token exchange are not
-  # identities rows, so they are never found here and
+  # identities rows (they live in DelegatedTokenStore), so they are never found here and
   # userinfo never releases a person's attributes to the holder of one; an agency learns about
   # the person only through introspection. Do not add a second lookup path.
   def load_identity(access_token)
