@@ -30,7 +30,7 @@ module Accounts
           applications = revoked.map(&:application)
           notify_delegation_revoked(service_provider: @service_provider, applications:)
           analytics.delegation_account_revoked(
-            issuer: @service_provider&.issuer,
+            service_provider_issuer: @service_provider&.issuer,
             applications: applications.map(&:issuer),
             scope: @revocation.scope_name,
           )

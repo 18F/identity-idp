@@ -98,7 +98,8 @@ RSpec.describe Accounts::DelegatedAccess::ApprovalsController do
 
       expect(@analytics).to have_logged_event(
         :delegation_account_approved,
-        issuer: mybenefits.issuer, applications: [housing.issuer, retirement.issuer],
+        service_provider_issuer: mybenefits.issuer,
+        applications: [housing.issuer, retirement.issuer],
       )
       expect(flash[:success]).to eq(
         t('account.delegated_access.approved_flash', count: 2, sp: 'MyBenefits Assistant'),

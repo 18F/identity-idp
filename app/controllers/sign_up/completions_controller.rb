@@ -33,7 +33,7 @@ module SignUp
       update_verified_attributes
       if delegation_consent_requested? && delegation_consent_result
         analytics.delegation_consent_submitted(
-          issuer: current_sp.issuer,
+          service_provider_issuer: current_sp.issuer,
           applications: requested_delegation_applications.map(&:issuer),
           remembered: delegation_remember?,
           newly_approved_count: delegation_consent_result.approved.size,
