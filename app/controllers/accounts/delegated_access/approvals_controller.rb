@@ -26,7 +26,8 @@ module Accounts
         ).call
         notify_delegation_approved(service_provider: @service_provider, applications: @applications)
         analytics.delegation_account_approved(
-          issuer: @service_provider.issuer, applications: grants.map { |g| g.application.issuer },
+          service_provider_issuer: @service_provider.issuer,
+          applications: grants.map { |g| g.application.issuer },
         )
         flash[:success] = t(
           'account.delegated_access.approved_flash',

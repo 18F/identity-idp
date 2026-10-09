@@ -776,7 +776,7 @@ RSpec.describe SignUp::CompletionsController do
         expect(live_grants.pluck(:source).uniq).to eq(['consent_screen'])
         expect(@analytics).to have_logged_event(
           :delegation_consent_submitted,
-          issuer: current_sp.issuer,
+          service_provider_issuer: current_sp.issuer,
           applications: [housing.issuer, retirement.issuer],
           remembered: false,
           newly_approved_count: 2,

@@ -579,25 +579,26 @@ module AnalyticsEvents
 
   # Tracks the person approving, from the account page, applications a service provider may act
   # at on their behalf. Approvals made here are always remembered for the maximum period.
-  # @param [String] issuer Issuer of the service provider
+  # @param [String] service_provider_issuer Issuer of the service provider
   # @param [Array<String>] applications Issuers of the applications approved
-  def delegation_account_approved(issuer:, applications:, **extra)
+  def delegation_account_approved(service_provider_issuer:, applications:, **extra)
     track_event(
       :delegation_account_approved,
-      issuer:,
+      service_provider_issuer:,
       applications:,
       **extra,
     )
   end
 
   # Tracks the person revoking delegated-access approvals from the account page.
-  # @param [String, nil] issuer Issuer of the service provider; nil when every approval was revoked
+  # @param [String, nil] service_provider_issuer Issuer of the service provider; nil when every
+  #   approval was revoked
   # @param [Array<String>] applications Issuers of the applications whose approvals were revoked
   # @param [String] scope "application", "service_provider" or "all"
-  def delegation_account_revoked(issuer:, applications:, scope:, **extra)
+  def delegation_account_revoked(service_provider_issuer:, applications:, scope:, **extra)
     track_event(
       :delegation_account_revoked,
-      issuer:,
+      service_provider_issuer:,
       applications:,
       scope:,
       **extra,
@@ -607,15 +608,15 @@ module AnalyticsEvents
   # Tracks the person approving, on the agency handoff screen, the applications a service provider
   # requested. The requested applications are not optional, so this fires on every completed
   # screen; what varies is the remember choice and how many approvals were new.
-  # @param [String] issuer Issuer of the service provider
+  # @param [String] service_provider_issuer Issuer of the service provider
   # @param [Array<String>] applications Issuers of the applications requested and approved
   # @param [Boolean] remembered Whether the person asked to remember the new approvals
   # @param [Integer] newly_approved_count Approvals written now, as opposed to kept from before
-  def delegation_consent_submitted(issuer:, applications:, remembered:, newly_approved_count:,
-                                   **extra)
+  def delegation_consent_submitted(service_provider_issuer:, applications:, remembered:,
+                                   newly_approved_count:, **extra)
     track_event(
       :delegation_consent_submitted,
-      issuer:,
+      service_provider_issuer:,
       applications:,
       remembered:,
       newly_approved_count:,

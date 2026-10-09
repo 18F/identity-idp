@@ -74,7 +74,8 @@ RSpec.describe Accounts::DelegatedAccess::RevocationsController do
       )
       expect(@analytics).to have_logged_event(
         :delegation_account_revoked,
-        issuer: mybenefits.issuer, applications: [housing.issuer], scope: 'application',
+        service_provider_issuer: mybenefits.issuer, applications: [housing.issuer],
+        scope: 'application'
       )
     end
 
