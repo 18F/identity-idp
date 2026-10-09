@@ -172,6 +172,33 @@ RSpec.describe TokenExchangeGrant do
     end
   end
 
+  describe '.live_by_application' do
+    it 'returns the live approvals keyed by application id, bound to the given records' do
+      kept = approve
+      described_class.approve!(
+        user:, service_provider:, application: other_application,
+        source: 'account_page', remember: true
+      ).revoke!(reason: 'user_revoked')
+
+      grants = described_class.live_by_application(
+        user:, service_provider_issuer: service_provider.issuer,
+        applications: [application, other_application]
+      )
+
+      expect(grants.keys).to eq([application.id])
+      expect(grants[application.id]).to eq(kept)
+      expect(grants[application.id].application).to equal(application)
+    end
+
+    it 'is empty with no applications and runs no query' do
+      expect(
+        described_class.live_by_application(
+          user:, service_provider_issuer: service_provider.issuer, applications: [],
+        ),
+      ).to eq({})
+    end
+  end
+
   describe '.revoke_for! and .revoke_all_for!' do
     it 'revokes one application, or every approval given to a service provider' do
       approve

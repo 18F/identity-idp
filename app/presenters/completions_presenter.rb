@@ -57,6 +57,10 @@ class CompletionsPresenter
   end
 
   def heading
+    # With delegation requested the screen leads with who is asking, so the heading names the
+    # service provider and what it is being allowed.
+    return t('sign_up.delegation.heading', sp: sp_name) if delegation_requested?
+
     if idv_requested?
       if consent_has_expired?
         I18n.t('titles.sign_up.completion_consent_expired_idv')
@@ -107,14 +111,82 @@ class CompletionsPresenter
     end
   end
 
+  # --- Delegated access consent ---------------------------------------------------------------
+
   # Whether this screen collects delegated-access consent: the service provider is approved for
-  # delegation and asked for it in this sign-in.
+  # delegation and named applications in this sign-in request.
   def delegation_requested?
-    current_sp.delegation_service_provider? && @requested_delegation_scopes.any?
+    current_sp.delegation_service_provider? && requested_delegation_applications.any?
   end
 
-  def delegation_disclosure
-    t('help_text.requested_attributes.token_exchange_html', sp_html: content_tag(:strong, sp_name))
+  # One row per requested application. `status` is :new (no live approval), :approved (a live
+  # approval that is remembered and current) or :updated (a live approval made stale by a material
+  # content change). `approved_from_account_at` is set when the approval was given in advance on
+  # the account page.
+  DelegationRow = Struct.new(:application, :status, :approved_from_account_at, keyword_init: true)
+
+  # Requested applications grouped under their agency, in request order. Every string shown comes
+  # from the registry, never from the authorization request; the view renders it escaped.
+  # @return [Array<[Agency, Array<DelegationRow>]>]
+  def delegation_groups
+    rows = requested_delegation_applications.map do |application|
+      grant = live_grants_by_application_id[application.id]
+      status =
+        if grant.nil? || !grant.valid_now?
+          grant&.current_content? == false ? :updated : :new
+        else
+          :approved
+        end
+      DelegationRow.new(
+        application:,
+        status:,
+        approved_from_account_at: (grant.consented_at if grant&.source == 'account_page'),
+      )
+    end
+    rows.group_by { |row| row.application.agency }.to_a
+  end
+
+  def delegation_logo_url
+    current_sp.logo.present? ? current_sp.logo_url : nil
+  end
+
+  def delegation_operator_name
+    current_sp.delegation_operator_legal_name.presence || sp_name
+  end
+
+  def delegation_service_description
+    current_sp.delegation_service_description_for
+  end
+
+  def delegation_data_handling_statement
+    current_sp.delegation_data_handling_statement_for
+  end
+
+  def delegation_uses_ai?
+    current_sp.delegation_uses_ai?
+  end
+
+  def delegation_ai_description
+    current_sp.delegation_ai_description_for
+  end
+
+  def delegation_learn_more_url
+    current_sp.delegation_privacy_policy_url.presence
+  end
+
+  # The applications named in the request, as registry records, in request order. The screen
+  # shows each application's agency and resource servers, so both are loaded up front rather than
+  # once per row.
+  def requested_delegation_applications
+    @requested_delegation_applications ||= begin
+      applications = DelegationApplications.requested(
+        current_sp.issuer, @requested_delegation_scopes
+      )
+      ActiveRecord::Associations::Preloader.new(
+        records: applications, associations: [:agency, :token_exchange_resource_servers],
+      ).call
+      applications
+    end
   end
 
   def document_images_sharing?
@@ -126,43 +198,16 @@ class CompletionsPresenter
     t('help_text.requested_attributes.document_images_html', sp_html: content_tag(:strong, sp_name))
   end
 
-  # The applications the user has connected to that accept this service provider, grouped by
-  # agency for the chooser.
-  # @return [Array<[Agency, Array<ServiceProvider>]>]
-  def delegation_applications_by_agency
-    @delegation_applications_by_agency ||=
-      DelegationApplications.grouped_by_agency(delegation_applications)
-  end
+  private
 
-  # @return [Array<ServiceProvider>]
-  def delegation_applications
-    @delegation_applications ||= DelegationApplications.connected_for(
+  # Live approvals for the requested applications, keyed by application id, each bound to the
+  # application record already loaded (with its agency) for the screen.
+  def live_grants_by_application_id
+    @live_grants_by_application_id ||= TokenExchangeGrant.live_by_application(
       user: current_user, service_provider_issuer: current_sp.issuer,
+      applications: requested_delegation_applications
     )
   end
-
-  def delegation_has_applications?
-    delegation_applications.any?
-  end
-
-  # The user's CURRENT approvals for this service provider, used to pre-populate the control on a
-  # return visit so that simply continuing preserves (rather than silently revokes) approvals the
-  # user already made here or on the account page. Nothing is pre-checked on a first visit.
-  # @return [Array<String>] issuers of the approved applications
-  def delegation_current_application_issuers
-    @delegation_current_application_issuers ||= TokenExchangeGrant.live
-      .where(user: current_user, service_provider_issuer: current_sp.issuer)
-      .joins(:application).pluck('service_providers.issuer')
-  end
-
-  # True when every connected application is already approved, which the control renders as
-  # "allow all".
-  def delegation_currently_all?
-    delegation_has_applications? &&
-      (delegation_applications.map(&:issuer) - delegation_current_application_issuers).empty?
-  end
-
-  private
 
   def first_time_signing_in?
     current_user.identities.where.not(last_consented_at: nil).empty?

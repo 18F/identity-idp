@@ -1,4 +1,5 @@
 ---
+account.connected_apps.token_exchange.other_agency: 其他
 account_reset.cancel_request.are_you_sure: 你确定要取消删除账户的请求吗？
 account_reset.cancel_request.cancel: 退出
 account_reset.cancel_request.cancel_button: 取消删除账户
@@ -1118,7 +1119,6 @@ help_text.requested_attributes.intro_html: 我们会与 %{sp_html} 分享这些�
 help_text.requested_attributes.phone: 电话号码
 help_text.requested_attributes.select_email_link: 选择电邮
 help_text.requested_attributes.social_security_number: 社会保障号码
-help_text.requested_attributes.token_exchange_html: '%{sp_html} 可以使用你已验证的身份，让你登录你选择的其他政府服务，这样你就无需再次验证。每项服务仅会收到其获准接收的信息，并且能够看到你是通过 %{sp_html} 连接的。'
 help_text.requested_attributes.verified_at: 更新是在
 help_text.requested_attributes.x509_issuer: PIV/CAC 发放方
 help_text.requested_attributes.x509_subject: PIV/CAC 身份
@@ -1882,19 +1882,46 @@ sign_up.agree_and_continue: 同意并继续
 sign_up.cancel.success: 你的账户已被删除。我们没有存储你的信息。
 sign_up.cancel.warning_header: 如果你现在取消：
 sign_up.completed.smiling_image_alt: 面带笑容的一个人加上绿勾说明成功了
+sign_up.delegation.about_agency: 关于%{agency}
+sign_up.delegation.about_heading: 关于此服务
+sign_up.delegation.access_read: 只读
+sign_up.delegation.access_read_write: 可以进行更改
+sign_up.delegation.account_link: 账户 → 已连接的账户
+sign_up.delegation.ai_badge: 人工智能
+sign_up.delegation.allow_button: 允许并继续
+sign_up.delegation.applications_count.one: 请求了 %{count} 个应用
+sign_up.delegation.applications_count.other: 请求了 %{count} 个应用
+sign_up.delegation.approved_from_account_html: 于 %{timestamp_html} 从您的账户批准
+sign_up.delegation.cancel_button: 取消并返回 %{sp}
+sign_up.delegation.data_handling: 来自您批准的机构的信息%{statement}
+sign_up.delegation.description: 这允许该服务%{description}
+sign_up.delegation.does_not_use_ai: 不使用人工智能
+sign_up.delegation.heading: 您正在允许 %{sp} 访问您的信息
+sign_up.delegation.learn_more: 了解有关 %{sp} 的更多信息
+sign_up.delegation.learn_more_agency: 了解 %{agency} 的更多信息
+sign_up.delegation.no_password_shared: 只会共享上面列出的应用，且每个应用仅接收其获准接收的信息。%{app_name} 绝不会共享您的密码。
+sign_up.delegation.other_agency: 其他
+sign_up.delegation.remember_description_html: 如果不勾选此项，这些批准仅在本次登录期间有效。您可以随时在%{link_html}下查看、提前批准或撤销批准。
+sign_up.delegation.remember_label: 记住我的批准 1 年
+sign_up.delegation.requesting_access: '%{sp} 需要访问以下应用'
+sign_up.delegation.required_badge: 必需
+sign_up.delegation.required_explanation: 继续前往 %{sp} 需要这些应用。如果您不想允许其中某一个，请取消并返回 %{sp}。每个机构都用自己的语言说明了其应用的功能。
+sign_up.delegation.required_hint: （继续所必需）
+sign_up.delegation.run_by: '%{sp} 的运营方是'
+sign_up.delegation.service_description: 是一项政府服务，%{description}
+sign_up.delegation.services_used: '该应用将使用的服务：'
+sign_up.delegation.status.approved: 已批准
+sign_up.delegation.status.new: 新
+sign_up.delegation.status.updated: 已更新
+sign_up.delegation.uses_ai: 使用人工智能
+sign_up.delegation.uses_ai_description: 它使用人工智能来%{description}
+sign_up.delegation.will_receive: 将收到：%{data}
+sign_up.delegation.your_information: 您的信息
 sign_up.document_images_sharing_consent_label: 我同意将我的身份证件照片和身份验证自拍照与 %{sp} 共享，用于身份裁定。
 sign_up.document_images_sharing_consent_required: 你必须同意共享身份证件照片和自拍照才能继续，或者取消。
 sign_up.information_sharing_html: 如需了解 %{app_name} 如何共享您的信息，请查阅我们的《%{link_html}》。
 sign_up.nds_terms_intro: 继续即表示您接受
 sign_up.terms: 我已阅读并接受 %{app_name}
-sign_up.token_exchange_grant.all: 允许 %{sp} 在与我的 %{app_name} 账户关联的所有联邦机构中代表我行事
-sign_up.token_exchange_grant.legend: 选择 %{sp} 可以如何代表你行事
-sign_up.token_exchange_grant.next: 下一页
-sign_up.token_exchange_grant.or: 或
-sign_up.token_exchange_grant.other_agency: 其他
-sign_up.token_exchange_grant.pagination: 机构
-sign_up.token_exchange_grant.previous: 上一页
-sign_up.token_exchange_grant.specific: 仅允许访问以下机构：
 simple_form.error_notification.default_message: 请仔细阅读以下问题：
 simple_form.no: 不
 simple_form.required.html: ''

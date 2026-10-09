@@ -49,6 +49,23 @@ class TokenExchangeGrant < ApplicationRecord
     live.find_by(user:, service_provider_issuer:, application:)
   end
 
+  # The live approvals for several applications in one query, keyed by application id. Each
+  # grant's application association is set to the record passed in, so freshness checks read the
+  # application (and whatever the caller loaded on it) without another query per grant.
+  # @param applications [Array<ServiceProvider>]
+  # @return [Hash{Integer => TokenExchangeGrant}]
+  def self.live_by_application(user:, service_provider_issuer:, applications:)
+    by_id = applications.index_by(&:id)
+    return {} if by_id.empty?
+
+    grants = live.where(
+      user:, service_provider_issuer:,
+      application_service_provider_id: by_id.keys
+    )
+    grants.each { |grant| grant.application = by_id[grant.application_service_provider_id] }
+    grants.index_by(&:application_service_provider_id)
+  end
+
   # Whether a live, currently valid approval lets +service_provider_issuer+ act for +user+ at
   # +application+. Used at exchange time.
   def self.authorizes?(user:, service_provider_issuer:, application:, current_authorization: nil)
@@ -116,6 +133,13 @@ class TokenExchangeGrant < ApplicationRecord
 
   def remembered?
     remember_until.present?
+  end
+
+  # A live approval that is remembered, still within its period, and given under content that has
+  # not materially changed since. The consent screen is skipped for such an application and a later
+  # screen leaves the approval untouched.
+  def remembered_and_current?
+    !revoked? && remembered? && remember_until.future? && current_content?
   end
 
   # Time left on a remembered approval, never negative; nil for a single-authorization approval.

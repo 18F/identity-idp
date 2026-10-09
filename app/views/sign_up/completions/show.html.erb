@@ -79,13 +79,23 @@
               <% end %>
 
               <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
-                <%= render ButtonComponent.new(type: :submit, full_width: true)
-                      .with_content(t('forms.buttons.continue')) %>
-                <%= render ButtonComponent.new(
-                      url: sign_up_completed_cancel_path,
-                      variant: :secondary,
-                      full_width: true,
-                    ).with_content(t('links.cancel')) %>
+                <% if @presenter.delegation_requested? %>
+                  <%= render ButtonComponent.new(type: :submit, full_width: true)
+                        .with_content(t('sign_up.delegation.allow_button')) %>
+                  <%= render ButtonComponent.new(
+                        url: return_to_sp_cancel_path(step: :sign_up),
+                        variant: :secondary,
+                        full_width: true,
+                      ).with_content(t('sign_up.delegation.cancel_button', sp: @presenter.sp_name)) %>
+                <% else %>
+                  <%= render ButtonComponent.new(type: :submit, full_width: true)
+                        .with_content(t('forms.buttons.continue')) %>
+                  <%= render ButtonComponent.new(
+                        url: sign_up_completed_cancel_path,
+                        variant: :secondary,
+                        full_width: true,
+                      ).with_content(t('links.cancel')) %>
+                <% end %>
               <% end %>
             <% end %>
           <% end %>
@@ -193,10 +203,20 @@
   <% if @presenter.document_images_sharing? %>
     <%= render 'sign_up/completions/biometric_sharing_consent', form: f, presenter: @presenter %>
   <% end %>
-  <%= f.submit t('sign_up.agree_and_continue') %>
+  <% if @presenter.delegation_requested? %>
+    <%= f.submit t('sign_up.delegation.allow_button') %>
+  <% else %>
+    <%= f.submit t('sign_up.agree_and_continue') %>
+  <% end %>
 <% end %>
 
 <%= render PageFooterComponent.new do %>
-  <%= link_to t('links.cancel'), sign_up_completed_cancel_path %>
+  <% if @presenter.delegation_requested? %>
+    <%# Cancelling declines the requested applications: back to the service provider with
+        access_denied, no sign-in completes. %>
+    <%= link_to t('sign_up.delegation.cancel_button', sp: @presenter.sp_name), return_to_sp_cancel_path(step: :sign_up) %>
+  <% else %>
+    <%= link_to t('links.cancel'), sign_up_completed_cancel_path %>
+  <% end %>
 <% end %>
 <% end %>

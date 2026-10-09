@@ -29,6 +29,20 @@ module DelegationApplications
     )
   end
 
+  # The applications a service provider named in its request, by bare scope value, in request
+  # order. Values naming no application that accepts the service provider are dropped: the
+  # authorize request already refused them, so this only guards against a stale session.
+  # @param service_provider_issuer [String]
+  # @param scope_values [Array<String>]
+  # @return [Array<ServiceProvider>]
+  def requested(service_provider_issuer, scope_values)
+    values = Array(scope_values).map(&:to_s)
+    return [] if values.empty?
+
+    by_value = accepting(service_provider_issuer).index_by(&:delegation_scope_value)
+    values.filter_map { |value| by_value[value] }
+  end
+
   # The subset of #accepting that the user has already connected to (a live identity).
   # @return [Array<ServiceProvider>] sorted by display name
   def connected_for(user:, service_provider_issuer:)

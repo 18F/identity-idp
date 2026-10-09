@@ -31,12 +31,12 @@ module SignUp
 
       track_completion_event('agency-page')
       update_verified_attributes
-      if delegation_consent_requested?
-        analytics.delegation_consent_decided(
+      if delegation_consent_requested? && delegation_consent_result
+        analytics.delegation_consent_submitted(
           issuer: current_sp.issuer,
-          granted: delegation_consent_granted?,
-          all_connected: delegation_all?,
-          application_count: approved_delegation_applications.size,
+          applications: requested_delegation_applications.map(&:issuer),
+          remembered: delegation_remember?,
+          newly_approved_count: delegation_consent_result.approved.size,
         )
       end
       if biometric_sharing_consent_granted?

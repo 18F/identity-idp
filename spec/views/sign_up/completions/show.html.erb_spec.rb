@@ -200,116 +200,134 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
   describe 'delegated-access consent' do
     let(:idv_requested) { true }
     let(:requested_attributes) { %i[email] }
-    let(:requested_delegation_scopes) { %w[housing_records] }
+    let(:requested_delegation_scopes) { %w[housing_records retirement_benefits] }
+    let(:service_provider) do
+      create(:service_provider, :delegation_service_provider, friendly_name: 'MyBenefits Assistant')
+    end
+    let(:housing_agency) do
+      create(
+        :agency, name: 'Department of Housing Support',
+                 delegation_description: { en: 'helps people find and keep housing.' },
+                 delegation_learn_more_url: 'https://housing.example.gov/about'
+      )
+    end
+    let!(:housing) do
+      create(
+        :service_provider, :delegation_application, agency: housing_agency,
+                                                    delegation_scope_value: 'housing_records',
+                                                    friendly_name: 'Housing Assistance Records',
+                                                    delegation_display_name: {
+                                                      en: 'Housing Assistance Records',
+                                                    }
+      )
+    end
+    let!(:housing_api) do
+      create(
+        :token_exchange_resource_server, service_provider: housing,
+                                         identifier: 'https://records-api.housing.example.gov'
+      )
+    end
+    let!(:retirement) do
+      create(
+        :service_provider, :delegation_application,
+        agency: create(:agency, name: 'National Retirement Administration'),
+        delegation_scope_value: 'retirement_benefits',
+        delegation_display_name: { en: 'Retirement Benefits Portal' },
+        delegation_access_type: 'read_write'
+      )
+    end
 
-    context 'when a service provider approved for delegation requests it' do
-      let(:agency) { create(:agency, name: 'Department of Housing Support') }
-      let!(:application) do
-        create(
-          :service_provider, :delegation_application, issuer: 'urn:application', agency: agency,
-                                                      friendly_name: 'Housing Assistance Records',
-                                                      allowed_delegation_service_providers: [
-                                                        service_provider.issuer,
-                                                      ]
+    before { allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true) }
+
+    shared_examples 'renders the locked consent rows' do
+      it 'shows who is asking, one locked row per requested application, and the remember box' do
+        render
+
+        expect(rendered).to have_content('Office of Benefits Coordination')
+        expect(rendered).to have_content(t('sign_up.delegation.uses_ai'))
+        expect(rendered).to have_content(
+          t('sign_up.delegation.requesting_access', sp: 'MyBenefits Assistant'),
+        )
+        expect(rendered).to have_css('[data-delegation-agency]', count: 2)
+        expect(rendered).to have_content('Department of Housing Support')
+        expect(rendered).to have_content('helps people find and keep housing.')
+        expect(rendered).to have_css(
+          "input[type=checkbox][name='idv_form[delegation_applications][]'][checked][disabled]",
+          count: 2,
+        )
+        expect(rendered).to have_css('[data-delegation-application][data-status="new"]', count: 2)
+        expect(rendered).to have_content('Housing Assistance Records')
+        expect(rendered).to have_content('https://records-api.housing.example.gov')
+        expect(rendered).to have_content(t('sign_up.delegation.access_read_write'))
+        expect(rendered).to have_css(
+          "input[type=checkbox][name='idv_form[delegation_remember]']:not([checked])",
+        )
+        expect(rendered).to have_content(t('sign_up.delegation.required_badge'))
+      end
+    end
+
+    context 'in the legacy layout' do
+      let(:nds_layout) { false }
+      it_behaves_like 'renders the locked consent rows'
+
+      it 'offers allow-and-continue and a cancel link back to the service provider' do
+        render
+        expect(rendered).to have_button(t('sign_up.delegation.allow_button'))
+        expect(rendered).to have_link(
+          t('sign_up.delegation.cancel_button', sp: 'MyBenefits Assistant'),
+          href: return_to_sp_cancel_path(step: :sign_up),
+        )
+      end
+    end
+
+    context 'in the NDS layout' do
+      let(:nds_layout) { true }
+      it_behaves_like 'renders the locked consent rows'
+    end
+
+    context 'with an approval made in advance from the account page' do
+      let(:nds_layout) { false }
+      before do
+        TokenExchangeGrant.approve!(
+          user:, service_provider:, application: housing, source: 'account_page', remember: true,
         )
       end
 
+      it 'marks that row already approved and the other new' do
+        render
+        expect(rendered).to have_css(
+          '[data-delegation-application][data-status="approved"]',
+          count: 1,
+        )
+        expect(rendered).to have_css('[data-delegation-application][data-status="new"]', count: 1)
+        expect(rendered).to have_content(t('sign_up.delegation.status.approved'))
+      end
+    end
+
+    context 'with an approval made stale by a material content change' do
+      let(:nds_layout) { false }
       before do
-        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
-        # Approval lives on the record and requires an active service provider.
-        service_provider.update!(active: true, token_exchange_enabled_sp: true)
+        TokenExchangeGrant.approve!(
+          user:, service_provider:, application: housing, source: 'consent_screen', remember: true,
+        )
+        housing.update!(consent_content_version: 2, consent_material_version: 2)
       end
 
-      context 'with connected applications' do
-        before do
-          create(:service_provider_identity, user: user, service_provider: application.issuer)
-        end
-
-        shared_examples 'renders the full consent control' do
-          it 'renders allow-all and an agency-grouped list of applications' do
-            render
-
-            form = "form[action='#{sign_up_completed_path}']"
-            expect(rendered).to have_css(
-              "#{form} input[type=checkbox][name='idv_form[delegation_all]']:not([checked])",
-            )
-            expect(rendered).to have_content(t('sign_up.token_exchange_grant.or'))
-            expect(rendered).to have_css(
-              '[data-delegation-agency] h3',
-              text: 'Department of Housing Support',
-            )
-            expect(rendered).to have_css(
-              "#{form} input[type=checkbox][name='idv_form[delegation_applications][]']" \
-              "[value='urn:application']",
-            )
-            expect(rendered).to have_css('label', text: 'Housing Assistance Records')
-            expect(rendered).to have_css('[data-delegation-pager]', visible: false)
-          end
-        end
-
-        context 'in the legacy layout' do
-          let(:nds_layout) { false }
-          it_behaves_like 'renders the full consent control'
-        end
-
-        context 'in the NDS layout' do
-          let(:nds_layout) { true }
-          it_behaves_like 'renders the full consent control'
-        end
-      end
-
-      context 'with connected applications and existing approvals (return visit)' do
-        let(:nds_layout) { false }
-        before do
-          create(:service_provider_identity, user: user, service_provider: application.issuer)
-          TokenExchangeGrant.approve!(
-            user: user, service_provider: service_provider, application: application,
-            source: 'consent_screen', remember: true
-          )
-        end
-
-        it 'pre-checks the current approvals so continuing preserves them' do
-          render
-          # every connected application is approved => rendered as "allow all"
-          expect(rendered).to have_css("input[name='idv_form[delegation_all]'][checked]")
-        end
-      end
-
-      context 'with a connected application that has no agency record' do
-        let(:nds_layout) { false }
-        before do
-          create(:service_provider_identity, user: user, service_provider: application.issuer)
-          orphan = create(
-            :service_provider, :delegation_application,
-            issuer: 'urn:orphan', agency: nil, friendly_name: 'Orphan App',
-            allowed_delegation_service_providers: [service_provider.issuer]
-          )
-          create(:service_provider_identity, user: user, service_provider: orphan.issuer)
-        end
-
-        it 'groups it under Other without raising' do
-          expect { render }.not_to raise_error
-          expect(rendered).to have_content(t('sign_up.token_exchange_grant.other_agency'))
-        end
-      end
-
-      context 'with no connected applications' do
-        let(:nds_layout) { false }
-
-        it 'explains that nothing can be approved yet and offers no checkboxes' do
-          render
-
-          expect(rendered).not_to have_css("input[name='idv_form[delegation_all]']")
-          expect(rendered).not_to have_css("input[name='idv_form[delegation_applications][]']")
-          expect(rendered).to have_content(t('account.connected_apps.token_exchange.no_linked'))
-        end
+      it 'marks that row updated' do
+        render
+        expect(rendered).to have_css(
+          '[data-delegation-application][data-status="updated"]',
+          count: 1,
+        )
+        expect(rendered).to have_content(t('sign_up.delegation.status.updated'))
       end
     end
 
     context 'when the service provider is not approved for delegation' do
       let(:nds_layout) { true }
+      before { service_provider.update!(token_exchange_enabled_sp: false) }
 
-      it 'renders no consent control' do
+      it 'renders no consent section' do
         render
         expect(rendered).not_to have_css('[data-delegation-consent]')
       end

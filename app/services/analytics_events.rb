@@ -565,20 +565,21 @@ module AnalyticsEvents
 
   # User directed to this page after TMX returns a failure
 
-  # Tracks the user's delegated-access decision on the agency handoff screen for a service
-  # provider approved for delegation. Consent is optional; this fires whether or not anything was
-  # approved.
+  # Tracks the person approving, on the agency handoff screen, the applications a service provider
+  # requested. The requested applications are not optional, so this fires on every completed
+  # screen; what varies is the remember choice and how many approvals were new.
   # @param [String] issuer Issuer of the service provider
-  # @param [Boolean] granted Whether at least one application was approved
-  # @param [Boolean] all_connected Whether the user approved every connected application
-  # @param [Integer] application_count Number of applications approved
-  def delegation_consent_decided(issuer:, granted:, all_connected:, application_count:, **extra)
+  # @param [Array<String>] applications Issuers of the applications requested and approved
+  # @param [Boolean] remembered Whether the person asked to remember the new approvals
+  # @param [Integer] newly_approved_count Approvals written now, as opposed to kept from before
+  def delegation_consent_submitted(issuer:, applications:, remembered:, newly_approved_count:,
+                                   **extra)
     track_event(
-      :delegation_consent_decided,
+      :delegation_consent_submitted,
       issuer:,
-      granted:,
-      all_connected:,
-      application_count:,
+      applications:,
+      remembered:,
+      newly_approved_count:,
       **extra,
     )
   end

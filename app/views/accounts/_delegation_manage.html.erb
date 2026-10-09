@@ -19,7 +19,7 @@ locals:
   <ul class="add-list-reset">
     <% delegation.applications_by_agency.each do |agency, applications| %>
       <li class="margin-bottom-1">
-        <span class="text-bold"><%= agency&.name || t('sign_up.token_exchange_grant.other_agency') %></span>
+        <span class="text-bold"><%= agency&.name || t('account.connected_apps.token_exchange.other_agency') %></span>
         <ul class="add-list-reset margin-left-2">
           <% applications.each do |application| %>
             <% grant = delegation.grant_for(application) %>
