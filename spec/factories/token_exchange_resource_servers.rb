@@ -9,9 +9,5 @@ FactoryBot.define do
     trait :saml do
       token_format { 'saml2' }
     end
-
-    trait :dpop_required do
-      dpop_required { true }
-    end
   end
 end

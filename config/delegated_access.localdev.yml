@@ -92,7 +92,6 @@ service_providers:
     token_exchange_resource_servers:
       - identifier: 'https://records-api.agency.localdev'
         token_format: 'oauth'
-        dpop_required: true
         certs:
           - 'rs_records_demo'
 
@@ -129,6 +128,5 @@ service_providers:
     token_exchange_resource_servers:
       - identifier: 'https://benefits-api.agency.localdev'
         token_format: 'saml2'
-        dpop_required: true
         certs:
           - 'sp_sinatra_demo'
