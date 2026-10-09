@@ -168,6 +168,13 @@ class TokenExchangeGrant < ApplicationRecord
     live.where(user:, service_provider_issuer:).find_each { |grant| grant.revoke!(reason:, now:) }
   end
 
+  # Revokes every live approval the user has given to anyone. Delegated tokens do not end with
+  # the person's browser session, so when the account itself is suspended or deleted this is
+  # what stops every service provider acting for the person.
+  def self.revoke_all_for_user!(user:, reason:, now: Time.zone.now)
+    live.where(user:).find_each { |grant| grant.revoke!(reason:, now:) }
+  end
+
   def revoked?
     revoked_at.present?
   end

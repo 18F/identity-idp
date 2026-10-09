@@ -67,6 +67,21 @@ RSpec.describe Users::DeleteController do
       expect(User.where(id: user.id).length).to eq(0)
     end
 
+    it 'ends every delegated-access approval, token and refresh family of the person' do
+      user = stub_signed_in_user
+      grant = create(:token_exchange_grant, user:)
+      plaintext = TokenExchangeToken.generate_token
+      issued = create(:token_exchange_token, grant:, plaintext:)
+      refresh = create(:token_exchange_refresh_token, token_exchange_token: issued)
+
+      delete
+
+      expect(grant.reload.revocation_reason).to eq('account_deleted')
+      expect(issued.reload.revocation_reason).to eq('account_deleted')
+      expect(refresh.reload.revocation_reason).to eq('account_deleted')
+      expect(DelegatedTokenStore.read(plaintext)).to be_nil
+    end
+
     it 'deletes the site key root with the user' do
       allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
       user = stub_signed_in_user
