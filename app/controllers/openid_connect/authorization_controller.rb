@@ -18,6 +18,7 @@ module OpenidConnect
     before_action :pre_validate_authorize_form, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
     before_action :store_request, only: [:index]
+    before_action :start_delegation_context, only: [:index]
     before_action :check_sp_active, only: [:index]
     before_action :secure_headers_override, only: [:index]
     before_action :handle_banned_user
@@ -335,6 +336,35 @@ module OpenidConnect
         protocol_request: @authorize_form,
         protocol: FederatedProtocols::Oidc,
       ).call
+    end
+
+    # When the validated request asks for delegation, note which agency recipients could receive
+    # the session's fraud signals once the person approves. Only recipients enrolled in the
+    # Attempts API are candidates; the events themselves are held in the session until then. This
+    # runs before the person has signed in, so the sign-in's own events are captured.
+    def start_delegation_context
+      return unless DelegatedAccessEvents.enabled?
+
+      scope_values = @authorize_form.requested_delegation_scopes
+      return if scope_values.empty? || !service_provider&.delegation_service_provider?
+
+      applications = DelegationApplications.requested(issuer, scope_values)
+      # Each application's recipients are reached through its API URLs; load them in one query
+      # when several applications are grouped so the lookup does not fan out per application.
+      if applications.size > 1
+        ActiveRecord::Associations::Preloader.new(
+          records: applications,
+          associations: { token_exchange_resource_servers: :attempts_service_provider },
+        ).call
+      end
+      candidates = applications.flat_map(&:delegation_attempts_recipients).uniq
+        .select(&:attempts_api_deliverable?)
+
+      AttemptsApi::DelegationContext.from_session(session).start(
+        request_id: sp_session[:request_id],
+        sp_issuer: issuer,
+        candidate_issuers: candidates.map(&:issuer),
+      )
     end
 
     def track_events

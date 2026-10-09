@@ -565,6 +565,42 @@ module AnalyticsEvents
 
   # User directed to this page after TMX returns a failure
 
+  # Tracks the outcome of delivering delegated-access fraud-signal events to an agency through the
+  # Attempts API: the sign-in events buffered for the agency, a live session event forwarded to
+  # it, or a consent or token event written for it. Delivery is best-effort, so a failure here
+  # never fails the person's request.
+  # @param [String] event_type Attempts event type delivered, or "buffered_session_events" for
+  #   the re-mapped sign-in events released at consent
+  # @param [String, nil] recipient_issuer Issuer of the agency record that receives the events
+  # @param [String, nil] actor_issuer Issuer of the service provider acting for the person
+  # @param [Boolean] success Whether the events were written to the agency's Attempts queue
+  # @param [Integer] event_count How many events the outcome covers
+  # @param ["delivery_disabled", "recipient_not_enrolled", nil] skipped_reason Why nothing was
+  #   delivered, when delivery was not attempted
+  # @param [String, nil] exception Class of the error that stopped delivery, when one did
+  def delegated_access_attempts_delivery(
+    event_type:,
+    recipient_issuer:,
+    actor_issuer:,
+    success:,
+    event_count:,
+    skipped_reason: nil,
+    exception: nil,
+    **extra
+  )
+    track_event(
+      :delegated_access_attempts_delivery,
+      event_type:,
+      recipient_issuer:,
+      actor_issuer:,
+      success:,
+      event_count:,
+      skipped_reason:,
+      exception:,
+      **extra,
+    )
+  end
+
   # Tracks a visit to the Account > Delegated access page.
   def delegated_access_page_visited
     track_event(:delegated_access_page_visited)

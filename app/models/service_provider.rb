@@ -154,6 +154,29 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
+  # Whether Attempts API events can actually be delivered to this record: it is listed in the
+  # Attempts configuration, belongs to an agency (events are attributed to the person's identifier
+  # at that agency) and a public key to encrypt events to exists, either an explicit key in that
+  # configuration or the record's own certificate. A record listed without any usable key is not
+  # onboarded and is treated as not enrolled rather than as an error. Delegated-access delivery
+  # to agencies decides enrollment with this; the direct sign-in flow is unchanged.
+  def attempts_api_deliverable?
+    return false unless attempts_api_enabled?
+    return false if agency_id.blank?
+    return true if attempts_config['keys'].present?
+
+    ssl_certs.first.present?
+  end
+
+  # The records whose Attempts API credentials receive the fraud-signal events of a delegated
+  # session at this application: each of its active API URLs names a recipient
+  # (TokenExchangeResourceServer#attempts_recipient), which defaults to the application itself.
+  # @return [Array<ServiceProvider>]
+  def delegation_attempts_recipients
+    recipients = token_exchange_resource_servers.select(&:active?).map(&:attempts_recipient).uniq
+    recipients.presence || [self]
+  end
+
   def create_prompt_allowed?
     IdentityConfig.store.allowed_create_prompt_providers.include?(issuer)
   end

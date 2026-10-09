@@ -219,6 +219,87 @@ RSpec.describe ServiceProvider do
     end
   end
 
+  describe '#attempts_api_deliverable?' do
+    let(:service_provider) { create(:service_provider, :delegation_application) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:attempts_api_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
+        [{ 'issuer' => service_provider.issuer, 'keys' => keys }],
+      )
+    end
+    let(:keys) { [] }
+
+    it 'is true when the record is listed and its certificate provides the key' do
+      expect(service_provider.attempts_api_deliverable?).to eq(true)
+    end
+
+    context 'with an explicit key in the Attempts configuration' do
+      let(:service_provider) { create(:service_provider, :delegation_application, certs: []) }
+      let(:keys) { [OpenSSL::PKey::RSA.new(2048).public_key.to_pem] }
+
+      it 'is true' do
+        expect(service_provider.attempts_api_deliverable?).to eq(true)
+      end
+    end
+
+    it 'is false when the record is listed but has no usable key' do
+      service_provider.update!(certs: [])
+      expect(service_provider.attempts_api_enabled?).to eq(true)
+      expect(service_provider.attempts_api_deliverable?).to eq(false)
+    end
+
+    it 'is false when the record belongs to no agency' do
+      service_provider.update!(agency: nil)
+      expect(service_provider.attempts_api_deliverable?).to eq(false)
+    end
+
+    it 'is false when the record is not listed' do
+      allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return([])
+      expect(service_provider.attempts_api_deliverable?).to eq(false)
+    end
+
+    it 'is false when the Attempts API is off' do
+      allow(IdentityConfig.store).to receive(:attempts_api_enabled).and_return(false)
+      expect(service_provider.attempts_api_deliverable?).to eq(false)
+    end
+  end
+
+  describe '#delegation_attempts_recipients' do
+    let(:application) { create(:service_provider, :delegation_application) }
+
+    it 'is the application itself when its APIs name no other recipient' do
+      create(:token_exchange_resource_server, service_provider: application)
+      expect(application.delegation_attempts_recipients).to eq([application])
+    end
+
+    it 'is the application itself when it has no API registered' do
+      expect(application.delegation_attempts_recipients).to eq([application])
+    end
+
+    it 'is each distinct recipient the active APIs name' do
+      other = create(:service_provider)
+      create(:token_exchange_resource_server, service_provider: application)
+      create(
+        :token_exchange_resource_server, service_provider: application,
+                                         attempts_service_provider: other
+      )
+      create(
+        :token_exchange_resource_server, service_provider: application,
+                                         attempts_service_provider: other
+      )
+      create(
+        :token_exchange_resource_server, service_provider: application, active: false,
+                                         attempts_service_provider: create(:service_provider)
+      )
+
+      expect(application.reload.delegation_attempts_recipients).to contain_exactly(
+        application,
+        other,
+      )
+    end
+  end
+
   describe '#attempts_public_key' do
     context 'when the sp is configured to use the attempts api' do
       context 'when there is no public key set in the configuration' do
