@@ -1,4 +1,5 @@
 ---
+account.connected_apps.token_exchange.other_agency: Other
 account_reset.cancel_request.are_you_sure: Are you sure you want to cancel your delete account request?
 account_reset.cancel_request.cancel: Exit
 account_reset.cancel_request.cancel_button: Cancel delete account
@@ -1105,7 +1106,6 @@ help_text.requested_attributes.intro_html: 'We’ll share this information with 
 help_text.requested_attributes.phone: Phone number
 help_text.requested_attributes.select_email_link: Select email
 help_text.requested_attributes.social_security_number: Social Security number
-help_text.requested_attributes.token_exchange_html: '%{sp_html} can sign you in to other government services you choose, using your verified identity, so you don’t have to verify again. Each service receives only the information it is approved for and can see that you were connected through %{sp_html}.'
 help_text.requested_attributes.verified_at: Updated on
 help_text.requested_attributes.x509_issuer: PIV/CAC Issuer
 help_text.requested_attributes.x509_subject: PIV/CAC Identity
@@ -1869,19 +1869,46 @@ sign_up.agree_and_continue: Agree and continue
 sign_up.cancel.success: Your account has been deleted. We did not save your information.
 sign_up.cancel.warning_header: 'If you cancel now:'
 sign_up.completed.smiling_image_alt: A smiling person with a green checkmark indicating success
+sign_up.delegation.about_agency: About the %{agency}
+sign_up.delegation.about_heading: About this service
+sign_up.delegation.access_read: Read only
+sign_up.delegation.access_read_write: Can make changes
+sign_up.delegation.account_link: Account → Connected accounts
+sign_up.delegation.ai_badge: AI
+sign_up.delegation.allow_button: Allow and continue
+sign_up.delegation.applications_count.one: '%{count} application requested'
+sign_up.delegation.applications_count.other: '%{count} applications requested'
+sign_up.delegation.approved_from_account_html: Approved from your account on %{timestamp_html}
+sign_up.delegation.cancel_button: Cancel and return to %{sp}
+sign_up.delegation.data_handling: Information from the agencies you approve is %{statement}
+sign_up.delegation.description: This lets the service %{description}
+sign_up.delegation.does_not_use_ai: Does not use AI
+sign_up.delegation.heading: You’re allowing %{sp} access to your information
+sign_up.delegation.learn_more: Learn more about %{sp}
+sign_up.delegation.learn_more_agency: Learn more from %{agency}
+sign_up.delegation.no_password_shared: Only the applications listed above will be shared, and each receives only the information it is approved for. %{app_name} never shares your password.
+sign_up.delegation.other_agency: Other
+sign_up.delegation.remember_description_html: If you leave this unchecked, these approvals last for this sign-in only. You can review, approve in advance, or revoke approvals at any time under %{link_html}.
+sign_up.delegation.remember_label: Remember my approvals for 1 year
+sign_up.delegation.requesting_access: '%{sp} needs access to these applications'
+sign_up.delegation.required_badge: Required
+sign_up.delegation.required_explanation: These applications are required to continue to %{sp}. If you don’t want to allow one of them, cancel and return to %{sp}. Each agency has written what its application does in its own words.
+sign_up.delegation.required_hint: (required to continue)
+sign_up.delegation.run_by: '%{sp} is run by'
+sign_up.delegation.service_description: is a government service that %{description}
+sign_up.delegation.services_used: 'Services the application will use:'
+sign_up.delegation.status.approved: Already approved
+sign_up.delegation.status.new: New
+sign_up.delegation.status.updated: Updated
+sign_up.delegation.uses_ai: Uses AI
+sign_up.delegation.uses_ai_description: It uses AI to %{description}
+sign_up.delegation.will_receive: 'Will receive: %{data}'
+sign_up.delegation.your_information: Your information
 sign_up.document_images_sharing_consent_label: I consent to share the photos of my identity documents and my identity verification selfie with %{sp} for identity adjudication.
 sign_up.document_images_sharing_consent_required: You must consent to sharing your identity document photos and selfie to continue, or cancel.
 sign_up.information_sharing_html: To learn how %{app_name} shares your information, review our %{link_html}.
 sign_up.nds_terms_intro: By continuing, you accept the
 sign_up.terms: I read and accept the %{app_name}
-sign_up.token_exchange_grant.all: Allow %{sp} to act on your behalf across all federal agencies linked to your %{app_name} account
-sign_up.token_exchange_grant.legend: Choose how %{sp} may act on your behalf
-sign_up.token_exchange_grant.next: Next
-sign_up.token_exchange_grant.or: OR
-sign_up.token_exchange_grant.other_agency: Other
-sign_up.token_exchange_grant.pagination: Agencies
-sign_up.token_exchange_grant.previous: Previous
-sign_up.token_exchange_grant.specific: 'Allow access only for the following agencies:'
 simple_form.error_notification.default_message: 'Please review the problems below:'
 simple_form.no: 'No'
 simple_form.required.html: ''

@@ -1,4 +1,5 @@
 ---
+account.connected_apps.token_exchange.other_agency: Otra
 account_reset.cancel_request.are_you_sure: '¿Está seguro de que desea cancelar su solicitud de eliminación de cuenta?'
 account_reset.cancel_request.cancel: Salir
 account_reset.cancel_request.cancel_button: Cancelar la cuenta eliminada
@@ -1116,7 +1117,6 @@ help_text.requested_attributes.intro_html: 'Divulgaremos esta información a %{s
 help_text.requested_attributes.phone: Número de teléfono
 help_text.requested_attributes.select_email_link: Seleccionar correo electrónico
 help_text.requested_attributes.social_security_number: Número de Seguro Social
-help_text.requested_attributes.token_exchange_html: '%{sp_html} puede iniciar su sesión en otros servicios gubernamentales que usted elija, usando su identidad verificada, para que no tenga que verificarla de nuevo. Cada servicio recibe únicamente la información para la que está autorizado y puede ver que usted se conectó a través de %{sp_html}.'
 help_text.requested_attributes.verified_at: Actualizado en
 help_text.requested_attributes.x509_issuer: Emisor de la tarjeta PIV o CAC
 help_text.requested_attributes.x509_subject: Identidad de la tarjeta PIV o CAC
@@ -1881,19 +1881,46 @@ sign_up.agree_and_continue: Aceptar y continuar
 sign_up.cancel.success: Su cuenta fue eliminada. No guardamos su información.
 sign_up.cancel.warning_header: 'Si cancela ahora:'
 sign_up.completed.smiling_image_alt: Una persona sonriente con una marca de verificación verde
+sign_up.delegation.about_agency: Acerca de %{agency}
+sign_up.delegation.about_heading: Acerca de este servicio
+sign_up.delegation.access_read: Solo lectura
+sign_up.delegation.access_read_write: Puede hacer cambios
+sign_up.delegation.account_link: Cuenta → Cuentas conectadas
+sign_up.delegation.ai_badge: IA
+sign_up.delegation.allow_button: Permitir y continuar
+sign_up.delegation.applications_count.one: '%{count} aplicación solicitada'
+sign_up.delegation.applications_count.other: '%{count} aplicaciones solicitadas'
+sign_up.delegation.approved_from_account_html: Aprobado desde su cuenta el %{timestamp_html}
+sign_up.delegation.cancel_button: Cancelar y volver a %{sp}
+sign_up.delegation.data_handling: La información de las agencias que apruebe se %{statement}
+sign_up.delegation.description: Esto permite que el servicio %{description}
+sign_up.delegation.does_not_use_ai: No usa IA
+sign_up.delegation.heading: Está permitiendo que %{sp} acceda a su información
+sign_up.delegation.learn_more: Más información sobre %{sp}
+sign_up.delegation.learn_more_agency: Más información de %{agency}
+sign_up.delegation.no_password_shared: Solo se compartirán las aplicaciones indicadas arriba, y cada una recibe únicamente la información para la que está aprobada. %{app_name} nunca comparte su contraseña.
+sign_up.delegation.other_agency: Otra
+sign_up.delegation.remember_description_html: Si deja esta casilla sin marcar, estas aprobaciones durarán solo durante este inicio de sesión. Puede revisar, aprobar por adelantado o revocar aprobaciones en cualquier momento en %{link_html}.
+sign_up.delegation.remember_label: Recordar mis aprobaciones durante 1 año
+sign_up.delegation.requesting_access: '%{sp} necesita acceso a estas aplicaciones'
+sign_up.delegation.required_badge: Obligatoria
+sign_up.delegation.required_explanation: Estas aplicaciones son necesarias para continuar a %{sp}. Si no desea permitir alguna de ellas, cancele y vuelva a %{sp}. Cada agencia ha escrito con sus propias palabras lo que hace su aplicación.
+sign_up.delegation.required_hint: (obligatoria para continuar)
+sign_up.delegation.run_by: '%{sp} es administrado por'
+sign_up.delegation.service_description: es un servicio del gobierno que %{description}
+sign_up.delegation.services_used: 'Servicios que usará la aplicación:'
+sign_up.delegation.status.approved: Ya aprobada
+sign_up.delegation.status.new: Nueva
+sign_up.delegation.status.updated: Actualizada
+sign_up.delegation.uses_ai: Usa IA
+sign_up.delegation.uses_ai_description: Usa IA para %{description}
+sign_up.delegation.will_receive: 'Recibirá: %{data}'
+sign_up.delegation.your_information: Su información
 sign_up.document_images_sharing_consent_label: Doy mi consentimiento para compartir las fotos de mis documentos de identidad y la selfie de verificación de identidad con %{sp} para la adjudicación de identidad.
 sign_up.document_images_sharing_consent_required: Debe dar su consentimiento para compartir las fotos de sus documentos de identidad y su selfie para continuar, o cancelar.
 sign_up.information_sharing_html: Para saber cómo %{app_name} comparte su información, consulte nuestra %{link_html}.
 sign_up.nds_terms_intro: Al continuar, acepta las
 sign_up.terms: Leí y acepto %{app_name}
-sign_up.token_exchange_grant.all: Permitir que %{sp} actúe en mi nombre en todas las agencias federales vinculadas a mi cuenta de %{app_name}
-sign_up.token_exchange_grant.legend: Elija cómo %{sp} puede actuar en su nombre
-sign_up.token_exchange_grant.next: Siguiente
-sign_up.token_exchange_grant.or: O
-sign_up.token_exchange_grant.other_agency: Otras
-sign_up.token_exchange_grant.pagination: Agencias
-sign_up.token_exchange_grant.previous: Anterior
-sign_up.token_exchange_grant.specific: 'Permitir el acceso solo a las siguientes agencias:'
 simple_form.error_notification.default_message: 'Revise los siguientes problemas:'
 simple_form.no: 'No'
 simple_form.required.html: ''

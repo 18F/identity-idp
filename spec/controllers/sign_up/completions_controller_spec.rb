@@ -732,34 +732,22 @@ RSpec.describe SignUp::CompletionsController do
       end
     end
 
-    context 'when a service provider approved for delegation asks for consent' do
-      let(:current_sp) { create(:service_provider, :idv, :active, token_exchange_enabled_sp: true) }
+    context 'when a service provider approved for delegation requested applications' do
+      let(:current_sp) { create(:service_provider, :delegation_service_provider) }
       let(:user) { create(:user, :proofed) }
       let(:sp_identity) do
         create(:service_provider_identity, user: user, service_provider: current_sp.issuer)
       end
-      let!(:application_a) do
+      let!(:housing) do
         create(
-          :service_provider, :delegation_application, issuer: 'urn:application-a',
-                                                      allowed_delegation_service_providers: [
-                                                        current_sp.issuer,
-                                                      ]
+          :service_provider, :delegation_application, delegation_scope_value: 'housing_records'
         )
       end
-      let!(:application_b) do
+      let!(:retirement) do
         create(
-          :service_provider, :delegation_application, issuer: 'urn:application-b',
-                                                      allowed_delegation_service_providers: [
-                                                        current_sp.issuer,
-                                                      ]
+          :service_provider, :delegation_application,
+          delegation_scope_value: 'retirement_benefits'
         )
-      end
-      # Only applications the user has connected to are offered on this screen.
-      let!(:connected_a) do
-        create(:service_provider_identity, user: user, service_provider: application_a.issuer)
-      end
-      let!(:connected_b) do
-        create(:service_provider_identity, user: user, service_provider: application_b.issuer)
       end
 
       before do
@@ -769,92 +757,131 @@ RSpec.describe SignUp::CompletionsController do
         subject.session[:sp] = {
           issuer: current_sp.issuer,
           acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
-          request_url: 'http://example.com',
+          request_url: 'http://example.com/authorize?state=abc',
           requested_attributes: %w[email],
-          requested_delegation_scopes: %w[housing_records],
+          requested_delegation_scopes: %w[housing_records retirement_benefits],
         }
       end
 
-      def grants
+      def live_grants
         TokenExchangeGrant.live.where(user: user, service_provider_issuer: current_sp.issuer)
       end
 
-      def approved_issuers
-        grants.joins(:application).pluck('service_providers.issuer')
-      end
-
-      it 'proceeds with nothing approved when the user declines (consent is optional)' do
+      it 'approves every requested application for this sign-in when remember is unchecked' do
         patch :update
 
         expect(response).to_not render_template(:show)
-        expect(grants).to be_empty
+        expect(live_grants.map(&:application)).to contain_exactly(housing, retirement)
+        expect(live_grants.pluck(:remember_until).uniq).to eq([nil])
+        expect(live_grants.pluck(:source).uniq).to eq(['consent_screen'])
         expect(@analytics).to have_logged_event(
-          :delegation_consent_decided,
-          issuer: current_sp.issuer, granted: false, all_connected: false, application_count: 0,
+          :delegation_consent_submitted,
+          issuer: current_sp.issuer,
+          applications: [housing.issuer, retirement.issuer],
+          remembered: false,
+          newly_approved_count: 2,
         )
       end
 
-      it 'treats a malformed idv_form param as declined rather than raising' do
-        expect { patch :update, params: { idv_form: 'x' } }.not_to raise_error
-        expect { patch :update, params: { idv_form: ['x'] } }.not_to raise_error
-        expect(grants).to be_empty
+      it 'remembers the approvals for a year when asked' do
+        patch :update, params: { idv_form: { delegation_remember: '1' } }
+
+        expect(live_grants.pluck(:remember_until)).to all(be_within(1.minute).of(1.year.from_now))
       end
 
-      it '"allow all" approves every connected application that accepts the service provider' do
-        patch :update, params: { idv_form: { delegation_all: '1' } }
+      it 'ignores anything submitted about the applications: the request decides' do
+        patch :update, params: { idv_form: { delegation_applications: ['urn:something-else'] } }
 
-        expect(approved_issuers).to match_array(%w[urn:application-a urn:application-b])
-        expect(grants.pluck(:source).uniq).to eq(['consent_screen'])
-        expect(grants.pluck(:remember_until)).to all(be_within(1.minute).of(1.year.from_now))
+        expect(live_grants.map(&:application)).to contain_exactly(housing, retirement)
+      end
+
+      it 'keeps an existing remembered approval and only records the missing one' do
+        TokenExchangeGrant.approve!(
+          user:, service_provider: current_sp, application: housing,
+          source: 'account_page', remember: true
+        )
+
+        patch :update
+
+        expect(live_grants.find_by(application: housing).remember_until).to be_present
+        expect(live_grants.find_by(application: retirement).remember_until).to be_nil
         expect(@analytics).to have_logged_event(
-          :delegation_consent_decided,
-          issuer: current_sp.issuer, granted: true, all_connected: true, application_count: 2,
+          :delegation_consent_submitted, hash_including(newly_approved_count: 1)
         )
       end
 
-      it '"allow all" skips a connected application that does not accept this service provider' do
-        application_b.update!(allowed_delegation_service_providers: ['urn:someone-else'])
-        patch :update, params: { idv_form: { delegation_all: '1' } }
-
-        expect(approved_issuers).to eq(['urn:application-a'])
-      end
-
-      it 'approves only the chosen, connected, accepting applications' do
-        patch :update, params: {
-          idv_form: { delegation_applications: ['urn:application-a', 'urn:not-connected'] },
-        }
-
-        expect(approved_issuers).to eq(['urn:application-a'])
-      end
-
-      it 'revokes applications dropped when the user changes their choice' do
-        [application_a, application_b].each do |application|
-          TokenExchangeGrant.approve!(
-            user:, service_provider: current_sp, application:, source: 'consent_screen',
-            remember: true
-          )
+      it 'does not ask again within the same authorization' do
+        # The linker is stubbed, so mirror what linking does to the identity: the requested
+        # attributes are now consented to. Only delegation could bring the screen back.
+        allow(@linker).to receive(:link_identity) do
+          sp_identity.update!(verified_attributes: %w[email], last_consented_at: Time.zone.now)
+          sp_identity
         end
 
-        patch :update, params: { idv_form: { delegation_applications: ['urn:application-b'] } }
+        patch :update
+        get :show
 
-        expect(approved_issuers).to eq(['urn:application-b'])
-        revoked = TokenExchangeGrant.where(user:, application: application_a).first
-        expect(revoked.revoked_at).to be_present
-        expect(revoked.revocation_reason).to eq('user_revoked')
+        expect(response).not_to render_template(:show)
       end
 
-      it 'renews an existing approval on a return visit that submits the pre-populated form' do
-        # The view pre-checks current approvals, so a returning user who just continues
-        # re-submits them; the approval is renewed, never silently revoked.
-        TokenExchangeGrant.approve!(
-          user:, service_provider: current_sp, application: application_a,
-          source: 'consent_screen', remember: true
-        )
-
-        patch :update, params: { idv_form: { delegation_applications: ['urn:application-a'] } }
-
-        expect(approved_issuers).to eq(['urn:application-a'])
+      it 'treats a malformed idv_form param as unchecked remember rather than raising' do
+        expect { patch :update, params: { idv_form: 'x' } }.not_to raise_error
       end
+    end
+  end
+
+  describe 'needs_completion_screen_reason for delegation' do
+    let(:current_sp) { create(:service_provider, :delegation_service_provider) }
+    let(:user) { create(:user, :proofed) }
+    let!(:housing) do
+      create(:service_provider, :delegation_application, delegation_scope_value: 'housing_records')
+    end
+
+    before do
+      stub_analytics
+      allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+      stub_sign_in(user)
+      # The service provider's own attributes were consented to after identity verification, so
+      # only delegation can bring the screen back.
+      create(
+        :service_provider_identity, user:, service_provider: current_sp.issuer,
+                                    verified_attributes: %w[email],
+                                    last_consented_at: Time.zone.now
+      )
+      subject.session[:sp] = {
+        issuer: current_sp.issuer,
+        acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+        request_url: 'http://example.com/authorize?state=abc',
+        requested_attributes: %w[email],
+        requested_delegation_scopes: %w[housing_records],
+      }
+    end
+
+    it 'shows the screen when a requested application has no remembered approval' do
+      get :show
+      expect(response).to render_template(:show)
+      expect(assigns(:presenter).delegation_requested?).to eq(true)
+    end
+
+    it 'skips the screen when every requested application is remembered and current' do
+      TokenExchangeGrant.approve!(
+        user:, service_provider: current_sp, application: housing,
+        source: 'account_page', remember: true
+      )
+
+      get :show
+      expect(response).not_to render_template(:show)
+    end
+
+    it 'shows the screen again after a material content change' do
+      TokenExchangeGrant.approve!(
+        user:, service_provider: current_sp, application: housing,
+        source: 'account_page', remember: true
+      )
+      housing.update!(consent_content_version: 2, consent_material_version: 2)
+
+      get :show
+      expect(response).to render_template(:show)
     end
   end
 end

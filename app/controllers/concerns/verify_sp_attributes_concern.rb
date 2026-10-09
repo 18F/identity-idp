@@ -16,6 +16,8 @@ module VerifySpAttributesConcern
       :consent_expired
     elsif consent_was_revoked?(sp_session_identity)
       :consent_revoked
+    elsif delegation_consent_needed?
+      :delegation_requested
     elsif biometric_consent_needed?(sp_session_identity)
       :biometric_consent_needed
     end
@@ -29,11 +31,10 @@ module VerifySpAttributesConcern
       clear_deleted_at: true,
     )
 
-    # Record the user's delegated-access decision whenever this screen runs for a service provider
-    # that asked for it: one approval row per chosen application, and a revocation for every
-    # connected application the user did not choose this time, so a changed decision never leaves
-    # a stale approval behind.
-    record_delegation_decision if delegation_consent_requested?
+    # Record the person's approval of the applications the service provider requested. The screen
+    # shows them locked, so continuing approves every requested application; the only choice made
+    # here is whether to remember the approvals.
+    record_delegation_consent if delegation_consent_requested?
 
     # Record biometric sharing consent as a distinct, purpose-specific decision;
     # only touched for allow-listed SPs, and set-or-cleared so stale consent
@@ -45,68 +46,90 @@ module VerifySpAttributesConcern
     end
   end
 
-  def record_delegation_decision
-    now = Time.zone.now
-    chosen = approved_delegation_applications
-
-    chosen.each do |application|
-      # Approvals from this screen are remembered for the maximum period.
-      TokenExchangeGrant.approve!(
-        user: current_user, service_provider: current_sp, application:,
-        source: 'consent_screen', remember: true, now:
-      )
-    end
-    (connected_delegation_applications - chosen).each do |application|
-      TokenExchangeGrant.revoke_for!(
-        user: current_user, service_provider_issuer: current_sp.issuer, application:,
-        reason: 'user_revoked', now:
-      )
-    end
+  def record_delegation_consent
+    @delegation_consent_result = TokenExchangeConsent.new(
+      user: current_user,
+      service_provider: current_sp,
+      applications: requested_delegation_applications,
+      remember: delegation_remember?,
+      rails_session_id: session.id.to_s,
+      proofed_in_session: identity_verified_in_this_session?,
+    ).call
+    # The person has answered for this authorization; the screen is not shown again before the
+    # handoff completes, whatever the remember choice was.
+    user_session[:delegation_consent_authorization] = delegation_authorization_key
   end
 
-  # True when the service provider is approved for delegation, asked for it in this sign-in, and
-  # the user approved at least one application. Consent to delegation is optional: declining still
-  # completes the service provider's own sign-in.
-  def delegation_consent_granted?
-    delegation_consent_requested? && approved_delegation_applications.any?
+  # The approvals written by the submit that just ran, for analytics.
+  def delegation_consent_result
+    @delegation_consent_result
+  end
+
+  # The screen is needed when the service provider requested applications and any of them lacks
+  # an approval that is remembered and current. It is not shown twice for one authorization: the
+  # person's answer is keyed to the authorize URL (fresh state and nonce per authorization), which
+  # the service provider's request id does not distinguish.
+  def delegation_consent_needed?
+    return false unless delegation_consent_requested?
+    return false if delegation_consent_given_for_current_authorization?
+
+    applications = requested_delegation_applications
+    grants = TokenExchangeGrant.live_by_application(
+      user: current_user, service_provider_issuer: current_sp.issuer, applications:,
+    )
+    # An application with no live approval at all needs the screen; content versions are beside
+    # the point for it.
+    return true if grants.size < applications.size
+
+    # Every application has a live approval. The screen is still needed if any of them is for a
+    # single authorization, past its remember period, or stale. Staleness compares against each
+    # agency's material version, so the agencies are loaded in one query here, and every
+    # application is checked rather than stopping at the first stale one.
+    ActiveRecord::Associations::Preloader.new(records: applications, associations: :agency).call
+    applications.reject { |application| grants[application.id].remembered_and_current? }.any?
+  end
+
+  def delegation_consent_given_for_current_authorization?
+    key = delegation_authorization_key
+    key.present? && user_session[:delegation_consent_authorization] == key
+  end
+
+  def delegation_authorization_key
+    url = sp_session[:request_url]
+    url.present? ? Digest::SHA256.hexdigest(url) : nil
   end
 
   def delegation_consent_requested?
-    current_sp&.delegation_service_provider? &&
-      decorated_sp_session.requested_delegation_scopes.any?
+    current_sp&.delegation_service_provider? && requested_delegation_applications.any?
   end
 
-  # The user chose "allow all connected applications".
-  def delegation_all?
-    ActiveModel::Type::Boolean.new.cast(delegation_form_params[:delegation_all]) == true
-  end
-
-  def connected_delegation_applications
-    @connected_delegation_applications ||= DelegationApplications.connected_for(
-      user: current_user, service_provider_issuer: current_sp.issuer,
+  # The applications named in the request, as registry records, in request order.
+  # @return [Array<ServiceProvider>]
+  def requested_delegation_applications
+    @requested_delegation_applications ||= DelegationApplications.requested(
+      current_sp&.issuer, decorated_sp_session.requested_delegation_scopes
     )
   end
 
-  # Applications to approve: every connected application that accepts the service provider when
-  # the user chose "allow all", otherwise the specific applications chosen. Submitted issuers
-  # outside that set are ignored rather than approved.
-  # @return [Array<ServiceProvider>]
-  def approved_delegation_applications
-    return @approved_delegation_applications if defined?(@approved_delegation_applications)
+  # The one choice the screen offers for delegation: remember these approvals for the maximum
+  # period, or keep them for this authorization only.
+  def delegation_remember?
+    form = params[:idv_form]
+    return false unless form.is_a?(ActionController::Parameters)
 
-    connected = connected_delegation_applications
-    @approved_delegation_applications =
-      if delegation_all?
-        connected
-      else
-        chosen_issuers = Array(delegation_form_params[:delegation_applications]).map(&:to_s)
-        connected.select { |application| chosen_issuers.include?(application.issuer) }
-      end
+    ActiveModel::Type::Boolean.new.cast(form[:delegation_remember]) == true
   end
 
-  def delegation_form_params
-    form = params[:idv_form]
-    form.is_a?(ActionController::Parameters) ? form : {}
+  # Whether the person's identity was verified during this browser session, recorded on the
+  # approval so reporting can attribute the verification to the service provider's sign-in.
+  def identity_verified_in_this_session?
+    profile = current_user.active_profile
+    return false unless profile&.verified_at
+
+    user_session.dig(:idv, :profile_id).to_s == profile.id.to_s ||
+      profile.verified_at > (session[:created_at] || 1.day.ago)
+  rescue StandardError
+    false
   end
 
   # True only when the SP is allow-listed, the SP requested document_images, and
