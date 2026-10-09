@@ -309,6 +309,17 @@ RSpec.describe SocureDocvResultsJob do
             expect(document_capture_session_result.aamva_status).to eq(:not_processed)
             expect(document_capture_session_result.errors).to eq({ unexpected_id_type: true })
           end
+
+          context 'when document escrow is enabled' do
+            let(:doc_escrow_enabled) { true }
+
+            it 'does not enqueue or perform SocureImageRetrievalJob' do
+              expect(SocureImageRetrievalJob).not_to receive(:perform_later)
+              expect(SocureImageRetrievalJob).not_to receive(:perform_now)
+
+              perform
+            end
+          end
         end
       end
 
@@ -1370,6 +1381,36 @@ RSpec.describe SocureDocvResultsJob do
               failure_reason: nil,
             )
             perform
+          end
+
+          context 'when document escrow is enabled' do
+            let(:doc_escrow_enabled) { true }
+            let(:historical_attempts_api_enabled) { true }
+
+            it 'does not enqueue or perform SocureImageRetrievalJob and stores no escrow images' do
+              expect(SocureImageRetrievalJob).not_to receive(:perform_later)
+              expect(SocureImageRetrievalJob).not_to receive(:perform_now)
+              expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+
+              expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                success: true,
+                document_state: address_data[:state],
+                document_number: pii_from_doc[:documentNumber],
+                document_issued: Date.parse(pii_from_doc[:issueDate]),
+                document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+                first_name: pii_from_doc[:firstName],
+                last_name: pii_from_doc[:surName],
+                date_of_birth: Date.parse(pii_from_doc[:dob]),
+                address1: address_data[:physicalAddress],
+                address2: address_data[:physicalAddress2],
+                city: address_data[:city],
+                state: address_data[:state],
+                zip: address_data[:zip],
+                failure_reason: nil,
+              )
+
+              perform
+            end
           end
         end
 

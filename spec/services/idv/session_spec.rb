@@ -665,6 +665,85 @@ RSpec.describe Idv::Session do
     end
   end
 
+  describe '#inherited_proofed?' do
+    context 'when clear1 is not allowed and not verified' do
+      it 'returns false' do
+        expect(subject.inherited_proofed?).to be(false)
+      end
+    end
+
+    context 'when clear1 allowed' do
+      before do
+        subject.clear1_allowed = true
+      end
+
+      it 'returns false' do
+        expect(subject.inherited_proofed?).to be(false)
+      end
+
+      context 'when clear1 verified' do
+        before do
+          subject.clear1_verified = true
+        end
+
+        it 'returns true' do
+          expect(subject.inherited_proofed?).to be(true)
+        end
+      end
+    end
+
+    context 'when clear1 is not allowed but verified' do
+      before do
+        subject.clear1_allowed = false
+        subject.clear1_verified = true
+      end
+
+      it 'returns false' do
+        expect(subject.inherited_proofed?).to be(false)
+      end
+    end
+  end
+
+  describe '#gpo_verifcation_needed?' do
+    context 'when phone unverified' do
+      it 'returns false' do
+        expect(subject.gpo_verification_needed?).to eq(true)
+      end
+    end
+
+    context 'when phone verified' do
+      before do
+        subject.vendor_phone_confirmation = true
+        subject.user_phone_confirmation = true
+      end
+
+      it 'returns false' do
+        expect(subject.gpo_verification_needed?).to eq(false)
+      end
+
+      context 'when gpo requested' do
+        before do
+          subject.address_verification_mechanism = 'gpo'
+        end
+
+        it 'returns true' do
+          expect(subject.gpo_verification_needed?).to eq(true)
+        end
+      end
+    end
+
+    context 'when clear1 verified' do
+      before do
+        subject.clear1_allowed = true
+        subject.clear1_verified = true
+      end
+
+      it 'returns false' do
+        expect(subject.gpo_verification_needed?).to eq(false)
+      end
+    end
+  end
+
   describe '#pii_from_doc' do
     before { subject.pii_from_doc = { document_type_received:, first_name: 'JANE' } }
 

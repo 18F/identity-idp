@@ -16,11 +16,14 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
 
   let(:ipp_enrollment_in_progress) { true }
 
+  let(:proofer_transaction_id) { 'state-id-address-123' }
+
   let(:proofer_result) do
     Proofing::Resolution::Result.new(
       success: true,
       errors: {},
       exception: nil,
+      transaction_id: proofer_transaction_id,
       vendor_name: 'test_resolution_vendor',
     )
   end
@@ -29,7 +32,7 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
     instance_double(Proofing::LexisNexis::InstantVerify::Proofer, proof: proofer_result)
   end
 
-  let(:sp_cost_token) { :test_cost_token }
+  let(:sp_cost_token) { :lexis_nexis_resolution }
 
   subject(:plugin) do
     described_class.new(
@@ -47,6 +50,16 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
         residential_address_resolution_result:,
         timer: JobHelpers::Timer.new,
       )
+    end
+
+    let(:sp_costs_for_issuer) { SpCost.where(issuer: current_sp.issuer) }
+
+    let(:lexis_nexis_sp_costs) do
+      sp_costs_for_issuer.where(cost_type: :lexis_nexis_resolution)
+    end
+
+    let(:socure_sp_costs) do
+      sp_costs_for_issuer.where(cost_type: :socure_resolution)
     end
 
     context 'remote unsupervised proofing' do
@@ -74,14 +87,8 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
           expect(call).to eql(proofer_result)
         end
 
-        it 'records correct SP cost' do
-          expect { call }
-            .to change {
-                  SpCost.where(
-                    cost_type: :lexis_nexis_resolution,
-                    issuer: current_sp.issuer,
-                  ).count
-                }.to(1)
+        it 'records a LexisNexis SP cost' do
+          expect { call }.to change(lexis_nexis_sp_costs, :count).from(0).to(1)
         end
       end
 
@@ -91,6 +98,7 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
             success: false,
             errors: {},
             exception: nil,
+            transaction_id: proofer_transaction_id,
             vendor_name: 'test_resolution_vendor',
           )
         end
@@ -100,13 +108,7 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
         end
 
         it 'records a LexisNexis SP cost' do
-          expect { call }
-            .to change {
-                  SpCost.where(
-                    cost_type: :lexis_nexis_resolution,
-                    issuer: current_sp.issuer,
-                  ).count
-                }.to(1)
+          expect { call }.to change(lexis_nexis_sp_costs, :count).from(0).to(1)
         end
       end
 
@@ -116,6 +118,7 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
             success: false,
             errors: {},
             exception: RuntimeError.new(':ohno:'),
+            transaction_id: proofer_transaction_id,
             vendor_name: 'lexisnexis:instant_verify',
           )
         end
@@ -125,13 +128,29 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
         end
 
         it 'records a LexisNexis SP cost' do
-          expect { call }
-            .to change {
-                  SpCost.where(
-                    cost_type: :lexis_nexis_resolution,
-                    issuer: current_sp.issuer,
-                  ).count
-                }.to(1)
+          expect { call }.to change(lexis_nexis_sp_costs, :count).from(0).to(1)
+        end
+      end
+
+      context 'when configured with the Socure cost token' do
+        let(:sp_cost_token) { :socure_resolution }
+
+        it 'records a Socure SP cost' do
+          expect { call }.to change(socure_sp_costs, :count).from(0).to(1)
+        end
+
+        it 'does not record a LexisNexis SP cost' do
+          expect { call }.not_to change(lexis_nexis_sp_costs, :count)
+        end
+
+        it 'records the vendor transaction id with the Socure cost' do
+          call
+
+          expect(SpCost.last).to have_attributes(
+            cost_type: 'socure_resolution',
+            issuer: current_sp.issuer,
+            transaction_id: proofer_transaction_id,
+          )
         end
       end
     end
@@ -144,14 +163,8 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
           expect(result).to eql(residential_address_resolution_result)
         end
 
-        it 'does not add a new LexisNexis SP cost (since residential address result was reused)' do
-          expect { call }
-            .not_to change {
-              SpCost.where(
-                cost_type: :lexis_nexis_resolution,
-                issuer: current_sp.issuer,
-              ).count
-            }
+        it 'does not add a new SP cost (since residential address result was reused)' do
+          expect { call }.not_to change(SpCost, :count)
         end
       end
 
@@ -187,13 +200,7 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
             end
 
             it 'records a LexisNexis SP cost' do
-              expect { call }
-                .to change {
-                      SpCost.where(
-                        cost_type: :lexis_nexis_resolution,
-                        issuer: current_sp.issuer,
-                      ).count
-                    }.to(1)
+              expect { call }.to change(lexis_nexis_sp_costs, :count).from(0).to(1)
             end
           end
 
@@ -203,6 +210,7 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
                 success: false,
                 errors: {},
                 exception: nil,
+                transaction_id: proofer_transaction_id,
                 vendor_name: 'lexisnexis:instant_verify',
               )
             end
@@ -212,13 +220,7 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
             end
 
             it 'records a LexisNexis SP cost' do
-              expect { call }
-                .to change {
-                      SpCost.where(
-                        cost_type: :lexis_nexis_resolution,
-                        issuer: current_sp.issuer,
-                      ).count
-                    }.to(1)
+              expect { call }.to change(lexis_nexis_sp_costs, :count).from(0).to(1)
             end
           end
 
@@ -228,6 +230,7 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
                 success: false,
                 errors: {},
                 exception: RuntimeError.new(':ohno:'),
+                transaction_id: proofer_transaction_id,
                 vendor_name: 'lexisnexis:instant_verify',
               )
             end
@@ -237,13 +240,19 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
             end
 
             it 'records a LexisNexis SP cost' do
-              expect { call }
-                .to change {
-                      SpCost.where(
-                        cost_type: :lexis_nexis_resolution,
-                        issuer: current_sp.issuer,
-                      ).count
-                    }.to(1)
+              expect { call }.to change(lexis_nexis_sp_costs, :count).from(0).to(1)
+            end
+          end
+
+          context 'when configured with the Socure cost token' do
+            let(:sp_cost_token) { :socure_resolution }
+
+            it 'records a Socure SP cost' do
+              expect { call }.to change(socure_sp_costs, :count).from(0).to(1)
+            end
+
+            it 'does not record a LexisNexis SP cost' do
+              expect { call }.not_to change(lexis_nexis_sp_costs, :count)
             end
           end
 
@@ -262,20 +271,22 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
               call
             end
 
-            it 'does not record an additional LexisNexis SP cost' do
-              expect { call }
-                .not_to change {
-                          SpCost.where(
-                            cost_type: :lexis_nexis_resolution,
-                            issuer: current_sp.issuer,
-                          ).count
-                        }
+            it 'does not record an additional SP cost' do
+              expect { call }.not_to change(SpCost, :count)
             end
 
             it 'returns a ResolutionCannotPass result' do
               call.tap do |result|
                 expect(result.success?).to eql(false)
                 expect(result.vendor_name).to eql('ResolutionCannotPass')
+              end
+            end
+
+            context 'when configured with the Socure cost token' do
+              let(:sp_cost_token) { :socure_resolution }
+
+              it 'does not record a Socure SP cost' do
+                expect { call }.not_to change(SpCost, :count)
               end
             end
           end

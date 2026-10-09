@@ -127,7 +127,8 @@ class SocureDocvResultsJob < ApplicationJob
     image_data = {}
 
     if doc_escrow_enabled? &&
-       docv_result_response.instance_of?(DocAuth::Socure::Responses::DocvResultResponse)
+       docv_result_response.instance_of?(DocAuth::Socure::Responses::DocvResultResponse) &&
+       !docv_result_response.document_type_mdl?
 
       pii = docv_result_response.pii_from_doc.to_h || {}
       job_data = {

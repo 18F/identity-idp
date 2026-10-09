@@ -1,14 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
-  let(:clear1_enabled) { false }
+  let(:clear1_allowed) { false }
   before do
     allow(view).to receive(:current_user).and_return(@user)
     @idv_form = Idv::PhoneForm.new(user: build_stubbed(:user), previous_params: nil)
     @idv_how_to_verify_form = Idv::HowToVerifyForm.new
     @presenter = Idv::HowToVerifyPresenter.new(
       selfie_check_required: true,
-      clear1_enabled:,
+      clear1_allowed:,
     )
   end
 
@@ -51,7 +51,7 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
   end
 
   context 'when clear1 is enabled' do
-    let(:clear1_enabled) { true }
+    let(:clear1_allowed) { true }
     it 'renders the Clear1 action' do
       expect(rendered).to have_selector(
         :xpath,

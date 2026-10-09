@@ -5,7 +5,8 @@ module DocAuth
     module Requests
       class TrueIdRequest < DocAuth::LexisNexis::Request
         attr_reader :front_image, :back_image, :passport_image, :selfie_image,
-                    :liveness_checking_required, :document_type_requested, :passport_requested
+                    :liveness_checking_required, :document_type_requested, :passport_requested,
+                    :passport_card_requested
 
         def initialize(
           config:,
@@ -19,7 +20,8 @@ module DocAuth
           image_source: nil,
           images_cropped: false,
           liveness_checking_required: false,
-          passport_requested: false
+          passport_requested: false,
+          passport_card_requested: false
         )
           super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
           @front_image = front_image
@@ -32,6 +34,7 @@ module DocAuth
           @liveness_checking_required = liveness_checking_required
           @document_type_requested = document_type_requested
           @passport_requested = passport_requested
+          @passport_card_requested = passport_card_requested
         end
 
         def request_context
@@ -110,7 +113,7 @@ module DocAuth
         end
 
         def back_image_required?
-          document_type_requested == DocumentTypes::DRIVERS_LICENSE
+          document_type_requested == DocumentTypes::DRIVERS_LICENSE || passport_card_requested
         end
 
         def image_cropping_mode

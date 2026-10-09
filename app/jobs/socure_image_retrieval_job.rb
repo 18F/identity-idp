@@ -18,6 +18,8 @@ class SocureImageRetrievalJob < ApplicationJob
     @docv_transaction_token = docv_transaction_token
     @document_metadata = document_metadata
 
+    return if document_capture_session&.mdl_requested?
+
     result = fetch_images(reference_id, passport_book:)
     if result.is_a?(Idv::IdvImages)
       result.write_with_data(image_storage_data:)

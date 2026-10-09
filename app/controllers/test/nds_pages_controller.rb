@@ -994,6 +994,7 @@ module Test
         auto_check_value: :state_id_card,
         passport_cards_enabled: params[:passport_card].present?,
         mdl_enabled: params[:mdl].present?,
+        disable_mdl: params[:disable_mdl].present?,
         show_verify_in_person: params[:ipp].present?,
       }
     end
@@ -1204,7 +1205,7 @@ module Test
     def setup_hybrid_handoff
       @upload_enabled = params[:upload].present?
       @presenter = Idv::HowToVerifyPresenter.new(
-        selfie_check_required: false, mdl_enabled: false, clear1_enabled: false,
+        selfie_check_required: false, mdl_enabled: false, clear1_allowed: false,
       )
       form = Idv::PhoneForm.new(
         previous_params: { phone: '2025551212' }, user: User.new, delivery_methods: [:sms],
