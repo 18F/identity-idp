@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_09_100200) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_09_100300) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -587,12 +587,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_100200) do
     t.datetime "created_at", precision: nil, comment: "sensitive=false"
     t.integer "default_aal", comment: "sensitive=false"
     t.string "delegation_access_type", default: "read", null: false, comment: "sensitive=false"
+    t.jsonb "delegation_ai_description", default: {}, null: false, comment: "sensitive=false"
     t.boolean "delegation_application", default: false, null: false, comment: "sensitive=false"
+    t.jsonb "delegation_data_handling_statement", default: {}, null: false, comment: "sensitive=false"
     t.jsonb "delegation_data_provided", default: {}, null: false, comment: "sensitive=false"
     t.jsonb "delegation_description", default: {}, null: false, comment: "sensitive=false"
     t.jsonb "delegation_display_name", default: {}, null: false, comment: "sensitive=false"
     t.text "delegation_learn_more_url", comment: "sensitive=false"
+    t.string "delegation_operator_legal_name", comment: "sensitive=false"
+    t.string "delegation_operator_type", comment: "sensitive=false"
+    t.text "delegation_privacy_policy_url", comment: "sensitive=false"
     t.string "delegation_scope_value", comment: "sensitive=false"
+    t.jsonb "delegation_service_description", default: {}, null: false, comment: "sensitive=false"
+    t.text "delegation_support_contact", comment: "sensitive=false"
+    t.text "delegation_terms_of_service_url", comment: "sensitive=false"
+    t.boolean "delegation_uses_ai", default: false, null: false, comment: "sensitive=false"
     t.text "description", comment: "sensitive=false"
     t.boolean "email_nameid_format_allowed", default: false, comment: "sensitive=false"
     t.text "failure_to_proof_url", comment: "sensitive=false"
@@ -620,7 +629,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_100200) do
     t.boolean "saml_emailaddress_attribute_enabled", default: false, comment: "sensitive=false"
     t.string "signature", comment: "sensitive=false"
     t.boolean "signed_response_message_requested", default: false, comment: "sensitive=false"
+    t.integer "sp_content_version", default: 1, null: false, comment: "sensitive=false"
     t.text "sp_initiated_login_url", comment: "sensitive=false"
+    t.integer "sp_material_version", default: 1, null: false, comment: "sensitive=false"
+    t.boolean "token_exchange_enabled_sp", default: false, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, comment: "sensitive=false"
     t.boolean "use_legacy_name_id_behavior", default: false, comment: "sensitive=false"
     t.index ["delegation_scope_value"], name: "index_service_providers_on_delegation_scope_value", unique: true, where: "(delegation_scope_value IS NOT NULL)"

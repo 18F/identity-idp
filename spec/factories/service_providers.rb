@@ -54,6 +54,26 @@ FactoryBot.define do
       iaa { ServiceProvider::IAA_INTERNAL }
     end
 
+    # A service provider approved for delegated access, with the consent-screen content it
+    # writes about itself.
+    trait :delegation_service_provider do
+      active { true }
+      ial { 2 }
+      token_exchange_enabled_sp { true }
+      delegation_operator_legal_name { 'Office of Benefits Coordination' }
+      delegation_operator_type { 'federal' }
+      delegation_service_description do
+        { en: 'helps you find benefits you may qualify for and track your applications.' }
+      end
+      delegation_data_handling_statement do
+        { en: 'used only while you are signed in and deleted when you sign out.' }
+      end
+      delegation_privacy_policy_url { 'https://mybenefits.example.gov/privacy' }
+      delegation_support_contact { 'help@mybenefits.example.gov' }
+      delegation_uses_ai { true }
+      delegation_ai_description { { en: 'answer your questions and suggest benefits.' } }
+    end
+
     # An agency application registered for delegated access, with the consent-screen content an
     # agency writes about it. Accepts any approved service provider unless
     # allowed_delegation_service_providers is set.

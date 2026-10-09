@@ -33,6 +33,11 @@ class ServiceProvider < ApplicationRecord
   include DelegationLocalizedContent
   # Consent-screen content an agency writes about this application; jsonb keyed by locale.
   localized_content :delegation_display_name, :delegation_description, :delegation_data_provided
+  # Consent-screen content a service provider writes about itself ("who is asking").
+  localized_content :delegation_service_description, :delegation_data_handling_statement,
+                    :delegation_ai_description
+
+  DELEGATION_OPERATOR_TYPES = %w[federal state_local contractor non_government].freeze
 
   # Prefix every application's delegation scope carries on the wire:
   # `token_exchange:<delegation_scope_value>`.
@@ -90,12 +95,11 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.allowed_ialmax_providers.include?(issuer)
   end
 
-  # Whether this SP is onboarded as a token-exchange broker: login controls the
-  # capability via a per-SP allowlist, independent of the broker's own signed
-  # target manifest.
-  def token_exchange_broker_allowed?
-    IdentityConfig.store.token_exchange_enabled &&
-      IdentityConfig.store.token_exchange_service_providers.include?(issuer)
+  # Whether this service provider may request delegated access: the capability is switched on,
+  # the record is active, and Login.gov has approved it (`token_exchange_enabled_sp`, set through
+  # partner onboarding like every other service provider field).
+  def delegation_service_provider?
+    IdentityConfig.store.token_exchange_enabled && active? && token_exchange_enabled_sp?
   end
 
   # Whether this record is an application registered for delegated access: an agency-owned

@@ -106,7 +106,7 @@ class CompletionsPresenter
   end
 
   def token_exchange_sharing?
-    current_sp.token_exchange_broker_allowed? &&
+    current_sp.delegation_service_provider? &&
       requested_attributes.map(&:to_s).include?('token_exchange')
   end
 

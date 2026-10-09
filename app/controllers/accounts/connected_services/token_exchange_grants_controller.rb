@@ -65,7 +65,7 @@ module Accounts
 
       def validate_broker
         render_not_found if broker_identity.blank? || broker.blank? ||
-                            !broker.token_exchange_broker_allowed?
+                            !broker.delegation_service_provider?
       end
 
       def broker_identity

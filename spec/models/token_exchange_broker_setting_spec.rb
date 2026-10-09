@@ -12,10 +12,9 @@ RSpec.describe TokenExchangeBrokerSetting do
   end
 
   before do
-    create(:service_provider, :active, issuer: broker)
+    create(:service_provider, :active, issuer: broker, token_exchange_enabled_sp: true)
     create(:service_provider_identity, user: user, service_provider: broker)
     allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:token_exchange_service_providers).and_return([broker])
   end
 
   describe '#enable_auto_enroll! / #disable_auto_enroll!' do
