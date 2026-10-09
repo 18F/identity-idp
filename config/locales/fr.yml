@@ -50,12 +50,9 @@ account.connected_apps.associated_html: Connecté %{timestamp_html}
 account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs services de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos services actuellement connectés.
 account.connected_apps.email_not_selected: Adresse e-mail non encore sélectionnée
 account.connected_apps.email_update_success_html: Vous avez réussi à modifier votre adresse e-mail pour <strong>%{sp_name}</strong>.
-account.connected_apps.token_exchange.auto_enroll_toggle_label: Autoriser automatiquement %{sp} auprès des nouveaux organismes que je connecte
 account.connected_apps.token_exchange.description: Activez chaque organisme auquel vous souhaitez que %{sp} puisse vous connecter. Vous pouvez modifier ce choix à tout moment.
 account.connected_apps.token_exchange.granted_html: Autorisé depuis le %{timestamp_html}
 account.connected_apps.token_exchange.heading: Organismes auprès desquels %{sp} peut agir en votre nom
-account.connected_apps.token_exchange.modal.auto_enroll_body_html: '%{sp_html} sera automatiquement autorisé à vous connecter à tout nouvel organisme que vous connectez à %{app_name} et qui fonctionne avec %{sp_html}, à l’aide de votre identité vérifiée.'
-account.connected_apps.token_exchange.modal.auto_enroll_duration: Les nouveaux organismes sont couverts à compter d’aujourd’hui pendant 12 mois. Vous pouvez désactiver cette option à tout moment depuis cette page.
 account.connected_apps.token_exchange.modal.body_html: '%{sp_html} pourra vous connecter à %{target_html} à l’aide de votre identité vérifiée, sans vous demander de la vérifier de nouveau. Il ne recevra que les informations auxquelles il est autorisé et pourra voir que vous avez été connecté par l’intermédiaire de %{sp_html}.'
 account.connected_apps.token_exchange.modal.confirm: Autoriser
 account.connected_apps.token_exchange.modal.duration: Cette autorisation dure 12 mois. Vous pouvez la désactiver à tout moment depuis cette page.
@@ -1877,8 +1874,6 @@ sign_up.information_sharing_html: Pour savoir comment %{app_name} partage vos in
 sign_up.nds_terms_intro: En continuant, vous acceptez les
 sign_up.terms: J’ai lu et j’accepte les %{app_name}
 sign_up.token_exchange_grant.all: Autoriser %{sp} à agir en mon nom auprès de tous les organismes fédéraux liés à mon compte %{app_name}
-sign_up.token_exchange_grant.auto_enroll: Inscrire automatiquement les nouveaux organismes que je connecte à %{app_name}
-sign_up.token_exchange_grant.auto_enroll_hint: Les nouveaux organismes seront couverts à compter de la date de votre premier accord, pendant 12 mois.
 sign_up.token_exchange_grant.legend: Choisissez comment %{sp} peut agir en votre nom
 sign_up.token_exchange_grant.next: Suivant
 sign_up.token_exchange_grant.or: OU

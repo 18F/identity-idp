@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
 module OpenidConnect
-  # Browser-callable RFC 8693 token exchange. Lets an allowlisted broker SP
-  # trade its access token for a token bound to another SP for the same
-  # already-proofed user, without a client secret. The broker may only mint for
-  # a user who granted the broker the token-exchange consent during proofing,
-  # and only for targets on the broker's signed manifest allowlist.
+  # RFC 8693 token exchange: a service provider trades its own access token (the subject token)
+  # for a token bound to one of the user's approved applications. The request is validated and
+  # minted by OpenidConnectTokenExchangeForm; this controller only maps it to a JSON response.
   class ExchangeController < ApplicationController
     prepend_before_action :skip_session_load
     prepend_before_action :skip_session_expiration

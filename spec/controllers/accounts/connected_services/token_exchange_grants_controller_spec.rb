@@ -2,20 +2,24 @@ require 'rails_helper'
 
 RSpec.describe Accounts::ConnectedServices::TokenExchangeGrantsController do
   let(:user) { create(:user, :fully_registered) }
-  let(:broker) do
-    create(:service_provider, :active, issuer: 'broker.gov', token_exchange_enabled_sp: true)
-  end
-  let(:target) do
+  let(:service_provider) do
     create(
-      :service_provider, :active, issuer: 'target.gov', delegation_application: true,
-                                  allowed_delegation_service_providers: ['broker.gov']
+      :service_provider, :delegation_service_provider,
+      issuer: 'urn:gov:gsa:openidconnect:sp:mybenefits'
     )
   end
-  let!(:broker_identity) do
-    create(:service_provider_identity, user: user, service_provider: broker.issuer)
+  let(:application) do
+    create(
+      :service_provider, :delegation_application,
+      issuer: 'urn:gov:gsa:openidconnect:sp:housing_records',
+      allowed_delegation_service_providers: [service_provider.issuer]
+    )
   end
-  let!(:target_identity) do
-    create(:service_provider_identity, user: user, service_provider: target.issuer)
+  let!(:service_provider_identity) do
+    create(:service_provider_identity, user:, service_provider: service_provider.issuer)
+  end
+  let!(:application_identity) do
+    create(:service_provider_identity, user:, service_provider: application.issuer)
   end
 
   before do
@@ -24,146 +28,93 @@ RSpec.describe Accounts::ConnectedServices::TokenExchangeGrantsController do
     allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
   end
 
+  def toggle(enabled:, application_issuer: application.issuer, identity_id: nil)
+    patch :update, params: {
+      identity_id: identity_id || service_provider_identity.id,
+      application_issuer:,
+      enabled: enabled ? '1' : '0',
+    }
+  end
+
   def grant
-    TokenExchangeGrant.active.find_by(
-      user: user, broker_issuer: 'broker.gov',
-      target_issuer: 'target.gov'
+    TokenExchangeGrant.live_for(
+      user:, service_provider_issuer: service_provider.issuer, application:,
     )
   end
 
-  describe '#update (target)' do
-    it 'enables a per-application grant and redirects back to the broker card' do
-      patch :update, params: {
-        identity_id: broker_identity.id,
-        grant_type: 'target',
-        target_issuer: 'target.gov',
-        enabled: '1',
-      }
+  describe '#update' do
+    it 'approves an application from the account page and redirects back to the card' do
+      toggle(enabled: true)
 
       expect(response).to redirect_to(
-        account_connected_services_path(anchor: "connected-app-#{broker_identity.id}"),
+        account_connected_services_path(anchor: "connected-app-#{service_provider_identity.id}"),
       )
       expect(grant).to be_present
+      expect(grant.source).to eq('account_page')
+      expect(grant.remember_until).to be_within(1.minute).of(1.year.from_now)
       expect(@analytics).to have_logged_event(
-        :token_exchange_grant_toggled,
-        issuer: 'broker.gov', target_issuer: 'target.gov', enabled: true,
+        :delegation_grant_toggled,
+        issuer: service_provider.issuer, application_issuer: application.issuer, enabled: true,
       )
     end
 
-    it 'disables (revokes) a per-application grant' do
-      TokenExchangeGrant.grant_one!(
-        user: user, broker_issuer: 'broker.gov',
-        target_issuer: 'target.gov'
+    it 'revokes an approval when toggled off, keeping the row for the record' do
+      TokenExchangeGrant.approve!(
+        user:, service_provider:, application:, source: 'account_page', remember: true,
       )
 
-      patch :update, params: {
-        identity_id: broker_identity.id,
-        grant_type: 'target',
-        target_issuer: 'target.gov',
-        enabled: '0',
-      }
+      toggle(enabled: false)
 
       expect(grant).to be_nil
-      expect(
-        TokenExchangeGrant.find_by(
-          user: user,
-          target_issuer: 'target.gov',
-        ).revoked_at,
-      ).to be_present
+      expect(TokenExchangeGrant.where(user:, application:).first.revocation_reason)
+        .to eq('user_revoked')
     end
 
-    it 'refuses a target that has not opted in to the broker' do
-      target.update!(allowed_delegation_service_providers: ['other-service-provider.gov'])
-      patch :update, params: {
-        identity_id: broker_identity.id,
-        grant_type: 'target',
-        target_issuer: 'target.gov',
-        enabled: '1',
-      }
+    it 'refuses an application that does not accept this service provider' do
+      application.update!(allowed_delegation_service_providers: ['urn:someone-else'])
+      toggle(enabled: true)
+
       expect(response).to have_http_status(:not_found)
       expect(grant).to be_nil
     end
 
-    it 'refuses a target the user has not linked' do
-      target_identity.destroy!
-      patch :update, params: {
-        identity_id: broker_identity.id,
-        grant_type: 'target',
-        target_issuer: 'target.gov',
-        enabled: '1',
-      }
+    it 'refuses an application the user has not connected to' do
+      application_identity.destroy!
+      toggle(enabled: true)
+
       expect(response).to have_http_status(:not_found)
     end
 
-    it 'refuses when the identity is not an allow-listed broker' do
-      broker.update!(token_exchange_enabled_sp: false)
-      patch :update, params: {
-        identity_id: broker_identity.id,
-        grant_type: 'target',
-        target_issuer: 'target.gov',
-        enabled: '1',
-      }
+    it 'refuses when the connected app is not a service provider approved for delegation' do
+      service_provider.update!(token_exchange_enabled_sp: false)
+      toggle(enabled: true)
+
       expect(response).to have_http_status(:not_found)
     end
 
-    it 'refuses granting the broker to itself' do
-      broker.update!(
+    it 'refuses approving the service provider at itself' do
+      service_provider.update!(
         delegation_application: true,
-        allowed_delegation_service_providers: ['broker.gov'],
+        allowed_delegation_service_providers: [service_provider.issuer],
       )
-      patch :update, params: {
-        identity_id: broker_identity.id,
-        grant_type: 'target',
-        target_issuer: 'broker.gov',
-        enabled: '1',
-      }
+      toggle(enabled: true, application_issuer: service_provider.issuer)
+
       expect(response).to have_http_status(:not_found)
     end
 
-    it "refuses another user's identity" do
+    it "refuses another user's connected app" do
       other = create(
-        :service_provider_identity, user: create(:user),
-                                    service_provider: broker.issuer
+        :service_provider_identity, user: create(:user), service_provider: service_provider.issuer
       )
-      patch :update, params: {
-        identity_id: other.id, grant_type: 'target', target_issuer: 'target.gov', enabled: '1'
-      }
+      toggle(enabled: true, identity_id: other.id)
+
       expect(response).to have_http_status(:not_found)
     end
-  end
 
-  describe '#update (auto_enroll)' do
-    it 'enables auto-enrollment, stamping the consent time' do
-      freeze_time do
-        patch :update,
-              params: { identity_id: broker_identity.id, grant_type: 'auto_enroll', enabled: '1' }
+    it 'refuses an unknown application' do
+      toggle(enabled: true, application_issuer: 'urn:unknown')
 
-        setting = TokenExchangeBrokerSetting.find_by(user: user, broker_issuer: 'broker.gov')
-        expect(setting.auto_enroll_enabled?).to eq(true)
-        expect(setting.auto_enroll_granted_at).to eq(Time.zone.now)
-      end
-      expect(@analytics).to have_logged_event(
-        :token_exchange_auto_enroll_toggled, issuer: 'broker.gov', enabled: true
-      )
+      expect(response).to have_http_status(:not_found)
     end
-
-    it 'disables auto-enrollment' do
-      TokenExchangeBrokerSetting.for(user: user, broker_issuer: 'broker.gov').enable_auto_enroll!
-      patch :update,
-            params: { identity_id: broker_identity.id, grant_type: 'auto_enroll', enabled: '0' }
-
-      expect(
-        TokenExchangeBrokerSetting.find_by(
-          user: user,
-          broker_issuer: 'broker.gov',
-        ).auto_enroll_enabled?,
-      )
-        .to eq(false)
-    end
-  end
-
-  it 'rejects an unknown grant_type' do
-    patch :update, params: { identity_id: broker_identity.id, grant_type: 'bogus', enabled: '1' }
-    expect(response).to have_http_status(:not_found)
   end
 end

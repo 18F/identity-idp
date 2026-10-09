@@ -120,30 +120,33 @@ RSpec.describe 'accounts/connected_services/show.html.erb' do
     end
   end
 
-  context 'with a connected broker' do
-    let(:broker) do
+  context 'with a connected service provider approved for delegation' do
+    let(:service_provider) do
       create(
-        :service_provider, :active, issuer: 'broker.gov', friendly_name: 'Broker',
-                                    token_exchange_enabled_sp: true
+        :service_provider, :delegation_service_provider, issuer: 'urn:mybenefits',
+                                                         friendly_name: 'MyBenefits Assistant'
       )
     end
-    let(:agency) { create(:agency, name: 'Department of Benefits') }
-    let(:target) do
+    let(:agency) { create(:agency, name: 'Department of Housing Support') }
+    let(:application) do
       create(
-        :service_provider, :active, issuer: 'target.gov', friendly_name: 'Benefits Portal',
-                                    agency: agency, delegation_application: true,
-                                    allowed_delegation_service_providers: ['broker.gov']
+        :service_provider, :delegation_application, issuer: 'urn:housing-records',
+                                                    friendly_name: 'Housing Assistance Records',
+                                                    agency: agency,
+                                                    allowed_delegation_service_providers: [
+                                                      'urn:mybenefits',
+                                                    ]
       )
     end
-    let!(:broker_identity) do
+    let!(:service_provider_identity) do
       create(
-        :service_provider_identity, user:, service_provider: broker.issuer,
+        :service_provider_identity, user:, service_provider: service_provider.issuer,
                                     verified_attributes: ['email']
       )
     end
-    let!(:target_identity) do
+    let!(:application_identity) do
       create(
-        :service_provider_identity, user:, service_provider: target.issuer,
+        :service_provider_identity, user:, service_provider: application.issuer,
                                     verified_attributes: ['email']
       )
     end
@@ -152,56 +155,52 @@ RSpec.describe 'accounts/connected_services/show.html.erb' do
       allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
     end
 
-    it 'renders per-application toggles by agency, an auto-enroll toggle, and a consent modal' do
-      toggle_path = connected_services_token_exchange_grant_path(identity_id: broker_identity.id)
+    it 'renders a toggle per application grouped by agency and a confirmation modal' do
+      toggle_path = connected_services_token_exchange_grant_path(
+        identity_id: service_provider_identity.id,
+      )
       render
 
       page = Capybara.string(rendered.html)
-      manage = page.find_css('[data-token-exchange-manage]')
-      expect(manage.size).to eq(1)
+      expect(page.find_css('[data-delegation-manage]').size).to eq(1)
 
       expect(rendered).to have_content(
-        t(
-          'account.connected_apps.token_exchange.heading',
-          sp: 'Broker',
-        ),
+        t('account.connected_apps.token_exchange.heading', sp: 'MyBenefits Assistant'),
       )
-      expect(rendered).to have_content('Department of Benefits')
+      expect(rendered).to have_content('Department of Housing Support')
       expect(rendered).to have_css(
         "form[action='#{toggle_path}'] " \
-        "input[name='target_issuer'][value='target.gov']",
+        "input[name='application_issuer'][value='urn:housing-records']",
         visible: false,
       )
-      expect(rendered).to have_css("[data-token-exchange-toggle][aria-checked='false']", minimum: 2)
-      expect(rendered).to have_css("input[name='grant_type'][value='auto_enroll']", visible: false)
-      expect(rendered).to have_css('lg-modal.token-exchange-consent-modal', visible: false)
+      expect(rendered).to have_css("[data-delegation-toggle][aria-checked='false']")
+      expect(rendered).to have_css('lg-modal.delegation-consent-modal', visible: false)
       expect(rendered).to have_content(t('account.connected_apps.token_exchange.modal.confirm'))
     end
 
-    it 'shows an existing grant as on, with the date it was allowed' do
-      granted_at = 2.months.ago
-      TokenExchangeGrant.grant_one!(
-        user:, broker_issuer: 'broker.gov', target_issuer: 'target.gov', granted_at:,
+    it 'shows an existing approval as on, with the date it was given' do
+      TokenExchangeGrant.approve!(
+        user:, service_provider:, application:, source: 'account_page', remember: true,
+        now: 2.months.ago
       )
 
       render
 
-      expect(rendered).to have_css("[data-token-exchange-toggle][aria-checked='true']")
+      expect(rendered).to have_css("[data-delegation-toggle][aria-checked='true']")
       expect(rendered).to have_content(t('account.connected_apps.token_exchange.on'))
     end
 
-    it 'renders the consent modal inside the manage block in the NDS layout too' do
+    it 'renders the confirmation modal inside the block in the NDS layout too' do
       allow(view).to receive(:nds_layout?).and_return(true)
       render
       page = Capybara.string(rendered.html)
-      expect(page.find_css('[data-token-exchange-manage] lg-modal').size).to eq(1)
-      expect(rendered).to have_css('[data-token-exchange-modal-body="auto_enroll"]', visible: false)
+      expect(page.find_css('[data-delegation-manage] lg-modal').size).to eq(1)
     end
 
-    it 'renders no management block for a connected app that is not a broker' do
-      broker.update!(token_exchange_enabled_sp: false)
+    it 'renders no management block for a connected app not approved for delegation' do
+      service_provider.update!(token_exchange_enabled_sp: false)
       render
-      expect(rendered).not_to have_css('[data-token-exchange-manage]')
+      expect(rendered).not_to have_css('[data-delegation-manage]')
     end
   end
 end

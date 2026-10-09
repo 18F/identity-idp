@@ -4,86 +4,90 @@ RSpec.describe OpenidConnectTokenExchangeForm do
   subject(:form) { described_class.new(params) }
 
   let(:user) { create(:user, :proofed) }
-  let(:broker_sp) do
-    create(:service_provider, :active, issuer: 'broker.gov', token_exchange_enabled_sp: true)
+  let(:delegating_sp) do
+    create(:service_provider, :active, issuer: 'urn:mybenefits', token_exchange_enabled_sp: true)
   end
-  let(:target_sp) do
+  let(:application_sp) do
     create(
       :service_provider, :active,
-      issuer: 'target.gov',
+      issuer: 'urn:application',
       ial: 2,
       attribute_bundle: %w[email],
-      delegation_application: true, allowed_delegation_service_providers: ['broker.gov']
+      delegation_application: true, allowed_delegation_service_providers: ['urn:mybenefits']
     )
   end
   let(:rails_session_id) { SecureRandom.uuid }
 
-  let(:broker_identity) do
+  let(:delegating_identity) do
     create(
       :service_provider_identity,
       user: user,
-      service_provider: broker_sp.issuer,
+      service_provider: delegating_sp.issuer,
       access_token: SecureRandom.urlsafe_base64,
       rails_session_id: rails_session_id,
-      ial: broker_ial,
+      ial: delegating_ial,
       verified_attributes: %w[email],
       scope: 'openid email token_exchange',
     )
   end
-  let(:broker_ial) { Idp::Constants::IAL2 }
-  # The user's per-application token-exchange grants for the broker. Defaults to
-  # a grant covering target.gov; override to nil for "never consented".
-  let(:grant_targets) { ['target.gov'] }
+  let(:delegating_ial) { Idp::Constants::IAL2 }
+  # The applications the user approved for the service provider. Defaults to the one
+  # application; override to nil for "never consented".
+  let(:approved_applications) { ['urn:application'] }
 
   let(:params) do
     {
       grant_type: OpenidConnectTokenExchangeForm::TOKEN_EXCHANGE_GRANT_TYPE,
-      subject_token: broker_identity.access_token,
+      subject_token: delegating_identity.access_token,
       subject_token_type: OpenidConnectTokenExchangeForm::ACCESS_TOKEN_TYPE,
-      audience: target_sp.issuer,
+      audience: application_sp.issuer,
     }
   end
 
   before do
-    broker_sp
-    target_sp
+    delegating_sp
+    application_sp
     allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
     OutOfBandSessionAccessor.new(rails_session_id).put_empty_user_session
-    if grant_targets
-      TokenExchangeGrant.grant!(user: user, broker_issuer: 'broker.gov', targets: grant_targets)
+    Array(approved_applications).each do |issuer|
+      TokenExchangeGrant.approve!(
+        user: user, service_provider: delegating_sp,
+        application: ServiceProvider.find_by!(issuer: issuer),
+        source: 'consent_screen', remember: true
+      )
     end
   end
 
   describe '#submit' do
     context 'happy path' do
-      it 'succeeds and mints a target identity reusing the broker session' do
+      it 'succeeds and mints a application identity reusing the service provider session' do
         result = form.submit
 
         expect(result.success?).to eq(true)
-        minted = user.identities.find_by(service_provider: 'target.gov')
+        minted = user.identities.find_by(service_provider: 'urn:application')
         expect(minted).to be_present
         expect(minted.rails_session_id).to eq(rails_session_id)
         expect(minted.last_consented_at).to be_present
         expect(minted.access_token).to be_present
-        expect(minted.uuid).not_to eq(broker_identity.uuid)
+        expect(minted.uuid).not_to eq(delegating_identity.uuid)
       end
 
-      it 'returns an RFC 8693 token-exchange response tagged with the broker' do
+      it 'returns an RFC 8693 token-exchange response tagged with the service provider' do
         response = form.response
 
         expect(response[:token_type]).to eq('Bearer')
         expect(response[:issued_token_type])
           .to eq(OpenidConnectTokenExchangeForm::ACCESS_TOKEN_TYPE)
         expect(response[:access_token]).to be_present
-        expect(response[:exchanged_from]).to eq('broker.gov')
+        expect(response[:exchanged_from]).to eq('urn:mybenefits')
         expect(response[:expires_in]).to be > 0
       end
 
       it 'issues an id_token expressing delegation via the RFC 8693 act claim' do
         payload, = JWT.decode(form.response[:id_token], nil, false)
 
-        expect(payload['act']).to eq('sub' => 'broker.gov')
-        expect(payload['aud']).to eq('target.gov')
+        expect(payload['act']).to eq('sub' => 'urn:mybenefits')
+        expect(payload['aud']).to eq('urn:application')
         expect(payload).not_to have_key('c_hash')
         expect(payload).not_to have_key('nonce')
         expect(payload['at_hash']).to be_present
@@ -108,19 +112,19 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
 
       it 'further narrows the issued scope to an explicitly requested scope' do
-        broker_identity.update!(
+        delegating_identity.update!(
           scope: 'openid email phone token_exchange',
           verified_attributes: %w[email phone],
         )
-        target_sp.update!(attribute_bundle: %w[email phone])
+        application_sp.update!(attribute_bundle: %w[email phone])
 
         form = described_class.new(params.merge(scope: 'openid email'))
         expect(form.submit.success?).to eq(true)
         expect(form.response[:scope].split(' ')).to match_array(%w[openid email])
       end
 
-      it 'never widens scope beyond what the broker holds, even if requested' do
-        target_sp.update!(attribute_bundle: %w[email phone address])
+      it 'never widens scope beyond what the service provider holds, even if requested' do
+        application_sp.update!(attribute_bundle: %w[email phone address])
         form = described_class.new(params.merge(scope: 'openid email phone address'))
         expect(form.submit.success?).to eq(true)
         expect(form.response[:scope].split(' ')).to match_array(%w[openid email])
@@ -136,23 +140,24 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
 
       it 'maps an unusable audience to invalid_target' do
-        target_sp.update!(allowed_delegation_service_providers: ['other-service-provider.gov'])
+        application_sp.update!(allowed_delegation_service_providers: ['other-service-provider.gov'])
         expect(form.submit.success?).to eq(false)
         expect(form.response[:error]).to eq('invalid_target')
       end
 
-      it 'refuses a broker exchanging for itself' do
-        broker_sp.update!(
+      it 'refuses a service provider exchanging for itself' do
+        delegating_sp.update!(
           ial: 2, delegation_application: true,
-          allowed_delegation_service_providers: ['broker.gov']
+          allowed_delegation_service_providers: ['urn:mybenefits']
         )
-        TokenExchangeGrant.grant_one!(
-          user: user, broker_issuer: 'broker.gov', target_issuer: 'broker.gov',
+        TokenExchangeGrant.approve!(
+          user: user, service_provider: delegating_sp, application: delegating_sp,
+          source: 'consent_screen', remember: true
         )
-        form = described_class.new(params.merge(audience: 'broker.gov'))
+        form = described_class.new(params.merge(audience: 'urn:mybenefits'))
         expect(form.submit.success?).to eq(false)
         expect(form.response[:error]).to eq('invalid_target')
-        expect(broker_identity.reload.access_token).to eq(params[:subject_token])
+        expect(delegating_identity.reload.access_token).to eq(params[:subject_token])
       end
 
       it 'describes only the highest-precedence error' do
@@ -168,39 +173,39 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
 
       it 'rejects a null byte in audience without raising' do
-        form = described_class.new(params.merge(audience: "target\x00.gov"))
+        form = described_class.new(params.merge(audience: "urn:appli\x00cation"))
         expect { form.submit }.not_to raise_error
         expect(form.submit.success?).to eq(false)
       end
     end
 
     context 'when an unauthorized token holder probes audiences' do
-      let(:grant_targets) { nil }
+      let(:approved_applications) { nil }
       let!(:revoked_target_identity) do
         create(
           :service_provider_identity,
           user: user,
-          service_provider: target_sp.issuer,
+          service_provider: application_sp.issuer,
           deleted_at: 1.day.ago,
         )
       end
 
-      it 'reveals nothing about the target connection' do
+      it 'reveals nothing about the application connection' do
         response = form.response
         expect(response[:error]).to eq('invalid_request')
-        expect(response[:error_description]).not_to match(/target|revoked|in_use|forbids/)
+        expect(response[:error_description]).not_to match(/application|revoked|in_use|refuses/)
         expect(form.errors.details[:audience]).to be_blank
       end
     end
 
-    context 'when the broker SP is not an allow-listed broker' do
+    context 'when the service provider is not an allow-listed service provider' do
       before do
-        broker_sp.update!(token_exchange_enabled_sp: false)
+        delegating_sp.update!(token_exchange_enabled_sp: false)
       end
 
       it 'fails and mints nothing' do
         expect(form.submit.success?).to eq(false)
-        expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
+        expect(user.identities.find_by(service_provider: 'urn:application')).to be_nil
       end
     end
 
@@ -211,44 +216,42 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
       it 'fails and mints nothing' do
         expect(form.submit.success?).to eq(false)
-        expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
+        expect(user.identities.find_by(service_provider: 'urn:application')).to be_nil
       end
     end
 
     context 'when the user never granted token-exchange consent' do
-      let(:grant_targets) { nil }
+      let(:approved_applications) { nil }
 
       it 'fails and mints nothing' do
         expect(form.submit.success?).to eq(false)
-        expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
+        expect(user.identities.find_by(service_provider: 'urn:application')).to be_nil
       end
     end
 
-    context 'when the token-exchange grant has expired' do
+    context 'when the approval is no longer remembered' do
       before do
-        TokenExchangeGrant.where(user: user).update_all(
-          expires_at: 1.day.ago, granted_at: (TokenExchangeGrant::GRANT_DURATION + 1.day).ago,
-        )
+        TokenExchangeGrant.where(user: user).update_all(remember_until: 1.day.ago)
       end
 
       it 'fails and mints nothing' do
         expect(form.submit.success?).to eq(false)
-        expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
+        expect(user.identities.find_by(service_provider: 'urn:application')).to be_nil
       end
     end
 
-    context 'when the target SP has not allow-listed the broker' do
+    context 'when the application has not allow-listed the service provider' do
       before do
-        target_sp.update!(allowed_delegation_service_providers: ['other-service-provider.gov'])
+        application_sp.update!(allowed_delegation_service_providers: ['other-service-provider.gov'])
       end
 
       it 'fails and mints nothing' do
         expect(form.submit.success?).to eq(false)
-        expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
+        expect(user.identities.find_by(service_provider: 'urn:application')).to be_nil
       end
     end
 
-    context 'when the broker session is dead' do
+    context 'when the service provider session is dead' do
       before { OutOfBandSessionAccessor.new(rails_session_id).destroy }
 
       it 'fails' do
@@ -269,52 +272,52 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
       it 'fails and mints nothing' do
         expect(form.submit.success?).to eq(false)
-        expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
+        expect(user.identities.find_by(service_provider: 'urn:application')).to be_nil
       end
     end
 
     context 'IAL forwarding (no step-up)' do
-      it 'forwards the broker IAL2 assertion to the minted identity' do
+      it 'forwards the service provider IAL2 assertion to the minted identity' do
         expect(form.submit.success?).to eq(true)
-        expect(user.identities.find_by(service_provider: 'target.gov').ial)
+        expect(user.identities.find_by(service_provider: 'urn:application').ial)
           .to eq(Idp::Constants::IAL2)
       end
 
-      context 'when the broker token was asserted below IAL2' do
-        let(:broker_ial) { Idp::Constants::IAL1 }
+      context 'when the service provider token was asserted below IAL2' do
+        let(:delegating_ial) { Idp::Constants::IAL1 }
 
         it 'refuses to mint even though the user is proofed to IAL2' do
           expect(user.active_profile).to be_present
           expect(form.submit.success?).to eq(false)
-          expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
+          expect(user.identities.find_by(service_provider: 'urn:application')).to be_nil
         end
       end
 
-      context 'when the broker token was asserted at IALMax for a verified user' do
-        let(:broker_ial) { Idp::Constants::IAL_MAX }
+      context 'when the service provider token was asserted at IALMax for a verified user' do
+        let(:delegating_ial) { Idp::Constants::IAL_MAX }
 
         it 'treats it as IAL2 and mints' do
           expect(form.submit.success?).to eq(true)
-          expect(user.identities.find_by(service_provider: 'target.gov')).to be_present
+          expect(user.identities.find_by(service_provider: 'urn:application')).to be_present
         end
       end
 
-      context 'when the broker token has no asserted IAL (nil)' do
-        let(:broker_ial) { nil }
+      context 'when the service provider token has no asserted IAL (nil)' do
+        let(:delegating_ial) { nil }
 
         it 'refuses to mint (nil is not IAL2, despite nil.to_i == 0)' do
           expect(form.submit.success?).to eq(false)
-          expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
+          expect(user.identities.find_by(service_provider: 'urn:application')).to be_nil
         end
       end
     end
 
-    context 'scope / attribute narrowing to the target SP' do
-      let(:broker_identity) do
+    context 'scope / attribute narrowing to the application' do
+      let(:delegating_identity) do
         create(
           :service_provider_identity,
           user: user,
-          service_provider: broker_sp.issuer,
+          service_provider: delegating_sp.issuer,
           access_token: SecureRandom.urlsafe_base64,
           rails_session_id: rails_session_id,
           ial: Idp::Constants::IAL2,
@@ -324,23 +327,23 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
 
       before do
-        target_sp.update!(attribute_bundle: %w[email])
+        application_sp.update!(attribute_bundle: %w[email])
       end
 
-      it 'grants the target only what its own attribute bundle allows' do
+      it 'grants the application only what its own attribute bundle allows' do
         expect(form.submit.success?).to eq(true)
 
-        minted = user.identities.find_by(service_provider: 'target.gov')
+        minted = user.identities.find_by(service_provider: 'urn:application')
         expect(minted.scope.split(' ')).to match_array(%w[openid email])
         expect(minted.verified_attributes).to eq(%w[email])
       end
 
       context 'with SP-facing bundle names (first_name, dob)' do
-        let(:broker_identity) do
+        let(:delegating_identity) do
           create(
             :service_provider_identity,
             user: user,
-            service_provider: broker_sp.issuer,
+            service_provider: delegating_sp.issuer,
             access_token: SecureRandom.urlsafe_base64,
             rails_session_id: rails_session_id,
             ial: Idp::Constants::IAL2,
@@ -349,13 +352,13 @@ RSpec.describe OpenidConnectTokenExchangeForm do
           )
         end
 
-        before { target_sp.update!(attribute_bundle: %w[email first_name dob]) }
+        before { application_sp.update!(attribute_bundle: %w[email first_name dob]) }
 
         it 'translates bundle names to claims and admits only fully-covered scopes' do
           expect(form.submit.success?).to eq(true)
 
-          minted = user.identities.find_by(service_provider: 'target.gov')
-          # The broker's `profile` authorizes birthdate, and the bundle names dob,
+          minted = user.identities.find_by(service_provider: 'urn:application')
+          # The service provider's `profile` authorizes birthdate, and the bundle names dob,
           # so the narrower profile:birthdate is granted. `profile` itself is
           # refused (it would also release family_name + verified_at), and phone
           # is outside the bundle.
@@ -365,12 +368,12 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         end
       end
 
-      context 'when the broker holds the umbrella profile scope' do
-        let(:broker_identity) do
+      context 'when the service provider holds the umbrella profile scope' do
+        let(:delegating_identity) do
           create(
             :service_provider_identity,
             user: user,
-            service_provider: broker_sp.issuer,
+            service_provider: delegating_sp.issuer,
             access_token: SecureRandom.urlsafe_base64,
             rails_session_id: rails_session_id,
             ial: Idp::Constants::IAL2,
@@ -379,39 +382,39 @@ RSpec.describe OpenidConnectTokenExchangeForm do
           )
         end
 
-        it 'refuses profile for a target whose bundle only names first_name' do
-          target_sp.update!(attribute_bundle: %w[email first_name])
+        it 'refuses profile for a application whose bundle only names first_name' do
+          application_sp.update!(attribute_bundle: %w[email first_name])
           expect(form.submit.success?).to eq(true)
 
-          minted = user.identities.find_by(service_provider: 'target.gov')
+          minted = user.identities.find_by(service_provider: 'urn:application')
           expect(minted.scope.split(' ')).to match_array(%w[openid email])
           expect(minted.scope).not_to include('profile')
         end
 
         it 'grants profile only when the bundle covers every claim it releases' do
-          target_sp.update!(attribute_bundle: %w[email first_name last_name dob verified_at])
+          application_sp.update!(attribute_bundle: %w[email first_name last_name dob verified_at])
           expect(form.submit.success?).to eq(true)
 
-          minted = user.identities.find_by(service_provider: 'target.gov')
+          minted = user.identities.find_by(service_provider: 'urn:application')
           expect(minted.scope.split(' ')).to include('profile')
         end
 
-        it 'grants the narrower profile:name to a name-only target when the broker holds profile' do
-          target_sp.update!(attribute_bundle: %w[email first_name last_name])
+        it 'grants the narrower profile:name to a name-only application from profile' do
+          application_sp.update!(attribute_bundle: %w[email first_name last_name])
           expect(form.submit.success?).to eq(true)
 
-          minted = user.identities.find_by(service_provider: 'target.gov')
+          minted = user.identities.find_by(service_provider: 'urn:application')
           expect(minted.scope.split(' ')).to match_array(%w[openid email profile:name])
           expect(minted.verified_attributes).to match_array(%w[email given_name family_name])
         end
       end
 
-      context 'when the target bundle uses the address component vocabulary' do
-        let(:broker_identity) do
+      context 'when the application bundle uses the address component vocabulary' do
+        let(:delegating_identity) do
           create(
             :service_provider_identity,
             user: user,
-            service_provider: broker_sp.issuer,
+            service_provider: delegating_sp.issuer,
             access_token: SecureRandom.urlsafe_base64,
             rails_session_id: rails_session_id,
             ial: Idp::Constants::IAL2,
@@ -421,21 +424,21 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         end
 
         it 'maps address1/city/state/zipcode to the composite address claim' do
-          target_sp.update!(attribute_bundle: %w[email address1 city state zipcode])
+          application_sp.update!(attribute_bundle: %w[email address1 city state zipcode])
           expect(form.submit.success?).to eq(true)
 
-          minted = user.identities.find_by(service_provider: 'target.gov')
+          minted = user.identities.find_by(service_provider: 'urn:application')
           expect(minted.scope.split(' ')).to match_array(%w[openid email address])
           expect(minted.verified_attributes).to match_array(%w[email address])
         end
       end
 
-      context 'when the broker holds an attribute it was never scoped for' do
-        let(:broker_identity) do
+      context 'when the service provider holds an attribute it was never scoped for' do
+        let(:delegating_identity) do
           create(
             :service_provider_identity,
             user: user,
-            service_provider: broker_sp.issuer,
+            service_provider: delegating_sp.issuer,
             access_token: SecureRandom.urlsafe_base64,
             rails_session_id: rails_session_id,
             ial: Idp::Constants::IAL2,
@@ -444,12 +447,12 @@ RSpec.describe OpenidConnectTokenExchangeForm do
           )
         end
 
-        before { target_sp.update!(attribute_bundle: %w[email ssn]) }
+        before { application_sp.update!(attribute_bundle: %w[email ssn]) }
 
         it 'does not store an attribute outside the granted scope' do
           expect(form.submit.success?).to eq(true)
 
-          minted = user.identities.find_by(service_provider: 'target.gov')
+          minted = user.identities.find_by(service_provider: 'urn:application')
           expect(minted.scope.split(' ')).to match_array(%w[openid email])
           expect(minted.verified_attributes).to eq(%w[email])
         end
@@ -457,16 +460,16 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     end
 
     context 'minted identity hygiene' do
-      it 'forwards aal, requested_aal_value and email_address_id from the broker' do
+      it 'forwards aal, requested_aal_value and email_address_id from the service provider' do
         email_address = user.confirmed_email_addresses.first
-        broker_identity.update!(
+        delegating_identity.update!(
           aal: 2,
           requested_aal_value: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
           email_address_id: email_address.id,
         )
         expect(form.submit.success?).to eq(true)
 
-        minted = user.identities.find_by(service_provider: 'target.gov')
+        minted = user.identities.find_by(service_provider: 'urn:application')
         expect(minted.aal).to eq(2)
         expect(minted.requested_aal_value)
           .to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
@@ -477,96 +480,82 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
       it 'leaves no redeemable authorization code on the minted identity' do
         expect(form.submit.success?).to eq(true)
-        expect(user.identities.find_by(service_provider: 'target.gov').session_uuid).to be_nil
+        expect(user.identities.find_by(service_provider: 'urn:application').session_uuid).to be_nil
       end
     end
 
     context 'per-application grant semantics' do
-      let!(:other_target) do
+      let!(:other_application) do
         create(
           :service_provider, :active,
-          issuer: 'other.gov', ial: 2, attribute_bundle: %w[email],
-          delegation_application: true, allowed_delegation_service_providers: ['broker.gov']
+          issuer: 'urn:other-application', ial: 2, attribute_bundle: %w[email],
+          delegation_application: true, allowed_delegation_service_providers: ['urn:mybenefits']
         )
       end
 
-      context 'when only target.gov was granted' do
-        let(:grant_targets) { ['target.gov'] }
+      context 'when only application.gov was granted' do
+        let(:approved_applications) { ['urn:application'] }
 
         it 'mints for the granted application' do
           expect(form.submit.success?).to eq(true)
         end
 
         it 'refuses an application the user did not grant, with invalid_target' do
-          form = described_class.new(params.merge(audience: 'other.gov'))
+          form = described_class.new(params.merge(audience: 'urn:other-application'))
           expect(form.submit.success?).to eq(false)
           expect(form.response[:error]).to eq('invalid_target')
-          expect(user.identities.find_by(service_provider: 'other.gov')).to be_nil
+          expect(user.identities.find_by(service_provider: 'urn:other-application')).to be_nil
         end
       end
 
-      context 'when auto-enrollment is on but the target was never enrolled' do
-        let(:grant_targets) { ['target.gov'] }
-
-        before do
-          TokenExchangeBrokerSetting.for(user: user, broker_issuer: 'broker.gov')
-            .enable_auto_enroll!
-        end
-
-        it 'still refuses: auto-enrollment grants when the user connects, not at exchange' do
-          form = described_class.new(params.merge(audience: 'other.gov'))
-          expect(form.submit.success?).to eq(false)
-          expect(form.response[:error]).to eq('invalid_target')
-        end
-      end
-
-      it 'records an independent timestamp per application' do
-        TokenExchangeGrant.grant_one!(
-          user: user, broker_issuer: 'broker.gov', target_issuer: 'other.gov',
-          granted_at: 1.month.ago
+      it 'records an independent approval per application' do
+        TokenExchangeGrant.approve!(
+          user: user, service_provider: delegating_sp, application: other_application,
+          source: 'account_page', remember: true, now: 1.month.ago
         )
-        rows = TokenExchangeGrant.active.where(user: user, broker_issuer: 'broker.gov')
-        expect(rows.pluck(:target_issuer)).to match_array(%w[target.gov other.gov])
-        expect(rows.pluck(:granted_at).uniq.size).to eq(2)
+        rows = TokenExchangeGrant.live.where(user: user, service_provider_issuer: 'urn:mybenefits')
+        expect(rows.map { |row| row.application.issuer })
+          .to match_array(%w[urn:application urn:other-application])
+        expect(rows.pluck(:consented_at).uniq.size).to eq(2)
       end
     end
 
-    context 'billing the target on mint' do
-      it 'records a billable return for the TARGET issuer, not the broker' do
+    context 'billing the application on mint' do
+      it 'records a billable return for the APPLICATION issuer, not the service provider' do
         expect { form.submit }.to change { SpReturnLog.count }.by(1)
 
         log = SpReturnLog.last
-        expect(log.issuer).to eq('target.gov')
+        expect(log.issuer).to eq('urn:application')
         expect(log.billable).to eq(true)
         expect(log.user).to eq(user)
         expect(log.ial).to eq(Idp::Constants::IAL2)
         expect(log.profile_id).to eq(user.active_profile.id)
-        expect(SpReturnLog.where(issuer: 'broker.gov')).to be_empty
+        expect(SpReturnLog.where(issuer: 'urn:mybenefits')).to be_empty
         expect(form.submit.to_h[:billable]).to eq(true)
       end
 
-      it 'bills once per broker session, recording a repeat as non-billable' do
+      it 'bills once per service provider session, recording a repeat as non-billable' do
         form.submit
         second = described_class.new(params)
         expect { second.submit }.not_to(change { SpReturnLog.where(billable: true).count })
         expect(second.submit.to_h[:billable]).to eq(false)
-        expect(SpReturnLog.where(issuer: 'target.gov', billable: false).count).to eq(1)
+        expect(SpReturnLog.where(issuer: 'urn:application', billable: false).count).to eq(1)
       end
 
-      it 'bills a fresh return in a new broker session' do
+      it 'bills a fresh return in a new service provider session' do
         form.submit
-        # The user signs in to the broker again: a new session, and the target
+        # The user signs in to the service provider again: a new session, and the application
         # identity from the first exchange is no longer bound to a live session.
         OutOfBandSessionAccessor.new(rails_session_id).destroy
         new_session = SecureRandom.uuid
         OutOfBandSessionAccessor.new(new_session).put_empty_user_session
-        broker_identity.update!(rails_session_id: new_session)
+        delegating_identity.update!(rails_session_id: new_session)
         second = described_class.new(params)
         expect { second.submit }.to(change { SpReturnLog.where(billable: true).count }.by(1))
       end
 
-      it 'bills an IALMax broker token as IAL2' do
-        broker_identity.update!(ial: Idp::Constants::IAL_MAX)
+      it 'bills an IALMax service provider token as IAL2' do
+        delegating_identity.update!(ial: Idp::Constants::IAL_MAX)
         form.submit
         expect(SpReturnLog.last.ial).to eq(Idp::Constants::IAL2)
       end
@@ -578,24 +567,24 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       before do
         allow(IdentityConfig.store).to receive(:attempts_api_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
-          [{ 'issuer' => 'target.gov',
+          [{ 'issuer' => 'urn:application',
              'keys' => [OpenSSL::PKey::RSA.new(2048).public_key.to_pem] }],
         )
         allow(AttemptsApi::Tracker).to receive(:new).and_return(target_tracker)
         allow(target_tracker).to receive(:token_exchange_login_completed)
       end
 
-      it 'sends the login-completed signal to the TARGET service provider' do
+      it 'sends the login-completed signal to the APPLICATION service provider' do
         described_class.new(params, request: instance_double(ActionDispatch::Request)).submit
 
         expect(AttemptsApi::Tracker).to have_received(:new).with(
-          hash_including(sp: target_sp, user: user, enabled_for_session: true),
+          hash_including(sp: application_sp, user: user, enabled_for_session: true),
         )
         expect(target_tracker).to have_received(:token_exchange_login_completed)
-          .with(broker_issuer: 'broker.gov')
+          .with(service_provider_issuer: 'urn:mybenefits')
       end
 
-      it "never forwards the broker's request (IP, UA, cookies) or the raw IdP session id" do
+      it "never forwards the service provider's request details or the raw IdP session id" do
         request = instance_double(ActionDispatch::Request)
         described_class.new(params, request: request).submit
 
@@ -614,25 +603,25 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         expect(form.submit.to_h[:fraud_signalled]).to eq(true)
       end
 
-      it 'never builds a tracker for the broker' do
+      it 'never builds a tracker for the service provider' do
         form.submit
         expect(AttemptsApi::Tracker).not_to have_received(:new)
-          .with(hash_including(sp: broker_sp))
+          .with(hash_including(sp: delegating_sp))
       end
 
-      it 'sends nothing when the target has not enabled the Attempts API' do
+      it 'sends nothing when the application has not enabled the Attempts API' do
         allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return([])
         form.submit
         expect(AttemptsApi::Tracker).not_to have_received(:new)
       end
     end
 
-    context 'when the presented broker token was not issued with token_exchange' do
-      let(:broker_identity) do
+    context 'when the presented service provider token was not issued with token_exchange' do
+      let(:delegating_identity) do
         create(
           :service_provider_identity,
           user: user,
-          service_provider: broker_sp.issuer,
+          service_provider: delegating_sp.issuer,
           access_token: SecureRandom.urlsafe_base64,
           rails_session_id: rails_session_id,
           ial: Idp::Constants::IAL2,
@@ -644,35 +633,35 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       it 'fails even though a prior consent is recorded (consent travels with the grant)' do
         expect(form.submit.success?).to eq(false)
         expect(form.response[:error]).to eq('invalid_request')
-        expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
+        expect(user.identities.find_by(service_provider: 'urn:application')).to be_nil
       end
     end
 
-    context 'when the target SP is not entitled to identity proofing (IAL1)' do
-      before { target_sp.update!(ial: 1) }
+    context 'when the application is not entitled to identity proofing (IAL1)' do
+      before { application_sp.update!(ial: 1) }
 
       it 'refuses to mint an IAL2 identity for it' do
         expect(form.submit.success?).to eq(false)
         expect(form.response[:error]).to eq('invalid_target')
-        expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
+        expect(user.identities.find_by(service_provider: 'urn:application')).to be_nil
       end
     end
 
-    context 'when the broker SP is no longer active' do
-      before { broker_sp.update!(active: false) }
+    context 'when the service provider is no longer active' do
+      before { delegating_sp.update!(active: false) }
 
       it 'fails and mints nothing' do
         expect(form.submit.success?).to eq(false)
-        expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
+        expect(user.identities.find_by(service_provider: 'urn:application')).to be_nil
       end
     end
 
-    context 'when the user previously revoked the target connection' do
+    context 'when the user previously revoked the application connection' do
       let!(:revoked_identity) do
         create(
           :service_provider_identity,
           user: user,
-          service_provider: target_sp.issuer,
+          service_provider: application_sp.issuer,
           verified_attributes: %w[email phone address],
           deleted_at: 1.day.ago,
         )
@@ -685,12 +674,12 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when a target identity exists with no bound session' do
+    context 'when a application identity exists with no bound session' do
       let!(:unbound_identity) do
         create(
           :service_provider_identity,
           user: user,
-          service_provider: target_sp.issuer,
+          service_provider: application_sp.issuer,
           rails_session_id: nil,
         )
       end
@@ -701,12 +690,12 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when a live target identity already exists for a different session' do
+    context 'when a live application identity already exists for a different session' do
       let!(:other_identity) do
         create(
           :service_provider_identity,
           user: user,
-          service_provider: target_sp.issuer,
+          service_provider: application_sp.issuer,
           access_token: 'existing-token',
           rails_session_id: SecureRandom.uuid,
           ial: Idp::Constants::IAL2,

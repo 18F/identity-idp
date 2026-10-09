@@ -195,93 +195,90 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
     end
   end
 
-  describe 'token-exchange grant' do
+  describe 'delegated-access consent' do
     let(:idv_requested) { true }
     let(:requested_attributes) { %i[email token_exchange] }
 
-    context 'when the SP is an allow-listed broker requesting token_exchange' do
-      let(:agency) { create(:agency, name: 'Department of Benefits') }
-      let!(:target) do
+    context 'when a service provider approved for delegation requests it' do
+      let(:agency) { create(:agency, name: 'Department of Housing Support') }
+      let!(:application) do
         create(
-          :service_provider, :active, issuer: 'target.gov', ial: 2, agency: agency,
-                                      friendly_name: 'Benefits Portal',
-                                      delegation_application: true,
-                                      allowed_delegation_service_providers: [
-                                        service_provider.issuer,
-                                      ]
+          :service_provider, :delegation_application, issuer: 'urn:application', agency: agency,
+                                                      friendly_name: 'Housing Assistance Records',
+                                                      allowed_delegation_service_providers: [
+                                                        service_provider.issuer,
+                                                      ]
         )
       end
 
       before do
         allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
-        # Approval now lives on the record and requires an active service provider.
+        # Approval lives on the record and requires an active service provider.
         service_provider.update!(active: true, token_exchange_enabled_sp: true)
       end
 
-      context 'with linked agencies' do
-        before { create(:service_provider_identity, user: user, service_provider: 'target.gov') }
+      context 'with connected applications' do
+        before do
+          create(:service_provider_identity, user: user, service_provider: application.issuer)
+        end
 
-        shared_examples 'renders the full grant control' do
-          it 'renders allow-all, a dependent (disabled) auto-enroll, and an agency-grouped list' do
+        shared_examples 'renders the full consent control' do
+          it 'renders allow-all and an agency-grouped list of applications' do
             render
 
             form = "form[action='#{sign_up_completed_path}']"
             expect(rendered).to have_css(
-              "#{form} input[type=checkbox][name='idv_form[token_exchange_all]']:not([checked])",
-            )
-            expect(rendered).to have_css(
-              "#{form} input[type=checkbox][name='idv_form[token_exchange_auto_enroll]'][disabled]",
+              "#{form} input[type=checkbox][name='idv_form[delegation_all]']:not([checked])",
             )
             expect(rendered).to have_content(t('sign_up.token_exchange_grant.or'))
             expect(rendered).to have_css(
-              '[data-token-exchange-agency] h3',
-              text: 'Department of Benefits',
+              '[data-delegation-agency] h3',
+              text: 'Department of Housing Support',
             )
             expect(rendered).to have_css(
-              "#{form} input[type=checkbox][name='idv_form[token_exchange_targets][]']" \
-              "[value='target.gov']",
+              "#{form} input[type=checkbox][name='idv_form[delegation_applications][]']" \
+              "[value='urn:application']",
             )
-            expect(rendered).to have_css('label', text: 'Benefits Portal')
-            expect(rendered).to have_css('[data-token-exchange-pager]', visible: false)
+            expect(rendered).to have_css('label', text: 'Housing Assistance Records')
+            expect(rendered).to have_css('[data-delegation-pager]', visible: false)
           end
         end
 
         context 'in the legacy layout' do
           let(:nds_layout) { false }
-          it_behaves_like 'renders the full grant control'
+          it_behaves_like 'renders the full consent control'
         end
 
         context 'in the NDS layout' do
           let(:nds_layout) { true }
-          it_behaves_like 'renders the full grant control'
+          it_behaves_like 'renders the full consent control'
         end
       end
 
-      context 'with linked agencies and existing grants (return visit)' do
+      context 'with connected applications and existing approvals (return visit)' do
         let(:nds_layout) { false }
         before do
-          create(:service_provider_identity, user: user, service_provider: 'target.gov')
-          TokenExchangeGrant.grant!(
-            user: user, broker_issuer: service_provider.issuer,
-            targets: ['target.gov']
+          create(:service_provider_identity, user: user, service_provider: application.issuer)
+          TokenExchangeGrant.approve!(
+            user: user, service_provider: service_provider, application: application,
+            source: 'consent_screen', remember: true
           )
         end
 
-        it 'pre-checks the current grants so continuing preserves them' do
+        it 'pre-checks the current approvals so continuing preserves them' do
           render
-          # every linked target is granted => rendered as "allow all"
-          expect(rendered).to have_css("input[name='idv_form[token_exchange_all]'][checked]")
+          # every connected application is approved => rendered as "allow all"
+          expect(rendered).to have_css("input[name='idv_form[delegation_all]'][checked]")
         end
       end
 
-      context 'with a linked agency that has no agency record' do
+      context 'with a connected application that has no agency record' do
         let(:nds_layout) { false }
         before do
-          create(:service_provider_identity, user: user, service_provider: 'target.gov')
+          create(:service_provider_identity, user: user, service_provider: application.issuer)
           orphan = create(
-            :service_provider, :active,
-            issuer: 'orphan.gov', agency: nil, friendly_name: 'Orphan App',
-            delegation_application: true,
+            :service_provider, :delegation_application,
+            issuer: 'urn:orphan', agency: nil, friendly_name: 'Orphan App',
             allowed_delegation_service_providers: [service_provider.issuer]
           )
           create(:service_provider_identity, user: user, service_provider: orphan.issuer)
@@ -293,26 +290,25 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
         end
       end
 
-      context 'with no linked agencies' do
-        it 'offers only the (enabled, optional) auto-enroll choice' do
+      context 'with no connected applications' do
+        let(:nds_layout) { false }
+
+        it 'explains that nothing can be approved yet and offers no checkboxes' do
           render
 
-          expect(rendered).not_to have_css("input[name='idv_form[token_exchange_all]']")
-          expect(rendered).not_to have_css("input[name='idv_form[token_exchange_targets][]']")
-          expect(rendered).to have_css(
-            "input[type=checkbox][name='idv_form[token_exchange_auto_enroll]']:not([disabled])",
-          )
-          expect(rendered).not_to have_content(t('sign_up.token_exchange_grant.or'))
+          expect(rendered).not_to have_css("input[name='idv_form[delegation_all]']")
+          expect(rendered).not_to have_css("input[name='idv_form[delegation_applications][]']")
+          expect(rendered).to have_content(t('account.connected_apps.token_exchange.no_linked'))
         end
       end
     end
 
-    context 'when the SP is not a broker' do
+    context 'when the service provider is not approved for delegation' do
       let(:nds_layout) { true }
 
-      it 'renders no grant control' do
+      it 'renders no consent control' do
         render
-        expect(rendered).not_to have_css('[data-token-exchange-grant]')
+        expect(rendered).not_to have_css('[data-delegation-consent]')
       end
     end
   end

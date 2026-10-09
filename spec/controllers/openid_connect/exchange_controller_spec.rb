@@ -8,29 +8,29 @@ RSpec.describe OpenidConnect::ExchangeController do
              grant_type: OpenidConnectTokenExchangeForm::TOKEN_EXCHANGE_GRANT_TYPE,
              subject_token: subject_token,
              subject_token_type: OpenidConnectTokenExchangeForm::ACCESS_TOKEN_TYPE,
-             audience: 'target.gov',
+             audience: 'urn:application',
            }
     end
 
     let(:user) { create(:user, :proofed) }
     let(:rails_session_id) { SecureRandom.uuid }
-    let!(:broker_sp) do
-      create(:service_provider, :active, issuer: 'broker.gov', token_exchange_enabled_sp: true)
+    let!(:delegating_sp) do
+      create(:service_provider, :active, issuer: 'urn:mybenefits', token_exchange_enabled_sp: true)
     end
-    let!(:target_sp) do
+    let!(:application_sp) do
       create(
         :service_provider, :active,
-        issuer: 'target.gov',
+        issuer: 'urn:application',
         ial: 2,
         attribute_bundle: %w[email],
-        delegation_application: true, allowed_delegation_service_providers: ['broker.gov']
+        delegation_application: true, allowed_delegation_service_providers: ['urn:mybenefits']
       )
     end
-    let!(:broker_identity) do
+    let!(:delegating_identity) do
       create(
         :service_provider_identity,
         user: user,
-        service_provider: 'broker.gov',
+        service_provider: 'urn:mybenefits',
         access_token: SecureRandom.urlsafe_base64,
         rails_session_id: rails_session_id,
         ial: 2,
@@ -38,29 +38,33 @@ RSpec.describe OpenidConnect::ExchangeController do
         scope: 'openid email token_exchange',
       )
     end
-    let(:subject_token) { broker_identity.access_token }
-    let(:grant_targets) { ['target.gov'] }
+    let(:subject_token) { delegating_identity.access_token }
+    let(:approved_applications) { ['urn:application'] }
 
     before do
       allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
       OutOfBandSessionAccessor.new(rails_session_id).put_empty_user_session
-      if grant_targets
-        TokenExchangeGrant.grant!(user: user, broker_issuer: 'broker.gov', targets: grant_targets)
+      Array(approved_applications).each do |issuer|
+        TokenExchangeGrant.approve!(
+          user: user, service_provider: delegating_sp,
+          application: ServiceProvider.find_by!(issuer: issuer),
+          source: 'consent_screen', remember: true
+        )
       end
     end
 
-    it 'returns a target access token' do
+    it 'returns a application access token' do
       action
 
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body['access_token']).to be_present
-      expect(body['exchanged_from']).to eq('broker.gov')
+      expect(body['exchanged_from']).to eq('urn:mybenefits')
     end
 
     context 'when audience is not allowlisted' do
       before do
-        target_sp.update!(allowed_delegation_service_providers: ['other-service-provider.gov'])
+        application_sp.update!(allowed_delegation_service_providers: ['other-service-provider.gov'])
       end
 
       it 'returns bad_request' do
@@ -70,13 +74,13 @@ RSpec.describe OpenidConnect::ExchangeController do
     end
 
     context 'when the user never granted token-exchange consent' do
-      let(:grant_targets) { nil }
+      let(:approved_applications) { nil }
 
       it 'returns invalid_request (RFC 8693 §2.2.2) and mints nothing' do
         action
         expect(response).to have_http_status(:bad_request)
         expect(JSON.parse(response.body)['error']).to eq('invalid_request')
-        expect(user.identities.find_by(service_provider: 'target.gov')).to be_nil
+        expect(user.identities.find_by(service_provider: 'urn:application')).to be_nil
       end
     end
   end

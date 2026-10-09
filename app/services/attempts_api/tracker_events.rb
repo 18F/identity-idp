@@ -448,15 +448,16 @@ module AttemptsApi
       track_event('login-completed')
     end
 
-    # A credential for this user was minted for the service provider through a
-    # token exchange initiated by a broker, rather than a direct sign-in. The
-    # receiving service provider gets this in place of login-completed so it can
-    # see the user was brokered and by whom.
-    # @param [String] broker_issuer Issuer of the broker that initiated the exchange
-    def token_exchange_login_completed(broker_issuer:)
+    # A credential for this user was minted for the application through a token exchange
+    # requested by a service provider acting for the user, rather than a direct sign-in. The
+    # application receives this in place of login-completed so it can see that a service
+    # provider is acting and which one.
+    # @param [String] service_provider_issuer Issuer of the service provider that requested the
+    #   exchange
+    def token_exchange_login_completed(service_provider_issuer:)
       track_event(
         'token-exchange-login-completed',
-        broker_issuer:,
+        service_provider_issuer:,
       )
     end
 

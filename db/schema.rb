@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_09_100300) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_09_100400) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -704,28 +704,27 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_100300) do
     t.index ["email_address_id"], name: "index_suspended_emails_on_email_address_id"
   end
 
-  create_table "token_exchange_broker_settings", comment: "sensitive=false", force: :cascade do |t|
-    t.datetime "auto_enroll_granted_at", comment: "sensitive=false"
-    t.datetime "auto_enroll_revoked_at", comment: "sensitive=false"
-    t.string "broker_issuer", null: false, comment: "sensitive=false"
+  create_table "token_exchange_grants", force: :cascade do |t|
+    t.integer "agency_content_version", default: 1, null: false, comment: "sensitive=false"
+    t.integer "application_content_version", default: 1, null: false, comment: "sensitive=false"
+    t.bigint "application_service_provider_id", null: false, comment: "sensitive=false"
+    t.datetime "consented_at", null: false, comment: "sensitive=false"
     t.datetime "created_at", null: false, comment: "sensitive=false"
-    t.datetime "updated_at", null: false, comment: "sensitive=false"
-    t.bigint "user_id", null: false, comment: "sensitive=false"
-    t.index ["user_id", "broker_issuer"], name: "index_token_exchange_broker_settings_on_user_broker", unique: true
-    t.index ["user_id"], name: "index_token_exchange_broker_settings_on_user_id"
-  end
-
-  create_table "token_exchange_grants", comment: "sensitive=false", force: :cascade do |t|
-    t.string "broker_issuer", null: false, comment: "sensitive=false"
-    t.datetime "created_at", null: false, comment: "sensitive=false"
-    t.datetime "expires_at", null: false, comment: "sensitive=false"
-    t.datetime "granted_at", null: false, comment: "sensitive=false"
+    t.string "delegation_id", null: false, comment: "sensitive=false"
+    t.datetime "first_exchanged_at", comment: "sensitive=false"
+    t.boolean "proofed_in_session", default: false, null: false, comment: "sensitive=false"
+    t.string "rails_session_id", comment: "sensitive=true"
+    t.datetime "remember_until", comment: "sensitive=false"
+    t.string "revocation_reason", comment: "sensitive=false"
     t.datetime "revoked_at", comment: "sensitive=false"
-    t.string "target_issuer", null: false, comment: "sensitive=false"
+    t.string "service_provider_issuer", null: false, comment: "sensitive=false"
+    t.string "source", null: false, comment: "sensitive=false"
+    t.integer "sp_content_version", default: 1, null: false, comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.bigint "user_id", null: false, comment: "sensitive=false"
-    t.index ["user_id", "broker_issuer", "target_issuer"], name: "index_token_exchange_grants_on_user_broker_target", unique: true
-    t.index ["user_id"], name: "index_token_exchange_grants_on_user_id"
+    t.index ["application_service_provider_id"], name: "index_token_exchange_grants_on_application_service_provider_id"
+    t.index ["delegation_id"], name: "index_token_exchange_grants_on_delegation_id", unique: true
+    t.index ["user_id", "service_provider_issuer", "application_service_provider_id"], name: "index_token_exchange_grants_live", unique: true, where: "(revoked_at IS NULL)"
   end
 
   create_table "token_exchange_resource_servers", force: :cascade do |t|
@@ -843,6 +842,4 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_100300) do
   add_foreign_key "integrations", "service_providers"
   add_foreign_key "partner_accounts", "agencies"
   add_foreign_key "partner_accounts", "partner_account_statuses"
-  add_foreign_key "token_exchange_broker_settings", "users"
-  add_foreign_key "token_exchange_grants", "users"
 end

@@ -29,9 +29,7 @@ module DelegationApplications
     )
   end
 
-  # The subset of #accepting that the user has already connected to (a live identity). The
-  # consent and account screens currently list this subset; the account page moves to the full
-  # registry list when advance approval lands.
+  # The subset of #accepting that the user has already connected to (a live identity).
   # @return [Array<ServiceProvider>] sorted by display name
   def connected_for(user:, service_provider_issuer:)
     return [] if user.blank? || service_provider_issuer.blank?

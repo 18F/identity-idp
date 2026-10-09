@@ -20,10 +20,6 @@
 #   approved for delegation, so an agency that does not care needs no configuration.
 #
 # The application's API URLs live in `token_exchange_resource_servers` (next migration).
-#
-# `allowed_token_exchange_brokers` from the previous design is removed rather than renamed: its
-# semantics change (empty now means "any approved service provider") and the branch keeps nothing
-# for compatibility because it has never run in production.
 class AddDelegationApplicationColumnsToServiceProviders < ActiveRecord::Migration[8.1]
   # The unique index is built concurrently, which cannot run inside a transaction.
   disable_ddl_transaction!
@@ -56,7 +52,8 @@ class AddDelegationApplicationColumnsToServiceProviders < ActiveRecord::Migratio
               unique: true, algorithm: :concurrently,
               where: 'delegation_scope_value IS NOT NULL'
 
-    # The code that read this column is replaced in the same change, so removing it is safe.
+    # No code reads this column any longer; `allowed_delegation_service_providers` above carries
+    # the agency's list of accepted service providers.
     safety_assured do
       remove_column :service_providers, :allowed_token_exchange_brokers, :string,
                     array: true, default: [], comment: 'sensitive=false'

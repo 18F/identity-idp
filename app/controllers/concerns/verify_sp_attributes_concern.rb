@@ -29,18 +29,11 @@ module VerifySpAttributesConcern
       clear_deleted_at: true,
     )
 
-    # Record the user's token-exchange decision whenever this screen runs. The
-    # grant is per application: "allow all" materializes one row per currently
-    # connected application rather than a wildcard, so each has its own
-    # timestamp and later per-application toggles never fight an "all" state.
-    # Applications the user did not choose this time are revoked (not deleted),
-    # so a changed decision never leaves stale authorizations behind.
-    #
-    # Auto-enrollment is a separate per-broker setting: when on, applications
-    # the user connects LATER are granted with a timestamp of this consent
-    # moment, not of first use. (The exchange endpoint additionally requires the
-    # presented token's own scope to include token_exchange.)
-    record_token_exchange_decision if token_exchange_consent_requested?
+    # Record the user's delegated-access decision whenever this screen runs for a service provider
+    # that asked for it: one approval row per chosen application, and a revocation for every
+    # connected application the user did not choose this time, so a changed decision never leaves
+    # a stale approval behind.
+    record_delegation_decision if delegation_consent_requested?
 
     # Record biometric sharing consent as a distinct, purpose-specific decision;
     # only touched for allow-listed SPs, and set-or-cleared so stale consent
@@ -50,92 +43,68 @@ module VerifySpAttributesConcern
         biometric_sharing_consent_at: (Time.zone.now if biometric_sharing_consent_granted?),
       )
     end
-
-    # When the user connects a new application, auto-enroll it for every broker
-    # the user has opted into auto-enrollment for.
-    auto_enroll_token_exchange
   end
 
-  def record_token_exchange_decision
-    broker = current_sp.issuer
+  def record_delegation_decision
     now = Time.zone.now
+    chosen = approved_delegation_applications
 
-    TokenExchangeGrant.grant!(
-      user: current_user, broker_issuer: broker, targets: token_exchange_grant_targets,
-      granted_at: now
-    )
-
-    setting = TokenExchangeBrokerSetting.for(user: current_user, broker_issuer: broker)
-    if token_exchange_auto_enroll?
-      setting.enable_auto_enroll!(now: now)
-    elsif setting.persisted?
-      setting.disable_auto_enroll!(now: now)
+    chosen.each do |application|
+      # Approvals from this screen are remembered for the maximum period.
+      TokenExchangeGrant.approve!(
+        user: current_user, service_provider: current_sp, application:,
+        source: 'consent_screen', remember: true, now:
+      )
+    end
+    (connected_delegation_applications - chosen).each do |application|
+      TokenExchangeGrant.revoke_for!(
+        user: current_user, service_provider_issuer: current_sp.issuer, application:,
+        reason: 'user_revoked', now:
+      )
     end
   end
 
-  def auto_enroll_token_exchange
-    target = current_sp
-    return if target.blank? || !target.delegation_application?
-
-    TokenExchangeBrokerSetting.where(user: current_user)
-      .where.not(broker_issuer: target.issuer)
-      .find_each { |setting| setting.auto_enroll!(target) }
+  # True when the service provider is approved for delegation, asked for it in this sign-in, and
+  # the user approved at least one application. Consent to delegation is optional: declining still
+  # completes the service provider's own sign-in.
+  def delegation_consent_granted?
+    delegation_consent_requested? && approved_delegation_applications.any?
   end
 
-  # True when the SP is an allow-listed broker, requested the token_exchange
-  # scope, and the user granted at least one application or auto-enrollment.
-  # Consent to token exchange is optional: declining still completes the
-  # broker's own sign-in.
-  def token_exchange_consent_granted?
-    token_exchange_consent_requested? &&
-      (token_exchange_grant_targets.any? || token_exchange_auto_enroll?)
-  end
-
-  def token_exchange_consent_requested?
+  def delegation_consent_requested?
     current_sp&.delegation_service_provider? &&
       decorated_sp_session.requested_attributes.map(&:to_s).include?('token_exchange')
   end
 
-  # The user chose "allow all currently linked agencies".
-  def token_exchange_all?
-    ActiveModel::Type::Boolean.new.cast(token_exchange_form_params[:token_exchange_all]) == true
+  # The user chose "allow all connected applications".
+  def delegation_all?
+    ActiveModel::Type::Boolean.new.cast(delegation_form_params[:delegation_all]) == true
   end
 
-  # The user chose auto-enrollment. It depends on "allow all" when the user has
-  # linked agencies (enforced here, not just in the UI); offered on its own when
-  # they have none.
-  def token_exchange_auto_enroll?
-    checked = ActiveModel::Type::Boolean.new.cast(
-      token_exchange_form_params[:token_exchange_auto_enroll],
-    ) == true
-    return checked if token_exchange_linked_targets.empty?
-
-    checked && token_exchange_all?
-  end
-
-  def token_exchange_linked_targets
-    @token_exchange_linked_targets ||= DelegationApplications.connected_for(
+  def connected_delegation_applications
+    @connected_delegation_applications ||= DelegationApplications.connected_for(
       user: current_user, service_provider_issuer: current_sp.issuer,
     )
   end
 
-  # Target issuers to grant. "Allow all" covers every application the user has
-  # ALREADY linked to their account that has opted in to the broker; otherwise
-  # the specific applications chosen. Submitted issuers outside the user's
-  # linked, opted-in set are ignored rather than granted.
-  def token_exchange_grant_targets
-    return @token_exchange_grant_targets if defined?(@token_exchange_grant_targets)
+  # Applications to approve: every connected application that accepts the service provider when
+  # the user chose "allow all", otherwise the specific applications chosen. Submitted issuers
+  # outside that set are ignored rather than approved.
+  # @return [Array<ServiceProvider>]
+  def approved_delegation_applications
+    return @approved_delegation_applications if defined?(@approved_delegation_applications)
 
-    linked = token_exchange_linked_targets.map(&:issuer)
-    @token_exchange_grant_targets =
-      if token_exchange_all?
-        linked
+    connected = connected_delegation_applications
+    @approved_delegation_applications =
+      if delegation_all?
+        connected
       else
-        Array(token_exchange_form_params[:token_exchange_targets]).map(&:to_s) & linked
+        chosen_issuers = Array(delegation_form_params[:delegation_applications]).map(&:to_s)
+        connected.select { |application| chosen_issuers.include?(application.issuer) }
       end
   end
 
-  def token_exchange_form_params
+  def delegation_form_params
     form = params[:idv_form]
     form.is_a?(ActionController::Parameters) ? form : {}
   end

@@ -50,12 +50,9 @@ account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用您的 %{app_name} 帐户，您可以安全地在线连接到多个政府服务。以下是您当前已连接的所有服务列表。
 account.connected_apps.email_not_selected: 尚未选择电邮
 account.connected_apps.email_update_success_html: 你给<strong>%{sp_name}</strong>的电邮更新成功了。
-account.connected_apps.token_exchange.auto_enroll_toggle_label: 自动允许 %{sp} 访问我之后连接的新机构
 account.connected_apps.token_exchange.description: 为你希望 %{sp} 能够登录的每个机构开启此选项。你可以随时更改。
 account.connected_apps.token_exchange.granted_html: 自 %{timestamp_html} 起允许
 account.connected_apps.token_exchange.heading: '%{sp} 可以代表你行事的机构'
-account.connected_apps.token_exchange.modal.auto_enroll_body_html: '%{sp_html} 将自动获准使用你已验证的身份，让你登录你之后连接到 %{app_name} 且可与 %{sp_html} 配合使用的任何新机构。'
-account.connected_apps.token_exchange.modal.auto_enroll_duration: 新机构自今日起生效，有效期 12 个月。你可以随时在此页面将其关闭。
 account.connected_apps.token_exchange.modal.body_html: '%{sp_html} 将能够使用你已验证的身份让你登录 %{target_html}，而无需你再次验证。它仅会收到其获准接收的信息，并且能够看到你是通过 %{sp_html} 连接的。'
 account.connected_apps.token_exchange.modal.confirm: 允许
 account.connected_apps.token_exchange.modal.duration: 此权限有效期为 12 个月。你可以随时在此页面将其关闭。
@@ -1889,8 +1886,6 @@ sign_up.information_sharing_html: 如需了解 %{app_name} 如何共享您的信
 sign_up.nds_terms_intro: 继续即表示您接受
 sign_up.terms: 我已阅读并接受 %{app_name}
 sign_up.token_exchange_grant.all: 允许 %{sp} 在与我的 %{app_name} 账户关联的所有联邦机构中代表我行事
-sign_up.token_exchange_grant.auto_enroll: 自动注册我之后连接到 %{app_name} 的新机构
-sign_up.token_exchange_grant.auto_enroll_hint: 新机构自你首次同意之日起生效，有效期 12 个月。
 sign_up.token_exchange_grant.legend: 选择 %{sp} 可以如何代表你行事
 sign_up.token_exchange_grant.next: 下一页
 sign_up.token_exchange_grant.or: 或
