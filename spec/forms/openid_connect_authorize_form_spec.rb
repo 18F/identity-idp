@@ -14,6 +14,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       state: state,
       code_challenge: code_challenge,
       code_challenge_method: code_challenge_method,
+      dpop_jkt: dpop_jkt,
       verified_within: verified_within,
       site_key_jwk: site_key_jwk,
     )
@@ -30,6 +31,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
   let(:state) { SecureRandom.hex }
   let(:code_challenge) { nil }
   let(:code_challenge_method) { nil }
+  let(:dpop_jkt) { nil }
   let(:verified_within) { nil }
   let(:site_key_jwk) { nil }
 
@@ -441,6 +443,94 @@ RSpec.describe OpenidConnectAuthorizeForm do
           expect(result.success?).to eq(false)
           expect(result.to_h[:redirect_uri]).to include('error=invalid_scope')
           expect(result.errors[:scope].join).to include('approved for delegated access')
+        end
+      end
+
+      context 'dpop_jkt (RFC 9449 section 10)' do
+        let(:user) { create(:user, :fully_registered) }
+        let(:thumbprint) { Base64.urlsafe_encode64(SecureRandom.random_bytes(32), padding: false) }
+
+        def link
+          form.submit
+          form.link_identity_to_service_provider(
+            current_user: user, ial: 2, rails_session_id: SecureRandom.hex, email_address_id: nil,
+          )
+        end
+
+        context 'for a public client approved for delegation' do
+          before do
+            service_provider.update!(pkce: true)
+            allow(IdentityConfig.store).to receive(:openid_connect_private_key_jwt_pkce_enabled)
+              .and_return(false)
+          end
+
+          let(:code_challenge) { Digest::SHA256.urlsafe_base64digest('a' * 43) }
+          let(:code_challenge_method) { 'S256' }
+
+          it 'is required' do
+            expect(form.dpop_binding_required?).to eq(true)
+            expect(result.success?).to eq(false)
+            expect(result.errors[:dpop_jkt])
+              .to eq([t('openid_connect.authorization.errors.dpop_jkt_required')])
+            expect(result.to_h[:redirect_uri]).to include('error=invalid_request')
+          end
+
+          context 'with a well-formed thumbprint' do
+            let(:dpop_jkt) { thumbprint }
+
+            it 'succeeds and stores the thumbprint on the identity' do
+              expect(result.success?).to eq(true)
+              expect(link.dpop_jkt).to eq(thumbprint)
+            end
+          end
+
+          context 'with a malformed thumbprint' do
+            let(:dpop_jkt) { 'not-a-thumbprint' }
+
+            it 'fails with invalid_request' do
+              expect(result.success?).to eq(false)
+              expect(result.errors[:dpop_jkt])
+                .to eq([t('openid_connect.authorization.errors.dpop_jkt_invalid')])
+            end
+          end
+
+          context 'when the client is not approved for delegation' do
+            before { service_provider.update!(token_exchange_enabled_sp: false) }
+            let(:scope) { 'openid email' }
+
+            it 'is not required' do
+              expect(form.dpop_binding_required?).to eq(false)
+              expect(result.success?).to eq(true)
+            end
+          end
+        end
+
+        context 'for a confidential client approved for delegation' do
+          before { service_provider.update!(pkce: false) }
+
+          it 'is not required' do
+            expect(form.dpop_binding_required?).to eq(false)
+            expect(result.success?).to eq(true)
+          end
+
+          context 'when sent anyway' do
+            let(:dpop_jkt) { thumbprint }
+
+            it 'is accepted but not stored, since bearer tokens are issued to this client' do
+              expect(result.success?).to eq(true)
+              expect(link.dpop_jkt).to be_nil
+            end
+          end
+
+          context 'when sent malformed' do
+            let(:dpop_jkt) { 'x' }
+
+            it 'fails with invalid_request' do
+              expect(result.success?).to eq(false)
+              expect(result.errors[:dpop_jkt])
+                .to eq([t('openid_connect.authorization.errors.dpop_jkt_invalid')])
+            end
+          end
         end
       end
 

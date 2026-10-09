@@ -34,6 +34,7 @@ RSpec.describe IdentityLinker do
       vtr = ['C2.Pb'].to_json
       scope = 'openid profile email'
       code_challenge = SecureRandom.hex
+      dpop_jkt = Base64.urlsafe_encode64(SecureRandom.random_bytes(32), padding: false)
       verified_attributes = %w[address email]
 
       IdentityLinker.new(user, service_provider).link_identity(
@@ -44,6 +45,7 @@ RSpec.describe IdentityLinker do
         vtr: vtr,
         scope: scope,
         code_challenge: code_challenge,
+        dpop_jkt: dpop_jkt,
         verified_attributes: verified_attributes.map(&:to_sym),
       )
       user.reload
@@ -56,7 +58,14 @@ RSpec.describe IdentityLinker do
       expect(last_identity.vtr).to eq(nil)
       expect(last_identity.scope).to eq(scope)
       expect(last_identity.code_challenge).to eq(code_challenge)
+      expect(last_identity.dpop_jkt).to eq(dpop_jkt)
       expect(last_identity.verified_attributes).to eq(verified_attributes)
+    end
+
+    it 'clears a stored dpop_jkt when a new authorization names none' do
+      IdentityLinker.new(user, service_provider).link_identity(dpop_jkt: 'a' * 43)
+      IdentityLinker.new(user, service_provider).link_identity
+      expect(user.reload.last_identity.dpop_jkt).to be_nil
     end
 
     context 'identity.last_consented_at' do

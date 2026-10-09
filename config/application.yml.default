@@ -168,6 +168,7 @@ dos_passport_healthcheck_timeout_seconds: 5
 dos_passport_mrz_endpoint: ''
 dos_passport_mrz_maxretry: 2
 dos_passport_mrz_timeout_seconds: 60
+dpop_proof_max_age_seconds: 300
 drop_off_report_config: '[{"emails":["ursula@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
 eligible_one_account_providers: '[]'
 email_from: no-reply@login.gov

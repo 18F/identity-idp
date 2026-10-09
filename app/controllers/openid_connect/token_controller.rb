@@ -7,7 +7,7 @@ module OpenidConnect
     skip_before_action :verify_authenticity_token
 
     def create
-      @token_form = OpenidConnectTokenForm.new(token_params)
+      @token_form = OpenidConnectTokenForm.new(form_params)
 
       result = @token_form.submit
       response = @token_form.response
@@ -33,6 +33,15 @@ module OpenidConnect
 
     def token_params
       params.permit(:client_assertion, :client_assertion_type, :code, :code_verifier, :grant_type)
+    end
+
+    private
+
+    # The form body plus the RFC 9449 proof, which travels in the `DPoP` request header rather
+    # than the body. Only the header can supply a proof: a `dpop_proof` body field is not
+    # permitted above, so it is dropped before the merge. An empty header reads as no proof.
+    def form_params
+      token_params.to_h.merge(dpop_proof: request.headers['DPoP'].presence)
     end
   end
 end

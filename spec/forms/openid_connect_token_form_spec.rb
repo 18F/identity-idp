@@ -11,6 +11,7 @@ RSpec.describe OpenidConnectTokenForm do
       client_assertion_type: client_assertion_type,
       code: code,
       code_verifier: code_verifier,
+      dpop_proof: dpop_proof,
       grant_type: grant_type,
     }
   end
@@ -18,6 +19,7 @@ RSpec.describe OpenidConnectTokenForm do
   let(:grant_type) { 'authorization_code' }
   let(:code) { identity.session_uuid }
   let(:code_verifier) { nil }
+  let(:dpop_proof) { nil }
   let(:client_assertion_type) { OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE }
   let(:client_assertion) { JWT.encode(jwt_payload, client_private_key, 'RS256') }
 
@@ -602,6 +604,8 @@ RSpec.describe OpenidConnectTokenForm do
       let(:client_assertion) { nil }
       let(:client_assertion_type) { nil }
       let(:service_provider) { create(:service_provider, :delegation_service_provider, pkce: true) }
+      # A public client approved for delegation: its code is bound to its DPoP key.
+      let(:dpop_proof) { build_dpop_proof(url: api_openid_connect_token_url) }
       let(:user) { create(:user, :proofed) }
       let(:rails_session_id) { SecureRandom.hex }
       let!(:housing) do
@@ -622,6 +626,7 @@ RSpec.describe OpenidConnectTokenForm do
           rails_session_id: rails_session_id,
           ial: 2,
           code_challenge: code_challenge,
+          dpop_jkt: dpop_thumbprint,
           scope: 'openid email token_exchange:housing_records token_exchange:retirement_benefits',
         )
       end
@@ -777,6 +782,123 @@ RSpec.describe OpenidConnectTokenForm do
       it 'has an error key in the response' do
         expect(response[:error]).to be_present
       end
+    end
+  end
+end
+
+RSpec.describe OpenidConnectTokenForm, 'for a public client approved for delegation' do
+  include Rails.application.routes.url_helpers
+
+  let(:service_provider) do
+    create(:service_provider, :delegation_service_provider, pkce: true, certs: [])
+  end
+  let(:user) { create(:user) }
+  let(:code_verifier) { SecureRandom.urlsafe_base64(32) }
+  let(:code_challenge) { Digest::SHA256.urlsafe_base64digest(code_verifier) }
+  let(:stored_thumbprint) { dpop_thumbprint }
+  let!(:identity) do
+    IdentityLinker.new(user, service_provider).link_identity(
+      acr_values: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+      nonce: SecureRandom.hex,
+      rails_session_id: SecureRandom.hex,
+      ial: 1,
+      code_challenge:,
+      dpop_jkt: stored_thumbprint,
+    )
+  end
+  let(:dpop_proof) { build_dpop_proof(url: api_openid_connect_token_url) }
+  let(:params) do
+    { grant_type: 'authorization_code', code: identity.session_uuid, code_verifier:, dpop_proof: }
+  end
+
+  subject(:form) { OpenidConnectTokenForm.new(params) }
+
+  before do
+    allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+    OutOfBandSessionAccessor.new(identity.rails_session_id).put_empty_user_session(300)
+  end
+
+  it 'redeems the code with a proof from the bound key and issues a DPoP token' do
+    expect(form.valid?).to eq(true)
+    response = form.response
+    expect(response[:token_type]).to eq('DPoP')
+    expect(response[:access_token]).to eq(identity.access_token)
+    expect(response[:id_token]).to be_present
+  end
+
+  context 'without a proof' do
+    let(:dpop_proof) { nil }
+
+    it 'fails with invalid_dpop_proof and leaves the code redeemable' do
+      expect(form.submit.success?).to eq(false)
+      expect(form.response).to eq(
+        error: 'invalid_dpop_proof',
+        error_description: t('openid_connect.token.errors.dpop_proof_required'),
+      )
+      expect(identity.reload.session_uuid).to be_present
+    end
+  end
+
+  context 'with a proof from a key other than the one named at authorization' do
+    let(:dpop_proof) do
+      build_dpop_proof(url: api_openid_connect_token_url, key: OpenSSL::PKey::EC.generate('prime256v1'))
+    end
+
+    it 'fails with invalid_dpop_proof' do
+      expect(form.valid?).to eq(false)
+      expect(form.response[:error]).to eq('invalid_dpop_proof')
+      expect(form.response[:error_description])
+        .to eq(t('openid_connect.token.errors.dpop_key_mismatch'))
+    end
+  end
+
+  context 'with a proof for a different URL' do
+    let(:dpop_proof) { build_dpop_proof(url: api_openid_connect_userinfo_url) }
+
+    it 'fails with invalid_dpop_proof' do
+      expect(form.valid?).to eq(false)
+      expect(form.response[:error]).to eq('invalid_dpop_proof')
+    end
+  end
+
+  context 'when the code was issued without a thumbprint' do
+    let(:stored_thumbprint) { nil }
+
+    it 'fails with invalid_dpop_proof naming the missing binding' do
+      expect(form.valid?).to eq(false)
+      expect(form.response[:error_description])
+        .to eq(t('openid_connect.token.errors.dpop_code_unbound'))
+    end
+  end
+
+  context 'when the code verifier is wrong' do
+    let(:params) do
+      {
+        grant_type: 'authorization_code',
+        code: identity.session_uuid,
+        code_verifier: 'wrong',
+        dpop_proof:,
+      }
+    end
+
+    it 'reports the verifier error, not a proof error, and does not consume the proof jti' do
+      expect(form.valid?).to eq(false)
+      expect(form.errors.attribute_names).to eq([:code_verifier])
+      expect(
+        DpopProofVerifier.new(
+          proof: dpop_proof, http_method: 'POST', http_url: api_openid_connect_token_url,
+        ).call,
+      ).to be_success
+    end
+  end
+
+  context 'for a public client that is not approved for delegation' do
+    before { service_provider.update!(token_exchange_enabled_sp: false) }
+    let(:dpop_proof) { nil }
+
+    it 'issues a bearer token without a proof, as before' do
+      expect(form.valid?).to eq(true)
+      expect(form.response[:token_type]).to eq('Bearer')
     end
   end
 end

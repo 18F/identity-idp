@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_09_100400) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_09_100500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -350,6 +350,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_100400) do
     t.string "code_challenge", comment: "sensitive=true"
     t.datetime "created_at", precision: nil, comment: "sensitive=false"
     t.datetime "deleted_at", precision: nil, comment: "sensitive=false"
+    t.string "dpop_jkt", comment: "sensitive=false"
     t.bigint "email_address_id", comment: "sensitive=false"
     t.integer "ial", default: 1, comment: "sensitive=false"
     t.datetime "last_authenticated_at", precision: nil, comment: "sensitive=false"

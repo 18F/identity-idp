@@ -12,6 +12,7 @@ class OpenidConnectTokenForm
     client_assertion_type
     code
     code_verifier
+    dpop_proof
     grant_type
   ].freeze
 
@@ -29,6 +30,7 @@ class OpenidConnectTokenForm
   validate :validate_pkce_or_private_key_jwt
   validate :validate_code_verifier, if: :pkce_verification_required?
   validate :validate_client_assertion, if: :client_assertion_required?
+  validate :validate_dpop_proof, if: :dpop_binding_required?
 
   def initialize(params)
     ATTRS.each do |key|
@@ -54,11 +56,16 @@ class OpenidConnectTokenForm
 
       {
         access_token: identity.access_token,
-        token_type: 'Bearer',
+        # RFC 9449 §5: a token bound to the client's key is presented with a proof, never as a
+        # bearer token.
+        token_type: dpop_binding_required? ? 'DPoP' : 'Bearer',
         expires_in: @ttl,
         id_token: id_token_builder.id_token,
         **granted_scope,
       }
+    elsif errors.include?(:dpop_proof)
+      # RFC 9449 §5: the one error code for every proof problem, with the reason as description.
+      { error: 'invalid_dpop_proof', error_description: errors[:dpop_proof].join(' ') }
     elsif private_key_jwt_pkce? && errors.include?(:code_verifier)
       { error: 'invalid_grant',
         error_description: t('openid_connect.token.errors.invalid_code_verifier') }
@@ -184,6 +191,46 @@ class OpenidConnectTokenForm
   def code_verifier_matches_challenge?
     given_code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier.to_s)
     ActiveSupport::SecurityUtils.secure_compare(expected_code_challenge, given_code_challenge)
+  end
+
+  # Whether the code being redeemed must be accompanied by a DPoP proof (RFC 9449 §5, §10). This
+  # is a property of the client, not of the request: a public client approved for delegated
+  # access holds its tokens in the person's browser, so each token it receives is bound to a key
+  # it holds and its authorization code was bound to that key's thumbprint at the authorization
+  # request. Confidential clients and public clients not approved for delegation are unaffected.
+  def dpop_binding_required?
+    identity.present? && service_provider&.pkce == true &&
+      service_provider.delegation_service_provider?
+  end
+
+  # Runs after every other check so a proof problem is reported only for an otherwise valid
+  # redemption and a rejected request never consumes the proof's single-use jti. The proof must
+  # be for POST to this endpoint and signed by the key whose thumbprint the authorization request
+  # named; no token accompanies a code redemption, so the proof carries no `ath`.
+  def validate_dpop_proof
+    return if errors.any?
+
+    if identity.dpop_jkt.blank?
+      errors.add(
+        :dpop_proof, t('openid_connect.token.errors.dpop_code_unbound'), type: :dpop_code_unbound
+      )
+      return
+    end
+
+    return if dpop_result.success?
+
+    errors.add(:dpop_proof, dpop_result.error_message, type: dpop_result.error_type)
+  end
+
+  # Verified once per form: a proof's jti is single-use, so running the verifier again on the
+  # same proof (validations run on every `valid?`) would report a replay of our own check.
+  def dpop_result
+    @dpop_result ||= DpopProofVerifier.new(
+      proof: dpop_proof,
+      http_method: 'POST',
+      http_url: api_openid_connect_token_url,
+      expected_thumbprint: identity.dpop_jkt,
+    ).call
   end
 
   def validate_client_assertion

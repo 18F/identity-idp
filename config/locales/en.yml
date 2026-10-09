@@ -1832,6 +1832,8 @@ notices.webauthn_configured: A security key was added to your account.
 notices.webauthn_platform_configured: You used your device’s screen lock to add face or touch unlock to your account.
 openid_connect.authorization.errors.bad_client_id: Bad client_id. Please see our documentation at https://developers.login.gov/support/#bad-client-id
 openid_connect.authorization.errors.delegation_not_allowed: Delegation scopes (token_exchange:*) require an identity-verified request from a service provider approved for delegated access. Please see our documentation at https://developers.login.gov/support/#oidc-delegation
+openid_connect.authorization.errors.dpop_jkt_invalid: 'dpop_jkt must be the base64url RFC 7638 thumbprint of the client''s DPoP public key: 43 characters, no padding.'
+openid_connect.authorization.errors.dpop_jkt_required: 'dpop_jkt is required: this client is a public client approved for delegated access, so the authorization code must be bound to the thumbprint of its DPoP key (RFC 9449 section 10).'
 openid_connect.authorization.errors.invalid_verified_within_duration.one: value must be at least %{count} day or older
 openid_connect.authorization.errors.invalid_verified_within_duration.other: value must be at least %{count} days or older
 openid_connect.authorization.errors.invalid_verified_within_format: Unrecognized format for verified_within
@@ -1857,6 +1859,11 @@ openid_connect.logout.errors.id_token_hint_present: This application is misconfi
 openid_connect.logout.errors.no_client_id_or_id_token_hint: This application is misconfigured and must send either client_id or id_token_hint. Please see our documentation at https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: Do you want to sign out of %{app_name}?
 openid_connect.logout.heading_with_sp: Do you want to sign out of %{app_name} and return to %{service_provider_name}?
+openid_connect.token.errors.dpop_code_unbound: The authorization code was issued without a dpop_jkt binding. Start a new authorization request that names the thumbprint of the DPoP key.
+openid_connect.token.errors.dpop_key_mismatch: The DPoP proof is signed with a different key than the one this token is bound to.
+openid_connect.token.errors.dpop_proof_invalid: 'The DPoP proof could not be verified: it must be a dpop+jwt signed with ES256 or RS256 by the public key in its jwk header, name the method and URL of this request, be recent, carry an unused jti and, when a token is presented, the ath hash of that token.'
+openid_connect.token.errors.dpop_proof_replayed: The jti of the DPoP proof has already been used; each proof must carry a unique jti.
+openid_connect.token.errors.dpop_proof_required: 'A DPoP proof is required: this client''s tokens are bound to its key, so send a DPoP header signed by that key with the request (RFC 9449).'
 openid_connect.token.errors.expired_code: is expired. Please see our documentation at https://developers.login.gov/support/#token-expired
 openid_connect.token.errors.invalid_aud: Invalid audience claim, expected %{url}. Please see our documentation at https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: Client must authenticate via PKCE or private_key_jwt, missing either code_challenge or client_assertion. Please see our documentation at https://developers.login.gov/support/#pkce-or-private-key
