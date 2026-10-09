@@ -34,18 +34,21 @@ agencies:
 
 service_providers:
   # The service provider the person signs in to (identity-sts-sinatra reference application).
+  # It runs in the browser as a public client: PKCE instead of a client secret, no signing
+  # certificate, and every token it holds bound to a key it holds (DPoP). Its browser redeems
+  # the authorization code at /auth/result. What it may ask to act at is bounded by each
+  # application's allowed_delegation_service_providers list below, not by anything here.
   'urn:gov:gsa:openidconnect:sp:sinatra_sts':
     agency_id: 100
     ial: 2
     friendly_name: 'MyBenefits Assistant'
     logo: 'generic.svg'
+    pkce: true
     return_to_sp_url: '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>'
     redirect_uris:
       - '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/'
       - '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/auth/result'
       - '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/logout'
-    certs:
-      - 'sp_sinatra_demo'
     token_exchange_enabled_sp: true
     delegation_operator_legal_name: 'Office of Benefits Coordination'
     delegation_operator_type: 'federal'
