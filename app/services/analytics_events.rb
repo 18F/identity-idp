@@ -492,6 +492,29 @@ module AnalyticsEvents
     track_event('Banned User visited')
   end
 
+  # Tracks when the agency handoff was submitted for a service provider that
+  # requested document images but the user did not affirmatively consent; the
+  # submission is rejected and the screen re-rendered.
+  # @param [String] issuer issuer of the service provider requesting the images
+  def biometric_sharing_consent_declined(issuer:, **extra)
+    track_event(
+      :biometric_sharing_consent_declined,
+      issuer: issuer,
+      **extra,
+    )
+  end
+
+  # Tracks when a user grants consent to share proofing document images (biometric
+  # artifacts) with a service provider on the agency handoff screen.
+  # @param [String] issuer issuer of the service provider receiving the images
+  def biometric_sharing_consent_granted(issuer:, **extra)
+    track_event(
+      :biometric_sharing_consent_granted,
+      issuer: issuer,
+      **extra,
+    )
+  end
+
   # A user that had a broken personal key was routed to a page to regenerate their personal key,
   # so that they no longer have a broken one
   def broken_personal_key_regenerated
@@ -590,6 +613,45 @@ module AnalyticsEvents
       message:,
       unknown_alerts:,
       response_info:,
+      **extra,
+    )
+  end
+
+  # Emitted by the daily job that removes document_artifacts rows whose escrow
+  # objects have aged past the retention window.
+  # @param [Integer] deleted_count number of artifact rows removed
+  # @param [Integer] deleted_metadata_count number of document metadata rows removed
+  def document_artifacts_expired(deleted_count:, deleted_metadata_count: 0, **extra)
+    track_event(
+      :document_artifacts_expired,
+      deleted_count:,
+      deleted_metadata_count:,
+      **extra,
+    )
+  end
+
+  # Audit record for every request to the document image proxy endpoint, whether
+  # an image was released or the request was refused.
+  # @param [Boolean] success whether image bytes were released
+  # @param [String] image_type which artifact was requested (front/back/passport/selfie)
+  # @param [String, nil] issuer issuer of the requesting service provider
+  # @param [Integer, nil] profile_id the verified profile whose artifact was requested
+  # @param [String, nil] denial_reason why the request was refused, if it was
+  def document_image_release(
+    success:,
+    image_type:,
+    issuer: nil,
+    profile_id: nil,
+    denial_reason: nil,
+    **extra
+  )
+    track_event(
+      :document_image_release,
+      success:,
+      image_type:,
+      issuer:,
+      profile_id:,
+      denial_reason:,
       **extra,
     )
   end
@@ -8790,68 +8852,6 @@ module AnalyticsEvents
     track_event(
       'SP Revoke Consent: Visited',
       issuer: issuer,
-      **extra,
-    )
-  end
-
-  # Tracks when a user grants consent to share proofing document images (biometric
-  # artifacts) with a service provider on the agency handoff screen.
-  # @param [String] issuer issuer of the service provider receiving the images
-  def biometric_sharing_consent_granted(issuer:, **extra)
-    track_event(
-      :biometric_sharing_consent_granted,
-      issuer: issuer,
-      **extra,
-    )
-  end
-
-  # Tracks when the agency handoff was submitted for a service provider that
-  # requested document images but the user did not affirmatively consent; the
-  # submission is rejected and the screen re-rendered.
-  # @param [String] issuer issuer of the service provider requesting the images
-  def biometric_sharing_consent_declined(issuer:, **extra)
-    track_event(
-      :biometric_sharing_consent_declined,
-      issuer: issuer,
-      **extra,
-    )
-  end
-
-  # Emitted by the daily job that removes document_artifacts rows whose escrow
-  # objects have aged past the retention window.
-  # @param [Integer] deleted_count number of artifact rows removed
-  # @param [Integer] deleted_metadata_count number of document metadata rows removed
-  def document_artifacts_expired(deleted_count:, deleted_metadata_count: 0, **extra)
-    track_event(
-      :document_artifacts_expired,
-      deleted_count:,
-      deleted_metadata_count:,
-      **extra,
-    )
-  end
-
-  # Audit record for every request to the document image proxy endpoint, whether
-  # an image was released or the request was refused.
-  # @param [Boolean] success whether image bytes were released
-  # @param [String] image_type which artifact was requested (front/back/passport/selfie)
-  # @param [String, nil] issuer issuer of the requesting service provider
-  # @param [Integer, nil] profile_id the verified profile whose artifact was requested
-  # @param [String, nil] denial_reason why the request was refused, if it was
-  def document_image_release(
-    success:,
-    image_type:,
-    issuer: nil,
-    profile_id: nil,
-    denial_reason: nil,
-    **extra
-  )
-    track_event(
-      :document_image_release,
-      success:,
-      image_type:,
-      issuer:,
-      profile_id:,
-      denial_reason:,
       **extra,
     )
   end

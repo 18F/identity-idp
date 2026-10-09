@@ -68,7 +68,7 @@ RSpec.describe DelegatedAccessSeeder do
 
         it 'refuses to run and loads nothing' do
           expect { seeder.run }.to raise_error(DelegatedAccessSeeder::RefusedEnvironment)
-          expect(ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:sinatra_sts')).to be_nil
+          expect(ServiceProvider.find_by(issuer: sp_issuer)).to be_nil
         end
       end
     end
