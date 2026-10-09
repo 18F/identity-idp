@@ -141,6 +141,10 @@ class User < ApplicationRecord
     end
     OutOfBandSessionAccessor.new(unique_session_id).destroy if unique_session_id
     update!(suspended_at: Time.zone.now, unique_session_id: nil)
+    # Delegated-access tokens do not end with the browser session, so a suspension must end
+    # them itself: every approval the person gave is revoked, and with it every token and
+    # refresh family issued under it.
+    TokenExchangeGrant.revoke_all_for_user!(user: self, reason: 'account_suspended')
     analytics.user_suspended(success: true)
 
     event = PushNotification::AccountDisabledEvent.new(user: self)

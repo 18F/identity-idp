@@ -285,6 +285,24 @@ RSpec.describe TokenExchangeGrant do
     end
   end
 
+  describe '.revoke_all_for_user!' do
+    it 'ends every live approval of the person, with their tokens and families, nobody else\'s' do
+      grant = approve
+      other_application = create(:service_provider, :delegation_application)
+      other_grant = approve(application: other_application)
+      issued = create(:token_exchange_token, grant:)
+      refresh = create(:token_exchange_refresh_token, token_exchange_token: issued)
+      someone_else = create(:token_exchange_grant)
+
+      described_class.revoke_all_for_user!(user:, reason: 'account_suspended')
+
+      [grant, other_grant, issued, refresh].each do |row|
+        expect(row.reload.revocation_reason).to eq('account_suspended')
+      end
+      expect(someone_else.reload.revoked_at).to be_nil
+    end
+  end
+
   describe 're-approval' do
     it 'keeps delegated tokens working and re-points them at the replacement approval' do
       earlier = approve
