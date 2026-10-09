@@ -686,7 +686,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_10_100100) do
     t.index ["created_at"], name: "index_sp_costs_on_created_at"
   end
 
+  create_table "sp_return_log_billing_adjustments", force: :cascade do |t|
+    t.integer "adjustment_type", null: false, comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.bigint "delegated_return_log_id", comment: "sensitive=false"
+    t.integer "resolved_via", comment: "sensitive=false"
+    t.bigint "sp_return_log_id", null: false, comment: "sensitive=false"
+    t.bigint "token_exchange_token_id", comment: "sensitive=false"
+    t.index ["delegated_return_log_id"], name: "index_sp_return_log_billing_adjustments_on_delegated_log_id"
+    t.index ["sp_return_log_id", "adjustment_type"], name: "index_sp_return_log_billing_adjustments_on_log_and_type"
+    t.index ["token_exchange_token_id"], name: "index_sp_return_log_billing_adjustments_on_token_id"
+  end
+
   create_table "sp_return_logs", force: :cascade do |t|
+    t.string "access_type", default: "direct", comment: "sensitive=false"
     t.boolean "billable", comment: "sensitive=false"
     t.integer "ial", null: false, comment: "sensitive=false"
     t.string "issuer", null: false, comment: "sensitive=false"
