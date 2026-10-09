@@ -92,6 +92,52 @@ RSpec.describe BillableEventTrackable do
       expect(SpReturnLog.last).to have_attributes(billable: false, access_type: 'direct')
     end
 
+    context 'for a service provider approved for delegated access' do
+      let(:current_sp) { create(:service_provider, :delegation_service_provider) }
+      let(:ial_context) { IalContext.new(ial: 2, service_provider: current_sp) }
+      let!(:identity) do
+        IdentityLinker.new(current_user, current_sp).link_identity(ial: 2)
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+      end
+
+      it 'links the access token the service provider will receive to the billable row' do
+        instance.track_billing_events
+
+        expect(Billing::SignInWaiverLink.read(access_token: identity.access_token))
+          .to eq(SpReturnLog.last.id)
+      end
+
+      it 'points a later handoff in the same session at the session’s billable row' do
+        instance.track_billing_events
+        billable_row = SpReturnLog.last
+        IdentityLinker.new(current_user, current_sp).link_identity(ial: 2)
+        later = fake_controller_class.new(**instance.to_h, request_id: SecureRandom.hex)
+
+        later.track_billing_events
+
+        expect(SpReturnLog.last.billable).to eq(false)
+        expect(Billing::SignInWaiverLink.read(access_token: identity.reload.access_token))
+          .to eq(billable_row.id)
+      end
+
+      it 'does not fail the handoff when the link cannot be written' do
+        allow(Billing::SignInWaiverLink).to receive(:write).and_raise(Redis::CannotConnectError)
+        expect(NewRelic::Agent).to receive(:notice_error).with(Redis::CannotConnectError)
+
+        expect { instance.track_billing_events }.to change { SpReturnLog.count }.by(1)
+      end
+    end
+
+    it 'writes no link for an ordinary service provider' do
+      IdentityLinker.new(current_user, current_sp).link_identity(ial: 1)
+      expect(Billing::SignInWaiverLink).not_to receive(:write)
+
+      instance.track_billing_events
+    end
+
     context 'with an IAL 1 event' do
       let(:ial_context) { IalContext.new(ial: 1, service_provider: current_sp) }
 

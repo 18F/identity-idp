@@ -584,6 +584,7 @@ module IdentityConfig
     config.add(:telephony_adapter, type: :string)
     config.add(:test_ssn_allowed_list, type: :comma_separated_string_list)
     config.add(:token_exchange_access_token_ttl_seconds, type: :integer)
+    config.add(:token_exchange_billing_waiver_cache_seconds, type: :integer)
     config.add(:token_exchange_enabled, type: :boolean)
     config.add(:token_exchange_refresh_token_ttl_seconds, type: :integer)
     config.add(:token_exchange_saml_assertion_ttl_seconds, type: :integer)
