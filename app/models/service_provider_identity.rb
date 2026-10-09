@@ -85,7 +85,6 @@ class ServiceProviderIdentity < ApplicationRecord
     user.last_sign_in_email_address
   end
 
-
   # Biometric (document image) sharing consent is only valid when it is present,
   # not revoked, not expired, and not older than the user's most recent proofing
   # (so re-proofing forces fresh, purpose-specific re-consent). Fails closed if
