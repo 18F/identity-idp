@@ -68,6 +68,37 @@ class DelegatedTokenStore
     revoke_index(GRANT_INDEX_PREFIX + grant_id.to_s)
   end
 
+  # Re-points every live token of one approval at another approval: each listed entry's
+  # `grant_id` is rewritten (keeping its remaining lifetime) and the digests move to the new
+  # approval's index set, which keeps the longer of the two lifetimes. Used when a re-approval
+  # replaces an earlier approval of the same application.
+  # @return [Integer] how many token entries were moved
+  def self.move_grant(from_grant_id, to_grant_id)
+    from_key = GRANT_INDEX_PREFIX + from_grant_id.to_s
+    to_key = GRANT_INDEX_PREFIX + to_grant_id.to_s
+    REDIS_POOL.with do |client|
+      digests = client.smembers(from_key)
+      moved = 0
+      digests.each do |digest|
+        token_key = TOKEN_KEY_PREFIX + digest
+        raw = client.get(token_key)
+        remaining = client.ttl(token_key)
+        # An entry that expired since it was listed is skipped; it will not be found anyway.
+        next if raw.nil? || remaining <= 0
+
+        attributes = JSON.parse(raw, symbolize_names: true).merge(grant_id: to_grant_id)
+        client.multi do |multi|
+          multi.set(token_key, attributes.to_json, ex: remaining)
+          multi.sadd(to_key, digest)
+        end
+        client.expire(to_key, remaining) if client.ttl(to_key) < remaining
+        moved += 1
+      end
+      client.del(from_key)
+      moved
+    end
+  end
+
   # Removes every live token of one refresh family.
   # @return [Integer] how many token entries were removed
   def self.revoke_family(family_id)

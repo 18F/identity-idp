@@ -62,6 +62,30 @@ RSpec.describe DelegatedTokenStore do
     end
   end
 
+  describe '.move_grant' do
+    let(:new_grant_id) { grant_id + 1 }
+
+    after { described_class.revoke_grant(new_grant_id) }
+
+    it 'rewrites each live entry for the new grant, keeps its lifetime, and moves the index' do
+      described_class.write(token, attributes, ttl: 600)
+
+      expect(described_class.move_grant(grant_id, new_grant_id)).to eq(1)
+
+      expect(described_class.read(token)[:grant_id]).to eq(new_grant_id)
+      expect(redis_ttl(described_class::TOKEN_KEY_PREFIX + described_class.digest(token)))
+        .to be_between(590, 600)
+      expect(REDIS_POOL.with { |c| c.exists(described_class::GRANT_INDEX_PREFIX + grant_id.to_s) })
+        .to eq(0)
+      expect(described_class.revoke_grant(new_grant_id)).to eq(1)
+      expect(described_class.read(token)).to be_nil
+    end
+
+    it 'moves nothing for an approval without live tokens' do
+      expect(described_class.move_grant(grant_id, new_grant_id)).to eq(0)
+    end
+  end
+
   describe '.revoke_grant' do
     it 'removes every token listed for the grant and the set itself' do
       other = TokenExchangeToken.generate_token
