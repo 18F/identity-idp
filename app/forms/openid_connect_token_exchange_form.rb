@@ -352,6 +352,12 @@ class OpenidConnectTokenExchangeForm
       @access_token = saml_issued? ? build_assertion! : @reference
       @refresh = create_refresh_token!(family_expires_at:, dpop_jkt:)
       grant.update!(first_exchanged_at: now) if grant.first_exchanged_at.nil?
+
+      # Billing for the agency whose API received the token, and the waiver of the service
+      # provider's own sign-in. Committed with the issuance record; can never fail the exchange.
+      Billing::DelegatedReturnRecorder.new(
+        issued: @issued, grant:, resource_server:, service_provider:, identity:, subject_token:,
+      ).call
     end
 
     DelegatedTokenStore.write(@reference, @issued.live_attributes, ttl: lifetime)

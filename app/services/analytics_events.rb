@@ -570,6 +570,33 @@ module AnalyticsEvents
     track_event(:delegated_access_page_visited)
   end
 
+  # Tracks, at a token exchange that issued a delegated token, the attempt to find the service
+  # provider's own sign-in so that it is waived from the service provider's invoice in favor of
+  # the agency receiving the token.
+  # @param ["cache_hit", "db_fallback", "not_found"] outcome How the sign-in's billing row was
+  #   found: through the link written at the handoff, through the database once that link had
+  #   lapsed, or not at all (the service provider stays billed for the sign-in)
+  # @param [Boolean] already_waived Whether an earlier exchange in the same sign-in had already
+  #   waived it
+  # @param [String] service_provider_issuer Issuer of the service provider whose sign-in it is
+  # @param [String] billing_issuer Issuer billed for the delegated token
+  def delegated_billing_waiver(
+    outcome:,
+    already_waived:,
+    service_provider_issuer:,
+    billing_issuer:,
+    **extra
+  )
+    track_event(
+      :delegated_billing_waiver,
+      outcome:,
+      already_waived:,
+      service_provider_issuer:,
+      billing_issuer:,
+      **extra,
+    )
+  end
+
   # Emitted by the daily job that removes the refresh-token rows of delegated-access families
   # that ended more than a day ago.
   # @param [Integer] deleted_count number of refresh-token rows removed

@@ -238,6 +238,66 @@ RSpec.describe 'OpenID Connect token exchange' do
       end
     end
 
+    describe 'billing' do
+      let!(:sign_in_row) do
+        create(
+          :sp_return_log, user_id: user.id, issuer: service_provider.issuer, ial: 2,
+                          billable: true, returned_at: Time.zone.now
+        )
+      end
+
+      before do
+        Billing::SignInWaiverLink.write(
+          access_token: subject_token, sp_return_log_id: sign_in_row.id,
+        )
+      end
+
+      it 'bills the agency for the delegated token and waives the service provider sign-in' do
+        analytics = FakeAnalytics.new
+        allow(Analytics).to receive(:new).and_return(analytics)
+
+        expect { exchange }.to change { SpReturnLog.count }.by(1)
+
+        agency_row = SpReturnLog.last
+        expect(agency_row).to have_attributes(
+          issuer: application.issuer, user_id: user.id, ial: 2, billable: true,
+          access_type: 'delegated',
+          request_id: "tx:#{grant.delegation_id}:#{application.issuer}:2"
+        )
+        issued = TokenExchangeToken.last
+        expect(agency_row.billing_adjustments.delegated_token_issued.sole.token_exchange_token)
+          .to eq(issued)
+        exclusion = sign_in_row.billing_adjustments.exclude_from_billing.sole
+        expect(exclusion).to have_attributes(
+          delegated_return_log: agency_row, token_exchange_token: issued,
+        )
+        expect(exclusion).to be_resolved_via_cache
+        expect(analytics).to have_logged_event(
+          :delegated_billing_waiver, hash_including(outcome: 'cache_hit')
+        )
+      end
+
+      it 'keeps a non-billable trail row for a second exchange under the same approval' do
+        exchange
+        refresh_credentials(access_token: subject_token)
+
+        expect { exchange }.to change { SpReturnLog.count }.by(1)
+        expect(response).to have_http_status(:ok)
+        expect(SpReturnLog.last).to have_attributes(billable: false, access_type: 'delegated')
+        expect(SpReturnLog.where(access_type: 'delegated', billable: true).count).to eq(1)
+        expect(sign_in_row.billing_adjustments.exclude_from_billing.count).to eq(1)
+      end
+
+      it 'issues the token even when billing fails' do
+        allow(Billing::SpReturnLogWriter).to receive(:write).and_raise(ActiveRecord::StatementInvalid)
+        allow(NewRelic::Agent).to receive(:notice_error)
+
+        expect { exchange }.to change { TokenExchangeToken.count }.by(1)
+        expect(response).to have_http_status(:ok)
+        expect(DelegatedTokenStore.read(json[:access_token])).to be_present
+      end
+    end
+
     describe 'the issued token' do
       it 'is refused at userinfo' do
         exchange
