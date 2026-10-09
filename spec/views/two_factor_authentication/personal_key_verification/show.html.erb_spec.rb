@@ -40,4 +40,26 @@ RSpec.describe 'two_factor_authentication/personal_key_verification/show.html.er
     expect(rendered)
       .to have_xpath("//form[@method='post']")
   end
+
+  context 'when the personal key deprecation warning is shown' do
+    before { @show_deprecation_warning = true }
+
+    it 'renders a warning alert with the deprecation message' do
+      render
+
+      expect(rendered).to have_selector('.usa-alert--warning')
+      expect(rendered)
+        .to have_content(t('two_factor_authentication.personal_key_deprecation_warning'))
+    end
+  end
+
+  context 'when the personal key deprecation warning is not shown' do
+    before { @show_deprecation_warning = false }
+
+    it 'does not render a warning alert' do
+      render
+
+      expect(rendered).to_not have_selector('.usa-alert--warning')
+    end
+  end
 end

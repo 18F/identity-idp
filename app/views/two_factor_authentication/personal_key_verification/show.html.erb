@@ -1,5 +1,11 @@
 <% self.title = t('titles.enter_2fa_code.security_code') %>
 
+<% if @show_deprecation_warning %>
+  <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
+    <%= t('two_factor_authentication.personal_key_deprecation_warning') %>
+  <% end %>
+<% end %>
+
 <%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.personal_key_header_text')) %>
 
 <p>

@@ -573,4 +573,78 @@ RSpec.describe AccountShowPresenter do
       end
     end
   end
+
+  describe '#show_manage_personal_key_partial?' do
+    subject(:show_manage_personal_key_partial?) { presenter.show_manage_personal_key_partial? }
+
+    context 'when the user has no recovery code' do
+      let(:user) { build(:user) }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when the user has a recovery code' do
+      let(:user) { build(:user, :with_personal_key) }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when the user has a password reset profile' do
+      let(:user) { build(:user, :with_personal_key, :deactivated_password_reset_profile) }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#show_regenerate_personal_key_action?' do
+    subject(:show_regenerate_personal_key_action?) do
+      presenter.show_regenerate_personal_key_action?
+    end
+
+    context 'when personal key MFA deprecation phase 1 is disabled' do
+      before do
+        allow(FeatureManagement)
+          .to receive(:personal_key_mfa_deprecation_phase_1_enabled?).and_return(false)
+      end
+
+      let(:user) { build(:user, :with_personal_key) }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when personal key MFA deprecation phase 1 is enabled' do
+      before do
+        allow(FeatureManagement)
+          .to receive(:personal_key_mfa_deprecation_phase_1_enabled?).and_return(true)
+      end
+
+      context 'for a personal key MFA user' do
+        let(:user) { build(:user, :with_personal_key, :with_phone) }
+
+        it 'hides the regenerate action' do
+          expect(show_regenerate_personal_key_action?).to eq(false)
+        end
+      end
+
+      context 'for a user whose only credential is a personal key' do
+        let(:user) { build(:user, :with_personal_key) }
+
+        it 'still shows the regenerate action so they are not left without a credential' do
+          expect(show_regenerate_personal_key_action?).to eq(true)
+        end
+      end
+
+      context 'for an identity-verified user' do
+        let(:user) do
+          profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
+          PersonalKeyGenerator.new(profile.user).generate!
+          profile.user
+        end
+
+        it 'still shows the regenerate action' do
+          expect(show_regenerate_personal_key_action?).to eq(true)
+        end
+      end
+    end
+  end
 end
