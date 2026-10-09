@@ -173,6 +173,7 @@ module IdentityConfig
     config.add(:document_images_sharing_enabled, type: :boolean)
     config.add(:document_images_sharing_service_providers, type: :json)
     config.add(:document_images_retention_days, type: :integer)
+    config.add(:dpop_proof_max_age_seconds, type: :integer)
     config.add(:drop_off_report_config, type: :json)
     config.add(:domain_name, type: :string)
     config.add(:dos_passport_client_id, type: :string)

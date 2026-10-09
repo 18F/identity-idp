@@ -1832,6 +1832,8 @@ notices.webauthn_configured: Une clé de sécurité a été ajoutée à votre co
 notices.webauthn_platform_configured: Vous avez utilisé le verrouillage de l’écran de votre appareil pour ajouter le déverrouillage facial ou tactile à votre compte.
 openid_connect.authorization.errors.bad_client_id: Mauvaise client_id. Veuillez consulter notre documentation à https://developers.login.gov/support/#bad-client-id
 openid_connect.authorization.errors.delegation_not_allowed: Les portées de délégation (token_exchange:*) exigent une demande à identité vérifiée provenant d’un fournisseur de services approuvé pour l’accès délégué. Veuillez consulter notre documentation à https://developers.login.gov/support/#oidc-delegation
+openid_connect.authorization.errors.dpop_jkt_invalid: 'dpop_jkt doit être l’empreinte RFC 7638 en base64url de la clé publique DPoP du client : 43 caractères, sans remplissage.'
+openid_connect.authorization.errors.dpop_jkt_required: 'dpop_jkt est obligatoire : ce client est un client public approuvé pour l’accès délégué, le code d’autorisation doit donc être lié à l’empreinte de sa clé DPoP (RFC 9449, section 10).'
 openid_connect.authorization.errors.invalid_verified_within_duration.one: la valeur doit être d’au moins %{count} jour ou plus
 openid_connect.authorization.errors.invalid_verified_within_duration.other: la valeur doit être d’au moins %{count} jours ou plus
 openid_connect.authorization.errors.invalid_verified_within_format: Format non reconnu pour verified_within
@@ -1858,6 +1860,11 @@ openid_connect.logout.errors.no_client_id_or_id_token_hint: Cette application es
 openid_connect.logout.heading: Voulez-vous vous déconnecter de %{app_name}?
 openid_connect.logout.heading_with_sp: Souhaitez-vous vous déconnecter de %{app_name} et revenir à %{service_provider_name}?
 
+openid_connect.token.errors.dpop_code_unbound: Le code d’autorisation a été émis sans liaison dpop_jkt. Lancez une nouvelle demande d’autorisation qui indique l’empreinte de la clé DPoP.
+openid_connect.token.errors.dpop_key_mismatch: La preuve DPoP est signée avec une clé différente de celle à laquelle ce jeton est lié.
+openid_connect.token.errors.dpop_proof_invalid: 'La preuve DPoP n’a pas pu être vérifiée : elle doit être un dpop+jwt signé en ES256 ou RS256 par la clé publique de son en-tête jwk, indiquer la méthode et l’URL de cette requête, être récente, porter un jti inutilisé et, lorsqu’un jeton est présenté, le hachage ath de ce jeton.'
+openid_connect.token.errors.dpop_proof_replayed: Le jti de la preuve DPoP a déjà été utilisé ; chaque preuve doit porter un jti unique.
+openid_connect.token.errors.dpop_proof_required: 'Une preuve DPoP est requise : les jetons de ce client sont liés à sa clé, envoyez donc avec la requête un en-tête DPoP signé avec cette clé (RFC 9449).'
 openid_connect.token.errors.expired_code: est expiré. Veuillez consulter notre documentation à https://developers.login.gov/support/#token-expired
 openid_connect.token.errors.invalid_aud: Affirmation liée à l’auditoire non valide, attendu %{url}. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: Le client doit s’authentifier par PKCE ou private_key_jwt, code_challenge ou client_assertion manquant. Veuillez consulter notre documentation à https://developers.login.gov/support/#pkce-or-private-key

@@ -1843,6 +1843,8 @@ notices.webauthn_configured: Se agregó una clave de seguridad a su cuenta.
 notices.webauthn_platform_configured: Usó el bloqueo de pantalla de su dispositivo para agregar el desbloqueo facial o táctil a su cuenta.
 openid_connect.authorization.errors.bad_client_id: client_id incorrecto. Consulte nuestra documentación en https://developers.login.gov/support/#bad-client-id
 openid_connect.authorization.errors.delegation_not_allowed: Los ámbitos de delegación (token_exchange:*) requieren una solicitud con identidad verificada de un proveedor de servicios aprobado para el acceso delegado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-delegation
+openid_connect.authorization.errors.dpop_jkt_invalid: 'dpop_jkt debe ser la huella digital RFC 7638 en base64url de la clave pública DPoP del cliente: 43 caracteres, sin relleno.'
+openid_connect.authorization.errors.dpop_jkt_required: 'dpop_jkt es obligatorio: este cliente es un cliente público aprobado para el acceso delegado, por lo que el código de autorización debe vincularse a la huella digital de su clave DPoP (RFC 9449, sección 10).'
 openid_connect.authorization.errors.invalid_verified_within_duration.one: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_duration.other: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_format: Formato no reconocido de verified_within
@@ -1869,6 +1871,11 @@ openid_connect.logout.errors.no_client_id_or_id_token_hint: Esta aplicación est
 openid_connect.logout.heading: ¿Desea cerrar sesión en %{app_name}?
 openid_connect.logout.heading_with_sp: ¿Desea cerrar sesión en %{app_name} y volver a %{service_provider_name}?
 
+openid_connect.token.errors.dpop_code_unbound: El código de autorización se emitió sin una vinculación dpop_jkt. Inicie una nueva solicitud de autorización que indique la huella digital de la clave DPoP.
+openid_connect.token.errors.dpop_key_mismatch: La prueba DPoP está firmada con una clave distinta de aquella a la que está vinculado este token.
+openid_connect.token.errors.dpop_proof_invalid: 'No se pudo verificar la prueba DPoP: debe ser un dpop+jwt firmado con ES256 o RS256 por la clave pública de su encabezado jwk, indicar el método y la URL de esta solicitud, ser reciente, llevar un jti sin usar y, cuando se presenta un token, el hash ath de ese token.'
+openid_connect.token.errors.dpop_proof_replayed: El jti de la prueba DPoP ya se ha utilizado; cada prueba debe llevar un jti único.
+openid_connect.token.errors.dpop_proof_required: 'Se requiere una prueba DPoP: los tokens de este cliente están vinculados a su clave, así que envíe con la solicitud un encabezado DPoP firmado con esa clave (RFC 9449).'
 openid_connect.token.errors.expired_code: venció. Consulte nuestra documentación en https://developers.login.gov/support/#token-expired
 openid_connect.token.errors.invalid_aud: Notificación de audiencia no válida, %{url} prevista. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: El cliente debe autenticarse a través de PKCE o private_key_jwt, omitiendo code_challenge o client_assertion. Consulte nuestra documentación en https://developers.login.gov/support/#pkce-or-private-key

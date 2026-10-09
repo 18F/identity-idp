@@ -10,6 +10,7 @@ class OpenidConnectAuthorizeForm
     client_id
     code_challenge
     code_challenge_method
+    dpop_jkt
     nonce
     prompt
     redirect_uri
@@ -48,6 +49,8 @@ class OpenidConnectAuthorizeForm
   attr_reader(*ATTRS)
 
   RANDOM_VALUE_MINIMUM_LENGTH = 22
+  # An RFC 7638 thumbprint: base64url of a SHA-256, 43 characters without padding.
+  DPOP_JKT_FORMAT = /\A[A-Za-z0-9_-]{43}\z/
   MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS = 30
 
   validates :acr_values, presence: true
@@ -71,6 +74,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_unauthorized_scope
   validate :validate_privileges
   validate :validate_delegation_scopes
+  validate :validate_dpop_jkt
   validate :validate_document_images_scope
   validate :validate_site_key_jwk
   validate :validate_prompt
@@ -132,6 +136,7 @@ class OpenidConnectAuthorizeForm
       code_challenge: code_challenge,
       private_key_jwt_pkce: private_key_jwt_pkce_requested?,
       email_address_id: email_address_id,
+      dpop_jkt: (dpop_jkt if dpop_binding_required?),
     )
   end
 
@@ -177,6 +182,15 @@ class OpenidConnectAuthorizeForm
 
   def site_key_requested?
     site_key_jwk.present? && service_provider&.site_key_allowed?
+  end
+
+  # Whether every token this client receives is bound to a key it holds (RFC 9449). Binding
+  # follows the client type alone: a public client (PKCE, no client secret) approved for
+  # delegated access holds its tokens in the person's browser, so each must be useless without
+  # the key. Confidential clients, and public clients not approved for delegation, receive bearer
+  # tokens as before.
+  def dpop_binding_required?
+    service_provider&.pkce == true && service_provider.delegation_service_provider?
   end
 
   private
@@ -261,6 +275,26 @@ class OpenidConnectAuthorizeForm
       t('openid_connect.authorization.errors.unknown_delegation_scope', scopes: unknown.join(', ')),
       type: :unknown_delegation_scope,
     )
+  end
+
+  # RFC 9449 §10: a public client approved for delegation names the thumbprint of its DPoP key in
+  # the authorization request, so the code it receives can be redeemed only with a proof from that
+  # key and an intercepted code is worthless. Any client may send a well-formed thumbprint; it is
+  # stored only when binding applies to the client.
+  def validate_dpop_jkt
+    if dpop_jkt.blank?
+      return unless dpop_binding_required?
+
+      errors.add(
+        :dpop_jkt, t('openid_connect.authorization.errors.dpop_jkt_required'),
+        type: :dpop_jkt_required
+      )
+    elsif !dpop_jkt.match?(DPOP_JKT_FORMAT)
+      errors.add(
+        :dpop_jkt, t('openid_connect.authorization.errors.dpop_jkt_invalid'),
+        type: :dpop_jkt_invalid
+      )
+    end
   end
 
   def delegation_scope_error?

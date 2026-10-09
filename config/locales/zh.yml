@@ -1845,6 +1845,8 @@ notices.webauthn_configured: 你账户添加了一个安全密钥。
 notices.webauthn_platform_configured: 你用了自己设备的屏幕锁定给账户添加了人脸或触摸解锁。
 openid_connect.authorization.errors.bad_client_id: 坏的client_id。请参阅我们的文档：https://developers.login.gov/support/#bad-client-id
 openid_connect.authorization.errors.delegation_not_allowed: 委托范围（token_exchange:*）需要来自已获批准进行委托访问的服务提供商的身份已验证请求。请参阅我们的文档：https://developers.login.gov/support/#oidc-delegation
+openid_connect.authorization.errors.dpop_jkt_invalid: dpop_jkt 必须是客户端 DPoP 公钥的 RFC 7638 base64url 指纹：43 个字符，无填充。
+openid_connect.authorization.errors.dpop_jkt_required: dpop_jkt 为必填项：此客户端是获准进行委托访问的公共客户端，因此授权码必须绑定到其 DPoP 密钥的指纹（RFC 9449 第 10 节）。
 openid_connect.authorization.errors.invalid_verified_within_duration.one: 值必须至少为 %{count} 天或以上
 openid_connect.authorization.errors.invalid_verified_within_duration.other: 值必须至少为 %{count} 天或以上
 openid_connect.authorization.errors.invalid_verified_within_format: verified_within 格式无法识别
@@ -1870,6 +1872,11 @@ openid_connect.logout.errors.id_token_hint_present: 本应用程序配置错误�
 openid_connect.logout.errors.no_client_id_or_id_token_hint: 本应用程序配置错误，必须发送 client_id 或者 id_token_hint。请参阅我们的文档：https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: 你想登出 %{app_name} 吗？
 openid_connect.logout.heading_with_sp: 你想登出 %{app_name} 并回到 %{service_provider_name} 吗？
+openid_connect.token.errors.dpop_code_unbound: 该授权码签发时没有 dpop_jkt 绑定。请发起新的授权请求并指明 DPoP 密钥的指纹。
+openid_connect.token.errors.dpop_key_mismatch: DPoP 证明所用的签名密钥与此令牌绑定的密钥不同。
+openid_connect.token.errors.dpop_proof_invalid: 无法验证 DPoP 证明：它必须是由其 jwk 标头中的公钥以 ES256 或 RS256 签名的 dpop+jwt，指明本次请求的方法和 URL，时间必须是近期，携带未使用过的 jti，并且在出示令牌时携带该令牌的 ath 哈希。
+openid_connect.token.errors.dpop_proof_replayed: DPoP 证明的 jti 已被使用过；每个证明都必须携带唯一的 jti。
+openid_connect.token.errors.dpop_proof_required: 需要 DPoP 证明：此客户端的令牌已绑定到其密钥，请在请求中附带由该密钥签名的 DPoP 标头（RFC 9449）。
 openid_connect.token.errors.expired_code: 过期了。请参阅我们的文档：https://developers.login.gov/support/#token-expired
 openid_connect.token.errors.invalid_aud: 受众声明有误，预期 %{url}。请参阅我们的文档：https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: 客户必须通过 PKCE 或 private_key_jwt 来验证，缺失 code_challenge 或者 client_assertion。请参阅我们的文档：https://developers.login.gov/support/#pkce-or-private-key
