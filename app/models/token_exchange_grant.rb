@@ -27,6 +27,8 @@ class TokenExchangeGrant < ApplicationRecord
   belongs_to :service_provider_record, class_name: 'ServiceProvider',
                                        foreign_key: :service_provider_issuer,
                                        primary_key: :issuer, optional: true, inverse_of: false
+  # Issuance records of the delegated tokens issued under this approval.
+  has_many :token_exchange_tokens, foreign_key: :grant_id, inverse_of: :grant, dependent: nil
 
   validates :service_provider_issuer, :consented_at, presence: true
   validates :source, inclusion: { in: SOURCES }
@@ -220,9 +222,17 @@ class TokenExchangeGrant < ApplicationRecord
       sp_content_version >= (service_provider_record&.sp_material_version || 1)
   end
 
-  # Ends this approval; the row is kept for the record.
+  # Ends this approval; the row is kept for the record. Every delegated token still live under
+  # it stops working at once: the Redis entries listed in the approval's index set are removed,
+  # so introspection answers "not active" from the next call, and the issuance records are
+  # marked revoked with the same reason so the history shows why they ended.
   def revoke!(reason:, now: Time.zone.now)
     update!(revoked_at: now, revocation_reason: reason)
+    DelegatedTokenStore.revoke_grant(id)
+    # rubocop:disable Rails/SkipsModelValidations
+    token_exchange_tokens.where(revoked_at: nil)
+      .update_all(revoked_at: now, revocation_reason: reason, updated_at: now)
+    # rubocop:enable Rails/SkipsModelValidations
   end
 
   private
