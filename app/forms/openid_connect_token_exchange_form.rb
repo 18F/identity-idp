@@ -493,7 +493,7 @@ class OpenidConnectTokenExchangeForm
     if audience.present? && audience == broker_identity.service_provider
       return errors.add(:audience, 'self_exchange', type: :self_exchange)
     end
-    return if target_service_provider&.active? &&
+    return if target_service_provider&.delegation_application? &&
               target_service_provider.identity_proofing_allowed?
     errors.add(:audience, 'unknown_target', type: :unknown_target)
   end
@@ -505,7 +505,7 @@ class OpenidConnectTokenExchangeForm
   def validate_target_allows_broker
     return unless broker_authorized?
     return if target_service_provider.blank?
-    return if target_service_provider.allows_token_exchange_broker?(
+    return if target_service_provider.accepts_delegation_from?(
       broker_identity.service_provider,
     )
     errors.add(:audience, 'target_forbids_broker', type: :target_forbids_broker)

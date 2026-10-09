@@ -11,7 +11,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       issuer: 'target.gov',
       ial: 2,
       attribute_bundle: %w[email],
-      allowed_token_exchange_brokers: ['broker.gov']
+      delegation_application: true, allowed_delegation_service_providers: ['broker.gov']
     )
   end
   let(:rails_session_id) { SecureRandom.uuid }
@@ -136,13 +136,16 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
 
       it 'maps an unusable audience to invalid_target' do
-        target_sp.update!(allowed_token_exchange_brokers: [])
+        target_sp.update!(allowed_delegation_service_providers: ['other-service-provider.gov'])
         expect(form.submit.success?).to eq(false)
         expect(form.response[:error]).to eq('invalid_target')
       end
 
       it 'refuses a broker exchanging for itself' do
-        broker_sp.update!(ial: 2, allowed_token_exchange_brokers: ['broker.gov'])
+        broker_sp.update!(
+          ial: 2, delegation_application: true,
+          allowed_delegation_service_providers: ['broker.gov']
+        )
         TokenExchangeGrant.grant_one!(
           user: user, broker_issuer: 'broker.gov', target_issuer: 'broker.gov',
         )
@@ -236,7 +239,9 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     end
 
     context 'when the target SP has not allow-listed the broker' do
-      before { target_sp.update!(allowed_token_exchange_brokers: []) }
+      before do
+        target_sp.update!(allowed_delegation_service_providers: ['other-service-provider.gov'])
+      end
 
       it 'fails and mints nothing' do
         expect(form.submit.success?).to eq(false)
@@ -482,7 +487,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         create(
           :service_provider, :active,
           issuer: 'other.gov', ial: 2, attribute_bundle: %w[email],
-          allowed_token_exchange_brokers: ['broker.gov']
+          delegation_application: true, allowed_delegation_service_providers: ['broker.gov']
         )
       end
 

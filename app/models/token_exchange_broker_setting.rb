@@ -45,7 +45,7 @@ class TokenExchangeBrokerSetting < ApplicationRecord
   def auto_enroll!(target_service_provider)
     return unless auto_enroll_enabled?
     return if target_service_provider.blank? || target_service_provider.issuer == broker_issuer
-    return unless target_service_provider.allows_token_exchange_broker?(broker_issuer)
+    return unless target_service_provider.accepts_delegation_from?(broker_issuer)
     return unless broker_still_connected?
 
     TokenExchangeGrant.grant_one!(

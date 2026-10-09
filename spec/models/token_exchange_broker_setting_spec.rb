@@ -5,7 +5,10 @@ RSpec.describe TokenExchangeBrokerSetting do
   let(:broker) { 'broker.gov' }
   let(:setting) { described_class.for(user:, broker_issuer: broker) }
   let(:target) do
-    create(:service_provider, :active, issuer: 'new.gov', allowed_token_exchange_brokers: [broker])
+    create(
+      :service_provider, :active, issuer: 'new.gov', delegation_application: true,
+                                  allowed_delegation_service_providers: [broker]
+    )
   end
 
   before do
@@ -51,7 +54,7 @@ RSpec.describe TokenExchangeBrokerSetting do
 
     it 'does nothing for a target that has not opted in to the broker' do
       setting.enable_auto_enroll!
-      target.update!(allowed_token_exchange_brokers: [])
+      target.update!(allowed_delegation_service_providers: ['other-service-provider.gov'])
       setting.auto_enroll!(target)
       expect(TokenExchangeGrant.where(user:)).to be_empty
     end

@@ -13,13 +13,13 @@ class TokenExchangeBrokerPresenter
 
   # @return [Array<[Agency, Array<ServiceProvider>]>]
   def linked_targets_by_agency
-    @linked_targets_by_agency ||= TokenExchangeReachableTargets.grouped_by_agency(linked_targets)
+    @linked_targets_by_agency ||= DelegationApplications.grouped_by_agency(linked_targets)
   end
 
   # @return [Array<ServiceProvider>]
   def linked_targets
-    @linked_targets ||= TokenExchangeReachableTargets.linked_for(
-      user: user, broker_issuer: broker.issuer,
+    @linked_targets ||= DelegationApplications.connected_for(
+      user: user, service_provider_issuer: broker.issuer,
     )
   end
 

@@ -205,7 +205,10 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
         create(
           :service_provider, :active, issuer: 'target.gov', ial: 2, agency: agency,
                                       friendly_name: 'Benefits Portal',
-                                      allowed_token_exchange_brokers: [service_provider.issuer]
+                                      delegation_application: true,
+                                      allowed_delegation_service_providers: [
+                                        service_provider.issuer,
+                                      ]
         )
       end
 
@@ -278,7 +281,8 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
           orphan = create(
             :service_provider, :active,
             issuer: 'orphan.gov', agency: nil, friendly_name: 'Orphan App',
-            allowed_token_exchange_brokers: [service_provider.issuer]
+            delegation_application: true,
+            allowed_delegation_service_providers: [service_provider.issuer]
           )
           create(:service_provider_identity, user: user, service_provider: orphan.issuer)
         end

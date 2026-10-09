@@ -740,14 +740,14 @@ RSpec.describe SignUp::CompletionsController do
       end
       let!(:target_a) do
         create(
-          :service_provider, :active, issuer: 'target-a.gov', ial: 2,
-                                      allowed_token_exchange_brokers: [current_sp.issuer]
+          :service_provider, :active, issuer: 'target-a.gov', ial: 2, delegation_application: true,
+                                      allowed_delegation_service_providers: [current_sp.issuer]
         )
       end
       let!(:target_b) do
         create(
-          :service_provider, :active, issuer: 'target-b.gov', ial: 2,
-                                      allowed_token_exchange_brokers: [current_sp.issuer]
+          :service_provider, :active, issuer: 'target-b.gov', ial: 2, delegation_application: true,
+                                      allowed_delegation_service_providers: [current_sp.issuer]
         )
       end
       # Only agencies the user has ALREADY linked are coverable.
@@ -812,7 +812,7 @@ RSpec.describe SignUp::CompletionsController do
       end
 
       it '"allow all" ignores a linked agency that has not opted in to the broker' do
-        target_b.update!(allowed_token_exchange_brokers: [])
+        target_b.update!(allowed_delegation_service_providers: ['other-service-provider.gov'])
         patch :update, params: { idv_form: { token_exchange_all: '1' } }
         expect(grants.pluck(:target_issuer)).to eq(['target-a.gov'])
       end
@@ -890,7 +890,10 @@ RSpec.describe SignUp::CompletionsController do
     context 'auto-enrolling a newly connected agency' do
       let(:broker) { create(:service_provider, :idv, :active, issuer: 'broker.gov') }
       let(:current_sp) do
-        create(:service_provider, :idv, :active, allowed_token_exchange_brokers: ['broker.gov'])
+        create(
+          :service_provider, :idv, :active, delegation_application: true,
+                                            allowed_delegation_service_providers: ['broker.gov']
+        )
       end
       let(:user) { create(:user, :proofed) }
       let(:new_identity) do

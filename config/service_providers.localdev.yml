@@ -247,7 +247,8 @@ test:
     certs:
       - 'saml_test_sp'
     friendly_name: 'Token Exchange Target (local proof of concept)'
-    allowed_token_exchange_brokers:
+    delegation_application: true
+    allowed_delegation_service_providers:
       - 'urn:gov:gsa:openidconnect:sp:token_exchange_broker'
     attribute_bundle:
       - email

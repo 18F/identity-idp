@@ -128,13 +128,13 @@ class CompletionsPresenter
   # @return [Array<[Agency, Array<ServiceProvider>]>]
   def token_exchange_linked_targets_by_agency
     @token_exchange_linked_targets_by_agency ||=
-      TokenExchangeReachableTargets.grouped_by_agency(token_exchange_linked_targets)
+      DelegationApplications.grouped_by_agency(token_exchange_linked_targets)
   end
 
   # @return [Array<ServiceProvider>]
   def token_exchange_linked_targets
-    @token_exchange_linked_targets ||= TokenExchangeReachableTargets.linked_for(
-      user: current_user, broker_issuer: current_sp.issuer,
+    @token_exchange_linked_targets ||= DelegationApplications.connected_for(
+      user: current_user, service_provider_issuer: current_sp.issuer,
     )
   end
 

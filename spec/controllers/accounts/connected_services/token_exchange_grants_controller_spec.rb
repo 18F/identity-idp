@@ -5,8 +5,8 @@ RSpec.describe Accounts::ConnectedServices::TokenExchangeGrantsController do
   let(:broker) { create(:service_provider, :active, issuer: 'broker.gov') }
   let(:target) do
     create(
-      :service_provider, :active, issuer: 'target.gov',
-                                  allowed_token_exchange_brokers: ['broker.gov']
+      :service_provider, :active, issuer: 'target.gov', delegation_application: true,
+                                  allowed_delegation_service_providers: ['broker.gov']
     )
   end
   let!(:broker_identity) do
@@ -73,7 +73,7 @@ RSpec.describe Accounts::ConnectedServices::TokenExchangeGrantsController do
     end
 
     it 'refuses a target that has not opted in to the broker' do
-      target.update!(allowed_token_exchange_brokers: [])
+      target.update!(allowed_delegation_service_providers: ['other-service-provider.gov'])
       patch :update, params: {
         identity_id: broker_identity.id,
         grant_type: 'target',
@@ -107,7 +107,10 @@ RSpec.describe Accounts::ConnectedServices::TokenExchangeGrantsController do
     end
 
     it 'refuses granting the broker to itself' do
-      broker.update!(allowed_token_exchange_brokers: ['broker.gov'])
+      broker.update!(
+        delegation_application: true,
+        allowed_delegation_service_providers: ['broker.gov'],
+      )
       patch :update, params: {
         identity_id: broker_identity.id,
         grant_type: 'target',

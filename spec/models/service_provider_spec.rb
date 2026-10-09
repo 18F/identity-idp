@@ -339,4 +339,63 @@ RSpec.describe ServiceProvider do
       end
     end
   end
+
+  describe '#delegation_application?' do
+    it 'is true only for an active record registered as an application' do
+      expect(create(:service_provider, :delegation_application).delegation_application?).to eq(true)
+      expect(
+        create(:service_provider, :delegation_application, active: false)
+                .delegation_application?,
+      ).to eq(false)
+      expect(create(:service_provider, :active).delegation_application?).to eq(false)
+    end
+  end
+
+  describe '#delegation_scope' do
+    it 'prefixes the scope value with token_exchange:' do
+      application = create(
+        :service_provider, :delegation_application, delegation_scope_value: 'housing_records'
+      )
+      expect(application.delegation_scope).to eq('token_exchange:housing_records')
+    end
+
+    it 'is nil for a record without a scope value' do
+      expect(create(:service_provider, :active).delegation_scope).to be_nil
+    end
+  end
+
+  describe '#accepts_delegation_from?' do
+    let(:issuer) { 'urn:gov:gsa:openidconnect:sp:mybenefits' }
+
+    it 'accepts any service provider when the list is empty' do
+      application = create(:service_provider, :delegation_application)
+      expect(application.accepts_delegation_from?(issuer)).to eq(true)
+    end
+
+    it 'accepts only the listed service providers when the list is set' do
+      application = create(
+        :service_provider, :delegation_application,
+        allowed_delegation_service_providers: [issuer]
+      )
+      expect(application.accepts_delegation_from?(issuer)).to eq(true)
+      expect(application.accepts_delegation_from?('urn:someone-else')).to eq(false)
+    end
+
+    it 'accepts nobody when the record is not an application' do
+      expect(create(:service_provider, :active).accepts_delegation_from?(issuer)).to eq(false)
+    end
+  end
+
+  describe 'localized consent content' do
+    it 'reads the current locale and falls back to English' do
+      application = create(
+        :service_provider, :delegation_application,
+        delegation_display_name: { en: 'Housing Assistance Records', es: 'Registros de vivienda' },
+        delegation_description: { en: 'check your housing application.' }
+      )
+      expect(application.delegation_display_name_for(:es)).to eq('Registros de vivienda')
+      expect(application.delegation_display_name_for(:fr)).to eq('Housing Assistance Records')
+      expect(application.delegation_description_for(:zh)).to eq('check your housing application.')
+    end
+  end
 end

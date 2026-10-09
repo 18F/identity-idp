@@ -128,7 +128,8 @@ RSpec.describe 'accounts/connected_services/show.html.erb' do
     let(:target) do
       create(
         :service_provider, :active, issuer: 'target.gov', friendly_name: 'Benefits Portal',
-                                    agency: agency, allowed_token_exchange_brokers: ['broker.gov']
+                                    agency: agency, delegation_application: true,
+                                    allowed_delegation_service_providers: ['broker.gov']
       )
     end
     let!(:broker_identity) do

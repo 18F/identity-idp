@@ -27,6 +27,18 @@ class ServiceProvider < ApplicationRecord
           class_name: 'Agreements::Integration',
           dependent: nil
 
+  # The API URLs of this record when it is an application registered for delegated access.
+  has_many :token_exchange_resource_servers, inverse_of: :service_provider, dependent: :destroy
+
+  include DelegationLocalizedContent
+  # Consent-screen content an agency writes about this application; jsonb keyed by locale.
+  localized_content :delegation_display_name, :delegation_description, :delegation_data_provided
+
+  # Prefix every application's delegation scope carries on the wire:
+  # `token_exchange:<delegation_scope_value>`.
+  DELEGATION_SCOPE_PREFIX = 'token_exchange:'
+  DELEGATION_ACCESS_TYPES = %w[read read_write].freeze
+
   # Do not define validations in this model
   # See https://github.com/18F/identity_validations
   include IdentityValidations::ServiceProviderValidation
@@ -86,12 +98,34 @@ class ServiceProvider < ApplicationRecord
       IdentityConfig.store.token_exchange_service_providers.include?(issuer)
   end
 
-  # Whether this SP (as a token-exchange TARGET) has opted in to accepting
-  # exchanged tokens minted by the given broker. The target sets this allowlist
-  # in its own partner management portal configuration, so a broker can never
-  # mint for a target that has not agreed to it.
-  def allows_token_exchange_broker?(broker_issuer)
-    Array(allowed_token_exchange_brokers).map(&:to_s).include?(broker_issuer.to_s)
+  # Whether this record is an application registered for delegated access: an agency-owned
+  # record a service provider may act at on the user's behalf, owning one or more API URLs
+  # (token_exchange_resource_servers).
+  def delegation_application?
+    active? && delegation_application
+  end
+
+  # The scope value a service provider sends to request this application, with its prefix,
+  # e.g. "token_exchange:housing_records". Nil for records that are not applications.
+  def delegation_scope
+    return nil if delegation_scope_value.blank?
+
+    "#{DELEGATION_SCOPE_PREFIX}#{delegation_scope_value}"
+  end
+
+  # Whether this application accepts delegation from the given service provider. The agency
+  # lists the service providers it accepts in its own configuration; an empty list means any
+  # service provider Login.gov has approved for delegation, so an agency that does not care needs
+  # no configuration. A record that is not an application accepts nobody.
+  def accepts_delegation_from?(service_provider_issuer)
+    return false unless delegation_application?
+
+    allowed = Array(allowed_delegation_service_providers).map(&:to_s)
+    allowed.empty? || allowed.include?(service_provider_issuer.to_s)
+  end
+
+  def delegation_read_write?
+    delegation_access_type == 'read_write'
   end
 
   def document_images_sharing_allowed?

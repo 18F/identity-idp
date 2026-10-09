@@ -75,7 +75,7 @@ module VerifySpAttributesConcern
 
   def auto_enroll_token_exchange
     target = current_sp
-    return if target.blank? || target.allowed_token_exchange_brokers.blank?
+    return if target.blank? || !target.delegation_application?
 
     TokenExchangeBrokerSetting.where(user: current_user)
       .where.not(broker_issuer: target.issuer)
@@ -114,8 +114,8 @@ module VerifySpAttributesConcern
   end
 
   def token_exchange_linked_targets
-    @token_exchange_linked_targets ||= TokenExchangeReachableTargets.linked_for(
-      user: current_user, broker_issuer: current_sp.issuer,
+    @token_exchange_linked_targets ||= DelegationApplications.connected_for(
+      user: current_user, service_provider_issuer: current_sp.issuer,
     )
   end
 

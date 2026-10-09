@@ -28,7 +28,7 @@ module Accounts
       def update_target
         target = ServiceProvider.active.find_by(issuer: params[:target_issuer])
         return false if target.blank? || target.issuer == broker.issuer
-        return false unless target.allows_token_exchange_broker?(broker.issuer)
+        return false unless target.accepts_delegation_from?(broker.issuer)
         return false unless linked_to?(target)
 
         if enabled?
