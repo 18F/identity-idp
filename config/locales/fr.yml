@@ -1864,19 +1864,37 @@ openid_connect.token.errors.client_assertion_lifetime: exp doit être un horodat
 openid_connect.token.errors.client_assertion_malformed: client_assertion n’a pas pu être interprété comme un JWT dont les affirmations iss et sub correspondent.
 openid_connect.token.errors.client_assertion_missing: client_assertion est obligatoire pour ce type d’octroi.
 openid_connect.token.errors.client_assertion_replayed: L’affirmation jti de client_assertion a déjà été utilisée ; chaque assertion doit porter un jti unique.
+openid_connect.token.errors.client_assertion_type_invalid: 'client_assertion_type doit être urn:ietf:params:oauth:client-assertion-type:jwt-bearer.'
+openid_connect.token.errors.client_authentication_required: 'L’authentification du client est requise : un client confidentiel envoie un client_assertion (private_key_jwt) ; un client public envoie son client_id et une preuve DPoP signée avec la clé à laquelle son jeton est lié.'
+openid_connect.token.errors.client_not_approved: Ce client n’est pas approuvé pour l’accès délégué.
+openid_connect.token.errors.code_verifier_not_allowed: code_verifier n’est pas accepté pour ce type d’octroi.
+openid_connect.token.errors.consent_required: L’utilisateur n’a pas approuvé cette application pour ce client, ou l’approbation a expiré. Lancez une demande d’autorisation avec la portée %{delegation_scope} pour la demander.
 openid_connect.token.errors.dpop_code_unbound: Le code d’autorisation a été émis sans liaison dpop_jkt. Lancez une nouvelle demande d’autorisation qui indique l’empreinte de la clé DPoP.
 openid_connect.token.errors.dpop_key_mismatch: La preuve DPoP est signée avec une clé différente de celle à laquelle ce jeton est lié.
 openid_connect.token.errors.dpop_proof_invalid: 'La preuve DPoP n’a pas pu être vérifiée : elle doit être un dpop+jwt signé en ES256 ou RS256 par la clé publique de son en-tête jwk, indiquer la méthode et l’URL de cette requête, être récente, porter un jti inutilisé et, lorsqu’un jeton est présenté, le hachage ath de ce jeton.'
 openid_connect.token.errors.dpop_proof_replayed: Le jti de la preuve DPoP a déjà été utilisé ; chaque preuve doit porter un jti unique.
 openid_connect.token.errors.dpop_proof_required: 'Une preuve DPoP est requise : les jetons de ce client sont liés à sa clé, envoyez donc avec la requête un en-tête DPoP signé avec cette clé (RFC 9449).'
 openid_connect.token.errors.expired_code: est expiré. Veuillez consulter notre documentation à https://developers.login.gov/support/#token-expired
+openid_connect.token.errors.identity_not_verified: L’accès délégué requiert un utilisateur dont l’identité est vérifiée et connecté au niveau IAL2.
 openid_connect.token.errors.invalid_aud: Affirmation liée à l’auditoire non valide, attendu %{url}. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: Le client doit s’authentifier par PKCE ou private_key_jwt, code_challenge ou client_assertion manquant. Veuillez consulter notre documentation à https://developers.login.gov/support/#pkce-or-private-key
 openid_connect.token.errors.invalid_code: n’est pas valide, car il ne correspond à aucun utilisateur. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-code
 openid_connect.token.errors.invalid_code_verifier: code_verifier ne correspondait pas à code_challenge. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat doit être un horodatage Unix entier ou à virgule flottante représentant une heure dans le passé. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-iat
+openid_connect.token.errors.invalid_requested_token_type: 'requested_token_type doit être urn:ietf:params:oauth:token-type:access_token ou urn:ietf:params:oauth:token-type:saml2.'
 openid_connect.token.errors.invalid_signature: Impossible de valider l’assertion contre les clés publiques enregistrées. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-token-signature
+openid_connect.token.errors.invalid_subject_token: subject_token n’est pas un jeton d’accès délivré à ce client pour une connexion en cours.
+openid_connect.token.errors.invalid_subject_token_type: 'subject_token_type doit être urn:ietf:params:oauth:token-type:access_token.'
+openid_connect.token.errors.multiple_resources: resource doit désigner exactement une API enregistrée ; un jeton n’a qu’un seul auditoire.
+openid_connect.token.errors.requested_token_type_required: requested_token_type est obligatoire.
+openid_connect.token.errors.resource_missing: resource est obligatoire et doit désigner une API enregistrée.
+openid_connect.token.errors.saml_not_available: 'Aucune assertion SAML n’est disponible pour cette API ; demandez urn:ietf:params:oauth:token-type:access_token.'
+openid_connect.token.errors.subject_token_missing: subject_token est obligatoire.
+openid_connect.token.errors.subject_token_session_ended: La session qui a délivré subject_token est terminée ; l’utilisateur doit se reconnecter avant qu’une nouvelle délégation puisse commencer.
 openid_connect.token.errors.unknown_client: L’affirmation iss de client_assertion ne correspond à aucun client enregistré.
+openid_connect.token.errors.unknown_resource: resource ne désigne pas une API enregistrée active accessible à ce client.
+openid_connect.token.errors.unsupported_grant_type: Ce type d’octroi n’est pas pris en charge.
+openid_connect.token.errors.user_suspended: Le compte de l’utilisateur n’est pas en règle.
 openid_connect.user_info.errors.bound_token_requires_dpop: 'Ce jeton d’accès est lié à une clé : présentez-le avec le schéma d’autorisation DPoP et une preuve DPoP signée avec cette clé (RFC 9449).'
 openid_connect.user_info.errors.malformed_authorization: Forme de l’en-tête d’autorisation non valide. Veuillez consulter notre documentation à https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: Aucune en-tête d’autorisation fournie. Veuillez consulter notre documentation à https://developers.login.gov/support/#no-auth-header

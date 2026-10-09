@@ -7691,38 +7691,46 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks an RFC 8693 token exchange: a service provider presenting its own token for a
-  # delegated token at one of the user's approved applications.
-  # @param [Boolean] success Whether the exchange succeeded
-  # @param [String, nil] service_provider_issuer Issuer of the service provider presenting the
-  #   subject token
-  # @param [String, nil] application_issuer Issuer of the application the token was requested for
-  # @param [Integer, nil] minted_ial IAL carried by the minted token
-  # @param [String, nil] minted_scope Scope carried by the minted token
-  # @param [Boolean, nil] billable Whether the mint was recorded as a billable return
-  # @param [Boolean, nil] fraud_signalled Whether the application received a fraud-signal event
+  # Tracks an RFC 8693 token exchange at the token endpoint: a service provider presenting the
+  # access token of a signed-in person for a delegated token at one agency API.
+  # @param [Boolean] success Whether a token was issued
+  # @param [String, nil] service_provider_issuer Issuer of the service provider making the
+  #   exchange, as authenticated or as claimed when authentication failed
+  # @param [String, nil] resource_server_identifier Identifier of the agency API named in
+  #   `resource`, when it is registered
+  # @param [String, nil] application_issuer Issuer of the application that owns the API
+  # @param ["confidential", "public", nil] client_type How the service provider authenticated:
+  #   a client assertion (confidential) or client_id with a DPoP proof (public)
+  # @param ["Bearer", "DPoP", nil] token_type Type of the issued token
+  # @param [String, nil] requested_token_type The `requested_token_type` parameter as sent
+  # @param [Integer, nil] expires_in Lifetime in seconds of the issued token
+  # @param [String, nil] error_code RFC 6749/8693/9449 error code returned on failure
   # @param [Hash, nil] error_details Details for errors that occurred in an unsuccessful exchange
   def openid_connect_token_exchange(
     success:,
     service_provider_issuer: nil,
+    resource_server_identifier: nil,
     application_issuer: nil,
-    minted_ial: nil,
-    minted_scope: nil,
-    billable: nil,
-    fraud_signalled: nil,
+    client_type: nil,
+    token_type: nil,
+    requested_token_type: nil,
+    expires_in: nil,
+    error_code: nil,
     error_details: nil,
     **extra
   )
     track_event(
       :openid_connect_token_exchange,
       success:,
-      error_details:,
       service_provider_issuer:,
+      resource_server_identifier:,
       application_issuer:,
-      minted_ial:,
-      minted_scope:,
-      billable:,
-      fraud_signalled:,
+      client_type:,
+      token_type:,
+      requested_token_type:,
+      expires_in:,
+      error_code:,
+      error_details:,
       **extra,
     )
   end

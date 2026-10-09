@@ -1863,19 +1863,37 @@ openid_connect.token.errors.client_assertion_lifetime: exp must be an integer Un
 openid_connect.token.errors.client_assertion_malformed: client_assertion could not be parsed as a JWT whose iss and sub claims match.
 openid_connect.token.errors.client_assertion_missing: client_assertion is required for this grant type.
 openid_connect.token.errors.client_assertion_replayed: The jti claim of client_assertion has already been used; each assertion must carry a unique jti.
+openid_connect.token.errors.client_assertion_type_invalid: 'client_assertion_type must be urn:ietf:params:oauth:client-assertion-type:jwt-bearer.'
+openid_connect.token.errors.client_authentication_required: 'Client authentication is required: a confidential client sends a client_assertion (private_key_jwt); a public client sends its client_id and a DPoP proof signed by the key its token is bound to.'
+openid_connect.token.errors.client_not_approved: This client is not approved for delegated access.
+openid_connect.token.errors.code_verifier_not_allowed: code_verifier is not accepted for this grant type.
+openid_connect.token.errors.consent_required: The user has not approved this application for this client, or the approval has lapsed. Start an authorization request with the scope %{delegation_scope} to ask for it.
 openid_connect.token.errors.dpop_code_unbound: The authorization code was issued without a dpop_jkt binding. Start a new authorization request that names the thumbprint of the DPoP key.
 openid_connect.token.errors.dpop_key_mismatch: The DPoP proof is signed with a different key than the one this token is bound to.
 openid_connect.token.errors.dpop_proof_invalid: 'The DPoP proof could not be verified: it must be a dpop+jwt signed with ES256 or RS256 by the public key in its jwk header, name the method and URL of this request, be recent, carry an unused jti and, when a token is presented, the ath hash of that token.'
 openid_connect.token.errors.dpop_proof_replayed: The jti of the DPoP proof has already been used; each proof must carry a unique jti.
 openid_connect.token.errors.dpop_proof_required: 'A DPoP proof is required: this client''s tokens are bound to its key, so send a DPoP header signed by that key with the request (RFC 9449).'
 openid_connect.token.errors.expired_code: is expired. Please see our documentation at https://developers.login.gov/support/#token-expired
+openid_connect.token.errors.identity_not_verified: Delegated access requires an identity-verified user signed in at IAL2.
 openid_connect.token.errors.invalid_aud: Invalid audience claim, expected %{url}. Please see our documentation at https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: Client must authenticate via PKCE or private_key_jwt, missing either code_challenge or client_assertion. Please see our documentation at https://developers.login.gov/support/#pkce-or-private-key
 openid_connect.token.errors.invalid_code: is invalid because doesn’t match any user. Please see our documentation at https://developers.login.gov/support/#invalid-code
 openid_connect.token.errors.invalid_code_verifier: code_verifier did not match code_challenge. Please see our documentation at https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat must be an integer or floating point Unix timestamp representing a time in the past. Please see our documentation at https://developers.login.gov/support/#invalid-iat
+openid_connect.token.errors.invalid_requested_token_type: 'requested_token_type must be urn:ietf:params:oauth:token-type:access_token or urn:ietf:params:oauth:token-type:saml2.'
 openid_connect.token.errors.invalid_signature: Could not validate assertion against any registered public keys. Please see our documentation at https://developers.login.gov/support/#invalid-token-signature
+openid_connect.token.errors.invalid_subject_token: subject_token is not an access token issued to this client for a current connection.
+openid_connect.token.errors.invalid_subject_token_type: 'subject_token_type must be urn:ietf:params:oauth:token-type:access_token.'
+openid_connect.token.errors.multiple_resources: resource must name exactly one registered API; a token has one audience.
+openid_connect.token.errors.requested_token_type_required: requested_token_type is required.
+openid_connect.token.errors.resource_missing: resource is required and must name one registered API.
+openid_connect.token.errors.saml_not_available: 'A SAML assertion is not available for this API; request urn:ietf:params:oauth:token-type:access_token.'
+openid_connect.token.errors.subject_token_missing: subject_token is required.
+openid_connect.token.errors.subject_token_session_ended: The sign-in that issued subject_token has ended; the user must sign in again before a new delegation can start.
 openid_connect.token.errors.unknown_client: The iss claim of client_assertion does not match any registered client.
+openid_connect.token.errors.unknown_resource: resource does not name an active registered API available to this client.
+openid_connect.token.errors.unsupported_grant_type: This grant type is not supported.
+openid_connect.token.errors.user_suspended: The user's account is not in good standing.
 openid_connect.user_info.errors.bound_token_requires_dpop: 'This access token is bound to a key: present it with the DPoP authorization scheme and a DPoP proof signed by that key (RFC 9449).'
 openid_connect.user_info.errors.malformed_authorization: Malformed Authorization header. Please see our documentation at https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No Authorization header provided. Please see our documentation at https://developers.login.gov/support/#no-auth-header

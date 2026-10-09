@@ -123,8 +123,38 @@ RSpec.describe OpenidConnect::TokenController do
       end
     end
 
-    context 'with invalid params' do
+    context 'with a grant type the endpoint does not serve' do
       let(:grant_type) { nil }
+
+      it 'is a 400 with unsupported_grant_type and no id_token' do
+        action
+        expect(response).to be_bad_request
+
+        json = JSON.parse(response.body).with_indifferent_access
+        expect(json[:error]).to eq('unsupported_grant_type')
+        expect(json[:error_description]).to be_present
+        expect(json).to_not have_key(:id_token)
+      end
+
+      it 'tracks an unsuccessful event in analytics' do
+        stub_analytics
+
+        action
+
+        expect(@analytics).to have_logged_event(
+          'OpenID Connect: token', {
+            success: false,
+            code_verifier_present: false,
+            error_details: { grant_type: { unsupported_grant_type: true } },
+          }
+        )
+
+        expect(@analytics).to_not have_logged_event(:sp_integration_errors_present)
+      end
+    end
+
+    context 'with invalid params' do
+      let(:code) { nil }
 
       it 'is a 400 and has an error response and no id_token' do
         action
@@ -143,25 +173,12 @@ RSpec.describe OpenidConnect::TokenController do
         expect(@analytics).to have_logged_event(
           'OpenID Connect: token', {
             success: false,
-            client_id: client_id,
-            user_id: user.uuid,
-            code_digest: kind_of(String),
             code_verifier_present: false,
-            error_details: hash_including(:grant_type),
-            ial: 1,
+            error_details: hash_including(:code),
           }
         )
 
-        expect(@analytics).to have_logged_event(
-          :sp_integration_errors_present,
-          error_details: array_including(
-            'Grant type is not included in the list',
-          ),
-          error_types: { grant_type: true },
-          event: :oidc_token_request,
-          integration_exists: true,
-          request_issuer: client_id,
-        )
+        expect(@analytics).to_not have_logged_event(:sp_integration_errors_present)
       end
     end
 

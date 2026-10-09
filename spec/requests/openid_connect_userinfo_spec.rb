@@ -194,7 +194,28 @@ RSpec.describe 'OpenID Connect UserInfo controller' do
           success: true, client_id: identity.service_provider, ial: identity.ial,
         )
       end
-    end
 
+      it 'refuses a delegated token, never a sign-in credential, with or without a proof' do
+        plaintext = TokenExchangeToken.generate_token
+        token = create(:token_exchange_token, :key_bound, dpop_jkt: dpop_thumbprint, plaintext:)
+        expect(DelegatedTokenStore.read(plaintext)).to be_present
+
+        get api_openid_connect_userinfo_path,
+            headers: { 'HTTP_AUTHORIZATION' => "Bearer #{plaintext}" }
+        expect(response).to be_unauthorized
+
+        get api_openid_connect_userinfo_path,
+            headers: {
+              'HTTP_AUTHORIZATION' => "DPoP #{plaintext}",
+              'DPoP' => build_dpop_proof(
+                url: api_openid_connect_userinfo_url, method: 'GET', access_token: plaintext,
+              ),
+            }
+        expect(response).to be_unauthorized
+        expect(JSON.parse(response.body)['error'])
+          .to eq(t('openid_connect.user_info.errors.not_found'))
+        DelegatedTokenStore.revoke_grant(token.grant_id)
+      end
+    end
   end
 end
