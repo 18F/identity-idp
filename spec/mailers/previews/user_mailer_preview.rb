@@ -123,6 +123,33 @@ class UserMailerPreview < ActionMailer::Preview
       .account_connected_to_sp(sp_name: 'Sample App SP', disavowal_token: SecureRandom.hex)
   end
 
+  def delegation_approved
+    UserMailer.with(user: user, email_address: email_address_record)
+      .delegation_approved(
+        sp_name: 'MyBenefits Assistant',
+        application_names: ['Housing Assistance Records', 'Retirement Benefits Portal'],
+        disavowal_token: SecureRandom.hex,
+      )
+  end
+
+  def delegation_revoked
+    UserMailer.with(user: user, email_address: email_address_record)
+      .delegation_revoked(
+        sp_name: 'MyBenefits Assistant',
+        application_names: ['Housing Assistance Records'],
+        disavowal_token: SecureRandom.hex,
+      )
+  end
+
+  def delegation_revoked_all
+    UserMailer.with(user: user, email_address: email_address_record)
+      .delegation_revoked(
+        sp_name: nil,
+        application_names: ['Housing Assistance Records', 'Retirement Benefits Portal'],
+        disavowal_token: SecureRandom.hex,
+      )
+  end
+
   def account_disconnected_from_sp
     UserMailer.with(user: user, email_address: email_address_record)
       .account_disconnected_from_sp(sp_name: 'Sample App SP', disavowal_token: SecureRandom.hex)

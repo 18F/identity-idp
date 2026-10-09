@@ -31,8 +31,13 @@
         ) %>
   <% end %>
 
-  <% if (delegation = @presenter.delegation_for(identity)) %>
-    <%= render 'accounts/delegation_manage', identity: identity, delegation: delegation %>
+  <% if identity.service_provider_record&.delegation_service_provider? %>
+    <p class="margin-y-1">
+      <%= link_to(
+            t('account.connected_apps.manage_delegated_access', sp: identity.display_name),
+            account_delegated_access_path(anchor: "delegated-access-#{identity.service_provider_record.id}"),
+          ) %>
+    </p>
   <% end %>
 
   <% if identity.service_provider_id %>

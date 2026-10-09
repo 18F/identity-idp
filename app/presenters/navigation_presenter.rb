@@ -46,7 +46,9 @@ class NavigationPresenter
       ),
       NavItem.new(
         I18n.t('account.navigation.connected_services'),
-        account_connected_services_path, []
+        account_connected_services_path, [
+          NavItem.new(I18n.t('account.navigation.delegated_access'), account_delegated_access_path),
+        ]
       ),
       NavItem.new(
         I18n.t('account.navigation.history'), account_history_path, [

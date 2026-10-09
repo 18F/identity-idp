@@ -35,6 +35,8 @@ class Event < ApplicationRecord
     max_attempts_reached: 28, # deprecated
     sp_user_consent_revoked: 29,
     sp_user_consent_granted: 30,
+    delegation_approved: 31,
+    delegation_revoked: 32,
   }
 
   validates :event_type, presence: true

@@ -565,6 +565,38 @@ module AnalyticsEvents
 
   # User directed to this page after TMX returns a failure
 
+  # Tracks a visit to the Account > Delegated access page.
+  def delegated_access_page_visited
+    track_event(:delegated_access_page_visited)
+  end
+
+  # Tracks the person approving, from the account page, applications a service provider may act
+  # at on their behalf. Approvals made here are always remembered for the maximum period.
+  # @param [String] issuer Issuer of the service provider
+  # @param [Array<String>] applications Issuers of the applications approved
+  def delegation_account_approved(issuer:, applications:, **extra)
+    track_event(
+      :delegation_account_approved,
+      issuer:,
+      applications:,
+      **extra,
+    )
+  end
+
+  # Tracks the person revoking delegated-access approvals from the account page.
+  # @param [String, nil] issuer Issuer of the service provider; nil when every approval was revoked
+  # @param [Array<String>] applications Issuers of the applications whose approvals were revoked
+  # @param [String] scope "application", "service_provider" or "all"
+  def delegation_account_revoked(issuer:, applications:, scope:, **extra)
+    track_event(
+      :delegation_account_revoked,
+      issuer:,
+      applications:,
+      scope:,
+      **extra,
+    )
+  end
+
   # Tracks the person approving, on the agency handoff screen, the applications a service provider
   # requested. The requested applications are not optional, so this fires on every completed
   # screen; what varies is the remember choice and how many approvals were new.
@@ -580,21 +612,6 @@ module AnalyticsEvents
       applications:,
       remembered:,
       newly_approved_count:,
-      **extra,
-    )
-  end
-
-  # Tracks a user toggling, on the account page, whether a service provider may act for them at
-  # one application.
-  # @param [String] issuer Issuer of the service provider
-  # @param [String] application_issuer Issuer of the application toggled
-  # @param [Boolean] enabled Whether the service provider may now act at that application
-  def delegation_grant_toggled(issuer:, application_issuer:, enabled:, **extra)
-    track_event(
-      :delegation_grant_toggled,
-      issuer:,
-      application_issuer:,
-      enabled:,
       **extra,
     )
   end

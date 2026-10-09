@@ -50,25 +50,6 @@ RSpec.describe DelegationApplications do
     end
   end
 
-  describe '.connected_for' do
-    let(:user) { create(:user) }
-
-    it 'narrows the accepting list to applications the user has connected to' do
-      create(:service_provider_identity, user:, service_provider: listed_application.issuer)
-      create(:service_provider_identity, user:, service_provider: other_providers_only.issuer)
-
-      expect(described_class.connected_for(user:, service_provider_issuer:))
-        .to eq([listed_application])
-    end
-
-    it 'never lists the service provider itself' do
-      me = create(:service_provider, :delegation_application, issuer: service_provider_issuer)
-      create(:service_provider_identity, user:, service_provider: me.issuer)
-
-      expect(described_class.connected_for(user:, service_provider_issuer:)).to eq([])
-    end
-  end
-
   describe '.grouped_by_agency' do
     it 'groups applications under their agency, agencies and applications sorted by name' do
       grouped = described_class.grouped_by_agency(

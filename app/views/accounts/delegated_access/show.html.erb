@@ -1,0 +1,107 @@
+<% self.title = t('account.navigation.delegated_access') %>
+
+<%= render PageHeadingComponent.new.with_content(t('headings.account.delegated_access')) %>
+
+<p><%= t('account.delegated_access.description', app_name: APP_NAME) %></p>
+
+<% if @delegated_access.any_approvals? %>
+  <p>
+    <%= render ButtonComponent.new(
+          url: account_delegated_access_revocation_path,
+          outline: true,
+          data: { delegated_access_end_all: true },
+        ).with_content(t('account.delegated_access.end_all')) %>
+  </p>
+<% end %>
+
+<% if @delegated_access.sections.empty? %>
+  <p class="text-base"><%= t('account.delegated_access.none_registered') %></p>
+<% end %>
+
+<% @delegated_access.sections.each do |section| %>
+  <% sp = section.service_provider %>
+  <section class="card margin-bottom-4" id="delegated-access-<%= sp.id %>" data-delegated-access-service-provider>
+    <h2 class="margin-top-0 margin-bottom-2"><%= section.card.name %></h2>
+    <%= render 'shared/delegation_service_provider_card', card: section.card %>
+
+    <% unless section.approvable? %>
+      <p class="text-base-dark" data-delegated-access-not-approvable>
+        <%= t('account.delegated_access.service_provider_unavailable', sp: section.card.name) %>
+      </p>
+    <% end %>
+
+    <%# Unapproved applications are checkboxes; the selection goes to a confirmation page that
+        shows the consent-screen content before anything is recorded. Approved ones show their
+        standing and a Revoke link. %>
+    <%= form_with(url: new_account_delegated_access_approval_path(service_provider_id: sp.id), method: :get, local: true, data: { delegated_access_selection: true }) do |f| %>
+      <% section.agency_groups.each do |agency, rows| %>
+        <% agency_name = agency&.name || t('account.delegated_access.other_agency') %>
+        <details class="margin-bottom-2 border border-primary-light radius-lg padding-2" data-delegated-access-agency <%= 'open' if rows.any?(&:approved?) %>>
+          <summary class="text-bold">
+            <%= agency_name %>
+            <span class="font-body-2xs text-base text-normal">
+              <%= t('account.delegated_access.approved_count', count: rows.count(&:approved?), total: rows.size) %>
+            </span>
+          </summary>
+          <% if agency&.delegation_description_for.present? %>
+            <p class="margin-top-1 margin-bottom-1 text-base-dark"><%= agency.delegation_description_for %></p>
+          <% end %>
+          <ul class="add-list-reset">
+            <% rows.each do |row| %>
+              <% application = row.application %>
+              <li class="padding-y-2 border-top border-primary-light" data-delegated-access-application data-status="<%= row.approved? ? 'approved' : 'available' %>">
+                <% if row.approved? %>
+                  <div class="display-flex flex-align-center flex-justify">
+                    <strong><%= application.delegation_display_name_for.presence || application.display_name %></strong>
+                    <span class="usa-tag bg-success-dark"><%= t('account.delegated_access.status_approved') %></span>
+                  </div>
+                  <p class="margin-y-05 text-base font-body-2xs">
+                    <%= t('account.delegated_access.approved_on_html', timestamp_html: render(TimeComponent.new(time: row.grant.consented_at))) %>
+                    <%= t('account.delegated_access.time_remaining', duration: distance_of_time_in_words(Time.zone.now, row.grant.remember_until)) %>
+                    <% if row.grant.source == 'consent_screen' %>
+                      <%= t('account.delegated_access.source_consent_screen') %>
+                    <% else %>
+                      <%= t('account.delegated_access.source_account_page') %>
+                    <% end %>
+                  </p>
+                  <%= render 'shared/delegation_application_content', application: application, agency_name: agency_name %>
+                  <p class="margin-top-1 margin-bottom-0">
+                    <%= link_to(
+                          t('account.delegated_access.revoke_application'),
+                          account_delegated_access_application_revocation_path(service_provider_id: sp.id, application_id: application.id),
+                          class: 'usa-button usa-button--outline usa-button--small',
+                        ) %>
+                  </p>
+                <% elsif section.approvable? %>
+                  <div class="usa-checkbox">
+                    <%= check_box_tag('application_ids[]', application.id, false, id: "delegated_access_application_#{sp.id}_#{application.id}", class: 'usa-checkbox__input usa-checkbox__input--bordered') %>
+                    <label class="usa-checkbox__label margin-top-0" for="delegated_access_application_<%= sp.id %>_<%= application.id %>">
+                      <strong class="display-block"><%= application.delegation_display_name_for.presence || application.display_name %></strong>
+                      <span class="usa-checkbox__label-description display-block">
+                        <%= render 'shared/delegation_application_content', application: application, agency_name: agency_name %>
+                      </span>
+                    </label>
+                  </div>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </details>
+      <% end %>
+
+      <% if section.approvable_rows.any? %>
+        <%= f.submit(t('account.delegated_access.approve_selected'), class: 'usa-button', data: { delegated_access_approve: true }) %>
+      <% end %>
+    <% end %>
+
+    <% if section.approved_rows.any? %>
+      <p class="margin-top-2">
+        <%= link_to(
+              t('account.delegated_access.revoke_service_provider', sp: section.card.name),
+              account_delegated_access_service_provider_revocation_path(service_provider_id: sp.id),
+              class: 'usa-button usa-button--outline',
+            ) %>
+      </p>
+    <% end %>
+  </section>
+<% end %>

@@ -1761,6 +1761,61 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
+  describe '#delegation_approved' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).delegation_approved(
+        sp_name: 'MyBenefits Assistant',
+        application_names: ['Housing Assistance Records', 'Retirement Benefits Portal'],
+        disavowal_token: '123abc',
+      )
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'names the service provider and lists the applications, with the disavowal link' do
+      expect(mail.subject).to eq(
+        t('user_mailer.delegation_approved.subject', sp_name: 'MyBenefits Assistant'),
+      )
+      body = mail.html_part.body.to_s
+      expect(body).to include('Housing Assistance Records')
+      expect(body).to include('Retirement Benefits Portal')
+      expect(body).to include(event_disavowal_url(disavowal_token: '123abc'))
+      expect(body).to include(account_delegated_access_url)
+    end
+  end
+
+  describe '#delegation_revoked' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).delegation_revoked(
+        sp_name: sp_name, application_names: ['Housing Assistance Records'],
+        disavowal_token: '123abc'
+      )
+    end
+    let(:sp_name) { 'MyBenefits Assistant' }
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'names the service provider whose access ended' do
+      expect(mail.subject).to eq(
+        t('user_mailer.delegation_revoked.subject', sp_name: 'MyBenefits Assistant'),
+      )
+      expect(mail.html_part.body.to_s).to include(
+        t('user_mailer.delegation_revoked.intro', sp_name: 'MyBenefits Assistant'),
+      )
+    end
+
+    context 'when every approval was ended at once' do
+      let(:sp_name) { nil }
+
+      it 'says so' do
+        expect(mail.subject).to eq(t('user_mailer.delegation_revoked.subject_all'))
+        expect(mail.html_part.body.to_s).to include(t('user_mailer.delegation_revoked.intro_all'))
+      end
+    end
+  end
+
   describe '#account_reinstated' do
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).account_reinstated

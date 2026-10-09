@@ -1,0 +1,29 @@
+<% scope = @revocation.scope_name %>
+<% sp_name = @service_provider&.friendly_name %>
+<% self.title = t("account.delegated_access.revoke.title_#{scope}", sp: sp_name) %>
+
+<%= render PageHeadingComponent.new.with_content(t("account.delegated_access.revoke.heading_#{scope}", sp: sp_name)) %>
+
+<p><%= t("account.delegated_access.revoke.description_#{scope}", sp: sp_name) %></p>
+
+<ul data-delegated-access-revoking>
+  <% @revocation.grants.each do |grant| %>
+    <li>
+      <%= grant.application.delegation_display_name_for.presence || grant.application.display_name %>
+      <% unless @service_provider %>
+        <span class="text-base">(<%= ServiceProvider.find_by(issuer: grant.service_provider_issuer)&.friendly_name || grant.service_provider_issuer %>)</span>
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+
+<%= button_to(
+      t('account.delegated_access.revoke.confirm'),
+      request.path,
+      method: :delete,
+      class: 'usa-button usa-button--wide usa-button--big margin-top-4',
+    ) %>
+
+<%= render PageFooterComponent.new do %>
+  <%= link_to(t('links.cancel'), account_delegated_access_path) %>
+<% end %>

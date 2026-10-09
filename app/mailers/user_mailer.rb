@@ -495,6 +495,42 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  # The person approved, from their account page, applications a service provider may act at for
+  # them. One email per action, listing the applications.
+  # @param sp_name [String]
+  # @param application_names [Array<String>]
+  # @param disavowal_token [String]
+  def delegation_approved(sp_name:, application_names:, disavowal_token:)
+    with_user_locale(user) do
+      @sp_name = sp_name
+      @application_names = application_names
+      @disavowal_token = disavowal_token
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.delegation_approved.subject', sp_name:),
+      )
+    end
+  end
+
+  # The person revoked, from their account page, delegated-access approvals: for one or more
+  # applications of a service provider, or every approval they had given (then +sp_name+ is nil).
+  # @param sp_name [String, nil]
+  # @param application_names [Array<String>]
+  # @param disavowal_token [String]
+  def delegation_revoked(sp_name:, application_names:, disavowal_token:)
+    with_user_locale(user) do
+      @sp_name = sp_name
+      @application_names = application_names
+      @disavowal_token = disavowal_token
+      subject = if sp_name
+                  t('user_mailer.delegation_revoked.subject', sp_name:)
+                else
+                  t('user_mailer.delegation_revoked.subject_all')
+                end
+      mail(to: email_address.email, subject:)
+    end
+  end
+
   def account_rejected
     with_user_locale(user) do
       mail(

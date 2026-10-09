@@ -149,32 +149,9 @@ class CompletionsPresenter
     rows.group_by { |row| row.application.agency }.to_a
   end
 
-  def delegation_logo_url
-    current_sp.logo.present? ? current_sp.logo_url : nil
-  end
-
-  def delegation_operator_name
-    current_sp.delegation_operator_legal_name.presence || sp_name
-  end
-
-  def delegation_service_description
-    current_sp.delegation_service_description_for
-  end
-
-  def delegation_data_handling_statement
-    current_sp.delegation_data_handling_statement_for
-  end
-
-  def delegation_uses_ai?
-    current_sp.delegation_uses_ai?
-  end
-
-  def delegation_ai_description
-    current_sp.delegation_ai_description_for
-  end
-
-  def delegation_learn_more_url
-    current_sp.delegation_privacy_policy_url.presence
+  # The service provider's own registry content for the card at the top of the consent section.
+  def delegation_card
+    @delegation_card ||= DelegationServiceProviderCard.new(current_sp)
   end
 
   # How long, in hours, the service provider can keep acting after one sign-in: the longest a

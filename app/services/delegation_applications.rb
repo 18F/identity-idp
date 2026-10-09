@@ -43,17 +43,6 @@ module DelegationApplications
     values.filter_map { |value| by_value[value] }
   end
 
-  # The subset of #accepting that the user has already connected to (a live identity).
-  # @return [Array<ServiceProvider>] sorted by display name
-  def connected_for(user:, service_provider_issuer:)
-    return [] if user.blank? || service_provider_issuer.blank?
-
-    connected_issuers = user.connected_apps.pluck(:service_provider) - [service_provider_issuer]
-    return [] if connected_issuers.empty?
-
-    accepting(service_provider_issuer).select { |app| connected_issuers.include?(app.issuer) }
-  end
-
   # Groups applications under their agency for display.
   # @return [Array<[Agency, Array<ServiceProvider>]>] agencies sorted by name, each with its
   #   applications sorted by display name

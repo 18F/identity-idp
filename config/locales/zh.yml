@@ -1,5 +1,41 @@
 ---
-account.connected_apps.token_exchange.other_agency: 其他
+account.connected_apps.manage_delegated_access: 管理 %{sp} 可以代表您做什么
+account.delegated_access.approve.confirm: 允许
+account.delegated_access.approve.description: 请查看每个机构对其应用的说明。如果您允许，%{sp} 可以在 %{months} 个月内，于您每次登录它时在这些应用中代表您行事，除非您提前在本页终止。
+account.delegated_access.approve.heading: 允许 %{sp} 在这些应用中代表您行事？
+account.delegated_access.approve.title: 允许 %{sp} 代表您行事
+account.delegated_access.approve_selected: 批准所选
+account.delegated_access.approved_count.one: 已批准 %{count} 个，共 %{total} 个
+account.delegated_access.approved_count.other: 已批准 %{count} 个，共 %{total} 个
+account.delegated_access.approved_count.zero: 已批准 %{count} 个，共 %{total} 个
+account.delegated_access.approved_flash.one: 您为 %{sp} 批准了 %{count} 个应用。
+account.delegated_access.approved_flash.other: 您为 %{sp} 批准了 %{count} 个应用。
+account.delegated_access.approved_on_html: 于 %{timestamp_html} 批准。
+account.delegated_access.description: 在您使用 %{app_name} 登录后，某些服务可以代表您在其他机构行事。每个机构都用自己的语言描述其应用。您在此处给予的批准有效期为 1 年，并在您登录时生效；您可以随时终止。
+account.delegated_access.end_all: 终止所有委托访问
+account.delegated_access.none_registered: 目前还没有服务获准代表您行事。
+account.delegated_access.nothing_selected: 请至少选择一个要批准的应用。
+account.delegated_access.other_agency: 其他
+account.delegated_access.revoke.confirm: 终止访问
+account.delegated_access.revoke.description_all: 在您再次批准之前，任何服务都无法在任何机构代表您行事。目前持有的任何访问权限将终止。
+account.delegated_access.revoke.description_application: '%{sp} 将不再能够在此应用中代表您行事。它目前持有的任何访问权限将终止。您可以随时再次批准。'
+account.delegated_access.revoke.description_service_provider: '%{sp} 将不再能够在这些应用中代表您行事。它目前持有的任何访问权限将终止。'
+account.delegated_access.revoke.heading_all: 终止所有委托访问？
+account.delegated_access.revoke.heading_application: 终止对此应用的委托访问？
+account.delegated_access.revoke.heading_service_provider: 终止 %{sp} 可以代表您做的一切？
+account.delegated_access.revoke.title_all: 终止所有委托访问
+account.delegated_access.revoke.title_application: 撤销委托访问
+account.delegated_access.revoke.title_service_provider: 撤销 %{sp} 的委托访问
+account.delegated_access.revoke_application: 撤销
+account.delegated_access.revoke_service_provider: 撤销 %{sp} 的所有权限
+account.delegated_access.revoked_flash.one: 您终止了 %{count} 个应用的委托访问。
+account.delegated_access.revoked_flash.other: 您终止了 %{count} 个应用的委托访问。
+account.delegated_access.service_provider_unavailable: '%{sp} 已不再获准代表您行事。您仍然可以终止您给予它的批准。'
+account.delegated_access.source_account_page: 从您的账户给予。
+account.delegated_access.source_consent_screen: 在登录时给予。
+account.delegated_access.status_approved: 已批准
+account.delegated_access.time_remaining: 将在 %{duration} 后结束。
+account.navigation.delegated_access: 委托访问
 account_reset.cancel_request.are_you_sure: 你确定要取消删除账户的请求吗？
 account_reset.cancel_request.cancel: 退出
 account_reset.cancel_request.cancel_button: 取消删除账户
@@ -51,17 +87,6 @@ account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用您的 %{app_name} 帐户，您可以安全地在线连接到多个政府服务。以下是您当前已连接的所有服务列表。
 account.connected_apps.email_not_selected: 尚未选择电邮
 account.connected_apps.email_update_success_html: 你给<strong>%{sp_name}</strong>的电邮更新成功了。
-account.connected_apps.token_exchange.description: 为你希望 %{sp} 能够登录的每个机构开启此选项。你可以随时更改。
-account.connected_apps.token_exchange.granted_html: 自 %{timestamp_html} 起允许
-account.connected_apps.token_exchange.heading: '%{sp} 可以代表你行事的机构'
-account.connected_apps.token_exchange.modal.body_html: '%{sp_html} 将能够使用你已验证的身份让你登录 %{target_html}，而无需你再次验证。它仅会收到其获准接收的信息，并且能够看到你是通过 %{sp_html} 连接的。'
-account.connected_apps.token_exchange.modal.confirm: 允许
-account.connected_apps.token_exchange.modal.duration: 此权限有效期为 12 个月。你可以随时在此页面将其关闭。
-account.connected_apps.token_exchange.modal.heading: 允许 %{sp} 代表你行事？
-account.connected_apps.token_exchange.no_linked: 你尚未连接任何可与此服务配合使用的机构。
-account.connected_apps.token_exchange.off: '关'
-account.connected_apps.token_exchange.on: '开'
-account.connected_apps.token_exchange.toggle_label: 允许 %{sp} 在 %{target} 代表我行事
 account.email_language.default: '%{language}（默认）'
 account.email_language.edit_title: 编辑电邮语言选择
 account.email_language.languages_list: 您将收到%{app_name}用您选择的语言发送的电子邮件。
@@ -932,6 +957,8 @@ event_types.authenticator_disabled: 身份证实器应用程序已去掉
 event_types.authenticator_enabled: 身份证实器应用程序已添加
 event_types.backup_codes_added: 备用代码已添加
 event_types.backup_codes_removed: 备份代码已删除
+event_types.delegation_approved: 已批准委托访问
+event_types.delegation_revoked: 已撤销委托访问
 event_types.eastern_timestamp: '%{timestamp}（东部）'
 event_types.email_changed: 电邮地址已更改
 event_types.email_deleted: 电邮地址已删除
@@ -1054,6 +1081,7 @@ forms.webauthn_setup.step_3a: 点击下面的“设置安全密钥”并按照�
 headings.account.activity: 活动
 headings.account.authentication_apps: 身份证实应用程序
 headings.account.connected_services: 您的互联服务
+headings.account.delegated_access: 委托访问
 headings.account.devices: 设备
 headings.account.events: 事件
 headings.account.government_employee_id: 政府雇员身份证件
@@ -2254,6 +2282,14 @@ user_mailer.agent_proofing_succeeded.footer_html: 如果您并未亲自尝试进
 user_mailer.agent_proofing_succeeded.header: 您已成功完成身份验证
 user_mailer.agent_proofing_succeeded.subject: 需采取行动：确认您的已验证账户
 user_mailer.contact_link_text: 联系我们
+user_mailer.delegation_approved.intro: 您从账户中允许 %{sp_name} 在以下应用中代表您行事，有效期 1 年：
+user_mailer.delegation_approved.manage_html: 您可以随时在%{link_html}中查看或终止这些批准。
+user_mailer.delegation_approved.manage_link: 账户中的委托访问
+user_mailer.delegation_approved.subject: 您允许了 %{sp_name} 代表您行事
+user_mailer.delegation_revoked.intro: 您从账户中终止了 %{sp_name} 在以下应用中代表您行事的权限：
+user_mailer.delegation_revoked.intro_all: 您从账户中终止了任何服务在以下应用中代表您行事的所有权限：
+user_mailer.delegation_revoked.subject: 您终止了 %{sp_name} 可以代表您做的事
+user_mailer.delegation_revoked.subject_all: 您终止了所有委托访问
 user_mailer.device_profiling_error_cleared.info: 您的账户（LG22）错误已解决。您现在可以使用您的账户登录机构网站。
 user_mailer.device_profiling_error_cleared.subject: 您可以使用 帐户重新登录。
 user_mailer.dupe_profile.created.description: 有人使用你的个人信息验证了另一个 %{app_name} 账户。 为了你的安全，我们已限制了具有同样信息的所有账户的访问权以及对 %{sp_or_app_name} 的访问权.

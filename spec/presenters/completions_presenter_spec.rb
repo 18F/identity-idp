@@ -404,9 +404,11 @@ RSpec.describe CompletionsPresenter do
     end
 
     it 'exposes the service provider card content' do
-      expect(presenter.delegation_operator_name).to eq('Office of Benefits Coordination')
-      expect(presenter.delegation_uses_ai?).to eq(true)
-      expect(presenter.delegation_learn_more_url).to eq('https://mybenefits.example.gov/privacy')
+      card = presenter.delegation_card
+      expect(card.operator_name).to eq('Office of Benefits Coordination')
+      expect(card.uses_ai?).to eq(true)
+      expect(card.learn_more_url).to eq('https://mybenefits.example.gov/privacy')
+      expect(presenter.delegation_access_hours).to eq(12)
     end
   end
 end
