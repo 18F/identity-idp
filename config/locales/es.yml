@@ -1792,6 +1792,9 @@ openid_connect.authorization.errors.pkce_parameter_pair: code_challenge y code_c
 openid_connect.authorization.errors.prompt_invalid: No se encontraron valores de consulta válidos. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-no-prompt
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri no es válido. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri no coincide con el redirect_uri registrado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-redirect-match
+openid_connect.authorization.errors.site_key_jwk_invalid: site_key_jwk no es una JWK pública P-256 válida.
+openid_connect.authorization.errors.site_key_jwk_not_allowed: site_key_jwk no está habilitado para este client_id.
+openid_connect.authorization.errors.site_key_unavailable: Las claves de sitio no están disponibles temporalmente para esta cuenta. Inténtelo de nuevo más tarde.
 openid_connect.authorization.errors.unauthorized_scope: Ámbito no autorizado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-unauthotized-scope
 openid_connect.logout.confirm: Sí, cerrar sesión en %{app_name}
 openid_connect.logout.deny: No, ir a la página de mi cuenta
