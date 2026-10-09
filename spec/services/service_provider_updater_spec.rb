@@ -179,7 +179,6 @@ RSpec.describe ServiceProviderUpdater do
               identifier: 'https://records-api.housing.example.gov',
               certs: [saml_test_sp_cert],
               token_format: 'oauth',
-              dpop_required: true,
             },
             {
               identifier: 'https://documents-api.housing.example.gov',
@@ -207,7 +206,6 @@ RSpec.describe ServiceProviderUpdater do
         records_api = application.token_exchange_resource_servers
           .find_by(identifier: 'https://records-api.housing.example.gov')
         expect(records_api.certs).to eq([saml_test_sp_cert])
-        expect(records_api.dpop_required).to eq(true)
 
         # The Dashboard drops one URL: it is deactivated, not deleted, so approvals and tokens
         # that reference it keep their foreign keys.

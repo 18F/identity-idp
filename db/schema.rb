@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_09_100500) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_09_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -747,7 +747,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_100500) do
     t.string "billing_issuer", comment: "sensitive=false"
     t.string "certs", default: [], null: false, comment: "sensitive=false", array: true
     t.datetime "created_at", null: false, comment: "sensitive=false"
-    t.boolean "dpop_required", default: false, null: false, comment: "sensitive=false"
     t.string "identifier", null: false, comment: "sensitive=false"
     t.bigint "service_provider_id", null: false, comment: "sensitive=false"
     t.string "token_format", default: "oauth", null: false, comment: "sensitive=false"

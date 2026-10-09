@@ -74,7 +74,6 @@ RSpec.describe ServiceProviderSeeder do
                   certs:
                     - 'saml_test_sp'
                   token_format: 'oauth'
-                  dpop_required: true
                 - identifier: 'https://documents-api.housing.example.gov'
                   certs:
                     - |
@@ -114,7 +113,6 @@ RSpec.describe ServiceProviderSeeder do
         records_api = app.token_exchange_resource_servers
           .find_by(identifier: 'https://records-api.housing.example.gov')
         expect(records_api.certs).to eq([Rails.root.join('certs', 'sp', 'saml_test_sp.crt').read])
-        expect(records_api.dpop_required).to eq(true)
         expect(records_api.token_format).to eq('oauth')
 
         documents_api = app.token_exchange_resource_servers
