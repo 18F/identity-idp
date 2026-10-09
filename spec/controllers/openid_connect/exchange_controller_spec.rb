@@ -21,7 +21,7 @@ RSpec.describe OpenidConnect::ExchangeController do
         issuer: 'target.gov',
         ial: 2,
         attribute_bundle: %w[email],
-        allowed_token_exchange_brokers: ['broker.gov']
+        delegation_application: true, allowed_delegation_service_providers: ['broker.gov']
       )
     end
     let!(:broker_identity) do
@@ -60,7 +60,7 @@ RSpec.describe OpenidConnect::ExchangeController do
 
     context 'when audience is not allowlisted' do
       before do
-        target_sp.update!(allowed_token_exchange_brokers: [])
+        target_sp.update!(allowed_delegation_service_providers: ['other-service-provider.gov'])
       end
 
       it 'returns bad_request' do
