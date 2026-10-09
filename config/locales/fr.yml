@@ -1860,6 +1860,10 @@ openid_connect.logout.errors.no_client_id_or_id_token_hint: Cette application es
 openid_connect.logout.heading: Voulez-vous vous déconnecter de %{app_name}?
 openid_connect.logout.heading_with_sp: Souhaitez-vous vous déconnecter de %{app_name} et revenir à %{service_provider_name}?
 
+openid_connect.token.errors.client_assertion_lifetime: exp doit être un horodatage Unix entier, au plus 5 minutes après iat.
+openid_connect.token.errors.client_assertion_malformed: client_assertion n’a pas pu être interprété comme un JWT dont les affirmations iss et sub correspondent.
+openid_connect.token.errors.client_assertion_missing: client_assertion est obligatoire pour ce type d’octroi.
+openid_connect.token.errors.client_assertion_replayed: L’affirmation jti de client_assertion a déjà été utilisée ; chaque assertion doit porter un jti unique.
 openid_connect.token.errors.dpop_code_unbound: Le code d’autorisation a été émis sans liaison dpop_jkt. Lancez une nouvelle demande d’autorisation qui indique l’empreinte de la clé DPoP.
 openid_connect.token.errors.dpop_key_mismatch: La preuve DPoP est signée avec une clé différente de celle à laquelle ce jeton est lié.
 openid_connect.token.errors.dpop_proof_invalid: 'La preuve DPoP n’a pas pu être vérifiée : elle doit être un dpop+jwt signé en ES256 ou RS256 par la clé publique de son en-tête jwk, indiquer la méthode et l’URL de cette requête, être récente, porter un jti inutilisé et, lorsqu’un jeton est présenté, le hachage ath de ce jeton.'
@@ -1872,6 +1876,7 @@ openid_connect.token.errors.invalid_code: n’est pas valide, car il ne correspo
 openid_connect.token.errors.invalid_code_verifier: code_verifier ne correspondait pas à code_challenge. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat doit être un horodatage Unix entier ou à virgule flottante représentant une heure dans le passé. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: Impossible de valider l’assertion contre les clés publiques enregistrées. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-token-signature
+openid_connect.token.errors.unknown_client: L’affirmation iss de client_assertion ne correspond à aucun client enregistré.
 openid_connect.user_info.errors.bound_token_requires_dpop: 'Ce jeton d’accès est lié à une clé : présentez-le avec le schéma d’autorisation DPoP et une preuve DPoP signée avec cette clé (RFC 9449).'
 openid_connect.user_info.errors.malformed_authorization: Forme de l’en-tête d’autorisation non valide. Veuillez consulter notre documentation à https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: Aucune en-tête d’autorisation fournie. Veuillez consulter notre documentation à https://developers.login.gov/support/#no-auth-header

@@ -1872,6 +1872,10 @@ openid_connect.logout.errors.id_token_hint_present: 本应用程序配置错误�
 openid_connect.logout.errors.no_client_id_or_id_token_hint: 本应用程序配置错误，必须发送 client_id 或者 id_token_hint。请参阅我们的文档：https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: 你想登出 %{app_name} 吗？
 openid_connect.logout.heading_with_sp: 你想登出 %{app_name} 并回到 %{service_provider_name} 吗？
+openid_connect.token.errors.client_assertion_lifetime: exp 必须是整数 Unix 时间戳，且不得晚于 iat 之后 5 分钟。
+openid_connect.token.errors.client_assertion_malformed: client_assertion 无法解析为 iss 与 sub 声明一致的 JWT。
+openid_connect.token.errors.client_assertion_missing: 此授权类型需要 client_assertion。
+openid_connect.token.errors.client_assertion_replayed: client_assertion 的 jti 声明已被使用过；每个断言都必须携带唯一的 jti。
 openid_connect.token.errors.dpop_code_unbound: 该授权码签发时没有 dpop_jkt 绑定。请发起新的授权请求并指明 DPoP 密钥的指纹。
 openid_connect.token.errors.dpop_key_mismatch: DPoP 证明所用的签名密钥与此令牌绑定的密钥不同。
 openid_connect.token.errors.dpop_proof_invalid: 无法验证 DPoP 证明：它必须是由其 jwk 标头中的公钥以 ES256 或 RS256 签名的 dpop+jwt，指明本次请求的方法和 URL，时间必须是近期，携带未使用过的 jti，并且在出示令牌时携带该令牌的 ath 哈希。
@@ -1884,6 +1888,7 @@ openid_connect.token.errors.invalid_code: 无效，因为与任何用户都匹�
 openid_connect.token.errors.invalid_code_verifier: code_verifier 与 code_challenge 不匹配。请参阅我们的文档：https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat 必须是整数或者浮动点 Unix 时间印章来代表过去的一个时间。请参阅我们的文档：https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: 无法根据任何已注册的公钥验证这个说法。请参阅我们的文档：https://developers.login.gov/support/#invalid-token-signature
+openid_connect.token.errors.unknown_client: client_assertion 的 iss 声明与任何已注册的客户端都不匹配。
 openid_connect.user_info.errors.bound_token_requires_dpop: '此访问令牌已绑定到一个密钥：请使用 DPoP 授权方案并附带由该密钥签名的 DPoP 证明来提交（RFC 9449）。'
 openid_connect.user_info.errors.malformed_authorization: 授权标头畸形。请参阅我们的文档：https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: 未提供授权标头。请参阅我们的文档：https://developers.login.gov/support/#no-auth-header

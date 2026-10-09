@@ -1859,6 +1859,10 @@ openid_connect.logout.errors.id_token_hint_present: This application is misconfi
 openid_connect.logout.errors.no_client_id_or_id_token_hint: This application is misconfigured and must send either client_id or id_token_hint. Please see our documentation at https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: Do you want to sign out of %{app_name}?
 openid_connect.logout.heading_with_sp: Do you want to sign out of %{app_name} and return to %{service_provider_name}?
+openid_connect.token.errors.client_assertion_lifetime: exp must be an integer Unix timestamp no more than 5 minutes after iat.
+openid_connect.token.errors.client_assertion_malformed: client_assertion could not be parsed as a JWT whose iss and sub claims match.
+openid_connect.token.errors.client_assertion_missing: client_assertion is required for this grant type.
+openid_connect.token.errors.client_assertion_replayed: The jti claim of client_assertion has already been used; each assertion must carry a unique jti.
 openid_connect.token.errors.dpop_code_unbound: The authorization code was issued without a dpop_jkt binding. Start a new authorization request that names the thumbprint of the DPoP key.
 openid_connect.token.errors.dpop_key_mismatch: The DPoP proof is signed with a different key than the one this token is bound to.
 openid_connect.token.errors.dpop_proof_invalid: 'The DPoP proof could not be verified: it must be a dpop+jwt signed with ES256 or RS256 by the public key in its jwk header, name the method and URL of this request, be recent, carry an unused jti and, when a token is presented, the ath hash of that token.'
@@ -1871,6 +1875,7 @@ openid_connect.token.errors.invalid_code: is invalid because doesn’t match any
 openid_connect.token.errors.invalid_code_verifier: code_verifier did not match code_challenge. Please see our documentation at https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat must be an integer or floating point Unix timestamp representing a time in the past. Please see our documentation at https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: Could not validate assertion against any registered public keys. Please see our documentation at https://developers.login.gov/support/#invalid-token-signature
+openid_connect.token.errors.unknown_client: The iss claim of client_assertion does not match any registered client.
 openid_connect.user_info.errors.bound_token_requires_dpop: 'This access token is bound to a key: present it with the DPoP authorization scheme and a DPoP proof signed by that key (RFC 9449).'
 openid_connect.user_info.errors.malformed_authorization: Malformed Authorization header. Please see our documentation at https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No Authorization header provided. Please see our documentation at https://developers.login.gov/support/#no-auth-header

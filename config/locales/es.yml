@@ -1871,6 +1871,10 @@ openid_connect.logout.errors.no_client_id_or_id_token_hint: Esta aplicación est
 openid_connect.logout.heading: ¿Desea cerrar sesión en %{app_name}?
 openid_connect.logout.heading_with_sp: ¿Desea cerrar sesión en %{app_name} y volver a %{service_provider_name}?
 
+openid_connect.token.errors.client_assertion_lifetime: exp debe ser una marca de tiempo Unix entera, como máximo 5 minutos después de iat.
+openid_connect.token.errors.client_assertion_malformed: client_assertion no pudo interpretarse como un JWT cuyas notificaciones iss y sub coincidan.
+openid_connect.token.errors.client_assertion_missing: client_assertion es obligatorio para este tipo de concesión.
+openid_connect.token.errors.client_assertion_replayed: La notificación jti de client_assertion ya se ha utilizado; cada aserción debe llevar un jti único.
 openid_connect.token.errors.dpop_code_unbound: El código de autorización se emitió sin una vinculación dpop_jkt. Inicie una nueva solicitud de autorización que indique la huella digital de la clave DPoP.
 openid_connect.token.errors.dpop_key_mismatch: La prueba DPoP está firmada con una clave distinta de aquella a la que está vinculado este token.
 openid_connect.token.errors.dpop_proof_invalid: 'No se pudo verificar la prueba DPoP: debe ser un dpop+jwt firmado con ES256 o RS256 por la clave pública de su encabezado jwk, indicar el método y la URL de esta solicitud, ser reciente, llevar un jti sin usar y, cuando se presenta un token, el hash ath de ese token.'
@@ -1883,6 +1887,7 @@ openid_connect.token.errors.invalid_code: no es válido porque no coincide con n
 openid_connect.token.errors.invalid_code_verifier: code_verifier no coincide con code_challenge. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat debe ser una marca de tiempo Unix de punto flotante o un entero que represente un momento en el pasado. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: No se pudo validar la afirmación contra ninguna clave pública registrada. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-token-signature
+openid_connect.token.errors.unknown_client: La notificación iss de client_assertion no coincide con ningún cliente registrado.
 openid_connect.user_info.errors.bound_token_requires_dpop: 'Este token de acceso está vinculado a una clave: preséntelo con el esquema de autorización DPoP y una prueba DPoP firmada con esa clave (RFC 9449).'
 openid_connect.user_info.errors.malformed_authorization: Encabezado de autorización mal formado. Consulte nuestra documentación en https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No se proporcionó ningún encabezado de autorización. Consulte nuestra documentación en https://developers.login.gov/support/#no-auth-header
