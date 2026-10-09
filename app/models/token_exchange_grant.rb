@@ -29,6 +29,9 @@ class TokenExchangeGrant < ApplicationRecord
                                        primary_key: :issuer, optional: true, inverse_of: false
   # Issuance records of the delegated tokens issued under this approval.
   has_many :token_exchange_tokens, foreign_key: :grant_id, inverse_of: :grant, dependent: nil
+  # Refresh tokens of the families started under this approval.
+  has_many :token_exchange_refresh_tokens, foreign_key: :grant_id, inverse_of: :grant,
+                                           dependent: nil
 
   validates :service_provider_issuer, :consented_at, presence: true
   validates :source, inclusion: { in: SOURCES }
@@ -234,25 +237,30 @@ class TokenExchangeGrant < ApplicationRecord
 
   # Hands this approval's live delegated tokens to the row that replaced it. A re-approval of the
   # same application is a replacement, not a withdrawal: the tokens keep working and are
-  # re-pointed at the new row, in Redis and on their issuance records, so a later revocation of
-  # the new row ends them.
+  # re-pointed at the new row, in Redis, on their issuance records and on their refresh tokens,
+  # so a later revocation of the new row ends them and a refresh is issued under the new row.
   def transfer_live_tokens_to!(replacement, now: Time.zone.now)
     DelegatedTokenStore.move_grant(id, replacement.id)
     # rubocop:disable Rails/SkipsModelValidations
     token_exchange_tokens.where(revoked_at: nil)
+      .update_all(grant_id: replacement.id, updated_at: now)
+    token_exchange_refresh_tokens.where(revoked_at: nil)
       .update_all(grant_id: replacement.id, updated_at: now)
     # rubocop:enable Rails/SkipsModelValidations
   end
 
   # Ends this approval; the row is kept for the record. Every delegated token still live under
   # it stops working at once: the Redis entries listed in the approval's index set are removed,
-  # so introspection answers "not active" from the next call, and the issuance records are
-  # marked revoked with the same reason so the history shows why they ended.
+  # so introspection answers "not active" from the next call, and the issuance records and the
+  # refresh tokens are marked revoked with the same reason so the history shows why they ended
+  # and no refresh can start a new access token under the approval.
   def revoke!(reason:, now: Time.zone.now)
     update!(revoked_at: now, revocation_reason: reason)
     DelegatedTokenStore.revoke_grant(id)
     # rubocop:disable Rails/SkipsModelValidations
     token_exchange_tokens.where(revoked_at: nil)
+      .update_all(revoked_at: now, revocation_reason: reason, updated_at: now)
+    token_exchange_refresh_tokens.where(revoked_at: nil)
       .update_all(revoked_at: now, revocation_reason: reason, updated_at: now)
     # rubocop:enable Rails/SkipsModelValidations
   end

@@ -77,7 +77,8 @@ RSpec.describe 'OpenID Connect token exchange' do
 
           expect(response).to have_http_status(:ok)
           expect(json.keys).to contain_exactly(
-            :access_token, :issued_token_type, :token_type, :expires_in, :scope
+            :access_token, :issued_token_type, :token_type, :expires_in, :scope,
+            :refresh_token, :refresh_token_expires_in
           )
           expect(json[:access_token]).to match(/\A[A-Za-z0-9_-]{43}\z/)
           expect(json[:issued_token_type])
@@ -121,6 +122,68 @@ RSpec.describe 'OpenID Connect token exchange' do
           )
           expect(grant.reload.first_exchanged_at).to eq(Time.zone.now)
         end
+      end
+
+      it 'opens a refresh family ending twelve hours from now, storing only the digest' do
+        freeze_time do
+          exchange
+
+          expect(json[:refresh_token]).to match(/\A[A-Za-z0-9_-]{43}\z/)
+          expect(json[:refresh_token]).not_to eq(json[:access_token])
+          expect(json[:refresh_token_expires_in]).to eq(12.hours.to_i)
+
+          issued = TokenExchangeToken.last
+          refresh = TokenExchangeRefreshToken.last
+          expect(refresh.token_digest).to eq(TokenExchangeRefreshToken.digest(json[:refresh_token]))
+          expect(refresh.attributes.values.map(&:to_s)).not_to include(json[:refresh_token])
+          expect(refresh.family_id).to eq(issued.refresh_family_id)
+          expect(refresh.token_exchange_token).to eq(issued)
+          expect(refresh.grant).to eq(grant)
+          expect(refresh.resource_server).to eq(resource_server)
+          expect(refresh.service_provider).to eq(service_provider)
+          expect(refresh.user).to eq(user)
+          expect(refresh.scope).to eq('token_exchange:housing_records')
+          expect(refresh.dpop_jkt).to eq(issued.dpop_jkt)
+          expect(refresh.expires_at).to eq(12.hours.from_now)
+          expect(refresh.rotated_at).to be_nil
+          expect(refresh.used_at).to be_nil
+          expect(TokenExchangeRefreshToken.lookup(json[:refresh_token])).to eq(refresh)
+        end
+      end
+
+      it 'shortens the family to the API maximum when that is lower' do
+        resource_server.update!(max_family_seconds: 4.hours.to_i)
+        exchange
+        expect(json[:refresh_token_expires_in]).to eq(4.hours.to_i)
+      end
+
+      it 'shortens the family to the service provider maximum when that is lower' do
+        service_provider.update!(delegation_max_family_seconds: 2.hours.to_i)
+        resource_server.update!(max_family_seconds: 4.hours.to_i)
+        exchange
+        expect(json[:refresh_token_expires_in]).to eq(2.hours.to_i)
+      end
+
+      it 'never lengthens the family past the default' do
+        resource_server.update!(max_family_seconds: 2.days.to_i)
+        exchange
+        expect(json[:refresh_token_expires_in]).to eq(12.hours.to_i)
+      end
+
+      it 'ends the family no later than the remembered approval, and the token with it' do
+        freeze_time do
+          grant.update!(remember_until: 10.minutes.from_now)
+          exchange
+          expect(json[:refresh_token_expires_in]).to eq(10.minutes.to_i)
+          expect(json[:expires_in]).to eq(10.minutes.to_i)
+          expect(TokenExchangeRefreshToken.last.expires_at).to eq(grant.remember_until)
+        end
+      end
+
+      it 'gives a single-authorization approval the full family lifetime' do
+        grant.update!(remember_until: nil, rails_session_id:)
+        exchange
+        expect(json[:refresh_token_expires_in]).to eq(12.hours.to_i)
       end
 
       it 'creates nothing at the application and leaves the subject token untouched' do
@@ -194,12 +257,13 @@ RSpec.describe 'OpenID Connect token exchange' do
         expect(json[:error]).to eq('invalid_grant')
       end
 
-      it 'stops working when the approval is revoked' do
+      it 'stops working, with its refresh token, when the approval is revoked' do
         exchange
         issued = json[:access_token]
         grant.revoke!(reason: 'user_revoked')
         expect(DelegatedTokenStore.read(issued)).to be_nil
         expect(TokenExchangeToken.last.revocation_reason).to eq('user_revoked')
+        expect(TokenExchangeRefreshToken.last.revocation_reason).to eq('user_revoked')
       end
     end
 
@@ -207,6 +271,7 @@ RSpec.describe 'OpenID Connect token exchange' do
       shared_examples 'invalid_request' do |key|
         it "fails with invalid_request (#{key})" do
           expect { exchange }.not_to(change { TokenExchangeToken.count })
+          expect(TokenExchangeRefreshToken.count).to eq(0)
           expect(response).to have_http_status(:bad_request)
           expect(json[:error]).to eq('invalid_request')
           expect(json[:error_description]).to eq(t("openid_connect.token.errors.#{key}"))
