@@ -53,17 +53,16 @@ class IppAamvaProofingJob < ApplicationJob
 
   private
 
-  def aamva_plugin
-    @aamva_plugin ||= Proofing::Resolution::Plugins::AamvaPlugin.new
+  def aamva_verifier
+    @aamva_verifier ||= DocAuth::Aamva::Verifier.new
   end
 
   def call_aamva(applicant_pii:, current_sp:, timer:)
-    aamva_plugin.call(
+    aamva_verifier.call(
       applicant_pii: applicant_pii.freeze,
       current_sp:,
       ipp_enrollment_in_progress: true,
       timer:,
-      doc_auth_flow: true,
       analytics:,
     )
   end

@@ -437,7 +437,7 @@ RSpec.describe ProofingAgentJob, type: :job do
     context 'when AAMVA verification throws an unexpected exception' do
       before do
         allow(NewRelic::Agent).to receive(:notice_error)
-        allow_any_instance_of(Proofing::Resolution::Plugins::AamvaPlugin)
+        allow_any_instance_of(DocAuth::Aamva::Verifier)
           .to receive(:call).and_raise('AAMVA IS DOWN')
       end
 
@@ -615,15 +615,15 @@ RSpec.describe ProofingAgentJob, type: :job do
       end
 
       context 'AAMVA and resolution use the same address selection (dual address verification)' do
-        let(:aamva_plugin) { Proofing::Resolution::Plugins::AamvaPlugin.new }
+        let(:aamva_verifier) { DocAuth::Aamva::Verifier.new }
 
         before do
-          allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new)
-            .and_return(aamva_plugin)
+          allow(DocAuth::Aamva::Verifier).to receive(:new)
+            .and_return(aamva_verifier)
         end
 
         it 'verifies AAMVA with ipp_enrollment_in_progress: true' do
-          expect(aamva_plugin).to receive(:call)
+          expect(aamva_verifier).to receive(:call)
             .with(hash_including(ipp_enrollment_in_progress: true))
             .and_call_original
 

@@ -726,17 +726,16 @@ module Idv
       IdentityConfig.store.doc_auth_check_failed_image_resubmission_enabled
     end
 
-    def aamva_proofer
-      Proofing::Resolution::Plugins::AamvaPlugin.new
+    def aamva_verifier
+      DocAuth::Aamva::Verifier.new
     end
 
     def validate_aamva(pii)
-      aamva_proofer.call(
+      aamva_verifier.call(
         applicant_pii: pii.merge(additional_aamva_attributes),
         current_sp: service_provider,
         ipp_enrollment_in_progress: false,
         timer: JobHelpers::Timer.new,
-        doc_auth_flow: true,
         analytics:,
       ).to_doc_auth_response
     end

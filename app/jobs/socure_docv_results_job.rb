@@ -205,8 +205,8 @@ class SocureDocvResultsJob < ApplicationJob
     id_type == Idp::Constants::DocumentTypes::PASSPORT
   end
 
-  def aamva_proofer
-    Proofing::Resolution::Plugins::AamvaPlugin.new
+  def aamva_verifier
+    DocAuth::Aamva::Verifier.new
   end
 
   def analytics
@@ -308,12 +308,11 @@ class SocureDocvResultsJob < ApplicationJob
 
   def validate_aamva(doc_pii_response)
     if document_capture_session.state_id_requested?
-      aamva_proofer.call(
+      aamva_verifier.call(
         applicant_pii: to_aamva_applicant_pii(doc_pii_response.pii_from_doc.to_h),
         current_sp: sp,
         ipp_enrollment_in_progress: false,
         timer: JobHelpers::Timer.new,
-        doc_auth_flow: true,
         analytics:,
       ).to_doc_auth_response
     end
