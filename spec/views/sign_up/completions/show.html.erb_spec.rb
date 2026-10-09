@@ -246,6 +246,9 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
         expect(rendered).to have_content('Office of Benefits Coordination')
         expect(rendered).to have_content(t('sign_up.delegation.uses_ai'))
         expect(rendered).to have_content(
+          t('sign_up.delegation.access_duration', sp: 'MyBenefits Assistant', hours: 12),
+        )
+        expect(rendered).to have_content(
           t('sign_up.delegation.requesting_access', sp: 'MyBenefits Assistant'),
         )
         expect(rendered).to have_css('[data-delegation-agency]', count: 2)

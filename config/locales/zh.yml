@@ -1884,6 +1884,8 @@ sign_up.cancel.warning_header: 如果你现在取消：
 sign_up.completed.smiling_image_alt: 面带笑容的一个人加上绿勾说明成功了
 sign_up.delegation.about_agency: 关于%{agency}
 sign_up.delegation.about_heading: 关于此服务
+sign_up.delegation.access_duration: 本次登录后，%{sp} 最多可以代表您行事 %{hours} 小时，除非您提前在账户中终止。
+sign_up.delegation.access_duration_heading: 访问持续多久
 sign_up.delegation.access_read: 只读
 sign_up.delegation.access_read_write: 可以进行更改
 sign_up.delegation.account_link: 账户 → 已连接的账户

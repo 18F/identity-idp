@@ -1872,6 +1872,8 @@ sign_up.cancel.warning_header: 'Si vous annulez maintenant :'
 sign_up.completed.smiling_image_alt: Une personne souriante avec une coche verte indiquant la réussite de la procédure
 sign_up.delegation.about_agency: À propos de %{agency}
 sign_up.delegation.about_heading: À propos de ce service
+sign_up.delegation.access_duration: Après cette connexion, %{sp} peut agir pour vous pendant au plus %{hours} heures, sauf si vous y mettez fin plus tôt depuis votre compte.
+sign_up.delegation.access_duration_heading: Durée de l’accès
 sign_up.delegation.access_read: Lecture seule
 sign_up.delegation.access_read_write: Peut faire des modifications
 sign_up.delegation.account_link: Compte → Comptes connectés

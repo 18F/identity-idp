@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class CompletionsPresenter
+  # Delegated tokens obtained after a sign-in can be renewed for at most this long.
+  DELEGATION_ACCESS_HOURS = 12
+
   include ActionView::Helpers::TranslationHelper
   include ActionView::Helpers::TagHelper
 
@@ -172,6 +175,12 @@ class CompletionsPresenter
 
   def delegation_learn_more_url
     current_sp.delegation_privacy_policy_url.presence
+  end
+
+  # How long, in hours, the service provider can keep acting after one sign-in: the longest a
+  # family of delegated tokens can be renewed, counted from the first exchange.
+  def delegation_access_hours
+    DELEGATION_ACCESS_HOURS
   end
 
   # The applications named in the request, as registry records, in request order. The screen
