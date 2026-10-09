@@ -1860,6 +1860,7 @@ openid_connect.logout.errors.no_client_id_or_id_token_hint: Cette application es
 openid_connect.logout.heading: Voulez-vous vous déconnecter de %{app_name}?
 openid_connect.logout.heading_with_sp: Souhaitez-vous vous déconnecter de %{app_name} et revenir à %{service_provider_name}?
 
+openid_connect.revoke.errors.token_missing: token est obligatoire.
 openid_connect.token.errors.client_assertion_lifetime: exp doit être un horodatage Unix entier, au plus 5 minutes après iat.
 openid_connect.token.errors.client_assertion_malformed: client_assertion n’a pas pu être interprété comme un JWT dont les affirmations iss et sub correspondent.
 openid_connect.token.errors.client_assertion_missing: client_assertion est obligatoire pour ce type d’octroi.

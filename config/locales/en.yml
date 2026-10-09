@@ -1859,6 +1859,7 @@ openid_connect.logout.errors.id_token_hint_present: This application is misconfi
 openid_connect.logout.errors.no_client_id_or_id_token_hint: This application is misconfigured and must send either client_id or id_token_hint. Please see our documentation at https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: Do you want to sign out of %{app_name}?
 openid_connect.logout.heading_with_sp: Do you want to sign out of %{app_name} and return to %{service_provider_name}?
+openid_connect.revoke.errors.token_missing: token is required.
 openid_connect.token.errors.client_assertion_lifetime: exp must be an integer Unix timestamp no more than 5 minutes after iat.
 openid_connect.token.errors.client_assertion_malformed: client_assertion could not be parsed as a JWT whose iss and sub claims match.
 openid_connect.token.errors.client_assertion_missing: client_assertion is required for this grant type.
