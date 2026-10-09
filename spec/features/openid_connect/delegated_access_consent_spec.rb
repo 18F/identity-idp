@@ -62,6 +62,8 @@ RSpec.describe 'Delegated access consent', driver: :desktop_rack_test do
       nonce: SecureRandom.hex,
       code_challenge: Digest::SHA256.urlsafe_base64digest(@code_verifier),
       code_challenge_method: 'S256',
+      # A public client approved for delegation names the key its tokens will be bound to.
+      dpop_jkt: Base64.urlsafe_encode64(SecureRandom.random_bytes(32), padding: false),
     )
   end
 
