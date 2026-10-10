@@ -37,6 +37,8 @@ description: Use for any question, review, edit, run or decision about the deleg
 | Review a branch | `references/branch-context/<branch>.md`, the diff against the branch below it (`git diff <below>..<branch>`), `references/traceability.md` for the rows it must satisfy |
 | Edit code or change a requirement | `references/update-protocol.md` and `references/interview.md` FIRST, then the activity rows above as needed |
 | Run locally, what is local-only, sandbox | `references/local-runbook.md`, `scripts/local_stack.sh`, `references/local-only-changes.md`, `scripts/local_only_changes.sh`, `references/sandbox-notes.md` |
+| Billing change (`sp_return_logs`, waiver, adjustments, reports) | `.claude/skills/login-billing/SKILL.md` first, then `references/branch-context/delegated-access-billing-reporting.md` |
+| Schema, log, token-storage, analytics or Attempts-schema change | `.claude/skills/login-billing/SKILL.md` section 9 and its `references/data-change-review-guidelines.md` (data team review and notification) |
 | Where to start reading | `references/reading-order.md` |
 
 ## 4. Changing things

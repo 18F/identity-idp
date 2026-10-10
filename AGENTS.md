@@ -138,7 +138,7 @@ GitHub vulnerability alerts are fixed on the base branch when the fix does not c
   like service providers; fictitious entries are `sandbox`. Deploy clones that repository at
   `main`, so its branch is not deployable until merged.
 - GitLab `lg/*` projects are pull mirrors of the GitHub repositories; do not push to them.
-- Billing changes follow the local `login-billing` skill and the data-team items recorded in the
+- Billing changes follow the repository skill `.claude/skills/login-billing` and the data-team items recorded in the
   plan's 5.8 notes.
 
 ## 6. Environment-specific pieces
@@ -151,9 +151,10 @@ browser-callable endpoints, discovery metadata gated by the switch, alert-thresh
 to that table whenever a new local-only piece is introduced, so it can be removed or disabled
 deliberately.
 
-## 7. The skill
+## 7. The skills
 
-`.claude/skills/login-delegated-access` (SKILL.md, `references/`, `scripts/`) is the entry point for any
-question, review, edit or run on these branches; `.agents/skills` is its byte-identical twin, produced by
+Three project skills live under `.claude/skills/`: `login-delegated-access` (SKILL.md, `references/`,
+`scripts/`), the entry point for any question, review, edit or run on these branches; `interview`, the
+change interview it invokes; and `login-billing`, loaded for any change to billing rows, waivers or reports. `.agents/skills` is their byte-identical twin, produced by
 `scripts/sync_twins.sh` and checked by the skill's own `scripts/check.sh` (nothing is added to the repository's test suite). Generated references are
 never edited by hand: after a docs change run `scripts/build_index.py`, after a skill change run `sync_twins.sh`.

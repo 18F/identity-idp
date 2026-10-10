@@ -58,3 +58,10 @@ after the first area is clear, not at the end.
    Appendix E, as-built when code lands); regenerate the indexes; sync the twins.
 3. State explicitly which requirements changed and which skill context changed.
 4. Leave genuinely open items as plan 5.x "Findings" or "Still open" lines, never as silent omissions.
+
+## Data-change review
+
+When the change adds or alters a table, column, durable log row, token storage, billing or reporting
+evidence, an analytics event or an Attempts API schema, run the data team's decision procedure from
+`.claude/skills/login-billing/references/data-change-review-guidelines.md` (requirement, durability,
+table ownership, grain, sensitivity, event shape) and record that the data team was notified.

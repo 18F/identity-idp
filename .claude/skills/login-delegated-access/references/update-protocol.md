@@ -65,7 +65,10 @@ Say it in one short paragraph before any edit, in this shape:
 - what the change is, in the documents' vocabulary (service provider, application, resource server);
 - which decision or row it agrees with or conflicts with (cite `Dnn`, `Ennn`, `FR-…`, the RFC section);
 - the cost or risk the recorded rationale warns about (existing-client behavior, security posture, data
-  growth, billing or fraud-signal effects, rebase cascade);
+  growth, billing or fraud-signal effects, rebase cascade; for billing changes also load
+  `.claude/skills/login-billing/SKILL.md`; for any schema, durable-log, token-storage, analytics or
+  Attempts-schema change apply the data team's review in that skill's section 9 and
+  `references/data-change-review-guidelines.md`, and notify the data team);
 - the recommendation, stated plainly ("I would do it", "I would not, because …", "either works; the
   difference is …").
 

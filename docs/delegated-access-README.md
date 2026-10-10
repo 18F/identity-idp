@@ -91,4 +91,5 @@ per-branch context, RFC digests, the interview and update protocol, and the loca
 `scripts/` holds the generator, the twin sync and the local stack helpers. `.agents/skills` is a
 byte-identical twin kept by `scripts/sync_twins.sh` and checked by the skill's own `scripts/check.sh` (nothing is added to the repository's test suite). In Claude
 Code the skill loads when the conversation concerns these branches, or on request with
-`/login-delegated-access`; `/interview` runs the interview that precedes every change.
+`/login-delegated-access`; `/interview` runs the interview that precedes every change; `/login-billing`
+(`.claude/skills/login-billing`) is the companion skill for billing rows, the sign-in waiver and the reports.
