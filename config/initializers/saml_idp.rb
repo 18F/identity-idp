@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 require 'feature_management'
+require 'saml_idp_extensions/assertion_builder'
+
+# Behavior the IdP needs from the assertion builder ahead of the gem carrying it; see the module.
+SamlIdp::AssertionBuilder.prepend(SamlIdpExtensions::AssertionBuilder)
 
 SamlIdp.configure do |config|
   protocol = Rails.env.development? ? 'http://' : 'https://'

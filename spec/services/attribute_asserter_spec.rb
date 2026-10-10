@@ -867,6 +867,53 @@ RSpec.describe AttributeAsserter do
     end
   end
 
+  describe 'without an AuthnRequest' do
+    let(:service_provider_ial) { 2 }
+    let(:attribute_bundle) { %w[email first_name] }
+    let(:ial) { 2 }
+    let(:aal) { 2 }
+    let(:subject) do
+      described_class.new(
+        user:,
+        name_id_format:,
+        service_provider:,
+        authn_request: nil,
+        ial:,
+        aal:,
+        decrypted_pii:,
+        user_session:,
+      )
+    end
+
+    before { subject.build }
+
+    it 'asserts the given IAL and AAL' do
+      expect(get_asserted_attribute(user, :ial))
+        .to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+      expect(get_asserted_attribute(user, :aal))
+        .to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
+      expect(@analytics).not_to have_logged_event(:asserted_aal_different_from_response_aal)
+    end
+
+    it 'uses the service provider attribute bundle, since there is no request to narrow it' do
+      expect(user.asserted_attributes.keys).to eq(%i[uuid email first_name verified_at aal ial])
+      expect(get_asserted_attribute(user, :first_name)).to eq('Jåné')
+    end
+
+    context 'when the levels are IALmax and no AAL' do
+      let(:ial) { 0 }
+      let(:aal) { nil }
+
+      it 'asserts IAL2 for a verified user and the service provider default AAL' do
+        expect(get_asserted_attribute(user, :ial))
+          .to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+        expect(get_asserted_attribute(user, :aal))
+          .to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+        expect(get_asserted_attribute(user, :first_name)).to eq('Jåné')
+      end
+    end
+  end
+
   describe 'aal attributes handling' do
     let(:attribute_bundle) { %w[email] }
     before do

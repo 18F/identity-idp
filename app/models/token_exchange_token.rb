@@ -37,18 +37,29 @@ class TokenExchangeToken < ApplicationRecord
     DelegatedAccess::OpaqueToken.generate
   end
 
-  # Lifetime in seconds of an access token issued at +now+ for +resource_server+ within a family
-  # that ends at +family_expires_at+: the configured default, or the API's own maximum when that
-  # is lower, and never past the family's end, so no access token outlives the family it belongs
-  # to. At least one second, the smallest lifetime a live entry can be stored with.
-  def self.lifetime_seconds_for(now:, resource_server:, family_expires_at:)
+  # Lifetime in seconds of a token issued at +now+ for +resource_server+ within a family that
+  # ends at +family_expires_at+: the configured default for the format (an access token's, or the
+  # shorter validity window of a SAML assertion, which the agency checks locally and which must
+  # therefore die on its own soon after a revocation), or the API's own maximum when that is
+  # lower, and never past the family's end, so no token outlives the family it belongs to. At
+  # least one second, the smallest lifetime a live entry can be stored with.
+  def self.lifetime_seconds_for(now:, resource_server:, family_expires_at:, token_format: 'oauth')
     lifetime = [
-      IdentityConfig.store.token_exchange_access_token_ttl_seconds,
+      default_lifetime_seconds(token_format),
       resource_server.max_access_token_seconds,
       (family_expires_at - now).floor,
     ].compact.min
     [lifetime, 1].max
   end
+
+  def self.default_lifetime_seconds(token_format)
+    if token_format == 'saml2'
+      IdentityConfig.store.token_exchange_saml_assertion_ttl_seconds
+    else
+      IdentityConfig.store.token_exchange_access_token_ttl_seconds
+    end
+  end
+  private_class_method :default_lifetime_seconds
 
   def saml?
     token_format == 'saml2'
