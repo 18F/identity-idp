@@ -13,7 +13,9 @@
 #
 # * A refresh token of this client's: the whole family is revoked, so the access token issued
 #   with it and every one that followed stop working, and no refresh can mint another.
-# * A delegated access token of this client's: that token alone is removed, and its issuance
+# * A delegated access token of this client's, or a SAML assertion of this client's presented
+#   as its `ID` or as the encoded assertion (an encrypted one hides its ID; the service provider
+#   revokes by the ID or by the refresh token): that token alone is removed, and its issuance
 #   record is marked revoked. Its family is untouched.
 # * The access token of this client's own sign-in: accepted and not acted on. Ending the sign-in
 #   is the logout flow's job; this endpoint ends delegated access only.
@@ -134,14 +136,16 @@ class OpenidConnectRevokeForm
     REFRESH_TOKEN_HINT
   end
 
-  # A live delegated access token of this client's is removed and its issuance record marked
-  # revoked; nothing else in its family changes.
+  # A live delegated access token or SAML assertion of this client's is removed and its issuance
+  # record marked revoked; nothing else in its family changes. An assertion's live entry is keyed
+  # by the digest of its `ID`, which is read from the encoded assertion when that is presented.
   def revoke_access_token
-    live = DelegatedTokenStore.read(token)
+    reference = DelegatedSamlAssertion.reference_for(token)
+    live = DelegatedTokenStore.read(reference)
     return nil unless live && owned?(live[:service_provider_id], live[:dpop_jkt])
 
     now = Time.zone.now
-    DelegatedTokenStore.revoke_token(token)
+    DelegatedTokenStore.revoke_token(reference)
     TokenExchangeToken.where(id: live[:issuance_id], revoked_at: nil)
       .find_each { |issued| issued.revoke!(reason: 'client_revoked', now:) }
     ACCESS_TOKEN_HINT

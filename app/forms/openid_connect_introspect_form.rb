@@ -29,7 +29,10 @@
 # does not verify or is missing. Neither says anything about the token.
 #
 # The token is read from Redis by its digest (DelegatedTokenStore); an absent entry is "not
-# active" whether the token never existed, expired or was revoked. A present entry is active only
+# active" whether the token never existed, expired or was revoked. A SAML assertion is keyed by
+# the digest of its `ID`, so the agency may present either the `ID` it read from the assertion or
+# the encoded assertion itself as `token` (RFC 7662 does not restrict the token format); an
+# encrypted assertion hides its ID and is answered "not active". A present entry is active only
 # while its expiry is in the future, the approval it was issued under still authorizes delegation,
 # the API with its application and agency is usable, the service provider is still approved and
 # active, and the person's account is in good standing.
@@ -132,7 +135,10 @@ class OpenidConnectIntrospectForm
   end
 
   def introspect
-    @entry = DelegatedTokenStore.read(token) unless token.to_s.include?("\x00")
+    # A token with a null byte can be neither an assertion reference nor a stored digest key, so
+    # the store is not consulted for it at all.
+    @reference = DelegatedSamlAssertion.reference_for(token) unless token.to_s.include?("\x00")
+    @entry = @reference.present? ? DelegatedTokenStore.read(@reference) : nil
     load_records if entry
     verify_service_provider_proof if caller_type == :service_provider
     return if errors.any?
@@ -229,7 +235,7 @@ class OpenidConnectIntrospectForm
       .merge(
         sub: claims.agency_sub,
         act: { sub: token_service_provider.issuer },
-        jti: DelegatedTokenStore.digest(token),
+        jti: DelegatedTokenStore.digest(@reference),
         acr: claims.acr,
         aal: claims.aal_acr,
         auth_time: auth_time,
