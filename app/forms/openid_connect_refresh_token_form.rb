@@ -187,8 +187,13 @@ class OpenidConnectRefreshTokenForm
       @presented = TokenExchangeRefreshToken.lock.find(presented.id)
       presented.rotated? ? handle_reuse!(now) : rotate_locked!(now)
     end
-    write_live_token! if outcome
-    outcome
+    return outcome unless outcome
+
+    write_live_token!
+    # The agency learns of the renewal through the Attempts API. Delivery is best-effort and
+    # never affects the response.
+    DelegatedAccessEvents.token_refreshed(@issued, expires_at: @expires_at)
+    true
   end
 
   # With the row locked: the token must be unspent and unrevoked, the family must not have ended,
@@ -243,17 +248,12 @@ class OpenidConnectRefreshTokenForm
         presented.family_id, grant: presented.grant, reason: 'refresh_token_reuse', now:
       )
       @reuse_detected = true
-      report_family_revoked(reason: 'refresh_token_reuse')
     end
     fail_with(
       :refresh_token, 'invalid_grant', t('openid_connect.token.errors.refresh_token_reused'),
       type: :refresh_token_reused
     )
   end
-
-  # The notice to the agency that owns the API that this family has ended, and why, leaves from
-  # here. Nothing is delivered from the token endpoint itself.
-  def report_family_revoked(reason:); end
 
   # The next token of the family and the next refresh token. The family's issuance record,
   # written by the exchange that started it, stands for every token of the family: it is renewed

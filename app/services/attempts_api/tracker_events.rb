@@ -469,8 +469,8 @@ module AttemptsApi
 
     # @param [String] application Issuer of the application whose approval ended
     # @param [String, nil] resource Identifier of the one API whose access ended, when only one did
-    # @param [String] reason Why access ended: user_revoked, sp_disconnected, refresh_token_reuse,
-    #   account_suspended, account_deleted or client_revoked
+    # @param [String] reason Why access ended: user_revoked, sp_disconnected, account_suspended,
+    #   account_deleted, refresh_token_reuse, approval_lapsed or client_revoked
     # Access under a delegated-access approval ended. Delivered to the application's agency by
     # DelegatedAccessEvents.
     def delegated_access_revoked(application:, resource:, reason:)

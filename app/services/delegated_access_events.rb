@@ -67,20 +67,23 @@ class DelegatedAccessEvents
 
   # A delegated token was renewed with a refresh token for one API. Written to that API's
   # recipient. Called by the refresh grant once the renewed token is live.
-  # @param issued [TokenExchangeToken] the issuance record of the renewed token
+  # @param issued [TokenExchangeToken] the family's issuance record, whose own times are the
+  #   first token's
+  # @param expires_at [Time] when the renewed token expires
   # @return [AttemptsApi::AttemptEvent, nil]
-  def self.token_refreshed(issued, analytics: nil)
+  def self.token_refreshed(issued, expires_at:, analytics: nil)
     new(grant: issued.grant, analytics:).write_to(issued.resource_server.attempts_recipient) do |w|
-      w.delegated_access_token_refreshed(**token_metadata(issued))
+      w.delegated_access_token_refreshed(**token_metadata(issued, expires_at:))
     end
   end
 
   # Access under an approval ended, with the reason. Called by `TokenExchangeGrant#revoke!` for
   # every approval revocation (`user_revoked`, `sp_disconnected`, `account_suspended`,
-  # `account_deleted`, `client_revoked`), written to each recipient of the application; and by
-  # refresh-token reuse detection with `reason: 'refresh_token_reuse'` and the `resource_server:`
-  # whose refresh family ended, written to that API's recipient alone. A superseding re-approval
-  # is not a revocation and is not reported.
+  # `account_deleted`), written to each recipient of the application; and by
+  # `TokenExchangeRefreshToken.revoke_family!` when one refresh family ends
+  # (`refresh_token_reuse`, `approval_lapsed`, `client_revoked`) with the `resource_server:` the
+  # family was addressed to, written to that API's recipient alone. A superseding re-approval is
+  # not a revocation and is not reported.
   # @param grant [TokenExchangeGrant] the approval
   # @param reason [String]
   # @param resource_server [TokenExchangeResourceServer, nil] when only one API's access ended
@@ -103,7 +106,9 @@ class DelegatedAccessEvents
 
   # What the agency learns about a token: which API and scope, the assurance the sign-in carried,
   # the token's shape and when it ends. Never the token itself or anything derived from it.
-  def self.token_metadata(issued)
+  # @param expires_at [Time] when the token ends; the record's own expiry unless a refresh passes
+  #   the renewed token's
+  def self.token_metadata(issued, expires_at: issued.expires_at)
     {
       application: issued.grant.application.issuer,
       resource: issued.resource_server.identifier,
@@ -112,7 +117,7 @@ class DelegatedAccessEvents
       aal: issued.aal,
       token_type: issued.token_type,
       token_format: issued.token_format,
-      expires_at: issued.expires_at.to_i,
+      expires_at: expires_at.to_i,
     }
   end
   private_class_method :token_metadata

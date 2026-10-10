@@ -169,12 +169,16 @@ RSpec.describe DelegatedAccessEvents do
       end
     end
 
-    it 'writes token-refreshed the same way' do
-      event = described_class.token_refreshed(issued)
+    it 'writes token-refreshed the same way, with the renewed token\'s expiry' do
+      renewed_expires_at = 1.hour.from_now
+      event = described_class.token_refreshed(issued, expires_at: renewed_expires_at)
 
       expect(event.event_type).to eq('delegated-access-token-refreshed')
       expect(event.event_metadata).to include(
-        delegation_id: grant.delegation_id, resource: housing_api.identifier, token_type: 'DPoP',
+        delegation_id: grant.delegation_id,
+        resource: housing_api.identifier,
+        token_type: 'DPoP',
+        expires_at: renewed_expires_at.to_i,
       )
     end
 
