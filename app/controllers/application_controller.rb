@@ -216,6 +216,12 @@ class ApplicationController < ActionController::Base
     request.headers['X-Amzn-Trace-Id']
   end
 
+  # Parses CloudFront-injected request headers (e.g. viewer address, JA3/JA4
+  # TLS fingerprints). Available to all controllers.
+  def cloud_front_header_parser
+    @cloud_front_header_parser ||= CloudFrontHeaderParser.new(request)
+  end
+
   def disable_caching
     response.headers[Rack::CACHE_CONTROL] = 'no-store'
     response.headers['pragma'] = 'no-cache'

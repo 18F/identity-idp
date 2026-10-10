@@ -34,6 +34,43 @@ RSpec.describe CloudFrontHeaderParser do
     end
   end
 
+  describe '#ja3_fingerprint' do
+    context 'with the JA3 header sent' do
+      before do
+        req.headers['CloudFront-Viewer-JA3-Fingerprint'] = 'e7d705a3286e19ea42f587b344ee6865'
+      end
+
+      it 'returns the JA3 fingerprint' do
+        expect(subject.ja3_fingerprint).to eq('e7d705a3286e19ea42f587b344ee6865')
+      end
+    end
+
+    context 'with no JA3 header sent' do
+      it 'returns nil' do
+        expect(subject.ja3_fingerprint).to be nil
+      end
+    end
+  end
+
+  describe '#ja4_fingerprint' do
+    context 'with the JA4 header sent' do
+      before do
+        req.headers['CloudFront-Viewer-JA4-Fingerprint'] =
+          't13d1516h2_8daaf6152771_b186095e22b6'
+      end
+
+      it 'returns the JA4 fingerprint' do
+        expect(subject.ja4_fingerprint).to eq('t13d1516h2_8daaf6152771_b186095e22b6')
+      end
+    end
+
+    context 'with no JA4 header sent' do
+      it 'returns nil' do
+        expect(subject.ja4_fingerprint).to be nil
+      end
+    end
+  end
+
   context 'with no CloudFront header sent' do
     let(:ip) { '192.0.2.1' }
 
@@ -56,6 +93,18 @@ RSpec.describe CloudFrontHeaderParser do
     describe '#client_port' do
       it 'returns nil' do
         expect(subject.client_port).to be nil
+      end
+    end
+
+    describe '#ja3_fingerprint' do
+      it 'returns nil' do
+        expect(subject.ja3_fingerprint).to be nil
+      end
+    end
+
+    describe '#ja4_fingerprint' do
+      it 'returns nil' do
+        expect(subject.ja4_fingerprint).to be nil
       end
     end
   end

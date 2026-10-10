@@ -34,7 +34,14 @@ class RecaptchaService
     end
   end
 
-  def create_assessment(recaptcha_token:, recaptcha_action:, user_agent: nil, user_ip_address: nil)
+  def create_assessment(
+    recaptcha_token:,
+    recaptcha_action:,
+    user_agent: nil,
+    user_ip_address: nil,
+    ja3_fingerprint: nil,
+    ja4_fingerprint: nil
+  )
     event = {
       site_key: IdentityConfig.store.recaptcha_site_key,
       token: recaptcha_token,
@@ -42,6 +49,8 @@ class RecaptchaService
     if FeatureManagement.recaptcha_enterprise_additional_context_enabled?
       event[:user_agent] = user_agent if user_agent.present?
       event[:user_ip_address] = user_ip_address if user_ip_address.present?
+      event[:ja3] = ja3_fingerprint if ja3_fingerprint.present?
+      event[:ja4] = ja4_fingerprint if ja4_fingerprint.present?
     end
 
     request = {

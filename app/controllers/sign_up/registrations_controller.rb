@@ -71,7 +71,13 @@ module SignUp
     end
 
     def recaptcha_form_args
-      args = { analytics:, user_agent: request.user_agent, user_ip_address: request.remote_ip }
+      args = {
+        analytics:,
+        user_agent: request.user_agent,
+        user_ip_address: request.remote_ip,
+        ja3_fingerprint: cloud_front_header_parser.ja3_fingerprint,
+        ja4_fingerprint: cloud_front_header_parser.ja4_fingerprint,
+      }
       if IdentityConfig.store.recaptcha_mock_validator
         args.merge(
           form_class: RecaptchaMockForm,

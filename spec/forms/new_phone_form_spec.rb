@@ -604,12 +604,29 @@ RSpec.describe NewPhoneForm do
       context 'with request context' do
         let(:request_ip) { '203.0.113.10' }
         let(:request_user_agent) { 'Example/1.0' }
-        subject(:form) { NewPhoneForm.new(user:, request_ip:, request_user_agent:) }
+        let(:ja3_fingerprint) { 'e7d705a3286e19ea42f587b344ee6865' }
+        let(:ja4_fingerprint) { 't13d1516h2_8daaf6152771_b186095e22b6' }
+        subject(:form) do
+          NewPhoneForm.new(
+            user:,
+            request_ip:,
+            request_user_agent:,
+            ja3_fingerprint:,
+            ja4_fingerprint:,
+          )
+        end
 
         it 'forwards the user agent and ip to the recaptcha form args' do
           expect(form.send(:recaptcha_form_args)).to include(
             user_agent: request_user_agent,
             user_ip_address: request_ip,
+          )
+        end
+
+        it 'forwards the JA3 and JA4 fingerprints to the recaptcha form args' do
+          expect(form.send(:recaptcha_form_args)).to include(
+            ja3_fingerprint: ja3_fingerprint,
+            ja4_fingerprint: ja4_fingerprint,
           )
         end
       end
