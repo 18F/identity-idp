@@ -533,6 +533,59 @@ RSpec.describe AttemptsApi::Tracker do
       end
     end
 
+    context 'after the person approved an application' do
+      let(:enabled_for_session) { false }
+
+      before do
+        context.start(
+          request_id: 'req-1', sp_issuer: service_provider.issuer,
+          candidate_issuers: [recipient.issuer]
+        )
+        context.approve(
+          issuer: recipient.issuer, delegation_id: 'dlg_abc', agency_uuid: 'agency-uuid',
+        )
+      end
+
+      it 'delivers a re-mapped copy of each event to the agency as it happens' do
+        expect(NewRelic::Agent).not_to receive(:notice_error)
+        freeze_time do
+          subject.track_event(:test_event, foo: :bar)
+
+          buffered = context.buffered_events.first
+          copies = redis_client.read_events(issuer: recipient.issuer).values.map do |jwe|
+            AttemptsApi::AttemptEvent.from_jwe(jwe, saml_test_sp_private_key)
+          end
+          expect(copies.map(&:jti)).to eq([buffered.jti])
+          expect(copies.first.event_metadata).to include(
+            user_uuid: 'agency-uuid',
+            delegation_id: 'dlg_abc',
+            actor_issuer: service_provider.issuer,
+            foo: 'bar',
+            user_ip_address: '192.0.2.1',
+          )
+          expect(redis_client.read_events(issuer: service_provider.issuer)).to be_empty
+        end
+      end
+
+      it 'delivers nothing to an approved recipient that is no longer enrolled' do
+        allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return([])
+        subject.track_event(:test_event, foo: :bar)
+        expect(redis_client.read_events(issuer: recipient.issuer)).to be_empty
+        expect(context.buffered_event_count).to eq(1)
+      end
+
+      it 'keeps recording for the service provider when the copy cannot be written' do
+        allow(AttemptsApi::RedisClient).to receive(:new).and_wrap_original do |original|
+          original.call.tap do |client|
+            allow(client).to receive(:write_event).and_raise(Redis::CannotConnectError)
+          end
+        end
+
+        expect { subject.track_event(:test_event, foo: :bar) }.not_to raise_error
+        expect(context.buffered_event_count).to eq(1)
+      end
+    end
+
     context 'without a delegation request' do
       it 'behaves exactly as before: the service provider event is written and nothing buffered' do
         event = subject.track_event(:test_event, foo: :bar)
