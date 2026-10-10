@@ -260,12 +260,14 @@ class TokenExchangeGrant < ApplicationRecord
   # it stops working at once: the Redis entries listed in the approval's index set are removed,
   # so introspection answers "not active" from the next call, and the issuance records and the
   # refresh tokens are marked revoked with the same reason so the history shows why they ended
-  # and no refresh can start a new access token under the approval.
+  # and no refresh can start a new access token under the approval. The application's agency
+  # is told, with the reason, through the Attempts API.
   def revoke!(reason:, now: Time.zone.now)
     update!(revoked_at: now, revocation_reason: reason)
     DelegatedTokenStore.revoke_grant(id)
     TokenExchangeToken.revoke_rows!(token_exchange_tokens, reason:, now:)
     TokenExchangeToken.revoke_rows!(token_exchange_refresh_tokens, reason:, now:)
+    DelegatedAccessEvents.access_revoked(grant: self, reason:)
   end
 
   private
