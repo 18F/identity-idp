@@ -15,10 +15,13 @@
 # revoked, so a stolen refresh token costs the holder the access rather than extending it.
 #
 # Only the SHA-256 digest of the token string is stored. The plaintext exists in the token
-# response and nowhere else.
+# response and nowhere else. The rows are operational state, not evidence: once a family has
+# ended they serve nothing, and ExpireDelegatedRefreshTokensJob deletes them a day after the end
+# (#expired_for_purge). The family's issuance record (TokenExchangeToken) is what stays.
 class TokenExchangeRefreshToken < ApplicationRecord
   belongs_to :grant, class_name: 'TokenExchangeGrant', inverse_of: :token_exchange_refresh_tokens
-  # The issuance record of the access token this refresh token was handed out with.
+  # The family's issuance record: written by the exchange that started the family and renewed by
+  # each refresh, so every refresh token of a family points at the same record.
   belongs_to :token_exchange_token, inverse_of: false
   belongs_to :resource_server, class_name: 'TokenExchangeResourceServer', inverse_of: false
   belongs_to :service_provider
@@ -30,6 +33,10 @@ class TokenExchangeRefreshToken < ApplicationRecord
   # Usable: not rotated, not revoked and the family has not ended.
   scope :live, -> { where(rotated_at: nil, revoked_at: nil).where('expires_at > ?', Time.zone.now) }
   scope :for_family, ->(family_id) { where(family_id:) }
+  # Rows whose family ended more than a day ago, which the nightly purge deletes. No refresh under
+  # an ended family can succeed, and a day past the end a replay of one of its tokens has nothing
+  # left to end, so the rows carry no further state.
+  scope :expired_for_purge, -> { where('expires_at < ?', 1.day.ago) }
 
   # The token string a service provider receives.
   def self.generate_token

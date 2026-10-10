@@ -69,8 +69,8 @@ RSpec.describe 'OpenID Connect delegated token refresh' do
     describe 'a successful refresh' do
       it 'rotates the refresh token and mints the next access token of the family' do
         freeze_time do
-          expect { refresh }.to change { TokenExchangeToken.count }.by(1)
-            .and change { TokenExchangeRefreshToken.count }.by(1)
+          expect { refresh }.to change { TokenExchangeRefreshToken.count }.by(1)
+          expect(TokenExchangeToken.count).to eq(1)
 
           expect(response).to have_http_status(:ok)
           expect(json.keys).to contain_exactly(
@@ -88,32 +88,37 @@ RSpec.describe 'OpenID Connect delegated token refresh' do
           expect(json[:refresh_token]).not_to eq(refresh_token)
           expect(json[:refresh_token_expires_in]).to eq((family_expires_at - Time.zone.now).to_i)
 
-          issued = TokenExchangeToken.order(:id).last
-          expect(issued.grant).to eq(grant)
-          expect(issued.resource_server).to eq(resource_server)
-          expect(issued.service_provider).to eq(service_provider)
-          expect(issued.user).to eq(user)
-          expect(issued.delegation_id).to eq(grant.delegation_id)
-          expect(issued.scope).to eq('token_exchange:housing_records')
-          expect(issued.ial).to eq(2)
-          expect(issued.aal).to eq(2)
-          expect(issued.token_type).to eq(token_type)
-          expect(issued.dpop_jkt).to eq(family_jkt)
-          expect(issued.refresh_family_id).to eq(previous_issuance.refresh_family_id)
-          expect(issued.sp_rails_session_id).to eq('sign-in-session')
-          expect(issued.issued_at).to eq(Time.zone.now)
-          expect(issued.expires_at).to eq(15.minutes.from_now)
+          # The family's one issuance record is renewed, not copied: its own times stay those
+          # of the first token.
+          first_token_times = [previous_issuance.issued_at, previous_issuance.expires_at]
+          issued = previous_issuance.reload
+          expect(issued.refresh_count).to eq(1)
+          expect(issued.last_refreshed_at).to eq(Time.zone.now)
+          expect([issued.issued_at, issued.expires_at]).to eq(first_token_times)
+          expect(issued.revoked_at).to be_nil
 
-          expect(DelegatedTokenStore.read(json[:access_token])).to include(
+          expect(DelegatedTokenStore.read(json[:access_token])).to eq(
             aud: resource_server.identifier,
             scope: 'token_exchange:housing_records',
             grant_id: grant.id,
             delegation_id: grant.delegation_id,
+            user_id: user.id,
+            service_provider_id: service_provider.id,
+            resource_server_id: resource_server.id,
+            ial: 2,
+            aal: 2,
             refresh_family_id: previous_issuance.refresh_family_id,
             dpop_jkt: family_jkt,
             token_type:,
+            token_format: 'oauth',
+            sp_rails_session_id: 'sign-in-session',
+            issued_at: Time.zone.now.to_i,
+            expires_at: 15.minutes.from_now.to_i,
             issuance_id: issued.id,
           )
+          live_key = DelegatedTokenStore::TOKEN_KEY_PREFIX +
+                     DelegatedTokenStore.digest(json[:access_token])
+          expect(REDIS_POOL.with { |client| client.ttl(live_key) }).to be_between(890, 900)
 
           presented.reload
           expect(presented.rotated_at).to eq(Time.zone.now)
@@ -158,13 +163,17 @@ RSpec.describe 'OpenID Connect delegated token refresh' do
         end
       end
 
-      it 'can be repeated with the new refresh token' do
+      it 'can be repeated with the new refresh token, counting each refresh on the one record' do
         refresh
         params[:refresh_token] = json[:refresh_token]
         renew_credentials
         refresh
         expect(response).to have_http_status(:ok)
         expect(TokenExchangeRefreshToken.where(family_id: presented.family_id).count).to eq(3)
+        expect(TokenExchangeToken.where(refresh_family_id: presented.family_id).count).to eq(1)
+        expect(previous_issuance.reload.refresh_count).to eq(2)
+        expect(TokenExchangeRefreshToken.lookup(json[:refresh_token]).token_exchange_token)
+          .to eq(previous_issuance)
       end
 
       it 'accepts a scope parameter equal to the family scope' do
@@ -205,7 +214,7 @@ RSpec.describe 'OpenID Connect delegated token refresh' do
         )
         refresh
         expect(response).to have_http_status(:ok)
-        expect(TokenExchangeToken.order(:id).last.grant).to eq(replacement)
+        expect(previous_issuance.reload.grant).to eq(replacement)
         expect(TokenExchangeRefreshToken.lookup(json[:refresh_token]).grant).to eq(replacement)
       end
     end
@@ -407,9 +416,11 @@ RSpec.describe 'OpenID Connect delegated token refresh' do
             expect(presented.reload.used_at).to eq(Time.zone.now)
             expect(TokenExchangeRefreshToken.lookup(@next_refresh_token).rotated_at).to be_nil
 
+            # The cascade reaches the family's one issuance record.
             issuances = TokenExchangeToken.where(refresh_family_id: presented.family_id)
-            expect(issuances.count).to eq(2)
-            expect(issuances.map(&:revocation_reason).uniq).to eq(['refresh_token_reuse'])
+            expect(issuances).to eq([previous_issuance])
+            expect(previous_issuance.reload.revocation_reason).to eq('refresh_token_reuse')
+            expect(previous_issuance.revoked_at).to eq(Time.zone.now)
             expect(DelegatedTokenStore.read(previous_access_token)).to be_nil
             expect(DelegatedTokenStore.read(@next_access_token)).to be_nil
 

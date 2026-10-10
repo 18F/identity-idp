@@ -570,6 +570,13 @@ module AnalyticsEvents
     track_event(:delegated_access_page_visited)
   end
 
+  # Emitted by the daily job that removes the refresh-token rows of delegated-access families
+  # that ended more than a day ago.
+  # @param [Integer] deleted_count number of refresh-token rows removed
+  def delegated_refresh_tokens_expired(deleted_count:, **extra)
+    track_event(:delegated_refresh_tokens_expired, deleted_count:, **extra)
+  end
+
   # Tracks the person approving, from the account page, applications a service provider may act
   # at on their behalf. Approvals made here are always remembered for the maximum period.
   # @param [String] issuer Issuer of the service provider
