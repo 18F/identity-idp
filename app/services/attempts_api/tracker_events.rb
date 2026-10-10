@@ -448,16 +448,89 @@ module AttemptsApi
       track_event('login-completed')
     end
 
-    # A credential for this user was minted for the application through a token exchange
-    # requested by a service provider acting for the user, rather than a direct sign-in. The
-    # application receives this in place of login-completed so it can see that a service
-    # provider is acting and which one.
-    # @param [String] service_provider_issuer Issuer of the service provider that requested the
-    #   exchange
-    def token_exchange_login_completed(service_provider_issuer:)
+    # @param [String] application Issuer of the application the user approved
+    # @param [String] scope The delegation scope the approval covers, as on the wire
+    # @param [Boolean] remembered True when an earlier approval was reused rather than given now
+    # @param [String] source Where the approval was given, consent_screen or account_page
+    # @param [Float] consented_at When the user gave this approval, in epoch seconds
+    # The user approved an application for a service provider to act at on their behalf, or a
+    # remembered approval was reused. Delivered to the application's agency by
+    # DelegatedAccessEvents, with delegation_id and actor_issuer.
+    def delegated_access_consented(application:, scope:, remembered:, source:, consented_at:)
       track_event(
-        'token-exchange-login-completed',
-        service_provider_issuer:,
+        'delegated-access-consented',
+        application:,
+        scope:,
+        remembered:,
+        source:,
+        consented_at:,
+      )
+    end
+
+    # @param [String] application Issuer of the application whose approval ended
+    # @param [String, nil] resource Identifier of the one API whose access ended, when only one did
+    # @param [String] reason Why access ended: user_revoked, sp_disconnected, refresh_token_reuse,
+    #   account_suspended, account_deleted or client_revoked
+    # Access under a delegated-access approval ended. Delivered to the application's agency by
+    # DelegatedAccessEvents.
+    def delegated_access_revoked(application:, resource:, reason:)
+      track_event(
+        'delegated-access-revoked',
+        application:,
+        resource:,
+        reason:,
+      )
+    end
+
+    # @param [String] application Issuer of the application that owns the API
+    # @param [String] resource Identifier of the API the token is addressed to
+    # @param [String] scope The delegation scope the token carries, as on the wire
+    # @param [Integer, nil] ial Identity assurance level of the sign-in behind the token
+    # @param [Integer, nil] aal Authentication assurance level of the sign-in behind the token
+    # @param [String] token_type Bearer, DPoP or N_A
+    # @param [String] token_format oauth or saml2
+    # @param [Integer] expires_at When the token stops working, in epoch seconds
+    # A service provider exchanged the user's token for a delegated token addressed to this
+    # agency's API. Delivered to the API's agency by DelegatedAccessEvents.
+    def delegated_access_token_issued(
+      application:, resource:, scope:, ial:, aal:, token_type:, token_format:, expires_at:
+    )
+      track_event(
+        'delegated-access-token-issued',
+        application:,
+        resource:,
+        scope:,
+        ial:,
+        aal:,
+        token_type:,
+        token_format:,
+        expires_at:,
+      )
+    end
+
+    # @param [String] application Issuer of the application that owns the API
+    # @param [String] resource Identifier of the API the token is addressed to
+    # @param [String] scope The delegation scope the token carries, as on the wire
+    # @param [Integer, nil] ial Identity assurance level of the sign-in behind the token
+    # @param [Integer, nil] aal Authentication assurance level of the sign-in behind the token
+    # @param [String] token_type Bearer, DPoP or N_A
+    # @param [String] token_format oauth or saml2
+    # @param [Integer] expires_at When the token stops working, in epoch seconds
+    # A service provider renewed a delegated token for this agency's API with its refresh token.
+    # Delivered to the API's agency by DelegatedAccessEvents.
+    def delegated_access_token_refreshed(
+      application:, resource:, scope:, ial:, aal:, token_type:, token_format:, expires_at:
+    )
+      track_event(
+        'delegated-access-token-refreshed',
+        application:,
+        resource:,
+        scope:,
+        ial:,
+        aal:,
+        token_type:,
+        token_format:,
+        expires_at:,
       )
     end
 
