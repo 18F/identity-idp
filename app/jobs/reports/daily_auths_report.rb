@@ -71,7 +71,41 @@ module Reports
         start: start,
         finish: finish,
         results: results.as_json,
+        results_by_access_type: results_by_access_type.as_json,
       }
+    end
+
+    # The same billable rows broken down by how the person reached the issuer: `direct` sign-in
+    # handoffs or `delegated` token exchanges written under an agency API's billing issuer. The
+    # totals in `results` keep counting both together; this is an operational view, so sign-in
+    # rows later excluded from the invoice still count.
+    def results_by_access_type
+      params = {
+        start: start,
+        finish: finish,
+        direct: SpReturnLog::ACCESS_TYPE_DIRECT,
+      }.transform_values { |v| ActiveRecord::Base.connection.quote(v) }
+
+      sql = format(<<-SQL, params)
+        SELECT
+          COUNT(*)
+        , sp_return_logs.ial
+        , sp_return_logs.issuer
+        , COALESCE(sp_return_logs.access_type, %{direct}) AS access_type
+        FROM
+          sp_return_logs
+        WHERE
+          sp_return_logs.returned_at::date BETWEEN %{start} AND %{finish}
+          AND sp_return_logs.billable = true
+        GROUP BY
+          sp_return_logs.ial
+        , sp_return_logs.issuer
+        , COALESCE(sp_return_logs.access_type, %{direct})
+      SQL
+
+      transaction_with_timeout do
+        ActiveRecord::Base.connection.execute(sql)
+      end
     end
   end
 end

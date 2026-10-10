@@ -34,6 +34,29 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow do
       expect(result.to_a).to eq([])
     end
 
+    context 'with a sign-in row an exchange excluded from billing and a delegated row' do
+      let(:full_month_date) { iaa_range.begin + 1.month }
+
+      before do
+        excluded = create(
+          :sp_return_log, user: create(:user), ial: 2, service_provider:,
+                          returned_at: full_month_date, billable: true
+        )
+        SpReturnLogBillingAdjustment.create!(
+          sp_return_log: excluded, adjustment_type: :exclude_from_billing,
+        )
+        create(
+          :sp_return_log, user: create(:user), ial: 2, service_provider:,
+                          returned_at: full_month_date, billable: true, access_type: 'delegated'
+        )
+      end
+
+      it 'counts the delegated row and leaves the excluded row out' do
+        ial2 = result.find { |row| row[:ial] == 2 }
+        expect(ial2).to include(total_auth_count: 1, unique_users: 1)
+      end
+    end
+
     context 'with data' do
       let(:partial_month_date) { iaa_range.begin + 1.day }
       let(:full_month_date) { iaa_range.begin + 1.month }

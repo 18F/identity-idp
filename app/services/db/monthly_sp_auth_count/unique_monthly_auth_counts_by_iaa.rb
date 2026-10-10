@@ -29,9 +29,17 @@ module Db
 
         all_year_month_to_users = Hash.new { |h, ym_k| h[ym_k] = Set.new }
 
+        # Users whose billable rows for the month were all delegated token exchanges, with no
+        # direct sign-in to any of the agreement's issuers; a subset of `unique_users`, never an
+        # addition to it, kept per IAL so the invoice supplement can show the delegated-only share.
+        ial_to_year_month_to_delegated_only = Hash.new do |ial_h, ial_k|
+          ial_h[ial_k] = Hash.new { |ym_h, ym_k| ym_h[ym_k] = Set.new }
+        end
+
         queries.each do |query|
           by_ial_temp_copy = ial_to_year_month_to_users.deep_dup
           all_temp_copy = all_year_month_to_users.deep_dup
+          delegated_only_temp_copy = ial_to_year_month_to_delegated_only.deep_dup
 
           with_retries(
             max_tries: 3,
@@ -44,6 +52,7 @@ module Db
             handler: proc do
               ial_to_year_month_to_users = by_ial_temp_copy
               all_year_month_to_users = all_temp_copy
+              ial_to_year_month_to_delegated_only = delegated_only_temp_copy
               ActiveRecord::Base.connection.reconnect!
             end,
           ) do
@@ -56,6 +65,9 @@ module Db
 
                 ial_to_year_month_to_users[ial][year_month].add(user_id, auth_count)
                 all_year_month_to_users[year_month] << user_id
+                if ActiveModel::Type::Boolean.new.cast(row['delegated_only'])
+                  ial_to_year_month_to_delegated_only[ial][year_month] << user_id
+                end
               end
             end
           end
@@ -86,6 +98,8 @@ module Db
               total_auth_count: auth_count,
               unique_users: unique_users.count,
               new_unique_users: new_unique_users.count,
+              delegated_only_unique_users:
+                ial_to_year_month_to_delegated_only[ial][year_month].count,
             }
           end
         end
@@ -109,6 +123,13 @@ module Db
       # @param [Array<Range<Date>>] months ranges of dates by month that are included in this iaa,
       #  the first and last may be partial months
       # @return [Array<String>]
+      #
+      # Delegated rows (a token exchange for an agency API, written under the API's billing
+      # issuer) count like direct rows, and grouping by user collapses a person's direct and
+      # delegated rows into one billed user for the agreement and month. A sign-in row that a
+      # later exchange excluded from billing (the agency is billed instead) is left out.
+      # `delegated_only` is true when every billable row the user has for these issuers in the
+      # month is a delegated exchange; rows written before the column existed read as direct.
       def build_queries(issuers:, months:)
         months.map do |month_range|
           params = {
@@ -116,6 +137,8 @@ module Db
             range_end: month_range.end,
             year_month: month_range.begin.strftime('%Y%m'),
             issuers: issuers,
+            delegated: SpReturnLog::ACCESS_TYPE_DELEGATED,
+            direct: SpReturnLog::ACCESS_TYPE_DIRECT,
           }.transform_values { |value| quote(value) }
 
           format(<<~SQL, params)
@@ -124,11 +147,13 @@ module Db
             , %{year_month} AS year_month
             , COUNT(sp_return_logs.id) AS auth_count
             , sp_return_logs.ial
+            , BOOL_AND(COALESCE(sp_return_logs.access_type, %{direct}) = %{delegated}) AS delegated_only
             FROM sp_return_logs
             WHERE
                   sp_return_logs.returned_at::date BETWEEN %{range_start} AND %{range_end}
               AND sp_return_logs.issuer IN %{issuers}
               AND sp_return_logs.billable = true
+              AND #{SpReturnLogBillingAdjustment.not_excluded_sql}
             GROUP BY
               sp_return_logs.user_id
             , sp_return_logs.ial

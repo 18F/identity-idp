@@ -115,6 +115,9 @@ module Db
       # @param [Array<Range<Date>>] months ranges of dates by month that are included in this iaa,
       #  the first and last may be partial months
       # @return [Array<String>]
+      #
+      # Delegated rows written under this issuer count like direct rows; a sign-in row a later
+      # exchange excluded from billing is left out, as in every invoice query.
       def build_queries(issuer:, months:)
         months.map do |month_range|
           params = {
@@ -135,6 +138,7 @@ module Db
                   sp_return_logs.returned_at::date BETWEEN %{range_start} AND %{range_end}
               AND sp_return_logs.issuer = %{issuer}
               AND sp_return_logs.billable = true
+              AND #{SpReturnLogBillingAdjustment.not_excluded_sql}
             GROUP BY
               sp_return_logs.user_id
             , sp_return_logs.ial

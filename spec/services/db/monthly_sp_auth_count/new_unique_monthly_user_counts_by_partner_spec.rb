@@ -318,6 +318,8 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             partner_ial2_new_unique_user_events_year5: 2,
             partner_ial2_new_unique_user_events_year_greater_than_5: 0,
             partner_ial2_new_unique_user_events_unknown: 0,
+            partner_ial2_unique_user_events_delegated_only: 0,
+            partner_ial2_unique_user_events_delegated_proofing: 0,
           },
           {
             partner: partner_key,
@@ -343,12 +345,136 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             partner_ial2_new_unique_user_events_year5: 0,
             partner_ial2_new_unique_user_events_year_greater_than_5: 2,
             partner_ial2_new_unique_user_events_unknown: 1,
+            partner_ial2_unique_user_events_delegated_only: 0,
+            partner_ial2_unique_user_events_delegated_proofing: 0,
           },
         ]
         expect(results).to match_array(rows)
       end
     end
     # rubocop:enable Layout/LineLength
+
+    context 'with a delegated row' do
+      let(:partner_key) { 'HOUSING' }
+      let(:partner_range) { Date.new(2020, 9, 1)..Date.new(2021, 8, 31) }
+      let(:agency_issuer) { 'urn:gov:gsa:openidconnect:sp:housing_records' }
+      let(:sp_issuer) { 'urn:gov:gsa:openidconnect:sp:mybenefits' }
+      let(:issuers) { [agency_issuer] }
+      let(:profile) { build(:profile, verified_at: DateTime.new(2020, 10, 1).utc) }
+      let(:user) { create(:user, profiles: [profile]) }
+      let(:proofed_in_session) { true }
+      let(:grant) { create(:token_exchange_grant, user:, proofed_in_session:) }
+      let(:october) { results.find { |row| row[:year_month] == '202010' } }
+
+      def create_row(returned_at:, access_type:, token: nil)
+        row = create(
+          :sp_return_log, user_id: user.id, issuer: agency_issuer, ial: 2, billable: true,
+                          returned_at:, profile_id: profile.id,
+                          profile_verified_at: profile.verified_at,
+                          profile_requested_issuer: sp_issuer, access_type:
+        )
+        if token
+          SpReturnLogBillingAdjustment.create!(
+            sp_return_log: row, adjustment_type: :delegated_token_issued,
+            token_exchange_token: token
+          )
+        end
+        row
+      end
+
+      before do
+        create_row(
+          returned_at: DateTime.new(2020, 10, 5).utc, access_type: 'delegated',
+          token: create(:token_exchange_token, grant:)
+        )
+      end
+
+      it 'counts the person once, as upfront for the agency, and breaks the facts out' do
+        expect(results.length).to eq(1)
+        expect(october).to include(
+          unique_user_proofed_events: 1,
+          new_unique_user_proofed_events: 1,
+          partner_ial2_new_unique_user_events_year1_upfront: 1,
+          partner_ial2_new_unique_user_events_year1_existing: 0,
+          partner_ial2_unique_user_events_delegated_only: 1,
+          partner_ial2_unique_user_events_delegated_proofing: 1,
+        )
+      end
+
+      context 'when the person was verified before the delegating sign-in' do
+        let(:proofed_in_session) { false }
+
+        it 'is an existing profile for the agency' do
+          expect(october).to include(
+            partner_ial2_new_unique_user_events_year1_upfront: 0,
+            partner_ial2_new_unique_user_events_year1_existing: 1,
+            partner_ial2_unique_user_events_delegated_only: 1,
+            partner_ial2_unique_user_events_delegated_proofing: 0,
+          )
+        end
+      end
+
+      it 'keeps how the person arrived off the per-user key' do
+        expect(described_class::UserVerifiedKey.members)
+          .to eq(%i[user_id profile_id profile_age is_upfront])
+        sql = described_class.build_queries(
+          issuers:, months: [partner_range.begin...partner_range.begin.end_of_month],
+        ).first
+        expect(sql).to include("COALESCE(sp_return_logs.access_type, 'direct') AS access_type")
+        expect(sql).to include('grants.proofed_in_session = true')
+        expect(sql).to include('NOT EXISTS')
+      end
+
+      context 'when the same person also signed in to the agency directly that month' do
+        before { create_row(returned_at: DateTime.new(2020, 10, 7).utc, access_type: 'direct') }
+
+        it 'counts one person, not one per way of arriving, and not as delegated-only' do
+          expect(october).to include(
+            unique_user_proofed_events: 1,
+            new_unique_user_proofed_events: 1,
+            partner_ial2_new_unique_user_events_year1_upfront: 1,
+            partner_ial2_unique_user_events_delegated_only: 0,
+            partner_ial2_unique_user_events_delegated_proofing: 1,
+          )
+        end
+      end
+
+      context 'when the person signed in directly in an earlier month' do
+        before { create_row(returned_at: DateTime.new(2020, 10, 2).utc, access_type: 'direct') }
+        let(:profile) { build(:profile, verified_at: DateTime.new(2020, 9, 10).utc) }
+
+        before do
+          # The direct sign-in is in September; the delegated row (created above) in October.
+          SpReturnLog.where(access_type: 'direct').update_all(
+            returned_at: DateTime.new(
+              2020, 9,
+              20
+            ).utc,
+          )
+        end
+
+        it 'does not count the delegated month as a new user' do
+          expect(october).to include(
+            unique_user_proofed_events: 1,
+            new_unique_user_proofed_events: 0,
+            partner_ial2_unique_user_events_delegated_only: 1,
+          )
+        end
+      end
+
+      context 'with a sign-in row an exchange excluded from billing' do
+        before do
+          excluded = create_row(returned_at: DateTime.new(2020, 11, 3).utc, access_type: 'direct')
+          SpReturnLogBillingAdjustment.create!(
+            sp_return_log: excluded, adjustment_type: :exclude_from_billing,
+          )
+        end
+
+        it 'leaves the excluded row out' do
+          expect(results.map { |row| row[:year_month] }).to eq(['202010'])
+        end
+      end
+    end
 
     context 'with only partial month data' do
       let(:partner_key) { 'DHS' }

@@ -78,6 +78,34 @@ RSpec.describe Reports::DailyAuthsReport do
         create(:sp_return_log, ial: 2, issuer: 'a', returned_at: timestamp, billable: false)
       end
 
+      context 'with a delegated row' do
+        before do
+          create(
+            :sp_return_log, ial: 2, issuer: 'a', returned_at: timestamp, billable: true,
+                            access_type: 'delegated'
+          )
+        end
+
+        it 'counts it in the totals and breaks it out by access type' do
+          expect(report).to receive(:upload_file_to_s3_bucket)
+            .exactly(2).times do |body:, **|
+              parsed = JSON.parse(body, symbolize_names: true)
+
+              ial2 = parsed[:results].find { |row| row[:ial] == 2 }
+              expect(ial2[:count]).to eq(2)
+              expect(parsed[:results_by_access_type]).to match_array(
+                [
+                  { count: 2, ial: 1, issuer: 'a', access_type: 'direct' },
+                  { count: 1, ial: 2, issuer: 'a', access_type: 'direct' },
+                  { count: 1, ial: 2, issuer: 'a', access_type: 'delegated' },
+                ],
+              )
+            end
+
+          report.perform(report_date)
+        end
+      end
+
       it 'aggregates by issuer' do
         expect(report).to receive(:upload_file_to_s3_bucket)
           .exactly(2).times do |path:, body:, content_type:, bucket:|
