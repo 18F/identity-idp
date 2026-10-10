@@ -1,0 +1,22 @@
+description: |
+  The user approved an application for a service provider to act at on their behalf, or a remembered approval was reused for a sign-in without the consent screen. Delivered to the application's agency, not to the service provider. Like every delegated event it carries `delegation_id` and `actor_issuer`; `user_uuid` is the user's identifier at this agency; `subject.session_id` is null, because this is not an event of a session the agency started. `unique_session_id` is the same hash the sign-in's events carry, so the two can be joined.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      application:
+        type: string
+        description: The issuer of the application the user approved.
+      scope:
+        type: string
+        description: The delegation scope the approval covers, as it appears on the wire (for example `token_exchange:housing_records`).
+      remembered:
+        type: boolean
+        description: True when an earlier approval was reused rather than given now; the event then reports the original consent time.
+      source:
+        type: string
+        description: Where the approval was given, `consent_screen` or `account_page`.
+      consented_at:
+        type: number
+        format: float64
+        description: The time the user gave this approval, in epoch seconds.

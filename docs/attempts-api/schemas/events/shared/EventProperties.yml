@@ -1,5 +1,9 @@
 type: object
 properties:
+  actor_issuer:
+    type: string
+    description: |
+      Present only on events delivered to an agency for a delegated session: the issuer of the service provider acting for the user. Any event carrying `actor_issuer` or `delegation_id` belongs to a delegated session, so its `subject.session_id` is the acting service provider's session identifier (or null for events Login.gov's server writes for the agency), not one the agency started.
   application_url:
     type: string
     description: |
@@ -14,6 +18,10 @@ properties:
     type: string
     description: |
       Cookie device unique identifier. This value is securely randomly generated server-side as a string of 128 hexadecimal characters using the SecureRandom Ruby library.
+  delegation_id:
+    type: string
+    description: |
+      Present only on events delivered to an agency for a delegated session: the identifier of the user's approval of the application for the acting service provider. Token verification returns the same value, so the agency can join API calls to these events.
   google_analytics_cookies:
     type: object
     description: |

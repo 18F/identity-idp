@@ -1,0 +1,9 @@
+properties:
+  delegated-access-consented:
+    $ref: './delegated-access/DelegatedAccessConsented.yml'
+  delegated-access-revoked:
+    $ref: './delegated-access/DelegatedAccessRevoked.yml'
+  delegated-access-token-issued:
+    $ref: './delegated-access/DelegatedAccessTokenIssued.yml'
+  delegated-access-token-refreshed:
+    $ref: './delegated-access/DelegatedAccessTokenRefreshed.yml'

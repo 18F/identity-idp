@@ -208,6 +208,10 @@ paths:
                                   allOf: &ref_6
                                     - type: object
                                       properties: &ref_0
+                                        actor_issuer:
+                                          type: string
+                                          description: |
+                                            Present only on events delivered to an agency for a delegated session: the issuer of the service provider acting for the user. Any event carrying `actor_issuer` or `delegation_id` belongs to a delegated session, so its `subject.session_id` is the acting service provider's session identifier (or null for events Login.gov's server writes for the agency), not one the agency started.
                                         application_url:
                                           type: string
                                           description: |
@@ -222,6 +226,10 @@ paths:
                                           type: string
                                           description: |
                                             Cookie device unique identifier. This value is securely randomly generated server-side as a string of 128 hexadecimal characters using the SecureRandom Ruby library.
+                                        delegation_id:
+                                          type: string
+                                          description: |
+                                            Present only on events delivered to an agency for a delegated session: the identifier of the user's approval of the application for the acting service provider. Token verification returns the same value, so the agency can join API calls to these events.
                                         google_analytics_cookies:
                                           type: object
                                           description: |
@@ -1588,6 +1596,117 @@ paths:
                                           type: boolean
                                           description: |
                                             Indicates whether the entered code matched the code that was sent confirming the address
+                            - properties: &ref_54
+                                delegated-access-consented:
+                                  description: |
+                                    The user approved an application for a service provider to act at on their behalf, or a remembered approval was reused for a sign-in without the consent screen. Delivered to the application's agency, not to the service provider. Like every delegated event it carries `delegation_id` and `actor_issuer`; `user_uuid` is the user's identifier at this agency; `subject.session_id` is null, because this is not an event of a session the agency started. `unique_session_id` is the same hash the sign-in's events carry, so the two can be joined.
+                                  allOf: &ref_50
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        application:
+                                          type: string
+                                          description: The issuer of the application the user approved.
+                                        scope:
+                                          type: string
+                                          description: The delegation scope the approval covers, as it appears on the wire (for example `token_exchange:housing_records`).
+                                        remembered:
+                                          type: boolean
+                                          description: True when an earlier approval was reused rather than given now; the event then reports the original consent time.
+                                        source:
+                                          type: string
+                                          description: Where the approval was given, `consent_screen` or `account_page`.
+                                        consented_at:
+                                          type: number
+                                          format: float64
+                                          description: The time the user gave this approval, in epoch seconds.
+                                delegated-access-revoked:
+                                  description: |
+                                    Access under an approval ended, so delegated tokens for the application stop working at their next verification or renewal. Delivered to the application's agency. Carries no IP address or user agent: the revocation came from the user's account page, from Login.gov, or from the service provider's server.
+                                  allOf: &ref_51
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        application:
+                                          type: string
+                                          description: The issuer of the application whose approval ended.
+                                        resource:
+                                          type: string
+                                          nullable: true
+                                          description: The identifier of the one API whose access ended, when only one did (a renewal credential replayed, `refresh_token_reuse`); null when the whole approval ended.
+                                        reason:
+                                          type: string
+                                          description: Why access ended; `user_revoked` (the user, from the account page), `sp_disconnected` (the user disconnected the service provider), `refresh_token_reuse` (a retired renewal credential was presented again, a possible theft), `account_suspended`, `account_deleted` or `client_revoked` (the service provider gave the token up).
+                                delegated-access-token-issued:
+                                  description: |
+                                    A service provider exchanged the user's token for a delegated token addressed to this agency's API (RFC 8693 token exchange). Delivered to the API's agency. Carries no IP address or user agent: the request came from the service provider's server, not from the user. `unique_session_id` is the same hash the sign-in's events carry, so the token can be joined to the sign-in behind it.
+                                  allOf: &ref_52
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        application:
+                                          type: string
+                                          description: The issuer of the application that owns the API.
+                                        resource:
+                                          type: string
+                                          description: The identifier of the API (the token's audience).
+                                        scope:
+                                          type: string
+                                          description: The delegation scope the token carries, as it appears on the wire.
+                                        ial:
+                                          type: integer
+                                          nullable: true
+                                          description: The identity assurance level of the sign-in the token is derived from.
+                                        aal:
+                                          type: integer
+                                          nullable: true
+                                          description: The authentication assurance level of the sign-in the token is derived from.
+                                        token_type:
+                                          type: string
+                                          description: How the token must be presented; `Bearer`, `DPoP` (bound to the service provider's key) or `N_A` for a SAML assertion.
+                                        token_format:
+                                          type: string
+                                          description: The format of the issued token, `oauth` (opaque access token) or `saml2` (SAML assertion).
+                                        expires_at:
+                                          type: integer
+                                          description: When the token stops working, in epoch seconds.
+                                delegated-access-token-refreshed:
+                                  description: |
+                                    A service provider renewed a delegated token for this agency's API with its refresh token. Delivered to the API's agency. Carries no IP address or user agent: the request came from the service provider's server, not from the user. `unique_session_id` is the same hash the sign-in's events carry, so the renewed token can be joined to the sign-in behind it.
+                                  allOf: &ref_53
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        application:
+                                          type: string
+                                          description: The issuer of the application that owns the API.
+                                        resource:
+                                          type: string
+                                          description: The identifier of the API (the token's audience).
+                                        scope:
+                                          type: string
+                                          description: The delegation scope the token carries, as it appears on the wire.
+                                        ial:
+                                          type: integer
+                                          nullable: true
+                                          description: The identity assurance level of the sign-in the token is derived from.
+                                        aal:
+                                          type: integer
+                                          nullable: true
+                                          description: The authentication assurance level of the sign-in the token is derived from.
+                                        token_type:
+                                          type: string
+                                          description: How the token must be presented; `Bearer`, `DPoP` (bound to the service provider's key) or `N_A` for a SAML assertion.
+                                        token_format:
+                                          type: string
+                                          description: The format of the issued token, `oauth` (opaque access token) or `saml2` (SAML assertion).
+                                        expires_at:
+                                          type: integer
+                                          description: When the token stops working, in epoch seconds.
         '400':
           description: |
             The 400 (Bad Request) status code indicates that the server cannot or
@@ -1626,7 +1745,7 @@ paths:
             application/json:
               schema:
                 type: object
-                properties: &ref_50
+                properties: &ref_55
                   status:
                     type: string
                     example: disabled
@@ -1867,12 +1986,30 @@ components:
       allOf: *ref_48
     IdentityProofingEvents:
       properties: *ref_49
+    DelegatedAccessConsented:
+      description: |
+        The user approved an application for a service provider to act at on their behalf, or a remembered approval was reused for a sign-in without the consent screen. Delivered to the application's agency, not to the service provider. Like every delegated event it carries `delegation_id` and `actor_issuer`; `user_uuid` is the user's identifier at this agency; `subject.session_id` is null, because this is not an event of a session the agency started. `unique_session_id` is the same hash the sign-in's events carry, so the two can be joined.
+      allOf: *ref_50
+    DelegatedAccessRevoked:
+      description: |
+        Access under an approval ended, so delegated tokens for the application stop working at their next verification or renewal. Delivered to the application's agency. Carries no IP address or user agent: the revocation came from the user's account page, from Login.gov, or from the service provider's server.
+      allOf: *ref_51
+    DelegatedAccessTokenIssued:
+      description: |
+        A service provider exchanged the user's token for a delegated token addressed to this agency's API (RFC 8693 token exchange). Delivered to the API's agency. Carries no IP address or user agent: the request came from the service provider's server, not from the user. `unique_session_id` is the same hash the sign-in's events carry, so the token can be joined to the sign-in behind it.
+      allOf: *ref_52
+    DelegatedAccessTokenRefreshed:
+      description: |
+        A service provider renewed a delegated token for this agency's API with its refresh token. Delivered to the API's agency. Carries no IP address or user agent: the request came from the service provider's server, not from the user. `unique_session_id` is the same hash the sign-in's events carry, so the renewed token can be joined to the sign-in behind it.
+      allOf: *ref_53
+    DelegationEvents:
+      properties: *ref_54
     AllEvents:
       type: object
       allOf: *ref_2
     StreamStatus:
       type: object
-      properties: *ref_50
+      properties: *ref_55
   securitySchemes:
     BearerAuth:
       type: http

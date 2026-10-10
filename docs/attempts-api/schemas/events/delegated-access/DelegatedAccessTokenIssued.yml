@@ -1,0 +1,32 @@
+description: |
+  A service provider exchanged the user's token for a delegated token addressed to this agency's API (RFC 8693 token exchange). Delivered to the API's agency. Carries no IP address or user agent: the request came from the service provider's server, not from the user. `unique_session_id` is the same hash the sign-in's events carry, so the token can be joined to the sign-in behind it.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      application:
+        type: string
+        description: The issuer of the application that owns the API.
+      resource:
+        type: string
+        description: The identifier of the API (the token's audience).
+      scope:
+        type: string
+        description: The delegation scope the token carries, as it appears on the wire.
+      ial:
+        type: integer
+        nullable: true
+        description: The identity assurance level of the sign-in the token is derived from.
+      aal:
+        type: integer
+        nullable: true
+        description: The authentication assurance level of the sign-in the token is derived from.
+      token_type:
+        type: string
+        description: How the token must be presented; `Bearer`, `DPoP` (bound to the service provider's key) or `N_A` for a SAML assertion.
+      token_format:
+        type: string
+        description: The format of the issued token, `oauth` (opaque access token) or `saml2` (SAML assertion).
+      expires_at:
+        type: integer
+        description: When the token stops working, in epoch seconds.
