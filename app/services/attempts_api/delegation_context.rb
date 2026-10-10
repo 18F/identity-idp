@@ -7,16 +7,18 @@ module AttemptsApi
   # While a service provider's authorization request carrying `token_exchange:*` scopes is in
   # flight, the agencies that could receive the session's fraud signals do not yet have the
   # person's approval, so nothing can be delivered to them. Instead every Attempts event of the
-  # session is copied into a buffer here, each copy KMS-encrypted like the identity-proofing
-  # history in `Cacher`, and released to the agencies of the applications the person approves
-  # (`DelegatedRelease`). After approval the agencies are kept so later events of the same browser
-  # session (login completed, re-authentication, MFA changes, logout, timeout, rate limits) reach
-  # them as they happen.
+  # session is copied into a buffer here and released to the agencies of the applications the
+  # person approves (`DelegatedRelease`). After approval the agencies are kept so later events of
+  # the same browser session (login completed, re-authentication, MFA changes, logout, timeout,
+  # rate limits) reach them as they happen.
   #
   # Everything lives in the Rails session and is gone when the session ends. The context sits at
   # the session root rather than in the Devise user session because sign-in events (failed
-  # passwords, rate limits) happen before a user session exists, and the whole-session encryptor
-  # refuses plaintext carrying keys such as `email`, which those events carry.
+  # passwords, rate limits) happen before a user session exists. The buffer holds the events as
+  # plain data under `BUFFER_KEY`, which `SessionEncryptor::SENSITIVE_PATHS` lists: the session
+  # encryptor moves it into the KMS-encrypted part of the session once per save, the same
+  # protection the identity-proofing data gets, and the events (which carry keys such as `email`)
+  # never appear in the session's outer plaintext.
   class DelegationContext
     SESSION_KEY = 'delegation_context'
     BUFFER_KEY = 'delegated_attempts_buffer'
@@ -112,37 +114,20 @@ module AttemptsApi
     end
 
     # Appends one event to the buffer. The service provider's pairwise identifier and Google
-    # Analytics cookies are never re-mapped to an agency, so they are dropped before encryption.
+    # Analytics cookies are never re-mapped to an agency, so they are dropped here.
     def push_buffered_event(event)
       return if session.nil?
       return if buffered_event_count >= MAX_BUFFERED_EVENTS
 
-      serialized = {
-        'jti' => event.jti,
-        'iat' => event.iat,
-        'event_type' => event.event_type.to_s,
-        'session_id' => event.session_id,
-        'occurred_at' => Time.zone.at(event.occurred_at).iso8601(6),
-        'event_metadata' => (event.event_metadata || {}).except(
-          :user_uuid, :google_analytics_cookies, 'user_uuid', 'google_analytics_cookies'
-        ),
-      }.to_json
-      session[BUFFER_KEY] = Array(session[BUFFER_KEY]) + [encryptor.kms_encrypt(serialized)]
+      data = event.as_json
+      data['event_metadata'] =
+        data['event_metadata'].except('user_uuid', 'google_analytics_cookies')
+      session[BUFFER_KEY] = Array(session[BUFFER_KEY]) + [data]
     end
 
-    # @return [Array<AttemptEvent>] the buffered events, decrypted, oldest first
+    # @return [Array<AttemptEvent>] the buffered events, oldest first
     def buffered_events
-      Array(session&.dig(BUFFER_KEY)).map do |ciphertext|
-        data = JSON.parse(encryptor.kms_decrypt(ciphertext))
-        AttemptEvent.new(
-          jti: data['jti'],
-          iat: data['iat'],
-          event_type: data['event_type'],
-          session_id: data['session_id'],
-          occurred_at: Time.zone.parse(data['occurred_at']),
-          event_metadata: data['event_metadata'].symbolize_keys,
-        )
-      end
+      Array(session&.dig(BUFFER_KEY)).map { |data| AttemptEvent.from_json(data) }
     end
 
     def buffered_event_count
@@ -170,10 +155,6 @@ module AttemptsApi
       d = (data || {}).dup
       yield d
       session[SESSION_KEY] = d
-    end
-
-    def encryptor
-      @encryptor ||= SessionEncryptor.new
     end
   end
 end

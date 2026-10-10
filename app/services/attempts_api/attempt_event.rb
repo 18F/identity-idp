@@ -20,6 +20,37 @@ module AttemptsApi
       @event_metadata = event_metadata
     end
 
+    # The event as plain JSON data, from which .from_json rebuilds it: for holding an event outside
+    # the process, for example buffered in the session, before it is encrypted to a recipient.
+    # Values are already in their JSON form (symbols as strings), so a reader sees the same data
+    # whether or not the hash has been through a serializer in between. Nothing is dropped, so the
+    # rebuilt event encrypts identically.
+    # @return [Hash{String => Object}]
+    def as_json(*)
+      {
+        'jti' => jti,
+        'iat' => iat,
+        'event_type' => event_type.to_s,
+        'session_id' => session_id,
+        'occurred_at' => occurred_at.to_f,
+        'event_metadata' => JSON.parse((event_metadata || {}).to_json),
+      }
+    end
+
+    # @param data [Hash] what #as_json produced, after a JSON round trip
+    # @return [AttemptEvent]
+    def self.from_json(data)
+      data = data.stringify_keys
+      new(
+        jti: data['jti'],
+        iat: data['iat'],
+        event_type: data['event_type'],
+        session_id: data['session_id'],
+        occurred_at: Time.zone.at(data['occurred_at']),
+        event_metadata: (data['event_metadata'] || {}).deep_symbolize_keys,
+      )
+    end
+
     def to_jwe(public_key:, issuer:)
       jwk = JWT::JWK.new(public_key)
 

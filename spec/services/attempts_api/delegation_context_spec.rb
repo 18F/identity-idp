@@ -54,16 +54,15 @@ RSpec.describe AttemptsApi::DelegationContext do
     expect(context.active?).to eq(false)
   end
 
-  it 'stores buffered events KMS-encrypted without the SP identifier or GA cookies' do
+  it 'buffers events as plain data without the SP identifier or GA cookies' do
     context.start(request_id: 'req-1', sp_issuer: 'sp', candidate_issuers: ['agency'])
     context.push_buffered_event(event)
 
     raw = session[described_class::BUFFER_KEY]
     expect(raw.length).to eq(1)
-    expect(raw.first).not_to include('user@example.com')
-    expect(raw.first).not_to include('sp-agency-uuid')
-    expect(JSON.parse(SessionEncryptor.new.kms_decrypt(raw.first))['event_metadata'])
-      .to include('email' => 'user@example.com')
+    expect(raw.first['event_metadata']).to include('email' => 'user@example.com')
+    expect(raw.first['event_metadata']).not_to have_key('user_uuid')
+    expect(raw.first['event_metadata']).not_to have_key('google_analytics_cookies')
 
     restored = context.buffered_events.first
     expect(restored.jti).to eq(event.jti)
@@ -73,6 +72,21 @@ RSpec.describe AttemptsApi::DelegationContext do
     expect(restored.event_metadata).to include(email: 'user@example.com', success: true)
     expect(restored.event_metadata).not_to have_key(:user_uuid)
     expect(restored.event_metadata).not_to have_key(:google_analytics_cookies)
+  end
+
+  it 'is carried in the KMS-encrypted part of the session and survives a save' do
+    expect(SessionEncryptor::SENSITIVE_PATHS).to include([described_class::BUFFER_KEY])
+
+    context.start(request_id: 'req-1', sp_issuer: 'sp', candidate_issuers: ['agency'])
+    context.push_buffered_event(event)
+    encryptor = SessionEncryptor.new
+
+    dumped = encryptor.dump(session.deep_dup)
+    restored = described_class.from_session(encryptor.load(dumped)).buffered_events.first
+
+    expect(restored.jti).to eq(event.jti)
+    expect(restored.occurred_at.to_f).to be_within(0.001).of(event.occurred_at.to_f)
+    expect(restored.event_metadata).to include(email: 'user@example.com', success: true)
   end
 
   it 'keeps the earliest events once the buffer is full' do
