@@ -1897,9 +1897,8 @@ openid_connect.token.errors.invalid_signature: No se pudo validar la afirmación
 openid_connect.token.errors.invalid_subject_token: subject_token no es un token de acceso emitido a este cliente para una conexión vigente.
 openid_connect.token.errors.invalid_subject_token_type: 'subject_token_type debe ser urn:ietf:params:oauth:token-type:access_token.'
 openid_connect.token.errors.multiple_resources: resource debe nombrar exactamente una API registrada; un token tiene una sola audiencia.
-openid_connect.token.errors.requested_token_type_required: requested_token_type es obligatorio.
 openid_connect.token.errors.resource_missing: resource es obligatorio y debe nombrar una API registrada.
-openid_connect.token.errors.saml_not_available: 'No hay una aserción SAML disponible para esta API; solicite urn:ietf:params:oauth:token-type:access_token.'
+openid_connect.token.errors.saml_not_available: 'Esta API está registrada para aserciones SAML, que no están disponibles.'
 openid_connect.token.errors.subject_token_missing: subject_token es obligatorio.
 openid_connect.token.errors.subject_token_session_ended: La sesión que emitió subject_token ha terminado; el usuario debe iniciar sesión de nuevo antes de que pueda comenzar una nueva delegación.
 openid_connect.token.errors.unknown_client: La notificación iss de client_assertion no coincide con ningún cliente registrado.

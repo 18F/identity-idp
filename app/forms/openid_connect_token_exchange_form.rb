@@ -3,8 +3,9 @@
 # Handles `grant_type=urn:ietf:params:oauth:grant-type:token-exchange` at the token endpoint
 # (RFC 8693). A service provider presents the access token Login.gov issued to it for a signed-in
 # person (the `subject_token`) and names one agency API (`resource`, RFC 8707); if the person
-# approved the application that owns that API for this service provider, Login.gov issues an
-# opaque token the API verifies by introspection.
+# approved the application that owns that API for this service provider, Login.gov issues a token
+# for that API in the format the API is registered for. An opaque token the API verifies by
+# introspection is issued here; `requested_token_type` is optional and never changes the format.
 #
 # How the caller proves who it is depends on its client type, fixed at onboarding:
 #
@@ -27,7 +28,7 @@
 #                           person is not identity-verified
 # * `invalid_dpop_proof`  - a public client's proof is missing or fails verification
 # * `invalid_target`      - the resource is unknown or inactive, its application does not accept
-#                           this client, or the requested format is not available for it
+#                           this client, or its registered format is not available
 # * `consent_required`    - the person has not approved the application that owns the resource,
 #                           or the approval lapsed; the description names the scope to request
 #
@@ -65,7 +66,7 @@ class OpenidConnectTokenExchangeForm
   validate :validate_session_live
   validate :validate_identity_assurance
   validate :validate_resource
-  validate :validate_requested_token_type
+  validate :validate_token_format
   validate :validate_grant
 
   def initialize(params)
@@ -81,11 +82,12 @@ class OpenidConnectTokenExchangeForm
   end
 
   # RFC 8693 §2.2.1 response or the RFC error object. No `id_token`, no `refresh_token`.
+  # `issued_token_type` names the format actually issued, which is the API's registered one.
   def response
     if @success
       {
         access_token: @access_token,
-        issued_token_type: ACCESS_TOKEN_TYPE,
+        issued_token_type: issued_token_type,
         token_type: @issued.token_type,
         expires_in: @issued.lifetime_seconds,
         scope: @issued.scope,
@@ -206,8 +208,8 @@ class OpenidConnectTokenExchangeForm
   end
 
   # The parameters RFC 8693 §2.1 defines, with the restrictions Login.gov applies: the subject
-  # is a Login.gov access token, the requested type is one of the two formats Login.gov issues
-  # and must be stated, and exactly one resource is named so one token has one audience.
+  # is a Login.gov access token, `requested_token_type`, when sent, is one of the two formats
+  # Login.gov issues, and exactly one resource is named so one token has one audience.
   def validate_request_shape
     return if errors.any?
 
@@ -225,14 +227,7 @@ class OpenidConnectTokenExchangeForm
         type: :subject_token_missing
       )
     end
-    if requested_token_type.blank?
-      return fail_with(
-        :requested_token_type, 'invalid_request',
-        t('openid_connect.token.errors.requested_token_type_required'),
-        type: :requested_token_type_required
-      )
-    end
-    unless REQUESTED_TOKEN_TYPES.include?(requested_token_type)
+    if requested_token_type.present? && !REQUESTED_TOKEN_TYPES.include?(requested_token_type)
       return fail_with(
         :requested_token_type, 'invalid_request',
         t('openid_connect.token.errors.invalid_requested_token_type'),
@@ -344,20 +339,19 @@ class OpenidConnectTokenExchangeForm
     )
   end
 
-  # Which format to issue for the named API. An access token is issued here; a SAML assertion is
-  # not available, so a request for one is refused as a target problem.
-  def validate_requested_token_type
-    return if errors.any?
+  # The API's registration (`token_format`) decides the format of the token issued for it, so
+  # the service provider cannot obtain a format the agency did not ask for. An access token is
+  # issued here; a SAML assertion is not available, so an API registered for one is refused as a
+  # target problem. A `requested_token_type` naming the other format does not change the outcome
+  # and is noted for analytics (#requested_token_type_mismatch?) so the integration can be fixed.
+  def validate_token_format
+    return if errors.any? || !resource_server.saml?
 
-    case requested_token_type
-    when ACCESS_TOKEN_TYPE then nil
-    when SAML2_TOKEN_TYPE
-      fail_with(
-        :requested_token_type, 'invalid_target',
-        t('openid_connect.token.errors.saml_not_available'),
-        type: :saml_not_available
-      )
-    end
+    fail_with(
+      :resource, 'invalid_target',
+      t('openid_connect.token.errors.saml_not_available'),
+      type: :saml_not_available
+    )
   end
 
   # The person's live, current approval of the application that owns the resource, for this
@@ -391,6 +385,18 @@ class OpenidConnectTokenExchangeForm
 
   def application
     resource_server&.service_provider
+  end
+
+  # The RFC 8693 token type URN of the format issued.
+  def issued_token_type
+    @issued.saml? ? SAML2_TOKEN_TYPE : ACCESS_TOKEN_TYPE
+  end
+
+  # Whether the service provider asked for a format other than the API's registered one.
+  def requested_token_type_mismatch?
+    return false if requested_token_type.blank? || resource_server.nil?
+
+    (requested_token_type == SAML2_TOKEN_TYPE) != resource_server.saml?
   end
 
   def identity_verified?
@@ -441,7 +447,7 @@ class OpenidConnectTokenExchangeForm
         aal: forwarded_aal,
         refresh_family_id: SecureRandom.uuid,
         token_type: public_client? ? 'DPoP' : 'Bearer',
-        token_format: 'oauth',
+        token_format: resource_server.token_format,
         dpop_jkt:,
         sp_rails_session_id: identity.rails_session_id,
         issued_at: now,
@@ -466,6 +472,7 @@ class OpenidConnectTokenExchangeForm
       client_type:,
       token_type: @issued&.token_type,
       requested_token_type:,
+      requested_token_type_mismatch: (true if requested_token_type_mismatch?),
       error_code:,
       integration_errors:,
     }
