@@ -34,6 +34,7 @@ class OpenidConnectRefreshTokenForm
 
   GRANT_TYPE = 'refresh_token'
   ACCESS_TOKEN_TYPE = OpenidConnectTokenExchangeForm::ACCESS_TOKEN_TYPE
+  SAML2_TOKEN_TYPE = OpenidConnectTokenExchangeForm::SAML2_TOKEN_TYPE
 
   ATTRS = %i[
     client_assertion
@@ -65,13 +66,14 @@ class OpenidConnectRefreshTokenForm
     FormResponse.new(success: @success, errors:, extra: extra_analytics_attributes)
   end
 
-  # The same shape as the exchange response, so a service provider handles both alike. Both
-  # lifetimes are counted from the instant the new tokens were created.
+  # The same shape as the exchange response, so a service provider handles both alike.
+  # `issued_token_type` names the family's format, fixed at the exchange by the API's
+  # registration. Both lifetimes are counted from the instant the new tokens were created.
   def response
     if @success
       {
         access_token: @access_token,
-        issued_token_type: ACCESS_TOKEN_TYPE,
+        issued_token_type: @issued.saml? ? SAML2_TOKEN_TYPE : ACCESS_TOKEN_TYPE,
         token_type: @issued.token_type,
         expires_in: @issued.lifetime_seconds,
         scope: @issued.scope,
@@ -248,8 +250,9 @@ class OpenidConnectRefreshTokenForm
   def report_family_revoked(reason:); end
 
   # The next access token of the family and the next refresh token, copied from the family: same
-  # API, scope, approval, delegation id, assurance levels and key binding. The new refresh token
-  # carries the family's end unchanged.
+  # API, scope, approval, delegation id, assurance levels, key binding and format. The format was
+  # fixed at the exchange by the API's registration and no refresh changes it. The new refresh
+  # token carries the family's end unchanged.
   def mint!(now)
     previous = presented.token_exchange_token
     lifetime = TokenExchangeToken.lifetime_seconds_for(
@@ -269,7 +272,7 @@ class OpenidConnectRefreshTokenForm
       aal: previous.aal,
       refresh_family_id: presented.family_id,
       token_type: presented.key_bound? ? 'DPoP' : 'Bearer',
-      token_format: 'oauth',
+      token_format: previous.token_format,
       dpop_jkt: presented.dpop_jkt,
       sp_rails_session_id: previous.sp_rails_session_id,
       issued_at: now,
