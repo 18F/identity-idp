@@ -122,6 +122,11 @@ RSpec.describe TokenExchangeRefreshToken do
       other_family = create(:token_exchange_refresh_token)
 
       freeze_time do
+        expect(DelegatedAccessEvents).to receive(:access_revoked).with(
+          grant: issuance.grant, reason: 'refresh_token_reuse',
+          resource_server: issuance.resource_server
+        ).and_call_original
+
         described_class.revoke_family!(
           family_id, grant: issuance.grant, reason: 'refresh_token_reuse'
         )

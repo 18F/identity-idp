@@ -80,17 +80,22 @@ class TokenExchangeRefreshToken < ApplicationRecord
   # are removed, so a resource server verifying one is told it is not active from the next call,
   # and the family's refresh tokens and issuance records are marked revoked with the reason so
   # the history shows why the access ended. Rows already revoked keep their earlier reason. A
-  # family belongs to one approval, whose rows are the ones marked.
+  # family belongs to one approval, whose rows are the ones marked, and is addressed to one API,
+  # whose agency is told that this family's access ended and why.
   # @param family_id [String]
   # @param grant [TokenExchangeGrant] the approval the family was opened under
   def self.revoke_family!(family_id, grant:, reason:, now: Time.zone.now)
+    family = grant.token_exchange_refresh_tokens.for_family(family_id)
+    resource_server = family.first&.resource_server
+
     DelegatedTokenStore.revoke_family(family_id)
-    TokenExchangeToken.revoke_rows!(
-      grant.token_exchange_refresh_tokens.for_family(family_id), reason:, now:
-    )
+    TokenExchangeToken.revoke_rows!(family, reason:, now:)
     TokenExchangeToken.revoke_rows!(
       grant.token_exchange_tokens.where(refresh_family_id: family_id), reason:, now:
     )
+    return if resource_server.nil?
+
+    DelegatedAccessEvents.access_revoked(grant:, reason:, resource_server:)
   end
 
   # Whether the family is bound to a key, in which case every refresh must carry a DPoP proof
