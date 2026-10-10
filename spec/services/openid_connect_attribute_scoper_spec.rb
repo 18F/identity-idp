@@ -21,6 +21,17 @@ RSpec.describe OpenidConnectAttributeScoper do
         expect(scopes).to eq(%w[openid email profile])
       end
     end
+
+    context 'with a narrower allowed list' do
+      let(:scope) { 'openid email profile token_exchange:housing_records' }
+      let(:scoper) do
+        OpenidConnectAttributeScoper.new(scope, allowed: OpenidConnectAttributeScoper::VALID_IAL1_SCOPES)
+      end
+
+      it 'drops attribute scopes outside the list and keeps delegation scopes' do
+        expect(scopes).to eq(%w[openid email token_exchange:housing_records])
+      end
+    end
   end
 
   describe 'delegation scopes' do
