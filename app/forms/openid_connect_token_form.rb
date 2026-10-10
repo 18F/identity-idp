@@ -102,16 +102,10 @@ class OpenidConnectTokenForm
     grants = TokenExchangeGrant.live_by_application(
       user: identity.user, service_provider_issuer: identity.service_provider, applications:,
     )
+    # A single-authorization approval counts only when it was given in the sign-in that produced
+    # this code, which the identity's browser session identifies.
     approved = applications.select do |application|
-      grant = grants[application.id]
-      next false if grant.nil?
-
-      # A single-authorization approval counts only when it was given in the sign-in that
-      # produced this code, which the identity's browser session identifies.
-      grant.valid_now?(
-        current_authorization: grant.rails_session_id.present? &&
-                               grant.rails_session_id == identity.rails_session_id,
-      )
+      grants[application.id]&.valid_now?(identity:)
     end
 
     granted = scoper.scopes.reject do |value|

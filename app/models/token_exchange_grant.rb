@@ -185,8 +185,9 @@ class TokenExchangeGrant < ApplicationRecord
   # 4. Either the approval is remembered and the period has not passed, or it was given in the
   #    authorization that is asking now. For a single-authorization approval the caller passes
   #    +current_authorization+ when it knows the answer from context; otherwise the browser
-  #    session recorded on the row must match the service provider identity's session.
-  def valid_now?(current_authorization: nil)
+  #    session recorded on the row must match the service provider identity's session, read
+  #    from +identity+ when the caller has it loaded and looked up otherwise.
+  def valid_now?(current_authorization: nil, identity: nil)
     return false if revoked?
     return false unless application&.delegation_application?
     return false unless service_provider_record&.delegation_service_provider?
@@ -194,16 +195,19 @@ class TokenExchangeGrant < ApplicationRecord
     return true if remembered? && remember_until.future?
     return current_authorization unless current_authorization.nil?
 
-    current_authorization?
+    current_authorization?(identity:)
   end
 
   # A single-authorization approval is "the current authorization" exactly while the browser
   # session it was given in is still the session the service provider identity is bound to; the
   # next sign-in to the service provider replaces that session and the approval lapses.
-  def current_authorization?
+  #
+  # @param identity [ServiceProviderIdentity, nil] the user's identity at this approval's service
+  #   provider, when the caller already holds it; looked up otherwise
+  def current_authorization?(identity: nil)
     return false if rails_session_id.blank?
 
-    identity = user.identities.find_by(service_provider: service_provider_issuer)
+    identity ||= user.identities.find_by(service_provider: service_provider_issuer)
     identity.present? && identity.rails_session_id == rails_session_id
   end
 

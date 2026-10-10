@@ -169,6 +169,15 @@ RSpec.describe TokenExchangeGrant do
         expect(grant.valid_now?(current_authorization: true)).to eq(true)
         expect(grant.valid_now?(current_authorization: false)).to eq(false)
       end
+
+      it 'reads the browser session from an identity the caller already holds' do
+        grant = approve(remember: false, rails_session_id: 'session-1')
+        loaded = ServiceProviderIdentity.find(identity.id)
+        identity.update!(rails_session_id: 'session-2')
+
+        expect(grant.valid_now?(identity: loaded)).to eq(true)
+        expect(grant.valid_now?).to eq(false)
+      end
     end
   end
 
