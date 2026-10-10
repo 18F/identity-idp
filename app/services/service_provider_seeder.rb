@@ -11,8 +11,9 @@
 #
 # Dependency: in production this YAML comes from the identity-idp-config repository, and in lower
 # environments the same records are synced from the partner Dashboard (identity-dashboard) by
-# ServiceProviderUpdater. The Dashboard does not have the delegated-access fields yet; until it
-# does, `rake delegated_access:seed` loads them in non-production environments.
+# ServiceProviderUpdater. The Dashboard does not have the delegated-access fields; the service
+# providers that carry them are seeded from config/delegated_access.yml by DelegatedAccessSeeder
+# through #write_service_provider.
 class ServiceProviderSeeder
   class ExtraServiceProviderError < StandardError; end
 
@@ -53,8 +54,9 @@ class ServiceProviderSeeder
     write_service_provider(issuer: issuer, config: config)
   end
 
-  # Upserts one service provider entry (one key of service_providers.yml and its nested API URLs).
-  # Public so DelegatedAccessSeeder can load its fixtures through the same code path.
+  # Upserts one service provider entry (one key of service_providers.yml and its nested API URLs)
+  # when its deploy-environment restriction allows it. Public so DelegatedAccessSeeder writes the
+  # entries of config/delegated_access.yml through the same code path.
   def write_service_provider(issuer:, config:)
     return unless write_service_provider?(config)
 
@@ -109,19 +111,12 @@ class ServiceProviderSeeder
   end
 
   def write_service_provider?(config)
-    return true if rails_env != 'production'
+    deploy_env_restriction.allows?(config)
+  end
 
-    restrict_env = config['restrict_to_deploy_env']
-    in_prod = deploy_env == 'prod'
-    in_sandbox = !%w[prod staging].include?(deploy_env)
-    in_staging = deploy_env == 'staging'
-
-    return true if restrict_env == 'prod' && in_prod
-    return true if restrict_env == 'staging' && in_staging
-    return true if restrict_env == 'sandbox' && in_sandbox
-    return true if restrict_env.blank? && !in_prod
-
-    false
+  def deploy_env_restriction
+    @deploy_env_restriction ||=
+      DeployEnvRestriction.new(rails_env: rails_env, deploy_env: deploy_env)
   end
 
   def check_for_missing_sps

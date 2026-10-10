@@ -1,11 +1,20 @@
 require 'rails_helper'
 
 RSpec.describe DelegatedAccessSeeder do
-  subject(:seeder) { described_class.new(deploy_env: deploy_env) }
+  subject(:seeder) do
+    described_class.new(rails_env: rails_env, deploy_env: deploy_env, yaml_path: yaml_path)
+  end
+  let(:rails_env) { 'development' }
   let(:deploy_env) { 'dev' }
+  let(:yaml_path) { fixture_path }
+  let(:fixture_path) { 'config/delegated_access.localdev.yml' }
   let(:sp_issuer) { 'urn:gov:gsa:openidconnect:sp:sinatra_sts' }
   let(:oidc_issuer) { 'urn:gov:gsa:openidconnect:sp:records_agency' }
   let(:saml_issuer) { 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:benefits_agency' }
+
+  def fixture_data
+    YAML.safe_load(ERB.new(Rails.root.join(fixture_path).read).result)
+  end
 
   describe '#run' do
     it 'loads the fictitious agencies with their consent content' do
@@ -21,7 +30,7 @@ RSpec.describe DelegatedAccessSeeder do
     it 'loads the service provider approved for delegation with its content' do
       seeder.run
 
-      sp = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:sinatra_sts')
+      sp = ServiceProvider.find_by(issuer: sp_issuer)
       expect(sp.token_exchange_enabled_sp).to eq(true)
       expect(sp.active).to eq(true)
       expect(sp.delegation_operator_legal_name).to eq('Office of Benefits Coordination')
@@ -40,7 +49,7 @@ RSpec.describe DelegatedAccessSeeder do
     it 'loads the applications with their scope values, content and API URLs' do
       seeder.run
 
-      housing = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:records_agency')
+      housing = ServiceProvider.find_by(issuer: oidc_issuer)
       expect(housing.delegation_application?).to eq(true)
       expect(housing.delegation_scope).to eq('token_exchange:housing_records')
       expect(housing.delegation_read_write?).to eq(true)
@@ -148,25 +157,142 @@ RSpec.describe DelegatedAccessSeeder do
       end
 
       it 'carries no per-API key-binding setting: binding follows the client type' do
-        fixture = Rails.root.join(DelegatedAccessSeeder::DEFAULT_YAML_PATH).read
-        expect(fixture).not_to include('dpop_required')
+        expect(Rails.root.join(fixture_path).read).not_to include('dpop_required')
       end
 
       it 'gives the service provider no Attempts API credentials' do
-        fixture = YAML.safe_load(
-          ERB.new(Rails.root.join(DelegatedAccessSeeder::DEFAULT_YAML_PATH).read).result,
-        )
-        expect(fixture.dig('service_providers', sp_issuer).keys.grep(/attempts/)).to be_empty
+        sp_config = fixture_data.dig('development', 'service_providers', sp_issuer)
+        expect(sp_config.keys.grep(/attempts/)).to be_empty
+      end
+
+      it 'offers a sandbox the same entries, each restricted to sandbox deploy environments' do
+        development = fixture_data.fetch('development')
+        production = fixture_data.fetch('production')
+        strip = ->(entries) { entries.transform_values { |e| e.except('restrict_to_deploy_env') } }
+
+        %w[agencies service_providers].each do |section|
+          expect(production.fetch(section).values.map { |e| e['restrict_to_deploy_env'] })
+            .to all(eq('sandbox'))
+          expect(strip.call(production.fetch(section))).to eq(development.fetch(section))
+        end
       end
     end
 
-    %w[prod staging].each do |refused|
-      context "in #{refused}" do
-        let(:deploy_env) { refused }
+    context 'when the file is absent' do
+      let(:yaml_path) { 'config/no_such_delegated_access.yml' }
 
-        it 'refuses to run and loads nothing' do
-          expect { seeder.run }.to raise_error(DelegatedAccessSeeder::RefusedEnvironment)
-          expect(ServiceProvider.find_by(issuer: sp_issuer)).to be_nil
+      it 'seeds nothing and raises nothing' do
+        expect { seeder.run }.not_to raise_error
+        expect(Agency.where(id: [100, 101, 102])).to be_empty
+        expect(ServiceProvider.find_by(issuer: sp_issuer)).to be_nil
+      end
+    end
+
+    context 'when the file is a symlink to nothing' do
+      let(:yaml_path) { File.join(Dir.mktmpdir, 'delegated_access.yml') }
+
+      before { File.symlink('delegated_access.localdev.yml', yaml_path) }
+      after { FileUtils.rm_rf(File.dirname(yaml_path)) }
+
+      it 'seeds nothing and raises nothing' do
+        expect(File.symlink?(yaml_path)).to eq(true)
+        expect { seeder.run }.not_to raise_error
+        expect(ServiceProvider.find_by(issuer: sp_issuer)).to be_nil
+      end
+    end
+
+    context 'when the file has no section for the Rails environment' do
+      let(:rails_env) { 'test' }
+
+      it 'seeds nothing' do
+        expect { seeder.run }.not_to raise_error
+        expect(ServiceProvider.find_by(issuer: sp_issuer)).to be_nil
+      end
+    end
+
+    context 'in RAILS_ENV=production' do
+      let(:rails_env) { 'production' }
+
+      context 'in a sandbox deploy environment' do
+        let(:deploy_env) { 'dev' }
+
+        it 'writes the production entries, which are restricted to sandbox' do
+          seeder.run
+
+          expect(Agency.where(id: [100, 101, 102]).count).to eq(3)
+          expect(ServiceProvider.find_by(issuer: sp_issuer).token_exchange_enabled_sp).to eq(true)
+          expect(ServiceProvider.where(delegation_application: true).pluck(:issuer))
+            .to contain_exactly(oidc_issuer, saml_issuer)
+        end
+      end
+
+      %w[prod staging].each do |restricted|
+        context "in #{restricted}" do
+          let(:deploy_env) { restricted }
+
+          it 'writes none of the fictitious entries' do
+            seeder.run
+
+            expect(Agency.where(id: [100, 101, 102])).to be_empty
+            expect(ServiceProvider.where(issuer: [sp_issuer, oidc_issuer, saml_issuer])).to be_empty
+            expect(TokenExchangeResourceServer.count).to eq(0)
+          end
+        end
+      end
+    end
+
+    describe 'restrict_to_deploy_env on an agency' do
+      let(:rails_env) { 'production' }
+      let(:yaml_path) { File.join(Dir.mktmpdir, 'delegated_access.yml') }
+
+      before do
+        File.write(yaml_path, <<~YAML)
+          production:
+            agencies:
+              900:
+                name: 'Prod Only Agency'
+                abbreviation: 'POA'
+                restrict_to_deploy_env: 'prod'
+              901:
+                name: 'Staging Only Agency'
+                abbreviation: 'SOA'
+                restrict_to_deploy_env: 'staging'
+              902:
+                name: 'Everywhere But Prod Agency'
+                abbreviation: 'EBP'
+        YAML
+      end
+      after { FileUtils.rm_rf(File.dirname(yaml_path)) }
+
+      context 'in prod' do
+        let(:deploy_env) { 'prod' }
+
+        it 'writes only the entry restricted to prod, without the restriction as an attribute' do
+          seeder.run
+
+          expect(Agency.where(id: [900, 901, 902]).pluck(:id)).to eq([900])
+          expect(Agency.find(900).attributes).not_to have_key('restrict_to_deploy_env')
+          expect(Agency.find(900).name).to eq('Prod Only Agency')
+        end
+      end
+
+      context 'in staging' do
+        let(:deploy_env) { 'staging' }
+
+        it 'writes the staging entry and the unrestricted one' do
+          seeder.run
+
+          expect(Agency.where(id: [900, 901, 902]).pluck(:id)).to contain_exactly(901, 902)
+        end
+      end
+
+      context 'in a sandbox' do
+        let(:deploy_env) { 'int' }
+
+        it 'writes only the unrestricted entry' do
+          seeder.run
+
+          expect(Agency.where(id: [900, 901, 902]).pluck(:id)).to eq([902])
         end
       end
     end

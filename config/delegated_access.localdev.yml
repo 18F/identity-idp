@@ -1,9 +1,20 @@
-# Delegated-access fixtures for local development, review apps and personal sandboxes.
-#
-# Loaded by `rake delegated_access:seed`, which refuses to run in prod and staging. Every agency,
+# Delegated-access content: the agencies with their consent content, the service providers
+# approved to act for people, and the agency applications with their API URLs. Every agency,
 # service and person here is fictitious.
 #
-# This file is the one contract between the identity-idp seed task and the three reference
+# This is the development fixture for config/delegated_access.yml. bin/setup links it into
+# place; in deployed environments that file comes from the identity-idp-config repository
+# instead. db:seed and `rake delegated_access:seed` load it through DelegatedAccessSeeder.
+#
+# The file is keyed by Rails environment at the top level, like config/service_providers.yml.
+# Under each environment, `agencies` is keyed by agency id with the shape of
+# config/agencies.yml and `service_providers` is keyed by issuer with the shape of
+# config/service_providers.yml. An entry may carry `restrict_to_deploy_env` with the same
+# meaning as in service_providers.yml: in RAILS_ENV=production, 'prod' is written in prod only,
+# 'staging' in staging only, 'sandbox' in every other deployed environment, and a blank value
+# everywhere except prod; in development and test every entry is written.
+#
+# The `development` section is the contract between identity-idp and the three reference
 # applications with their end-to-end harness (identity-sts-sinatra, spec/e2e): the harness reads
 # issuers, API identifiers, scope values, redirect URIs and hostnames from here and from nowhere
 # else, so a change to any of them is a change to the reference applications too.
@@ -20,8 +31,10 @@
 #                          (scope value retirement_benefits), on :4567; relocated with
 #                          DELEGATION_SAML_AGENCY_URL.
 #
-# A sandbox seeds this same file with those three variables set to its hostnames. The API
-# identifiers are RFC 8707 resource indicators and never change with the hostname.
+# The `production` section repeats the same entries, each restricted to sandbox, so a personal
+# sandbox (RAILS_ENV=production, deploy environment dev or int) seeds them with the three
+# variables above set to the hostnames of its hosted reference applications. The API identifiers
+# are RFC 8707 resource indicators and never change with the hostname.
 #
 # Whether tokens are key-bound follows each service provider's client type (a public client's
 # always, a confidential client's never); no API sets or waives it, so there is no per-API key.
@@ -30,138 +43,266 @@
 # otherwise, so a developer can generate a key pair locally without committing it. A sandbox can
 # instead paste an inline PEM string.
 
-agencies:
-  100:
-    name: 'Office of Benefits Coordination'
-    abbreviation: 'OBC'
-    delegation_description:
-      en: 'coordinates benefits programs and operates MyBenefits Assistant.'
-      es: 'coordina programas de beneficios y opera MyBenefits Assistant.'
-    delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/about'
-  101:
-    name: 'Department of Housing Support'
-    abbreviation: 'DHSP'
-    delegation_description:
-      en: 'helps people find, keep and pay for housing.'
-      es: 'ayuda a las personas a encontrar, conservar y pagar su vivienda.'
-    delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/'
-  102:
-    name: 'National Retirement Administration'
-    abbreviation: 'NRTA'
-    delegation_description:
-      en: 'administers retirement benefits and earnings records.'
-      es: 'administra los beneficios de jubilación y los registros de ingresos.'
-    delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "http://localhost:4567") %>/'
+development:
+  agencies:
+    100:
+      name: 'Office of Benefits Coordination'
+      abbreviation: 'OBC'
+      delegation_description:
+        en: 'coordinates benefits programs and operates MyBenefits Assistant.'
+        es: 'coordina programas de beneficios y opera MyBenefits Assistant.'
+      delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/about'
+    101:
+      name: 'Department of Housing Support'
+      abbreviation: 'DHSP'
+      delegation_description:
+        en: 'helps people find, keep and pay for housing.'
+        es: 'ayuda a las personas a encontrar, conservar y pagar su vivienda.'
+      delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/'
+    102:
+      name: 'National Retirement Administration'
+      abbreviation: 'NRTA'
+      delegation_description:
+        en: 'administers retirement benefits and earnings records.'
+        es: 'administra los beneficios de jubilación y los registros de ingresos.'
+      delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "http://localhost:4567") %>/'
 
-service_providers:
-  # The service provider the person signs in to (identity-sts-sinatra reference application).
-  # It runs in the browser as a public client: PKCE instead of a client secret, no signing
-  # certificate, and every token it holds bound to a key it holds (DPoP). Its browser redeems
-  # the authorization code at /auth/result. What it may ask to act at is bounded by each
-  # application's allowed_delegation_service_providers list below, not by anything here.
-  'urn:gov:gsa:openidconnect:sp:sinatra_sts':
-    agency_id: 100
-    ial: 2
-    friendly_name: 'MyBenefits Assistant'
-    logo: 'generic.svg'
-    pkce: true
-    return_to_sp_url: '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>'
-    redirect_uris:
-      - '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/'
-      - '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/auth/result'
-      - '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/logout'
-    token_exchange_enabled_sp: true
-    delegation_operator_legal_name: 'Office of Benefits Coordination'
-    delegation_operator_type: 'federal'
-    delegation_service_description:
-      en: 'helps you find benefits you may qualify for and track your applications in one place.'
-      es: 'le ayuda a encontrar beneficios y a seguir sus solicitudes en un solo lugar.'
-    delegation_data_handling_statement:
-      en: 'used only while you are signed in and deleted when you sign out. Not shared outside the Office of Benefits Coordination.'
-    delegation_privacy_policy_url: '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/about'
-    delegation_support_contact: 'help@mybenefits.example.gov'
-    delegation_uses_ai: true
-    delegation_ai_description:
-      en: 'answer your questions and suggest benefits you may qualify for.'
+  service_providers:
+    # The service provider the person signs in to (identity-sts-sinatra reference application).
+    # It runs in the browser as a public client: PKCE instead of a client secret, no signing
+    # certificate, and every token it holds bound to a key it holds (DPoP). Its browser redeems
+    # the authorization code at /auth/result. What it may ask to act at is bounded by each
+    # application's allowed_delegation_service_providers list below, not by anything here.
+    'urn:gov:gsa:openidconnect:sp:sinatra_sts':
+      agency_id: 100
+      ial: 2
+      friendly_name: 'MyBenefits Assistant'
+      logo: 'generic.svg'
+      pkce: true
+      return_to_sp_url: '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>'
+      redirect_uris:
+        - '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/'
+        - '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/auth/result'
+        - '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/logout'
+      token_exchange_enabled_sp: true
+      delegation_operator_legal_name: 'Office of Benefits Coordination'
+      delegation_operator_type: 'federal'
+      delegation_service_description:
+        en: 'helps you find benefits you may qualify for and track your applications in one place.'
+        es: 'le ayuda a encontrar beneficios y a seguir sus solicitudes en un solo lugar.'
+      delegation_data_handling_statement:
+        en: 'used only while you are signed in and deleted when you sign out. Not shared outside the Office of Benefits Coordination.'
+      delegation_privacy_policy_url: '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/about'
+      delegation_support_contact: 'help@mybenefits.example.gov'
+      delegation_uses_ai: true
+      delegation_ai_description:
+        en: 'answer your questions and suggest benefits you may qualify for.'
 
-  # An agency application that consumes OAuth tokens (identity-oidc-sinatra reference application).
-  # A different agency from the service provider, so the person has a different identifier here.
-  'urn:gov:gsa:openidconnect:sp:records_agency':
-    agency_id: 101
-    ial: 2
-    friendly_name: 'Housing Assistance Records'
-    logo: 'generic.svg'
-    return_to_sp_url: '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>'
-    redirect_uris:
-      - '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/'
-      - '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/auth/result'
-      - '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/logout'
-    certs:
-      - 'rs_records_demo'
-    attribute_bundle:
-      - email
-    delegation_application: true
-    delegation_scope_value: 'housing_records'
-    delegation_display_name:
-      en: 'Housing Assistance Records'
-      es: 'Registros de asistencia para la vivienda'
-    delegation_description:
-      en: 'check where your housing application is in review, whether anything is missing, and submit missing documents for you.'
-    delegation_data_provided:
-      en: ['Case number', 'Current status', 'Next step', 'Documents requested']
-    delegation_access_type: 'read_write'
-    delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/'
-    # Empty: accepts any service provider Login.gov has approved for delegation.
-    allowed_delegation_service_providers: []
-    # What the service provider learns about the person when it checks its own delegated token,
-    # beyond the identifier its own sign-in already gives it. Names from the attribute bundle
-    # above; an attribute outside the bundle is never shared. Empty: nothing further.
-    delegation_sp_shareable_attributes: []
-    token_exchange_resource_servers:
-      - identifier: 'https://records-api.agency.localdev'
-        token_format: 'oauth'
-        # A read-write API: delegated tokens for it live five minutes instead of the default, and
-        # a service provider's unattended access ends four hours after the exchange instead of
-        # twelve.
-        max_access_token_seconds: 300
-        max_family_seconds: 14400
-        certs:
-          - 'rs_records_demo'
+    # An agency application that consumes OAuth tokens (identity-oidc-sinatra reference application).
+    # A different agency from the service provider, so the person has a different identifier here.
+    'urn:gov:gsa:openidconnect:sp:records_agency':
+      agency_id: 101
+      ial: 2
+      friendly_name: 'Housing Assistance Records'
+      logo: 'generic.svg'
+      return_to_sp_url: '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>'
+      redirect_uris:
+        - '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/'
+        - '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/auth/result'
+        - '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/logout'
+      certs:
+        - 'rs_records_demo'
+      attribute_bundle:
+        - email
+      delegation_application: true
+      delegation_scope_value: 'housing_records'
+      delegation_display_name:
+        en: 'Housing Assistance Records'
+        es: 'Registros de asistencia para la vivienda'
+      delegation_description:
+        en: 'check where your housing application is in review, whether anything is missing, and submit missing documents for you.'
+      delegation_data_provided:
+        en: ['Case number', 'Current status', 'Next step', 'Documents requested']
+      delegation_access_type: 'read_write'
+      delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/'
+      # Empty: accepts any service provider Login.gov has approved for delegation.
+      allowed_delegation_service_providers: []
+      # What the service provider learns about the person when it checks its own delegated token,
+      # beyond the identifier its own sign-in already gives it. Names from the attribute bundle
+      # above; an attribute outside the bundle is never shared. Empty: nothing further.
+      delegation_sp_shareable_attributes: []
+      token_exchange_resource_servers:
+        - identifier: 'https://records-api.agency.localdev'
+          token_format: 'oauth'
+          # A read-write API: delegated tokens for it live five minutes instead of the default, and
+          # a service provider's unattended access ends four hours after the exchange instead of
+          # twelve.
+          max_access_token_seconds: 300
+          max_family_seconds: 14400
+          certs:
+            - 'rs_records_demo'
 
-  # An agency application that consumes SAML assertions (identity-saml-sinatra reference
-  # application). It lists the service providers it accepts.
-  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:benefits_agency':
-    agency_id: 102
-    ial: 2
-    friendly_name: 'Retirement Benefits Portal'
-    logo: 'generic.svg'
-    acs_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "http://localhost:4567") %>/consume'
-    sp_initiated_login_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "http://localhost:4567") %>/test/saml'
-    assertion_consumer_logout_service_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "http://localhost:4567") %>/slo_logout'
-    block_encryption: 'aes256-cbc'
-    certs:
-      - 'sp_sinatra_demo'
-    attribute_bundle:
-      - email
-      - first_name
-      - last_name
-    delegation_application: true
-    delegation_scope_value: 'retirement_benefits'
-    delegation_display_name:
-      en: 'Retirement Benefits Portal'
-      es: 'Portal de beneficios de jubilación'
-    delegation_description:
-      en: 'view your estimated monthly benefit and your yearly earnings record.'
-    delegation_data_provided:
-      en: ['Estimated monthly benefit', 'Yearly earnings record']
-    delegation_access_type: 'read'
-    delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "http://localhost:4567") %>/'
-    allowed_delegation_service_providers:
-      - 'urn:gov:gsa:openidconnect:sp:sinatra_sts'
-    token_exchange_resource_servers:
-      # A SAML assertion issued for this API is encrypted to the certificate named here when the
-      # file is present locally and returned signed in the clear when it is not.
-      - identifier: 'https://benefits-api.agency.localdev'
-        token_format: 'saml2'
-        certs:
-          - 'sp_sinatra_demo'
+    # An agency application that consumes SAML assertions (identity-saml-sinatra reference
+    # application). It lists the service providers it accepts.
+    'urn:gov:gsa:SAML:2.0.profiles:sp:sso:benefits_agency':
+      agency_id: 102
+      ial: 2
+      friendly_name: 'Retirement Benefits Portal'
+      logo: 'generic.svg'
+      acs_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "http://localhost:4567") %>/consume'
+      sp_initiated_login_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "http://localhost:4567") %>/test/saml'
+      assertion_consumer_logout_service_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "http://localhost:4567") %>/slo_logout'
+      block_encryption: 'aes256-cbc'
+      certs:
+        - 'sp_sinatra_demo'
+      attribute_bundle:
+        - email
+        - first_name
+        - last_name
+      delegation_application: true
+      delegation_scope_value: 'retirement_benefits'
+      delegation_display_name:
+        en: 'Retirement Benefits Portal'
+        es: 'Portal de beneficios de jubilación'
+      delegation_description:
+        en: 'view your estimated monthly benefit and your yearly earnings record.'
+      delegation_data_provided:
+        en: ['Estimated monthly benefit', 'Yearly earnings record']
+      delegation_access_type: 'read'
+      delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "http://localhost:4567") %>/'
+      allowed_delegation_service_providers:
+        - 'urn:gov:gsa:openidconnect:sp:sinatra_sts'
+      token_exchange_resource_servers:
+        # A SAML assertion issued for this API is encrypted to the certificate named here when the
+        # file is present locally and returned signed in the clear when it is not.
+        - identifier: 'https://benefits-api.agency.localdev'
+          token_format: 'saml2'
+          certs:
+            - 'sp_sinatra_demo'
+
+# A personal sandbox's copy of the development entries, written in every deployed
+# environment except prod and staging.
+production:
+  agencies:
+    100:
+      restrict_to_deploy_env: 'sandbox'
+      name: 'Office of Benefits Coordination'
+      abbreviation: 'OBC'
+      delegation_description:
+        en: 'coordinates benefits programs and operates MyBenefits Assistant.'
+        es: 'coordina programas de beneficios y opera MyBenefits Assistant.'
+      delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/about'
+    101:
+      restrict_to_deploy_env: 'sandbox'
+      name: 'Department of Housing Support'
+      abbreviation: 'DHSP'
+      delegation_description:
+        en: 'helps people find, keep and pay for housing.'
+        es: 'ayuda a las personas a encontrar, conservar y pagar su vivienda.'
+      delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/'
+    102:
+      restrict_to_deploy_env: 'sandbox'
+      name: 'National Retirement Administration'
+      abbreviation: 'NRTA'
+      delegation_description:
+        en: 'administers retirement benefits and earnings records.'
+        es: 'administra los beneficios de jubilación y los registros de ingresos.'
+      delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "http://localhost:4567") %>/'
+
+  service_providers:
+    'urn:gov:gsa:openidconnect:sp:sinatra_sts':
+      restrict_to_deploy_env: 'sandbox'
+      agency_id: 100
+      ial: 2
+      friendly_name: 'MyBenefits Assistant'
+      logo: 'generic.svg'
+      pkce: true
+      return_to_sp_url: '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>'
+      redirect_uris:
+        - '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/'
+        - '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/auth/result'
+        - '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/logout'
+      token_exchange_enabled_sp: true
+      delegation_operator_legal_name: 'Office of Benefits Coordination'
+      delegation_operator_type: 'federal'
+      delegation_service_description:
+        en: 'helps you find benefits you may qualify for and track your applications in one place.'
+        es: 'le ayuda a encontrar beneficios y a seguir sus solicitudes en un solo lugar.'
+      delegation_data_handling_statement:
+        en: 'used only while you are signed in and deleted when you sign out. Not shared outside the Office of Benefits Coordination.'
+      delegation_privacy_policy_url: '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/about'
+      delegation_support_contact: 'help@mybenefits.example.gov'
+      delegation_uses_ai: true
+      delegation_ai_description:
+        en: 'answer your questions and suggest benefits you may qualify for.'
+
+    'urn:gov:gsa:openidconnect:sp:records_agency':
+      restrict_to_deploy_env: 'sandbox'
+      agency_id: 101
+      ial: 2
+      friendly_name: 'Housing Assistance Records'
+      logo: 'generic.svg'
+      return_to_sp_url: '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>'
+      redirect_uris:
+        - '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/'
+        - '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/auth/result'
+        - '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/logout'
+      certs:
+        - 'rs_records_demo'
+      attribute_bundle:
+        - email
+      delegation_application: true
+      delegation_scope_value: 'housing_records'
+      delegation_display_name:
+        en: 'Housing Assistance Records'
+        es: 'Registros de asistencia para la vivienda'
+      delegation_description:
+        en: 'check where your housing application is in review, whether anything is missing, and submit missing documents for you.'
+      delegation_data_provided:
+        en: ['Case number', 'Current status', 'Next step', 'Documents requested']
+      delegation_access_type: 'read_write'
+      delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/'
+      allowed_delegation_service_providers: []
+      delegation_sp_shareable_attributes: []
+      token_exchange_resource_servers:
+        - identifier: 'https://records-api.agency.localdev'
+          token_format: 'oauth'
+          max_access_token_seconds: 300
+          max_family_seconds: 14400
+          certs:
+            - 'rs_records_demo'
+
+    'urn:gov:gsa:SAML:2.0.profiles:sp:sso:benefits_agency':
+      restrict_to_deploy_env: 'sandbox'
+      agency_id: 102
+      ial: 2
+      friendly_name: 'Retirement Benefits Portal'
+      logo: 'generic.svg'
+      acs_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "http://localhost:4567") %>/consume'
+      sp_initiated_login_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "http://localhost:4567") %>/test/saml'
+      assertion_consumer_logout_service_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "http://localhost:4567") %>/slo_logout'
+      block_encryption: 'aes256-cbc'
+      certs:
+        - 'sp_sinatra_demo'
+      attribute_bundle:
+        - email
+        - first_name
+        - last_name
+      delegation_application: true
+      delegation_scope_value: 'retirement_benefits'
+      delegation_display_name:
+        en: 'Retirement Benefits Portal'
+        es: 'Portal de beneficios de jubilación'
+      delegation_description:
+        en: 'view your estimated monthly benefit and your yearly earnings record.'
+      delegation_data_provided:
+        en: ['Estimated monthly benefit', 'Yearly earnings record']
+      delegation_access_type: 'read'
+      delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "http://localhost:4567") %>/'
+      allowed_delegation_service_providers:
+        - 'urn:gov:gsa:openidconnect:sp:sinatra_sts'
+      token_exchange_resource_servers:
+        - identifier: 'https://benefits-api.agency.localdev'
+          token_format: 'saml2'
+          certs:
+            - 'sp_sinatra_demo'

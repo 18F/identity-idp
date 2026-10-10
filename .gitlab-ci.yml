@@ -294,6 +294,7 @@ specs:
     - cp config/application.yml.default config/application.yml
     - cp config/service_providers.localdev.yml config/service_providers.yml
     - cp config/agencies.localdev.yml config/agencies.yml
+    - cp config/delegated_access{.localdev,}.yml
     - cp config/iaa_gtcs{.localdev,}.yml
     - cp config/iaa_orders{.localdev,}.yml
     - cp config/iaa_statuses{.localdev,}.yml

@@ -9,8 +9,8 @@
 # Dependency: the partner Dashboard (identity-dashboard) does not yet expose the delegated-access
 # fields (token_exchange_enabled_sp, the delegation_* content, delegation_application,
 # delegation_scope_value, allowed_delegation_service_providers, the agency content, or nested
-# token_exchange_resource_servers). Until it does, payloads carry none of them and
-# `rake delegated_access:seed` loads that data in non-production environments.
+# token_exchange_resource_servers). Until it does, payloads carry none of them and the records
+# that have them are seeded from config/delegated_access.yml by DelegatedAccessSeeder.
 class ServiceProviderUpdater
   SP_PROTECTED_ATTRIBUTES = %i[
     created_at

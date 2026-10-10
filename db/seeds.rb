@@ -21,6 +21,9 @@ end
 # add config/agencies.yml
 seed_runner.run(AgencySeeder.new, &:run)
 
+# add config/delegated_access.yml
+seed_runner.run(DelegatedAccessSeeder.new, &:run)
+
 # add partnerships / agreements data, note that the order matters!
 if IdentityConfig.store.seed_agreements_data
   Rails.logger.info('=== Seeding agreements data ===')
