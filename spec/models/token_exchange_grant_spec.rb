@@ -59,6 +59,24 @@ RSpec.describe TokenExchangeGrant do
     end
   end
 
+  describe '#service_provider_record' do
+    it 'is the service provider the approval names, by issuer' do
+      grant = approve
+      grant.reload
+
+      expect(grant.service_provider_record).to eq(service_provider)
+    end
+
+    it 'is nil when the service provider has left the registry' do
+      grant = approve
+      service_provider.destroy!
+      grant.reload
+
+      expect(grant.service_provider_record).to be_nil
+      expect(grant.valid_now?).to eq(false)
+    end
+  end
+
   describe '.authorizes?' do
     it 'is true only for a live, current approval of exactly that application' do
       approve
