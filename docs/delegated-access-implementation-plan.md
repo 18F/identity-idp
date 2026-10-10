@@ -538,7 +538,7 @@ Against the passport use case (FR-DOS) it differs in four ways: images go to the
 
 ### 5.13 Third-party-initiated login
 
-No identity-idp work. The pattern is implemented in the three reference applications (`identity-sts-sinatra`, `identity-oidc-sinatra`, `identity-saml-sinatra`) and runs against an unchanged identity provider (FR-TPL-1 to FR-TPL-10; companion §16). It is listed here only so the sequence is complete: it can be exercised in the sandbox as soon as the agency reference applications are registered as ordinary service providers there (section 7.6).
+No identity-idp work. The pattern is implemented in the three reference applications (`identity-sts-sinatra`, `identity-oidc-sinatra`, `identity-saml-sinatra`) and runs against an unchanged identity provider (FR-TPL-1 to FR-TPL-10; companion §16). It is listed here only so the sequence is complete: it can be exercised in the sandbox as soon as the agency reference applications are registered as ordinary service providers there (section 7.5).
 
 ### 5.14 Encrypted userinfo responses (planned)
 
