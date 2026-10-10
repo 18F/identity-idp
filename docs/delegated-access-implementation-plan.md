@@ -4,7 +4,7 @@
 **Authoritative copy:** `docs/delegated-access-implementation-plan.md` on branch `login-delegated-access` of `identity-idp`, together with `docs/delegated-access-functional-requirements.md` and `docs/delegated-access-requirements.md`. The Google Drive copies are no longer maintained (decided 2026-10-09).
 **Branch reviewed:** `sbx-taigrr` at `0b0539e19` (2026-10-08). Identical on GitHub `18F/identity-idp` and GitLab `lg/identity-idp`. Local clone: `/Users/kylepneuman/coding/worktrees/sbx-taigrr`.
 **Compared against:** *Login STS and Dept of State Functional Requirements* (FR-… identifiers below), *Delegated Access for Login.gov — Requirements* (`delegated-access-requirements.md`, §-references below), and the `token-exchange2-login` branch on GitLab `lg/identity-idp` at `bd32c5f4e2` (2026-10-08), which implements those requirements against an older `main`.
-**Purpose of this revision:** define the new branch `login-delegated-access`, which starts from `sbx-taigrr` and is extended feature by feature until it meets the functional requirements. For each feature the document states what the branch already has, what is added, what is removed and why, what engineering decisions remain, and what can be ported from `token-exchange2-login`. The last sections cover cross-cutting concerns and the sandbox infrastructure.
+**Purpose of this revision:** define the new branch `login-delegated-access`, which takes `sbx-taigrr` as its foundation and layers the additional architecture from `token-exchange2-login` on top of it, feature by feature, until it meets the functional requirements. For each feature the document states what the foundation already has, what is added, what is removed and why, what engineering decisions remain, and what is ported from `token-exchange2-login`. The last sections cover cross-cutting concerns and the sandbox infrastructure.
 
 Nothing in this document has been implemented. Each feature waits for a go-ahead.
 
@@ -51,13 +51,15 @@ For reference, `token-exchange2-login` against the same `main` conflicts in two 
 
 ---
 
-## 3. The two branches side by side
+## 3. The foundation (`sbx-taigrr`) and the architecture layered on top (`token-exchange2-login`)
 
-### 3.1 What `sbx-taigrr` is
+`sbx-taigrr` is the foundation the project builds on; the additional architectural components come from `token-exchange2-login`, layered on top of that foundation. This section describes each in turn and where the layered components touch the same files as the foundation.
 
-The branch is the National Design Studio `token-exchange` branch plus later commits (target opt-in, per-application grants, account-page toggles), merged with a `proofing/socure-identity-artifacts` branch that adds identity-document image and metadata sharing.
+### 3.1 The foundation: `sbx-taigrr`
 
-It is a different design from the functional requirements rather than a partial implementation of them. Its design document (`docs/token-exchange.md`) describes a **browser-callable** RFC 8693 exchange, **with no client secret**, that mints a **full user access token for the target service provider**, structurally identical to one the user would have received by signing in there directly, whose lifetime is the service provider's Rails session. Consent is per *application the user has already connected to*, not per agency API the service provider requests. The `document_images` scope lets an allow-listed service provider download the ID document photos and the selfie over a bearer-token URL and read the document number and dates from userinfo. The branch calls the service provider the "broker" in code, comments, strings and its design document; this document says *service provider*, and every identifier that carries the old word is renamed or removed by the feature that touches it (5.1, 5.2, 5.3).
+The branch is the `token-exchange` branch plus later commits (target opt-in, per-application grants, account-page toggles), merged with a `proofing/socure-identity-artifacts` branch that adds identity-document image and metadata sharing. It is the base the rest of the project is built on.
+
+Its original design differs from the functional requirements rather than being a partial implementation of them, which is why the later architecture is layered on top rather than merely finished. Its design document (`docs/token-exchange.md`) describes a **browser-callable** RFC 8693 exchange, **with no client secret**, that mints a **full user access token for the target service provider**, structurally identical to one the user would have received by signing in there directly, whose lifetime is the service provider's Rails session. Consent is per *application the user has already connected to*, not per agency API the service provider requests. The `document_images` scope lets an allow-listed service provider download the ID document photos and the selfie over a bearer-token URL and read the document number and dates from userinfo. The branch calls the service provider the "broker" in code, comments, strings and its design document; this document says *service provider*, and every identifier that carries the old word is renamed or removed by the feature that touches it (5.1, 5.2, 5.3).
 
 Components:
 
@@ -72,11 +74,11 @@ Components:
 9. `id_token` for the target carries an RFC 8693 `act` claim naming the service provider; no `nonce`, no `c_hash`.
 10. `document_images` scope, `document_artifacts` and `document_metadata` tables, `GET /api/openid_connect/document_images/:type` bearer-authenticated download, biometric consent checkbox on the completions screen, `ExpireDocumentArtifactsJob`, two design documents under `docs/proofing/`.
 
-### 3.2 What `token-exchange2-login` is
+### 3.2 Layered on top: `token-exchange2-login`
 
-Forty-one commits (160 files, about 11,800 lines added, 326 new spec examples) implementing the requirements document end to end against `main` at `48a1ff3e3f` (2026-09-04): onboarding data model, `token_exchange:<name>` scopes and the agency-level consent screen, Account → Delegated access, RFC 8693 exchange at the existing token endpoint with `private_key_jwt`, opaque delegated tokens with refresh rotation and RFC 7009 revocation, RFC 7662 introspection authenticated by the agency, Attempts buffering and delivery, billing rows and reports, SAML assertions as an issued token type, DPoP, discovery metadata, suspension and deletion cascade. It has only ever run locally, with the three reference applications and the live end-to-end harness (24 scenarios passing on 2026-10-08).
+The additional architectural components layered onto the foundation come from `token-exchange2-login`: forty-one commits (160 files, about 11,800 lines added, 326 new spec examples) implementing the requirements document end to end against `main` at `48a1ff3e3f` (2026-09-04): onboarding data model, `token_exchange:<name>` scopes and the agency-level consent screen, Account → Delegated access, RFC 8693 exchange at the existing token endpoint with `private_key_jwt`, opaque delegated tokens with refresh rotation and RFC 7009 revocation, RFC 7662 introspection authenticated by the agency, Attempts buffering and delivery, billing rows and reports, SAML assertions as an issued token type, DPoP, discovery metadata, suspension and deletion cascade. It has only ever run locally, with the three reference applications and the live end-to-end harness (24 scenarios passing on 2026-10-08).
 
-### 3.3 Where they collide
+### 3.3 Where the layered components touch the foundation
 
 Twenty-eight files are changed by both branches relative to their bases. A dry-run merge of `token-exchange2-login` into `sbx-taigrr` conflicts in seventeen: `app/forms/openid_connect_token_exchange_form.rb` (both add it), `app/forms/openid_connect_token_form.rb`, `app/models/token_exchange_grant.rb` (both add it), `app/presenters/openid_connect_user_info_presenter.rb`, `app/services/analytics_events.rb`, `app/views/accounts/_connected_app.html.erb`, `app/views/sign_up/completions/show.html.erb`, `config/application.yml.default`, `config/initializers/job_configurations.rb`, the four locale files, `config/routes.rb`, `db/schema.rb`, `lib/identity_config.rb`, `spec/models/token_exchange_grant_spec.rb`. The branch is therefore built by porting, not merging.
 
@@ -92,9 +94,9 @@ Name collisions that must be resolved deliberately, because the same name means 
 8. **Locale keys** `sign_up.token_exchange_grant.*` and `account.connected_apps.token_exchange.*` (`sbx-taigrr`) against `sign_up.delegation.*` and `account.delegated_access.*` (`token-exchange2`).
 9. **`ServiceProvider#token_exchange_broker_allowed?` / `#allows_token_exchange_broker?`** against `#delegation_service_provider?` and the resource-server associations.
 
-### 3.4 What to keep from `sbx-taigrr` regardless of feature
+### 3.4 What the foundation contributes regardless of feature
 
-These pieces do not conflict with the premise of any requirement and are kept, in some cases generalized:
+These pieces of the foundation do not conflict with the premise of any requirement and are kept, in some cases generalized:
 
 1. **Agency opt-in to specific service providers** (`allowed_token_exchange_brokers`). It answers the open question in functional requirements section 3, question 3 ("should an agency be able to restrict which service providers may use its APIs"). It moves from "target SP" to "agency SP that owns resource servers" and is enforced at authorize (FR-CEN-2) and at exchange.
 2. **IAL forwarded, never elevated** (FR-FIT-5). `token-exchange2` copies `ial` and `aal` onto the delegated token; the same rule.
