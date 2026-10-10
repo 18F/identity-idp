@@ -39,6 +39,7 @@ description: Use for any question, review, edit, run or decision about the deleg
 | Run locally, what is local-only, sandbox | `references/local-runbook.md`, `scripts/local_stack.sh`, `references/local-only-changes.md`, `scripts/local_only_changes.sh`, `references/sandbox-notes.md` |
 | Billing change (`sp_return_logs`, waiver, adjustments, reports) | `.claude/skills/login-billing/SKILL.md` first, then `references/branch-context/delegated-access-billing-reporting.md` |
 | Schema, log, token-storage, analytics or Attempts-schema change | `.claude/skills/login-billing/SKILL.md` section 9 and its `references/data-change-review-guidelines.md` (data team review and notification) |
+| Rebase or merge the base into a feature branch with conflicts in the skill or docs | `references/conflict-resolution.md`, `scripts/skill_conflicts.sh` (feature context wins for its own work; base wins elsewhere; generated and twin files are regenerated, never hand-resolved) |
 | Where to start reading | `references/reading-order.md` |
 
 ## 4. Changing things

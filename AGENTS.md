@@ -158,3 +158,6 @@ Three project skills live under `.claude/skills/`: `login-delegated-access` (SKI
 change interview it invokes; and `login-billing`, loaded for any change to billing rows, waivers or reports. `.agents/skills` is their byte-identical twin, produced by
 `scripts/sync_twins.sh` and checked by the skill's own `scripts/check.sh` (nothing is added to the repository's test suite). Generated references are
 never edited by hand: after a docs change run `scripts/build_index.py`, after a skill change run `sync_twins.sh`.
+When bringing the base into a feature branch produces conflicts in the skill or the documents, the
+skill's `references/conflict-resolution.md` applies: the feature branch's own context wins, the base
+wins for everything else, generated files and twins are regenerated rather than resolved by hand.

@@ -5,6 +5,10 @@ skill's own steps. Follow it for every change to a requirement and every code ch
 longer describe. The documents live only on `login-delegated-access`; feature branches never commit under
 `docs/`.
 
+## Conflicts when the base meets a feature branch
+
+Follow `conflict-resolution.md` with `scripts/skill_conflicts.sh`: the feature branch's own context wins, the base wins elsewhere, generated files and twins are regenerated. Afterwards move the branch's document and skill context to the base so feature branches return to code-only.
+
 ## 0. Before the edit
 
 1. Run the interview (`references/interview.md`, or `/interview` when available). Keep it proportionate.
