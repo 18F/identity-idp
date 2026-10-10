@@ -60,6 +60,7 @@ login-delegated-access (base + docs)
  → delegated-access-billing-reporting(5.8)
  → delegated-access-fraud-signals    (5.7)
  → delegated-access-config-content   (5.17, content seeded from identity-idp-config)
+ → delegated-access-encrypted-userinfo (5.14, encrypted userinfo responses)
 ```
 
 - Plan section 8 maps every branch to its feature section and requirement identifiers and gives

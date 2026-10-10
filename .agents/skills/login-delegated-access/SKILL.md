@@ -12,7 +12,7 @@ description: Use for any question, review, edit, run or decision about the deleg
   (`delegated-access-functional-requirements.md`, `FR-…` rows, Appendix D) and the companion requirements
   (`delegated-access-requirements.md`, protocol rows `ONB-`, `CON-`, `ACC-`, `EXC-`, `INT-`, `REF-`, `ATT-`, `BIL-`,
   `DISC-`, `SAML-`, `TPL-`, Appendix E rows `Ennn`). `docs/delegated-access-README.md` says how they relate.
-- The documents live only on `login-delegated-access`. Thirteen code-only feature branches are stacked on it (section 6).
+- The documents live only on `login-delegated-access`. Fourteen code-only feature branches are stacked on it (section 6).
 - `CLAUDE.md` governs every change (vocabulary, fictitious names, no requirement ids in code, local before CI).
   This skill adds context and rationale; it never overrides `CLAUDE.md` and never vetoes a change. Requirements
   can change; the developer decides.
@@ -86,8 +86,9 @@ login-delegated-access                      base: docs, CLAUDE.md, AGENTS.md, th
  ├─ 10. delegated-access-operations         §5.11 discovery and operational metadata
  ├─ 11. delegated-access-billing-reporting  §5.8  billing rows and reports
  ├─ 12. delegated-access-fraud-signals      §5.7  Attempts API fraud signals
- └─ 13. delegated-access-config-content     §5.17 content seeded from identity-idp-config
+ ├─ 13. delegated-access-config-content     §5.17 content seeded from identity-idp-config
+ └─ 14. delegated-access-encrypted-userinfo §5.14 encrypted userinfo responses
 ```
 
 Not branches: 5.12 (document images) stays on the base, enabled only in a sandbox; 5.13 lives in the reference
-applications; 5.14 and 5.15 are planned.
+applications; 5.15 is planned.

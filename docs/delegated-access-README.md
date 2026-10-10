@@ -52,11 +52,12 @@ login-delegated-access                      base: main merge, docs, CLAUDE.md / 
  ├─ 10. delegated-access-operations         §5.11 discovery and operational metadata
  ├─ 11. delegated-access-billing-reporting  §5.8  billing rows and reports
  ├─ 12. delegated-access-fraud-signals      §5.7  Attempts API fraud signals
- └─ 13. delegated-access-config-content     §5.17 content seeded from identity-idp-config
+ ├─ 13. delegated-access-config-content     §5.17 content seeded from identity-idp-config
+ └─ 14. delegated-access-encrypted-userinfo §5.14 encrypted userinfo responses
 ```
 
 Not branches: 5.12 (document images) is foundation code kept on the base and enabled only in a sandbox;
-5.13 (third-party-initiated login) lives in the reference applications; 5.14 and 5.15 are planned.
+5.13 (third-party-initiated login) lives in the reference applications; 5.15 is planned.
 
 ## The traceability matrices
 
