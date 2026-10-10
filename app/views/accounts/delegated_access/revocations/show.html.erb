@@ -11,7 +11,7 @@
     <li>
       <%= grant.application.delegation_display_name_for.presence || grant.application.display_name %>
       <% unless @service_provider %>
-        <span class="text-base">(<%= ServiceProvider.find_by(issuer: grant.service_provider_issuer)&.friendly_name || grant.service_provider_issuer %>)</span>
+        <span class="text-base">(<%= grant.service_provider_record&.friendly_name || grant.service_provider_issuer %>)</span>
       <% end %>
     </li>
   <% end %>
