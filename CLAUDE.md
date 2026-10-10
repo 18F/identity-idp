@@ -85,7 +85,6 @@ login-delegated-access (base + docs)
   Dashboard lacking fields) are fine.
 - Commit subjects mirror the functional requirement identifiers ("FR-TOK-1, FR-TOK-3: …");
   bodies may cite companion rows. Ported commits keep their original author and message.
-- No attribution trailers or model names in commits, pull requests or files.
 - Locale strings in en, es, fr and zh; the files are flat dotted keys kept sorted; single-quote a
   value that contains a colon or starts with `%{`.
 - Analytics methods stay alphabetical with YARD docs (`make lint_analytics_events
