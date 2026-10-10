@@ -107,7 +107,9 @@ RSpec.describe TokenExchangeRefreshToken do
       other_family = create(:token_exchange_refresh_token)
 
       freeze_time do
-        described_class.revoke_family!(family_id, reason: 'refresh_token_reuse')
+        described_class.revoke_family!(
+          family_id, grant: issuance.grant, reason: 'refresh_token_reuse'
+        )
 
         expect(DelegatedTokenStore.read(plaintext)).to be_nil
         expect(issuance.reload.revoked_at).to eq(Time.zone.now)

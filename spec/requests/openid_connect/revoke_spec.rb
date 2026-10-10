@@ -126,7 +126,9 @@ RSpec.describe 'OpenID Connect delegated token revocation' do
 
       it 'leaves a family that already ended as it was' do
         stub_request_analytics
-        TokenExchangeRefreshToken.revoke_family!(issuance.refresh_family_id, reason: 'user_revoked')
+        TokenExchangeRefreshToken.revoke_family!(
+          issuance.refresh_family_id, grant: issuance.grant, reason: 'user_revoked'
+        )
         revoke
         expect(response).to have_http_status(:ok)
         expect(refresh_row.reload.revocation_reason).to eq('user_revoked')

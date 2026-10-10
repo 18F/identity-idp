@@ -142,7 +142,9 @@ class OpenidConnectRevokeForm
     return nil unless row && owned?(row.service_provider_id, row.dpop_jkt)
     return REFRESH_TOKEN_HINT if row.revoked?
 
-    TokenExchangeRefreshToken.revoke_family!(row.family_id, reason: 'client_revoked')
+    TokenExchangeRefreshToken.revoke_family!(
+      row.family_id, grant: row.grant, reason: 'client_revoked'
+    )
     REFRESH_TOKEN_HINT
   end
 

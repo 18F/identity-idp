@@ -215,7 +215,9 @@ class OpenidConnectRefreshTokenForm
   def rotate_locked!(now)
     return refuse_refresh_token if presented.revoked? || presented.family_ended?(now:)
     unless approval_stands?
-      TokenExchangeRefreshToken.revoke_family!(presented.family_id, reason: 'approval_lapsed', now:)
+      TokenExchangeRefreshToken.revoke_family!(
+        presented.family_id, grant: presented.grant, reason: 'approval_lapsed', now:
+      )
       return refuse_refresh_token
     end
     return refuse_refresh_token unless api_open_to_client?
@@ -254,7 +256,7 @@ class OpenidConnectRefreshTokenForm
     presented.update!(used_at: now)
     unless presented.revoked?
       TokenExchangeRefreshToken.revoke_family!(
-        presented.family_id, reason: 'refresh_token_reuse', now:
+        presented.family_id, grant: presented.grant, reason: 'refresh_token_reuse', now:
       )
       @reuse_detected = true
       report_family_revoked(reason: 'refresh_token_reuse')
@@ -313,7 +315,7 @@ class OpenidConnectRefreshTokenForm
 
   def write_live_token!
     DelegatedTokenStore.write(
-      @access_token, @issued.live_attributes, ttl: @issued.lifetime_seconds,
+      @access_token, @issued.live_attributes, ttl: @issued.lifetime_seconds
     )
   end
 

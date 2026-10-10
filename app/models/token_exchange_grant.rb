@@ -264,12 +264,8 @@ class TokenExchangeGrant < ApplicationRecord
   def revoke!(reason:, now: Time.zone.now)
     update!(revoked_at: now, revocation_reason: reason)
     DelegatedTokenStore.revoke_grant(id)
-    # rubocop:disable Rails/SkipsModelValidations
-    token_exchange_tokens.where(revoked_at: nil)
-      .update_all(revoked_at: now, revocation_reason: reason, updated_at: now)
-    token_exchange_refresh_tokens.where(revoked_at: nil)
-      .update_all(revoked_at: now, revocation_reason: reason, updated_at: now)
-    # rubocop:enable Rails/SkipsModelValidations
+    TokenExchangeToken.revoke_rows!(token_exchange_tokens, reason:, now:)
+    TokenExchangeToken.revoke_rows!(token_exchange_refresh_tokens, reason:, now:)
   end
 
   private
