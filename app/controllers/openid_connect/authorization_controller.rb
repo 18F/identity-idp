@@ -133,6 +133,7 @@ module OpenidConnect
     end
 
     def handle_successful_handoff
+      release_remembered_delegation
       redirect_uri = @authorize_form.success_redirect_uri
       redirect_uri = with_sealed_site_key(redirect_uri) if @authorize_form.site_key_requested?
 
@@ -365,6 +366,37 @@ module OpenidConnect
         sp_issuer: issuer,
         candidate_issuers: candidates.map(&:issuer),
       )
+    end
+
+    # When remembered approvals covered every requested application, the consent screen was
+    # skipped and nothing has yet reached the agencies for this authorization: release now, before
+    # `login-completed` is recorded, so that event reaches them too. A request the consent screen
+    # already released is not released again.
+    def release_remembered_delegation
+      return unless DelegatedAccessEvents.enabled?
+
+      scope_values = @authorize_form.requested_delegation_scopes
+      return if scope_values.empty?
+      return if AttemptsApi::DelegationContext.from_session(session)
+        .released_for?(sp_session[:request_id])
+
+      applications = DelegationApplications.requested(issuer, scope_values)
+      # Each approval's currency is judged against its agency's material version; load the
+      # agencies in one query rather than one per application.
+      ActiveRecord::Associations::Preloader.new(records: applications, associations: :agency).call
+      remembered = TokenExchangeGrant.live_by_application(
+        user: current_user, service_provider_issuer: issuer, applications:,
+      ).values.select(&:remembered_and_current?)
+      return if remembered.empty?
+
+      AttemptsApi::DelegatedRelease.new(
+        user: current_user,
+        session:,
+        user_session:,
+        analytics:,
+        remembered_grants: remembered,
+        request_id: sp_session[:request_id],
+      ).call
     end
 
     def track_events
