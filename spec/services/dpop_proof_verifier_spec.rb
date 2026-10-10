@@ -46,8 +46,10 @@ RSpec.describe DpopProofVerifier do
   it 'keeps the jti for twice the acceptance window' do
     allow(IdentityConfig.store).to receive(:dpop_proof_max_age_seconds).and_return(120)
     expect(result).to be_success
-    key = DpopProofVerifier::JTI_KEY_PREFIX +
-          Digest::SHA256.hexdigest("#{dpop_thumbprint}\n#{JWT.decode(proof, nil, false)[0]['jti']}")
+    key = ReplayGuard.key(
+      namespace: DpopProofVerifier::JTI_NAMESPACE, scope: dpop_thumbprint,
+      value: JWT.decode(proof, nil, false)[0]['jti']
+    )
     expect(REDIS_POOL.with { |client| client.ttl(key) }).to be_between(230, 240)
   end
 

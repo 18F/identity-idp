@@ -33,7 +33,7 @@ class DpopProofVerifier
   PROOF_TYPE = 'dpop+jwt'
   ALLOWED_ALGORITHMS = %w[ES256 RS256].freeze
   REQUIRED_CLAIMS = %w[jti htm htu iat].freeze
-  JTI_KEY_PREFIX = 'dpop:jti:'
+  JTI_NAMESPACE = 'dpop:jti'
 
   # @!attribute thumbprint
   #   @return [String, nil] RFC 7638 thumbprint of the proof key, on success
@@ -110,7 +110,7 @@ class DpopProofVerifier
 
   # RFC 9449 §4.2 `ath`: base64url, unpadded, of the SHA-256 of the token exactly as presented.
   def self.token_hash(access_token)
-    Base64.urlsafe_encode64(Digest::SHA256.digest(access_token.to_s), padding: false)
+    Digest::SHA256.urlsafe_base64digest(access_token.to_s)
   end
 
   # The URL as `htu` must name it (RFC 9449 §4.3): scheme, host and path, with no query or
@@ -187,11 +187,9 @@ class DpopProofVerifier
   # future `iat` at the edge of the window stays acceptable for two windows; the entry lives that
   # long.
   def first_use_of_jti?(thumbprint, jti)
-    return false unless jti.is_a?(String) && jti.present?
-
-    key = JTI_KEY_PREFIX + Digest::SHA256.hexdigest("#{thumbprint}\n#{jti}")
-    ttl = self.class.max_age_seconds * 2
-    REDIS_POOL.with { |client| client.set(key, '1', nx: true, ex: ttl) } ? true : false
+    ReplayGuard.first_use?(
+      namespace: JTI_NAMESPACE, scope: thumbprint, value: jti, ttl: self.class.max_age_seconds * 2,
+    )
   end
 
   def failure(error_type)
