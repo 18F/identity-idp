@@ -225,7 +225,7 @@ A service provider that holds a person's approval can obtain a credential for ex
 | **FR-TOK-6** | A delegated token MUST NOT be usable to obtain further tokens, and MUST NOT be usable at Login.gov's user-information endpoint, with or without a key-possession proof. The person's identity attributes for an agency are available only through the agency's verification (section 7); the service provider never receives them through delegation. |
 | **FR-TOK-7** | Issuance MUST be possible only while the person's Login.gov sign-in to the service provider is still active. Once a token has been issued, continued access rests on renewal (FR-TOK-10), not on the sign-in. |
 | **FR-TOK-8** | Issuing a delegated token MUST NOT revive a connection the person revoked or alter a direct session the person has with the agency. |
-| **FR-TOK-9** | Login.gov MUST be able to issue a SAML 2.0 assertion instead of an OAuth token for an agency API that consumes SAML, with the same access, record-keeping, and revocation behavior. The service provider MUST name the format it wants on every issuance request; a request that names none is refused. For now the agency API's registered format is informational and does not restrict the choice (flagged for review: Login.gov could instead choose the format from the API's registration). An assertion is valid for five minutes, is always signed, and is encrypted to the agency's registered certificate when one exists. (Amended 2026-10-09.) |
+| **FR-TOK-9** | Login.gov MUST be able to issue a SAML 2.0 assertion instead of an OAuth token for an agency API that consumes SAML, with the same access, record-keeping, and revocation behavior. The format is decided by the agency API's registration: the format registered for the API named in the request is the format issued. The service provider MAY name a format on the request; a request that names none is served, a request that names the registered format is served, and a request that names another format is served in the registered format, which the response states and Login.gov logs, rather than refused. An assertion is valid for five minutes, is always signed, and is encrypted to the agency's registered certificate when one exists. When an assertion is issued after the person's sign-in has ended, the response MUST say so with the same member the agency's verification uses. (Amended 2026-10-09, 2026-10-11.) |
 | **FR-TOK-26** | When issuance is refused because the person has not approved the application that owns the requested API, or that approval has lapsed, Login.gov MUST tell the service provider so and name the application's delegation scope, so the service provider can start a new sign-in requesting it. This MUST be told only to a service provider that has proved its identity, and only for a registered API; any other problem with the API is refused without that detail. |
 
 ### Functional requirements — renewal and ending access
@@ -258,7 +258,7 @@ A service provider that holds a person's approval can obtain a credential for ex
 
 1. ~~Is 15 minutes the right token lifetime? Shorter reduces exposure; longer reduces renewal traffic.~~ Decided 2026-10-09: 15 minutes by default, with a shorter maximum per API where the agency wants one (FR-TOK-4).
 2. ~~Is 12 hours the right bound for continued access? It matches the NIST SP 800-63B re-authentication limit for AAL2. Should agencies whose APIs can make changes have a shorter bound (for example, one hour)?~~ Decided 2026-10-09: 12 hours from the first issuance for every approval, remembered or not, never past the remember period; a shorter bound per service provider or per API remains available (FR-TOK-10, FR-TOK-11, FR-TOK-16).
-3. Should a service provider be able to request narrower access than it was approved for?
+3. ~~Should a service provider be able to request narrower access than it was approved for?~~ Decided 2026-10-11 (D72): no; with one scope per application there is nothing to narrow, a `scope` parameter on the issuance request is ignored and the issued scope is the application's (FR-TOK-17).
 4. ~~Should Login.gov also issue server nonces (RFC 9449 §8)?~~ Decided 2026-10-09: deferred, with the rationale recorded in the companion document (Appendix E row E57); the 60-second issued-at window and single-use proof identifiers are the freshness controls.
 5. ~~Is the "sign-in must still be active" rule for first issuance acceptable to America.gov, whose server may act after the person has left?~~ Decided 2026-10-09: the rule stands for the first issuance; renewal carries access afterwards (FR-TOK-7, FR-TOK-15).
 6. ~~Should the person be told, at consent, that the service provider may keep acting for up to 12 hours after they leave?~~ Decided 2026-10-09 (D53): yes, in one sentence on the consent screen (FR-CUX-2).
@@ -316,7 +316,7 @@ An agency that accepts delegated access on a person's behalf receives the same s
 | **FR-FRD-5** | Login.gov MUST deliver an event to the agency when a delegated token is issued, when it is renewed, and when access is revoked (with the reason). |
 | **FR-FRD-6** | Every delivered event MUST carry the delegation identifier so the agency can join events to API calls, and MUST identify the acting service provider. |
 | **FR-FRD-7** | When a remembered approval is reused without showing the consent screen, the agency MUST still receive the events for that sign-in and a consent event marked as remembered. |
-| **FR-FRD-8** | Existing Attempts API integrations MUST continue to work unchanged; the new events are additive. |
+| **FR-FRD-8** | Existing Attempts API integrations MUST continue to work unchanged; the new events are additive. Delivery of the new events is on by default and reaches only an agency enrolled in the Attempts API (listed as a provider, with a usable encryption key); an agency that is not enrolled receives nothing and needs no change. The privacy-review questions below stay open and are that review's agenda. (Amended 2026-10-11.) |
 | **FR-FRD-9** | Retained events MUST be encrypted while held and MUST be discarded when the session ends. |
 
 ### Questions to resolve
@@ -623,7 +623,7 @@ Decisions by the product owner, applied to the rows above and to the companion d
 35. **The link from a service provider's sign-in to the exchange that waives it is held for one hour**, not for the whole session (FR-BIL-8).
 36. **When that link has lapsed, Login.gov finds the sign-in from its own records and never refuses the issuance for billing**; the fallback and its over- or under-billing risk are flagged for review by the data team (FR-BIL-8).
 37. **Identity verification in a delegated sign-in is billed to every agency that received a token**; the service provider is not billed for that sign-in (FR-BIL-8).
-38. **The service provider names the token format on every issuance**; the agency API's registered format is informational for now, flagged for review (FR-TOK-9).
+38. **The service provider names the token format on every issuance**; the agency API's registered format is informational for now, flagged for review (FR-TOK-9). *Replaced 2026-10-11 by item 55.*
 39. **SAML assertions are valid for five minutes, always signed, encrypted when the agency has a certificate** (FR-TOK-9, FR-VER-9).
 40. **Key-possession proofs use ES256 or RS256**, advertised in discovery (FR-TOK-22).
 41. **Binding follows the service provider's client type, never a per-API setting**: public clients always, confidential clients never; the per-API requirement formerly in FR-TOK-22 is withdrawn (FR-TOK-22, FR-TOK-24).
@@ -643,6 +643,16 @@ Decisions by the product owner, applied to the rows above and to the companion d
 52. **Fraud-signal viewer code is removed from the reference applications that did not have it before this project** (`identity-sts-sinatra`, `identity-saml-sinatra`); the OAuth agency reference keeps its viewer, and the SAML agency's events can be observed through it (FR-OPS-5, FR-FRD-1).
 53. **The agency reference APIs, and Login.gov's revocation and verification endpoints, accept cross-origin calls from a browser client**, as the token endpoint already does, so a public-client service provider can renew, revoke and check its own tokens from the browser (FR-TOK-14, FR-VER-6).
 54. **Process: a vulnerability GitHub reports on the repository is fixed on the base branch when the fix changes no behavior; otherwise it is reported to the product owner** for a decision (implementation plan section 6, item 11).
+
+### 2026-10-11 (interview on the open items)
+
+55. **The agency API's registered format decides the issued token type.** A service provider may name a format; a request that names none is served, and a request that names a format other than the registered one is served in the registered format, stated in the response and logged, not refused. Replaces item 38 (FR-TOK-9).
+56. **An unknown grant type is refused with the standard `unsupported_grant_type` code** in place of the earlier validation message; working integrations are unaffected (FR-TOK-1).
+57. **No narrowing of access at issuance**: with one scope per application there is nothing to narrow; a `scope` parameter on the issuance request is ignored and the issued access is the application's (FR-TOK-17; section 6, question 3).
+58. **A SAML assertion issued after the sign-in ended is signaled in the response with the same member the agency's verification uses** (`session_live: false`, present only when false), replacing the earlier text member (FR-TOK-9, FR-VER-9).
+59. **Fraud-signal delivery is on by default and gated by the agency's Attempts API enrollment**: only an enrolled agency with a usable encryption key receives events; the privacy-review questions stay open as that review's agenda (FR-FRD-1, FR-FRD-8).
+60. **The billing items flagged for the data team stand as built**, with the current defaults, until the data team answers (FR-BIL-8; implementation plan 5.8).
+61. **Process: both repositories carry a secret-scanning allowlist** for the known test placeholders, and scans are expected to run clean (implementation plan section 6, item 12).
 
 ### 2026-10-09 (baseline change: the service provider is a public client)
 
