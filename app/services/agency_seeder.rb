@@ -4,8 +4,8 @@
 #
 # Every key of an agency entry is passed through to the record, including the delegated-access
 # consent content (delegation_description, delegation_learn_more_url and the content version
-# pair). Dependency: the partner Dashboard does not yet carry these agency fields; until it does,
-# `rake delegated_access:seed` loads them in non-production environments.
+# pair). Dependency: the partner Dashboard does not carry these agency fields; the agencies that
+# have them are seeded from config/delegated_access.yml by DelegatedAccessSeeder.
 class AgencySeeder
   def initialize(
     rails_env: Rails.env,

@@ -128,6 +128,7 @@ COPY --chown=app:app ./config/application.yml.default $RAILS_ROOT/config/applica
 
 # Setup config files
 COPY --chown=app:app config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yml
+COPY --chown=app:app config/delegated_access.localdev.yml $RAILS_ROOT/config/delegated_access.yml
 COPY --chown=app:app config/iaa_gtcs.localdev.yml $RAILS_ROOT/config/iaa_gtcs.yml
 COPY --chown=app:app config/iaa_orders.localdev.yml $RAILS_ROOT/config/iaa_orders.yml
 COPY --chown=app:app config/iaa_statuses.localdev.yml $RAILS_ROOT/config/iaa_statuses.yml

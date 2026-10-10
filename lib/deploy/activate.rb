@@ -8,8 +8,8 @@ require 'yaml'
 module Deploy
   class Activate
     FILES_TO_LINK =
-      %w[agencies iaa_gtcs iaa_orders iaa_statuses integration_statuses integrations
-         partner_account_statuses partner_accounts service_providers].freeze
+      %w[agencies delegated_access iaa_gtcs iaa_orders iaa_statuses integration_statuses
+         integrations partner_account_statuses partner_accounts service_providers].freeze
 
     attr_reader :logger, :s3_client
 
