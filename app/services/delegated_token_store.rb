@@ -20,7 +20,7 @@ class DelegatedTokenStore
   # @param token [String] the token string as handed to the service provider
   # @return [String] hex SHA-256 digest; the Redis key suffix and the token's `jti`
   def self.digest(token)
-    Digest::SHA256.hexdigest(token.to_s)
+    DelegatedAccess::OpaqueToken.digest(token)
   end
 
   # Stores the live entry for a freshly issued token and lists it in the grant and family
