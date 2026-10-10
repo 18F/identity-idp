@@ -31,7 +31,6 @@
 class OpenidConnectRevokeForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
-  include Rails.application.routes.url_helpers
   include DelegatedAccessClientHandling
 
   REFRESH_TOKEN_HINT = 'refresh_token'
@@ -67,25 +66,12 @@ class OpenidConnectRevokeForm
   end
 
   def response
-    return {} if @success
-
-    { error: error_code, error_description: errors.map(&:message).join(' ') }
-  end
-
-  def url_options
-    {}
+    @success ? {} : error_response
   end
 
   private
 
-  attr_reader :error_code, :proof_thumbprint
-
-  # Records an error under the RFC code the service provider should act on. Only the first code
-  # is reported, since later checks are skipped once one fails.
-  def fail_with(attribute, code, message, type:)
-    @error_code ||= code
-    errors.add(attribute, message, type:)
-  end
+  attr_reader :proof_thumbprint
 
   def client_assertion_audience
     api_openid_connect_revoke_url
@@ -180,16 +166,7 @@ class OpenidConnectRevokeForm
     }
   end
 
-  def integration_errors
-    return nil if @success || claimed_issuer.blank?
-
-    {
-      error_details: errors.full_messages,
-      error_types: errors.attribute_names,
-      event: :oidc_revoke_request,
-      integration_exists: service_provider.present? ||
-        ServiceProvider.exists?(issuer: claimed_issuer),
-      request_issuer: claimed_issuer,
-    }
+  def integration_error_event
+    :oidc_revoke_request
   end
 end
