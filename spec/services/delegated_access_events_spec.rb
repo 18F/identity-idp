@@ -56,6 +56,31 @@ RSpec.describe DelegatedAccessEvents do
     end
   end
 
+  describe 'enrollment' do
+    it 'delivers nothing to an agency that is not in the Attempts API configuration' do
+      allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return([])
+
+      expect(described_class.consented(grant, remembered: false)).to eq([])
+      expect(redis_client.read_events(issuer: housing.issuer)).to be_empty
+      expect(housing_identity).to be_nil
+    end
+
+    it 'delivers nothing to an agency listed without a usable encryption key' do
+      housing.update!(certs: [])
+
+      expect(described_class.consented(grant, remembered: false)).to eq([])
+      expect(redis_client.read_events(issuer: housing.issuer)).to be_empty
+    end
+
+    it 'delivers nothing while delivery to agencies is switched off' do
+      allow(IdentityConfig.store).to receive(:token_exchange_attempts_delivery_enabled)
+        .and_return(false)
+
+      expect(described_class.consented(grant, remembered: false)).to eq([])
+      expect(redis_client.read_events(issuer: housing.issuer)).to be_empty
+    end
+  end
+
   describe '.consented' do
     it 'writes the consent event to the application, attributed to the agency identifier' do
       freeze_time do
