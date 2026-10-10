@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
-# The issuance record of one delegated token: an opaque access token for one agency API, or a
-# SAML assertion for one SAML-consuming API, issued to a service provider acting for a person
-# under one approval (TokenExchangeGrant).
+# The issuance record of one delegated-access exchange: an opaque access token for one agency
+# API, or a SAML assertion for one SAML-consuming API, issued to a service provider acting for a
+# person under one approval (TokenExchangeGrant), together with the refresh family the exchange
+# started. One record per exchange: each refresh of the family renews this record (one more in
+# `refresh_count`, the instant in `last_refreshed_at`) instead of adding a row, so `issued_at`
+# and `expires_at` are the first token's and the number of tokens the family has produced is
+# `refresh_count` + 1.
 #
 # This row is not the token. The live token is a Redis entry keyed by the token's digest with a
 # TTL equal to its lifetime (DelegatedTokenStore); introspection reads that entry and an absent
@@ -68,11 +72,15 @@ class TokenExchangeToken < ApplicationRecord
     (expires_at - issued_at).to_i
   end
 
-  # What the live Redis entry for this token holds (DelegatedTokenStore): everything introspection
-  # reports about the token, and the ids that tie the entry back to this record, its approval and
-  # its refresh family so revocation can find it. Times are epoch seconds, as the entry is JSON.
+  # What the live Redis entry for a token of this record's family holds (DelegatedTokenStore):
+  # everything introspection reports about the token, and the ids that tie the entry back to this
+  # record, its approval and its refresh family so revocation can find it. Times are epoch
+  # seconds, as the entry is JSON. The record's own times are the first token's; a refresh passes
+  # the new token's.
+  # @param issued_at [Time] when the token was issued
+  # @param expires_at [Time] when the token expires
   # @return [Hash{Symbol => Object}]
-  def live_attributes
+  def live_attributes(issued_at: self.issued_at, expires_at: self.expires_at)
     {
       aud: resource_server.identifier,
       scope:,
@@ -92,6 +100,18 @@ class TokenExchangeToken < ApplicationRecord
       expires_at: expires_at.to_i,
       issuance_id: id,
     }
+  end
+
+  # Counts a refresh of the family on this record, in one statement so two refreshes committed
+  # close together both count, and reloads the record.
+  # @param now [Time] the instant of the refresh
+  def record_refresh!(now:)
+    # rubocop:disable Rails/SkipsModelValidations
+    self.class.where(id:).update_all(
+      ['refresh_count = refresh_count + 1, last_refreshed_at = ?, updated_at = ?', now, now],
+    )
+    # rubocop:enable Rails/SkipsModelValidations
+    reload
   end
 
   def revoke!(reason:, now: Time.zone.now)

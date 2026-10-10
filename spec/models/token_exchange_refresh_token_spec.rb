@@ -50,6 +50,21 @@ RSpec.describe TokenExchangeRefreshToken do
     end
   end
 
+  describe '.expired_for_purge' do
+    it 'is the rows whose family ended more than a day ago, whatever their state' do
+      create(:token_exchange_refresh_token)
+      create(:token_exchange_refresh_token, :rotated, expires_at: 1.hour.ago)
+      create(:token_exchange_refresh_token, expires_at: 23.hours.ago)
+      purgeable = [
+        create(:token_exchange_refresh_token, expires_at: 25.hours.ago),
+        create(:token_exchange_refresh_token, :rotated, expires_at: 2.days.ago),
+        create(:token_exchange_refresh_token, :revoked, expires_at: 2.days.ago),
+      ]
+
+      expect(described_class.expired_for_purge).to match_array(purgeable)
+    end
+  end
+
   describe '.family_end' do
     let(:now) { Time.zone.now.change(usec: 0) }
     let(:grant) { build(:token_exchange_grant, remember_until: now + 1.year) }

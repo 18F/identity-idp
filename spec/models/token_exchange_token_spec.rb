@@ -50,6 +50,35 @@ RSpec.describe TokenExchangeToken do
         issuance_id: token.id,
       )
     end
+
+    it 'takes the times of a later token of the family in place of the record\'s' do
+      token = create(:token_exchange_token)
+      now = 1.hour.from_now.change(usec: 0)
+
+      entry = token.live_attributes(issued_at: now, expires_at: now + 300)
+      expect(entry).to include(
+        issued_at: now.to_i, expires_at: (now + 300).to_i, issuance_id: token.id,
+      )
+    end
+  end
+
+  describe '#record_refresh!' do
+    it 'counts the refresh and records its instant, once per refresh' do
+      token = create(:token_exchange_token)
+      expect(token.refresh_count).to eq(0)
+      expect(token.last_refreshed_at).to be_nil
+
+      first = 1.minute.from_now.change(usec: 0)
+      token.record_refresh!(now: first)
+      expect(token.refresh_count).to eq(1)
+      expect(token.last_refreshed_at).to eq(first)
+
+      second = 2.minutes.from_now.change(usec: 0)
+      token.record_refresh!(now: second)
+      expect(token.reload.refresh_count).to eq(2)
+      expect(token.last_refreshed_at).to eq(second)
+      expect(token.updated_at).to eq(second)
+    end
   end
 
   describe '.live' do

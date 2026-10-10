@@ -75,10 +75,10 @@ class OpenidConnectRefreshTokenForm
         access_token: @access_token,
         issued_token_type: @issued.saml? ? SAML2_TOKEN_TYPE : ACCESS_TOKEN_TYPE,
         token_type: @issued.token_type,
-        expires_in: @issued.lifetime_seconds,
+        expires_in: @lifetime,
         scope: @issued.scope,
         refresh_token: @new_refresh_token,
-        refresh_token_expires_in: @next.seconds_until_family_end(now: @issued.issued_at),
+        refresh_token_expires_in: @next.seconds_until_family_end(now: @issued_at),
       }
     else
       error_response
@@ -249,35 +249,24 @@ class OpenidConnectRefreshTokenForm
   # here. Nothing is delivered from the token endpoint itself.
   def report_family_revoked(reason:); end
 
-  # The next access token of the family and the next refresh token, copied from the family: same
-  # API, scope, approval, delegation id, assurance levels, key binding and format. The format was
-  # fixed at the exchange by the API's registration and no refresh changes it. The new refresh
-  # token carries the family's end unchanged.
+  # The next access token of the family and the next refresh token. The family's issuance record,
+  # written by the exchange that started it, stands for every token of the family: it is renewed
+  # (one more refresh counted, the instant recorded) rather than copied, so one exchange leaves
+  # one record however often it is refreshed. The new access token takes the family's API,
+  # scope, approval, delegation id, assurance levels, key binding and format from that record,
+  # with its own lifetime; the format was fixed at the exchange by the API's registration and no
+  # refresh changes it. The new refresh token carries the family's end unchanged.
   def mint!(now)
-    previous = presented.token_exchange_token
-    lifetime = TokenExchangeToken.lifetime_seconds_for(
+    @issued = presented.token_exchange_token
+    @issued_at = now
+    @lifetime = TokenExchangeToken.lifetime_seconds_for(
       now:, resource_server:, family_expires_at: presented.expires_at,
     )
+    @expires_at = now + @lifetime.seconds
     @access_token = TokenExchangeToken.generate_token
     @new_refresh_token = TokenExchangeRefreshToken.generate_token
 
-    @issued = TokenExchangeToken.create!(
-      grant: presented.grant,
-      resource_server:,
-      service_provider:,
-      user: presented.user,
-      delegation_id: presented.grant.delegation_id,
-      scope: presented.scope,
-      ial: previous.ial,
-      aal: previous.aal,
-      refresh_family_id: presented.family_id,
-      token_type: presented.key_bound? ? 'DPoP' : 'Bearer',
-      token_format: previous.token_format,
-      dpop_jkt: presented.dpop_jkt,
-      sp_rails_session_id: previous.sp_rails_session_id,
-      issued_at: now,
-      expires_at: now + lifetime.seconds,
-    )
+    @issued.record_refresh!(now:)
     @next = TokenExchangeRefreshToken.create!(
       token_digest: TokenExchangeRefreshToken.digest(@new_refresh_token),
       family_id: presented.family_id,
@@ -292,9 +281,12 @@ class OpenidConnectRefreshTokenForm
     )
   end
 
+  # The live entry carries the new token's own lifetime; the record's times are the first token's.
   def write_live_token!
     DelegatedTokenStore.write(
-      @access_token, @issued.live_attributes, ttl: @issued.lifetime_seconds
+      @access_token,
+      @issued.live_attributes(issued_at: @issued_at, expires_at: @expires_at),
+      ttl: @lifetime,
     )
   end
 

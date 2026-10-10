@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_09_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_10_100100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -759,6 +759,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_120000) do
     t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.datetime "used_at", comment: "sensitive=false"
     t.bigint "user_id", null: false, comment: "sensitive=false"
+    t.index ["expires_at"], name: "index_token_exchange_refresh_tokens_on_expires_at"
     t.index ["family_id"], name: "index_token_exchange_refresh_tokens_on_family_id"
     t.index ["grant_id"], name: "index_token_exchange_refresh_tokens_on_grant_id"
     t.index ["service_provider_id"], name: "index_token_exchange_refresh_tokens_on_service_provider_id"
@@ -792,6 +793,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_120000) do
     t.bigint "grant_id", null: false, comment: "sensitive=false"
     t.integer "ial", comment: "sensitive=false"
     t.datetime "issued_at", null: false, comment: "sensitive=false"
+    t.datetime "last_refreshed_at", comment: "sensitive=false"
+    t.integer "refresh_count", default: 0, null: false, comment: "sensitive=false"
     t.string "refresh_family_id", null: false, comment: "sensitive=false"
     t.bigint "resource_server_id", null: false, comment: "sensitive=false"
     t.string "revocation_reason", comment: "sensitive=false"
