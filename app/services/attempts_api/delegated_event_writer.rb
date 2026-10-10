@@ -10,13 +10,17 @@ module AttemptsApi
   # event-specific field; it replaces `user_uuid` with the person's identifier at the agency,
   # drops the service provider's Google Analytics cookies, and adds `delegation_id` and
   # `actor_issuer`. A *written* event is produced by Login.gov's server for the agency alone (the
-  # consent and token events); it carries no network details, because the request behind it, when
-  # there is one, came from the service provider's server and not from the person, and the IdP
-  # session appears only as the same opaque hash the session's other events carry.
+  # consent and token events), through the same TrackerEvents methods the session tracker uses,
+  # so the Attempts API's event catalog defines every event an agency can receive; it carries no
+  # network details, because the request behind it, when there is one, came from the service
+  # provider's server and not from the person, and the IdP session appears only as the same
+  # opaque hash the session's other events carry.
   #
   # Every delivery is best-effort: a failure is reported and logged, never raised, so a broken
   # agency configuration cannot affect the person or the service provider.
   class DelegatedEventWriter
+    include TrackerEvents
+
     attr_reader :recipient, :agency_uuid, :delegation_id, :actor_issuer
 
     # @param recipient [ServiceProvider] the record whose Attempts credentials receive the events
@@ -24,12 +28,16 @@ module AttemptsApi
     # @param delegation_id [String] join key the agency also sees at token verification
     # @param actor_issuer [String] issuer of the service provider acting for the person
     # @param analytics [Analytics] where delivery outcomes are logged
-    def initialize(recipient:, agency_uuid:, delegation_id:, actor_issuer:, analytics:)
+    # @param extra_metadata [Hash] members added to every written event, for example the opaque
+    #   hash of the person's Login.gov session
+    def initialize(recipient:, agency_uuid:, delegation_id:, actor_issuer:, analytics:,
+                   extra_metadata: {})
       @recipient = recipient
       @agency_uuid = agency_uuid
       @delegation_id = delegation_id
       @actor_issuer = actor_issuer
       @analytics = analytics
+      @extra_metadata = extra_metadata
     end
 
     # Whether anything can reach this recipient: delivery is switched on and the recipient is
@@ -54,25 +62,26 @@ module AttemptsApi
       deliver(events.map { |event| remap(event) }, event_type: 'buffered_session_events')
     end
 
-    # Writes one server-side event for the agency.
+    # Writes one server-side event for the agency. The TrackerEvents methods call this with the
+    # event type and the event's own members, as they do on the session tracker.
     # @param event_type [String] the Attempts event type, for example `delegated-access-consented`
     # @param metadata [Hash] the event's own members
     # @return [AttemptEvent, nil] the event written, or nil when nothing was delivered
-    def write(event_type, metadata)
+    def track_event(event_type, metadata = {})
       event = AttemptEvent.new(
         event_type:,
         # `subject.session_id` is, by the published schema, the service provider's own session
         # identifier for the sign-in; a server-to-server event has none.
         session_id: nil,
         occurred_at: Time.zone.now,
-        event_metadata: base_metadata.merge(metadata),
+        event_metadata: base_metadata.merge(extra_metadata).merge(metadata),
       )
       deliver([event], event_type:).first
     end
 
     private
 
-    attr_reader :analytics
+    attr_reader :analytics, :extra_metadata
 
     def remap(event)
       metadata = (event.event_metadata || {}).symbolize_keys

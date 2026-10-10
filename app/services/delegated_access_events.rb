@@ -25,11 +25,6 @@
 # the person's sign-in, the service provider's own Attempts events or the token request that
 # produced the event.
 class DelegatedAccessEvents
-  EVENT_CONSENTED = 'delegated-access-consented'
-  EVENT_TOKEN_ISSUED = 'delegated-access-token-issued'
-  EVENT_TOKEN_REFRESHED = 'delegated-access-token-refreshed'
-  EVENT_REVOKED = 'delegated-access-revoked'
-
   # A re-approval of the same application replaces the earlier approval and carries its live
   # tokens over, so nothing ended for the agency; it is not reported as a revocation.
   UNREPORTED_REVOCATION_REASONS = %w[superseded_by_new_consent].freeze
@@ -49,14 +44,15 @@ class DelegatedAccessEvents
   # @param remembered [Boolean] true when an earlier approval was reused rather than given now
   # @return [Array<AttemptsApi::AttemptEvent>] the events written
   def self.consented(grant, remembered:, analytics: nil)
-    new(grant:, analytics:).write_to_each_recipient(
-      EVENT_CONSENTED,
-      application: grant.application.issuer,
-      scope: grant.application.delegation_scope,
-      remembered:,
-      source: grant.source,
-      consented_at: grant.consented_at.to_f,
-    )
+    new(grant:, analytics:).write_to_each_recipient do |writer|
+      writer.delegated_access_consented(
+        application: grant.application.issuer,
+        scope: grant.application.delegation_scope,
+        remembered:,
+        source: grant.source,
+        consented_at: grant.consented_at.to_f,
+      )
+    end
   end
 
   # A delegated token was issued by exchange for one API. Written to that API's recipient. Called
@@ -64,9 +60,9 @@ class DelegatedAccessEvents
   # @param issued [TokenExchangeToken] the issuance record
   # @return [AttemptsApi::AttemptEvent, nil]
   def self.token_issued(issued, analytics: nil)
-    new(grant: issued.grant, analytics:).write_to(
-      issued.resource_server.attempts_recipient, EVENT_TOKEN_ISSUED, token_metadata(issued)
-    )
+    new(grant: issued.grant, analytics:).write_to(issued.resource_server.attempts_recipient) do |w|
+      w.delegated_access_token_issued(**token_metadata(issued))
+    end
   end
 
   # A delegated token was renewed with a refresh token for one API. Written to that API's
@@ -74,9 +70,9 @@ class DelegatedAccessEvents
   # @param issued [TokenExchangeToken] the issuance record of the renewed token
   # @return [AttemptsApi::AttemptEvent, nil]
   def self.token_refreshed(issued, analytics: nil)
-    new(grant: issued.grant, analytics:).write_to(
-      issued.resource_server.attempts_recipient, EVENT_TOKEN_REFRESHED, token_metadata(issued)
-    )
+    new(grant: issued.grant, analytics:).write_to(issued.resource_server.attempts_recipient) do |w|
+      w.delegated_access_token_refreshed(**token_metadata(issued))
+    end
   end
 
   # Access under an approval ended, with the reason. Called by `TokenExchangeGrant#revoke!` for
@@ -93,15 +89,15 @@ class DelegatedAccessEvents
     return [] if UNREPORTED_REVOCATION_REASONS.include?(reason)
 
     events = new(grant:, analytics:)
-    metadata = {
-      application: grant.application.issuer,
-      resource: resource_server&.identifier,
-      reason:,
-    }
+    write = lambda do |writer|
+      writer.delegated_access_revoked(
+        application: grant.application.issuer, resource: resource_server&.identifier, reason:,
+      )
+    end
     if resource_server
-      Array(events.write_to(resource_server.attempts_recipient, EVENT_REVOKED, metadata))
+      Array(events.write_to(resource_server.attempts_recipient, &write))
     else
-      events.write_to_each_recipient(EVENT_REVOKED, metadata)
+      events.write_to_each_recipient(&write)
     end
   end
 
@@ -132,17 +128,21 @@ class DelegatedAccessEvents
   end
 
   # Writes one event to every recipient of the approval's application.
+  # @yieldparam writer [AttemptsApi::DelegatedEventWriter] addressed to one recipient; the block
+  #   calls the TrackerEvents method for the event
   # @return [Array<AttemptsApi::AttemptEvent>] the events written
-  def write_to_each_recipient(event_type, metadata)
+  def write_to_each_recipient(&)
     grant.application.delegation_attempts_recipients.filter_map do |recipient|
-      write_to(recipient, event_type, metadata)
+      write_to(recipient, &)
     end
   end
 
   # Writes one event to one recipient.
+  # @yieldparam writer [AttemptsApi::DelegatedEventWriter] addressed to the recipient
   # @return [AttemptsApi::AttemptEvent, nil] the event written, or nil when nothing was delivered
-  def write_to(recipient, event_type, metadata)
-    writer_for(recipient)&.write(event_type, session_metadata.merge(metadata))
+  def write_to(recipient)
+    writer = writer_for(recipient)
+    yield writer if writer
   end
 
   # A writer addressed to one recipient, or nil when nothing can reach it. The person's identifier
@@ -161,6 +161,7 @@ class DelegatedAccessEvents
       delegation_id: grant.delegation_id,
       actor_issuer: grant.service_provider_issuer,
       analytics:,
+      extra_metadata: session_metadata,
     )
   end
 
