@@ -199,6 +199,39 @@ RSpec.describe TokenExchangeGrant do
     end
   end
 
+  describe '.partition_current' do
+    it 'keeps remembered, current approvals and lists every other application for approval' do
+      third_application = create(:service_provider, :delegation_application)
+      kept = approve
+      single_use = described_class.approve!(
+        user:, service_provider:, application: other_application,
+        source: 'consent_screen', remember: false, rails_session_id: 'session-1'
+      )
+
+      partition = described_class.partition_current(
+        user:, service_provider_issuer: service_provider.issuer,
+        applications: [third_application, other_application, application]
+      )
+
+      expect(partition[:kept]).to eq([kept])
+      expect(partition[:needing_approval]).to eq([third_application, other_application])
+      expect(single_use.reload).not_to be_revoked
+    end
+
+    it 'lists an application whose agency content changed materially since the approval' do
+      approve
+      application.agency.update!(consent_content_version: 2, consent_material_version: 2)
+
+      partition = described_class.partition_current(
+        user:, service_provider_issuer: service_provider.issuer, applications: [application],
+      )
+
+      expect(partition[:kept]).to be_empty
+      expect(partition[:needing_approval]).to eq([application])
+      expect(application.association(:agency)).to be_loaded
+    end
+  end
+
   describe '.revoke_for! and .revoke_all_for!' do
     it 'revokes one application, or every approval given to a service provider' do
       approve

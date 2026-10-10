@@ -66,6 +66,32 @@ class TokenExchangeGrant < ApplicationRecord
     grants.index_by(&:application_service_provider_id)
   end
 
+  # Splits the applications a service provider requested into the ones the person need not be
+  # asked about again and the ones that need a decision. An application is kept when its live
+  # approval is remembered, unexpired and given under content that has not materially changed;
+  # every other application (no live approval, a single-authorization one, an expired or stale
+  # one) needs approval. Freshness reads each application's agency, so the agencies are loaded
+  # in one query here and stay loaded for whatever the caller does with the applications next.
+  #
+  # @param applications [Array<ServiceProvider>] in request order, which both lists keep
+  # @return [Hash{Symbol => Array}] +kept+ as grants, +needing_approval+ as applications
+  def self.partition_current(user:, service_provider_issuer:, applications:)
+    ActiveRecord::Associations::Preloader.new(records: applications, associations: :agency).call
+    grants = live_by_application(user:, service_provider_issuer:, applications:)
+
+    kept = []
+    needing_approval = []
+    applications.each do |application|
+      grant = grants[application.id]
+      if grant&.remembered_and_current?
+        kept << grant
+      else
+        needing_approval << application
+      end
+    end
+    { kept:, needing_approval: }
+  end
+
   # Whether a live, currently valid approval lets +service_provider_issuer+ act for +user+ at
   # +application+. Used at exchange time.
   def self.authorizes?(user:, service_provider_issuer:, application:, current_authorization: nil)
