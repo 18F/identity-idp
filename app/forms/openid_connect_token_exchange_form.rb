@@ -361,6 +361,10 @@ class OpenidConnectTokenExchangeForm
     end
 
     DelegatedTokenStore.write(@reference, @issued.live_attributes, ttl: lifetime)
+
+    # The agency learns of the issuance through the Attempts API. Delivery is best-effort and
+    # never affects the response.
+    DelegatedAccessEvents.token_issued(@issued)
   end
 
   # One exchange opens one family, so the family id is new here; every token the family later

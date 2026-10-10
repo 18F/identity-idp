@@ -264,6 +264,14 @@ RSpec.describe TokenExchangeGrant do
   end
 
   describe '#revoke!' do
+    it 'tells the application agency, with the reason' do
+      grant = approve
+      expect(DelegatedAccessEvents).to receive(:access_revoked)
+        .with(grant:, reason: 'sp_disconnected')
+
+      grant.revoke!(reason: 'sp_disconnected')
+    end
+
     it 'ends every live delegated token and refresh token issued under the approval' do
       grant = approve
       plaintext = TokenExchangeToken.generate_token

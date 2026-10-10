@@ -236,6 +236,65 @@ RSpec.describe 'OpenID Connect token exchange' do
         exchange
         expect(TokenExchangeToken.last.aal).to eq(3)
       end
+
+      describe 'telling the agency' do
+        let(:redis_client) { AttemptsApi::RedisClient.new }
+        let(:delivery_enabled) { true }
+
+        before do
+          allow(IdentityConfig.store).to receive_messages(
+            attempts_api_enabled: true,
+            token_exchange_attempts_delivery_enabled: delivery_enabled,
+            allowed_attempts_providers: [{ 'issuer' => application.issuer, 'keys' => [] }],
+          )
+        end
+
+        def agency_events
+          redis_client.read_events(issuer: application.issuer).values.map do |jwe|
+            AttemptsApi::AttemptEvent.from_jwe(jwe, saml_test_sp_private_key)
+          end
+        end
+
+        it 'delivers a token-issued event to the application agency' do
+          exchange
+
+          expect(response).to have_http_status(:ok)
+          events = agency_events
+          expect(events.map(&:event_type)).to eq(['delegated-access-token-issued'])
+          expect(events.first.event_metadata).to include(
+            delegation_id: grant.delegation_id,
+            actor_issuer: service_provider.issuer,
+            application: application.issuer,
+            resource: resource_server.identifier,
+            scope: 'token_exchange:housing_records',
+            token_type:,
+            user_uuid: AgencyIdentity.find_by(user:, agency: application.agency).uuid,
+          )
+          expect(events.first.event_metadata).not_to have_key(:user_ip_address)
+          expect(ServiceProviderIdentity.where(service_provider: application.issuer)).to be_empty
+        end
+
+        it 'issues the token even when delivery fails' do
+          allow(AttemptsApi::RedisClient).to receive(:new).and_raise(Redis::CannotConnectError)
+
+          exchange
+
+          expect(response).to have_http_status(:ok)
+          expect(DelegatedTokenStore.read(json[:access_token])).to be_present
+        end
+
+        context 'when delivery to agencies is switched off' do
+          let(:delivery_enabled) { false }
+
+          it 'issues the token and tells the agency nothing' do
+            exchange
+
+            expect(response).to have_http_status(:ok)
+            expect(redis_client.read_events(issuer: application.issuer)).to be_empty
+            expect(AgencyIdentity.where(user:, agency: application.agency)).to be_empty
+          end
+        end
+      end
     end
 
     describe 'billing' do

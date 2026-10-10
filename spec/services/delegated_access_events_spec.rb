@@ -100,6 +100,120 @@ RSpec.describe DelegatedAccessEvents do
     end
   end
 
+  describe 'token events' do
+    let!(:housing_api) do
+      create(
+        :token_exchange_resource_server, service_provider: housing,
+                                         identifier: 'https://records-api.housing.example.gov'
+      )
+    end
+    let(:issued) do
+      create(
+        :token_exchange_token, grant:, resource_server: housing_api, ial: 2, aal: 2,
+                               token_type: 'DPoP', expires_at: 15.minutes.from_now
+      )
+    end
+
+    before { user.update!(unique_session_id: 'idp-session-1') }
+
+    it 'writes token-issued for the API with the join keys and no network details' do
+      freeze_time do
+        event = described_class.token_issued(issued)
+
+        expect(event.event_type).to eq('delegated-access-token-issued')
+        expect(event.session_id).to be_nil
+        expect(event.event_metadata).to include(
+          user_uuid: housing_identity.uuid,
+          delegation_id: grant.delegation_id,
+          actor_issuer: mybenefits.issuer,
+          application: housing.issuer,
+          resource: 'https://records-api.housing.example.gov',
+          scope: 'token_exchange:housing_records',
+          ial: 2,
+          aal: 2,
+          token_type: 'DPoP',
+          token_format: 'oauth',
+          expires_at: 15.minutes.from_now.to_i,
+          unique_session_id: Digest::SHA1.hexdigest('idp-session-1'),
+        )
+        %i[user_ip_address user_agent client_port device_id google_analytics_cookies].each do |key|
+          expect(event.event_metadata).not_to have_key(key)
+        end
+        expect(event.event_metadata.values.map(&:to_s).join).not_to include('idp-session-1')
+        expect(housing_events.map(&:event_type)).to eq(['delegated-access-token-issued'])
+      end
+    end
+
+    it 'writes token-refreshed the same way' do
+      event = described_class.token_refreshed(issued)
+
+      expect(event.event_type).to eq('delegated-access-token-refreshed')
+      expect(event.event_metadata).to include(
+        delegation_id: grant.delegation_id, resource: housing_api.identifier, token_type: 'DPoP',
+      )
+    end
+
+    it 'writes the event to the recipient the API names in place of the application' do
+      records_office = create(:service_provider)
+      housing_api.update!(attempts_service_provider: records_office)
+      allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
+        [{ 'issuer' => records_office.issuer, 'keys' => [] }],
+      )
+
+      described_class.token_issued(issued)
+
+      expect(redis_client.read_events(issuer: records_office.issuer).size).to eq(1)
+      expect(redis_client.read_events(issuer: housing.issuer)).to be_empty
+      expect(AgencyIdentity.find_by(user:, agency: records_office.agency)).to be_present
+    end
+
+    it 'omits the session hash when the person has no live session' do
+      user.update!(unique_session_id: nil)
+      event = described_class.token_issued(issued)
+      expect(event.event_metadata).not_to have_key(:unique_session_id)
+    end
+  end
+
+  describe '.access_revoked' do
+    it 'tells every recipient of the application why access ended' do
+      events = described_class.access_revoked(grant:, reason: 'user_revoked')
+
+      expect(events.map(&:event_type)).to eq(['delegated-access-revoked'])
+      expect(events.first.event_metadata).to include(
+        user_uuid: housing_identity.uuid,
+        delegation_id: grant.delegation_id,
+        actor_issuer: mybenefits.issuer,
+        application: housing.issuer,
+        resource: nil,
+        reason: 'user_revoked',
+      )
+      expect(housing_events.map(&:event_type)).to eq(['delegated-access-revoked'])
+    end
+
+    it 'names the API when only one refresh family ended' do
+      housing_api = create(:token_exchange_resource_server, service_provider: housing)
+      other_api = create(
+        :token_exchange_resource_server, service_provider: housing,
+                                         attempts_service_provider: create(:service_provider)
+      )
+
+      events = described_class.access_revoked(
+        grant:, reason: 'refresh_token_reuse', resource_server: housing_api,
+      )
+
+      expect(events.size).to eq(1)
+      expect(events.first.event_metadata).to include(
+        reason: 'refresh_token_reuse', resource: housing_api.identifier,
+      )
+      expect(redis_client.read_events(issuer: other_api.attempts_recipient.issuer)).to be_empty
+    end
+
+    it 'does not report a superseding re-approval' do
+      expect(described_class.access_revoked(grant:, reason: 'superseded_by_new_consent')).to eq([])
+      expect(redis_client.read_events(issuer: housing.issuer)).to be_empty
+    end
+  end
+
   context 'when the recipient is not enrolled in the Attempts API' do
     let(:allowed_attempts_providers) { [] }
 
