@@ -70,8 +70,9 @@ class OpenidConnectRefreshTokenForm
   # The same shape as the exchange response, so a service provider handles both alike.
   # `issued_token_type` names the family's format, fixed at the exchange by the API's
   # registration. Both lifetimes are counted from the instant the new tokens were created. For a
-  # SAML family `attributes: "identifiers_only"` says the new assertion carries no proofed
-  # attributes because the sign-in that started the delegation has ended.
+  # SAML family `session_live: false` (present only then) says the sign-in that started the
+  # delegation no longer supplies the person's decrypted profile, so the new assertion carries
+  # identifiers and email only; it is the same member introspection reports to the agency.
   def response
     if @success
       body = {
@@ -83,7 +84,7 @@ class OpenidConnectRefreshTokenForm
         refresh_token: @new_refresh_token,
         refresh_token_expires_in: @next.seconds_until_family_end(now: @issued_at),
       }
-      body[:attributes] = 'identifiers_only' if @assertion&.identifiers_only?
+      body[:session_live] = false if @assertion&.identifiers_only?
       body
     else
       error_response

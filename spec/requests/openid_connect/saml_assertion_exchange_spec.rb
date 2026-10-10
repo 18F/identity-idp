@@ -301,10 +301,10 @@ RSpec.describe 'OpenID Connect token exchange for SAML assertions' do
           OutOfBandSessionAccessor.new(rails_session_id).put_empty_user_session(300)
         end
 
-        it 'issues identifiers and email only and says so' do
+        it 'issues identifiers and email only and reports the session as not live' do
           body = exchange
           expect(response).to have_http_status(:ok)
-          expect(body[:attributes]).to eq('identifiers_only')
+          expect(body[:session_live]).to eq(false)
           doc, = decode_assertion(body[:access_token])
           names = %w[uuid email aal ial delegation_scopes delegation_id actor]
           names << 'dpop_jkt' if bound
@@ -381,7 +381,7 @@ RSpec.describe 'OpenID Connect token exchange for SAML assertions' do
         body = refresh(first[:refresh_token])
 
         expect(response).to have_http_status(:ok)
-        expect(body[:attributes]).to eq('identifiers_only')
+        expect(body[:session_live]).to eq(false)
         expect(body[:scope]).to eq(expected_scope)
         doc, = decode_assertion(body[:access_token])
         attrs = attribute_values(doc)
@@ -581,13 +581,18 @@ RSpec.describe 'OpenID Connect token exchange for SAML assertions' do
 
     include_examples 'a SAML assertion exchange', bound: false
 
-    it 'issues an access token for the SAML API when that is what is requested' do
+    it 'issues the assertion when an access token is requested: the registration decides' do
+      stub_request_analytics
       body = exchange(requested_token_type: OpenidConnectTokenExchangeForm::ACCESS_TOKEN_TYPE)
+
       expect(response).to have_http_status(:ok)
-      expect(body[:issued_token_type]).to eq(OpenidConnectTokenExchangeForm::ACCESS_TOKEN_TYPE)
-      expect(body[:token_type]).to eq('Bearer')
-      expect(body[:access_token]).to match(/\A[A-Za-z0-9_-]{43}\z/)
-      expect(TokenExchangeToken.last.token_format).to eq('oauth')
+      expect(body[:issued_token_type]).to eq(OpenidConnectTokenExchangeForm::SAML2_TOKEN_TYPE)
+      expect(body[:token_type]).to eq('N_A')
+      expect(TokenExchangeToken.last.token_format).to eq('saml2')
+      expect(@analytics).to have_logged_event(
+        :openid_connect_token_exchange,
+        hash_including(success: true, requested_token_type_mismatch: true),
+      )
     end
   end
 end

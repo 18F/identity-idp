@@ -93,9 +93,10 @@ class OpenidConnectTokenExchangeForm
   # registered one, and `token_type` is `N_A` for a SAML assertion, which is not a credential at
   # Login.gov's own endpoints. `refresh_token_expires_in` is how long the family lasts, measured
   # from the same instant as `expires_in`, so the service provider can schedule its refreshes
-  # without clock arithmetic against the response time. `attributes: "identifiers_only"` tells
-  # the service provider that an assertion carries no proofed attributes because the sign-in held
-  # no decrypted profile.
+  # without clock arithmetic against the response time. For a SAML assertion, `session_live:
+  # false` (present only then) tells the service provider that the sign-in no longer supplies the
+  # person's decrypted profile, so the assertion carries identifiers and email only; it is the
+  # same member introspection reports to the agency.
   def response
     if @success
       body = {
@@ -107,7 +108,7 @@ class OpenidConnectTokenExchangeForm
         refresh_token: @refresh_token,
         refresh_token_expires_in: @refresh.seconds_until_family_end(now: @issued.issued_at),
       }
-      body[:attributes] = 'identifiers_only' if @assertion&.identifiers_only?
+      body[:session_live] = false if @assertion&.identifiers_only?
       body
     else
       error_response
