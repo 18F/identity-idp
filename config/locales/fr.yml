@@ -1893,7 +1893,6 @@ openid_connect.token.errors.refresh_token_missing: refresh_token est obligatoire
 openid_connect.token.errors.refresh_token_reused: Ce jeton de rafraîchissement a déjà été utilisé ; tous les jetons de sa famille ont donc été révoqués. Lancez un nouvel échange pour continuer.
 openid_connect.token.errors.resource_missing: resource est obligatoire et doit désigner une API enregistrée.
 openid_connect.token.errors.resource_not_allowed_on_refresh: resource n’est pas accepté lors d’un rafraîchissement ; l’API est fixée par le jeton de rafraîchissement. Procédez à un nouvel échange pour obtenir un jeton pour une autre API.
-openid_connect.token.errors.saml_not_available: 'Cette API est enregistrée pour des assertions SAML, qui ne sont pas disponibles.'
 openid_connect.token.errors.subject_token_missing: subject_token est obligatoire.
 openid_connect.token.errors.subject_token_session_ended: La session qui a délivré subject_token est terminée ; l’utilisateur doit se reconnecter avant qu’une nouvelle délégation puisse commencer.
 openid_connect.token.errors.unknown_client: L’affirmation iss de client_assertion ne correspond à aucun client enregistré.
