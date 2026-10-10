@@ -1374,6 +1374,90 @@ RSpec.describe OpenidConnect::AuthorizationController do
           expect(AttemptsApi::DelegationContext.from_session(session).present?).to eq(false)
         end
       end
+
+      context 'when a remembered approval covers the request' do
+        let!(:grant) do
+          TokenExchangeGrant.approve!(
+            user:, service_provider:, application:, source: 'account_page', remember: true,
+            now: 2.days.ago
+          )
+        end
+        let(:redis_client) { AttemptsApi::RedisClient.new }
+
+        before do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+          user.identities.last.update!(
+            verified_attributes: %w[email], last_consented_at: Time.zone.now,
+          )
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('server_side')
+          allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+        end
+
+        def agency_events
+          redis_client.read_events(issuer: application.issuer).values.map do |jwe|
+            AttemptsApi::AttemptEvent.from_jwe(jwe, saml_test_sp_private_key)
+          end
+        end
+
+        it 'releases to the agency at handoff as remembered and delivers login-completed' do
+          action
+          expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+
+          events = agency_events
+          expect(events.map(&:event_type)).to match_array(
+            ['delegated-access-consented', 'login-completed'],
+          )
+          consented = events.find { |e| e.event_type == 'delegated-access-consented' }
+          expect(consented.event_metadata).to include(
+            remembered: true,
+            source: 'account_page',
+            consented_at: grant.consented_at.to_f,
+            delegation_id: grant.delegation_id,
+            actor_issuer: client_id,
+          )
+          completed = events.find { |e| e.event_type == 'login-completed' }
+          expect(completed.event_metadata).to include(
+            delegation_id: grant.delegation_id,
+            actor_issuer: client_id,
+            user_uuid: AgencyIdentity.find_by(user:, agency: application.agency).uuid,
+          )
+          expect(completed.event_metadata).not_to have_key(:google_analytics_cookies)
+          expect(AttemptsApi::DelegationContext.from_session(session).approved_issuers)
+            .to eq([application.issuer])
+        end
+
+        it 'releases again on the next sign-in that reuses the approval' do
+          action
+          AttemptsApi::RedisClient.new.delete_events(
+            issuer: application.issuer, keys: redis_client.read_events(issuer: application.issuer).keys,
+          )
+
+          # A later authorization from the service provider: a new request in a new session.
+          session.delete(:sp)
+          session.delete(AttemptsApi::DelegationContext::SESSION_KEY)
+          get :index, params: params.merge(state: SecureRandom.hex, nonce: SecureRandom.hex)
+
+          consented = agency_events.select { |e| e.event_type == 'delegated-access-consented' }
+          expect(consented.map { |e| e.event_metadata[:remembered] }).to eq([true])
+        end
+
+        it 'does not release again when this request was already released at consent' do
+          # The consent screen already approved the agency and released for this request.
+          agency_uuid = AgencyIdentityLinker.for(
+            user:, service_provider: application, skip_create: false,
+          ).uuid
+          seeded = AttemptsApi::DelegationContext.from_session(session)
+          seeded.start(request_id: 'seed', sp_issuer: client_id, candidate_issuers: [application.issuer])
+          seeded.approve(issuer: application.issuer, delegation_id: grant.delegation_id, agency_uuid:)
+          allow_any_instance_of(AttemptsApi::DelegationContext).to receive(:released_for?)
+            .and_return(true)
+
+          action
+
+          expect(agency_events.map(&:event_type)).to eq(['login-completed'])
+        end
+      end
     end
 
     context 'user is suspended' do

@@ -58,6 +58,18 @@ module VerifySpAttributesConcern
     # The person has answered for this authorization; the screen is not shown again before the
     # handoff completes, whatever the remember choice was.
     user_session[:delegation_consent_authorization] = delegation_authorization_key
+
+    # Now that the person has approved, the applications' agencies receive the sign-in's fraud
+    # signals. Approvals kept from an earlier decision are reported as reused.
+    AttemptsApi::DelegatedRelease.new(
+      user: current_user,
+      session:,
+      user_session:,
+      analytics:,
+      grants: @delegation_consent_result.approved,
+      remembered_grants: @delegation_consent_result.kept,
+      request_id: sp_session[:request_id],
+    ).call
   end
 
   # The approvals written by the submit that just ran, for analytics.

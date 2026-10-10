@@ -26,9 +26,11 @@ module AttemptsApi
 
     include TrackerEvents
 
-    def self.write_existing_user_events(sp:, historical_attempts: [])
+    # @param extra_metadata [Hash] members added to every released event; a delegated release adds
+    #   `delegation_id` and `actor_issuer` so the agency can tell the events apart
+    def self.write_existing_user_events(sp:, historical_attempts: [], extra_metadata: {})
       historical_attempts.each do |event_data|
-        event = HistoricalAttemptEvent.new(event_data:, sp:)
+        event = HistoricalAttemptEvent.new(event_data:, sp:, extra_metadata:)
 
         jwe = event.to_jwe(issuer: sp.issuer, public_key: sp.attempts_public_key)
 

@@ -824,6 +824,71 @@ RSpec.describe SignUp::CompletionsController do
         expect(response).not_to render_template(:show)
       end
 
+      context 'with the approved application enrolled in the Attempts API' do
+        let(:redis_client) { AttemptsApi::RedisClient.new }
+
+        before do
+          allow(IdentityConfig.store).to receive_messages(
+            attempts_api_enabled: true,
+            token_exchange_attempts_delivery_enabled: true,
+            allowed_attempts_providers: [{ 'issuer' => housing.issuer, 'keys' => [] }],
+          )
+          subject.session[:sp][:request_id] = 'req-1'
+          AttemptsApi::DelegationContext.from_session(subject.session).start(
+            request_id: 'req-1', sp_issuer: current_sp.issuer,
+            candidate_issuers: [housing.issuer]
+          )
+        end
+
+        def housing_events
+          redis_client.read_events(issuer: housing.issuer).values.map do |jwe|
+            AttemptsApi::AttemptEvent.from_jwe(jwe, saml_test_sp_private_key)
+          end
+        end
+
+        it 'releases the consent event to the agency and keeps it approved for the session' do
+          patch :update
+
+          events = housing_events
+          expect(events.map(&:event_type)).to eq(['delegated-access-consented'])
+          expect(events.first.event_metadata).to include(
+            remembered: false,
+            source: 'consent_screen',
+            application: housing.issuer,
+            actor_issuer: current_sp.issuer,
+            delegation_id: live_grants.find_by(application: housing).delegation_id,
+          )
+
+          context = AttemptsApi::DelegationContext.from_session(subject.session)
+          expect(context.approved_issuers).to eq([housing.issuer])
+          expect(context.released_for?('req-1')).to eq(true)
+          expect(AgencyIdentity.where(user:, agency: housing.agency)).to exist
+          # Retirement Benefits Portal is not enrolled: nothing for it, and no identifier.
+          expect(redis_client.read_events(issuer: retirement.issuer)).to be_empty
+          expect(AgencyIdentity.where(user:, agency: retirement.agency)).to be_empty
+        end
+
+        it 'reports an approval kept from before as remembered' do
+          TokenExchangeGrant.approve!(
+            user:, service_provider: current_sp, application: housing,
+            source: 'account_page', remember: true
+          )
+
+          patch :update
+
+          expect(housing_events.map { |e| e.event_metadata.slice(:remembered, :source) })
+            .to eq([{ remembered: true, source: 'account_page' }])
+        end
+
+        it 'does not block the screen when delivery fails' do
+          allow(AttemptsApi::RedisClient).to receive(:new).and_raise(Redis::CannotConnectError)
+
+          expect { patch :update }.not_to raise_error
+          expect(live_grants.map(&:application)).to contain_exactly(housing, retirement)
+          expect(response).to_not render_template(:show)
+        end
+      end
+
       it 'treats a malformed idv_form param as unchecked remember rather than raising' do
         expect { patch :update, params: { idv_form: 'x' } }.not_to raise_error
       end

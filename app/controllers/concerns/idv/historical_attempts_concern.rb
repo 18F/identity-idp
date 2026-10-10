@@ -16,11 +16,8 @@ module Idv
 
     def send_historic_events?
       return false, :idv_not_requested unless idv_requested?
-      return false, :no_user_proofing_event if existing_user_proofing_event.blank?
-      return false, :already_sent if existing_user_proofing_event.already_sent_to_sp?(current_sp.id)
-      return false, :no_encrypted_file_reference if profile.encrypted_attempts_file_reference.blank?
 
-      return true, nil
+      AttemptsApi::HistoricalReleaseCheck.new(profile:, sp: current_sp).call
     end
 
     private

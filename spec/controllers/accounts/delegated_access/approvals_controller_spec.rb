@@ -74,6 +74,35 @@ RSpec.describe Accounts::DelegatedAccess::ApprovalsController do
   end
 
   describe '#create' do
+    context 'with an application enrolled in the Attempts API' do
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          attempts_api_enabled: true,
+          token_exchange_attempts_delivery_enabled: true,
+          allowed_attempts_providers: [{ 'issuer' => housing.issuer, 'keys' => [] }],
+        )
+      end
+
+      it 'tells the agency of the approval, attributed to the agency identifier' do
+        post :create, params: { service_provider_id: mybenefits.id, application_ids: [housing.id] }
+
+        jwes = AttemptsApi::RedisClient.new.read_events(issuer: housing.issuer).values
+        events = jwes.map do |jwe|
+          AttemptsApi::AttemptEvent.from_jwe(jwe, saml_test_sp_private_key)
+        end
+        expect(events.map(&:event_type)).to eq(['delegated-access-consented'])
+        expect(events.first.event_metadata).to include(
+          user_uuid: AgencyIdentity.find_by(user:, agency: housing.agency).uuid,
+          delegation_id: live_grants.first.delegation_id,
+          actor_issuer: mybenefits.issuer,
+          application: housing.issuer,
+          remembered: false,
+          source: 'account_page',
+        )
+        expect(ServiceProviderIdentity.where(user:, service_provider: housing.issuer)).to be_empty
+      end
+    end
+
     it 'records remembered approvals, the account event and an email, and logs analytics' do
       expect do
         post :create, params: {
