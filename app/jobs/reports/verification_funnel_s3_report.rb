@@ -1,32 +1,35 @@
 # frozen_string_literal: true
 
 require 'csv'
-require 'reporting/demographics_metrics_s3_report'
+require 'reporting/verification_funnel_s3_report'
 
 module Reports
-  # This job reads pre-generated demographics CSV files from S3 and emails them to partners.
+  # This job reads pre-generated verification funnel CSV files from S3 and emails
+  # them to partners. The CSVs are produced by Reports::VerificationFunnelReport in the
+  # identity-reporting-rails app
   #
   # @param run_date [Time] When the job runs (defaults to now)
-  # @param days_back [Integer] How many days to look back for the reporting period (defaults to 3)
+  # @param days_back [Integer] How many days to look back for the reporting period
   # @param receiver [Symbol] :internal (Login only) or :both (partners + Login)
-  # @param time_frame [String] 'quarterly' for now - determines time range for report
+  # @param time_frame [String] 'weekly' or 'monthly' - determines the report period
   #
   # @example
-  #   # Manual execution (run late in day on March 1st for Q1 data, looking back 3 days)
-  #   job = Reports::DemographicsMetricsS3Report.new(
+  #   job = Reports::VerificationFunnelS3Report.new(
   #     Time.zone.now,  # run_date
-  #     3,              # days_back_for_time_period
+  #     1,              # days_back_for_time_period
   #     :both,          # receiver
-  #     'quarterly'     # time_frame
+  #     'weekly'        # time_frame
   #   )
   #   job.perform
-  class DemographicsMetricsS3Report < BaseReport
+  class VerificationFunnelS3Report < BaseReport
     include JobHelpers::ServiceProviderMetadata
 
-    REPORT_NAME = 'DemographicsMetricsReport'
-    DEFAULT_TIME_FRAME = 'quarterly' # Report coverage - quarter even if run mid quarter internally
+    REPORT_NAME = 'VerificationFunnelReport' # Must match the producer's S3 folder
+    DEFAULT_TIME_FRAME = 'weekly'
     MAX_FILE_AGE_DAYS = 30 # Realistically, report should have been generated within a few days
-    DEFAULT_LOOK_BACK_DAYS = 3 # Assume job runs 1st day of month late in day, after report upload
+    DEFAULT_LOOK_BACK_DAYS = 1 # Producer uses a 1-day look-back; logs have negligible lag
+
+    VALID_TIME_FRAMES = %w[daily weekly monthly quarterly].freeze
 
     attr_reader :run_date, :days_back_for_time_period, :report_receiver, :time_frame
 
@@ -50,7 +53,6 @@ module Reports
     def perform(perform_run_date = nil, perform_days_back_for_time_period = nil,
                 perform_receiver = nil, perform_time_frame = nil)
       # rubocop:enable Metrics/ParameterLists
-      # Use perform params if provided, otherwise fall back to constructor values, then defaults
       @run_date = perform_run_date || @run_date || Time.zone.now
       @days_back_for_time_period = perform_days_back_for_time_period ||
                                    @days_back_for_time_period ||
@@ -60,16 +62,24 @@ module Reports
 
       validate_parameters!
 
-      issuer_configs = report_configs
-      if issuer_configs.empty?
-        Rails.logger.warn 'No issuer configurations found - Demographics Metrics S3 Report NOT SENT'
+      # If 1st of month is monday, job is double scheduled. skip internal weekly run
+      if @time_frame == 'monthly' && @report_receiver == :internal && @run_date.day == 1
+        Rails.logger.info 'Skipping monthly verification funnel refresh - '\
+                          '1st-of-month run covers today'
         return false
       end
-      Rails.logger.info "Processing demographics reports for #{issuer_configs.length} issuers"
+
+      issuer_configs = report_configs
+      if issuer_configs.empty?
+        Rails.logger.warn 'No issuer configurations found - Verification Funnel S3 Report NOT SENT'
+        return false
+      end
+      Rails.logger.info "Processing verification funnel reports for "\
+                        "#{issuer_configs.length} issuers"
       issuer_configs.each do |config|
         process_issuer_report(config)
       end
-      Rails.logger.info 'Completed demographics metrics S3 report processing'
+      Rails.logger.info 'Completed verification funnel S3 report processing'
     end
 
     private
@@ -99,30 +109,30 @@ module Reports
         agency_abbreviation
       )
       return unless email_addresses
-      Rails.logger.info "Processing demographics report for issuer: #{issuer_string}"
+      Rails.logger.info "Processing verification funnel report for issuer: #{issuer_string}"
 
       report_reader = create_report_reader(sp_id, agency_abbreviation)
 
-      # First check: Do all required files exist? (Comprehensive logging here)
+      # First check: Do all required files exist?
       unless validate_all_files_exist(report_reader, sp_info)
         return
       end
 
-      # Second check: Are the files recent enough? (Minimal logging)
+      # Second check: Are the files recent enough?
       unless validate_report_freshness(report_reader)
         Rails.logger.error "Report files are too old for issuer: #{issuer_string} - skipping"
         return
       end
 
-      send_demographics_email(
+      send_verification_funnel_email(
         email_addresses: email_addresses,
         report_reader: report_reader,
         agency_abbreviation: agency_abbreviation,
       )
-      Rails.logger.info "Successfully sent demographics report for issuer: #{issuer_string}"
+      Rails.logger.info "Successfully sent verification funnel report for issuer: #{issuer_string}"
     rescue StandardError => e
-      Rails.logger.error "Failed to process demographics report for issuer #{issuer_string}:"\
-                         " #{e.message}"
+      Rails.logger.error "Failed to process verification funnel report for issuer "\
+                         "#{issuer_string}: #{e.message}"
       # Continue processing other issuers instead of failing the entire job
     end
 
@@ -134,7 +144,7 @@ module Reports
       s3_path = "#{base_path}#{REPORT_NAME}/#{sp_id}/"\
                 "#{@time_frame}/#{report_time_range_label}/#{file_prefix}_SP#{sp_id}"
 
-      Reporting::DemographicsMetricsS3Report.new(
+      Reporting::VerificationFunnelS3Report.new(
         bucket_name: data_warehouse_bucket_name,
         custom_s3_path: s3_path,
         agency_abbreviation: agency_abbreviation,
@@ -184,7 +194,7 @@ module Reports
     def determine_email_addresses(internal_emails, partner_emails, agency_abbreviation)
       if @report_receiver == :both && partner_emails.empty?
         Rails.logger.warn(
-          "#{agency_abbreviation} Demographics Metrics Report: recipient is :both " \
+          "#{agency_abbreviation} Verification Funnel Report: recipient is :both " \
           "but no external email specified",
         )
       end
@@ -200,24 +210,24 @@ module Reports
       bcc_emails = bcc_emails.select(&:present?)
       if to_emails.empty? && bcc_emails.empty?
         Rails.logger.warn "No emails received - #{agency_abbreviation} "\
-                          "Demographics Metrics Report NOT SENT"
+                          "Verification Funnel Report NOT SENT"
         return nil
       end
       { to: to_emails, bcc: bcc_emails }
     end
 
-    def send_demographics_email(email_addresses:, report_reader:, agency_abbreviation:)
+    def send_verification_funnel_email(email_addresses:, report_reader:, agency_abbreviation:)
       ReportMailer.tables_report(
         to: email_addresses[:to],
         bcc: email_addresses[:bcc],
-        subject: demographics_email_subject(agency_abbreviation, report_reader),
+        subject: verification_funnel_email_subject(agency_abbreviation, report_reader),
         reports: report_reader.as_emailable_reports,
-        message: demographics_email_preamble,
+        message: verification_funnel_email_preamble,
         attachment_format: :csv,
       ).deliver_now
     end
 
-    def demographics_email_subject(agency_abbreviation, report_reader)
+    def verification_funnel_email_subject(agency_abbreviation, report_reader)
       if agency_abbreviation.blank?
         Rails.logger.warn 'Missing agency abbreviation'
         agency_abbreviation_formatted = ''
@@ -228,7 +238,7 @@ module Reports
       # Get file date from S3, fallback to today
       report_date = get_report_file_date(report_reader)
 
-      "#{agency_abbreviation_formatted}Verification Demographics Report "\
+      "#{agency_abbreviation_formatted}Verification Funnel Report "\
       "#{report_time_range_label_email_subject} - #{report_date}"
     end
 
@@ -246,7 +256,7 @@ module Reports
       end
     end
 
-    def demographics_email_preamble
+    def verification_funnel_email_preamble
       ERB.new(<<~ERB).result(binding).html_safe # rubocop:disable Rails/OutputSafety
         <% env = Identity::Hostdata.env || 'local' %>
         <% if env != 'prod' %>
@@ -262,54 +272,80 @@ module Reports
       ERB
     end
 
+    # Weeks are Sunday-Saturday to match the producer's all_week(:sunday); a
+    # different week boundary here would resolve to a different S3 folder.
     def report_time_range
+      anchor = @run_date.prev_day(@days_back_for_time_period)
+
       case @time_frame
-      when 'quarterly'
-        @run_date.prev_day(@days_back_for_time_period).all_quarter
-      when 'monthly'
-        @run_date.prev_day(@days_back_for_time_period).all_month
       when 'daily'
-        @run_date.prev_day(@days_back_for_time_period).all_day
+        anchor.all_day
+      when 'weekly'
+        anchor.all_week(:sunday)
+      when 'monthly'
+        anchor.all_month
+      when 'quarterly'
+        anchor.all_quarter
       else
         raise ArgumentError, "Unsupported time frame: #{@time_frame}"
       end
     end
 
+    # Mirrors Reports::VerificationFunnelReport#report_time_range_label in
+    # reporting-rails
+    #   daily     -> Jan012026 (Unused for now)
+    #   weekly    -> 20260104_20260110
+    #   monthly   -> Jan2026
+    #   quarterly -> Q12026 (Unused for now)
     def report_time_range_label
-      end_of_range = report_time_range.end
+      range = report_time_range
+      end_of_range = range.end
+
       case @time_frame
+      when 'daily'
+        "#{end_of_range.strftime('%b')}#{end_of_range.strftime('%d')}"\
+          "#{end_of_range.strftime('%Y')}"
+      when 'weekly'
+        "#{range.begin.strftime('%Y%m%d')}_#{end_of_range.strftime('%Y%m%d')}"
+      when 'monthly'
+        "#{end_of_range.strftime('%b')}#{end_of_range.strftime('%Y')}"
       when 'quarterly'
         q_int = ((end_of_range.month - 1) / 3) + 1
-        label_start = "Q#{q_int}" # Q1
-      when 'monthly'
-        label_start = end_of_range.strftime('%b') # Jan
-      when 'daily'
-        label_start = "#{end_of_range.strftime('%b')}"\
-                      "#{end_of_range.strftime('%d')}" # Jan01
+        "Q#{q_int}#{end_of_range.strftime('%Y')}"
       else
         raise ArgumentError, "Unsupported time frame: #{@time_frame}"
       end
-      "#{label_start}#{end_of_range.strftime('%Y')}" # Q12026, Jan2026, Jan012026
     end
 
     def report_time_range_label_email_subject
-      end_of_range = report_time_range.end
+      range = report_time_range
+      end_of_range = range.end
+
       case @time_frame
-      when 'quarterly'
-        # Add CY to indicate calendary year
-        q_int = ((end_of_range.month - 1) / 3) + 1
-        "Q#{q_int} CY #{end_of_range.year}" # Q1 CY 2026
-      when 'monthly'
-        end_of_range.strftime('%b %Y') # Jan 2026
       when 'daily'
         end_of_range.strftime('%b %-d %Y') # Jan 1 2026
+      when 'weekly'
+        "#{range.begin.strftime('%b %-d')} - #{end_of_range.strftime('%b %-d %Y')}"
+      when 'monthly'
+        end_of_range.strftime('%b %Y') # Jan 2026
+      when 'quarterly'
+        q_int = ((end_of_range.month - 1) / 3) + 1
+        "Q#{q_int} CY #{end_of_range.year}" # Q1 CY 2026
       else
         raise ArgumentError, "Unsupported time frame: #{@time_frame}"
       end
     end
 
+    # Example config structure (one entry per issuer):
+    #   [
+    #     {
+    #       'issuer_string' => 'issuer_string_1',
+    #       'internal_emails' => ['internal_email@login.gov'],
+    #       'partner_emails' => ['external_email@login.gov'],
+    #     },
+    #   ]
     def report_configs
-      IdentityConfig.store.demographics_metrics_s3_report_configs
+      IdentityConfig.store.verification_funnel_s3_report_configs
     end
 
     def validate_parameters!
@@ -322,8 +358,9 @@ module Reports
         raise ArgumentError, "report_receiver must be :internal or :both, got #{@report_receiver}"
       end
 
-      unless %w[quarterly monthly daily].include?(@time_frame)
-        raise ArgumentError, "time_frame must be quarterly, monthly, or daily, got #{@time_frame}"
+      unless VALID_TIME_FRAMES.include?(@time_frame)
+        raise ArgumentError, "time_frame must be one of #{VALID_TIME_FRAMES.join(', ')},"\
+                             " got #{@time_frame}"
       end
     end
 

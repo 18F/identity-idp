@@ -2,30 +2,32 @@
 
 require 'rails_helper'
 
-RSpec.describe Reports::DemographicsMetricsS3Report do
-  let(:frozen_time) { Time.zone.parse('2026-05-04 10:00:00') } # Day after reporting-rails upload
+RSpec.describe Reports::VerificationFunnelS3Report do
+  # Wed Mar 4 2026. With a 1-day look-back the anchor is Tue Mar 3, whose
+  # Sunday-Saturday week is Mar 1 - Mar 7 (still in progress on Mar 4).
+  let(:frozen_time) { Time.zone.parse('2026-03-04 12:00:00') }
   let(:run_date) { frozen_time }
-  let(:days_back) { 5 }
+  let(:days_back) { 1 }
   let(:receiver) { :internal }
-  let(:time_frame) { 'quarterly' }
+  let(:time_frame) { 'weekly' }
 
   let(:bucket_name) { 'test-data-warehouse-bucket-123456789-us-west-2' }
   let(:s3_client) { Aws::S3::Client.new(stub_responses: true) }
 
-  let(:issuer1) { 'urn:gov:gsa:openidconnect.profiles:sp:sso:ssa:benefits' }
-  let(:issuer2) { 'urn:gov:gsa:openidconnect.profiles:sp:sso:va:healthcare' }
+  let(:issuer1) { 'urn:gov:gsa:openidconnect.profiles:sp:sso:irs:test' }
+  let(:issuer2) { 'urn:gov:gsa:openidconnect.profiles:sp:sso:ssa:benefits' }
 
   let(:mock_configs) do
     [
       {
         'issuer_string' => issuer1,
         'internal_emails' => ['gsa.internal@example.com'],
-        'partner_emails' => ['ssa.partner@example.com'],
+        'partner_emails' => ['irs.partner@example.com'],
       },
       {
         'issuer_string' => issuer2,
         'internal_emails' => ['gsa.internal@example.com'],
-        'partner_emails' => ['va.partner@example.com', 'va2.partner@example.com'],
+        'partner_emails' => ['ssa.partner@example.com', 'ssa2.partner@example.com'],
       },
     ]
   end
@@ -34,26 +36,25 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
     {
       issuer1 => {
         id: 123,
-        friendly_name: 'SSA Benefits Portal',
+        friendly_name: 'IRS Portal',
         active: true,
         agency_id: 1,
-        agency_name: 'Social Security Administration',
-        agency_abbreviation: 'SSA',
+        agency_name: 'Internal Revenue Service',
+        agency_abbreviation: 'IRS',
         issuer_string: issuer1,
       },
       issuer2 => {
         id: 456,
-        friendly_name: 'VA Healthcare Portal',
+        friendly_name: 'SSA Benefits Portal',
         active: true,
         agency_id: 2,
-        agency_name: 'Veterans Affairs',
-        agency_abbreviation: 'VA',
+        agency_name: 'Social Security Administration',
+        agency_abbreviation: 'SSA',
         issuer_string: issuer2,
       },
     }
   end
 
-  # Utility getters for tests (hash is single source of truth)
   def issuer1_id
     sp_metadata[issuer1][:id]
   end
@@ -66,31 +67,21 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
     sp_metadata[issuer1][:agency_abbreviation]
   end
 
-  def issuer2_agency
-    sp_metadata[issuer2][:agency_abbreviation]
-  end
-
   let(:csv_data) do
     {
       'definitions' => <<~CSV,
-        Metric,Unit,Definition
-        Age range/Verification Demographics,Count,The number of users for this issuer who verified within the reporting period
+        Metric,Definition
+        Verification Demand,The count of users who started the identity verification process
       CSV
       'overview' => <<~CSV,
-        Report Timeframe,2026-04-01 to 2026-06-30
-        Report Generated,2026-05-05
+        Report Timeframe,2026-03-01 to 2026-03-07
+        Report Generated,2026-03-04
         Issuer,#{issuer1}
       CSV
-      'age_metrics' => <<~CSV,
-        Age Range,User Count
-        20-29,15
-        30-39,25
-      CSV
-      'state_metrics' => <<~CSV,
-        State,User Count
-        CA,20
-        TX,10
-        NY,10
+      'verification_funnel_metrics' => <<~CSV,
+        Metric,Count,Rate
+        Verification Demand,100,1.0
+        Verification Successes,60,0.6
       CSV
     }
   end
@@ -100,7 +91,7 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:demographics_metrics_s3_report_configs)
+    allow(IdentityConfig.store).to receive(:verification_funnel_s3_report_configs)
       .and_return(mock_configs)
     allow(IdentityConfig.store).to receive(:s3_data_warehouse_replica_bucket_prefix)
       .and_return('test-data-warehouse-bucket')
@@ -128,19 +119,16 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
     allow(connection).to receive(:execute).and_return(mock_sql_results)
 
     # Mock BaseReport method
-    allow_any_instance_of(Reports::DemographicsMetricsS3Report).to receive(:generate_base_s3_path)
+    allow_any_instance_of(Reports::VerificationFunnelS3Report).to receive(:generate_base_s3_path)
       .with(directory: 'idp').and_return('env/idp/')
 
     # Default S3 stubbing - files exist and are fresh
-    setup_s3_responses(
-      fresh: [
-        issuer1_id,
-        issuer2_id,
-      ],
-    )
+    setup_s3_responses(fresh: [issuer1_id, issuer2_id])
   end
 
-  subject(:job) { Reports::DemographicsMetricsS3Report.new(run_date, days_back, receiver, time_frame) }
+  subject(:job) do
+    Reports::VerificationFunnelS3Report.new(run_date, days_back, receiver, time_frame)
+  end
 
   describe '#initialize' do
     context 'with valid parameters' do
@@ -148,35 +136,40 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         expect(job.run_date).to eq(run_date)
         expect(job.days_back_for_time_period).to eq(days_back)
         expect(job.report_receiver).to eq(:internal)
-        expect(job.time_frame).to eq('quarterly')
+        expect(job.time_frame).to eq('weekly')
       end
     end
 
     context 'with defaults' do
-      subject(:default_job) { Reports::DemographicsMetricsS3Report.new }
+      subject(:default_job) { Reports::VerificationFunnelS3Report.new }
 
       it 'uses default values' do
         expect(default_job.run_date).to be_within(1.second).of(Time.zone.now)
-        expect(default_job.days_back_for_time_period).to eq(Reports::DemographicsMetricsS3Report::DEFAULT_LOOK_BACK_DAYS)
+        expect(default_job.days_back_for_time_period).to eq(
+          Reports::VerificationFunnelS3Report::DEFAULT_LOOK_BACK_DAYS,
+        )
         expect(default_job.report_receiver).to eq(:internal)
-        expect(default_job.time_frame).to eq(Reports::DemographicsMetricsS3Report::DEFAULT_TIME_FRAME)
+        expect(default_job.time_frame).to eq(
+          Reports::VerificationFunnelS3Report::DEFAULT_TIME_FRAME,
+        )
       end
     end
 
     context 'with invalid parameters' do
       it 'raises error for invalid days_back' do
-        expect { Reports::DemographicsMetricsS3Report.new(run_date, 95, receiver, time_frame) }
+        expect { Reports::VerificationFunnelS3Report.new(run_date, 95, receiver, time_frame) }
           .to raise_error(ArgumentError, /days_back_for_time_period must be between 0 and 90/)
       end
 
       it 'raises error for invalid receiver' do
-        expect { Reports::DemographicsMetricsS3Report.new(run_date, days_back, :external, time_frame) }
-          .to raise_error(ArgumentError, /report_receiver must be :internal or :both/)
+        expect do
+          Reports::VerificationFunnelS3Report.new(run_date, days_back, :external, time_frame)
+        end.to raise_error(ArgumentError, /report_receiver must be :internal or :both/)
       end
 
       it 'raises error for invalid time_frame' do
-        expect { Reports::DemographicsMetricsS3Report.new(run_date, days_back, receiver, 'weekly') }
-          .to raise_error(ArgumentError, /time_frame must be quarterly, monthly, or daily/)
+        expect { Reports::VerificationFunnelS3Report.new(run_date, days_back, receiver, 'yearly') }
+          .to raise_error(ArgumentError, /time_frame must be one of/)
       end
     end
   end
@@ -184,31 +177,59 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
   describe '#perform' do
     context 'with no configurations' do
       before do
-        allow(IdentityConfig.store).to receive(:demographics_metrics_s3_report_configs)
+        allow(IdentityConfig.store).to receive(:verification_funnel_s3_report_configs)
           .and_return([])
       end
 
       it 'logs warning and returns false' do
         expect(Rails.logger).to receive(:warn)
-          .with('No issuer configurations found - Demographics Metrics S3 Report NOT SENT')
+          .with('No issuer configurations found - Verification Funnel S3 Report NOT SENT')
         expect(job.perform).to eq(false)
+      end
+    end
+
+    context 'when the monthly internal refresh coincides with the 1st of the month' do
+      let(:run_date) { Time.zone.parse('2026-06-01 12:00:00') }
+      let(:time_frame) { 'monthly' }
+      let(:receiver) { :internal }
+
+      it 'skips the run without contacting S3 or sending mail' do
+        expect(Rails.logger).to receive(:info)
+          .with('Skipping monthly verification funnel refresh - 1st-of-month run covers today')
+        expect(ReportMailer).not_to receive(:tables_report)
+
+        expect(job.perform).to eq(false)
+      end
+    end
+
+    context 'when the monthly report is external on the 1st of the month' do
+      let(:run_date) { Time.zone.parse('2026-06-01 12:00:00') }
+      let(:time_frame) { 'monthly' }
+      let(:receiver) { :both }
+
+      it 'does not skip - the guard only applies to the internal refresh' do
+        expect(ReportMailer).to receive(:tables_report).twice.and_return(
+          double(deliver_now: true),
+        )
+
+        job.perform
       end
     end
 
     context 'with valid configurations' do
       it 'processes all issuers successfully' do
         expect(Rails.logger).to receive(:info)
-          .with('Processing demographics reports for 2 issuers')
+          .with('Processing verification funnel reports for 2 issuers')
         expect(Rails.logger).to receive(:info)
-          .with("Processing demographics report for issuer: #{issuer1}")
+          .with("Processing verification funnel report for issuer: #{issuer1}")
         expect(Rails.logger).to receive(:info)
-          .with("Successfully sent demographics report for issuer: #{issuer1}")
+          .with("Successfully sent verification funnel report for issuer: #{issuer1}")
         expect(Rails.logger).to receive(:info)
-          .with("Processing demographics report for issuer: #{issuer2}")
+          .with("Processing verification funnel report for issuer: #{issuer2}")
         expect(Rails.logger).to receive(:info)
-          .with("Successfully sent demographics report for issuer: #{issuer2}")
+          .with("Successfully sent verification funnel report for issuer: #{issuer2}")
         expect(Rails.logger).to receive(:info)
-          .with('Completed demographics metrics S3 report processing')
+          .with('Completed verification funnel S3 report processing')
 
         expect(ReportMailer).to receive(:tables_report).twice.and_return(
           double(deliver_now: true),
@@ -218,8 +239,8 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
       end
 
       it 'uses perform parameters over constructor parameters' do
-        new_date = Time.zone.parse('2026-06-01')
-        new_days = 3
+        new_date = Time.zone.parse('2026-04-01')
+        new_days = 1
         new_receiver = :both
         new_time_frame = 'monthly'
 
@@ -234,29 +255,25 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
 
     context 'with missing service provider' do
       before do
-        # Remove issuer1 from metadata
-        allow_any_instance_of(Reports::DemographicsMetricsS3Report)
+        allow_any_instance_of(Reports::VerificationFunnelS3Report)
           .to receive(:get_service_provider_info)
           .with(issuer1).and_return(nil)
-        allow_any_instance_of(Reports::DemographicsMetricsS3Report)
+        allow_any_instance_of(Reports::VerificationFunnelS3Report)
           .to receive(:get_service_provider_info)
           .with(issuer2).and_return(sp_metadata[issuer2])
       end
 
       it 'skips missing SP and continues processing' do
-        # Remove the "Processing demographics report" expectation for issuer1
-        # since it returns early when SP is not found
-        expect(Rails.logger).to receive(:info).with('Processing demographics reports for 2 issuers')
+        expect(Rails.logger).to receive(:info)
+          .with('Processing verification funnel reports for 2 issuers')
         expect(Rails.logger).to receive(:error)
           .with("No service provider metadata found for issuer: #{issuer1} - skipping")
-        expect(Rails.logger).to receive(:info).with(
-          "Processing demographics report for issuer: #{issuer2}",
-        )
         expect(Rails.logger).to receive(:info)
-          .with("Successfully sent demographics report for issuer: #{issuer2}")
-        expect(Rails.logger).to receive(:info).with(
-          'Completed demographics metrics S3 report processing',
-        )
+          .with("Processing verification funnel report for issuer: #{issuer2}")
+        expect(Rails.logger).to receive(:info)
+          .with("Successfully sent verification funnel report for issuer: #{issuer2}")
+        expect(Rails.logger).to receive(:info)
+          .with('Completed verification funnel S3 report processing')
 
         expect(ReportMailer).to receive(:tables_report).once.and_return(
           double(deliver_now: true),
@@ -268,15 +285,14 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
 
     context 'with missing S3 files' do
       before do
-        # Override the default stubbing to make issuer1 files missing
         setup_s3_responses(missing: [issuer1_id], fresh: [issuer2_id])
       end
 
       it 'logs detailed error information and skips issuer' do
         expect(Rails.logger).to receive(:info).ordered
-          .with('Processing demographics reports for 2 issuers')
+          .with('Processing verification funnel reports for 2 issuers')
         expect(Rails.logger).to receive(:info).ordered
-          .with("Processing demographics report for issuer: #{issuer1}")
+          .with("Processing verification funnel report for issuer: #{issuer1}")
         expect(Rails.logger).to receive(:error).ordered
           .with("Missing report files for issuer: #{issuer1}")
         expect(Rails.logger).to receive(:error).ordered
@@ -290,19 +306,16 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         expect(Rails.logger).to receive(:error).ordered
           .with("  Bucket: #{bucket_name}")
         expect(Rails.logger).to receive(:error).ordered
-          .with('  Time frame: quarterly (Q22026)')
+          .with('  Time frame: weekly (20260301_20260307)')
         expect(Rails.logger).to receive(:error).ordered
           .with('  Report receiver: internal')
 
-        expect(Rails.logger).to receive(:info).ordered.with(
-          "Processing demographics report for issuer: #{issuer2}",
-        )
-        expect(Rails.logger).to receive(:info).ordered.with(
-          "Successfully sent demographics report for issuer: #{issuer2}",
-        )
-        expect(Rails.logger).to receive(:info).ordered.with(
-          'Completed demographics metrics S3 report processing',
-        )
+        expect(Rails.logger).to receive(:info).ordered
+          .with("Processing verification funnel report for issuer: #{issuer2}")
+        expect(Rails.logger).to receive(:info).ordered
+          .with("Successfully sent verification funnel report for issuer: #{issuer2}")
+        expect(Rails.logger).to receive(:info).ordered
+          .with('Completed verification funnel S3 report processing')
 
         expect(ReportMailer).to receive(:tables_report).once.and_return(
           double(deliver_now: true),
@@ -314,30 +327,12 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
 
     context 'with old S3 files' do
       before do
-        setup_s3_responses(
-          old: [issuer1_id],
-          fresh: [issuer2_id],
-        )
+        setup_s3_responses(old: [issuer1_id], fresh: [issuer2_id])
       end
 
       it 'logs error about old files and skips issuer' do
-        expect(Rails.logger).to receive(:info).with(
-          'Processing demographics reports for 2 issuers',
-        )
-        expect(Rails.logger).to receive(:info).with(
-          "Processing demographics report for issuer: #{issuer1}",
-        )
         expect(Rails.logger).to receive(:error)
           .with("Report files are too old for issuer: #{issuer1} - skipping")
-        expect(Rails.logger).to receive(:info).with(
-          "Processing demographics report for issuer: #{issuer2}",
-        )
-        expect(Rails.logger).to receive(:info).with(
-          "Successfully sent demographics report for issuer: #{issuer2}",
-        )
-        expect(Rails.logger).to receive(:info).with(
-          'Completed demographics metrics S3 report processing',
-        )
 
         expect(ReportMailer).to receive(:tables_report).once.and_return(
           double(deliver_now: true),
@@ -356,17 +351,17 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
       end
 
       before do
-        allow(IdentityConfig.store).to receive(:demographics_metrics_s3_report_configs)
+        allow(IdentityConfig.store).to receive(:verification_funnel_s3_report_configs)
           .and_return(invalid_configs)
       end
 
       it 'skips invalid configs with appropriate logging' do
-        expect(Rails.logger).to receive(:info).with('Processing demographics reports for 2 issuers')
+        expect(Rails.logger).to receive(:info)
+          .with('Processing verification funnel reports for 2 issuers')
         expect(Rails.logger).to receive(:error).with('Missing issuer_string for config')
         expect(Rails.logger).to receive(:error).with('No emails provided for issuer valid.issuer')
-        expect(Rails.logger).to receive(:info).with(
-          'Completed demographics metrics S3 report processing',
-        )
+        expect(Rails.logger).to receive(:info)
+          .with('Completed verification funnel S3 report processing')
 
         expect(ReportMailer).not_to receive(:tables_report)
 
@@ -376,23 +371,21 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
 
     context 'with email recipient handling' do
       it 'sends to internal emails only when receiver is :internal' do
-        job = Reports::DemographicsMetricsS3Report.new(run_date, days_back, :internal, time_frame)
+        job = Reports::VerificationFunnelS3Report.new(run_date, days_back, :internal, time_frame)
 
-        # Both issuers should use internal emails when job receiver is :internal
         expect(ReportMailer).to receive(:tables_report).with(
           hash_including(
-            to: ['gsa.internal@example.com'], # Both use internal emails
+            to: ['gsa.internal@example.com'],
             bcc: [],
           ),
-        ).and_return(double(deliver_now: true)).twice # Both issuers
+        ).and_return(double(deliver_now: true)).twice
 
         job.perform
       end
 
       it 'sends to partner emails with internal BCC when receiver is :both' do
-        job = Reports::DemographicsMetricsS3Report.new(run_date, days_back, :both, time_frame)
+        job = Reports::VerificationFunnelS3Report.new(run_date, days_back, :both, time_frame)
 
-        # First issuer (SSA)
         expect(ReportMailer).to receive(:tables_report).with(
           hash_including(
             to: mock_configs[0]['partner_emails'],
@@ -400,7 +393,6 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
           ),
         ).and_return(double(deliver_now: true))
 
-        # Second issuer (VA)
         expect(ReportMailer).to receive(:tables_report).with(
           hash_including(
             to: mock_configs[1]['partner_emails'],
@@ -412,20 +404,51 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
       end
 
       it 'warns when receiver is :both but no partner emails' do
-        # Remove partner emails from one config
-        mock_configs[0]['partner_emails'] = [] # Remove SSA partner emails
+        mock_configs[0]['partner_emails'] = []
 
         expect(Rails.logger).to receive(:warn).with(
-          a_string_matching(/#{issuer1_agency} Demographics Metrics/) &
+          a_string_matching(/#{issuer1_agency} Verification Funnel/) &
           a_string_matching(/ Report: recipient is :both but no external email/),
         )
-        # Should still send to internal emails for SSA, and normally for VA
         expect(ReportMailer).to receive(:tables_report).twice.and_return(
           double(deliver_now: true),
         )
 
-        job = Reports::DemographicsMetricsS3Report.new(run_date, days_back, :both, time_frame)
+        job = Reports::VerificationFunnelS3Report.new(run_date, days_back, :both, time_frame)
         job.perform
+      end
+    end
+
+    # The internal/external distinction is expressed entirely through the S3 key
+    # prefix, so this asserts the receiver selects the right one - reading the
+    # external copy when :both, and the rolling internal copy otherwise.
+    context 'S3 key selection by receiver' do
+      def requested_keys_for(receiver_sym)
+        keys = []
+        allow(s3_client).to receive(:head_object).and_wrap_original do |original, params|
+          keys << params[:key]
+          original.call(params)
+        end
+        Reports::VerificationFunnelS3Report.new(
+          run_date, days_back, receiver_sym, time_frame
+        ).perform
+        keys
+      end
+
+      before do
+        allow(ReportMailer).to receive(:tables_report).and_return(double(deliver_now: true))
+      end
+
+      it 'reads latest_SP<id> files when receiver is :internal' do
+        keys = requested_keys_for(:internal)
+
+        expect(keys).to all(include('/weekly/20260301_20260307/latest_SP'))
+      end
+
+      it 'reads latest_external_SP<id> files when receiver is :both' do
+        keys = requested_keys_for(:both)
+
+        expect(keys).to all(include('/weekly/20260301_20260307/latest_external_SP'))
       end
     end
 
@@ -447,25 +470,14 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
 
     context 'with error handling' do
       it 'continues processing when one issuer fails' do
-        # Force an error by making csv_data_for raise after files are validated to exist
-        allow_any_instance_of(Reporting::DemographicsMetricsS3Report)
+        allow_any_instance_of(Reporting::VerificationFunnelS3Report)
           .to receive(:as_emailable_reports)
           .and_raise(StandardError, 'S3 read error')
 
-        expect(Rails.logger).to receive(:info).with('Processing demographics reports for 2 issuers')
-        expect(Rails.logger).to receive(:info).with(
-          "Processing demographics report for issuer: #{issuer1}",
-        )
         expect(Rails.logger).to receive(:error)
-          .with("Failed to process demographics report for issuer #{issuer1}: S3 read error")
-        expect(Rails.logger).to receive(:info).with(
-          "Processing demographics report for issuer: #{issuer2}",
-        )
+          .with("Failed to process verification funnel report for issuer #{issuer1}: S3 read error")
         expect(Rails.logger).to receive(:error)
-          .with("Failed to process demographics report for issuer #{issuer2}: S3 read error")
-        expect(Rails.logger).to receive(:info).with(
-          'Completed demographics metrics S3 report processing',
-        )
+          .with("Failed to process verification funnel report for issuer #{issuer2}: S3 read error")
 
         expect(ReportMailer).not_to receive(:tables_report)
 
@@ -475,98 +487,88 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
   end
 
   describe 'private methods' do
+    # These labels are S3 path segments shared with reporting-rails'
+    # Reports::VerificationFunnelReport#report_time_range_label. If one side
+    # changes, the consumer reads a key the producer never wrote.
     describe '#report_time_range_label' do
-      it 'formats quarterly labels correctly' do
-        # Q2 2026 (May 5 - 5 days = April 30, which is Q2)
-        expect(job.send(:report_time_range_label)).to eq('Q22026')
-
-        # Q4 2025
-        q4_job = Reports::DemographicsMetricsS3Report.new(
-          Time.zone.parse('2026-01-04'), 5, :internal, 'quarterly'
-        )
-        expect(q4_job.send(:report_time_range_label)).to eq('Q42025')
+      it 'formats weekly labels as start_end of the Sunday-Saturday week' do
+        expect(job.send(:report_time_range_label)).to eq('20260301_20260307')
       end
 
       it 'formats monthly labels correctly' do
-        monthly_job = Reports::DemographicsMetricsS3Report.new(
-          Time.zone.parse('2026-05-04'), 5, :internal, 'monthly'
+        monthly_job = Reports::VerificationFunnelS3Report.new(
+          Time.zone.parse('2026-04-01'), 1, :internal, 'monthly'
         )
-        expect(monthly_job.send(:report_time_range_label)).to eq('Apr2026')
+        expect(monthly_job.send(:report_time_range_label)).to eq('Mar2026')
       end
 
-      it 'formats daily labels correctly' do
-        daily_job = Reports::DemographicsMetricsS3Report.new(
-          Time.zone.parse('2026-05-04'), 1, :internal, 'daily'
+      it 'formats daily labels with the year' do
+        daily_job = Reports::VerificationFunnelS3Report.new(
+          Time.zone.parse('2026-03-04'), 1, :internal, 'daily'
         )
-        expect(daily_job.send(:report_time_range_label)).to eq('May032026')
+        expect(daily_job.send(:report_time_range_label)).to eq('Mar032026')
+      end
+
+      it 'formats quarterly labels correctly' do
+        quarterly_job = Reports::VerificationFunnelS3Report.new(
+          Time.zone.parse('2026-05-15'), 1, :internal, 'quarterly'
+        )
+        expect(quarterly_job.send(:report_time_range_label)).to eq('Q22026')
       end
     end
-    describe '#report_time_range_label_email_subject' do
-      it 'formats quarterly labels with CY and spaces' do
-        # Q2 2026 (May 5 - 5 days = April 30, which is Q2)
-        expect(job.send(:report_time_range_label_email_subject)).to eq('Q2 CY 2026')
 
-        # Q4 2025
-        q4_job = Reports::DemographicsMetricsS3Report.new(
-          Time.zone.parse('2026-01-04'), 5, :internal, 'quarterly'
+    describe '#report_time_range' do
+      it 'calculates a Sunday-Saturday week for the weekly frame' do
+        range = job.send(:report_time_range)
+        expect(range.begin).to eq(Time.zone.parse('2026-03-01'))
+        expect(range.end).to eq(Time.zone.parse('2026-03-07').end_of_day)
+      end
+
+      it 'calculates the prior month when run on the 1st' do
+        monthly_job = Reports::VerificationFunnelS3Report.new(
+          Time.zone.parse('2026-04-01'), 1, :internal, 'monthly'
         )
-        expect(q4_job.send(:report_time_range_label_email_subject)).to eq('Q4 CY 2025')
+        range = monthly_job.send(:report_time_range)
+        expect(range.begin).to eq(Time.zone.parse('2026-03-01'))
+        expect(range.end).to eq(Time.zone.parse('2026-03-31').end_of_day)
+      end
+    end
+
+    describe '#report_time_range_label_email_subject' do
+      it 'formats weekly labels as a readable date span' do
+        expect(job.send(:report_time_range_label_email_subject)).to eq('Mar 1 - Mar 7 2026')
       end
 
       it 'formats monthly labels with spaces' do
-        monthly_job = Reports::DemographicsMetricsS3Report.new(
-          Time.zone.parse('2026-05-04'), 5, :internal, 'monthly'
+        monthly_job = Reports::VerificationFunnelS3Report.new(
+          Time.zone.parse('2026-04-01'), 1, :internal, 'monthly'
         )
-        expect(monthly_job.send(:report_time_range_label_email_subject)).to eq('Apr 2026')
-      end
-
-      it 'formats daily labels with spaces' do
-        daily_job = Reports::DemographicsMetricsS3Report.new(
-          Time.zone.parse('2026-05-04'), 1, :internal, 'daily'
-        )
-        expect(daily_job.send(:report_time_range_label_email_subject)).to eq('May 3 2026')
-      end
-    end
-    describe '#report_time_range' do
-      it 'calculates correct quarterly range' do
-        range = job.send(:report_time_range)
-        # May 5 - 5 days = April 30, which is Q2 2026
-        expect(range.begin).to eq(Time.zone.parse('2026-04-01'))
-        expect(range.end).to eq(Time.zone.parse('2026-06-30').end_of_day)
-      end
-
-      it 'calculates correct monthly range' do
-        monthly_job = Reports::DemographicsMetricsS3Report.new(
-          Time.zone.parse('2026-05-04'), 5, :internal, 'monthly'
-        )
-        range = monthly_job.send(:report_time_range)
-        expect(range.begin).to eq(Time.zone.parse('2026-04-01'))
-        expect(range.end).to eq(Time.zone.parse('2026-04-30').end_of_day)
+        expect(monthly_job.send(:report_time_range_label_email_subject)).to eq('Mar 2026')
       end
     end
 
-    describe '#demographics_email_subject' do
-      let(:report_reader) { instance_double(Reporting::DemographicsMetricsS3Report) }
+    describe '#verification_funnel_email_subject' do
+      let(:report_reader) { instance_double(Reporting::VerificationFunnelS3Report) }
 
       before do
         allow(report_reader).to receive(:csv_file_names).and_return(['definitions'])
         allow(report_reader).to receive(:get_file_last_modified)
-          .and_return(Time.zone.parse('2026-05-04'))
+          .and_return(Time.zone.parse('2026-03-04'))
       end
 
       it 'formats subject with agency abbreviation' do
-        subject_line = job.send(:demographics_email_subject, 'SSA', report_reader)
+        subject_line = job.send(:verification_funnel_email_subject, 'IRS', report_reader)
         expect(subject_line).to eq(
-          'SSA Verification Demographics Report Q2 CY 2026 - 2026-05-04',
+          'IRS Verification Funnel Report Mar 1 - Mar 7 2026 - 2026-03-04',
         )
       end
 
       it 'handles missing agency abbreviation' do
         expect(Rails.logger).to receive(:warn).with('Missing agency abbreviation')
 
-        subject_line = job.send(:demographics_email_subject, nil, report_reader)
+        subject_line = job.send(:verification_funnel_email_subject, nil, report_reader)
         expect(subject_line).to eq(
-          'Verification Demographics Report Q2 CY 2026 - 2026-05-04',
+          'Verification Funnel Report Mar 1 - Mar 7 2026 - 2026-03-04',
         )
       end
 
@@ -578,7 +580,7 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
           .with('Unexpected S3 file access issue when getting '\
                 'modified date, using today for email subject')
 
-        subject_line = job.send(:demographics_email_subject, 'IRS', report_reader)
+        subject_line = job.send(:verification_funnel_email_subject, 'IRS', report_reader)
         expect(subject_line).to include(Date.current.strftime('%Y-%m-%d'))
       end
 
@@ -590,7 +592,7 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
           .with('Unexpected S3 file access issue when getting '\
                 'modified date, using today for email subject')
 
-        subject_line = job.send(:demographics_email_subject, 'VA', report_reader)
+        subject_line = job.send(:verification_funnel_email_subject, 'IRS', report_reader)
         expect(subject_line).to include(Date.current.strftime('%Y-%m-%d'))
       end
     end
@@ -608,41 +610,30 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
   #
   # @param config [Hash] Configuration for different SP file states:
   #   - :missing [Array<Integer>] SP IDs that should have missing files
-  #     (head_object -> NotFound, get_object -> NoSuchKey)
-  #   - :old [Array<Integer>] SP IDs that should have old files (returns files with old timestamps)
-  #   - :fresh [Array<Integer>] SP IDs that should have fresh files (returns recent files)
+  #     (head_object -> NotFound, get_object -> NoSuchKey, matching real S3)
+  #   - :old [Array<Integer>] SP IDs that should have old files (old timestamps)
+  #   - :fresh [Array<Integer>] SP IDs that should have fresh files (recent files)
   #   - Files not specified in any category default to fresh
-  #
-  # @example
-  #   setup_s3_responses(
-  #     missing: [123],      # SP 123 files don't exist
-  #     old: [456],          # SP 456 files are old
-  #     fresh: [789]         # SP 789 files are recent (could be omitted, it's the default)
-  #   )
   def setup_s3_responses(config = {})
     stub_response = lambda do |context|
       key = context.params[:key]
 
-      # Extract SP ID from the S3 key path
       sp_match = key.match(/SP(\d+)/)
       return missing_error_for(context) unless sp_match
       sp_id = sp_match[1].to_i
 
-      # Extract report type from filename
-      file_match = key.match(/_(definitions|overview|age_metrics|state_metrics)\.csv$/)
+      file_match = key.match(/_(definitions|overview|verification_funnel_metrics)\.csv$/)
       return missing_error_for(context) unless file_match
       report_type = file_match[1]
 
-      # Determine which category this SP falls into
       file_state = if config[:missing]&.include?(sp_id)
                      :missing
-                  elsif config[:old]&.include?(sp_id)
-                    :old
-                  else
-                    :fresh # Default behavior
-                  end
+                   elsif config[:old]&.include?(sp_id)
+                     :old
+                   else
+                     :fresh # Default behavior
+                   end
 
-      # Return appropriate response based on file state and operation
       case file_state
       when :missing
         missing_error_for(context)

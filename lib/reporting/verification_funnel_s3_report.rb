@@ -3,15 +3,15 @@
 require 'csv'
 
 module Reporting
-  # Reads pre-generated demographics CSV reports from S3 and presents them as emailable reports.
-  class DemographicsMetricsS3Report
+  # Reads pre-generated verification funnel CSV reports from S3 and presents them
+  # as emailable reports
+  class VerificationFunnelS3Report
     attr_reader :bucket_name, :s3_path, :agency_abbreviation
 
     CSV_FILE_NAMES = %w[
       definitions
       overview
-      age_metrics
-      state_metrics
+      verification_funnel_metrics
     ].freeze
 
     # @param [String] bucket_name the S3 bucket name
@@ -36,14 +36,11 @@ module Reporting
           filename: 'overview',
         ),
         Reporting::EmailableReport.new(
-          title: "#{agency_abbreviation_prefix}Age Metrics",
-          table: age_metrics_table,
-          filename: 'age_metrics',
-        ),
-        Reporting::EmailableReport.new(
-          title: "#{agency_abbreviation_prefix}State Metrics",
-          table: state_metrics_table,
-          filename: 'state_metrics',
+          title: "#{agency_abbreviation_prefix}Verification Funnel Metrics",
+          float_as_percent: true,
+          precision: 2,
+          table: verification_funnel_metrics_table,
+          filename: 'verification_funnel_metrics',
         ),
       ]
     end
@@ -56,12 +53,8 @@ module Reporting
       csv_data_for('overview')
     end
 
-    def age_metrics_table
-      csv_data_for('age_metrics')
-    end
-
-    def state_metrics_table
-      csv_data_for('state_metrics')
+    def verification_funnel_metrics_table
+      csv_data_for('verification_funnel_metrics')
     end
 
     def csv_file_names
@@ -69,19 +62,15 @@ module Reporting
     end
 
     # Returns parsed CSV data (array of arrays) for the given report name.
-    # Memoized per report name.
-    # @param [String] report_name one of CSV_FILE_NAMES
     # @return [Array<Array<String>>]
     def csv_data_for(report_name)
       @csv_cache ||= {}
       @csv_cache[report_name] ||= begin
         body = fetch_csv_from_s3(report_name)
-        CSV.parse(body)
+        CSV.parse(body).map { |row| row.map { |cell| coerce_cell(cell) } }
       end
     end
 
-    # Get the last modified time for a specific file
-    # @param [String] report_name
     # @return [Time] last modified time
     # @raise [Aws::S3::Errors::NotFound] if the file doesn't exist (head_object)
     def get_file_last_modified(report_name)
@@ -92,6 +81,29 @@ module Reporting
 
     private
 
+    # CSV stores everything as strings. The producer writes Integers (counts) and
+    # Floats (rates); recreate that here so:
+    #   - integer-looking cells (counts) -> Integer
+    #   - decimal-looking cells (rates) -> Float (so float_as_percent kicks in
+    #     in the mailer template)
+    #   - everything else (labels, headers) -> left as the original String
+    def coerce_cell(cell)
+      return cell unless cell.is_a?(String)
+
+      stripped = cell.strip
+      return cell if stripped.empty?
+
+      if stripped.match?(/\A-?\d+\z/)
+        Integer(stripped)
+      elsif stripped.match?(/\A-?\d*\.\d+\z/)
+        Float(stripped)
+      else
+        cell
+      end
+    rescue ArgumentError
+      cell
+    end
+
     def agency_abbreviation_prefix
       if agency_abbreviation.present?
         "#{agency_abbreviation} "
@@ -101,9 +113,6 @@ module Reporting
     end
 
     # Builds the full S3 object key for the given CSV report name and fetches it.
-    # Key format: "<s3_path>_<report_name>.csv"
-    # @param [String] report_name
-    # @return [String] raw CSV body
     # @raise [Aws::S3::Errors::NoSuchKey] if the CSV file does not exist in S3
     def fetch_csv_from_s3(report_name)
       key = "#{s3_path}_#{report_name}.csv"

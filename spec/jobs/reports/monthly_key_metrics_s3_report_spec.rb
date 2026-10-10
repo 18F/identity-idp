@@ -157,7 +157,7 @@ RSpec.describe Reports::MonthlyKeyMetricsS3Report do
       before do
         allow(idv_s3_report).to receive(:get_file_last_modified)
           .with('condensed_idv')
-          .and_raise(Aws::S3::Errors::NoSuchKey.new(nil, 'Key not found'))
+          .and_raise(Aws::S3::Errors::NotFound.new(nil, 'Not Found'))
       end
 
       it 'aborts the whole report and does not email or upload' do
@@ -172,6 +172,20 @@ RSpec.describe Reports::MonthlyKeyMetricsS3Report do
         expect(Rails.logger).to receive(:error).at_least(:once)
 
         report.perform(report_date)
+      end
+    end
+
+    context 'when an IDV file is missing with NoSuchKey' do
+      before do
+        allow(idv_s3_report).to receive(:get_file_last_modified)
+          .with('condensed_idv')
+          .and_raise(Aws::S3::Errors::NoSuchKey.new(nil, 'Key not found'))
+      end
+
+      it 'aborts the whole report' do
+        expect(ReportMailer).to_not receive(:tables_report)
+
+        expect(report.perform(report_date)).to eq(false)
       end
     end
 
