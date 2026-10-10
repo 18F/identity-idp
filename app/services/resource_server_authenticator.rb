@@ -37,7 +37,7 @@ class ResourceServerAuthenticator
   MAX_LIFETIME_SECONDS = 300
   REQUIRED_CLAIMS = %w[iss sub aud exp jti].freeze
   KEY_SOURCES = %i[service_provider resource_server].freeze
-  JTI_KEY_PREFIX = 'client-assertion:jti:'
+  JTI_NAMESPACE = 'client-assertion:jti'
 
   # @!attribute record
   #   @return [ServiceProvider, TokenExchangeResourceServer, nil] the authenticated caller
@@ -157,12 +157,10 @@ class ResourceServerAuthenticator
   # Records the `jti` for this caller and reports whether it was new. The entry lives for the
   # maximum assertion lifetime, which is as long as the assertion itself could be accepted.
   def first_use_of_jti?(identifier, payload)
-    jti = payload['jti']
-    return false unless jti.is_a?(String) && jti.present?
-
-    key = JTI_KEY_PREFIX + Digest::SHA256.hexdigest("#{identifier}\n#{jti}")
-    ttl = MAX_LIFETIME_SECONDS + ISSUED_AT_LEEWAY_SECONDS
-    REDIS_POOL.with { |client| client.set(key, '1', nx: true, ex: ttl) } ? true : false
+    ReplayGuard.first_use?(
+      namespace: JTI_NAMESPACE, scope: identifier, value: payload['jti'],
+      ttl: MAX_LIFETIME_SECONDS + ISSUED_AT_LEEWAY_SECONDS
+    )
   end
 
   # Distinguishes the library's reasons for analytics; the message shown to the caller is the
