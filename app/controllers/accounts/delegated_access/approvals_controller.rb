@@ -50,19 +50,12 @@ module Accounts
       def load_applications
         accepting = DelegationApplications.accepting(@service_provider.issuer).index_by(&:id)
         selected_ids = Array(params[:application_ids]).map(&:to_i)
-        remembered = TokenExchangeGrant.live_by_application(
+        # The partition also leaves each application's agency loaded, which both steps read: the
+        # page groups by it, and each approval records the agency's content version.
+        @applications = TokenExchangeGrant.partition_current(
           user: current_user, service_provider_issuer: @service_provider.issuer,
-          applications: accepting.values
-        )
-        @applications = selected_ids.filter_map { |id| accepting[id] }.reject do |application|
-          remembered[application.id]&.remembered_and_current?
-        end
-        # Both steps read each application's agency: the page groups by it, and each approval
-        # records the agency's content version. One query instead of one per application.
-        ActiveRecord::Associations::Preloader.new(
-          records: @applications,
-          associations: :agency,
-        ).call
+          applications: selected_ids.filter_map { |id| accepting[id] }
+        )[:needing_approval]
         return if @applications.any?
 
         flash[:info] = t('account.delegated_access.nothing_selected')
