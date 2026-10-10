@@ -394,8 +394,8 @@ class OpenidConnectTokenExchangeForm
   end
 
   def identity_verified?
-    return false if identity.user.active_profile.nil?
-    [::Idp::Constants::IAL2, ::Idp::Constants::IAL_MAX].include?(identity.ial)
+    identity.user.identity_verified? &&
+      [::Idp::Constants::IAL2, ::Idp::Constants::IAL_MAX].include?(identity.ial)
   end
 
   # The authentication assurance of the service provider's sign-in, as an integer level: the
