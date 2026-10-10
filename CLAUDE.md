@@ -57,6 +57,7 @@ login-delegated-access (base + docs)
  → delegated-access-operations       (5.11)
  → delegated-access-billing-reporting(5.8)
  → delegated-access-fraud-signals    (5.7)
+ → delegated-access-config-content   (5.17, content seeded from identity-idp-config)
 ```
 
 - Branch names say what the branch delivers; no numbers or abbreviations.
@@ -102,9 +103,10 @@ changed files, the analytics and tracker lints, and, before pushing a branch, th
 on the top of the stack. Then `gitleaks git --redact --log-opts="<base>..HEAD" .` on the commit
 range; report the result with the push.
 
-Fresh worktree checklist: symlink `config/*.localdev.yml` → `config/*.yml`, `certs` →
-`certs.example`, `keys` → `keys.example`; copy `config/application.yml` from a sibling
-worktree; symlink `pwned_passwords/pwned_passwords.txt`; `mkdir -p tmp/pids`;
+Fresh worktree checklist: symlink `config/*.localdev.yml` → `config/*.yml` (this includes
+`config/delegated_access.localdev.yml` → `config/delegated_access.yml`, which `bin/setup` also
+links and `db:seed` reads), `certs` → `certs.example`, `keys` → `keys.example`; copy
+`config/application.yml` from a sibling worktree; symlink `pwned_passwords/pwned_passwords.txt`; `mkdir -p tmp/pids`;
 `npm ci && NODE_ENV=development npm run build && npm run build:css` (a production build digests
 pack names and breaks a layout spec). Browser specs route through the capybara-webmock proxy on
 port 9292, which the sample service provider also uses when the local stack is up; run them with
@@ -121,18 +123,26 @@ GitHub vulnerability alerts are fixed on the base branch when the fix does not c
 - Service provider reference app (browser public client): `github.com/GSA-TTS/identity-sts-sinatra`,
   branch `main`. Agency reference APIs: `github.com/18F/identity-oidc-sinatra` and
   `github.com/18F/identity-saml-sinatra`, branch `login-delegated-access`. The contract between
-  them and this repository is `config/delegated_access.localdev.yml` (one delegation scope per
-  application, issuers, resource identifiers, redirect URIs) plus the end-to-end harness in the
-  service provider app; change one side only together with the other.
+  them and this repository is the `development` section of `config/delegated_access.localdev.yml`
+  (one delegation scope per application, issuers, resource identifiers, redirect URIs) plus the
+  end-to-end harness in the service provider app; change one side only together with the other.
+- Configuration repository: `github.com/18F/identity-idp-config`, branch `delegated-access`.
+  Production content for delegated access (agency consent content, applications with their
+  consent text, logos and API URLs, service providers approved for delegation) lives there as
+  `delegated_access.yml`, edited by pull request and seeded by `db:seed` in every environment
+  (plan D77, 5.17); there is no admin interface for it. Entries carry `restrict_to_deploy_env`
+  like service providers; fictitious entries are `sandbox`. Deploy clones that repository at
+  `main`, so its branch is not deployable until merged.
 - GitLab `lg/*` projects are pull mirrors of the GitHub repositories; do not push to them.
 - Billing changes follow the local `login-billing` skill and the data-team items recorded in the
   plan's 5.8 notes.
 
 ## 6. Environment-specific pieces
 
-Plan section 7.5 lists what applies only locally or in a sandbox (the localdev fixture and seed
-task, sample certificate names, development `application.yml` values, the webmock port
-workaround) and what is not environment-specific although it looks it (CORS rules for the
+Plan section 7.5 lists what applies only locally or in a sandbox (the localdev fixture, linked to
+`config/delegated_access.yml` by `bin/setup` where a deployed environment links the
+identity-idp-config file instead, the three fictitious logos, sample certificate names,
+development `application.yml` values, the webmock port workaround) and what is not environment-specific although it looks it (CORS rules for the
 browser-callable endpoints, discovery metadata gated by the switch, alert-threshold keys). Add
 to that table whenever a new local-only piece is introduced, so it can be removed or disabled
 deliberately.
