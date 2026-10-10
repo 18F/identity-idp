@@ -450,29 +450,7 @@ class OpenidConnectTokenExchangeForm
       grant.update!(first_exchanged_at: now) if grant.first_exchanged_at.nil?
     end
 
-    DelegatedTokenStore.write(
-      @access_token,
-      {
-        aud: resource_server.identifier,
-        scope: @issued.scope,
-        grant_id: grant.id,
-        delegation_id: grant.delegation_id,
-        user_id: identity.user_id,
-        service_provider_id: service_provider.id,
-        resource_server_id: resource_server.id,
-        ial: @issued.ial,
-        aal: @issued.aal,
-        refresh_family_id: @issued.refresh_family_id,
-        dpop_jkt:,
-        token_type: @issued.token_type,
-        token_format: @issued.token_format,
-        sp_rails_session_id: identity.rails_session_id,
-        issued_at: now.to_i,
-        expires_at: @issued.expires_at.to_i,
-        issuance_id: @issued.id,
-      },
-      ttl: lifetime,
-    )
+    DelegatedTokenStore.write(@access_token, @issued.live_attributes, ttl: lifetime)
   end
 
   # The issuer the caller claimed, authenticated or not, so failures can be attributed.

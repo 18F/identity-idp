@@ -55,6 +55,32 @@ class TokenExchangeToken < ApplicationRecord
     (expires_at - issued_at).to_i
   end
 
+  # What the live Redis entry for this token holds (DelegatedTokenStore): everything introspection
+  # reports about the token, and the ids that tie the entry back to this record, its approval and
+  # its refresh family so revocation can find it. Times are epoch seconds, as the entry is JSON.
+  # @return [Hash{Symbol => Object}]
+  def live_attributes
+    {
+      aud: resource_server.identifier,
+      scope:,
+      grant_id:,
+      delegation_id:,
+      user_id:,
+      service_provider_id:,
+      resource_server_id:,
+      ial:,
+      aal:,
+      refresh_family_id:,
+      dpop_jkt:,
+      token_type:,
+      token_format:,
+      sp_rails_session_id:,
+      issued_at: issued_at.to_i,
+      expires_at: expires_at.to_i,
+      issuance_id: id,
+    }
+  end
+
   def revoke!(reason:, now: Time.zone.now)
     update!(revoked_at: now, revocation_reason: reason)
   end

@@ -37,25 +37,7 @@ FactoryBot.define do
       next if evaluator.plaintext.blank?
 
       DelegatedTokenStore.write(
-        evaluator.plaintext,
-        {
-          aud: token.resource_server.identifier,
-          scope: token.scope,
-          grant_id: token.grant_id,
-          delegation_id: token.delegation_id,
-          user_id: token.user_id,
-          service_provider_id: token.service_provider_id,
-          resource_server_id: token.resource_server_id,
-          ial: token.ial,
-          aal: token.aal,
-          refresh_family_id: token.refresh_family_id,
-          dpop_jkt: token.dpop_jkt,
-          token_type: token.token_type,
-          token_format: token.token_format,
-          expires_at: token.expires_at.to_i,
-          issuance_id: token.id,
-        },
-        ttl: token.lifetime_seconds,
+        evaluator.plaintext, token.live_attributes, ttl: token.lifetime_seconds
       )
     end
   end
