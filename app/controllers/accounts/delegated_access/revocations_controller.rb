@@ -15,6 +15,13 @@ module Accounts
         return redirect_to account_delegated_access_path if @revocation.grants.empty?
 
         @applications = @revocation.grants.map(&:application)
+        # When the revocation spans every service provider the page names each row's service
+        # provider, so those records are loaded in one query rather than one per row.
+        return if @service_provider
+
+        ActiveRecord::Associations::Preloader.new(
+          records: @revocation.grants, associations: :service_provider_record,
+        ).call
       end
 
       def destroy
