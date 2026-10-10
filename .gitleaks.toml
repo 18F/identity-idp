@@ -1,0 +1,13 @@
+# gitleaks configuration for the delegated-access branches.
+#
+# The default rules apply. The allowlist covers spec helpers whose names resemble a credential but
+# only read the repository's example key files (keys.example/, certs.example/), which are public
+# test fixtures and not secrets.
+title = "identity-idp"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Spec helper names that reference the example key files"
+regexes = ['''saml_test_sp\d*_private_key''']
