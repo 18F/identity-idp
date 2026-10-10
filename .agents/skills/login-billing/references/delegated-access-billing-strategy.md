@@ -1,6 +1,6 @@
 <!-- Vendored from the data team's docs/delegated-access-billing-strategy.md on the `token-exchange2-login`
 branch (fetched 2026-10-10), quoted as written except that the real service provider's name is replaced
-by "the service provider" (53 occurrences), because this repository names no real service
+by "the service provider" in prose and by `service-provider.example.gov` in example issuer values (53 occurrences), because this repository names no real service
 provider or agency; the source's own vocabulary ("broker") is otherwise kept. This is the design the
 built billing follows; SKILL.md section 7 lists the two points where the product owner decided
 differently (the 1-hour cache TTL and the database fallback on a cache miss). -->
@@ -102,7 +102,7 @@ Keep return-log writes minimal:
 
 ```text
 the service provider direct return row
-  issuer = america.gov
+  issuer = service-provider.example.gov
   access_type = direct
   existing billing fields only
 
@@ -226,7 +226,7 @@ Do not persist delegated proofing/session metadata in billing adjustments unless
 Billing should remain at issuer/integration grain:
 
 ```text
-broker_issuer = america.gov
+broker_issuer = service-provider.example.gov
 target_issuer = State billing issuer
 ```
 
@@ -296,7 +296,7 @@ broker_subject_token_digest
   Digest of the the service provider subject token used to resolve the cache entry.
 
 broker_issuer
-  The broker issuer, e.g. america.gov.
+  The broker issuer, e.g. service-provider.example.gov.
 
 target_issuer
   The delegated target billing issuer.
@@ -311,7 +311,7 @@ reason = 1 # delegated_token_issued
 related_sp_return_log_id = State delegated return D1
 token_exchange_token_id = T1
 broker_subject_token_digest = sha256(the service provider subject token)
-broker_issuer = america.gov
+broker_issuer = service-provider.example.gov
 target_issuer = State billing issuer
 ```
 
