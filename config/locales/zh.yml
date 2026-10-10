@@ -1898,9 +1898,8 @@ openid_connect.token.errors.invalid_signature: 无法根据任何已注册的公
 openid_connect.token.errors.invalid_subject_token: subject_token 不是为当前连接签发给此客户端的访问令牌。
 openid_connect.token.errors.invalid_subject_token_type: 'subject_token_type 必须是 urn:ietf:params:oauth:token-type:access_token。'
 openid_connect.token.errors.multiple_resources: resource 必须且只能指明一个已注册的 API；一个令牌只有一个受众。
-openid_connect.token.errors.requested_token_type_required: requested_token_type 为必填项。
 openid_connect.token.errors.resource_missing: resource 为必填项，且必须指明一个已注册的 API。
-openid_connect.token.errors.saml_not_available: '此 API 不提供 SAML 断言；请申请 urn:ietf:params:oauth:token-type:access_token。'
+openid_connect.token.errors.saml_not_available: '此 API 已注册为使用 SAML 断言，但目前无法提供。'
 openid_connect.token.errors.subject_token_missing: subject_token 为必填项。
 openid_connect.token.errors.subject_token_session_ended: 签发 subject_token 的登录会话已结束；用户必须重新登录后才能开始新的委托。
 openid_connect.token.errors.unknown_client: client_assertion 的 iss 声明与任何已注册的客户端都不匹配。

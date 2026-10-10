@@ -234,7 +234,43 @@ RSpec.describe 'OpenID Connect token exchange' do
       context 'without a requested_token_type' do
         let(:requested_token_type) { nil }
 
-        include_examples 'invalid_request', 'requested_token_type_required'
+        it 'issues the format the API is registered for' do
+          stub_request_analytics
+          exchange
+
+          expect(response).to have_http_status(:ok)
+          expect(json[:issued_token_type])
+            .to eq(OpenidConnectTokenExchangeForm::ACCESS_TOKEN_TYPE)
+          expect(@analytics).to have_logged_event(
+            :openid_connect_token_exchange, hash_including(success: true)
+          )
+          expect(@analytics).not_to have_logged_event(
+            :openid_connect_token_exchange,
+            hash_including(requested_token_type_mismatch: true),
+          )
+        end
+      end
+
+      context 'with a requested_token_type other than the registered format' do
+        let(:requested_token_type) { OpenidConnectTokenExchangeForm::SAML2_TOKEN_TYPE }
+
+        it 'issues the registered format and notes the mismatch' do
+          stub_request_analytics
+          exchange
+
+          expect(response).to have_http_status(:ok)
+          expect(json[:issued_token_type])
+            .to eq(OpenidConnectTokenExchangeForm::ACCESS_TOKEN_TYPE)
+          expect(TokenExchangeToken.last.token_format).to eq('oauth')
+          expect(@analytics).to have_logged_event(
+            :openid_connect_token_exchange,
+            hash_including(
+              success: true,
+              requested_token_type: OpenidConnectTokenExchangeForm::SAML2_TOKEN_TYPE,
+              requested_token_type_mismatch: true,
+            ),
+          )
+        end
       end
 
       context 'with an unknown requested_token_type' do
@@ -364,10 +400,16 @@ RSpec.describe 'OpenID Connect token exchange' do
         include_examples 'invalid_target', 'unknown_resource'
       end
 
-      context 'when a SAML assertion is requested' do
-        let(:requested_token_type) { OpenidConnectTokenExchangeForm::SAML2_TOKEN_TYPE }
+      context 'when the API is registered for SAML assertions' do
+        before { resource_server.update!(token_format: 'saml2') }
 
         include_examples 'invalid_target', 'saml_not_available'
+
+        context 'and the request asks for an access token' do
+          let(:requested_token_type) { OpenidConnectTokenExchangeForm::ACCESS_TOKEN_TYPE }
+
+          include_examples 'invalid_target', 'saml_not_available'
+        end
       end
 
       context 'when the application lists this service provider' do

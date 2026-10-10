@@ -7703,6 +7703,8 @@ module AnalyticsEvents
   #   a client assertion (confidential) or client_id with a DPoP proof (public)
   # @param ["Bearer", "DPoP", nil] token_type Type of the issued token
   # @param [String, nil] requested_token_type The `requested_token_type` parameter as sent
+  # @param [true, nil] requested_token_type_mismatch Present when the parameter named a format
+  #   other than the API's registered format, which was issued regardless
   # @param [Integer, nil] expires_in Lifetime in seconds of the issued token
   # @param [String, nil] error_code RFC 6749/8693/9449 error code returned on failure
   # @param [Hash, nil] error_details Details for errors that occurred in an unsuccessful exchange
@@ -7714,6 +7716,7 @@ module AnalyticsEvents
     client_type: nil,
     token_type: nil,
     requested_token_type: nil,
+    requested_token_type_mismatch: nil,
     expires_in: nil,
     error_code: nil,
     error_details: nil,
@@ -7728,6 +7731,7 @@ module AnalyticsEvents
       client_type:,
       token_type:,
       requested_token_type:,
+      requested_token_type_mismatch:,
       expires_in:,
       error_code:,
       error_details:,

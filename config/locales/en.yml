@@ -1885,9 +1885,8 @@ openid_connect.token.errors.invalid_signature: Could not validate assertion agai
 openid_connect.token.errors.invalid_subject_token: subject_token is not an access token issued to this client for a current connection.
 openid_connect.token.errors.invalid_subject_token_type: 'subject_token_type must be urn:ietf:params:oauth:token-type:access_token.'
 openid_connect.token.errors.multiple_resources: resource must name exactly one registered API; a token has one audience.
-openid_connect.token.errors.requested_token_type_required: requested_token_type is required.
 openid_connect.token.errors.resource_missing: resource is required and must name one registered API.
-openid_connect.token.errors.saml_not_available: 'A SAML assertion is not available for this API; request urn:ietf:params:oauth:token-type:access_token.'
+openid_connect.token.errors.saml_not_available: 'This API is registered for SAML assertions, which are not available.'
 openid_connect.token.errors.subject_token_missing: subject_token is required.
 openid_connect.token.errors.subject_token_session_ended: The sign-in that issued subject_token has ended; the user must sign in again before a new delegation can start.
 openid_connect.token.errors.unknown_client: The iss claim of client_assertion does not match any registered client.
