@@ -103,10 +103,21 @@ RSpec.describe AttemptsApi::DelegatedEventWriter do
     end
   end
 
-  describe '#write' do
+  describe 'written events' do
+    subject(:writer) do
+      described_class.new(
+        recipient:, agency_uuid: 'agency-uuid', delegation_id: 'dlg_1',
+        actor_issuer: 'urn:gov:gsa:openidconnect:sp:mybenefits', analytics:,
+        extra_metadata: { unique_session_id: 'session-hash' }
+      )
+    end
+
     it 'writes a server-side event with the join keys and no network details' do
       freeze_time do
-        written = writer.write('delegated-access-consented', remembered: false)
+        written = writer.delegated_access_consented(
+          application: recipient.issuer, scope: 'token_exchange:housing_records',
+          remembered: false, source: 'consent_screen', consented_at: Time.zone.now.to_f
+        )
 
         expect(written.event_type).to eq('delegated-access-consented')
         expect(written.session_id).to be_nil
@@ -116,6 +127,7 @@ RSpec.describe AttemptsApi::DelegatedEventWriter do
           delegation_id: 'dlg_1',
           actor_issuer: 'urn:gov:gsa:openidconnect:sp:mybenefits',
           application_url: nil,
+          unique_session_id: 'session-hash',
           remembered: false,
         )
         %i[user_ip_address user_agent client_port device_id google_analytics_cookies].each do |key|
@@ -132,7 +144,7 @@ RSpec.describe AttemptsApi::DelegatedEventWriter do
     it 'treats the recipient as not enrolled and delivers nothing, without raising' do
       expect(writer.enabled?).to eq(false)
       expect(writer.forward(event)).to be_nil
-      expect(writer.write('delegated-access-consented', remembered: false)).to be_nil
+      expect(writer.track_event('delegated-access-consented', remembered: false)).to be_nil
       expect(redis_client.read_events(issuer: recipient.issuer)).to be_empty
       expect(analytics).to have_logged_event(
         :delegated_access_attempts_delivery,
@@ -157,7 +169,7 @@ RSpec.describe AttemptsApi::DelegatedEventWriter do
     end
 
     it 'delivers nothing and says why' do
-      expect(writer.write('delegated-access-consented', remembered: false)).to be_nil
+      expect(writer.track_event('delegated-access-consented', remembered: false)).to be_nil
       expect(redis_client.read_events(issuer: recipient.issuer)).to be_empty
       expect(analytics).to have_logged_event(
         :delegated_access_attempts_delivery,
