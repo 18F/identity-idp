@@ -36,9 +36,8 @@
 class OpenidConnectIntrospectForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
-  include Rails.application.routes.url_helpers
+  include DelegatedAccessClientHandling
 
-  CLIENT_ASSERTION_TYPE = OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE
   CALLER_TYPES = %i[resource_server service_provider none].freeze
 
   ATTRS = %i[
@@ -75,7 +74,7 @@ class OpenidConnectIntrospectForm
     return { active: false } if @success && !@active
     return active_response if @success
 
-    { error: error_code, error_description: errors.map(&:message).join(' ') }
+    error_response
   end
 
   # The RFC 9449 §7.1 challenge for a failed or missing proof; nil for every other outcome.
@@ -87,52 +86,36 @@ class OpenidConnectIntrospectForm
       %(error="#{error_code}", error_description="#{description}")
   end
 
-  def url_options
-    {}
-  end
-
   private
 
-  attr_reader :caller_type, :error_code, :entry, :user, :grant, :identity,
+  attr_reader :caller_type, :entry, :user, :grant, :identity,
               :token_resource_server, :token_service_provider
-
-  def fail_with(attribute, code, message, type:)
-    @error_code ||= code
-    errors.add(attribute, message, type:)
-  end
 
   # A client assertion, or even just its type, means a resource server is authenticating; a bare
   # `client_id` means a public client is naming itself. A request with neither has no credential
   # and is answered "not active" without further examination.
   def identify_caller
     if client_assertion.present? || client_assertion_type.present?
-      authenticate_resource_server
+      @caller_type = :resource_server
+      authenticate_confidential_client
     elsif client_id.present?
       identify_service_provider
     end
   end
 
-  def authenticate_resource_server
-    @caller_type = :resource_server
-    unless client_assertion_type == CLIENT_ASSERTION_TYPE
-      return fail_with(
-        :client_assertion_type, 'invalid_client',
-        t('openid_connect.token.errors.client_assertion_type_invalid'),
-        type: :client_assertion_type_invalid
-      )
-    end
+  def client_assertion_audience
+    api_openid_connect_introspect_url
+  end
 
-    @auth_result = ResourceServerAuthenticator.new(
-      client_assertion:, audience: api_openid_connect_introspect_url, key_source: :resource_server,
-    ).call
-    if @auth_result.success?
-      @caller_resource_server = @auth_result.record
-    else
-      fail_with(
-        :client_assertion, 'invalid_client', @auth_result.error_message,
-        type: @auth_result.error_type
-      )
-    end
+  # The confidential caller here is an agency API, verified against the keys on its own
+  # registration (TokenExchangeResourceServer#ssl_certs).
+  def client_key_source
+    :resource_server
+  end
+
+  # @param record [TokenExchangeResourceServer]
+  def confidential_client_authenticated(record)
+    @caller_resource_server = record
   end
 
   # Only a registered public client approved for delegation can be the holder of a bound token,
@@ -304,17 +287,18 @@ class OpenidConnectIntrospectForm
     }
   end
 
-  def integration_errors
-    identifier = claimed_resource_server_identifier || @caller_service_provider&.issuer
-    return nil if @success || identifier.blank?
+  def integration_error_event
+    :oidc_introspection_request
+  end
 
-    {
-      error_details: errors.full_messages,
-      error_types: errors.attribute_names,
-      event: :oidc_introspection_request,
-      integration_exists: @caller_resource_server.present? || @caller_service_provider.present? ||
-        TokenExchangeResourceServer.exists?(identifier:),
-      request_issuer: identifier,
-    }
+  # Either kind of caller may be the misconfigured one: the API by its identifier, the service
+  # provider by its issuer.
+  def integration_error_issuer
+    claimed_resource_server_identifier || @caller_service_provider&.issuer
+  end
+
+  def integration_exists?(identifier)
+    @caller_resource_server.present? || @caller_service_provider.present? ||
+      TokenExchangeResourceServer.exists?(identifier:)
   end
 end
