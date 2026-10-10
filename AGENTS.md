@@ -60,6 +60,8 @@ login-delegated-access (base + docs)
  → delegated-access-config-content   (5.17, content seeded from identity-idp-config)
 ```
 
+- Plan section 8 maps every branch to its feature section and requirement identifiers and gives
+  the reading and review order (each branch is reviewed as the diff against the one below it).
 - Branch names say what the branch delivers; no numbers or abbreviations.
 - A fix belongs in the branch that owns the behavior; rebase the branches above it afterwards
   (`git rebase <previous tip>` in each worktree, in stack order). Acceptance is a fast-forward of

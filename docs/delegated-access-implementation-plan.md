@@ -827,25 +827,44 @@ Not environment-specific, although it can look so: the `Rack::Cors` rules for `/
 
 ## 8. Worktrees and sequence
 
-Branch `login-delegated-access` is created from `sbx-taigrr` `0b0539e19` on GitLab `lg/identity-idp` (GitHub needs a push by someone with write access; see 7.4 item 12). Thirteen worktrees under `~/coding/worktrees/`, each on a branch of the same name, numbered in dependency order and **stacked**: each feature branch starts from the head of the one before it, so the highest branch always contains every feature below it.
+Branch `login-delegated-access` is the base: `sbx-taigrr` `0b0539e19` with `main` merged (section 2), the three documents under `docs/`, `CLAUDE.md` and `AGENTS.md`. Every feature is a code-only branch stacked on the one before it, with a worktree of the same name under `~/coding/worktrees/`; the local pointer branch `delegated-access-integration` always names the top. All branches are on GitHub `18F/identity-idp`.
 
-1. `delegated-access-registry` — data model and configuration (5.1)
-2. `delegated-access-consent` — authorize request and consent screen (5.2)
-3. `delegated-access-account-page` — account page (5.3)
-4. `delegated-access-site-keys` — per-site keys, sealing primitives and custody, ported from pull requests #13618 and #13619; independent of the chain (5.16)
-5. `delegated-access-dpop` — client key binding for the public client: the proof verifier, `dpop_jkt` at authorize and on `identities`, the bound code exchange, the `DPoP` scheme at userinfo and document images, the removal of `dpop_required` (5.10; D64)
-6. `delegated-access-token-exchange` — token exchange at the token endpoint and the agency client authenticator (5.4)
-7. `delegated-access-token-lifecycle` — refresh, revocation, suspension and deletion (5.5)
-8. `delegated-access-introspection` — agency verification (5.6)
-9. `delegated-access-fraud-signals` — Attempts API delivery (5.7)
-10. `delegated-access-billing-reporting` — billing rows, waiver by adjustment, reports (5.8)
-11. `delegated-access-saml-assertions` — SAML assertions (5.9)
-12. `delegated-access-operations` — discovery, analytics sweep, fixtures, test sweep (5.11)
-13. `delegated-access-document-images` — document images and the passport-agency channel; decisions first (5.12)
+**Where to start.** Read sections 1 to 4 of this plan for the context and the approach, then the feature section (5.x) of the branch under review, then the functional requirements it names and the companion rows. Review code as the diff between a branch and the branch directly below it (`git diff <below>..<branch>`), starting with `delegated-access-registry` against `login-delegated-access`. Accept and merge in the same order, bottom to top: a branch merged out of order carries the commits of every branch below it.
 
-**Amended 2026-10-10 (D64, D65).** The order above is the stack as rebuilt on 2026-10-10: `delegated-access-site-keys` sits after the account page and `delegated-access-dpop` directly above it, so the token-exchange branch and everything after it build on the verifier. Feature branches are code-only; the three documents in `docs/` are committed on `login-delegated-access` alone (section 6, item 8).
+```
+login-delegated-access                         base: main merge, docs, CLAUDE.md / AGENTS.md
+ ├─  1. delegated-access-registry              §5.1  onboarding data model and registry
+ ├─  2. delegated-access-consent               §5.2  authorize request and consent screen
+ ├─  3. delegated-access-account-page          §5.3  Account → Delegated access
+ ├─  4. delegated-access-site-keys             §5.16 per-site keys (ported)
+ ├─  5. delegated-access-dpop                  §5.10 public-client key binding (DPoP)
+ ├─  6. delegated-access-token-exchange        §5.4  RFC 8693 exchange at the token endpoint
+ ├─  7. delegated-access-token-lifecycle       §5.5  refresh rotation, revocation, suspension
+ ├─  8. delegated-access-introspection         §5.6  RFC 7662 introspection
+ ├─  9. delegated-access-saml-assertions       §5.9  SAML assertions as an issued token type
+ ├─ 10. delegated-access-operations            §5.11 discovery and operational metadata
+ ├─ 11. delegated-access-billing-reporting     §5.8  billing rows and reports
+ ├─ 12. delegated-access-fraud-signals         §5.7  Attempts API fraud signals
+ └─ 13. delegated-access-config-content        §5.17 content seeded from identity-idp-config
+```
 
-**Amended 2026-10-10 (D77).** A fourteenth worktree, `delegated-access-config-content` (5.17), sits after `delegated-access-fraud-signals` and before `delegated-access-billing-reporting`; the branches above it rebase onto it. Tips after that rebase are listed in 5.17 as built, item 9.
+| # | Branch | Plan | Functional requirements | Companion rows |
+|---|---|---|---|---|
+| 1 | `delegated-access-registry` | 5.1 | FR-ONB-1 to FR-ONB-9, FR-OPS-1 | §3 ONB-1..8, §10 |
+| 2 | `delegated-access-consent` | 5.2 | FR-CEN-1 to 7, 9 to 12, 17; FR-CUX-1 to 11 | §4.1–4.6 CON-1..19 |
+| 3 | `delegated-access-account-page` | 5.3 | FR-CUX-12 to 14; FR-CEN-14, FR-CEN-15 (sign-out) | §4.7 ACC-1..6 |
+| 4 | `delegated-access-site-keys` | 5.16 | supporting key-custody primitives, no requirement rows of its own | — |
+| 5 | `delegated-access-dpop` | 5.10 | FR-TOK-19, FR-TOK-22 to 25 | §5.5 EXC-17..19, Appendix C |
+| 6 | `delegated-access-token-exchange` | 5.4 | FR-TOK-1 to 8, 17, 19, 20 (exchange), 21, 26; FR-CEN-8, 10, 12, 16 | §5 EXC-1..12, §6.2 |
+| 7 | `delegated-access-token-lifecycle` | 5.5 | FR-TOK-10 to 16, 18, 20 (refresh); FR-CEN-13, FR-CEN-15 (suspension, deletion) | §7 REF-1..9, §11 |
+| 8 | `delegated-access-introspection` | 5.6 | FR-VER-1 to 8; FR-TOK-5, FR-TOK-6 | §6 INT-1..11 |
+| 9 | `delegated-access-saml-assertions` | 5.9 | FR-TOK-9, FR-VER-9 | §15 SAML-1..15 |
+| 10 | `delegated-access-operations` | 5.11 | FR-OPS-1, 2, 4, 5 | §5.4 DISC-1..5, §12, §13, §14.5 |
+| 11 | `delegated-access-billing-reporting` | 5.8 | FR-BIL-1 to 10 | §9 BIL-1..14 |
+| 12 | `delegated-access-fraud-signals` | 5.7 | FR-FRD-1 to 9; FR-CEN-13 and FR-TOK-12 (reported to the agency) | §8 ATT-1..18 |
+| 13 | `delegated-access-config-content` | 5.17 | FR-ONB-3, 5, 9 (as amended 2026-10-10) | §3.5 ONB-5, 12, 15 |
+
+Not branches: 5.12 (document images) is `sbx-taigrr` code kept on the base and enabled only in the sandbox; 5.13 (third-party-initiated login) lives in the reference applications; 5.14 and 5.15 are planned. The stack took this shape on 2026-10-10: the key-binding code was consolidated into one branch placed before the exchange, and SAML and operations moved before billing and fraud signals (D64, D65); the content branch was added last (D77).
 
 Before feature 1: merge `main` into `login-delegated-access` and resolve the one spec conflict (section 2).
 
