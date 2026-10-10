@@ -84,15 +84,37 @@ module AttemptsApi
 
     # While a delegated-access authorization is in flight, every event is copied into the session
     # buffer for the agencies the person may approve, whether or not the service provider itself
-    # is enrolled in the Attempts API. The service provider's own event is unaffected.
+    # is enrolled in the Attempts API. Once an agency is approved, each later event of the browser
+    # session also reaches it at once as a re-mapped copy. The service provider's own event is
+    # unaffected either way.
     def capture_for_delegation(event)
       return unless delegation_context.active?
 
       delegation_context.push_buffered_event(event)
+      delegation_context.approved.each do |issuer, approval|
+        recipient = delegation_recipients[issuer] ||= ServiceProvider.find_by(issuer:)
+        DelegatedEventWriter.new(
+          recipient:,
+          agency_uuid: approval['agency_uuid'],
+          delegation_id: approval['delegation_id'],
+          actor_issuer: delegation_context.sp_issuer,
+          analytics: delegation_analytics,
+        ).forward(event)
+      end
     end
 
     def delegation_context
       @delegation_context ||= DelegationContext.from_session(session)
+    end
+
+    def delegation_recipients
+      @delegation_recipients ||= {}
+    end
+
+    def delegation_analytics
+      @delegation_analytics ||= Analytics.new(
+        user: user || AnonymousUser.new, request: nil, session: {}, sp:,
+      )
     end
 
     # True when this event is being recorded only for the delegation buffer: the service provider
