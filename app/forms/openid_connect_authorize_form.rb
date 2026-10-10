@@ -79,7 +79,8 @@ class OpenidConnectAuthorizeForm
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
     SIMPLE_ATTRS.each { |key| instance_variable_set(:"@#{key}", params[key]) }
     @prompt ||= 'select_account'
-    @scope = parse_scope_param(params[:scope])
+    @scoper = OpenidConnectAttributeScoper.new(params[:scope], allowed: scopes)
+    @scope = scoper.scopes
     @unauthorized_scope = check_for_unauthorized_scope(params)
 
     if verified_within_allowed?
@@ -159,8 +160,7 @@ class OpenidConnectAuthorizeForm
   # Bare delegation scope values: the applications the service provider asks to act at for the
   # user, requested as `token_exchange:<value>` in the OIDC scope parameter.
   def requested_delegation_scopes
-    scope.select { |value| OpenidConnectAttributeScoper.delegation_scope?(value) }
-      .map { |value| value.delete_prefix(ServiceProvider::DELEGATION_SCOPE_PREFIX) }
+    scoper.delegation_scope_values
   end
 
   def delegation_requested?
@@ -169,7 +169,7 @@ class OpenidConnectAuthorizeForm
 
   private
 
-  attr_reader :identity, :success
+  attr_reader :identity, :success, :scoper
 
   def private_key_jwt_sp?
     # Missing service providers are rejected by validate_client_id.
@@ -222,18 +222,6 @@ class OpenidConnectAuthorizeForm
   def parse_to_values(param_value, possible_values)
     return [] if param_value.blank?
     param_value.split(' ').compact & possible_values
-  end
-
-  # Attribute scopes are intersected with the fixed list as before, so unknown values without the
-  # delegation prefix stay silently ignored (existing integrations, including Login.gov's own
-  # sample applications, send non-scope values and rely on that). Delegation scopes are kept so
-  # #validate_delegation_scopes can reject unknown ones explicitly.
-  def parse_scope_param(param_value)
-    return [] if param_value.blank?
-
-    values = param_value.split(' ').compact
-    (values & scopes) +
-      values.select { |value| OpenidConnectAttributeScoper.delegation_scope?(value) }.uniq
   end
 
   # Delegation may be requested only by a service provider approved for it, only on an

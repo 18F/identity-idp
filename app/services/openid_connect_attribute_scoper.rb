@@ -80,8 +80,11 @@ class OpenidConnectAttributeScoper
 
   attr_reader :scopes
 
-  def initialize(scope)
-    @scopes = parse_scope(scope)
+  # @param scope [String, nil] the space-separated OIDC scope parameter
+  # @param allowed [Array<String>] the attribute scopes recognized for this request; the
+  #   authorize form narrows it to VALID_IAL1_SCOPES when identity proofing is not requested
+  def initialize(scope, allowed: VALID_SCOPES)
+    @scopes = parse_scope(scope, allowed)
   end
 
   def ial2_scopes_requested?
@@ -131,12 +134,13 @@ class OpenidConnectAttributeScoper
 
   private
 
-  # Attribute scopes are intersected with the fixed list, so an unknown value is silently
-  # ignored as it always has been (existing integrations send values that are not scopes).
-  # Delegation scopes are kept as given; the authorize form validates them against the registry.
-  def parse_scope(scope)
+  # Attribute scopes are intersected with the allowed list, so an unknown value is silently
+  # ignored as it always has been (existing integrations, including Login.gov's own sample
+  # applications, send values that are not scopes). Delegation scopes are kept as given; the
+  # authorize form validates them against the registry and can reject unknown ones explicitly.
+  def parse_scope(scope, allowed)
     return [] if scope.blank?
     values = scope.split(' ').flatten.compact
-    (values & VALID_SCOPES) + values.select { |value| self.class.delegation_scope?(value) }.uniq
+    (values & allowed) + values.select { |value| self.class.delegation_scope?(value) }.uniq
   end
 end
