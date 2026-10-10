@@ -58,7 +58,8 @@ description: Use for any question, review, edit, run or decision about the deleg
 - After any change under `docs/`: `python3 .claude/skills/login-delegated-access/scripts/build_index.py`.
 - After any change under `.claude/skills/`: `.claude/skills/login-delegated-access/scripts/sync_twins.sh`
   (`.agents/skills` must stay byte-identical; `--check` verifies).
-- `bundle exec rspec spec/skills/skill_twins_spec.rb` checks both the twins and the generation headers.
+- `bash .claude/skills/login-delegated-access/scripts/check.sh` runs every check (indexes current, twins identical,
+  headers present, markers paired, size limit). There is deliberately no test in the repository's suite for this.
 - Never edit a generated file by hand: `requirements-index.md`, `traceability.md`, `branches.md`, `decisions.md`
   and the marked matrix bodies in the three documents (plan 8.1, FR Appendix E, companion Appendix F).
 - Hand-written references (`foundation.yml`, `foundation-sbx-taigrr.md`, `branch-context/`, `rfcs/`, runbooks)

@@ -89,6 +89,6 @@ branch review, protocol question, code or requirement change, running the local 
 references to load, so a session reads only what it needs. `references/` holds the generated indexes, the
 per-branch context, RFC digests, the interview and update protocol, and the local and sandbox runbooks;
 `scripts/` holds the generator, the twin sync and the local stack helpers. `.agents/skills` is a
-byte-identical twin kept by `scripts/sync_twins.sh` and checked by `spec/skills/skill_twins_spec.rb`. In Claude
+byte-identical twin kept by `scripts/sync_twins.sh` and checked by the skill's own `scripts/check.sh` (nothing is added to the repository's test suite). In Claude
 Code the skill loads when the conversation concerns these branches, or on request with
 `/login-delegated-access`; `/interview` runs the interview that precedes every change.

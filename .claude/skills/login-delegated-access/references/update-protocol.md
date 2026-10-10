@@ -56,7 +56,7 @@ When a change alters a branch's scope, a document section the skill cites, or th
 3. `SKILL.md` section 6 and `docs/delegated-access-README.md` carry the branch diagram; update both when
    the stack changes (plan §8 is the source).
 4. Run `.claude/skills/login-delegated-access/scripts/sync_twins.sh`, then
-   `bundle exec rspec spec/skills/skill_twins_spec.rb`.
+   `bash .claude/skills/login-delegated-access/scripts/check.sh`.
 
 ## 4. The informed opinion
 

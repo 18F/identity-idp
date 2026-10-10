@@ -155,5 +155,5 @@ deliberately.
 
 `.claude/skills/login-delegated-access` (SKILL.md, `references/`, `scripts/`) is the entry point for any
 question, review, edit or run on these branches; `.agents/skills` is its byte-identical twin, produced by
-`scripts/sync_twins.sh` and checked by `spec/skills/skill_twins_spec.rb`. Generated references are
+`scripts/sync_twins.sh` and checked by the skill's own `scripts/check.sh` (nothing is added to the repository's test suite). Generated references are
 never edited by hand: after a docs change run `scripts/build_index.py`, after a skill change run `sync_twins.sh`.

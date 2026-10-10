@@ -4,7 +4,7 @@
 #   scripts/sync_twins.sh          copy .claude/skills over .agents/skills (removing anything extra)
 #   scripts/sync_twins.sh --check  compare only; print every differing path and exit 1 on any difference
 #
-# The source of truth is .claude/skills. spec/skills/skill_twins_spec.rb fails when the twins differ.
+# The source of truth is .claude/skills. scripts/check.sh fails when the twins differ.
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
