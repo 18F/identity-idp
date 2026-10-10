@@ -19,6 +19,11 @@ module Db
 
       # @param [Range<Date>]
       # @return [Array<Hash>]
+      #
+      # An operational total, not an invoice: delegated rows count under the agency API's billing
+      # issuer like direct rows, and sign-in rows later excluded from billing still count here.
+      # A delegated row whose issuer has no service_providers record is dropped by the join like
+      # any other unknown issuer.
       def self.query_month(month_range)
         params = {
           month_start: month_range.begin,

@@ -124,6 +124,17 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
             expect(row['partner_ial2_new_unique_user_events_year_greater_than_5'].to_i).to eq(0)
             expect(row['partner_ial2_new_unique_user_events_unknown'].to_i).to eq(0)
 
+            expect(row['iaa_ial2_delegated_only_unique_users'].to_i).to eq(0)
+            expect(row['partner_ial2_unique_user_events_delegated_only'].to_i).to eq(0)
+            expect(row['partner_ial2_unique_user_events_delegated_proofing'].to_i).to eq(0)
+            expect(csv.headers.last(3)).to eq(
+              %w[
+                iaa_ial2_delegated_only_unique_users
+                partner_ial2_unique_user_events_delegated_only
+                partner_ial2_unique_user_events_delegated_proofing
+              ],
+            )
+
             expect(row['issuer_ial2_unique_user_events_year1'].to_i).to eq(0)
             expect(row['issuer_ial2_unique_user_events_year2'].to_i).to eq(2)
             expect(row['issuer_ial2_unique_user_events_year3'].to_i).to eq(0)
