@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# How a service provider is identified and authenticated at the delegated-access endpoints (token
-# exchange, refresh and revocation), by the client type fixed at onboarding:
+# How a caller is identified and authenticated at the delegated-access endpoints (token exchange,
+# refresh, revocation and introspection), by the client type fixed at onboarding:
 #
 # * A confidential service provider authenticates with a `private_key_jwt` client assertion
 #   (RFC 7523) signed with a key on its record, with `aud` naming the endpoint being called.
@@ -22,7 +22,10 @@
 #
 # The including form provides the `client_assertion`, `client_assertion_type` and `client_id`
 # readers, a `client_assertion_audience` (the absolute URL of the endpoint), an
-# `integration_error_event` naming the request kind, and sets `@success` when it submits.
+# `integration_error_event` naming the request kind, and sets `@success` when it submits. A form
+# that serves agency APIs rather than service providers overrides #client_key_source and
+# #confidential_client_authenticated, so the one client-assertion check verifies against the
+# API's registered keys and hands it the API's record.
 module DelegatedAccessClientHandling
   extend ActiveSupport::Concern
   # The forms build the absolute URL of the endpoint they serve, for client assertion audiences
@@ -77,18 +80,29 @@ module DelegatedAccessClientHandling
   end
 
   # What the integration-errors event reports for a failed request from a caller that named
-  # itself, so partner support can see which service provider sent what; nil otherwise.
+  # itself, so partner support can see which integration sent what; nil otherwise.
   def integration_errors
-    return nil if @success || claimed_issuer.blank?
+    issuer = integration_error_issuer
+    return nil if @success || issuer.blank?
 
     {
       error_details: errors.full_messages,
       error_types: errors.attribute_names,
       event: integration_error_event,
-      integration_exists: service_provider.present? ||
-        ServiceProvider.exists?(issuer: claimed_issuer),
-      request_issuer: claimed_issuer,
+      integration_exists: integration_exists?(issuer),
+      request_issuer: issuer,
     }
+  end
+
+  # The identifier the integration-errors event attributes a failed request to.
+  def integration_error_issuer
+    claimed_issuer
+  end
+
+  # Whether that identifier names a registered integration, so support can tell a misconfigured
+  # partner from an unknown caller.
+  def integration_exists?(issuer)
+    service_provider.present? || ServiceProvider.exists?(issuer:)
   end
 
   def validate_client
@@ -122,7 +136,7 @@ module DelegatedAccessClientHandling
     end
 
     @auth_result = ResourceServerAuthenticator.new(
-      client_assertion:, audience: client_assertion_audience, key_source: :service_provider,
+      client_assertion:, audience: client_assertion_audience, key_source: client_key_source,
     ).call
     unless @auth_result.success?
       return fail_with(
@@ -131,9 +145,21 @@ module DelegatedAccessClientHandling
       )
     end
 
-    # A public client has no secret to sign with; a client assertion from one is a client
-    # presenting the wrong kind of credential, not an authenticated public client.
-    if @auth_result.record.pkce == true
+    confidential_client_authenticated(@auth_result.record)
+  end
+
+  # Whose registered keys verify a client assertion at this endpoint: service providers, unless
+  # the form serves agency APIs.
+  def client_key_source
+    :service_provider
+  end
+
+  # The service provider whose assertion verified. A public client has no secret to sign with; a
+  # client assertion from one is a client presenting the wrong kind of credential, not an
+  # authenticated public client.
+  # @param record [ServiceProvider]
+  def confidential_client_authenticated(record)
+    if record.pkce == true
       return fail_with(
         :client_assertion, 'invalid_client',
         t('openid_connect.token.errors.client_authentication_required'),
@@ -141,7 +167,7 @@ module DelegatedAccessClientHandling
       )
     end
 
-    @service_provider = @auth_result.record
+    @service_provider = record
     @client_type = 'confidential'
   end
 
