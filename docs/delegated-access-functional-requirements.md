@@ -483,6 +483,8 @@ A service provider that Login.gov allows can be given a key that is unique to th
 
 ---
 
+**Amended 2026-10-10.** The release on OIDC authorization, recovery after a password reset and recovery with the personal key (pull requests #13620 to #13622) are ported too, so every row above is met by the branch as built; see implementation plan 5.16.
+
 ## Appendix A — Consolidated decisions awaiting an owner
 
 The questions in this document that most affect scope or schedule, gathered in one place.

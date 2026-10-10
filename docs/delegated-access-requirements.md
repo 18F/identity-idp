@@ -2624,6 +2624,8 @@ Independent code paths: nothing in §3–§9 reads a site key root and nothing h
 
 ---
 
+**Amended 2026-10-10.** Pull requests #13620 to #13622 are ported as well: `site_key_roots` gains `encrypted_root_recovery_code`, `recovery_code_generated_at`, `recovery_code_acknowledged_at` and `encrypted_root_personal_key` (migrations `20261003110002`, `20261003110003`); `encrypted_root` becomes nullable; sealed keys are released on OIDC authorization through the fragment the browser reads; recovery flows live under `/account/site_key/*`. Implementation plan 5.16 has the details.
+
 ## Appendix A — Open decisions
 
 | Decision | Options | Recommendation |
