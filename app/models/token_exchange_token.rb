@@ -27,10 +27,10 @@ class TokenExchangeToken < ApplicationRecord
   # token is still accepted; the Redis entry does.
   scope :live, -> { where(revoked_at: nil).where('expires_at > ?', Time.zone.now) }
 
-  # The token string a service provider receives: 32 random bytes, base64url without padding.
-  # It carries no claims; a resource server learns its meaning only by introspection.
+  # The token string a service provider receives. It carries no claims; a resource server learns
+  # its meaning only by introspection.
   def self.generate_token
-    SecureRandom.urlsafe_base64(32)
+    DelegatedAccess::OpaqueToken.generate
   end
 
   def saml?
