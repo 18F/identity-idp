@@ -1,7 +1,7 @@
 # Login STS and Dept of State Functional Requirements
 
 **Status:** Draft for review
-**Date:** 2026-10-09 (consent granularity, pre-approval, content, token, verification, fraud-signal, billing, SAML, key-binding, operations, document-image and account-page decisions of 2026-10-09 applied; see Appendix D)
+**Date:** 2026-10-10 (amended through 2026-10-10; consent granularity, pre-approval, content, token, verification, fraud-signal, billing, SAML, key-binding, operations, document-image and account-page decisions of 2026-10-09 applied; see Appendix D)
 **Companion document:** *Delegated Access for Login.gov — Requirements* (`delegated-access-requirements.md`), which specifies how the Secure Token Service is built. This document states *what* the capability must do and leaves *how* to the companion document.
 
 ---

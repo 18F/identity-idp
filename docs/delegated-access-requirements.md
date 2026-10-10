@@ -2,7 +2,7 @@
 
 **Audience:** maintainers of `18F/identity-idp`
 **Status:** Draft for review
-**Baseline:** `identity-idp` `main` as of 2026-09-04 (`48a1ff3e3f`)
+**Baseline:** branch `login-delegated-access` (`sbx-taigrr` `0b0539e19` with `main` `42e6a7171` merged; implementation plan section 2). First written against `main` `48a1ff3e3f` (2026-09-04).
 
 > Implementation note (2026-09-28): the baseline commit does not boot under `identity-hostdata` 4.4.2 because
 > `lib/identity_config.rb` passes the type of `lexisnexis_threatmetrix_hybrid_handoff_policy` positionally
