@@ -1,0 +1,56 @@
+# Pieces of the requirements the sbx-taigrr foundation already satisfied or supplied, kept in the stack.
+# fr: functional requirement ids; companion: companion row ids; plan: plan section; note: one line.
+- id: agency_opt_in
+  fr: [FR-CEN-2]
+  companion: [ONB-5]
+  plan: "3.4 item 1, 5.1"
+  kept_by: delegated-access-registry
+  note: "allowed_delegation_service_providers, generalized from allowed_token_exchange_brokers"
+- id: ial_forwarded_never_elevated
+  fr: [FR-FIT-5]
+  companion: [EXC-4]
+  plan: "3.4 item 2, 5.4"
+  kept_by: delegated-access-token-exchange
+  note: "ial and aal copied from the sign-in onto the issuance record and live entry; a refresh copies them from the family"
+- id: act_claim
+  fr: [FR-VER-3]
+  companion: [INT-4, SAML-7, E12]
+  plan: "3.4 item 3, 5.6, 5.9"
+  kept_by: delegated-access-introspection
+  note: "act: {sub: <service provider issuer>} in the introspection response and the SAML actor attribute; no longer an id_token claim"
+- id: analytics_on_every_decision
+  fr: [FR-OPS-2]
+  companion: [EXC-8, EXC-10]
+  plan: "3.4 item 4, 5.11"
+  kept_by: delegated-access-operations
+  note: "openid_connect_token_exchange keeps its name with new properties; one caller property (service_provider_issuer) across every delegated-access event"
+- id: no_target_error_before_caller_cleared_gates
+  fr: [FR-TOK-26]
+  companion: [EXC-3, EXC-11, INT-3, E26]
+  plan: "3.4 item 5, 5.4 Findings 4"
+  kept_by: delegated-access-token-exchange
+  note: "exchange validation order stops at the first failure; consent_required only to an authenticated caller for a registered resource; null-byte guard on untrusted lookups"
+- id: document_images_direct_sp
+  fr: [FR-DOS-1, FR-DOS-10, FR-TOK-6]
+  companion: [DOC-1, INT-16]
+  plan: "3.4 item 6, 5.12"
+  kept_by: login-delegated-access
+  note: "document_images scope, artifact store, download endpoint and consent checkbox kept on the base behind document_images_sharing_enabled, on in the sandbox only (D49); never reachable by a delegated token"
+- id: mdl_exemption
+  fr: []
+  companion: []
+  plan: "3.4 item 7, 5.12, section 2"
+  kept_by: login-delegated-access
+  note: "SocureImageRetrievalJob persists no artifacts for mDL sessions; compatible with main's mDL early return merged in section 2"
+- id: per_application_account_toggles
+  fr: [FR-CUX-12, FR-CUX-13]
+  companion: [ACC-1, ACC-2]
+  plan: "3.4 item 8, 5.3"
+  kept_by: delegated-access-account-page
+  note: "one control per application under the service provider with confirmation before approving; the list becomes every registered application that accepts the service provider (D4, D23)"
+- id: consent_per_application_grouped_by_agency
+  fr: [FR-CUX-3]
+  companion: [CON-7, CON-10]
+  plan: "3.4 item 9, 5.2"
+  kept_by: delegated-access-consent
+  note: "application granularity grouped by agency was already the screen's shape and is the decided granularity (D1); rows are now the requested applications, locked"

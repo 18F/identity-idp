@@ -15,6 +15,8 @@ change, by a person or by an agent.
 
 They live **only on `login-delegated-access`**. Feature branches are code-only and never commit
 under `docs/`. Copies on Google Drive are stale and carry a banner saying so.
+`docs/delegated-access-README.md` explains how the three relate and in what order to read them;
+the skill `.claude/skills/login-delegated-access` indexes them (section 7).
 
 ### Keep them current, in the same unit of work as the code
 
@@ -148,3 +150,10 @@ development `application.yml` values, the webmock port workaround) and what is n
 browser-callable endpoints, discovery metadata gated by the switch, alert-threshold keys). Add
 to that table whenever a new local-only piece is introduced, so it can be removed or disabled
 deliberately.
+
+## 7. The skill
+
+`.claude/skills/login-delegated-access` (SKILL.md, `references/`, `scripts/`) is the entry point for any
+question, review, edit or run on these branches; `.agents/skills` is its byte-identical twin, produced by
+`scripts/sync_twins.sh` and checked by `spec/skills/skill_twins_spec.rb`. Generated references are
+never edited by hand: after a docs change run `scripts/build_index.py`, after a skill change run `sync_twins.sh`.
