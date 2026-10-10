@@ -553,15 +553,6 @@ team_ursula_email: ''
 telephony_adapter: test
 test_ssn_allowed_list: ''
 token_exchange_access_token_ttl_seconds: 900
-# Delegated access has no per-caller rate limit; a registered service provider or agency API is
-# never refused for volume. Operations alerting reads these thresholds against the analytics
-# stream (openid_connect_token_exchange, openid_connect_token_refresh, openid_connect_introspect,
-# openid_connect_revoke) per service_provider_issuer or resource_server_identifier over a
-# one-minute window; nothing in the application reads them.
-token_exchange_alert_error_rate_percent: 5
-token_exchange_alert_exchanges_per_minute: 1000
-token_exchange_alert_introspections_per_minute: 6000
-token_exchange_alert_refreshes_per_minute: 1000
 token_exchange_enabled: false
 token_exchange_refresh_token_ttl_seconds: 43200
 token_exchange_saml_assertion_ttl_seconds: 300
