@@ -43,6 +43,24 @@ RSpec.describe TokenExchangeResourceServer do
     end
   end
 
+  describe '#warn_if_unbillable' do
+    it 'warns when the billing issuer has no partner agreement' do
+      expect(Rails.logger).to receive(:warn) do |&block|
+        expect(block.call).to include(resource_server.identifier)
+          .and include(resource_server.billing_issuer_value)
+      end
+
+      resource_server.warn_if_unbillable
+    end
+
+    it 'is silent when an integration carries the billing issuer' do
+      create(:integration, issuer: resource_server.billing_issuer_value)
+      expect(Rails.logger).not_to receive(:warn)
+
+      resource_server.warn_if_unbillable
+    end
+  end
+
   describe '#usable?' do
     it 'is true while the URL and its application are active' do
       expect(resource_server.usable?).to eq(true)
