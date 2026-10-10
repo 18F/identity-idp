@@ -9,8 +9,6 @@
 class OpenidConnectConfigurationPresenter
   include Rails.application.routes.url_helpers
 
-  TOKEN_EXCHANGE_GRANT_TYPE = 'urn:ietf:params:oauth:grant-type:token-exchange'
-
   def configuration
     {
       acr_values_supported: Saml::Idp::Constants::VALID_AUTHN_CONTEXTS,
@@ -56,7 +54,7 @@ class OpenidConnectConfigurationPresenter
   def grant_types_supported
     return %w[authorization_code] unless delegated_access_enabled?
 
-    %W[authorization_code refresh_token #{TOKEN_EXCHANGE_GRANT_TYPE}]
+    %W[authorization_code refresh_token #{OpenidConnectTokenExchangeForm::GRANT_TYPE}]
   end
 
   def token_endpoint_auth_methods_supported
