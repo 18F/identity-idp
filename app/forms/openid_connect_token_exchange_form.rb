@@ -4,8 +4,10 @@
 # (RFC 8693). A service provider presents the access token Login.gov issued to it for a signed-in
 # person (the `subject_token`) and names one agency API (`resource`, RFC 8707); if the person
 # approved the application that owns that API for this service provider, Login.gov issues a token
-# for that API in the format the API is registered for. An opaque token the API verifies by
-# introspection is issued here; `requested_token_type` is optional and never changes the format.
+# for that API in the format the API is registered for (`token_format`): an opaque access token
+# the API verifies by introspection, or a SAML 2.0 assertion the API verifies on its own against
+# Login.gov's SAML signing certificate (DelegatedSamlAssertion). `requested_token_type` is
+# optional and never changes the format.
 #
 # How the caller proves who it is depends on its client type, fixed at onboarding
 # (DelegatedAccessClientHandling):
@@ -28,8 +30,8 @@
 # * `invalid_grant`       - the subject token is not this client's, its sign-in has ended, or the
 #                           person is not identity-verified
 # * `invalid_dpop_proof`  - a public client's proof is missing or fails verification
-# * `invalid_target`      - the resource is unknown or inactive, its application does not accept
-#                           this client, or its registered format is not available
+# * `invalid_target`      - the resource is unknown or inactive, or its application does not
+#                           accept this client
 # * `consent_required`    - the person has not approved the application that owns the resource,
 #                           or the approval lapsed; the description names the scope to request
 #
@@ -72,7 +74,6 @@ class OpenidConnectTokenExchangeForm
   validate :validate_session_live
   validate :validate_identity_assurance
   validate :validate_resource
-  validate :validate_token_format
   validate :validate_grant
 
   def initialize(params)
@@ -87,13 +88,17 @@ class OpenidConnectTokenExchangeForm
     FormResponse.new(success: @success, errors:, extra: extra_analytics_attributes)
   end
 
-  # RFC 8693 §2.2.1 response or the RFC error object. No `id_token`. `issued_token_type` names
-  # the format actually issued, which is the API's registered one. `refresh_token_expires_in`
-  # is how long the family lasts, measured from the same instant as `expires_in`, so the service
-  # provider can schedule its refreshes without clock arithmetic against the response time.
+  # RFC 8693 §2.2.1 response or the RFC error object. No `id_token`. `access_token` carries the
+  # issued token whatever its format, `issued_token_type` names the format, which is the API's
+  # registered one, and `token_type` is `N_A` for a SAML assertion, which is not a credential at
+  # Login.gov's own endpoints. `refresh_token_expires_in` is how long the family lasts, measured
+  # from the same instant as `expires_in`, so the service provider can schedule its refreshes
+  # without clock arithmetic against the response time. `attributes: "identifiers_only"` tells
+  # the service provider that an assertion carries no proofed attributes because the sign-in held
+  # no decrypted profile.
   def response
     if @success
-      {
+      body = {
         access_token: @access_token,
         issued_token_type: issued_token_type,
         token_type: @issued.token_type,
@@ -102,6 +107,8 @@ class OpenidConnectTokenExchangeForm
         refresh_token: @refresh_token,
         refresh_token_expires_in: @refresh.seconds_until_family_end(now: @issued.issued_at),
       }
+      body[:attributes] = 'identifiers_only' if @assertion&.identifiers_only?
+      body
     else
       error_response
     end
@@ -247,21 +254,6 @@ class OpenidConnectTokenExchangeForm
     )
   end
 
-  # The API's registration (`token_format`) decides the format of the token issued for it, so
-  # the service provider cannot obtain a format the agency did not ask for. An access token is
-  # issued here; a SAML assertion is not available, so an API registered for one is refused as a
-  # target problem. A `requested_token_type` naming the other format does not change the outcome
-  # and is noted for analytics (#requested_token_type_mismatch?) so the integration can be fixed.
-  def validate_token_format
-    return if errors.any? || !resource_server.saml?
-
-    fail_with(
-      :resource, 'invalid_target',
-      t('openid_connect.token.errors.saml_not_available'),
-      type: :saml_not_available
-    )
-  end
-
   # The person's live, current approval of the application that owns the resource, for this
   # service provider. A single-authorization approval counts only when it was given in the
   # sign-in the subject token belongs to, which the identity's browser session identifies. With
@@ -300,6 +292,14 @@ class OpenidConnectTokenExchangeForm
     @issued.saml? ? SAML2_TOKEN_TYPE : ACCESS_TOKEN_TYPE
   end
 
+  # The API's registration (`token_format`) decides the format of every token issued for it, so
+  # the service provider cannot obtain a format the agency did not ask for. A
+  # `requested_token_type` naming the other format does not change the outcome and is noted for
+  # analytics (#requested_token_type_mismatch?) so the integration can be corrected.
+  def saml_issued?
+    resource_server.saml?
+  end
+
   # Whether the service provider asked for a format other than the API's registered one.
   def requested_token_type_mismatch?
     return false if requested_token_type.blank? || resource_server.nil?
@@ -326,31 +326,38 @@ class OpenidConnectTokenExchangeForm
   end
 
   # Issues the tokens: the issuance record and the refresh token row are written first, in one
-  # transaction with the approval's first-exchange timestamp, and the live access token is
-  # written to Redis only once that has committed, so a token can never be live without its
-  # record. The access token string exists only in this process and in the response; the refresh
-  # token is stored as a digest. Every lifetime is counted from the one instant +now+.
+  # transaction with the approval's first-exchange timestamp, and the live token is written to
+  # Redis only once that has committed, so a token can never be live without its record. A SAML
+  # assertion is built inside the transaction, so a signing or encryption failure leaves no
+  # record behind. The live entry is keyed by the digest of the access token string, or of the
+  # assertion's `ID` for an assertion, whose XML is never stored. The access token string exists
+  # only in this process and in the response; the refresh token is stored as a digest. Every
+  # lifetime is counted from the one instant +now+.
   def issue!
     now = Time.zone.now
     family_expires_at = TokenExchangeRefreshToken.family_end(
       from: now, grant:, resource_server:, service_provider:,
     )
-    lifetime = TokenExchangeToken.lifetime_seconds_for(now:, resource_server:, family_expires_at:)
-    @access_token = TokenExchangeToken.generate_token
+    lifetime = TokenExchangeToken.lifetime_seconds_for(
+      now:, resource_server:, family_expires_at:, token_format: resource_server.token_format,
+    )
+    @reference = saml_issued? ? DelegatedSamlAssertion.new_assertion_id
+                              : TokenExchangeToken.generate_token
     @refresh_token = TokenExchangeRefreshToken.generate_token
     dpop_jkt = identity.dpop_jkt if public_client?
 
     TokenExchangeToken.transaction do
       @issued = create_issuance_record!(now:, lifetime:, dpop_jkt:)
+      @access_token = saml_issued? ? build_assertion! : @reference
       @refresh = create_refresh_token!(family_expires_at:, dpop_jkt:)
       grant.update!(first_exchanged_at: now) if grant.first_exchanged_at.nil?
     end
 
-    DelegatedTokenStore.write(@access_token, @issued.live_attributes, ttl: lifetime)
+    DelegatedTokenStore.write(@reference, @issued.live_attributes, ttl: lifetime)
   end
 
   # One exchange opens one family, so the family id is new here; every token the family later
-  # yields carries it.
+  # yields carries it, and the format fixed here is the format of every one of them.
   def create_issuance_record!(now:, lifetime:, dpop_jkt:)
     TokenExchangeToken.create!(
       grant:,
@@ -362,13 +369,28 @@ class OpenidConnectTokenExchangeForm
       ial: identity.ial,
       aal: forwarded_aal,
       refresh_family_id: SecureRandom.uuid,
-      token_type: public_client? ? 'DPoP' : 'Bearer',
+      token_type: issued_token_type_for(dpop_jkt:),
       token_format: resource_server.token_format,
       dpop_jkt:,
       sp_rails_session_id: identity.rails_session_id,
       issued_at: now,
       expires_at: now + lifetime.seconds,
     )
+  end
+
+  # RFC 8693 §2.2.1: `N_A` for a SAML assertion, which is not a bearer or key-bound credential
+  # at Login.gov even when its family is bound; otherwise the scheme the token is presented with.
+  def issued_token_type_for(dpop_jkt:)
+    return 'N_A' if saml_issued?
+
+    dpop_jkt.present? ? 'DPoP' : 'Bearer'
+  end
+
+  # The assertion for the record just written, with the ID chosen as the live entry's reference.
+  # @return [String] the encoded assertion, the response's `access_token`
+  def build_assertion!
+    @assertion = DelegatedSamlAssertion.new(issued: @issued, assertion_id: @reference)
+    @assertion.encoded
   end
 
   # The first refresh token of the family: its digest, the family id and end, and everything a

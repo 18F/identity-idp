@@ -1905,7 +1905,6 @@ openid_connect.token.errors.refresh_token_missing: refresh_token 为必填项。
 openid_connect.token.errors.refresh_token_reused: 此刷新令牌已被使用，因此其所属系列中的所有令牌均已被撤销。请重新发起交换以继续。
 openid_connect.token.errors.resource_missing: resource 为必填项，且必须指明一个已注册的 API。
 openid_connect.token.errors.resource_not_allowed_on_refresh: 刷新时不接受 resource；API 由刷新令牌确定。如需获取其他 API 的令牌，请重新交换。
-openid_connect.token.errors.saml_not_available: '此 API 已注册为使用 SAML 断言，但目前无法提供。'
 openid_connect.token.errors.subject_token_missing: subject_token 为必填项。
 openid_connect.token.errors.subject_token_session_ended: 签发 subject_token 的登录会话已结束；用户必须重新登录后才能开始新的委托。
 openid_connect.token.errors.unknown_client: client_assertion 的 iss 声明与任何已注册的客户端都不匹配。

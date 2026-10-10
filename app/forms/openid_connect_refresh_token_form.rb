@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 # Handles `grant_type=refresh_token` at the token endpoint (RFC 6749 §6) for delegated-access
-# families, the only refresh tokens Login.gov issues. A refresh mints the next access token of the
-# family (same API, same scope, same approval and delegation id, same key binding) and rotates the
-# refresh token, so the service provider can keep acting for the person after the sign-in that
-# started the delegation has ended, until the family's absolute end.
+# families, the only refresh tokens Login.gov issues. A refresh mints the next token of the family
+# (same API, same scope, same approval and delegation id, same key binding, same format: an opaque
+# access token or a SAML assertion, whichever the exchange issued) and rotates the refresh token,
+# so the service provider can keep acting for the person after the sign-in that started the
+# delegation has ended, until the family's absolute end.
 #
 # The caller is identified by its client type (DelegatedAccessClientHandling): a confidential
 # service provider by its client assertion, a public one by `client_id` and a DPoP proof
@@ -68,10 +69,12 @@ class OpenidConnectRefreshTokenForm
 
   # The same shape as the exchange response, so a service provider handles both alike.
   # `issued_token_type` names the family's format, fixed at the exchange by the API's
-  # registration. Both lifetimes are counted from the instant the new tokens were created.
+  # registration. Both lifetimes are counted from the instant the new tokens were created. For a
+  # SAML family `attributes: "identifiers_only"` says the new assertion carries no proofed
+  # attributes because the sign-in that started the delegation has ended.
   def response
     if @success
-      {
+      body = {
         access_token: @access_token,
         issued_token_type: @issued.saml? ? SAML2_TOKEN_TYPE : ACCESS_TOKEN_TYPE,
         token_type: @issued.token_type,
@@ -80,6 +83,8 @@ class OpenidConnectRefreshTokenForm
         refresh_token: @new_refresh_token,
         refresh_token_expires_in: @next.seconds_until_family_end(now: @issued_at),
       }
+      body[:attributes] = 'identifiers_only' if @assertion&.identifiers_only?
+      body
     else
       error_response
     end
@@ -172,8 +177,8 @@ class OpenidConnectRefreshTokenForm
 
   # Rotation runs with the presented row locked (SELECT ... FOR UPDATE), so of two concurrent
   # refreshes with the same token the second waits, then sees the row spent and is treated as a
-  # reuse. The live access token is written to Redis only after the transaction committed, so a
-  # token can never be live without its record.
+  # reuse. The live token is written to Redis only after the transaction committed, so a token
+  # can never be live without its record.
   # @return [Boolean] whether a token was minted
   def rotate_and_mint!
     now = Time.zone.now
@@ -249,24 +254,31 @@ class OpenidConnectRefreshTokenForm
   # here. Nothing is delivered from the token endpoint itself.
   def report_family_revoked(reason:); end
 
-  # The next access token of the family and the next refresh token. The family's issuance record,
+  # The next token of the family and the next refresh token. The family's issuance record,
   # written by the exchange that started it, stands for every token of the family: it is renewed
   # (one more refresh counted, the instant recorded) rather than copied, so one exchange leaves
-  # one record however often it is refreshed. The new access token takes the family's API,
-  # scope, approval, delegation id, assurance levels, key binding and format from that record,
-  # with its own lifetime; the format was fixed at the exchange by the API's registration and no
-  # refresh changes it. The new refresh token carries the family's end unchanged.
+  # one record however often it is refreshed. The new token takes the family's API, scope,
+  # approval, delegation id, assurance levels, key binding and format from that record, with its
+  # own lifetime; the format was fixed at the exchange by the API's registration and no refresh
+  # changes it. A SAML family gets a new assertion (new `ID`, `IssueInstant` and validity
+  # windows; same audience and access), built inside the transaction so a signing or encryption
+  # failure leaves the family as it was. The new refresh token carries the family's end unchanged.
   def mint!(now)
     @issued = presented.token_exchange_token
     @issued_at = now
     @lifetime = TokenExchangeToken.lifetime_seconds_for(
-      now:, resource_server:, family_expires_at: presented.expires_at,
+      now:,
+      resource_server:,
+      family_expires_at: presented.expires_at,
+      token_format: presented.token_format,
     )
     @expires_at = now + @lifetime.seconds
-    @access_token = TokenExchangeToken.generate_token
+    @reference = presented.saml? ? DelegatedSamlAssertion.new_assertion_id
+                                 : TokenExchangeToken.generate_token
     @new_refresh_token = TokenExchangeRefreshToken.generate_token
 
     @issued.record_refresh!(now:)
+    @access_token = presented.saml? ? build_assertion! : @reference
     @next = TokenExchangeRefreshToken.create!(
       token_digest: TokenExchangeRefreshToken.digest(@new_refresh_token),
       family_id: presented.family_id,
@@ -281,10 +293,19 @@ class OpenidConnectRefreshTokenForm
     )
   end
 
-  # The live entry carries the new token's own lifetime; the record's times are the first token's.
+  # @return [String] the encoded assertion, the response's `access_token`
+  def build_assertion!
+    @assertion = DelegatedSamlAssertion.new(
+      issued: @issued, assertion_id: @reference, issued_at: @issued_at, lifetime_seconds: @lifetime,
+    )
+    @assertion.encoded
+  end
+
+  # Keyed by the digest of the access token string, or of the assertion's `ID` for a SAML family.
+  # The entry carries the new token's own lifetime; the record's times are the first token's.
   def write_live_token!
     DelegatedTokenStore.write(
-      @access_token,
+      @reference,
       @issued.live_attributes(issued_at: @issued_at, expires_at: @expires_at),
       ttl: @lifetime,
     )

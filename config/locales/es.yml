@@ -1904,7 +1904,6 @@ openid_connect.token.errors.refresh_token_missing: refresh_token es obligatorio.
 openid_connect.token.errors.refresh_token_reused: Este token de actualización ya se había usado, por lo que se han revocado todos los tokens de su familia. Inicie un nuevo intercambio para continuar.
 openid_connect.token.errors.resource_missing: resource es obligatorio y debe nombrar una API registrada.
 openid_connect.token.errors.resource_not_allowed_on_refresh: resource no se acepta en una actualización; la API la fija el token de actualización. Vuelva a intercambiar para obtener un token para otra API.
-openid_connect.token.errors.saml_not_available: 'Esta API está registrada para aserciones SAML, que no están disponibles.'
 openid_connect.token.errors.subject_token_missing: subject_token es obligatorio.
 openid_connect.token.errors.subject_token_session_ended: La sesión que emitió subject_token ha terminado; el usuario debe iniciar sesión de nuevo antes de que pueda comenzar una nueva delegación.
 openid_connect.token.errors.unknown_client: La notificación iss de client_assertion no coincide con ningún cliente registrado.

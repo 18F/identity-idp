@@ -97,11 +97,18 @@ class DelegatedSamlAssertion
   end
 
   # @param issued [TokenExchangeToken] the issuance record this assertion embodies; its scope,
-  #   delegation id, assurance levels, key binding, session and lifetime are what is asserted
+  #   delegation id, assurance levels, key binding and session are what is asserted
   # @param assertion_id [String] from `.new_assertion_id`
-  def initialize(issued:, assertion_id:)
+  # @param issued_at [Time] the assertion's `IssueInstant`; the record's own issuance instant
+  #   unless a refresh passes the new token's
+  # @param lifetime_seconds [Integer] both validity windows, counted from +issued_at+; the
+  #   record's own lifetime unless a refresh passes the new token's
+  def initialize(issued:, assertion_id:, issued_at: issued.issued_at,
+                 lifetime_seconds: issued.lifetime_seconds)
     @issued = issued
     @assertion_id = assertion_id
+    @issued_at = issued_at
+    @lifetime_seconds = lifetime_seconds
     @user = issued.user
     @resource_server = issued.resource_server
     @application = @resource_server.service_provider
@@ -126,11 +133,12 @@ class DelegatedSamlAssertion
 
   private
 
-  attr_reader :issued, :user, :resource_server, :application, :endpoint
+  attr_reader :issued, :user, :resource_server, :application, :endpoint, :issued_at,
+              :lifetime_seconds
 
   # The same positional arguments `SamlIdp::SamlResponse#assertion_builder` passes for a sign-in,
   # with the exchange supplying what an AuthnRequest normally would. Both validity windows are
-  # the record's lifetime, counted from the record's issuance instant.
+  # the token's lifetime, counted from its issuance instant.
   def builder
     @builder ||= SamlIdp::AssertionBuilder.new(
       assertion_id.delete_prefix('_'), # the builder prefixes the underscore
@@ -145,10 +153,10 @@ class DelegatedSamlAssertion
       endpoint.x509_certificate,
       endpoint.secret_key,
       authn_instant,
-      issued.lifetime_seconds,
+      lifetime_seconds,
       encryption_opts,
-      subject_confirmation_expiry: issued.lifetime_seconds,
-      issue_instant: issued.issued_at,
+      subject_confirmation_expiry: lifetime_seconds,
+      issue_instant: issued_at,
     )
   end
 
@@ -169,7 +177,7 @@ class DelegatedSamlAssertion
   # When the person last authenticated to the service provider, the sign-in this delegation rests
   # on; the issuance instant if the connection carries no such instant.
   def authn_instant
-    identity&.last_authenticated_at || issued.issued_at
+    identity&.last_authenticated_at || issued_at
   end
 
   # The agency application's bundle as at a direct sign-in, reduced to the identifiers when the

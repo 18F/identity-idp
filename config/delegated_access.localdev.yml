@@ -138,6 +138,8 @@ service_providers:
     allowed_delegation_service_providers:
       - 'urn:gov:gsa:openidconnect:sp:sinatra_sts'
     token_exchange_resource_servers:
+      # A SAML assertion issued for this API is encrypted to the certificate named here when the
+      # file is present locally and returned signed in the clear when it is not.
       - identifier: 'https://benefits-api.agency.localdev'
         token_format: 'saml2'
         certs:

@@ -99,6 +99,17 @@ class TokenExchangeRefreshToken < ApplicationRecord
     dpop_jkt.present?
   end
 
+  # The format of every token in the family, fixed by the exchange that opened it and carried by
+  # the issuance record this refresh token was handed out with: a refresh re-issues what the
+  # exchange issued, an opaque access token or a SAML assertion.
+  def token_format
+    token_exchange_token.token_format
+  end
+
+  def saml?
+    token_format == 'saml2'
+  end
+
   def rotated?
     rotated_at.present?
   end
