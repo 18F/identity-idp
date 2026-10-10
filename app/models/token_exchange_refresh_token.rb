@@ -72,15 +72,18 @@ class TokenExchangeRefreshToken < ApplicationRecord
   # Ends a whole family at once: the live access tokens listed in the family's Redis index set
   # are removed, so a resource server verifying one is told it is not active from the next call,
   # and the family's refresh tokens and issuance records are marked revoked with the reason so
-  # the history shows why the access ended. Rows already revoked keep their earlier reason.
-  def self.revoke_family!(family_id, reason:, now: Time.zone.now)
+  # the history shows why the access ended. Rows already revoked keep their earlier reason. A
+  # family belongs to one approval, whose rows are the ones marked.
+  # @param family_id [String]
+  # @param grant [TokenExchangeGrant] the approval the family was opened under
+  def self.revoke_family!(family_id, grant:, reason:, now: Time.zone.now)
     DelegatedTokenStore.revoke_family(family_id)
-    # rubocop:disable Rails/SkipsModelValidations
-    for_family(family_id).where(revoked_at: nil)
-      .update_all(revoked_at: now, revocation_reason: reason, updated_at: now)
-    TokenExchangeToken.where(refresh_family_id: family_id, revoked_at: nil)
-      .update_all(revoked_at: now, revocation_reason: reason, updated_at: now)
-    # rubocop:enable Rails/SkipsModelValidations
+    TokenExchangeToken.revoke_rows!(
+      grant.token_exchange_refresh_tokens.for_family(family_id), reason:, now:
+    )
+    TokenExchangeToken.revoke_rows!(
+      grant.token_exchange_tokens.where(refresh_family_id: family_id), reason:, now:
+    )
   end
 
   # Whether the family is bound to a key, in which case every refresh must carry a DPoP proof

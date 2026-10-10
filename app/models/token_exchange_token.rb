@@ -97,4 +97,16 @@ class TokenExchangeToken < ApplicationRecord
   def revoke!(reason:, now: Time.zone.now)
     update!(revoked_at: now, revocation_reason: reason)
   end
+
+  # Marks every row of +relation+ that is not yet revoked as revoked now, with one reason; rows
+  # already revoked keep their earlier reason. Issuance records and refresh tokens carry the same
+  # two columns, so the cascades that end an approval or a refresh family share this step.
+  # @param relation [ActiveRecord::Relation] of TokenExchangeToken or TokenExchangeRefreshToken
+  # @return [Integer] rows updated
+  def self.revoke_rows!(relation, reason:, now: Time.zone.now)
+    # rubocop:disable Rails/SkipsModelValidations
+    relation.where(revoked_at: nil)
+      .update_all(revoked_at: now, revocation_reason: reason, updated_at: now)
+    # rubocop:enable Rails/SkipsModelValidations
+  end
 end
