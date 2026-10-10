@@ -313,27 +313,7 @@ class OpenidConnectRefreshTokenForm
 
   def write_live_token!
     DelegatedTokenStore.write(
-      @access_token,
-      {
-        aud: resource_server.identifier,
-        scope: @issued.scope,
-        grant_id: @issued.grant_id,
-        delegation_id: @issued.delegation_id,
-        user_id: @issued.user_id,
-        service_provider_id: service_provider.id,
-        resource_server_id: resource_server.id,
-        ial: @issued.ial,
-        aal: @issued.aal,
-        refresh_family_id: @issued.refresh_family_id,
-        dpop_jkt: @issued.dpop_jkt,
-        token_type: @issued.token_type,
-        token_format: @issued.token_format,
-        sp_rails_session_id: @issued.sp_rails_session_id,
-        issued_at: @issued.issued_at.to_i,
-        expires_at: @issued.expires_at.to_i,
-        issuance_id: @issued.id,
-      },
-      ttl: @issued.lifetime_seconds,
+      @access_token, @issued.live_attributes, ttl: @issued.lifetime_seconds,
     )
   end
 

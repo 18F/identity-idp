@@ -31,15 +31,15 @@ class TokenExchangeRefreshToken < ApplicationRecord
   scope :live, -> { where(rotated_at: nil, revoked_at: nil).where('expires_at > ?', Time.zone.now) }
   scope :for_family, ->(family_id) { where(family_id:) }
 
-  # The token string a service provider receives: 32 random bytes, base64url without padding.
+  # The token string a service provider receives.
   def self.generate_token
-    SecureRandom.urlsafe_base64(32)
+    DelegatedAccess::OpaqueToken.generate
   end
 
   # @param token [String] the token string as presented by a caller
   # @return [String] hex SHA-256 digest; the stored lookup key
   def self.digest(token)
-    Digest::SHA256.hexdigest(token.to_s)
+    DelegatedAccess::OpaqueToken.digest(token)
   end
 
   # @param token [String, nil] the token string as presented by a caller
