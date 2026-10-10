@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_10_100100) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_10_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -639,6 +639,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_10_100100) do
     t.boolean "token_exchange_enabled_sp", default: false, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, comment: "sensitive=false"
     t.boolean "use_legacy_name_id_behavior", default: false, comment: "sensitive=false"
+    t.string "userinfo_encrypted_response_alg", comment: "sensitive=false"
     t.index ["delegation_scope_value"], name: "index_service_providers_on_delegation_scope_value", unique: true, where: "(delegation_scope_value IS NOT NULL)"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end

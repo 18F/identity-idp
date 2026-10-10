@@ -41,11 +41,17 @@ class OpenidConnectConfigurationPresenter
   # `none` (RFC 8414 §2, RFC 7591 §2) is listed only with delegated access on: a public client
   # identifies itself with `client_id` alone and binds its tokens to a key instead, which the
   # token endpoint accepts only for the delegated-access grants.
+  #
+  # The userinfo encryption members (OpenID Connect Discovery 1.0 §3) name the one JWE algorithm
+  # pair a service provider may opt in to; they are advertised unconditionally because the opt-in
+  # is per record and does not depend on delegated access.
   def crypto_configuration
     {
       id_token_signing_alg_values_supported: %w[RS256],
       token_endpoint_auth_methods_supported: token_endpoint_auth_methods_supported,
       token_endpoint_auth_signing_alg_values_supported: %w[RS256],
+      userinfo_encryption_alg_values_supported: [OpenidConnect::UserInfoEncryptor::ALG],
+      userinfo_encryption_enc_values_supported: [OpenidConnect::UserInfoEncryptor::ENC],
     }
   end
 

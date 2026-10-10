@@ -44,9 +44,17 @@ class ServiceProvider < ApplicationRecord
   DELEGATION_SCOPE_PREFIX = 'token_exchange:'
   DELEGATION_ACCESS_TYPES = %w[read read_write].freeze
 
+  # The only JWE key-management algorithm (RFC 7518 §4.3) userinfo responses are encrypted with;
+  # a record opts in by naming it in `userinfo_encrypted_response_alg`.
+  USERINFO_ENCRYPTED_RESPONSE_ALGS = %w[RSA-OAEP-256].freeze
+
   # Do not define validations in this model
   # See https://github.com/18F/identity_validations
   include IdentityValidations::ServiceProviderValidation
+  # The shared validations above do not know the delegated-access columns; this one is checked
+  # here so onboarding cannot persist an algorithm the userinfo endpoint cannot produce.
+  validates :userinfo_encrypted_response_alg,
+            inclusion: { in: USERINFO_ENCRYPTED_RESPONSE_ALGS }, allow_blank: true
 
   scope(:active, -> { where(active: true) })
   scope(
@@ -77,6 +85,42 @@ class ServiceProvider < ApplicationRecord
 
   def encrypt_responses?
     block_encryption != 'none'
+  end
+
+  # Whether this service provider has asked for its userinfo responses as an encrypted JWT
+  # (OpenID Connect Core 1.0 §5.3.2) rather than plain JSON.
+  def userinfo_encrypted_response?
+    userinfo_encrypted_response_alg.present?
+  end
+
+  # The public key userinfo responses to this service provider are encrypted to: the key of its
+  # first registered certificate, the same certificate its `private_key_jwt` client assertions
+  # are verified against, so an opted-in partner decrypts with the key it already holds. Only a
+  # confidential client has such a key. A public client (`pkce` true) holds no registered key by
+  # definition, so it gets nil even if a certificate was pasted onto its record, as does a record
+  # whose certificate is missing or cannot be parsed.
+  # @return [OpenSSL::PKey::PKey, nil]
+  def userinfo_encryption_key
+    return nil if pkce == true
+
+    ssl_certs.first&.public_key
+  rescue OpenSSL::OpenSSLError
+    nil
+  end
+
+  # Logs a warning when the record has opted in to encrypted userinfo responses but no key to
+  # encrypt to exists. The userinfo endpoint then refuses every request from this record rather
+  # than answer in the clear, so the misconfiguration should be noticed when it is written.
+  # Onboarding runs it after every write.
+  def warn_if_userinfo_encryption_unusable
+    return unless userinfo_encrypted_response?
+    return if userinfo_encryption_key.present?
+
+    Rails.logger.warn do
+      reason = pkce == true ? 'it is a public client' : 'it has no usable registered certificate'
+      "service provider #{issuer} asks for encrypted userinfo responses but #{reason}; " \
+        "its userinfo requests will be refused rather than answered in the clear"
+    end
   end
 
   def skip_encryption_allowed

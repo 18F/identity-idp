@@ -163,6 +163,7 @@ RSpec.describe OpenidConnect::UserInfoController do
           success: true,
           client_id: identity.service_provider,
           ial: identity.ial,
+          encrypted: false,
         )
 
         expect(@analytics).to_not have_logged_event(

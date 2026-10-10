@@ -164,6 +164,56 @@ RSpec.describe ServiceProviderUpdater do
         expect { subject.run }
           .to(change { ServiceProvider.find_by(issuer: oidc_issuer)&.ssl_certs&.size }.to(2))
       end
+
+      context 'when the payload carries the userinfo encryption opt-in' do
+        let(:openid_connect_sp) do
+          super().merge(userinfo_encrypted_response_alg: 'RSA-OAEP-256')
+        end
+
+        it 'writes it through and does not warn for a confidential client with certificates' do
+          warnings = []
+          allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+
+          subject.run
+
+          sp = ServiceProvider.find_by(issuer: oidc_issuer)
+          expect(sp.userinfo_encrypted_response_alg).to eq('RSA-OAEP-256')
+          expect(sp.userinfo_encryption_key).to be_a(OpenSSL::PKey::RSA)
+          expect(warnings.grep(/encrypted userinfo/)).to be_empty
+        end
+
+        context 'without certificates' do
+          let(:openid_connect_sp) { super().merge(certs: []) }
+
+          it 'writes it through and warns that userinfo requests will be refused' do
+            warnings = []
+            allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+
+            subject.run
+
+            expect(ServiceProvider.find_by(issuer: oidc_issuer).userinfo_encrypted_response_alg)
+              .to eq('RSA-OAEP-256')
+            expect(warnings).to contain_exactly(
+              a_string_including(oidc_issuer, 'no usable registered certificate', 'refused'),
+            )
+          end
+        end
+
+        context 'on a public client' do
+          let(:openid_connect_sp) { super().merge(pkce: true) }
+
+          it 'warns that userinfo requests will be refused' do
+            warnings = []
+            allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+
+            subject.run
+
+            expect(warnings).to contain_exactly(
+              a_string_including(oidc_issuer, 'public client', 'refused'),
+            )
+          end
+        end
+      end
     end
 
     context 'dashboard payload carries delegated-access fields and API URLs' do

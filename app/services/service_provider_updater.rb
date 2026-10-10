@@ -64,6 +64,7 @@ class ServiceProviderUpdater
   def create_or_update_service_provider(issuer, service_provider)
     sp = ServiceProvider.find_by(issuer: issuer)
     sp = sync_model(sp, cleaned_service_provider(service_provider))
+    sp.warn_if_userinfo_encryption_unusable
     sync_resource_servers(sp, service_provider['token_exchange_resource_servers'])
   end
 

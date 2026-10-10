@@ -381,6 +381,105 @@ RSpec.describe ServiceProvider do
     end
   end
 
+  describe 'userinfo_encrypted_response_alg' do
+    it 'accepts nil, blank and RSA-OAEP-256 only' do
+      expect(build(:service_provider, userinfo_encrypted_response_alg: nil)).to be_valid
+      expect(build(:service_provider, userinfo_encrypted_response_alg: '')).to be_valid
+      expect(build(:service_provider, userinfo_encrypted_response_alg: 'RSA-OAEP-256')).to be_valid
+
+      sp = build(:service_provider, userinfo_encrypted_response_alg: 'RSA-OAEP')
+      expect(sp).not_to be_valid
+      expect(sp.errors[:userinfo_encrypted_response_alg]).to be_present
+    end
+  end
+
+  describe '#userinfo_encrypted_response?' do
+    it 'is true only when an algorithm is set' do
+      expect(build(:service_provider).userinfo_encrypted_response?).to eq(false)
+      opted_in = build(:service_provider, userinfo_encrypted_response_alg: 'RSA-OAEP-256')
+      expect(opted_in.userinfo_encrypted_response?).to eq(true)
+    end
+  end
+
+  describe '#userinfo_encryption_key' do
+    let(:pem) { Rails.root.join('certs', 'sp', 'saml_test_sp.crt').read }
+
+    it 'is the public key of the first registered certificate for a confidential client' do
+      sp = build(:service_provider, certs: [pem, 'saml_test_sp2'])
+
+      key = sp.userinfo_encryption_key
+      expect(key).to be_a(OpenSSL::PKey::RSA)
+      expect(key.to_pem).to eq(OpenSSL::X509::Certificate.new(pem).public_key.to_pem)
+    end
+
+    it 'is nil without a certificate or when the named certificate is not on disk' do
+      expect(build(:service_provider, certs: []).userinfo_encryption_key).to be_nil
+      expect(build(:service_provider, certs: ['i_do_not_exist']).userinfo_encryption_key)
+        .to be_nil
+    end
+
+    it 'is nil when the stored certificate cannot be parsed' do
+      garbage = "-----BEGIN CERTIFICATE-----\nnope\n-----END CERTIFICATE-----"
+      sp = build(:service_provider, certs: [garbage])
+
+      expect(sp.userinfo_encryption_key).to be_nil
+    end
+
+    it 'is nil for a public client even with a certificate on its record' do
+      expect(build(:service_provider, pkce: true, certs: [pem]).userinfo_encryption_key).to be_nil
+    end
+  end
+
+  describe '#warn_if_userinfo_encryption_unusable' do
+    let(:warnings) { [] }
+
+    before do
+      allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+    end
+
+    it 'says nothing for a record that did not opt in, with or without a certificate' do
+      build(:service_provider, certs: []).warn_if_userinfo_encryption_unusable
+      build(:service_provider, pkce: true, certs: []).warn_if_userinfo_encryption_unusable
+
+      expect(warnings).to be_empty
+    end
+
+    it 'says nothing for an opted-in confidential client with a certificate' do
+      build(:service_provider, userinfo_encrypted_response_alg: 'RSA-OAEP-256')
+        .warn_if_userinfo_encryption_unusable
+
+      expect(warnings).to be_empty
+    end
+
+    it 'warns when the opted-in record has no usable certificate' do
+      sp = build(
+        :service_provider,
+        issuer: 'urn:opted-in',
+        certs: [],
+        userinfo_encrypted_response_alg: 'RSA-OAEP-256',
+      )
+      sp.warn_if_userinfo_encryption_unusable
+
+      expect(warnings).to contain_exactly(
+        a_string_including('urn:opted-in', 'no usable registered certificate', 'refused'),
+      )
+    end
+
+    it 'warns when the opted-in record is a public client' do
+      sp = build(
+        :service_provider,
+        issuer: 'urn:public',
+        pkce: true,
+        userinfo_encrypted_response_alg: 'RSA-OAEP-256',
+      )
+      sp.warn_if_userinfo_encryption_unusable
+
+      expect(warnings).to contain_exactly(
+        a_string_including('urn:public', 'public client', 'refused'),
+      )
+    end
+  end
+
   describe '#logo_is_email_compatible?' do
     subject { ServiceProvider.new(logo: logo) }
     before do

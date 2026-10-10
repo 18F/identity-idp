@@ -1911,6 +1911,7 @@ openid_connect.token.errors.unknown_resource: resource no nombra una API registr
 openid_connect.token.errors.unsupported_grant_type: Este tipo de concesión no es compatible.
 openid_connect.token.errors.user_suspended: La cuenta del usuario no está en buen estado.
 openid_connect.user_info.errors.bound_token_requires_dpop: 'Este token de acceso está vinculado a una clave: preséntelo con el esquema de autorización DPoP y una prueba DPoP firmada con esa clave (RFC 9449).'
+openid_connect.user_info.errors.encryption_unavailable: 'Este proveedor de servicios está registrado para recibir respuestas userinfo cifradas, pero no tiene registrada ninguna clave de cifrado utilizable: la respuesta no se envió.'
 openid_connect.user_info.errors.malformed_authorization: Encabezado de autorización mal formado. Consulte nuestra documentación en https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No se proporcionó ningún encabezado de autorización. Consulte nuestra documentación en https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: No se pudo encontrar la autorización para el contenido del access_token proporcionado o puede ser que este haya vencido. Consulte nuestra documentación en https://developers.login.gov/support/#auth-header-contents-not-found

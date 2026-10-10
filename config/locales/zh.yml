@@ -1912,6 +1912,7 @@ openid_connect.token.errors.unknown_resource: resource 未指明此客户端可�
 openid_connect.token.errors.unsupported_grant_type: 不支持此授权类型。
 openid_connect.token.errors.user_suspended: 该用户账户状态异常。
 openid_connect.user_info.errors.bound_token_requires_dpop: '此访问令牌已绑定到一个密钥：请使用 DPoP 授权方案并附带由该密钥签名的 DPoP 证明来提交（RFC 9449）。'
+openid_connect.user_info.errors.encryption_unavailable: '此服务提供商已登记接收加密的 userinfo 响应，但没有为其登记可用的加密密钥：响应未发送。'
 openid_connect.user_info.errors.malformed_authorization: 授权标头畸形。请参阅我们的文档：https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: 未提供授权标头。请参阅我们的文档：https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: 就提供的 access_token 内容找不到授权或者授权已过期。请参阅我们的文档：https://developers.login.gov/support/#auth-header-contents-not-found

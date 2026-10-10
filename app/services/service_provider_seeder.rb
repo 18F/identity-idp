@@ -83,6 +83,7 @@ class ServiceProviderSeeder
         'token_exchange_resource_servers',
       ).merge(certs: cert_pems),
     )
+    service_provider.warn_if_userinfo_encryption_unusable
 
     write_resource_servers(service_provider, config['token_exchange_resource_servers'])
   end

@@ -34,6 +34,8 @@ RSpec.describe OpenidConnectConfigurationPresenter do
         id_token_signing_alg_values_supported: %w[RS256],
         token_endpoint_auth_methods_supported: %w[private_key_jwt],
         token_endpoint_auth_signing_alg_values_supported: %w[RS256],
+        userinfo_encryption_alg_values_supported: %w[RSA-OAEP-256],
+        userinfo_encryption_enc_values_supported: %w[A256GCM],
       }
     end
 
@@ -57,6 +59,11 @@ RSpec.describe OpenidConnectConfigurationPresenter do
         )
         expect(configuration[:grant_types_supported]).to eq(%w[authorization_code])
         expect(configuration[:token_endpoint_auth_methods_supported]).to eq(%w[private_key_jwt])
+      end
+
+      it 'advertises the userinfo encryption algorithms regardless of the switch' do
+        expect(configuration[:userinfo_encryption_alg_values_supported]).to eq(%w[RSA-OAEP-256])
+        expect(configuration[:userinfo_encryption_enc_values_supported]).to eq(%w[A256GCM])
       end
     end
 
@@ -100,6 +107,11 @@ RSpec.describe OpenidConnectConfigurationPresenter do
 
       it 'advertises the DPoP proof algorithms' do
         expect(configuration[:dpop_signing_alg_values_supported]).to eq(%w[ES256 RS256])
+      end
+
+      it 'advertises the userinfo encryption algorithms regardless of the switch' do
+        expect(configuration[:userinfo_encryption_alg_values_supported]).to eq(%w[RSA-OAEP-256])
+        expect(configuration[:userinfo_encryption_enc_values_supported]).to eq(%w[A256GCM])
       end
 
       it 'does not enumerate per-partner delegation scopes' do
