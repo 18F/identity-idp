@@ -49,8 +49,9 @@ class OpenidConnectAuthorizeForm
   attr_reader(*ATTRS)
 
   RANDOM_VALUE_MINIMUM_LENGTH = 22
-  # An RFC 7638 thumbprint: base64url of a SHA-256, 43 characters without padding.
-  DPOP_JKT_FORMAT = /\A[A-Za-z0-9_-]{43}\z/
+  # A base64url SHA-256 without padding, 43 characters: the shape of an S256 PKCE code challenge
+  # and of an RFC 7638 key thumbprint.
+  BASE64URL_SHA256_FORMAT = /\A[A-Za-z0-9_-]{43}\z/
   MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS = 30
 
   validates :acr_values, presence: true
@@ -65,7 +66,7 @@ class OpenidConnectAuthorizeForm
   validates :code_challenge_method, inclusion: { in: %w[S256] },
                                     if: :validate_code_challenge_method?
   validate :validate_pkce_parameter_pair, if: :private_key_jwt_pkce_enabled?
-  validates :code_challenge, format: { with: /\A[A-Za-z0-9_-]{43}\z/ },
+  validates :code_challenge, format: { with: BASE64URL_SHA256_FORMAT },
                              if: :private_key_jwt_pkce_requested?
 
   validate :validate_acr_values
@@ -289,7 +290,7 @@ class OpenidConnectAuthorizeForm
         :dpop_jkt, t('openid_connect.authorization.errors.dpop_jkt_required'),
         type: :dpop_jkt_required
       )
-    elsif !dpop_jkt.match?(DPOP_JKT_FORMAT)
+    elsif !dpop_jkt.match?(BASE64URL_SHA256_FORMAT)
       errors.add(
         :dpop_jkt, t('openid_connect.authorization.errors.dpop_jkt_invalid'),
         type: :dpop_jkt_invalid
