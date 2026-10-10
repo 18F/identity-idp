@@ -232,8 +232,8 @@ A service provider that holds a person's approval can obtain a credential for ex
 
 | ID | Requirement |
 |---|---|
-| **FR-TOK-10** | Login.gov MUST allow the service provider to obtain a fresh delegated token for the same API without involving the person, for a bounded total period after issuance (currently 12 hours, absolute, not extended by use). |
-| **FR-TOK-11** | The total period MUST never extend past the person's remembered-approval period, and for a non-remembered approval MUST end no later than 12 hours after issuance. |
+| **FR-TOK-10** | Login.gov MUST allow the service provider to obtain a fresh delegated token for the same API without involving the person, for a bounded total period after issuance (currently 12 hours, absolute, not extended by use). **Amended 2026-10-10 (D79):** a refresh renews the opening issuance record rather than writing a new one; refresh-token rows are purged a day after the family end. |
+| **FR-TOK-11** | The total period MUST never extend past the person's remembered-approval period, and for a non-remembered approval MUST end no later than 12 hours after issuance. **Amended 2026-10-10 (D79):** a refresh renews the opening issuance record; refresh-token rows are purged a day after the family end, so the stored state of a family ends with the period. |
 | **FR-TOK-12** | Each renewal MUST retire the renewal credential used. Reuse of a retired renewal credential MUST end all access under that issuance and MUST be reported to the agency as a possible theft, so a stolen renewal credential ends access rather than extending it. |
 | **FR-TOK-13** | A renewed token MUST have the same API, access, and delegation identifier as the original; the service provider MUST NOT be able to change them at renewal. |
 | **FR-TOK-14** | The service provider MUST be able to end its access early (Token Revocation, RFC 7009). |
@@ -265,6 +265,7 @@ A service provider that holds a person's approval can obtain a credential for ex
 7. Should the service provider be required to end access when the person's task is complete, and how would Login.gov know?
 8. Which agencies need SAML rather than OAuth, and does any need both?
 9. Should the stricter proof-of-identity rules used for delegated access also be applied to existing sign-in integrations?
+10. Performance findings flagged on 2026-10-10 and not implemented pending a performance review (implementation plan 6.3): KMS decryption on the verification path and the KMS-encrypted fraud-signal buffer; certificate parsing and signature verification repeated on every verification with no caching; the shared Redis pool and the per-address throttle on the token, verification and revocation endpoints; the ordering of Redis and database writes under partial failure; and load testing of the delegated paths. Retention of issuance and renewal records is decided (D79).
 
 ---
 
@@ -694,6 +695,10 @@ Decisions by the product owner, applied to the rows above and to the companion d
 ### 2026-10-10 (documentation, traceability and the repository skill)
 
 63. **A README, per-document traceability matrices and a repository skill carry the context for informed changes.** `docs/delegated-access-README.md` summarizes the three documents and the branch stack; each document carries a generated traceability matrix (this document's Appendix E, the implementation plan's 8.1, the companion's Appendix F) tracing requirement rows to companion rows, plan sections and branches; the skill under `.claude/skills/login-delegated-access` (twinned under `.agents/skills`) carries the generated indexes, the foundation and per-branch context, RFC digests, the local runbook and the update protocol, which interviews a change, states an informed opinion, collects rationale and records the outcome here and in the plan. Requirements remain changeable; the matrices and the skill supply context, not a veto (implementation plan D78).
+
+### 2026-10-10 (performance review)
+
+64. **A refresh renews the opening issuance record; expired renewal-credential rows are purged; the other performance findings are flagged, not implemented.** One issuance record per exchange, carrying a refresh count and the time of the last refresh, remains the billing evidence; renewal-credential rows stay one per rotation for reuse detection and are deleted by a nightly job a day after the family end. Rationale: issuance records must outlive the token for billing; renewal rows have no value after the family ends; the unbounded table growth is removed with no change to protocol behavior or responses. Rejected for now: keeping only the current and previous renewal credential per family (changes reuse detection to one generation; needs its own decision); purging issuance records. The findings on KMS use, verification caching, the shared Redis pool and throttling, partial-failure ordering and load testing are recorded with recommendations in implementation plan 6.3 and left for a performance review (FR-TOK-10, FR-TOK-11, FR-TOK-12; section 6 question 10; implementation plan D79).
 
 ## Appendix E — Traceability matrix
 

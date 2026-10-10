@@ -1420,6 +1420,15 @@ justifies, and agencies that need less can set it per resource server.
 
 **As built, 2026-10-11 (reuse review, `delegated-access-token-lifecycle`; eight commits on `delegated-access-token-exchange`).** `TokenExchangeToken.revoke_rows!` and `revoke_family!(family_id, grant:, reason:)` as REF-4 is amended above. `OpenidConnectRefreshTokenForm#mint!` writes `TokenExchangeToken#live_attributes`, draws the next refresh token from `DelegatedAccess::OpaqueToken` and calls `DelegatedAccessEvents.token_refreshed` after the live entry is written; the next access token keeps the family's registered format (EXC-21 as amended, SAML-9) and `issued_token_type` reports it. `DelegatedAccessClientHandling` carries `fail_with`, `error_code`, `error_response`, `url_options`, `validate_code_verifier_absent` and `integration_errors` with a per-form `integration_error_event`, and includes the route helpers itself because the repository's `UrlOptionsLinter` requires `url_options` wherever they are included; `OpenidConnect::DelegatedEndpointConcern` carries the `token_exchange_enabled` check, the session and CSRF skips, `options`, `form_params` with the `DPoP` header and `log_integration_errors`, read by `OpenidConnect::RevokeController` and the introspection controller (§6.4 as built).
 
+**Amended 2026-10-10 (D79).** Decided with the product owner after the performance review of implementation plan 6.3; rationale in Appendix E row E118. Where a row below conflicts with §7.1–§7.6 and the as-built notes, this subsection governs.
+
+| ID | Requirement |
+|---|---|
+| **REF-14** (amend 2026-10-10, D79) | A refresh writes a new Redis entry and adds the new digest to the family's index set, but no new issuance row: the family keeps the one `token_exchange_tokens` row its exchange opened, and the refresh updates that row's `refresh_count` and `last_refreshed_at`. The live Redis entry carries the opening record's id, so introspection, revocation and billing join the same record for every token of the family. |
+| **REF-7** (amend 2026-10-10, D79) | Refresh-token rows stay one per rotation (digest only) while the family lives, for reuse detection. `ExpireDelegatedRefreshTokensJob` runs nightly and deletes the rows of a family one day after its `expires_at` (indexed); issuance records are not purged, their retention following `sp_return_logs`. |
+| **REF-4** (confirmed 2026-10-10, D79) | Reuse detection keeps every rotation of the family within its lifetime. Keeping only the current and previous digest per family was considered and not adopted: it bounds the live set further but detects reuse one generation back only, and needs its own decision. |
+
+
 ---
 
 ## 8. Fraud signals: Attempts API delivery to target agencies
@@ -1905,6 +1914,7 @@ New code MUST satisfy these suite conventions (learned while implementing):
 4. Turn on billing rows; reconcile one month of `DelegationOutcomesReport` against the invoice
    supplement.
 5. Confirm with each agency that its API verifies the DPoP proof on every request for tokens issued to a public-client service provider (RS-DPOP-1); there is no per-API `dpop_required` setting (EXC-9 as amended, 2026-10-09).
+6. The performance findings of implementation plan 6.3 (KMS on the hot path, introspection caching, shared Redis and throttling, partial-failure ordering, load testing) are open items to be resolved before any sandbox runs at scale (recorded 2026-10-10, D79).
 
 ---
 
@@ -3210,6 +3220,7 @@ time they come up.
 | E115 | Both repositories carry a `.gitleaks.toml` extending the default rules with an allowlist for the known test placeholders (`saml_test_sp*_private_key` helper references in `identity-idp`; `PHNhbWw-assertion` in the browser client); scans on the commit range before a push are expected to run clean (implementation plan section 6, item 12). | — (process). | Read past the same findings on every scan. | Decided 2026-10-11 (D76) |
 | E116 | Delegated-access content (agency consent content, applications' names, consent text, logos and resource servers, service providers approved for delegation) is YAML in `identity-idp-config` (`delegated_access.yml`), reviewed by pull request, linked at deploy and seeded by `rake db:seed` in every environment, with `restrict_to_deploy_env` per entry and every fictitious entry `sandbox`; no admin interface in the identity provider (ONB-5, ONB-12 as amended; ONB-15; E43's interim path superseded). | — (onboarding, outside the protocol). | An admin content form inside the identity provider; a Dashboard editing feature first. | Decided 2026-10-10 (D77); the production path every other service-provider content item already uses, with one source of truth; the Dashboard remains the longer-term path (implementation plan 6.2) |
 | E117 | The documentation gains `docs/delegated-access-README.md`, generated traceability matrices in each document (plan 8.1, FR Appendix E, this Appendix F) and the repository skill `.claude/skills/login-delegated-access` (twinned under `.agents/skills`) with generated indexes, foundation and per-branch context, RFC digests, local runbook and the interview-first update protocol; requirements stay changeable, the skill supplies context and rationale (D78, 2026-10-10). |
+| E118 | A refresh renews the opening issuance record (`refresh_count`, `last_refreshed_at`) instead of inserting one; refresh-token rows stay one per rotation and are deleted by `ExpireDelegatedRefreshTokensJob` a day after the family's `expires_at` (indexed); issuance records are kept as billing evidence (REF-4 confirmed, REF-7 and REF-14 as amended). The other performance findings of implementation plan 6.3 (KMS on the hot path, introspection caching, shared Redis and throttling, partial-failure ordering, load testing) are recorded with recommendations and not implemented. | RFC 9700 §4.14.2 (rotation with reuse detection; storage is the server's concern); RFC 6749 §6. | Keep only the current and previous digest per family (one-generation reuse detection); purge issuance records with the tokens; apply the other findings now. | Decided 2026-10-10 (D79); growth bounded with no change to protocol behavior or responses; the remaining findings await a performance review |
 
 ---
 
@@ -3235,5 +3246,5 @@ Generated by `.claude/skills/login-delegated-access/scripts/build_index.py` from
 | SAML | SAML-1..15, SAML-5b (16) | §15.3, §15.8 | FR-TOK-9, FR-VER-9 | 5.9 | `delegated-access-saml-assertions` |
 | TPL | TPL-1..7 (7) | §16.2 | — | — | — |
 | UINF | UINF-1 (1) | §6.5 | — | — | — |
-| E | E1..117 (117) | §Appendix E | — | 5.10, 5.16 | `delegated-access-dpop`, `delegated-access-site-keys` |
+| E | E1..118 (118) | §Appendix E | — | 5.10, 5.16 | `delegated-access-dpop`, `delegated-access-site-keys` |
 <!-- traceability:end -->
