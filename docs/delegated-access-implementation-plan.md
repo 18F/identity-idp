@@ -184,12 +184,8 @@ Each feature lists: the functional requirements it serves; what `sbx-taigrr` has
 
 Deviations from the list above, and why:
 
-- *Item 7 (configuration keys) is not done here.* A key nothing reads is dead configuration; each key is added by the feature that reads it (token and exchange rate limit in 5.4, refresh in 5.5, introspection in 5.6, report recipients in 5.8).
-- *The consent screen and the account page still list the applications the person has connected to.* 5.1 changes the model and the vocabulary; the population change to every registered application (D4) and the locked requested rows (D5) are 5.2 and 5.3.
-- *Approvals from the consent screen are remembered for the maximum period* until 5.2 adds the explicit remember choice (D6); the model already supports single-authorization approvals.
+- *Configuration keys live with the feature that reads them,* not all in 5.1: the token and exchange rate limits in 5.4, refresh in 5.5, introspection in 5.6, report recipients in 5.8. A key nothing reads would be dead configuration.
 - *Fixture identifiers.* The seed file keeps the API URL identifiers the three reference applications are built against (`https://records-api.agency.localdev`, `https://benefits-api.agency.localdev`) and the issuers `sinatra_sts`, `records_agency`, `benefits_agency`; display names are the fictitious ones (MyBenefits Assistant; Housing Assistance Records; Retirement Benefits Portal).
-- *The consent-screen mockup was revised the same day* (Drive `Consent screen mockup/`): per-application rows, locked requested rows, pre-approval, remember help text. 5.2 Findings 2 is therefore done.
-- *The exchange route and form from `sbx-taigrr` remain* (renamed vocabulary, no DPoP yet); 5.4 moves the exchange to the token endpoint and adds the key binding. Their comments describe what they do now, nothing else.
 
 ### 5.2 Authorize request and the consent screen
 
