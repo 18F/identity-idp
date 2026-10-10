@@ -21,6 +21,12 @@ class TokenExchangeGrant < ApplicationRecord
   belongs_to :user
   belongs_to :application, class_name: 'ServiceProvider',
                            foreign_key: :application_service_provider_id, inverse_of: false
+  # The approved service provider, joined on its issuer the way ServiceProviderIdentity joins
+  # its record. Optional so a row whose service provider was removed from the registry still
+  # loads; #valid_now? then refuses it.
+  belongs_to :service_provider_record, class_name: 'ServiceProvider',
+                                       foreign_key: :service_provider_issuer,
+                                       primary_key: :issuer, optional: true, inverse_of: false
 
   validates :service_provider_issuer, :consented_at, presence: true
   validates :source, inclusion: { in: SOURCES }
@@ -163,10 +169,6 @@ class TokenExchangeGrant < ApplicationRecord
   # Ends this approval; the row is kept for the record.
   def revoke!(reason:, now: Time.zone.now)
     update!(revoked_at: now, revocation_reason: reason)
-  end
-
-  def service_provider_record
-    @service_provider_record ||= ServiceProvider.find_by(issuer: service_provider_issuer)
   end
 
   private
