@@ -30,7 +30,6 @@
 class OpenidConnectRefreshTokenForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
-  include Rails.application.routes.url_helpers
   include DelegatedAccessClientHandling
 
   GRANT_TYPE = 'refresh_token'
@@ -80,7 +79,7 @@ class OpenidConnectRefreshTokenForm
         refresh_token_expires_in: @next.seconds_until_family_end(now: @issued.issued_at),
       }
     else
-      { error: error_code, error_description: errors.map(&:message).join(' ') }
+      error_response
     end
   end
 
@@ -91,35 +90,12 @@ class OpenidConnectRefreshTokenForm
     @reuse_detected == true
   end
 
-  def url_options
-    {}
-  end
-
   private
 
-  attr_reader :presented, :error_code, :proof_thumbprint
-
-  # Records an error under the RFC code the service provider should act on. Only the first code
-  # is reported, since later checks are skipped once one fails.
-  def fail_with(attribute, code, message, type:)
-    @error_code ||= code
-    errors.add(attribute, message, type:)
-    false
-  end
+  attr_reader :presented, :proof_thumbprint
 
   def client_assertion_audience
     api_openid_connect_token_url
-  end
-
-  # PKCE never substitutes for a client credential on this grant.
-  def validate_code_verifier_absent
-    return if code_verifier.blank?
-
-    fail_with(
-      :code_verifier, 'invalid_request',
-      t('openid_connect.token.errors.code_verifier_not_allowed'),
-      type: :code_verifier_not_allowed
-    )
   end
 
   # A refresh keeps the audience of the exchange that started the family, so `resource` is
@@ -341,16 +317,7 @@ class OpenidConnectRefreshTokenForm
     }
   end
 
-  def integration_errors
-    return nil if @success || claimed_issuer.blank?
-
-    {
-      error_details: errors.full_messages,
-      error_types: errors.attribute_names,
-      event: :oidc_token_refresh_request,
-      integration_exists: service_provider.present? ||
-        ServiceProvider.exists?(issuer: claimed_issuer),
-      request_issuer: claimed_issuer,
-    }
+  def integration_error_event
+    :oidc_token_refresh_request
   end
 end

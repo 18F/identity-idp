@@ -43,7 +43,6 @@
 class OpenidConnectTokenExchangeForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
-  include Rails.application.routes.url_helpers
   include DelegatedAccessClientHandling
 
   GRANT_TYPE = 'urn:ietf:params:oauth:grant-type:token-exchange'
@@ -104,40 +103,16 @@ class OpenidConnectTokenExchangeForm
         refresh_token_expires_in: @refresh.seconds_until_family_end(now: @issued.issued_at),
       }
     else
-      { error: error_code, error_description: errors.map(&:message).join(' ') }
+      error_response
     end
-  end
-
-  def url_options
-    {}
   end
 
   private
 
-  attr_reader :identity, :resource_server, :grant, :error_code
-
-  # Records an error under the RFC code the service provider should act on. Only the first code
-  # is reported, since later checks are skipped once one fails.
-  def fail_with(attribute, code, message, type:)
-    @error_code ||= code
-    errors.add(attribute, message, type:)
-  end
+  attr_reader :identity, :resource_server, :grant
 
   def client_assertion_audience
     api_openid_connect_token_url
-  end
-
-  # PKCE never substitutes for a client credential on this grant: a confidential client is
-  # authenticated by its client assertion and a public client by the proof it presents with its
-  # subject token (#validate_public_client_proof).
-  def validate_code_verifier_absent
-    return if code_verifier.blank?
-
-    fail_with(
-      :code_verifier, 'invalid_request',
-      t('openid_connect.token.errors.code_verifier_not_allowed'),
-      type: :code_verifier_not_allowed
-    )
   end
 
   # The parameters RFC 8693 §2.1 defines, with the restrictions Login.gov applies: the subject
@@ -427,16 +402,7 @@ class OpenidConnectTokenExchangeForm
     }
   end
 
-  def integration_errors
-    return nil if @success || claimed_issuer.blank?
-
-    {
-      error_details: errors.full_messages,
-      error_types: errors.attribute_names,
-      event: :oidc_token_exchange_request,
-      integration_exists: service_provider.present? ||
-        ServiceProvider.exists?(issuer: claimed_issuer),
-      request_issuer: claimed_issuer,
-    }
+  def integration_error_event
+    :oidc_token_exchange_request
   end
 end
