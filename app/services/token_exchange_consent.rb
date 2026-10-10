@@ -40,27 +40,17 @@ class TokenExchangeConsent
 
   # @return [Result] the approvals written now (`approved`) and the remembered ones kept (`kept`)
   def call
-    approved = []
-    kept = []
     now = Time.zone.now
 
-    # Every application's agency is read below, either to judge an existing approval's freshness
-    # or to record the agency's content version on the new row, so the agencies are loaded in one
-    # query rather than one per application.
-    ActiveRecord::Associations::Preloader.new(records: applications, associations: :agency).call
-    existing_by_application_id = TokenExchangeGrant.live_by_application(
+    # The partition also leaves every application's agency loaded, which approve! reads to record
+    # the agency's content version on the new row.
+    partition = TokenExchangeGrant.partition_current(
       user:, service_provider_issuer: service_provider.issuer, applications:,
     )
 
-    TokenExchangeGrant.transaction do
-      applications.each do |application|
-        existing = existing_by_application_id[application.id]
-        if existing&.remembered_and_current?
-          kept << existing
-          next
-        end
-
-        approved << TokenExchangeGrant.approve!(
+    approved = TokenExchangeGrant.transaction do
+      partition[:needing_approval].map do |application|
+        TokenExchangeGrant.approve!(
           user:, service_provider:, application:,
           source: 'consent_screen',
           remember:,
@@ -71,7 +61,7 @@ class TokenExchangeConsent
       end
     end
 
-    Result.new(approved:, kept:)
+    Result.new(approved:, kept: partition[:kept])
   end
 
   private

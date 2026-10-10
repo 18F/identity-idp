@@ -73,20 +73,10 @@ module VerifySpAttributesConcern
     return false unless delegation_consent_requested?
     return false if delegation_consent_given_for_current_authorization?
 
-    applications = requested_delegation_applications
-    grants = TokenExchangeGrant.live_by_application(
-      user: current_user, service_provider_issuer: current_sp.issuer, applications:,
-    )
-    # An application with no live approval at all needs the screen; content versions are beside
-    # the point for it.
-    return true if grants.size < applications.size
-
-    # Every application has a live approval. The screen is still needed if any of them is for a
-    # single authorization, past its remember period, or stale. Staleness compares against each
-    # agency's material version, so the agencies are loaded in one query here, and every
-    # application is checked rather than stopping at the first stale one.
-    ActiveRecord::Associations::Preloader.new(records: applications, associations: :agency).call
-    applications.reject { |application| grants[application.id].remembered_and_current? }.any?
+    TokenExchangeGrant.partition_current(
+      user: current_user, service_provider_issuer: current_sp.issuer,
+      applications: requested_delegation_applications
+    )[:needing_approval].any?
   end
 
   def delegation_consent_given_for_current_authorization?
