@@ -49,6 +49,18 @@ class TokenExchangeResourceServer < ApplicationRecord
     Agreements::Integration.exists?(issuer: billing_issuer_value)
   end
 
+  # Logs a warning when the billing issuer is not wired into a partner agreement: delegated
+  # access to this URL would be recorded and never invoiced. Local fixtures have no agreements,
+  # so this is a warning rather than a refusal; onboarding runs it after every write.
+  def warn_if_unbillable
+    return if billing_issuer_has_agreement?
+
+    Rails.logger.warn do
+      "token exchange resource server #{identifier} bills to #{billing_issuer_value}, " \
+        "which has no partner agreement; delegated access to it will be recorded but not invoiced"
+    end
+  end
+
   # Certificates used to verify the API's `private_key_jwt` client assertions, in the same two
   # forms `ServiceProvider#ssl_certs` accepts: a PEM string stored inline, or a name resolved to
   # `certs/sp/<name>.crt`. Inline PEM lets a sandbox register an API without a file on disk.
