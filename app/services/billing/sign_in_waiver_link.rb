@@ -19,7 +19,7 @@ module Billing
     # @param access_token [String] the access token issued to the service provider
     # @return [String] hex SHA-256 digest, the key suffix
     def self.digest(access_token)
-      Digest::SHA256.hexdigest(access_token.to_s)
+      DelegatedAccess::OpaqueToken.digest(access_token)
     end
 
     # @param access_token [String] the service provider's access token for the sign-in
