@@ -120,6 +120,7 @@ module IdentityConfig
     config.add(:database_worker_jobs_password, type: :string)
     config.add(:database_worker_jobs_sslmode, type: :string)
     config.add(:database_worker_jobs_username, type: :string)
+    config.add(:delegation_outcomes_report_emails, type: :json)
     config.add(:deleted_user_accounts_report_configs, type: :json)
     config.add(:deliver_mail_async, type: :boolean)
     config.add(:demographics_metrics_s3_report_configs, type: :json)

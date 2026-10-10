@@ -103,6 +103,7 @@ database_worker_jobs_name: ''
 database_worker_jobs_password: ''
 database_worker_jobs_sslmode: 'verify-full'
 database_worker_jobs_username: ''
+delegation_outcomes_report_emails: '[]'
 deleted_user_accounts_report_configs: '[]'
 deliver_mail_async: false
 demographics_metrics_s3_report_configs: '[]'
