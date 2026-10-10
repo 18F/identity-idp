@@ -640,6 +640,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_100000) do
     t.boolean "token_exchange_enabled_sp", default: false, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, comment: "sensitive=false"
     t.boolean "use_legacy_name_id_behavior", default: false, comment: "sensitive=false"
+    t.string "userinfo_encrypted_response_alg", comment: "sensitive=false"
     t.index ["delegation_scope_value"], name: "index_service_providers_on_delegation_scope_value", unique: true, where: "(delegation_scope_value IS NOT NULL)"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end

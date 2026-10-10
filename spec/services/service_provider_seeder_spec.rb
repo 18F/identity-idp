@@ -58,6 +58,7 @@ RSpec.describe ServiceProviderSeeder do
               ial: 2
               certs:
                 - 'saml_test_sp'
+              userinfo_encrypted_response_alg: 'RSA-OAEP-256'
               delegation_application: true
               delegation_scope_value: 'housing_records'
               delegation_display_name:
@@ -114,6 +115,68 @@ RSpec.describe ServiceProviderSeeder do
         run
         sp = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:mybenefits')
         expect(sp.delegation_sp_shareable_attributes).to eq([])
+      end
+
+      it 'writes the userinfo encryption opt-in through, nil for a record that has none' do
+        run
+
+        app = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:housing_records')
+        expect(app.userinfo_encrypted_response_alg).to eq('RSA-OAEP-256')
+        expect(app.userinfo_encrypted_response?).to eq(true)
+        expect(app.userinfo_encryption_key).to be_a(OpenSSL::PKey::RSA)
+        sp = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:mybenefits')
+        expect(sp.userinfo_encrypted_response_alg).to be_nil
+      end
+
+      it 'does not warn about encryption for an opted-in record with a certificate' do
+        warnings = []
+        allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+
+        run
+
+        expect(warnings.grep(/encrypted userinfo/)).to be_empty
+      end
+
+      context 'when the opted-in record has no certificate or is a public client' do
+        let(:sp_yaml) do
+          <<~SP_YAML
+            test:
+              'urn:gov:gsa:openidconnect:sp:no_certificate':
+                agency_id: 2
+                friendly_name: 'Opted in without a certificate'
+                ial: 2
+                userinfo_encrypted_response_alg: 'RSA-OAEP-256'
+              'urn:gov:gsa:openidconnect:sp:public_client':
+                agency_id: 2
+                friendly_name: 'Opted-in public client'
+                ial: 2
+                pkce: true
+                certs:
+                  - 'saml_test_sp'
+                userinfo_encrypted_response_alg: 'RSA-OAEP-256'
+          SP_YAML
+        end
+
+        it 'writes the records and warns that their userinfo requests will be refused' do
+          warnings = []
+          allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+
+          run
+
+          expect(
+            ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:no_certificate')
+              .userinfo_encrypted_response_alg,
+          ).to eq('RSA-OAEP-256')
+          expect(warnings).to contain_exactly(
+            a_string_including(
+              'urn:gov:gsa:openidconnect:sp:no_certificate',
+              'no usable registered certificate', 'refused'
+            ),
+            a_string_including(
+              'urn:gov:gsa:openidconnect:sp:public_client', 'public client', 'refused'
+            ),
+          )
+        end
       end
 
       it 'upserts the API URLs by identifier, with certificates by name or inline, idempotently' do
