@@ -39,7 +39,7 @@
 # service provider's live sign-in session (the same place userinfo and introspection read it).
 # While that session is live the bundle is released as registered; once it has ended only the
 # identifiers (`uuid`, `ial`, `aal`), the email attributes and the delegation attributes remain,
-# and #identifiers_only? tells the caller so the token response can say so.
+# and #identifiers_only? tells the caller so the token response can report `session_live: false`.
 #
 # The assertion is encrypted to the resource server's registered certificate when it has one
 # (SAML 2.0 Core §2.3.4, `EncryptedAssertion`) and returned signed in the clear otherwise.
