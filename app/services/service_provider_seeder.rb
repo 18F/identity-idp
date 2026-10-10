@@ -166,6 +166,20 @@ class ServiceProviderSeeder
               lookup_service_provider(rs_config['attempts_service_provider']),
           ),
       )
+      warn_unbillable_resource_server(resource_server)
+    end
+  end
+
+  # The billing issuer decides which partner agreement is invoiced for delegated access to this
+  # API. If it is not an issuer wired into an agreement, every exchange is recorded and never
+  # invoiced. Local fixtures have no agreements, so this is a warning rather than a refusal.
+  def warn_unbillable_resource_server(resource_server)
+    return if resource_server.billing_issuer_has_agreement?
+
+    Rails.logger.warn do
+      "token exchange resource server #{resource_server.identifier} bills to " \
+        "#{resource_server.billing_issuer_value}, which has no partner agreement; " \
+        "delegated access to it will be recorded but not invoiced"
     end
   end
 

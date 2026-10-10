@@ -135,6 +135,31 @@ RSpec.describe ServiceProviderSeeder do
         expect(documents_api.attempts_recipient.issuer)
           .to eq('urn:gov:gsa:openidconnect:sp:mybenefits')
       end
+      it 'warns that an API whose billing issuer has no partner agreement is never invoiced' do
+        warnings = []
+        allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+
+        run
+
+        # Every API billed to an issuer without an agreement is warned about; the records API
+        # must be among them.
+        expect(warnings).to include(
+          a_string_including(
+            'https://records-api.housing.example.gov',
+            'urn:gov:gsa:openidconnect:sp:housing_records', 'recorded but not invoiced'
+          ),
+        )
+      end
+
+      it 'does not warn when the billing issuer has a partner agreement' do
+        allow_any_instance_of(TokenExchangeResourceServer)
+          .to receive(:billing_issuer_has_agreement?).and_return(true)
+        allow(Rails.logger).to receive(:warn)
+
+        run
+
+        expect(Rails.logger).not_to have_received(:warn)
+      end
     end
 
     context 'with other existing service providers in the database' do

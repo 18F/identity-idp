@@ -105,11 +105,24 @@ class ServiceProviderUpdater
             ),
           ),
       )
+      warn_unbillable_resource_server(rs)
       seen << rs.id
     end
     # rubocop:disable Rails/SkipsModelValidations
     sp.token_exchange_resource_servers.where.not(id: seen).update_all(active: false)
     # rubocop:enable Rails/SkipsModelValidations
+  end
+
+  # An API whose billing issuer is not wired into a partner agreement is billed to no one:
+  # delegated access to it is recorded and never invoiced, so onboarding is warned.
+  def warn_unbillable_resource_server(resource_server)
+    return if resource_server.billing_issuer_has_agreement?
+
+    Rails.logger.warn do
+      "token exchange resource server #{resource_server.identifier} bills to " \
+        "#{resource_server.billing_issuer_value}, which has no partner agreement; " \
+        "delegated access to it will be recorded but not invoiced"
+    end
   end
 
   def url

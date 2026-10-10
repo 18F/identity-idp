@@ -221,6 +221,23 @@ RSpec.describe ServiceProviderUpdater do
             .find_by(identifier: 'https://documents-api.housing.example.gov').active,
         ).to eq(false)
       end
+      it 'warns that an API whose billing issuer has no partner agreement is never invoiced' do
+        stub_request(:get, fake_dashboard_url)
+          .to_return(status: 200, body: [application_payload].to_json)
+        warnings = []
+        allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+
+        subject.run
+
+        # Every API billed to an issuer without an agreement is warned about; the records API
+        # must be among them.
+        expect(warnings).to include(
+          a_string_including(
+            'https://records-api.housing.example.gov', oidc_issuer,
+            'recorded but not invoiced'
+          ),
+        )
+      end
     end
 
     context 'dashboard is not available' do

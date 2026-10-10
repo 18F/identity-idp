@@ -51,6 +51,12 @@ else
         cron: cron_24h_and_a_bit,
         args: -> { [Time.zone.now] },
       },
+      # Previous month's delegated-access outcomes per service provider, agency and API
+      delegation_outcomes_report: {
+        class: 'Reports::DelegationOutcomesReport',
+        cron: cron_monthly,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
         class: 'Reports::TotalMonthlyAuthsReport',
