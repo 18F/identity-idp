@@ -26,6 +26,32 @@ RSpec.describe TokenExchangeToken do
     end
   end
 
+  describe '#live_attributes' do
+    it 'is the Redis entry introspection reads, with epoch times and the record ids' do
+      token = create(:token_exchange_token, :key_bound, sp_rails_session_id: 'session-1')
+
+      expect(token.live_attributes).to eq(
+        aud: token.resource_server.identifier,
+        scope: token.scope,
+        grant_id: token.grant_id,
+        delegation_id: token.delegation_id,
+        user_id: token.user_id,
+        service_provider_id: token.service_provider_id,
+        resource_server_id: token.resource_server_id,
+        ial: 2,
+        aal: 2,
+        refresh_family_id: token.refresh_family_id,
+        dpop_jkt: token.dpop_jkt,
+        token_type: 'DPoP',
+        token_format: 'oauth',
+        sp_rails_session_id: 'session-1',
+        issued_at: token.issued_at.to_i,
+        expires_at: token.expires_at.to_i,
+        issuance_id: token.id,
+      )
+    end
+  end
+
   describe '.live' do
     it 'excludes revoked and expired rows' do
       live = create(:token_exchange_token)
