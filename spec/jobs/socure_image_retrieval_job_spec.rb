@@ -22,12 +22,16 @@ RSpec.describe SocureImageRetrievalJob do
   let(:result) do
     EncryptedDocStorage::DocWriter::Result.new(name: 'name', encryption_key: '12345')
   end
+  let(:redis_storage) { EncryptedDocStorage::RedisStorage.new }
   let(:selfie) { false }
 
   before do
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
     allow(FraudOps::Tracker).to receive(:new).and_return(fraud_ops_tracker)
-    allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+    allow(EncryptedDocStorage::DocWriter).to receive(:new).and_call_original
+    allow(EncryptedDocStorage::DocWriter).to receive(:new)
+      .with(s3_enabled: anything).and_return(writer)
+    allow(EncryptedDocStorage::RedisStorage).to receive(:new).and_return(redis_storage)
 
     document_capture_session.update(issuer: sp.issuer)
 
@@ -68,23 +72,61 @@ RSpec.describe SocureImageRetrievalJob do
   end
 
   describe '#perform' do
+    let(:persist_artifacts) { false }
+    let(:docv_transaction_token) { document_capture_session.socure_docv_transaction_token }
+    let(:document_metadata) do
+      {
+        document_number: 'D-9988',
+        document_issued: '2022-02-02',
+        document_expiration: '2032-02-02',
+      }
+    end
+
     subject(:perform) do
       job.perform(
         reference_id:,
         document_capture_session_uuid:,
         image_storage_data:,
         passport_book:,
+        persist_artifacts:,
+        docv_transaction_token:,
+        document_metadata:,
       )
     end
 
     context 'we get a 200-http response from the image endpoint' do
       before do
-        expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+        expect(EncryptedDocStorage::DocWriter).to receive(:new)
+          .with(s3_enabled: anything).and_return(writer)
         expect(writer).to receive(:write_with_data).exactly(2).times
       end
 
       it 'stores the images via doc escrow' do
         perform
+      end
+    end
+
+    context 'when no escrow data was provided (escrow disabled for the SP)' do
+      let(:image_storage_data) { {} }
+
+      it 'does not write to escrow' do
+        expect(writer).not_to receive(:write_with_data)
+
+        perform
+      end
+
+      context 'and Socure returns an error' do
+        before do
+          stub_request(:get, socure_image_endpoint)
+            .to_return(status: 500, headers: { 'Content-Type' => 'application/json' }, body: '{}')
+        end
+
+        it 'does not report an escrow retrieval failure for files that were never requested' do
+          expect(attempts_api_tracker).not_to receive(:idv_image_retrieval_failed)
+          expect(fraud_ops_tracker).not_to receive(:idv_image_retrieval_failed)
+
+          perform
+        end
       end
     end
 
@@ -103,12 +145,317 @@ RSpec.describe SocureImageRetrievalJob do
       end
     end
 
+    context 'persisting document artifacts' do
+      let(:persist_artifacts) { true }
+
+      before do
+        allow(IdentityConfig.store).to receive(:document_images_sharing_enabled)
+          .and_return(true)
+        allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+          .and_return([sp.issuer])
+      end
+
+      after do
+        DocumentArtifact.find_each do |artifact|
+          redis_storage.delete_image(name: artifact.storage_name)
+        end
+      end
+
+      it 'creates one artifact per returned image, keyed to the capture session' do
+        expect { perform }.to change { document_capture_session.document_artifacts.count }
+          .from(0).to(2)
+
+        artifact = document_capture_session.document_artifacts.find_by(image_type: 'front')
+        expect(artifact.storage_name).to start_with('encrypted_images/')
+        expect(artifact.encryption_key).to be_present
+        expect(artifact.profile_id).to be_nil
+      end
+
+      it 'encrypts each image under its own key and stores it in Redis with the TTL' do
+        allow(IdentityConfig.store).to receive(:document_images_ttl_seconds).and_return(3.days.to_i)
+
+        perform
+
+        artifacts = document_capture_session.document_artifacts.index_by(&:image_type)
+        reader = EncryptedDocStorage::DocReader.new(storage: redis_storage)
+        front = reader.read(
+          name: artifacts['front'].storage_name,
+          encryption_key: artifacts['front'].encryption_key,
+        )
+        back = reader.read(
+          name: artifacts['back'].storage_name,
+          encryption_key: artifacts['back'].encryption_key,
+        )
+
+        expect(front).to be_present
+        expect(back).to be_present
+        expect(front).not_to eq(back)
+        expect(artifacts['front'].encryption_key).not_to eq(artifacts['back'].encryption_key)
+        expect(redis_storage.ttl(name: artifacts['front'].storage_name))
+          .to be_between(3.days.to_i - 10, 3.days.to_i)
+      end
+
+      it 'does not use the escrow object names or keys' do
+        perform
+
+        expect(document_capture_session.document_artifacts.pluck(:storage_name))
+          .not_to include('name')
+      end
+
+      it 'persists artifacts even when escrow is disabled for the SP' do
+        expect do
+          job.perform(
+            reference_id:,
+            document_capture_session_uuid:,
+            image_storage_data: {},
+            passport_book:,
+            persist_artifacts:,
+            docv_transaction_token:,
+            document_metadata:,
+          )
+        end.to change { document_capture_session.document_artifacts.count }.from(0).to(2)
+      end
+
+      it 'persists the document metadata encrypted, one row per capture session' do
+        expect { perform }.to change { DocumentMetadata.count }.by(1)
+
+        expect(document_capture_session.document_metadata.document_data).to eq(document_metadata)
+      end
+
+      context 'when the initiating SP is not allow-listed for image sharing' do
+        before do
+          allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+            .and_return([])
+        end
+
+        it 'does not persist any key material' do
+          expect { perform }.not_to change { DocumentArtifact.count }
+        end
+
+        it 'writes nothing to Redis' do
+          expect(redis_storage).not_to receive(:write_image)
+
+          perform
+        end
+
+        it 'does not persist document metadata either' do
+          expect { perform }.not_to change { DocumentMetadata.count }
+        end
+      end
+
+      context 'when the verification attempt was not successful' do
+        let(:persist_artifacts) { false }
+
+        it 'still escrows the images but never persists shareable artifacts' do
+          expect(writer).to receive(:write_with_data).exactly(2).times
+          expect(redis_storage).not_to receive(:write_image)
+
+          expect { perform }.not_to change { DocumentArtifact.count }
+        end
+      end
+
+      context 'when the session started a newer Socure transaction after this job was enqueued' do
+        let(:docv_transaction_token) { 'superseded-token' }
+
+        before do
+          create(
+            :document_artifact,
+            document_capture_session:,
+            image_type: 'front',
+            storage_name: 'newer-attempt-object',
+          )
+        end
+
+        it 'does not overwrite the newer verification with the stale attempt' do
+          expect(redis_storage).not_to receive(:write_image)
+
+          perform
+
+          front = document_capture_session.document_artifacts.find_by(image_type: 'front')
+          expect(front.storage_name).to eq('newer-attempt-object')
+        end
+      end
+
+      context 'when no transaction token was recorded for this attempt' do
+        let(:docv_transaction_token) { nil }
+
+        before { document_capture_session.update!(socure_docv_transaction_token: nil) }
+
+        it 'does not persist (cannot prove which attempt the images belong to)' do
+          expect { perform }.not_to change { DocumentArtifact.count }
+        end
+      end
+
+      context 'when the capture session was deleted before the job ran' do
+        before do
+          allow(job).to receive(:fetch_images).and_wrap_original do |m, *args, **kwargs|
+            job.send(:document_capture_session)
+            DocumentCaptureSession.where(id: document_capture_session.id).delete_all
+            m.call(*args, **kwargs)
+          end
+        end
+
+        it 'no-ops instead of raising' do
+          expect { perform }.not_to raise_error
+        end
+      end
+
+      context 'when a prior failed attempt left artifacts of a different type on the session' do
+        before do
+          create(:document_artifact, document_capture_session:, image_type: 'passport')
+        end
+
+        it 'prunes the stale artifact and its stored image so only the verified document remains' do
+          stale_name = document_capture_session.document_artifacts.find_by(image_type: 'passport')
+            .storage_name
+          redis_storage.write_image(encrypted_image: 'stale', name: stale_name)
+
+          perform
+
+          expect(document_capture_session.document_artifacts.pluck(:image_type))
+            .to contain_exactly('front', 'back')
+          expect(redis_storage.read_image(name: stale_name)).to be_nil
+        end
+      end
+
+      context 'when Idv::Session already stamped this session with the profile it produced' do
+        let(:profile) { create(:profile, user:) }
+
+        before { document_capture_session.update!(profile:) }
+
+        it 'links the artifacts to that exact profile (job landed after profile creation)' do
+          perform
+
+          expect(document_capture_session.document_artifacts.pluck(:profile_id).uniq)
+            .to eq([profile.id])
+        end
+
+        it 'links the document metadata to that profile too' do
+          perform
+
+          expect(document_capture_session.document_metadata.profile_id).to eq(profile.id)
+        end
+      end
+
+      context 'when the stamp is written while the job is mid-flight (backlog race)' do
+        let(:profile) { create(:profile, user:) }
+
+        before do
+          # Job memoizes the session record early; simulate Idv::Session stamping the
+          # row in the DB after that memoization but before reconciliation. The job
+          # must read the stamp from the FOR UPDATE-locked row, not the stale memo.
+          allow(job).to receive(:fetch_images).and_wrap_original do |m, *args, **kwargs|
+            job.send(:document_capture_session)
+            DocumentCaptureSession.where(id: document_capture_session.id)
+              .update_all(profile_id: profile.id)
+            m.call(*args, **kwargs)
+          end
+        end
+
+        it 'still links the artifacts by reading the stamp from the locked row' do
+          perform
+
+          expect(document_capture_session.document_artifacts.pluck(:profile_id).uniq)
+            .to eq([profile.id])
+        end
+
+        it 'serializes on the capture-session row lock so a concurrent stamp is never missed' do
+          expect(DocumentCaptureSession).to receive(:lock).and_call_original
+
+          perform
+        end
+      end
+
+      context 'when a previously stored type did not come back in this result set' do
+        before do
+          create(:document_artifact, document_capture_session:, image_type: 'back')
+          allow_any_instance_of(Idv::IdvImages).to receive(:images).and_wrap_original do |m|
+            m.call.reject { |image| image.type == :back }
+          end
+        end
+
+        it 'prunes the stale row for that type rather than keeping the old object' do
+          perform
+
+          expect(document_capture_session.document_artifacts.pluck(:image_type))
+            .to contain_exactly('front')
+        end
+      end
+
+      context 'when the user has an unrelated active profile but this session produced none' do
+        let!(:other_profile) { create(:profile, :active, user:, verified_at: 1.minute.from_now) }
+
+        it 'leaves the artifacts unlinked rather than guessing from the active profile' do
+          perform
+
+          expect(document_capture_session.document_artifacts.pluck(:profile_id).uniq)
+            .to eq([nil])
+        end
+      end
+
+      context 'when document image sharing is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:document_images_sharing_enabled)
+            .and_return(false)
+        end
+
+        it 'does not persist artifacts' do
+          expect { perform }.not_to change { DocumentArtifact.count }
+        end
+      end
+
+      context 'when the capture session requested an mDL' do
+        before { document_capture_session.request_mdl! }
+
+        it 'does not persist artifacts' do
+          expect { perform }.not_to change { DocumentArtifact.count }
+        end
+      end
+
+      context 'when the job is retried (runs twice)' do
+        let(:rerun) do
+          lambda do
+            described_class.new.perform(
+              reference_id:,
+              document_capture_session_uuid:,
+              image_storage_data:,
+              passport_book:,
+              persist_artifacts:,
+              docv_transaction_token:,
+              document_metadata:,
+            )
+          end
+        end
+
+        it 'is idempotent and does not create duplicate artifacts' do
+          perform
+          expect { rerun.call }.not_to change { document_capture_session.document_artifacts.count }
+            .from(2)
+        end
+
+        it 'replaces the stored image and removes the superseded one' do
+          perform
+          first_name = document_capture_session.document_artifacts.find_by(image_type: 'front')
+            .storage_name
+
+          rerun.call
+          second_name = document_capture_session.document_artifacts.find_by(image_type: 'front')
+            .storage_name
+
+          expect(second_name).not_to eq(first_name)
+          expect(redis_storage.read_image(name: first_name)).to be_nil
+          expect(redis_storage.read_image(name: second_name)).to be_present
+        end
+      end
+    end
+
     context 'when we get a non-200 HTTP response back from the image endpoint' do
       let(:referenceId) { '360ae43f-123f-47ab-8e05-6af79752e76c' }
 
       before do
-        expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+        expect(EncryptedDocStorage::DocWriter).not_to receive(:new).with(s3_enabled: anything)
         expect(writer).not_to receive(:write_with_data)
+        expect(redis_storage).not_to receive(:write_image)
       end
 
       context 'when we get an error without a socure response body' do

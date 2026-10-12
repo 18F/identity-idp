@@ -430,6 +430,78 @@ RSpec.describe SocureDocvResultsJob do
         end
       end
 
+      context 'when the SP is allow-listed for document image sharing' do
+        let(:doc_escrow_enabled) { false }
+
+        before do
+          allow(IdentityConfig.store).to receive_messages(
+            document_images_sharing_enabled: true,
+            document_images_sharing_service_providers: [sp.issuer],
+          )
+        end
+
+        it 'runs SocureImageRetrievalJob to persist artifacts without any escrow data' do
+          expect(SocureImageRetrievalJob).to receive(:perform_later).with(
+            hash_including(
+              document_capture_session_uuid:,
+              image_storage_data: {},
+              persist_artifacts: true,
+              docv_transaction_token: socure_docv_transaction_token,
+            ),
+          )
+
+          perform
+        end
+
+        it 'does not report escrow file ids to the attempts API' do
+          allow(SocureImageRetrievalJob).to receive(:perform_later)
+
+          expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            hash_excluding(:document_front_image_file_id, :document_back_image_file_id),
+          )
+
+          perform
+        end
+
+        context 'when the verification was not successful' do
+          let(:decision_value) { 'reject' }
+
+          it 'does not run SocureImageRetrievalJob' do
+            expect(SocureImageRetrievalJob).not_to receive(:perform_later)
+            expect(SocureImageRetrievalJob).not_to receive(:perform_now)
+
+            perform
+          end
+        end
+
+        context 'when document escrow is also enabled' do
+          let(:doc_escrow_enabled) { true }
+          let(:historical_attempts_api_enabled) { true }
+
+          it 'passes both the escrow data and the persist flag' do
+            expect(SocureImageRetrievalJob).to receive(:perform_later).with(
+              hash_including(
+                image_storage_data: hash_including(:front, :back),
+                persist_artifacts: true,
+              ),
+            )
+
+            perform
+          end
+        end
+      end
+
+      context 'when neither escrow nor image sharing applies to the SP' do
+        let(:doc_escrow_enabled) { false }
+
+        it 'does not run SocureImageRetrievalJob' do
+          expect(SocureImageRetrievalJob).not_to receive(:perform_later)
+          expect(SocureImageRetrievalJob).not_to receive(:perform_now)
+
+          perform
+        end
+      end
+
       context 'facial match' do
         let(:reason_codes_selfie_fail) { ['no match', 'not live'] }
         let(:reason_codes_selfie_not_processed) { ['not procesed'] }
