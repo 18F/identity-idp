@@ -492,6 +492,29 @@ module AnalyticsEvents
     track_event('Banned User visited')
   end
 
+  # Tracks when the agency handoff was submitted for a service provider that
+  # requested document images but the user did not affirmatively consent; the
+  # submission is rejected and the screen re-rendered.
+  # @param [String] issuer issuer of the service provider requesting the images
+  def biometric_sharing_consent_declined(issuer:, **extra)
+    track_event(
+      :biometric_sharing_consent_declined,
+      issuer: issuer,
+      **extra,
+    )
+  end
+
+  # Tracks when a user grants consent to share proofing document images (biometric
+  # artifacts) with a service provider on the agency handoff screen.
+  # @param [String] issuer issuer of the service provider receiving the images
+  def biometric_sharing_consent_granted(issuer:, **extra)
+    track_event(
+      :biometric_sharing_consent_granted,
+      issuer: issuer,
+      **extra,
+    )
+  end
+
   # A user that had a broken personal key was routed to a page to regenerate their personal key,
   # so that they no longer have a broken one
   def broken_personal_key_regenerated
@@ -8930,8 +8953,9 @@ module AnalyticsEvents
   # @param [Integer] ialmax Whether the user registration was for an IALMax request
   # @param [String] service_provider_name The friendly name of the service provider
   # @param ['account-page','agency-page'] page_occurence Where the user concluded registration
-  # @param ['new_sp','new_attributes','reverified_after_consent'] needs_completion_screen_reason The
-  #   reason for the consent screen being shown
+  # @param [String] needs_completion_screen_reason The reason for the consent screen being
+  #   shown: new_sp, new_attributes, reverified_after_consent, consent_expired,
+  #   consent_revoked, or biometric_consent_needed
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
   # @param [String, nil] in_person_proofing_status In person proofing status
@@ -8978,8 +9002,9 @@ module AnalyticsEvents
   # @param [Boolean] ialmax Whether the user registration was for an IALMax request
   # @param [String] service_provider_name The friendly name of the service provider
   # @param ['account-page','agency-page'] page_occurence Where the user concluded registration
-  # @param ['new_sp','new_attributes','reverified_after_consent'] needs_completion_screen_reason The
-  #   reason for the consent screen being shown
+  # @param [String] needs_completion_screen_reason The reason for the consent screen being
+  #   shown: new_sp, new_attributes, reverified_after_consent, consent_expired,
+  #   consent_revoked, or biometric_consent_needed
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [String, nil] in_person_proofing_status In person proofing status
