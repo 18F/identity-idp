@@ -597,6 +597,32 @@ module AnalyticsEvents
     )
   end
 
+  # Audit record for every request to the document image proxy endpoint, whether
+  # an image was released or the request was refused.
+  # @param [Boolean] success whether image bytes were released
+  # @param [String] image_type which artifact was requested (front/back/passport/selfie)
+  # @param [String, nil] issuer issuer of the requesting service provider
+  # @param [Integer, nil] profile_id the verified profile whose artifact was requested
+  # @param [String, nil] denial_reason why the request was refused, if it was
+  def document_image_release(
+    success:,
+    image_type:,
+    issuer: nil,
+    profile_id: nil,
+    denial_reason: nil,
+    **extra
+  )
+    track_event(
+      :document_image_release,
+      success:,
+      image_type:,
+      issuer:,
+      profile_id:,
+      denial_reason:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] required_password_change if user forced to change password
   # When a user views the edit password page
   def edit_password_visit(required_password_change: false, **extra)
