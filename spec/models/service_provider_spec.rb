@@ -153,6 +153,30 @@ RSpec.describe ServiceProvider do
     end
   end
 
+  describe '#token_exchange_broker?' do
+    context 'when the sp is not on the token exchange broker allowlist' do
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return(['an-issuer'])
+      end
+
+      it 'returns false' do
+        expect(service_provider.token_exchange_broker?).to be(false)
+      end
+    end
+
+    context 'when the sp is on the token exchange broker allowlist' do
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return(['an-issuer', service_provider.issuer])
+      end
+
+      it 'returns true' do
+        expect(service_provider.token_exchange_broker?).to be(true)
+      end
+    end
+  end
+
   describe '#attempts_public_key' do
     context 'when the sp is configured to use the attempts api' do
       context 'when there is no public key set in the configuration' do
