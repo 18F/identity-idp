@@ -37,7 +37,7 @@ RSpec.describe 'OpenID Connect token introspection' do
       :service_provider, :delegation_service_provider,
       issuer: 'urn:gov:gsa:openidconnect:sp:mybenefits',
       friendly_name: 'MyBenefits Assistant',
-      pkce: true, certs: [],
+      pkce: true, certs: [], dpop_required: true,
       redirect_uris: ['https://mybenefits.example.gov/auth/result']
     )
   end
@@ -678,6 +678,104 @@ RSpec.describe 'OpenID Connect token introspection' do
 
         include_examples 'invalid_dpop_proof'
       end
+    end
+  end
+
+  describe 'a service provider without dpop_required asking about its own bearer token' do
+    let(:service_provider) do
+      create(
+        :service_provider, :delegation_service_provider,
+        issuer: 'urn:gov:gsa:openidconnect:sp:mybenefits',
+        friendly_name: 'MyBenefits Assistant',
+        pkce: true, certs: [], dpop_required: false,
+        redirect_uris: ['https://mybenefits.example.gov/auth/result']
+      )
+    end
+    # Its sign-in token and the delegated tokens issued on it are bearer tokens.
+    let!(:identity) do
+      IdentityLinker.new(user, service_provider).link_identity(
+        acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+        ial: 2,
+        rails_session_id:,
+        scope: 'openid email token_exchange:housing_records',
+      ).tap { |linked| linked.update!(last_authenticated_at: sign_in_at) }
+    end
+    let!(:token) do
+      create(
+        :token_exchange_token,
+        grant:, resource_server:, service_provider:, user:,
+        sp_rails_session_id: rails_session_id, plaintext:
+      )
+    end
+
+    it 'answers the limited response on client_id alone, with no key binding and no proof read' do
+      introspect_as_service_provider(proof: nil)
+
+      expect(response).to have_http_status(:ok)
+      expect(json.keys).to contain_exactly(
+        :active, :iss, :aud, :scope, :client_id, :delegation_id, :token_type, :iat, :exp, :sub
+      )
+      expect(json).to include(
+        active: true, token_type: 'Bearer', client_id: service_provider.issuer,
+      )
+    end
+
+    it 'ignores a proof sent anyway' do
+      introspect_as_service_provider
+      expect(json).to include(active: true, token_type: 'Bearer')
+      expect(json.keys).not_to include(:cnf)
+    end
+
+    it 'answers exactly {"active": false} for an unknown token, with no proof read' do
+      introspect_as_service_provider(TokenExchangeToken.generate_token, proof: nil)
+      expect(response).to have_http_status(:ok)
+      expect(json).to eq(active: false)
+    end
+
+    context 'when the token it presents is bound to a key' do
+      let!(:token) do
+        create(
+          :token_exchange_token, :key_bound,
+          grant:, resource_server:, service_provider:, user:,
+          dpop_jkt: dpop_thumbprint, sp_rails_session_id: rails_session_id, plaintext:
+        )
+      end
+
+      it 'still requires a proof from that key: a DPoP challenge without one' do
+        introspect_as_service_provider(proof: nil)
+        expect(response).to have_http_status(:unauthorized)
+        expect(json[:error]).to eq('invalid_dpop_proof')
+        expect(json[:error_description])
+          .to eq(t('openid_connect.token.errors.dpop_proof_required'))
+        expect(response.headers['WWW-Authenticate']).to start_with('DPoP algs="ES256 RS256"')
+      end
+
+      it 'answers exactly {"active": false} with a proof from another key' do
+        introspect_as_service_provider(key: OpenSSL::PKey::EC.generate('prime256v1'))
+        expect(json).to eq(active: false)
+      end
+
+      it 'answers the limited response with the key binding for a proof from its key' do
+        introspect_as_service_provider
+        expect(json).to include(active: true, token_type: 'DPoP', cnf: { jkt: dpop_thumbprint })
+      end
+    end
+  end
+
+  describe 'a service provider registered with dpop_required asking about a bearer token' do
+    # Issued to it before the setting: a client that holds only bound tokens is not the holder.
+    let!(:token) do
+      create(
+        :token_exchange_token,
+        grant:, resource_server:, service_provider:, user:,
+        sp_rails_session_id: rails_session_id, plaintext:
+      )
+    end
+
+    it 'answers exactly {"active": false}' do
+      introspect_as_service_provider
+      expect(response).to have_http_status(:ok)
+      expect(json).to eq(active: false)
     end
   end
 

@@ -10,7 +10,9 @@ RSpec.describe OpenidConnectIntrospectForm do
     create(:token_exchange_resource_server, service_provider: application, certs: ['saml_test_sp'])
   end
   let(:service_provider) do
-    create(:service_provider, :delegation_service_provider, pkce: true, certs: [])
+    create(
+      :service_provider, :delegation_service_provider, pkce: true, certs: [], dpop_required: true
+    )
   end
   let(:user) { create(:user, :proofed) }
   let!(:identity) do

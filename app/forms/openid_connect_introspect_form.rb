@@ -10,12 +10,15 @@
 #   §2.2 defines, `act` naming the service provider acting for the person (RFC 8693 §4.1), the
 #   delegation identifier, the assurance of the sign-in, and the person's identity as the agency
 #   would read it from userinfo after a direct sign-in (DelegatedTokenClaims).
-# * The public-client service provider holding a token identifies itself with `client_id` and
-#   proves possession of the key the token is bound to with a DPoP proof (RFC 9449 §4.3) whose
-#   `ath` is over the `token` parameter. For its own token it receives the limited response: the
-#   token's status and lifetime, audience and access, the delegation identifier, the key binding,
-#   the person's identifier as its own sign-in already reports it, and any attribute the
-#   application has chosen to share with service providers. Nothing else about the person.
+# * The public-client service provider holding a token identifies itself with `client_id`. For a
+#   token bound to a key it proves possession of that key with a DPoP proof (RFC 9449 §4.3) whose
+#   `ath` is over the `token` parameter: a service provider registered with `dpop_required` holds
+#   only bound tokens and its proof is required with every call, while one without the setting
+#   holds bearer tokens and names itself alone. For its own token it receives the limited
+#   response: the token's status and lifetime, audience and access, the delegation identifier,
+#   the key binding when there is one, the person's identifier as its own sign-in already reports
+#   it, and any attribute the application has chosen to share with service providers. Nothing
+#   else about the person.
 # * Anyone else receives exactly `{"active": false}` (RFC 7662 §2.2): an authenticated resource
 #   server asking about another API's token, a service provider whose proof key is not the one
 #   the token is bound to or whose token was issued to a different service provider, a
@@ -118,9 +121,9 @@ class OpenidConnectIntrospectForm
     @caller_resource_server = record
   end
 
-  # Only a registered public client approved for delegation can be the holder of a bound token,
-  # so only such a name counts as a caller whose proof is then required. Any other name (a
-  # confidential client, an unknown issuer) is not a credential and the answer is "not active".
+  # Only a registered public client approved for delegation can hold a delegated token, so only
+  # such a name counts as a caller. Any other name (a confidential client, an unknown issuer) is
+  # not a credential and the answer is "not active".
   def identify_service_provider
     return if client_id.include?("\x00")
 
@@ -134,10 +137,19 @@ class OpenidConnectIntrospectForm
   def introspect
     @entry = DelegatedTokenStore.read(token) unless token.to_s.include?("\x00")
     load_records if entry
-    verify_service_provider_proof if caller_type == :service_provider
+    verify_service_provider_proof if caller_type == :service_provider && proof_required?
     return if errors.any?
 
     @active = token_active? && caller_entitled?
+  end
+
+  # A service provider registered with `dpop_required` holds only bound tokens, so its proof is
+  # demanded on every call, token found or not, and a caller without one learns nothing. One
+  # without the setting names itself alone and is asked for a proof only when the token it
+  # presents turns out to be bound (issued while the setting was on): a bound token is never
+  # answered for without its key.
+  def proof_required?
+    @caller_service_provider.dpop_bound? || (entry.present? && entry[:dpop_jkt].present?)
   end
 
   def load_records
@@ -181,15 +193,21 @@ class OpenidConnectIntrospectForm
       token_service_provider&.delegation_service_provider? == true
   end
 
-  # The audience may ask about its own token; the holder may ask about a token issued to it and
-  # bound to the key it just proved possession of.
+  # The audience may ask about its own token. The holder may ask about a token issued to it: a
+  # bound token only with the key it just proved possession of, a bearer token by naming itself,
+  # unless it is registered with `dpop_required` and so holds no bearer token of its own.
   def caller_entitled?
     case caller_type
     when :resource_server
       entry[:resource_server_id] == @caller_resource_server.id
     when :service_provider
-      entry[:service_provider_id] == @caller_service_provider.id &&
-        entry[:dpop_jkt].present? && entry[:dpop_jkt] == @proof_thumbprint
+      return false unless entry[:service_provider_id] == @caller_service_provider.id
+
+      if entry[:dpop_jkt].present?
+        entry[:dpop_jkt] == @proof_thumbprint
+      else
+        !@caller_service_provider.dpop_bound?
+      end
     else
       false
     end
