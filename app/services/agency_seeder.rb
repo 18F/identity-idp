@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 # Update Agency from config/agencies.yml (all environments in rake db:seed)
+#
+# Every key of an agency entry is passed through to the record, including the delegated-access
+# consent content (delegation_description, delegation_learn_more_url and the content version
+# pair). Dependency: the partner Dashboard does not yet carry these agency fields; until it does,
+# `rake delegated_access:seed` loads them in non-production environments.
 class AgencySeeder
   def initialize(
     rails_env: Rails.env,

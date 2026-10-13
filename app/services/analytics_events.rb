@@ -492,6 +492,29 @@ module AnalyticsEvents
     track_event('Banned User visited')
   end
 
+  # Tracks when the agency handoff was submitted for a service provider that
+  # requested document images but the user did not affirmatively consent; the
+  # submission is rejected and the screen re-rendered.
+  # @param [String] issuer issuer of the service provider requesting the images
+  def biometric_sharing_consent_declined(issuer:, **extra)
+    track_event(
+      :biometric_sharing_consent_declined,
+      issuer: issuer,
+      **extra,
+    )
+  end
+
+  # Tracks when a user grants consent to share proofing document images (biometric
+  # artifacts) with a service provider on the agency handoff screen.
+  # @param [String] issuer issuer of the service provider receiving the images
+  def biometric_sharing_consent_granted(issuer:, **extra)
+    track_event(
+      :biometric_sharing_consent_granted,
+      issuer: issuer,
+      **extra,
+    )
+  end
+
   # A user that had a broken personal key was routed to a page to regenerate their personal key,
   # so that they no longer have a broken one
   def broken_personal_key_regenerated
@@ -542,6 +565,39 @@ module AnalyticsEvents
 
   # User directed to this page after TMX returns a failure
 
+  # Tracks the user's delegated-access decision on the agency handoff screen for a service
+  # provider approved for delegation. Consent is optional; this fires whether or not anything was
+  # approved.
+  # @param [String] issuer Issuer of the service provider
+  # @param [Boolean] granted Whether at least one application was approved
+  # @param [Boolean] all_connected Whether the user approved every connected application
+  # @param [Integer] application_count Number of applications approved
+  def delegation_consent_decided(issuer:, granted:, all_connected:, application_count:, **extra)
+    track_event(
+      :delegation_consent_decided,
+      issuer:,
+      granted:,
+      all_connected:,
+      application_count:,
+      **extra,
+    )
+  end
+
+  # Tracks a user toggling, on the account page, whether a service provider may act for them at
+  # one application.
+  # @param [String] issuer Issuer of the service provider
+  # @param [String] application_issuer Issuer of the application toggled
+  # @param [Boolean] enabled Whether the service provider may now act at that application
+  def delegation_grant_toggled(issuer:, application_issuer:, enabled:, **extra)
+    track_event(
+      :delegation_grant_toggled,
+      issuer:,
+      application_issuer:,
+      enabled:,
+      **extra,
+    )
+  end
+
   def device_profiling_failed_visited
     track_event(:device_profiling_failed_visited)
   end
@@ -557,6 +613,45 @@ module AnalyticsEvents
       message:,
       unknown_alerts:,
       response_info:,
+      **extra,
+    )
+  end
+
+  # Emitted by the daily job that removes document_artifacts rows whose escrow
+  # objects have aged past the retention window.
+  # @param [Integer] deleted_count number of artifact rows removed
+  # @param [Integer] deleted_metadata_count number of document metadata rows removed
+  def document_artifacts_expired(deleted_count:, deleted_metadata_count: 0, **extra)
+    track_event(
+      :document_artifacts_expired,
+      deleted_count:,
+      deleted_metadata_count:,
+      **extra,
+    )
+  end
+
+  # Audit record for every request to the document image proxy endpoint, whether
+  # an image was released or the request was refused.
+  # @param [Boolean] success whether image bytes were released
+  # @param [String] image_type which artifact was requested (front/back/passport/selfie)
+  # @param [String, nil] issuer issuer of the requesting service provider
+  # @param [Integer, nil] profile_id the verified profile whose artifact was requested
+  # @param [String, nil] denial_reason why the request was refused, if it was
+  def document_image_release(
+    success:,
+    image_type:,
+    issuer: nil,
+    profile_id: nil,
+    denial_reason: nil,
+    **extra
+  )
+    track_event(
+      :document_image_release,
+      success:,
+      image_type:,
+      issuer:,
+      profile_id:,
+      denial_reason:,
       **extra,
     )
   end
@@ -7574,19 +7669,21 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks an RFC 8693 browser-based token exchange from a broker SP to a target SP.
+  # Tracks an RFC 8693 token exchange: a service provider presenting its own token for a
+  # delegated token at one of the user's approved applications.
   # @param [Boolean] success Whether the exchange succeeded
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [String] broker_issuer Issuer of the SP presenting the subject token
-  # @param [String] target_issuer Issuer the token was exchanged for
-  # @param [Integer] minted_ial IAL of the minted target identity
-  # @param [String] minted_scope Scope granted to the minted target identity
-  # @param [Boolean] billable Whether the target was billed for this return
-  # @param [Boolean] fraud_signalled Whether the fraud signal was delivered to the target
+  # @param [String, nil] service_provider_issuer Issuer of the service provider presenting the
+  #   subject token
+  # @param [String, nil] application_issuer Issuer of the application the token was requested for
+  # @param [Integer, nil] minted_ial IAL carried by the minted token
+  # @param [String, nil] minted_scope Scope carried by the minted token
+  # @param [Boolean, nil] billable Whether the mint was recorded as a billable return
+  # @param [Boolean, nil] fraud_signalled Whether the application received a fraud-signal event
+  # @param [Hash, nil] error_details Details for errors that occurred in an unsuccessful exchange
   def openid_connect_token_exchange(
     success:,
-    broker_issuer: nil,
-    target_issuer: nil,
+    service_provider_issuer: nil,
+    application_issuer: nil,
     minted_ial: nil,
     minted_scope: nil,
     billable: nil,
@@ -7598,66 +7695,12 @@ module AnalyticsEvents
       :openid_connect_token_exchange,
       success:,
       error_details:,
-      broker_issuer:,
-      target_issuer:,
+      service_provider_issuer:,
+      application_issuer:,
       minted_ial:,
       minted_scope:,
       billable:,
       fraud_signalled:,
-      **extra,
-    )
-  end
-
-  # Tracks a user toggling auto-enrollment of new agencies for a broker on the
-  # account page.
-  # @param [String] issuer Issuer of the broker SP
-  # @param [Boolean] enabled Whether auto-enrollment is now on
-  def token_exchange_auto_enroll_toggled(issuer:, enabled:, **extra)
-    track_event(
-      :token_exchange_auto_enroll_toggled,
-      issuer:,
-      enabled:,
-      **extra,
-    )
-  end
-
-  # Tracks the user's token-exchange decision on the agency handoff screen for a
-  # broker SP. Consent is optional; this fires whether or not anything was granted.
-  # @param [String] issuer Issuer of the broker SP
-  # @param [Boolean] granted Whether any application or auto-enrollment was granted
-  # @param [Boolean] all_linked Whether the user allowed every currently linked agency
-  # @param [Boolean] auto_enroll Whether the user enabled auto-enrollment of new agencies
-  # @param [Integer] target_count Number of applications granted
-  def token_exchange_consent_decided(
-    issuer:,
-    granted:,
-    all_linked:,
-    auto_enroll:,
-    target_count:,
-    **extra
-  )
-    track_event(
-      :token_exchange_consent_decided,
-      issuer:,
-      granted:,
-      all_linked:,
-      auto_enroll:,
-      target_count:,
-      **extra,
-    )
-  end
-
-  # Tracks a user toggling a broker's access to one application on the account
-  # page. Each application is its own grant.
-  # @param [String] issuer Issuer of the broker SP
-  # @param [String] target_issuer Issuer of the application toggled
-  # @param [Boolean] enabled Whether the broker may now act at that application
-  def token_exchange_grant_toggled(issuer:, target_issuer:, enabled:, **extra)
-    track_event(
-      :token_exchange_grant_toggled,
-      issuer:,
-      target_issuer:,
-      enabled:,
       **extra,
     )
   end
@@ -8809,68 +8852,6 @@ module AnalyticsEvents
     track_event(
       'SP Revoke Consent: Visited',
       issuer: issuer,
-      **extra,
-    )
-  end
-
-  # Tracks when a user grants consent to share proofing document images (biometric
-  # artifacts) with a service provider on the agency handoff screen.
-  # @param [String] issuer issuer of the service provider receiving the images
-  def biometric_sharing_consent_granted(issuer:, **extra)
-    track_event(
-      :biometric_sharing_consent_granted,
-      issuer: issuer,
-      **extra,
-    )
-  end
-
-  # Tracks when the agency handoff was submitted for a service provider that
-  # requested document images but the user did not affirmatively consent; the
-  # submission is rejected and the screen re-rendered.
-  # @param [String] issuer issuer of the service provider requesting the images
-  def biometric_sharing_consent_declined(issuer:, **extra)
-    track_event(
-      :biometric_sharing_consent_declined,
-      issuer: issuer,
-      **extra,
-    )
-  end
-
-  # Emitted by the daily job that removes document_artifacts rows whose escrow
-  # objects have aged past the retention window.
-  # @param [Integer] deleted_count number of artifact rows removed
-  # @param [Integer] deleted_metadata_count number of document metadata rows removed
-  def document_artifacts_expired(deleted_count:, deleted_metadata_count: 0, **extra)
-    track_event(
-      :document_artifacts_expired,
-      deleted_count:,
-      deleted_metadata_count:,
-      **extra,
-    )
-  end
-
-  # Audit record for every request to the document image proxy endpoint, whether
-  # an image was released or the request was refused.
-  # @param [Boolean] success whether image bytes were released
-  # @param [String] image_type which artifact was requested (front/back/passport/selfie)
-  # @param [String, nil] issuer issuer of the requesting service provider
-  # @param [Integer, nil] profile_id the verified profile whose artifact was requested
-  # @param [String, nil] denial_reason why the request was refused, if it was
-  def document_image_release(
-    success:,
-    image_type:,
-    issuer: nil,
-    profile_id: nil,
-    denial_reason: nil,
-    **extra
-  )
-    track_event(
-      :document_image_release,
-      success:,
-      image_type:,
-      issuer:,
-      profile_id:,
-      denial_reason:,
       **extra,
     )
   end

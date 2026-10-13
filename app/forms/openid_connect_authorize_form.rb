@@ -255,7 +255,7 @@ class OpenidConnectAuthorizeForm
 
   def validate_token_exchange_scope
     return unless scope.include?('token_exchange')
-    return if service_provider&.token_exchange_broker_allowed?
+    return if service_provider&.delegation_service_provider?
 
     errors.add(
       :scope, t('openid_connect.authorization.errors.no_valid_scope'),
