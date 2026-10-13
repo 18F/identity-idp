@@ -662,13 +662,13 @@ RSpec.describe 'OpenID Connect token exchange' do
     end
   end
 
-  context 'as a public client' do
+  context 'as a public client registered with dpop_required' do
     let(:service_provider) do
       create(
         :service_provider, :delegation_service_provider,
         issuer: 'urn:gov:gsa:openidconnect:sp:mybenefits',
         friendly_name: 'MyBenefits Assistant',
-        pkce: true, certs: []
+        pkce: true, certs: [], dpop_required: true
       )
     end
     let(:client_type) { 'public' }
@@ -816,6 +816,68 @@ RSpec.describe 'OpenID Connect token exchange' do
         params[:resource] = 'https://nowhere.example.gov'
         exchange
         expect(json[:error]).to eq('invalid_dpop_proof')
+      end
+    end
+  end
+
+  context 'as a public client approved for delegation without dpop_required' do
+    let(:service_provider) do
+      create(
+        :service_provider, :delegation_service_provider,
+        issuer: 'urn:gov:gsa:openidconnect:sp:mybenefits',
+        friendly_name: 'MyBenefits Assistant',
+        pkce: true, certs: [], dpop_required: false
+      )
+    end
+    let(:client_type) { 'public' }
+    # Its sign-in token is a bearer token: no key was named at authorization.
+    let!(:identity) { link_identity(service_provider) }
+    let(:credentials) { { client_id: service_provider.issuer } }
+
+    # Nothing to renew: the client names itself the same way on every request.
+    def refresh_credentials(access_token:); end
+
+    include_examples 'a token exchange', token_type: 'Bearer'
+
+    it 'issues a bearer token on client_id alone, reading no proof' do
+      exchange
+      expect(response).to have_http_status(:ok)
+      expect(json[:token_type]).to eq('Bearer')
+      issued = TokenExchangeToken.last
+      expect(issued.dpop_jkt).to be_nil
+      expect(issued).not_to be_key_bound
+      expect(DelegatedTokenStore.read(json[:access_token])[:dpop_jkt]).to be_nil
+    end
+
+    it 'ignores a proof sent with the bearer subject token' do
+      headers['DPoP'] = build_dpop_proof(
+        url: api_openid_connect_token_url, access_token: subject_token,
+      )
+      exchange
+      expect(response).to have_http_status(:ok)
+      expect(json[:token_type]).to eq('Bearer')
+      expect(TokenExchangeToken.last.dpop_jkt).to be_nil
+    end
+
+    context 'presenting a subject token that is bound to a key' do
+      let!(:identity) { link_identity(service_provider, dpop_jkt: dpop_thumbprint) }
+
+      it 'still requires a proof from that key: a bound token is never honored without it' do
+        exchange
+        expect(response).to have_http_status(:bad_request)
+        expect(json[:error]).to eq('invalid_dpop_proof')
+        expect(json[:error_description])
+          .to eq(t('openid_connect.token.errors.dpop_proof_required'))
+      end
+
+      it 'issues a token bound to that key when the proof comes from it' do
+        headers['DPoP'] = build_dpop_proof(
+          url: api_openid_connect_token_url, access_token: subject_token,
+        )
+        exchange
+        expect(response).to have_http_status(:ok)
+        expect(json[:token_type]).to eq('DPoP')
+        expect(TokenExchangeToken.last.dpop_jkt).to eq(dpop_thumbprint)
       end
     end
   end

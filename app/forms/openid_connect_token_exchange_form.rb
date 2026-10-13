@@ -12,9 +12,12 @@
 # * A confidential service provider authenticates with a `private_key_jwt` client assertion
 #   (RFC 7523) signed with a key on its record. It receives a bearer token.
 # * A public service provider (PKCE, no secret; its tokens live in the person's browser) sends its
-#   `client_id` and a DPoP proof (RFC 9449 §4.3) signed by the key its own access token is bound
-#   to, with `ath` over that token. A stolen subject token is therefore useless without the key.
-#   It receives a token bound to the same key, reported as `token_type: DPoP`.
+#   `client_id`. When its sign-in access token is bound to a key (`identities.dpop_jkt`, named at
+#   authorization by a client registered with `dpop_required`), it also sends a DPoP proof
+#   (RFC 9449 §4.3) signed by that key with `ath` over the token, so a stolen subject token is
+#   useless without the key, and it receives a token bound to the same key, reported as
+#   `token_type: DPoP`. A public client without that setting holds bearer tokens: no proof is
+#   read, and it receives a bearer token.
 #
 # The checks run in a fixed order, each stopping at the first failure, so nothing about the
 # registry or the person's approvals is revealed to a caller that has not authenticated, and each
@@ -251,15 +254,16 @@ class OpenidConnectTokenExchangeForm
 
   # The subject token must be the access token Login.gov issued to *this* service provider for a
   # connection the person has not revoked. Tokens issued by exchange are not `identities` rows and
-  # so can never be found here, which is what rules out chained delegation. For a public client
-  # the token must also be bound to a key, which its authorization request guaranteed.
+  # so can never be found here, which is what rules out chained delegation. A client registered
+  # with `dpop_required` holds only bound tokens, so an unbound one it presents (issued before the
+  # setting) is refused and a new sign-in replaces it.
   def validate_subject_token
     return if errors.any?
 
     @identity = ServiceProviderIdentity.not_deleted.find_by(access_token: subject_token)
     return unless identity.nil? || identity.user.nil? ||
                   identity.service_provider != service_provider.issuer ||
-                  (public_client? && identity.dpop_jkt.blank?)
+                  (service_provider.dpop_bound? && identity.dpop_jkt.blank?)
 
     @identity = nil
     fail_with(
@@ -268,12 +272,13 @@ class OpenidConnectTokenExchangeForm
     )
   end
 
-  # A public client is authenticated by possession of the key its subject token is bound to:
-  # the proof must be for POST to this endpoint, signed by that key (thumbprint equal to the
-  # token's binding) and carry `ath` over the subject token (RFC 9449 §4.3, §7.1). Every failure
-  # is `invalid_dpop_proof` (§5).
+  # A bound subject token is honored only with proof of possession of its key: the proof must be
+  # for POST to this endpoint, signed by that key (thumbprint equal to the token's binding) and
+  # carry `ath` over the subject token (RFC 9449 §4.3, §7.1). Every failure is
+  # `invalid_dpop_proof` (§5). An unbound subject token, which only a client without
+  # `dpop_required` can present, needs no proof and none is read.
   def validate_public_client_proof
-    return if errors.any? || !public_client?
+    return if errors.any? || identity.dpop_jkt.blank?
 
     result = DpopProofVerifier.new(
       proof: dpop_proof,
@@ -433,7 +438,7 @@ class OpenidConnectTokenExchangeForm
     now = Time.zone.now
     lifetime = access_token_lifetime
     @access_token = TokenExchangeToken.generate_token
-    dpop_jkt = identity.dpop_jkt if public_client?
+    dpop_jkt = identity.dpop_jkt
 
     TokenExchangeToken.transaction do
       @issued = TokenExchangeToken.create!(
@@ -446,7 +451,9 @@ class OpenidConnectTokenExchangeForm
         ial: identity.ial,
         aal: forwarded_aal,
         refresh_family_id: SecureRandom.uuid,
-        token_type: public_client? ? 'DPoP' : 'Bearer',
+        # RFC 9449 §5: a token bound to a key is presented under the DPoP scheme, never as a
+        # bearer token; an unbound one is a bearer token whoever holds it.
+        token_type: dpop_jkt.present? ? 'DPoP' : 'Bearer',
         token_format: resource_server.token_format,
         dpop_jkt:,
         sp_rails_session_id: identity.rails_session_id,
