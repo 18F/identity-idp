@@ -50,6 +50,7 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
         target_issuer: 'target-issuer',
         resource: 'https://api.example.gov/passport',
         scope: 'openid token_exchange:passport',
+        expires_at: loaded_access_token.issued_at + 600,
       )
     end
 
