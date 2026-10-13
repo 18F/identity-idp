@@ -107,6 +107,7 @@ class ServiceProviderUpdater
             ),
           ),
       )
+      rs.warn_if_unbillable
       seen << rs.id
     end
     # rubocop:disable Rails/SkipsModelValidations

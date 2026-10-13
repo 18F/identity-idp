@@ -142,6 +142,15 @@ module Reports
           'issuer_ial2_unique_users',
           'issuer_unique_users',
           'issuer_auth_billable',
+
+          # Delegated access. Each is a subset of a count to its left, never an addition: of the
+          # agreement's billed IAL2 users, those who arrived only by delegated token exchange this
+          # month; of the partner's IAL2 user events, those that were delegated-only, and those
+          # where the person verified identity during the delegating service provider's sign-in
+          # (the agency is billed for that verification; the service provider is not).
+          'iaa_ial2_delegated_only_unique_users',
+          'partner_ial2_unique_user_events_delegated_only',
+          'partner_ial2_unique_user_events_delegated_proofing',
         ]
         by_issuer_iaa_issuer_year_months.each do |iaa_key, issuer_year_months|
           issuer_year_months.each do |issuer, year_months_data|
@@ -235,6 +244,10 @@ module Reports
                 extract(issuer_results, :unique_users, ial: :all),
                 (extract(issuer_results, :unique_users, ial: :all) -
                 extract(issuer_results, :unique_users, ial: 2)),
+
+                extract(iaa_results, :delegated_only_unique_users, ial: 2),
+                partner_results[:partner_ial2_unique_user_events_delegated_only] || 0,
+                partner_results[:partner_ial2_unique_user_events_delegated_proofing] || 0,
               ]
             end
           end

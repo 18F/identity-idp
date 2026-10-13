@@ -167,6 +167,7 @@ class ServiceProviderSeeder
               lookup_service_provider(rs_config['attempts_service_provider']),
           ),
       )
+      resource_server.warn_if_unbillable
     end
   end
 
