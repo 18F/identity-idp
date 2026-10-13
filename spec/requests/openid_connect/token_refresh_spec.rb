@@ -67,6 +67,21 @@ RSpec.describe 'OpenID Connect delegated token refresh' do
   # Everything that does not depend on how the client authenticates.
   shared_examples 'a token refresh' do |token_type:|
     describe 'a successful refresh' do
+      it 'tells the agency about the renewal once the token is live' do
+        expect(DelegatedAccessEvents).to receive(:token_refreshed) do |issued, expires_at:|
+          expect(issued).to eq(previous_issuance)
+          expect(expires_at).to be_within(1.second).of(15.minutes.from_now)
+          # The family's index already lists the renewed token: the live entry was written first.
+          live_in_family = REDIS_POOL.with do |client|
+            client.scard(DelegatedTokenStore::FAMILY_INDEX_PREFIX + issued.refresh_family_id)
+          end
+          expect(live_in_family).to eq(2)
+        end
+
+        refresh
+        expect(response).to have_http_status(:ok)
+      end
+
       it 'rotates the refresh token and mints the next access token of the family' do
         freeze_time do
           expect { refresh }.to change { TokenExchangeRefreshToken.count }.by(1)
@@ -400,6 +415,9 @@ RSpec.describe 'OpenID Connect delegated token refresh' do
 
         it 'ends the whole family and answers invalid_grant' do
           stub_request_analytics
+          expect(DelegatedAccessEvents).to receive(:access_revoked).with(
+            grant:, reason: 'refresh_token_reuse', resource_server:,
+          ).and_call_original
 
           freeze_time do
             expect { refresh }.not_to(change { TokenExchangeToken.count })

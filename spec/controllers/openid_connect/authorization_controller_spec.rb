@@ -1307,6 +1307,159 @@ RSpec.describe OpenidConnect::AuthorizationController do
       end
     end
 
+    context 'delegation scopes requested' do
+      let(:client_id) { 'urn:gov:gsa:openidconnect:sp:mybenefits' }
+      let!(:service_provider) do
+        create(
+          :service_provider, :delegation_service_provider, issuer: client_id,
+                                                           redirect_uris: [params[:redirect_uri]]
+        )
+      end
+      let!(:application) do
+        create(:service_provider, :delegation_application, delegation_scope_value: 'housing_records')
+      end
+      let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
+      let(:user) { create(:profile, :active, :verified).user }
+      let(:params) { super().merge(scope: 'openid email token_exchange:housing_records') }
+      let(:allowed_attempts_providers) { [{ 'issuer' => application.issuer, 'keys' => [] }] }
+      let(:delivery_enabled) { true }
+
+      before do
+        stub_sign_in user
+        allow(IdentityConfig.store).to receive_messages(
+          token_exchange_enabled: true,
+          token_exchange_attempts_delivery_enabled: delivery_enabled,
+          attempts_api_enabled: true,
+          allowed_attempts_providers:,
+        )
+      end
+
+      it 'starts a delegation context naming the enrolled recipients as candidates' do
+        action
+
+        context = AttemptsApi::DelegationContext.from_session(session)
+        expect(context.active?).to eq(true)
+        expect(context.candidate_issuers).to eq([application.issuer])
+        expect(context.sp_issuer).to eq(client_id)
+        expect(context.request_id).to eq(session[:sp][:request_id])
+        expect(context.approved).to eq({})
+      end
+
+      context 'when no recipient is enrolled in the Attempts API' do
+        let(:allowed_attempts_providers) { [] }
+
+        it 'starts a context with no candidates, so nothing is captured' do
+          action
+
+          context = AttemptsApi::DelegationContext.from_session(session)
+          expect(context.present?).to eq(true)
+          expect(context.active?).to eq(false)
+        end
+      end
+
+      context 'when delivery to agencies is switched off' do
+        let(:delivery_enabled) { false }
+
+        it 'does not start a delegation context' do
+          action
+          expect(AttemptsApi::DelegationContext.from_session(session).present?).to eq(false)
+        end
+      end
+
+      context 'without delegation scopes' do
+        let(:params) { super().merge(scope: 'openid email') }
+
+        it 'does not start a delegation context' do
+          action
+          expect(AttemptsApi::DelegationContext.from_session(session).present?).to eq(false)
+        end
+      end
+
+      context 'when a remembered approval covers the request' do
+        let!(:grant) do
+          TokenExchangeGrant.approve!(
+            user:, service_provider:, application:, source: 'account_page', remember: true,
+            now: 2.days.ago
+          )
+        end
+        let(:redis_client) { AttemptsApi::RedisClient.new }
+
+        before do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+          user.identities.last.update!(
+            verified_attributes: %w[email], last_consented_at: Time.zone.now,
+          )
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('server_side')
+          allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+        end
+
+        def agency_events
+          redis_client.read_events(issuer: application.issuer).values.map do |jwe|
+            AttemptsApi::AttemptEvent.from_jwe(jwe, saml_test_sp_private_key)
+          end
+        end
+
+        it 'releases to the agency at handoff as remembered and delivers login-completed' do
+          action
+          expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+
+          events = agency_events
+          expect(events.map(&:event_type)).to match_array(
+            ['delegated-access-consented', 'login-completed'],
+          )
+          consented = events.find { |e| e.event_type == 'delegated-access-consented' }
+          expect(consented.event_metadata).to include(
+            remembered: true,
+            source: 'account_page',
+            consented_at: grant.consented_at.to_f,
+            delegation_id: grant.delegation_id,
+            actor_issuer: client_id,
+          )
+          completed = events.find { |e| e.event_type == 'login-completed' }
+          expect(completed.event_metadata).to include(
+            delegation_id: grant.delegation_id,
+            actor_issuer: client_id,
+            user_uuid: AgencyIdentity.find_by(user:, agency: application.agency).uuid,
+          )
+          expect(completed.event_metadata).not_to have_key(:google_analytics_cookies)
+          expect(AttemptsApi::DelegationContext.from_session(session).approved_issuers)
+            .to eq([application.issuer])
+        end
+
+        it 'releases again on the next sign-in that reuses the approval' do
+          action
+          AttemptsApi::RedisClient.new.delete_events(
+            issuer: application.issuer, keys: redis_client.read_events(issuer: application.issuer).keys,
+          )
+
+          # A later authorization from the service provider: a new request in a new session.
+          session.delete(:sp)
+          session.delete(AttemptsApi::DelegationContext::SESSION_KEY)
+          get :index, params: params.merge(state: SecureRandom.hex, nonce: SecureRandom.hex)
+
+          consented = agency_events.select { |e| e.event_type == 'delegated-access-consented' }
+          expect(consented.map { |e| e.event_metadata[:remembered] }).to eq([true])
+        end
+
+        it 'does not release again when this request was already released at consent' do
+          # The consent screen already approved the agency and released for this request.
+          agency_uuid = AgencyIdentityLinker.for(
+            user:, service_provider: application, skip_create: false,
+          ).uuid
+          seeded = AttemptsApi::DelegationContext.from_session(session)
+          seeded.start(request_id: 'seed', sp_issuer: client_id, candidate_issuers: [application.issuer])
+          seeded.approve(issuer: application.issuer, delegation_id: grant.delegation_id, agency_uuid:)
+          allow_any_instance_of(AttemptsApi::DelegationContext).to receive(:released_for?)
+            .and_return(true)
+
+          action
+
+          expect(agency_events.map(&:event_type)).to eq(['login-completed'])
+        end
+      end
+    end
+
     context 'user is suspended' do
       let(:user) { create(:user, :fully_registered, :suspended) }
       let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }

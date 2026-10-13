@@ -1,0 +1,16 @@
+description: |
+  Access under an approval ended, so delegated tokens for the application stop working at their next verification or renewal. Delivered to the application's agency. Carries no IP address or user agent: the revocation came from the user's account page, from Login.gov, or from the service provider's server.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      application:
+        type: string
+        description: The issuer of the application whose approval ended.
+      resource:
+        type: string
+        nullable: true
+        description: The identifier of the one API whose access ended, when only one did (a renewal credential replayed, `refresh_token_reuse`); null when the whole approval ended.
+      reason:
+        type: string
+        description: Why access ended; `user_revoked` (the user, from the account page), `sp_disconnected` (the user disconnected the service provider), `refresh_token_reuse` (a retired renewal credential was presented again, a possible theft), `account_suspended`, `account_deleted` or `client_revoked` (the service provider gave the token up).

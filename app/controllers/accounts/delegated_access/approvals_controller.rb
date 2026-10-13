@@ -24,6 +24,11 @@ module Accounts
         grants = AccountDelegationApproval.new(
           user: current_user, service_provider: @service_provider, applications: @applications,
         ).call
+        # The approved applications' agencies learn of the approval the way they do from the
+        # consent screen.
+        AttemptsApi::DelegatedRelease.new(
+          user: current_user, session:, user_session:, analytics:, grants:,
+        ).call
         notify_delegation_approved(service_provider: @service_provider, applications: @applications)
         analytics.delegation_account_approved(
           service_provider_issuer: @service_provider.issuer,
