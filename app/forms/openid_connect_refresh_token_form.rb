@@ -7,9 +7,13 @@
 # started the delegation has ended, until the family's absolute end.
 #
 # The caller is identified by its client type (DelegatedAccessClientHandling): a confidential
-# service provider by its client assertion, a public one by `client_id` and a DPoP proof
-# (RFC 9449 §4.3) signed by the key the family is bound to. The proof carries no `ath`: a refresh
-# token is not an access token (§4.3 item 12 applies to access tokens only).
+# service provider by its client assertion, a public one by `client_id`, with a DPoP proof
+# (RFC 9449 §4.3) signed by the key the family is bound to whenever the family is bound. A public
+# client registered with `dpop_required` holds only bound families, so its proof is verified
+# before the token is looked up; one without the setting holds bearer families and sends none,
+# unless the family it presents is bound (opened while the setting was on), in which case the
+# proof is demanded all the same. The proof carries no `ath`: a refresh token is not an access
+# token (§4.3 item 12 applies to access tokens only).
 #
 # Rotation is what makes a long-lived refresh token safe to hold: every refresh token can be used
 # exactly once. Presenting one that was already used means either the service provider replayed
@@ -26,7 +30,7 @@
 # * `invalid_grant`       - the refresh token is unknown, another client's, spent, revoked, or its
 #                           family has ended or its approval no longer stands
 # * `invalid_scope`       - `scope` was given and is not exactly the family's scope
-# * `invalid_dpop_proof`  - a public client's proof is missing or fails verification
+# * `invalid_dpop_proof`  - the proof a bound family needs is missing or fails verification
 class OpenidConnectRefreshTokenForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
@@ -121,20 +125,30 @@ class OpenidConnectRefreshTokenForm
     )
   end
 
-  # A public client's proof is for POST to this endpoint with no `ath`, since no access token is
-  # presented (RFC 9449 §4.3, §5). It is verified before the refresh token is looked up, so a
-  # caller without a valid proof learns nothing about the token; which key it must be signed by
-  # is known only once the family is found (#validate_refresh_token). Every failure is
-  # `invalid_dpop_proof`, and nothing about the family changes.
+  # A client registered with `dpop_required` holds only bound families, so its proof is verified
+  # before the refresh token is looked up and a caller without a valid proof learns nothing about
+  # the token; which key it must be signed by is known only once the family is found
+  # (#validate_refresh_token). No other client's proof is read here.
   def validate_public_client_proof
-    return if errors.any? || !public_client?
+    return if errors.any? || !service_provider.dpop_bound?
 
+    verify_proof
+  end
+
+  # A public client's proof is for POST to this endpoint with no `ath`, since no access token is
+  # presented (RFC 9449 §4.3, §5), and signed by the expected key when one is already known.
+  # Every failure is `invalid_dpop_proof`, and nothing about the family changes.
+  # @return [Boolean] whether the proof verified
+  def verify_proof(expected_thumbprint: nil)
     result = DpopProofVerifier.new(
-      proof: dpop_proof, http_method: 'POST', http_url: api_openid_connect_token_url,
+      proof: dpop_proof,
+      http_method: 'POST',
+      http_url: api_openid_connect_token_url,
+      expected_thumbprint:,
     ).call
     if result.success?
       @proof_thumbprint = result.thumbprint
-      return
+      return true
     end
 
     fail_with(:dpop_proof, 'invalid_dpop_proof', result.error_message, type: result.error_type)
@@ -142,9 +156,12 @@ class OpenidConnectRefreshTokenForm
 
   # The token must exist and belong to this client before anything else about it is decided, so
   # a client holding another client's token gets the same answer as for a random string and
-  # cannot end the other client's family. A public client must also have signed its proof with
-  # the key the family is bound to. `scope`, when given, must be exactly the family's: a refresh
-  # can neither widen nor narrow what the exchange issued.
+  # cannot end the other client's family. A bound family is refreshed only with a proof from the
+  # key it is bound to: the proof already verified must be from that key, and a client that sent
+  # none up front (it is not registered with `dpop_required`; the family was opened while it was)
+  # is asked for one now, since a bound token is never honored without its key. `scope`, when
+  # given, must be exactly the family's: a refresh can neither widen nor narrow what the exchange
+  # issued.
   def validate_refresh_token
     return if errors.any?
 
@@ -156,7 +173,9 @@ class OpenidConnectRefreshTokenForm
         type: :invalid_refresh_token
       )
     end
-    if public_client? && presented.dpop_jkt != proof_thumbprint
+    if presented.dpop_jkt.present? && proof_thumbprint.nil?
+      return unless verify_proof(expected_thumbprint: presented.dpop_jkt)
+    elsif proof_thumbprint.present? && presented.dpop_jkt != proof_thumbprint
       return fail_with(
         :dpop_proof, 'invalid_dpop_proof', t('openid_connect.token.errors.dpop_key_mismatch'),
         type: :dpop_key_mismatch

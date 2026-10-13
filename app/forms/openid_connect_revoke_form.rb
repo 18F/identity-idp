@@ -5,9 +5,12 @@
 #
 # The caller is identified by its client type (DelegatedAccessClientHandling): a confidential
 # service provider by its client assertion with `aud` naming this endpoint, a public one by
-# `client_id` and a DPoP proof (RFC 9449 §4.3) for this endpoint carrying `ath` over the presented
-# token. A public client has no secret, so the proof is what ties the request to the token: a
-# party that holds a copy of a token but not the key it is bound to cannot end it.
+# `client_id` and, when its tokens are bound to a key, a DPoP proof (RFC 9449 §4.3) for this
+# endpoint carrying `ath` over the presented token. A public client has no secret, so for a bound
+# token the proof is what ties the request to the token: a party that holds a copy of a token but
+# not the key it is bound to cannot end it. A public client registered with `dpop_required` holds
+# only bound tokens and its proof is required with every request; one without the setting holds
+# bearer tokens, which it ends by naming itself alone.
 #
 # What is acted on depends on what was presented:
 #
@@ -27,7 +30,8 @@
 #
 # Errors (RFC 7009 §2.2.1, RFC 6749 §5.2, RFC 9449 §5): `invalid_client` for a caller that does
 # not authenticate or is not approved for delegation, `invalid_request` for a missing `token`,
-# `invalid_dpop_proof` for a public client's proof that is missing or fails verification.
+# `invalid_dpop_proof` for a proof that is missing or fails verification from a public client
+# registered with `dpop_required`.
 class OpenidConnectRevokeForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
@@ -87,25 +91,32 @@ class OpenidConnectRevokeForm
     )
   end
 
-  # A public client's proof is for POST to this endpoint and carries `ath` over the presented
-  # token (RFC 9449 §4.3). Which key it must be signed by is not known until the token is looked
-  # up, so the proof is verified on its own terms here and its key is compared with the token's
-  # binding in #revoke!; a token bound to another key is simply not acted on.
+  # A public client registered with `dpop_required` holds only bound tokens, so its proof is part
+  # of every request: for POST to this endpoint, carrying `ath` over the presented token
+  # (RFC 9449 §4.3). Which key it must be signed by is not known until the token is looked up, so
+  # the proof is verified on its own terms here and its key is compared with the token's binding
+  # in #revoke!; a token bound to another key is simply not acted on. No other client's proof is
+  # read here.
   def validate_public_client_proof
-    return if errors.any? || !public_client?
+    return if errors.any? || !service_provider.dpop_bound?
 
-    result = DpopProofVerifier.new(
-      proof: dpop_proof,
-      http_method: 'POST',
-      http_url: api_openid_connect_revoke_url,
-      access_token: token,
-    ).call
+    result = verify_proof
     if result.success?
       @proof_thumbprint = result.thumbprint
       return
     end
 
     fail_with(:dpop_proof, 'invalid_dpop_proof', result.error_message, type: result.error_type)
+  end
+
+  # @return [DpopProofVerifier::Result]
+  def verify_proof
+    DpopProofVerifier.new(
+      proof: dpop_proof,
+      http_method: 'POST',
+      http_url: api_openid_connect_revoke_url,
+      access_token: token,
+    ).call
   end
 
   # Tries the lookups in the order the hint suggests and acts on the first that finds this
@@ -147,12 +158,28 @@ class OpenidConnectRevokeForm
     ACCESS_TOKEN_HINT
   end
 
-  # The token is this client's and, for a public client, bound to the key that signed the proof.
+  # The token is this client's and, when it is bound to a key, the proof was signed by that key.
+  # A client registered with `dpop_required` proved its key with the request and may act only on
+  # a token bound to it. A client without the setting holds bearer tokens and names itself alone;
+  # a bound token it presents (issued while the setting was on) is acted on only if it sent a
+  # proof from that key after all, and is otherwise left as it is: a bound token is never honored
+  # without its key, and this endpoint does not say why a token was not acted on.
   def owned?(owner_service_provider_id, bound_thumbprint)
     return false unless owner_service_provider_id == service_provider.id
-    return true unless public_client?
+    if service_provider.dpop_bound?
+      return bound_thumbprint.present? && bound_thumbprint == proof_thumbprint
+    end
+    return true if bound_thumbprint.blank?
 
-    bound_thumbprint.present? && bound_thumbprint == proof_thumbprint
+    bound_thumbprint == late_proof_thumbprint
+  end
+
+  # The key of a proof a client without `dpop_required` sent with a bound token, verified on its
+  # own terms when first needed; nil when none was sent or it does not verify.
+  def late_proof_thumbprint
+    return @late_proof_thumbprint if defined?(@late_proof_thumbprint)
+
+    @late_proof_thumbprint = (verify_proof.thumbprint if public_client? && dpop_proof.present?)
   end
 
   def extra_analytics_attributes

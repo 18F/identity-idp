@@ -586,13 +586,13 @@ RSpec.describe 'OpenID Connect delegated token refresh' do
     end
   end
 
-  context 'as a public client' do
+  context 'as a public client registered with dpop_required' do
     let(:service_provider) do
       create(
         :service_provider, :delegation_service_provider,
         issuer: 'urn:gov:gsa:openidconnect:sp:mybenefits',
         friendly_name: 'MyBenefits Assistant',
-        pkce: true, certs: []
+        pkce: true, certs: [], dpop_required: true
       )
     end
     let(:client_type) { 'public' }
@@ -703,6 +703,75 @@ RSpec.describe 'OpenID Connect delegated token refresh' do
         params[:refresh_token] = 'not-a-token'
         refresh
         expect(json[:error]).to eq('invalid_dpop_proof')
+      end
+    end
+  end
+
+  context 'as a public client approved for delegation without dpop_required' do
+    let(:service_provider) do
+      create(
+        :service_provider, :delegation_service_provider,
+        issuer: 'urn:gov:gsa:openidconnect:sp:mybenefits',
+        friendly_name: 'MyBenefits Assistant',
+        pkce: true, certs: [], dpop_required: false
+      )
+    end
+    let(:client_type) { 'public' }
+    # Its families are bearer families: the exchange that opened them read no proof.
+    let(:token_type) { 'Bearer' }
+    let(:family_jkt) { nil }
+    let(:credentials) { { client_id: service_provider.issuer } }
+
+    # Nothing to renew: the client names itself the same way on every request.
+    def renew_credentials; end
+
+    include_examples 'a token refresh', token_type: 'Bearer'
+
+    it 'refreshes a bearer family on client_id alone, reading no proof' do
+      refresh
+      expect(response).to have_http_status(:ok)
+      expect(json[:token_type]).to eq('Bearer')
+      expect(TokenExchangeRefreshToken.lookup(json[:refresh_token]).dpop_jkt).to be_nil
+      expect(DelegatedTokenStore.read(json[:access_token])[:dpop_jkt]).to be_nil
+    end
+
+    it 'ignores a proof sent with a bearer family' do
+      headers['DPoP'] = build_dpop_proof(url: api_openid_connect_token_url)
+      refresh
+      expect(response).to have_http_status(:ok)
+      expect(json[:token_type]).to eq('Bearer')
+    end
+
+    context 'presenting a family that is bound to a key' do
+      let(:token_type) { 'DPoP' }
+      let(:family_jkt) { dpop_thumbprint }
+
+      it 'still requires a proof from that key: a bound token is never honored without it' do
+        expect { refresh }.not_to(change { TokenExchangeRefreshToken.count })
+        expect(response).to have_http_status(:bad_request)
+        expect(json[:error]).to eq('invalid_dpop_proof')
+        expect(json[:error_description])
+          .to eq(t('openid_connect.token.errors.dpop_proof_required'))
+        expect(presented.reload.rotated_at).to be_nil
+      end
+
+      it 'refuses a proof from another key' do
+        headers['DPoP'] = build_dpop_proof(
+          url: api_openid_connect_token_url, key: OpenSSL::PKey::EC.generate('prime256v1'),
+        )
+        refresh
+        expect(json[:error]).to eq('invalid_dpop_proof')
+        expect(json[:error_description]).to eq(t('openid_connect.token.errors.dpop_key_mismatch'))
+        expect(presented.reload.rotated_at).to be_nil
+      end
+
+      it 'refreshes the bound family with a proof from its key, keeping the binding' do
+        headers['DPoP'] = build_dpop_proof(url: api_openid_connect_token_url)
+        refresh
+        expect(response).to have_http_status(:ok)
+        expect(json[:token_type]).to eq('DPoP')
+        expect(TokenExchangeRefreshToken.lookup(json[:refresh_token]).dpop_jkt)
+          .to eq(dpop_thumbprint)
       end
     end
   end

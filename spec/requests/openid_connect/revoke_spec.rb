@@ -406,13 +406,13 @@ RSpec.describe 'OpenID Connect delegated token revocation' do
     end
   end
 
-  context 'as a public client' do
+  context 'as a public client registered with dpop_required' do
     let(:service_provider) do
       create(
         :service_provider, :delegation_service_provider,
         issuer: 'urn:gov:gsa:openidconnect:sp:mybenefits',
         friendly_name: 'MyBenefits Assistant',
-        pkce: true, certs: []
+        pkce: true, certs: [], dpop_required: true
       )
     end
     let(:client_type) { 'public' }
@@ -537,6 +537,77 @@ RSpec.describe 'OpenID Connect delegated token revocation' do
           revoke
           expect(response).to have_http_status(:unauthorized)
           expect(json[:error]).to eq('invalid_client')
+        end
+      end
+    end
+  end
+  context 'as a public client approved for delegation without dpop_required' do
+    let(:service_provider) do
+      create(
+        :service_provider, :delegation_service_provider,
+        issuer: 'urn:gov:gsa:openidconnect:sp:mybenefits',
+        friendly_name: 'MyBenefits Assistant',
+        pkce: true, certs: [], dpop_required: false
+      )
+    end
+    let(:client_type) { 'public' }
+    # Its tokens are bearer tokens: the exchange that issued them read no proof.
+    let(:token_type) { 'Bearer' }
+    let(:family_jkt) { nil }
+    let(:credentials) { { client_id: service_provider.issuer } }
+
+    include_examples 'a revocation endpoint'
+
+    it 'ends a bearer family on client_id alone, reading no proof' do
+      revoke
+      expect(response).to have_http_status(:ok)
+      expect(json).to eq({})
+      expect(family_rows.pluck(:revocation_reason).uniq).to eq(['client_revoked'])
+      expect(DelegatedTokenStore.read(access_token)).to be_nil
+    end
+
+    context 'presenting a token that is bound to a key' do
+      let(:token_type) { 'DPoP' }
+      let(:family_jkt) { dpop_thumbprint }
+
+      it 'leaves it as it is without a proof from that key, saying nothing' do
+        revoke
+        expect(response).to have_http_status(:ok)
+        expect(json).to eq({})
+        expect(refresh_row.reload.revoked_at).to be_nil
+        expect(DelegatedTokenStore.read(access_token)).to be_present
+      end
+
+      it 'leaves it as it is with a proof from another key' do
+        headers['DPoP'] = build_dpop_proof(
+          url: api_openid_connect_revoke_url, access_token: token,
+          key: OpenSSL::PKey::EC.generate('prime256v1')
+        )
+        revoke
+        expect(response).to have_http_status(:ok)
+        expect(refresh_row.reload.revoked_at).to be_nil
+      end
+
+      it 'ends the family with a proof from its key' do
+        headers['DPoP'] = build_dpop_proof(url: api_openid_connect_revoke_url, access_token: token)
+        revoke
+        expect(response).to have_http_status(:ok)
+        expect(json).to eq({})
+        expect(refresh_row.reload.revocation_reason).to eq('client_revoked')
+        expect(DelegatedTokenStore.read(access_token)).to be_nil
+      end
+
+      context 'presenting the bound access token' do
+        let(:token) { access_token }
+
+        it 'ends that token alone with a proof from its key' do
+          headers['DPoP'] = build_dpop_proof(
+            url: api_openid_connect_revoke_url, access_token: token,
+          )
+          revoke
+          expect(response).to have_http_status(:ok)
+          expect(DelegatedTokenStore.read(access_token)).to be_nil
+          expect(DelegatedTokenStore.read(sibling_access_token)).to be_present
         end
       end
     end

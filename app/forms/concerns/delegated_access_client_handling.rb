@@ -6,9 +6,11 @@
 # * A confidential service provider authenticates with a `private_key_jwt` client assertion
 #   (RFC 7523) signed with a key on its record, with `aud` naming the endpoint being called.
 # * A public service provider (PKCE, no secret; its tokens live in the person's browser) only
-#   names itself here, by `client_id`, and is authenticated by the DPoP proof (RFC 9449) it
-#   presents with its token, which the including form verifies against the key that token is
-#   bound to.
+#   names itself here, by `client_id`. One registered with `dpop_required` is authenticated by the
+#   DPoP proof (RFC 9449) it presents with its token, which the including form verifies against
+#   the key that token is bound to. One without the setting holds bearer tokens and `client_id`
+#   is all it sends; a bound token it presents all the same is honored only with a proof from
+#   its key, which the including form demands once it has found the token.
 #
 # The two credentials are not interchangeable: the record says which kind of client this is, and
 # the other kind's credential is refused. Approval for delegated access is a property of the
