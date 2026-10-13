@@ -10,6 +10,7 @@ module TokenExchange
     :resource,
     :scope,
     :issued_at,
+    :expires_at,
     keyword_init: true,
   ) do
     def self.redis_key_prefix

@@ -23,6 +23,7 @@ module TokenExchange
     def issue
       token = SecureRandom.urlsafe_base64(32)
       expires_in = IdentityConfig.store.token_exchange_access_token_expires_in
+      issued_at = Time.zone.now.to_i
       access_token = AccessToken.new(
         id: AccessToken.digest(token),
         user_id: subject_token.user_id,
@@ -31,7 +32,8 @@ module TokenExchange
         target_issuer:,
         resource:,
         scope:,
-        issued_at: Time.zone.now.to_i,
+        issued_at:,
+        expires_at: issued_at + expires_in,
       )
 
       EncryptedRedisStructStorage.store(access_token, expires_in:)
