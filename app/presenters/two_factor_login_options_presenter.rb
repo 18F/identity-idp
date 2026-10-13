@@ -8,7 +8,8 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
               :reauthentication_context,
               :phishing_resistant_required,
               :piv_cac_required,
-              :add_piv_cac_after_2fa
+              :add_piv_cac_after_2fa,
+              :account_recovery_v2_enabled
 
   alias_method :reauthentication_context?, :reauthentication_context
   alias_method :phishing_resistant_required?, :phishing_resistant_required
@@ -22,7 +23,8 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     service_provider:,
     phishing_resistant_required:,
     piv_cac_required:,
-    add_piv_cac_after_2fa:
+    add_piv_cac_after_2fa:,
+    account_recovery_v2_enabled:
   )
     @user = user
     @view = view
@@ -31,6 +33,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     @phishing_resistant_required = phishing_resistant_required
     @piv_cac_required = piv_cac_required
     @add_piv_cac_after_2fa = add_piv_cac_after_2fa
+    @account_recovery_v2_enabled = account_recovery_v2_enabled
   end
 
   def title
@@ -90,6 +93,42 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   def account_reset_or_cancel_link
     account_reset_token_valid? ? account_reset_cancel_link : account_reset_link
+  end
+
+  # True when the user may use account-preserving MFA recovery instead of the
+  # legacy destructive account reset. See
+  # docs/adr/0001-account-preserving-mfa-recovery.md.
+  def account_recovery_eligible?
+    return @account_recovery_eligible if defined?(@account_recovery_eligible)
+
+    @account_recovery_eligible = AccountRecovery::EligibilityPolicy.new(
+      user: user,
+      account_recovery_v2_enabled: account_recovery_v2_enabled,
+    ).eligible?
+  end
+
+  # Link offering account-preserving recovery, shown above the legacy deletion
+  # option for eligible users.
+  def account_recovery_link
+    t(
+      'two_factor_authentication.account_recovery.recover_text_html',
+      link_html: @view.link_to(
+        t('two_factor_authentication.account_recovery.recover_link'),
+        account_recovery_start_path(locale: LinkLocaleResolver.locale),
+      ),
+    )
+  end
+
+  # Legacy destructive account reset, phrased as the fallback when recovery is
+  # also offered.
+  def account_recovery_delete_link
+    t(
+      'two_factor_authentication.account_recovery.delete_text_html',
+      link_html: @view.link_to(
+        t('two_factor_authentication.account_recovery.delete_link'),
+        account_reset_url(locale: LinkLocaleResolver.locale),
+      ),
+    )
   end
 
   def cancel_link

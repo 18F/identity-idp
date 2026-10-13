@@ -48,8 +48,18 @@
   <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
 <% end %>
 
-<p>
-  <%= @presenter.account_reset_or_cancel_link %>
-</p>
+<% if @presenter.account_recovery_eligible? %>
+  <p>
+    <%= @presenter.account_recovery_link %>
+  </p>
+
+  <p>
+    <%= @presenter.account_recovery_delete_link %>
+  </p>
+<% else %>
+  <p>
+    <%= @presenter.account_reset_or_cancel_link %>
+  </p>
+<% end %>
 
 <%= render 'shared/cancel', link: @presenter.cancel_link %>

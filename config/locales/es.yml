@@ -1,4 +1,15 @@
 ---
+account_recovery.pending.check_email: Le enviaremos un enlace por correo electrónico para recuperar su cuenta cuando termine el período de espera. El enlace solo funcionará una vez.
+account_recovery.pending.header: Recibimos su solicitud de recuperación de cuenta
+account_recovery.pending.methods_still_work: Sus métodos de autenticación actuales seguirán funcionando mientras su solicitud de recuperación esté pendiente.
+account_recovery.pending.leaving_does_not_cancel: Puede salir de esta página y volver más tarde. Salir de esta página no cancelará su solicitud de recuperación.
+account_recovery.pending.return_home: Volver a la página de inicio
+account_recovery.pending.wait: Se necesitan %{interval} desde el momento en que realizó la solicitud para poder continuar.
+account_recovery.start.continue: Solicitar la recuperación de la cuenta
+account_recovery.start.header: Recupere su cuenta
+account_recovery.start.intro: Si no puede usar ninguno de sus métodos de autenticación, puede recuperar su cuenta y configurar otros nuevos. Conservará su cuenta de %{app_name} y todo lo que haya compartido con las agencias gubernamentales.
+account_recovery.start.keep_account: Necesitará su contraseña de nuevo para terminar de recuperar su cuenta, así que no solicite la recuperación si también olvidó su contraseña.
+account_recovery.start.wait_period: Por su seguridad, esperamos %{interval} antes de enviarle un enlace de recuperación por correo electrónico.
 account_reset.cancel_request.are_you_sure: '¿Está seguro de que desea cancelar su solicitud de eliminación de cuenta?'
 account_reset.cancel_request.cancel: Salir
 account_reset.cancel_request.cancel_button: Cancelar la cuenta eliminada
@@ -1972,6 +1983,10 @@ titles.visitors.index: Bienvenido
 titles.webauthn_setup: Añada su clave de seguridad
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> requiere un método de autenticación de alta seguridad, como desbloqueo facial o táctil, una clave de seguridad o una identificación de empleado de gobierno.'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> requiere su identificación de empleado de gobierno, un método de autenticación de alta seguridad.'
+two_factor_authentication.account_recovery.delete_link: elimine su cuenta
+two_factor_authentication.account_recovery.delete_text_html: Si no puede recuperar su cuenta, puede %{link_html} y crear una nueva.
+two_factor_authentication.account_recovery.recover_link: recupere su cuenta
+two_factor_authentication.account_recovery.recover_text_html: Si no puede usar ninguno de los métodos de autenticación anteriores para acceder a su cuenta, puede %{link_html} para restablecer sus métodos de autenticación.
 two_factor_authentication.account_reset.cancel_link: Cancelar su solicitud
 two_factor_authentication.account_reset.link: elimine su cuenta
 two_factor_authentication.account_reset.pending: Actualmente tiene una solicitud pendiente para eliminar su cuenta. Se necesitan %{interval} desde el momento en que realizó la solicitud para completar el proceso. Por favor, vuelva más tarde.

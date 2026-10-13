@@ -1,4 +1,15 @@
 ---
+account_recovery.pending.check_email: We will email you a link to recover your account when the waiting period is over. The link will only work once.
+account_recovery.pending.header: We received your account recovery request
+account_recovery.pending.methods_still_work: Your current authentication methods still work while your recovery request is pending.
+account_recovery.pending.leaving_does_not_cancel: You can leave this page and return later. Leaving this page will not cancel your recovery request.
+account_recovery.pending.return_home: Return to the home page
+account_recovery.pending.wait: It takes %{interval} from the time you made the request before you can continue.
+account_recovery.start.continue: Request account recovery
+account_recovery.start.header: Recover your account
+account_recovery.start.intro: If you cannot use any of your authentication methods, you can recover your account and set up new ones. You will keep your %{app_name} account and anything you have shared with government agencies.
+account_recovery.start.keep_account: You will need your password again to finish recovering your account, so do not request recovery if you have also forgotten your password.
+account_recovery.start.wait_period: For your security, we wait %{interval} before emailing you a recovery link.
 account_reset.cancel_request.are_you_sure: Are you sure you want to cancel your delete account request?
 account_reset.cancel_request.cancel: Exit
 account_reset.cancel_request.cancel_button: Cancel delete account
@@ -1960,6 +1971,10 @@ titles.visitors.index: Welcome
 titles.webauthn_setup: Add your security key
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> requires a high-security authentication method, such as face or touch unlock, a security key or a government employee ID.'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> requires your government employee ID, a high-security authentication method.'
+two_factor_authentication.account_recovery.delete_link: delete your account
+two_factor_authentication.account_recovery.delete_text_html: If you can’t recover your account, you can %{link_html} and make a new one.
+two_factor_authentication.account_recovery.recover_link: recover your account
+two_factor_authentication.account_recovery.recover_text_html: If you can’t use any of your authentication methods above to access your account, you can %{link_html} to reset your authentication methods.
 two_factor_authentication.account_reset.cancel_link: Cancel your request
 two_factor_authentication.account_reset.link: delete your account
 two_factor_authentication.account_reset.pending: You currently have a pending request to delete your account. It takes %{interval} from the time you made the request to complete the process. Please check back later.

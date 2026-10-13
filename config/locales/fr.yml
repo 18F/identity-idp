@@ -1,4 +1,15 @@
 ---
+account_recovery.pending.check_email: Nous vous enverrons un lien par e-mail pour récupérer votre compte à la fin du délai d’attente. Le lien ne fonctionnera qu’une seule fois.
+account_recovery.pending.header: Nous avons reçu votre demande de récupération de compte
+account_recovery.pending.methods_still_work: Vos méthodes d’authentification actuelles restent utilisables tant que votre demande de récupération est en attente.
+account_recovery.pending.leaving_does_not_cancel: Vous pouvez quitter cette page et y revenir plus tard. Le fait de quitter cette page n’annulera pas votre demande de récupération.
+account_recovery.pending.return_home: Retourner à la page d’accueil
+account_recovery.pending.wait: Il faut compter %{interval} à partir du moment où vous avez fait la demande avant de pouvoir continuer.
+account_recovery.start.continue: Demander la récupération du compte
+account_recovery.start.header: Récupérez votre compte
+account_recovery.start.intro: Si vous ne pouvez utiliser aucune de vos méthodes d’authentification, vous pouvez récupérer votre compte et en configurer de nouvelles. Vous conserverez votre compte %{app_name} et tout ce que vous avez partagé avec les organismes publics.
+account_recovery.start.keep_account: Vous aurez besoin de votre mot de passe à nouveau pour terminer la récupération de votre compte. Ne demandez donc pas de récupération si vous avez également oublié votre mot de passe.
+account_recovery.start.wait_period: Pour votre sécurité, nous attendons %{interval} avant de vous envoyer un lien de récupération par e-mail.
 account_reset.cancel_request.are_you_sure: Êtes-vous sûr de vouloir annuler votre demande de suppression de compte ?
 account_reset.cancel_request.cancel: Quitter
 account_reset.cancel_request.cancel_button: Annuler la suppression du compte
@@ -1961,6 +1972,10 @@ titles.visitors.index: Bienvenue
 titles.webauthn_setup: Ajouter votre clé de sécurité
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> nécessite une méthode d’authentification de haute sécurité, telle que le déverrouillage facial ou tactile, une clé de sécurité ou une carte d’employé fédéral.'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> nécessite votre carte d’employé fédéral, qui est une méthode d’authentification de haute sécurité.'
+two_factor_authentication.account_recovery.delete_link: supprimer votre compte
+two_factor_authentication.account_recovery.delete_text_html: Si vous ne pouvez pas récupérer votre compte, vous pouvez %{link_html} puis en créer un nouveau.
+two_factor_authentication.account_recovery.recover_link: récupérer votre compte
+two_factor_authentication.account_recovery.recover_text_html: Si vous ne pouvez utiliser aucune de vos méthodes d’authentification ci-dessus pour accéder à votre compte, vous pouvez %{link_html} pour réinitialiser vos méthodes d’authentification.
 two_factor_authentication.account_reset.cancel_link: Annuler votre demande
 two_factor_authentication.account_reset.link: supprimer votre compte
 two_factor_authentication.account_reset.pending: Vous avez actuellement une demande en attente pour supprimer votre compte. Il faut compter %{interval} à partir du moment où vous avez fait la demande pour terminer le processus. Veuillez vérifier plus tard.

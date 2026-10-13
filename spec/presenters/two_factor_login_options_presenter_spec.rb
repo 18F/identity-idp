@@ -14,6 +14,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
   let(:reauthentication_context) { false }
   let(:service_provider) { nil }
   let(:add_piv_cac_after_2fa) { false }
+  let(:account_recovery_bucket) { nil }
 
   subject(:presenter) do
     TwoFactorLoginOptionsPresenter.new(
@@ -24,6 +25,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       phishing_resistant_required:,
       piv_cac_required:,
       add_piv_cac_after_2fa:,
+      account_recovery_bucket:,
     )
   end
 
@@ -92,6 +94,86 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
           account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
         ),
       )
+  end
+
+  describe 'account recovery entry point' do
+    let(:user) { create(:user, :fully_registered) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
+    end
+
+    context 'when the user is in the treatment bucket and eligible' do
+      let(:account_recovery_bucket) { :account_preserving }
+
+      it 'reports the user as eligible' do
+        expect(presenter.account_recovery_eligible?).to eq(true)
+      end
+
+      it 'supplies a recover-your-account link' do
+        expect(presenter.account_recovery_link).to eq \
+          t(
+            'two_factor_authentication.account_recovery.recover_text_html',
+            link_html: view.link_to(
+              t('two_factor_authentication.account_recovery.recover_link'),
+              account_recovery_start_path(locale: LinkLocaleResolver.locale),
+            ),
+          )
+      end
+
+      it 'supplies a delete-your-account fallback link to the legacy flow' do
+        expect(presenter.account_recovery_delete_link).to eq \
+          t(
+            'two_factor_authentication.account_recovery.delete_text_html',
+            link_html: view.link_to(
+              t('two_factor_authentication.account_recovery.delete_link'),
+              account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
+            ),
+          )
+      end
+
+      context 'when the user already has a pending recovery request' do
+        before { create(:account_recovery_request, :waiting, user: user) }
+
+        it 'reports the user as ineligible' do
+          expect(presenter.account_recovery_eligible?).to eq(false)
+        end
+      end
+
+      context 'when the user is identity proofed' do
+        let(:user) { create(:user, :proofed) }
+
+        it 'reports the user as ineligible' do
+          expect(presenter.account_recovery_eligible?).to eq(false)
+        end
+      end
+    end
+
+    context 'when the user is in the control bucket' do
+      let(:account_recovery_bucket) { :legacy }
+
+      it 'reports the user as ineligible' do
+        expect(presenter.account_recovery_eligible?).to eq(false)
+      end
+    end
+
+    context 'when the feature is disabled' do
+      let(:account_recovery_bucket) { :account_preserving }
+
+      before do
+        allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+      end
+
+      it 'reports the user as ineligible' do
+        expect(presenter.account_recovery_eligible?).to eq(false)
+      end
+    end
+
+    context 'when no bucket was assigned' do
+      it 'reports the user as ineligible' do
+        expect(presenter.account_recovery_eligible?).to eq(false)
+      end
+    end
   end
 
   describe '#options' do

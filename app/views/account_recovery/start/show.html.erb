@@ -1,0 +1,23 @@
+<% self.title = t('account_recovery.start.header') %>
+
+<%= render PageHeadingComponent.new.with_content(t('account_recovery.start.header')) %>
+
+<p><%= t('account_recovery.start.intro', app_name: APP_NAME) %></p>
+
+<p><%= t('account_recovery.start.wait_period', interval: @waiting_period_interval) %></p>
+
+<p><%= t('account_recovery.start.keep_account') %></p>
+
+<%= simple_form_for(
+      :account_recovery,
+      url: account_recovery_start_path,
+      method: 'POST',
+    ) do |f| %>
+  <%= f.submit(t('account_recovery.start.continue'), class: 'margin-bottom-2') %>
+<% end %>
+
+<%= button_to(
+      root_url,
+      method: :get,
+      class: 'usa-button usa-button--unstyled',
+    ) { t('links.cancel') } %>

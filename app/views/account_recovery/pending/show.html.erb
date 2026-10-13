@@ -1,0 +1,17 @@
+<% self.title = t('account_recovery.pending.header') %>
+
+<%= render PageHeadingComponent.new.with_content(t('account_recovery.pending.header')) %>
+
+<p><%= t('account_recovery.pending.wait', interval: @waiting_period_interval) %></p>
+
+<p><%= t('account_recovery.pending.check_email') %></p>
+
+<p><%= t('account_recovery.pending.methods_still_work') %></p>
+
+<p><%= t('account_recovery.pending.leaving_does_not_cancel') %></p>
+
+<%= link_to(
+      t('account_recovery.pending.return_home'),
+      root_path,
+      class: 'usa-button usa-button--unstyled',
+    ) %>

@@ -55,6 +55,7 @@ module TwoFactorAuthentication
         phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
         piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
         add_piv_cac_after_2fa: user_session[:add_piv_cac_after_2fa].present?,
+        account_recovery_v2_enabled: account_recovery_v2_enabled?,
       )
     end
 
@@ -82,6 +83,10 @@ module TwoFactorAuthentication
 
     def two_factor_options_form_params
       params.fetch(:two_factor_options_form, {}).permit(:selection)
+    end
+
+    def account_recovery_v2_enabled?
+      IdentityConfig.store.account_recovery_v2_enabled
     end
   end
 end

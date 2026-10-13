@@ -1,4 +1,15 @@
 ---
+account_recovery.pending.check_email: 等待期结束后，我们会通过电邮向你发送恢复账户的链接。该链接只能使用一次。
+account_recovery.pending.header: 我们已收到你的账户恢复请求
+account_recovery.pending.methods_still_work: 你的账户恢复请求待处理期间，当前的身份验证方法仍然有效。
+account_recovery.pending.leaving_does_not_cancel: 你可以离开此页面并稍后返回。离开此页面不会取消你的账户恢复请求。
+account_recovery.pending.return_home: 返回主页
+account_recovery.pending.wait: 从你提出请求到可以继续需要 %{interval}。
+account_recovery.start.continue: 请求恢复账户
+account_recovery.start.header: 恢复你的账户
+account_recovery.start.intro: 如果你无法使用任何身份证实方法，你可以恢复账户并设置新的方法。你将保留你的 %{app_name} 账户以及你与政府机构共享的所有信息。
+account_recovery.start.keep_account: 你需要再次使用密码才能完成账户恢复，因此如果你也忘记了密码，请不要请求恢复。
+account_recovery.start.wait_period: 为了你的安全，我们会等待 %{interval} 后再通过电邮向你发送恢复链接。
 account_reset.cancel_request.are_you_sure: 你确定要取消删除账户的请求吗？
 account_reset.cancel_request.cancel: 退出
 account_reset.cancel_request.cancel_button: 取消删除账户
@@ -1973,6 +1984,10 @@ titles.visitors.index: 欢迎。
 titles.webauthn_setup: 添加你的安全密钥
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> 要求一种高安全水平的身份证实方法。比如人脸或触摸解锁、安全密钥或政府雇员身份证件。'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> 要求你的政府雇员身份证件，这是一种高安全水平的身份证实方法。'
+two_factor_authentication.account_recovery.delete_link: 删除你的帐户
+two_factor_authentication.account_recovery.delete_text_html: 如果你无法恢复账户，可以%{link_html}并创建一个新帐户。
+two_factor_authentication.account_recovery.recover_link: 恢复你的账户
+two_factor_authentication.account_recovery.recover_text_html: 如果你无法使用上述任何身份证实方法访问你的账户，可以%{link_html}来重置你的身份证实方法。
 two_factor_authentication.account_reset.cancel_link: 取消你的请求
 two_factor_authentication.account_reset.link: 删除你的帐户
 two_factor_authentication.account_reset.pending: 你目前有个待处理的删除账户请求。从你提出请求到完成该流程需要 %{interval}。请随后回来查看。

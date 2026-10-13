@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_13_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -23,6 +23,31 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
     t.string "experiment", null: false, comment: "sensitive=false"
     t.datetime "updated_at", comment: "sensitive=false"
     t.index ["experiment", "discriminator"], name: "index_ab_test_assignments_on_experiment_and_discriminator", unique: true
+  end
+
+  create_table "account_recovery_requests", force: :cascade do |t|
+    t.string "cancel_reason", comment: "sensitive=false"
+    t.datetime "cancelled_at", comment: "sensitive=false"
+    t.datetime "completed_at", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "expired_at", comment: "sensitive=false"
+    t.string "failure_reason", comment: "sensitive=false"
+    t.string "flow_variant", null: false, comment: "sensitive=false"
+    t.datetime "granted_at", comment: "sensitive=false"
+    t.datetime "link_verified_at", comment: "sensitive=false"
+    t.datetime "password_verified_at", comment: "sensitive=false"
+    t.datetime "requested_at", comment: "sensitive=false"
+    t.string "requesting_issuer", comment: "sensitive=false"
+    t.string "state", null: false, comment: "sensitive=false"
+    t.datetime "superseded_at", comment: "sensitive=false"
+    t.datetime "token_expires_at", comment: "sensitive=false"
+    t.string "token_fingerprint", comment: "sensitive=true"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.integer "user_id", null: false, comment: "sensitive=false"
+    t.index ["state", "requested_at"], name: "index_account_recovery_requests_on_state_and_requested_at"
+    t.index ["token_fingerprint"], name: "index_account_recovery_requests_on_token_fingerprint", unique: true, where: "(token_fingerprint IS NOT NULL)"
+    t.index ["user_id"], name: "index_account_recovery_requests_on_active_user_id", unique: true, where: "((completed_at IS NULL) AND (cancelled_at IS NULL) AND (expired_at IS NULL) AND (superseded_at IS NULL))"
+    t.index ["user_id"], name: "index_account_recovery_requests_on_user_id"
   end
 
   create_table "account_reset_requests", force: :cascade do |t|
