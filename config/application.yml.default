@@ -545,6 +545,9 @@ team_daily_fraud_metrics_emails: '[]'
 team_monthly_fraud_metrics_emails: '[]'
 team_ursula_email: ''
 telephony_adapter: test
+token_exchange_allowed_audiences: '[]'
+token_exchange_allowed_broker_issuers: '[]'
+token_exchange_enabled: false
 test_ssn_allowed_list: ''
 totp_code_interval: 30
 ui_test_bucket_params_enabled: true
