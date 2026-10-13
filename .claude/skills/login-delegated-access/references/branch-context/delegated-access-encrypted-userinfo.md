@@ -37,7 +37,7 @@ Specs: `spec/requests/openid_connect/user_info_encrypted_spec.rb` (12 examples),
 
 ## Commits
 
-- `561eed4d2b` FR-DOS-12: userinfo responses are encrypted to the opted-in service provider's registered certificate
+- `1907d69c67` FR-DOS-12: userinfo responses are encrypted to the opted-in service provider's registered certificate
 
 ## How to review
 

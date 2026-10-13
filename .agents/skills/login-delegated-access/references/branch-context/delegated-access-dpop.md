@@ -56,6 +56,7 @@ Config/locales: `lib/identity_config.rb` and `config/application.yml.default` (`
 - `716a87cff6` FR-TOK-22, FR-TOK-24: key binding follows the client type; the per-API dpop_required flag is dropped
 - `2bb8394a01` FR-TOK-22: ReplayGuard records single-use values; the proof verifier reads its jti check from it
 - `22416c0d05` FR-TOK-25: one format constant for a base64url SHA-256 on the authorize form
+- `d18cf57b12` FR-TOK-19, FR-TOK-22: DPoP binding is a per-client setting, dpop_required, independent of delegation approval
 
 ## How to review
 

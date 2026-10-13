@@ -44,16 +44,17 @@ Config/locales: `config/application.rb` (CORS resource removed), `config/routes.
 
 ## Commits
 
-- `ab67d04ea2` FR-TOK-4, FR-TOK-5, FR-TOK-21, FR-CEN-13: issuance record, Redis token store and lifetime configuration
-- `8a007209b2` FR-TOK-2, FR-TOK-19: private_key_jwt authentication for delegated-access endpoints
-- `b08b1401a2` FR-TOK-1, FR-TOK-3, FR-TOK-5, FR-TOK-6, FR-TOK-7, FR-TOK-8, FR-TOK-17, FR-TOK-26, FR-CEN-8, FR-CEN-10, FR-CEN-12, FR-CEN-16: token exchange at the token endpoint
-- `3d613f6d9b` FR-CEN-8, FR-CEN-13: re-approval keeps delegated tokens; revocation ends them
-- `76038b7d84` FR-ONB-9, FR-TOK-24: register the sample service provider as a public client
-- `21fc8d50e2` FR-TOK-2: the client assertion jti check reads ReplayGuard
-- `893483569d` FR-TOK-4: DelegatedAccess::OpaqueToken generates and digests the opaque strings
-- `baa7bdac91` FR-TOK-4, FR-TOK-5: the issuance record builds its own live entry
-- `6a87477121` FR-TOK-7: the exchange reads identity verification from the user
-- `aae81e26ef` FR-TOK-9, FR-TOK-3: the agency's registered format decides the issued token type
+- `3591592253` FR-TOK-4, FR-TOK-5, FR-TOK-21, FR-CEN-13: issuance record, Redis token store and lifetime configuration
+- `61512b0afe` FR-TOK-2, FR-TOK-19: private_key_jwt authentication for delegated-access endpoints
+- `13ee07347a` FR-TOK-1, FR-TOK-3, FR-TOK-5, FR-TOK-6, FR-TOK-7, FR-TOK-8, FR-TOK-17, FR-TOK-26, FR-CEN-8, FR-CEN-10, FR-CEN-12, FR-CEN-16: token exchange at the token endpoint
+- `4c5fce3d90` FR-CEN-8, FR-CEN-13: re-approval keeps delegated tokens; revocation ends them
+- `d0acbcf144` FR-ONB-9, FR-TOK-24: register the sample service provider as a public client
+- `91436d1b51` FR-TOK-2: the client assertion jti check reads ReplayGuard
+- `f5cd8496e9` FR-TOK-4: DelegatedAccess::OpaqueToken generates and digests the opaque strings
+- `974fbe256d` FR-TOK-4, FR-TOK-5: the issuance record builds its own live entry
+- `42606c6a73` FR-TOK-7: the exchange reads identity verification from the user
+- `78c261d6d8` FR-TOK-9, FR-TOK-3: the agency's registered format decides the issued token type
+- `cfa3044697` FR-TOK-19, FR-TOK-22: the exchange binds the issued token as the subject token is bound
 
 ## How to review
 

@@ -38,10 +38,10 @@ Config/locales: `lib/identity_config.rb` and `config/application.yml.default` (`
 
 ## Commits
 
-- `e504a67029` FR-TOK-9: SAML assertion adapter on the IdP's assertion builder
-- `58aa12d8ab` FR-TOK-9: issue and refresh SAML assertions at the token endpoint
-- `79d1fc5de3` FR-TOK-9, FR-VER-9: introspection and revocation by assertion ID
-- `80aacf18b2` FR-TOK-9, FR-VER-9: session_live in the SAML token response; registered format decides
+- `bcf152e1be` FR-TOK-9: SAML assertion adapter on the IdP's assertion builder
+- `703433b4fc` FR-TOK-9: issue and refresh SAML assertions at the token endpoint
+- `491f358767` FR-TOK-9, FR-VER-9: introspection and revocation by assertion ID
+- `6d86497027` FR-TOK-9, FR-VER-9: session_live in the SAML token response; registered format decides
 
 ## How to review
 

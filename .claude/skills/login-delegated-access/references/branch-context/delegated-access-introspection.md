@@ -36,8 +36,9 @@ Config/locales: `config/application.rb` (CORS for `/api/openid_connect/introspec
 
 ## Commits
 
-- `115beb8d31` FR-VER-1, FR-VER-2, FR-VER-3, FR-VER-4, FR-VER-5, FR-VER-6, FR-VER-8, FR-TOK-5: token introspection for agency APIs and the service provider
-- `2098895cad` FR-VER-1, FR-VER-2: introspection reads the shared client handling and endpoint plumbing
+- `ed8c284ef6` FR-VER-1, FR-VER-2, FR-VER-3, FR-VER-4, FR-VER-5, FR-VER-6, FR-VER-8, FR-TOK-5: token introspection for agency APIs and the service provider
+- `6c217da4aa` FR-VER-1, FR-VER-2: introspection reads the shared client handling and endpoint plumbing
+- `e916a6bbb2` FR-VER-3, FR-TOK-19, FR-TOK-22: the service provider's introspection demands a proof as its token is bound
 
 ## How to review
 

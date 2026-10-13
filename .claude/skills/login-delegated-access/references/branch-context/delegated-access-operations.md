@@ -38,12 +38,12 @@ Config: `config/delegated_access.localdev.yml` (header and contract).
 
 ## Commits
 
-- `dc35871814` FR-OPS-1: discovery advertises the delegated-access metadata only while the switch is on
-- `34b4872c01` FR-OPS-2, FR-TOK-20: alert thresholds for delegated-access monitoring, one name for the caller
-- `c36952cb43` FR-OPS-4, FR-OPS-5: the localdev fixture is the contract with the reference applications
-- `dd28cc98be` FR-TOK-6, FR-TOK-19, FR-TOK-22, FR-TOK-24, FR-VER-2, FR-CEN-13, FR-CEN-16: the threat sweep, end to end
-- `6ca9352f97` FR-OPS-1: discovery names the token exchange grant from the form that serves it
-- `fbd913958c` FR-OPS-2: alert thresholds leave the application configuration
+- `0267f49082` FR-OPS-1: discovery advertises the delegated-access metadata only while the switch is on
+- `825fa3bde5` FR-OPS-2, FR-TOK-20: alert thresholds for delegated-access monitoring, one name for the caller
+- `01ea4bf11f` FR-OPS-4, FR-OPS-5: the localdev fixture is the contract with the reference applications
+- `4ff9340d5e` FR-TOK-6, FR-TOK-19, FR-TOK-22, FR-TOK-24, FR-VER-2, FR-CEN-13, FR-CEN-16: the threat sweep, end to end
+- `7ba7afad12` FR-OPS-1: discovery names the token exchange grant from the form that serves it
+- `8cfd1a9fb6` FR-OPS-2: alert thresholds leave the application configuration
 
 ## How to review
 

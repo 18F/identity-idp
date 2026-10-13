@@ -36,14 +36,16 @@ Config/locales: `config/application.rb` (CORS for `/api/openid_connect/revoke`),
 
 ## Commits
 
-- `4ea723cd45` FR-TOK-10, FR-TOK-11, FR-TOK-13, FR-TOK-16, FR-TOK-18, FR-CEN-13: refresh token families issued at exchange
-- `f81049ea81` FR-TOK-10, FR-TOK-12, FR-TOK-13, FR-TOK-15, FR-TOK-20: refresh grant with rotation and reuse detection
-- `a6f6553be9` FR-TOK-14: RFC 7009 revocation endpoint for delegated access
-- `879f97d848` FR-CEN-15: account suspension and deletion revoke every approval
-- `5389302b52` FR-TOK-10, FR-TOK-13: the refresh grant writes the record's live entry and reads OpaqueToken
-- `f57f62d7bc` FR-TOK-12, FR-CEN-13: one cascade marks the rows an approval or a family revokes
-- `2c8d996227` FR-TOK-14, FR-TOK-10: the delegated-access forms and endpoints share their plumbing
-- `9d132cd53b` FR-TOK-9, FR-TOK-10: a refresh keeps the family's registered format
+- `8b98a4f7d0` FR-TOK-10, FR-TOK-11, FR-TOK-13, FR-TOK-16, FR-TOK-18, FR-CEN-13: refresh token families issued at exchange
+- `3d103287f5` FR-TOK-10, FR-TOK-12, FR-TOK-13, FR-TOK-15, FR-TOK-20: refresh grant with rotation and reuse detection
+- `bcab30aada` FR-TOK-14: RFC 7009 revocation endpoint for delegated access
+- `0a843b1c96` FR-CEN-15: account suspension and deletion revoke every approval
+- `2a6dbef4b9` FR-TOK-10, FR-TOK-13: the refresh grant writes the record's live entry and reads OpaqueToken
+- `4532982df8` FR-TOK-12, FR-CEN-13: one cascade marks the rows an approval or a family revokes
+- `03fc413a76` FR-TOK-14, FR-TOK-10: the delegated-access forms and endpoints share their plumbing
+- `09748b9d4a` FR-TOK-9, FR-TOK-10: a refresh keeps the family's registered format
+- `60d9b5736f` FR-TOK-10, FR-TOK-11: a refresh renews the opening issuance record and expired refresh-token rows are purged
+- `c24507a5eb` FR-TOK-19, FR-TOK-22: refresh and revocation demand a proof as the family is bound
 
 ## How to review
 

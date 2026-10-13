@@ -38,15 +38,15 @@ Config/docs: `lib/identity_config.rb` and `config/application.yml.default` (`tok
 
 ## Commits
 
-- `15bc944122` FR-FRD-1, FR-FRD-8, FR-FRD-9: buffer the sign-in session's Attempts events while a delegation request is in flight
-- `296fe2b4a9` FR-FRD-4: forward later session events to approved agencies as they happen
-- `ab1e9d03fb` FR-FRD-2, FR-FRD-3, FR-FRD-7: release the sign-in's fraud signals to approved applications at consent, on the account page and on remembered reuse
-- `1c37319869` FR-FRD-5, FR-FRD-6, FR-TOK-12, FR-CEN-13: tell the agency when a delegated token is issued, renewed or access is revoked
-- `62ed7b7a4a` FR-FRD-6, FR-FRD-8: publish the delegated-access Attempts events in the API schema
-- `990dbb3ab8` FR-FRD-6: fraud-signal delivery to agencies is on by default
-- `279e58a2f2` FR-FRD-1, FR-FRD-8: the delegation buffer rides in the session's KMS-encrypted part
-- `a9a88e262c` FR-FRD-5, FR-FRD-6: delegated events are written through the Attempts event catalog
-- `1a9ad371ee` FR-FRD-5, FR-FRD-6, FR-TOK-12: the refresh grant and family revocation tell the agency
+- `54d55a4ac4` FR-FRD-1, FR-FRD-8, FR-FRD-9: buffer the sign-in session's Attempts events while a delegation request is in flight
+- `5b6424e47f` FR-FRD-4: forward later session events to approved agencies as they happen
+- `8592f52bf0` FR-FRD-2, FR-FRD-3, FR-FRD-7: release the sign-in's fraud signals to approved applications at consent, on the account page and on remembered reuse
+- `9530f4eec4` FR-FRD-5, FR-FRD-6, FR-TOK-12, FR-CEN-13: tell the agency when a delegated token is issued, renewed or access is revoked
+- `9a5e7b3b9f` FR-FRD-6, FR-FRD-8: publish the delegated-access Attempts events in the API schema
+- `81dc8fec17` FR-FRD-6: fraud-signal delivery to agencies is on by default
+- `4c176e4eac` FR-FRD-1, FR-FRD-8: the delegation buffer rides in the session's KMS-encrypted part
+- `198ad8e190` FR-FRD-5, FR-FRD-6: delegated events are written through the Attempts event catalog
+- `be8ee27b32` FR-FRD-5, FR-FRD-6, FR-TOK-12: the refresh grant and family revocation tell the agency
 
 ## How to review
 

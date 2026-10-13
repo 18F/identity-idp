@@ -35,7 +35,6 @@ Config/locales: `config/routes.rb` (`/account/site_key/*`), `config/application.
 
 ## Commits
 
-Ported; original authors and messages preserved, no FR identifiers in the subjects.
 - `07982f3614` Add sealing primitives for per-site keys
 - `35a390fb0c` Store per-site key roots wrapped under the user's password
 - `ec929f2ec3` Release sealed per-site keys on OIDC authorization

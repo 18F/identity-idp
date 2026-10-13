@@ -34,7 +34,7 @@ Config: `config/delegated_access.localdev.yml`, `.gitignore`, `.gitlab-ci.yml`, 
 
 ## Commits
 
-- `3a50ac249b` FR-ONB-9: delegated-access content seeds from config/delegated_access.yml in every environment
+- `8f585f5473` FR-ONB-9: delegated-access content seeds from config/delegated_access.yml in every environment
 
 ## How to review
 

@@ -41,14 +41,14 @@ Config: `config/initializers/job_configurations.rb`, `lib/identity_config.rb` an
 
 ## Commits
 
-- `5c42ac0520` FR-BIL-1, FR-BIL-7, FR-BIL-8: mark delegated billing rows and record billing adjustments
-- `34c77be874` FR-BIL-1, FR-BIL-6: write direct and delegated billing rows through one writer
-- `867bd27c1b` FR-BIL-7, FR-BIL-8: link a delegating service provider's sign-in to its access token
-- `54284655e2` FR-BIL-1, FR-BIL-2, FR-BIL-6, FR-BIL-7, FR-BIL-8: bill the agency at exchange and waive the sign-in
-- `73217176d9` FR-BIL-3, FR-BIL-4, FR-BIL-9: count delegated rows in the invoice and operational reports
-- `0c47b98dc9` FR-BIL-5, FR-BIL-8, FR-BIL-10: monthly delegation outcomes report and billing-issuer warnings
-- `8bc66df799` FR-BIL-8: onboarding reads the resource server's own unbillable warning
-- `5e7478240f` FR-BIL-7: the sign-in waiver link digests the access token through OpaqueToken
+- `9ed1cd0c0a` FR-BIL-1, FR-BIL-7, FR-BIL-8: mark delegated billing rows and record billing adjustments
+- `d113e0ded1` FR-BIL-1, FR-BIL-6: write direct and delegated billing rows through one writer
+- `e1524de3cc` FR-BIL-7, FR-BIL-8: link a delegating service provider's sign-in to its access token
+- `31e003da37` FR-BIL-1, FR-BIL-2, FR-BIL-6, FR-BIL-7, FR-BIL-8: bill the agency at exchange and waive the sign-in
+- `0460ebeac4` FR-BIL-3, FR-BIL-4, FR-BIL-9: count delegated rows in the invoice and operational reports
+- `73f18c5150` FR-BIL-5, FR-BIL-8, FR-BIL-10: monthly delegation outcomes report and billing-issuer warnings
+- `bdaa4de901` FR-BIL-8: onboarding reads the resource server's own unbillable warning
+- `06950fd40e` FR-BIL-7: the sign-in waiver link digests the access token through OpaqueToken
 
 ## How to review
 
