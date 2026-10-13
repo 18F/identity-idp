@@ -1,44 +1,50 @@
 # Reading order
 
-The delegated-access work is described by three documents under `docs/` and one README. They are
-written for different readers and answer different questions; none repeats another.
+The delegated-access work is described by one document, `docs/delegated-access-functional-requirements.md`,
+with `docs/delegated-access-README.md` as its short front door. The implementation plan that preceded it is
+kept as a historical file and is not part of the reading order.
 
-## The four files
+## The document
 
-| File | Answers | Written for | Structure |
-|---|---|---|---|
-| `docs/delegated-access-README.md` | How the three documents relate, in what order to read them, which branch carries what | Anyone arriving cold | Short: document map, branch diagram, matrix cross-references, skill paragraph |
-| `docs/delegated-access-functional-requirements.md` (the FR document) | *What* the capability must do | Product owner, privacy and security reviewers, agency partners | One section per area (onboarding, consent UX, consent enforcement, tokens, verification, fraud signals, billing, operations, Department of State case, per-site keys); `FR-<area>-<n>` rows with MUST/SHOULD/MAY; "Questions to resolve"; Appendix A open decisions; Appendix B map to the companion; Appendix C the alternative pattern; Appendix D decisions log; Appendix E generated traceability matrix |
-| `docs/delegated-access-requirements.md` (the companion) | *How* it is built, protocol by protocol | Maintainers of identity-idp and of the reference applications | Sections per protocol concern (§3 onboarding data model, §4 consent, §5 exchange, §6 introspection, §7 refresh, §8 fraud signals, §9 billing, §10 configuration, §11 security, §12 testing, §13 rollout, §14 reference apps and harness, §15 SAML, §16 third-party-initiated login, §17 per-site keys); rows `ONB-`, `CON-`, `ACC-`, `EXC-`, `INT-`, `REF-`, `ATT-`, `BIL-`, `DISC-`, `SAML-`, `TPL-` with Why/Where/How and code sketches; dated "Amendments" subsections; Appendix C DPoP; Appendix D repository mapping; Appendix E protocol decisions `Ennn`; Appendix F generated traceability matrix |
-| `docs/delegated-access-implementation-plan.md` (the plan) | What the foundation branch had, what each feature adds, removes and why; what was decided and when | Implementers and reviewers of the branch stack | §1–§4 context and approach; §5 one subsection per feature (5.1–5.17) with Requirements line, additions, removals, findings, as-built blocks; §6 cross-cutting; §7 infrastructure and environment-specific pieces (7.5); §8 branch stack and review order with the generated 8.1 matrix; §9 decisions log `Dnn` |
+| Part | Answers | Structure |
+|---|---|---|
+| Front matter | What exists today, how to read the document, the branch stack, the conventions (identifiers, current state only, fictitious names, vocabulary, requirement language, standards) | Status paragraph, "How to read this document", "The branch stack", "Conventions" |
+| Sections 1 to 14 | For one branch: what it delivers and why, what it must do, how it is built on the wire, what was built, what was decided, how to review it | One section per feature branch in stack order, heading `# N. \`delegated-access-<name>\`: <title>`, each with Objective, Functional requirements (`FR-<area>-<n>` rows), Protocol rows (`ONB-`, `CON-`, `ACC-`, `EXC-`, `REF-`, `INT-`, `SAML-`, `DISC-`, `BIL-`, `ATT-`, `UINF-`), As built, Decisions (one line per `Dnn`), How to review |
+| Section 15 | The base branch and the work outside this repository | 15.1 document-image sharing for a direct service provider (kept on the base), 15.2 third-party-initiated login (reference applications), 15.3 the reference applications and the end-to-end harness, 15.4 the configuration repository, 15.5 and 15.6 the two designs recorded and not built, 15.7 encrypted user-information enhancements documented for later, 15.8 the FR rows no branch owns |
+| Section 16 | Why each decision was taken and what was rejected | Dated `##` subsections with numbered `**Dnn — Title.**` entries, D1 upward |
+| Appendix A | Where any identifier lives | Generated traceability matrix: FR row → section and branch → protocol rows → decisions; protocol rows by prefix; rows owned by section 15; foundation items |
+| Appendix B | How the stack is reviewed and merged | The stack, how it is used, where to start a review, the pull request procedure |
+| Appendix C | What is local-only or sandbox-only | One table, plus what is not environment-specific although it looks so |
+| Appendix D | The performance review and the open items with their owners | D.1 to D.4 |
+| Appendix E | What the foundation branch was and what the stack kept, replaced and removed | E.1 to E.5 |
+| Appendix F | Terms | One table |
 
-The plan's 5.x "Requirements" lines are the join: each names the FR rows and companion rows the feature
-serves, and the §8 table names the branch. The generated indexes in this skill are derived from those lines.
+Every row states the requirement as it stands today and cites the decision that last changed it as `(Dnn)`;
+there are no amendment trails. The generated indexes in this skill are derived from the section headings,
+the row tables and the Decisions lists.
 
 ## Where to start
 
-**A reader who wants the shape of the thing** (an hour): README; FR document §1–§2 and the Objective
-paragraphs of §3–§10; companion §0–§2 (terms, actors, happy path, design decisions); plan §1, §3 and §4.
-Then the branch diagram in plan §8.
+**A reader who wants the shape of the thing** (an hour): the README; the front matter; the Objective of each
+of sections 1 to 14; Appendix E.1 and E.2 for where the code came from; the branch diagram in Appendix B.
 
-**A reviewer of one branch**: plan §8 "Where to start", then the feature's 5.x section (Requirements line,
-Add, Remove, Findings, As built), then each FR row the line names (FR document) and each companion row
-(companion), then the diff against the branch below. `references/branch-context/<branch>.md` collects
-this for each branch; `references/traceability.md` lists the rows per branch.
+**A reviewer of one branch**: Appendix A to find the rows, then the branch's section in full (Objective, the
+two row tables, As built, Decisions, How to review), then the diff against the branch below.
+`references/branch-context/<branch>.md` collects the same for each branch; `references/traceability.md`
+lists the rows per section.
 
 **An implementer changing or adding behavior**: `CLAUDE.md` first (conventions and the recording rules),
-then the owning feature's 5.x section and its decisions in plan §9 (`references/decisions.md` indexes them),
-then the companion rows for the protocol detail and the RFC digests under `references/rfcs/`. Before
-editing, `references/update-protocol.md` and `references/interview.md`.
+then the owning section and its decisions in section 16 (`references/decisions.md` indexes them), then the
+RFC digests under `references/rfcs/`. Before editing, `references/update-protocol.md` and
+`references/interview.md`.
 
-**A question about a single identifier**: `references/requirements-index.md` gives the document, section
-and line; read that section, not the whole document.
+**A question about a single identifier**: `references/requirements-index.md` gives the section, the branch
+and the line; read that section, not the whole document.
 
-## How the documents cite each other
+## The historical plan
 
-- FR rows cite companion sections in Appendix B (section level) and companion rows in their text.
-- Companion rows cite FR rows in amendment subsections and Appendix E rows cite plan decisions (`Dnn`).
-- Plan 5.x sections cite FR rows, companion sections and rows, and decisions; plan §9 entries cite the
-  FR and companion rows they change and the Appendix E rows that record them.
-- The three generated matrices (plan 8.1, FR Appendix E, companion Appendix F) show the same join
-  from each document's side; they are regenerated, never edited.
+`docs/delegated-access-implementation-plan.md` records how each feature was planned against the foundation
+branch, its findings and its dated amendment trails, through 2026-10-13. It is not maintained; its old
+section numbers (5.x features, section 8 stack, section 9 decisions, 7.5 environment pieces) appear in
+older commit messages and in the "Historical plan section" line at the top of each branch section. When it
+disagrees with the document, the document is right. Nothing in it is regenerated.

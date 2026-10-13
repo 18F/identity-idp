@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Plan 5.5, token lifecycle: refresh, revocation, suspension and deletion. Every exchange opens a refresh family (rotating, digest-only rows, 12-hour absolute end, never past the approval's `remember_until`); the `refresh_token` grant at the token endpoint mints the next token with reuse detection; `POST /api/openid_connect/revoke` (RFC 7009) ends a family or one token; grant revocation, account suspension and account deletion cascade to every live token. The foundation had nothing here: its token died with the browser session.
+Section 7, token lifecycle: refresh, revocation, suspension and deletion. Every exchange opens a refresh family (rotating, digest-only rows, 12-hour absolute end, never past the approval's `remember_until`); the `refresh_token` grant at the token endpoint mints the next token with reuse detection; `POST /api/openid_connect/revoke` (RFC 7009) ends a family or one token; grant revocation, account suspension and account deletion cascade to every live token. The foundation had nothing here: its token died with the browser session.
 
 ## Requirements it satisfies
 
-FR-TOK-10, 11, 12, 13, 14, 15, 16, 18, 20 (refresh half); FR-CEN-13, FR-CEN-15 (suspension and deletion). Companion §7 (REF-1..9 as amended in §5.5 and §7.6), §11.
+FR-TOK-10, 11, 12, 13, 14, 15, 16, 18, 20 (refresh half); FR-CEN-13, FR-CEN-15 (suspension and deletion). Protocol rows REF-1 to REF-14 (section 7).
 
 ## What it adds / removes and why
 
@@ -51,8 +51,8 @@ Diff against `delegated-access-token-exchange`. Check first: `family_end` and `l
 
 ## Known open items and later amendments
 
-- Amended 2026-10-11 (reuse review, D70): `revoke_rows!`/`revoke_family!` with the Attempts calls wired through them (the empty `report_family_revoked` seam is gone), `#mint!` on `live_attributes` and `OpaqueToken`, the registered format kept on refresh, the shared concerns (plan 5.5 items 13 to 16).
-- Held until the harness run (plan 6.1): a `User` deletion callback for the grant cascade in place of the two call sites; `ServiceProviderIdentity#session_live?`.
+- Amended 2026-10-11 (reuse review, D70): `revoke_rows!`/`revoke_family!` with the Attempts calls wired through them (the empty `report_family_revoked` seam is gone), `#mint!` on `live_attributes` and `OpaqueToken`, the registered format kept on refresh, the shared concerns (section 7, As built).
+- Held until the harness run (Appendix D.3): a `User` deletion callback for the grant cascade in place of the two call sites; `ServiceProviderIdentity#session_live?`.
 - Revocation by SAML assertion ID arrives with the SAML branch.
 
 ## Depends on / depended on by

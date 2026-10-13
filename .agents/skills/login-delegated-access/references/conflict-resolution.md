@@ -1,6 +1,6 @@
 # Resolving conflicts in the skill and the documents when the base meets a feature branch
 
-The documents under `docs/` and this skill live on `login-delegated-access` (the base). Feature
+The document under `docs/` and this skill live on `login-delegated-access` (the base). Feature
 branches are stacked on it and are meant to be code-only, so the normal case has no conflict here.
 When a feature branch does carry skill or document edits (a developer recorded context while
 working on it) and the base is brought into that branch, by `git rebase` or by `git merge`, apply
@@ -34,7 +34,7 @@ mechanical part and lays out the evidence for the rest.
    branch's hunks that pass this test: the hunk states something about the feature branch's own
    code or decisions (it names a class, migration, route, config key or decision that the
    branch's code commits introduced or changed, or it is in that branch's `branch-context` file
-   or the plan section for that feature). A hunk that edits shared guidance, another branch's
+   or the document section for that branch). A hunk that edits shared guidance, another branch's
    context, or text the base has since amended with a later date or a higher decision number is
    dropped; the base wins.
 5. When both sides amended the same fact, prefer the later dated amendment or the higher
@@ -57,8 +57,8 @@ mechanical part and lays out the evidence for the rest.
   -- app lib db config`) and the files they touch. A skill hunk that names those classes, files,
   routes or keys is the branch's own context.
 - Dated "Amended <date>" or "As built, <date>" lines and decision numbers: newer beats older.
-- Placement: a hunk inside `references/branch-context/<this branch>.md` or inside the plan
-  subsection for this feature is presumed to be the branch's context; a hunk inside shared files
+- Placement: a hunk inside `references/branch-context/<this branch>.md` or inside the document
+  section for this branch is presumed to be the branch's context; a hunk inside shared files
   (`update-protocol.md`, `interview.md`, `reading-order.md`, `rfcs/`, `SKILL.md`, CLAUDE.md) is
   presumed shared guidance and the base wins unless the hunk is clearly a fact about this branch.
 - A hunk whose feature-branch side equals the merge-base text is not a change by the branch at

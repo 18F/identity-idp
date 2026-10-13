@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Plan 5.8, billing and reporting. The exchange writes an `sp_return_logs` row under the API's `billing_issuer` marked `delegated`, through the one writer the direct handoff also uses; the service provider's own sign-in is waived through an append-only adjustment row (never by mutating a return log); the invoice queries exclude adjusted rows and add delegated-only breakouts; a monthly `DelegationOutcomesReport` counts approvals and sign-ins. The foundation billed the target at mint with a request id keyed to the browser session and no marker.
+Section 11, billing and reporting. The exchange writes an `sp_return_logs` row under the API's `billing_issuer` marked `delegated`, through the one writer the direct handoff also uses; the service provider's own sign-in is waived through an append-only adjustment row (never by mutating a return log); the invoice queries exclude adjusted rows and add delegated-only breakouts; a monthly `DelegationOutcomesReport` counts approvals and sign-ins. The foundation billed the target at mint with a request id keyed to the browser session and no marker.
 
 ## Requirements it satisfies
 
-FR-BIL-1 to FR-BIL-10. Companion §9 (BIL-1..14 as amended in §9.5, BIL-15) and *How billing works under delegated access*.
+FR-BIL-1 to FR-BIL-10. Protocol rows BIL-1 to BIL-16 (section 11).
 
 ## What it adds / removes and why
 
@@ -59,7 +59,7 @@ Diff against `delegated-access-operations`; billing changes follow the repositor
 - Amended 2026-10-11 (reuse review): `warn_if_unbillable` from the registry branch; `SignInWaiverLink.digest` via `OpaqueToken.digest`.
 - For the data team (D75, BIL-15): the fallback's matching rule can pick the wrong row for a person who signed in twice in the window; `not_found` leaves the service provider billed alongside an agency; `TotalMonthlyAuthCounts` and `DailyAuthsReport` keep counting waived sign-ins; the supplement's three delegated columns are subsets, not addends; the `access_type` backfill is implicit (`NULL` reads as direct).
 - The branch's specs could not run at build time (shared test database held by another worktree) and were verified on the integrated stack.
-- Held until the harness run (plan 6.1): a durable `identities`-to-return-log link replacing the Redis waiver link (a billing change under the `login-billing` skill).
+- Held until the harness run (Appendix D.3): a durable `identities`-to-return-log link replacing the Redis waiver link (a billing change under the `login-billing` skill).
 
 ## Depends on / depended on by
 

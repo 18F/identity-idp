@@ -2,17 +2,17 @@
 
 ## Purpose
 
-Plan 5.9, SAML assertions as an issued token type. For a resource server registered `token_format: saml2` the exchange and refresh mint a signed SAML assertion (encrypted to the agency's certificate when one is registered) instead of an opaque token, through an adapter over the IdP's own `SamlIdp::AssertionBuilder`; introspection and revocation accept the assertion ID or the encoded assertion. The foundation had nothing here.
+Section 9, SAML assertions as an issued token type. For a resource server registered `token_format: saml2` the exchange and refresh mint a signed SAML assertion (encrypted to the agency's certificate when one is registered) instead of an opaque token, through an adapter over the IdP's own `SamlIdp::AssertionBuilder`; introspection and revocation accept the assertion ID or the encoded assertion. The foundation had nothing here.
 
 ## Requirements it satisfies
 
-FR-TOK-9, FR-VER-9. Companion §15 (SAML-1..15 as amended in §15.8).
+FR-TOK-9, FR-VER-9. Protocol rows SAML-1 to SAML-15 and SAML-5b (section 9).
 
 ## What it adds / removes and why
 
 Adds:
 - `lib/saml_idp_extensions/assertion_builder.rb`, prepended from `config/initializers/saml_idp.rb`: `InResponseTo` only when there is a request id, `subject_confirmation_expiry:`, `issue_instant:`; each a no-op for the browser flow, pinned byte for byte by `spec/lib/saml_idp_extensions/assertion_builder_spec.rb` (SAML-15).
-- `DelegatedSamlAssertion`: `Issuer` the metadata entityID; persistent `NameID` the agency-level identifier (`DelegatedTokenClaims#agency_sub`); bearer `SubjectConfirmation` with `Recipient` and `Audience` the resource server identifier; both `NotOnOrAfter` values the issuance record's lifetime (`token_exchange_saml_assertion_ttl_seconds`, 300, capped by `max_access_token_seconds` and the family end); `AuthnInstant` the sign-in's `last_authenticated_at`; the attribute statement from `AttributeAsserter` (now accepting `authn_request: nil`) for the agency's bundle with `uuid` re-pointed at the agency identifier and `email` at the shared address, plus `delegation_scopes`, `delegation_id`, `actor` and `dpop_jkt` for a bound family (E30). Identifiers only once the sign-in ended (`#identifiers_only?`). Signed with the `SamlEndpoint` key; encrypted to `resource_server.ssl_certs.first` when present (D45).
+- `DelegatedSamlAssertion`: `Issuer` the metadata entityID; persistent `NameID` the agency-level identifier (`DelegatedTokenClaims#agency_sub`); bearer `SubjectConfirmation` with `Recipient` and `Audience` the resource server identifier; both `NotOnOrAfter` values the issuance record's lifetime (`token_exchange_saml_assertion_ttl_seconds`, 300, capped by `max_access_token_seconds` and the family end); `AuthnInstant` the sign-in's `last_authenticated_at`; the attribute statement from `AttributeAsserter` (now accepting `authn_request: nil`) for the agency's bundle with `uuid` re-pointed at the agency identifier and `email` at the shared address, plus `delegation_scopes`, `delegation_id`, `actor` and `dpop_jkt` for a bound family. Identifiers only once the sign-in ended (`#identifiers_only?`). Signed with the `SamlEndpoint` key; encrypted to `resource_server.ssl_certs.first` when present (D45).
 - Issuance in `OpenidConnectTokenExchangeForm#issue!` when `resource_server.saml?` (D70): record `token_format: saml2`, `token_type: N_A`; the assertion built inside the transaction; the live entry keyed by the SHA-256 of the assertion `ID`; the XML never stored. Response `access_token` is the base64url assertion, `issued_token_type` the saml2 URN, `session_live: false` present only when false (D73).
 - Refresh re-issues what the exchange issued (`TokenExchangeRefreshToken#saml?` reads the issuance record) with a new `ID` and windows (SAML-9).
 - `DelegatedSamlAssertion.reference_for(token)` lets `OpenidConnectIntrospectForm` and `OpenidConnectRevokeForm` accept an ID or an encoded plaintext assertion (at most 64 KB, parsed strictly without network access); an encrypted assertion hides its ID and is not active or not acted on. Revoke by ID ends that assertion only (D69).
@@ -49,9 +49,9 @@ Diff against `delegated-access-introspection`. Check first: the builder extensio
 
 ## Known open items and later amendments
 
-- Amended 2026-10-11 (D70, D73): registered format decides, mismatch predicate and strings removed, `session_live: false` replaces `attributes: "identifiers_only"` (plan 5.9 item 9).
+- Amended 2026-10-11 (D70, D73): registered format decides, mismatch predicate and strings removed, `session_live: false` replaces `attributes: "identifiers_only"` (section 9, As built).
 - Revocation of an issued assertion is observed by the agency only at expiry, which the five-minute window bounds (D45); revoke-by-ID narrowing of SAML-12 is recorded for review (D69).
-- Held until the harness run (plan 6.1): `DelegatedTokenClaims` exposing identity, email and PII to the builder.
+- Held until the harness run (Appendix D.3): `DelegatedTokenClaims` exposing identity, email and PII to the builder.
 
 ## Depends on / depended on by
 

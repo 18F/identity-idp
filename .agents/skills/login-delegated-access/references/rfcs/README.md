@@ -2,7 +2,7 @@
 
 One digest per specification the delegated-access code relies on. Each digest states the sections
 the implementation honors, names the class and method that honors each one, points to the decision
-(`Dnn` in the plan's section 9) or companion row (`EXC-`, `INT-`, `REF-`, `SAML-`, `DISC-`, `Ennn`)
+(`Dnn` in section 16 of the document) or protocol row (`EXC-`, `INT-`, `REF-`, `SAML-`, `DISC-`)
 that interprets it, lists the deliberate choices made where the specification leaves latitude, and
 answers the questions developers ask most. Digests describe the code at the top of the stack.
 
@@ -51,8 +51,8 @@ stands on the top of the stack, so a method may have moved to a lower branch by 
    available. Quote the section number and the text's own words (MUST, SHOULD, MAY) in code
    comments and documents; where this knowledge base and the text disagree, the text wins and the
    digest is corrected.
-4. **Record a new interpretation as a decision**, not as a digest edit alone: a `Dnn` entry in the
-   plan's section 9 and an Appendix E row in the companion, then update the digest's "Deliberate
+4. **Record a new interpretation as a decision**, not as a digest edit alone: a `Dnn` entry in
+   section 16 of the document and the owning section's rows amended in place, then update the digest's "Deliberate
    choices and deviations" to point at it (see `CLAUDE.md` section 1).
 5. **Code comments cite the standard, never the requirement identifier** (`CLAUDE.md` section 3);
    the digests are where the standard, the identifiers and the code meet.
@@ -62,7 +62,7 @@ stands on the top of the stack, so a method may have moved to a lower branch by 
 - `rfc9449.md`: the error code RFC 9449 §10 prescribes for a `dpop_jkt` mismatch at the token
   endpoint; the code reports `invalid_dpop_proof` for every proof problem.
 - `rfc8693.md`: §2.2.2 directs `invalid_request` for an invalid `subject_token`; this implementation
-  answers `invalid_grant` (E26). Deliberate, but the deviation should be named in the integration guide.
+  answers `invalid_grant`. Deliberate, but the deviation should be named in the integration guide.
 - `rfc9449.md`: the number of the Security Considerations section (the project documents cite the
   replay subsection as §11.1); the digest names the subsection by title.
-- `nist-ir-8587.md`: the element list is taken from companion INT-4, not from the publication.
+- `nist-ir-8587.md`: the element list is taken from protocol row INT-4 (section 8 of the document), not from the publication.

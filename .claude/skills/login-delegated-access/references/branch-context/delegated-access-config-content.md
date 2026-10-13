@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Plan 5.17, content seeded from `identity-idp-config`. The agencies' consent content, the service providers approved for delegation and the applications with their logos and API URLs are seeded by `rake db:seed` from `config/delegated_access.yml` in every environment: in deployed environments the file is linked from the configuration repository at deploy (as `service_providers.yml` and `agencies.yml` are), locally and in CI it is the fixture `config/delegated_access.localdev.yml`. The seed task's refusal of `prod` and `staging` goes; `restrict_to_deploy_env` on each entry replaces it. Top of the stack; one commit.
+Section 13, content seeded from `identity-idp-config`. The agencies' consent content, the service providers approved for delegation and the applications with their logos and API URLs are seeded by `rake db:seed` from `config/delegated_access.yml` in every environment: in deployed environments the file is linked from the configuration repository at deploy (as `service_providers.yml` and `agencies.yml` are), locally and in CI it is the fixture `config/delegated_access.localdev.yml`. The seed task's refusal of `prod` and `staging` goes; `restrict_to_deploy_env` on each entry replaces it. Top of the stack; one commit.
 
 ## Requirements it satisfies
 
-FR-ONB-3, FR-ONB-5 and FR-ONB-9 as amended 2026-10-10 (and FR-ONB-1, FR-ONB-2 through the same seeder). Companion §3.5 (ONB-5 and ONB-12 as amended, ONB-15).
+FR-ONB-3, FR-ONB-5 and FR-ONB-9 as amended 2026-10-10 (and FR-ONB-1, FR-ONB-2 through the same seeder). Protocol rows ONB-5 (its content-source amendment delivered here), ONB-12 and ONB-15 (section 13).
 
 ## What it adds / removes and why
 
@@ -17,7 +17,7 @@ Adds:
 - The fixture keyed by Rails environment: `development` is the content as before and remains the contract with the reference applications (D51); `production` repeats the entries with `restrict_to_deploy_env: 'sandbox'` and hosts from `DELEGATION_SP_URL`, `DELEGATION_OIDC_AGENCY_URL`, `DELEGATION_SAML_AGENCY_URL`, so a personal sandbox seeds the hosted reference applications; API identifiers never change with the hostname.
 - `rake delegated_access:seed` kept as a convenience running the same seeder; comments on `AgencySeeder`, `ServiceProviderSeeder` and the two registry migrations reworded to say the fields come from the delegated-access configuration file in every environment.
 
-Removes: the `RefusedEnvironment` error and the `prod`/`staging` refusal of the seed task (plan 5.1 item 8, 7.4 item 3); an environment that should hold no fictitious content has no file, no section, or only `sandbox`-restricted entries.
+Removes: the `RefusedEnvironment` error and the `prod`/`staging` refusal of the seed task (section 1 As built; Appendix C); an environment that should hold no fictitious content has no file, no section, or only `sandbox`-restricted entries.
 
 ## Key decisions
 
@@ -38,13 +38,13 @@ Config: `config/delegated_access.localdev.yml`, `.gitignore`, `.gitlab-ci.yml`, 
 
 ## How to review
 
-Diff against `delegated-access-fraud-signals`. Check first: `DeployEnvRestriction` against the inline rule it replaces (the seeder spec and `service_provider_seeder_spec.rb` must agree), the seeder's handling of a missing file and of `restrict_to_deploy_env`, and that the `development` section of the fixture is unchanged (the harness contract). Then read the companion repository's `delegated_access.yml` and `spec/delegated_access_config_spec.rb` (8 examples on the file's shape). Specs: the seeder spec (56 examples), the service provider and agency seeder specs, the activate spec. Must not change for existing clients: `service_providers.yml` and `agencies.yml` seeding is unchanged; a deploy without `delegated_access.yml` on the configuration repository's `main` seeds nothing new and raises nothing.
+Diff against `delegated-access-fraud-signals`. Check first: `DeployEnvRestriction` against the inline rule it replaces (the seeder spec and `service_provider_seeder_spec.rb` must agree), the seeder's handling of a missing file and of `restrict_to_deploy_env`, and that the `development` section of the fixture is unchanged (the harness contract). Then read the configuration repository's `delegated_access.yml` and `spec/delegated_access_config_spec.rb` (8 examples on the file's shape). Specs: the seeder spec (56 examples), the service provider and agency seeder specs, the activate spec. Must not change for existing clients: `service_providers.yml` and `agencies.yml` seeding is unchanged; a deploy without `delegated_access.yml` on the configuration repository's `main` seeds nothing new and raises nothing.
 
 ## Known open items and later amendments
 
-- Companion repository: the pre-existing "has no invalid logos" example in `spec/service_provider_config_spec.rb` fails until it also counts the logos `delegated_access.yml` references; the product owner decided on 2026-10-10 to leave it unchanged for now. 24 Dependabot alerts there have a conservative fix on branch `update-deps` awaiting that repository's owners (plan section 6 item 13).
-- The Dashboard remains the longer-term content path (plan 6.2); when it gains the fields, `ServiceProviderUpdater` already writes them.
-- Held until the harness run (plan 6.1): `DelegatedAccessSeeder` reusing `AgencySeeder#write_agency`; the resource-server upsert shared by seeder and updater.
+- Configuration repository: the pre-existing "has no invalid logos" example in `spec/service_provider_config_spec.rb` fails until it also counts the logos `delegated_access.yml` references; the product owner decided on 2026-10-10 to leave it unchanged for now. 24 Dependabot alerts there have a conservative fix on branch `update-deps` awaiting that repository's owners (Appendix D item 13).
+- The Dashboard remains the longer-term content path (Appendix D.4); when it gains the fields, `ServiceProviderUpdater` already writes them.
+- Held until the harness run (Appendix D.3): `DelegatedAccessSeeder` reusing `AgencySeeder#write_agency`; the resource-server upsert shared by seeder and updater.
 
 ## Depends on / depended on by
 

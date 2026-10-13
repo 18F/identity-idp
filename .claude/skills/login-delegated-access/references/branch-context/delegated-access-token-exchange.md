@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Plan 5.4, server-to-server token exchange. RFC 8693 exchange at the existing token endpoint, dispatched on `grant_type`, with client handling by client type (`private_key_jwt` for a confidential client, `client_id` plus a DPoP proof for the public client), exactly one `resource`, an opaque delegated token stored as a Redis entry by digest plus a secret-free Postgres issuance record, and no `id_token`. It removes the foundation's browser-callable `/exchange` endpoint and its minting of a real target identity.
+Section 6, server-to-server token exchange. RFC 8693 exchange at the existing token endpoint, dispatched on `grant_type`, with client handling by client type (`private_key_jwt` for a confidential client, `client_id` plus a DPoP proof for the public client), exactly one `resource`, an opaque delegated token stored as a Redis entry by digest plus a secret-free Postgres issuance record, and no `id_token`. It removes the foundation's browser-callable `/exchange` endpoint and its minting of a real target identity.
 
 ## Requirements it satisfies
 
-FR-TOK-1, 2, 3, 4, 5, 6, 7, 8, 17, 19, 20 (exchange half), 21, 26; FR-CEN-8, FR-CEN-10, FR-CEN-12, FR-CEN-16. Companion §5 (EXC-1..12 as amended in §5.5 and §5.6, EXC-21), §6.2.
+FR-TOK-1, 2, 3, 4, 5, 6, 7, 8, 17, 19, 20 (exchange half), 21, 26; FR-CEN-8, FR-CEN-10, FR-CEN-12, FR-CEN-16. Protocol rows EXC-1 to EXC-16, EXC-20 and EXC-21 (section 6).
 
 ## What it adds / removes and why
 
@@ -16,7 +16,7 @@ Adds:
 - `OpenidConnectTokenExchangeForm` (new body, same name): `validate_client` by client type (credentials not interchangeable, `client_type_mismatch`; `client_not_approved` first), then request shape, subject token (a `ServiceProviderIdentity.not_deleted` row for this client's issuer, bound for a public client), the proof with `ath`, sign-in live (`OutOfBandSessionAccessor` TTL, D28), identity verification (`User#identity_verified?` plus the sign-in's IAL), the resource (`TokenExchangeResourceServer#usable?` and `accepts_delegation_from?`, one wording for every failure, `invalid_target`), the approval (`TokenExchangeGrant.live_by_application`, `valid_now?`; `consent_required` naming the application's scope, D31). No `scope` parameter is read (D72); `requested_token_type` is optional and the registered `token_format` decides (D70).
 - `TokenExchangeToken` (`token_exchange_tokens`, migration `20261009100700`): the issuance record; `#issue!` writes it and the grant's `first_exchanged_at` in one transaction, then `DelegatedTokenStore.write` puts the live entry (`#live_attributes`) at `delegated_token:<hex SHA-256>` with TTL the lifetime, indexed per grant and per refresh family (D26). Lifetime is the lower of `token_exchange_access_token_ttl_seconds` (900) and `max_access_token_seconds` (migration `20261009100600`) (D27).
 - `DelegatedAccess::OpaqueToken.generate`/`.digest`: the one source for every opaque string Login.gov hands out and looks up.
-- Re-approval and revocation: `TokenExchangeGrant.approve!` supersedes earlier live rows and `#transfer_live_tokens_to!` moves their live entries (`DelegatedTokenStore.move_grant`, E97); `#revoke!` deletes the entries (`revoke_grant`) and marks open issuance rows, so `user_revoked` and `sp_disconnected` end tokens at once (FR-CEN-13).
+- Re-approval and revocation: `TokenExchangeGrant.approve!` supersedes earlier live rows and `#transfer_live_tokens_to!` moves their live entries (`DelegatedTokenStore.move_grant`); `#revoke!` deletes the entries (`revoke_grant`) and marks open issuance rows, so `user_revoked` and `sp_disconnected` end tokens at once (FR-CEN-13).
 - `AccessTokenVerifier#load_identity` comment: delegated tokens live in `DelegatedTokenStore`, are never found in `identities`, and no second lookup path is to be added.
 - Fixture: MyBenefits Assistant becomes a public client (`pkce: true`, no `certs`) (D57).
 
@@ -61,9 +61,9 @@ Diff against `delegated-access-dpop`. Check first: the validation order in `Open
 
 ## Known open items and later amendments
 
-- Amended 2026-10-11 (reuse review, D70): `OpaqueToken`, `#live_attributes`, `User#identity_verified?`, the shared replay guard, optional `requested_token_type` with `requested_token_type_mismatch` logged (plan 5.4 items 17 to 21).
+- Amended 2026-10-11 (reuse review, D70): `OpaqueToken`, `#live_attributes`, `User#identity_verified?`, the shared replay guard, optional `requested_token_type` with `requested_token_type_mismatch` logged (section 6, As built).
 - On this branch an API registered `saml2` is still refused as `invalid_target` until the SAML branch; `refresh_token` is absent from the response until the lifecycle branch (the family id is already recorded).
-- Held until the harness run (plan 6.1): `OpenidConnectTokenForm` delegating to `ResourceServerAuthenticator`; `ServiceProviderIdentity#session_live?` as the one TTL test.
+- Held until the harness run (Appendix D.3): `OpenidConnectTokenForm` delegating to `ResourceServerAuthenticator`; `ServiceProviderIdentity#session_live?` as the one TTL test.
 - The billing branch adds `Billing::DelegatedReturnRecorder` and the fraud-signals branch adds `DelegatedAccessEvents.token_issued` to `#issue!`.
 
 ## Depends on / depended on by

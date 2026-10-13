@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Plan 5.14, encrypted userinfo responses. A confidential service provider that opts in on its record receives its userinfo claims as one compact JWE (RFC 7516; RSA-OAEP-256, A256GCM) with content type `application/jwt`, per OpenID Connect Core 1.0 §5.3.2, encrypted to the public key of its first registered certificate, the one its `private_key_jwt` assertions are verified against. Everyone else keeps the plain JSON response unchanged. The whole claims object is encrypted, document-metadata claims under the `document_images` scope included, so the edge, logs and any intermediary see ciphertext. An opted-in record without a usable key is refused, never answered in the clear. Top of the stack; one commit.
+Section 14, encrypted userinfo responses. A confidential service provider that opts in on its record receives its userinfo claims as one compact JWE (RFC 7516; RSA-OAEP-256, A256GCM) with content type `application/jwt`, per OpenID Connect Core 1.0 §5.3.2, encrypted to the public key of its first registered certificate, the one its `private_key_jwt` assertions are verified against. Everyone else keeps the plain JSON response unchanged. The whole claims object is encrypted, document-metadata claims under the `document_images` scope included, so the edge, logs and any intermediary see ciphertext. An opted-in record without a usable key is refused, never answered in the clear. Top of the stack; one commit.
 
 ## Requirements it satisfies
 
-FR-DOS-12 as amended 2026-10-10 (the end-to-end property for the direct service provider's attributes). Companion §6.5 UINF-1 as amended, UINF-2 (fail closed), UINF-3 (discovery members); §14.2 as amended (no reference application decrypts).
+FR-DOS-12 as amended 2026-10-10 (the end-to-end property for the direct service provider's attributes). Protocol rows UINF-1, UINF-2 (fail closed) and UINF-3 (discovery members) (section 14); no reference application decrypts (section 15.7).
 
 ## What it adds / removes and why
 

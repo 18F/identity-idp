@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Plan 5.6, agency verification. `POST /api/openid_connect/introspect` (RFC 7662): the resource server named in `aud` authenticates with `private_key_jwt` and receives the full active response with the agency-level `sub`, `act`, `delegation_id` and the identity attributes its registered bundle allows while the sign-in is live; the public-client service provider may introspect its own token with a DPoP proof and receives a limited response; everyone else gets `{"active": false}`. The foundation's agency would have called userinfo with a token the service provider also held.
+Section 8, agency verification. `POST /api/openid_connect/introspect` (RFC 7662): the resource server named in `aud` authenticates with `private_key_jwt` and receives the full active response with the agency-level `sub`, `act`, `delegation_id` and the identity attributes its registered bundle allows while the sign-in is live; the public-client service provider may introspect its own token with a DPoP proof and receives a limited response; everyone else gets `{"active": false}`. The foundation's agency would have called userinfo with a token the service provider also held.
 
 ## Requirements it satisfies
 
-FR-VER-1 to FR-VER-8, FR-TOK-5, FR-TOK-6. Companion §6 (INT-1..11 as amended in §6.4, INT-13 to INT-16), NIST IR 8587 §5.2.1.1 element list.
+FR-VER-1 to FR-VER-8, FR-TOK-5, FR-TOK-6. Protocol rows INT-1 to INT-17 (section 8), NIST IR 8587 §5.2.1.1 element list.
 
 ## What it adds / removes and why
 
@@ -45,11 +45,11 @@ Diff against `delegated-access-token-lifecycle`. Check first: the caller rules (
 
 ## Known open items and later amendments
 
-- Amended 2026-10-11 (reuse review): the form on `DelegatedAccessClientHandling`, the controller on `DelegatedEndpointConcern` (plan 5.6 item 11).
+- Amended 2026-10-11 (reuse review): the form on `DelegatedAccessClientHandling`, the controller on `DelegatedEndpointConcern` (section 8, As built).
 - The released `email` is the one shared with the service provider (INT-13) until decided otherwise.
-- Held until the harness run (plan 6.1): `DelegatedTokenClaims` exposing identity, email and PII to the SAML builder so `DelegatedSamlAssertion` stops reading them itself.
+- Held until the harness run (Appendix D.3): `DelegatedTokenClaims` exposing identity, email and PII to the SAML builder so `DelegatedSamlAssertion` stops reading them itself.
 - The SAML branch extends the form to accept an assertion ID or an encoded assertion as `token`.
-- D83 (2026-10-13): delegated tokens stay refused at userinfo; FR-TOK-6, INT-1, EXC-6, EXC-18 and E56 confirmed, current behavior kept. The option of accepting a delegated token at userinfo as a bearer token for an agency that cannot yet implement introspection is documented in plan 5.18 (companion §6.6 INT-17, E122; FR Appendix D item 68) and not built, with the recommendation against it: userinfo authenticates no caller and the agency holds no key the token is bound to, so acceptance is bearer acceptance. If it is ever built it touches this branch's `AccessTokenVerifier#load_identity` (today `identities` only, with the comment not to add a second lookup path) and reuses `DelegatedTokenClaims` and the validity list of `OpenidConnectIntrospectForm#token_active?`; it must be time-boxed per API (`token_exchange_resource_servers.userinfo_allowed`, `userinfo_allowed_until`), set in identity-idp-config, never by request parameter; the userinfo analytics event is marked `delegated: true`. Revisit when an agency cannot implement introspection in time (plan 6 item 20).
+- D83 (2026-10-13): delegated tokens stay refused at userinfo; FR-TOK-6, INT-1, EXC-6 and EXC-18 confirmed, current behavior kept. The option of accepting a delegated token at userinfo as a bearer token for an agency that cannot yet implement introspection is documented in section 15.6 (INT-17; section 16, D83) and not built, with the recommendation against it: userinfo authenticates no caller and the agency holds no key the token is bound to, so acceptance is bearer acceptance. If it is ever built it touches this branch's `AccessTokenVerifier#load_identity` (today `identities` only, with the comment not to add a second lookup path) and reuses `DelegatedTokenClaims` and the validity list of `OpenidConnectIntrospectForm#token_active?`; it must be time-boxed per API (`token_exchange_resource_servers.userinfo_allowed`, `userinfo_allowed_until`), set in identity-idp-config, never by request parameter; the userinfo analytics event is marked `delegated: true`. Revisit when an agency cannot implement introspection in time (Appendix D item 20).
 
 ## Depends on / depended on by
 

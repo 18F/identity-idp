@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Plan 5.2, authorize request and the consent screen. The service provider names applications in the request as `token_exchange:<scope value>`; Login.gov refuses unknown or unaccepted ones at authorize, shows the requested applications selected and locked on the completions screen, records one approval per application, and lists the approved values in the token response `scope`. It replaces the foundation's consent over already-connected applications and removes the bare `token_exchange` attribute scope whose side effect skipped the screen.
+Section 2, authorize request and the consent screen. The service provider names applications in the request as `token_exchange:<scope value>`; Login.gov refuses unknown or unaccepted ones at authorize, shows the requested applications selected and locked on the completions screen, records one approval per application, and lists the approved values in the token response `scope`. It replaces the foundation's consent over already-connected applications and removes the bare `token_exchange` attribute scope whose side effect skipped the screen.
 
 ## Requirements it satisfies
 
-FR-CEN-1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 17; FR-CUX-1 to FR-CUX-11. Companion §4.1–§4.6 (CON-1..19 as amended in §4.8 and §4.9, CON-21).
+FR-CEN-1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 17; FR-CUX-1 to FR-CUX-11. Protocol rows CON-1 to CON-26 and CON-9a (section 2).
 
 ## What it adds / removes and why
 
@@ -58,9 +58,9 @@ Diff against `delegated-access-registry`. Check first: `validate_delegation_scop
 
 ## Known open items and later amendments
 
-- Amended 2026-10-11 (reuse review): items 9 to 11 of plan 5.2 (partition, single parse, loaded identity).
-- Declines no longer exist as records (plan 5.2 Findings 1); the outcomes report counts `withdrawn_before_use` instead (D68).
-- The approved mockup needs a revision for the locked, disabled checkbox (plan 5.2 Findings 2).
+- Amended 2026-10-11 (reuse review): partition, single parse, loaded identity (section 2, As built).
+- Declines no longer exist as records (section 2); the outcomes report counts `withdrawn_before_use` instead (D68).
+- The approved mockup needs a revision for the locked, disabled checkbox (section 2, How to review).
 - The fraud-signals branch adds `record_delegation_consent` release hooks into this concern and controller.
 
 ## Depends on / depended on by

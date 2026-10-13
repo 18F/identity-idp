@@ -44,21 +44,21 @@ Canonical text: https://openid.net/specs/openid-connect-core-1_0.html
 - **§4 Initiating login from a third party.** `iss`, `login_hint`, `target_link_uri`; the relying
   party MUST verify `iss` is an issuer it trusts and MUST validate `target_link_uri` against open
   redirects. No identity-idp code: the pattern is implemented in the reference applications
-  (companion §16, TPL-1 to TPL-7; plan 5.13).
+  (section 15.2, TPL-1 to TPL-7).
 
 ## Deliberate choices and deviations
 
 - **`consent_required` at the token endpoint.** OpenID Connect defines it for the authorization
   endpoint; using it on the exchange gives the service provider an actionable code naming the scope
   to request (D31). It is given only to an authenticated caller for a registered resource.
-- **Delegation scopes are plain scope strings** with a `token_exchange:` prefix (E1), not Rich
-  Authorization Requests (companion §0.2, RFC 9396 rejected).
+- **Delegation scopes are plain scope strings** with a `token_exchange:` prefix, not Rich
+  Authorization Requests (the document's Conventions, "Standards over invention": RFC 9396 rejected).
 - **Claims released by the agency's bundle, not the sign-in's scopes** (INT-11): the person approved
   the agency receiving its bundle, not the service provider choosing what the agency learns.
 - **No new userinfo behavior for delegated tokens**: they are refused there; the agency reads
-  identity through introspection or the SAML attribute statement (companion §6.1 "Why INT-10").
+  identity through introspection or the SAML attribute statement (section 8, INT-10).
 - **Third-party-initiated login is browser-only** and needs no identity-idp change; it is listed so
-  the two integration patterns are not confused (companion §16.1).
+  the two integration patterns are not confused (section 15.2).
 
 ## Questions this digest answers
 

@@ -1,14 +1,14 @@
 # The foundation: branch `sbx-taigrr`
 
-Source: `docs/delegated-access-implementation-plan.md` section 3 (3.1 components, 3.3 collisions, 3.4 kept pieces), section 4 (approach) and the "Remove, and why" lists of each 5.x section. Branch reviewed at `0b0539e19` (15 commits, 91 files, about 6,200 lines added, 206 spec examples).
+Source: Appendix E of `docs/delegated-access-functional-requirements.md` (E.1 what the foundation is, E.2 the approach, E.3 kept and generalized, E.4 replaced or removed, E.5 what this means when changing things) and the As built lists of sections 1 to 14. Branch reviewed at `0b0539e19` (15 commits, 91 files, about 6,200 lines added, 206 spec examples).
 
 ## What it is
 
-`sbx-taigrr` is the branch `login-delegated-access` starts from: `main` at `827da132a` plus the `token-exchange` branch (an RFC 8693 exchange with target opt-in, per-application grants and account-page toggles) merged with `proofing/socure-identity-artifacts` (identity-document image and metadata sharing). The base branch is `sbx-taigrr` with `main` merged (plan section 2) and the three documents under `docs/`; every feature branch is stacked on that.
+`sbx-taigrr` is the branch `login-delegated-access` starts from: `main` at `827da132a` plus the `token-exchange` branch (an RFC 8693 exchange with target opt-in, per-application grants and account-page toggles) merged with `proofing/socure-identity-artifacts` (identity-document image and metadata sharing). The base branch is `sbx-taigrr` with `main` merged (Appendix E.1) and the document under `docs/`; every feature branch is stacked on that.
 
 Its design is not a partial implementation of the functional requirements; it answers a different question, which is why the stack layers a new architecture on top of it (ported by hand from `token-exchange2-login`, never merged) rather than finishing it.
 
-## Components (plan 3.1)
+## Components (Appendix E.1)
 
 1. `POST /api/openid_connect/exchange` (`OpenidConnect::ExchangeController`, `OpenidConnectTokenExchangeForm`) with a `Rack::Cors` rule in `config/application.rb` so browsers can call it.
 2. A bare `token_exchange` scope, honored only for service providers listed in the `token_exchange_service_providers` JSON key of `application.yml`, treated as an IAL2 attribute scope so it flows through `requested_attributes`.
@@ -27,17 +27,17 @@ Its design is not a partial implementation of the functional requirements; it an
 - **A full user access token for the target.** The foundation mints through `IdentityLinker` against the target service provider, so the target appears in connected services as if the person had signed in there, a later direct sign-in skips its consent screen, the token works at userinfo, and an `id_token` is returned to the caller (FR-TOK-6, FR-CEN-12 violated). The requirements issue an opaque reference the agency verifies by introspection; nothing is created at the agency.
 - **Consent per connected application.** The screen lists the applications the person has already connected that opted in to the caller; the request names no target, so Login.gov cannot refuse an unknown one at authorize (FR-CEN-1, FR-CEN-2). The requirements name applications in the request (`token_exchange:<scope value>`) and define reach by the registry.
 - **Lifetime is the caller's Rails session**, with no refresh, no revocation endpoint and no cascade (FR-TOK-10 to FR-TOK-16 missing).
-- **Vocabulary.** The code calls the service provider the "broker"; the project says *service provider* (plan 4.5).
+- **Vocabulary.** The code calls the service provider the "broker"; the project says *service provider* (Conventions, "Vocabulary").
 
-## Kept and generalized (plan 3.4)
+## Kept and generalized (Appendix E.3)
 
 1. **Agency opt-in to specific service providers.** `allowed_token_exchange_brokers` becomes `allowed_delegation_service_providers` on the application row (empty means any approved service provider), enforced at authorize and at exchange (FR-CEN-2; D7). Registry branch.
 2. **IAL forwarded, never elevated** (FR-FIT-5): `ial` and `aal` copied onto the delegated token. Token-exchange branch.
 3. **The `act` claim naming the service provider** (FR-VER-3): moves from the target `id_token` to the introspection response (`act: {sub: <issuer>}`) and the SAML `actor` attribute. Introspection and SAML branches.
 4. **Analytics on every decision** (FR-OPS-2), renamed to the new vocabulary; `openid_connect_token_exchange` keeps its name with new properties.
 5. **No target-side error until the caller has cleared its own gates** (audience probing): the exchange form validates client, request shape, subject token and proof before it says anything about the registry or approvals; `consent_required` is given only to an authenticated caller for a registered resource (D31).
-6. **Document image and metadata sharing for a direct service provider** (plan 5.12): kept on the base behind `document_images_sharing_enabled`, on in the sandbox only (D49). Not a branch.
-7. **mDL exemption** for image sharing (`SocureImageRetrievalJob` skips mDL sessions); compatible with `main`'s own mDL early return (plan section 2).
+6. **Document image and metadata sharing for a direct service provider** (section 15.1): kept on the base behind `document_images_sharing_enabled`, on in the sandbox only (D49). Not a branch.
+7. **mDL exemption** for image sharing (`SocureImageRetrievalJob` skips mDL sessions); compatible with `main`'s own mDL early return (Appendix E.1).
 8. **Per-application toggles on the account page**: the pattern (one control per application under the service provider, confirmation before approving) is kept; the population becomes every registered application that accepts the service provider, not the ones the person connected to (D4, D23).
 9. **One consent choice per application, grouped by agency**: the foundation's screen already works at application granularity, which is the decided granularity (D1).
 
@@ -60,7 +60,7 @@ Its design is not a partial implementation of the functional requirements; it an
 | `bill_target` and `billing_request_id` keyed to the browser session | Replaced by `Billing::DelegatedReturnRecorder` keyed to the approval (`tx:<delegation_id>:<billing issuer>:<ial>`) | `delegated-access-billing-reporting` |
 | `token-exchange-login-completed` Attempts event and its schema | Replaced by `delegated-access-token-issued` and the delegated event family with `delegation_id` | `delegated-access-fraud-signals` |
 
-## Name collisions resolved deliberately (plan 3.3)
+## Name collisions resolved deliberately (Appendix E.4)
 
 The same name meant different things on `sbx-taigrr` and `token-exchange2-login`; each is resolved inside the branch that owns the new meaning, with no shim keeping both alive.
 
@@ -76,8 +76,8 @@ The same name meant different things on `sbx-taigrr` and `token-exchange2-login`
 
 ## Why this matters when you change things
 
-- **Nothing is kept for compatibility.** Neither branch was in production, so the sandbox database held the foundation's tables and the registry migration drops them. Do not add `legacy`/`old` variants or flags for foundation behavior (plan 4.7).
-- **Refusing null bytes on every lookup by untrusted value** (the foundation's `db_safe?` habit, plan 5.4 Findings 4) is kept as inline checks: `TokenExchangeRefreshToken.lookup`, the exchange form's `subject_token` check, and the revoke and introspect forms' `token` checks. Keep it on any new lookup.
+- **Nothing is kept for compatibility.** Neither branch was in production, so the sandbox database held the foundation's tables and the registry migration drops them. Do not add `legacy`/`old` variants or flags for foundation behavior (Appendix E.5).
+- **Refusing null bytes on every lookup by untrusted value** (the foundation's `db_safe?` habit, section 6) is kept as inline checks: `TokenExchangeRefreshToken.lookup`, the exchange form's `subject_token` check, and the revoke and introspect forms' `token` checks. Keep it on any new lookup.
 - **Target-side errors stay hidden until authentication**: the validation order of `OpenidConnectTokenExchangeForm`, and `{"active": false}` from introspection for anyone but the audience or bound holder (D62), are the foundation's audience-probing rule generalized. Preserve the order when adding checks.
 - **Delegated tokens are refused at userinfo** because they are never `identities` rows; the foundation's channel was exactly that row. `AccessTokenVerifier#load_identity` says so in a comment; do not add a second lookup path.
 - **Document images stay reachable only through a direct sign-in** (INT-16, DOC-1). A delegated token never sets `biometric_sharing_consent_at`, so the artifact store is unreachable by delegation; keep it that way.

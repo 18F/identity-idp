@@ -1,6 +1,6 @@
 # Sandbox notes: what changes between a developer machine and a sandbox
 
-Source: `docs/delegated-access-implementation-plan.md` sections 5.17 and 7.5. A sandbox is a
+Source: `docs/delegated-access-functional-requirements.md` section 13 and Appendix C. A sandbox is a
 personal environment or `dev`/`int`: `RAILS_ENV=production` with a deploy environment other
 than `prod` or `staging`, so entries restricted to `sandbox` are written and `prod`/`staging`
 entries are not.

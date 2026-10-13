@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Plan 5.1, onboarding data model and configuration. The branch turns the foundation's whole-service-provider targets into a registry: an *application* is an agency-owned `service_providers` row with consent content, owning one or more *resource servers* (API URLs); the service provider is approved on its own record; approvals are one live row per (user, service provider issuer, application). It also carries the full "broker" terminology sweep and drops every foundation table and key that contradicts the registry. First branch on `login-delegated-access`; everything else waits on its schema.
+Section 1, onboarding data model and configuration. The branch turns the foundation's whole-service-provider targets into a registry: an *application* is an agency-owned `service_providers` row with consent content, owning one or more *resource servers* (API URLs); the service provider is approved on its own record; approvals are one live row per (user, service provider issuer, application). It also carries the full "broker" terminology sweep and drops every foundation table and key that contradicts the registry. First branch on `login-delegated-access`; everything else waits on its schema.
 
 ## Requirements it satisfies
 
-FR-ONB-1 to FR-ONB-9, FR-OPS-1; the approval record behind FR-CEN-11, FR-CEN-17 and FR-CUX-13. Companion §3 (ONB-1..8 as amended in §3.4, ONB-10 to ONB-14), §10.
+FR-ONB-1 to FR-ONB-9, FR-OPS-1; the approval record behind FR-CEN-11, FR-CEN-17 and FR-CUX-13. Protocol rows ONB-1 to ONB-8, ONB-10, ONB-11, ONB-13 and ONB-14 (section 1); ONB-12 and ONB-15 are section 13.
 
 ## What it adds / removes and why
 
@@ -26,7 +26,7 @@ Removes:
 - `allowed_token_exchange_brokers`: replaced by `allowed_delegation_service_providers`.
 - The two foundation localdev fixtures, `docs/token-exchange.md`, and every "broker" or browser-callable identifier, string and comment (D11, ONB-14).
 
-Configuration keys are introduced by the branch that reads them, not here (E46); only the registry's own keys land.
+Configuration keys are introduced by the branch that reads them, not here; only the registry's own keys land.
 
 ## Key decisions
 
@@ -63,10 +63,10 @@ Diff against `login-delegated-access`; use `git diff $(git merge-base login-dele
 
 ## Known open items and later amendments
 
-- Amended 2026-10-11 (reuse review): `service_provider_record` association and `warn_if_unbillable` (plan 5.1 items 8, 9).
-- Dashboard has none of these fields (plan 6.2); production content comes from `identity-idp-config` (D77, config-content branch).
-- Held until the harness run (plan 6.1): resource-server upsert shared by seeder and updater; `SslCertsLoadable` concern; `DelegatedAccessSeeder` reusing `AgencySeeder#write_agency`; `DelegationApplications.accepting` returning a preloaded relation.
+- Amended 2026-10-11 (reuse review): `service_provider_record` association and `warn_if_unbillable` (section 1, As built).
+- Dashboard has none of these fields (Appendix D.4); production content comes from `identity-idp-config` (D77, config-content branch).
+- Held until the harness run (Appendix D.3): resource-server upsert shared by seeder and updater; `SslCertsLoadable` concern; `DelegatedAccessSeeder` reusing `AgencySeeder#write_agency`; `DelegationApplications.accepting` returning a preloaded relation.
 
 ## Depends on / depended on by
 
-Depends on `login-delegated-access` (main merged, plan section 2). Depended on by every other branch: `delegated-access-consent` reads the applications and grants; the DPoP branch drops the `dpop_required` column this one adds; the config-content branch replaces the seed task's environment guard.
+Depends on `login-delegated-access` (main merged, Appendix E). Depended on by every other branch: `delegated-access-consent` reads the applications and grants; the DPoP branch drops the `dpop_required` column this one adds; the config-content branch replaces the seed task's environment guard.

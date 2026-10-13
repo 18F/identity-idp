@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Plan 5.7, fraud signals: Attempts API delivery to agencies. While a delegation request is in flight the sign-in session's Attempts events are buffered in the KMS-encrypted part of the session; at consent (or when a remembered approval lets the screen be skipped, or on an account-page approval) they are released to each approved application's enrolled agency under the person's identifier at that agency, with a consented event and the identity-verification history; later session events are forwarded live; token issued, refreshed and revoked events carry `delegation_id`. The foundation sent one `token-exchange-login-completed` event to the target at mint and nothing else.
+Section 12, fraud signals: Attempts API delivery to agencies. While a delegation request is in flight the sign-in session's Attempts events are buffered in the KMS-encrypted part of the session; at consent (or when a remembered approval lets the screen be skipped, or on an account-page approval) they are released to each approved application's enrolled agency under the person's identifier at that agency, with a consented event and the identity-verification history; later session events are forwarded live; token issued, refreshed and revoked events carry `delegation_id`. The foundation sent one `token-exchange-login-completed` event to the target at mint and nothing else.
 
 ## Requirements it satisfies
 
-FR-FRD-1 to FR-FRD-9; FR-CEN-13 and FR-TOK-12 (reported to the agency). Companion §8 (ATT-1..18 as amended).
+FR-FRD-1 to FR-FRD-9; FR-CEN-13 and FR-TOK-12 (reported to the agency). Protocol rows ATT-1 to ATT-18 (section 12).
 
 ## What it adds / removes and why
 
@@ -15,7 +15,7 @@ Adds:
 - `AttemptsApi::DelegationContext` at the Rails session root (`delegation_context`, `delegated_attempts_buffer`), started by `OpenidConnect::AuthorizationController#start_delegation_context` when the validated request carries delegation scopes. While `active?`, `AttemptsApi::Tracker#track_event` copies each event into the buffer (`capture_for_delegation`, `user_uuid` and `google_analytics_cookies` removed) without creating an `AgencyIdentity`; capped at `MAX_BUFFERED_EVENTS` (200); listed in `SessionEncryptor::SENSITIVE_PATHS` so it is KMS-encrypted once per save; discarded with the session (FR-FRD-9).
 - `AttemptsApi::DelegatedRelease` at three points: `VerifySpAttributesConcern#record_delegation_consent`, `OpenidConnect::AuthorizationController#release_remembered_delegation` before `login-completed` is recorded, and `Accounts::DelegatedAccess::ApprovalsController#create`. For each deliverable recipient it creates the `AgencyIdentity` if missing (never an `identities` row), forwards the buffer once per recipient per session, writes one `delegated-access-consented` event per approval, releases the `idv-*` history under `AttemptsApi::HistoricalReleaseCheck` (extracted from `Idv::HistoricalAttemptsConcern`), and marks the recipient for live fan-out only when the current sign-in is to that service provider (D66). Released once per SP request id (`mark_released`/`released_for?`, D67). Failures are reported and never block the person.
 - `AttemptsApi::DelegatedEventWriter` includes `AttemptsApi::TrackerEvents`: a forwarded copy keeps the event, replaces `user_uuid`, adds `delegation_id` and `actor_issuer`; a server-side event (consent, token, revocation) carries no IP, user agent or device. Both encrypt to the recipient's key and store through `AttemptsApi::RedisClient#write_event`, so the agency polls the existing endpoint. Logged as `delegated_access_attempts_delivery`.
-- `DelegatedAccessEvents.token_issued` (from `#issue!`), `.token_refreshed` (from the refresh form) and `.access_revoked` (from `TokenExchangeGrant#revoke!` and `TokenExchangeRefreshToken.revoke_family!`, so reuse, lapse and client revocation each tell the one API's agency once). Events are `delegated-access-consented`, `-token-issued`, `-token-refreshed`, `-revoked`; `superseded_by_new_consent` is never reported (E97).
+- `DelegatedAccessEvents.token_issued` (from `#issue!`), `.token_refreshed` (from the refresh form) and `.access_revoked` (from `TokenExchangeGrant#revoke!` and `TokenExchangeRefreshToken.revoke_family!`, so reuse, lapse and client revocation each tell the one API's agency once). Events are `delegated-access-consented`, `-token-issued`, `-token-refreshed`, `-revoked`; `superseded_by_new_consent` is never reported.
 - Schemas: `docs/attempts-api/schemas/events/DelegationEvents.yml`, the four files under `events/delegated-access/`, `actor_issuer` and `delegation_id` in `shared/EventProperties.yml`, the compiled bundle rebuilt (ATT-16).
 
 Removes: the `token_exchange_login_completed` tracker event, its schema and method: it reported a sign-in at the target, which never happens now. Its opaque-session-id and no-network-details choices are kept.
@@ -54,9 +54,9 @@ Diff against `delegated-access-billing-reporting`. Check first: `Tracker#track_e
 
 ## Known open items and later amendments
 
-- Amended 2026-10-11 (reuse review, D74): default on, buffer via `SENSITIVE_PATHS` (no per-event KMS call), one event catalog, renewal and family end reported through `revoke_family!` (plan 5.7 items 12 to 15).
-- Open for the privacy review (plan 5.7 item 11): the buffer carries the whole sign-in including failed-password events with the typed email; the hashed `unique_session_id` correlates service provider and agency events; a mid-session revocation ends tokens but not live fan-out; the `idv-*` history is released whether or not the request was an identity-verification request (ATT-15).
-- Held until the harness run (plan 6.1): `AttemptsApi::HistoricalRelease` and `EventDelivery` extracted from `DelegatedRelease`.
+- Amended 2026-10-11 (reuse review, D74): default on, buffer via `SENSITIVE_PATHS` (no per-event KMS call), one event catalog, renewal and family end reported through `revoke_family!` (section 12, As built).
+- Open for the privacy review (section 12, How to review): the buffer carries the whole sign-in including failed-password events with the typed email; the hashed `unique_session_id` correlates service provider and agency events; a mid-session revocation ends tokens but not live fan-out; the `idv-*` history is released whether or not the request was an identity-verification request (ATT-15).
+- Held until the harness run (Appendix D.3): `AttemptsApi::HistoricalRelease` and `EventDelivery` extracted from `DelegatedRelease`.
 
 ## Depends on / depended on by
 

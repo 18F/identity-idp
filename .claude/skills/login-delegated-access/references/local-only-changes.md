@@ -1,7 +1,7 @@
 # Inventory of local-only and sandbox-only pieces
 
-The authoritative list is the table in `docs/delegated-access-implementation-plan.md`
-section 7.5 ("Environment-specific pieces and how to remove them"); CLAUDE.md section 6 says to
+The authoritative list is the table in Appendix C ("Environment-specific pieces") of
+`docs/delegated-access-functional-requirements.md`; CLAUDE.md section 6 says to
 add to that table whenever a new local-only piece is introduced. This file is the developer-facing
 mirror with exact locations, so each piece can be found, removed or disabled deliberately.
 `scripts/local_only_changes.sh` prints the current `file:line` hits for comparison.

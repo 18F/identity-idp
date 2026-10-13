@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Plan 5.16, per-site keys: a key unique to a person and a service provider, the same on every device, delivered only to the service provider's browser. The branch is a port of the five per-site-keys pull requests (#13618 to #13622 on `18F/identity-idp`), cherry-picked with their original authors and commit messages preserved. It is independent of the delegation chain and has no requirement rows of its own; it sits after the account page and before the DPoP branch so every delegation branch from the exchange on builds on it (D64).
+Section 4, per-site keys: a key unique to a person and a service provider, the same on every device, delivered only to the service provider's browser. The branch is a port of the five per-site-keys pull requests (#13618 to #13622 on `18F/identity-idp`), cherry-picked with their original authors and commit messages preserved. It is independent of the delegation chain and has no requirement rows of its own; it sits after the account page and before the DPoP branch so every delegation branch from the exchange on builds on it (D64).
 
 ## Requirements it satisfies
 
-None of the FR-ONB/CEN/CUX/TOK/VER/FRD/BIL/OPS rows. Functional requirements section 12 (FR-KEY-1 to FR-KEY-7) describes the ported feature; companion §17 and Appendix E row E92. Plan section 8 lists it as "supporting key-custody primitives, no requirement rows of its own".
+None of the FR-ONB/CEN/CUX/TOK/VER/FRD/BIL/OPS rows. Section 4 of the document (FR-KEY-1 to FR-KEY-7 and the protocol row E92) describes the ported feature as supporting key-custody primitives with no requirement rows of its own in the delegation areas.
 
 ## What it adds / removes and why
 
@@ -20,7 +20,7 @@ Why ported here: the sealed key is held in the service provider's page like its 
 
 ## Key decisions
 
-- D56: #13618 and #13619 ported first as their own branch; the rest of the series followed on 2026-10-10 (plan section 7 amendment), so all five are on the branch.
+- D56: #13618 and #13619 ported first as their own branch; the rest of the series followed on 2026-10-10 (section 4), so all five are on the branch.
 - D64: position in the stack (after account page, before DPoP).
 
 ## Key files
@@ -49,8 +49,8 @@ Diff against `delegated-access-account-page`. Review as a port, not as new desig
 ## Known open items and later amendments
 
 - Known limitation from the source: a transient unlock failure followed by a password change deletes the root; the later pull requests drop only the password wrap.
-- The site-key request digest hashes `client_id`, `state` and `site_key_jwk` only, not `dpop_jkt`, so the two authorize parameters coexist without interaction (plan section 7 amendment).
-- Whether a released site key should ever be tied to a delegation is left to future work (plan 5.16).
+- The site-key request digest hashes `client_id`, `state` and `site_key_jwk` only, not `dpop_jkt`, so the two authorize parameters coexist without interaction (section 4).
+- Whether a released site key should ever be tied to a delegation is left to future work (section 4).
 
 ## Depends on / depended on by
 

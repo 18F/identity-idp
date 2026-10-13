@@ -2,19 +2,19 @@
 
 ## Purpose
 
-Plan 5.10, client key binding (RFC 9449 DPoP) for the public-client service provider. The branch is the whole proof-of-possession layer in one reviewable unit (D64): the proof verifier, the `dpop_jkt` binding of the authorization request and code, the DPoP-bound code exchange, the `DPoP` scheme at userinfo and the document images endpoint, and the removal of the per-API `dpop_required` flag. It was assembled from commits first built with 5.4, 5.6 and 5.11 and relocated by rebase, so the exchange, lifecycle and introspection branches above it only call the verifier and compare thumbprints.
+Section 5, client key binding (RFC 9449 DPoP) for the public-client service provider. The branch is the whole proof-of-possession layer in one reviewable unit (D64): the proof verifier, the `dpop_jkt` binding of the authorization request and code, the DPoP-bound code exchange, the `DPoP` scheme at userinfo and the document images endpoint, and the removal of the per-API `dpop_required` flag. It was assembled from commits first built with 5.4, 5.6 and 5.11 and relocated by rebase, so the exchange, lifecycle and introspection branches above it only call the verifier and compare thumbprints.
 
 Amended 2026-10-13 (D82): key binding is a per-client setting, `service_providers.dpop_required` (default false, public clients only), independent of delegation approval. `ServiceProvider#dpop_bound?` (`pkce` and `dpop_required`) decides alone where the forms and the call sites asked `delegation_service_provider?` before. A flagged client is bound strictly; an unflagged public client approved for delegation is a bearer client end to end, at the token exchange included. As built, 2026-10-13: pending.
 
 ## Requirements it satisfies
 
-FR-TOK-19, FR-TOK-22, FR-TOK-23 (the parts built here), FR-TOK-24, FR-TOK-25 (each as amended 2026-10-13, D82). Companion §5.5 (EXC-17 to EXC-19 as amended, EXC-19a), Appendix C as amended, Appendix E rows E28–E32, E53–E57, E98, E102, E121.
+FR-TOK-19, FR-TOK-22, FR-TOK-23 (the parts built here), FR-TOK-24, FR-TOK-25 (each as amended 2026-10-13, D82). Protocol rows EXC-17 to EXC-19 and EXC-19a (section 5); decisions D19 to D22, D46, D47, D64 and D82 (section 16).
 
 ## What it adds / removes and why
 
 Adds:
 - `DpopProofVerifier`: the RFC 9449 §4.3 checks in order (`typ` `dpop+jwt`, `alg` in `ALLOWED_ALGORITHMS` ES256/RS256, public-only `jwk`, signature, `htm`, normalized `htu`, `iat` within `dpop_proof_max_age_seconds` (300) either side of now, `ath` when a token accompanies the proof, expected thumbprint when the token is bound, single-use `jti` last so a rejected proof never consumes one). Missing proof, key mismatch and replay get their own description; every other failure shares one, so the response does not help tune a forged proof. No server nonce (D22).
-- `ReplayGuard.first_use?(namespace:, scope:, value:, ttl:)`: the one Redis `SET NX` for single-use values, keyed by namespace and a SHA-256 of presenter and value; the proof `jti` is recorded under the key thumbprint for twice the window (E98). The token-exchange branch reuses it for client-assertion `jti`.
+- `ReplayGuard.first_use?(namespace:, scope:, value:, ttl:)`: the one Redis `SET NX` for single-use values, keyed by namespace and a SHA-256 of presenter and value; the proof `jti` is recorded under the key thumbprint for twice the window. The token-exchange branch reuses it for client-assertion `jti`.
 - `OpenidConnectAuthorizeForm#dpop_jkt`: required for a `pkce` client approved for delegation (`dpop_binding_required?`, `dpop_jkt_required`; amended 2026-10-13, D82: required when the record sets `dpop_required`, through `ServiceProvider#dpop_bound?`), accepted well-formed from any client (`BASE64URL_SHA256_FORMAT`, shared with the S256 `code_challenge` check); stored through `IdentityLinker#link_identity(dpop_jkt:)` on `identities.dpop_jkt` only when binding applies (D21).
 - `OpenidConnectTokenForm#validate_dpop_proof`: after every other check for such a client; a code whose identity has no thumbprint is refused (`dpop_code_unbound`); the proof is verified once per form against `identities.dpop_jkt`; the response reports `token_type: DPoP`. `OpenidConnect::TokenController#form_params` reads the proof from the `DPoP` header only.
 - `AccessTokenVerifier#verify_key_binding`: a bound token under `Bearer` refused (`bound_token_requires_dpop`), an unbound token under `DPoP` refused (`token_not_bound`), `WWW-Authenticate: DPoP algs="ES256 RS256"` on the 401; `OpenidConnect::UserInfoController` and `OpenidConnect::DocumentImagesController` pass header, method and URL. `#load_identity` still reads `identities` only, so delegated tokens stay refused with or without a proof.
@@ -36,7 +36,7 @@ Stays elsewhere: `ResourceServerAuthenticator` and `DelegatedAccessClientHandlin
 
 - D19 public client with DPoP (baseline change of 2026-10-09; the confidential-client wording withdrawn); D20 mandatory for every public client approved for delegation; D21 the code bound through `dpop_jkt`; D22 server nonces deferred (rejected: `DPoP-Nonce` round trip, nonce state at Login.gov and every agency).
 - D46 ES256 and RS256; D47 no `dpop_required` flag; D64 one branch for the layer (rejected: leaving each piece where it was first needed).
-- E98: ±300 s window, `jti` kept two windows; amends the companion's "60 s back / 10 s forward".
+- Proof window ±300 s, `jti` kept two windows (section 5, As built); the earlier 60 s back / 10 s forward window is superseded.
 - D82 (2026-10-13): key binding is a per-client setting, `service_providers.dpop_required`, independent of delegation approval; public clients only; strict when set; an unflagged delegation client is a bearer client end to end. Rationale: onboarding flexibility for public clients that cannot implement DPoP yet, tightened later by setting the flag. Rejected: mandatory for delegation-approved public clients with the flag only widening the set (the recommendation); the flag on confidential clients; a soft mode that falls back to bearer when no thumbprint is sent. Security consequence: for an unflagged client the exposure D19 to D22 closed is accepted as an onboarding trade-off, mitigated by 15-minute lifetimes, rotation with reuse detection, revocation cascades and the seeder warning; every delegation-approved public client should set the flag before production (plan 6 item 19). D20 and D47 narrowed, not withdrawn: binding is still never per API.
 
 ## Key files
@@ -63,10 +63,10 @@ Diff against `delegated-access-site-keys`. Read `DpopProofVerifier` once against
 
 ## Known open items and later amendments
 
-- Amended 2026-10-11 (reuse review): `ReplayGuard` and `BASE64URL_SHA256_FORMAT` (plan 5.10 items 7, 8); `ath` via `Digest::SHA256.urlsafe_base64digest`.
+- Amended 2026-10-11 (reuse review): `ReplayGuard` and `BASE64URL_SHA256_FORMAT` (section 5, As built); `ath` via `Digest::SHA256.urlsafe_base64digest`.
 - D22 revisit triggers: partner clock skew, pre-computed proofs observed, or an agency asking for nonces.
-- Held until the harness run (plan 6.1): `Addressable` for `htu` normalization.
-- Amended 2026-10-13 (D82): `service_providers.dpop_required`, `ServiceProvider#dpop_bound?`, the bearer path for an unflagged public client, the two seeder and updater warnings, the fixture flag on the reference browser client (plan 5.10 items 9, 10; FR Appendix D item 67; companion EXC-19a, E121). As built, 2026-10-13: pending.
+- Held until the harness run (Appendix D.3): `Addressable` for `htu` normalization.
+- Amended 2026-10-13 (D82): `service_providers.dpop_required`, `ServiceProvider#dpop_bound?`, the bearer path for an unflagged public client, the two seeder and updater warnings, the fixture flag on the reference browser client (section 5 As built; EXC-19a; section 16, D82). As built, 2026-10-13: pending.
 - Review item (D82): every delegation-approved public client sets `dpop_required` before production; the Dashboard needs the field before partners can set it there.
 
 ## Depends on / depended on by

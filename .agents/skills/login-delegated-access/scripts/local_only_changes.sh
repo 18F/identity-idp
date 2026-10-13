@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Read-only inventory of the local-only and sandbox-only markers in an identity-idp worktree,
-# grouped by category, to compare with references/local-only-changes.md (and plan section 7.5).
+# grouped by category, to compare with references/local-only-changes.md (and Appendix C of the document).
 # Prints file:line hits; values from config/application.yml are never printed, only key names.
 #
 #   local_only_changes.sh            inventory the identity-idp worktree (IDP_DIR, default: cwd

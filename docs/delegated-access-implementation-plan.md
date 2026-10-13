@@ -1,5 +1,11 @@
 # Review of `18F/identity-idp` branch `sbx-taigrr` against the functional requirements, and the plan for `login-delegated-access`
 
+> **Historical document.** This implementation plan records how the delegated-access work was planned
+> and built through 2026-10-13. It is no longer maintained. The authoritative description of the system,
+> organized by feature branch with the decisions log and the traceability matrix, is
+> `docs/delegated-access-functional-requirements.md`.
+
+
 **Date:** 2026-10-09 (supersedes the 2026-10-05 review)
 **Authoritative copy:** `docs/delegated-access-implementation-plan.md` on branch `login-delegated-access` of `identity-idp`, together with `docs/delegated-access-functional-requirements.md` and `docs/delegated-access-requirements.md`. The Google Drive copies are no longer maintained (decided 2026-10-09).
 **Branch reviewed:** `sbx-taigrr` at `0b0539e19` (2026-10-08). Identical on GitHub `18F/identity-idp` and GitLab `lg/identity-idp`. Local clone: `~/coding/worktrees/sbx-taigrr`.

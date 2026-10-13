@@ -1,20 +1,25 @@
 #!/usr/bin/env python3
-"""Regenerate the delegated-access skill's indexes from the three documents under docs/ and git.
+"""Regenerate the delegated-access skill's indexes from docs/delegated-access-functional-requirements.md and git.
 
-Outputs (all under .claude/skills/login-delegated-access/references/):
-  requirements-index.md  every identifier -> document, section, line, plan feature, branch
-  traceability.md        branch -> plan section -> FR rows -> companion rows -> foundation items
-  branches.md            the stack as git sees it (tips, parents, commits, directories touched)
-  decisions.md           D-numbers with the rows that cite them
+The document has one section per feature branch (sections 1 to 14, in stack order), section 15 for the
+base branch and the work outside this repository, section 16 for the decisions log, and Appendix A for
+the traceability matrix. This script parses the branch sections (number, branch, title), their
+functional requirement rows (`| **FR-XXX-n** | … |`) and protocol rows (`| **EXC-n** | … |`), their
+Decisions lists (`- **Dnn** …`), the section 15 rows, the decisions log (`NN. **Dnn — Title.**` under dated
+`##` subsections) and the skill's hand-written `references/foundation.yml`.
 
-and the generated body between the `<!-- traceability:begin -->` / `<!-- traceability:end -->`
-markers of three appendices in the documents themselves (plan 8.1, FR Appendix E, companion
-Appendix F). The appendices are created, with their markers, when missing.
+Outputs (all under .claude/skills/login-delegated-access/references/ unless stated):
+  requirements-index.md  every FR id, protocol id and D-number -> section, branch, line in the document
+  traceability.md        FR row -> section and branch -> protocol rows -> decisions; protocol rows by prefix;
+                         rows owned by section 15; foundation items per section
+  decisions.md           D-numbers with their dated subsection, line and the sections that cite them
+  branches.md            the stack as git sees it (tips, parents, commits with FR ids, directories touched)
+  Appendix A body        between `<!-- traceability:begin -->` and `<!-- traceability:end -->` in the document
 
 Usage:
   build_index.py            regenerate everything, print a one-line summary
-  build_index.py --check    recompute without writing; exit 1 with a diff summary if anything
-                            on disk differs (the base sha in the header line is ignored)
+  build_index.py --check    recompute without writing; exit 1 with a per-file summary if anything on disk
+                            differs (the base sha in the header line is ignored)
 
 Standard library only. Run from anywhere inside the repository.
 """
@@ -33,30 +38,26 @@ REFS_DIR = os.path.join(SKILL_DIR, 'references')
 SKILL_REL = '.claude/skills/login-delegated-access'
 BASE_BRANCH = 'login-delegated-access'
 
-PLAN = 'docs/delegated-access-implementation-plan.md'
-FR = 'docs/delegated-access-functional-requirements.md'
-COMPANION = 'docs/delegated-access-requirements.md'
+DOC = 'docs/delegated-access-functional-requirements.md'
+BASE_SECTION = '15'
+LOG_SECTION = '16'
+BASE_OWNER = 'base branch / outside the repository'
 
 BEGIN = '<!-- traceability:begin -->'
 END = '<!-- traceability:end -->'
 
+HEADING = re.compile(r'^(#{1,6})\s+(.*?)\s*$')
+BRANCH_HEADING = re.compile(r'^(\d+)\.\s+`([a-z0-9-]+)`:\s+(.*)$')
+NUMBERED_HEADING = re.compile(r'^(\d+)\.\s+(.*)$')
+SUBSECTION_HEADING = re.compile(r'^(\d+\.\d+)\s+(.*)$')
+TABLE_ROW = re.compile(r'^\|\s*\*\*((?:FR-)?[A-Z]{1,5}(?:-[A-Z]{2,5})?-\d+[a-z]?|E\d+)\*\*\s*(\([^)|]*\))?\s*\|\s*(.*?)\s*\|\s*$')
+DECISION_BULLET = re.compile(r'^-\s+\*\*(D\d+)\*\*\s+(.*)$')
+DECISION_ENTRY = re.compile(r'^\d+\.\s+\*\*(D\d+)\s+[—–-]+\s+(.*?)\*\*')
 FR_ID = re.compile(r'\bFR-[A-Z]{2,5}-\d+\b')
 FR_RANGE = re.compile(r'\b(FR-[A-Z]{2,5})-(\d+)\s+to\s+\1-(\d+)\b')
-ROW_ID = re.compile(r'\b([A-Z]{2,5})-(\d+)([a-z]?)\b')
-ROW_RANGE = re.compile(r'\b([A-Z]{2,5})-(\d+)(?:\.\.(\d+)|\s+to\s+\1-(\d+))\b')
-IS_E_ROW = re.compile(r'^E\d+$')
-E_ID = re.compile(r'(?<![A-Za-z])E(\d+)(?:\s*[–-]\s*E(\d+))?\b')
-D_ID = re.compile(r'(?<![A-Za-z])D(\d+)(?:\s*[–-]\s*D(\d+))?\b')
-SECTION_REF = re.compile(r'§\s?(\d+(?:\.\d+)?)(?:\s*[–-]\s*§?\s?(\d+(?:\.\d+)?))?')
-FEATURE_HEADING = re.compile(r'^### (5\.\d+)\s+(.*?)\s*$')
-HEADING = re.compile(r'^(#{1,4})\s+(.*?)\s*$')
-TABLE_ROW_BOLD = re.compile(r'^\|\s*\*\*([A-Z]{2,5}(?:-[A-Z]{2,5})?-\d+[a-z]?)\*\*\s*(\([^)|]*\))?\s*\|')
-TABLE_ROW_E = re.compile(r'^\|\s*(E\d+)\s*\|')
-DECISION_LINE = re.compile(r'^\d+\.\s+\*\*(D\d+)\s+[—–-]+\s+(.*?)\*\*')
-APPD_ITEM = re.compile(r'^(\d+)\.\s+(.*)$')
-STACK_ROW = re.compile(r'^\|\s*(\d+)\s*\|\s*`([a-z0-9-]+)`\s*\|\s*(5\.\d+)\s*\|\s*(.*?)\s*\|\s*(.*?)\s*\|\s*$')
-COMPANION_PREFIXES = ('ONB', 'CON', 'ACC', 'EXC', 'INT', 'REF', 'ATT', 'BIL', 'DISC', 'SAML',
-                      'TPL', 'DOC', 'UINF', 'KEY')
+ROW_ID = re.compile(r'\b([A-Z]{2,5}(?:-[A-Z]{2,5})?)-(\d+)([a-z]?)\b')
+ROW_RANGE = re.compile(r'\b([A-Z]{2,5}(?:-[A-Z]{2,5})?)-(\d+)(?:\.\.(\d+)|\s+to\s+\1-(\d+))\b')
+D_ID = re.compile(r'(?<![A-Za-z])D(\d+)(?:\s*(?:[–-]|to)\s*D(\d+))?\b')
 
 
 # --------------------------------------------------------------------------- helpers
@@ -71,14 +72,14 @@ def run_git(*args, default=None):
 
 def find_root():
     root = run_git('rev-parse', '--show-toplevel')
-    if root and os.path.isfile(os.path.join(root, PLAN)):
+    if root and os.path.isfile(os.path.join(root, DOC)):
         return root
     here = SKILL_DIR
     while here != os.path.dirname(here):
-        if os.path.isfile(os.path.join(here, PLAN)):
+        if os.path.isfile(os.path.join(here, DOC)):
             return here
         here = os.path.dirname(here)
-    sys.exit('cannot find the repository root (docs/delegated-access-implementation-plan.md)')
+    sys.exit(f'cannot find the repository root ({DOC})')
 
 
 def natural_key(identifier):
@@ -98,24 +99,18 @@ def expand_fr(text):
     return sorted_ids(ids)
 
 
-def expand_rows(text):
-    """Companion row identifiers (ONB-1, EXC-17..19, CON-1 to CON-5, E28–E32) in text."""
+def expand_rows(text, known_prefixes):
+    """Protocol row identifiers in text (ONB-1, EXC-17..19, CON-1 to CON-5), limited to known prefixes."""
     text = FR_ID.sub(' ', text)
     text = re.sub(r'\bRFC\s*\d+\b', ' ', text)
     ids = []
     for prefix, lo, hi_dots, hi_to in ROW_RANGE.findall(text):
-        if prefix not in COMPANION_PREFIXES:
-            continue
-        hi = hi_dots or hi_to
-        ids.extend(f'{prefix}-{n}' for n in range(int(lo), int(hi) + 1))
+        if prefix in known_prefixes:
+            hi = hi_dots or hi_to
+            ids.extend(f'{prefix}-{n}' for n in range(int(lo), int(hi) + 1))
     for prefix, num, suffix in ROW_ID.findall(text):
-        if prefix in COMPANION_PREFIXES:
+        if prefix in known_prefixes:
             ids.append(f'{prefix}-{num}{suffix}')
-    for lo, hi in E_ID.findall(text):
-        if hi:
-            ids.extend(f'E{n}' for n in range(int(lo), int(hi) + 1))
-        else:
-            ids.append(f'E{lo}')
     return sorted_ids(ids)
 
 
@@ -129,22 +124,13 @@ def expand_decisions(text):
     return sorted_ids(ids)
 
 
-def section_refs(text):
-    refs = []
-    for lo, hi in SECTION_REF.findall(text):
-        refs.append(f'§{lo}' + (f'–§{hi}' if hi else ''))
-    for appendix in re.findall(r'Appendix [A-F]\b', text):
-        refs.append(appendix)
-    return list(OrderedDict.fromkeys(refs))
-
-
 def join(ids, empty='—'):
     ids = list(ids)
     return ', '.join(ids) if ids else empty
 
 
 def compress(ids, empty='—'):
-    """Identifier list with consecutive numbers collapsed: FR-ONB-1..9, CON-1..19, E53..57."""
+    """Identifier list with consecutive numbers collapsed: FR-ONB-1..9, CON-1..19, D1..D3."""
     groups = OrderedDict()
     for identifier in sorted_ids(ids):
         match = re.match(r'^(.*?)(\d+)$', identifier)
@@ -172,6 +158,10 @@ def cell(text):
     return str(text).replace('|', '\\|').replace('\n', ' ')
 
 
+def row_prefix(row_id):
+    return re.sub(r'-\d+[a-z]?$', '', row_id)
+
+
 # --------------------------------------------------------------------------- document model
 
 class Document:
@@ -182,7 +172,7 @@ class Document:
             with open(self.path, encoding='utf-8') as handle:
                 text = handle.read()
         self.text = text
-        # Generated matrix bodies are blanked (line count preserved) so the parser never reads its own output.
+        # The generated Appendix A body is blanked (line count preserved) so the parser never reads its own output.
         self.lines = []
         in_generated = False
         for line in self.text.split('\n'):
@@ -203,15 +193,6 @@ class Document:
             if match:
                 self.headings.append((i, len(match.group(1)), match.group(2)))
 
-    def heading_at(self, line_no, min_level=1):
-        best = None
-        for number, level, text in self.headings:
-            if number > line_no:
-                break
-            if level >= min_level:
-                best = text
-        return best or ''
-
     def nearest_heading_of_level(self, line_no, level):
         best = None
         for number, lvl, text in self.headings:
@@ -222,169 +203,86 @@ class Document:
         return best or ''
 
     def section_body(self, start_line, same_or_higher_level):
-        """Lines (1-based numbers and text) from start_line until the next heading of the given level or higher."""
+        """(1-based line number, text) pairs from start_line until the next heading at or above the given level."""
         out = []
+        in_code = False
         for i in range(start_line, len(self.lines)):
             line = self.lines[i]
-            match = HEADING.match(line)
+            if line.startswith('```'):
+                in_code = not in_code
+            match = None if in_code else HEADING.match(line)
             if match and len(match.group(1)) <= same_or_higher_level:
                 break
             out.append((i + 1, line))
         return out
 
 
-def section_number(heading):
-    match = re.match(r'^(Appendix [A-F])\b', heading)
-    if match:
-        return match.group(1)
-    match = re.match(r'^((?:\d+|[A-Z])(?:\.\d+)*)\.?\s', heading)
-    return match.group(1) if match else heading.strip()
-
-
-# --------------------------------------------------------------------------- parsing
-
-def parse_rows(doc, want_e_rows=False):
-    """Requirement rows in a document: id -> list of {line, section, qualifier}."""
-    rows = defaultdict(list)
-    for i, line in enumerate(doc.lines, 1):
-        match = TABLE_ROW_BOLD.match(line)
-        if match:
-            rows[match.group(1)].append({
-                'line': i,
-                'section': doc.heading_at(i),
-                'qualifier': (match.group(2) or '').strip(),
-                'text': line,
-            })
+def parse_sections(doc):
+    """Level-1 numbered sections: number -> {number, branch, title, line, subsections}."""
+    sections = OrderedDict()
+    for line_no, level, text in doc.headings:
+        if level != 1:
             continue
-        if want_e_rows:
-            match = TABLE_ROW_E.match(line)
-            if match:
-                rows[match.group(1)].append({
-                    'line': i, 'section': doc.heading_at(i), 'qualifier': '', 'text': line,
-                })
-    return rows
-
-
-def parse_features(plan):
-    """Plan 5.x features: number -> {title, line, branch, fr, rows, sections, decisions, requirements_text}."""
-    features = OrderedDict()
-    for line_no, level, text in plan.headings:
-        match = FEATURE_HEADING.match(f'### {text}') if level == 3 else None
-        if not match:
-            continue
-        number, title = match.groups()
-        body = plan.section_body(line_no, 3)
-        feature = {
-            'number': number, 'title': title, 'line': line_no, 'branch': None,
-            'fr': [], 'rows': [], 'sections': [], 'decisions': [], 'requirements_text': '',
-        }
-        for _, body_line in body:
-            worktree = re.search(r'\*\*Worktree\*\*\s*`([a-z0-9-]+)`', body_line)
-            if worktree and not feature['branch']:
-                feature['branch'] = worktree.group(1)
-            req = re.search(r'\*\*Requirements[^*]*\*\*\s*(.*?)(?=\*\*Decisions|\*\*Companion repository|$)', body_line)
-            if req:
-                requirements_text = req.group(1).strip()
-                feature['requirements_text'] = requirements_text
-                feature['fr'] = expand_fr(requirements_text)
-                feature['rows'] = expand_rows(requirements_text)
-                feature['sections'] = section_refs(requirements_text)
-            decisions = re.search(r'\*\*Decisions:\*\*\s*(.*?)(?:\.\s|$)', body_line)
-            if decisions:
-                feature['decisions'] = sorted_ids(feature['decisions'] + expand_decisions(decisions.group(1)))
-        features[number] = feature
-    return features
-
-
-def parse_stack(plan):
-    """Plan section 8 table: ordered list of {position, branch, feature, fr_text, rows_text}."""
-    stack = []
-    for line in plan.lines:
-        match = STACK_ROW.match(line)
+        match = BRANCH_HEADING.match(text)
         if match:
-            position, branch, feature, fr_text, rows_text = match.groups()
-            stack.append({'position': int(position), 'branch': branch, 'feature': feature,
-                          'fr_text': fr_text, 'rows_text': rows_text})
-    stack.sort(key=lambda row: row['position'])
-    seen = set()
-    return [row for row in stack if not (row['branch'] in seen or seen.add(row['branch']))]
+            number, branch, title = match.groups()
+            sections[number] = {'number': number, 'branch': branch, 'title': title.strip(), 'line': line_no}
+            continue
+        match = NUMBERED_HEADING.match(text)
+        if match:
+            number, title = match.groups()
+            sections[number] = {'number': number, 'branch': None, 'title': title.strip(), 'line': line_no}
+    for section in sections.values():
+        body = doc.section_body(section['line'], 1)
+        section['end'] = body[-1][0] if body else section['line']
+        section['fr'] = OrderedDict()      # id -> occurrence
+        section['rows'] = OrderedDict()    # id -> occurrence
+        section['decisions'] = []          # [(D, gist, line)]
+        current = ''
+        for line_no, line in body:
+            heading = HEADING.match(line)
+            if heading:
+                current = heading.group(2)
+                continue
+            row = TABLE_ROW.match(line)
+            if row:
+                row_id, qualifier, text = row.groups()
+                occurrence = {
+                    'id': row_id, 'line': line_no, 'section': section['number'],
+                    'subsection': current, 'qualifier': (qualifier or '').strip(), 'text': text,
+                }
+                target = section['fr'] if row_id.startswith('FR-') else section['rows']
+                target.setdefault(row_id, occurrence)
+                continue
+            if current == 'Decisions':
+                bullet = DECISION_BULLET.match(line)
+                if bullet:
+                    section['decisions'].append((bullet.group(1), bullet.group(2).strip(), line_no))
+    return sections
 
 
-def parse_decisions(plan):
-    """Plan section 9 decisions: D-number -> {title, date_heading, line, fr, rows}."""
+def parse_decisions_log(doc, log_section):
+    """Section 16 entries: D-number -> {title, date_heading, line}."""
     decisions = OrderedDict()
-    start = next((n for n, lvl, text in plan.headings if lvl == 2 and text.startswith('9.')), None)
-    if start is None:
+    if log_section is None:
         return decisions
-    for line_no, line in plan.section_body(start, 2):
-        match = DECISION_LINE.match(line)
+    for line_no, line in doc.section_body(log_section['line'], 1):
+        match = DECISION_ENTRY.match(line)
         if not match:
             continue
         number, title = match.groups()
         decisions[number] = {
             'title': title.strip().rstrip('.'),
-            'date_heading': plan.nearest_heading_of_level(line_no, 3),
+            'date_heading': doc.nearest_heading_of_level(line_no, 2),
             'line': line_no,
-            'fr': expand_fr(line),
-            'rows': expand_rows(line),
         }
     return OrderedDict(sorted(decisions.items(), key=lambda item: natural_key(item[0])))
 
 
-def parse_appendix_d(fr):
-    """FR doc Appendix D numbered items: item number -> {line, date_heading, fr, decisions}."""
-    items = OrderedDict()
-    start = next((n for n, lvl, text in fr.headings if lvl == 2 and text.startswith('Appendix D')), None)
-    if start is None:
-        return items
-    for line_no, line in fr.section_body(start, 2):
-        match = APPD_ITEM.match(line)
-        if match:
-            items[int(match.group(1))] = {
-                'line': line_no,
-                'date_heading': fr.nearest_heading_of_level(line_no, 3),
-                'fr': expand_fr(line),
-                'decisions': expand_decisions(line),
-                'title': re.sub(r'\*\*', '', match.group(2))[:90],
-            }
-    return items
-
-
-def parse_appendix_b(fr):
-    """FR doc Appendix B: FR section number -> companion sections text."""
-    mapping = {}
-    start = next((n for n, lvl, text in fr.headings if lvl == 2 and text.startswith('Appendix B')), None)
-    if start is None:
-        return mapping
-    for _, line in fr.section_body(start, 2):
-        match = re.match(r'^\|\s*(.*?)\s*\|\s*(.*?)\s*\|\s*$', line)
-        if not match or match.group(1) in ('This document', '---'):
-            continue
-        mapping[section_number(match.group(1) + ' ')] = match.group(2)
-    return mapping
-
-
-def parse_implemented(fr):
-    """FR doc 'Implemented <date> (feature 5.x ...)' paragraphs: FR id -> list of (date, feature)."""
-    implemented = defaultdict(list)
-    for line in fr.lines:
-        match = re.match(r'^\*\*Implemented (\d{4}-\d{2}-\d{2}) \(feature (5\.\d+)[^)]*\):\*\*\s*(.*)$', line)
-        if match:
-            date, feature, rest = match.groups()
-            for fr_id in expand_fr(rest):
-                implemented[fr_id].append((date, feature))
-    return implemented
-
-
-def fr_section_of(fr, line_no):
-    return section_number(fr.nearest_heading_of_level(line_no, 2) + ' ')
-
-
-def section_label(doc, line_no):
-    """'3. Partner onboarding › Functional requirements' style label for a row."""
-    major = doc.nearest_heading_of_level(line_no, 2)
-    minor = doc.heading_at(line_no)
-    return major if minor == major or not minor else f'{major} › {minor}'
+def subsection_label(doc, line_no):
+    """'15.1 Document-image sharing …' for a row inside section 15; '' elsewhere."""
+    heading = doc.nearest_heading_of_level(line_no, 2)
+    return heading if SUBSECTION_HEADING.match(heading) else ''
 
 
 # --------------------------------------------------------------------------- foundation.yml (stdlib subset parser)
@@ -432,7 +330,6 @@ def _parse_sequence(lines, index, indent):
             items.append(value)
             continue
         if re.match(r'^[^\[\]{}"\'#][^:]*:(\s|$)', content):
-            # inline mapping start: treat the rest as a mapping whose first line is this content
             child_indent = indent + 2
             lines[index] = (child_indent, content)
             value, index = _parse_mapping(lines, index, child_indent)
@@ -520,7 +417,7 @@ def _split_flow(text):
 
 
 FOUNDATION_FR_KEYS = ('fr', 'fr_id', 'fr_ids', 'requirements', 'functional_requirements', 'satisfies')
-FOUNDATION_ROW_KEYS = ('companion', 'companion_rows', 'rows')
+FOUNDATION_ROW_KEYS = ('rows', 'protocol_rows')
 FOUNDATION_BRANCH_KEYS = ('kept_by', 'branch', 'branches')
 FOUNDATION_NOTE_KEYS = ('note', 'title', 'summary', 'description', 'what')
 
@@ -533,10 +430,10 @@ def _as_list(value):
     return [part.strip() for part in re.split(r'[;,]\s*', str(value)) if part.strip()]
 
 
-def load_foundation(path):
+def load_foundation(path, known_prefixes):
     """Items from references/foundation.yml, or ([], status note) when absent or unreadable."""
     if not os.path.isfile(path):
-        return [], 'references/foundation.yml not present; foundation column left empty'
+        return [], 'references/foundation.yml not present; foundation items left empty'
     try:
         with open(path, encoding='utf-8') as handle:
             data = parse_simple_yaml(handle.read())
@@ -553,7 +450,7 @@ def load_foundation(path):
                 note = next((str(node[key]) for key in FOUNDATION_NOTE_KEYS if node.get(key)), '')
                 rows = []
                 for key in FOUNDATION_ROW_KEYS:
-                    rows.extend(expand_rows(' '.join(_as_list(node.get(key)))))
+                    rows.extend(expand_rows(' '.join(_as_list(node.get(key))), known_prefixes))
                 branches = []
                 for key in FOUNDATION_BRANCH_KEYS:
                     branches.extend(_as_list(node.get(key)))
@@ -576,11 +473,11 @@ def git_branch_info(stack, base):
     """Per branch: tip, parent, commit list, directories touched; graceful when a branch is missing."""
     info = OrderedDict()
     previous = base if run_git('rev-parse', '--verify', '--quiet', base) else None
-    for row in stack:
-        branch = row['branch']
+    for section in stack:
+        branch = section['branch']
         tip = run_git('rev-parse', '--verify', '--quiet', '--short', branch)
-        entry = {'branch': branch, 'feature': row['feature'], 'tip': tip, 'parent': previous,
-                 'commits': [], 'dirs': [], 'present': bool(tip), 'stacked': True}
+        entry = {'branch': branch, 'section': section['number'], 'title': section['title'], 'tip': tip,
+                 'parent': previous, 'commits': [], 'dirs': [], 'present': bool(tip), 'stacked': True}
         if tip and previous:
             entry['stacked'] = run_git('merge-base', '--is-ancestor', previous, branch, default=None) is not None
             log = run_git('log', '--no-merges', '--format=%h%x09%s', f'{previous}..{branch}', default='')
@@ -600,204 +497,260 @@ def git_branch_info(stack, base):
     return info
 
 
-# --------------------------------------------------------------------------- rendering
-
-def header(base_sha):
-    return (f'<!-- generated by {SKILL_REL}/scripts/build_index.py from docs/ and git at {base_sha}; '
-            'do not edit by hand -->')
-
-
-HEADER_SHA = re.compile(r'(from docs/ and git at )[0-9a-f]+;')
-
-
-def normalize(text):
-    return HEADER_SHA.sub(r'\1SHA;', text)
-
+# --------------------------------------------------------------------------- model
 
 class Model:
     """Everything the renderers need, parsed once."""
 
-    def __init__(self, root, texts=None):
-        """texts: optional {relative doc path: text} overriding what is on disk."""
+    def __init__(self, root, text=None):
         self.root = root
-        texts = texts or {}
-        self.plan = Document(root, PLAN, texts.get(PLAN))
-        self.fr = Document(root, FR, texts.get(FR))
-        self.companion = Document(root, COMPANION, texts.get(COMPANION))
-        self.fr_rows = parse_rows(self.fr)
-        self.companion_rows = parse_rows(self.companion, want_e_rows=True)
-        self.plan_rows = parse_rows(self.plan)  # the plan has no requirement tables of its own, but tolerate them
-        self.features = parse_features(self.plan)
-        self.stack = parse_stack(self.plan)
-        self.decisions = parse_decisions(self.plan)
-        self.appendix_d = parse_appendix_d(self.fr)
-        self.appendix_b = parse_appendix_b(self.fr)
-        self.implemented = parse_implemented(self.fr)
-        self.foundation, self.foundation_status = load_foundation(os.path.join(REFS_DIR, 'foundation.yml'))
-        self.feature_branch = {row['feature']: row['branch'] for row in self.stack}
-        for feature in self.features.values():
-            if feature['number'] not in self.feature_branch and feature['branch']:
-                self.feature_branch[feature['number']] = feature['branch']
-        self.fr_features = defaultdict(list)
-        self.row_features = defaultdict(list)
-        for number, feature in self.features.items():
-            for fr_id in feature['fr']:
-                self.fr_features[fr_id].append(number)
-            for row_id in feature['rows']:
-                self.row_features[row_id].append(number)
-        self.e_rows = sorted_ids(r for r in self.companion_rows if IS_E_ROW.match(r))
-        self.plain_rows = sorted_ids(r for r in self.companion_rows if not IS_E_ROW.match(r))
+        self.doc = Document(root, DOC, text)
+        self.sections = parse_sections(self.doc)
+        self.stack = [s for s in self.sections.values() if s['branch']]
+        self.base_section = self.sections.get(BASE_SECTION)
+        self.decisions = parse_decisions_log(self.doc, self.sections.get(LOG_SECTION))
+        # Owner of a row: the first branch section (stack order) that carries it; else section 15.
+        self.fr_rows = OrderedDict()     # id -> [occurrences], owner first
+        self.rows = OrderedDict()        # id -> [occurrences], owner first
+        for section in self.stack + ([self.base_section] if self.base_section else []):
+            for row_id, occurrence in section['fr'].items():
+                self.fr_rows.setdefault(row_id, []).append(occurrence)
+            for row_id, occurrence in section['rows'].items():
+                self.rows.setdefault(row_id, []).append(occurrence)
+        self.fr_rows = OrderedDict(sorted(self.fr_rows.items(), key=lambda item: natural_key(item[0])))
+        self.rows = OrderedDict(sorted(self.rows.items(), key=lambda item: natural_key(item[0])))
+        self.prefixes = tuple(sorted({row_prefix(r) for r in self.rows}))
+        self.foundation, self.foundation_status = load_foundation(os.path.join(REFS_DIR, 'foundation.yml'), self.prefixes)
+        self.section_decisions = {s['number']: sorted_ids(d for d, _, _ in s['decisions']) for s in self.sections.values()}
 
-    def branches_for_features(self, numbers):
-        return list(OrderedDict.fromkeys(self.feature_branch[n] for n in numbers if n in self.feature_branch))
+    # -- lookups
 
-    def companion_rows_for_fr(self, fr_id):
-        rows = []
-        for number in self.fr_features.get(fr_id, []):
-            rows.extend(r for r in self.features[number]['rows'] if not IS_E_ROW.match(r))
-        return sorted_ids(rows)
+    def owner(self, occurrences):
+        return self.sections[occurrences[0]['section']]
 
-    def fr_rows_for_row(self, row_id):
-        ids = []
-        for number in self.row_features.get(row_id, []):
-            ids.extend(self.features[number]['fr'])
-        return sorted_ids(ids)
+    def owner_label(self, occurrences):
+        """'1' for a branch section; '15.3' for a section 15 subsection."""
+        first = occurrences[0]
+        if first['section'] == BASE_SECTION:
+            label = subsection_label(self.doc, first['line'])
+            return label.split(' ', 1)[0] if label else BASE_SECTION
+        return first['section']
 
-    def foundation_for_branch(self, branch, fr_ids):
+    def branch_label(self, occurrences):
+        section = self.owner(occurrences)
+        return f'`{section["branch"]}`' if section['branch'] else BASE_OWNER
+
+    def also_in(self, occurrences):
+        return [self.owner_label([o]) for o in occurrences[1:]]
+
+    def cites(self, text):
+        return expand_fr(text), expand_rows(text, self.prefixes), expand_decisions(text)
+
+    def section_rows(self, number):
+        return sorted_ids(self.sections[number]['rows'])
+
+    def citing_sections(self, d_id):
+        return [n for n, ids in self.section_decisions.items() if d_id in ids]
+
+    def rows_citing(self, d_id, rows):
         hits = []
-        fr_set = set(fr_ids)
+        for row_id, occurrences in rows.items():
+            if any(d_id in expand_decisions(o['text']) for o in occurrences):
+                hits.append(row_id)
+        return hits
+
+    def foundation_for_section(self, section):
+        fr_set = set(section['fr'])
+        hits = []
         for item in self.foundation:
-            if branch in item['branches'] or (not item['branches'] and fr_set.intersection(item['fr'])):
+            if (section['branch'] and section['branch'] in item['branches']) or \
+               (not section['branch'] and BASE_BRANCH in item['branches']) or \
+               (not item['branches'] and fr_set.intersection(item['fr'])):
                 hits.append(item)
         return hits
 
     def foundation_for_fr(self, fr_id):
         return [item for item in self.foundation if fr_id in item['fr']]
 
-    def stack_for_branch(self, branch):
-        return next((row for row in self.stack if row['branch'] == branch), None)
+    def section_of_branch(self, branch):
+        return next((s for s in self.stack if s['branch'] == branch), None)
 
-    def feature_title(self, number):
-        return self.features[number]['title'] if number in self.features else ''
+    def foundation_owner(self, item):
+        for branch in item['branches']:
+            section = self.section_of_branch(branch)
+            if section:
+                return f'section {section["number"]} (`{branch}`)'
+            if branch == BASE_BRANCH:
+                return f'section {BASE_SECTION} (`{branch}`)'
+        return '—'
 
-    def citing_appendix_d(self, d_id):
-        return [str(n) for n, item in self.appendix_d.items() if d_id in item['decisions']]
 
-    def citing_rows(self, d_id):
-        hits = []
-        for row_id, occurrences in self.companion_rows.items():
-            for occurrence in occurrences:
-                if re.search(rf'(?<![A-Za-z]){d_id}\b', occurrence['text']):
-                    hits.append(f'{row_id} (line {occurrence["line"]})')
-        return hits
+# --------------------------------------------------------------------------- rendering
 
-    def citing_features(self, d_id):
-        return [n for n, feature in self.features.items() if d_id in feature['decisions']]
+def header(base_sha):
+    return (f'<!-- generated by {SKILL_REL}/scripts/build_index.py from {DOC} and git at {base_sha}; '
+            'do not edit by hand -->')
+
+
+HEADER_SHA = re.compile(r'( and git at )[0-9a-f]+;')
+
+
+def normalize(text):
+    return HEADER_SHA.sub(r'\1SHA;', text)
+
+
+def section_cell(model, occurrences):
+    label = model.owner_label(occurrences)
+    also = model.also_in(occurrences)
+    return label + (f' (also {", ".join(also)})' if also else '')
+
+
+def counts_line(model):
+    base_fr = sum(1 for o in model.fr_rows.values() if o[0]['section'] == BASE_SECTION)
+    base_rows = sum(1 for o in model.rows.values() if o[0]['section'] == BASE_SECTION)
+    return (f'{len(model.fr_rows)} FR rows, {len(model.rows)} protocol rows ({len(model.prefixes)} prefixes), '
+            f'{len(model.stack)} branch sections, {base_fr + base_rows} rows owned by section {BASE_SECTION}, '
+            f'{len(model.decisions)} decisions')
 
 
 def render_requirements_index(model, base_sha):
+    counts = counts_line(model)
     out = [header(base_sha), '', '# Requirements index', '',
-           'Every identifier in the three delegated-access documents, where it is defined and what implements it.',
-           'Line numbers are those of the documents at the base sha in the header. "Plan feature" and "Branch" come',
-           'from each plan 5.x "**Requirements**" line (ranges expanded) and the plan section 8 table; the',
-           '"Companion rows" of an FR row are the rows the same plan feature cites (feature-level, not row-level),',
-           'and "Companion sections" come from the FR document\'s Appendix B. "Implemented" comes from the FR',
-           'document\'s "**Implemented <date> (feature 5.x …)**" paragraphs. Load the cited section for the text.',
-           '']
-    counts = (f'{len(model.fr_rows)} FR rows, {len(model.plain_rows)} companion rows, {len(model.e_rows)} Appendix E rows, '
-              f'{len(model.features)} plan features, {len(model.decisions)} decisions, {len(model.appendix_d)} Appendix D items')
-    out += [f'Counts: {counts}.', '']
+           f'Every identifier in `{DOC}`, where it is defined and which branch delivers it. Line numbers are those',
+           'of the document at the base sha in the header. "Section" is the branch section (1 to 14) that owns the',
+           f'row, or the section {BASE_SECTION} subsection for rows kept on the base or outside this repository; a row',
+           'that appears again in another section (an amendment delivered there, or a pointer) lists it as "also".',
+           '"Cites" lists the identifiers the row\'s own text names. Load the cited section for the text.', '',
+           f'Counts: {counts}.', '']
 
-    out += ['## Functional requirements (`docs/delegated-access-functional-requirements.md`)', '',
-            '| ID | Section | Line | Plan feature | Branch | Companion rows (via feature) | Companion sections (Appendix B) | Implemented |',
-            '|---|---|---|---|---|---|---|---|']
-    for fr_id in sorted_ids(model.fr_rows):
-        occurrences = model.fr_rows[fr_id]
+    out += ['## Sections', '',
+            '| Section | Branch | Title | Line | FR rows | Protocol rows | Decisions |', '|---|---|---|---|---|---|---|']
+    for section in model.stack:
+        out.append('| ' + ' | '.join([
+            section['number'], f'`{section["branch"]}`', cell(section['title']), str(section['line']),
+            compress(section['fr']), compress(section['rows']), compress(model.section_decisions[section['number']])]) + ' |')
+    if model.base_section:
+        section = model.base_section
+        out.append('| ' + ' | '.join([
+            section['number'], BASE_OWNER, cell(section['title']), str(section['line']),
+            compress(section['fr']), compress(section['rows']), compress(model.section_decisions[section['number']])]) + ' |')
+
+    out += ['', '## Functional requirement rows', '',
+            '| ID | Section | Branch | Line | Cites |', '|---|---|---|---|---|']
+    for fr_id, occurrences in model.fr_rows.items():
         first = occurrences[0]
-        features = model.fr_features.get(fr_id, [])
-        section_no = fr_section_of(model.fr, first['line'])
-        implemented = '; '.join(f'{date} ({feature})' for date, feature in model.implemented.get(fr_id, []))
-        lines = ', '.join(str(o['line']) for o in occurrences)
+        fr, rows, decisions = model.cites(first['text'])
+        cites = join([*(f for f in fr if f != fr_id), *rows, *decisions])
         out.append('| ' + ' | '.join([
-            f'`{fr_id}`', cell(section_label(model.fr, first['line'])), lines, join(features), join(f'`{b}`' for b in model.branches_for_features(features)),
-            compress(model.companion_rows_for_fr(fr_id)), cell(model.appendix_b.get(section_no, '—')), implemented or '—']) + ' |')
+            f'`{fr_id}`', section_cell(model, occurrences), model.branch_label(occurrences),
+            ', '.join(str(o['line']) for o in occurrences), cites]) + ' |')
 
-    out += ['', '## Companion rows (`docs/delegated-access-requirements.md`)', '',
-            'A row listed more than once has an original and one or more amendment rows; the qualifier says which.', '',
-            '| ID | Section | Line | Qualifier | Plan feature | Branch | FR rows (via feature) |',
-            '|---|---|---|---|---|---|---|']
-    for row_id in model.plain_rows:
-        for occurrence in model.companion_rows[row_id]:
-            features = model.row_features.get(row_id, [])
-            out.append('| ' + ' | '.join([
-                f'`{row_id}`', cell(section_label(model.companion, occurrence['line'])), str(occurrence['line']), cell(occurrence['qualifier'] or '—'),
-                join(features), join(f'`{b}`' for b in model.branches_for_features(features)),
-                compress(model.fr_rows_for_row(row_id))]) + ' |')
-
-    out += ['', '## Companion Appendix E rows (protocol decisions)', '',
-            '| ID | Line | Decisions cited | Plan features citing the row |', '|---|---|---|---|']
-    for row_id in model.e_rows:
-        occurrence = model.companion_rows[row_id][0]
-        cited = expand_decisions(occurrence['text'])
-        out.append(f'| `{row_id}` | {occurrence["line"]} | {join(cited)} | {join(model.row_features.get(row_id, []))} |')
-
-    out += ['', '## Plan features (`docs/delegated-access-implementation-plan.md` section 5)', '',
-            '| Feature | Title | Line | Branch | FR rows | Companion rows | Companion sections | Decisions |',
-            '|---|---|---|---|---|---|---|---|']
-    for number, feature in model.features.items():
-        branch = model.feature_branch.get(number)
+    out += ['', '## Protocol rows', '',
+            '| ID | Section | Branch | Line | Qualifier | Cites |', '|---|---|---|---|---|---|']
+    for row_id, occurrences in model.rows.items():
+        first = occurrences[0]
+        fr, rows, decisions = model.cites(first['text'])
+        cites = join([*fr, *(r for r in rows if r != row_id), *decisions])
         out.append('| ' + ' | '.join([
-            number, cell(feature['title']), str(feature['line']), f'`{branch}`' if branch else '—',
-            compress(feature['fr']), compress(feature['rows']), join(feature['sections']), compress(feature['decisions'])]) + ' |')
+            f'`{row_id}`', section_cell(model, occurrences), model.branch_label(occurrences),
+            ', '.join(str(o['line']) for o in occurrences), cell(first['qualifier'] or '—'), cites]) + ' |')
 
-    out += ['', '## Decisions (plan section 9)', '', 'Full cross-references are in `decisions.md`.', '',
-            '| ID | Title | Date subsection | Line |', '|---|---|---|---|']
+    out += ['', f'## Decisions (section {LOG_SECTION})', '', 'Cross-references are in `decisions.md`.', '',
+            '| ID | Title | Dated subsection | Line | Sections citing |', '|---|---|---|---|---|']
     for d_id, decision in model.decisions.items():
-        out.append(f'| `{d_id}` | {cell(decision["title"])} | {cell(decision["date_heading"])} | {decision["line"]} |')
-
-    out += ['', '## FR document Appendix D items', '',
-            'The items are numbered in their own sequence; most do not carry a plan D-number. The FR rows each item',
-            'cites give the link back to the plan decision with the same rows (see `decisions.md`).', '',
-            '| Item | Date subsection | Line | FR rows cited | Plan decisions cited |', '|---|---|---|---|---|']
-    for number, item in model.appendix_d.items():
-        out.append(f'| {number} | {cell(item["date_heading"])} | {item["line"]} | {join(item["fr"])} | {join(item["decisions"])} |')
+        out.append(f'| `{d_id}` | {cell(decision["title"])} | {cell(decision["date_heading"])} | {decision["line"]} | '
+                   f'{join(model.citing_sections(d_id))} |')
     out.append('')
     return '\n'.join(out), counts
 
 
+def render_fr_matrix(model):
+    out = ['| FR row | Section and branch | Protocol rows | Decisions |', '|---|---|---|---|']
+    for fr_id, occurrences in model.fr_rows.items():
+        owner = model.owner(occurrences)
+        if owner['branch']:
+            where = f'{section_cell(model, occurrences)} `{owner["branch"]}`'
+        else:
+            where = f'{section_cell(model, occurrences)} {BASE_OWNER}'
+        out.append(f'| `{fr_id}` | {where} | {compress(model.section_rows(owner["number"]))} | '
+                   f'{compress(model.section_decisions[owner["number"]])} |')
+    return '\n'.join(out)
+
+
+def render_prefix_matrix(model):
+    out = ['| Prefix | Rows | Section and branch |', '|---|---|---|']
+    groups = OrderedDict()
+    for row_id, occurrences in model.rows.items():
+        groups.setdefault(row_prefix(row_id), []).append((row_id, occurrences))
+    for prefix, rows in groups.items():
+        by_owner = OrderedDict()
+        for row_id, occurrences in rows:
+            by_owner.setdefault((model.owner_label(occurrences), model.branch_label(occurrences)), []).append(row_id)
+        if len(by_owner) == 1:
+            (label, branch), ids = next(iter(by_owner.items()))
+            out.append(f'| {prefix} | {compress(ids)} ({len(ids)}) | section {label} {branch} |')
+            continue
+        parts = [f'{compress(ids)}: section {label} {branch}' for (label, branch), ids in by_owner.items()]
+        out.append(f'| {prefix} | {len(rows)} rows | {"; ".join(parts)} |')
+    return '\n'.join(out)
+
+
+def render_base_matrix(model):
+    out = [f'| Row | Section {BASE_SECTION} subsection | Decisions cited |', '|---|---|---|']
+    base_rows = [(i, o) for i, o in list(model.fr_rows.items()) + list(model.rows.items())
+                 if o[0]['section'] == BASE_SECTION]
+    for row_id, occurrences in sorted(base_rows, key=lambda item: (natural_key(model.owner_label(item[1])), natural_key(item[0]))):
+        first = occurrences[0]
+        label = subsection_label(model.doc, first['line']) or model.base_section['title']
+        out.append(f'| `{row_id}` | {cell(label)} | {join(expand_decisions(first["text"]))} |')
+    return '\n'.join(out)
+
+
+def render_foundation_matrix(model):
+    out = ['| Foundation item | FR rows | Protocol rows | Kept by |', '|---|---|---|---|']
+    for item in model.foundation:
+        out.append(f'| `{item["id"]}` | {join(item["fr"])} | {join(item["rows"])} | {model.foundation_owner(item)} |')
+    return '\n'.join(out)
+
+
+def render_appendix_body(model):
+    return '\n'.join([
+        '**Functional requirement rows.** Section and branch that own the row; the protocol rows and the decisions '
+        'listed are those of the owning section.', '',
+        render_fr_matrix(model), '',
+        '**Protocol rows by prefix.**', '',
+        render_prefix_matrix(model), '',
+        f'**Rows owned by section {BASE_SECTION}** (the base branch and work outside this repository).', '',
+        render_base_matrix(model), '',
+        '**Foundation items** (`' + SKILL_REL + '/references/foundation.yml`): pieces the foundation branch already '
+        'satisfied, and the section that keeps them.', '',
+        render_foundation_matrix(model),
+    ])
+
+
 def render_traceability(model, base_sha):
     out = [header(base_sha), '', '# Traceability matrix', '',
-           'Branch → plan section → FR rows → companion rows → foundation items, in stack order (plan section 8).',
-           'FR and companion rows come from each feature\'s "**Requirements**" line; the three documents carry the',
-           'same matrix in plan 8.1, FR Appendix E and companion Appendix F, written by the same generator.', '',
+           f'FR row → section and branch → protocol rows → decisions, derived from `{DOC}`: a row belongs to the',
+           'section whose table defines it (sections 1 to 14 in stack order; section 15 for the base branch and work',
+           'outside this repository), and the section\'s Protocol rows table and Decisions list give the other two',
+           'columns. Appendix A of the document carries the same matrix, written by the same generator.', '',
            '## Foundation items', '',
-           '`references/foundation.yml` (written by hand from the sbx-taigrr review) is read when present. Shape: a',
-           'list (at the top level or under any key) of mappings with `id`, `fr` (FR ids; `FR-X-1 to FR-X-4` ranges',
-           'allowed), `companion` (row ids), `plan` (section reference, free text), `kept_by` (the branch that keeps',
-           'the piece; `branch` is accepted too) and `note` (one line). Example:',
-           '`- {id: act_claim, fr: [FR-VER-3], companion: [INT-4, E12], kept_by: delegated-access-introspection, note: …}`.',
-           'An item is listed under a branch when `kept_by` names it or, without one, when its FR ids intersect the',
-           'branch\'s FR rows. Parsing uses a small stdlib YAML subset: block and flow mappings and sequences, quoted',
-           'and bare scalars, `#` comments.', '',
-           f'Status: {model.foundation_status}.', '']
-    out += ['## By branch', '']
-    all_fr, all_rows = set(), set()
-    for row in model.stack:
-        number = row['feature']
-        feature = model.features.get(number)
-        fr_ids = feature['fr'] if feature else []
-        rows = feature['rows'] if feature else []
-        all_fr.update(fr_ids)
-        all_rows.update(rows)
-        out += [f'### {row["position"]}. `{row["branch"]}` — plan {number} {model.feature_title(number)}', '',
-                f'- Plan: section {number}' + (f' (line {feature["line"]})' if feature else ' (no 5.x section found)'),
-                f'- FR rows: {compress(fr_ids)}',
-                f'- Companion rows: {compress(r for r in rows if not IS_E_ROW.match(r))}',
-                f'- Appendix E rows: {compress(r for r in rows if IS_E_ROW.match(r))}',
-                f'- Companion sections: {join(feature["sections"]) if feature else "—"}',
-                f'- Decisions: {join(feature["decisions"]) if feature else "—"}',
-                f'- Section 8 table: FR "{row["fr_text"]}"; companion "{row["rows_text"]}"']
-        hits = model.foundation_for_branch(row['branch'], fr_ids)
+           '`references/foundation.yml` (written by hand from the review of the foundation branch, Appendix E of the',
+           'document) is read when present. Shape: a list of mappings with `id`, `fr` (FR ids; `FR-X-1 to FR-X-4`',
+           'ranges allowed), `rows` (protocol row ids), `section` (free text), `kept_by` (the branch that keeps the',
+           'piece) and `note` (one line). An item is listed under a section when `kept_by` names its branch or, without',
+           'one, when its FR ids intersect the section\'s FR rows. Parsing uses a small stdlib YAML subset: block and',
+           'flow mappings and sequences, quoted and bare scalars, `#` comments.', '',
+           f'Status: {model.foundation_status}.', '',
+           '## By section, in stack order', '']
+    for section in model.stack + ([model.base_section] if model.base_section else []):
+        owner = f'`{section["branch"]}`' if section['branch'] else BASE_OWNER
+        out += [f'### {section["number"]}. {owner} — {section["title"]}', '',
+                f'- Line {section["line"]}',
+                f'- FR rows: {compress(section["fr"])}',
+                f'- Protocol rows: {compress(section["rows"])}',
+                f'- Decisions: {compress(model.section_decisions[section["number"]])}']
+        hits = model.foundation_for_section(section)
         if hits:
             out.append('- Foundation items:')
             for item in hits:
@@ -805,33 +758,33 @@ def render_traceability(model, base_sha):
         else:
             out.append('- Foundation items: —')
         out.append('')
-    unmapped_fr = [fr_id for fr_id in sorted_ids(model.fr_rows) if fr_id not in all_fr]
-    unmapped_rows = [row_id for row_id in model.plain_rows if row_id not in all_rows]
-    out += ['## Not mapped to a branch', '',
-            'Rows no plan 5.x feature cites. Expected for the Department of State use case (FR-DOS, plan 5.12, kept on',
-            'the base), the alternative pattern (FR-TPL, TPL rows, plan 5.13), FR-FIT, and rows added by amendments',
-            'that the feature line does not enumerate. Check this list when a review asks "where is X implemented".', '',
-            f'- FR rows: {compress(unmapped_fr)}', f'- Companion rows: {compress(unmapped_rows)}', '']
+    out += ['## Functional requirement rows', '', render_fr_matrix(model), '',
+            '## Protocol rows by prefix', '', render_prefix_matrix(model), '',
+            f'## Rows owned by section {BASE_SECTION}', '',
+            'Rows no branch section defines: kept on the base, delivered outside this repository, documented and not',
+            'built, or process obligations. Check this list when a review asks "where is X implemented".', '',
+            render_base_matrix(model), '']
     return '\n'.join(out)
 
 
 def render_branches(model, info, base_sha):
     present = sum(1 for entry in info.values() if entry['present'])
     out = [header(base_sha), '', '# Branch stack', '',
-           f'Stack order from plan section 8; state from the local git repository ({present} of {len(info)} branches present).',
-           'Tips move whenever a lower branch changes (plan section 8, "feature branch heads are not stable"); rerun the',
-           'generator after a rebase. Commit counts are against the parent shown.', '',
-           '| # | Branch | Plan | Tip | Parent | Commits | Top-level paths touched (merge-base diff) |', '|---|---|---|---|---|---|---|']
+           f'Stack order from the section headings of `{DOC}`; state from the local git repository ({present} of',
+           f'{len(info)} branches present). Tips move whenever a lower branch changes (Appendix B: feature branch heads',
+           'are not stable until fast-forwarded into the base); rerun the generator after a rebase. Commit counts are',
+           'against the parent shown.', '',
+           '| # | Branch | Section | Tip | Parent | Commits | Top-level paths touched (merge-base diff) |', '|---|---|---|---|---|---|---|']
     for position, entry in enumerate(info.values(), 1):
         if not entry['present']:
-            out.append(f'| {position} | `{entry["branch"]}` | {entry["feature"]} | branch not present locally | — | — | — |')
+            out.append(f'| {position} | `{entry["branch"]}` | {entry["section"]} | branch not present locally | — | — | — |')
             continue
         parent = f'`{entry["parent"]}`' + ('' if entry['stacked'] else ' (not an ancestor: rebase needed)')
-        out.append(f'| {position} | `{entry["branch"]}` | {entry["feature"]} | `{entry["tip"]}` | {parent} | '
+        out.append(f'| {position} | `{entry["branch"]}` | {entry["section"]} | `{entry["tip"]}` | {parent} | '
                    f'{len(entry["commits"])} | {join(f"`{d}`" for d in entry["dirs"])} |')
     out.append('')
     for position, entry in enumerate(info.values(), 1):
-        out.append(f'## {position}. `{entry["branch"]}` (plan {entry["feature"]} {model.feature_title(entry["feature"])})')
+        out.append(f'## {position}. `{entry["branch"]}` (section {entry["section"]}: {cell(entry["title"])})')
         out.append('')
         if not entry['present']:
             out += ['Branch not present locally; fetch it to list its commits.', '']
@@ -848,127 +801,41 @@ def render_branches(model, info, base_sha):
 
 def render_decisions(model, base_sha):
     out = [header(base_sha), '', '# Decisions', '',
-           'Plan section 9 decisions with the rows that cite them. "FR Appendix D items" and "Companion rows" list only',
-           'explicit `Dnn` citations; FR Appendix D items are numbered in their own sequence, so an item without a',
-           'D-number is found through the FR rows it shares with the decision (`requirements-index.md`).', '',
-           '| ID | Title | Date subsection | Plan line | FR rows cited | Companion rows cited | Plan features | FR Appendix D items citing | Companion rows citing |',
-           '|---|---|---|---|---|---|---|---|---|']
+           f'Section {LOG_SECTION} of `{DOC}` with the sections and rows that cite each decision. "Sections citing" are',
+           'the branch sections whose Decisions list carries the D-number; "rows citing" are the FR and protocol rows',
+           'whose text names it. The full entry (rationale and the rejected alternative) is at the line given.', '',
+           '| ID | Title | Dated subsection | Line | Sections citing | FR rows citing | Protocol rows citing |',
+           '|---|---|---|---|---|---|---|']
     for d_id, decision in model.decisions.items():
         out.append('| ' + ' | '.join([
             f'`{d_id}`', cell(decision['title']), cell(decision['date_heading']), str(decision['line']),
-            join(decision['fr']), join(decision['rows']), join(model.citing_features(d_id)),
-            join(model.citing_appendix_d(d_id)), join(model.citing_rows(d_id))]) + ' |')
+            join(model.citing_sections(d_id)), compress(model.rows_citing(d_id, model.fr_rows)),
+            compress(model.rows_citing(d_id, model.rows))]) + ' |')
     out.append('')
     return '\n'.join(out)
 
 
-def render_plan_matrix(model):
-    out = ['| # | Branch | Plan | FR rows | Companion rows | Foundation items |', '|---|---|---|---|---|---|']
-    for row in model.stack:
-        feature = model.features.get(row['feature'])
-        fr_ids = feature['fr'] if feature else []
-        rows = feature['rows'] if feature else []
-        hits = model.foundation_for_branch(row['branch'], fr_ids)
-        out.append(f'| {row["position"]} | `{row["branch"]}` | {row["feature"]} | {compress(fr_ids)} | {compress(rows)} | '
-                   f'{join(f"`{h["id"]}`" for h in hits)} |')
-    return '\n'.join(out)
+# --------------------------------------------------------------------------- the document's Appendix A
 
-
-def render_fr_matrix(model):
-    out = ['| FR row | Section | Companion rows (via plan feature) | Plan section | Branch | Foundation items |',
-           '|---|---|---|---|---|---|']
-    for fr_id in sorted_ids(model.fr_rows):
-        features = model.fr_features.get(fr_id, [])
-        section_no = fr_section_of(model.fr, model.fr_rows[fr_id][0]['line'])
-        hits = model.foundation_for_fr(fr_id)
-        out.append(f'| `{fr_id}` | {section_no} | {compress(model.companion_rows_for_fr(fr_id))} | {join(features)} | '
-                   f'{join(f"`{b}`" for b in model.branches_for_features(features))} | {join(f"`{h["id"]}`" for h in hits)} |')
-    return '\n'.join(out)
-
-
-def render_companion_matrix(model):
-    out = ['| Row group | Rows | Sections | FR rows (via plan feature) | Plan section | Branch |', '|---|---|---|---|---|---|']
-    groups = OrderedDict()
-    for row_id in model.plain_rows:
-        groups.setdefault(re.sub(r'-\d+[a-z]?$', '', row_id), []).append(row_id)
-    for prefix, rows in groups.items():
-        features = sorted_ids(n for r in rows for n in model.row_features.get(r, []))
-        fr_ids = sorted_ids(f for r in rows for f in model.fr_rows_for_row(r))
-        sections = sorted_ids(
-            '§' + section_number(o['section'] + ' ') for r in rows for o in model.companion_rows[r])
-        out.append(f'| {prefix} | {compress(rows)} ({len(rows)}) | {join(sections)} | {compress(fr_ids)} | {join(features)} | '
-                   f'{join(f"`{b}`" for b in model.branches_for_features(features))} |')
-    e_features = sorted_ids(n for r in model.e_rows for n in model.row_features.get(r, []))
-    out.append(f'| E | {compress(model.e_rows)} ({len(model.e_rows)}) | §Appendix E | — | {join(e_features)} | '
-               f'{join(f"`{b}`" for b in model.branches_for_features(e_features))} |')
-    return '\n'.join(out)
-
-
-# --------------------------------------------------------------------------- document appendices
-
-APPENDICES = {
-    PLAN: {
-        'heading': '### 8.1 Traceability matrix',
-        'intro': ('Generated by `' + SKILL_REL + '/scripts/build_index.py` from the 5.x "**Requirements**" lines, the '
-                  'section 8 table and the skill\'s `references/foundation.yml`; the FR document\'s Appendix E and the '
-                  'companion\'s Appendix F carry the same matrix from their own side. Only the body between the markers '
-                  'is generated.'),
-        'insert_before': re.compile(r'^## 9\. '),
-        'render': render_plan_matrix,
-    },
-    FR: {
-        'heading': '## Appendix E — Traceability matrix',
-        'intro': ('Generated by `' + SKILL_REL + '/scripts/build_index.py` from the implementation plan\'s 5.x '
-                  '"**Requirements**" lines and section 8 table (see plan 8.1 and companion Appendix F). Only the body '
-                  'between the markers is generated.'),
-        'insert_before': None,
-        'render': render_fr_matrix,
-    },
-    COMPANION: {
-        'heading': '## Appendix F — Traceability matrix',
-        'intro': ('Generated by `' + SKILL_REL + '/scripts/build_index.py` from the implementation plan\'s 5.x '
-                  '"**Requirements**" lines and section 8 table (see plan 8.1 and FR Appendix E). Only the body between '
-                  'the markers is generated.'),
-        'insert_before': None,
-        'render': render_companion_matrix,
-    },
-}
-
-
-def with_matrix(doc_text, spec, body):
-    """Document text with the marked body replaced (or the appendix created) for one document."""
-    if BEGIN in doc_text and END in doc_text:
-        head, _, rest = doc_text.partition(BEGIN)
-        _, _, tail = rest.partition(END)
-        return f'{head}{BEGIN}\n{body}\n{END}{tail}'
-    block = f'{spec["heading"]}\n\n{spec["intro"]}\n\n{BEGIN}\n{body}\n{END}\n'
-    lines = doc_text.split('\n')
-    if spec['insert_before'] is not None:
-        for index, line in enumerate(lines):
-            if spec['insert_before'].match(line):
-                insert_at = index
-                while insert_at > 0 and lines[insert_at - 1].strip() in ('', '---'):
-                    insert_at -= 1
-                return '\n'.join(lines[:insert_at] + [''] + block.split('\n') + ['---', ''] + lines[index:])
-    text = doc_text.rstrip('\n')
-    return f'{text}\n\n---\n\n{block}'
+def with_matrix(doc_text, body):
+    """Document text with the marked Appendix A body replaced."""
+    if BEGIN not in doc_text or END not in doc_text:
+        sys.exit(f'{DOC} lacks the {BEGIN} / {END} marker pair in Appendix A')
+    head, _, rest = doc_text.partition(BEGIN)
+    _, _, tail = rest.partition(END)
+    return f'{head}{BEGIN}\n{body}\n{END}{tail}'
 
 
 # --------------------------------------------------------------------------- main
 
 def compute_outputs(root, base_sha):
-    """All outputs as {absolute path: text}. Documents first, so line numbers reflect the regenerated appendices."""
+    """All outputs as {absolute path: text}. The document first, so line numbers reflect the regenerated appendix."""
     model = Model(root)
     outputs = OrderedDict()
-    docs_changed = False
-    for rel, spec in APPENDICES.items():
-        doc = getattr(model, {PLAN: 'plan', FR: 'fr', COMPANION: 'companion'}[rel])
-        new_text = with_matrix(doc.text, spec, spec['render'](model))
-        outputs[doc.path] = new_text
-        docs_changed = docs_changed or new_text != doc.text
-    if docs_changed:
-        # Re-parse against the regenerated appendices so recorded line numbers match the written documents.
-        model = Model(root, {rel: outputs[os.path.join(root, rel)] for rel in APPENDICES})
+    new_text = with_matrix(model.doc.text, render_appendix_body(model))
+    outputs[model.doc.path] = new_text
+    if new_text != model.doc.text:
+        model = Model(root, new_text)
     info = git_branch_info(model.stack, BASE_BRANCH)
     index_text, counts = render_requirements_index(model, base_sha)
     outputs[os.path.join(REFS_DIR, 'requirements-index.md')] = index_text

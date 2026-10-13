@@ -252,7 +252,7 @@ provider's agreement clear of it, and needs confirmation; item 3 is flagged by
 `billing_issuer_has_agreement`, sufficiency open; item 4 is open (functional requirements §9 question 4);
 item 5 is configured by `delegation_outcomes_report_emails`, audience open.
 
-Also handed over as built (plan 5.8 item 10):
+Also handed over as built (section 11 of `docs/delegated-access-functional-requirements.md`, As built):
 6. Fallback matching rule: a person who signed in to the service provider more than once in the window
    can be matched to the wrong row; a row written before the identity was re-linked is not found.
 7. `not_found` outcome: the service provider stays billed for a sign-in an agency was also billed for;
@@ -270,7 +270,7 @@ Also handed over as built (plan 5.8 item 10):
 - `docs/delegated-access-billing-strategy.md` (`token-exchange2-login`, not ported): the cache +
   adjustment design adopted here; "no adjustment on cache miss" and "TTL aligned to session
   lifetime" superseded by the database fallback (D42) and the 1-hour TTL (D41).
-- `docs/delegated-access-requirements.md` §9: BIL-4 (four columns, then a `token_exchange_token_id`
+- `docs/delegated-access-functional-requirements.md` section 11: BIL-4 (four columns, then a `token_exchange_token_id`
   column) and BIL-13 (mutation waiver; Redis key `delegation_waiver:`; `reason`/`effect` pair)
   superseded by §9.5 as amended 2026-10-10; `delegation_waiver_unresolved` is the `not_found`
   outcome of `delegated_billing_waiver`, not a separate event (BIL-15 as amended).
@@ -285,10 +285,12 @@ Also handed over as built (plan 5.8 item 10):
 
 ## 8. Where this sits
 
-The billing code lives on branch `delegated-access-billing-reporting` (plan 5.8). The
+The billing code lives on branch `delegated-access-billing-reporting` (section 11 of
+`docs/delegated-access-functional-requirements.md`). The
 delegated-access skill at `.claude/skills/login-delegated-access` holds the branch context,
 decisions and RFC digests and points here for billing changes. A change to a billing rule is
-recorded as a decision in the plan (D-number) and in companion §9, following that skill's
+recorded as a decision in section 16 of `docs/delegated-access-functional-requirements.md`
+(D-number), with the section 11 rows amended in place, following that skill's
 update protocol, in the same unit of work as the code.
 
 ## 9. Data-change review (the data team's guidelines)

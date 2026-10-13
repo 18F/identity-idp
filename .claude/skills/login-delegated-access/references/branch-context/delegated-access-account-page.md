@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Plan 5.3, Account → Delegated access. A dedicated page at `/account/delegated_access` lists every service provider approved for delegation, connected or not, with every active application that accepts it grouped by agency; the person approves applications in advance through a select-then-confirm flow, revokes one application, one service provider or everything through confirmation pages, and receives an account history event and an email for each change. It replaces the foundation's inline toggles under each connected-service entry.
+Section 3, Account → Delegated access. A dedicated page at `/account/delegated_access` lists every service provider approved for delegation, connected or not, with every active application that accepts it grouped by agency; the person approves applications in advance through a select-then-confirm flow, revokes one application, one service provider or everything through confirmation pages, and receives an account history event and an email for each change. It replaces the foundation's inline toggles under each connected-service entry.
 
 ## Requirements it satisfies
 
-FR-CUX-12, FR-CUX-13, FR-CUX-14, FR-CEN-14, FR-CEN-15 (sign-out half). Companion §4.7 (ACC-1..6 as amended in §4.8 and §4.9).
+FR-CUX-12, FR-CUX-13, FR-CUX-14, FR-CEN-14, FR-CEN-15 (sign-out half). Protocol rows ACC-1 to ACC-6 (section 3).
 
 ## What it adds / removes and why
 
@@ -28,7 +28,7 @@ Removes:
 
 - D19 a dedicated page (rejected: inline controls per connected service); D23 unconnected service providers listed too (reverses the earlier deferral).
 - D20 select-then-confirm; D21 every revocation confirms; D22 history event plus email; D25 collapsible agency groups, no pagination.
-- D54 remembered approvals only, current state only, with "End all delegated access" (ACC-6); D24 token activity withdrawn in favor of the planned history view (D55, plan 5.15).
+- D54 remembered approvals only, current state only, with "End all delegated access" (ACC-6); D24 token activity withdrawn in favor of the planned history view (D55, section 15.5).
 
 ## Key files
 
@@ -52,9 +52,9 @@ Diff against `delegated-access-consent`. Check first: the routes block in `confi
 ## Known open items and later amendments
 
 - Amended 2026-10-11 (reuse review): the approval step reads `partition_current`; the revocation page preloads `service_provider_record` only for the all-providers scope (Bullet flagged an unused preload on the single-provider page).
-- Not built here: token activity on rows (D24 withdrawn) and the history view (D55, plan 5.15).
+- Not built here: token activity on rows (D24 withdrawn) and the history view (D55, section 15.5).
 - The token cascade behind `TokenExchangeGrant#revoke!` arrives with the token-exchange and lifecycle branches; here revocation marks the approval row.
-- Held until the harness run (plan 6.1): views on `ButtonComponent`/`TagComponent`; `ServiceProvider#delegation_display_name_or_default`; a shared mailer instructions partial; folding `AccountDelegationApproval` into `TokenExchangeGrant.approve_all!`.
+- Held until the harness run (Appendix D.3): views on `ButtonComponent`/`TagComponent`; `ServiceProvider#delegation_display_name_or_default`; a shared mailer instructions partial; folding `AccountDelegationApproval` into `TokenExchangeGrant.approve_all!`.
 - The fraud-signals branch adds a release call to `ApprovalsController#create`; the operations branch renames the analytics property `issuer` to `service_provider_issuer`.
 
 ## Depends on / depended on by
