@@ -9,8 +9,30 @@ module Idv
       REQUIRED_ATTRIBUTES = %i[first_name last_name dob email phone ssn id_type].freeze
       ATTRIBUTES = (%i[state_id residential_address passport] + REQUIRED_ATTRIBUTES).freeze
 
+      FIELD_RULES = {
+        email: { max: 255 },
+        first_name: { max: 128 },
+        last_name: { max: 128 },
+        dob: { max: 10, date: true },
+        phone: { max: 20 },
+        ssn: { min: 9, max: 9, digits_only: true },
+        id_type: { max: 20 },
+      }.freeze
+
+      # Address fields are already validated by Pii::StateIdForm and
+      # Pii::UspsStrictAddressForm, so they are not repeated here.
+      NESTED_FIELD_RULES = {
+        state_id: {
+          document_number: { max: 64 },
+          jurisdiction: { max: 64 },
+          expiration_date: { max: 10, date: true },
+          issue_date: { max: 10, date: true },
+        },
+      }.freeze
+
       validates_presence_of(*REQUIRED_ATTRIBUTES, message: 'cannot be blank')
 
+      validate :field_rules_valid?
       validate :dob_valid?
       validate :id_type_valid?
 
@@ -72,8 +94,60 @@ module Idv
 
       attr_reader(*ATTRIBUTES)
 
+      # Checks each field against FIELD_RULES / NESTED_FIELD_RULES.
+      # Nested fields are keyed as "parent.field" (e.g. "state_id.address1").
+      def field_rules_valid?
+        add_field_rule_errors(pii_from_agent, FIELD_RULES)
+
+        NESTED_FIELD_RULES.each do |parent, rules|
+          next if pii_from_agent[parent].blank?
+
+          add_field_rule_errors(pii_from_agent[parent], rules, prefix: parent)
+        end
+      end
+
+      def add_field_rule_errors(values, rules, prefix: nil)
+        rules.each do |key, rule|
+          field_errors(values[key], **rule).each do |type, message|
+            errors.add(prefix ? :"#{prefix}.#{key}" : key, message, type:)
+          end
+        end
+      end
+
+      # Returns [[error_type, message], ...] for each rule the value violates.
+      # Presence is validated separately, so blank values are skipped here.
+      def field_errors(value, max: nil, min: nil, date: false, digits_only: false)
+        return [] if value.blank?
+        return [[:wrong_type, 'must be a string']] unless value.is_a?(String)
+
+        violations = []
+        if min && value.length < min
+          violations << [:too_short, "is too short (minimum is #{min} characters)"]
+        end
+        if max && value.length > max
+          violations << [:too_long, "is too long (maximum is #{max} characters)"]
+        end
+        if digits_only && !value.match?(/\A\d+\z/)
+          violations << [:not_digits, 'must contain only digits']
+        end
+        if date && !valid_date_format?(value)
+          violations << [:invalid_date, 'must be in YYYY-MM-DD format']
+        end
+        violations
+      end
+
+      def valid_date_format?(value)
+        return false unless value.match?(/\A\d{4}-\d{2}-\d{2}\z/)
+
+        Date.strptime(value, '%Y-%m-%d')
+        true
+      rescue Date::Error
+        false
+      end
+
       def dob_valid?
-        return unless dob
+        # A malformed dob is reported by field_rules_valid? and would fail to parse here
+        return if dob.blank? || errors.include?(:dob)
 
         dob_date = DateParser.parse_legacy(dob)
         today = Time.zone.today

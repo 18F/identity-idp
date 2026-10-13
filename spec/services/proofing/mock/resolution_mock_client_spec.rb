@@ -136,7 +136,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
     context 'with a simulated AAMVA parsing error' do
       let(:expected_success) { false }
       let(:expected_exception) do
-        Proofing::Aamva::VerificationError.new('Unexpected status code in response: 504')
+        DocAuth::Aamva::VerificationError.new('Unexpected status code in response: 504')
       end
 
       it 'returns a parsing error result with exception' do

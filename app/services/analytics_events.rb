@@ -11,6 +11,28 @@
 #                 ||     ||
 
 module AnalyticsEvents
+  # @param [Boolean] success Whether the reCAPTCHA check passed (always false for this event)
+  # @param [Boolean] valid_captcha_result Whether the user passed the reCAPTCHA check or was exempt
+  # @param [Boolean] captcha_validation_performed Whether a reCAPTCHA check was performed
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # The account creation reCAPTCHA check failed and the request was blocked
+  def account_creation_recaptcha_failed(
+    success:,
+    valid_captcha_result:,
+    captcha_validation_performed:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :account_creation_recaptcha_failed,
+      success:,
+      error_details:,
+      valid_captcha_result:,
+      captcha_validation_performed:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success Check whether threatmetrix succeeded properly.
   # @param [String] transaction_id Vendor-specific transaction ID for the request.
   # @param [String, nil] client Client user was directed from when creating account
@@ -1611,7 +1633,7 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
-  # @param [String] selection Selection form parameter
+  # @param ["remote","ipp","clear1"] selection Selection form parameter
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_how_to_verify_submitted(
     success:,
@@ -1668,7 +1690,8 @@ module AnalyticsEvents
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
   #   warning
   # @param [Boolean] selfie_check_required Whether facial match check is required
-  # @param ["document_capture","send_link"] destination Where user is sent after submission
+  # @param ["document_capture","send_link","clear1_session"] destination Where user is sent after
+  #   submission
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   #   SDK upgrades
@@ -7745,6 +7768,28 @@ module AnalyticsEvents
       profile_deactivated:,
       pending_profile_invalidated:,
       pending_profile_pending_reasons:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether the reCAPTCHA check passed (always false for this event)
+  # @param [Boolean] valid_captcha_result Whether the user passed the reCAPTCHA check or was exempt
+  # @param [Boolean] captcha_validation_performed Whether a reCAPTCHA check was performed
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # The password reset reCAPTCHA check failed and the request was blocked
+  def password_reset_recaptcha_failed(
+    success:,
+    valid_captcha_result:,
+    captcha_validation_performed:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :password_reset_recaptcha_failed,
+      success:,
+      error_details:,
+      valid_captcha_result:,
+      captcha_validation_performed:,
       **extra,
     )
   end

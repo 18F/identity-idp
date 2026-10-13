@@ -2,7 +2,7 @@ require 'openssl'
 
 module AamvaFixtures
   def self.example_config
-    Proofing::Aamva::Proofer::Config.new(
+    DocAuth::Aamva::Proofer::Config.new(
       cert_enabled: 'false',
       private_key: Base64.strict_encode64(aamva_private_key.to_der),
       public_key: Base64.strict_encode64(aamva_public_key.to_der),
@@ -48,29 +48,29 @@ module AamvaFixtures
   end
 
   def self.authentication_token_request
-    read_fixture_file('proofing/aamva/requests/authentication_token_request.xml')
+    read_fixture_file('doc_auth/aamva/requests/authentication_token_request.xml')
       .gsub(/^\s+/, '')
       .gsub(/\s+$/, '')
       .delete("\n") + "\n"
   end
 
   def self.authentication_token_response
-    read_fixture_file('proofing/aamva/responses/authentication_token_response.xml')
+    read_fixture_file('doc_auth/aamva/responses/authentication_token_response.xml')
   end
 
   def self.security_token_request
-    read_fixture_file('proofing/aamva/requests/security_token_request.xml')
+    read_fixture_file('doc_auth/aamva/requests/security_token_request.xml')
       .gsub(/^\s+/, '')
       .gsub(/\s+$/, '')
       .delete("\n") + "\n"
   end
 
   def self.security_token_response
-    read_fixture_file('proofing/aamva/responses/security_token_response.xml')
+    read_fixture_file('doc_auth/aamva/responses/security_token_response.xml')
   end
 
   def self.soap_fault_response
-    read_fixture_file('proofing/aamva/responses/soap_fault_response.xml')
+    read_fixture_file('doc_auth/aamva/responses/soap_fault_response.xml')
   end
 
   def self.soap_fault_response_simplified
@@ -81,25 +81,25 @@ module AamvaFixtures
   end
 
   def self.verification_request
-    read_fixture_file('proofing/aamva/requests/verification_request.xml')
+    read_fixture_file('doc_auth/aamva/requests/verification_request.xml')
   end
 
   def self.verification_response_with_newline_in_transaction_id
     read_fixture_file(
-      'proofing/aamva/responses/verification_response_with_newline_in_transaction_id.xml',
+      'doc_auth/aamva/responses/verification_response_with_newline_in_transaction_id.xml',
     )
   end
 
   def self.verification_response
-    read_fixture_file('proofing/aamva/responses/verification_response.xml')
+    read_fixture_file('doc_auth/aamva/responses/verification_response.xml')
   end
 
   def self.verification_response_namespaced_success
-    read_fixture_file('proofing/aamva/responses/verification_response_namespaced_success.xml')
+    read_fixture_file('doc_auth/aamva/responses/verification_response_namespaced_success.xml')
   end
 
   def self.verification_response_namespaced_failure
-    read_fixture_file('proofing/aamva/responses/verification_response_namespaced_failure.xml')
+    read_fixture_file('doc_auth/aamva/responses/verification_response_namespaced_failure.xml')
   end
 
   private_class_method def self.read_fixture_file(path)

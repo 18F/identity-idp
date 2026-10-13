@@ -59,6 +59,8 @@ module I18n
       # rubocop:disable Layout/LineLength
       ALLOWED_UNTRANSLATED_KEYS = [
         { key: 'i18n.locale.en', locales: %i[es fr zh] },
+        { key: 'forms.buttons.verify_with_clear1', locales: %i[es fr zh] }, # CLEAR branded button is not translated
+        { key: 'forms.buttons.verify_with', locales: %i[es fr zh] }, # CLEAR branded button is not translated
         { key: 'i18n.locale.es', locales: %i[es fr zh] },
         { key: 'i18n.locale.fr', locales: %i[es fr zh] },
         { key: 'i18n.locale.zh', locales: %i[es fr zh] },

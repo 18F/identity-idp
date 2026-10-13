@@ -14,6 +14,7 @@ module Db
         lexis_nexis_resolution
         lexis_nexis_address
         socure_address
+        socure_resolution
         gpo_letter
         threatmetrix
       ].freeze
