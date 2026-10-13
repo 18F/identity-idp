@@ -6,5 +6,12 @@ module TokenExchange
     ACCESS_TOKEN_TYPE = 'urn:ietf:params:oauth:token-type:access_token'
     CLIENT_ASSERTION_TYPE = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
     SCOPE = 'token_exchange'
+    SCOPE_PREFIX = "#{SCOPE}:".freeze
+
+    # Matches the base `token_exchange` scope and audience-qualified variants,
+    # for example `token_exchange:passport`.
+    def self.scope?(value)
+      value == SCOPE || value.to_s.start_with?(SCOPE_PREFIX)
+    end
   end
 end

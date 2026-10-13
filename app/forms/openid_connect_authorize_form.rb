@@ -339,9 +339,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def requested_token_exchange_scopes(requested_scopes)
-    requested_scopes.select do |scope|
-      scope == TokenExchange::Constants::SCOPE || scope.start_with?("#{TokenExchange::Constants::SCOPE}:")
-    end
+    requested_scopes.select { |scope| TokenExchange::Constants.scope?(scope) }
   end
 
   def base_scopes
@@ -362,7 +360,7 @@ class OpenidConnectAuthorizeForm
 
   def token_exchange_scopes
     IdentityConfig.store.token_exchange_allowed_audiences.map do |audience|
-      "#{TokenExchange::Constants::SCOPE}:#{audience}"
+      "#{TokenExchange::Constants::SCOPE_PREFIX}#{audience}"
     end
   end
 
