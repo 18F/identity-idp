@@ -1,12 +1,14 @@
 require 'rails_helper'
 
-# The authorization-code grant at POST /api/openid_connect/token for a public client approved
-# for delegated access, whose code and access token are bound to its DPoP key (RFC 9449).
+# The authorization-code grant at POST /api/openid_connect/token for a public client registered
+# with dpop_required, whose code and access token are bound to its DPoP key (RFC 9449).
 RSpec.describe 'OpenID Connect token endpoint, DPoP-bound authorization code' do
   include Rails.application.routes.url_helpers
 
   let(:service_provider) do
-    create(:service_provider, :delegation_service_provider, pkce: true, certs: [])
+    create(
+      :service_provider, :delegation_service_provider, pkce: true, certs: [], dpop_required: true
+    )
   end
   let(:user) { create(:user, :proofed) }
   let(:code_verifier) { SecureRandom.urlsafe_base64(32) }

@@ -1844,7 +1844,7 @@ notices.webauthn_platform_configured: Usó el bloqueo de pantalla de su disposit
 openid_connect.authorization.errors.bad_client_id: client_id incorrecto. Consulte nuestra documentación en https://developers.login.gov/support/#bad-client-id
 openid_connect.authorization.errors.delegation_not_allowed: Los ámbitos de delegación (token_exchange:*) requieren una solicitud con identidad verificada de un proveedor de servicios aprobado para el acceso delegado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-delegation
 openid_connect.authorization.errors.dpop_jkt_invalid: 'dpop_jkt debe ser la huella digital RFC 7638 en base64url de la clave pública DPoP del cliente: 43 caracteres, sin relleno.'
-openid_connect.authorization.errors.dpop_jkt_required: 'dpop_jkt es obligatorio: este cliente es un cliente público aprobado para el acceso delegado, por lo que el código de autorización debe vincularse a la huella digital de su clave DPoP (RFC 9449, sección 10).'
+openid_connect.authorization.errors.dpop_jkt_required: 'dpop_jkt es obligatorio: este cliente está registrado con dpop_required, por lo que el código de autorización debe vincularse a la huella digital de su clave DPoP (RFC 9449, sección 10).'
 openid_connect.authorization.errors.invalid_verified_within_duration.one: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_duration.other: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_format: Formato no reconocido de verified_within

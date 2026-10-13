@@ -603,8 +603,10 @@ RSpec.describe OpenidConnectTokenForm do
       let(:code_challenge) { Digest::SHA256.urlsafe_base64digest(code_verifier) }
       let(:client_assertion) { nil }
       let(:client_assertion_type) { nil }
-      let(:service_provider) { create(:service_provider, :delegation_service_provider, pkce: true) }
-      # A public client approved for delegation: its code is bound to its DPoP key.
+      let(:service_provider) do
+        create(:service_provider, :delegation_service_provider, pkce: true, dpop_required: true)
+      end
+      # A public client registered with dpop_required: its code is bound to its DPoP key.
       let(:dpop_proof) { build_dpop_proof(url: api_openid_connect_token_url) }
       let(:user) { create(:user, :proofed) }
       let(:rails_session_id) { SecureRandom.hex }
@@ -786,11 +788,13 @@ RSpec.describe OpenidConnectTokenForm do
   end
 end
 
-RSpec.describe OpenidConnectTokenForm, 'for a public client approved for delegation' do
+RSpec.describe OpenidConnectTokenForm, 'for a public client registered with dpop_required' do
   include Rails.application.routes.url_helpers
 
   let(:service_provider) do
-    create(:service_provider, :delegation_service_provider, pkce: true, certs: [])
+    create(
+      :service_provider, :delegation_service_provider, pkce: true, certs: [], dpop_required: true
+    )
   end
   let(:user) { create(:user) }
   let(:code_verifier) { SecureRandom.urlsafe_base64(32) }
@@ -892,13 +896,33 @@ RSpec.describe OpenidConnectTokenForm, 'for a public client approved for delegat
     end
   end
 
-  context 'for a public client that is not approved for delegation' do
+  context 'when the client is not approved for delegation' do
     before { service_provider.update!(token_exchange_enabled_sp: false) }
+
+    it 'still requires the proof and issues a DPoP token: the setting alone decides' do
+      expect(form.valid?).to eq(true)
+      expect(form.response[:token_type]).to eq('DPoP')
+    end
+  end
+
+  context 'for a public client approved for delegation without dpop_required' do
+    before { service_provider.update!(dpop_required: false) }
+    let(:stored_thumbprint) { nil }
     let(:dpop_proof) { nil }
 
     it 'issues a bearer token without a proof, as before' do
+      expect(service_provider.delegation_service_provider?).to eq(true)
       expect(form.valid?).to eq(true)
       expect(form.response[:token_type]).to eq('Bearer')
+    end
+
+    context 'when a proof is sent anyway' do
+      let(:dpop_proof) { build_dpop_proof(url: api_openid_connect_token_url) }
+
+      it 'is not read: the token is a bearer token' do
+        expect(form.valid?).to eq(true)
+        expect(form.response[:token_type]).to eq('Bearer')
+      end
     end
   end
 end

@@ -7,8 +7,9 @@
 # URLs of an agency application, handled by #sync_resource_servers.
 #
 # Dependency: the partner Dashboard (identity-dashboard) does not yet expose the delegated-access
-# fields (token_exchange_enabled_sp, the delegation_* content, delegation_application,
-# delegation_scope_value, allowed_delegation_service_providers, the agency content, or nested
+# fields (token_exchange_enabled_sp, dpop_required, the delegation_* content,
+# delegation_application, delegation_scope_value, allowed_delegation_service_providers, the
+# agency content, or nested
 # token_exchange_resource_servers). Until it does, payloads carry none of them and
 # `rake delegated_access:seed` loads that data in non-production environments.
 class ServiceProviderUpdater
@@ -64,6 +65,7 @@ class ServiceProviderUpdater
   def create_or_update_service_provider(issuer, service_provider)
     sp = ServiceProvider.find_by(issuer: issuer)
     sp = sync_model(sp, cleaned_service_provider(service_provider))
+    sp.warn_if_key_binding_misconfigured
     sync_resource_servers(sp, service_provider['token_exchange_resource_servers'])
   end
 

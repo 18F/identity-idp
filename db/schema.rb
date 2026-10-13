@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_09_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_13_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -604,6 +604,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_120000) do
     t.text "delegation_terms_of_service_url", comment: "sensitive=false"
     t.boolean "delegation_uses_ai", default: false, null: false, comment: "sensitive=false"
     t.text "description", comment: "sensitive=false"
+    t.boolean "dpop_required", default: false, null: false, comment: "sensitive=false"
     t.boolean "email_nameid_format_allowed", default: false, comment: "sensitive=false"
     t.text "failure_to_proof_url", comment: "sensitive=false"
     t.string "friendly_name", comment: "sensitive=false"

@@ -414,6 +414,78 @@ RSpec.describe ServiceProvider do
     end
   end
 
+  describe '#dpop_bound?' do
+    it 'is true only for a public client registered with dpop_required' do
+      expect(build(:service_provider, pkce: true, dpop_required: true).dpop_bound?).to eq(true)
+      expect(build(:service_provider, pkce: true, dpop_required: false).dpop_bound?).to eq(false)
+      expect(build(:service_provider, pkce: false, dpop_required: true).dpop_bound?).to eq(false)
+      expect(build(:service_provider, pkce: nil, dpop_required: true).dpop_bound?).to eq(false)
+    end
+
+    it 'does not follow approval for delegated access' do
+      allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+
+      approved = build(:service_provider, :delegation_service_provider, pkce: true)
+      expect(approved.delegation_service_provider?).to eq(true)
+      expect(approved.dpop_bound?).to eq(false)
+
+      unapproved = build(:service_provider, pkce: true, dpop_required: true)
+      expect(unapproved.delegation_service_provider?).to eq(false)
+      expect(unapproved.dpop_bound?).to eq(true)
+    end
+  end
+
+  describe '#warn_if_key_binding_misconfigured' do
+    let(:warnings) { [] }
+
+    before do
+      allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+    end
+
+    it 'says nothing for a public client registered with dpop_required, approved or not' do
+      build(:service_provider, pkce: true, dpop_required: true).warn_if_key_binding_misconfigured
+      build(:service_provider, :delegation_service_provider, pkce: true, dpop_required: true)
+        .warn_if_key_binding_misconfigured
+
+      expect(warnings).to be_empty
+    end
+
+    it 'says nothing for a confidential client without the setting, approved or not' do
+      build(:service_provider, pkce: false).warn_if_key_binding_misconfigured
+      build(:service_provider, :delegation_service_provider, pkce: false)
+        .warn_if_key_binding_misconfigured
+
+      expect(warnings).to be_empty
+    end
+
+    it 'says nothing for a public client without the setting that is not approved for delegation' do
+      build(:service_provider, pkce: true).warn_if_key_binding_misconfigured
+
+      expect(warnings).to be_empty
+    end
+
+    it 'warns when a confidential client sets dpop_required, which has no effect' do
+      build(:service_provider, issuer: 'urn:confidential', pkce: false, dpop_required: true)
+        .warn_if_key_binding_misconfigured
+      build(:service_provider, issuer: 'urn:unset', pkce: nil, dpop_required: true)
+        .warn_if_key_binding_misconfigured
+
+      expect(warnings).to contain_exactly(
+        a_string_including('urn:confidential', 'confidential client', 'ignored'),
+        a_string_including('urn:unset', 'confidential client', 'ignored'),
+      )
+    end
+
+    it 'warns when a public client approved for delegation has no dpop_required' do
+      build(:service_provider, :delegation_service_provider, issuer: 'urn:public', pkce: true)
+        .warn_if_key_binding_misconfigured
+
+      expect(warnings).to contain_exactly(
+        a_string_including('urn:public', 'without dpop_required', 'bearer tokens'),
+      )
+    end
+  end
+
   describe 'localized consent content' do
     it 'reads the current locale and falls back to English' do
       application = create(

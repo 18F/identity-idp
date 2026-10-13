@@ -457,9 +457,9 @@ RSpec.describe OpenidConnectAuthorizeForm do
           )
         end
 
-        context 'for a public client approved for delegation' do
+        context 'for a public client registered with dpop_required' do
           before do
-            service_provider.update!(pkce: true)
+            service_provider.update!(pkce: true, dpop_required: true)
             allow(IdentityConfig.store).to receive(:openid_connect_private_key_jwt_pkce_enabled)
               .and_return(false)
           end
@@ -498,9 +498,48 @@ RSpec.describe OpenidConnectAuthorizeForm do
             before { service_provider.update!(token_exchange_enabled_sp: false) }
             let(:scope) { 'openid email' }
 
-            it 'is not required' do
-              expect(form.dpop_binding_required?).to eq(false)
+            it 'is still required: the setting alone decides' do
+              expect(form.dpop_binding_required?).to eq(true)
+              expect(result.success?).to eq(false)
+              expect(result.errors[:dpop_jkt])
+                .to eq([t('openid_connect.authorization.errors.dpop_jkt_required')])
+            end
+          end
+        end
+
+        context 'for a public client approved for delegation without dpop_required' do
+          before do
+            service_provider.update!(pkce: true, dpop_required: false)
+            allow(IdentityConfig.store).to receive(:openid_connect_private_key_jwt_pkce_enabled)
+              .and_return(false)
+          end
+
+          let(:code_challenge) { Digest::SHA256.urlsafe_base64digest('a' * 43) }
+          let(:code_challenge_method) { 'S256' }
+
+          it 'is not required: approval for delegation does not bind this client' do
+            expect(service_provider.delegation_service_provider?).to eq(true)
+            expect(form.dpop_binding_required?).to eq(false)
+            expect(result.success?).to eq(true)
+            expect(link.dpop_jkt).to be_nil
+          end
+
+          context 'when sent anyway' do
+            let(:dpop_jkt) { thumbprint }
+
+            it 'is accepted but not stored, since bearer tokens are issued to this client' do
               expect(result.success?).to eq(true)
+              expect(link.dpop_jkt).to be_nil
+            end
+          end
+
+          context 'when sent malformed' do
+            let(:dpop_jkt) { 'x' }
+
+            it 'fails with invalid_request' do
+              expect(result.success?).to eq(false)
+              expect(result.errors[:dpop_jkt])
+                .to eq([t('openid_connect.authorization.errors.dpop_jkt_invalid')])
             end
           end
         end
@@ -529,6 +568,17 @@ RSpec.describe OpenidConnectAuthorizeForm do
               expect(result.success?).to eq(false)
               expect(result.errors[:dpop_jkt])
                 .to eq([t('openid_connect.authorization.errors.dpop_jkt_invalid')])
+            end
+          end
+
+          context 'with dpop_required set on its record' do
+            before { service_provider.update!(dpop_required: true) }
+            let(:dpop_jkt) { thumbprint }
+
+            it 'has no effect: not required, and a thumbprint sent is not stored' do
+              expect(form.dpop_binding_required?).to eq(false)
+              expect(result.success?).to eq(true)
+              expect(link.dpop_jkt).to be_nil
             end
           end
         end

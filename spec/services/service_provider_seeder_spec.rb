@@ -124,6 +124,75 @@ RSpec.describe ServiceProviderSeeder do
       end
     end
 
+    context 'with the key-binding setting on service providers in the yaml' do
+      let(:sp_yaml) do
+        <<~SP_YAML
+          test:
+            'urn:gov:gsa:openidconnect:sp:mybenefits':
+              agency_id: 2
+              friendly_name: 'MyBenefits Assistant'
+              ial: 2
+              pkce: true
+              token_exchange_enabled_sp: true
+              dpop_required: true
+            'urn:gov:gsa:openidconnect:sp:bearer_assistant':
+              agency_id: 2
+              friendly_name: 'Bearer Assistant'
+              ial: 2
+              pkce: true
+              token_exchange_enabled_sp: true
+            'urn:gov:gsa:openidconnect:sp:confidential_assistant':
+              agency_id: 2
+              friendly_name: 'Confidential Assistant'
+              ial: 2
+              certs:
+                - 'saml_test_sp'
+              token_exchange_enabled_sp: true
+              dpop_required: true
+        SP_YAML
+      end
+      let(:warnings) { [] }
+
+      before do
+        allow(instance).to receive(:service_provider_data).and_return(sp_yaml)
+        allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+      end
+
+      it 'writes the setting through and binds only the public client that sets it' do
+        run
+
+        bound = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:mybenefits')
+        expect(bound.dpop_required).to eq(true)
+        expect(bound.dpop_bound?).to eq(true)
+
+        bearer = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:bearer_assistant')
+        expect(bearer.dpop_required).to eq(false)
+        expect(bearer.dpop_bound?).to eq(false)
+
+        confidential = ServiceProvider
+          .find_by(issuer: 'urn:gov:gsa:openidconnect:sp:confidential_assistant')
+        expect(confidential.dpop_required).to eq(true)
+        expect(confidential.dpop_bound?).to eq(false)
+      end
+
+      it 'warns about the setting on a confidential client and its absence on a public one' do
+        run
+
+        expect(warnings).to contain_exactly(
+          a_string_including(
+            'urn:gov:gsa:openidconnect:sp:bearer_assistant',
+            'without dpop_required',
+            'bearer tokens',
+          ),
+          a_string_including(
+            'urn:gov:gsa:openidconnect:sp:confidential_assistant',
+            'confidential client',
+            'ignored',
+          ),
+        )
+      end
+    end
+
     context 'with other existing service providers in the database' do
       let!(:existing_provider) { create(:service_provider) }
 

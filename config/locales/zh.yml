@@ -1846,7 +1846,7 @@ notices.webauthn_platform_configured: 你用了自己设备的屏幕锁定给账
 openid_connect.authorization.errors.bad_client_id: 坏的client_id。请参阅我们的文档：https://developers.login.gov/support/#bad-client-id
 openid_connect.authorization.errors.delegation_not_allowed: 委托范围（token_exchange:*）需要来自已获批准进行委托访问的服务提供商的身份已验证请求。请参阅我们的文档：https://developers.login.gov/support/#oidc-delegation
 openid_connect.authorization.errors.dpop_jkt_invalid: dpop_jkt 必须是客户端 DPoP 公钥的 RFC 7638 base64url 指纹：43 个字符，无填充。
-openid_connect.authorization.errors.dpop_jkt_required: dpop_jkt 为必填项：此客户端是获准进行委托访问的公共客户端，因此授权码必须绑定到其 DPoP 密钥的指纹（RFC 9449 第 10 节）。
+openid_connect.authorization.errors.dpop_jkt_required: dpop_jkt 为必填项：此客户端注册时设置了 dpop_required，因此授权码必须绑定到其 DPoP 密钥的指纹（RFC 9449 第 10 节）。
 openid_connect.authorization.errors.invalid_verified_within_duration.one: 值必须至少为 %{count} 天或以上
 openid_connect.authorization.errors.invalid_verified_within_duration.other: 值必须至少为 %{count} 天或以上
 openid_connect.authorization.errors.invalid_verified_within_format: verified_within 格式无法识别

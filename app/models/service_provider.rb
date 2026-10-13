@@ -102,6 +102,36 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.token_exchange_enabled && active? && token_exchange_enabled_sp?
   end
 
+  # Whether every token Login.gov issues to this service provider is bound to a key it holds
+  # (RFC 9449 DPoP): the authorization code, the sign-in access token and, for delegated access,
+  # the delegated and refresh tokens. A per-client setting (`dpop_required`) that takes effect
+  # only for a public client (`pkce`), which has no client secret and holds its tokens in the
+  # person's browser, so each must be useless without the key. A confidential client proves itself
+  # with its registered key and keeps bearer tokens whatever the setting says. Independent of
+  # approval for delegated access: an approved public client without the setting is a bearer
+  # client throughout, and a public client with it is bound whether or not it is approved.
+  def dpop_bound?
+    pkce == true && dpop_required
+  end
+
+  # Logs a warning when the key-binding setting cannot mean what it says: set on a confidential
+  # client, where it has no effect, or left unset on a public client approved for delegated
+  # access, whose delegated tokens are then bearer tokens that anyone holding a copy can use.
+  # Onboarding runs it after every write so the configuration is questioned when it is written.
+  def warn_if_key_binding_misconfigured
+    if dpop_required && pkce != true
+      Rails.logger.warn do
+        "service provider #{issuer} sets dpop_required but is a confidential client; the setting " \
+          "is ignored and its tokens are bearer tokens"
+      end
+    elsif pkce == true && token_exchange_enabled_sp && !dpop_required
+      Rails.logger.warn do
+        "service provider #{issuer} is a public client approved for delegated access without " \
+          "dpop_required; its delegated tokens will be bearer tokens"
+      end
+    end
+  end
+
   # Whether this record is an application registered for delegated access: an agency-owned
   # record a service provider may act at on the user's behalf, owning one or more API URLs
   # (token_exchange_resource_servers).

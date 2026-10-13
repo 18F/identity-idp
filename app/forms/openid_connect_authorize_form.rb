@@ -185,13 +185,13 @@ class OpenidConnectAuthorizeForm
     site_key_jwk.present? && service_provider&.site_key_allowed?
   end
 
-  # Whether every token this client receives is bound to a key it holds (RFC 9449). Binding
-  # follows the client type alone: a public client (PKCE, no client secret) approved for
-  # delegated access holds its tokens in the person's browser, so each must be useless without
-  # the key. Confidential clients, and public clients not approved for delegation, receive bearer
-  # tokens as before.
+  # Whether every token this client receives is bound to a key it holds (RFC 9449). Binding is a
+  # per-client setting (`dpop_required`) that takes effect only for a public client (PKCE, no
+  # client secret), which holds its tokens in the person's browser, so each must be useless
+  # without the key. Every other client, including a public client approved for delegated access
+  # without the setting, receives bearer tokens as before.
   def dpop_binding_required?
-    service_provider&.pkce == true && service_provider.delegation_service_provider?
+    service_provider.present? && service_provider.dpop_bound?
   end
 
   private
@@ -278,10 +278,10 @@ class OpenidConnectAuthorizeForm
     )
   end
 
-  # RFC 9449 §10: a public client approved for delegation names the thumbprint of its DPoP key in
-  # the authorization request, so the code it receives can be redeemed only with a proof from that
-  # key and an intercepted code is worthless. Any client may send a well-formed thumbprint; it is
-  # stored only when binding applies to the client.
+  # RFC 9449 §10: a public client whose tokens are key-bound names the thumbprint of its DPoP key
+  # in the authorization request, so the code it receives can be redeemed only with a proof from
+  # that key and an intercepted code is worthless. Any client may send a well-formed thumbprint;
+  # it is stored only when binding applies to the client.
   def validate_dpop_jkt
     if dpop_jkt.blank?
       return unless dpop_binding_required?

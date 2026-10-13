@@ -3,8 +3,8 @@
 # Update ServiceProvider from config/service_providers.yml (all environments in rake db:seed)
 #
 # Delegated access adds two kinds of data to a service provider entry, both passed straight
-# through to the record: the service provider fields (token_exchange_enabled_sp and the
-# delegation_* content) and, for an agency application, delegation_application,
+# through to the record: the service provider fields (token_exchange_enabled_sp, dpop_required
+# and the delegation_* content) and, for an agency application, delegation_application,
 # delegation_scope_value, the consent content, allowed_delegation_service_providers and a nested
 # token_exchange_resource_servers list (the application's API URLs), written by
 # #write_resource_servers.
@@ -81,6 +81,7 @@ class ServiceProviderSeeder
         'token_exchange_resource_servers',
       ).merge(certs: cert_pems),
     )
+    service_provider.warn_if_key_binding_misconfigured
 
     write_resource_servers(service_provider, config['token_exchange_resource_servers'])
   end

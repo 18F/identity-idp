@@ -223,6 +223,53 @@ RSpec.describe ServiceProviderUpdater do
       end
     end
 
+    context 'dashboard payload carries the key-binding setting' do
+      let(:warnings) { [] }
+      let(:public_client_payload) do
+        openid_connect_sp.merge(pkce: true, certs: [], token_exchange_enabled_sp: true)
+      end
+
+      before do
+        allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+      end
+
+      it 'writes it through for a public client and binds it, without a warning' do
+        stub_request(:get, fake_dashboard_url)
+          .to_return(status: 200, body: [public_client_payload.merge(dpop_required: true)].to_json)
+        subject.run
+
+        sp = ServiceProvider.find_by(issuer: oidc_issuer)
+        expect(sp.dpop_required).to eq(true)
+        expect(sp.dpop_bound?).to eq(true)
+        expect(warnings).to be_empty
+      end
+
+      it 'warns when a public client approved for delegation does not set it' do
+        stub_request(:get, fake_dashboard_url)
+          .to_return(status: 200, body: [public_client_payload].to_json)
+        subject.run
+
+        sp = ServiceProvider.find_by(issuer: oidc_issuer)
+        expect(sp.dpop_bound?).to eq(false)
+        expect(warnings).to contain_exactly(
+          a_string_including(oidc_issuer, 'without dpop_required', 'bearer tokens'),
+        )
+      end
+
+      it 'warns when a confidential client sets it, which has no effect' do
+        stub_request(:get, fake_dashboard_url)
+          .to_return(status: 200, body: [openid_connect_sp.merge(dpop_required: true)].to_json)
+        subject.run
+
+        sp = ServiceProvider.find_by(issuer: oidc_issuer)
+        expect(sp.dpop_required).to eq(true)
+        expect(sp.dpop_bound?).to eq(false)
+        expect(warnings).to contain_exactly(
+          a_string_including(oidc_issuer, 'confidential client', 'ignored'),
+        )
+      end
+    end
+
     context 'dashboard is not available' do
       it 'logs error and does not affect registry' do
         allow(Rails.logger).to receive(:error)

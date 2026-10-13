@@ -194,13 +194,13 @@ class OpenidConnectTokenForm
   end
 
   # Whether the code being redeemed must be accompanied by a DPoP proof (RFC 9449 §5, §10). This
-  # is a property of the client, not of the request: a public client approved for delegated
-  # access holds its tokens in the person's browser, so each token it receives is bound to a key
-  # it holds and its authorization code was bound to that key's thumbprint at the authorization
-  # request. Confidential clients and public clients not approved for delegation are unaffected.
+  # is a property of the client, not of the request: a public client registered for key binding
+  # (`dpop_required`) holds its tokens in the person's browser, so each token it receives is bound
+  # to a key it holds and its authorization code was bound to that key's thumbprint at the
+  # authorization request. Every other client, approved for delegated access or not, is
+  # unaffected.
   def dpop_binding_required?
-    identity.present? && service_provider&.pkce == true &&
-      service_provider.delegation_service_provider?
+    identity.present? && service_provider.present? && service_provider.dpop_bound?
   end
 
   # Runs after every other check so a proof problem is reported only for an otherwise valid
