@@ -50,13 +50,52 @@ Not branches: document-image sharing is foundation code kept on the base and ena
 
 ## Conventions
 
-- **Identifiers are preserved.** `FR-<area>-<n>` rows state what the capability must do; the protocol rows (`ONB-`, `CON-`, `ACC-`, `EXC-`, `REF-`, `INT-`, `SAML-`, `DISC-`, `BIL-`, `ATT-`, `UINF-`, `DOC-`, `TPL-`, `REF-IMPL-`, `RS-DPOP-`) state how it is built; `Dnn` numbers the decisions. An identifier means the same thing in every document, commit message and review that has ever used it. A row owned by one branch is referenced by its identifier elsewhere, never copied.
+- **Identifiers are preserved.** `FR-<area>-<n>` rows state what the capability must do (the legend below explains every area); the protocol rows (`ONB-`, `CON-`, `ACC-`, `EXC-`, `REF-`, `INT-`, `SAML-`, `DISC-`, `BIL-`, `ATT-`, `UINF-`, `DOC-`, `TPL-`, `REF-IMPL-`, `RS-DPOP-`) state how it is built; `Dnn` numbers the decisions. An identifier means the same thing in every document, commit message and review that has ever used it. A row owned by one branch is referenced by its identifier elsewhere, never copied.
 - **Current state only.** Every row states the requirement as it stands today. Where a decision changed a row, the row is written in its amended form and cites the decision as "(Dnn)"; the dated amendment trails live in git history and in section 16. Nothing in a row is marked planned, implemented or superseded; the two unbuilt designs are described as such in section 15.
 - **Decisions live in section 16.** A branch section lists its decisions in one line each; the rationale and the rejected alternative are in section 16 only.
 - **Fictitious names.** Code, fixtures, comments, examples and this document use the fictitious names: MyBenefits Assistant, run by the Office of Benefits Coordination (agency 100); the Department of Housing Support (101) with its application Housing Assistance Records; the National Retirement Administration (102) with its application Retirement Benefits Portal. No real service provider is named. The Department of State appears only as the subject of the business case its requirement rows describe (section 15.1); it is not a fixture.
 - **Vocabulary.** *Service provider*: the application the person signs in to, which then acts for them (OAuth's client, OpenID Connect's relying party, RFC 8693's actor); never "broker" in this repository. *Application*: an agency's record for one service it registers for delegation, carrying consent content and owning one or more agency APIs. *Resource server* or *agency API*: one URL a delegated token is issued for. *Agency SP*: the agency's service-provider record when the record itself matters. *Person*: the member of the public. The reference applications outside this repository name their own roles from their own side; that naming does not reach this repository's code or wire contract. Appendix F defines the remaining terms.
 - **Requirement language.** MUST, SHOULD and MAY as in RFC 2119 and RFC 8174. Values in parentheses (lifetimes, limits) are current defaults, not requirements, unless a row says otherwise.
 - **Standards over invention.** Wherever a cited standard covers a behavior, the behavior is the standard's: RFC 6749, 6750, 7009, 7516, 7519, 7523, 7636, 7662, 8693, 8707, 8725, 9449, 9700, OpenID Connect Core 1.0 and Discovery 1.0, RFC 8414, RFC 8417 and 8936 with the OpenID Shared Signals Framework, NIST SP 800-63B and 800-63C. Two standards were considered and not used: RFC 9068 (JWT access tokens; tokens stay opaque so an agency must ask Login.gov before trusting one) and RFC 9396 (rich authorization requests; named scopes fit the existing consent and scope code).
+
+## Identifier legend
+
+Every requirement row carries an identifier. The letters say which area of the capability the row belongs to; the number is only a label and says nothing about priority or order. Functional requirement rows start with `FR-`; protocol rows, which say how a functional requirement is built on the wire, carry the area letters alone.
+
+| Functional requirement prefix | Stands for | What the rows cover | Owned by |
+|---|---|---|---|
+| **FR-ONB** | Onboarding | The registry of applications, their APIs and content, the approved service providers, and how that content is maintained | Sections 1 and 13 |
+| **FR-CEN** | Consent enforcement | What an approval permits, how long it is valid, what Login.gov records about it, and how revocation takes effect everywhere | Sections 2, 3, 6 and 7 |
+| **FR-CUX** | Consent user experience | What the person sees and can do on the consent screen and on the account page | Sections 2 and 3, one row in 15 |
+| **FR-KEY** | Per-site keys | Keys derived for a service provider and sealed to its browser | Section 4 |
+| **FR-TOK** | Tokens | Issuing delegated tokens, their lifetime, renewal, revocation and key binding | Sections 5, 6, 7 and 9 |
+| **FR-VER** | Verification | How an agency API confirms a delegated token or assertion with Login.gov | Sections 8 and 9 |
+| **FR-OPS** | Operations | The master switch, discovery, monitoring, the reference setup and the gates before production | Sections 1, 10 and 15 |
+| **FR-BIL** | Billing | Which party is billed for a delegated use and the reports that count delegation outcomes | Section 11 |
+| **FR-FRD** | Fraud signals | Delivery of fraud-relevant events to agencies through the Attempts API | Section 12 |
+| **FR-DOS** | Department of State case | Document-image sharing for a direct service provider and encrypted user-information responses, the needs of the passport use case | Sections 14 and 15.1 |
+| **FR-TPL** | Third-party-initiated login | The alternative pattern in which an agency signs the person in itself, implemented in the reference applications | Section 15.2 |
+| **FR-FIT** | Pattern fit | When the token service is the right pattern and when third-party-initiated login is | Section 15.8 |
+
+| Protocol row prefix | Stands for | Owned by |
+|---|---|---|
+| **ONB** | Onboarding data model and seeding | Sections 1 and 13 |
+| **CON** | Consent: the authorization request and the consent screen | Section 2 |
+| **ACC** | Account page | Section 3 |
+| **EXC** | Exchange: the token exchange request and response | Sections 5 and 6 |
+| **REF** | Refresh: renewal, rotation and revocation of delegated access | Section 7 |
+| **INT** | Introspection: an agency verifying a token | Section 8 |
+| **SAML** | SAML assertions as an issued token type | Section 9 |
+| **DISC** | Discovery metadata | Section 10 |
+| **BIL** | Billing rows and reports | Section 11 |
+| **ATT** | Attempts API fraud-signal events | Section 12 |
+| **UINF** | User-information endpoint | Section 14 |
+| **DOC** | Document-image sharing | Section 15.1 |
+| **TPL** | Third-party-initiated login | Section 15.2 |
+| **REF-IMPL** | Reference implementations: the three reference applications and the end-to-end harness | Section 15.3 |
+| **RS-DPOP** | Resource-server handling of key-bound tokens | Section 15.3 |
+
+Two more numberings appear. **Dnn** is a decision, recorded in full in section 16 and listed in one line under the branch section it shaped. **Enn** is an item of the foundation review in Appendix E: a piece of the foundation branch the stack kept, replaced or removed.
 
 # 1. `delegated-access-registry`: the registry of applications, their APIs and the content people are shown
 
