@@ -31,6 +31,10 @@ class StoreSpMetadataInSession
       acr_values: sp_request.acr_values,
       vtr: sp_request.vtr,
     }
+    # Only an OpenID Connect request can name applications for delegated access; the key is
+    # present only when one did, so every other sign-in's session is unchanged.
+    delegation_scopes = sp_request.requested_delegation_scopes
+    session[:sp][:requested_delegation_scopes] = delegation_scopes if delegation_scopes.present?
   end
 
   def service_provider

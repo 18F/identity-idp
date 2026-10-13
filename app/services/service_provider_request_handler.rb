@@ -64,6 +64,7 @@ class ServiceProviderRequestHandler
       acr_values: protocol.acr_values,
       vtr: protocol.vtr,
       requested_attributes: protocol.requested_attributes,
+      requested_delegation_scopes: protocol.requested_delegation_scopes,
       uuid: request_id,
       url: url,
     }

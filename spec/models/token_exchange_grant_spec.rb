@@ -169,6 +169,75 @@ RSpec.describe TokenExchangeGrant do
         expect(grant.valid_now?(current_authorization: true)).to eq(true)
         expect(grant.valid_now?(current_authorization: false)).to eq(false)
       end
+
+      it 'reads the browser session from an identity the caller already holds' do
+        grant = approve(remember: false, rails_session_id: 'session-1')
+        loaded = ServiceProviderIdentity.find(identity.id)
+        identity.update!(rails_session_id: 'session-2')
+
+        expect(grant.valid_now?(identity: loaded)).to eq(true)
+        expect(grant.valid_now?).to eq(false)
+      end
+    end
+  end
+
+  describe '.live_by_application' do
+    it 'returns the live approvals keyed by application id, bound to the given records' do
+      kept = approve
+      described_class.approve!(
+        user:, service_provider:, application: other_application,
+        source: 'account_page', remember: true
+      ).revoke!(reason: 'user_revoked')
+
+      grants = described_class.live_by_application(
+        user:, service_provider_issuer: service_provider.issuer,
+        applications: [application, other_application]
+      )
+
+      expect(grants.keys).to eq([application.id])
+      expect(grants[application.id]).to eq(kept)
+      expect(grants[application.id].application).to equal(application)
+    end
+
+    it 'is empty with no applications and runs no query' do
+      expect(
+        described_class.live_by_application(
+          user:, service_provider_issuer: service_provider.issuer, applications: [],
+        ),
+      ).to eq({})
+    end
+  end
+
+  describe '.partition_current' do
+    it 'keeps remembered, current approvals and lists every other application for approval' do
+      third_application = create(:service_provider, :delegation_application)
+      kept = approve
+      single_use = described_class.approve!(
+        user:, service_provider:, application: other_application,
+        source: 'consent_screen', remember: false, rails_session_id: 'session-1'
+      )
+
+      partition = described_class.partition_current(
+        user:, service_provider_issuer: service_provider.issuer,
+        applications: [third_application, other_application, application]
+      )
+
+      expect(partition[:kept]).to eq([kept])
+      expect(partition[:needing_approval]).to eq([third_application, other_application])
+      expect(single_use.reload).not_to be_revoked
+    end
+
+    it 'lists an application whose agency content changed materially since the approval' do
+      approve
+      application.agency.update!(consent_content_version: 2, consent_material_version: 2)
+
+      partition = described_class.partition_current(
+        user:, service_provider_issuer: service_provider.issuer, applications: [application],
+      )
+
+      expect(partition[:kept]).to be_empty
+      expect(partition[:needing_approval]).to eq([application])
+      expect(application.association(:agency)).to be_loaded
     end
   end
 

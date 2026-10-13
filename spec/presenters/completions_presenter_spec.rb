@@ -345,4 +345,68 @@ RSpec.describe CompletionsPresenter do
       end
     end
   end
+
+  describe 'delegated access' do
+    let(:current_sp) do
+      create(:service_provider, :delegation_service_provider, friendly_name: 'MyBenefits Assistant')
+    end
+    let(:housing) do
+      create(:service_provider, :delegation_application, delegation_scope_value: 'housing_records')
+    end
+    let(:retirement) do
+      create(
+        :service_provider, :delegation_application, delegation_scope_value: 'retirement_benefits'
+      )
+    end
+    let(:requested_delegation_scopes) { [housing, retirement].map(&:delegation_scope_value) }
+
+    subject(:presenter) do
+      described_class.new(
+        current_user:, current_sp:, decrypted_pii:, requested_attributes:, idv_requested: true,
+        completion_context:, selected_email_id:, requested_delegation_scopes:
+      )
+    end
+
+    before { allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true) }
+
+    it 'is requested only for an approved service provider with requested applications' do
+      expect(presenter.delegation_requested?).to eq(true)
+      expect(presenter.heading)
+        .to eq(t('sign_up.delegation.heading', sp: 'MyBenefits Assistant'))
+
+      current_sp.update!(token_exchange_enabled_sp: false)
+      expect(presenter.delegation_requested?).to eq(false)
+    end
+
+    it 'groups the requested applications by agency with a status per row' do
+      TokenExchangeGrant.approve!(
+        user: current_user, service_provider: current_sp, application: housing,
+        source: 'account_page', remember: true
+      )
+
+      rows = presenter.delegation_groups.flat_map { |_agency, agency_rows| agency_rows }
+      by_app = rows.index_by(&:application)
+      expect(by_app[housing].status).to eq(:approved)
+      expect(by_app[housing].approved_from_account_at).to be_present
+      expect(by_app[retirement].status).to eq(:new)
+      expect(by_app[retirement].approved_from_account_at).to be_nil
+    end
+
+    it 'marks an approval made stale by a material change as updated' do
+      TokenExchangeGrant.approve!(
+        user: current_user, service_provider: current_sp, application: housing,
+        source: 'consent_screen', remember: true
+      )
+      housing.agency.update!(consent_content_version: 2, consent_material_version: 2)
+
+      rows = presenter.delegation_groups.flat_map { |_agency, agency_rows| agency_rows }
+      expect(rows.find { |row| row.application == housing }.status).to eq(:updated)
+    end
+
+    it 'exposes the service provider card content' do
+      expect(presenter.delegation_operator_name).to eq('Office of Benefits Coordination')
+      expect(presenter.delegation_uses_ai?).to eq(true)
+      expect(presenter.delegation_learn_more_url).to eq('https://mybenefits.example.gov/privacy')
+    end
+  end
 end

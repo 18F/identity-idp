@@ -21,6 +21,34 @@ RSpec.describe OpenidConnectAttributeScoper do
         expect(scopes).to eq(%w[openid email profile])
       end
     end
+
+    context 'with a narrower allowed list' do
+      let(:scope) { 'openid email profile token_exchange:housing_records' }
+      let(:scoper) do
+        OpenidConnectAttributeScoper.new(scope, allowed: OpenidConnectAttributeScoper::VALID_IAL1_SCOPES)
+      end
+
+      it 'drops attribute scopes outside the list and keeps delegation scopes' do
+        expect(scopes).to eq(%w[openid email token_exchange:housing_records])
+      end
+    end
+  end
+
+  describe 'delegation scopes' do
+    subject(:scoper) do
+      OpenidConnectAttributeScoper.new('openid email token_exchange:housing_records bogus')
+    end
+
+    it 'keeps token_exchange:* values, drops unknown attribute scopes' do
+      expect(scoper.scopes).to eq(%w[openid email token_exchange:housing_records])
+    end
+
+    it 'exposes the bare delegation scope values and never treats them as attributes' do
+      expect(scoper.delegation_scope_values).to eq(['housing_records'])
+      expect(scoper.delegation_requested?).to eq(true)
+      expect(scoper.requested_attributes).to eq(%w[email])
+      expect(OpenidConnectAttributeScoper.new('openid email').delegation_requested?).to eq(false)
+    end
   end
 
   describe '#filter' do

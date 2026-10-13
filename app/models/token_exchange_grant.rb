@@ -49,6 +49,49 @@ class TokenExchangeGrant < ApplicationRecord
     live.find_by(user:, service_provider_issuer:, application:)
   end
 
+  # The live approvals for several applications in one query, keyed by application id. Each
+  # grant's application association is set to the record passed in, so freshness checks read the
+  # application (and whatever the caller loaded on it) without another query per grant.
+  # @param applications [Array<ServiceProvider>]
+  # @return [Hash{Integer => TokenExchangeGrant}]
+  def self.live_by_application(user:, service_provider_issuer:, applications:)
+    by_id = applications.index_by(&:id)
+    return {} if by_id.empty?
+
+    grants = live.where(
+      user:, service_provider_issuer:,
+      application_service_provider_id: by_id.keys
+    )
+    grants.each { |grant| grant.application = by_id[grant.application_service_provider_id] }
+    grants.index_by(&:application_service_provider_id)
+  end
+
+  # Splits the applications a service provider requested into the ones the person need not be
+  # asked about again and the ones that need a decision. An application is kept when its live
+  # approval is remembered, unexpired and given under content that has not materially changed;
+  # every other application (no live approval, a single-authorization one, an expired or stale
+  # one) needs approval. Freshness reads each application's agency, so the agencies are loaded
+  # in one query here and stay loaded for whatever the caller does with the applications next.
+  #
+  # @param applications [Array<ServiceProvider>] in request order, which both lists keep
+  # @return [Hash{Symbol => Array}] +kept+ as grants, +needing_approval+ as applications
+  def self.partition_current(user:, service_provider_issuer:, applications:)
+    ActiveRecord::Associations::Preloader.new(records: applications, associations: :agency).call
+    grants = live_by_application(user:, service_provider_issuer:, applications:)
+
+    kept = []
+    needing_approval = []
+    applications.each do |application|
+      grant = grants[application.id]
+      if grant&.remembered_and_current?
+        kept << grant
+      else
+        needing_approval << application
+      end
+    end
+    { kept:, needing_approval: }
+  end
+
   # Whether a live, currently valid approval lets +service_provider_issuer+ act for +user+ at
   # +application+. Used at exchange time.
   def self.authorizes?(user:, service_provider_issuer:, application:, current_authorization: nil)
@@ -118,6 +161,13 @@ class TokenExchangeGrant < ApplicationRecord
     remember_until.present?
   end
 
+  # A live approval that is remembered, still within its period, and given under content that has
+  # not materially changed since. The consent screen is skipped for such an application and a later
+  # screen leaves the approval untouched.
+  def remembered_and_current?
+    !revoked? && remembered? && remember_until.future? && current_content?
+  end
+
   # Time left on a remembered approval, never negative; nil for a single-authorization approval.
   def time_remaining
     return nil unless remembered?
@@ -135,8 +185,9 @@ class TokenExchangeGrant < ApplicationRecord
   # 4. Either the approval is remembered and the period has not passed, or it was given in the
   #    authorization that is asking now. For a single-authorization approval the caller passes
   #    +current_authorization+ when it knows the answer from context; otherwise the browser
-  #    session recorded on the row must match the service provider identity's session.
-  def valid_now?(current_authorization: nil)
+  #    session recorded on the row must match the service provider identity's session, read
+  #    from +identity+ when the caller has it loaded and looked up otherwise.
+  def valid_now?(current_authorization: nil, identity: nil)
     return false if revoked?
     return false unless application&.delegation_application?
     return false unless service_provider_record&.delegation_service_provider?
@@ -144,16 +195,19 @@ class TokenExchangeGrant < ApplicationRecord
     return true if remembered? && remember_until.future?
     return current_authorization unless current_authorization.nil?
 
-    current_authorization?
+    current_authorization?(identity:)
   end
 
   # A single-authorization approval is "the current authorization" exactly while the browser
   # session it was given in is still the session the service provider identity is bound to; the
   # next sign-in to the service provider replaces that session and the approval lapses.
-  def current_authorization?
+  #
+  # @param identity [ServiceProviderIdentity, nil] the user's identity at this approval's service
+  #   provider, when the caller already holds it; looked up otherwise
+  def current_authorization?(identity: nil)
     return false if rails_session_id.blank?
 
-    identity = user.identities.find_by(service_provider: service_provider_issuer)
+    identity ||= user.identities.find_by(service_provider: service_provider_issuer)
     identity.present? && identity.rails_session_id == rails_session_id
   end
 

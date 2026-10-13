@@ -35,7 +35,7 @@ RSpec.describe OpenidConnect::ExchangeController do
         rails_session_id: rails_session_id,
         ial: 2,
         verified_attributes: %w[email],
-        scope: 'openid email token_exchange',
+        scope: 'openid email token_exchange:application',
       )
     end
     let(:subject_token) { delegating_identity.access_token }

@@ -48,6 +48,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
           allow_prompt_create: false,
           redirect_uri: nil,
           unauthorized_scope: true,
+          delegation_scopes: nil,
           acr_values:,
           scope: 'openid',
           code_digest: nil,
@@ -73,6 +74,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
             redirect_uri: "#{redirect_uri}?error=invalid_request&error_description=" \
                           "Response+type+is+not+included+in+the+list&state=#{state}",
             unauthorized_scope: true,
+            delegation_scopes: nil,
             acr_values:,
             scope: 'openid',
             code_digest: nil,
@@ -375,6 +377,88 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(valid?).to eq(false)
         expect(form.errors[:scope])
           .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+      end
+    end
+
+    context 'with delegation (token_exchange:) scopes' do
+      let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
+      let(:service_provider) do
+        create(:service_provider, :delegation_service_provider, redirect_uris: [redirect_uri])
+      end
+      let(:client_id) { service_provider.issuer }
+      let!(:application) do
+        create(
+          :service_provider, :delegation_application,
+          delegation_scope_value: 'housing_records'
+        )
+      end
+      let(:scope) { 'openid email token_exchange:housing_records' }
+      let(:result) { form.submit }
+
+      before { allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true) }
+
+      it 'succeeds and exposes the requested applications' do
+        expect(result.success?).to eq(true)
+        expect(form.scope).to eq(%w[openid email token_exchange:housing_records])
+        expect(form.requested_delegation_scopes).to eq(['housing_records'])
+        expect(result.to_h[:delegation_scopes]).to eq(['housing_records'])
+      end
+
+      context 'when a value names no registered application' do
+        let(:scope) { 'openid email token_exchange:housing_records token_exchange:nope' }
+
+        it 'fails with invalid_scope and names the unknown value' do
+          expect(result.success?).to eq(false)
+          expect(result.to_h[:redirect_uri]).to include('error=invalid_scope')
+          expect(result.errors[:scope].join).to include('nope')
+        end
+      end
+
+      context 'when the application is inactive' do
+        before { application.update!(active: false) }
+
+        it 'fails with invalid_scope' do
+          expect(result.success?).to eq(false)
+          expect(result.to_h[:redirect_uri]).to include('error=invalid_scope')
+        end
+      end
+
+      context 'when the application does not accept this service provider' do
+        before { application.update!(allowed_delegation_service_providers: ['urn:someone-else']) }
+
+        it 'fails with invalid_scope' do
+          expect(result.success?).to eq(false)
+          expect(result.to_h[:redirect_uri]).to include('error=invalid_scope')
+        end
+      end
+
+      context 'when the service provider is not approved for delegation' do
+        before { service_provider.update!(token_exchange_enabled_sp: false) }
+
+        it 'fails with invalid_scope' do
+          expect(result.success?).to eq(false)
+          expect(result.to_h[:redirect_uri]).to include('error=invalid_scope')
+          expect(result.errors[:scope].join).to include('approved for delegated access')
+        end
+      end
+
+      context 'when the request is not identity-verified' do
+        let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
+        before { service_provider.update!(ial: 1) }
+
+        it 'fails with invalid_scope' do
+          expect(result.success?).to eq(false)
+          expect(result.to_h[:redirect_uri]).to include('error=invalid_scope')
+        end
+      end
+
+      context 'with an unknown value that lacks the prefix' do
+        let(:scope) { 'openid email sub given_name token_exchange:housing_records' }
+
+        it 'still silently ignores it' do
+          expect(result.success?).to eq(true)
+          expect(form.scope).to eq(%w[openid email token_exchange:housing_records])
+        end
       end
     end
 
