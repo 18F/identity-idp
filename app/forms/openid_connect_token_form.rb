@@ -5,8 +5,6 @@ class OpenidConnectTokenForm
   include ActionView::Helpers::TranslationHelper
   include Rails.application.routes.url_helpers
 
-  ISSUED_AT_LEEWAY_SECONDS = 10
-
   ATTRS = %i[
     client_assertion
     client_assertion_type
@@ -185,54 +183,15 @@ class OpenidConnectTokenForm
   def validate_client_assertion
     return if identity.blank?
 
-    payload, _headers, err = nil
-
-    matching_cert = service_provider&.ssl_certs&.find do |ssl_cert|
-      err = nil
-      payload, _headers = JWT.decode(
-        client_assertion, ssl_cert.public_key, true,
-        algorithm: 'RS256', iss: client_id,
-        verify_iss: true, sub: client_id,
-        verify_sub: true
-      )
-    rescue JWT::DecodeError => err
-      next
-    end
-
-    if matching_cert && payload
-      validate_aud_claim(payload)
-      validate_iat(payload)
-    else
-      errors.add(
-        :client_assertion,
-        err&.message || t('openid_connect.token.errors.invalid_signature'),
-        type: :invalid_signature,
-      )
-    end
-  end
-
-  def validate_aud_claim(payload)
-    aud_claim = payload['aud']
-    aud_as_array = Array.wrap(aud_claim)
-    aud_as_array.map! { |aud| aud.to_s.chomp('/') }
-    return true if aud_as_array.include?(api_openid_connect_token_url)
-
-    errors.add(
-      :client_assertion,
-      t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url),
-      type: :invalid_aud,
+    validator = OpenidConnectClientAssertionValidator.new(
+      client_assertion:,
+      client_id:,
+      service_provider:,
+      audience_url: api_openid_connect_token_url,
     )
-  end
-
-  def validate_iat(payload)
-    return true unless payload.key?('iat')
-    iat = payload['iat']
-    return true if iat.is_a?(Numeric) && (iat.to_i - ISSUED_AT_LEEWAY_SECONDS) < Time.zone.now.to_i
-
-    errors.add(
-      :client_assertion, t('openid_connect.token.errors.invalid_iat'),
-      type: :invalid_iat
-    )
+    validator.errors.each do |error|
+      errors.add(error.attribute, error.message, type: error.type)
+    end
   end
 
   def service_provider
