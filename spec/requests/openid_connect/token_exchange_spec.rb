@@ -468,12 +468,29 @@ RSpec.describe 'OpenID Connect token exchange' do
       context 'when the API is registered for SAML assertions' do
         before { resource_server.update!(token_format: 'saml2') }
 
-        include_examples 'invalid_target', 'saml_not_available'
+        it 'issues the assertion: the registration decides the format' do
+          exchange
+          expect(response).to have_http_status(:ok)
+          expect(json[:issued_token_type]).to eq(OpenidConnectTokenExchangeForm::SAML2_TOKEN_TYPE)
+          expect(json[:token_type]).to eq('N_A')
+          expect(TokenExchangeToken.last.token_format).to eq('saml2')
+        end
 
         context 'and the request asks for an access token' do
           let(:requested_token_type) { OpenidConnectTokenExchangeForm::ACCESS_TOKEN_TYPE }
 
-          include_examples 'invalid_target', 'saml_not_available'
+          it 'still issues the assertion and notes the mismatch' do
+            stub_request_analytics
+            exchange
+
+            expect(response).to have_http_status(:ok)
+            expect(json[:issued_token_type])
+              .to eq(OpenidConnectTokenExchangeForm::SAML2_TOKEN_TYPE)
+            expect(@analytics).to have_logged_event(
+              :openid_connect_token_exchange,
+              hash_including(success: true, requested_token_type_mismatch: true),
+            )
+          end
         end
       end
 

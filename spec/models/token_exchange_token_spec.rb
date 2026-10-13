@@ -91,6 +91,43 @@ RSpec.describe TokenExchangeToken do
     end
   end
 
+  describe '.lifetime_seconds_for' do
+    let(:now) { Time.zone.now }
+    let(:resource_server) { build(:token_exchange_resource_server, max_access_token_seconds: nil) }
+    let(:family_expires_at) { now + 12.hours }
+
+    it 'is the configured access token lifetime by default' do
+      expect(
+        described_class.lifetime_seconds_for(now:, resource_server:, family_expires_at:),
+      ).to eq(IdentityConfig.store.token_exchange_access_token_ttl_seconds)
+    end
+
+    it 'is the shorter assertion window for a SAML assertion' do
+      expect(
+        described_class.lifetime_seconds_for(
+          now:, resource_server:, family_expires_at:, token_format: 'saml2',
+        ),
+      ).to eq(IdentityConfig.store.token_exchange_saml_assertion_ttl_seconds)
+    end
+
+    it 'never exceeds the API maximum or the family end, and is at least one second' do
+      resource_server.max_access_token_seconds = 120
+      expect(
+        described_class.lifetime_seconds_for(
+          now:, resource_server:, family_expires_at:, token_format: 'saml2',
+        ),
+      ).to eq(120)
+      expect(
+        described_class.lifetime_seconds_for(
+          now:, resource_server:, family_expires_at: now + 30, token_format: 'saml2',
+        ),
+      ).to eq(30)
+      expect(
+        described_class.lifetime_seconds_for(now:, resource_server:, family_expires_at: now),
+      ).to eq(1)
+    end
+  end
+
   describe '#lifetime_seconds' do
     it 'is the distance between issuance and expiry' do
       now = Time.zone.now

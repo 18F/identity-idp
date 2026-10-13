@@ -586,6 +586,7 @@ module IdentityConfig
     config.add(:token_exchange_access_token_ttl_seconds, type: :integer)
     config.add(:token_exchange_enabled, type: :boolean)
     config.add(:token_exchange_refresh_token_ttl_seconds, type: :integer)
+    config.add(:token_exchange_saml_assertion_ttl_seconds, type: :integer)
     config.add(:totp_code_interval, type: :integer)
     config.add(:ui_test_bucket_params_enabled, type: :boolean)
     config.add(:unauthorized_scope_enabled, type: :boolean)

@@ -18,18 +18,27 @@ class AttributeAsserter
     phone
   ].freeze
 
+  # @param authn_request [SamlIdp::Request, nil] the request being answered; when nil, the
+  #   authentication context is the +ial+ and +aal+ given, and the attribute bundle is the
+  #   service provider's registered one, since there is no request to narrow it
+  # @param ial [Integer, nil] identity assurance level asserted when there is no request
+  # @param aal [Integer, nil] authentication assurance level asserted when there is no request
   def initialize(user:,
                  service_provider:,
                  name_id_format:,
                  authn_request:,
                  decrypted_pii:,
-                 user_session:)
+                 user_session:,
+                 ial: nil,
+                 aal: nil)
     self.user = user
     self.service_provider = service_provider
     self.name_id_format = name_id_format
     self.authn_request = authn_request
     self.decrypted_pii = decrypted_pii
     self.user_session = user_session
+    self.ial = ial
+    self.aal = aal
   end
 
   def build
@@ -53,7 +62,9 @@ class AttributeAsserter
                 :name_id_format,
                 :authn_request,
                 :decrypted_pii,
-                :user_session
+                :user_session,
+                :ial,
+                :aal
 
   def analytics
     Analytics.new(user:, request: nil, session: {}, sp: nil)
@@ -73,14 +84,29 @@ class AttributeAsserter
   end
 
   def authn_context_resolver
-    @authn_context_resolver ||= begin
-      saml = FederatedProtocols::Saml.new(authn_request)
-      AuthnContextResolver.new(
-        user: user,
-        service_provider: service_provider,
-        acr_values: saml.acr_values,
-      )
+    @authn_context_resolver ||= AuthnContextResolver.new(
+      user: user,
+      service_provider: service_provider,
+      acr_values: acr_values,
+    )
+  end
+
+  # The requested authentication context: the AuthnRequest's when answering one, otherwise the
+  # levels the caller asserts.
+  def acr_values
+    if authn_request
+      FederatedProtocols::Saml.new(authn_request).acr_values
+    else
+      [given_aal_authn_context, given_ial_authn_context].compact.join(' ')
     end
+  end
+
+  def given_ial_authn_context
+    Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[ial]
+  end
+
+  def given_aal_authn_context
+    Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[aal]
   end
 
   def default_attrs
@@ -252,10 +278,12 @@ class AttributeAsserter
   end
 
   def requested_aal_authn_context
+    return given_aal_authn_context if authn_request.nil?
     FederatedProtocols::Saml.new(authn_request).aal
   end
 
   def authn_request_bundle
+    return nil if authn_request.nil?
     SamlRequestParser.new(authn_request).requested_attributes
   end
 
