@@ -263,6 +263,44 @@ RSpec.describe TokenExchangeGrant do
     end
   end
 
+  describe '#revoke!' do
+    it 'ends every live delegated token issued under the approval' do
+      grant = approve
+      plaintext = TokenExchangeToken.generate_token
+      issued = create(:token_exchange_token, grant:, plaintext:)
+      already_ended = create(:token_exchange_token, :revoked, grant:)
+      expect(DelegatedTokenStore.read(plaintext)).to be_present
+
+      freeze_time do
+        grant.revoke!(reason: 'user_revoked')
+
+        expect(DelegatedTokenStore.read(plaintext)).to be_nil
+        expect(issued.reload.revoked_at).to eq(Time.zone.now)
+        expect(issued.revocation_reason).to eq('user_revoked')
+        expect(already_ended.reload.revocation_reason).to eq('user_revoked')
+      end
+    end
+  end
+
+  describe 're-approval' do
+    it 'keeps delegated tokens working and re-points them at the replacement approval' do
+      earlier = approve
+      plaintext = TokenExchangeToken.generate_token
+      issued = create(:token_exchange_token, grant: earlier, plaintext:)
+
+      replacement = approve
+
+      expect(earlier.reload.revocation_reason).to eq('superseded_by_new_consent')
+      expect(DelegatedTokenStore.read(plaintext)[:grant_id]).to eq(replacement.id)
+      expect(issued.reload.grant_id).to eq(replacement.id)
+      expect(issued.revoked_at).to be_nil
+
+      replacement.revoke!(reason: 'user_revoked')
+      expect(DelegatedTokenStore.read(plaintext)).to be_nil
+      expect(issued.reload.revocation_reason).to eq('user_revoked')
+    end
+  end
+
   describe '#time_remaining' do
     it 'is the time left on a remembered approval, never negative, nil otherwise' do
       grant = approve
