@@ -49,6 +49,7 @@ Diff against `delegated-access-token-lifecycle`. Check first: the caller rules (
 - The released `email` is the one shared with the service provider (INT-13) until decided otherwise.
 - Held until the harness run (plan 6.1): `DelegatedTokenClaims` exposing identity, email and PII to the SAML builder so `DelegatedSamlAssertion` stops reading them itself.
 - The SAML branch extends the form to accept an assertion ID or an encoded assertion as `token`.
+- D83 (2026-10-13): delegated tokens stay refused at userinfo; FR-TOK-6, INT-1, EXC-6, EXC-18 and E56 confirmed, current behavior kept. The option of accepting a delegated token at userinfo as a bearer token for an agency that cannot yet implement introspection is documented in plan 5.18 (companion §6.6 INT-17, E122; FR Appendix D item 68) and not built, with the recommendation against it: userinfo authenticates no caller and the agency holds no key the token is bound to, so acceptance is bearer acceptance. If it is ever built it touches this branch's `AccessTokenVerifier#load_identity` (today `identities` only, with the comment not to add a second lookup path) and reuses `DelegatedTokenClaims` and the validity list of `OpenidConnectIntrospectForm#token_active?`; it must be time-boxed per API (`token_exchange_resource_servers.userinfo_allowed`, `userinfo_allowed_until`), set in identity-idp-config, never by request parameter; the userinfo analytics event is marked `delegated: true`. Revisit when an agency cannot implement introspection in time (plan 6 item 20).
 
 ## Depends on / depended on by
 
