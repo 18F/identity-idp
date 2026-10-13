@@ -25,5 +25,26 @@ RSpec.describe TokenExchange::Constants do
     it 'defines the base delegated access scope' do
       expect(described_class::SCOPE).to eq('token_exchange')
     end
+
+    it 'defines the audience-qualified scope prefix' do
+      expect(described_class::SCOPE_PREFIX).to eq('token_exchange:')
+    end
+  end
+
+  describe '.scope?' do
+    it 'matches the base scope' do
+      expect(described_class.scope?('token_exchange')).to eq(true)
+    end
+
+    it 'matches any audience-qualified scope' do
+      expect(described_class.scope?('token_exchange:passport')).to eq(true)
+      expect(described_class.scope?('token_exchange:benefits')).to eq(true)
+    end
+
+    it 'does not match other scopes' do
+      expect(described_class.scope?('openid')).to eq(false)
+      expect(described_class.scope?('token_exchange_passport')).to eq(false)
+      expect(described_class.scope?(nil)).to eq(false)
+    end
   end
 end
