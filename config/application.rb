@@ -19,6 +19,7 @@ require_relative '../lib/good_job_connection_pool_size'
 require_relative '../lib/identity_cors'
 require_relative '../lib/version_headers'
 require_relative '../lib/idp/constants'
+require_relative '../lib/token_exchange/constants'
 
 Bundler.require(*Rails.groups)
 

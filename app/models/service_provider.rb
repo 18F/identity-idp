@@ -95,6 +95,10 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
+  def token_exchange_broker?
+    IdentityConfig.store.token_exchange_allowed_broker_issuers.include?(issuer)
+  end
+
   def create_prompt_allowed?
     IdentityConfig.store.allowed_create_prompt_providers.include?(issuer)
   end

@@ -201,9 +201,21 @@ class OpenidConnectAuthorizeForm
 
   def check_for_unauthorized_scope(params)
     param_value = params[:scope]
-    return false if identity_proofing_requested_or_default? || param_value.blank?
+    return false if param_value.blank?
+
+    requested_scopes = param_value.split(' ').compact
+
+    if token_exchange_scope_available?
+      return true unless broker_request?
+      requested_token_exchange_scopes = requested_token_exchange_scopes(requested_scopes)
+      return true if requested_token_exchange_scopes.present? &&
+                     (requested_token_exchange_scopes - token_exchange_scopes).present?
+    end
+
+    return false if identity_proofing_requested_or_default?
     return true if verified_at_requested? && !identity_proofing_service_provider?
-    @scope != param_value.split(' ').compact
+
+    @scope != requested_scopes
   end
 
   def parse_to_values(param_value, possible_values)
@@ -321,10 +333,37 @@ class OpenidConnectAuthorizeForm
   end
 
   def scopes
-    if identity_proofing_requested_or_default?
-      return OpenidConnectAttributeScoper::VALID_SCOPES
+    return base_scopes unless token_exchange_scope_available?
+
+    base_scopes + token_exchange_scopes
+  end
+
+  def requested_token_exchange_scopes(requested_scopes)
+    requested_scopes.select do |scope|
+      scope == TokenExchange::Constants::SCOPE || scope.start_with?("#{TokenExchange::Constants::SCOPE}:")
     end
-    OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
+  end
+
+  def base_scopes
+    if identity_proofing_requested_or_default?
+      OpenidConnectAttributeScoper::VALID_SCOPES
+    else
+      OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
+    end
+  end
+
+  def token_exchange_scope_available?
+    IdentityConfig.store.token_exchange_enabled
+  end
+
+  def broker_request?
+    service_provider&.token_exchange_broker?
+  end
+
+  def token_exchange_scopes
+    IdentityConfig.store.token_exchange_allowed_audiences.map do |audience|
+      "#{TokenExchange::Constants::SCOPE}:#{audience}"
+    end
   end
 
   def validate_privileges
