@@ -7673,13 +7673,23 @@ module AnalyticsEvents
   # @param [Integer] ial
   # @param [String] client_id Service Provider issuer
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  def openid_connect_bearer_token(success:, ial:, client_id:, error_details: nil, **extra)
+  # @param [Boolean, nil] encrypted Whether the service provider receives its userinfo response
+  #   as an encrypted JWT; nil when the token did not authenticate
+  def openid_connect_bearer_token(
+    success:,
+    ial:,
+    client_id:,
+    error_details: nil,
+    encrypted: nil,
+    **extra
+  )
     track_event(
       'OpenID Connect: bearer token authentication',
       success:,
       ial:,
       client_id:,
       error_details:,
+      encrypted:,
       **extra,
     )
   end
@@ -7937,6 +7947,19 @@ module AnalyticsEvents
       expires_in:,
       error_code:,
       error_details:,
+      **extra,
+    )
+  end
+
+  # Tracks a userinfo request from a service provider that opted in to encrypted responses but
+  # has no usable key to encrypt to; the request was refused rather than answered in the clear
+  # @param [String] client_id Service Provider issuer
+  # @param [String] error Class of the error that prevented encryption
+  def openid_connect_userinfo_encryption_failed(client_id:, error:, **extra)
+    track_event(
+      :openid_connect_userinfo_encryption_failed,
+      client_id:,
+      error:,
       **extra,
     )
   end

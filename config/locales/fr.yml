@@ -1900,6 +1900,7 @@ openid_connect.token.errors.unknown_resource: resource ne désigne pas une API e
 openid_connect.token.errors.unsupported_grant_type: Ce type d’octroi n’est pas pris en charge.
 openid_connect.token.errors.user_suspended: Le compte de l’utilisateur n’est pas en règle.
 openid_connect.user_info.errors.bound_token_requires_dpop: 'Ce jeton d’accès est lié à une clé : présentez-le avec le schéma d’autorisation DPoP et une preuve DPoP signée avec cette clé (RFC 9449).'
+openid_connect.user_info.errors.encryption_unavailable: 'Ce fournisseur de services est enregistré pour recevoir des réponses userinfo chiffrées, mais aucune clé de chiffrement utilisable n’est enregistrée pour lui : la réponse n’a pas été envoyée.'
 openid_connect.user_info.errors.malformed_authorization: Forme de l’en-tête d’autorisation non valide. Veuillez consulter notre documentation à https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: Aucune en-tête d’autorisation fournie. Veuillez consulter notre documentation à https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: L’autorisation pour le contenu du access_token fourni introuvable ou il peut être expiré. Veuillez consulter notre documentation à https://developers.login.gov/support/#auth-header-contents-not-found

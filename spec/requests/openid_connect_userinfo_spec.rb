@@ -191,7 +191,10 @@ RSpec.describe 'OpenID Connect UserInfo controller' do
         )
         expect(@analytics).to have_logged_event(
           'OpenID Connect: bearer token authentication',
-          success: true, client_id: identity.service_provider, ial: identity.ial,
+          success: true,
+          client_id: identity.service_provider,
+          ial: identity.ial,
+          encrypted: false,
         )
       end
 

@@ -1899,6 +1899,7 @@ openid_connect.token.errors.unknown_resource: resource does not name an active r
 openid_connect.token.errors.unsupported_grant_type: This grant type is not supported.
 openid_connect.token.errors.user_suspended: The user's account is not in good standing.
 openid_connect.user_info.errors.bound_token_requires_dpop: 'This access token is bound to a key: present it with the DPoP authorization scheme and a DPoP proof signed by that key (RFC 9449).'
+openid_connect.user_info.errors.encryption_unavailable: 'This service provider is registered to receive encrypted userinfo responses, but no usable encryption key is registered for it: the response was not sent.'
 openid_connect.user_info.errors.malformed_authorization: Malformed Authorization header. Please see our documentation at https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No Authorization header provided. Please see our documentation at https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: Could not find authorization for the contents of the provided access_token or it may have expired. Please see our documentation at https://developers.login.gov/support/#auth-header-contents-not-found
