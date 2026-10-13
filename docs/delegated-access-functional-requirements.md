@@ -53,6 +53,7 @@ Not branches: document-image sharing is foundation code kept on the base and ena
 - **Identifiers are preserved.** `FR-<area>-<n>` rows state what the capability must do (the legend below explains every area); the protocol rows (`ONB-`, `CON-`, `ACC-`, `EXC-`, `REF-`, `INT-`, `SAML-`, `DISC-`, `BIL-`, `ATT-`, `UINF-`, `DOC-`, `TPL-`, `REF-IMPL-`, `RS-DPOP-`) state how it is built; `Dnn` numbers the decisions. An identifier means the same thing in every document, commit message and review that has ever used it. A row owned by one branch is referenced by its identifier elsewhere, never copied.
 - **Current state only.** Every row states the requirement as it stands today. Where a decision changed a row, the row is written in its amended form and cites the decision as "(Dnn)"; the dated amendment trails live in git history and in section 16. Nothing in a row is marked planned, implemented or superseded; the two unbuilt designs are described as such in section 15.
 - **Decisions live in section 16.** A branch section lists its decisions in one line each; the rationale and the rejected alternative are in section 16 only.
+- **Fictitious hosts.** Examples use fictitious hosts so that no reader mistakes them for a real deployment or for the local stack: Login.gov is `https://idp.example.gov`; MyBenefits Assistant is `https://mybenefits.example.gov`; the Housing Assistance Records API is `https://records-api.housing.example.gov` and its agency site `https://records.housing.example.gov`; the Retirement Benefits Portal API is `https://benefits-api.retirement.example.gov` and its agency site `https://portal.retirement.example.gov`. The local fixture registers the same actors under `localhost` ports and `.localdev` API identifiers; section 15.3 and Appendix C give that mapping.
 - **Fictitious names.** Code, fixtures, comments, examples and this document use the fictitious names: MyBenefits Assistant, run by the Office of Benefits Coordination (agency 100); the Department of Housing Support (101) with its application Housing Assistance Records; the National Retirement Administration (102) with its application Retirement Benefits Portal. No real service provider is named. The Department of State appears only as the subject of the business case its requirement rows describe (section 15.1); it is not a fixture.
 - **Vocabulary.** *Service provider*: the application the person signs in to, which then acts for them (OAuth's client, OpenID Connect's relying party, RFC 8693's actor); never "broker" in this repository. *Application*: an agency's record for one service it registers for delegation, carrying consent content and owning one or more agency APIs. *Resource server* or *agency API*: one URL a delegated token is issued for. *Agency SP*: the agency's service-provider record when the record itself matters. *Person*: the member of the public. The reference applications outside this repository name their own roles from their own side; that naming does not reach this repository's code or wire contract. Appendix F defines the remaining terms.
 - **Requirement language.** MUST, SHOULD and MAY as in RFC 2119 and RFC 8174. Values in parentheses (lifetimes, limits) are current defaults, not requirements, unless a row says otherwise.
@@ -165,11 +166,11 @@ service_providers:
     ial: 2
     friendly_name: 'Housing Assistance Records'
     logo: 'generic.svg'
-    return_to_sp_url: 'http://localhost:9393'
+    return_to_sp_url: 'https://records.housing.example.gov'
     redirect_uris:
-      - 'http://localhost:9393/'
-      - 'http://localhost:9393/auth/result'
-      - 'http://localhost:9393/logout'
+      - 'https://records.housing.example.gov/'
+      - 'https://records.housing.example.gov/auth/result'
+      - 'https://records.housing.example.gov/logout'
     certs:
       - 'rs_records_demo'
     attribute_bundle:
@@ -184,10 +185,10 @@ service_providers:
     delegation_data_provided:
       en: ['Case number', 'Current status', 'Next step', 'Documents requested']
     delegation_access_type: 'read_write'
-    delegation_learn_more_url: 'http://localhost:9393/'
+    delegation_learn_more_url: 'https://records.housing.example.gov/'
     allowed_delegation_service_providers: []
     token_exchange_resource_servers:
-      - identifier: 'https://records-api.agency.localdev'
+      - identifier: 'https://records-api.housing.example.gov'
         token_format: 'oauth'
         certs:
           - 'rs_records_demo'
@@ -204,11 +205,11 @@ service_providers:
     ial: 2
     friendly_name: 'MyBenefits Assistant'
     logo: 'generic.svg'
-    return_to_sp_url: 'http://localhost:9292'
+    return_to_sp_url: 'https://mybenefits.example.gov'
     redirect_uris:
-      - 'http://localhost:9292/'
-      - 'http://localhost:9292/auth/result'
-      - 'http://localhost:9292/logout'
+      - 'https://mybenefits.example.gov/'
+      - 'https://mybenefits.example.gov/auth/result'
+      - 'https://mybenefits.example.gov/logout'
     certs:
       - 'sp_sinatra_demo'
     token_exchange_enabled_sp: true
@@ -219,7 +220,7 @@ service_providers:
       es: 'le ayuda a encontrar beneficios y a seguir sus solicitudes en un solo lugar.'
     delegation_data_handling_statement:
       en: 'used only while you are signed in and deleted when you sign out. Not shared outside the Office of Benefits Coordination.'
-    delegation_privacy_policy_url: 'http://localhost:9292/about'
+    delegation_privacy_policy_url: 'https://mybenefits.example.gov/about'
     delegation_support_contact: 'help@mybenefits.example.gov'
     delegation_uses_ai: true
     delegation_ai_description:
@@ -238,7 +239,7 @@ agencies:
     delegation_description:
       en: 'helps people find, keep and pay for housing.'
       es: 'ayuda a las personas a encontrar, conservar y pagar su vivienda.'
-    delegation_learn_more_url: 'http://localhost:9393/'
+    delegation_learn_more_url: 'https://records.housing.example.gov/'
 ```
 
 Notice that the agency description, like the application description, is a sentence completion: the consent screen prints the agency's name and then this text.
@@ -327,7 +328,7 @@ Rows ONB-12 and ONB-15 (the production content source and `restrict_to_deploy_en
 6. The new table `token_exchange_grants` holds one approval per row: `user_id`, `service_provider_issuer`, `application_service_provider_id`, `delegation_id` (unique), `source` (`consent_screen` or `account_page`), `consented_at`, `remember_until`, `rails_session_id` (the one column marked `sensitive=true`), `agency_content_version`, `application_content_version`, `sp_content_version`, `proofed_in_session`, `first_exchanged_at`, `revoked_at` and `revocation_reason`. A partial unique index named `index_token_exchange_grants_live` allows one unrevoked row per (user, service provider issuer, application).
 7. The models are: `TokenExchangeResourceServer`, which knows whether its URL is usable (`#usable?`), whether it issues SAML (`#saml?`), which record receives fraud signals (`#attempts_recipient`), which issuer is billed (`#billing_issuer_value`), and defines `#warn_if_unbillable`, the warning for an API URL whose billing issuer has no partner agreement; `TokenExchangeGrant`, which records approvals (`approve!`), decides validity (`valid_now?`, built from `current_content?` and `current_authorization?`), ends approvals (`revoke!`, `revoke_for!`, `revoke_all_for!`), defines the maximum remember period `MAX_REMEMBER` (one year, the same constant as the service provider consent period) and the `dlg_` prefix of `delegation_id`, and joins its service provider through `belongs_to :service_provider_record` on `service_provider_issuer` (preloaded wherever a page lists many approvals); `DelegationLocalizedContent`, the concern that stores localized text as JSON keyed by locale with an `en` fallback and defines a `<column>_for` reader for each localized column, all rendered as escaped text; `ServiceProvider#delegation_application?`, `#accepts_delegation_from?`, `#delegation_scope`, `#delegation_service_provider?` and `#delegation_read_write?`; the `Agency` content readers; and `DelegationApplications.accepting`, which returns every active application that accepts a given service provider, with `grouped_by_agency` for display.
 8. `ServiceProviderSeeder` and `ServiceProviderUpdater` write the application, service provider and agency columns straight through from their input, and write the nested `token_exchange_resource_servers` list by upserting each entry on its `identifier`. The updater deactivates any resource server that is missing from a payload instead of deleting it. Code comments on the seeder, the updater, `AgencySeeder` and the models state that the partner Dashboard does not yet carry these fields.
-9. `DelegatedAccessSeeder`, the task `rake delegated_access:seed` (`lib/tasks/delegated_access.rake`) and the fixture `config/delegated_access.localdev.yml` load the fictitious registry: one service provider (MyBenefits Assistant, operated by the Office of Benefits Coordination, agency 100), two agencies (the Department of Housing Support, 101, and the National Retirement Administration, 102) with one application each (Housing Assistance Records with the OAuth API `https://records-api.agency.localdev`, and Retirement Benefits Portal with the SAML API `https://benefits-api.agency.localdev`), and consent content for all of them. The seeder reads the file through ERB so hostnames can come from the environment, upserts agencies by id, and writes service providers through `ServiceProviderSeeder#write_service_provider` so the data shape is identical to production's. On this branch the task refuses to run in `prod` and `staging`. The fixture is the single contract between the seed task and the end-to-end harness (D51). Where the seeder reads from in deployed environments is section 13.
+9. `DelegatedAccessSeeder`, the task `rake delegated_access:seed` (`lib/tasks/delegated_access.rake`) and the fixture `config/delegated_access.localdev.yml` load the fictitious registry: one service provider (MyBenefits Assistant, operated by the Office of Benefits Coordination, agency 100), two agencies (the Department of Housing Support, 101, and the National Retirement Administration, 102) with one application each (Housing Assistance Records with the OAuth API `https://records-api.housing.example.gov`, and Retirement Benefits Portal with the SAML API `https://benefits-api.retirement.example.gov`), and consent content for all of them. The seeder reads the file through ERB so hostnames can come from the environment, upserts agencies by id, and writes service providers through `ServiceProviderSeeder#write_service_provider` so the data shape is identical to production's. On this branch the task refuses to run in `prod` and `staging`. The fixture is the single contract between the seed task and the end-to-end harness (D51). Where the seeder reads from in deployed environments is section 13.
 10. The configuration key `token_exchange_enabled` in `lib/identity_config.rb` and `config/application.yml.default` is the master switch, and it is `false` by default. No other configuration key is introduced here; each later key arrives with the branch that reads it.
 11. This branch deletes the foundation's `token_exchange_service_providers` configuration key, its per-service-provider settings table and model with their auto-enrollment, its whole-service-provider opt-in column, its two localdev fixtures, its design document, and every identifier, string, comment and analytics property that used the foundation's term for the service provider. The foundation's consent and account partials survive under new names (`_delegation_consent.html.erb`, `_delegation_manage.html.erb`, with `DelegationServiceProviderPresenter`) only until sections 2 and 3 provide their own.
 12. The specs are `spec/models/token_exchange_grant_spec.rb`, `spec/models/token_exchange_resource_server_spec.rb`, `spec/services/delegated_access_seeder_spec.rb`, `spec/services/service_provider_seeder_spec.rb`, `spec/services/service_provider_updater_spec.rb`, and the factories under `spec/factories/` (`token_exchange_grants.rb`, `token_exchange_resource_servers.rb`, and the `:delegation_application` and `:delegation_service_provider` traits in `service_providers.rb`). 533 examples across the touched specs pass locally, lint is clean, and `rake delegated_access:seed` loads the fixture into the development database.
@@ -398,7 +399,7 @@ GET /openid_connect/authorize
     &response_type=code
     &acr_values=urn%3Aacr.login.gov%3Averified
     &scope=openid+email+token_exchange%3Ahousing_records+token_exchange%3Aretirement_benefits
-    &redirect_uri=http%3A%2F%2Flocalhost%3A9292%2Fauth%2Fresult
+    &redirect_uri=https%3A%2F%2Fmybenefits.example.gov%2Fauth%2Fresult
     &state=…
     &nonce=…
     &prompt=select_account
@@ -413,7 +414,7 @@ When the request fails one of the delegation checks, Login.gov sends the browser
 
 ```http
 HTTP/1.1 302 Found
-Location: http://localhost:9292/auth/result
+Location: https://mybenefits.example.gov/auth/result
     ?error=invalid_scope
     &error_description=Scope+Unknown+delegation+scope%3A+not_a_thing.+Please+see+our+documentation+at+…
     &state=…
@@ -456,7 +457,7 @@ Each agency has written what its application does in its own words.
         review, whether anything is missing, and submit missing documents for you.
         Will receive: Case number, Current status, Next step, Documents requested
         Services the application will use:
-          https://records-api.agency.localdev
+          https://records-api.housing.example.gov
         [Can make changes]              Learn more from Department of Housing Support
 
   [logo] National Retirement Administration     1 application requested
@@ -468,7 +469,7 @@ Each agency has written what its application does in its own words.
         yearly earnings record.
         Will receive: Estimated monthly benefit, Yearly earnings record
         Services the application will use:
-          https://benefits-api.agency.localdev
+          https://benefits-api.retirement.example.gov
         [Read only]                     Learn more from National Retirement Administration
 
   [ ] Remember my approvals for 1 year
@@ -657,7 +658,7 @@ MyBenefits Assistant
       [ ] Housing Assistance Records
           This lets the service check where your housing application is in review …
           Will receive: Case number, Current status, Next step, Documents requested
-          Services the application will use: https://records-api.agency.localdev
+          Services the application will use: https://records-api.housing.example.gov
           [Can make changes]
 
   ▾ National Retirement Administration                    1 of 1 approved
@@ -666,7 +667,7 @@ MyBenefits Assistant
           This lets the service view your estimated monthly benefit and your
           yearly earnings record.
           Will receive: Estimated monthly benefit, Yearly earnings record
-          Services the application will use: https://benefits-api.agency.localdev
+          Services the application will use: https://benefits-api.retirement.example.gov
           [Read only]                                      Revoke
 
   [ Approve selected ]                   Revoke everything for MyBenefits Assistant
@@ -818,7 +819,7 @@ GET /openid_connect/authorize
     ?client_id=urn:gov:gsa:openidconnect:sp:sinatra_sts
     &response_type=code
     &scope=openid%20email
-    &redirect_uri=http://localhost:9292/auth/result
+    &redirect_uri=https://mybenefits.example.gov/auth/result
     &acr_values=http://idmanagement.gov/ns/assurance/ial/1
     &state=…
     &nonce=…
@@ -840,7 +841,7 @@ Notice that `x` and `y` must each decode to exactly 32 bytes and must lie on the
 On success Login.gov does not answer with a `Location` header. It always renders the client-side JavaScript redirect page with `Cache-Control: no-store`, whatever `openid_connect_redirect` is set to, and that page navigates the browser to the redirect URI below. The authorization code and `state` are in the query, where the service provider's server reads them; the sealed site key is in the fragment, which the browser never sends to a server and which never appears in a `Location` header or a request log.
 
 ```text
-http://localhost:9292/auth/result?code=…&state=…#site_key=eyJ2IjoxLCJlcGsiOnsia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIng…
+https://mybenefits.example.gov/auth/result?code=…&state=…#site_key=eyJ2IjoxLCJlcGsiOnsia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIng…
 ```
 
 Notice that the query carries only `code` and `state`; everything secret is after the `#`.
@@ -869,7 +870,7 @@ The site key itself is derived from the root with HKDF-SHA256 using the salt `"l
 When Login.gov cannot release the key after the person has been through the password prompt once, it answers the service provider with an OAuth error redirect instead of prompting again:
 
 ```text
-http://localhost:9292/auth/result?error=temporarily_unavailable&error_description=Site+keys+are+temporarily+unavailable+for+this+account.+Please+try+again+later.&state=…
+https://mybenefits.example.gov/auth/result?error=temporarily_unavailable&error_description=Site+keys+are+temporarily+unavailable+for+this+account.+Please+try+again+later.&state=…
 ```
 
 Notice that no authorization code is issued, no handoff is recorded and no billing row is written, because the key is sealed before the identity is linked.
@@ -1030,7 +1031,7 @@ GET /openid_connect/authorize
     ?client_id=urn:gov:gsa:openidconnect:sp:sinatra_sts
     &response_type=code
     &scope=openid%20email%20token_exchange:housing_records
-    &redirect_uri=http://localhost:9292/auth/result
+    &redirect_uri=https://mybenefits.example.gov/auth/result
     &acr_values=…
     &state=…
     &nonce=…
@@ -1043,7 +1044,7 @@ Notice that `dpop_jkt` has the same shape as `code_challenge`; the form checks b
 A flagged client that omits `dpop_jkt` is sent back with the ordinary authorization error redirect:
 
 ```text
-http://localhost:9292/auth/result?error=invalid_request&error_description=dpop_jkt+is+required%3A+this+client+is+registered+with+dpop_required%2C+so+the+authorization+code+must+be+bound+to+the+thumbprint+of+its+DPoP+key+%28RFC+9449+section+10%29.&state=…
+https://mybenefits.example.gov/auth/result?error=invalid_request&error_description=dpop_jkt+is+required%3A+this+client+is+registered+with+dpop_required%2C+so+the+authorization+code+must+be+bound+to+the+thumbprint+of+its+DPoP+key+%28RFC+9449+section+10%29.&state=…
 ```
 
 Notice that no code is issued; a malformed value from any client is refused the same way with the `dpop_jkt_invalid` description.
@@ -1062,7 +1063,7 @@ A DPoP proof is a JSON Web Token (JWT) the browser signs with its private key, o
 {
   "jti": "e1j3V_bKic8-LAEB",
   "htm": "POST",
-  "htu": "http://localhost:3000/api/openid_connect/token",
+  "htu": "https://idp.example.gov/api/openid_connect/token",
   "iat": 1760356800
 }
 ```
@@ -1303,7 +1304,7 @@ grant_type=urn:ietf:params:oauth:grant-type:token-exchange
 &client_id=urn:gov:gsa:openidconnect:sp:sinatra_sts
 &subject_token=…
 &subject_token_type=urn:ietf:params:oauth:token-type:access_token
-&resource=https://records-api.agency.localdev
+&resource=https://records-api.housing.example.gov
 &requested_token_type=urn:ietf:params:oauth:token-type:access_token
 ```
 
@@ -1319,7 +1320,7 @@ The proof is a signed JWT of type `dpop+jwt` whose header carries the public key
 }
 {
   "htm": "POST",
-  "htu": "https://<login.gov host>/api/openid_connect/token",
+  "htu": "https://idp.example.gov/api/openid_connect/token",
   "iat": 1791849600,
   "jti": "…",
   "ath": "…"
@@ -1390,7 +1391,7 @@ The live entry is the only place a delegated token's meaning exists. Its key is 
 ```text
 delegated_token:<hex SHA-256 of the token>        TTL = lifetime (300 s here)
 {
-  "aud": "https://records-api.agency.localdev",
+  "aud": "https://records-api.housing.example.gov",
   "scope": "token_exchange:housing_records",
   "grant_id": 1,
   "delegation_id": "…",
@@ -1454,7 +1455,7 @@ token_exchange_enabled: false
 'urn:gov:gsa:openidconnect:sp:records_agency':   # Housing Assistance Records
   delegation_scope_value: 'housing_records'
   token_exchange_resource_servers:
-    - identifier: 'https://records-api.agency.localdev'
+    - identifier: 'https://records-api.housing.example.gov'
       token_format: 'oauth'
       max_access_token_seconds: 300
 ```
@@ -1743,7 +1744,7 @@ token_exchange_refresh_token_ttl_seconds: 43200   # one family, counted from the
 
 # config/delegated_access.localdev.yml (excerpt): the read-write API shortens both
 token_exchange_resource_servers:
-  - identifier: 'https://records-api.agency.localdev'
+  - identifier: 'https://records-api.housing.example.gov'
     token_format: 'oauth'
     max_access_token_seconds: 300
     max_family_seconds: 14400
@@ -1885,8 +1886,8 @@ The client assertion is a signed JWT whose payload names the API twice and this 
 
 ```json
 {
-  "iss": "https://records-api.agency.localdev",
-  "sub": "https://records-api.agency.localdev",
+  "iss": "https://records-api.housing.example.gov",
+  "sub": "https://records-api.housing.example.gov",
   "aud": "https://idp.example.gov/api/openid_connect/introspect",
   "iat": 1760371200,
   "exp": 1760371500,
@@ -1902,7 +1903,7 @@ Notice that `iss` and `sub` are both the resource server identifier from the reg
 {
   "active": true,
   "iss": "https://idp.example.gov/",
-  "aud": "https://records-api.agency.localdev",
+  "aud": "https://records-api.housing.example.gov",
   "scope": "token_exchange:housing_records",
   "client_id": "urn:gov:gsa:openidconnect:sp:sinatra_sts",
   "delegation_id": "4f0c9d2e-…",
@@ -1932,7 +1933,7 @@ Notice four things. `sub` is the person's identifier for the Department of Housi
 {
   "active": true,
   "iss": "https://idp.example.gov/",
-  "aud": "https://records-api.agency.localdev",
+  "aud": "https://records-api.housing.example.gov",
   "scope": "token_exchange:housing_records",
   "client_id": "urn:gov:gsa:openidconnect:sp:sinatra_sts",
   "delegation_id": "4f0c9d2e-…",
@@ -1967,7 +1968,7 @@ Notice that there is no reason and no other member. A revoked token and a token 
 ```http
 POST /api/openid_connect/introspect HTTP/1.1
 Host: idp.example.gov
-Origin: http://localhost:9292
+Origin: https://mybenefits.example.gov
 Content-Type: application/x-www-form-urlencoded
 DPoP: eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7…
 
@@ -1995,7 +1996,7 @@ The limited response the service provider receives:
 {
   "active": true,
   "iss": "https://idp.example.gov/",
-  "aud": "https://records-api.agency.localdev",
+  "aud": "https://records-api.housing.example.gov",
   "scope": "token_exchange:housing_records",
   "client_id": "urn:gov:gsa:openidconnect:sp:sinatra_sts",
   "delegation_id": "4f0c9d2e-…",
@@ -2034,7 +2035,7 @@ Notice that neither error says anything about the token, and that the challenge 
 
 ```json
 {
-  "aud": "https://records-api.agency.localdev",
+  "aud": "https://records-api.housing.example.gov",
   "scope": "token_exchange:housing_records",
   "grant_id": 12,
   "delegation_id": "4f0c9d2e-…",
@@ -2088,7 +2089,7 @@ Every call logs one analytics event, whatever the outcome:
   "name": "openid_connect_introspect",
   "success": true,
   "caller_type": "resource_server",
-  "resource_server_identifier": "https://records-api.agency.localdev",
+  "resource_server_identifier": "https://records-api.housing.example.gov",
   "service_provider_issuer": null,
   "active": true,
   "error_code": null
@@ -2215,7 +2216,7 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Atoken-exchange
 &subject_token=2YotnFZFEjr1zCsicMWpAA…
 &subject_token_type=urn%3Aietf%3Aparams%3Aoauth%3Atoken-type%3Aaccess_token
 &requested_token_type=urn%3Aietf%3Aparams%3Aoauth%3Atoken-type%3Asaml2
-&resource=https%3A%2F%2Fbenefits-api.agency.localdev
+&resource=https%3A%2F%2Fbenefits-api.retirement.example.gov
 &client_id=urn%3Agov%3Agsa%3Aopenidconnect%3Asp%3Asinatra_sts
 ```
 
@@ -2246,12 +2247,12 @@ Notice three things. `issued_token_type` names what Login.gov issued, whatever t
   <Subject>
     <NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">b2d9a7c4-…</NameID>
     <SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
-      <SubjectConfirmationData NotOnOrAfter="2026-10-13T15:05:00Z" Recipient="https://benefits-api.agency.localdev"/>
+      <SubjectConfirmationData NotOnOrAfter="2026-10-13T15:05:00Z" Recipient="https://benefits-api.retirement.example.gov"/>
     </SubjectConfirmation>
   </Subject>
   <Conditions NotBefore="2026-10-13T14:59:55Z" NotOnOrAfter="2026-10-13T15:05:00Z">
     <AudienceRestriction>
-      <Audience>https://benefits-api.agency.localdev</Audience>
+      <Audience>https://benefits-api.retirement.example.gov</Audience>
     </AudienceRestriction>
   </Conditions>
   <AttributeStatement>
@@ -2323,7 +2324,7 @@ token=_5f0c2b1e-…
 {
   "active": true,
   "iss": "https://idp.example.gov/",
-  "aud": "https://benefits-api.agency.localdev",
+  "aud": "https://benefits-api.retirement.example.gov",
   "scope": "token_exchange:retirement_benefits",
   "client_id": "urn:gov:gsa:openidconnect:sp:sinatra_sts",
   "delegation_id": "4f0c9d2e-…",
@@ -2403,7 +2404,7 @@ Rows owned by other sections that this branch gives effect to: **FR-TOK-23** (se
 4. Refresh. `OpenidConnectRefreshTokenForm#mint!` re-issues what the exchange issued. `TokenExchangeRefreshToken#token_format` and `#saml?` read the family's issuance record. A SAML family gets a new assertion with a new `ID`, `IssueInstant` and windows from the renewed times, for the same audience and access, after the usual approval checks. `token_type` is copied from the record, and the response carries `issued_token_type` saml2 and `session_live: false` once the sign-in has ended.
 5. Referencing an assertion. `DelegatedSamlAssertion.reference_for(presented)` returns the `ID` of a base64url- or base64-encoded plaintext `<saml:Assertion>` (at most 64 KB, parsed strictly without network access, with the root element and namespace checked) and otherwise returns the presented value itself. `OpenidConnectIntrospectForm` and `OpenidConnectRevokeForm` therefore accept an assertion `ID` or the encoded assertion as `token`; an encrypted assertion hides its ID and is answered not active or not acted on. Introspection reports `token_type: N_A`, `cnf.jkt` for a bound family and `jti` equal to the digest of the ID. Revocation by ID or by encoded assertion ends that assertion alone (`client_revoked`).
 6. Removals. This branch removes the exchange branch's refusal of a SAML API (`validate_token_format` and its `saml_not_available` locale string in en, es, fr and zh), because the exchange can now serve that API. The analytics property `requested_token_type_mismatch` stays: it records that a service provider asked for a format other than the API's registered one, which the exchange ignores (D70). There is no migration: `token_format` on `token_exchange_resource_servers` and `token_exchange_tokens` comes from the registry and exchange branches.
-7. Fixture. The SAML API in `config/delegated_access.localdev.yml` (`https://benefits-api.agency.localdev`, `token_format: saml2`) keeps its encryption certificate; the assertion is encrypted when the certificate file is present locally and is returned signed in the clear when it is not.
+7. Fixture. The SAML API in `config/delegated_access.localdev.yml` (`https://benefits-api.retirement.example.gov`, `token_format: saml2`) keeps its encryption certificate; the assertion is encrypted when the certificate file is present locally and is returned signed in the clear when it is not.
 8. Verification. The six specs this branch touches pass together with 407 examples. `spec/requests/openid_connect/saml_assertion_exchange_spec.rb` covers a bound public client, a bearer public client and a confidential client end to end: the encrypted and signed assertion checked as a relying party checks it, the attribute set with `dpop_jkt` for a bound public client, the configured window, refresh with identifiers only after the sign-in ends, introspection by ID and by encoded assertion, and revocation by ID, by encoded assertion and by refresh token. The others are `spec/services/delegated_saml_assertion_spec.rb`, `spec/lib/saml_idp_extensions/assertion_builder_spec.rb`, `spec/services/attribute_asserter_spec.rb`, `spec/models/token_exchange_token_spec.rb` and `spec/requests/openid_connect/token_exchange_spec.rb`. Rubocop is clean.
 
 ## Decisions
@@ -2508,7 +2509,7 @@ Notice that there is no `token_exchange_endpoint` (RFC 8693 uses the token endpo
   "name": "openid_connect_introspect",
   "success": true,
   "caller_type": "resource_server",
-  "resource_server_identifier": "https://records-api.agency.localdev",
+  "resource_server_identifier": "https://records-api.housing.example.gov",
   "service_provider_issuer": null,
   "active": false,
   "error_code": null
@@ -2540,11 +2541,11 @@ Nothing in the application refuses a caller for volume, and no `token_exchange_a
 #                               client (PKCE, DPoP, no secret) on :9292, relocated with
 #                               DELEGATION_SP_URL
 #   Housing Assistance Records  the Department of Housing Support's application with the OAuth
-#                               API https://records-api.agency.localdev (scope value
+#                               API https://records-api.housing.example.gov (scope value
 #                               housing_records), on :9393, relocated with
 #                               DELEGATION_OIDC_AGENCY_URL
 #   Retirement Benefits Portal  the National Retirement Administration's application with the
-#                               SAML API https://benefits-api.agency.localdev (scope value
+#                               SAML API https://benefits-api.retirement.example.gov (scope value
 #                               retirement_benefits), on :4567, relocated with
 #                               DELEGATION_SAML_AGENCY_URL
 #
@@ -2562,9 +2563,9 @@ service_providers:
     pkce: true
     dpop_required: true
     redirect_uris:
-      - '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/'
-      - '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/auth/result'
-      - '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/logout'
+      - '<%= ENV.fetch("DELEGATION_SP_URL", "https://mybenefits.example.gov") %>/'
+      - '<%= ENV.fetch("DELEGATION_SP_URL", "https://mybenefits.example.gov") %>/auth/result'
+      - '<%= ENV.fetch("DELEGATION_SP_URL", "https://mybenefits.example.gov") %>/logout'
     token_exchange_enabled_sp: true
   'urn:gov:gsa:openidconnect:sp:records_agency':
     agency_id: 101
@@ -2572,17 +2573,17 @@ service_providers:
     delegation_scope_value: 'housing_records'
     allowed_delegation_service_providers: []
     token_exchange_resource_servers:
-      - identifier: 'https://records-api.agency.localdev'
+      - identifier: 'https://records-api.housing.example.gov'
         token_format: 'oauth'
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:benefits_agency':
     agency_id: 102
     friendly_name: 'Retirement Benefits Portal'
-    acs_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "http://localhost:4567") %>/consume'
+    acs_url: '<%= ENV.fetch("DELEGATION_SAML_AGENCY_URL", "https://portal.retirement.example.gov") %>/consume'
     delegation_scope_value: 'retirement_benefits'
     allowed_delegation_service_providers:
       - 'urn:gov:gsa:openidconnect:sp:sinatra_sts'
     token_exchange_resource_servers:
-      - identifier: 'https://benefits-api.agency.localdev'
+      - identifier: 'https://benefits-api.retirement.example.gov'
         token_format: 'saml2'
 ```
 
@@ -2648,7 +2649,7 @@ Rows owned by other sections and referenced here: **FR-OPS-1** (the master switc
 1. Discovery. `OpenidConnectConfigurationPresenter` adds, only while `token_exchange_enabled` is on: `refresh_token` and `OpenidConnectTokenExchangeForm::GRANT_TYPE` in `grant_types_supported`; `none` in `token_endpoint_auth_methods_supported`; `introspection_endpoint` and `revocation_endpoint`, each with `*_auth_methods_supported` (`private_key_jwt`, `none`) and `*_auth_signing_alg_values_supported` (`RS256`); and `dpop_signing_alg_values_supported` taken from `DpopProofVerifier::ALLOWED_ALGORITHMS`. There is no `token_exchange_endpoint`, and `scopes_supported` stays static. `spec/presenters/openid_connect_configuration_presenter_spec.rb` (11 examples) holds the off-state document as a literal and asserts member and key-order equality.
 2. One caller property. The delegated-access analytics events `delegation_consent_submitted` (`app/controllers/sign_up/completions_controller.rb`), `delegation_account_approved` (`app/controllers/accounts/delegated_access/approvals_controller.rb`) and `delegation_account_revoked` (`app/controllers/accounts/delegated_access/revocations_controller.rb`) log the service provider as `service_provider_issuer`, as `openid_connect_token_exchange`, `openid_connect_token_refresh`, `openid_connect_revoke` and `openid_connect_introspect` already do. Agency callers are named by `resource_server_identifier`. The docstrings in `app/services/analytics_events.rb` describe each property.
 3. Alert thresholds live in the deployment's alarms over the analytics stream, per caller over a one-minute window: an error rate of 5 percent on the four token events, 1000 exchanges per minute, 6000 introspections per minute and 1000 refreshes per minute. No `token_exchange_alert_*` key exists in `lib/identity_config.rb` or `config/application.yml.default`, and nothing in the application refuses a caller for volume.
-4. The fixture contract. The header of `config/delegated_access.localdev.yml` names the three reference applications and their fictitious operators, with the variable that relocates each: `DELEGATION_SP_URL` for the browser public client MyBenefits Assistant of the Office of Benefits Coordination on port 9292; `DELEGATION_OIDC_AGENCY_URL` for Housing Assistance Records of the Department of Housing Support, with the OAuth API `https://records-api.agency.localdev` and scope value `housing_records`, on port 9393; and `DELEGATION_SAML_AGENCY_URL` for Retirement Benefits Portal of the National Retirement Administration, with the SAML API `https://benefits-api.agency.localdev` and scope value `retirement_benefits`, on port 4567. `spec/services/delegated_access_seeder_spec.rb` asserts the service provider's issuer, friendly name, agency, identity-verified level (IAL2), `pkce` with no certificates and no Attempts API credentials, its three redirect URIs and its per-client `dpop_required: true`; each application's agency, scope value, accepted service providers, API identifier (an RFC 8707 resource indicator, unchanged by hostname), token format and active state; the relocation of all three hosts, redirect URIs, ACS URL and learn-more URLs from the environment; and that no API entry carries a `dpop_required` key.
+4. The fixture contract. The header of `config/delegated_access.localdev.yml` names the three reference applications and their fictitious operators, with the variable that relocates each: `DELEGATION_SP_URL` for the browser public client MyBenefits Assistant of the Office of Benefits Coordination on port 9292; `DELEGATION_OIDC_AGENCY_URL` for Housing Assistance Records of the Department of Housing Support, with the OAuth API `https://records-api.housing.example.gov` and scope value `housing_records`, on port 9393; and `DELEGATION_SAML_AGENCY_URL` for Retirement Benefits Portal of the National Retirement Administration, with the SAML API `https://benefits-api.retirement.example.gov` and scope value `retirement_benefits`, on port 4567. `spec/services/delegated_access_seeder_spec.rb` asserts the service provider's issuer, friendly name, agency, identity-verified level (IAL2), `pkce` with no certificates and no Attempts API credentials, its three redirect URIs and its per-client `dpop_required: true`; each application's agency, scope value, accepted service providers, API identifier (an RFC 8707 resource indicator, unchanged by hostname), token format and active state; the relocation of all three hosts, redirect URIs, ACS URL and learn-more URLs from the environment; and that no API entry carries a `dpop_required` key.
 5. The threat sweep. `spec/requests/openid_connect/delegated_access_threats_spec.rb` (13 examples) runs on the integrated endpoints: a subject token belonging to another client, in both directions; a key-bound sign-in token presented as a bearer token at the user-information endpoint (refused with the `DPoP` challenge, accepted with the proof); a delegated token at the user-information endpoint with and without a proof; a replayed `jti` at the same endpoint and at another; a proof for another URL; an expired proof at the exchange and at the user-information endpoint; a refresh with a key other than the family's (the family stays intact for the right key); introspection by an API the token is not issued for (`active: false`); and an exchange after the approval is revoked, after Login.gov withdraws its approval of the service provider (`invalid_client`), and after the API URL or the application is deactivated (`invalid_target`), each with the earlier token dead. Every refusal is checked for its analytics event, caller property and `error_code`.
 6. Migrations: none. Configuration: the `config/delegated_access.localdev.yml` header and contract. Verification: the threat sweep (13 examples), the presenter spec (9), the touched specs together (94: presenter, seeder, the three controller specs and the sweep), the i18n spec (65); rubocop and the analytics-events lint are clean.
 
@@ -2773,7 +2774,7 @@ The monthly delegation outcomes report writes two CSV files. The first has one r
 
 ```text
 Service provider issuer, Agency, Resource server, Billing issuer has agreement, Requested, Withdrawn before use, Consented, not exchanged, Exchanged, Proofed in session, not exchanged
-urn:gov:gsa:openidconnect:sp:sinatra_sts, Department of Housing Support, https://records-api.agency.localdev, true, 6, 1, 2, 2, 1
+urn:gov:gsa:openidconnect:sp:sinatra_sts, Department of Housing Support, https://records-api.housing.example.gov, true, 6, 1, 2, 2, 1
 ```
 
 The second has one row per delegating service provider:
@@ -2949,7 +2950,7 @@ The event written at each exchange, `delegated-access-token-issued` (the renewal
     "aws_region": "us-west-2",
     "unique_session_id": "9f2c…",
     "application": "urn:gov:gsa:openidconnect:sp:records_agency",
-    "resource": "https://records-api.agency.localdev",
+    "resource": "https://records-api.housing.example.gov",
     "scope": "token_exchange:housing_records",
     "ial": 2,
     "aal": 2,
@@ -3126,7 +3127,7 @@ production:
       delegation_description:
         en: 'helps people find, keep and pay for housing.'
         es: 'ayuda a las personas a encontrar, conservar y pagar su vivienda.'
-      delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/'
+      delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "https://records.housing.example.gov") %>/'
 
   service_providers:
     'urn:gov:gsa:openidconnect:sp:sinatra_sts':
@@ -3144,7 +3145,7 @@ production:
         en: 'helps you find benefits you may qualify for and track your applications in one place.'
       delegation_data_handling_statement:
         en: 'used only while you are signed in and deleted when you sign out. Not shared outside the Office of Benefits Coordination.'
-      delegation_privacy_policy_url: '<%= ENV.fetch("DELEGATION_SP_URL", "http://localhost:9292") %>/about'
+      delegation_privacy_policy_url: '<%= ENV.fetch("DELEGATION_SP_URL", "https://mybenefits.example.gov") %>/about'
       delegation_support_contact: 'help@mybenefits.example.gov'
       delegation_uses_ai: true
       delegation_ai_description:
@@ -3166,11 +3167,11 @@ production:
       delegation_data_provided:
         en: ['Case number', 'Current status', 'Next step', 'Documents requested']
       delegation_access_type: 'read_write'
-      delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "http://localhost:9393") %>/'
+      delegation_learn_more_url: '<%= ENV.fetch("DELEGATION_OIDC_AGENCY_URL", "https://records.housing.example.gov") %>/'
       allowed_delegation_service_providers: []
       delegation_sp_shareable_attributes: []
       token_exchange_resource_servers:
-        - identifier: 'https://records-api.agency.localdev'
+        - identifier: 'https://records-api.housing.example.gov'
           token_format: 'oauth'
           max_access_token_seconds: 300
           max_family_seconds: 14400
@@ -3178,7 +3179,7 @@ production:
             - 'rs_records_demo'
 ```
 
-What to notice: `restrict_to_deploy_env: 'sandbox'` on every entry is what keeps the fictitious records out of prod and staging; the key is stripped before writing because it is not a column. The hosts come from environment variables through ERB, while the API identifier `https://records-api.agency.localdev` never changes with the hostname. `logo` is a filename under the identity provider's `sp-logos` assets, never a path or URL. The `development` section of the same file carries the same entries without the restriction.
+What to notice: `restrict_to_deploy_env: 'sandbox'` on every entry is what keeps the fictitious records out of prod and staging; the key is stripped before writing because it is not a column. The hosts come from environment variables through ERB, while the API identifier `https://records-api.housing.example.gov` never changes with the hostname. `logo` is a filename under the identity provider's `sp-logos` assets, never a path or URL. The `development` section of the same file carries the same entries without the restriction.
 
 How `restrict_to_deploy_env` is read, as `DeployEnvRestriction` applies it. It is consulted only when `RAILS_ENV=production`; in development and test every entry is written.
 
@@ -3436,7 +3437,7 @@ GET /openid_connect/authorize?client_id=urn:gov:gsa:openidconnect:sp:…
     &acr_values=urn:acr.login.gov:verified
     &redirect_uri=https://…/auth/result
     &state=…&nonce=… HTTP/1.1
-Host: localhost:3000
+Host: idp.example.gov
 ```
 
 What to notice: `document_images` is an ordinary scope value, and the request asks for an identity-verified sign-in; the download endpoint refuses a sign-in that did not request identity proofing even when the person has a verified profile. The `client_id` must be an issuer listed in `document_images_sharing_service_providers`; the local fixture lists none.
@@ -3447,22 +3448,22 @@ The user-information response then carries two extra claims. Each value under `d
 
 ```http
 GET /api/openid_connect/userinfo HTTP/1.1
-Host: localhost:3000
+Host: idp.example.gov
 Authorization: Bearer …
 ```
 
 ```json
 {
   "sub": "…",
-  "iss": "http://localhost:3000/",
+  "iss": "https://idp.example.gov/",
   "email": "…",
   "email_verified": true,
   "given_name": "…",
   "family_name": "…",
   "document_images": {
-    "front": "http://localhost:3000/api/openid_connect/document_images/front",
-    "back": "http://localhost:3000/api/openid_connect/document_images/back",
-    "selfie": "http://localhost:3000/api/openid_connect/document_images/selfie"
+    "front": "https://idp.example.gov/api/openid_connect/document_images/front",
+    "back": "https://idp.example.gov/api/openid_connect/document_images/back",
+    "selfie": "https://idp.example.gov/api/openid_connect/document_images/selfie"
   },
   "document_metadata": {
     "document_number": "…",
@@ -3481,7 +3482,7 @@ The download is a second request with the same access token.
 
 ```http
 GET /api/openid_connect/document_images/selfie HTTP/1.1
-Host: localhost:3000
+Host: idp.example.gov
 Authorization: Bearer …
 ```
 
@@ -3592,10 +3593,10 @@ sequenceDiagram
 The initiation request the browser builds (`initiationUrl` in `public/assets/js/third-party-login.js` of the service provider reference) is a GET with exactly the three §4 parameters. `iss` is Login.gov's issuer (`idp_url` from `/config.json`), `login_hint` is a fresh `crypto.randomUUID()`, and `target_link_uri` is the configured return route.
 
 ```http
-GET /initiate_login?iss=http%3A%2F%2Flocalhost%3A3000
+GET /initiate_login?iss=https%3A%2F%2Fidp.example.gov
     &login_hint=3f1c9b2e-7d4a-4c58-9e21-0b6f5a8d2c71
-    &target_link_uri=http%3A%2F%2Flocalhost%3A9292%2Fthird_party%2Freturn HTTP/1.1
-Host: localhost:9393
+    &target_link_uri=https%3A%2F%2Fmybenefits.example.gov%2Fthird_party%2Freturn HTTP/1.1
+Host: records.housing.example.gov
 ```
 
 What to notice: nothing in the request identifies the person. The agency learns who the person is only from its own Login.gov sign-in, and the hint is the only thing it will echo back.
@@ -3644,7 +3645,7 @@ When the sign-in completes, the OIDC agency redirects from its `/auth/result` ca
 
 ```http
 HTTP/1.1 302 Found
-Location: http://localhost:9292/third_party/return?login_hint=3f1c9b2e-7d4a-4c58-9e21-0b6f5a8d2c71&iss=urn%3Agov%3Agsa%3Aopenidconnect%3Asp%3Arecords_agency&status=signed_in
+Location: https://mybenefits.example.gov/third_party/return?login_hint=3f1c9b2e-7d4a-4c58-9e21-0b6f5a8d2c71&iss=urn%3Agov%3Agsa%3Aopenidconnect%3Asp%3Arecords_agency&status=signed_in
 ```
 
 What to notice: `iss` is now the agency's own identifier (its `client_id`, or its SAML issuer `urn:gov:gsa:SAML:2.0.profiles:sp:sso:benefits_agency`), `status` is `signed_in` or `failed`, and no identity data travels with the return. A failed sign-in also ends the hand-off, with `status=failed` instead of the agency's error page.
@@ -3652,7 +3653,7 @@ What to notice: `iss` is now the agency's own identifier (its `client_id`, or it
 The SAML agency cannot redirect from its assertion consumer. Login.gov's SAML POST-binding page carries `Content-Security-Policy: form-action 'self' <the agency's consumer URL>`, and Chrome applies `form-action` to the redirects that follow a form submission, so a cross-origin redirect from `/consume` is blocked and the person is left on Login.gov's page. The agency therefore answers the POST with `views/third_party_return.erb`, a page of its own that continues under its own policy.
 
 ```text
-<meta http-equiv="refresh" content="0;url=http://localhost:9292/third_party/return?login_hint=…&iss=urn:gov:gsa:SAML:2.0.profiles:sp:sso:benefits_agency&status=signed_in">
+<meta http-equiv="refresh" content="0;url=https://mybenefits.example.gov/third_party/return?login_hint=…&iss=urn:gov:gsa:SAML:2.0.profiles:sp:sso:benefits_agency&status=signed_in">
 Signed in. Returning you to the service that sent you here.
 [Return link to the same URL, id third-party-return-link]
 ```
@@ -3663,23 +3664,23 @@ The service provider's non-secret configuration carries the targets and the retu
 
 ```json
 {
-  "third_party_return_uri": "http://localhost:9292/third_party/return",
+  "third_party_return_uri": "https://mybenefits.example.gov/third_party/return",
   "third_party_login_targets": [
     {
       "name": "Department of Housing Support",
-      "initiate_login_uri": "http://localhost:9393/initiate_login",
+      "initiate_login_uri": "https://records.housing.example.gov/initiate_login",
       "issuer": "urn:gov:gsa:openidconnect:sp:records_agency"
     },
     {
       "name": "National Retirement Administration",
-      "initiate_login_uri": "http://localhost:4567/initiate_login",
+      "initiate_login_uri": "https://portal.retirement.example.gov/initiate_login",
       "issuer": "urn:gov:gsa:SAML:2.0.profiles:sp:sso:benefits_agency"
     }
   ]
 }
 ```
 
-What to notice: only a configured agency can be a destination, so the dashboard form cannot be turned into an open redirect. On the agency side the allow-list is `THIRD_PARTY_TARGET_LINK_ALLOWLIST`, a space- or comma-separated list of origins that defaults to `http://localhost:9292`.
+What to notice: only a configured agency can be a destination, so the dashboard form cannot be turned into an open redirect. On the agency side the allow-list is `THIRD_PARTY_TARGET_LINK_ALLOWLIST`, a space- or comma-separated list of origins that defaults to `https://mybenefits.example.gov`.
 
 ### Functional requirements
 
@@ -4403,7 +4404,7 @@ The fourteen branches are reviewed as stacked pull requests on GitHub and accept
 - Let GitHub delete the merged head branch. When a pull request's base branch is deleted, GitHub retargets the child pull request to that branch's base, so the next pull request moves to `login-delegated-access` on its own. Local worktrees are unaffected.
 - After each merge `delegated-access-integration` still names the top; nothing else moves.
 
-**Branch protection to request from the repository admins** (write access cannot create rulesets). A ruleset on `login-delegated-access`, with the merging maintainer on the bypass list: require a pull request before merging, so only the maintainer can push to the base; require linear history, which blocks merge commits (the merge procedure is the guard against squashes, which a ruleset cannot distinguish); block force pushes and deletions. A second ruleset on `delegated-access-*`: block deletions; block force pushes for everyone except the maintainer, since sync waves need them. No required status checks: continuous integration runs on GitLab through the mirror and reports no GitHub status.
+**Branch protection on the base, as applied on 2026-10-13.** The repository admins created the ruleset "login-delegated-access base" on `login-delegated-access`: changes must come through a pull request with two approving reviews, history must stay linear (which blocks merge commits), and force pushes and deletions are blocked. The ruleset has no bypass list, which has two consequences until one is added. First, nothing can be pushed straight to the base, documentation included: every change to the base, this document among them, travels as a pull request from a short-lived branch. Second, the fast-forward acceptance below cannot be performed: with merge commits blocked and rebase-merge disabled in the repository settings, GitHub's merge button could only squash, and a squash would replace the branch's commits with one new commit and put every pull request above it into conflict. The request to the admins is therefore to add a bypass actor to this ruleset, a team that holds the merging maintainer or the `maintain` repository role, with bypass mode "always"; the maintainer then fast-forwards the base and pushes documentation directly, and everyone else still goes through a pull request. A second ruleset on `delegated-access-*` is still to be requested: block deletions; block force pushes for everyone except the maintainer, since sync waves need them. No required status checks: continuous integration runs on GitLab through the mirror and reports no GitHub status. The JSON below is the ruleset as it should read once the bypass actor is added.
 
 ```json
 {

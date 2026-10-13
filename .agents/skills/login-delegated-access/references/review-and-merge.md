@@ -4,8 +4,11 @@ The fourteen feature branches are reviewed as stacked pull requests on GitHub an
 `login-delegated-access` bottom-up by fast-forward. These rules keep the stack linear while
 other people are reviewing. Repository facts they rest on (checked 2026-10-13): merge commits
 and squash merges are enabled, rebase-merge is disabled, merged head branches are deleted
-automatically, and `login-delegated-access` has no branch protection unless the ruleset below
-has been applied.
+automatically, and since 2026-10-13 the ruleset "login-delegated-access base" applies to
+`login-delegated-access`: pull request with two approving reviews required, linear history
+required, force pushes and deletions blocked, no bypass actors yet. Until a bypass actor is added,
+nothing is pushed straight to the base: documentation changes travel as a pull request from a
+short-lived branch, and the fast-forward acceptance below waits for the bypass.
 
 ## Opening the pull requests
 
@@ -42,18 +45,22 @@ has been applied.
   request moves to `login-delegated-access` on its own. Local worktrees are unaffected.
 - After each merge, `delegated-access-integration` still names the top; nothing else moves.
 
-## Branch protection to request from the repository admins
+## Branch protection, as applied and what is still missing
 
-A ruleset on `login-delegated-access` (bypass list: the merging maintainer):
+The admins applied a ruleset on `login-delegated-access` on 2026-10-13: pull request required
+(two approving reviews), linear history required, force pushes and deletions blocked, no bypass
+actors. Two things remain to request:
 
-- require a pull request before merging, so only the maintainer can push to the base;
-- require linear history (blocks merge commits; the merge procedure above is the guard against
-  squashes, which a ruleset cannot distinguish);
-- block force pushes and deletions.
+- a bypass actor on that ruleset (a team holding the merging maintainer, or the `maintain`
+  repository role; individual users cannot be bypass actors), bypass mode "always". Without it
+  the maintainer cannot fast-forward the base, GitHub's merge button could only squash (merge
+  commits are blocked, rebase-merge is disabled), and a squash would put every pull request
+  above into conflict. Documentation commits also need it to land without a two-review pull request;
+- a second ruleset on `delegated-access-*`: block deletions; block force pushes for everyone
+  except the maintainer (sync waves need them). No required status checks: this repository's
+  continuous integration runs on GitLab through the mirror and reports no GitHub status.
 
-A second ruleset on `delegated-access-*`: block deletions; block force pushes for everyone
-except the maintainer (sync waves need them). No required status checks: this repository's
-continuous integration runs on GitLab through the mirror and reports no GitHub status.
+The JSON is the base ruleset as it should read once the bypass actor is added:
 
 ```json
 {

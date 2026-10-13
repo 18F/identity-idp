@@ -51,7 +51,8 @@ under `docs/`. Copies on Google Drive are stale and carry a banner saying so.
 - Before implementing a feature, resolve its open decisions with the product owner (an interview),
   record them as above, then build.
 
-Docs commits on the base are pushed to GitHub immediately. Feature branches rebase onto the base
+Docs commits reach the base through a pull request from a short-lived branch, since the base
+ruleset requires one (a bypass-list member may push directly). Feature branches rebase onto the base
 when they next need code from below them; they never need to rebase for docs alone.
 
 ## 2. Branch structure

@@ -111,5 +111,6 @@ In the reply that completes the work, state explicitly:
 - Local before CI (`CLAUDE.md` section 4): touched specs, `spec/i18n_spec.rb`, rubocop on changed files, the
   analytics and tracker lints; the full suite on the top of the stack before pushing a branch.
 - Before any push: `gitleaks git --redact --log-opts="<base>..HEAD" .` on the commit range and
-  `gitleaks dir .` on the tree; report the result with the push. Push docs commits on the base at once;
+  `gitleaks dir .` on the tree; report the result with the push. Docs commits reach the base through a pull request from a
+  short-lived branch (the base ruleset requires it) unless the pusher is on the ruleset's bypass list;
   push feature branches only after they run locally. Never push to the GitLab mirrors.
