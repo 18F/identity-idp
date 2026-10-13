@@ -10,6 +10,7 @@ class OpenidConnectAuthorizeForm
     client_id
     code_challenge
     code_challenge_method
+    dpop_jkt
     nonce
     prompt
     redirect_uri
@@ -48,6 +49,9 @@ class OpenidConnectAuthorizeForm
   attr_reader(*ATTRS)
 
   RANDOM_VALUE_MINIMUM_LENGTH = 22
+  # A base64url SHA-256 without padding, 43 characters: the shape of an S256 PKCE code challenge
+  # and of an RFC 7638 key thumbprint.
+  BASE64URL_SHA256_FORMAT = /\A[A-Za-z0-9_-]{43}\z/
   MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS = 30
 
   validates :acr_values, presence: true
@@ -62,7 +66,7 @@ class OpenidConnectAuthorizeForm
   validates :code_challenge_method, inclusion: { in: %w[S256] },
                                     if: :validate_code_challenge_method?
   validate :validate_pkce_parameter_pair, if: :private_key_jwt_pkce_enabled?
-  validates :code_challenge, format: { with: /\A[A-Za-z0-9_-]{43}\z/ },
+  validates :code_challenge, format: { with: BASE64URL_SHA256_FORMAT },
                              if: :private_key_jwt_pkce_requested?
 
   validate :validate_acr_values
@@ -71,6 +75,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_unauthorized_scope
   validate :validate_privileges
   validate :validate_delegation_scopes
+  validate :validate_dpop_jkt
   validate :validate_document_images_scope
   validate :validate_site_key_jwk
   validate :validate_prompt
@@ -132,6 +137,7 @@ class OpenidConnectAuthorizeForm
       code_challenge: code_challenge,
       private_key_jwt_pkce: private_key_jwt_pkce_requested?,
       email_address_id: email_address_id,
+      dpop_jkt: (dpop_jkt if dpop_binding_required?),
     )
   end
 
@@ -177,6 +183,15 @@ class OpenidConnectAuthorizeForm
 
   def site_key_requested?
     site_key_jwk.present? && service_provider&.site_key_allowed?
+  end
+
+  # Whether every token this client receives is bound to a key it holds (RFC 9449). Binding is a
+  # per-client setting (`dpop_required`) that takes effect only for a public client (PKCE, no
+  # client secret), which holds its tokens in the person's browser, so each must be useless
+  # without the key. Every other client, including a public client approved for delegated access
+  # without the setting, receives bearer tokens as before.
+  def dpop_binding_required?
+    service_provider.present? && service_provider.dpop_bound?
   end
 
   private
@@ -261,6 +276,26 @@ class OpenidConnectAuthorizeForm
       t('openid_connect.authorization.errors.unknown_delegation_scope', scopes: unknown.join(', ')),
       type: :unknown_delegation_scope,
     )
+  end
+
+  # RFC 9449 §10: a public client whose tokens are key-bound names the thumbprint of its DPoP key
+  # in the authorization request, so the code it receives can be redeemed only with a proof from
+  # that key and an intercepted code is worthless. Any client may send a well-formed thumbprint;
+  # it is stored only when binding applies to the client.
+  def validate_dpop_jkt
+    if dpop_jkt.blank?
+      return unless dpop_binding_required?
+
+      errors.add(
+        :dpop_jkt, t('openid_connect.authorization.errors.dpop_jkt_required'),
+        type: :dpop_jkt_required
+      )
+    elsif !dpop_jkt.match?(BASE64URL_SHA256_FORMAT)
+      errors.add(
+        :dpop_jkt, t('openid_connect.authorization.errors.dpop_jkt_invalid'),
+        type: :dpop_jkt_invalid
+      )
+    end
   end
 
   def delegation_scope_error?

@@ -1843,6 +1843,8 @@ notices.webauthn_configured: Se agregó una clave de seguridad a su cuenta.
 notices.webauthn_platform_configured: Usó el bloqueo de pantalla de su dispositivo para agregar el desbloqueo facial o táctil a su cuenta.
 openid_connect.authorization.errors.bad_client_id: client_id incorrecto. Consulte nuestra documentación en https://developers.login.gov/support/#bad-client-id
 openid_connect.authorization.errors.delegation_not_allowed: Los ámbitos de delegación (token_exchange:*) requieren una solicitud con identidad verificada de un proveedor de servicios aprobado para el acceso delegado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-delegation
+openid_connect.authorization.errors.dpop_jkt_invalid: 'dpop_jkt debe ser la huella digital RFC 7638 en base64url de la clave pública DPoP del cliente: 43 caracteres, sin relleno.'
+openid_connect.authorization.errors.dpop_jkt_required: 'dpop_jkt es obligatorio: este cliente está registrado con dpop_required, por lo que el código de autorización debe vincularse a la huella digital de su clave DPoP (RFC 9449, sección 10).'
 openid_connect.authorization.errors.invalid_verified_within_duration.one: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_duration.other: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_format: Formato no reconocido de verified_within
@@ -1869,6 +1871,11 @@ openid_connect.logout.errors.no_client_id_or_id_token_hint: Esta aplicación est
 openid_connect.logout.heading: ¿Desea cerrar sesión en %{app_name}?
 openid_connect.logout.heading_with_sp: ¿Desea cerrar sesión en %{app_name} y volver a %{service_provider_name}?
 
+openid_connect.token.errors.dpop_code_unbound: El código de autorización se emitió sin una vinculación dpop_jkt. Inicie una nueva solicitud de autorización que indique la huella digital de la clave DPoP.
+openid_connect.token.errors.dpop_key_mismatch: La prueba DPoP está firmada con una clave distinta de aquella a la que está vinculado este token.
+openid_connect.token.errors.dpop_proof_invalid: 'No se pudo verificar la prueba DPoP: debe ser un dpop+jwt firmado con ES256 o RS256 por la clave pública de su encabezado jwk, indicar el método y la URL de esta solicitud, ser reciente, llevar un jti sin usar y, cuando se presenta un token, el hash ath de ese token.'
+openid_connect.token.errors.dpop_proof_replayed: El jti de la prueba DPoP ya se ha utilizado; cada prueba debe llevar un jti único.
+openid_connect.token.errors.dpop_proof_required: 'Se requiere una prueba DPoP: los tokens de este cliente están vinculados a su clave, así que envíe con la solicitud un encabezado DPoP firmado con esa clave (RFC 9449).'
 openid_connect.token.errors.expired_code: venció. Consulte nuestra documentación en https://developers.login.gov/support/#token-expired
 openid_connect.token.errors.invalid_aud: Notificación de audiencia no válida, %{url} prevista. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: El cliente debe autenticarse a través de PKCE o private_key_jwt, omitiendo code_challenge o client_assertion. Consulte nuestra documentación en https://developers.login.gov/support/#pkce-or-private-key
@@ -1876,9 +1883,11 @@ openid_connect.token.errors.invalid_code: no es válido porque no coincide con n
 openid_connect.token.errors.invalid_code_verifier: code_verifier no coincide con code_challenge. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat debe ser una marca de tiempo Unix de punto flotante o un entero que represente un momento en el pasado. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: No se pudo validar la afirmación contra ninguna clave pública registrada. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-token-signature
+openid_connect.user_info.errors.bound_token_requires_dpop: 'Este token de acceso está vinculado a una clave: preséntelo con el esquema de autorización DPoP y una prueba DPoP firmada con esa clave (RFC 9449).'
 openid_connect.user_info.errors.malformed_authorization: Encabezado de autorización mal formado. Consulte nuestra documentación en https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No se proporcionó ningún encabezado de autorización. Consulte nuestra documentación en https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: No se pudo encontrar la autorización para el contenido del access_token proporcionado o puede ser que este haya vencido. Consulte nuestra documentación en https://developers.login.gov/support/#auth-header-contents-not-found
+openid_connect.user_info.errors.token_not_bound: 'Este token de acceso no está vinculado a una clave: preséntelo con el esquema de autorización Bearer.'
 pages.page_took_too_long.body: Es conveniente que espere unos minutos y vuelva a intentarlo. (503)
 pages.page_took_too_long.header: El servidor tardó demasiado en procesar su solicitud.
 profiling_failed.details_html: 'Llame a nuestro centro de contacto al <strong>(844) 875-6446</strong> y mencione el código de error <strong>LG22</strong>.'

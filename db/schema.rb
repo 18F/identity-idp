@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_09_100400) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_13_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -350,6 +350,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_100400) do
     t.string "code_challenge", comment: "sensitive=true"
     t.datetime "created_at", precision: nil, comment: "sensitive=false"
     t.datetime "deleted_at", precision: nil, comment: "sensitive=false"
+    t.string "dpop_jkt", comment: "sensitive=false"
     t.bigint "email_address_id", comment: "sensitive=false"
     t.integer "ial", default: 1, comment: "sensitive=false"
     t.datetime "last_authenticated_at", precision: nil, comment: "sensitive=false"
@@ -603,6 +604,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_100400) do
     t.text "delegation_terms_of_service_url", comment: "sensitive=false"
     t.boolean "delegation_uses_ai", default: false, null: false, comment: "sensitive=false"
     t.text "description", comment: "sensitive=false"
+    t.boolean "dpop_required", default: false, null: false, comment: "sensitive=false"
     t.boolean "email_nameid_format_allowed", default: false, comment: "sensitive=false"
     t.text "failure_to_proof_url", comment: "sensitive=false"
     t.string "friendly_name", comment: "sensitive=false"
@@ -746,7 +748,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_09_100400) do
     t.string "billing_issuer", comment: "sensitive=false"
     t.string "certs", default: [], null: false, comment: "sensitive=false", array: true
     t.datetime "created_at", null: false, comment: "sensitive=false"
-    t.boolean "dpop_required", default: false, null: false, comment: "sensitive=false"
     t.string "identifier", null: false, comment: "sensitive=false"
     t.bigint "service_provider_id", null: false, comment: "sensitive=false"
     t.string "token_format", default: "oauth", null: false, comment: "sensitive=false"

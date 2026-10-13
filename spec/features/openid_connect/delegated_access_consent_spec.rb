@@ -14,7 +14,8 @@ RSpec.describe 'Delegated access consent', driver: :desktop_rack_test do
       issuer: 'urn:gov:gsa:openidconnect:sp:consent_feature',
       friendly_name: 'MyBenefits Assistant',
       redirect_uris: [redirect_uri],
-      pkce: true
+      pkce: true,
+      dpop_required: true
     )
   end
   let(:housing_agency) { create(:agency, name: 'Department of Housing Support') }
@@ -62,6 +63,8 @@ RSpec.describe 'Delegated access consent', driver: :desktop_rack_test do
       nonce: SecureRandom.hex,
       code_challenge: Digest::SHA256.urlsafe_base64digest(@code_verifier),
       code_challenge_method: 'S256',
+      # A public client registered with dpop_required names the key its tokens will be bound to.
+      dpop_jkt: Base64.urlsafe_encode64(SecureRandom.random_bytes(32), padding: false),
     )
   end
 
