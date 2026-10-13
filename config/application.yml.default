@@ -547,7 +547,9 @@ team_ursula_email: ''
 telephony_adapter: test
 token_exchange_allowed_audiences: '[]'
 token_exchange_allowed_broker_issuers: '[]'
+token_exchange_allowed_target_issuers: '[]'
 token_exchange_enabled: false
+token_exchange_access_token_expires_in: 600
 token_exchange_subject_token_expires_in: 600
 test_ssn_allowed_list: ''
 totp_code_interval: 30
