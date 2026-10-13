@@ -570,6 +570,13 @@ module AnalyticsEvents
     track_event(:delegated_access_page_visited)
   end
 
+  # Emitted by the daily job that removes the refresh-token rows of delegated-access families
+  # that ended more than a day ago.
+  # @param [Integer] deleted_count number of refresh-token rows removed
+  def delegated_refresh_tokens_expired(deleted_count:, **extra)
+    track_event(:delegated_refresh_tokens_expired, deleted_count:, **extra)
+  end
+
   # Tracks the person approving, from the account page, applications a service provider may act
   # at on their behalf. Approvals made here are always remembered for the maximum period.
   # @param [String] issuer Issuer of the service provider
@@ -612,6 +619,22 @@ module AnalyticsEvents
       applications:,
       remembered:,
       newly_approved_count:,
+      **extra,
+    )
+  end
+
+  # Tracks a spent delegated-access refresh token being presented again, which ended the whole
+  # family it belonged to: the token was replayed or a copy of it is in someone else's hands.
+  # @param [String, nil] service_provider_issuer Issuer of the service provider that presented it
+  # @param [String, nil] resource_server_identifier Identifier of the agency API the family was for
+  # @param [String, nil] family_id Identifier of the family that was ended
+  def delegation_refresh_token_reuse(service_provider_issuer:, resource_server_identifier:,
+                                     family_id:, **extra)
+    track_event(
+      :delegation_refresh_token_reuse,
+      service_provider_issuer:,
+      resource_server_identifier:,
+      family_id:,
       **extra,
     )
   end
@@ -7653,6 +7676,43 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks a request to the RFC 7009 revocation endpoint, where a service provider ends a
+  # delegated access token or a whole refresh family early.
+  # @param [Boolean] success Whether the caller authenticated and the request was well-formed; a
+  #   token that was unknown, another client's or already revoked still counts as a success
+  # @param [String, nil] service_provider_issuer Issuer of the service provider, as authenticated
+  #   or as claimed when authentication failed
+  # @param ["confidential", "public", nil] client_type How the service provider authenticated:
+  #   a client assertion (confidential) or client_id with a DPoP proof (public)
+  # @param [String, nil] token_type_hint The `token_type_hint` parameter as sent
+  # @param ["access_token", "refresh_token", "none", nil] revoked What was acted on: one
+  #   delegated access token, a refresh token and with it its whole family, or nothing; nil when
+  #   the request failed
+  # @param [String, nil] error_code RFC 6749/9449 error code returned on failure
+  # @param [Hash, nil] error_details Details for errors that occurred in an unsuccessful request
+  def openid_connect_revoke(
+    success:,
+    service_provider_issuer: nil,
+    client_type: nil,
+    token_type_hint: nil,
+    revoked: nil,
+    error_code: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :openid_connect_revoke,
+      success:,
+      service_provider_issuer:,
+      client_type:,
+      token_type_hint:,
+      revoked:,
+      error_code:,
+      error_details:,
+      **extra,
+    )
+  end
+
   # Tracks when an openid connect token request is made
   # @param [Boolean] success Whether the form was submitted successfully.
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
@@ -7732,6 +7792,53 @@ module AnalyticsEvents
       token_type:,
       requested_token_type:,
       requested_token_type_mismatch:,
+      expires_in:,
+      error_code:,
+      error_details:,
+      **extra,
+    )
+  end
+
+  # Tracks a refresh of a delegated-access family at the token endpoint: a service provider
+  # presenting a refresh token for the next access token of the same family.
+  # @param [Boolean] success Whether a token was issued
+  # @param [String, nil] service_provider_issuer Issuer of the service provider refreshing, as
+  #   authenticated or as claimed when authentication failed
+  # @param [String, nil] resource_server_identifier Identifier of the agency API the family is for
+  # @param [String, nil] application_issuer Issuer of the application that owns the API
+  # @param ["confidential", "public", nil] client_type How the service provider authenticated:
+  #   a client assertion (confidential) or client_id with a DPoP proof (public)
+  # @param ["Bearer", "DPoP", nil] token_type Type of the issued token
+  # @param [String, nil] family_id Identifier of the refresh family, when the token was found
+  # @param [Boolean] reuse_detected Whether a spent refresh token was presented and the family
+  #   was ended because of it
+  # @param [Integer, nil] expires_in Lifetime in seconds of the issued token
+  # @param [String, nil] error_code RFC 6749/9449 error code returned on failure
+  # @param [Hash, nil] error_details Details for errors that occurred in an unsuccessful refresh
+  def openid_connect_token_refresh(
+    success:,
+    service_provider_issuer: nil,
+    resource_server_identifier: nil,
+    application_issuer: nil,
+    client_type: nil,
+    token_type: nil,
+    family_id: nil,
+    reuse_detected: false,
+    expires_in: nil,
+    error_code: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :openid_connect_token_refresh,
+      success:,
+      service_provider_issuer:,
+      resource_server_identifier:,
+      application_issuer:,
+      client_type:,
+      token_type:,
+      family_id:,
+      reuse_detected:,
       expires_in:,
       error_code:,
       error_details:,

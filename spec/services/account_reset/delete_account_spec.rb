@@ -25,6 +25,24 @@ RSpec.describe AccountReset::DeleteAccount do
       AccountReset::DeleteAccount.new(token, request, analytics).call
     end
 
+    it 'ends every delegated-access approval, token and refresh family of the person' do
+      create_account_reset_request_for(user)
+      grant_request(user)
+      token = AccountResetRequest.where(user_id: user.id).first.granted_token
+      grant = create(:token_exchange_grant, user:)
+      plaintext = TokenExchangeToken.generate_token
+      issued = create(:token_exchange_token, grant:, plaintext:)
+      refresh = create(:token_exchange_refresh_token, token_exchange_token: issued)
+
+      AccountReset::DeleteAccount.new(token, request, analytics).call
+
+      expect(User.find_by(id: user.id)).to be_nil
+      expect(grant.reload.revocation_reason).to eq('account_deleted')
+      expect(issued.reload.revocation_reason).to eq('account_deleted')
+      expect(refresh.reload.revocation_reason).to eq('account_deleted')
+      expect(DelegatedTokenStore.read(plaintext)).to be_nil
+    end
+
     context 'when user.confirmed_at is nil' do
       let(:user) { create(:user, confirmed_at: nil) }
 

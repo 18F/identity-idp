@@ -45,6 +45,12 @@ else
         cron: cron_24h_and_a_bit,
         args: -> { [Time.zone.now] },
       },
+      # Remove delegated-access refresh-token rows a day after their family ended
+      expire_delegated_refresh_tokens: {
+        class: 'ExpireDelegatedRefreshTokensJob',
+        cron: cron_24h_and_a_bit,
+        args: -> { [Time.zone.now] },
+      },
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
         class: 'Reports::TotalMonthlyAuthsReport',
