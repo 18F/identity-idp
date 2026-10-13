@@ -10,18 +10,18 @@ module MfaSetupConcern
       webauthn_platform_recommended_path
     elsif suggest_second_mfa?
       auth_method_confirmation_path
-    elsif user_session[:mfa_selections]
+    elsif mfa_setup_session.selections
       track_user_registration_mfa_setup_complete_event
-      user_session.delete(:mfa_selections)
+      mfa_setup_session.clear_selections!
 
       sign_up_completed_path
     end
   end
 
   def confirmation_path(next_mfa_selection_choice = nil)
-    user_session[:next_mfa_selection_choice] = next_mfa_selection_choice || next_setup_choice
+    mfa_setup_session.next_selection_choice = next_mfa_selection_choice || next_setup_choice
 
-    case user_session[:next_mfa_selection_choice]
+    case mfa_setup_session.next_selection_choice
     when 'voice', 'sms', 'phone'
       phone_setup_url
     when 'auth_app'
@@ -45,7 +45,7 @@ module MfaSetupConcern
   end
 
   def in_multi_mfa_selection_flow?
-    return false unless user_session[:mfa_selections].present?
+    return false unless mfa_setup_session.selections?
     mfa_selection_index < mfa_selection_count
   end
 
@@ -60,23 +60,23 @@ module MfaSetupConcern
   end
 
   def first_mfa_selection_path
-    confirmation_path(user_session[:mfa_selections].first)
+    confirmation_path(mfa_setup_session.selections.first)
   end
 
   def in_account_creation_flow?
-    user_session[:in_account_creation_flow] || false
+    mfa_setup_session.in_account_creation_flow?
   end
 
   def mfa_selection_count
-    user_session[:mfa_selections]&.count || 0
+    mfa_setup_session.selection_count
   end
 
   def mfa_selection_index
-    user_session[:mfa_selection_index] || 0
+    mfa_setup_session.selection_index
   end
 
   def set_mfa_selections(selections)
-    user_session[:mfa_selections] = selections
+    mfa_setup_session.selections = selections
   end
 
   def show_skip_additional_mfa_link?
@@ -94,7 +94,7 @@ module MfaSetupConcern
     {
       user_id: current_user.id,
       request_ip: request&.remote_ip,
-      threatmetrix_session_id: user_session[:sign_up_threatmetrix_session_id],
+      threatmetrix_session_id: mfa_setup_session.threatmetrix_session_id,
       email: current_user.last_sign_in_email_address.email,
       uuid_prefix: current_sp&.app_id,
       user_uuid: current_user.uuid,
@@ -132,13 +132,17 @@ module MfaSetupConcern
 
   private
 
+  def mfa_setup_session
+    @mfa_setup_session ||= MfaSetupSession.new(user_session:)
+  end
+
   def track_user_registration_mfa_setup_complete_event
     analytics.user_registration_mfa_setup_complete(
       mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,
-      in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+      in_account_creation_flow: mfa_setup_session.in_account_creation_flow?,
       enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
-      second_mfa_reminder_conversion: user_session.delete(:second_mfa_reminder_conversion),
+      second_mfa_reminder_conversion: mfa_setup_session.take_second_mfa_reminder_conversion!,
       success: true,
     )
   end
@@ -147,23 +151,12 @@ module MfaSetupConcern
     ab_test_bucket(:ACCOUNT_CREATION_TMX_PROCESSED) == :account_creation_tmx_processed
   end
 
-  def determine_next_mfa
-    return unless user_session[:mfa_selections]
-    current_setup_step = user_session[:next_mfa_selection_choice]
-    current_index = user_session[:mfa_selections].find_index(current_setup_step) || 0
-    user_session[:mfa_selection_index] = current_index
-    current_index + 1
-  end
-
   def next_setup_choice
-    user_session.dig(
-      :mfa_selections,
-      determine_next_mfa,
-    )
+    mfa_setup_session.next_setup_choice
   end
 
   def recommend_webauthn_platform_for_sms_user?
-    user_session[:platform_authenticator_available] == true && user_has_phone_setup?
+    mfa_setup_session.platform_authenticator_available? && user_has_phone_setup?
   end
 
   def user_set_up_with_sms?
@@ -173,7 +166,7 @@ module MfaSetupConcern
   end
 
   def user_has_phone_setup?
-    user_session[:in_account_creation_flow] == true &&
+    mfa_setup_session.in_account_creation_flow? &&
       mfa_context.enabled_mfa_methods_count == 1 &&
       mfa_context.phone_configurations.present? &&
       user_set_up_with_sms?
