@@ -8,8 +8,8 @@ base branch and work outside this repository, section 16 is the decisions log, a
 the traceability matrix (A, generated), the stack and review procedure (B), environment-specific
 pieces (C), the performance review and open items (D), the foundation review (E) and terms (F).
 
-`docs/delegated-access-implementation-plan.md` is kept as a historical record of how the work was
-planned and built through 2026-10-13. It is not maintained; the single document above supersedes it.
+It is the only document. How the work was planned and how each requirement changed on the way is in
+its decisions log (section 16) and in git history (D88).
 
 ## Reading order
 

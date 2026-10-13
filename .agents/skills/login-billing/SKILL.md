@@ -274,7 +274,7 @@ Also handed over as built (section 11 of `docs/delegated-access-functional-requi
   column) and BIL-13 (mutation waiver; Redis key `delegation_waiver:`; `reason`/`effect` pair)
   superseded by §9.5 as amended 2026-10-10; `delegation_waiver_unresolved` is the `not_found`
   outcome of `delegated_billing_waiver`, not a separate event (BIL-15 as amended).
-- `docs/delegated-access-implementation-plan.md` §5.8: the 12-hour TTL (D41) and the `declined`
+- Earlier drafts of section 11 (in git history): the 12-hour TTL (D41) and the `declined`
   outcomes column (D68) superseded; `bill_application` / `billing_request_id` in the exchange form
   (session-keyed, billed `application.issuer`) replaced by `Billing::DelegatedReturnRecorder`.
 - The pre-build draft of this skill (2026-10-09): adjustment columns `reason`, `related_sp_return_log_id`,

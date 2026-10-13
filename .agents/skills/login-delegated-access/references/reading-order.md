@@ -1,8 +1,8 @@
 # Reading order
 
 The delegated-access work is described by one document, `docs/delegated-access-functional-requirements.md`,
-with `docs/delegated-access-README.md` as its short front door. The implementation plan that preceded it is
-kept as a historical file and is not part of the reading order.
+with `docs/delegated-access-README.md` as its short front door. There is no other document: how the work was
+planned and how requirements changed is in the decisions log (section 16) and in git history.
 
 ## The document
 
@@ -41,10 +41,3 @@ RFC digests under `references/rfcs/`. Before editing, `references/update-protoco
 **A question about a single identifier**: `references/requirements-index.md` gives the section, the branch
 and the line; read that section, not the whole document.
 
-## The historical plan
-
-`docs/delegated-access-implementation-plan.md` records how each feature was planned against the foundation
-branch, its findings and its dated amendment trails, through 2026-10-13. It is not maintained; its old
-section numbers (5.x features, section 8 stack, section 9 decisions, 7.5 environment pieces) appear in
-older commit messages and in the "Historical plan section" line at the top of each branch section. When it
-disagrees with the document, the document is right. Nothing in it is regenerated.

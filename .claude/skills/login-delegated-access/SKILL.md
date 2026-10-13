@@ -8,13 +8,11 @@ description: Use for any question, review, edit, run or decision about the deleg
 ## 1. What this is and the rules
 
 - One authoritative document, `docs/delegated-access-functional-requirements.md`: sections 1 to 14, one per feature
-  branch in stack order, each with Objective, Functional requirements (`FR-…` rows), Protocol rows (`ONB-`, `CON-`,
+  branch in stack order, each with Objective, How it works (diagram, sample requests and responses), Functional requirements (`FR-…` rows), Protocol rows (`ONB-`, `CON-`,
   `ACC-`, `EXC-`, `REF-`, `INT-`, `SAML-`, `DISC-`, `BIL-`, `ATT-`, `UINF-`), As built, Decisions and How to review;
   section 15 the base branch and work outside this repository; section 16 the decisions log (`Dnn`); Appendix A the
   generated traceability matrix; Appendices B to F the stack and review procedure, environment-specific pieces, the
   performance review and open items, the foundation, terms. `docs/delegated-access-README.md` says how to read it.
-- `docs/delegated-access-implementation-plan.md` is historical (how the work was planned and built through
-  2026-10-13), not maintained and never regenerated; where it differs, the document above is right.
 - The document lives only on `login-delegated-access`. Fourteen code-only feature branches are stacked on it (section 6).
 - `CLAUDE.md` governs every change (vocabulary, fictitious names, no requirement ids in code, local before CI).
   This skill adds context and rationale; it never overrides `CLAUDE.md` and never vetoes a change. Requirements

@@ -10,7 +10,7 @@ change, by a person or by an agent.
 branch that delivers each part:
 
 - sections 1 to 14, one per feature branch in stack order, each with the same parts: Objective,
-  Functional requirements (the `FR-…` rows the branch owns), Protocol rows (`ONB-`, `CON-`, `ACC-`,
+  How it works (a Mermaid diagram, sample requests and responses, the checks in order), Functional requirements (the `FR-…` rows the branch owns), Protocol rows (`ONB-`, `CON-`, `ACC-`,
   `EXC-`, `REF-`, `INT-`, `SAML-`, `DISC-`, `BIL-`, `ATT-`, `UINF-`), As built, Decisions (one line per
   `Dnn`) and How to review;
 - section 15, the base branch and the work outside this repository (document-image sharing kept on
@@ -26,10 +26,6 @@ branch that delivers each part:
 Every row states the requirement as it stands today; where a decision changed it, the row is written
 in its amended form and cites the decision as `(Dnn)`. There are no amendment trails in the document:
 history is in git and in section 16.
-
-`docs/delegated-access-implementation-plan.md` is a historical record of how the work was planned and
-built through 2026-10-13. It is not maintained and nothing in it is regenerated; when it disagrees with
-the document above, the document above is right.
 
 The document lives **only on `login-delegated-access`**. Feature branches are code-only and never commit
 under `docs/`. Copies on Google Drive are stale and carry a banner saying so.
