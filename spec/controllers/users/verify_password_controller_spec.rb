@@ -99,6 +99,32 @@ RSpec.describe Users::VerifyPasswordController do
             end
           end
 
+          context 'with a site key root recovered by the personal key' do
+            let(:created) { create_site_key_root(user, password: 'an older password') }
+
+            before do
+              allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+              created
+              user.site_key_root.forget_password!
+              SiteKeys::Vault.new(user:, user_session: controller.user_session)
+                .recover(created.recovery_code)
+              put :update, params: user_params
+            end
+
+            it 're-wraps the root under the new password' do
+              fresh = SiteKeys::Vault.new(user: user.reload, user_session: {})
+
+              expect(fresh.unlock(password)).to eq(created.root)
+            end
+
+            it 'wraps the root under the new personal key' do
+              user.reload.site_key_root.forget_password!
+              fresh = SiteKeys::Vault.new(user: user.reload, user_session: {})
+
+              expect(fresh.recover(controller.user_session[:personal_key])).to eq(created.root)
+            end
+          end
+
           context 'with stored historical attempt events' do
             let(:attempt_events) { [{ 'event' => 'event1' }, { 'event' => 'event2' }] }
             let(:encrypted_proofing_events) do

@@ -8740,6 +8740,79 @@ module AnalyticsEvents
     track_event(:sign_in_security_check_failed_visited)
   end
 
+  # The user gave up on a site key root that could only be opened with a recovery code
+  def site_key_recovery_abandoned
+    track_event(:site_key_recovery_abandoned)
+  end
+
+  # @param [Boolean] matched Whether the acknowledged code is the one currently stored
+  # The user acknowledged saving their site key recovery code
+  def site_key_recovery_code_acknowledged(matched:, **extra)
+    track_event(:site_key_recovery_code_acknowledged, matched:, **extra)
+  end
+
+  # The user downloaded their site key recovery code
+  def site_key_recovery_code_downloaded
+    track_event(:site_key_recovery_code_downloaded)
+  end
+
+  # The user visited the page to generate a new site key recovery code
+  def site_key_recovery_code_new_visited
+    track_event(:site_key_recovery_code_new_visited)
+  end
+
+  # The user generated a new site key recovery code
+  def site_key_recovery_code_regenerated
+    track_event(:site_key_recovery_code_regenerated)
+  end
+
+  # @param [Boolean] present Whether a freshly minted recovery code was available to show
+  # The site key recovery code page was viewed
+  def site_key_recovery_code_viewed(present:, **extra)
+    track_event(:site_key_recovery_code_viewed, present:, **extra)
+  end
+
+  # @param [Boolean] success Whether the code opened the site key root
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # The user submitted a site key recovery code (or personal key) after a password reset
+  def site_key_recovery_submitted(success:, errors: nil, error_details: nil, **extra)
+    track_event(:site_key_recovery_submitted, success:, errors:, error_details:, **extra)
+  end
+
+  # The site key recovery page was visited after a password reset
+  def site_key_recovery_visited
+    track_event(:site_key_recovery_visited)
+  end
+
+  # @param [String] client_id Service provider issuer
+  # @param [String] error
+  # A sealed per-site key could not be released to the service provider
+  def site_key_release_failed(client_id:, error:, **extra)
+    track_event(:site_key_release_failed, client_id:, error:, **extra)
+  end
+
+  # @param [String] client_id Service provider issuer
+  # @param [Boolean] email_sealed Whether the `email` scope was delivered inside the sealed key
+  # @param [Boolean] all_emails_sealed Whether `all_emails` was delivered inside the sealed key
+  # A sealed per-site key was released to the service provider's browser
+  def site_key_released(client_id:, email_sealed:, all_emails_sealed:, **extra)
+    track_event(:site_key_released, client_id:, email_sealed:, all_emails_sealed:, **extra)
+  end
+
+  # @param [Boolean] replaced Whether an existing root was replaced rather than created fresh
+  # A per-site key root was created for the user
+  def site_key_root_created(replaced:, **extra)
+    track_event(:site_key_root_created, replaced:, **extra)
+  end
+
+  # @param [String] error
+  # @param [Boolean] root_replaced Whether the unrecoverable root was replaced with a new one
+  # The user's per-site key root could not be unwrapped with the password they entered
+  def site_key_root_unlock_failed(error:, root_replaced:, **extra)
+    track_event(:site_key_root_unlock_failed, error:, root_replaced:, **extra)
+  end
+
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission

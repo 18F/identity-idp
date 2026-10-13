@@ -14,6 +14,15 @@ RSpec.describe ResetUserPassword do
       expect { call }.to(change { user.reload.encrypted_password_digest })
     end
 
+    it 'drops the site key root password wrap, which needs the old password to re-wrap' do
+      allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+      create_site_key_root(user)
+
+      call
+
+      expect(user.reload.site_key_root.encrypted_root).to be_nil
+    end
+
     it 'creates a password_invalidated user event' do
       expect { call }
         .to(change { user.events.password_invalidated.size }.from(0).to(1))

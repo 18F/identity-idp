@@ -116,6 +116,7 @@ module Idv
         end
       end
 
+      SiteKeys::Vault.new(user: current_user, user_session:).wrap_personal_key(new_personal_key)
       new_personal_key
     end
 

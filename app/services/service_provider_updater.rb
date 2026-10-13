@@ -20,6 +20,7 @@ class ServiceProviderUpdater
 
   SP_IGNORED_ATTRIBUTES = %i[
     cert
+    site_key_allowed
   ].freeze
 
   # Written through #sync_resource_servers rather than as a column.

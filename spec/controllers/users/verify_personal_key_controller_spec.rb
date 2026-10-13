@@ -95,6 +95,19 @@ RSpec.describe Users::VerifyPersonalKeyController do
         expect(response).to redirect_to(verify_password_url)
       end
 
+      it 'recovers a site key root wrapped under the same personal key' do
+        allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+        created = create_site_key_root(user)
+        SiteKeys::Vault.new(user:, user_session: {})
+          .wrap_personal_key(profiles.first.personal_key, password: user.password)
+        user.reload.site_key_root.forget_password!
+
+        post :create, params: { personal_key: profiles.first.personal_key }
+
+        vault = SiteKeys::Vault.new(user: user.reload, user_session: subject.user_session)
+        expect(vault.site_key('urn:sp')).to eq(derive_site_key(created.root, 'urn:sp'))
+      end
+
       it 'stores that the personal key was entered in the user session' do
         stub_analytics
 

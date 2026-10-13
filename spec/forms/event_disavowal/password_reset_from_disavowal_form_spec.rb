@@ -15,6 +15,15 @@ RSpec.describe EventDisavowal::PasswordResetFromDisavowalForm, type: :model do
 
       expect(user.reload.valid_password?(new_password)).to eq(true)
     end
+
+    it 'drops the site key root password wrap, which needs the old password to re-wrap' do
+      allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+      create_site_key_root(user, password: 'salty pickles')
+
+      subject.submit(password: new_password)
+
+      expect(user.reload.site_key_root.encrypted_root).to be_nil
+    end
   end
 
   context 'with an invalid password' do
