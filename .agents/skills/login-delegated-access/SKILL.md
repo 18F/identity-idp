@@ -40,6 +40,7 @@ description: Use for any question, review, edit, run or decision about the deleg
 | Billing change (`sp_return_logs`, waiver, adjustments, reports) | `.claude/skills/login-billing/SKILL.md` first, then `references/branch-context/delegated-access-billing-reporting.md` |
 | Schema, log, token-storage, analytics or Attempts-schema change | `.claude/skills/login-billing/SKILL.md` section 9 and its `references/data-change-review-guidelines.md` (data team review and notification) |
 | Rebase or merge the base into a feature branch with conflicts in the skill or docs | `references/conflict-resolution.md`, `scripts/skill_conflicts.sh` (feature context wins for its own work; base wins elsewhere; generated and twin files are regenerated, never hand-resolved) |
+| Open, review or merge the stacked pull requests; branch protection | `references/review-and-merge.md` (stacked bases, review-time rules, bottom-up fast-forward merge, the ruleset to request) |
 | Where to start reading | `references/reading-order.md` |
 
 ## 4. Changing things

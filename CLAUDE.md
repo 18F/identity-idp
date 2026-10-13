@@ -68,7 +68,9 @@ login-delegated-access (base + docs)
 - Branch names say what the branch delivers; no numbers or abbreviations.
 - A fix belongs in the branch that owns the behavior; rebase the branches above it afterwards
   (`git rebase <previous tip>` in each worktree, in stack order). Acceptance is a fast-forward of
-  `login-delegated-access`.
+  `login-delegated-access`. Once pull requests are open, the skill's `references/review-and-merge.md`
+  governs: stacked bases, fixes as new commits, rebases only in announced sync waves, merges by
+  maintainer fast-forward push, never the merge button.
 - Each branch has a worktree of the same name under `~/coding/worktrees/`. Never merge sibling
   branches; cherry-pick and rebase only.
 - No compatibility or dead code: nothing on these branches is in production, so drop and replace
