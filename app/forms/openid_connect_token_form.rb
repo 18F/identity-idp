@@ -49,6 +49,8 @@ class OpenidConnectTokenForm
 
   def response
     if valid?
+      return token_exchange_subject_token_response if token_exchange_authorization_code?
+
       id_token_builder = IdTokenBuilder.new(identity: identity, code: code)
       @ttl = id_token_builder.ttl
 
@@ -73,6 +75,32 @@ class OpenidConnectTokenForm
   private
 
   attr_reader :identity, :code_expiration
+
+  def token_exchange_subject_token_response
+    issued_token = TokenExchange::SubjectTokenIssuer.issue(identity:)
+    @ttl = issued_token.expires_in
+
+    {
+      subject_token: issued_token.token,
+      token_type: 'Bearer',
+      expires_in: issued_token.expires_in,
+      scope: identity.scope,
+    }
+  end
+
+  def token_exchange_authorization_code?
+    return false unless IdentityConfig.store.token_exchange_enabled &&
+                        service_provider&.token_exchange_broker?
+    return false if identity.blank?
+
+    token_exchange_scope_requested?
+  end
+
+  def token_exchange_scope_requested?
+    identity.scope.to_s.split(' ').any? do |scope|
+      TokenExchange::Constants.scope?(scope)
+    end
+  end
 
   def find_identity_with_code
     return if code.blank? || code.include?("\x00")

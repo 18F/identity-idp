@@ -679,6 +679,72 @@ RSpec.describe OpenidConnectTokenForm do
       end
     end
 
+    context 'with a token exchange authorization code' do
+      before do
+        identity.update!(
+          scope: 'openid token_exchange:passport',
+          ial: 2,
+        )
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return([client_id])
+        allow(IdentityConfig.store).to receive(:token_exchange_subject_token_expires_in)
+          .and_return(600)
+      end
+
+      it 'returns an opaque subject token response' do
+        expect(response).to include(
+          subject_token: be_present,
+          token_type: 'Bearer',
+          expires_in: 600,
+          scope: 'openid token_exchange:passport',
+        )
+        expect(response).to_not have_key(:access_token)
+        expect(response).to_not have_key(:refresh_token)
+      end
+
+      it 'stores the subject token metadata in Redis' do
+        subject_token = TokenExchange::SubjectToken.load(response[:subject_token])
+
+        expect(subject_token).to have_attributes(
+          user_id: identity.user_id,
+          identity_uuid: identity.uuid,
+          broker_issuer: identity.service_provider,
+          scope: 'openid token_exchange:passport',
+          ial: 2,
+        )
+      end
+
+      context 'when the service provider is not an allowlisted broker' do
+        before do
+          allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+            .and_return(['some-other-issuer'])
+        end
+
+        it 'returns the normal access token response' do
+          expect(response).to_not have_key(:subject_token)
+          expect(response[:access_token]).to eq(identity.access_token)
+        end
+
+        it 'does not issue a subject token' do
+          expect(TokenExchange::SubjectTokenIssuer).to_not receive(:issue)
+
+          response
+        end
+      end
+
+      context 'when token exchange is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(false)
+        end
+
+        it 'returns the normal access token response' do
+          expect(response).to_not have_key(:subject_token)
+          expect(response[:access_token]).to eq(identity.access_token)
+        end
+      end
+    end
+
     context 'with invalid params' do
       let(:code) { nil }
 
