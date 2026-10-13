@@ -117,7 +117,7 @@ module Users
     end
 
     def current_auth_app_count
-      current_user.auth_app_configurations.count
+      mfa_context.auth_app_configurations.count
     end
 
     def analytics_properties

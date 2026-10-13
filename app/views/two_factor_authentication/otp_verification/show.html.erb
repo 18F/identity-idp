@@ -16,8 +16,10 @@
         title: @presenter.header,
         subtitle: safe_join([@presenter.nds_code_sent_message, @presenter.nds_do_not_share_message], ' '),
       ) do |page| %>
-    <% if otp_invalid_error || @landline_alert || @presenter.otp_expiration.present? %>
+    <% if otp_invalid_error || @landline_alert || @presenter.otp_expiration.present? ||
+          account_recovery_cancellable_by_authentication? %>
       <% page.with_alert do %>
+        <%= render 'two_factor_authentication/account_recovery_pending_alert' %>
         <% if otp_invalid_error %>
           <%= render AlertComponent.new(
                 type: :error,
@@ -129,6 +131,8 @@
 
   <%= javascript_packs_tag_once('nds-input-otp', preload_links_header: false) %>
 <% else %>
+<%= render 'two_factor_authentication/account_recovery_pending_alert' %>
+
 <% if @landline_alert %>
   <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-2') do %>
     <%= @presenter.landline_warning %>

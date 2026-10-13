@@ -7,7 +7,7 @@ module TwoFactorAuthentication
     end
 
     def configured?
-      @user.backup_code_configurations.unused.any?
+      @user.backup_code_configurations.available_for_authentication.unused.any?
     end
 
     private

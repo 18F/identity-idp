@@ -14,6 +14,8 @@ module AccountRecovery
       elsif session_token
         render_password_form
       else
+        return handle_invalid_token unless prepare_replacement_mfa
+
         redirect_to account_recovery_new_mfa_setup_url
       end
     end
@@ -85,11 +87,21 @@ module AccountRecovery
     end
 
     def handle_password_verified
+      return handle_invalid_token unless prepare_replacement_mfa
+
       password_rate_limiter.reset!
       session.delete(:account_recovery_granted_token)
       sign_in_partially
 
       redirect_to account_recovery_new_mfa_setup_url
+    end
+
+    def prepare_replacement_mfa
+      return true if account_recovery_request.replacement_mfa_pending?
+
+      AccountRecovery::SuspendExistingMfa.new(
+        account_recovery_request: account_recovery_request,
+      ).call
     end
 
     def handle_incorrect_password
@@ -110,6 +122,12 @@ module AccountRecovery
     def sign_in_partially
       sign_in(:user, recovery_user)
 
+      # Opening the emailed link with a timed-out session makes Devise store
+      # that single-use URL as the return location; it must not be revisited.
+      session.delete(stored_location_key_for(:user))
+      %i[unconfirmed_phone phone_id new_totp_secret backup_codes mfa_selections
+         next_mfa_selection_choice webauthn_challenge].each { |key| user_session.delete(key) }
+      user_session[:context] = 'authentication'
       user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = true
     end
 
@@ -132,7 +150,11 @@ module AccountRecovery
       return @account_recovery_request if defined?(@account_recovery_request)
       return unless user_signed_in?
 
-      @account_recovery_request = AccountRecoveryRequest.password_verified_for_user(current_user)
+      @account_recovery_request = AccountRecoveryRequest.active.find_by(
+        user: current_user,
+        state: [AccountRecoveryRequest::PASSWORD_VERIFIED,
+                AccountRecoveryRequest::REPLACEMENT_MFA_PENDING],
+      )
     end
 
     def recovery_user

@@ -198,6 +198,20 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] recovery_state State of the recovery request
+  # A user visited the account-preserving MFA recovery status page while their
+  # request was waiting or granted
+  def account_recovery_pending_status_visit(recovery_state:, **extra)
+    track_event(:account_recovery_pending_status_visit, recovery_state:, **extra)
+  end
+
+  # @param [String] recovery_state State of the recovery request
+  # A user visited the account-preserving MFA recovery "check your email" page
+  # after submitting a request
+  def account_recovery_pending_visit(recovery_state:, **extra)
+    track_event(:account_recovery_pending_visit, recovery_state:, **extra)
+  end
+
   # @param [Boolean] success Whether the recovery request was created
   # @param [Hash] errors Errors resulting from the request attempt
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
@@ -241,6 +255,13 @@ module AnalyticsEvents
       mfa_method_counts:,
       **extra,
     )
+  end
+
+  # @param [Boolean] success Whether the request notification email was resent
+  # @param [Boolean] rate_limited Whether the resend was blocked by rate limiting
+  # A user asked to resend their account-preserving MFA recovery request email
+  def account_recovery_resend_request_email(success:, rate_limited: false, **extra)
+    track_event(:account_recovery_resend_request_email, success:, rate_limited:, **extra)
   end
 
   # @identity.idp.previous_event_name Account Reset

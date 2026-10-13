@@ -44,12 +44,12 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
       # Password confirmation gives the user a temporary pre-2FA session that
       # continues to replacement MFA setup.
       expect(page).to have_current_path(account_recovery_new_mfa_setup_path)
-      expect(page).to have_content t('account_recovery.new_mfa_setup.header')
-      expect(page).to have_content t('account_recovery.new_mfa_setup.intro')
+      expect(page).to have_content t('account_recovery.new_mfa_setup.alert')
+      expect(page).to have_content t('two_factor_authentication.two_factor_choice')
     end
 
     recovery_request = AccountRecoveryRequest.active_for_user(user)
-    expect(recovery_request.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
+    expect(recovery_request.state).to eq(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
     expect(recovery_request.password_verified_at).to be_present
   end
 
@@ -101,7 +101,9 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
 
     signin(user_email, user.password)
 
-    expect(page).to have_content t('account_recovery.pending.mfa_banner')
+    expect(page).to have_content(
+      t('two_factor_authentication.account_recovery.pending_alert', app_name: APP_NAME),
+    )
     expect(page).not_to have_link(href: account_recovery_start_path)
 
     visit account_recovery_start_path
@@ -184,8 +186,8 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
       fill_in t('account.index.password'), with: user.password
       click_button t('account_recovery.verify.continue')
 
-      expect(page).to have_content(t('account_recovery.new_mfa_setup.header'))
-      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
+      expect(page).to have_content(t('account_recovery.new_mfa_setup.alert'))
+      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
 
       visit account_path
 

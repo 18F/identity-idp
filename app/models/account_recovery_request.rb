@@ -82,6 +82,10 @@ class AccountRecoveryRequest < ApplicationRecord
     ACTIVE_STATES.include?(state)
   end
 
+  def replacement_mfa_pending?
+    active? && state == REPLACEMENT_MFA_PENDING
+  end
+
   def terminal?
     TERMINAL_STATES.include?(state)
   end

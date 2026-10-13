@@ -39,9 +39,21 @@ module TwoFactorAuthenticatable
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :authenticate_user
+    before_action :redirect_recovery_authentication_to_setup
     before_action :check_already_authenticated
     before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :create
     before_action :apply_secure_headers_override, only: %i[show create]
     # rubocop:enable Rails/LexicallyScopedActionFilter
+  end
+
+  def redirect_recovery_authentication_to_setup
+    return unless replacement_mfa_pending?
+    if UserSessionContext.confirmation_context?(context) &&
+       %w[users/two_factor_authentication two_factor_authentication/otp_verification
+          two_factor_authentication/sms_opt_in].include?(controller_path)
+      return
+    end
+
+    redirect_to account_recovery_new_mfa_setup_url
   end
 end

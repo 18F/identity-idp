@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class AuthAppConfiguration < ApplicationRecord
+  include AccountRecoverySuspendable
   include EncryptableAttribute
   include UserSuppliedNameAttributes
 
@@ -11,7 +12,7 @@ class AuthAppConfiguration < ApplicationRecord
   validates :name, presence: true, length: { maximum: UserSuppliedNameAttributes::MAX_NAME_LENGTH }
 
   def mfa_enabled?
-    otp_secret_key.present?
+    !suspended_for_account_recovery? && otp_secret_key.present?
   end
 
   def selection_presenters

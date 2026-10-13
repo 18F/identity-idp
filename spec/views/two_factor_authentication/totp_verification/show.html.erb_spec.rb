@@ -50,6 +50,20 @@ RSpec.describe 'two_factor_authentication/totp_verification/show.html.erb' do
     )
   end
 
+  context 'with a pending account recovery request' do
+    before do
+      create(:account_recovery_request, :waiting, user: user)
+      render
+    end
+
+    it 'warns that authenticating cancels the request' do
+      expect(rendered).to have_css(
+        '.usa-alert--info',
+        text: t('two_factor_authentication.account_recovery.pending_alert', app_name: APP_NAME),
+      )
+    end
+  end
+
   context 'user is reauthenticating' do
     before do
       allow(@presenter).to receive(:reauthn).and_return(true)

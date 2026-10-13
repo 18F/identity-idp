@@ -2,6 +2,8 @@
 
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
 
+<%= render 'two_factor_authentication/account_recovery_pending_alert' %>
+
 <% if @presenter.add_piv_cac_after_2fa? %>
   <%= render AlertComponent.new(
         type: :info,
