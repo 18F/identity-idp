@@ -1,0 +1,58 @@
+<%#
+Who is asking for delegated access, in the service provider's own registry content. Shared by the
+consent screen and the account page.
+
+locals:
+* card: DelegationServiceProviderCard
+* access_hours: hours the service provider can act after one sign-in (omit to leave the row out)
+%>
+<div class="border border-primary-light radius-lg padding-2 margin-bottom-4" data-delegation-about>
+  <h2 class="h3 margin-top-0 margin-bottom-2"><%= t('sign_up.delegation.about_heading') %></h2>
+  <dl class="margin-0">
+    <div class="padding-bottom-1 border-bottom border-primary-light margin-bottom-1">
+      <dt class="text-bold font-body-2xs text-base-dark"><%= t('sign_up.delegation.run_by', sp: card.name) %></dt>
+      <dd class="margin-left-0 display-flex flex-align-center">
+        <% if card.logo_url %>
+          <%= image_tag(card.logo_url, width: 28, height: 28, alt: '', class: 'margin-right-1') %>
+        <% end %>
+        <%= card.operator_name %>
+      </dd>
+    </div>
+    <div class="padding-bottom-1 border-bottom border-primary-light margin-bottom-1">
+      <dt class="text-bold font-body-2xs text-base-dark">
+        <%= card.uses_ai? ? t('sign_up.delegation.uses_ai') : t('sign_up.delegation.does_not_use_ai') %>
+        <% if card.uses_ai? %>
+          <span class="usa-tag bg-primary-lighter text-primary-darker margin-left-05"><%= t('sign_up.delegation.ai_badge') %></span>
+        <% end %>
+      </dt>
+      <% if card.uses_ai? && card.ai_description.present? %>
+        <dd class="margin-left-0">
+          <%= t('sign_up.delegation.uses_ai_description', description: card.ai_description) %>
+        </dd>
+      <% end %>
+    </div>
+    <% if card.data_handling_statement.present? %>
+      <div class="padding-bottom-1 border-bottom border-primary-light margin-bottom-1">
+        <dt class="text-bold font-body-2xs text-base-dark"><%= t('sign_up.delegation.your_information') %></dt>
+        <dd class="margin-left-0">
+          <%= t('sign_up.delegation.data_handling', statement: card.data_handling_statement) %>
+        </dd>
+      </div>
+    <% end %>
+    <% if local_assigns[:access_hours] %>
+      <%# How long the service provider can act after one sign-in: the delegated tokens it obtains
+          are renewable for at most this long, whatever the person chooses about remembering. %>
+      <div class="padding-bottom-1 margin-bottom-1" data-delegation-access-duration>
+        <dt class="text-bold font-body-2xs text-base-dark"><%= t('sign_up.delegation.access_duration_heading') %></dt>
+        <dd class="margin-left-0">
+          <%= t('sign_up.delegation.access_duration', sp: card.name, hours: access_hours) %>
+        </dd>
+      </div>
+    <% end %>
+  </dl>
+  <% if card.learn_more_url %>
+    <p class="margin-bottom-0 margin-top-1">
+      <%= new_tab_link_to(t('sign_up.delegation.learn_more', sp: card.name), card.learn_more_url) %>
+    </p>
+  <% end %>
+</div>

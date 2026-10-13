@@ -1,5 +1,41 @@
 ---
-account.connected_apps.token_exchange.other_agency: Autre
+account.connected_apps.manage_delegated_access: Gérer ce que %{sp} peut faire en votre nom
+account.delegated_access.approve.confirm: Autoriser
+account.delegated_access.approve.description: Lisez ce que chaque agence dit de son application. Si vous autorisez, %{sp} pourra agir en votre nom auprès de ces applications pendant %{months} mois, chaque fois que vous vous y connecterez, sauf si vous y mettez fin plus tôt depuis cette page.
+account.delegated_access.approve.heading: Autoriser %{sp} à agir en votre nom auprès de ces applications ?
+account.delegated_access.approve.title: Autoriser %{sp} à agir en votre nom
+account.delegated_access.approve_selected: Approuver la sélection
+account.delegated_access.approved_count.one: '%{count} sur %{total} approuvée'
+account.delegated_access.approved_count.other: '%{count} sur %{total} approuvées'
+account.delegated_access.approved_count.zero: '%{count} sur %{total} approuvée'
+account.delegated_access.approved_flash.one: Vous avez approuvé %{count} application pour %{sp}.
+account.delegated_access.approved_flash.other: Vous avez approuvé %{count} applications pour %{sp}.
+account.delegated_access.approved_on_html: Approuvée le %{timestamp_html}.
+account.delegated_access.description: Certains services peuvent agir en votre nom auprès d’autres agences après votre connexion avec %{app_name}. Chaque agence décrit son application dans ses propres mots. Les approbations données ici durent 1 an et sont respectées à la connexion ; vous pouvez y mettre fin à tout moment.
+account.delegated_access.end_all: Mettre fin à tout accès délégué
+account.delegated_access.none_registered: Aucun service n’est encore approuvé pour agir en votre nom.
+account.delegated_access.nothing_selected: Sélectionnez au moins une application à approuver.
+account.delegated_access.other_agency: Autre
+account.delegated_access.revoke.confirm: Mettre fin à l’accès
+account.delegated_access.revoke.description_all: Aucun service ne pourra agir en votre nom auprès d’une agence tant que vous ne l’aurez pas approuvé de nouveau. Tout accès en cours prend fin.
+account.delegated_access.revoke.description_application: '%{sp} ne pourra plus agir en votre nom auprès de cette application. Tout accès en cours prend fin. Vous pourrez l’approuver de nouveau à tout moment.'
+account.delegated_access.revoke.description_service_provider: '%{sp} ne pourra plus agir en votre nom auprès d’aucune de ces applications. Tout accès en cours prend fin.'
+account.delegated_access.revoke.heading_all: Mettre fin à tout accès délégué ?
+account.delegated_access.revoke.heading_application: Mettre fin à l’accès délégué à cette application ?
+account.delegated_access.revoke.heading_service_provider: Mettre fin à tout ce que %{sp} peut faire en votre nom ?
+account.delegated_access.revoke.title_all: Mettre fin à tout accès délégué
+account.delegated_access.revoke.title_application: Révoquer l’accès délégué
+account.delegated_access.revoke.title_service_provider: Révoquer l’accès délégué de %{sp}
+account.delegated_access.revoke_application: Révoquer
+account.delegated_access.revoke_service_provider: Tout révoquer pour %{sp}
+account.delegated_access.revoked_flash.one: Vous avez mis fin à l’accès délégué pour %{count} application.
+account.delegated_access.revoked_flash.other: Vous avez mis fin à l’accès délégué pour %{count} applications.
+account.delegated_access.service_provider_unavailable: '%{sp} n’est plus approuvé pour agir en votre nom. Vous pouvez toujours mettre fin aux approbations que vous lui avez données.'
+account.delegated_access.source_account_page: Donnée depuis votre compte.
+account.delegated_access.source_consent_screen: Donnée lors de la connexion.
+account.delegated_access.status_approved: Approuvée
+account.delegated_access.time_remaining: Prend fin dans %{duration}.
+account.navigation.delegated_access: Accès délégué
 account_reset.cancel_request.are_you_sure: Êtes-vous sûr de vouloir annuler votre demande de suppression de compte ?
 account_reset.cancel_request.cancel: Quitter
 account_reset.cancel_request.cancel_button: Annuler la suppression du compte
@@ -51,17 +87,6 @@ account.connected_apps.associated_html: Connecté %{timestamp_html}
 account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs services de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos services actuellement connectés.
 account.connected_apps.email_not_selected: Adresse e-mail non encore sélectionnée
 account.connected_apps.email_update_success_html: Vous avez réussi à modifier votre adresse e-mail pour <strong>%{sp_name}</strong>.
-account.connected_apps.token_exchange.description: Activez chaque organisme auquel vous souhaitez que %{sp} puisse vous connecter. Vous pouvez modifier ce choix à tout moment.
-account.connected_apps.token_exchange.granted_html: Autorisé depuis le %{timestamp_html}
-account.connected_apps.token_exchange.heading: Organismes auprès desquels %{sp} peut agir en votre nom
-account.connected_apps.token_exchange.modal.body_html: '%{sp_html} pourra vous connecter à %{target_html} à l’aide de votre identité vérifiée, sans vous demander de la vérifier de nouveau. Il ne recevra que les informations auxquelles il est autorisé et pourra voir que vous avez été connecté par l’intermédiaire de %{sp_html}.'
-account.connected_apps.token_exchange.modal.confirm: Autoriser
-account.connected_apps.token_exchange.modal.duration: Cette autorisation dure 12 mois. Vous pouvez la désactiver à tout moment depuis cette page.
-account.connected_apps.token_exchange.modal.heading: Autoriser %{sp} à agir en votre nom ?
-account.connected_apps.token_exchange.no_linked: Vous n’avez encore connecté aucun organisme compatible avec ce service.
-account.connected_apps.token_exchange.off: 'Désactivé'
-account.connected_apps.token_exchange.on: 'Activé'
-account.connected_apps.token_exchange.toggle_label: Autoriser %{sp} à agir en mon nom auprès de %{target}
 account.email_language.default: '%{language} (par défaut)'
 account.email_language.edit_title: Modifier la langue dans laquelle vous préférez recevoir les e-mails
 account.email_language.languages_list: Vous recevrez des e-mails de %{app_name} dans la langue de votre choix.
@@ -921,6 +946,8 @@ event_types.authenticator_disabled: Appli d’authentification supprimée
 event_types.authenticator_enabled: Appli d’authentification ajoutée
 event_types.backup_codes_added: Codes de sauvegarde ajoutés
 event_types.backup_codes_removed: Codes de sauvegarde supprimés
+event_types.delegation_approved: Accès délégué approuvé
+event_types.delegation_revoked: Accès délégué révoqué
 event_types.eastern_timestamp: '%{timestamp} (heure de l’Est)'
 event_types.email_changed: Adresse e-mail modifiée
 event_types.email_deleted: Adresse e-mail supprimée
@@ -1041,6 +1068,7 @@ forms.webauthn_setup.step_3a: Cliquez sur « Configurer une clé de sécurité�
 headings.account.activity: Activité
 headings.account.authentication_apps: Applis d’authentification
 headings.account.connected_services: Vos services connectés
+headings.account.delegated_access: Accès délégué
 headings.account.devices: Appareils
 headings.account.events: Événements
 headings.account.government_employee_id: Carte d’employé fédéral
@@ -2242,6 +2270,14 @@ user_mailer.agent_proofing_succeeded.footer_html: 'Si vous n’avez pas tenté d
 user_mailer.agent_proofing_succeeded.header: Vous avez completé la vérification de votre identité avec succès.
 user_mailer.agent_proofing_succeeded.subject: 'Action requise : Confirmez votre compte vérifié'
 user_mailer.contact_link_text: nous contacter
+user_mailer.delegation_approved.intro: 'Depuis votre compte, vous avez autorisé %{sp_name} à agir en votre nom auprès de ces applications pendant 1 an :'
+user_mailer.delegation_approved.manage_html: Vous pouvez consulter ou arrêter ces approbations à tout moment sous %{link_html}.
+user_mailer.delegation_approved.manage_link: Accès délégué dans votre compte
+user_mailer.delegation_approved.subject: Vous avez autorisé %{sp_name} à agir en votre nom
+user_mailer.delegation_revoked.intro: 'Depuis votre compte, vous avez mis fin à la permission de %{sp_name} d’agir en votre nom auprès de ces applications :'
+user_mailer.delegation_revoked.intro_all: 'Depuis votre compte, vous avez mis fin à toute permission donnée à un service d’agir en votre nom auprès de ces applications :'
+user_mailer.delegation_revoked.subject: Vous avez mis fin à ce que %{sp_name} peut faire en votre nom
+user_mailer.delegation_revoked.subject_all: Vous avez mis fin à tout accès délégué
 user_mailer.device_profiling_error_cleared.info: L’erreur concernant votre compte (LG22) a été résolue. Vous pouvez désormais vous connecter au site web de l’agence avec votre compte.
 user_mailer.device_profiling_error_cleared.subject: Vous pouvez vous reconnecter à votre compte
 user_mailer.dupe_profile.created.description: Quelqu’un a utilisé vos renseignements personnels pour confirmer un autre compte %{app_name}. Pour votre sécurité, nous avons restreint votre accès sur tous les comptes comportant des informations identiques et ayant accès à %{sp_or_app_name}.

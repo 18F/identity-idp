@@ -1,5 +1,41 @@
 ---
-account.connected_apps.token_exchange.other_agency: Other
+account.connected_apps.manage_delegated_access: Manage what %{sp} can do on your behalf
+account.delegated_access.approve.confirm: Allow
+account.delegated_access.approve.description: Review what each agency says about its application. If you allow this, %{sp} can act on your behalf at these applications for %{months} months, whenever you sign in to it, unless you end it sooner from this page.
+account.delegated_access.approve.heading: Allow %{sp} to act on your behalf at these applications?
+account.delegated_access.approve.title: Allow %{sp} to act on your behalf
+account.delegated_access.approve_selected: Approve selected
+account.delegated_access.approved_count.one: '%{count} of %{total} approved'
+account.delegated_access.approved_count.other: '%{count} of %{total} approved'
+account.delegated_access.approved_count.zero: '%{count} of %{total} approved'
+account.delegated_access.approved_flash.one: You approved %{count} application for %{sp}.
+account.delegated_access.approved_flash.other: You approved %{count} applications for %{sp}.
+account.delegated_access.approved_on_html: Approved on %{timestamp_html}.
+account.delegated_access.description: Some services can act on your behalf at other agencies after you sign in with %{app_name}. Each agency describes its application in its own words. Approvals you give here last for 1 year and are honored when you sign in; you can end them at any time.
+account.delegated_access.end_all: End all delegated access
+account.delegated_access.none_registered: No service is approved to act on your behalf yet.
+account.delegated_access.nothing_selected: Select at least one application to approve.
+account.delegated_access.other_agency: Other
+account.delegated_access.revoke.confirm: End access
+account.delegated_access.revoke.description_all: No service will be able to act on your behalf at any agency until you approve it again. Any access held right now ends.
+account.delegated_access.revoke.description_application: '%{sp} will no longer be able to act on your behalf at this application. Any access it holds right now ends. You can approve it again at any time.'
+account.delegated_access.revoke.description_service_provider: '%{sp} will no longer be able to act on your behalf at any of these applications. Any access it holds right now ends.'
+account.delegated_access.revoke.heading_all: End all delegated access?
+account.delegated_access.revoke.heading_application: End delegated access to this application?
+account.delegated_access.revoke.heading_service_provider: End everything %{sp} can do on your behalf?
+account.delegated_access.revoke.title_all: End all delegated access
+account.delegated_access.revoke.title_application: Revoke delegated access
+account.delegated_access.revoke.title_service_provider: Revoke delegated access for %{sp}
+account.delegated_access.revoke_application: Revoke
+account.delegated_access.revoke_service_provider: Revoke everything for %{sp}
+account.delegated_access.revoked_flash.one: You ended delegated access for %{count} application.
+account.delegated_access.revoked_flash.other: You ended delegated access for %{count} applications.
+account.delegated_access.service_provider_unavailable: '%{sp} is no longer approved to act on your behalf. You can still end the approvals you gave it.'
+account.delegated_access.source_account_page: Given from your account.
+account.delegated_access.source_consent_screen: Given when you signed in.
+account.delegated_access.status_approved: Approved
+account.delegated_access.time_remaining: Ends in %{duration}.
+account.navigation.delegated_access: Delegated access
 account_reset.cancel_request.are_you_sure: Are you sure you want to cancel your delete account request?
 account_reset.cancel_request.cancel: Exit
 account_reset.cancel_request.cancel_button: Cancel delete account
@@ -51,17 +87,6 @@ account.connected_apps.associated_html: Connected %{timestamp_html}
 account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government services online. Below is a list of all the services you currently have connected.
 account.connected_apps.email_not_selected: Email not yet selected
 account.connected_apps.email_update_success_html: Your email for <strong>%{sp_name}</strong> was updated successfully.
-account.connected_apps.token_exchange.description: Turn on each agency you want %{sp} to be able to sign you in to. You can change this at any time.
-account.connected_apps.token_exchange.granted_html: Allowed since %{timestamp_html}
-account.connected_apps.token_exchange.heading: Agencies %{sp} may act at on your behalf
-account.connected_apps.token_exchange.modal.body_html: '%{sp_html} will be able to sign you in to %{target_html} using your verified identity, without asking you to verify again. It will receive only the information it is approved for and can see that you were connected through %{sp_html}.'
-account.connected_apps.token_exchange.modal.confirm: Allow
-account.connected_apps.token_exchange.modal.duration: This permission lasts 12 months. You can turn it off at any time from this page.
-account.connected_apps.token_exchange.modal.heading: Allow %{sp} to act on your behalf?
-account.connected_apps.token_exchange.no_linked: You have not connected any agencies that work with this service yet.
-account.connected_apps.token_exchange.off: 'Off'
-account.connected_apps.token_exchange.on: 'On'
-account.connected_apps.token_exchange.toggle_label: Allow %{sp} to act on your behalf at %{target}
 account.email_language.default: '%{language} (default)'
 account.email_language.edit_title: Edit email language preference
 account.email_language.languages_list: You will receive emails from %{app_name} in the language you choose.
@@ -921,6 +946,8 @@ event_types.authenticator_disabled: Authenticator app removed
 event_types.authenticator_enabled: Authenticator app added
 event_types.backup_codes_added: Backup codes added
 event_types.backup_codes_removed: Backup codes removed
+event_types.delegation_approved: Delegated access approved
+event_types.delegation_revoked: Delegated access revoked
 event_types.eastern_timestamp: '%{timestamp} (Eastern)'
 event_types.email_changed: Email address changed
 event_types.email_deleted: Email address deleted
@@ -1041,6 +1068,7 @@ forms.webauthn_setup.step_3a: Click “set up security key” below and follow y
 headings.account.activity: Activity
 headings.account.authentication_apps: Authentication apps
 headings.account.connected_services: Your connected services
+headings.account.delegated_access: Delegated access
 headings.account.devices: Devices
 headings.account.events: Events
 headings.account.government_employee_id: Government employee ID
@@ -2241,6 +2269,14 @@ user_mailer.agent_proofing_succeeded.footer_html: If you did not attempt to veri
 user_mailer.agent_proofing_succeeded.header: You have successfully completed identity verification
 user_mailer.agent_proofing_succeeded.subject: 'Action Required: Confirm Your Verified Account'
 user_mailer.contact_link_text: contact us
+user_mailer.delegation_approved.intro: 'From your account, you allowed %{sp_name} to act on your behalf at these applications for 1 year:'
+user_mailer.delegation_approved.manage_html: You can review or end these approvals at any time under %{link_html}.
+user_mailer.delegation_approved.manage_link: Delegated access in your account
+user_mailer.delegation_approved.subject: You allowed %{sp_name} to act on your behalf
+user_mailer.delegation_revoked.intro: 'From your account, you ended the permission for %{sp_name} to act on your behalf at these applications:'
+user_mailer.delegation_revoked.intro_all: 'From your account, you ended every permission for a service to act on your behalf at these applications:'
+user_mailer.delegation_revoked.subject: You ended what %{sp_name} can do on your behalf
+user_mailer.delegation_revoked.subject_all: You ended all delegated access
 user_mailer.device_profiling_error_cleared.info: The error on your account (LG22) has been resolved. You can now sign into the agency website with your account.
 user_mailer.device_profiling_error_cleared.subject: You can sign back in with your account
 user_mailer.dupe_profile.created.description: Someone has verified another %{app_name} account using your personal information. For your safety, we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.
