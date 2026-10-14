@@ -69,6 +69,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_scope
   validate :validate_unauthorized_scope
   validate :validate_privileges
+  validate :validate_document_images_scope
   validate :validate_prompt
   validate :validate_verified_within_format, if: :verified_within_allowed?
   validate :validate_verified_within_duration, if: :verified_within_allowed?
@@ -251,6 +252,16 @@ class OpenidConnectAuthorizeForm
     )
   end
 
+  def validate_document_images_scope
+    return unless scope.include?('document_images')
+    return if service_provider&.document_images_sharing_allowed?
+
+    errors.add(
+      :scope, t('openid_connect.authorization.errors.no_valid_scope'),
+      type: :no_valid_scope
+    )
+  end
+
   def validate_prompt
     return if prompt == 'select_account'
     return if prompt == 'login' && service_provider&.allow_prompt_login
@@ -321,10 +332,12 @@ class OpenidConnectAuthorizeForm
   end
 
   def scopes
-    if identity_proofing_requested_or_default?
-      return OpenidConnectAttributeScoper::VALID_SCOPES
-    end
-    OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
+    allowed = if identity_proofing_requested_or_default?
+                OpenidConnectAttributeScoper::VALID_SCOPES
+              else
+                OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
+              end
+    IdentityConfig.store.document_images_sharing_enabled ? allowed : allowed - %w[document_images]
   end
 
   def validate_privileges
