@@ -141,9 +141,11 @@ RSpec.describe ResetPasswordForm, type: :model do
         create_site_key_root(user)
       end
 
-      it 'deletes the root, which cannot be re-wrapped without the old password' do
+      it 'drops the password wrap, keeping the root recoverable with the recovery code' do
         expect(result.success?).to eq(true)
-        expect(user.reload.site_key_root).to be_nil
+        record = user.reload.site_key_root
+        expect(record.encrypted_root).to be_nil
+        expect(record.encrypted_root_recovery_code).to be_present
       end
     end
 

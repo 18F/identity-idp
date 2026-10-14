@@ -1467,6 +1467,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
     context 'when the site key root is unlocked' do
       before do
         vault.unlock(user.password, create: true)
+        vault.acknowledge_recovery_code
       end
 
       it 'renders the client-side redirect even when server-side redirects are configured' do
@@ -1617,6 +1618,16 @@ RSpec.describe OpenidConnect::AuthorizationController do
       end
     end
 
+    context 'when a new recovery code has not been acknowledged' do
+      before { vault.unlock(user.password, create: true) }
+
+      it 'shows the recovery code first' do
+        action
+
+        expect(response).to redirect_to(site_key_recovery_code_url)
+      end
+    end
+
     context 'when the site key root is locked' do
       before { create_site_key_root(user) }
 
@@ -1645,6 +1656,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
     context 'when another session re-wrapped the root' do
       before do
         vault.unlock(user.password, create: true)
+        vault.acknowledge_recovery_code
         other = SiteKeys::Vault.new(user: User.find(user.id), user_session: {})
         other.unlock(user.password)
         other.store_root!(other.wrap_cached_root('a brand new password'))
@@ -1655,6 +1667,28 @@ RSpec.describe OpenidConnect::AuthorizationController do
         action
 
         expect(response).to redirect_to(capture_password_url)
+      end
+    end
+
+    context 'after a password reset' do
+      let!(:created) { create_site_key_root(user) }
+
+      before { user.site_key_root.forget_password! }
+
+      it 'asks for the recovery code' do
+        action
+
+        expect(response).to redirect_to(site_key_recovery_url)
+      end
+
+      context 'once the root is recovered' do
+        before { vault.recover(created.recovery_code) }
+
+        it 'asks for the password to re-wrap it' do
+          action
+
+          expect(response).to redirect_to(capture_password_url)
+        end
       end
     end
 
