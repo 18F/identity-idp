@@ -235,10 +235,6 @@ RSpec.describe OpenidConnectTokenExchangeForm do
   describe '#response' do
     subject(:response) { form.response }
 
-    before do
-      form.submit
-    end
-
     it 'returns an opaque delegated access token response' do
       expect(response).to include(
         access_token: be_present,
@@ -273,8 +269,6 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
   describe 'OAuth error codes' do
     subject(:error) { form.response[:error] }
-
-    before { form.submit }
 
     context 'when a required parameter is missing' do
       %i[

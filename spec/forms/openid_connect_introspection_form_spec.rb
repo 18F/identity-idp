@@ -189,8 +189,6 @@ RSpec.describe OpenidConnectIntrospectionForm do
   describe '#response' do
     subject(:response) { form.response }
 
-    before { form.submit }
-
     it 'returns RFC 7662 active token metadata' do
       loaded_access_token = TokenExchange::AccessToken.load(access_token)
 
