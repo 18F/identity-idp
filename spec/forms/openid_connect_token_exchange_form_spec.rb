@@ -189,9 +189,40 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when the user is not IAL2' do
+    context 'when the subject token was not issued at IAL2' do
       before do
         identity.update!(ial: 1)
+      end
+
+      it 'is invalid' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.errors[:subject_token]).to include('is invalid')
+      end
+    end
+
+    context 'when the user is no longer identity verified' do
+      before do
+        subject_token
+        user.active_profile.deactivate(:password_reset)
+      end
+
+      it 'is invalid' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.errors[:subject_token]).to include('is invalid')
+      end
+
+      it 'does not issue a delegated access token' do
+        expect(TokenExchange::AccessTokenIssuer).to_not receive(:issue)
+
+        form.submit
+        form.response
+      end
+    end
+
+    context 'when the user no longer exists' do
+      before do
+        subject_token
+        user.destroy!
       end
 
       it 'is invalid' do
