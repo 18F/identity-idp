@@ -196,7 +196,7 @@ RSpec.describe OpenidConnectIntrospectionForm do
 
       expect(response).to include(
         active: true,
-        client_id: target_issuer,
+        client_id: broker_issuer,
         sub: target_issuer,
         iss: root_url,
         exp: loaded_access_token.expires_at,
@@ -205,6 +205,11 @@ RSpec.describe OpenidConnectIntrospectionForm do
         act: { sub: broker_issuer },
         scope: 'openid token_exchange:passport',
       )
+    end
+
+    it 'identifies the broker as the client that requested the token' do
+      expect(response[:client_id]).to eq(broker_issuer)
+      expect(response[:client_id]).to_not eq(target_issuer)
     end
 
     context 'with an unknown access token' do
