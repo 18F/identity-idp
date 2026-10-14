@@ -92,9 +92,6 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     account_reset_token_valid? ? account_reset_cancel_link : account_reset_link
   end
 
-  # True when the user may use account-preserving MFA recovery instead of the
-  # legacy destructive account reset. See
-  # docs/adr/0001-account-preserving-mfa-recovery.md.
   def account_recovery_eligible?
     return @account_recovery_eligible if defined?(@account_recovery_eligible)
 
@@ -103,8 +100,6 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     ).eligible?
   end
 
-  # Link offering account-preserving recovery, shown above the legacy deletion
-  # option for eligible users.
   def account_recovery_link
     t(
       'two_factor_authentication.account_recovery.recover_text_html',
@@ -115,8 +110,6 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     )
   end
 
-  # Legacy destructive account reset, phrased as the fallback when recovery is
-  # also offered.
   def account_recovery_delete_link
     t(
       'two_factor_authentication.account_recovery.delete_text_html',

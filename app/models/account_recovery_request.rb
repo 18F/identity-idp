@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-# Persistence for the account-preserving MFA recovery workflow described in
-# docs/adr/0001-account-preserving-mfa-recovery.md.
-#
-# This record is intentionally separate from AccountResetRequest. The legacy
-# destructive account reset keeps its own record and lifecycle, and a request
-# never moves between the two workflows once created.
 class AccountRecoveryRequest < ApplicationRecord
   belongs_to :user
 
@@ -33,8 +27,6 @@ class AccountRecoveryRequest < ApplicationRecord
 
   STATES = (ACTIVE_STATES + TERMINAL_STATES).freeze
 
-  # Allowed state transitions, per the ADR state machine. Terminal states have
-  # no outbound transitions and are deliberately absent from this table.
   TRANSITIONS = {
     REQUESTED => [WAITING, CANCELLED, EXPIRED, SUPERSEDED],
     WAITING => [GRANTED, CANCELLED, EXPIRED, SUPERSEDED],
@@ -44,7 +36,6 @@ class AccountRecoveryRequest < ApplicationRecord
     REPLACEMENT_MFA_PENDING => [COMPLETED, CANCELLED, EXPIRED, SUPERSEDED],
   }.freeze
 
-  # Column that records when each state was entered.
   STATE_TIMESTAMPS = {
     REQUESTED => :requested_at,
     GRANTED => :granted_at,
@@ -58,9 +49,6 @@ class AccountRecoveryRequest < ApplicationRecord
 
   validates :state, inclusion: { in: STATES }
 
-  # Matches the predicate on index_account_recovery_requests_on_active_user_id,
-  # so the scope and the database's one-active-request-per-user guarantee cannot
-  # drift apart. Every terminal transition stamps exactly one of these columns.
   scope :active, -> {
     where(
       completed_at: nil,
@@ -86,13 +74,6 @@ class AccountRecoveryRequest < ApplicationRecord
     TRANSITIONS.fetch(state, []).include?(next_state)
   end
 
-  # Atomically moves the request to the next state. Returns false without
-  # mutating anything when the transition is not allowed from the current
-  # state, so callers fail closed rather than silently skipping a step.
-  #
-  # @param next_state [String] one of STATES
-  # @param attributes [Hash] additional columns to write in the same update
-  # @return [Boolean] whether the transition was applied
   def transition_to!(next_state, **attributes)
     raise ArgumentError, "unknown state: #{next_state}" unless STATES.include?(next_state)
 

@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
 module AccountRecovery
-  # Confirmation page shown after an account-preserving MFA recovery request is
-  # created, while the request waits out the configured period.
-  #
-  # The initial request notification is sent by CreateRequest. Cancellation and
-  # the emailed recovery link arrive in later phases.
   class PendingController < ApplicationController
     include TwoFactorAuthenticatable
     include AccountRecoveryConcern
