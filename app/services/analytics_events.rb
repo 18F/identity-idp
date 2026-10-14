@@ -7488,6 +7488,7 @@ module AnalyticsEvents
   # Tracks when a brokered token exchange request (RFC 8693) is made at the token endpoint
   # @param [Boolean] success Whether the form was submitted successfully.
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [Hash] errors Any additional error information we have
   # @param [String] client_id Issuer of the broker service provider making the exchange request
   # @param [String, nil] audience Issuer of the target service provider the token is requested for
   # @param [String, nil] resource URI the broker intends to use the delegated access token against
@@ -7500,6 +7501,7 @@ module AnalyticsEvents
     resource:,
     expires_in:,
     ial:,
+    errors: nil,
     error_details: nil,
     **extra
   )
