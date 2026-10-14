@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 # Replacement MFA setup requires the recovery authorization and suspension
-# ledger from later phases of
-# docs/adr/0001-account-preserving-mfa-recovery.md. Until then this controller
+# ledger from later phases. Until then this controller
 # must never grant access to MFA setup.
 RSpec.describe AccountRecovery::NewMfaSetupController do
   let(:user) { create(:user, :fully_registered) }

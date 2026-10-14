@@ -33,7 +33,6 @@ RSpec.describe AccountRecovery::StartController do
         expect(@analytics).to have_logged_event(
           :account_recovery_eligibility_evaluated,
           eligible: true,
-          eligibility_reason: AccountRecovery::EligibilityPolicy::ELIGIBLE,
         )
         expect(@analytics).to have_logged_event(:account_recovery_options_visit)
       end
@@ -57,7 +56,6 @@ RSpec.describe AccountRecovery::StartController do
           expect(@analytics).to have_logged_event(
             :account_recovery_eligibility_evaluated,
             eligible: false,
-            eligibility_reason: AccountRecovery::EligibilityPolicy::FEATURE_DISABLED,
           )
         end
       end
@@ -111,7 +109,6 @@ RSpec.describe AccountRecovery::StartController do
         expect(@analytics).to have_logged_event(
           :account_recovery_request,
           success: true,
-          eligibility_reason: AccountRecovery::EligibilityPolicy::ELIGIBLE,
           recovery_state: AccountRecoveryRequest::WAITING,
           rate_limited: false,
         )
@@ -155,7 +152,6 @@ RSpec.describe AccountRecovery::StartController do
           expect(@analytics).to have_logged_event(
             :account_recovery_request,
             success: false,
-            eligibility_reason: AccountRecovery::EligibilityPolicy::ELIGIBLE,
             rate_limited: true,
           )
         end

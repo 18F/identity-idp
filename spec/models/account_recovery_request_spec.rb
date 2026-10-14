@@ -125,19 +125,6 @@ RSpec.describe AccountRecoveryRequest do
     end
   end
 
-  describe '#supersede!' do
-    it 'marks the record superseded and clears the token' do
-      request = create(:account_recovery_request, :granted, user: user)
-
-      expect(request.supersede!).to eq(true)
-
-      request.reload
-      expect(request.state).to eq(AccountRecoveryRequest::SUPERSEDED)
-      expect(request.superseded_at).to be_present
-      expect(request.token_fingerprint).to be_nil
-    end
-  end
-
   describe '#expire!' do
     it 'marks the record expired with a failure reason' do
       request = create(:account_recovery_request, :granted, user: user)
@@ -204,7 +191,7 @@ RSpec.describe AccountRecoveryRequest do
     end
 
     it 'allows a new active request once the prior one is terminal' do
-      create(:account_recovery_request, :superseded, user: user)
+      create(:account_recovery_request, :cancelled, user: user)
 
       expect { create(:account_recovery_request, :waiting, user: user) }.to_not raise_error
     end

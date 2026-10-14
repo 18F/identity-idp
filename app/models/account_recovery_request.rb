@@ -12,7 +12,6 @@ class AccountRecoveryRequest < ApplicationRecord
   COMPLETED = 'completed'
   CANCELLED = 'cancelled'
   EXPIRED = 'expired'
-  SUPERSEDED = 'superseded'
 
   ACTIVE_STATES = [
     REQUESTED,
@@ -23,17 +22,17 @@ class AccountRecoveryRequest < ApplicationRecord
     REPLACEMENT_MFA_PENDING,
   ].freeze
 
-  TERMINAL_STATES = [COMPLETED, CANCELLED, EXPIRED, SUPERSEDED].freeze
+  TERMINAL_STATES = [COMPLETED, CANCELLED, EXPIRED].freeze
 
   STATES = (ACTIVE_STATES + TERMINAL_STATES).freeze
 
   TRANSITIONS = {
-    REQUESTED => [WAITING, CANCELLED, EXPIRED, SUPERSEDED],
-    WAITING => [GRANTED, CANCELLED, EXPIRED, SUPERSEDED],
-    GRANTED => [LINK_VERIFIED, CANCELLED, EXPIRED, SUPERSEDED],
-    LINK_VERIFIED => [PASSWORD_VERIFIED, CANCELLED, EXPIRED, SUPERSEDED],
-    PASSWORD_VERIFIED => [REPLACEMENT_MFA_PENDING, CANCELLED, EXPIRED, SUPERSEDED],
-    REPLACEMENT_MFA_PENDING => [COMPLETED, CANCELLED, EXPIRED, SUPERSEDED],
+    REQUESTED => [WAITING, CANCELLED, EXPIRED],
+    WAITING => [GRANTED, CANCELLED, EXPIRED],
+    GRANTED => [LINK_VERIFIED, CANCELLED, EXPIRED],
+    LINK_VERIFIED => [PASSWORD_VERIFIED, CANCELLED, EXPIRED],
+    PASSWORD_VERIFIED => [REPLACEMENT_MFA_PENDING, CANCELLED, EXPIRED],
+    REPLACEMENT_MFA_PENDING => [COMPLETED, CANCELLED, EXPIRED],
   }.freeze
 
   STATE_TIMESTAMPS = {
@@ -44,7 +43,6 @@ class AccountRecoveryRequest < ApplicationRecord
     COMPLETED => :completed_at,
     CANCELLED => :cancelled_at,
     EXPIRED => :expired_at,
-    SUPERSEDED => :superseded_at,
   }.freeze
 
   validates :state, inclusion: { in: STATES }
@@ -54,7 +52,6 @@ class AccountRecoveryRequest < ApplicationRecord
       completed_at: nil,
       cancelled_at: nil,
       expired_at: nil,
-      superseded_at: nil,
     )
   }
 
@@ -99,10 +96,6 @@ class AccountRecoveryRequest < ApplicationRecord
 
   def cancel!(reason:)
     transition_to!(CANCELLED, cancel_reason: reason, **cleared_token_attributes)
-  end
-
-  def supersede!
-    transition_to!(SUPERSEDED, **cleared_token_attributes)
   end
 
   def expire!(reason: nil)

@@ -3,15 +3,7 @@
 module AccountRecovery
   # Generates the single-use recovery token for an account-preserving MFA
   # recovery request.
-  #
-  # The raw token is returned to the caller exactly once, so it can be placed in
-  # the emailed recovery link. Only a keyed fingerprint is persisted. The raw
-  # token must never be logged, stored, or included in analytics.
   class TokenCreator
-    # 32 url-safe base64 characters, well above the 128 bits of entropy the ADR
-    # requires.
-    TOKEN_BYTE_LENGTH = 32
-
     Token = Struct.new(:raw, :fingerprint, :expires_at, keyword_init: true)
 
     # @return [Token]
@@ -21,7 +13,7 @@ module AccountRecovery
 
     # @return [Token]
     def call
-      raw = SecureRandom.urlsafe_base64(TOKEN_BYTE_LENGTH)
+      raw = SecureRandom.uuid
 
       Token.new(
         raw: raw,

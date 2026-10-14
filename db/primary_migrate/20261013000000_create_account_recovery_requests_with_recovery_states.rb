@@ -13,7 +13,6 @@ class CreateAccountRecoveryRequestsWithRecoveryStates < ActiveRecord::Migration[
       t.datetime :completed_at, comment: 'sensitive=false'
       t.datetime :cancelled_at, comment: 'sensitive=false'
       t.datetime :expired_at, comment: 'sensitive=false'
-      t.datetime :superseded_at, comment: 'sensitive=false'
 
       t.string :token_fingerprint, comment: 'sensitive=true'
       t.datetime :token_expires_at, comment: 'sensitive=false'
@@ -25,5 +24,10 @@ class CreateAccountRecoveryRequestsWithRecoveryStates < ActiveRecord::Migration[
     end
 
     add_index :account_recovery_requests, :user_id
+    add_index :account_recovery_requests,
+              :user_id,
+              unique: true,
+              where: 'completed_at IS NULL AND cancelled_at IS NULL AND expired_at IS NULL',
+              name: 'index_account_recovery_requests_on_active_user_id'
   end
 end

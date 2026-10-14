@@ -98,7 +98,6 @@ RSpec.describe AccountRecovery::CreateRequest do
 
       expect(result.to_h).to include(
         success: true,
-        eligibility_reason: AccountRecovery::EligibilityPolicy::ELIGIBLE,
         recovery_state: AccountRecoveryRequest::WAITING,
       )
     end
@@ -127,8 +126,7 @@ RSpec.describe AccountRecovery::CreateRequest do
         result = service.call
 
         expect(result.success?).to eq(false)
-        expect(result.to_h[:eligibility_reason])
-          .to eq(AccountRecovery::EligibilityPolicy::IDENTITY_VERIFIED)
+        expect(result.errors[:base]).to eq(['ineligible'])
         expect(AccountRecoveryRequest.where(user: user).count).to eq(0)
       end
     end
@@ -153,8 +151,7 @@ RSpec.describe AccountRecovery::CreateRequest do
         result = service.call
 
         expect(result.success?).to eq(false)
-        expect(result.to_h[:eligibility_reason])
-          .to eq(AccountRecovery::EligibilityPolicy::NOT_FULLY_REGISTERED)
+        expect(result.errors[:base]).to eq(['ineligible'])
         expect(AccountRecoveryRequest.where(user: user)).to be_empty
       end
     end
@@ -177,8 +174,7 @@ RSpec.describe AccountRecovery::CreateRequest do
         result = service.call
 
         expect(result.success?).to eq(false)
-        expect(result.to_h[:eligibility_reason])
-          .to eq(AccountRecovery::EligibilityPolicy::EXISTING_REQUEST_PENDING)
+        expect(result.errors[:base]).to eq(['ineligible'])
         expect(existing_request.reload.state).to eq(AccountRecoveryRequest::WAITING)
       end
     end
@@ -196,8 +192,7 @@ RSpec.describe AccountRecovery::CreateRequest do
         result = service.call
 
         expect(result.success?).to eq(false)
-        expect(result.to_h[:eligibility_reason])
-          .to eq(AccountRecovery::EligibilityPolicy::EXISTING_REQUEST_PENDING)
+        expect(result.errors[:base]).to eq(['ineligible'])
       end
     end
 
@@ -224,7 +219,7 @@ RSpec.describe AccountRecovery::CreateRequest do
         result = service.call
 
         expect(result.success?).to eq(false)
-        expect(result.to_h[:eligibility_reason]).to eq(described_class::REQUEST_NOT_PERSISTED)
+        expect(result.errors[:base]).to eq(['request_not_persisted'])
         expect(AccountRecoveryRequest.where(user: user).count).to eq(0)
       end
     end

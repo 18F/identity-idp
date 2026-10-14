@@ -9,22 +9,16 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
     allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
   end
 
-  describe '#call' do
+  describe '#eligible?' do
     it 'is eligible for a fully registered, non-proofed user' do
-      result = policy.call
-
-      expect(result.eligible?).to eq(true)
-      expect(result.reason).to eq(described_class::ELIGIBLE)
+      expect(policy.eligible?).to eq(true)
     end
 
     context 'when there is no user' do
       let(:user) { nil }
 
       it 'is ineligible' do
-        result = policy.call
-
-        expect(result.eligible?).to eq(false)
-        expect(result.reason).to eq(described_class::NO_USER)
+        expect(policy.eligible?).to eq(false)
       end
     end
 
@@ -32,7 +26,7 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
       let(:user) { AnonymousUser.new }
 
       it 'is ineligible' do
-        expect(policy.call.reason).to eq(described_class::NO_USER)
+        expect(policy.eligible?).to eq(false)
       end
     end
 
@@ -42,10 +36,7 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
       end
 
       it 'is ineligible' do
-        result = policy.call
-
-        expect(result.eligible?).to eq(false)
-        expect(result.reason).to eq(described_class::FEATURE_DISABLED)
+        expect(policy.eligible?).to eq(false)
       end
     end
 
@@ -53,7 +44,7 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
       let(:user) { create(:user, :with_phone) }
 
       it 'is ineligible' do
-        expect(policy.call.reason).to eq(described_class::NOT_FULLY_REGISTERED)
+        expect(policy.eligible?).to eq(false)
       end
     end
 
@@ -65,7 +56,7 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
       end
 
       it 'is ineligible' do
-        expect(policy.call.reason).to eq(described_class::NO_MFA_CONFIGURED)
+        expect(policy.eligible?).to eq(false)
       end
     end
 
@@ -73,7 +64,7 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
       let(:user) { create(:user, :proofed) }
 
       it 'is ineligible' do
-        expect(policy.call.reason).to eq(described_class::IDENTITY_VERIFIED)
+        expect(policy.eligible?).to eq(false)
       end
     end
 
@@ -81,7 +72,7 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
       let(:user) { create(:user, :fully_registered, :with_pending_gpo_profile) }
 
       it 'is ineligible' do
-        expect(policy.call.reason).to eq(described_class::PENDING_PROFILE)
+        expect(policy.eligible?).to eq(false)
       end
     end
 
@@ -89,7 +80,7 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
       let(:user) { create(:user, :deactivated_password_reset_profile) }
 
       it 'is ineligible' do
-        expect(policy.call.reason).to eq(described_class::PASSWORD_RESET_PROFILE)
+        expect(policy.eligible?).to eq(false)
       end
     end
 
@@ -97,7 +88,7 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
       let(:user) { create(:user, :fully_registered, :suspended) }
 
       it 'is ineligible' do
-        expect(policy.call.reason).to eq(described_class::ACCOUNT_SUSPENDED)
+        expect(policy.eligible?).to eq(false)
       end
     end
 
@@ -105,7 +96,7 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
       let(:user) { create(:user, :fraud_review_pending) }
 
       it 'is ineligible' do
-        expect(policy.call.reason).to eq(described_class::PENDING_PROFILE)
+        expect(policy.eligible?).to eq(false)
       end
     end
 
@@ -115,7 +106,7 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
       end
 
       it 'is ineligible' do
-        expect(policy.call.reason).to eq(described_class::NO_CONFIRMED_EMAIL)
+        expect(policy.eligible?).to eq(false)
       end
     end
 
@@ -125,7 +116,7 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
       end
 
       it 'is ineligible' do
-        expect(policy.call.reason).to eq(described_class::EXISTING_REQUEST_PENDING)
+        expect(policy.eligible?).to eq(false)
       end
     end
 
@@ -139,7 +130,7 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
       end
 
       it 'is ineligible' do
-        expect(policy.call.reason).to eq(described_class::EXISTING_REQUEST_PENDING)
+        expect(policy.eligible?).to eq(false)
       end
     end
 
@@ -149,7 +140,7 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
       end
 
       it 'is still eligible' do
-        expect(policy.call.eligible?).to eq(true)
+        expect(policy.eligible?).to eq(true)
       end
     end
 
@@ -159,14 +150,8 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
       end
 
       it 'propagates the error rather than reporting ordinary ineligibility' do
-        expect { policy.call }.to raise_error(ActiveRecord::StatementInvalid)
+        expect { policy.eligible? }.to raise_error(ActiveRecord::StatementInvalid)
       end
-    end
-  end
-
-  describe '#eligible?' do
-    it 'mirrors the result of #call' do
-      expect(policy.eligible?).to eq(policy.call.eligible?)
     end
   end
 end

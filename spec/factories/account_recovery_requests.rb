@@ -46,10 +46,5 @@ FactoryBot.define do
       state { AccountRecoveryRequest::EXPIRED }
       expired_at { Time.zone.now }
     end
-
-    trait :superseded do
-      state { AccountRecoveryRequest::SUPERSEDED }
-      superseded_at { Time.zone.now }
-    end
   end
 end

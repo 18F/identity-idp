@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-# Phase 3 of docs/adr/0001-account-preserving-mfa-recovery.md. The routes are
+# Phase 3 of the recovery flow. The routes are
 # committed so the flow's shape is visible, but every action must stay inert.
 RSpec.describe AccountRecovery::VerifyController do
   let(:user) { create(:user, :fully_registered) }

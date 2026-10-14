@@ -33,16 +33,11 @@ module AccountRecovery
     private
 
     def confirm_eligible_for_account_recovery
-      eligibility = AccountRecovery::EligibilityPolicy.new(
-        user: current_user,
-      ).call
+      eligible = AccountRecovery::EligibilityPolicy.new(user: current_user).eligible?
 
-      analytics.account_recovery_eligibility_evaluated(
-        eligible: eligibility.eligible?,
-        eligibility_reason: eligibility.reason,
-      )
+      analytics.account_recovery_eligibility_evaluated(eligible:)
 
-      return if eligibility.eligible?
+      return if eligible
 
       redirect_to account_reset_recovery_options_url
     end
@@ -50,7 +45,6 @@ module AccountRecovery
     def handle_rate_limited
       analytics.account_recovery_request(
         success: false,
-        eligibility_reason: AccountRecovery::EligibilityPolicy::ELIGIBLE,
         rate_limited: true,
       )
 

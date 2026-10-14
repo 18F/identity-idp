@@ -130,7 +130,6 @@ Rails.application.routes.draw do
       get '/account_reset/pending' => 'account_reset/pending#show'
       post '/account_reset/pending/cancel' => 'account_reset/pending#cancel'
       # Account-preserving MFA recovery.
-      # See docs/adr/0001-account-preserving-mfa-recovery.md.
       # `verify` and `new_mfa_setup` are committed but inert until later phases.
       scope 'account_recovery' do
         get '/start' => 'account_recovery/start#show', as: :account_recovery_start

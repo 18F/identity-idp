@@ -37,11 +37,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_000000) do
     t.datetime "password_verified_at", comment: "sensitive=false"
     t.datetime "requested_at", comment: "sensitive=false"
     t.string "state", null: false, comment: "sensitive=false"
-    t.datetime "superseded_at", comment: "sensitive=false"
     t.datetime "token_expires_at", comment: "sensitive=false"
     t.string "token_fingerprint", comment: "sensitive=true"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.integer "user_id", null: false, comment: "sensitive=false"
+    t.index ["user_id"], name: "index_account_recovery_requests_on_active_user_id", unique: true, where: "((completed_at IS NULL) AND (cancelled_at IS NULL) AND (expired_at IS NULL))"
     t.index ["user_id"], name: "index_account_recovery_requests_on_user_id"
   end
 
