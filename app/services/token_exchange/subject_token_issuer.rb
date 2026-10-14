@@ -17,7 +17,6 @@ module TokenExchange
       expires_in = IdentityConfig.store.token_exchange_subject_token_expires_in
       subject_token = SubjectToken.new(
         id: SubjectToken.digest(token),
-        user_id: identity.user_id,
         identity_uuid: identity.uuid,
         broker_issuer: identity.service_provider,
         scope: identity.scope,

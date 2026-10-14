@@ -3,7 +3,6 @@
 module TokenExchange
   AccessToken = Struct.new(
     :id,
-    :user_id,
     :identity_uuid,
     :broker_issuer,
     :target_issuer,
