@@ -73,23 +73,11 @@ class OpenidConnectUserInfoPresenter
   end
 
   def ial2_attributes
-    {
-      given_name: stringify_attr(ial2_data.first_name),
-      family_name: stringify_attr(ial2_data.last_name),
-      birthdate: dob,
-      social_security_number: stringify_attr(ial2_data.ssn),
-      address: address,
-      phone: phone,
-      phone_verified: phone.present? || nil,
-    }
+    OpenidConnectClaimsFormatter.new(pii: ial2_data).identity_proofing_claims
   end
 
   def x509_attributes
-    {
-      x509_subject: stringify_attr(x509_data.subject),
-      x509_issuer: stringify_attr(x509_data.issuer),
-      x509_presented: !!x509_data.presented.raw,
-    }
+    OpenidConnectClaimsFormatter.new(x509: x509_data).x509_claims
   end
 
   # Signed-in RP fetches each URL with the same bearer access token; the proxy
@@ -127,48 +115,6 @@ class OpenidConnectUserInfoPresenter
 
     metadata = active_profile.document_metadata
     metadata&.retained? ? metadata.document_data : {}
-  end
-
-  def phone
-    return if ial2_data.phone.blank?
-
-    Phonelib.parse(ial2_data.phone).e164
-  end
-
-  def dob
-    return if ial2_data.dob.blank?
-    DateParser.parse_legacy(ial2_data.dob).to_s
-  end
-
-  def address
-    return nil if ial2_data.address1.blank?
-
-    {
-      formatted: formatted_address,
-      street_address: street_address,
-      locality: stringify_attr(ial2_data.city),
-      region: stringify_attr(ial2_data.state),
-      postal_code: postal_code,
-    }
-  end
-
-  def formatted_address
-    [
-      street_address,
-      "#{ial2_data.city}, #{ial2_data.state} #{postal_code}",
-    ].compact.join("\n")
-  end
-
-  def postal_code
-    stringify_attr(ial2_data.zipcode)&.strip&.slice(0, 5)
-  end
-
-  def street_address
-    [ial2_data.address1, ial2_data.address2].compact.join("\n")
-  end
-
-  def stringify_attr(attribute)
-    attribute.to_s.presence
   end
 
   def ial2_data
