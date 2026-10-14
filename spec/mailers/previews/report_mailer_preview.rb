@@ -355,6 +355,8 @@ class ReportMailerPreview < ActionMailer::Preview
 
   # These previews can be deleted after reports are decommissioned and their code is deleted
   def mfa_report_with_decommission_notice
+    require 'reporting/cloudwatch_query_quoting'
+
     report = Reports::MfaReport.new
     report.report_date = Time.zone.yesterday
 
@@ -370,6 +372,8 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def authentication_report_with_decommission_notice
+    require 'reporting/cloudwatch_query_quoting'
+
     report = Reports::AuthenticationReport.new
     report.report_date = Time.zone.yesterday
 
@@ -385,6 +389,8 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def sp_issuer_user_counts_report_with_decommission_notice
+    require 'reporting/cloudwatch_query_quoting'
+
     report = Reports::SpIssuerUserCountsReport.new
 
     ReportMailer.tables_report(
@@ -399,6 +405,8 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def drop_off_report_with_decommission_notice
+    require 'reporting/cloudwatch_query_quoting'
+
     report = Reports::DropOffReport.new
 
     ReportMailer.tables_report(
