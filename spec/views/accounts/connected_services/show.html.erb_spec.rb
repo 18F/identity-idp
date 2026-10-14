@@ -119,4 +119,57 @@ RSpec.describe 'accounts/connected_services/show.html.erb' do
       end
     end
   end
+
+  context 'with a connected service provider approved for delegation' do
+    let(:service_provider) do
+      create(
+        :service_provider, :delegation_service_provider, issuer: 'urn:mybenefits',
+                                                         friendly_name: 'MyBenefits Assistant'
+      )
+    end
+    let(:agency) { create(:agency, name: 'Department of Housing Support') }
+    let(:application) do
+      create(
+        :service_provider, :delegation_application, issuer: 'urn:housing-records',
+                                                    friendly_name: 'Housing Assistance Records',
+                                                    agency: agency,
+                                                    allowed_delegation_service_providers: [
+                                                      'urn:mybenefits',
+                                                    ]
+      )
+    end
+    let!(:service_provider_identity) do
+      create(
+        :service_provider_identity, user:, service_provider: service_provider.issuer,
+                                    verified_attributes: ['email']
+      )
+    end
+    let!(:application_identity) do
+      create(
+        :service_provider_identity, user:, service_provider: application.issuer,
+                                    verified_attributes: ['email']
+      )
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+    end
+
+    it 'links to the delegated access page for that service provider' do
+      render
+
+      expect(rendered).to have_link(
+        t('account.connected_apps.manage_delegated_access', sp: 'MyBenefits Assistant'),
+        href: account_delegated_access_path(anchor: "delegated-access-#{service_provider.id}"),
+      )
+    end
+
+    it 'renders no link for a connected app not approved for delegation' do
+      service_provider.update!(token_exchange_enabled_sp: false)
+      render
+      expect(rendered).not_to have_content(
+        t('account.connected_apps.manage_delegated_access', sp: 'MyBenefits Assistant'),
+      )
+    end
+  end
 end
