@@ -119,9 +119,18 @@ class OpenidConnectTokenExchangeForm
 
   def validate_ial2
     return if loaded_subject_token.blank?
-    return if loaded_subject_token.ial.to_i >= 2
+    return errors.add(:subject_token, :invalid) if loaded_subject_token.ial.to_i < 2
+    return errors.add(:subject_token, :invalid) if user.blank?
+    return if user.identity_verified?
 
     errors.add(:subject_token, :invalid)
+  end
+
+  def user
+    return @user if defined?(@user)
+    return @user = nil if loaded_subject_token.blank?
+
+    @user = User.find_by(id: loaded_subject_token.user_id)
   end
 
   def broker
