@@ -239,6 +239,30 @@ RSpec.describe OpenidConnectIntrospectionForm do
       end
     end
 
+    context 'when the token has expired but is still present in Redis' do
+      before do
+        expired_access_token = TokenExchange::AccessToken.load(access_token)
+        expired_access_token.expires_at = 1.second.ago.to_i
+        EncryptedRedisStructStorage.store(expired_access_token, expires_in: 600)
+      end
+
+      it 'returns inactive' do
+        expect(response).to eq(active: false)
+      end
+    end
+
+    context 'when the stored expiration is missing' do
+      before do
+        access_token_without_expiration = TokenExchange::AccessToken.load(access_token)
+        access_token_without_expiration.expires_at = nil
+        EncryptedRedisStructStorage.store(access_token_without_expiration, expires_in: 600)
+      end
+
+      it 'fails closed and returns inactive' do
+        expect(response).to eq(active: false)
+      end
+    end
+
     context 'when client authentication is invalid' do
       let(:aud) { api_openid_connect_token_url }
 
