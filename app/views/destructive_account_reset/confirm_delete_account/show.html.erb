@@ -1,0 +1,14 @@
+<% self.title = t('destructive_account_reset.confirm_delete_account.title') %>
+<%= render StatusPageComponent.new(status: :delete) do |c| %>
+  <% c.with_header { t('destructive_account_reset.confirm_delete_account.title') } %>
+  <p><%= t('destructive_account_reset.confirm_delete_account.info_html', email: email) %></p>
+  <p class="margin-bottom-0">
+    <%= t(
+          'destructive_account_reset.confirm_delete_account.cta_html',
+          link_html: link_to(
+            t('destructive_account_reset.confirm_delete_account.link_text'),
+            sign_up_email_path,
+          ),
+        ) %>
+    </p>
+<% end %>

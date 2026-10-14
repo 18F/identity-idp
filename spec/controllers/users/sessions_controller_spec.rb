@@ -71,7 +71,7 @@ RSpec.describe Users::SessionsController, devise: true do
   end
 
   describe 'POST /create' do
-    include AccountResetHelper
+    include DestructiveAccountResetHelper
     before do
       stub_attempts_tracker
     end
