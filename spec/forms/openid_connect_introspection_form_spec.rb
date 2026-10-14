@@ -121,6 +121,19 @@ RSpec.describe OpenidConnectIntrospectionForm do
         expect(form.response[:error]).to eq('invalid_client')
         expect(form.response).to_not have_key(:active)
       end
+
+      it 'does not verify the client assertion' do
+        expect(OpenidConnectClientAssertionValidator).to_not receive(:new)
+
+        form.submit
+      end
+
+      it 'does not load the token from Redis' do
+        expect(TokenExchange::AccessToken).to_not receive(:load)
+
+        form.submit
+        form.response
+      end
     end
 
     context 'when another target is on the allowlist' do
