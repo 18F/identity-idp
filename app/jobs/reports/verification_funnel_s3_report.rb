@@ -114,12 +114,12 @@ module Reports
       report_reader = create_report_reader(sp_id, agency_abbreviation)
 
       # First check: Do all required files exist?
-      unless validate_all_files_exist(report_reader, sp_info)
+      unless all_files_exist?(report_reader, sp_info)
         return
       end
 
       # Second check: Are the files recent enough?
-      unless validate_report_freshness(report_reader)
+      unless report_fresh?(report_reader)
         Rails.logger.error "Report files are too old for issuer: #{issuer_string} - skipping"
         return
       end
@@ -151,7 +151,7 @@ module Reports
       )
     end
 
-    def validate_all_files_exist(report_reader, sp_info)
+    def all_files_exist?(report_reader, sp_info)
       missing_files = []
       report_reader.csv_file_names.each do |file_name|
         begin
@@ -174,7 +174,7 @@ module Reports
       true
     end
 
-    def validate_report_freshness(report_reader)
+    def report_fresh?(report_reader)
       # Check freshness of files we validated existence of
       cutoff_time = MAX_FILE_AGE_DAYS.days.ago
 
@@ -183,9 +183,9 @@ module Reports
           last_modified = report_reader.get_file_last_modified(file_name)
           last_modified > cutoff_time
         rescue Aws::S3::Errors::NotFound, Aws::S3::Errors::NoSuchKey
-          # Shouldn't happen if validate_all_files_exist passed, but just in case
+          # Shouldn't happen if all_files_exist? passed, but just in case
           Rails.logger.error "Unexpected file access issue during freshness check despite"\
-          " validate_all_files_exist passing for file: #{file_name}"
+          " all_files_exist? passing for file: #{file_name}"
           false
         end
       end
