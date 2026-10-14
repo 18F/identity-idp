@@ -10,6 +10,12 @@ module EncryptedDocStorage
       )
     end
 
+    def read_image(name:)
+      s3_client.get_object(bucket:, key: name).body.read
+    rescue Aws::S3::Errors::NoSuchKey, Aws::S3::Errors::NotFound
+      nil
+    end
+
     # @param [String] file_path "#{user_uuid}/#{profile.id}/#{file.uuid}"
     # @param [String] encrypted_attempt_events a bundle of events that have been encrypted
     def write_attempt_events(path:, encrypted_attempt_events:)
