@@ -79,6 +79,7 @@ module Users
         show_skip_additional_mfa_link: show_skip_additional_mfa_link?,
         after_mfa_setup_path:,
         return_to_sp_cancel_path:,
+        personal_key_mfa_deprecated: user_session[:personal_key_mfa_deprecated] || false,
       )
     end
 
