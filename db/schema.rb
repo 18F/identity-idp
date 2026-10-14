@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_03_110003) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_13_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -43,6 +43,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_03_110003) do
 
   create_table "agencies", force: :cascade do |t|
     t.string "abbreviation", comment: "sensitive=false"
+    t.integer "consent_content_version", default: 1, null: false, comment: "sensitive=false"
+    t.integer "consent_material_version", default: 1, null: false, comment: "sensitive=false"
+    t.jsonb "delegation_description", default: {}, null: false, comment: "sensitive=false"
+    t.text "delegation_learn_more_url", comment: "sensitive=false"
     t.string "name", null: false, comment: "sensitive=false"
     t.index ["abbreviation"], name: "index_agencies_on_abbreviation", unique: true
     t.index ["name"], name: "index_agencies_on_name", unique: true
@@ -346,6 +350,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_03_110003) do
     t.string "code_challenge", comment: "sensitive=true"
     t.datetime "created_at", precision: nil, comment: "sensitive=false"
     t.datetime "deleted_at", precision: nil, comment: "sensitive=false"
+    t.string "dpop_jkt", comment: "sensitive=false"
     t.bigint "email_address_id", comment: "sensitive=false"
     t.integer "ial", default: 1, comment: "sensitive=false"
     t.datetime "last_authenticated_at", precision: nil, comment: "sensitive=false"
@@ -569,15 +574,39 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_03_110003) do
     t.boolean "active", default: false, null: false, comment: "sensitive=false"
     t.integer "agency_id", comment: "sensitive=false"
     t.boolean "allow_prompt_login", default: false, comment: "sensitive=false"
+    t.string "allowed_delegation_service_providers", default: [], null: false, comment: "sensitive=false", array: true
     t.string "app_id", comment: "sensitive=false"
     t.boolean "approved", default: false, null: false, comment: "sensitive=false"
     t.text "assertion_consumer_logout_service_url", comment: "sensitive=false"
     t.json "attribute_bundle", comment: "sensitive=false"
     t.string "block_encryption", default: "aes256-cbc", null: false, comment: "sensitive=true"
     t.string "certs", comment: "sensitive=false", array: true
+    t.datetime "consent_approved_at", comment: "sensitive=false"
+    t.string "consent_approved_by", comment: "sensitive=false"
+    t.integer "consent_content_version", default: 1, null: false, comment: "sensitive=false"
+    t.integer "consent_material_version", default: 1, null: false, comment: "sensitive=false"
     t.datetime "created_at", precision: nil, comment: "sensitive=false"
     t.integer "default_aal", comment: "sensitive=false"
+    t.string "delegation_access_type", default: "read", null: false, comment: "sensitive=false"
+    t.jsonb "delegation_ai_description", default: {}, null: false, comment: "sensitive=false"
+    t.boolean "delegation_application", default: false, null: false, comment: "sensitive=false"
+    t.jsonb "delegation_data_handling_statement", default: {}, null: false, comment: "sensitive=false"
+    t.jsonb "delegation_data_provided", default: {}, null: false, comment: "sensitive=false"
+    t.jsonb "delegation_description", default: {}, null: false, comment: "sensitive=false"
+    t.jsonb "delegation_display_name", default: {}, null: false, comment: "sensitive=false"
+    t.text "delegation_learn_more_url", comment: "sensitive=false"
+    t.integer "delegation_max_family_seconds", comment: "sensitive=false"
+    t.string "delegation_operator_legal_name", comment: "sensitive=false"
+    t.string "delegation_operator_type", comment: "sensitive=false"
+    t.text "delegation_privacy_policy_url", comment: "sensitive=false"
+    t.string "delegation_scope_value", comment: "sensitive=false"
+    t.jsonb "delegation_service_description", default: {}, null: false, comment: "sensitive=false"
+    t.string "delegation_sp_shareable_attributes", default: [], null: false, comment: "sensitive=false", array: true
+    t.text "delegation_support_contact", comment: "sensitive=false"
+    t.text "delegation_terms_of_service_url", comment: "sensitive=false"
+    t.boolean "delegation_uses_ai", default: false, null: false, comment: "sensitive=false"
     t.text "description", comment: "sensitive=false"
+    t.boolean "dpop_required", default: false, null: false, comment: "sensitive=false"
     t.boolean "email_nameid_format_allowed", default: false, comment: "sensitive=false"
     t.text "failure_to_proof_url", comment: "sensitive=false"
     t.string "friendly_name", comment: "sensitive=false"
@@ -605,9 +634,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_03_110003) do
     t.string "signature", comment: "sensitive=false"
     t.boolean "signed_response_message_requested", default: false, comment: "sensitive=false"
     t.boolean "site_key_allowed", default: false, null: false, comment: "sensitive=false"
+    t.integer "sp_content_version", default: 1, null: false, comment: "sensitive=false"
     t.text "sp_initiated_login_url", comment: "sensitive=false"
+    t.integer "sp_material_version", default: 1, null: false, comment: "sensitive=false"
+    t.boolean "token_exchange_enabled_sp", default: false, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, comment: "sensitive=false"
     t.boolean "use_legacy_name_id_behavior", default: false, comment: "sensitive=false"
+    t.string "userinfo_encrypted_response_alg", comment: "sensitive=false"
+    t.index ["delegation_scope_value"], name: "index_service_providers_on_delegation_scope_value", unique: true, where: "(delegation_scope_value IS NOT NULL)"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
@@ -654,7 +688,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_03_110003) do
     t.index ["created_at"], name: "index_sp_costs_on_created_at"
   end
 
+  create_table "sp_return_log_billing_adjustments", force: :cascade do |t|
+    t.integer "adjustment_type", null: false, comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.bigint "delegated_return_log_id", comment: "sensitive=false"
+    t.integer "resolved_via", comment: "sensitive=false"
+    t.bigint "sp_return_log_id", null: false, comment: "sensitive=false"
+    t.bigint "token_exchange_token_id", comment: "sensitive=false"
+    t.index ["delegated_return_log_id"], name: "index_sp_return_log_billing_adjustments_on_delegated_log_id"
+    t.index ["sp_return_log_id", "adjustment_type"], name: "index_sp_return_log_billing_adjustments_on_log_and_type"
+    t.index ["token_exchange_token_id"], name: "index_sp_return_log_billing_adjustments_on_token_id"
+  end
+
   create_table "sp_return_logs", force: :cascade do |t|
+    t.string "access_type", default: "direct", comment: "sensitive=false"
     t.boolean "billable", comment: "sensitive=false"
     t.integer "ial", null: false, comment: "sensitive=false"
     t.string "issuer", null: false, comment: "sensitive=false"
@@ -686,6 +733,101 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_03_110003) do
     t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.index ["digested_base_email"], name: "index_suspended_emails_on_digested_base_email"
     t.index ["email_address_id"], name: "index_suspended_emails_on_email_address_id"
+  end
+
+  create_table "token_exchange_grants", force: :cascade do |t|
+    t.integer "agency_content_version", default: 1, null: false, comment: "sensitive=false"
+    t.integer "application_content_version", default: 1, null: false, comment: "sensitive=false"
+    t.bigint "application_service_provider_id", null: false, comment: "sensitive=false"
+    t.datetime "consented_at", null: false, comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.string "delegation_id", null: false, comment: "sensitive=false"
+    t.datetime "first_exchanged_at", comment: "sensitive=false"
+    t.boolean "proofed_in_session", default: false, null: false, comment: "sensitive=false"
+    t.string "rails_session_id", comment: "sensitive=true"
+    t.datetime "remember_until", comment: "sensitive=false"
+    t.string "revocation_reason", comment: "sensitive=false"
+    t.datetime "revoked_at", comment: "sensitive=false"
+    t.string "service_provider_issuer", null: false, comment: "sensitive=false"
+    t.string "source", null: false, comment: "sensitive=false"
+    t.integer "sp_content_version", default: 1, null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.bigint "user_id", null: false, comment: "sensitive=false"
+    t.index ["application_service_provider_id"], name: "index_token_exchange_grants_on_application_service_provider_id"
+    t.index ["delegation_id"], name: "index_token_exchange_grants_on_delegation_id", unique: true
+    t.index ["user_id", "service_provider_issuer", "application_service_provider_id"], name: "index_token_exchange_grants_live", unique: true, where: "(revoked_at IS NULL)"
+  end
+
+  create_table "token_exchange_refresh_tokens", force: :cascade do |t|
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.string "dpop_jkt", comment: "sensitive=false"
+    t.datetime "expires_at", null: false, comment: "sensitive=false"
+    t.string "family_id", null: false, comment: "sensitive=false"
+    t.bigint "grant_id", null: false, comment: "sensitive=false"
+    t.bigint "resource_server_id", null: false, comment: "sensitive=false"
+    t.string "revocation_reason", comment: "sensitive=false"
+    t.datetime "revoked_at", comment: "sensitive=false"
+    t.datetime "rotated_at", comment: "sensitive=false"
+    t.string "scope", null: false, comment: "sensitive=false"
+    t.bigint "service_provider_id", null: false, comment: "sensitive=false"
+    t.string "token_digest", null: false, comment: "sensitive=false"
+    t.bigint "token_exchange_token_id", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.datetime "used_at", comment: "sensitive=false"
+    t.bigint "user_id", null: false, comment: "sensitive=false"
+    t.index ["expires_at"], name: "index_token_exchange_refresh_tokens_on_expires_at"
+    t.index ["family_id"], name: "index_token_exchange_refresh_tokens_on_family_id"
+    t.index ["grant_id"], name: "index_token_exchange_refresh_tokens_on_grant_id"
+    t.index ["service_provider_id"], name: "index_token_exchange_refresh_tokens_on_service_provider_id"
+    t.index ["token_digest"], name: "index_token_exchange_refresh_tokens_on_token_digest", unique: true
+    t.index ["token_exchange_token_id"], name: "index_token_exchange_refresh_tokens_on_token_exchange_token_id"
+    t.index ["user_id"], name: "index_token_exchange_refresh_tokens_on_user_id"
+  end
+
+  create_table "token_exchange_resource_servers", force: :cascade do |t|
+    t.boolean "active", default: true, null: false, comment: "sensitive=false"
+    t.bigint "attempts_service_provider_id", comment: "sensitive=false"
+    t.string "billing_issuer", comment: "sensitive=false"
+    t.string "certs", default: [], null: false, comment: "sensitive=false", array: true
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.string "identifier", null: false, comment: "sensitive=false"
+    t.integer "max_access_token_seconds", comment: "sensitive=false"
+    t.integer "max_family_seconds", comment: "sensitive=false"
+    t.bigint "service_provider_id", null: false, comment: "sensitive=false"
+    t.string "token_format", default: "oauth", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.index ["identifier"], name: "index_token_exchange_resource_servers_on_identifier", unique: true
+    t.index ["service_provider_id"], name: "index_token_exchange_resource_servers_on_service_provider_id"
+  end
+
+  create_table "token_exchange_tokens", force: :cascade do |t|
+    t.integer "aal", comment: "sensitive=false"
+    t.datetime "authenticated_at", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.string "delegation_id", null: false, comment: "sensitive=false"
+    t.string "dpop_jkt", comment: "sensitive=false"
+    t.datetime "expires_at", null: false, comment: "sensitive=false"
+    t.bigint "grant_id", null: false, comment: "sensitive=false"
+    t.integer "ial", comment: "sensitive=false"
+    t.datetime "issued_at", null: false, comment: "sensitive=false"
+    t.datetime "last_refreshed_at", comment: "sensitive=false"
+    t.integer "refresh_count", default: 0, null: false, comment: "sensitive=false"
+    t.string "refresh_family_id", null: false, comment: "sensitive=false"
+    t.bigint "resource_server_id", null: false, comment: "sensitive=false"
+    t.string "revocation_reason", comment: "sensitive=false"
+    t.datetime "revoked_at", comment: "sensitive=false"
+    t.string "scope", null: false, comment: "sensitive=false"
+    t.bigint "service_provider_id", null: false, comment: "sensitive=false"
+    t.string "sp_rails_session_id", comment: "sensitive=true"
+    t.string "token_format", default: "oauth", null: false, comment: "sensitive=false"
+    t.string "token_type", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.bigint "user_id", null: false, comment: "sensitive=false"
+    t.index ["grant_id"], name: "index_token_exchange_tokens_on_grant_id"
+    t.index ["refresh_family_id"], name: "index_token_exchange_tokens_on_refresh_family_id"
+    t.index ["resource_server_id"], name: "index_token_exchange_tokens_on_resource_server_id"
+    t.index ["service_provider_id"], name: "index_token_exchange_tokens_on_service_provider_id"
+    t.index ["user_id"], name: "index_token_exchange_tokens_on_user_id"
   end
 
   create_table "user_proofing_events", id: :serial, force: :cascade do |t|
