@@ -22,7 +22,7 @@ RSpec.describe Users::StsConsentController do
       get :new
 
       expect(response).to render_template(:new)
-      expect(@analytics).to have_logged_event('STS Consent Visited')
+      expect(@analytics).to have_logged_event(:sts_consent_visited)
     end
 
     it 'redirects for a user without an SP request url' do
@@ -57,7 +57,7 @@ RSpec.describe Users::StsConsentController do
 
         expect(response).to redirect_to(sp_request_url)
         expect(@analytics).to have_logged_event(
-          'STS Consent Submitted',
+          :sts_consent_submitted,
           success: true,
         )
       end
@@ -71,7 +71,7 @@ RSpec.describe Users::StsConsentController do
 
         expect(response).to render_template(:new)
         expect(@analytics).to have_logged_event(
-          'STS Consent Submitted',
+          :sts_consent_submitted,
           success: false,
         )
       end
