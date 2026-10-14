@@ -102,7 +102,7 @@ class OpenidConnectTokenForm
 
   def token_exchange_scope_requested?
     identity.scope.to_s.split(' ').any? do |scope|
-      TokenExchange::Constants.scope?(scope)
+      TokenExchange::Constants.in_scope?(scope)
     end
   end
 
