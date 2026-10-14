@@ -4,6 +4,8 @@ require 'reporting/drop_off_report'
 
 module Reports
   class DropOffReport < BaseReport
+    include DecommissionNotice
+
     REPORT_NAME = 'drop-off-report'
 
     attr_accessor :report_date
@@ -33,6 +35,7 @@ module Reports
         <h2>
           Drop Off Report
         </h2>
+        #{decommission_notice}
       HTML
     end
 

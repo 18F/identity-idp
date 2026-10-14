@@ -2,11 +2,13 @@
 
 module Reports
   class SpIssuerUserCountsReport < BaseReport
+    include DecommissionNotice
+
     REPORT_NAME = 'sp-issuer-user-counts-report'
 
     def perform(_date)
       configs = IdentityConfig.store.sp_issuer_user_counts_report_configs
-      message = "Report: #{REPORT_NAME}"
+      message = "Report: #{REPORT_NAME}#{decommission_notice}".html_safe
       subject = 'Service provider user count report'
 
       configs.each do |report_hash|

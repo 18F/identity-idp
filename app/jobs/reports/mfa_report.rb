@@ -4,6 +4,8 @@ require 'reporting/mfa_report'
 
 module Reports
   class MfaReport < BaseReport
+    include DecommissionNotice
+
     REPORT_NAME = 'mfa-report'
 
     attr_accessor :report_date
@@ -12,7 +14,7 @@ module Reports
       return unless IdentityConfig.store.s3_reports_enabled
 
       self.report_date = report_date
-      message = "Report: #{REPORT_NAME} #{report_date}"
+      message = "Report: #{REPORT_NAME} #{report_date}#{decommission_notice}".html_safe
       subject = "Monthly MFA Report - #{report_date}"
 
       report_configs.each do |report_hash|
