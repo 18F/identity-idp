@@ -49,6 +49,15 @@ class OpenidConnectTokenExchangeForm
     end
   end
 
+  # Validations perform a Redis read and database lookups. The controller asks
+  # the form whether it is valid more than once per request, so memoize the
+  # result. Safe because the form is built once per request and is read-only.
+  def valid?
+    return @valid if defined?(@valid)
+
+    @valid = super
+  end
+
   def submit
     success = valid?
     FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
