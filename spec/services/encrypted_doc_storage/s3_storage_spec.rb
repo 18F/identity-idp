@@ -35,6 +35,28 @@ RSpec.describe EncryptedDocStorage::S3Storage do
     end
   end
 
+  describe '#read_image' do
+    it 'reads the image bytes from S3' do
+      response = double(body: StringIO.new(encrypted_image))
+      allow(stubbed_s3_client).to receive(:get_object).and_return(response)
+
+      result = subject.read_image(name:)
+
+      expect(stubbed_s3_client).to have_received(:get_object).with(
+        bucket: IdentityConfig.store.encrypted_document_storage_s3_bucket,
+        key: name,
+      )
+      expect(result).to eq(encrypted_image)
+    end
+
+    it 'returns nil when the object no longer exists (e.g. lifecycle-expired)' do
+      allow(stubbed_s3_client).to receive(:get_object)
+        .and_raise(Aws::S3::Errors::NoSuchKey.new(nil, 'missing'))
+
+      expect(subject.read_image(name:)).to be_nil
+    end
+  end
+
   describe '#write_attempt_events' do
     before do
       allow(subject).to receive(:s3_client).and_return(stubbed_s3_client)

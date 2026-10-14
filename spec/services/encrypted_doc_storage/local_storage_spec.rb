@@ -30,6 +30,18 @@ RSpec.describe EncryptedDocStorage::LocalStorage do
     end
   end
 
+  describe '#read_image' do
+    it 'reads back what was written and returns nil when missing' do
+      subject.write_image(encrypted_image:, name:)
+
+      result = subject.read_image(name:)
+      File.delete(local_img_path)
+
+      expect(result).to eq(encrypted_image)
+      expect(subject.read_image(name: 'encrypted_images/missing')).to be_nil
+    end
+  end
+
   describe '#write_attempt_events' do
     let(:file_path) { "#{user_uuid}/#{profile_id}/#{name}" }
 
