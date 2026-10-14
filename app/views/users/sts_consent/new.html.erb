@@ -1,0 +1,24 @@
+<% self.title = t('titles.sts_consent') %>
+
+<% if decorated_sp_session.sp_name %>
+  <%= render 'sign_up/registrations/sp_registration_heading' %>
+<% else %>
+  <%= render PageHeadingComponent.new.with_content(t('sts_consent.heading')) %>
+<% end %>
+
+<%= simple_form_for(
+      @sts_consent_form,
+      url: sts_consent_path,
+      method: :post,
+      html: { class: 'margin-top-4' },
+    ) do |f| %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :consent_given,
+        as: :boolean,
+        label: t('sts_consent.check_box_to_consent'),
+        required: true,
+      ) %>
+
+  <%= f.submit t('forms.buttons.continue'), class: 'margin-y-5' %>
+<% end %>

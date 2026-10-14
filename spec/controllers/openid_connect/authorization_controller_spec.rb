@@ -1199,6 +1199,69 @@ RSpec.describe OpenidConnect::AuthorizationController do
       end
     end
 
+    context 'STS token exchange consent' do
+      let(:user) { create(:user, :fully_registered) }
+      let(:client_id) { 'urn:gov:gsa:openidconnect:test:broker' }
+      let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
+
+      before do
+        stub_sign_in user
+        allow(controller).to receive(:auth_count).and_return(2)
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return([client_id])
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_audiences)
+          .and_return(['passport'])
+        allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)
+        params[:scope] = 'openid token_exchange:passport'
+      end
+
+      context 'when the user has not consented to STS for this broker' do
+        it 'redirects to the STS consent page' do
+          action
+
+          expect(response).to redirect_to(sts_consent_url)
+        end
+      end
+
+      context 'when the user has already consented to STS for this broker' do
+        before do
+          UserConsentSts.create!(user: user, target_app: client_id)
+        end
+
+        it 'does not redirect to the STS consent page' do
+          action
+
+          expect(response).not_to redirect_to(sts_consent_url)
+        end
+      end
+
+      context 'when the user previously consented but the consent has expired' do
+        before do
+          consent = UserConsentSts.create!(user: user, target_app: client_id)
+          consent.update!(created_at: 366.days.ago)
+        end
+
+        it 'redirects to the STS consent page' do
+          action
+
+          expect(response).to redirect_to(sts_consent_url)
+        end
+      end
+
+      context 'when token exchange is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(false)
+        end
+
+        it 'does not redirect to the STS consent page' do
+          action
+
+          expect(response).not_to redirect_to(sts_consent_url)
+        end
+      end
+    end
+
     context 'user is not signed in' do
       context 'using acr_values' do
         let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }

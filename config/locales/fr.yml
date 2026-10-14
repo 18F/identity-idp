@@ -1887,6 +1887,8 @@ step_indicator.status.complete: Étape effectuée
 step_indicator.status.current: Étape en cours
 step_indicator.status.not_complete: Étape non effectuée
 step_indicator.substep: Sous-étape %{current} sur %{total}
+sts_consent.check_box_to_consent: I agree to share my information
+sts_consent.heading: Consent to share your information
 time.am: A.M.
 time.formats.event_date: '%-d %B %Y'
 time.formats.event_time: '%-l h %M %p'
@@ -1959,6 +1961,7 @@ titles.sign_up.completion_new_attributes: '%{sp} demande de nouvelles informatio
 titles.sign_up.completion_new_sp: Vous vous connectez pour la première fois
 titles.sign_up.completion_reverified_consent: Partager vos informations mises à jour avec %{sp}
 titles.sign_up.confirmation: Continuer à vous connecter
+titles.sts_consent: Consent to share your information
 titles.totp_setup.new: Ajouter une appli d’authentification
 titles.two_factor_setup: Configuration de l’authentification à deux facteurs
 titles.verify_email: Consulter vos e-mails

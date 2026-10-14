@@ -1899,6 +1899,8 @@ step_indicator.status.complete: 完成了
 step_indicator.status.current: 目前步骤
 step_indicator.status.not_complete: 未完成
 step_indicator.substep: 子步骤 %{current} / %{total}
+sts_consent.check_box_to_consent: I agree to share my information
+sts_consent.heading: Consent to share your information
 time.am: 上午
 time.formats.event_date: '%Y年%B%-d日'
 time.formats.event_time: '%-l:%M %p'
@@ -1971,6 +1973,7 @@ titles.sign_up.completion_new_attributes: '%{sp} 在要求新信息'
 titles.sign_up.completion_new_sp: 你现在正在首次登入
 titles.sign_up.completion_reverified_consent: 与 %{sp}分享你更新后的信息
 titles.sign_up.confirmation: 继续登录
+titles.sts_consent: Consent to share your information
 titles.totp_setup.new: 添加身份证实应用程序
 titles.two_factor_setup: 设立双因素身份证实
 titles.verify_email: 检查你的电邮
