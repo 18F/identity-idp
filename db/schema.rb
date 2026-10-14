@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_24_100500) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_03_110001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -604,6 +604,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_24_100500) do
     t.boolean "saml_emailaddress_attribute_enabled", default: false, comment: "sensitive=false"
     t.string "signature", comment: "sensitive=false"
     t.boolean "signed_response_message_requested", default: false, comment: "sensitive=false"
+    t.boolean "site_key_allowed", default: false, null: false, comment: "sensitive=false"
     t.text "sp_initiated_login_url", comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, comment: "sensitive=false"
     t.boolean "use_legacy_name_id_behavior", default: false, comment: "sensitive=false"
@@ -616,6 +617,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_24_100500) do
     t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.integer "user_id", null: false, comment: "sensitive=false"
     t.index ["user_id", "service_provider"], name: "index_sign_in_restrictions_on_user_id_and_service_provider", unique: true
+  end
+
+  create_table "site_key_roots", force: :cascade do |t|
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.text "encrypted_root", null: false, comment: "sensitive=true"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.bigint "user_id", null: false, comment: "sensitive=false"
+    t.index ["user_id"], name: "index_site_key_roots_on_user_id", unique: true
   end
 
   create_table "socure_reason_codes", force: :cascade do |t|
@@ -775,4 +784,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_24_100500) do
   add_foreign_key "integrations", "service_providers"
   add_foreign_key "partner_accounts", "agencies"
   add_foreign_key "partner_accounts", "partner_account_statuses"
+  add_foreign_key "site_key_roots", "users", on_delete: :cascade
 end
