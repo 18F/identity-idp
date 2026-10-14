@@ -6,8 +6,8 @@ module AccountRecovery
   # method.
   #
   # Phase 1 scope (docs/adr/0001-account-preserving-mfa-recovery.md): this
-  # persists the request and moves it into the waiting state. It does not issue
-  # a recovery token, send notifications, or mutate any MFA configuration. Those
+  # persists the request, moves it into the waiting state, and notifies the
+  # last sign-in email address. Recovery token issuance and MFA replacement
   # happen in later phases.
   #
   # Phase 1 *rejects* a user who already has an in-flight request in either
@@ -40,6 +40,8 @@ module AccountRecovery
 
       return failure(REQUEST_NOT_PERSISTED) if account_recovery_request.blank?
 
+      notify_user_by_email
+
       FormResponse.new(
         success: true,
         extra: {
@@ -53,6 +55,11 @@ module AccountRecovery
     private
 
     attr_reader :user, :requesting_issuer
+
+    def notify_user_by_email
+      UserMailer.with(user: user, email_address: user.last_sign_in_email_address)
+        .account_recovery_request.deliver_now_or_later
+    end
 
     # @param reason [Symbol] bounded, non-PII reason safe for analytics
     # @return [FormResponse]

@@ -1,12 +1,15 @@
 <% self.title = t('account_recovery.start.header') %>
 
+<%= render AlertIconComponent.new(icon_name: :info_question, class: 'margin-bottom-4') %>
+
 <%= render PageHeadingComponent.new.with_content(t('account_recovery.start.header')) %>
 
-<p><%= t('account_recovery.start.intro', app_name: APP_NAME) %></p>
+<p><%= t('account_recovery.start.intro', interval: @waiting_period_interval) %></p>
 
-<p><%= t('account_recovery.start.wait_period', interval: @waiting_period_interval) %></p>
-
-<p><%= t('account_recovery.start.keep_account') %></p>
+<p><%= t(
+         'account_recovery.start.keep_account_html',
+         link_html: link_to(t('account_recovery.start.keep_account_link_text'), '#'),
+       ) %></p>
 
 <%= simple_form_for(
       :account_recovery,

@@ -6,7 +6,6 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
   let(:piv_cac_required) { false }
   let(:reauthentication_context) { false }
   let(:add_piv_cac_after_2fa) { false }
-  let(:account_recovery_bucket) { nil }
 
   subject(:rendered) { render }
 
@@ -22,7 +21,6 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
       phishing_resistant_required:,
       piv_cac_required:,
       add_piv_cac_after_2fa:,
-      account_recovery_bucket:,
     )
     @two_factor_options_form = TwoFactorLoginOptionsForm.new(user)
   end
@@ -168,7 +166,6 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
 
     context 'when the user is eligible for account recovery' do
       let(:user) { create(:user, :fully_registered) }
-      let(:account_recovery_bucket) { :account_preserving }
 
       before do
         allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)

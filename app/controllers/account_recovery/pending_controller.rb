@@ -4,7 +4,7 @@ module AccountRecovery
   # Confirmation page shown after an account-preserving MFA recovery request is
   # created, while the request waits out the configured period.
   #
-  # Phase 1 is read-only: it tells the user what happens next. Cancellation and
+  # The initial request notification is sent by CreateRequest. Cancellation and
   # the emailed recovery link arrive in later phases.
   class PendingController < ApplicationController
     include TwoFactorAuthenticatable
@@ -14,6 +14,7 @@ module AccountRecovery
 
     def show
       @waiting_period_interval = account_recovery_wait_period_interval
+      @email = current_user.last_sign_in_email_address.email
     end
 
     private

@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe AccountRecovery::StartController do
   let(:user) { create(:user, :fully_registered) }
-  let(:treatment_bucket) { :account_preserving }
 
   before do
     allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
@@ -63,8 +62,8 @@ RSpec.describe AccountRecovery::StartController do
         end
       end
 
-      context 'when the user is in the control bucket' do
-        let(:treatment_bucket) { :legacy }
+      context 'when the user is not fully registered' do
+        let(:user) { create(:user, :with_phone) }
 
         it 'redirects to the legacy account reset flow' do
           get :show
@@ -124,7 +123,7 @@ RSpec.describe AccountRecovery::StartController do
       end
 
       context 'when the user is ineligible' do
-        let(:treatment_bucket) { :legacy }
+        let(:user) { create(:user, :proofed) }
 
         it 'redirects to the legacy flow without creating a request' do
           post :create

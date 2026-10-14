@@ -1,17 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe AccountRecovery::EligibilityPolicy do
-  subject(:policy) { described_class.new(user: user, bucket: bucket) }
+  subject(:policy) { described_class.new(user: user) }
 
   let(:user) { create(:user, :fully_registered) }
-  let(:bucket) { :account_preserving }
 
   before do
     allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
   end
 
   describe '#call' do
-    it 'is eligible for a fully registered, non-proofed user in the treatment bucket' do
+    it 'is eligible for a fully registered, non-proofed user' do
       result = policy.call
 
       expect(result.eligible?).to eq(true)
@@ -47,22 +46,6 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
 
         expect(result.eligible?).to eq(false)
         expect(result.reason).to eq(described_class::FEATURE_DISABLED)
-      end
-    end
-
-    context 'when the user is in the control bucket' do
-      let(:bucket) { :legacy }
-
-      it 'is ineligible' do
-        expect(policy.call.reason).to eq(described_class::CONTROL_BUCKET)
-      end
-    end
-
-    context 'when there is no bucket assignment' do
-      let(:bucket) { nil }
-
-      it 'is ineligible' do
-        expect(policy.call.reason).to eq(described_class::CONTROL_BUCKET)
       end
     end
 
@@ -175,11 +158,8 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
         allow(user).to receive(:active_profile?).and_raise(ActiveRecord::StatementInvalid)
       end
 
-      it 'fails closed' do
-        result = policy.call
-
-        expect(result.eligible?).to eq(false)
-        expect(result.reason).to eq(described_class::NO_USER)
+      it 'propagates the error rather than reporting ordinary ineligibility' do
+        expect { policy.call }.to raise_error(ActiveRecord::StatementInvalid)
       end
     end
   end

@@ -4,8 +4,8 @@ module AccountRecovery
   # Decides whether a user may enter the account-preserving MFA recovery
   # workflow, per docs/adr/0001-account-preserving-mfa-recovery.md.
   #
-  # This policy fails closed: any unexpected state resolves to ineligible, and
-  # the caller falls back to the legacy destructive account reset. The result is
+  # Ineligible users fall back to the legacy destructive account reset.
+  # Unexpected errors propagate to the application's error handling. The result is
   # re-evaluated on the server at every transition. A decision made while
   # rendering a page is never sufficient authorization for a later transition.
   class EligibilityPolicy
@@ -62,14 +62,12 @@ module AccountRecovery
       return EXISTING_REQUEST_PENDING if existing_request_pending?
 
       nil
-    rescue StandardError
-      NO_USER
     end
 
     # A user may not hold active requests in both workflows, so an in-flight
     # request in either one blocks a new account-preserving request.
     def existing_request_pending?
-      AccountRecoveryRequest.active_for_user(user).present? ||
+      AccountRecoveryRequest.active.exists?(user: user) ||
         AccountReset::PendingRequestForUser.new(user).get_account_reset_request.present?
     end
   end

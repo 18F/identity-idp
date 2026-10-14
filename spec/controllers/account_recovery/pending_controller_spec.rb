@@ -46,12 +46,30 @@ RSpec.describe AccountRecovery::PendingController do
           expect(controller.view_assigns['waiting_period_interval']).to be_present
         end
 
+        it 'assigns only the email address used to sign in' do
+          signed_in_email = create(:email_address, user: user, last_sign_in_at: Time.zone.now)
+          create(:email_address, user: user)
+          create(:email_address, user: user, confirmed_at: nil)
+          create(:email_address)
+
+          get :show
+
+          expect(controller.view_assigns['email']).to eq(signed_in_email.email)
+        end
+
         it 'does not cancel the request when rendering the pending page' do
           recovery_request = AccountRecoveryRequest.active_for_user(user)
 
           get :show
 
           expect(recovery_request.reload).to be_active
+        end
+
+        it 'does not send more notifications when the confirmation page is refreshed' do
+          expect do
+            get :show
+            get :show
+          end.not_to change { ActionMailer::Base.deliveries.size }
         end
       end
     end

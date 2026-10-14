@@ -2,18 +2,81 @@ require 'rails_helper'
 
 RSpec.describe AccountRecovery::CreateRequest do
   subject(:service) do
-    described_class.new(user: user, requesting_issuer: requesting_issuer, bucket: bucket)
+    described_class.new(user: user, requesting_issuer: requesting_issuer)
   end
 
   let(:user) { create(:user, :fully_registered) }
   let(:requesting_issuer) { nil }
-  let(:bucket) { :account_preserving }
 
   before do
     allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
   end
 
   describe '#call' do
+    context 'when notifying the user' do
+      around do |example|
+        original_adapter = ActiveJob::Base.queue_adapter
+        example.run
+      ensure
+        ActiveJob::Base.queue_adapter = original_adapter
+      end
+
+      before do
+        ActiveJob::Base.queue_adapter = :test
+        allow(IdentityConfig.store).to receive(:deliver_mail_async).and_return(false)
+      end
+
+      it 'sends a request notification only to the email address used to sign in' do
+        signed_in_email = create(:email_address, user: user, last_sign_in_at: Time.zone.now)
+        create(:email_address, user: user)
+        create(:email_address, user: user, confirmed_at: nil, last_sign_in_at: 1.minute.from_now)
+        delivery_count = ActionMailer::Base.deliveries.size
+
+        result = service.call
+
+        expect(result).to be_success
+        notifications = ActionMailer::Base.deliveries.drop(delivery_count)
+        expect(notifications.map(&:to)).to eq([[signed_in_email.email]])
+        expect(notifications.map(&:subject).uniq).to eq(
+          [I18n.t('user_mailer.account_recovery_request.subject', app_name: APP_NAME)],
+        )
+      end
+
+      it 'does not send another notification when a request already exists' do
+        service.call
+
+        expect { service.call }.not_to change { ActionMailer::Base.deliveries.size }
+      end
+
+      it 'queues a notification to the sign-in address when asynchronous delivery is enabled' do
+        signed_in_email = create(:email_address, user: user, last_sign_in_at: Time.zone.now)
+        allow(IdentityConfig.store).to receive(:deliver_mail_async).and_return(true)
+
+        expect { service.call }.to have_enqueued_mail(UserMailer, :account_recovery_request).with(
+          params: { user: user, email_address: signed_in_email },
+          args: [],
+        )
+      end
+
+      it 'does not send a notification for an ineligible user' do
+        allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+
+        expect { service.call }.not_to change { ActionMailer::Base.deliveries.size }
+      end
+
+      it 'does not report success when notification delivery fails' do
+        delivery = instance_double(ActionMailer::MessageDelivery)
+        allow(UserMailer).to receive(:with).and_return(
+          double(account_recovery_request: delivery),
+        )
+        allow(delivery).to receive(:deliver_now_or_later)
+          .and_raise(Net::SMTPFatalError.new('Notification delivery failed'))
+
+        expect { service.call }.to raise_error(Net::SMTPFatalError)
+        expect(AccountRecoveryRequest.active_for_user(user)).to be_present
+      end
+    end
+
     it 'creates a waiting request for an eligible user' do
       result = service.call
 
@@ -74,14 +137,14 @@ RSpec.describe AccountRecovery::CreateRequest do
     end
 
     context 'when the user is ineligible' do
-      let(:bucket) { :legacy }
+      let(:user) { create(:user, :proofed) }
 
       it 'fails without creating a request' do
         result = service.call
 
         expect(result.success?).to eq(false)
         expect(result.to_h[:eligibility_reason])
-          .to eq(AccountRecovery::EligibilityPolicy::CONTROL_BUCKET)
+          .to eq(AccountRecovery::EligibilityPolicy::IDENTITY_VERIFIED)
         expect(AccountRecoveryRequest.where(user: user).count).to eq(0)
       end
     end
@@ -96,6 +159,30 @@ RSpec.describe AccountRecovery::CreateRequest do
 
         expect(result.success?).to eq(false)
         expect(AccountRecoveryRequest.where(user: user).count).to eq(0)
+      end
+    end
+
+    context 'when the user is not fully registered' do
+      let(:user) { create(:user, :with_phone) }
+
+      it 'rejects the request without persisting recovery state' do
+        result = service.call
+
+        expect(result.success?).to eq(false)
+        expect(result.to_h[:eligibility_reason])
+          .to eq(AccountRecovery::EligibilityPolicy::NOT_FULLY_REGISTERED)
+        expect(AccountRecoveryRequest.where(user: user)).to be_empty
+      end
+    end
+
+    context 'when eligibility evaluation raises an unexpected error' do
+      before do
+        allow(user).to receive(:active_profile?).and_raise(ActiveRecord::StatementInvalid)
+      end
+
+      it 'propagates the error without creating a request' do
+        expect { service.call }.to raise_error(ActiveRecord::StatementInvalid)
+        expect(AccountRecoveryRequest.where(user: user)).to be_empty
       end
     end
 

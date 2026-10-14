@@ -1,15 +1,30 @@
 ---
-account_recovery.pending.check_email: Nous vous enverrons un lien par e-mail pour récupérer votre compte à la fin du délai d’attente. Le lien ne fonctionnera qu’une seule fois.
-account_recovery.pending.header: Nous avons reçu votre demande de récupération de compte
-account_recovery.pending.methods_still_work: Vos méthodes d’authentification actuelles restent utilisables tant que votre demande de récupération est en attente.
-account_recovery.pending.leaving_does_not_cancel: Vous pouvez quitter cette page et y revenir plus tard. Le fait de quitter cette page n’annulera pas votre demande de récupération.
-account_recovery.pending.return_home: Retourner à la page d’accueil
-account_recovery.pending.wait: Il faut compter %{interval} à partir du moment où vous avez fait la demande avant de pouvoir continuer.
-account_recovery.start.continue: Demander la récupération du compte
-account_recovery.start.header: Récupérez votre compte
-account_recovery.start.intro: Si vous ne pouvez utiliser aucune de vos méthodes d’authentification, vous pouvez récupérer votre compte et en configurer de nouvelles. Vous conserverez votre compte %{app_name} et tout ce que vous avez partagé avec les organismes publics.
-account_recovery.start.keep_account: Vous aurez besoin de votre mot de passe à nouveau pour terminer la récupération de votre compte. Ne demandez donc pas de récupération si vous avez également oublié votre mot de passe.
-account_recovery.start.wait_period: Pour votre sécurité, nous attendons %{interval} avant de vous envoyer un lien de récupération par e-mail.
+account_recovery.pending.check_email: We will email you a link to recover your account when the waiting period is over. The link will only work once.
+account_recovery.pending.header: We received your account recovery request
+account_recovery.pending.notification_html: We sent an email to <strong>%{email}</strong> confirming your request to recover your account. Your account has not been recovered yet.
+account_recovery.pending.instructions: Keep your password available. You will need to enter it again before setting up new authentication methods. Your account and existing authentication methods have not been changed.
+account_recovery.pending.close_window: You can close this window if you’re done.
+account_recovery.pending.methods_still_work: Your current authentication methods still work while your recovery request is pending.
+account_recovery.pending.leaving_does_not_cancel: You can leave this page and return later. Leaving this page will not cancel your recovery request.
+account_recovery.pending.return_home: Return to the home page
+account_recovery.pending.wait: It takes %{interval} from the time you made the request before you can continue.
+account_recovery.start.continue: Recover my account
+account_recovery.start.header: Are you sure you want to recover your account?
+account_recovery.start.intro: You must wait %{interval} to receive an account recovery link. After clicking the link, you will set up new authentication methods to replace your old ones.
+account_recovery.start.keep_account_html: If you regain access to any of your authentication methods, sign in to restore your account and cancel recovery. %{link_html}
+account_recovery.start.keep_account_link_text: Learn more about account recovery.
+user_mailer.account_recovery_request.subject: Your request to recover your %{app_name} account
+user_mailer.account_recovery_request.header: How to recover your %{app_name} account
+user_mailer.account_recovery_request.intro: For your security, %{app_name} has a two-step process to recover your account. We received your request, but your account has not been recovered or deleted.
+user_mailer.account_recovery_request.step_one.title: Wait %{interval}
+user_mailer.account_recovery_request.step_one.body: This delay gives you time to find your authentication method or take action if you did not make the request.
+user_mailer.account_recovery_request.step_two.title: Recover your account
+user_mailer.account_recovery_request.step_two.body: After %{interval}, you will receive a link to add new authentication methods and recover your account.
+user_mailer.account_recovery_request.unrequested_html: '<strong>If this wasn’t you:</strong> Do not use any recovery links. Sign in and authenticate with your %{app_name} account, then:'
+user_mailer.account_recovery_request.change_password: Immediately change your password.
+user_mailer.account_recovery_request.review_methods: Review your authentication methods to ensure they are up to date and secure.
+user_mailer.account_recovery_request.review_history: Check your account activity by going to the “History” page in the side menu.
+user_mailer.account_recovery_request.report_html: Report suspicious activity by contacting %{contact_link_html}.
 account_reset.cancel_request.are_you_sure: Êtes-vous sûr de vouloir annuler votre demande de suppression de compte ?
 account_reset.cancel_request.cancel: Quitter
 account_reset.cancel_request.cancel_button: Annuler la suppression du compte
@@ -1972,10 +1987,10 @@ titles.visitors.index: Bienvenue
 titles.webauthn_setup: Ajouter votre clé de sécurité
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> nécessite une méthode d’authentification de haute sécurité, telle que le déverrouillage facial ou tactile, une clé de sécurité ou une carte d’employé fédéral.'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> nécessite votre carte d’employé fédéral, qui est une méthode d’authentification de haute sécurité.'
-two_factor_authentication.account_recovery.delete_link: supprimer votre compte
-two_factor_authentication.account_recovery.delete_text_html: Si vous ne pouvez pas récupérer votre compte, vous pouvez %{link_html} puis en créer un nouveau.
-two_factor_authentication.account_recovery.recover_link: récupérer votre compte
-two_factor_authentication.account_recovery.recover_text_html: Si vous ne pouvez utiliser aucune de vos méthodes d’authentification ci-dessus pour accéder à votre compte, vous pouvez %{link_html} pour réinitialiser vos méthodes d’authentification.
+two_factor_authentication.account_recovery.delete_link: delete your account
+two_factor_authentication.account_recovery.delete_text_html: If you can’t recover your account, you can %{link_html} and make a new one.
+two_factor_authentication.account_recovery.recover_link: recover your account
+two_factor_authentication.account_recovery.recover_text_html: If you can’t use any of your authentication methods above to access your account, you can %{link_html} to reset your authentication methods.
 two_factor_authentication.account_reset.cancel_link: Annuler votre demande
 two_factor_authentication.account_reset.link: supprimer votre compte
 two_factor_authentication.account_reset.pending: Vous avez actuellement une demande en attente pour supprimer votre compte. Il faut compter %{interval} à partir du moment où vous avez fait la demande pour terminer le processus. Veuillez vérifier plus tard.

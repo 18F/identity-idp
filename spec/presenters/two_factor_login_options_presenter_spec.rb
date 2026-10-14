@@ -14,7 +14,6 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
   let(:reauthentication_context) { false }
   let(:service_provider) { nil }
   let(:add_piv_cac_after_2fa) { false }
-  let(:account_recovery_bucket) { nil }
 
   subject(:presenter) do
     TwoFactorLoginOptionsPresenter.new(
@@ -25,7 +24,6 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       phishing_resistant_required:,
       piv_cac_required:,
       add_piv_cac_after_2fa:,
-      account_recovery_bucket:,
     )
   end
 
@@ -103,9 +101,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
     end
 
-    context 'when the user is in the treatment bucket and eligible' do
-      let(:account_recovery_bucket) { :account_preserving }
-
+    context 'when the user is eligible' do
       it 'reports the user as eligible' do
         expect(presenter.account_recovery_eligible?).to eq(true)
       end
@@ -149,8 +145,8 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       end
     end
 
-    context 'when the user is in the control bucket' do
-      let(:account_recovery_bucket) { :legacy }
+    context 'when the user is not fully registered' do
+      let(:user) { create(:user, :with_phone) }
 
       it 'reports the user as ineligible' do
         expect(presenter.account_recovery_eligible?).to eq(false)
@@ -158,18 +154,10 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
     end
 
     context 'when the feature is disabled' do
-      let(:account_recovery_bucket) { :account_preserving }
-
       before do
         allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
       end
 
-      it 'reports the user as ineligible' do
-        expect(presenter.account_recovery_eligible?).to eq(false)
-      end
-    end
-
-    context 'when no bucket was assigned' do
       it 'reports the user as ineligible' do
         expect(presenter.account_recovery_eligible?).to eq(false)
       end

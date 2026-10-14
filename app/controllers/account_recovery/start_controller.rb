@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 
 module AccountRecovery
-  # Entry point for account-preserving MFA recovery.
-  #
-  # Reached only after successful password authentication, when the user reports
-  # that they cannot access any configured MFA method. Eligible users are routed
-  # here; everyone else falls back to the legacy destructive account reset.
-  #
-  # See docs/adr/0001-account-preserving-mfa-recovery.md.
   class StartController < ApplicationController
     include TwoFactorAuthenticatable
     include AccountRecoveryConcern
@@ -27,7 +20,6 @@ module AccountRecovery
       result = AccountRecovery::CreateRequest.new(
         user: current_user,
         requesting_issuer: sp_session[:issuer],
-        bucket: treatment_bucket,
       ).call
 
       analytics.account_recovery_request(**result.to_h)
@@ -41,13 +33,9 @@ module AccountRecovery
 
     private
 
-    # Eligibility is authoritative on the server at every entry into the flow.
-    # Ineligible users are sent to the legacy destructive account reset rather
-    # than shown an error, matching the routing in the ADR.
     def confirm_eligible_for_account_recovery
       eligibility = AccountRecovery::EligibilityPolicy.new(
         user: current_user,
-        bucket: treatment_bucket,
       ).call
 
       analytics.account_recovery_eligibility_evaluated(
