@@ -164,10 +164,8 @@ class OpenidConnectTokenExchangeForm
   def extra_analytics_attributes
     {
       client_id:,
-      user_id: nil,
-      code_digest: nil,
-      code_verifier_present: false,
-      service_provider_pkce: broker&.pkce,
+      audience:,
+      resource:,
       ial: loaded_subject_token&.ial,
       integration_errors:,
     }

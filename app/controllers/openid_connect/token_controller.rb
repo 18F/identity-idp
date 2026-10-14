@@ -15,7 +15,7 @@ module OpenidConnect
       analytics_attributes = result.to_h
       analytics_attributes[:expires_in] = response[:expires_in]
 
-      analytics.openid_connect_token(**analytics_attributes.except(:integration_errors))
+      track_analytics(**analytics_attributes.except(:integration_errors))
 
       if !result.success? && analytics_attributes[:integration_errors].present?
         analytics.sp_integration_errors_present(
@@ -32,7 +32,7 @@ module OpenidConnect
     end
 
     def token_form
-      if params[:grant_type] == TokenExchange::Constants::GRANT_TYPE
+      if brokered_token_exchange?
         OpenidConnectTokenExchangeForm.new(token_params)
       else
         OpenidConnectTokenForm.new(token_params)
@@ -54,6 +54,18 @@ module OpenidConnect
         :subject_token,
         :subject_token_type,
       )
+    end
+
+    def track_analytics(analytics_attributes)
+      if brokered_token_exchange?
+        analytics.openid_connect_brokered_exchange_token(**analytics_attributes)
+      else
+        analytics.openid_connect_token(**analytics_attributes)
+      end
+    end
+
+    def brokered_token_exchange?
+      params[:grant_type] == TokenExchange::Constants::GRANT_TYPE
     end
   end
 end
