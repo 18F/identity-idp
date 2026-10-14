@@ -10,12 +10,15 @@ RSpec.describe ProofingAgent::SuccessEmailSender do
   let(:proofing_location_id) { SecureRandom.uuid }
   let(:correlation_id) { SecureRandom.uuid }
   let(:transaction_id) { SecureRandom.uuid }
+  let(:validity_hours) { 48 }
 
   subject(:sender) { described_class.new(user: user, analytics: analytics) }
 
   describe '#call' do
     before do
       ActionMailer::Base.deliveries.clear
+      allow(IdentityConfig.store).to receive(:agent_proofed_user_time_validity_hours)
+        .and_return(validity_hours)
     end
 
     it 'delivers a confirmation email to each confirmed email address' do
@@ -61,6 +64,26 @@ RSpec.describe ProofingAgent::SuccessEmailSender do
         },
         expiration_date: expected_expiration,
       )
+    end
+
+    context 'with a configured validity time' do
+      let(:verified_at) { '2026-06-01T12:00:00-04:00' }
+
+      it 'sets the expiration date to the configuration hours' do
+        allow(IdentityConfig.store).to receive(:agent_proofed_user_time_validity_hours)
+          .and_return(validity_hours)
+        sender.call(
+          verified_at: verified_at,
+          proofing_agent_id: proofing_agent_id,
+          proofing_location_id: proofing_location_id,
+          correlation_id: correlation_id,
+          transaction_id: transaction_id,
+        )
+        expiration_date = analytics.events[:idv_proofing_agent_profile_confirmation_email_sent]
+          .last[:expiration_date]
+
+        expect(expiration_date.to_date).to eq(Date.new(2026, 6, 3))
+      end
     end
 
     context 'with a service provider' do
