@@ -19,8 +19,10 @@ class OpenidConnectIntrospectionForm
   validates :client_assertion_type,
             inclusion: { in: [TokenExchange::Constants::CLIENT_ASSERTION_TYPE] }
 
-  validate :validate_client
-  validate :validate_client_assertion
+  validate :validate_enabled
+  validate :validate_client, if: :token_exchange_enabled?
+  validate :validate_target_allowlisted, if: :token_exchange_enabled?
+  validate :validate_client_assertion, if: :token_exchange_enabled?
 
   def initialize(params)
     ATTRS.each do |key|
@@ -40,14 +42,36 @@ class OpenidConnectIntrospectionForm
     active_response
   end
 
+  def url_options
+    {}
+  end
+
   private
+
+  def token_exchange_enabled?
+    IdentityConfig.store.token_exchange_enabled
+  end
+
+  def validate_enabled
+    return if token_exchange_enabled?
+
+    errors.add(:client_id, :invalid)
+  end
 
   def validate_client
     errors.add(:client_id, :invalid) unless service_provider
   end
 
+  def validate_target_allowlisted
+    return if service_provider.blank?
+    return if token_exchange_allowed_target_issuers.include?(client_id)
+
+    errors.add(:client_id, :invalid)
+  end
+
   def validate_client_assertion
     return if service_provider.blank?
+    return if errors.include?(:client_id)
 
     validator = OpenidConnectClientAssertionValidator.new(
       client_assertion:,
@@ -93,6 +117,10 @@ class OpenidConnectIntrospectionForm
 
   def service_provider
     @service_provider ||= ServiceProvider.active.find_by(issuer: client_id)
+  end
+
+  def token_exchange_allowed_target_issuers
+    Array(IdentityConfig.store.token_exchange_allowed_target_issuers)
   end
 
   def access_token
