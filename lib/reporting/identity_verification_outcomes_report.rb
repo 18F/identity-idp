@@ -418,6 +418,9 @@ module Reporting
     end
 
     # fetch command for idp sql query
+    #
+    # Rows written by delegated token exchanges are left out: those people verified identity in a
+    # service provider's sign-in, and counting them would inflate the agency's own outcomes.
     def fetch_proofing_ial2_data
       params = {
         start_date: time_range.begin,
@@ -436,6 +439,7 @@ module Reporting
             WHERE 
                 billable = TRUE
                 AND issuer = %{issuer}
+                AND COALESCE(access_type, 'direct') <> 'delegated'
                 AND returned_at >= CAST(%{start_date} AS DATE)
                 AND returned_at < CAST(%{end_date} AS DATE)
           )

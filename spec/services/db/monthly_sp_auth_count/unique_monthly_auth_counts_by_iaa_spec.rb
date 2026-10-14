@@ -141,6 +141,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             total_auth_count: 1,
             unique_users: 1,
             new_unique_users: 1,
+            delegated_only_unique_users: 0,
           },
           {
             ial: 2,
@@ -151,6 +152,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             total_auth_count: 2,
             unique_users: 2,
             new_unique_users: 2,
+            delegated_only_unique_users: 0,
           },
           {
             ial: :all,
@@ -169,6 +171,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             total_auth_count: 20,
             unique_users: 2,
             new_unique_users: 1,
+            delegated_only_unique_users: 0,
           },
           {
             ial: 2,
@@ -179,6 +182,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             total_auth_count: 21,
             unique_users: 3,
             new_unique_users: 1,
+            delegated_only_unique_users: 0,
           },
           {
             ial: :all,
@@ -191,6 +195,85 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
         ]
 
         expect(results).to match_array(rows)
+      end
+    end
+
+    context 'with delegated rows' do
+      let(:iaa_range) { Date.new(2020, 9, 1)..Date.new(2021, 8, 31) }
+      let(:issuer) { 'urn:gov:gsa:openidconnect:sp:housing_records' }
+      let(:user) { create(:user) }
+      let(:iaa) do
+        { key: key, start_date: iaa_range.begin, end_date: iaa_range.end, issuers: [issuer] }
+      end
+      let(:ial2_row) { results.find { |row| row[:ial] == 2 } }
+
+      before do
+        create(
+          :service_provider, iaa:, issuer:, iaa_start_date: iaa_range.begin,
+                             iaa_end_date: iaa_range.end
+        )
+      end
+
+      context 'with a direct row and a delegated row for the same user in one month' do
+        before do
+          # The person signed in to the agency's own application...
+          create(
+            :sp_return_log, user_id: user.id, issuer:, ial: 2, billable: true,
+                            returned_at: Date.new(2020, 10, 5), access_type: 'direct'
+          )
+          # ...and a service provider also exchanged a token for the agency's API that month.
+          create(
+            :sp_return_log, user_id: user.id, issuer:, ial: 2, billable: true,
+                            returned_at: Date.new(2020, 10, 20), access_type: 'delegated'
+          )
+        end
+
+        it 'bills one user while counting both rows, not as delegated-only' do
+          expect(ial2_row).to include(
+            total_auth_count: 2, unique_users: 1, new_unique_users: 1,
+            delegated_only_unique_users: 0
+          )
+          expect(results.find { |row| row[:ial] == :all }).to include(unique_users: 1)
+        end
+      end
+
+      context 'with a user who reached the agency only by delegation in the month' do
+        before do
+          create(
+            :sp_return_log, user_id: user.id, issuer:, ial: 2, billable: true,
+                            returned_at: Date.new(2020, 10, 20), access_type: 'delegated'
+          )
+        end
+
+        it 'bills the user once and reports them as delegated-only' do
+          expect(ial2_row).to include(
+            unique_users: 1, new_unique_users: 1, delegated_only_unique_users: 1,
+          )
+        end
+      end
+
+      context 'with a sign-in row an exchange excluded from billing' do
+        before do
+          excluded = create(
+            :sp_return_log, user_id: user.id, issuer:, ial: 2, billable: true,
+                            returned_at: Date.new(2020, 10, 5)
+          )
+          SpReturnLogBillingAdjustment.create!(
+            sp_return_log: excluded, adjustment_type: :exclude_from_billing,
+          )
+          # Two exclusions for one row (two agencies billed instead) still exclude it once.
+          SpReturnLogBillingAdjustment.create!(
+            sp_return_log: excluded, adjustment_type: :exclude_from_billing,
+          )
+          create(
+            :sp_return_log, user_id: create(:user).id, issuer:, ial: 2, billable: true,
+                            returned_at: Date.new(2020, 10, 6)
+          )
+        end
+
+        it 'leaves the excluded row out' do
+          expect(ial2_row).to include(total_auth_count: 1, unique_users: 1)
+        end
       end
     end
 

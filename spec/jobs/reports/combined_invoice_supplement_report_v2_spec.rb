@@ -88,6 +88,20 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
           end
         end
 
+        context 'when delegated access is enabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+          end
+
+          it 'includes the delegated subsets without changing the direct counts' do
+            row = csv.find { |r| r['issuer'] == iaa1_sp.issuer }
+            expect(row['iaa_ial2_delegated_only_unique_users']).to eq('0')
+            expect(row['partner_ial2_unique_user_events_delegated_only']).to eq('0')
+            expect(row['partner_ial2_unique_user_events_delegated_proofing']).to eq('0')
+            expect(row['issuer_ial1_plus_2_total_auth_count']).to eq('9')
+          end
+        end
+
         it 'checks authentication counts in ial1 + ial2 & checks partner single issuer cases' do
           expect(csv.length).to eq(1)
           aggregate_failures do
@@ -123,6 +137,12 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
             expect(row['partner_ial2_new_unique_user_events_year5'].to_i).to eq(0)
             expect(row['partner_ial2_new_unique_user_events_year_greater_than_5'].to_i).to eq(0)
             expect(row['partner_ial2_new_unique_user_events_unknown'].to_i).to eq(0)
+
+            expect(csv.headers).not_to include(
+              'iaa_ial2_delegated_only_unique_users',
+              'partner_ial2_unique_user_events_delegated_only',
+              'partner_ial2_unique_user_events_delegated_proofing',
+            )
 
             expect(row['issuer_ial2_unique_user_events_year1'].to_i).to eq(0)
             expect(row['issuer_ial2_unique_user_events_year2'].to_i).to eq(2)
