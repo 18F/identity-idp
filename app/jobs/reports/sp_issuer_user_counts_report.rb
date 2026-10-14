@@ -8,7 +8,7 @@ module Reports
 
     def perform(_date)
       configs = IdentityConfig.store.sp_issuer_user_counts_report_configs
-      message = "Report: #{REPORT_NAME}#{decommission_notice}".html_safe
+      message = "Report: #{REPORT_NAME}#{decommission_notice}".html_safe # rubocop:disable Rails/OutputSafety
       subject = 'Service provider user count report'
 
       configs.each do |report_hash|

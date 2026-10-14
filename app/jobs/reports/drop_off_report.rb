@@ -31,7 +31,7 @@ module Reports
     end
 
     def preamble
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <h2>
           Drop Off Report
         </h2>
