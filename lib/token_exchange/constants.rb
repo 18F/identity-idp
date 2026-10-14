@@ -10,7 +10,7 @@ module TokenExchange
 
     # Matches the base `token_exchange` scope and audience-qualified variants,
     # for example `token_exchange:passport`.
-    def self.scope?(value)
+    def self.in_scope?(value)
       value == SCOPE || value.to_s.start_with?(SCOPE_PREFIX)
     end
   end
