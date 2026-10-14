@@ -164,6 +164,177 @@ RSpec.describe ServiceProviderUpdater do
         expect { subject.run }
           .to(change { ServiceProvider.find_by(issuer: oidc_issuer)&.ssl_certs&.size }.to(2))
       end
+
+      context 'when the payload carries the userinfo encryption opt-in' do
+        let(:openid_connect_sp) do
+          super().merge(userinfo_encrypted_response_alg: 'RSA-OAEP-256')
+        end
+
+        it 'writes it through and does not warn for a confidential client with certificates' do
+          warnings = []
+          allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+
+          subject.run
+
+          sp = ServiceProvider.find_by(issuer: oidc_issuer)
+          expect(sp.userinfo_encrypted_response_alg).to eq('RSA-OAEP-256')
+          expect(sp.userinfo_encryption_key).to be_a(OpenSSL::PKey::RSA)
+          expect(warnings.grep(/encrypted userinfo/)).to be_empty
+        end
+
+        context 'without certificates' do
+          let(:openid_connect_sp) { super().merge(certs: []) }
+
+          it 'writes it through and warns that userinfo requests will be refused' do
+            warnings = []
+            allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+
+            subject.run
+
+            expect(ServiceProvider.find_by(issuer: oidc_issuer).userinfo_encrypted_response_alg)
+              .to eq('RSA-OAEP-256')
+            expect(warnings).to contain_exactly(
+              a_string_including(oidc_issuer, 'no usable registered certificate', 'refused'),
+            )
+          end
+        end
+
+        context 'on a public client' do
+          let(:openid_connect_sp) { super().merge(pkce: true) }
+
+          it 'warns that userinfo requests will be refused' do
+            warnings = []
+            allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+
+            subject.run
+
+            expect(warnings).to contain_exactly(
+              a_string_including(oidc_issuer, 'public client', 'refused'),
+            )
+          end
+        end
+      end
+    end
+
+    context 'dashboard payload carries delegated-access fields and API URLs' do
+      let(:application_payload) do
+        openid_connect_sp.merge(
+          delegation_application: true,
+          delegation_scope_value: 'housing_records',
+          delegation_display_name: { en: 'Housing Assistance Records' },
+          delegation_description: { en: 'check your housing application.' },
+          allowed_delegation_service_providers: ['urn:mybenefits'],
+          token_exchange_resource_servers: [
+            {
+              identifier: 'https://records-api.housing.example.gov',
+              certs: [saml_test_sp_cert],
+              token_format: 'oauth',
+            },
+            {
+              identifier: 'https://documents-api.housing.example.gov',
+              certs: [saml_test_sp_cert],
+              token_format: 'saml2',
+            },
+          ],
+        )
+      end
+
+      it 'writes the application fields and upserts its API URLs, deactivating ones dropped' do
+        stub_request(:get, fake_dashboard_url)
+          .to_return(status: 200, body: [application_payload].to_json)
+        subject.run
+
+        application = ServiceProvider.find_by(issuer: oidc_issuer)
+        expect(application.delegation_application).to eq(true)
+        expect(application.delegation_scope).to eq('token_exchange:housing_records')
+        expect(application.accepts_delegation_from?('urn:mybenefits')).to eq(true)
+        expect(application.token_exchange_resource_servers.active.pluck(:identifier))
+          .to contain_exactly(
+            'https://records-api.housing.example.gov',
+            'https://documents-api.housing.example.gov',
+          )
+        records_api = application.token_exchange_resource_servers
+          .find_by(identifier: 'https://records-api.housing.example.gov')
+        expect(records_api.certs).to eq([saml_test_sp_cert])
+
+        # The Dashboard drops one URL: it is deactivated, not deleted, so approvals and tokens
+        # that reference it keep their foreign keys.
+        application_payload[:token_exchange_resource_servers].pop
+        stub_request(:get, fake_dashboard_url)
+          .to_return(status: 200, body: [application_payload].to_json)
+        ServiceProviderUpdater.new.run
+
+        expect(application.token_exchange_resource_servers.active.pluck(:identifier))
+          .to eq(['https://records-api.housing.example.gov'])
+        expect(
+          application.token_exchange_resource_servers
+            .find_by(identifier: 'https://documents-api.housing.example.gov').active,
+        ).to eq(false)
+      end
+      it 'warns that an API whose billing issuer has no partner agreement is never invoiced' do
+        stub_request(:get, fake_dashboard_url)
+          .to_return(status: 200, body: [application_payload].to_json)
+        warnings = []
+        allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+
+        subject.run
+
+        # Every API billed to an issuer without an agreement is warned about; the records API
+        # must be among them.
+        expect(warnings).to include(
+          a_string_including(
+            'https://records-api.housing.example.gov', oidc_issuer,
+            'recorded but not invoiced'
+          ),
+        )
+      end
+    end
+
+    context 'dashboard payload carries the key-binding setting' do
+      let(:warnings) { [] }
+      let(:public_client_payload) do
+        openid_connect_sp.merge(pkce: true, certs: [], token_exchange_enabled_sp: true)
+      end
+
+      before do
+        allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+      end
+
+      it 'writes it through for a public client and binds it, without a warning' do
+        stub_request(:get, fake_dashboard_url)
+          .to_return(status: 200, body: [public_client_payload.merge(dpop_required: true)].to_json)
+        subject.run
+
+        sp = ServiceProvider.find_by(issuer: oidc_issuer)
+        expect(sp.dpop_required).to eq(true)
+        expect(sp.dpop_bound?).to eq(true)
+        expect(warnings).to be_empty
+      end
+
+      it 'warns when a public client approved for delegation does not set it' do
+        stub_request(:get, fake_dashboard_url)
+          .to_return(status: 200, body: [public_client_payload].to_json)
+        subject.run
+
+        sp = ServiceProvider.find_by(issuer: oidc_issuer)
+        expect(sp.dpop_bound?).to eq(false)
+        expect(warnings).to contain_exactly(
+          a_string_including(oidc_issuer, 'without dpop_required', 'bearer tokens'),
+        )
+      end
+
+      it 'warns when a confidential client sets it, which has no effect' do
+        stub_request(:get, fake_dashboard_url)
+          .to_return(status: 200, body: [openid_connect_sp.merge(dpop_required: true)].to_json)
+        subject.run
+
+        sp = ServiceProvider.find_by(issuer: oidc_issuer)
+        expect(sp.dpop_required).to eq(true)
+        expect(sp.dpop_bound?).to eq(false)
+        expect(warnings).to contain_exactly(
+          a_string_including(oidc_issuer, 'confidential client', 'ignored'),
+        )
+      end
     end
 
     context 'dashboard is not available' do
