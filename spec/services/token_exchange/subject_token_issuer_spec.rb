@@ -28,12 +28,17 @@ RSpec.describe TokenExchange::SubjectTokenIssuer do
       loaded_subject_token = TokenExchange::SubjectToken.load(issued_token.token)
 
       expect(loaded_subject_token).to have_attributes(
-        user_id: identity.user_id,
         identity_uuid: identity.uuid,
         broker_issuer: identity.service_provider,
         scope: 'openid token_exchange:passport',
         ial: 2,
       )
+    end
+
+    it 'does not store an internal database identifier' do
+      loaded_subject_token = TokenExchange::SubjectToken.load(issued_token.token)
+
+      expect(loaded_subject_token.to_h.keys).to_not include(:user_id)
     end
 
     it 'stores the token with the configured expiration' do

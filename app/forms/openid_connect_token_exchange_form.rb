@@ -153,10 +153,14 @@ class OpenidConnectTokenExchangeForm
   end
 
   def user
-    return @user if defined?(@user)
-    return @user = nil if loaded_subject_token.blank?
+    identity&.user
+  end
 
-    @user = User.find_by(id: loaded_subject_token.user_id)
+  def identity
+    return @identity if defined?(@identity)
+    return @identity = nil if loaded_subject_token.blank?
+
+    @identity = ServiceProviderIdentity.find_by(uuid: loaded_subject_token.identity_uuid)
   end
 
   def broker

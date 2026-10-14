@@ -20,7 +20,6 @@ RSpec.describe TokenExchange::AccessToken do
       token = 'opaque-access-token'
       access_token = described_class.new(
         id: described_class.digest(token),
-        user_id: 1,
         identity_uuid: 'identity-uuid',
         broker_issuer: 'broker-issuer',
         target_issuer: 'target-issuer',
@@ -33,7 +32,6 @@ RSpec.describe TokenExchange::AccessToken do
 
       expect(described_class.load(token)).to have_attributes(
         id: described_class.digest(token),
-        user_id: 1,
         identity_uuid: 'identity-uuid',
         broker_issuer: 'broker-issuer',
         target_issuer: 'target-issuer',
