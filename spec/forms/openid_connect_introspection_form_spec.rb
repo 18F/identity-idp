@@ -207,7 +207,7 @@ RSpec.describe OpenidConnectIntrospectionForm do
       expect(response).to include(
         active: true,
         client_id: broker_issuer,
-        sub: target_issuer,
+        sub: 'identity-uuid',
         iss: root_url,
         exp: loaded_access_token.expires_at,
         iat: loaded_access_token.issued_at,
