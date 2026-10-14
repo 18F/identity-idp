@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class CompletionsPresenter
+  # Delegated tokens obtained after a sign-in can be renewed for at most this long.
+  DELEGATION_ACCESS_HOURS = 12
+
   include ActionView::Helpers::TranslationHelper
   include ActionView::Helpers::TagHelper
 
@@ -35,7 +38,8 @@ class CompletionsPresenter
     requested_attributes:,
     idv_requested:,
     completion_context:,
-    selected_email_id:
+    selected_email_id:,
+    requested_delegation_scopes: []
   )
     @current_user = current_user
     @current_sp = current_sp
@@ -44,6 +48,7 @@ class CompletionsPresenter
     @idv_requested = idv_requested
     @completion_context = completion_context
     @selected_email_id = selected_email_id
+    @requested_delegation_scopes = Array(requested_delegation_scopes).map(&:to_s)
   end
 
   def idv_requested?
@@ -55,6 +60,10 @@ class CompletionsPresenter
   end
 
   def heading
+    # With delegation requested the screen leads with who is asking, so the heading names the
+    # service provider and what it is being allowed.
+    return t('sign_up.delegation.heading', sp: sp_name) if delegation_requested?
+
     if idv_requested?
       if consent_has_expired?
         I18n.t('titles.sign_up.completion_consent_expired_idv')
@@ -105,6 +114,67 @@ class CompletionsPresenter
     end
   end
 
+  # --- Delegated access consent ---------------------------------------------------------------
+
+  # Whether this screen collects delegated-access consent: the service provider is approved for
+  # delegation and named applications in this sign-in request.
+  def delegation_requested?
+    current_sp.delegation_service_provider? && requested_delegation_applications.any?
+  end
+
+  # One row per requested application. `status` is :new (no live approval), :approved (a live
+  # approval that is remembered and current) or :updated (a live approval made stale by a material
+  # content change). `approved_from_account_at` is set when the approval was given in advance on
+  # the account page.
+  DelegationRow = Struct.new(:application, :status, :approved_from_account_at, keyword_init: true)
+
+  # Requested applications grouped under their agency, in request order. Every string shown comes
+  # from the registry, never from the authorization request; the view renders it escaped.
+  # @return [Array<[Agency, Array<DelegationRow>]>]
+  def delegation_groups
+    rows = requested_delegation_applications.map do |application|
+      grant = live_grants_by_application_id[application.id]
+      status =
+        if grant.nil? || !grant.valid_now?
+          grant&.current_content? == false ? :updated : :new
+        else
+          :approved
+        end
+      DelegationRow.new(
+        application:,
+        status:,
+        approved_from_account_at: (grant.consented_at if grant&.source == 'account_page'),
+      )
+    end
+    rows.group_by { |row| row.application.agency }.to_a
+  end
+
+  # The service provider's own registry content for the card at the top of the consent section.
+  def delegation_card
+    @delegation_card ||= DelegationServiceProviderCard.new(current_sp)
+  end
+
+  # How long, in hours, the service provider can keep acting after one sign-in: the longest a
+  # family of delegated tokens can be renewed, counted from the first exchange.
+  def delegation_access_hours
+    DELEGATION_ACCESS_HOURS
+  end
+
+  # The applications named in the request, as registry records, in request order. The screen
+  # shows each application's agency and resource servers, so both are loaded up front rather than
+  # once per row.
+  def requested_delegation_applications
+    @requested_delegation_applications ||= begin
+      applications = DelegationApplications.requested(
+        current_sp.issuer, @requested_delegation_scopes
+      )
+      ActiveRecord::Associations::Preloader.new(
+        records: applications, associations: [:agency, :token_exchange_resource_servers],
+      ).call
+      applications
+    end
+  end
+
   def document_images_sharing?
     current_sp.document_images_sharing_allowed? &&
       requested_attributes.map(&:to_s).include?('document_images')
@@ -115,6 +185,15 @@ class CompletionsPresenter
   end
 
   private
+
+  # Live approvals for the requested applications, keyed by application id, each bound to the
+  # application record already loaded (with its agency) for the screen.
+  def live_grants_by_application_id
+    @live_grants_by_application_id ||= TokenExchangeGrant.live_by_application(
+      user: current_user, service_provider_issuer: current_sp.issuer,
+      applications: requested_delegation_applications
+    )
+  end
 
   def first_time_signing_in?
     current_user.identities.where.not(last_consented_at: nil).empty?

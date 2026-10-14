@@ -18,6 +18,7 @@ module OpenidConnect
     before_action :pre_validate_authorize_form, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
     before_action :store_request, only: [:index]
+    before_action :start_delegation_context, only: [:index]
     before_action :check_sp_active, only: [:index]
     before_action :secure_headers_override, only: [:index]
     before_action :handle_banned_user
@@ -132,6 +133,7 @@ module OpenidConnect
     end
 
     def handle_successful_handoff
+      release_remembered_delegation
       redirect_uri = @authorize_form.success_redirect_uri
       redirect_uri = with_sealed_site_key(redirect_uri) if @authorize_form.site_key_requested?
 
@@ -351,6 +353,66 @@ module OpenidConnect
         session: session,
         protocol_request: @authorize_form,
         protocol: FederatedProtocols::Oidc,
+      ).call
+    end
+
+    # When the validated request asks for delegation, note which agency recipients could receive
+    # the session's fraud signals once the person approves. Only recipients enrolled in the
+    # Attempts API are candidates; the events themselves are held in the session until then. This
+    # runs before the person has signed in, so the sign-in's own events are captured.
+    def start_delegation_context
+      return unless DelegatedAccessEvents.enabled?
+
+      scope_values = @authorize_form.requested_delegation_scopes
+      return if scope_values.empty? || !service_provider&.delegation_service_provider?
+
+      applications = DelegationApplications.requested(issuer, scope_values)
+      # Each application's recipients are reached through its API URLs; load them in one query
+      # when several applications are grouped so the lookup does not fan out per application.
+      if applications.size > 1
+        ActiveRecord::Associations::Preloader.new(
+          records: applications,
+          associations: { token_exchange_resource_servers: :attempts_service_provider },
+        ).call
+      end
+      candidates = applications.flat_map(&:delegation_attempts_recipients).uniq
+        .select(&:attempts_api_deliverable?)
+
+      AttemptsApi::DelegationContext.from_session(session).start(
+        request_id: sp_session[:request_id],
+        sp_issuer: issuer,
+        candidate_issuers: candidates.map(&:issuer),
+      )
+    end
+
+    # When remembered approvals covered every requested application, the consent screen was
+    # skipped and nothing has yet reached the agencies for this authorization: release now, before
+    # `login-completed` is recorded, so that event reaches them too. A request the consent screen
+    # already released is not released again.
+    def release_remembered_delegation
+      return unless DelegatedAccessEvents.enabled?
+
+      scope_values = @authorize_form.requested_delegation_scopes
+      return if scope_values.empty?
+      return if AttemptsApi::DelegationContext.from_session(session)
+        .released_for?(sp_session[:request_id])
+
+      applications = DelegationApplications.requested(issuer, scope_values)
+      # Each approval's currency is judged against its agency's material version; load the
+      # agencies in one query rather than one per application.
+      ActiveRecord::Associations::Preloader.new(records: applications, associations: :agency).call
+      remembered = TokenExchangeGrant.live_by_application(
+        user: current_user, service_provider_issuer: issuer, applications:,
+      ).values.select(&:remembered_and_current?)
+      return if remembered.empty?
+
+      AttemptsApi::DelegatedRelease.new(
+        user: current_user,
+        session:,
+        user_session:,
+        analytics:,
+        remembered_grants: remembered,
+        request_id: sp_session[:request_id],
       ).call
     end
 
