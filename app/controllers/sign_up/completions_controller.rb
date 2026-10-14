@@ -31,6 +31,14 @@ module SignUp
 
       track_completion_event('agency-page')
       update_verified_attributes
+      if delegation_consent_requested? && delegation_consent_result
+        analytics.delegation_consent_submitted(
+          service_provider_issuer: current_sp.issuer,
+          applications: requested_delegation_applications.map(&:issuer),
+          remembered: delegation_remember?,
+          newly_approved_count: delegation_consent_result.approved.size,
+        )
+      end
       if biometric_sharing_consent_granted?
         analytics.biometric_sharing_consent_granted(issuer: current_sp.issuer)
       end
@@ -75,6 +83,7 @@ module SignUp
         idv_requested: idv_requested?,
         completion_context: needs_completion_screen_reason,
         selected_email_id: selected_email_id_for_linked_identity,
+        requested_delegation_scopes: decorated_sp_session.requested_delegation_scopes,
       )
     end
 

@@ -1,0 +1,120 @@
+<%#
+Delegated-access consent on the agency handoff screen, in three parts: who is asking (the service
+provider, in its own words), what it asks for (one locked row per requested application, grouped
+under the agency, in the agency's own words), and how long to remember the approval. The requested
+applications are a condition of the sign-in, so their checkboxes are checked and disabled; the
+person declines by cancelling. Every partner-written string comes from the registry and is
+rendered escaped by the default output tag.
+
+locals:
+* form: the simple_form_for builder for :idv_form
+* presenter: CompletionsPresenter
+* compact: when true, omit outer spacing classes (NDS card layout)
+%>
+<% spacing = local_assigns[:compact] ? '' : 'margin-bottom-4' %>
+<section class="<%= spacing %>" data-delegation-consent>
+  <% if presenter.delegation_card.service_description.present? %>
+    <p class="margin-top-0 margin-bottom-3">
+      <strong><%= presenter.sp_name %></strong>
+      <%= t('sign_up.delegation.service_description', description: presenter.delegation_card.service_description) %>
+    </p>
+  <% end %>
+
+  <%= render 'shared/delegation_service_provider_card',
+             card: presenter.delegation_card,
+             access_hours: presenter.delegation_access_hours %>
+
+  <h2 class="h3 margin-bottom-1"><%= t('sign_up.delegation.requesting_access', sp: presenter.sp_name) %></h2>
+  <p class="margin-top-0 margin-bottom-3 text-base-dark" id="delegation-required-explanation">
+    <%= t('sign_up.delegation.required_explanation', sp: presenter.sp_name) %>
+  </p>
+
+  <% presenter.delegation_groups.each do |agency, rows| %>
+    <% agency_name = agency&.name || t('sign_up.delegation.other_agency') %>
+    <fieldset class="usa-fieldset margin-bottom-4" data-delegation-agency>
+      <legend class="usa-legend margin-bottom-1">
+        <span class="display-flex flex-align-center">
+          <% logo_application = rows.map(&:application).find { |application| application.logo.present? } %>
+          <% if logo_application %>
+            <%= image_tag(logo_application.logo_url, width: 28, height: 28, alt: '', class: 'margin-right-1') %>
+          <% end %>
+          <span>
+            <span class="display-block text-bold"><%= agency_name %></span>
+            <span class="display-block font-body-2xs text-base text-normal">
+              <%= t('sign_up.delegation.applications_count', count: rows.size) %>
+            </span>
+          </span>
+        </span>
+      </legend>
+      <% if agency&.delegation_description_for.present? %>
+        <p class="margin-top-0 margin-bottom-1 text-base-dark"><%= agency.delegation_description_for %></p>
+      <% end %>
+      <% if agency&.delegation_learn_more_url.present? %>
+        <p class="margin-top-0 margin-bottom-2 font-body-2xs">
+          <%= new_tab_link_to(t('sign_up.delegation.about_agency', agency: agency_name), agency.delegation_learn_more_url) %>
+        </p>
+      <% end %>
+
+      <% rows.each do |row| %>
+        <% application = row.application %>
+        <% checkbox_id = "delegation_application_#{application.id}" %>
+        <% status_id = "#{checkbox_id}_status" %>
+        <div class="border border-primary-light radius-lg padding-2 margin-bottom-2 usa-checkbox" data-delegation-application data-status="<%= row.status %>">
+          <%# Checked and disabled: a requested application is a condition of the sign-in. Nothing is
+              submitted for it; the server approves the applications recorded in the session. %>
+          <%= check_box_tag(
+                'idv_form[delegation_applications][]',
+                application.issuer,
+                true,
+                id: checkbox_id,
+                disabled: true,
+                class: 'usa-checkbox__input usa-checkbox__input--bordered',
+                aria: { describedby: "delegation-required-explanation #{status_id}" },
+              ) %>
+          <label class="usa-checkbox__label margin-top-0" for="<%= checkbox_id %>">
+            <strong class="display-block">
+              <%= application.delegation_display_name_for.presence || application.display_name %>
+              <span class="usa-sr-only"><%= t('sign_up.delegation.required_hint') %></span>
+            </strong>
+            <span class="display-block margin-top-05" id="<%= status_id %>">
+              <span class="usa-tag <%= row.status == :approved ? 'bg-success-dark' : 'bg-primary' %>">
+                <%= t("sign_up.delegation.status.#{row.status}") %>
+              </span>
+              <span class="usa-tag bg-base"><%= t('sign_up.delegation.required_badge') %></span>
+              <% if row.approved_from_account_at %>
+                <span class="display-block text-base font-body-2xs margin-top-05">
+                  <%= t('sign_up.delegation.approved_from_account_html', timestamp_html: render(TimeComponent.new(time: row.approved_from_account_at))) %>
+                </span>
+              <% end %>
+            </span>
+            <span class="usa-checkbox__label-description display-block">
+              <%= render 'shared/delegation_application_content', application: application, agency_name: agency_name %>
+            </span>
+          </label>
+        </div>
+      <% end %>
+    </fieldset>
+  <% end %>
+
+  <div class="usa-checkbox margin-bottom-1" data-delegation-remember>
+    <%= check_box_tag(
+          'idv_form[delegation_remember]',
+          '1',
+          false,
+          id: 'delegation_remember',
+          class: 'usa-checkbox__input',
+        ) %>
+    <label class="usa-checkbox__label" for="delegation_remember">
+      <%= t('sign_up.delegation.remember_label') %>
+      <span class="usa-checkbox__label-description">
+        <%= t(
+              'sign_up.delegation.remember_description_html',
+              link_html: link_to(t('sign_up.delegation.account_link'), account_connected_services_path),
+            ) %>
+      </span>
+    </label>
+  </div>
+  <p class="font-body-2xs text-base-dark margin-top-2">
+    <%= t('sign_up.delegation.no_password_shared', app_name: APP_NAME) %>
+  </p>
+</section>
