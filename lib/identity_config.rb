@@ -170,6 +170,7 @@ module IdentityConfig
     config.add(:doc_capture_request_valid_for_minutes, type: :integer)
     config.add(:doc_escrow_enabled, type: :boolean)
     config.add(:doc_escrow_s3_storage_enabled, type: :boolean)
+    config.add(:document_images_ttl_seconds, type: :integer)
     config.add(:drop_off_report_config, type: :json)
     config.add(:domain_name, type: :string)
     config.add(:dos_passport_client_id, type: :string)
