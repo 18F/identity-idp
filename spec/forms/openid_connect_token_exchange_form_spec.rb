@@ -161,19 +161,11 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         expect(form.submit.success?).to eq(false)
         expect(form.errors[:client_id]).to include('is invalid')
       end
-    end
 
-    context 'when the subject token belongs to another broker' do
-      let(:client_id) { 'a-different-sp' }
+      it 'does not read the subject token from Redis' do
+        expect(TokenExchange::SubjectToken).to_not receive(:load)
 
-      before do
-        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
-          .and_return(['another-broker'])
-      end
-
-      it 'is invalid' do
-        expect(form.submit.success?).to eq(false)
-        expect(form.errors[:subject_token]).to include('is invalid')
+        form.submit
       end
     end
 
@@ -186,6 +178,27 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       it 'is invalid' do
         expect(form.submit.success?).to eq(false)
         expect(form.errors[:audience]).to include('is invalid')
+      end
+
+      it 'does not read the subject token from Redis' do
+        expect(TokenExchange::SubjectToken).to_not receive(:load)
+
+        form.submit
+      end
+    end
+
+    context 'when the subject token belongs to another broker' do
+      let(:other_broker) { create(:service_provider, :active, issuer: 'other-broker-issuer') }
+      let(:client_id) { other_broker.issuer }
+
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return([broker_issuer, other_broker.issuer])
+      end
+
+      it 'is invalid' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.errors[:subject_token]).to include('is invalid')
       end
     end
 

@@ -35,13 +35,14 @@ class OpenidConnectTokenExchangeForm
   validates :requested_token_type,
             inclusion: { in: [TokenExchange::Constants::ACCESS_TOKEN_TYPE] }
 
+  # Ordered cheapest first.
   validate :validate_enabled
   validate :validate_broker
-  validate :validate_subject_token
   validate :validate_target
   validate :validate_resource
-  validate :validate_scope
-  validate :validate_ial2
+  validate :validate_subject_token, unless: :client_rejected?
+  validate :validate_scope, unless: :client_rejected?
+  validate :validate_ial2, unless: :client_rejected?
 
   def initialize(params)
     ATTRS.each do |key|
@@ -93,16 +94,40 @@ class OpenidConnectTokenExchangeForm
   private
 
   def validate_enabled
-    return if IdentityConfig.store.token_exchange_enabled
+    return if token_exchange_enabled?
 
     errors.add(:grant_type, :inclusion)
   end
 
+  def token_exchange_enabled?
+    IdentityConfig.store.token_exchange_enabled
+  end
+
+  # True once the feature flag, the broker allowlist, or the target allowlist
+  # has already rejected this request, so the remaining validations can skip
+  # the Redis read and the identity lookup entirely.
+  def client_rejected?
+    !token_exchange_enabled? ||
+      errors.include?(:client_id) ||
+      errors.include?(:audience)
+  end
+
   def validate_broker
     return if client_id.blank?
-    return if broker&.token_exchange_broker?
+    return if broker_allowlisted? && broker.present?
 
     errors.add(:client_id, :invalid)
+  end
+
+  def broker_allowlisted?
+    IdentityConfig.store.token_exchange_allowed_broker_issuers.include?(client_id)
+  end
+
+  def validate_target
+    return if audience.blank?
+    return if token_exchange_allowed_target_issuers.include?(audience) && target.present?
+
+    errors.add(:audience, :invalid)
   end
 
   def validate_subject_token
@@ -111,14 +136,6 @@ class OpenidConnectTokenExchangeForm
     return if loaded_subject_token.broker_issuer == client_id
 
     errors.add(:subject_token, :invalid)
-  end
-
-  def validate_target
-    return if audience.blank?
-    return errors.add(:audience, :invalid) unless target
-    return if token_exchange_allowed_target_issuers.include?(audience)
-
-    errors.add(:audience, :invalid)
   end
 
   def validate_resource
@@ -215,9 +232,18 @@ class OpenidConnectTokenExchangeForm
       client_id:,
       audience:,
       resource:,
-      ial: loaded_subject_token&.ial,
+      ial: subject_token_ial,
       integration_errors:,
     }
+  end
+
+  # Reports the IAL only when a validation already loaded the subject token.
+  # Analytics must not be the thing that triggers the Redis read for a request
+  # we rejected before reaching it.
+  def subject_token_ial
+    return unless defined?(@loaded_subject_token)
+
+    @loaded_subject_token&.ial
   end
 
   def integration_errors
