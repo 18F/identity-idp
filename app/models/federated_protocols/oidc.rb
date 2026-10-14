@@ -30,6 +30,16 @@ module FederatedProtocols
       OpenidConnectAttributeScoper.new(request.scope).requested_attributes
     end
 
+    # Bare delegation scope values, carried in the stored request and the session so the consent
+    # screen knows which applications were requested.
+    def requested_delegation_scopes
+      request.requested_delegation_scopes
+    end
+
+    def dpop_binding_required?
+      request.dpop_binding_required?
+    end
+
     def service_provider
       request.service_provider
     end

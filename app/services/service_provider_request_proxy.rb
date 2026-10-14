@@ -39,6 +39,7 @@ class ServiceProviderRequestProxy
       url: nil,
       requested_attributes: nil,
       acr_values: nil,
+      requested_delegation_scopes: nil,
     )
 
     yield(spr)
@@ -48,6 +49,8 @@ class ServiceProviderRequestProxy
       url: spr.url,
       requested_attributes: spr.requested_attributes,
       acr_values: spr.acr_values,
+      requested_delegation_scopes: spr.requested_delegation_scopes,
+      dpop_binding_required: spr.dpop_binding_required,
     )
   end
 
@@ -58,7 +61,13 @@ class ServiceProviderRequestProxy
       :url,
       :requested_attributes,
       :acr_values,
+      :requested_delegation_scopes,
+      :dpop_binding_required,
     )
+    # Ordinary requests retain the pre-feature Redis shape. Keep meaningful scopes on
+    # transactions already created while delegation was enabled, including during rollback.
+    obj.delete(:requested_delegation_scopes) if obj[:requested_delegation_scopes].blank?
+    obj.delete(:dpop_binding_required) unless obj[:dpop_binding_required] == true
     write(obj, uuid)
     hash_to_spr(obj, uuid)
   end

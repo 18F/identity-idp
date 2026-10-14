@@ -10,6 +10,7 @@ class OpenidConnectAuthorizeForm
     client_id
     code_challenge
     code_challenge_method
+    dpop_jkt
     nonce
     prompt
     redirect_uri
@@ -48,6 +49,9 @@ class OpenidConnectAuthorizeForm
   attr_reader(*ATTRS)
 
   RANDOM_VALUE_MINIMUM_LENGTH = 22
+  # A base64url SHA-256 without padding, 43 characters: the shape of an S256 PKCE code challenge
+  # and of an RFC 7638 key thumbprint.
+  BASE64URL_SHA256_FORMAT = /\A[A-Za-z0-9_-]{43}\z/
   MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS = 30
 
   validates :acr_values, presence: true
@@ -62,7 +66,7 @@ class OpenidConnectAuthorizeForm
   validates :code_challenge_method, inclusion: { in: %w[S256] },
                                     if: :validate_code_challenge_method?
   validate :validate_pkce_parameter_pair, if: :private_key_jwt_pkce_enabled?
-  validates :code_challenge, format: { with: /\A[A-Za-z0-9_-]{43}\z/ },
+  validates :code_challenge, format: { with: BASE64URL_SHA256_FORMAT },
                              if: :private_key_jwt_pkce_requested?
 
   validate :validate_acr_values
@@ -70,17 +74,25 @@ class OpenidConnectAuthorizeForm
   validate :validate_scope
   validate :validate_unauthorized_scope
   validate :validate_privileges
+  validate :validate_delegation_scopes
+  validate :validate_dpop_jkt
   validate :validate_document_images_scope
   validate :validate_site_key_jwk
   validate :validate_prompt
   validate :validate_verified_within_format, if: :verified_within_allowed?
   validate :validate_verified_within_duration, if: :verified_within_allowed?
 
-  def initialize(params)
+  # The second argument is trusted transaction state, never a browser request field.
+  def initialize(params, dpop_binding_required = nil)
+    @dpop_binding_required = dpop_binding_required
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
     SIMPLE_ATTRS.each { |key| instance_variable_set(:"@#{key}", params[key]) }
     @prompt ||= 'select_account'
-    @scope = parse_to_values(params[:scope], scopes)
+    @scoper = OpenidConnectAttributeScoper.new(
+      params[:scope], allowed: scopes,
+                      delegation_scopes: IdentityConfig.store.token_exchange_enabled
+    )
+    @scope = scoper.scopes
     @unauthorized_scope = check_for_unauthorized_scope(params)
 
     if verified_within_allowed?
@@ -130,6 +142,7 @@ class OpenidConnectAuthorizeForm
       code_challenge: code_challenge,
       private_key_jwt_pkce: private_key_jwt_pkce_requested?,
       email_address_id: email_address_id,
+      dpop_jkt: (dpop_jkt if dpop_binding_required?),
     )
   end
 
@@ -157,6 +170,16 @@ class OpenidConnectAuthorizeForm
     prompt == 'create'
   end
 
+  # Bare delegation scope values: the applications the service provider asks to act at for the
+  # user, requested as `token_exchange:<value>` in the OIDC scope parameter.
+  def requested_delegation_scopes
+    scoper.delegation_scope_values
+  end
+
+  def delegation_requested?
+    requested_delegation_scopes.any?
+  end
+
   # With a site key, email is sealed into the browser-only fragment instead, so the identity
   # (and therefore the ID token and userinfo the RP server reads) never carries it.
   def server_scope
@@ -167,9 +190,20 @@ class OpenidConnectAuthorizeForm
     site_key_jwk.present? && service_provider&.site_key_allowed?
   end
 
+  # Whether every token this client receives is bound to a key it holds (RFC 9449). Binding is a
+  # per-client setting (`dpop_required`) that takes effect only for a public client (PKCE, no
+  # client secret), which holds its tokens in the person's browser, so each must be useless
+  # without the key. Every other client, including a public client approved for delegated access
+  # without the setting, receives bearer tokens as before.
+  def dpop_binding_required?
+    return @dpop_binding_required unless @dpop_binding_required.nil?
+
+    service_provider.present? && service_provider.dpop_bound?
+  end
+
   private
 
-  attr_reader :identity, :success
+  attr_reader :identity, :success, :scoper
 
   def private_key_jwt_sp?
     # Missing service providers are rejected by validate_client_id.
@@ -222,6 +256,59 @@ class OpenidConnectAuthorizeForm
   def parse_to_values(param_value, possible_values)
     return [] if param_value.blank?
     param_value.split(' ').compact & possible_values
+  end
+
+  # Delegation may be requested only by a service provider approved for it, only on an
+  # identity-verified request, and only for registered, active applications that accept this
+  # service provider. Anything else is reported to the service provider as invalid_scope so the
+  # person never sees a choice that cannot be honored.
+  def validate_delegation_scopes
+    requested = requested_delegation_scopes
+    return if requested.empty?
+
+    unless service_provider&.delegation_service_provider? && identity_proofing_requested_or_default?
+      errors.add(
+        :scope, t('openid_connect.authorization.errors.delegation_not_allowed'),
+        type: :delegation_not_allowed
+      )
+      return
+    end
+
+    known = DelegationApplications.accepting(client_id).map(&:delegation_scope_value)
+    unknown = requested - known
+    return if unknown.empty?
+
+    errors.add(
+      :scope,
+      t('openid_connect.authorization.errors.unknown_delegation_scope', scopes: unknown.join(', ')),
+      type: :unknown_delegation_scope,
+    )
+  end
+
+  # RFC 9449 §10: a public client whose tokens are key-bound names the thumbprint of its DPoP key
+  # in the authorization request, so the code it receives can be redeemed only with a proof from
+  # that key and an intercepted code is worthless. When binding is inactive, the optional
+  # parameter is ignored exactly as it was before the feature.
+  def validate_dpop_jkt
+    return unless dpop_binding_required?
+
+    if dpop_jkt.blank?
+      errors.add(
+        :dpop_jkt, t('openid_connect.authorization.errors.dpop_jkt_required'),
+        type: :dpop_jkt_required
+      )
+    elsif !dpop_jkt.is_a?(String) || !dpop_jkt.match?(BASE64URL_SHA256_FORMAT)
+      errors.add(
+        :dpop_jkt, t('openid_connect.authorization.errors.dpop_jkt_invalid'),
+        type: :dpop_jkt_invalid
+      )
+    end
+  end
+
+  def delegation_scope_error?
+    errors.details[:scope].to_a.any? do |detail|
+      %i[delegation_not_allowed unknown_delegation_scope].include?(detail[:type])
+    end
   end
 
   def validate_acr_values
@@ -333,6 +420,7 @@ class OpenidConnectAuthorizeForm
       scope: scope&.sort&.join(' '),
       acr_values: acr_values&.sort&.join(' '),
       unauthorized_scope: @unauthorized_scope,
+      **(delegation_requested? ? { delegation_scopes: requested_delegation_scopes } : {}),
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
       code_challenge_present: code_challenge.present?,
       service_provider_pkce: service_provider&.pkce,
@@ -349,7 +437,8 @@ class OpenidConnectAuthorizeForm
 
     UriService.add_params(
       redirect_uri,
-      error: 'invalid_request',
+      # RFC 6749 §4.1.2.1: a bad or unauthorized scope value is invalid_scope, not invalid_request.
+      error: delegation_scope_error? ? 'invalid_scope' : 'invalid_request',
       error_description: errors.full_messages.join(' '),
       state: state,
     )

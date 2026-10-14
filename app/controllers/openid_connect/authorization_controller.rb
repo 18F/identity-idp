@@ -166,7 +166,24 @@ module OpenidConnect
     end
 
     def build_authorize_form_from_params
-      @authorize_form = OpenidConnectAuthorizeForm.new(authorization_params)
+      @authorize_form = OpenidConnectAuthorizeForm.new(
+        authorization_params, saved_dpop_binding_required
+      )
+    end
+
+    # Compare recognized authorization inputs, not a cached URL or ignored browser parameters.
+    # Locale may change during sign-in; a different authorization uses current policy.
+    # This marker is read only from our Redis request record, never from browser parameters.
+    def saved_dpop_binding_required
+      return if sp_session[:successful_handoff]
+
+      stored = ServiceProviderRequestProxy.from_uuid(sp_session[:request_id])
+      return if stored.url.blank?
+      stored_params = ActionController::Parameters.new(UriService.params(stored.url))
+        .permit(OpenidConnectAuthorizeForm::ATTRS).to_h
+      return unless stored_params == authorization_params.to_h
+
+      stored.dpop_binding_required == true
     end
 
     def secure_headers_override

@@ -12,6 +12,7 @@ class OpenidConnectTokenForm
     client_assertion_type
     code
     code_verifier
+    dpop_proof
     grant_type
   ].freeze
 
@@ -29,6 +30,7 @@ class OpenidConnectTokenForm
   validate :validate_pkce_or_private_key_jwt
   validate :validate_code_verifier, if: :pkce_verification_required?
   validate :validate_client_assertion, if: :client_assertion_required?
+  validate :validate_dpop_proof, if: :dpop_binding_required?
 
   def initialize(params)
     ATTRS.each do |key|
@@ -54,10 +56,16 @@ class OpenidConnectTokenForm
 
       {
         access_token: identity.access_token,
-        token_type: 'Bearer',
+        # RFC 9449 §5: a token bound to the client's key is presented with a proof, never as a
+        # bearer token.
+        token_type: dpop_binding_required? ? 'DPoP' : 'Bearer',
         expires_in: @ttl,
         id_token: id_token_builder.id_token,
+        **granted_scope,
       }
+    elsif errors.include?(:dpop_proof)
+      # RFC 9449 §5: the one error code for every proof problem, with the reason as description.
+      { error: 'invalid_dpop_proof', error_description: errors[:dpop_proof].join(' ') }
     elsif private_key_jwt_pkce? && errors.include?(:code_verifier)
       { error: 'invalid_grant',
         error_description: t('openid_connect.token.errors.invalid_code_verifier') }
@@ -80,6 +88,37 @@ class OpenidConnectTokenForm
     @identity = ServiceProviderIdentity
       .where(session_uuid: code)
       .order(updated_at: :desc).first
+  end
+
+  # The `scope` member of the token response (RFC 6749 section 5.1), present only when the request
+  # named applications for delegated access. The response then lists the scope actually granted:
+  # the attribute scopes as requested, plus the `token_exchange:<value>` scopes the person
+  # approved, in request order. Approval is read now, from the live approvals that are valid for
+  # this authorization (remembered ones, or ones given in the sign-in that produced this code),
+  # so an approval revoked between the consent screen and code redemption is not reported as
+  # granted. Requests without delegation scopes keep their response unchanged.
+  # @return [Hash] `{ scope: String }` or `{}`
+  def granted_scope
+    scoper = OpenidConnectAttributeScoper.new(identity.scope)
+    return {} unless scoper.delegation_requested?
+
+    applications = DelegationApplications.requested(
+      identity.service_provider, scoper.delegation_scope_values
+    )
+    ActiveRecord::Associations::Preloader.new(records: applications, associations: :agency).call
+    grants = TokenExchangeGrant.live_by_application(
+      user: identity.user, service_provider_issuer: identity.service_provider, applications:,
+    )
+    # A single-authorization approval counts only when it was given in the sign-in that produced
+    # this code, which the identity's browser session identifies.
+    approved = applications.select do |application|
+      grants[application.id]&.valid_now?(identity:)
+    end
+
+    granted = scoper.scopes.reject do |value|
+      OpenidConnectAttributeScoper.delegation_scope?(value)
+    end + approved.map(&:delegation_scope)
+    { scope: granted.join(' ') }
   end
 
   def private_key_jwt_pkce?
@@ -152,6 +191,36 @@ class OpenidConnectTokenForm
   def code_verifier_matches_challenge?
     given_code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier.to_s)
     ActiveSupport::SecurityUtils.secure_compare(expected_code_challenge, given_code_challenge)
+  end
+
+  # RFC 9449 §10 binds the authorization transaction to a key. Read the binding saved at
+  # authorization, so disabling a client's setting cannot weaken an outstanding code, and
+  # enabling it cannot add a requirement to a code issued without a binding.
+  def dpop_binding_required?
+    identity&.dpop_jkt.present?
+  end
+
+  # Runs after every other check so a proof problem is reported only for an otherwise valid
+  # redemption and a rejected request never consumes the proof's single-use jti. The proof must
+  # be for POST to this endpoint and signed by the key whose thumbprint the authorization request
+  # named; no token accompanies a code redemption, so the proof carries no `ath`.
+  def validate_dpop_proof
+    return if errors.any?
+
+    return if dpop_result.success?
+
+    errors.add(:dpop_proof, dpop_result.error_message, type: dpop_result.error_type)
+  end
+
+  # Verified once per form: a proof's jti is single-use, so running the verifier again on the
+  # same proof (validations run on every `valid?`) would report a replay of our own check.
+  def dpop_result
+    @dpop_result ||= DpopProofVerifier.new(
+      proof: dpop_proof,
+      http_method: 'POST',
+      http_url: api_openid_connect_token_url,
+      expected_thumbprint: identity.dpop_jkt,
+    ).call
   end
 
   def validate_client_assertion

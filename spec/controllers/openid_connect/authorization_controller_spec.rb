@@ -32,6 +32,67 @@ RSpec.describe OpenidConnect::AuthorizationController do
       get :index, params: params
     end
 
+    context 'DPoP policy changes during authorization' do
+      let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
+      let(:user) { create(:user, :fully_registered) }
+      let(:registered_sp) { ServiceProvider.find_by(issuer: client_id) }
+
+      before do
+        registered_sp.update!(pkce: true, dpop_required: true)
+        params[:code_challenge] = Digest::SHA256.urlsafe_base64digest('v' * 43)
+        params[:code_challenge_method] = 'S256'
+        params[:dpop_jkt] = dpop_thumbprint
+      end
+
+      def finish_authorization(extra = {})
+        stub_sign_in user
+        session[:sign_in_flow] = :sign_in
+        session[:sign_in_page_visited_at] = Time.zone.now.to_s
+        allow(controller).to receive(:needs_completion_screen_reason).and_return(nil)
+        get :index, params: params.merge(extra)
+      end
+
+      it 'saves and enforces the initial binding across rollback and locale changes' do
+        action
+        expect(ServiceProviderRequestProxy.last.dpop_binding_required).to eq(true)
+        registered_sp.update!(dpop_required: false)
+
+        finish_authorization(locale: 'es')
+
+        expect(user.identities.find_by(service_provider: client_id).dpop_jkt).to eq(dpop_thumbprint)
+      end
+
+      it 'does not add a binding to a legacy request when the setting is enabled' do
+        registered_sp.update!(dpop_required: false)
+        params[:dpop_jkt] = 'previously-ignored'
+        action
+        expect(ServiceProviderRequestProxy.last.dpop_binding_required).to be_nil
+        registered_sp.update!(dpop_required: true)
+
+        finish_authorization
+
+        expect(user.identities.find_by(service_provider: client_id).dpop_jkt).to be_nil
+      end
+
+      it 'uses current policy for a different authorization instead of the old marker' do
+        registered_sp.update!(dpop_required: false)
+        params[:dpop_jkt] = 'previously-ignored'
+        action
+        registered_sp.update!(dpop_required: true)
+
+        finish_authorization(state: SecureRandom.hex)
+
+        expect(user.identities.find_by(service_provider: client_id)).to be_nil
+        expect(controller.instance_variable_get(:@authorize_form).errors[:dpop_jkt]).to be_present
+      end
+
+      it 'does not accept a binding override from browser parameters' do
+        params[:dpop_jkt] = 'invalid'
+        get :index, params: params.merge(dpop_binding_required: false)
+        expect(controller.instance_variable_get(:@authorize_form).errors[:dpop_jkt]).to be_present
+      end
+    end
+
     context 'with prompt=login' do
       let(:prompt) { 'login' }
 
