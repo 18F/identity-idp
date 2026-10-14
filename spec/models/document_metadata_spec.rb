@@ -42,7 +42,7 @@ RSpec.describe DocumentMetadata do
     end
   end
 
-  describe 'retention' do
+  describe 'retention scopes' do
     before do
       allow(IdentityConfig.store).to receive(:document_images_ttl_seconds).and_return(3.days.to_i)
     end
