@@ -144,6 +144,7 @@ RSpec.describe 'OpenID Connect' do
     end
 
     it 'auto-allows with a second authorization and blank CSP headers if not enabled' do
+      allow(IdentityConfig.store).to receive(:openid_connect_redirect).and_return('client_side_js')
       allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled)
         .and_return(false)
       client_id = 'urn:gov:gsa:openidconnect:sp:server'

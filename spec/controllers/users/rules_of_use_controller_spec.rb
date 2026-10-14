@@ -151,6 +151,8 @@ RSpec.describe Users::RulesOfUseController do
       end
 
       it 'does not include service provider URIs in form-action CSP header when disabled' do
+        allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+          .and_return('client_side_js')
         allow(IdentityConfig.store).to(
           receive(:openid_connect_content_security_form_action_enabled).and_return(false),
         )
