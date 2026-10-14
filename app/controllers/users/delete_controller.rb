@@ -30,6 +30,10 @@ module Users
 
     def delete_user
       ActiveRecord::Base.transaction do
+        # Delegated-access tokens do not end with the browser session; the approvals, and with
+        # them every live token and refresh family, are revoked so no service provider can keep
+        # acting for a person whose account no longer exists. The rows stay as the record.
+        TokenExchangeGrant.revoke_all_for_user!(user: current_user, reason: 'account_deleted')
         DeletedUser.create_from_user(current_user)
         current_user.destroy!
       end

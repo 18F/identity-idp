@@ -1174,6 +1174,20 @@ RSpec.describe User do
           user.suspend!
         end
 
+        it 'ends every delegated-access approval, token and refresh family of the person' do
+          grant = create(:token_exchange_grant, user:)
+          plaintext = TokenExchangeToken.generate_token
+          issued = create(:token_exchange_token, grant:, plaintext:)
+          refresh = create(:token_exchange_refresh_token, token_exchange_token: issued)
+
+          user.suspend!
+
+          expect(grant.reload.revocation_reason).to eq('account_suspended')
+          expect(issued.reload.revocation_reason).to eq('account_suspended')
+          expect(refresh.reload.revocation_reason).to eq('account_suspended')
+          expect(DelegatedTokenStore.read(plaintext)).to be_nil
+        end
+
         it 'send account disabled push event' do
           expect(PushNotification::HttpPush).to receive(:deliver).once
             .with(PushNotification::AccountDisabledEvent.new(
