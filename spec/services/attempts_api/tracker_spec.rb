@@ -450,6 +450,152 @@ RSpec.describe AttemptsApi::Tracker do
     end
   end
 
+  describe 'delegated access' do
+    let(:recipient) { create(:service_provider, :delegation_application) }
+    let(:mock_session) { {} }
+    let(:context) { AttemptsApi::DelegationContext.from_session(mock_session) }
+    let(:redis_client) { AttemptsApi::RedisClient.new }
+
+    before do
+      allow(request).to receive(:session).and_return(mock_session)
+      allow(IdentityConfig.store).to receive_messages(
+        token_exchange_enabled: true,
+        token_exchange_attempts_delivery_enabled: true,
+        allowed_attempts_providers: [{ 'issuer' => recipient.issuer, 'keys' => [] }],
+      )
+    end
+
+    context 'with a delegation request in flight and the service provider not enrolled' do
+      let(:enabled_for_session) { false }
+
+      before do
+        context.start(
+          request_id: 'req-1', sp_issuer: service_provider.issuer,
+          candidate_issuers: [recipient.issuer]
+        )
+      end
+
+      it 'buffers the event in the session without sending it to the service provider' do
+        freeze_time do
+          # Nothing is returned: the service provider's copy is not sent.
+          expect(subject.track_event(:test_event, foo: :bar)).to be_nil
+
+          expect(context.buffered_event_count).to eq(1)
+          buffered = context.buffered_events.first
+          expect(buffered.event_type).to eq('test_event')
+          expect(buffered.event_metadata).to include(foo: 'bar', user_ip_address: '192.0.2.1')
+          expect(buffered.event_metadata).not_to have_key(:user_uuid)
+
+          expect(redis_client.read_events(issuer: service_provider.issuer)).to be_empty
+          expect(redis_client.read_events(issuer: recipient.issuer)).to be_empty
+        end
+      end
+
+      it 'does not create the user identity at the service provider agency just to buffer' do
+        subject.track_event(:test_event, foo: :bar)
+        expect(AgencyIdentity.where(user:, agency: service_provider.agency)).to be_empty
+      end
+
+      it 'buffers nothing when no candidate recipient is enrolled' do
+        context.start(
+          request_id: 'req-1', sp_issuer: service_provider.issuer, candidate_issuers: [],
+        )
+        expect(subject.track_event(:test_event, foo: :bar)).to be_nil
+        expect(context.buffered_event_count).to eq(0)
+      end
+
+      it 'buffers nothing while delivery to agencies is switched off' do
+        allow(IdentityConfig.store).to receive(:token_exchange_attempts_delivery_enabled)
+          .and_return(false)
+        expect(subject.track_event(:test_event, foo: :bar)).to be_nil
+        expect(context.buffered_event_count).to eq(0)
+      end
+    end
+
+    context 'with a delegation request in flight and the service provider enrolled' do
+      before do
+        context.start(
+          request_id: 'req-1', sp_issuer: service_provider.issuer,
+          candidate_issuers: [recipient.issuer]
+        )
+      end
+
+      it 'still sends the unchanged event to the service provider and buffers a copy' do
+        freeze_time do
+          event = subject.track_event(:test_event, foo: :bar)
+
+          expect(redis_client.read_events(issuer: service_provider.issuer).keys).to eq([event.jti])
+          expect(event.event_metadata[:user_uuid]).to eq(
+            AgencyIdentityLinker.for(user:, service_provider:, skip_create: true).uuid,
+          )
+          expect(context.buffered_event_count).to eq(1)
+        end
+      end
+    end
+
+    context 'after the person approved an application' do
+      let(:enabled_for_session) { false }
+
+      before do
+        context.start(
+          request_id: 'req-1', sp_issuer: service_provider.issuer,
+          candidate_issuers: [recipient.issuer]
+        )
+        context.approve(
+          issuer: recipient.issuer, delegation_id: 'dlg_abc', agency_uuid: 'agency-uuid',
+        )
+      end
+
+      it 'delivers a re-mapped copy of each event to the agency as it happens' do
+        expect(NewRelic::Agent).not_to receive(:notice_error)
+        freeze_time do
+          subject.track_event(:test_event, foo: :bar)
+
+          buffered = context.buffered_events.first
+          copies = redis_client.read_events(issuer: recipient.issuer).values.map do |jwe|
+            AttemptsApi::AttemptEvent.from_jwe(jwe, saml_test_sp_private_key)
+          end
+          expect(copies.map(&:jti)).to eq([buffered.jti])
+          expect(copies.first.event_metadata).to include(
+            user_uuid: 'agency-uuid',
+            delegation_id: 'dlg_abc',
+            actor_issuer: service_provider.issuer,
+            foo: 'bar',
+            user_ip_address: '192.0.2.1',
+          )
+          expect(redis_client.read_events(issuer: service_provider.issuer)).to be_empty
+        end
+      end
+
+      it 'delivers nothing to an approved recipient that is no longer enrolled' do
+        allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return([])
+        subject.track_event(:test_event, foo: :bar)
+        expect(redis_client.read_events(issuer: recipient.issuer)).to be_empty
+        expect(context.buffered_event_count).to eq(1)
+      end
+
+      it 'keeps recording for the service provider when the copy cannot be written' do
+        allow(AttemptsApi::RedisClient).to receive(:new).and_wrap_original do |original|
+          original.call.tap do |client|
+            allow(client).to receive(:write_event).and_raise(Redis::CannotConnectError)
+          end
+        end
+
+        expect { subject.track_event(:test_event, foo: :bar) }.not_to raise_error
+        expect(context.buffered_event_count).to eq(1)
+      end
+    end
+
+    context 'without a delegation request' do
+      it 'behaves exactly as before: the service provider event is written and nothing buffered' do
+        event = subject.track_event(:test_event, foo: :bar)
+
+        expect(redis_client.read_events(issuer: service_provider.issuer).keys).to eq([event.jti])
+        expect(mock_session).to eq({})
+      end
+    end
+  end
+
   describe '#parse_failure_reason' do
     let(:mock_error_message) { 'failure_reason_from_error' }
     let(:mock_error_details) { { mock_error: { failure_reason_from_error_details: true } } }

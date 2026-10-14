@@ -32,6 +32,9 @@ class SessionEncryptor
     ['flash', 'flashes', 'personal_key'],
     ['flash', 'flashes', 'email'],
     ['email'],
+    # Attempts API events buffered for a delegation request (AttemptsApi::DelegationContext
+    # BUFFER_KEY); they carry sign-in details such as the email address.
+    ['delegated_attempts_buffer'],
   ].freeze
 
   SENSITIVE_DEFAULT_FIELDS = Idp::Constants::MOCK_IDV_APPLICANT.slice(
