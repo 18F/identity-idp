@@ -27,9 +27,34 @@ class ServiceProvider < ApplicationRecord
           class_name: 'Agreements::Integration',
           dependent: nil
 
+  # The API URLs of this record when it is an application registered for delegated access.
+  has_many :token_exchange_resource_servers, inverse_of: :service_provider, dependent: :destroy
+
+  include DelegationLocalizedContent
+  # Consent-screen content an agency writes about this application; jsonb keyed by locale.
+  localized_content :delegation_display_name, :delegation_description, :delegation_data_provided
+  # Consent-screen content a service provider writes about itself ("who is asking").
+  localized_content :delegation_service_description, :delegation_data_handling_statement,
+                    :delegation_ai_description
+
+  DELEGATION_OPERATOR_TYPES = %w[federal state_local contractor non_government].freeze
+
+  # Prefix every application's delegation scope carries on the wire:
+  # `token_exchange:<delegation_scope_value>`.
+  DELEGATION_SCOPE_PREFIX = 'token_exchange:'
+  DELEGATION_ACCESS_TYPES = %w[read read_write].freeze
+
+  # The only JWE key-management algorithm (RFC 7518 §4.3) userinfo responses are encrypted with;
+  # a record opts in by naming it in `userinfo_encrypted_response_alg`.
+  USERINFO_ENCRYPTED_RESPONSE_ALGS = %w[RSA-OAEP-256].freeze
+
   # Do not define validations in this model
   # See https://github.com/18F/identity_validations
   include IdentityValidations::ServiceProviderValidation
+  # The shared validations above do not know the delegated-access columns; this one is checked
+  # here so onboarding cannot persist an algorithm the userinfo endpoint cannot produce.
+  validates :userinfo_encrypted_response_alg,
+            inclusion: { in: USERINFO_ENCRYPTED_RESPONSE_ALGS }, allow_blank: true
 
   scope(:active, -> { where(active: true) })
   scope(
@@ -62,6 +87,42 @@ class ServiceProvider < ApplicationRecord
     block_encryption != 'none'
   end
 
+  # Whether this service provider has asked for its userinfo responses as an encrypted JWT
+  # (OpenID Connect Core 1.0 §5.3.2) rather than plain JSON.
+  def userinfo_encrypted_response?
+    userinfo_encrypted_response_alg.present?
+  end
+
+  # The public key userinfo responses to this service provider are encrypted to: the key of its
+  # first registered certificate, the same certificate its `private_key_jwt` client assertions
+  # are verified against, so an opted-in partner decrypts with the key it already holds. Only a
+  # confidential client has such a key. A public client (`pkce` true) holds no registered key by
+  # definition, so it gets nil even if a certificate was pasted onto its record, as does a record
+  # whose certificate is missing or cannot be parsed.
+  # @return [OpenSSL::PKey::PKey, nil]
+  def userinfo_encryption_key
+    return nil if pkce == true
+
+    ssl_certs.first&.public_key
+  rescue OpenSSL::OpenSSLError
+    nil
+  end
+
+  # Logs a warning when the record has opted in to encrypted userinfo responses but no key to
+  # encrypt to exists. The userinfo endpoint then refuses every request from this record rather
+  # than answer in the clear, so the misconfiguration should be noticed when it is written.
+  # Onboarding runs it after every write.
+  def warn_if_userinfo_encryption_unusable
+    return unless userinfo_encrypted_response?
+    return if userinfo_encryption_key.present?
+
+    Rails.logger.warn do
+      reason = pkce == true ? 'it is a public client' : 'it has no usable registered certificate'
+      "service provider #{issuer} asks for encrypted userinfo responses but #{reason}; " \
+        "its userinfo requests will be refused rather than answered in the clear"
+    end
+  end
+
   def skip_encryption_allowed
     config = IdentityConfig.store.skip_encryption_allowed_list
     return false if config.blank?
@@ -76,6 +137,73 @@ class ServiceProvider < ApplicationRecord
 
   def ialmax_allowed?
     IdentityConfig.store.allowed_ialmax_providers.include?(issuer)
+  end
+
+  # Whether this service provider may request delegated access: the capability is switched on,
+  # the record is active, and Login.gov has approved it (`token_exchange_enabled_sp`, set through
+  # partner onboarding like every other service provider field).
+  def delegation_service_provider?
+    IdentityConfig.store.token_exchange_enabled && active? && token_exchange_enabled_sp?
+  end
+
+  # Whether every token Login.gov issues to this service provider is bound to a key it holds
+  # (RFC 9449 DPoP): the authorization code, the sign-in access token and, for delegated access,
+  # the delegated and refresh tokens. A per-client setting (`dpop_required`) that takes effect
+  # only for a public client (`pkce`), which has no client secret and holds its tokens in the
+  # person's browser, so each must be useless without the key. A confidential client proves itself
+  # with its registered key and keeps bearer tokens whatever the setting says. Independent of
+  # approval for delegated access: an approved public client without the setting is a bearer
+  # client throughout, and a public client with it is bound whether or not it is approved.
+  def dpop_bound?
+    pkce == true && dpop_required
+  end
+
+  # Logs a warning when the key-binding setting cannot mean what it says: set on a confidential
+  # client, where it has no effect, or left unset on a public client approved for delegated
+  # access, whose delegated tokens are then bearer tokens that anyone holding a copy can use.
+  # Onboarding runs it after every write so the configuration is questioned when it is written.
+  def warn_if_key_binding_misconfigured
+    if dpop_required && pkce != true
+      Rails.logger.warn do
+        "service provider #{issuer} sets dpop_required but is a confidential client; the setting " \
+          "is ignored and its tokens are bearer tokens"
+      end
+    elsif pkce == true && token_exchange_enabled_sp && !dpop_required
+      Rails.logger.warn do
+        "service provider #{issuer} is a public client approved for delegated access without " \
+          "dpop_required; its delegated tokens will be bearer tokens"
+      end
+    end
+  end
+
+  # Whether this record is an application registered for delegated access: an agency-owned
+  # record a service provider may act at on the user's behalf, owning one or more API URLs
+  # (token_exchange_resource_servers).
+  def delegation_application?
+    active? && delegation_application
+  end
+
+  # The scope value a service provider sends to request this application, with its prefix,
+  # e.g. "token_exchange:housing_records". Nil for records that are not applications.
+  def delegation_scope
+    return nil if delegation_scope_value.blank?
+
+    "#{DELEGATION_SCOPE_PREFIX}#{delegation_scope_value}"
+  end
+
+  # Whether this application accepts delegation from the given service provider. The agency
+  # lists the service providers it accepts in its own configuration; an empty list means any
+  # service provider Login.gov has approved for delegation, so an agency that does not care needs
+  # no configuration. A record that is not an application accepts nobody.
+  def accepts_delegation_from?(service_provider_issuer)
+    return false unless delegation_application?
+
+    allowed = Array(allowed_delegation_service_providers).map(&:to_s)
+    allowed.empty? || allowed.include?(service_provider_issuer.to_s)
+  end
+
+  def delegation_read_write?
+    delegation_access_type == 'read_write'
   end
 
   def document_images_sharing_allowed?
@@ -98,6 +226,29 @@ class ServiceProvider < ApplicationRecord
     else
       ssl_certs.first.public_key
     end
+  end
+
+  # Whether Attempts API events can actually be delivered to this record: it is listed in the
+  # Attempts configuration, belongs to an agency (events are attributed to the person's identifier
+  # at that agency) and a public key to encrypt events to exists, either an explicit key in that
+  # configuration or the record's own certificate. A record listed without any usable key is not
+  # onboarded and is treated as not enrolled rather than as an error. Delegated-access delivery
+  # to agencies decides enrollment with this; the direct sign-in flow is unchanged.
+  def attempts_api_deliverable?
+    return false unless attempts_api_enabled?
+    return false if agency_id.blank?
+    return true if attempts_config['keys'].present?
+
+    ssl_certs.first.present?
+  end
+
+  # The records whose Attempts API credentials receive the fraud-signal events of a delegated
+  # session at this application: each of its active API URLs names a recipient
+  # (TokenExchangeResourceServer#attempts_recipient), which defaults to the application itself.
+  # @return [Array<ServiceProvider>]
+  def delegation_attempts_recipients
+    recipients = token_exchange_resource_servers.select(&:active?).map(&:attempts_recipient).uniq
+    recipients.presence || [self]
   end
 
   def create_prompt_allowed?

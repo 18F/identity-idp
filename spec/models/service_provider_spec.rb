@@ -219,6 +219,87 @@ RSpec.describe ServiceProvider do
     end
   end
 
+  describe '#attempts_api_deliverable?' do
+    let(:service_provider) { create(:service_provider, :delegation_application) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:attempts_api_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
+        [{ 'issuer' => service_provider.issuer, 'keys' => keys }],
+      )
+    end
+    let(:keys) { [] }
+
+    it 'is true when the record is listed and its certificate provides the key' do
+      expect(service_provider.attempts_api_deliverable?).to eq(true)
+    end
+
+    context 'with an explicit key in the Attempts configuration' do
+      let(:service_provider) { create(:service_provider, :delegation_application, certs: []) }
+      let(:keys) { [OpenSSL::PKey::RSA.new(2048).public_key.to_pem] }
+
+      it 'is true' do
+        expect(service_provider.attempts_api_deliverable?).to eq(true)
+      end
+    end
+
+    it 'is false when the record is listed but has no usable key' do
+      service_provider.update!(certs: [])
+      expect(service_provider.attempts_api_enabled?).to eq(true)
+      expect(service_provider.attempts_api_deliverable?).to eq(false)
+    end
+
+    it 'is false when the record belongs to no agency' do
+      service_provider.update!(agency: nil)
+      expect(service_provider.attempts_api_deliverable?).to eq(false)
+    end
+
+    it 'is false when the record is not listed' do
+      allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return([])
+      expect(service_provider.attempts_api_deliverable?).to eq(false)
+    end
+
+    it 'is false when the Attempts API is off' do
+      allow(IdentityConfig.store).to receive(:attempts_api_enabled).and_return(false)
+      expect(service_provider.attempts_api_deliverable?).to eq(false)
+    end
+  end
+
+  describe '#delegation_attempts_recipients' do
+    let(:application) { create(:service_provider, :delegation_application) }
+
+    it 'is the application itself when its APIs name no other recipient' do
+      create(:token_exchange_resource_server, service_provider: application)
+      expect(application.delegation_attempts_recipients).to eq([application])
+    end
+
+    it 'is the application itself when it has no API registered' do
+      expect(application.delegation_attempts_recipients).to eq([application])
+    end
+
+    it 'is each distinct recipient the active APIs name' do
+      other = create(:service_provider)
+      create(:token_exchange_resource_server, service_provider: application)
+      create(
+        :token_exchange_resource_server, service_provider: application,
+                                         attempts_service_provider: other
+      )
+      create(
+        :token_exchange_resource_server, service_provider: application,
+                                         attempts_service_provider: other
+      )
+      create(
+        :token_exchange_resource_server, service_provider: application, active: false,
+                                         attempts_service_provider: create(:service_provider)
+      )
+
+      expect(application.reload.delegation_attempts_recipients).to contain_exactly(
+        application,
+        other,
+      )
+    end
+  end
+
   describe '#attempts_public_key' do
     context 'when the sp is configured to use the attempts api' do
       context 'when there is no public key set in the configuration' do
@@ -300,6 +381,105 @@ RSpec.describe ServiceProvider do
     end
   end
 
+  describe 'userinfo_encrypted_response_alg' do
+    it 'accepts nil, blank and RSA-OAEP-256 only' do
+      expect(build(:service_provider, userinfo_encrypted_response_alg: nil)).to be_valid
+      expect(build(:service_provider, userinfo_encrypted_response_alg: '')).to be_valid
+      expect(build(:service_provider, userinfo_encrypted_response_alg: 'RSA-OAEP-256')).to be_valid
+
+      sp = build(:service_provider, userinfo_encrypted_response_alg: 'RSA-OAEP')
+      expect(sp).not_to be_valid
+      expect(sp.errors[:userinfo_encrypted_response_alg]).to be_present
+    end
+  end
+
+  describe '#userinfo_encrypted_response?' do
+    it 'is true only when an algorithm is set' do
+      expect(build(:service_provider).userinfo_encrypted_response?).to eq(false)
+      opted_in = build(:service_provider, userinfo_encrypted_response_alg: 'RSA-OAEP-256')
+      expect(opted_in.userinfo_encrypted_response?).to eq(true)
+    end
+  end
+
+  describe '#userinfo_encryption_key' do
+    let(:pem) { Rails.root.join('certs', 'sp', 'saml_test_sp.crt').read }
+
+    it 'is the public key of the first registered certificate for a confidential client' do
+      sp = build(:service_provider, certs: [pem, 'saml_test_sp2'])
+
+      key = sp.userinfo_encryption_key
+      expect(key).to be_a(OpenSSL::PKey::RSA)
+      expect(key.to_pem).to eq(OpenSSL::X509::Certificate.new(pem).public_key.to_pem)
+    end
+
+    it 'is nil without a certificate or when the named certificate is not on disk' do
+      expect(build(:service_provider, certs: []).userinfo_encryption_key).to be_nil
+      expect(build(:service_provider, certs: ['i_do_not_exist']).userinfo_encryption_key)
+        .to be_nil
+    end
+
+    it 'is nil when the stored certificate cannot be parsed' do
+      garbage = "-----BEGIN CERTIFICATE-----\nnope\n-----END CERTIFICATE-----"
+      sp = build(:service_provider, certs: [garbage])
+
+      expect(sp.userinfo_encryption_key).to be_nil
+    end
+
+    it 'is nil for a public client even with a certificate on its record' do
+      expect(build(:service_provider, pkce: true, certs: [pem]).userinfo_encryption_key).to be_nil
+    end
+  end
+
+  describe '#warn_if_userinfo_encryption_unusable' do
+    let(:warnings) { [] }
+
+    before do
+      allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+    end
+
+    it 'says nothing for a record that did not opt in, with or without a certificate' do
+      build(:service_provider, certs: []).warn_if_userinfo_encryption_unusable
+      build(:service_provider, pkce: true, certs: []).warn_if_userinfo_encryption_unusable
+
+      expect(warnings).to be_empty
+    end
+
+    it 'says nothing for an opted-in confidential client with a certificate' do
+      build(:service_provider, userinfo_encrypted_response_alg: 'RSA-OAEP-256')
+        .warn_if_userinfo_encryption_unusable
+
+      expect(warnings).to be_empty
+    end
+
+    it 'warns when the opted-in record has no usable certificate' do
+      sp = build(
+        :service_provider,
+        issuer: 'urn:opted-in',
+        certs: [],
+        userinfo_encrypted_response_alg: 'RSA-OAEP-256',
+      )
+      sp.warn_if_userinfo_encryption_unusable
+
+      expect(warnings).to contain_exactly(
+        a_string_including('urn:opted-in', 'no usable registered certificate', 'refused'),
+      )
+    end
+
+    it 'warns when the opted-in record is a public client' do
+      sp = build(
+        :service_provider,
+        issuer: 'urn:public',
+        pkce: true,
+        userinfo_encrypted_response_alg: 'RSA-OAEP-256',
+      )
+      sp.warn_if_userinfo_encryption_unusable
+
+      expect(warnings).to contain_exactly(
+        a_string_including('urn:public', 'public client', 'refused'),
+      )
+    end
+  end
+
   describe '#logo_is_email_compatible?' do
     subject { ServiceProvider.new(logo: logo) }
     before do
@@ -365,6 +545,158 @@ RSpec.describe ServiceProvider do
       it 'returns true' do
         expect(subject.receives_client_id_in_risc?).to be false
       end
+    end
+  end
+
+  describe '#delegation_application?' do
+    it 'is true only for an active record registered as an application' do
+      expect(create(:service_provider, :delegation_application).delegation_application?).to eq(true)
+      expect(
+        create(:service_provider, :delegation_application, active: false)
+                .delegation_application?,
+      ).to eq(false)
+      expect(create(:service_provider, :active).delegation_application?).to eq(false)
+    end
+  end
+
+  describe '#delegation_scope' do
+    it 'prefixes the scope value with token_exchange:' do
+      application = create(
+        :service_provider, :delegation_application, delegation_scope_value: 'housing_records'
+      )
+      expect(application.delegation_scope).to eq('token_exchange:housing_records')
+    end
+
+    it 'is nil for a record without a scope value' do
+      expect(create(:service_provider, :active).delegation_scope).to be_nil
+    end
+  end
+
+  describe '#accepts_delegation_from?' do
+    let(:issuer) { 'urn:gov:gsa:openidconnect:sp:mybenefits' }
+
+    it 'accepts any service provider when the list is empty' do
+      application = create(:service_provider, :delegation_application)
+      expect(application.accepts_delegation_from?(issuer)).to eq(true)
+    end
+
+    it 'accepts only the listed service providers when the list is set' do
+      application = create(
+        :service_provider, :delegation_application,
+        allowed_delegation_service_providers: [issuer]
+      )
+      expect(application.accepts_delegation_from?(issuer)).to eq(true)
+      expect(application.accepts_delegation_from?('urn:someone-else')).to eq(false)
+    end
+
+    it 'accepts nobody when the record is not an application' do
+      expect(create(:service_provider, :active).accepts_delegation_from?(issuer)).to eq(false)
+    end
+  end
+
+  describe '#dpop_bound?' do
+    it 'is true only for a public client registered with dpop_required' do
+      expect(build(:service_provider, pkce: true, dpop_required: true).dpop_bound?).to eq(true)
+      expect(build(:service_provider, pkce: true, dpop_required: false).dpop_bound?).to eq(false)
+      expect(build(:service_provider, pkce: false, dpop_required: true).dpop_bound?).to eq(false)
+      expect(build(:service_provider, pkce: nil, dpop_required: true).dpop_bound?).to eq(false)
+    end
+
+    it 'does not follow approval for delegated access' do
+      allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+
+      approved = build(:service_provider, :delegation_service_provider, pkce: true)
+      expect(approved.delegation_service_provider?).to eq(true)
+      expect(approved.dpop_bound?).to eq(false)
+
+      unapproved = build(:service_provider, pkce: true, dpop_required: true)
+      expect(unapproved.delegation_service_provider?).to eq(false)
+      expect(unapproved.dpop_bound?).to eq(true)
+    end
+  end
+
+  describe '#warn_if_key_binding_misconfigured' do
+    let(:warnings) { [] }
+
+    before do
+      allow(Rails.logger).to receive(:warn) { |&block| warnings << block.call }
+    end
+
+    it 'says nothing for a public client registered with dpop_required, approved or not' do
+      build(:service_provider, pkce: true, dpop_required: true).warn_if_key_binding_misconfigured
+      build(:service_provider, :delegation_service_provider, pkce: true, dpop_required: true)
+        .warn_if_key_binding_misconfigured
+
+      expect(warnings).to be_empty
+    end
+
+    it 'says nothing for a confidential client without the setting, approved or not' do
+      build(:service_provider, pkce: false).warn_if_key_binding_misconfigured
+      build(:service_provider, :delegation_service_provider, pkce: false)
+        .warn_if_key_binding_misconfigured
+
+      expect(warnings).to be_empty
+    end
+
+    it 'says nothing for a public client without the setting that is not approved for delegation' do
+      build(:service_provider, pkce: true).warn_if_key_binding_misconfigured
+
+      expect(warnings).to be_empty
+    end
+
+    it 'warns when a confidential client sets dpop_required, which has no effect' do
+      build(:service_provider, issuer: 'urn:confidential', pkce: false, dpop_required: true)
+        .warn_if_key_binding_misconfigured
+      build(:service_provider, issuer: 'urn:unset', pkce: nil, dpop_required: true)
+        .warn_if_key_binding_misconfigured
+
+      expect(warnings).to contain_exactly(
+        a_string_including('urn:confidential', 'confidential client', 'ignored'),
+        a_string_including('urn:unset', 'confidential client', 'ignored'),
+      )
+    end
+
+    it 'warns when a public client approved for delegation has no dpop_required' do
+      build(:service_provider, :delegation_service_provider, issuer: 'urn:public', pkce: true)
+        .warn_if_key_binding_misconfigured
+
+      expect(warnings).to contain_exactly(
+        a_string_including('urn:public', 'without dpop_required', 'bearer tokens'),
+      )
+    end
+  end
+
+  describe 'localized consent content' do
+    it 'reads the current locale and falls back to English' do
+      application = create(
+        :service_provider, :delegation_application,
+        delegation_display_name: { en: 'Housing Assistance Records', es: 'Registros de vivienda' },
+        delegation_description: { en: 'check your housing application.' }
+      )
+      expect(application.delegation_display_name_for(:es)).to eq('Registros de vivienda')
+      expect(application.delegation_display_name_for(:fr)).to eq('Housing Assistance Records')
+      expect(application.delegation_description_for(:zh)).to eq('check your housing application.')
+    end
+  end
+
+  describe '#delegation_service_provider?' do
+    before { allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true) }
+
+    it 'is true for an active, approved service provider' do
+      expect(create(:service_provider, :delegation_service_provider).delegation_service_provider?)
+        .to eq(true)
+    end
+
+    it 'is false without approval, when inactive, or when the capability is off' do
+      expect(create(:service_provider, :active).delegation_service_provider?).to eq(false)
+      expect(
+        create(:service_provider, :delegation_service_provider, active: false)
+                .delegation_service_provider?,
+      ).to eq(false)
+
+      allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(false)
+      expect(create(:service_provider, :delegation_service_provider).delegation_service_provider?)
+        .to eq(false)
     end
   end
 end
