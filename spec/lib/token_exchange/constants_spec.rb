@@ -31,20 +31,20 @@ RSpec.describe TokenExchange::Constants do
     end
   end
 
-  describe '.scope?' do
+  describe '.in_scope?' do
     it 'matches the base scope' do
-      expect(described_class.scope?('token_exchange')).to eq(true)
+      expect(described_class.in_scope?('token_exchange')).to eq(true)
     end
 
     it 'matches any audience-qualified scope' do
-      expect(described_class.scope?('token_exchange:passport')).to eq(true)
-      expect(described_class.scope?('token_exchange:benefits')).to eq(true)
+      expect(described_class.in_scope?('token_exchange:passport')).to eq(true)
+      expect(described_class.in_scope?('token_exchange:benefits')).to eq(true)
     end
 
     it 'does not match other scopes' do
-      expect(described_class.scope?('openid')).to eq(false)
-      expect(described_class.scope?('token_exchange_passport')).to eq(false)
-      expect(described_class.scope?(nil)).to eq(false)
+      expect(described_class.in_scope?('openid')).to eq(false)
+      expect(described_class.in_scope?('token_exchange_passport')).to eq(false)
+      expect(described_class.in_scope?(nil)).to eq(false)
     end
   end
 end
