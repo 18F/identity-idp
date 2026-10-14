@@ -4,16 +4,17 @@ module Reports
   # Shared blurb warning partners that a report is being decommissioned in favor of
   # the partner portal's reporting feature.
   module DecommissionNotice
-    DECOMMISSION_DATE = 'November 1, 2026'
-
     # @return [String] HTML, marked html_safe, meant to be appended to a
     #   report email's message/preamble.
     def decommission_notice
+      decommission_date = IdentityConfig.store.decommissioned_reports_notice_date
+
       <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <div class="usa-alert usa-alert--warning usa-alert--email">
           <div class="usa-alert__body">
             <p class="usa-alert__text">
-              This automated report will be decommissioned beginning #{DECOMMISSION_DATE}.
+              <strong>This automated report will be decommissioned beginning #{decommission_date}.</strong>
+              <br>
               We have recently launched a new reporting feature in our production partner
               portal and will therefore be decommissioning subsequent emailed reports. The
               reporting in the partner portal includes our most up-to-date statistics,

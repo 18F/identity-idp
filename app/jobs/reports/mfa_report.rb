@@ -14,7 +14,6 @@ module Reports
       return unless IdentityConfig.store.s3_reports_enabled
 
       self.report_date = report_date
-      message = "Report: #{REPORT_NAME} #{report_date}#{decommission_notice}".html_safe # rubocop:disable Rails/OutputSafety
       subject = "Monthly MFA Report - #{report_date}"
 
       report_configs.each do |report_hash|
@@ -30,6 +29,10 @@ module Reports
           ).deliver_now
         end
       end
+    end
+
+    def message
+      "Report: #{REPORT_NAME} #{report_date}#{decommission_notice}".html_safe # rubocop:disable Rails/OutputSafety
     end
 
     private

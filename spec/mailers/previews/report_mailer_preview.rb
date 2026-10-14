@@ -1,6 +1,4 @@
 class ReportMailerPreview < ActionMailer::Preview
-  include Reports::DecommissionNotice # LG-748, remove with the module
-
   def deleted_user_accounts_report
     data = <<~CSV
       2023-01-01T:00:00:00Z,00000000-0000-0000-0000-000000000000
@@ -355,21 +353,61 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
-  # Temporary preview to check the decommission notice blurb; remove
-  # along with Reports::DecommissionNotice once the reports are decommissioned on Nov 1, 2026
-  def tables_report_with_decommission_notice
+  # These previews can be deleted after reports are decommissioned and their code is deleted
+  def mfa_report_with_decommission_notice
+    report = Reports::MfaReport.new
+    report.report_date = Time.zone.yesterday
+
     ReportMailer.tables_report(
       to: 'test@example.com',
-      subject: 'Example Report With Decommission Notice',
-      message: "Sample Message#{decommission_notice}".html_safe, # rubocop:disable Rails/OutputSafety
+      subject: 'Example MFA Report With Decommission Notice',
+      message: report.message,
       attachment_format: :csv,
       reports: [
-        Reporting::EmailableReport.new(
-          table: [
-            ['Metric', 'Value'],
-            ['Metric name 1', '1,000'],
-          ],
-        ),
+        Reporting::EmailableReport.new(table: [['Metric', 'Value'], ['Metric name 1', '1,000']]),
+      ],
+    )
+  end
+
+  def authentication_report_with_decommission_notice
+    report = Reports::AuthenticationReport.new
+    report.report_date = Time.zone.yesterday
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      subject: 'Example Authentication Report With Decommission Notice',
+      message: report.message,
+      attachment_format: :csv,
+      reports: [
+        Reporting::EmailableReport.new(table: [['Metric', 'Value'], ['Metric name 1', '1,000']]),
+      ],
+    )
+  end
+
+  def sp_issuer_user_counts_report_with_decommission_notice
+    report = Reports::SpIssuerUserCountsReport.new
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      subject: 'Example SP Issuer User Counts Report With Decommission Notice',
+      message: report.message,
+      attachment_format: :csv,
+      reports: [
+        Reporting::EmailableReport.new(table: [['Metric', 'Value'], ['Metric name 1', '1,000']]),
+      ],
+    )
+  end
+
+  def drop_off_report_with_decommission_notice
+    report = Reports::DropOffReport.new
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      subject: 'Example Drop Off Report With Decommission Notice',
+      message: report.preamble,
+      attachment_format: :csv,
+      reports: [
+        Reporting::EmailableReport.new(table: [['Metric', 'Value'], ['Metric name 1', '1,000']]),
       ],
     )
   end
