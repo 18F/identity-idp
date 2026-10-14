@@ -249,7 +249,6 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       access_token = TokenExchange::AccessToken.load(response[:access_token])
 
       expect(access_token).to have_attributes(
-        user_id: identity.user_id,
         identity_uuid: identity.uuid,
         target_issuer:,
         resource:,

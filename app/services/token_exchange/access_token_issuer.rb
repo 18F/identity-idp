@@ -26,7 +26,6 @@ module TokenExchange
       issued_at = Time.zone.now.to_i
       access_token = AccessToken.new(
         id: AccessToken.digest(token),
-        user_id: subject_token.user_id,
         identity_uuid: subject_token.identity_uuid,
         broker_issuer: subject_token.broker_issuer,
         target_issuer:,

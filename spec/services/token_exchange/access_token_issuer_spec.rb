@@ -14,7 +14,6 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
     let(:subject_token) do
       TokenExchange::SubjectToken.new(
         id: 'subject-token-digest',
-        user_id: 1,
         identity_uuid: 'identity-uuid',
         broker_issuer: 'broker-issuer',
         scope: 'openid token_exchange:passport',
@@ -44,7 +43,6 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
       loaded_access_token = TokenExchange::AccessToken.load(issued_token.token)
 
       expect(loaded_access_token).to have_attributes(
-        user_id: 1,
         identity_uuid: 'identity-uuid',
         broker_issuer: 'broker-issuer',
         target_issuer: 'target-issuer',

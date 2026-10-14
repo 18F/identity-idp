@@ -29,7 +29,6 @@ RSpec.describe OpenidConnectIntrospectionForm do
   let(:subject_token) do
     TokenExchange::SubjectToken.new(
       id: 'subject-token-digest',
-      user_id: 1,
       identity_uuid: 'identity-uuid',
       broker_issuer:,
       scope: 'openid token_exchange:passport',

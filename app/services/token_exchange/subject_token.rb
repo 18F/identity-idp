@@ -3,7 +3,6 @@
 module TokenExchange
   SubjectToken = Struct.new(
     :id,
-    :user_id,
     :identity_uuid,
     :broker_issuer,
     :scope,
