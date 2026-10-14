@@ -86,6 +86,15 @@ RSpec.describe Reporting::IdentityVerificationOutcomesReport do
     allow(ActiveRecord::Base.connection).to receive(:execute).and_return(mock_result)
   end
 
+  describe '#fetch_proofing_ial2_data' do
+    it 'leaves out rows written by delegated token exchanges' do
+      expect(ActiveRecord::Base.connection).to receive(:execute)
+        .with(/COALESCE\(access_type, 'direct'\) <> 'delegated'/)
+        .and_return([{ 'ial_2' => '5' }])
+      expect(report.send(:fetch_proofing_ial2_data)).to eq('5')
+    end
+  end
+
   describe '#overview_table' do
     it 'renders an overview table' do
       aggregate_failures do
