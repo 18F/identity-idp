@@ -14,6 +14,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       state: state,
       code_challenge: code_challenge,
       code_challenge_method: code_challenge_method,
+      dpop_jkt: dpop_jkt,
       verified_within: verified_within,
       site_key_jwk: site_key_jwk,
     )
@@ -30,6 +31,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
   let(:state) { SecureRandom.hex }
   let(:code_challenge) { nil }
   let(:code_challenge_method) { nil }
+  let(:dpop_jkt) { nil }
   let(:verified_within) { nil }
   let(:site_key_jwk) { nil }
 
@@ -377,6 +379,224 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(valid?).to eq(false)
         expect(form.errors[:scope])
           .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+      end
+    end
+
+    context 'with delegation (token_exchange:) scopes' do
+      let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
+      let(:service_provider) do
+        create(:service_provider, :delegation_service_provider, redirect_uris: [redirect_uri])
+      end
+      let(:client_id) { service_provider.issuer }
+      let!(:application) do
+        create(
+          :service_provider, :delegation_application,
+          delegation_scope_value: 'housing_records'
+        )
+      end
+      let(:scope) { 'openid email token_exchange:housing_records' }
+      let(:result) { form.submit }
+
+      before { allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true) }
+
+      it 'succeeds and exposes the requested applications' do
+        expect(result.success?).to eq(true)
+        expect(form.scope).to eq(%w[openid email token_exchange:housing_records])
+        expect(form.requested_delegation_scopes).to eq(['housing_records'])
+        expect(result.to_h[:delegation_scopes]).to eq(['housing_records'])
+      end
+
+      context 'when a value names no registered application' do
+        let(:scope) { 'openid email token_exchange:housing_records token_exchange:nope' }
+
+        it 'fails with invalid_scope and names the unknown value' do
+          expect(result.success?).to eq(false)
+          expect(result.to_h[:redirect_uri]).to include('error=invalid_scope')
+          expect(result.errors[:scope].join).to include('nope')
+        end
+      end
+
+      context 'when the application is inactive' do
+        before { application.update!(active: false) }
+
+        it 'fails with invalid_scope' do
+          expect(result.success?).to eq(false)
+          expect(result.to_h[:redirect_uri]).to include('error=invalid_scope')
+        end
+      end
+
+      context 'when the application does not accept this service provider' do
+        before { application.update!(allowed_delegation_service_providers: ['urn:someone-else']) }
+
+        it 'fails with invalid_scope' do
+          expect(result.success?).to eq(false)
+          expect(result.to_h[:redirect_uri]).to include('error=invalid_scope')
+        end
+      end
+
+      context 'when the service provider is not approved for delegation' do
+        before { service_provider.update!(token_exchange_enabled_sp: false) }
+
+        it 'fails with invalid_scope' do
+          expect(result.success?).to eq(false)
+          expect(result.to_h[:redirect_uri]).to include('error=invalid_scope')
+          expect(result.errors[:scope].join).to include('approved for delegated access')
+        end
+      end
+
+      context 'dpop_jkt (RFC 9449 section 10)' do
+        let(:user) { create(:user, :fully_registered) }
+        let(:thumbprint) { Base64.urlsafe_encode64(SecureRandom.random_bytes(32), padding: false) }
+
+        def link
+          form.submit
+          form.link_identity_to_service_provider(
+            current_user: user, ial: 2, rails_session_id: SecureRandom.hex, email_address_id: nil,
+          )
+        end
+
+        context 'for a public client registered with dpop_required' do
+          before do
+            service_provider.update!(pkce: true, dpop_required: true)
+            allow(IdentityConfig.store).to receive(:openid_connect_private_key_jwt_pkce_enabled)
+              .and_return(false)
+          end
+
+          let(:code_challenge) { Digest::SHA256.urlsafe_base64digest('a' * 43) }
+          let(:code_challenge_method) { 'S256' }
+
+          it 'is required' do
+            expect(form.dpop_binding_required?).to eq(true)
+            expect(result.success?).to eq(false)
+            expect(result.errors[:dpop_jkt])
+              .to eq([t('openid_connect.authorization.errors.dpop_jkt_required')])
+            expect(result.to_h[:redirect_uri]).to include('error=invalid_request')
+          end
+
+          context 'with a well-formed thumbprint' do
+            let(:dpop_jkt) { thumbprint }
+
+            it 'succeeds and stores the thumbprint on the identity' do
+              expect(result.success?).to eq(true)
+              expect(link.dpop_jkt).to eq(thumbprint)
+            end
+          end
+
+          context 'with a malformed thumbprint' do
+            let(:dpop_jkt) { 'not-a-thumbprint' }
+
+            it 'fails with invalid_request' do
+              expect(result.success?).to eq(false)
+              expect(result.errors[:dpop_jkt])
+                .to eq([t('openid_connect.authorization.errors.dpop_jkt_invalid')])
+            end
+          end
+
+          context 'when the client is not approved for delegation' do
+            before { service_provider.update!(token_exchange_enabled_sp: false) }
+            let(:scope) { 'openid email' }
+
+            it 'is still required: the setting alone decides' do
+              expect(form.dpop_binding_required?).to eq(true)
+              expect(result.success?).to eq(false)
+              expect(result.errors[:dpop_jkt])
+                .to eq([t('openid_connect.authorization.errors.dpop_jkt_required')])
+            end
+          end
+        end
+
+        context 'for a public client approved for delegation without dpop_required' do
+          before do
+            service_provider.update!(pkce: true, dpop_required: false)
+            allow(IdentityConfig.store).to receive(:openid_connect_private_key_jwt_pkce_enabled)
+              .and_return(false)
+          end
+
+          let(:code_challenge) { Digest::SHA256.urlsafe_base64digest('a' * 43) }
+          let(:code_challenge_method) { 'S256' }
+
+          it 'is not required: approval for delegation does not bind this client' do
+            expect(service_provider.delegation_service_provider?).to eq(true)
+            expect(form.dpop_binding_required?).to eq(false)
+            expect(result.success?).to eq(true)
+            expect(link.dpop_jkt).to be_nil
+          end
+
+          context 'when sent anyway' do
+            let(:dpop_jkt) { thumbprint }
+
+            it 'is accepted but not stored, since bearer tokens are issued to this client' do
+              expect(result.success?).to eq(true)
+              expect(link.dpop_jkt).to be_nil
+            end
+          end
+
+          context 'when sent malformed' do
+            let(:dpop_jkt) { 'x' }
+
+            it 'ignores the parameter when key binding does not apply' do
+              expect(result.success?).to eq(true)
+              expect(link.dpop_jkt).to be_nil
+            end
+          end
+        end
+
+        context 'for a confidential client approved for delegation' do
+          before { service_provider.update!(pkce: false) }
+
+          it 'is not required' do
+            expect(form.dpop_binding_required?).to eq(false)
+            expect(result.success?).to eq(true)
+          end
+
+          context 'when sent anyway' do
+            let(:dpop_jkt) { thumbprint }
+
+            it 'is accepted but not stored, since bearer tokens are issued to this client' do
+              expect(result.success?).to eq(true)
+              expect(link.dpop_jkt).to be_nil
+            end
+          end
+
+          context 'when sent malformed' do
+            let(:dpop_jkt) { 'x' }
+
+            it 'ignores the parameter when key binding does not apply' do
+              expect(result.success?).to eq(true)
+              expect(link.dpop_jkt).to be_nil
+            end
+          end
+
+          context 'with dpop_required set on its record' do
+            before { service_provider.update!(dpop_required: true) }
+            let(:dpop_jkt) { thumbprint }
+
+            it 'has no effect: not required, and a thumbprint sent is not stored' do
+              expect(form.dpop_binding_required?).to eq(false)
+              expect(result.success?).to eq(true)
+              expect(link.dpop_jkt).to be_nil
+            end
+          end
+        end
+      end
+
+      context 'when the request is not identity-verified' do
+        let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
+        before { service_provider.update!(ial: 1) }
+
+        it 'fails with invalid_scope' do
+          expect(result.success?).to eq(false)
+          expect(result.to_h[:redirect_uri]).to include('error=invalid_scope')
+        end
+      end
+
+      context 'with an unknown value that lacks the prefix' do
+        let(:scope) { 'openid email sub given_name token_exchange:housing_records' }
+
+        it 'still silently ignores it' do
+          expect(result.success?).to eq(true)
+          expect(form.scope).to eq(%w[openid email token_exchange:housing_records])
+        end
       end
     end
 
@@ -844,7 +1064,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'for an SP that does not use site keys' do
       before { form.service_provider.update!(site_key_allowed: false) }
 
-      it 'ignores the optional parameter when the provider has not opted in' do
+      it 'ignores the parameter for a service provider that has not opted in' do
         expect(form.submit.success?).to eq(true)
         expect(form.site_key_requested?).to eq(false)
       end

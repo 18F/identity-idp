@@ -67,10 +67,25 @@ class OpenidConnectAttributeScoper
   CLAIMS = ATTRIBUTE_SCOPES_MAP.keys.freeze
   UNSCOPED_CLAIMS = %w[auth_time iss sub].freeze
 
+  # Delegation scopes name an agency application the service provider wants to act at for the
+  # user: `token_exchange:<delegation_scope_value>`. The values are defined by the application
+  # registry, not by this list, so they are kept through parsing and validated against the
+  # registry by OpenidConnectAuthorizeForm. They are never attribute scopes: they release no
+  # claim and never reach requested_attributes or verified_attributes.
+  DELEGATION_SCOPE_PREFIX = ServiceProvider::DELEGATION_SCOPE_PREFIX
+
+  def self.delegation_scope?(value)
+    value.to_s.start_with?(DELEGATION_SCOPE_PREFIX)
+  end
+
   attr_reader :scopes
 
-  def initialize(scope)
-    @scopes = parse_scope(scope)
+  # @param scope [String, nil] the space-separated OIDC scope parameter
+  # @param allowed [Array<String>] the attribute scopes recognized for this request; the
+  #   authorize form narrows it to VALID_IAL1_SCOPES when identity proofing is not requested
+  def initialize(scope, allowed: VALID_SCOPES, delegation_scopes: true)
+    @delegation_scopes = delegation_scopes
+    @scopes = parse_scope(scope, allowed)
   end
 
   def ial2_scopes_requested?
@@ -107,10 +122,28 @@ class OpenidConnectAttributeScoper
     scopes.map { |scope| SCOPE_ATTRIBUTE_MAP[scope] }.flatten.compact
   end
 
+  # Bare delegation scope values ("housing_records" for "token_exchange:housing_records"), in the
+  # order requested.
+  def delegation_scope_values
+    scopes.select { |value| self.class.delegation_scope?(value) }
+      .map { |value| value.delete_prefix(DELEGATION_SCOPE_PREFIX) }
+  end
+
+  def delegation_requested?
+    delegation_scope_values.any?
+  end
+
   private
 
-  def parse_scope(scope)
+  # Attribute scopes are intersected with the allowed list, so an unknown value is silently
+  # ignored as it always has been (existing integrations, including Login.gov's own sample
+  # applications, send values that are not scopes). Delegation scopes are kept as given; the
+  # authorize form validates them against the registry and can reject unknown ones explicitly.
+  def parse_scope(scope, allowed)
     return [] if scope.blank?
-    scope.split(' ').flatten.compact & VALID_SCOPES
+    values = scope.split(' ').flatten.compact
+    return values & allowed unless @delegation_scopes
+
+    (values & allowed) + values.select { |value| self.class.delegation_scope?(value) }.uniq
   end
 end

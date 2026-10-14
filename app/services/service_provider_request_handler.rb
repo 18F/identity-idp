@@ -64,6 +64,8 @@ class ServiceProviderRequestHandler
       acr_values: protocol.acr_values,
       vtr: protocol.vtr,
       requested_attributes: protocol.requested_attributes,
+      requested_delegation_scopes: protocol.requested_delegation_scopes,
+      **(protocol.dpop_binding_required? ? { dpop_binding_required: true } : {}),
       uuid: request_id,
       url: url,
     }

@@ -7,7 +7,9 @@ module OpenidConnect
     skip_before_action :verify_authenticity_token
 
     def create
-      @token_form = OpenidConnectTokenForm.new(token_params)
+      @token_form = OpenidConnectTokenForm.new(
+        token_params.to_h.merge(dpop_proof: request.headers['DPoP'].presence),
+      )
 
       result = @token_form.submit
       response = @token_form.response
