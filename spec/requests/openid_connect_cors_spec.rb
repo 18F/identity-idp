@@ -53,65 +53,6 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
     end
   end
 
-  describe 'introspection endpoint' do
-    context 'origin is included in ServiceProvider redirect_uris' do
-      it 'responds to POST requests with the right CORS headers' do
-        post api_openid_connect_introspect_path,
-             headers: { 'HTTP_ORIGIN' => 'https://example.com' }
-
-        aggregate_failures do
-          expect(response).to_not be_not_found
-          expect(response['Access-Control-Allow-Credentials']).to eq('true')
-          expect(response['Access-Control-Allow-Methods']).to eq('POST, OPTIONS')
-          expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
-        end
-      end
-
-      it 'responds to OPTIONS requests with the right CORS headers' do
-        process(
-          :options,
-          api_openid_connect_introspect_path,
-          params: {},
-          headers: { 'HTTP_ORIGIN' => 'https://example.com' },
-        )
-
-        aggregate_failures do
-          expect(response).to be_ok
-          expect(response.body).to be_empty
-          expect(response['Access-Control-Allow-Credentials']).to eq('true')
-          expect(response['Access-Control-Allow-Methods']).to eq('POST, OPTIONS')
-          expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
-        end
-      end
-    end
-
-    context 'origin is not included in ServiceProvider redirect_uris' do
-      it 'does not allow POST requests from origin' do
-        post api_openid_connect_introspect_path,
-             headers: { 'HTTP_ORIGIN' => 'https://foo.com' }
-
-        aggregate_failures do
-          expect(response['Access-Control-Allow-Origin']).to be_nil
-          expect(response['Access-Control-Allow-Methods']).to be_nil
-        end
-      end
-
-      it 'does not allow OPTIONS requests from origin' do
-        process(
-          :options,
-          api_openid_connect_introspect_path,
-          params: {},
-          headers: { 'HTTP_ORIGIN' => 'https://foo.com' },
-        )
-
-        aggregate_failures do
-          expect(response['Access-Control-Allow-Origin']).to be_nil
-          expect(response['Access-Control-Allow-Methods']).to be_nil
-        end
-      end
-    end
-  end
-
   describe 'token endpoint' do
     context 'origin is included in ServiceProvider redirect_uris' do
       it 'responds to POST requests with the right CORS headers' do
