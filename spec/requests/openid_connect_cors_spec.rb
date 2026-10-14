@@ -4,6 +4,28 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
   before { Rails.cache.clear }
   after { Rails.cache.clear }
 
+  context 'when delegated access is disabled' do
+    before { allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(false) }
+
+    %w[revoke introspect].each do |endpoint|
+      %i[post options].each do |method|
+        it "does not grant cross-origin access to #{endpoint} through #{method}" do
+          process(
+            method, "/api/openid_connect/#{endpoint}", headers: {
+              'HTTP_ORIGIN' => 'https://example.com',
+              'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'POST',
+            }
+          )
+
+          # Rack::Cors answers every valid preflight with 200, including unmatched routes.
+          expect(response).to have_http_status(method == :options ? :ok : :not_found)
+          expect(response['Access-Control-Allow-Origin']).to be_nil
+          expect(response['Access-Control-Allow-Methods']).to be_nil
+        end
+      end
+    end
+  end
+
   describe 'configuration endpoint' do
     context 'origin is included in ServiceProvider redirect_uris' do
       it 'allows origin' do
@@ -101,6 +123,119 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
           params: {},
           headers: { 'HTTP_ORIGIN' => 'https://foo.com' },
         )
+
+        aggregate_failures do
+          expect(response['Access-Control-Allow-Origin']).to be_nil
+          expect(response['Access-Control-Allow-Methods']).to be_nil
+        end
+      end
+    end
+  end
+
+  describe 'revocation endpoint' do
+    before { allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true) }
+
+    context 'origin is included in ServiceProvider redirect_uris' do
+      it 'responds to POST requests with the right CORS headers' do
+        post api_openid_connect_revoke_path, headers: { 'HTTP_ORIGIN' => 'https://example.com' }
+
+        aggregate_failures do
+          expect(response).to_not be_not_found
+          expect(response['Access-Control-Allow-Credentials']).to eq('true')
+          expect(response['Access-Control-Allow-Methods']).to eq('POST, OPTIONS')
+          expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
+        end
+      end
+
+      it 'responds to OPTIONS preflight requests with the right CORS headers' do
+        process(
+          :options,
+          api_openid_connect_revoke_path,
+          params: {},
+          headers: {
+            'HTTP_ORIGIN' => 'https://example.com',
+            'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'POST',
+            'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'DPoP, Content-Type',
+          },
+        )
+
+        aggregate_failures do
+          expect(response).to be_ok
+          expect(response.body).to be_empty
+          expect(response['Access-Control-Allow-Credentials']).to eq('true')
+          expect(response['Access-Control-Allow-Methods']).to eq('POST, OPTIONS')
+          expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
+          expect(response['Access-Control-Allow-Headers']).to eq('DPoP, Content-Type')
+        end
+      end
+    end
+
+    context 'origin is not included in ServiceProvider redirect_uris' do
+      it 'does not allow POST requests from origin' do
+        post api_openid_connect_revoke_path, headers: { 'HTTP_ORIGIN' => 'https://foo.com' }
+
+        aggregate_failures do
+          expect(response['Access-Control-Allow-Origin']).to be_nil
+          expect(response['Access-Control-Allow-Methods']).to be_nil
+        end
+      end
+
+      it 'does not allow OPTIONS requests from origin' do
+        process(
+          :options,
+          api_openid_connect_revoke_path,
+          params: {},
+          headers: { 'HTTP_ORIGIN' => 'https://foo.com' },
+        )
+
+        aggregate_failures do
+          expect(response['Access-Control-Allow-Origin']).to be_nil
+          expect(response['Access-Control-Allow-Methods']).to be_nil
+        end
+      end
+    end
+  end
+
+  describe 'introspection endpoint' do
+    before do
+      allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+    end
+
+    context 'origin is included in ServiceProvider redirect_uris' do
+      it 'responds to POST requests with the right CORS headers' do
+        post api_openid_connect_introspect_path,
+             headers: { 'HTTP_ORIGIN' => 'https://example.com' }
+
+        aggregate_failures do
+          expect(response).to_not be_not_found
+          expect(response['Access-Control-Allow-Credentials']).to eq('true')
+          expect(response['Access-Control-Allow-Methods']).to eq('POST, OPTIONS')
+          expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
+        end
+      end
+
+      it 'responds to OPTIONS requests with the right CORS headers' do
+        process(
+          :options,
+          api_openid_connect_introspect_path,
+          params: {},
+          headers: { 'HTTP_ORIGIN' => 'https://example.com' },
+        )
+
+        aggregate_failures do
+          expect(response).to be_ok
+          expect(response.body).to be_empty
+          expect(response['Access-Control-Allow-Credentials']).to eq('true')
+          expect(response['Access-Control-Allow-Methods']).to eq('POST, OPTIONS')
+          expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
+        end
+      end
+    end
+
+    context 'origin is not included in ServiceProvider redirect_uris' do
+      it 'does not allow requests from origin' do
+        post api_openid_connect_introspect_path,
+             headers: { 'HTTP_ORIGIN' => 'https://foo.com' }
 
         aggregate_failures do
           expect(response['Access-Control-Allow-Origin']).to be_nil

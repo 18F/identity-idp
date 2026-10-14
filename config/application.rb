@@ -151,6 +151,16 @@ module Identity
                  credentials: true,
                  headers: :any,
                  methods: %i[post options]
+
+        # Browser callers can reach these new endpoints only while delegation is enabled.
+        %w[revoke introspect].each do |endpoint|
+          resource "/api/openid_connect/#{endpoint}",
+                   if: ->(_env) { IdentityConfig.store.token_exchange_enabled },
+                   credentials: true,
+                   headers: :any,
+                   methods: %i[post options]
+        end
+
         resource '/api/openid_connect/userinfo', headers: :any, methods: [:get]
       end
 
