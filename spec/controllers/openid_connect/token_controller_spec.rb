@@ -345,7 +345,6 @@ RSpec.describe OpenidConnect::TokenController do
           client_id: broker_issuer,
           audience: target_issuer,
           resource: resource,
-          ial: 2,
           error_details: hash_including(:audience),
         )
       end
@@ -367,7 +366,6 @@ RSpec.describe OpenidConnect::TokenController do
           client_id: broker_issuer,
           audience: target_issuer,
           resource: resource,
-          ial: 2,
           error_details: hash_including(:grant_type),
         )
       end

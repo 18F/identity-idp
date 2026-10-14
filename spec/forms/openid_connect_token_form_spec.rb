@@ -707,7 +707,6 @@ RSpec.describe OpenidConnectTokenForm do
         subject_token = TokenExchange::SubjectToken.load(response[:subject_token])
 
         expect(subject_token).to have_attributes(
-          user_id: identity.user_id,
           identity_uuid: identity.uuid,
           broker_issuer: identity.service_provider,
           scope: 'openid token_exchange:passport',

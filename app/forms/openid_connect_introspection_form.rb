@@ -20,9 +20,9 @@ class OpenidConnectIntrospectionForm
             inclusion: { in: [TokenExchange::Constants::CLIENT_ASSERTION_TYPE] }
 
   validate :validate_enabled
-  validate :validate_client, if: :token_exchange_enabled?
   validate :validate_target_allowlisted, if: :token_exchange_enabled?
-  validate :validate_client_assertion, if: :token_exchange_enabled?
+  validate :validate_client, unless: :client_rejected?
+  validate :validate_client_assertion, unless: :client_rejected?
 
   def initialize(params)
     ATTRS.each do |key|
@@ -61,6 +61,11 @@ class OpenidConnectIntrospectionForm
     IdentityConfig.store.token_exchange_enabled
   end
 
+  # skip remaining validations w/db and crypto calls if already rejected
+  def client_rejected?
+    !token_exchange_enabled? || client_id.blank? || errors.include?(:client_id)
+  end
+
   def validate_enabled
     return if token_exchange_enabled?
 
@@ -80,7 +85,6 @@ class OpenidConnectIntrospectionForm
 
   def validate_client_assertion
     return if service_provider.blank?
-    return if errors.include?(:client_id)
 
     validator = OpenidConnectClientAssertionValidator.new(
       client_assertion:,
@@ -131,7 +135,7 @@ class OpenidConnectIntrospectionForm
   end
 
   def token_exchange_allowed_target_issuers
-    Array(IdentityConfig.store.token_exchange_allowed_target_issuers)
+    IdentityConfig.store.token_exchange_allowed_target_issuers
   end
 
   def access_token
