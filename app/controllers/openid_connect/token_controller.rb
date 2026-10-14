@@ -8,6 +8,7 @@ module OpenidConnect
 
     AUTHORIZATION_CODE_GRANT = 'authorization_code'
     TOKEN_EXCHANGE_GRANT = OpenidConnectTokenExchangeForm::GRANT_TYPE
+    REFRESH_TOKEN_GRANT = OpenidConnectRefreshTokenForm::GRANT_TYPE
 
     def create
       @token_form = build_form
@@ -58,6 +59,10 @@ module OpenidConnect
         return OpenidConnectUnsupportedGrantForm.new(form_params) unless token_exchange_enabled?
 
         OpenidConnectTokenExchangeForm.new(form_params)
+      when REFRESH_TOKEN_GRANT
+        return OpenidConnectUnsupportedGrantForm.new(form_params) unless token_exchange_enabled?
+
+        OpenidConnectRefreshTokenForm.new(form_params)
       else
         OpenidConnectUnsupportedGrantForm.new(form_params)
       end
@@ -90,6 +95,7 @@ module OpenidConnect
 
       case params[:grant_type]
       when TOKEN_EXCHANGE_GRANT then :openid_connect_token_exchange
+      when REFRESH_TOKEN_GRANT then :openid_connect_token_refresh
       else :openid_connect_token
       end
     end
