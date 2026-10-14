@@ -112,6 +112,15 @@ module SiteKeys
       user_session.delete(UNAVAILABLE_SESSION_KEY)
     end
 
+    # What the user must do before a site key can be released in this session.
+    # @return [Symbol] :ready, :needs_password or :unavailable
+    def status
+      return :ready if unlocked?
+      return :unavailable if unavailable?
+
+      :needs_password
+    end
+
     def site_key(issuer)
       root = cached_root
       raise SealError, 'site key root is locked' if root.nil?
