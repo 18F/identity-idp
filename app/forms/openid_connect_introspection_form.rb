@@ -107,7 +107,7 @@ class OpenidConnectIntrospectionForm
     {
       active: true,
       client_id: access_token.broker_issuer,
-      sub: access_token.target_issuer,
+      sub: access_token.identity_uuid,
       iss: root_url,
       exp: access_token.expires_at,
       iat: access_token.issued_at,
