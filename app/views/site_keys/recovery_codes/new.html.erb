@@ -1,0 +1,16 @@
+<% self.title = t('forms.site_key_recovery_code.get_new') %>
+
+<%= render PageHeadingComponent.new.with_content(t('forms.site_key_recovery_code.get_new')) %>
+
+<p><%= t('forms.site_key_recovery_code.get_new_description') %></p>
+
+<%= button_to(
+      site_key_recovery_code_regenerate_path,
+      method: 'post',
+      class: 'usa-button usa-button--wide usa-button--big',
+      form_class: 'margin-y-5',
+    ) do %>
+  <%= t('forms.buttons.continue') %>
+<% end %>
+
+<%= render 'shared/cancel', link: account_path %>

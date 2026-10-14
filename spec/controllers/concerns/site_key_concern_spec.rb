@@ -61,8 +61,41 @@ RSpec.describe SiteKeyConcern do
       expect(vault.unavailable?).to eq(false)
     end
 
-    context 'when the password wrap is dead' do
+    context 'when the password wrap is dead but the root is recoverable' do
       before { create_site_key_root(user, password: 'some other password') }
+
+      it 'drops the password wrap so the root can be recovered' do
+        controller.unlock_site_key_root(user.password)
+
+        expect(user.reload.site_key_root.encrypted_root).to be_nil
+        expect(analytics).to have_logged_event(
+          :site_key_root_unlock_failed, error: kind_of(String), root_replaced: false
+        )
+      end
+    end
+
+    context 'when another session re-wrapped the root during the failed unlock' do
+      before do
+        create_site_key_root(user, password: 'some other password')
+        allow(User).to receive(:find).and_wrap_original do |original, *args|
+          other = SiteKeys::Vault.new(user: User.find_by(id: user.id), user_session: {})
+          other.unlock('some other password')
+          other.store_root!(other.wrap_cached_root(user.password))
+          original.call(*args)
+        end
+      end
+
+      it 'keeps the new password wrap' do
+        controller.unlock_site_key_root(user.password)
+
+        expect(user.reload.site_key_root.encrypted_root).to be_present
+      end
+    end
+
+    context 'when the password wrap is dead and nothing else can open the root' do
+      before do
+        create_site_key_root(user, password: 'some other password', acknowledge: false)
+      end
 
       it 'replaces the root' do
         controller.unlock_site_key_root(user.password)
@@ -76,7 +109,7 @@ RSpec.describe SiteKeyConcern do
 
     context 'when replacing the dead root fails' do
       before do
-        create_site_key_root(user, password: 'some other password')
+        create_site_key_root(user, password: 'some other password', acknowledge: false)
         allow(controller.site_key_vault).to receive(:replace!)
           .and_raise(Encryption::EncryptionError, 'kms down')
       end

@@ -1,14 +1,16 @@
 <%#
 locals:
 * form: SimpleForm form builder
+* name: field name (default :personal_key)
+* label: field label (default personal key label)
 %>
 <%= render ValidatedFieldComponent.new(
       form: form,
-      name: :personal_key,
+      name: local_assigns.fetch(:name, :personal_key),
       error_messages: {
         patternMismatch: t('users.personal_key.confirmation_error'),
       },
-      label: t('forms.personal_key.confirmation_label'),
+      label: local_assigns.fetch(:label, t('forms.personal_key.confirmation_label')),
       required: true,
       input_html: {
         autocomplete: 'off',

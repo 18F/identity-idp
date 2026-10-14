@@ -236,9 +236,20 @@ module OpenidConnect
     def confirm_site_key_available
       return unless @authorize_form.site_key_requested?
 
-      if site_key_vault.status == :ready
+      case site_key_vault.status
+      when :ready
         user_session.delete(:site_key_password_prompt)
-      elsif user_session.delete(:site_key_password_prompt) == site_key_request_digest
+      when :needs_recovery
+        redirect_to site_key_recovery_url
+      when :needs_acknowledgement
+        redirect_to site_key_recovery_code_url
+      else
+        prompt_for_site_key_password
+      end
+    end
+
+    def prompt_for_site_key_password
+      if user_session.delete(:site_key_password_prompt) == site_key_request_digest
         redirect_user(site_key_error_redirect_uri)
       else
         remember_site_key_password_prompt
