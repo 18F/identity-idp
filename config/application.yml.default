@@ -549,6 +549,8 @@ token_exchange_allowed_broker_issuers: '[]'
 token_exchange_allowed_target_issuers: '[]'
 token_exchange_enabled: false
 token_exchange_access_token_expires_in: 600
+token_exchange_introspections_per_ip_limit: 60
+token_exchange_introspections_per_ip_period: 60
 token_exchange_subject_token_expires_in: 600
 test_ssn_allowed_list: ''
 totp_code_interval: 30
@@ -764,6 +766,8 @@ test:
   team_daily_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
   team_monthly_fraud_metrics_emails: '["e@example.com", "f@example.com"]'
   test_ssn_allowed_list: '999999999'
+  token_exchange_introspections_per_ip_limit: 3
+  token_exchange_introspections_per_ip_period: 10
   totp_code_interval: 3
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_root_url: 'http://localhost:1000'
