@@ -9,6 +9,17 @@ RSpec.describe DocumentMetadata do
     }
   end
 
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:encrypted_document_data) }
+
+    it 'is invalid without document data' do
+      record = build(:document_metadata, encrypted_document_data: nil)
+
+      expect(record).not_to be_valid
+      expect(record.errors[:encrypted_document_data]).to be_present
+    end
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to(:document_capture_session) }
     it { is_expected.to belong_to(:profile).optional }
