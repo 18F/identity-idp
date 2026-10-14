@@ -8,12 +8,14 @@ module Idv
       applicant:,
       user:,
       user_password:,
-      initiating_service_provider: nil
+      initiating_service_provider: nil,
+      user_session: nil
     )
       self.pii_attributes = Pii::Attributes.new_from_hash(applicant)
       self.user = user
       self.user_password = user_password
       self.initiating_service_provider = initiating_service_provider
+      self.user_session = user_session
     end
 
     def save_profile(
@@ -40,6 +42,8 @@ module Idv
       )
 
       profile.save!
+      SiteKeys::Vault.new(user:, user_session: user_session || {})
+        .wrap_personal_key(profile.personal_key, password: user_password)
       profile.deactivate_for_gpo_verification if gpo_verification_needed
 
       if fraud_pending_reason.present? && !gpo_verification_needed && !in_person_verification_needed
@@ -79,6 +83,7 @@ module Idv
       :user_password,
       :phone_confirmed,
       :initiating_service_provider,
+      :user_session,
     )
     attr_writer :pii_attributes
   end
