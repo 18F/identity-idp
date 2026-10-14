@@ -165,6 +165,35 @@ RSpec.describe OpenidConnect::TokenController do
       end
     end
 
+    context 'with invalid params' do
+      let(:code) { nil }
+
+      it 'is a 400 and has an error response and no id_token' do
+        action
+        expect(response).to be_bad_request
+
+        json = JSON.parse(response.body).with_indifferent_access
+        expect(json[:error]).to be_present
+        expect(json).to_not have_key(:id_token)
+      end
+
+      it 'tracks an unsuccessful event in analytics' do
+        stub_analytics
+
+        action
+
+        expect(@analytics).to have_logged_event(
+          'OpenID Connect: token', {
+            success: false,
+            code_verifier_present: false,
+            error_details: hash_including(:code),
+          }
+        )
+
+        expect(@analytics).to_not have_logged_event(:sp_integration_errors_present)
+      end
+    end
+
     context 'with invalid form' do
       let(:code) { { nested: 'code' } }
 
