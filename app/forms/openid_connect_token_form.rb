@@ -70,6 +70,12 @@ class OpenidConnectTokenForm
     {}
   end
 
+  # The authorization code grant has always returned 400 for every failure.
+  # Preserved here so the token endpoint can ask either form for its status.
+  def http_status
+    valid? ? :ok : :bad_request
+  end
+
   private
 
   attr_reader :identity, :code_expiration

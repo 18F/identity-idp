@@ -237,6 +237,12 @@ RSpec.describe OpenidConnect::TokenController do
     end
 
     context 'with valid params' do
+      it 'is successful' do
+        action
+
+        expect(response).to be_ok
+      end
+
       it 'tracks the brokered exchange token event' do
         stub_analytics
 
@@ -272,6 +278,15 @@ RSpec.describe OpenidConnect::TokenController do
 
     context 'when the subject token is invalid' do
       let(:subject_token) { 'not-a-real-subject-token' }
+
+      it 'is a 400 with an invalid_grant error' do
+        action
+
+        expect(response).to be_bad_request
+
+        json = JSON.parse(response.body).with_indifferent_access
+        expect(json[:error]).to eq('invalid_grant')
+      end
 
       it 'tracks an unsuccessful brokered exchange token event' do
         stub_analytics
@@ -310,6 +325,15 @@ RSpec.describe OpenidConnect::TokenController do
           .and_return([])
       end
 
+      it 'is a 400 with an invalid_target error' do
+        action
+
+        expect(response).to be_bad_request
+
+        json = JSON.parse(response.body).with_indifferent_access
+        expect(json[:error]).to eq('invalid_target')
+      end
+
       it 'tracks an unsuccessful brokered exchange token event with the requested audience' do
         stub_analytics
 
@@ -346,6 +370,36 @@ RSpec.describe OpenidConnect::TokenController do
           ial: 2,
           error_details: hash_including(:grant_type),
         )
+      end
+    end
+
+    context 'when the broker is not allowlisted' do
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return([])
+      end
+
+      it 'is a 401 with an invalid_client error' do
+        action
+
+        expect(response).to be_unauthorized
+
+        json = JSON.parse(response.body).with_indifferent_access
+        expect(json[:error]).to eq('invalid_client')
+        expect(json).to_not have_key(:access_token)
+      end
+    end
+
+    context 'when a required parameter is missing' do
+      let(:audience) { nil }
+
+      it 'is a 400 with an invalid_request error' do
+        action
+
+        expect(response).to be_bad_request
+
+        json = JSON.parse(response.body).with_indifferent_access
+        expect(json[:error]).to eq('invalid_request')
       end
     end
   end

@@ -23,8 +23,7 @@ module OpenidConnect
         )
       end
 
-      render json: response,
-             status: (result.success? ? :ok : :bad_request)
+      render json: response, status: @token_form.http_status
     end
 
     def options

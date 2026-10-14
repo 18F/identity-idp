@@ -14,16 +14,21 @@ class OpenidConnectTokenExchangeForm
     scope
   ].freeze
 
+  # Parameters RFC 8693 section 2.1 requires on every token exchange request.
+  # Omitting any of them is an `invalid_request`, not a grant or target failure.
+  REQUIRED_ATTRS = %i[
+    client_id
+    grant_type
+    subject_token
+    subject_token_type
+    audience
+    resource
+    requested_token_type
+  ].freeze
+
   attr_reader(*ATTRS)
 
-  validates :client_id,
-            :grant_type,
-            :subject_token,
-            :subject_token_type,
-            :audience,
-            :resource,
-            :requested_token_type,
-            presence: true
+  validates(*REQUIRED_ATTRS, presence: true)
   validates :grant_type, inclusion: { in: [TokenExchange::Constants::GRANT_TYPE] }
   validates :subject_token_type,
             inclusion: { in: [TokenExchange::Constants::ACCESS_TOKEN_TYPE] }
@@ -68,6 +73,14 @@ class OpenidConnectTokenExchangeForm
     }
   end
 
+  # `invalid_client` indicates a client authentication failure, which RFC 6749
+  # section 5.2 requires be returned with a 401.
+  def http_status
+    return :ok if valid?
+
+    oauth_error == 'invalid_client' ? :unauthorized : :bad_request
+  end
+
   private
 
   def validate_enabled
@@ -77,12 +90,14 @@ class OpenidConnectTokenExchangeForm
   end
 
   def validate_broker
+    return if client_id.blank?
     return if broker&.token_exchange_broker?
 
     errors.add(:client_id, :invalid)
   end
 
   def validate_subject_token
+    return if subject_token.blank?
     return errors.add(:subject_token, :invalid) if loaded_subject_token.blank?
     return if loaded_subject_token.broker_issuer == client_id
 
@@ -90,6 +105,7 @@ class OpenidConnectTokenExchangeForm
   end
 
   def validate_target
+    return if audience.blank?
     return errors.add(:audience, :invalid) unless target
     return if token_exchange_allowed_target_issuers.include?(audience)
 
@@ -118,6 +134,7 @@ class OpenidConnectTokenExchangeForm
   end
 
   def validate_ial2
+    return if subject_token.blank?
     return if loaded_subject_token.blank?
     return errors.add(:subject_token, :invalid) if loaded_subject_token.ial.to_i < 2
     return errors.add(:subject_token, :invalid) if user.blank?
@@ -162,12 +179,22 @@ class OpenidConnectTokenExchangeForm
     }
   end
 
+  # Maps validation failures onto the OAuth error codes defined by RFC 6749
+  # section 5.2 and extended by RFC 8693 section 2.2.2.
   def oauth_error
+    return 'invalid_request' if missing_required_attrs?
     return 'unsupported_grant_type' if errors.include?(:grant_type)
-    return 'invalid_target' if errors.include?(:audience)
     return 'invalid_client' if errors.include?(:client_id)
+    return 'invalid_target' if errors.include?(:audience) || errors.include?(:resource)
+    return 'invalid_scope' if errors.include?(:scope)
 
     'invalid_grant'
+  end
+
+  def missing_required_attrs?
+    REQUIRED_ATTRS.any? do |attr|
+      errors.where(attr, :blank).any?
+    end
   end
 
   def extra_analytics_attributes
