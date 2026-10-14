@@ -270,4 +270,114 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
   end
+
+  describe 'OAuth error codes' do
+    subject(:error) { form.response[:error] }
+
+    before { form.submit }
+
+    context 'when a required parameter is missing' do
+      %i[
+        client_id
+        grant_type
+        subject_token
+        subject_token_type
+        audience
+        resource
+        requested_token_type
+      ].each do |attribute|
+        context "with missing #{attribute}" do
+          let(attribute) { nil }
+
+          it 'returns invalid_request' do
+            expect(error).to eq('invalid_request')
+          end
+
+          it 'returns a 400' do
+            expect(form.http_status).to eq(:bad_request)
+          end
+        end
+      end
+    end
+
+    context 'with an unsupported grant type' do
+      let(:grant_type) { 'authorization_code' }
+
+      it 'returns unsupported_grant_type' do
+        expect(error).to eq('unsupported_grant_type')
+      end
+
+      it 'returns a 400' do
+        expect(form.http_status).to eq(:bad_request)
+      end
+    end
+
+    context 'when the broker is not allowlisted' do
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return([])
+      end
+
+      it 'returns invalid_client' do
+        expect(error).to eq('invalid_client')
+      end
+
+      it 'returns a 401' do
+        expect(form.http_status).to eq(:unauthorized)
+      end
+    end
+
+    context 'when the target is not allowlisted' do
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_target_issuers)
+          .and_return([])
+      end
+
+      it 'returns invalid_target' do
+        expect(error).to eq('invalid_target')
+      end
+
+      it 'returns a 400' do
+        expect(form.http_status).to eq(:bad_request)
+      end
+    end
+
+    context 'with a non-HTTPS resource' do
+      let(:resource) { 'http://api.example.gov/passport' }
+
+      it 'returns invalid_target' do
+        expect(error).to eq('invalid_target')
+      end
+    end
+
+    context 'with requested scope outside the subject token scope' do
+      let(:params) { super().merge(scope: 'openid token_exchange:benefits') }
+
+      it 'returns invalid_scope' do
+        expect(error).to eq('invalid_scope')
+      end
+
+      it 'returns a 400' do
+        expect(form.http_status).to eq(:bad_request)
+      end
+    end
+
+    context 'with an unknown subject token' do
+      let(:subject_token) { 'unknown' }
+
+      it 'returns invalid_grant' do
+        expect(error).to eq('invalid_grant')
+      end
+
+      it 'returns a 400' do
+        expect(form.http_status).to eq(:bad_request)
+      end
+    end
+
+    context 'when the request is valid' do
+      it 'returns a 200' do
+        expect(form.http_status).to eq(:ok)
+      end
+    end
+  end
 end
