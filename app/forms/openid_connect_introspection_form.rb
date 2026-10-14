@@ -91,7 +91,7 @@ class OpenidConnectIntrospectionForm
   def active_response
     {
       active: true,
-      client_id: access_token.target_issuer,
+      client_id: access_token.broker_issuer,
       sub: access_token.target_issuer,
       iss: root_url,
       exp: access_token.expires_at,
