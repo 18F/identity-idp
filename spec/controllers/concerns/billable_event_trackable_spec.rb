@@ -53,6 +53,8 @@ RSpec.describe BillableEventTrackable do
   end
 
   describe '#track_billing_events' do
+    before { allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(false) }
+
     it 'does not fail if SpReturnLog row already exists' do
       SpReturnLog.create(
         request_id: request_id,
@@ -66,6 +68,81 @@ RSpec.describe BillableEventTrackable do
       expect do
         instance.track_billing_events
       end.to_not(change { SpReturnLog.count }.from(1))
+    end
+
+    it 'writes the same row as before through the shared writer, billable once per session' do
+      expect(Billing::SpReturnLogWriter).to receive(:write).twice.and_call_original
+
+      instance.track_billing_events
+      first = SpReturnLog.last
+      expect(first).to have_attributes(
+        request_id:, user_id: current_user.id, billable: true, ial: 1,
+        issuer: current_sp.issuer, profile_id: nil, profile_verified_at: nil,
+        profile_requested_issuer: nil, returned_at: Time.zone.now, access_type: nil
+      )
+      expect(instance.user_session["auth_counted_#{current_sp.issuer}ial1"]).to eq(true)
+
+      # A later handoff in the same session writes nothing: the row for this request id exists.
+      expect { instance.track_billing_events }.not_to(change { SpReturnLog.count })
+    end
+
+    it 'writes a non-billable row for a later handoff with a new request id' do
+      instance.track_billing_events
+      later = fake_controller_class.new(**instance.to_h, request_id: SecureRandom.hex)
+
+      expect { later.track_billing_events }.to change { SpReturnLog.count }.by(1)
+      expect(SpReturnLog.last).to have_attributes(billable: false, access_type: nil)
+    end
+
+    context 'for a service provider approved for delegated access' do
+      let(:current_sp) { create(:service_provider, :delegation_service_provider) }
+      let(:ial_context) { IalContext.new(ial: 2, service_provider: current_sp) }
+      let!(:identity) do
+        IdentityLinker.new(current_user, current_sp).link_identity(ial: 2)
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+      end
+
+      it 'labels new direct evidence when delegated billing is enabled' do
+        instance.track_billing_events
+        expect(SpReturnLog.last.access_type).to eq('direct')
+      end
+
+      it 'links the access token the service provider will receive to the billable row' do
+        instance.track_billing_events
+
+        expect(Billing::SignInWaiverLink.read(access_token: identity.access_token))
+          .to eq(SpReturnLog.last.id)
+      end
+
+      it 'points a later handoff in the same session at the session’s billable row' do
+        instance.track_billing_events
+        billable_row = SpReturnLog.last
+        IdentityLinker.new(current_user, current_sp).link_identity(ial: 2)
+        later = fake_controller_class.new(**instance.to_h, request_id: SecureRandom.hex)
+
+        later.track_billing_events
+
+        expect(SpReturnLog.last.billable).to eq(false)
+        expect(Billing::SignInWaiverLink.read(access_token: identity.reload.access_token))
+          .to eq(billable_row.id)
+      end
+
+      it 'does not fail the handoff when the link cannot be written' do
+        allow(Billing::SignInWaiverLink).to receive(:write).and_raise(Redis::CannotConnectError)
+        expect(NewRelic::Agent).to receive(:notice_error).with(Redis::CannotConnectError)
+
+        expect { instance.track_billing_events }.to change { SpReturnLog.count }.by(1)
+      end
+    end
+
+    it 'writes no link for an ordinary service provider' do
+      IdentityLinker.new(current_user, current_sp).link_identity(ial: 1)
+      expect(Billing::SignInWaiverLink).not_to receive(:write)
+
+      instance.track_billing_events
     end
 
     context 'with an IAL 1 event' do
