@@ -103,6 +103,7 @@ database_worker_jobs_name: ''
 database_worker_jobs_password: ''
 database_worker_jobs_sslmode: 'verify-full'
 database_worker_jobs_username: ''
+delegation_outcomes_report_emails: '[]'
 deleted_user_accounts_report_configs: '[]'
 deliver_mail_async: false
 demographics_metrics_s3_report_configs: '[]'
@@ -168,6 +169,7 @@ dos_passport_healthcheck_timeout_seconds: 5
 dos_passport_mrz_endpoint: ''
 dos_passport_mrz_maxretry: 2
 dos_passport_mrz_timeout_seconds: 60
+dpop_proof_max_age_seconds: 300
 drop_off_report_config: '[{"emails":["ursula@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
 eligible_one_account_providers: '[]'
 email_from: no-reply@login.gov
@@ -551,6 +553,12 @@ team_monthly_fraud_metrics_emails: '[]'
 team_ursula_email: ''
 telephony_adapter: test
 test_ssn_allowed_list: ''
+token_exchange_access_token_ttl_seconds: 900
+token_exchange_attempts_delivery_enabled: true
+token_exchange_billing_waiver_cache_seconds: 3600
+token_exchange_enabled: false
+token_exchange_refresh_token_ttl_seconds: 43200
+token_exchange_saml_assertion_ttl_seconds: 300
 totp_code_interval: 30
 ui_test_bucket_params_enabled: true
 unauthorized_scope_enabled: false

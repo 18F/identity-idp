@@ -1,4 +1,41 @@
 ---
+account.connected_apps.manage_delegated_access: Manage what %{sp} can do on your behalf
+account.delegated_access.approve.confirm: Allow
+account.delegated_access.approve.description: Review what each agency says about its application. If you allow this, %{sp} can act on your behalf at these applications for %{months} months, whenever you sign in to it, unless you end it sooner from this page.
+account.delegated_access.approve.heading: Allow %{sp} to act on your behalf at these applications?
+account.delegated_access.approve.title: Allow %{sp} to act on your behalf
+account.delegated_access.approve_selected: Approve selected
+account.delegated_access.approved_count.one: '%{count} of %{total} approved'
+account.delegated_access.approved_count.other: '%{count} of %{total} approved'
+account.delegated_access.approved_count.zero: '%{count} of %{total} approved'
+account.delegated_access.approved_flash.one: You approved %{count} application for %{sp}.
+account.delegated_access.approved_flash.other: You approved %{count} applications for %{sp}.
+account.delegated_access.approved_on_html: Approved on %{timestamp_html}.
+account.delegated_access.description: Some services can act on your behalf at other agencies after you sign in with %{app_name}. Each agency describes its application in its own words. Approvals you give here last for 1 year and are honored when you sign in; you can end them at any time.
+account.delegated_access.end_all: End all delegated access
+account.delegated_access.none_registered: No service is approved to act on your behalf yet.
+account.delegated_access.nothing_selected: Select at least one application to approve.
+account.delegated_access.other_agency: Other
+account.delegated_access.revoke.confirm: End access
+account.delegated_access.revoke.description_all: No service will be able to act on your behalf at any agency until you approve it again. Any access held right now ends.
+account.delegated_access.revoke.description_application: '%{sp} will no longer be able to act on your behalf at this application. Any access it holds right now ends. You can approve it again at any time.'
+account.delegated_access.revoke.description_service_provider: '%{sp} will no longer be able to act on your behalf at any of these applications. Any access it holds right now ends.'
+account.delegated_access.revoke.heading_all: End all delegated access?
+account.delegated_access.revoke.heading_application: End delegated access to this application?
+account.delegated_access.revoke.heading_service_provider: End everything %{sp} can do on your behalf?
+account.delegated_access.revoke.title_all: End all delegated access
+account.delegated_access.revoke.title_application: Revoke delegated access
+account.delegated_access.revoke.title_service_provider: Revoke delegated access for %{sp}
+account.delegated_access.revoke_application: Revoke
+account.delegated_access.revoke_service_provider: Revoke everything for %{sp}
+account.delegated_access.revoked_flash.one: You ended delegated access for %{count} application.
+account.delegated_access.revoked_flash.other: You ended delegated access for %{count} applications.
+account.delegated_access.service_provider_unavailable: '%{sp} is no longer approved to act on your behalf. You can still end the approvals you gave it.'
+account.delegated_access.source_account_page: Given from your account.
+account.delegated_access.source_consent_screen: Given when you signed in.
+account.delegated_access.status_approved: Approved
+account.delegated_access.time_remaining: Ends in %{duration}.
+account.navigation.delegated_access: Delegated access
 account_reset.cancel_request.are_you_sure: Are you sure you want to cancel your delete account request?
 account_reset.cancel_request.cancel: Exit
 account_reset.cancel_request.cancel_button: Cancel delete account
@@ -919,6 +956,8 @@ event_types.authenticator_disabled: Authenticator app removed
 event_types.authenticator_enabled: Authenticator app added
 event_types.backup_codes_added: Backup codes added
 event_types.backup_codes_removed: Backup codes removed
+event_types.delegation_approved: Delegated access approved
+event_types.delegation_revoked: Delegated access revoked
 event_types.eastern_timestamp: '%{timestamp} (Eastern)'
 event_types.email_changed: Email address changed
 event_types.email_deleted: Email address deleted
@@ -1054,6 +1093,7 @@ forms.webauthn_setup.step_3a: Click “set up security key” below and follow y
 headings.account.activity: Activity
 headings.account.authentication_apps: Authentication apps
 headings.account.connected_services: Your connected services
+headings.account.delegated_access: Delegated access
 headings.account.devices: Devices
 headings.account.events: Events
 headings.account.government_employee_id: Government employee ID
@@ -1796,6 +1836,9 @@ notices.verify_email.use_different_email: Use a different email
 notices.webauthn_configured: A security key was added to your account.
 notices.webauthn_platform_configured: You used your device’s screen lock to add face or touch unlock to your account.
 openid_connect.authorization.errors.bad_client_id: Bad client_id. Please see our documentation at https://developers.login.gov/support/#bad-client-id
+openid_connect.authorization.errors.delegation_not_allowed: Delegation scopes (token_exchange:*) require an identity-verified request from a service provider approved for delegated access. Please see our documentation at https://developers.login.gov/support/#oidc-delegation
+openid_connect.authorization.errors.dpop_jkt_invalid: 'dpop_jkt must be the base64url RFC 7638 thumbprint of the client''s DPoP public key: 43 characters, no padding.'
+openid_connect.authorization.errors.dpop_jkt_required: 'dpop_jkt is required: this client is registered with dpop_required, so the authorization code must be bound to the thumbprint of its DPoP key (RFC 9449 section 10).'
 openid_connect.authorization.errors.invalid_verified_within_duration.one: value must be at least %{count} day or older
 openid_connect.authorization.errors.invalid_verified_within_duration.other: value must be at least %{count} days or older
 openid_connect.authorization.errors.invalid_verified_within_format: Unrecognized format for verified_within
@@ -1808,9 +1851,9 @@ openid_connect.authorization.errors.prompt_invalid: No valid prompt values found
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri is invalid. Please see our documentation at https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri does not match registered redirect_uri. Please see our documentation at https://developers.login.gov/support/#oidc-redirect-match
 openid_connect.authorization.errors.site_key_jwk_invalid: site_key_jwk is not a valid P-256 public JWK.
-openid_connect.authorization.errors.site_key_jwk_not_allowed: site_key_jwk is not enabled for this client_id.
 openid_connect.authorization.errors.site_key_unavailable: Site keys are temporarily unavailable for this account. Please try again later.
 openid_connect.authorization.errors.unauthorized_scope: Unauthorized scope. Please see our documentation at https://developers.login.gov/support/#oidc-unauthotized-scope
+openid_connect.authorization.errors.unknown_delegation_scope: 'Unknown delegation scope: %{scopes}. Please see our documentation at https://developers.login.gov/support/#oidc-delegation'
 openid_connect.logout.confirm: Yes, sign out of %{app_name}
 openid_connect.logout.deny: No, go to my account page
 openid_connect.logout.errors.client_id_invalid: client_id was not recognized. Please see our documentation at https://developers.login.gov/support/#client-id-not-recognized
@@ -1820,13 +1863,46 @@ openid_connect.logout.errors.id_token_hint_present: This application is misconfi
 openid_connect.logout.errors.no_client_id_or_id_token_hint: This application is misconfigured and must send either client_id or id_token_hint. Please see our documentation at https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: Do you want to sign out of %{app_name}?
 openid_connect.logout.heading_with_sp: Do you want to sign out of %{app_name} and return to %{service_provider_name}?
+openid_connect.revoke.errors.token_missing: token is required.
+openid_connect.token.errors.client_assertion_lifetime: exp must be an integer Unix timestamp no more than 5 minutes after iat.
+openid_connect.token.errors.client_assertion_malformed: client_assertion could not be parsed as a JWT whose iss and sub claims match.
+openid_connect.token.errors.client_assertion_missing: client_assertion is required for this grant type.
+openid_connect.token.errors.client_assertion_replayed: The jti claim of client_assertion has already been used; each assertion must carry a unique jti.
+openid_connect.token.errors.client_assertion_type_invalid: 'client_assertion_type must be urn:ietf:params:oauth:client-assertion-type:jwt-bearer.'
+openid_connect.token.errors.client_authentication_required: 'Client authentication is required: a confidential client sends a client_assertion (private_key_jwt); a public client sends its client_id and a DPoP proof signed by the key its token is bound to.'
+openid_connect.token.errors.client_not_approved: This client is not approved for delegated access.
+openid_connect.token.errors.code_verifier_not_allowed: code_verifier is not accepted for this grant type.
+openid_connect.token.errors.consent_required: The user has not approved this application for this client, or the approval has lapsed. Start an authorization request with the scope %{delegation_scope} to ask for it.
+openid_connect.token.errors.dpop_key_mismatch: The DPoP proof is signed with a different key than the one this token is bound to.
+openid_connect.token.errors.dpop_proof_invalid: 'The DPoP proof could not be verified: it must be a dpop+jwt signed with ES256 or RS256 by the public key in its jwk header, name the method and URL of this request, be recent, carry an unused jti and, when a token is presented, the ath hash of that token.'
+openid_connect.token.errors.dpop_proof_replayed: The jti of the DPoP proof has already been used; each proof must carry a unique jti.
+openid_connect.token.errors.dpop_proof_required: 'A DPoP proof is required: this client''s tokens are bound to its key, so send a DPoP header signed by that key with the request (RFC 9449).'
 openid_connect.token.errors.expired_code: is expired. Please see our documentation at https://developers.login.gov/support/#token-expired
+openid_connect.token.errors.identity_not_verified: Delegated access requires an identity-verified user signed in at IAL2.
 openid_connect.token.errors.invalid_aud: Invalid audience claim, expected %{url}. Please see our documentation at https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: Client must authenticate via PKCE or private_key_jwt, missing either code_challenge or client_assertion. Please see our documentation at https://developers.login.gov/support/#pkce-or-private-key
 openid_connect.token.errors.invalid_code: is invalid because doesn’t match any user. Please see our documentation at https://developers.login.gov/support/#invalid-code
 openid_connect.token.errors.invalid_code_verifier: code_verifier did not match code_challenge. Please see our documentation at https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat must be an integer or floating point Unix timestamp representing a time in the past. Please see our documentation at https://developers.login.gov/support/#invalid-iat
+openid_connect.token.errors.invalid_refresh_token: refresh_token is not a live refresh token issued to this client.
+openid_connect.token.errors.invalid_requested_token_type: 'requested_token_type must be urn:ietf:params:oauth:token-type:access_token or urn:ietf:params:oauth:token-type:saml2.'
 openid_connect.token.errors.invalid_signature: Could not validate assertion against any registered public keys. Please see our documentation at https://developers.login.gov/support/#invalid-token-signature
+openid_connect.token.errors.invalid_subject_token: subject_token is not an access token issued to this client for a current connection.
+openid_connect.token.errors.invalid_subject_token_type: 'subject_token_type must be urn:ietf:params:oauth:token-type:access_token.'
+openid_connect.token.errors.multiple_resources: resource must name exactly one registered API; a token has one audience.
+openid_connect.token.errors.refresh_scope_mismatch: scope, when given, must be exactly the scope the refresh token was issued with.
+openid_connect.token.errors.refresh_token_missing: refresh_token is required.
+openid_connect.token.errors.refresh_token_reused: This refresh token was already used, so every token in its family has been revoked. Start a new exchange to continue.
+openid_connect.token.errors.resource_missing: resource is required and must name one registered API.
+openid_connect.token.errors.resource_not_allowed_on_refresh: resource is not accepted on a refresh; the API is fixed by the refresh token. Exchange again to obtain a token for another API.
+openid_connect.token.errors.subject_token_missing: subject_token is required.
+openid_connect.token.errors.subject_token_session_ended: The sign-in that issued subject_token has ended; the user must sign in again before a new delegation can start.
+openid_connect.token.errors.unknown_client: The iss claim of client_assertion does not match any registered client.
+openid_connect.token.errors.unknown_resource: resource does not name an active registered API available to this client.
+openid_connect.token.errors.unsupported_grant_type: This grant type is not supported.
+openid_connect.token.errors.user_suspended: The user's account is not in good standing.
+openid_connect.user_info.errors.bound_token_requires_dpop: 'This access token is bound to a key: present it with the DPoP authorization scheme and a DPoP proof signed by that key (RFC 9449).'
+openid_connect.user_info.errors.encryption_unavailable: 'This service provider is registered to receive encrypted userinfo responses, but no usable encryption key is registered for it: the response was not sent.'
 openid_connect.user_info.errors.malformed_authorization: Malformed Authorization header. Please see our documentation at https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No Authorization header provided. Please see our documentation at https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: Could not find authorization for the contents of the provided access_token or it may have expired. Please see our documentation at https://developers.login.gov/support/#auth-header-contents-not-found
@@ -1883,6 +1959,43 @@ sign_up.agree_and_continue: Agree and continue
 sign_up.cancel.success: Your account has been deleted. We did not save your information.
 sign_up.cancel.warning_header: 'If you cancel now:'
 sign_up.completed.smiling_image_alt: A smiling person with a green checkmark indicating success
+sign_up.delegation.about_agency: About the %{agency}
+sign_up.delegation.about_heading: About this service
+sign_up.delegation.access_duration: After this sign-in, %{sp} can act for you for up to %{hours} hours, unless you end it sooner from your account.
+sign_up.delegation.access_duration_heading: How long access lasts
+sign_up.delegation.access_read: Read only
+sign_up.delegation.access_read_write: Can make changes
+sign_up.delegation.account_link: Account → Connected accounts
+sign_up.delegation.ai_badge: AI
+sign_up.delegation.allow_button: Allow and continue
+sign_up.delegation.applications_count.one: '%{count} application requested'
+sign_up.delegation.applications_count.other: '%{count} applications requested'
+sign_up.delegation.approved_from_account_html: Approved from your account on %{timestamp_html}
+sign_up.delegation.cancel_button: Cancel and return to %{sp}
+sign_up.delegation.data_handling: Information from the agencies you approve is %{statement}
+sign_up.delegation.description: This lets the service %{description}
+sign_up.delegation.does_not_use_ai: Does not use AI
+sign_up.delegation.heading: You’re allowing %{sp} access to your information
+sign_up.delegation.learn_more: Learn more about %{sp}
+sign_up.delegation.learn_more_agency: Learn more from %{agency}
+sign_up.delegation.no_password_shared: Only the applications listed above will be shared, and each receives only the information it is approved for. %{app_name} never shares your password.
+sign_up.delegation.other_agency: Other
+sign_up.delegation.remember_description_html: If you leave this unchecked, these approvals last for this sign-in only. You can review, approve in advance, or revoke approvals at any time under %{link_html}.
+sign_up.delegation.remember_label: Remember my approvals for 1 year
+sign_up.delegation.requesting_access: '%{sp} needs access to these applications'
+sign_up.delegation.required_badge: Required
+sign_up.delegation.required_explanation: These applications are required to continue to %{sp}. If you don’t want to allow one of them, cancel and return to %{sp}. Each agency has written what its application does in its own words.
+sign_up.delegation.required_hint: (required to continue)
+sign_up.delegation.run_by: '%{sp} is run by'
+sign_up.delegation.service_description: is a government service that %{description}
+sign_up.delegation.services_used: 'Services the application will use:'
+sign_up.delegation.status.approved: Already approved
+sign_up.delegation.status.new: New
+sign_up.delegation.status.updated: Updated
+sign_up.delegation.uses_ai: Uses AI
+sign_up.delegation.uses_ai_description: It uses AI to %{description}
+sign_up.delegation.will_receive: 'Will receive: %{data}'
+sign_up.delegation.your_information: Your information
 sign_up.document_images_sharing_consent_label: I consent to share the photos of my identity documents and my identity verification selfie with %{sp} for identity adjudication.
 sign_up.document_images_sharing_consent_required: You must consent to sharing your identity document photos and selfie to continue, or cancel.
 sign_up.information_sharing_html: To learn how %{app_name} shares your information, review our %{link_html}.
@@ -2220,6 +2333,14 @@ user_mailer.agent_proofing_succeeded.footer_html: If you did not attempt to veri
 user_mailer.agent_proofing_succeeded.header: You have successfully completed identity verification
 user_mailer.agent_proofing_succeeded.subject: 'Action Required: Confirm Your Verified Account'
 user_mailer.contact_link_text: contact us
+user_mailer.delegation_approved.intro: 'From your account, you allowed %{sp_name} to act on your behalf at these applications for 1 year:'
+user_mailer.delegation_approved.manage_html: You can review or end these approvals at any time under %{link_html}.
+user_mailer.delegation_approved.manage_link: Delegated access in your account
+user_mailer.delegation_approved.subject: You allowed %{sp_name} to act on your behalf
+user_mailer.delegation_revoked.intro: 'From your account, you ended the permission for %{sp_name} to act on your behalf at these applications:'
+user_mailer.delegation_revoked.intro_all: 'From your account, you ended every permission for a service to act on your behalf at these applications:'
+user_mailer.delegation_revoked.subject: You ended what %{sp_name} can do on your behalf
+user_mailer.delegation_revoked.subject_all: You ended all delegated access
 user_mailer.device_profiling_error_cleared.info: The error on your account (LG22) has been resolved. You can now sign into the agency website with your account.
 user_mailer.device_profiling_error_cleared.subject: You can sign back in with your account
 user_mailer.dupe_profile.created.description: Someone has verified another %{app_name} account using your personal information. For your safety, we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.

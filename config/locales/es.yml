@@ -1,4 +1,41 @@
 ---
+account.connected_apps.manage_delegated_access: Administrar lo que %{sp} puede hacer en su nombre
+account.delegated_access.approve.confirm: Permitir
+account.delegated_access.approve.description: Revise lo que cada agencia dice sobre su aplicación. Si lo permite, %{sp} podrá actuar en su nombre en estas aplicaciones durante %{months} meses, cada vez que inicie sesión en él, a menos que lo termine antes desde esta página.
+account.delegated_access.approve.heading: ¿Permitir que %{sp} actúe en su nombre en estas aplicaciones?
+account.delegated_access.approve.title: Permitir que %{sp} actúe en su nombre
+account.delegated_access.approve_selected: Aprobar las seleccionadas
+account.delegated_access.approved_count.one: '%{count} de %{total} aprobada'
+account.delegated_access.approved_count.other: '%{count} de %{total} aprobadas'
+account.delegated_access.approved_count.zero: '%{count} de %{total} aprobadas'
+account.delegated_access.approved_flash.one: Aprobó %{count} aplicación para %{sp}.
+account.delegated_access.approved_flash.other: Aprobó %{count} aplicaciones para %{sp}.
+account.delegated_access.approved_on_html: Aprobada el %{timestamp_html}.
+account.delegated_access.description: Algunos servicios pueden actuar en su nombre ante otras agencias después de que inicie sesión con %{app_name}. Cada agencia describe su aplicación con sus propias palabras. Las aprobaciones que dé aquí duran 1 año y se respetan cuando inicia sesión; puede terminarlas en cualquier momento.
+account.delegated_access.end_all: Terminar todo el acceso delegado
+account.delegated_access.none_registered: Todavía ningún servicio está aprobado para actuar en su nombre.
+account.delegated_access.nothing_selected: Seleccione al menos una aplicación para aprobar.
+account.delegated_access.other_agency: Otra
+account.delegated_access.revoke.confirm: Terminar el acceso
+account.delegated_access.revoke.description_all: Ningún servicio podrá actuar en su nombre ante ninguna agencia hasta que lo apruebe de nuevo. Cualquier acceso vigente termina.
+account.delegated_access.revoke.description_application: '%{sp} ya no podrá actuar en su nombre en esta aplicación. Cualquier acceso que tenga ahora termina. Puede aprobarla de nuevo en cualquier momento.'
+account.delegated_access.revoke.description_service_provider: '%{sp} ya no podrá actuar en su nombre en ninguna de estas aplicaciones. Cualquier acceso que tenga ahora termina.'
+account.delegated_access.revoke.heading_all: ¿Terminar todo el acceso delegado?
+account.delegated_access.revoke.heading_application: ¿Terminar el acceso delegado a esta aplicación?
+account.delegated_access.revoke.heading_service_provider: ¿Terminar todo lo que %{sp} puede hacer en su nombre?
+account.delegated_access.revoke.title_all: Terminar todo el acceso delegado
+account.delegated_access.revoke.title_application: Revocar el acceso delegado
+account.delegated_access.revoke.title_service_provider: Revocar el acceso delegado de %{sp}
+account.delegated_access.revoke_application: Revocar
+account.delegated_access.revoke_service_provider: Revocar todo para %{sp}
+account.delegated_access.revoked_flash.one: Terminó el acceso delegado de %{count} aplicación.
+account.delegated_access.revoked_flash.other: Terminó el acceso delegado de %{count} aplicaciones.
+account.delegated_access.service_provider_unavailable: '%{sp} ya no está aprobado para actuar en su nombre. Aún puede terminar las aprobaciones que le dio.'
+account.delegated_access.source_account_page: Otorgada desde su cuenta.
+account.delegated_access.source_consent_screen: Otorgada al iniciar sesión.
+account.delegated_access.status_approved: Aprobada
+account.delegated_access.time_remaining: Termina en %{duration}.
+account.navigation.delegated_access: Acceso delegado
 account_reset.cancel_request.are_you_sure: '¿Está seguro de que desea cancelar su solicitud de eliminación de cuenta?'
 account_reset.cancel_request.cancel: Salir
 account_reset.cancel_request.cancel_button: Cancelar la cuenta eliminada
@@ -930,6 +967,8 @@ event_types.authenticator_disabled: Aplicación de autenticación eliminada
 event_types.authenticator_enabled: Aplicación de autenticación agregada
 event_types.backup_codes_added: Códigos de recuperación añadidos
 event_types.backup_codes_removed: Códigos de recuperación eliminados
+event_types.delegation_approved: Acceso delegado aprobado
+event_types.delegation_revoked: Acceso delegado revocado
 event_types.eastern_timestamp: '%{timestamp} (hora del Este)'
 event_types.email_changed: Dirección de correo electrónico modificada
 event_types.email_deleted: Dirección de correo electrónico eliminada
@@ -1065,6 +1104,7 @@ forms.webauthn_setup.step_3a: Haga clic en “configurar clave de seguridad” m
 headings.account.activity: Actividad
 headings.account.authentication_apps: Aplicaciones de autenticación
 headings.account.connected_services: Sus servicios conectados
+headings.account.delegated_access: Acceso delegado
 headings.account.devices: Dispositivos
 headings.account.events: Eventos
 headings.account.government_employee_id: Identificación de empleado gubernamental
@@ -1807,6 +1847,9 @@ notices.verify_email.use_different_email: Usar un correo electrónico diferente
 notices.webauthn_configured: Se agregó una clave de seguridad a su cuenta.
 notices.webauthn_platform_configured: Usó el bloqueo de pantalla de su dispositivo para agregar el desbloqueo facial o táctil a su cuenta.
 openid_connect.authorization.errors.bad_client_id: client_id incorrecto. Consulte nuestra documentación en https://developers.login.gov/support/#bad-client-id
+openid_connect.authorization.errors.delegation_not_allowed: Los ámbitos de delegación (token_exchange:*) requieren una solicitud con identidad verificada de un proveedor de servicios aprobado para el acceso delegado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-delegation
+openid_connect.authorization.errors.dpop_jkt_invalid: 'dpop_jkt debe ser la huella digital RFC 7638 en base64url de la clave pública DPoP del cliente: 43 caracteres, sin relleno.'
+openid_connect.authorization.errors.dpop_jkt_required: 'dpop_jkt es obligatorio: este cliente está registrado con dpop_required, por lo que el código de autorización debe vincularse a la huella digital de su clave DPoP (RFC 9449, sección 10).'
 openid_connect.authorization.errors.invalid_verified_within_duration.one: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_duration.other: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_format: Formato no reconocido de verified_within
@@ -1819,9 +1862,9 @@ openid_connect.authorization.errors.prompt_invalid: No se encontraron valores de
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri no es válido. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri no coincide con el redirect_uri registrado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-redirect-match
 openid_connect.authorization.errors.site_key_jwk_invalid: site_key_jwk no es una JWK pública P-256 válida.
-openid_connect.authorization.errors.site_key_jwk_not_allowed: site_key_jwk no está habilitado para este client_id.
 openid_connect.authorization.errors.site_key_unavailable: Las claves de sitio no están disponibles temporalmente para esta cuenta. Inténtelo de nuevo más tarde.
 openid_connect.authorization.errors.unauthorized_scope: Ámbito no autorizado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-unauthotized-scope
+openid_connect.authorization.errors.unknown_delegation_scope: 'Ámbito de delegación desconocido: %{scopes}. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-delegation'
 openid_connect.logout.confirm: Sí, cerrar sesión en %{app_name}
 openid_connect.logout.deny: No, ir a la página de mi cuenta
 openid_connect.logout.errors.client_id_invalid: No se reconoció client_id. Consulte nuestra documentación en https://developers.login.gov/support/#client-id-not-recognized
@@ -1832,13 +1875,46 @@ openid_connect.logout.errors.no_client_id_or_id_token_hint: Esta aplicación est
 openid_connect.logout.heading: ¿Desea cerrar sesión en %{app_name}?
 openid_connect.logout.heading_with_sp: ¿Desea cerrar sesión en %{app_name} y volver a %{service_provider_name}?
 
+openid_connect.revoke.errors.token_missing: token es obligatorio.
+openid_connect.token.errors.client_assertion_lifetime: exp debe ser una marca de tiempo Unix entera, como máximo 5 minutos después de iat.
+openid_connect.token.errors.client_assertion_malformed: client_assertion no pudo interpretarse como un JWT cuyas notificaciones iss y sub coincidan.
+openid_connect.token.errors.client_assertion_missing: client_assertion es obligatorio para este tipo de concesión.
+openid_connect.token.errors.client_assertion_replayed: La notificación jti de client_assertion ya se ha utilizado; cada aserción debe llevar un jti único.
+openid_connect.token.errors.client_assertion_type_invalid: 'client_assertion_type debe ser urn:ietf:params:oauth:client-assertion-type:jwt-bearer.'
+openid_connect.token.errors.client_authentication_required: 'Se requiere autenticación del cliente: un cliente confidencial envía un client_assertion (private_key_jwt); un cliente público envía su client_id y una prueba DPoP firmada con la clave a la que está vinculado su token.'
+openid_connect.token.errors.client_not_approved: Este cliente no está aprobado para el acceso delegado.
+openid_connect.token.errors.code_verifier_not_allowed: code_verifier no se acepta para este tipo de concesión.
+openid_connect.token.errors.consent_required: El usuario no ha aprobado esta aplicación para este cliente, o la aprobación ha caducado. Inicie una solicitud de autorización con el alcance %{delegation_scope} para pedirla.
+openid_connect.token.errors.dpop_key_mismatch: La prueba DPoP está firmada con una clave distinta de aquella a la que está vinculado este token.
+openid_connect.token.errors.dpop_proof_invalid: 'No se pudo verificar la prueba DPoP: debe ser un dpop+jwt firmado con ES256 o RS256 por la clave pública de su encabezado jwk, indicar el método y la URL de esta solicitud, ser reciente, llevar un jti sin usar y, cuando se presenta un token, el hash ath de ese token.'
+openid_connect.token.errors.dpop_proof_replayed: El jti de la prueba DPoP ya se ha utilizado; cada prueba debe llevar un jti único.
+openid_connect.token.errors.dpop_proof_required: 'Se requiere una prueba DPoP: los tokens de este cliente están vinculados a su clave, así que envíe con la solicitud un encabezado DPoP firmado con esa clave (RFC 9449).'
 openid_connect.token.errors.expired_code: venció. Consulte nuestra documentación en https://developers.login.gov/support/#token-expired
+openid_connect.token.errors.identity_not_verified: El acceso delegado requiere un usuario con identidad verificada que haya iniciado sesión en IAL2.
 openid_connect.token.errors.invalid_aud: Notificación de audiencia no válida, %{url} prevista. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: El cliente debe autenticarse a través de PKCE o private_key_jwt, omitiendo code_challenge o client_assertion. Consulte nuestra documentación en https://developers.login.gov/support/#pkce-or-private-key
 openid_connect.token.errors.invalid_code: no es válido porque no coincide con ningún usuario. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-code
 openid_connect.token.errors.invalid_code_verifier: code_verifier no coincide con code_challenge. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat debe ser una marca de tiempo Unix de punto flotante o un entero que represente un momento en el pasado. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-iat
+openid_connect.token.errors.invalid_refresh_token: refresh_token no es un token de actualización vigente emitido a este cliente.
+openid_connect.token.errors.invalid_requested_token_type: 'requested_token_type debe ser urn:ietf:params:oauth:token-type:access_token o urn:ietf:params:oauth:token-type:saml2.'
 openid_connect.token.errors.invalid_signature: No se pudo validar la afirmación contra ninguna clave pública registrada. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-token-signature
+openid_connect.token.errors.invalid_subject_token: subject_token no es un token de acceso emitido a este cliente para una conexión vigente.
+openid_connect.token.errors.invalid_subject_token_type: 'subject_token_type debe ser urn:ietf:params:oauth:token-type:access_token.'
+openid_connect.token.errors.multiple_resources: resource debe nombrar exactamente una API registrada; un token tiene una sola audiencia.
+openid_connect.token.errors.refresh_scope_mismatch: scope, si se indica, debe ser exactamente el alcance con el que se emitió el token de actualización.
+openid_connect.token.errors.refresh_token_missing: refresh_token es obligatorio.
+openid_connect.token.errors.refresh_token_reused: Este token de actualización ya se había usado, por lo que se han revocado todos los tokens de su familia. Inicie un nuevo intercambio para continuar.
+openid_connect.token.errors.resource_missing: resource es obligatorio y debe nombrar una API registrada.
+openid_connect.token.errors.resource_not_allowed_on_refresh: resource no se acepta en una actualización; la API la fija el token de actualización. Vuelva a intercambiar para obtener un token para otra API.
+openid_connect.token.errors.subject_token_missing: subject_token es obligatorio.
+openid_connect.token.errors.subject_token_session_ended: La sesión que emitió subject_token ha terminado; el usuario debe iniciar sesión de nuevo antes de que pueda comenzar una nueva delegación.
+openid_connect.token.errors.unknown_client: La notificación iss de client_assertion no coincide con ningún cliente registrado.
+openid_connect.token.errors.unknown_resource: resource no nombra una API registrada activa disponible para este cliente.
+openid_connect.token.errors.unsupported_grant_type: Este tipo de concesión no es compatible.
+openid_connect.token.errors.user_suspended: La cuenta del usuario no está en buen estado.
+openid_connect.user_info.errors.bound_token_requires_dpop: 'Este token de acceso está vinculado a una clave: preséntelo con el esquema de autorización DPoP y una prueba DPoP firmada con esa clave (RFC 9449).'
+openid_connect.user_info.errors.encryption_unavailable: 'Este proveedor de servicios está registrado para recibir respuestas userinfo cifradas, pero no tiene registrada ninguna clave de cifrado utilizable: la respuesta no se envió.'
 openid_connect.user_info.errors.malformed_authorization: Encabezado de autorización mal formado. Consulte nuestra documentación en https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No se proporcionó ningún encabezado de autorización. Consulte nuestra documentación en https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: No se pudo encontrar la autorización para el contenido del access_token proporcionado o puede ser que este haya vencido. Consulte nuestra documentación en https://developers.login.gov/support/#auth-header-contents-not-found
@@ -1895,6 +1971,43 @@ sign_up.agree_and_continue: Aceptar y continuar
 sign_up.cancel.success: Su cuenta fue eliminada. No guardamos su información.
 sign_up.cancel.warning_header: 'Si cancela ahora:'
 sign_up.completed.smiling_image_alt: Una persona sonriente con una marca de verificación verde
+sign_up.delegation.about_agency: Acerca de %{agency}
+sign_up.delegation.about_heading: Acerca de este servicio
+sign_up.delegation.access_duration: Después de este inicio de sesión, %{sp} puede actuar en su nombre durante un máximo de %{hours} horas, a menos que usted lo termine antes desde su cuenta.
+sign_up.delegation.access_duration_heading: Cuánto dura el acceso
+sign_up.delegation.access_read: Solo lectura
+sign_up.delegation.access_read_write: Puede hacer cambios
+sign_up.delegation.account_link: Cuenta → Cuentas conectadas
+sign_up.delegation.ai_badge: IA
+sign_up.delegation.allow_button: Permitir y continuar
+sign_up.delegation.applications_count.one: '%{count} aplicación solicitada'
+sign_up.delegation.applications_count.other: '%{count} aplicaciones solicitadas'
+sign_up.delegation.approved_from_account_html: Aprobado desde su cuenta el %{timestamp_html}
+sign_up.delegation.cancel_button: Cancelar y volver a %{sp}
+sign_up.delegation.data_handling: La información de las agencias que apruebe se %{statement}
+sign_up.delegation.description: Esto permite que el servicio %{description}
+sign_up.delegation.does_not_use_ai: No usa IA
+sign_up.delegation.heading: Está permitiendo que %{sp} acceda a su información
+sign_up.delegation.learn_more: Más información sobre %{sp}
+sign_up.delegation.learn_more_agency: Más información de %{agency}
+sign_up.delegation.no_password_shared: Solo se compartirán las aplicaciones indicadas arriba, y cada una recibe únicamente la información para la que está aprobada. %{app_name} nunca comparte su contraseña.
+sign_up.delegation.other_agency: Otra
+sign_up.delegation.remember_description_html: Si deja esta casilla sin marcar, estas aprobaciones durarán solo durante este inicio de sesión. Puede revisar, aprobar por adelantado o revocar aprobaciones en cualquier momento en %{link_html}.
+sign_up.delegation.remember_label: Recordar mis aprobaciones durante 1 año
+sign_up.delegation.requesting_access: '%{sp} necesita acceso a estas aplicaciones'
+sign_up.delegation.required_badge: Obligatoria
+sign_up.delegation.required_explanation: Estas aplicaciones son necesarias para continuar a %{sp}. Si no desea permitir alguna de ellas, cancele y vuelva a %{sp}. Cada agencia ha escrito con sus propias palabras lo que hace su aplicación.
+sign_up.delegation.required_hint: (obligatoria para continuar)
+sign_up.delegation.run_by: '%{sp} es administrado por'
+sign_up.delegation.service_description: es un servicio del gobierno que %{description}
+sign_up.delegation.services_used: 'Servicios que usará la aplicación:'
+sign_up.delegation.status.approved: Ya aprobada
+sign_up.delegation.status.new: Nueva
+sign_up.delegation.status.updated: Actualizada
+sign_up.delegation.uses_ai: Usa IA
+sign_up.delegation.uses_ai_description: Usa IA para %{description}
+sign_up.delegation.will_receive: 'Recibirá: %{data}'
+sign_up.delegation.your_information: Su información
 sign_up.document_images_sharing_consent_label: Doy mi consentimiento para compartir las fotos de mis documentos de identidad y la selfie de verificación de identidad con %{sp} para la adjudicación de identidad.
 sign_up.document_images_sharing_consent_required: Debe dar su consentimiento para compartir las fotos de sus documentos de identidad y su selfie para continuar, o cancelar.
 sign_up.information_sharing_html: Para saber cómo %{app_name} comparte su información, consulte nuestra %{link_html}.
@@ -2232,6 +2345,14 @@ user_mailer.agent_proofing_succeeded.footer_html: Si usted no intentó verificar
 user_mailer.agent_proofing_succeeded.header: Ha completado con éxito su verificación de identidad
 user_mailer.agent_proofing_succeeded.subject: 'Acción requerida: Confirme su cuenta verificada'
 user_mailer.contact_link_text: contáctenos
+user_mailer.delegation_approved.intro: 'Desde su cuenta, permitió que %{sp_name} actúe en su nombre en estas aplicaciones durante 1 año:'
+user_mailer.delegation_approved.manage_html: Puede revisar o terminar estas aprobaciones en cualquier momento en %{link_html}.
+user_mailer.delegation_approved.manage_link: Acceso delegado en su cuenta
+user_mailer.delegation_approved.subject: Permitió que %{sp_name} actúe en su nombre
+user_mailer.delegation_revoked.intro: 'Desde su cuenta, terminó el permiso de %{sp_name} para actuar en su nombre en estas aplicaciones:'
+user_mailer.delegation_revoked.intro_all: 'Desde su cuenta, terminó todos los permisos para que un servicio actúe en su nombre en estas aplicaciones:'
+user_mailer.delegation_revoked.subject: Terminó lo que %{sp_name} puede hacer en su nombre
+user_mailer.delegation_revoked.subject_all: Terminó todo el acceso delegado
 user_mailer.device_profiling_error_cleared.info: El error en su cuenta (LG22) se ha solucionado. Ahora puede iniciar sesión en el sitio web de la agencia con su cuenta.
 user_mailer.device_profiling_error_cleared.subject: Puede volver a iniciar sesión con su cuenta
 user_mailer.dupe_profile.created.description: Alguien verificó otra cuenta de %{app_name} usando la información personal de usted. Por su seguridad, hemos restringido su acceso a todas las cuentas con información que coincide y a %{sp_or_app_name}.

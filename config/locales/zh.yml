@@ -1,4 +1,41 @@
 ---
+account.connected_apps.manage_delegated_access: 管理 %{sp} 可以代表您做什么
+account.delegated_access.approve.confirm: 允许
+account.delegated_access.approve.description: 请查看每个机构对其应用的说明。如果您允许，%{sp} 可以在 %{months} 个月内，于您每次登录它时在这些应用中代表您行事，除非您提前在本页终止。
+account.delegated_access.approve.heading: 允许 %{sp} 在这些应用中代表您行事？
+account.delegated_access.approve.title: 允许 %{sp} 代表您行事
+account.delegated_access.approve_selected: 批准所选
+account.delegated_access.approved_count.one: 已批准 %{count} 个，共 %{total} 个
+account.delegated_access.approved_count.other: 已批准 %{count} 个，共 %{total} 个
+account.delegated_access.approved_count.zero: 已批准 %{count} 个，共 %{total} 个
+account.delegated_access.approved_flash.one: 您为 %{sp} 批准了 %{count} 个应用。
+account.delegated_access.approved_flash.other: 您为 %{sp} 批准了 %{count} 个应用。
+account.delegated_access.approved_on_html: 于 %{timestamp_html} 批准。
+account.delegated_access.description: 在您使用 %{app_name} 登录后，某些服务可以代表您在其他机构行事。每个机构都用自己的语言描述其应用。您在此处给予的批准有效期为 1 年，并在您登录时生效；您可以随时终止。
+account.delegated_access.end_all: 终止所有委托访问
+account.delegated_access.none_registered: 目前还没有服务获准代表您行事。
+account.delegated_access.nothing_selected: 请至少选择一个要批准的应用。
+account.delegated_access.other_agency: 其他
+account.delegated_access.revoke.confirm: 终止访问
+account.delegated_access.revoke.description_all: 在您再次批准之前，任何服务都无法在任何机构代表您行事。目前持有的任何访问权限将终止。
+account.delegated_access.revoke.description_application: '%{sp} 将不再能够在此应用中代表您行事。它目前持有的任何访问权限将终止。您可以随时再次批准。'
+account.delegated_access.revoke.description_service_provider: '%{sp} 将不再能够在这些应用中代表您行事。它目前持有的任何访问权限将终止。'
+account.delegated_access.revoke.heading_all: 终止所有委托访问？
+account.delegated_access.revoke.heading_application: 终止对此应用的委托访问？
+account.delegated_access.revoke.heading_service_provider: 终止 %{sp} 可以代表您做的一切？
+account.delegated_access.revoke.title_all: 终止所有委托访问
+account.delegated_access.revoke.title_application: 撤销委托访问
+account.delegated_access.revoke.title_service_provider: 撤销 %{sp} 的委托访问
+account.delegated_access.revoke_application: 撤销
+account.delegated_access.revoke_service_provider: 撤销 %{sp} 的所有权限
+account.delegated_access.revoked_flash.one: 您终止了 %{count} 个应用的委托访问。
+account.delegated_access.revoked_flash.other: 您终止了 %{count} 个应用的委托访问。
+account.delegated_access.service_provider_unavailable: '%{sp} 已不再获准代表您行事。您仍然可以终止您给予它的批准。'
+account.delegated_access.source_account_page: 从您的账户给予。
+account.delegated_access.source_consent_screen: 在登录时给予。
+account.delegated_access.status_approved: 已批准
+account.delegated_access.time_remaining: 将在 %{duration} 后结束。
+account.navigation.delegated_access: 委托访问
 account_reset.cancel_request.are_you_sure: 你确定要取消删除账户的请求吗？
 account_reset.cancel_request.cancel: 退出
 account_reset.cancel_request.cancel_button: 取消删除账户
@@ -930,6 +967,8 @@ event_types.authenticator_disabled: 身份证实器应用程序已去掉
 event_types.authenticator_enabled: 身份证实器应用程序已添加
 event_types.backup_codes_added: 备用代码已添加
 event_types.backup_codes_removed: 备份代码已删除
+event_types.delegation_approved: 已批准委托访问
+event_types.delegation_revoked: 已撤销委托访问
 event_types.eastern_timestamp: '%{timestamp}（东部）'
 event_types.email_changed: 电邮地址已更改
 event_types.email_deleted: 电邮地址已删除
@@ -1067,6 +1106,7 @@ forms.webauthn_setup.step_3a: 点击下面的“设置安全密钥”并按照�
 headings.account.activity: 活动
 headings.account.authentication_apps: 身份证实应用程序
 headings.account.connected_services: 您的互联服务
+headings.account.delegated_access: 委托访问
 headings.account.devices: 设备
 headings.account.events: 事件
 headings.account.government_employee_id: 政府雇员身份证件
@@ -1809,6 +1849,9 @@ notices.verify_email.use_different_email: 使用其他电子邮件
 notices.webauthn_configured: 你账户添加了一个安全密钥。
 notices.webauthn_platform_configured: 你用了自己设备的屏幕锁定给账户添加了人脸或触摸解锁。
 openid_connect.authorization.errors.bad_client_id: 坏的client_id。请参阅我们的文档：https://developers.login.gov/support/#bad-client-id
+openid_connect.authorization.errors.delegation_not_allowed: 委托范围（token_exchange:*）需要来自已获批准进行委托访问的服务提供商的身份已验证请求。请参阅我们的文档：https://developers.login.gov/support/#oidc-delegation
+openid_connect.authorization.errors.dpop_jkt_invalid: dpop_jkt 必须是客户端 DPoP 公钥的 RFC 7638 base64url 指纹：43 个字符，无填充。
+openid_connect.authorization.errors.dpop_jkt_required: dpop_jkt 为必填项：此客户端注册时设置了 dpop_required，因此授权码必须绑定到其 DPoP 密钥的指纹（RFC 9449 第 10 节）。
 openid_connect.authorization.errors.invalid_verified_within_duration.one: 值必须至少为 %{count} 天或以上
 openid_connect.authorization.errors.invalid_verified_within_duration.other: 值必须至少为 %{count} 天或以上
 openid_connect.authorization.errors.invalid_verified_within_format: verified_within 格式无法识别
@@ -1821,9 +1864,9 @@ openid_connect.authorization.errors.prompt_invalid: 未找到有效的提示值�
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri 有误。请参阅我们的文档：https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri 与注册的 redirect_uri 不匹配。请参阅我们的文档：https://developers.login.gov/support/#oidc-redirect-match
 openid_connect.authorization.errors.site_key_jwk_invalid: site_key_jwk 不是有效的 P-256 公钥 JWK。
-openid_connect.authorization.errors.site_key_jwk_not_allowed: 此 client_id 未启用 site_key_jwk。
 openid_connect.authorization.errors.site_key_unavailable: 此账户的站点密钥暂时不可用。请稍后再试。
 openid_connect.authorization.errors.unauthorized_scope: 未经授权的范围。请参阅我们的文档：https://developers.login.gov/support/#oidc-unauthotized-scope
+openid_connect.authorization.errors.unknown_delegation_scope: 未知的委托范围：%{scopes}。请参阅我们的文档：https://developers.login.gov/support/#oidc-delegation
 openid_connect.logout.confirm: 是的，登出 %{app_name}
 openid_connect.logout.deny: 不，到我的账户页面
 openid_connect.logout.errors.client_id_invalid: client_id 不认识。请参阅我们的文档：https://developers.login.gov/support/#client-id-not-recognized
@@ -1833,13 +1876,46 @@ openid_connect.logout.errors.id_token_hint_present: 本应用程序配置错误�
 openid_connect.logout.errors.no_client_id_or_id_token_hint: 本应用程序配置错误，必须发送 client_id 或者 id_token_hint。请参阅我们的文档：https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: 你想登出 %{app_name} 吗？
 openid_connect.logout.heading_with_sp: 你想登出 %{app_name} 并回到 %{service_provider_name} 吗？
+openid_connect.revoke.errors.token_missing: token 为必填项。
+openid_connect.token.errors.client_assertion_lifetime: exp 必须是整数 Unix 时间戳，且不得晚于 iat 之后 5 分钟。
+openid_connect.token.errors.client_assertion_malformed: client_assertion 无法解析为 iss 与 sub 声明一致的 JWT。
+openid_connect.token.errors.client_assertion_missing: 此授权类型需要 client_assertion。
+openid_connect.token.errors.client_assertion_replayed: client_assertion 的 jti 声明已被使用过；每个断言都必须携带唯一的 jti。
+openid_connect.token.errors.client_assertion_type_invalid: 'client_assertion_type 必须是 urn:ietf:params:oauth:client-assertion-type:jwt-bearer。'
+openid_connect.token.errors.client_authentication_required: 需要客户端身份验证：机密客户端发送 client_assertion（private_key_jwt）；公共客户端发送其 client_id 以及由其令牌所绑定密钥签名的 DPoP 证明。
+openid_connect.token.errors.client_not_approved: 此客户端未获准进行委托访问。
+openid_connect.token.errors.code_verifier_not_allowed: 此授权类型不接受 code_verifier。
+openid_connect.token.errors.consent_required: 用户尚未为此客户端批准此应用，或者批准已失效。请发起包含范围 %{delegation_scope} 的授权请求以申请批准。
+openid_connect.token.errors.dpop_key_mismatch: DPoP 证明所用的签名密钥与此令牌绑定的密钥不同。
+openid_connect.token.errors.dpop_proof_invalid: 无法验证 DPoP 证明：它必须是由其 jwk 标头中的公钥以 ES256 或 RS256 签名的 dpop+jwt，指明本次请求的方法和 URL，时间必须是近期，携带未使用过的 jti，并且在出示令牌时携带该令牌的 ath 哈希。
+openid_connect.token.errors.dpop_proof_replayed: DPoP 证明的 jti 已被使用过；每个证明都必须携带唯一的 jti。
+openid_connect.token.errors.dpop_proof_required: 需要 DPoP 证明：此客户端的令牌已绑定到其密钥，请在请求中附带由该密钥签名的 DPoP 标头（RFC 9449）。
 openid_connect.token.errors.expired_code: 过期了。请参阅我们的文档：https://developers.login.gov/support/#token-expired
+openid_connect.token.errors.identity_not_verified: 委托访问要求用户已通过身份验证并以 IAL2 登录。
 openid_connect.token.errors.invalid_aud: 受众声明有误，预期 %{url}。请参阅我们的文档：https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: 客户必须通过 PKCE 或 private_key_jwt 来验证，缺失 code_challenge 或者 client_assertion。请参阅我们的文档：https://developers.login.gov/support/#pkce-or-private-key
 openid_connect.token.errors.invalid_code: 无效，因为与任何用户都匹配不上。请参阅我们的文档： https://developers.login.gov/support/#invalid-code
 openid_connect.token.errors.invalid_code_verifier: code_verifier 与 code_challenge 不匹配。请参阅我们的文档：https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat 必须是整数或者浮动点 Unix 时间印章来代表过去的一个时间。请参阅我们的文档：https://developers.login.gov/support/#invalid-iat
+openid_connect.token.errors.invalid_refresh_token: refresh_token 不是签发给此客户端的有效刷新令牌。
+openid_connect.token.errors.invalid_requested_token_type: 'requested_token_type 必须是 urn:ietf:params:oauth:token-type:access_token 或 urn:ietf:params:oauth:token-type:saml2。'
 openid_connect.token.errors.invalid_signature: 无法根据任何已注册的公钥验证这个说法。请参阅我们的文档：https://developers.login.gov/support/#invalid-token-signature
+openid_connect.token.errors.invalid_subject_token: subject_token 不是为当前连接签发给此客户端的访问令牌。
+openid_connect.token.errors.invalid_subject_token_type: 'subject_token_type 必须是 urn:ietf:params:oauth:token-type:access_token。'
+openid_connect.token.errors.multiple_resources: resource 必须且只能指明一个已注册的 API；一个令牌只有一个受众。
+openid_connect.token.errors.refresh_scope_mismatch: scope 若提供，必须与签发刷新令牌时的范围完全一致。
+openid_connect.token.errors.refresh_token_missing: refresh_token 为必填项。
+openid_connect.token.errors.refresh_token_reused: 此刷新令牌已被使用，因此其所属系列中的所有令牌均已被撤销。请重新发起交换以继续。
+openid_connect.token.errors.resource_missing: resource 为必填项，且必须指明一个已注册的 API。
+openid_connect.token.errors.resource_not_allowed_on_refresh: 刷新时不接受 resource；API 由刷新令牌确定。如需获取其他 API 的令牌，请重新交换。
+openid_connect.token.errors.subject_token_missing: subject_token 为必填项。
+openid_connect.token.errors.subject_token_session_ended: 签发 subject_token 的登录会话已结束；用户必须重新登录后才能开始新的委托。
+openid_connect.token.errors.unknown_client: client_assertion 的 iss 声明与任何已注册的客户端都不匹配。
+openid_connect.token.errors.unknown_resource: resource 未指明此客户端可用的、已注册且处于活动状态的 API。
+openid_connect.token.errors.unsupported_grant_type: 不支持此授权类型。
+openid_connect.token.errors.user_suspended: 该用户账户状态异常。
+openid_connect.user_info.errors.bound_token_requires_dpop: '此访问令牌已绑定到一个密钥：请使用 DPoP 授权方案并附带由该密钥签名的 DPoP 证明来提交（RFC 9449）。'
+openid_connect.user_info.errors.encryption_unavailable: '此服务提供商已登记接收加密的 userinfo 响应，但没有为其登记可用的加密密钥：响应未发送。'
 openid_connect.user_info.errors.malformed_authorization: 授权标头畸形。请参阅我们的文档：https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: 未提供授权标头。请参阅我们的文档：https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: 就提供的 access_token 内容找不到授权或者授权已过期。请参阅我们的文档：https://developers.login.gov/support/#auth-header-contents-not-found
@@ -1896,6 +1972,43 @@ sign_up.agree_and_continue: 同意并继续
 sign_up.cancel.success: 你的账户已被删除。我们没有存储你的信息。
 sign_up.cancel.warning_header: 如果你现在取消：
 sign_up.completed.smiling_image_alt: 面带笑容的一个人加上绿勾说明成功了
+sign_up.delegation.about_agency: 关于%{agency}
+sign_up.delegation.about_heading: 关于此服务
+sign_up.delegation.access_duration: 本次登录后，%{sp} 最多可以代表您行事 %{hours} 小时，除非您提前在账户中终止。
+sign_up.delegation.access_duration_heading: 访问持续多久
+sign_up.delegation.access_read: 只读
+sign_up.delegation.access_read_write: 可以进行更改
+sign_up.delegation.account_link: 账户 → 已连接的账户
+sign_up.delegation.ai_badge: 人工智能
+sign_up.delegation.allow_button: 允许并继续
+sign_up.delegation.applications_count.one: 请求了 %{count} 个应用
+sign_up.delegation.applications_count.other: 请求了 %{count} 个应用
+sign_up.delegation.approved_from_account_html: 于 %{timestamp_html} 从您的账户批准
+sign_up.delegation.cancel_button: 取消并返回 %{sp}
+sign_up.delegation.data_handling: 来自您批准的机构的信息%{statement}
+sign_up.delegation.description: 这允许该服务%{description}
+sign_up.delegation.does_not_use_ai: 不使用人工智能
+sign_up.delegation.heading: 您正在允许 %{sp} 访问您的信息
+sign_up.delegation.learn_more: 了解有关 %{sp} 的更多信息
+sign_up.delegation.learn_more_agency: 了解 %{agency} 的更多信息
+sign_up.delegation.no_password_shared: 只会共享上面列出的应用，且每个应用仅接收其获准接收的信息。%{app_name} 绝不会共享您的密码。
+sign_up.delegation.other_agency: 其他
+sign_up.delegation.remember_description_html: 如果不勾选此项，这些批准仅在本次登录期间有效。您可以随时在%{link_html}下查看、提前批准或撤销批准。
+sign_up.delegation.remember_label: 记住我的批准 1 年
+sign_up.delegation.requesting_access: '%{sp} 需要访问以下应用'
+sign_up.delegation.required_badge: 必需
+sign_up.delegation.required_explanation: 继续前往 %{sp} 需要这些应用。如果您不想允许其中某一个，请取消并返回 %{sp}。每个机构都用自己的语言说明了其应用的功能。
+sign_up.delegation.required_hint: （继续所必需）
+sign_up.delegation.run_by: '%{sp} 的运营方是'
+sign_up.delegation.service_description: 是一项政府服务，%{description}
+sign_up.delegation.services_used: '该应用将使用的服务：'
+sign_up.delegation.status.approved: 已批准
+sign_up.delegation.status.new: 新
+sign_up.delegation.status.updated: 已更新
+sign_up.delegation.uses_ai: 使用人工智能
+sign_up.delegation.uses_ai_description: 它使用人工智能来%{description}
+sign_up.delegation.will_receive: 将收到：%{data}
+sign_up.delegation.your_information: 您的信息
 sign_up.document_images_sharing_consent_label: 我同意将我的身份证件照片和身份验证自拍照与 %{sp} 共享，用于身份裁定。
 sign_up.document_images_sharing_consent_required: 你必须同意共享身份证件照片和自拍照才能继续，或者取消。
 sign_up.information_sharing_html: 如需了解 %{app_name} 如何共享您的信息，请查阅我们的《%{link_html}》。
@@ -2233,6 +2346,14 @@ user_mailer.agent_proofing_succeeded.footer_html: 如果您并未亲自尝试进
 user_mailer.agent_proofing_succeeded.header: 您已成功完成身份验证
 user_mailer.agent_proofing_succeeded.subject: 需采取行动：确认您的已验证账户
 user_mailer.contact_link_text: 联系我们
+user_mailer.delegation_approved.intro: 您从账户中允许 %{sp_name} 在以下应用中代表您行事，有效期 1 年：
+user_mailer.delegation_approved.manage_html: 您可以随时在%{link_html}中查看或终止这些批准。
+user_mailer.delegation_approved.manage_link: 账户中的委托访问
+user_mailer.delegation_approved.subject: 您允许了 %{sp_name} 代表您行事
+user_mailer.delegation_revoked.intro: 您从账户中终止了 %{sp_name} 在以下应用中代表您行事的权限：
+user_mailer.delegation_revoked.intro_all: 您从账户中终止了任何服务在以下应用中代表您行事的所有权限：
+user_mailer.delegation_revoked.subject: 您终止了 %{sp_name} 可以代表您做的事
+user_mailer.delegation_revoked.subject_all: 您终止了所有委托访问
 user_mailer.device_profiling_error_cleared.info: 您的账户（LG22）错误已解决。您现在可以使用您的账户登录机构网站。
 user_mailer.device_profiling_error_cleared.subject: 您可以使用 帐户重新登录。
 user_mailer.dupe_profile.created.description: 有人使用你的个人信息验证了另一个 %{app_name} 账户。 为了你的安全，我们已限制了具有同样信息的所有账户的访问权以及对 %{sp_or_app_name} 的访问权.

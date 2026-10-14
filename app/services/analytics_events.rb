@@ -492,6 +492,29 @@ module AnalyticsEvents
     track_event('Banned User visited')
   end
 
+  # Tracks when the agency handoff was submitted for a service provider that
+  # requested document images but the user did not affirmatively consent; the
+  # submission is rejected and the screen re-rendered.
+  # @param [String] issuer issuer of the service provider requesting the images
+  def biometric_sharing_consent_declined(issuer:, **extra)
+    track_event(
+      :biometric_sharing_consent_declined,
+      issuer: issuer,
+      **extra,
+    )
+  end
+
+  # Tracks when a user grants consent to share proofing document images (biometric
+  # artifacts) with a service provider on the agency handoff screen.
+  # @param [String] issuer issuer of the service provider receiving the images
+  def biometric_sharing_consent_granted(issuer:, **extra)
+    track_event(
+      :biometric_sharing_consent_granted,
+      issuer: issuer,
+      **extra,
+    )
+  end
+
   # A user that had a broken personal key was routed to a page to regenerate their personal key,
   # so that they no longer have a broken one
   def broken_personal_key_regenerated
@@ -542,6 +565,144 @@ module AnalyticsEvents
 
   # User directed to this page after TMX returns a failure
 
+  # Tracks the outcome of delivering delegated-access fraud-signal events to an agency through the
+  # Attempts API: the sign-in events buffered for the agency, a live session event forwarded to
+  # it, or a consent or token event written for it. Delivery is best-effort, so a failure here
+  # never fails the person's request.
+  # @param [String] event_type Attempts event type delivered, or "buffered_session_events" for
+  #   the re-mapped sign-in events released at consent
+  # @param [String, nil] recipient_issuer Issuer of the agency record that receives the events
+  # @param [String, nil] actor_issuer Issuer of the service provider acting for the person
+  # @param [Boolean] success Whether the events were written to the agency's Attempts queue
+  # @param [Integer] event_count How many events the outcome covers
+  # @param ["delivery_disabled", "recipient_not_enrolled", nil] skipped_reason Why nothing was
+  #   delivered, when delivery was not attempted
+  # @param [String, nil] exception Class of the error that stopped delivery, when one did
+  def delegated_access_attempts_delivery(
+    event_type:,
+    recipient_issuer:,
+    actor_issuer:,
+    success:,
+    event_count:,
+    skipped_reason: nil,
+    exception: nil,
+    **extra
+  )
+    track_event(
+      :delegated_access_attempts_delivery,
+      event_type:,
+      recipient_issuer:,
+      actor_issuer:,
+      success:,
+      event_count:,
+      skipped_reason:,
+      exception:,
+      **extra,
+    )
+  end
+
+  # Tracks a visit to the Account > Delegated access page.
+  def delegated_access_page_visited
+    track_event(:delegated_access_page_visited)
+  end
+
+  # Tracks, at a token exchange that issued a delegated token, the attempt to find the service
+  # provider's own sign-in so that it is waived from the service provider's invoice in favor of
+  # the agency receiving the token.
+  # @param ["cache_hit", "db_fallback", "not_found"] outcome How the sign-in's billing row was
+  #   found: through the link written at the handoff, through the database once that link had
+  #   lapsed, or not at all (the service provider stays billed for the sign-in)
+  # @param [Boolean] already_waived Whether an earlier exchange in the same sign-in had already
+  #   waived it
+  # @param [String] service_provider_issuer Issuer of the service provider whose sign-in it is
+  # @param [String] billing_issuer Issuer billed for the delegated token
+  def delegated_billing_waiver(
+    outcome:,
+    already_waived:,
+    service_provider_issuer:,
+    billing_issuer:,
+    **extra
+  )
+    track_event(
+      :delegated_billing_waiver,
+      outcome:,
+      already_waived:,
+      service_provider_issuer:,
+      billing_issuer:,
+      **extra,
+    )
+  end
+
+  # Emitted by the daily job that removes the refresh-token rows of delegated-access families
+  # that ended more than a day ago.
+  # @param [Integer] deleted_count number of refresh-token rows removed
+  def delegated_refresh_tokens_expired(deleted_count:, **extra)
+    track_event(:delegated_refresh_tokens_expired, deleted_count:, **extra)
+  end
+
+  # Tracks the person approving, from the account page, applications a service provider may act
+  # at on their behalf. Approvals made here are always remembered for the maximum period.
+  # @param [String] service_provider_issuer Issuer of the service provider
+  # @param [Array<String>] applications Issuers of the applications approved
+  def delegation_account_approved(service_provider_issuer:, applications:, **extra)
+    track_event(
+      :delegation_account_approved,
+      service_provider_issuer:,
+      applications:,
+      **extra,
+    )
+  end
+
+  # Tracks the person revoking delegated-access approvals from the account page.
+  # @param [String, nil] service_provider_issuer Issuer of the service provider; nil when every
+  #   approval was revoked
+  # @param [Array<String>] applications Issuers of the applications whose approvals were revoked
+  # @param [String] scope "application", "service_provider" or "all"
+  def delegation_account_revoked(service_provider_issuer:, applications:, scope:, **extra)
+    track_event(
+      :delegation_account_revoked,
+      service_provider_issuer:,
+      applications:,
+      scope:,
+      **extra,
+    )
+  end
+
+  # Tracks the person approving, on the agency handoff screen, the applications a service provider
+  # requested. The requested applications are not optional, so this fires on every completed
+  # screen; what varies is the remember choice and how many approvals were new.
+  # @param [String] service_provider_issuer Issuer of the service provider
+  # @param [Array<String>] applications Issuers of the applications requested and approved
+  # @param [Boolean] remembered Whether the person asked to remember the new approvals
+  # @param [Integer] newly_approved_count Approvals written now, as opposed to kept from before
+  def delegation_consent_submitted(service_provider_issuer:, applications:, remembered:,
+                                   newly_approved_count:, **extra)
+    track_event(
+      :delegation_consent_submitted,
+      service_provider_issuer:,
+      applications:,
+      remembered:,
+      newly_approved_count:,
+      **extra,
+    )
+  end
+
+  # Tracks a spent delegated-access refresh token being presented again, which ended the whole
+  # family it belonged to: the token was replayed or a copy of it is in someone else's hands.
+  # @param [String, nil] service_provider_issuer Issuer of the service provider that presented it
+  # @param [String, nil] resource_server_identifier Identifier of the agency API the family was for
+  # @param [String, nil] family_id Identifier of the family that was ended
+  def delegation_refresh_token_reuse(service_provider_issuer:, resource_server_identifier:,
+                                     family_id:, **extra)
+    track_event(
+      :delegation_refresh_token_reuse,
+      service_provider_issuer:,
+      resource_server_identifier:,
+      family_id:,
+      **extra,
+    )
+  end
+
   def device_profiling_failed_visited
     track_event(:device_profiling_failed_visited)
   end
@@ -557,6 +718,45 @@ module AnalyticsEvents
       message:,
       unknown_alerts:,
       response_info:,
+      **extra,
+    )
+  end
+
+  # Emitted by the daily job that removes document_artifacts rows whose escrow
+  # objects have aged past the retention window.
+  # @param [Integer] deleted_count number of artifact rows removed
+  # @param [Integer] deleted_metadata_count number of document metadata rows removed
+  def document_artifacts_expired(deleted_count:, deleted_metadata_count: 0, **extra)
+    track_event(
+      :document_artifacts_expired,
+      deleted_count:,
+      deleted_metadata_count:,
+      **extra,
+    )
+  end
+
+  # Audit record for every request to the document image proxy endpoint, whether
+  # an image was released or the request was refused.
+  # @param [Boolean] success whether image bytes were released
+  # @param [String] image_type which artifact was requested (front/back/passport/selfie)
+  # @param [String, nil] issuer issuer of the requesting service provider
+  # @param [Integer, nil] profile_id the verified profile whose artifact was requested
+  # @param [String, nil] denial_reason why the request was refused, if it was
+  def document_image_release(
+    success:,
+    image_type:,
+    issuer: nil,
+    profile_id: nil,
+    denial_reason: nil,
+    **extra
+  )
+    track_event(
+      :document_image_release,
+      success:,
+      image_type:,
+      issuer:,
+      profile_id:,
+      denial_reason:,
       **extra,
     )
   end
@@ -7474,12 +7674,53 @@ module AnalyticsEvents
   # @param [Integer] ial
   # @param [String] client_id Service Provider issuer
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  def openid_connect_bearer_token(success:, ial:, client_id:, error_details: nil, **extra)
+  # @param [Boolean, nil] encrypted Whether the service provider receives its userinfo response
+  #   as an encrypted JWT; nil when the token did not authenticate
+  def openid_connect_bearer_token(
+    success:,
+    ial:,
+    client_id:,
+    error_details: nil,
+    encrypted: nil,
+    **extra
+  )
     track_event(
       'OpenID Connect: bearer token authentication',
       success:,
       ial:,
       client_id:,
+      error_details:,
+      **(encrypted ? { encrypted: true } : {}),
+      **extra,
+    )
+  end
+
+  # Tracks a token introspection request (RFC 7662) about a delegated token
+  # @param [Boolean] success Whether the credential the caller presented, if any, verified
+  # @param ["resource_server","service_provider","none"] caller_type Kind of caller identified
+  # @param [String, nil] resource_server_identifier Resource server that authenticated or claimed to
+  # @param [String, nil] service_provider_issuer Public-client service provider named as the caller
+  # @param [Boolean, nil] active Whether the token was reported active; nil if the credential failed
+  # @param [String, nil] error_code RFC error code when the credential failed
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  def openid_connect_introspect(
+    success:,
+    caller_type:,
+    resource_server_identifier: nil,
+    service_provider_issuer: nil,
+    active: nil,
+    error_code: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :openid_connect_introspect,
+      success:,
+      caller_type:,
+      resource_server_identifier:,
+      service_provider_issuer:,
+      active:,
+      error_code:,
       error_details:,
       **extra,
     )
@@ -7500,6 +7741,8 @@ module AnalyticsEvents
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
+  # @param [Array<String>, nil] delegation_scopes Bare delegation scope values (the applications
+  #   requested with token_exchange:* scopes), when any were requested
   def openid_connect_request_authorization(
     success:,
     prompt:,
@@ -7515,6 +7758,7 @@ module AnalyticsEvents
     user_fully_authenticated:,
     error_details: nil,
     unknown_authn_contexts: nil,
+    delegation_scopes: nil,
     **extra
   )
     track_event(
@@ -7531,8 +7775,46 @@ module AnalyticsEvents
       scope:,
       acr_values:,
       unauthorized_scope:,
+      **(delegation_scopes.present? ? { delegation_scopes: } : {}),
       user_fully_authenticated:,
       unknown_authn_contexts:,
+      **extra,
+    )
+  end
+
+  # Tracks a request to the RFC 7009 revocation endpoint, where a service provider ends a
+  # delegated access token or a whole refresh family early.
+  # @param [Boolean] success Whether the caller authenticated and the request was well-formed; a
+  #   token that was unknown, another client's or already revoked still counts as a success
+  # @param [String, nil] service_provider_issuer Issuer of the service provider, as authenticated
+  #   or as claimed when authentication failed
+  # @param ["confidential", "public", nil] client_type How the service provider authenticated:
+  #   a client assertion (confidential) or client_id with a DPoP proof (public)
+  # @param [String, nil] token_type_hint The `token_type_hint` parameter as sent
+  # @param ["access_token", "refresh_token", "none", nil] revoked What was acted on: one
+  #   delegated access token, a refresh token and with it its whole family, or nothing; nil when
+  #   the request failed
+  # @param [String, nil] error_code RFC 6749/9449 error code returned on failure
+  # @param [Hash, nil] error_details Details for errors that occurred in an unsuccessful request
+  def openid_connect_revoke(
+    success:,
+    service_provider_issuer: nil,
+    client_type: nil,
+    token_type_hint: nil,
+    revoked: nil,
+    error_code: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :openid_connect_revoke,
+      success:,
+      service_provider_issuer:,
+      client_type:,
+      token_type_hint:,
+      revoked:,
+      error_code:,
+      error_details:,
       **extra,
     )
   end
@@ -7571,6 +7853,114 @@ module AnalyticsEvents
       ial:,
       code_verifier_present:,
       service_provider_pkce:,
+      **extra,
+    )
+  end
+
+  # Tracks an RFC 8693 token exchange at the token endpoint: a service provider presenting the
+  # access token of a signed-in person for a delegated token at one agency API.
+  # @param [Boolean] success Whether a token was issued
+  # @param [String, nil] service_provider_issuer Issuer of the service provider making the
+  #   exchange, as authenticated or as claimed when authentication failed
+  # @param [String, nil] resource_server_identifier Identifier of the agency API named in
+  #   `resource`, when it is registered
+  # @param [String, nil] application_issuer Issuer of the application that owns the API
+  # @param ["confidential", "public", nil] client_type How the service provider authenticated:
+  #   a client assertion (confidential) or client_id with a DPoP proof (public)
+  # @param ["Bearer", "DPoP", nil] token_type Type of the issued token
+  # @param [String, nil] requested_token_type The `requested_token_type` parameter as sent
+  # @param [true, nil] requested_token_type_mismatch Present when the parameter named a format
+  #   other than the API's registered format, which was issued regardless
+  # @param [Integer, nil] expires_in Lifetime in seconds of the issued token
+  # @param [String, nil] error_code RFC 6749/8693/9449 error code returned on failure
+  # @param [Hash, nil] error_details Details for errors that occurred in an unsuccessful exchange
+  def openid_connect_token_exchange(
+    success:,
+    service_provider_issuer: nil,
+    resource_server_identifier: nil,
+    application_issuer: nil,
+    client_type: nil,
+    token_type: nil,
+    requested_token_type: nil,
+    requested_token_type_mismatch: nil,
+    expires_in: nil,
+    error_code: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :openid_connect_token_exchange,
+      success:,
+      service_provider_issuer:,
+      resource_server_identifier:,
+      application_issuer:,
+      client_type:,
+      token_type:,
+      requested_token_type:,
+      requested_token_type_mismatch:,
+      expires_in:,
+      error_code:,
+      error_details:,
+      **extra,
+    )
+  end
+
+  # Tracks a refresh of a delegated-access family at the token endpoint: a service provider
+  # presenting a refresh token for the next access token of the same family.
+  # @param [Boolean] success Whether a token was issued
+  # @param [String, nil] service_provider_issuer Issuer of the service provider refreshing, as
+  #   authenticated or as claimed when authentication failed
+  # @param [String, nil] resource_server_identifier Identifier of the agency API the family is for
+  # @param [String, nil] application_issuer Issuer of the application that owns the API
+  # @param ["confidential", "public", nil] client_type How the service provider authenticated:
+  #   a client assertion (confidential) or client_id with a DPoP proof (public)
+  # @param ["Bearer", "DPoP", nil] token_type Type of the issued token
+  # @param [String, nil] family_id Identifier of the refresh family, when the token was found
+  # @param [Boolean] reuse_detected Whether a spent refresh token was presented and the family
+  #   was ended because of it
+  # @param [Integer, nil] expires_in Lifetime in seconds of the issued token
+  # @param [String, nil] error_code RFC 6749/9449 error code returned on failure
+  # @param [Hash, nil] error_details Details for errors that occurred in an unsuccessful refresh
+  def openid_connect_token_refresh(
+    success:,
+    service_provider_issuer: nil,
+    resource_server_identifier: nil,
+    application_issuer: nil,
+    client_type: nil,
+    token_type: nil,
+    family_id: nil,
+    reuse_detected: false,
+    expires_in: nil,
+    error_code: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :openid_connect_token_refresh,
+      success:,
+      service_provider_issuer:,
+      resource_server_identifier:,
+      application_issuer:,
+      client_type:,
+      token_type:,
+      family_id:,
+      reuse_detected:,
+      expires_in:,
+      error_code:,
+      error_details:,
+      **extra,
+    )
+  end
+
+  # Tracks a userinfo request from a service provider that opted in to encrypted responses but
+  # has no usable key to encrypt to; the request was refused rather than answered in the clear
+  # @param [String] client_id Service Provider issuer
+  # @param [String] error Class of the error that prevented encryption
+  def openid_connect_userinfo_encryption_failed(client_id:, error:, **extra)
+    track_event(
+      :openid_connect_userinfo_encryption_failed,
+      client_id:,
+      error:,
       **extra,
     )
   end
@@ -8795,68 +9185,6 @@ module AnalyticsEvents
     track_event(
       'SP Revoke Consent: Visited',
       issuer: issuer,
-      **extra,
-    )
-  end
-
-  # Tracks when a user grants consent to share proofing document images (biometric
-  # artifacts) with a service provider on the agency handoff screen.
-  # @param [String] issuer issuer of the service provider receiving the images
-  def biometric_sharing_consent_granted(issuer:, **extra)
-    track_event(
-      :biometric_sharing_consent_granted,
-      issuer: issuer,
-      **extra,
-    )
-  end
-
-  # Tracks when the agency handoff was submitted for a service provider that
-  # requested document images but the user did not affirmatively consent; the
-  # submission is rejected and the screen re-rendered.
-  # @param [String] issuer issuer of the service provider requesting the images
-  def biometric_sharing_consent_declined(issuer:, **extra)
-    track_event(
-      :biometric_sharing_consent_declined,
-      issuer: issuer,
-      **extra,
-    )
-  end
-
-  # Emitted by the daily job that removes document_artifacts rows whose escrow
-  # objects have aged past the retention window.
-  # @param [Integer] deleted_count number of artifact rows removed
-  # @param [Integer] deleted_metadata_count number of document metadata rows removed
-  def document_artifacts_expired(deleted_count:, deleted_metadata_count: 0, **extra)
-    track_event(
-      :document_artifacts_expired,
-      deleted_count:,
-      deleted_metadata_count:,
-      **extra,
-    )
-  end
-
-  # Audit record for every request to the document image proxy endpoint, whether
-  # an image was released or the request was refused.
-  # @param [Boolean] success whether image bytes were released
-  # @param [String] image_type which artifact was requested (front/back/passport/selfie)
-  # @param [String, nil] issuer issuer of the requesting service provider
-  # @param [Integer, nil] profile_id the verified profile whose artifact was requested
-  # @param [String, nil] denial_reason why the request was refused, if it was
-  def document_image_release(
-    success:,
-    image_type:,
-    issuer: nil,
-    profile_id: nil,
-    denial_reason: nil,
-    **extra
-  )
-    track_event(
-      :document_image_release,
-      success:,
-      image_type:,
-      issuer:,
-      profile_id:,
-      denial_reason:,
       **extra,
     )
   end
