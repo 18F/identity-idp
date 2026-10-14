@@ -205,7 +205,8 @@ RSpec.describe SignUp::CompletionsController do
     before do
       stub_analytics
       @linker = instance_double(IdentityLinker)
-      allow(@linker).to receive(:link_identity).and_return(true)
+      @linked_identity = instance_double(ServiceProviderIdentity, update!: true)
+      allow(@linker).to receive(:link_identity).and_return(@linked_identity)
       allow(IdentityLinker).to receive(:new).and_return(@linker)
     end
 
@@ -251,6 +252,89 @@ RSpec.describe SignUp::CompletionsController do
         freeze_time do
           travel_to(now)
           patch :update
+        end
+      end
+
+      context 'when the SP requests document_images and sharing is allowed' do
+        before do
+          allow(IdentityConfig.store).to receive(:document_images_sharing_enabled)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+            .and_return([current_sp.issuer])
+          stub_sign_in(user)
+          subject.session[:sp] = {
+            issuer: current_sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            request_url: 'http://example.com',
+            requested_attributes: %w[email document_images],
+          }
+        end
+
+        context 'and the user checks the biometric sharing consent box' do
+          it 'records biometric sharing consent and logs the event' do
+            expect(@linked_identity).to receive(:update!).with(
+              biometric_sharing_consent_at: now,
+            )
+
+            freeze_time do
+              travel_to(now)
+              patch :update, params: { idv_form: { biometric_sharing_consent: '1' } }
+            end
+
+            expect(@analytics).to have_logged_event(
+              :biometric_sharing_consent_granted,
+              issuer: current_sp.issuer,
+            )
+          end
+        end
+
+        context 'and the user does not check the consent box' do
+          it 're-renders the handoff with an error and does not link or record consent' do
+            expect(@linker).not_to receive(:link_identity)
+            expect(@linked_identity).not_to receive(:update!)
+
+            patch :update, params: { idv_form: { biometric_sharing_consent: '0' } }
+
+            expect(response).to have_http_status(:unprocessable_content)
+            expect(response).to render_template(:show)
+            expect(flash.now[:error])
+              .to eq(t('sign_up.document_images_sharing_consent_required'))
+            expect(@analytics).to have_logged_event(
+              :biometric_sharing_consent_declined,
+              issuer: current_sp.issuer,
+            )
+            expect(@analytics).not_to have_logged_event(:biometric_sharing_consent_granted)
+          end
+
+          it 'also rejects when the param is stripped entirely' do
+            patch :update
+
+            expect(response).to have_http_status(:unprocessable_content)
+          end
+        end
+      end
+
+      context 'when the SP requests document_images but sharing is not allow-listed' do
+        before do
+          allow(IdentityConfig.store).to receive(:document_images_sharing_enabled)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+            .and_return([])
+        end
+
+        it 'does not touch biometric consent and does not log the event' do
+          stub_sign_in(user)
+          subject.session[:sp] = {
+            issuer: current_sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            request_url: 'http://example.com',
+            requested_attributes: %w[email document_images],
+          }
+          expect(@linked_identity).not_to receive(:update!)
+
+          patch :update, params: { idv_form: { biometric_sharing_consent: '1' } }
+
+          expect(@analytics).not_to have_logged_event(:biometric_sharing_consent_granted)
         end
       end
 

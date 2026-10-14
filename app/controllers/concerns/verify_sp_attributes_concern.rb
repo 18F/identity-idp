@@ -16,19 +16,62 @@ module VerifySpAttributesConcern
       :consent_expired
     elsif consent_was_revoked?(sp_session_identity)
       :consent_revoked
+    elsif biometric_consent_needed?(sp_session_identity)
+      :biometric_consent_needed
     end
   end
 
   def update_verified_attributes
-    IdentityLinker.new(
-      current_user,
-      current_sp,
-    ).link_identity(
+    identity = IdentityLinker.new(current_user, current_sp).link_identity(
       ial: linked_identity_ial,
       verified_attributes: sp_session[:requested_attributes],
       last_consented_at: Time.zone.now,
       clear_deleted_at: true,
     )
+
+    # Record biometric sharing consent as a distinct, purpose-specific decision;
+    # only touched for allow-listed SPs, and set-or-cleared so stale consent
+    # never carries over to a new proofing session or a dropped scope.
+    if current_sp&.document_images_sharing_allowed?
+      identity&.update!(
+        biometric_sharing_consent_at: (Time.zone.now if biometric_sharing_consent_granted?),
+      )
+    end
+  end
+
+  # True only when the SP is allow-listed, the SP requested document_images, and
+  # the user affirmatively checked the biometric-sharing consent box.
+  def biometric_sharing_consent_granted?
+    biometric_sharing_consent_requested? && biometric_sharing_consent_checked?
+  end
+
+  def biometric_sharing_consent_requested?
+    current_sp&.document_images_sharing_allowed? &&
+      Array(sp_session[:requested_attributes]).map(&:to_s).include?('document_images')
+  end
+
+  def biometric_sharing_consent_checked?
+    form_params = params[:idv_form]
+    return false unless form_params.is_a?(ActionController::Parameters)
+
+    ActiveModel::Type::Boolean.new.cast(form_params[:biometric_sharing_consent])
+  end
+
+  # Re-prompt the handoff screen whenever an allow-listed SP requests
+  # document_images but the user has no current, fresh biometric consent
+  # (never granted, expired, or invalidated by a newer proofing).
+  #
+  # Only fires when the user has a verified profile: without one there is nothing
+  # shareable and consent could never validate (the release gate fails closed on
+  # a missing verified_at), so prompting would loop forever for e.g. an IALmax
+  # request from an unverified user.
+  def biometric_consent_needed?(sp_session_identity)
+    return false unless biometric_sharing_consent_requested?
+
+    active_profile = current_user&.active_profile
+    return false if active_profile&.verified_at.blank?
+
+    !sp_session_identity.biometric_sharing_consented?(active_profile)
   end
 
   def consent_has_expired?(sp_session_identity)
