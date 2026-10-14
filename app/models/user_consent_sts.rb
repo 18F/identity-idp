@@ -7,6 +7,7 @@ class UserConsentSts < ApplicationRecord
 
   belongs_to :user
 
+  validates :user, presence: true
   validates :target_app, presence: true
 
   # Returns true when an unexpired consent exists for the given user and target_app.

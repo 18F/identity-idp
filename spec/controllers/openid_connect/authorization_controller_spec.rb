@@ -1201,7 +1201,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
     context 'STS token exchange consent' do
       let(:user) { create(:user, :fully_registered) }
-      let(:client_id) { 'urn:gov:gsa:openidconnect:test:broker' }
+      let(:broker_issuer) { 'urn:gov:gsa:openidconnect:test' }
+      let(:client_id) { broker_issuer }
       let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
 
       before do
@@ -1209,11 +1210,18 @@ RSpec.describe OpenidConnect::AuthorizationController do
         allow(controller).to receive(:auth_count).and_return(2)
         allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
-          .and_return([client_id])
+          .and_return([broker_issuer])
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_audiences)
           .and_return(['passport'])
         allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)
         params[:scope] = 'openid token_exchange:passport'
+
+        # Link the identity ahead of time so the completions/consent screen is not
+        # triggered, allowing the request to reach the STS consent check.
+        IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+        user.identities.last.update!(
+          verified_attributes: %w[given_name family_name birthdate],
+        )
       end
 
       context 'when the user has not consented to STS for this broker' do
@@ -1226,7 +1234,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
       context 'when the user has already consented to STS for this broker' do
         before do
-          UserConsentSts.create!(user: user, target_app: client_id)
+          UserConsentSts.create!(user: user, target_app: broker_issuer)
         end
 
         it 'does not redirect to the STS consent page' do
@@ -1238,7 +1246,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
       context 'when the user previously consented but the consent has expired' do
         before do
-          consent = UserConsentSts.create!(user: user, target_app: client_id)
+          consent = UserConsentSts.create!(user: user, target_app: broker_issuer)
           consent.update!(created_at: 366.days.ago)
         end
 
