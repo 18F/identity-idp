@@ -583,6 +583,8 @@ module IdentityConfig
     config.add(:token_exchange_allowed_broker_issuers, type: :json)
     config.add(:token_exchange_allowed_target_issuers, type: :json)
     config.add(:token_exchange_enabled, type: :boolean)
+    config.add(:token_exchange_introspections_per_ip_limit, type: :integer)
+    config.add(:token_exchange_introspections_per_ip_period, type: :integer)
     config.add(:token_exchange_access_token_expires_in, type: :integer)
     config.add(:token_exchange_subject_token_expires_in, type: :integer)
     config.add(:totp_code_interval, type: :integer)
