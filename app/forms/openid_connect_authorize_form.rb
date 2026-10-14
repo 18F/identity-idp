@@ -205,11 +205,13 @@ class OpenidConnectAuthorizeForm
 
     requested_scopes = param_value.split(' ').compact
 
-    if token_exchange_scope_available?
+    requested_token_exchange_scopes = requested_token_exchange_scopes(requested_scopes)
+
+    if token_exchange_scope_available? && requested_token_exchange_scopes.present?
       return true unless broker_request?
-      requested_token_exchange_scopes = requested_token_exchange_scopes(requested_scopes)
-      return true if requested_token_exchange_scopes.present? &&
-                     (requested_token_exchange_scopes - token_exchange_scopes).present?
+
+      # if there are any requested scopes that are not allowed
+      return true if (requested_token_exchange_scopes - token_exchange_scopes).present?
     end
 
     return false if identity_proofing_requested_or_default?
@@ -339,7 +341,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def requested_token_exchange_scopes(requested_scopes)
-    requested_scopes.select { |scope| TokenExchange::Constants.scope?(scope) }
+    requested_scopes.select { |scope| TokenExchange::Constants.in_scope?(scope) }
   end
 
   def base_scopes
