@@ -22,10 +22,8 @@ module AccountRecovery
     attr_reader :account_recovery_request
 
     # @param user [User]
-    # @param requesting_issuer [String, nil]
-    def initialize(user:, requesting_issuer:)
+    def initialize(user:)
       @user = user
-      @requesting_issuer = requesting_issuer
     end
 
     # @return [FormResponse]
@@ -46,7 +44,6 @@ module AccountRecovery
         success: true,
         extra: {
           eligibility_reason: eligibility.reason,
-          flow_variant: account_recovery_request.flow_variant,
           recovery_state: account_recovery_request.state,
         },
       )
@@ -54,7 +51,7 @@ module AccountRecovery
 
     private
 
-    attr_reader :user, :requesting_issuer
+    attr_reader :user
 
     def notify_user_by_email
       UserMailer.with(user: user, email_address: user.last_sign_in_email_address)
@@ -79,10 +76,8 @@ module AccountRecovery
       user.with_lock do
         request = AccountRecoveryRequest.create!(
           user: user,
-          flow_variant: AccountRecoveryRequest::FLOW_VARIANT_ACCOUNT_PRESERVING,
           state: AccountRecoveryRequest::REQUESTED,
           requested_at: Time.zone.now,
-          requesting_issuer: requesting_issuer,
         )
 
         # A request that cannot reach the waiting state is not usable, so fail

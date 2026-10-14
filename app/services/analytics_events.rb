@@ -111,7 +111,6 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from the request attempt
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] eligibility_reason Bounded reason code for the eligibility decision
-  # @param [String, nil] flow_variant Which recovery workflow owns the request
   # @param [String, nil] recovery_state State of the recovery request after creation
   # @param [Boolean] rate_limited Whether the request was blocked by rate limiting
   # An account-preserving MFA recovery request was submitted
@@ -120,7 +119,6 @@ module AnalyticsEvents
     eligibility_reason:,
     errors: nil,
     error_details: nil,
-    flow_variant: nil,
     recovery_state: nil,
     rate_limited: false,
     **extra
@@ -131,7 +129,6 @@ module AnalyticsEvents
       errors:,
       error_details:,
       eligibility_reason:,
-      flow_variant:,
       recovery_state:,
       rate_limited:,
       **extra,

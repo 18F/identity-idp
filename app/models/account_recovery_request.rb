@@ -8,15 +8,6 @@
 # never moves between the two workflows once created.
 class AccountRecoveryRequest < ApplicationRecord
   belongs_to :user
-  # rubocop:disable Rails/InverseOf
-  belongs_to :requesting_service_provider,
-             class_name: 'ServiceProvider',
-             foreign_key: 'requesting_issuer',
-             primary_key: 'issuer',
-             optional: true
-  # rubocop:enable Rails/InverseOf
-
-  FLOW_VARIANT_ACCOUNT_PRESERVING = 'account_preserving'
 
   REQUESTED = 'requested'
   WAITING = 'waiting'
@@ -66,7 +57,6 @@ class AccountRecoveryRequest < ApplicationRecord
   }.freeze
 
   validates :state, inclusion: { in: STATES }
-  validates :flow_variant, presence: true
 
   # Matches the predicate on index_account_recovery_requests_on_active_user_id,
   # so the scope and the database's one-active-request-per-user guarantee cannot

@@ -136,6 +136,8 @@ Rails.application.routes.draw do
         get '/start' => 'account_recovery/start#show', as: :account_recovery_start
         post '/start' => 'account_recovery/start#create'
         get '/pending' => 'account_recovery/pending#show', as: :account_recovery_pending
+        post '/pending/resend' => 'account_recovery/pending#resend',
+             as: :account_recovery_resend
         get '/verify' => 'account_recovery/verify#show', as: :account_recovery_verify
         post '/verify' => 'account_recovery/verify#create'
         get '/new_mfa_setup' => 'account_recovery/new_mfa_setup#show',

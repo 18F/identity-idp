@@ -4,9 +4,7 @@ class CreateAccountRecoveryRequestsWithRecoveryStates < ActiveRecord::Migration[
   def change
     create_table :account_recovery_requests do |t|
       t.integer :user_id, null: false, comment: 'sensitive=false'
-      t.string :flow_variant, null: false, comment: 'sensitive=false'
       t.string :state, null: false, comment: 'sensitive=false'
-      t.string :requesting_issuer, comment: 'sensitive=false'
 
       t.datetime :requested_at, comment: 'sensitive=false'
       t.datetime :granted_at, comment: 'sensitive=false'

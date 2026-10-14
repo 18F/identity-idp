@@ -112,7 +112,6 @@ RSpec.describe AccountRecovery::StartController do
           :account_recovery_request,
           success: true,
           eligibility_reason: AccountRecovery::EligibilityPolicy::ELIGIBLE,
-          flow_variant: AccountRecoveryRequest::FLOW_VARIANT_ACCOUNT_PRESERVING,
           recovery_state: AccountRecoveryRequest::WAITING,
           rate_limited: false,
         )

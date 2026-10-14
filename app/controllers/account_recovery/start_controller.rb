@@ -19,7 +19,6 @@ module AccountRecovery
 
       result = AccountRecovery::CreateRequest.new(
         user: current_user,
-        requesting_issuer: sp_session[:issuer],
       ).call
 
       analytics.account_recovery_request(**result.to_h)

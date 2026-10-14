@@ -2,11 +2,10 @@ require 'rails_helper'
 
 RSpec.describe AccountRecovery::CreateRequest do
   subject(:service) do
-    described_class.new(user: user, requesting_issuer: requesting_issuer)
+    described_class.new(user: user)
   end
 
   let(:user) { create(:user, :fully_registered) }
-  let(:requesting_issuer) { nil }
 
   before do
     allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
@@ -85,8 +84,6 @@ RSpec.describe AccountRecovery::CreateRequest do
       request = AccountRecoveryRequest.active_for_user(user)
       expect(request).to be_present
       expect(request.state).to eq(AccountRecoveryRequest::WAITING)
-      expect(request.flow_variant)
-        .to eq(AccountRecoveryRequest::FLOW_VARIANT_ACCOUNT_PRESERVING)
       expect(request.requested_at).to be_present
     end
 
@@ -102,7 +99,6 @@ RSpec.describe AccountRecovery::CreateRequest do
       expect(result.to_h).to include(
         success: true,
         eligibility_reason: AccountRecovery::EligibilityPolicy::ELIGIBLE,
-        flow_variant: AccountRecoveryRequest::FLOW_VARIANT_ACCOUNT_PRESERVING,
         recovery_state: AccountRecoveryRequest::WAITING,
       )
     end
@@ -122,18 +118,6 @@ RSpec.describe AccountRecovery::CreateRequest do
       service.call
 
       expect(user.reload.phone_configurations.count).to eq(phone_count)
-    end
-
-    context 'with a requesting service provider' do
-      let(:service_provider) { create(:service_provider) }
-      let(:requesting_issuer) { service_provider.issuer }
-
-      it 'records the issuer' do
-        service.call
-
-        expect(AccountRecoveryRequest.active_for_user(user).requesting_issuer)
-          .to eq(requesting_issuer)
-      end
     end
 
     context 'when the user is ineligible' do

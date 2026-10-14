@@ -218,11 +218,9 @@ RSpec.describe AccountRecoveryRequest do
       expect(request.errors[:state]).to be_present
     end
 
-    it 'requires a flow variant' do
-      request = build(:account_recovery_request, flow_variant: nil)
-
-      expect(request).to_not be_valid
-      expect(request.errors[:flow_variant]).to be_present
+    it 'does not expose removed recovery metadata' do
+      expect(described_class.column_names).not_to include('flow_variant', 'requesting_issuer')
+      expect(described_class.reflect_on_association(:requesting_service_provider)).to be_nil
     end
   end
 end

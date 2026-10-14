@@ -1,7 +1,6 @@
 FactoryBot.define do
   factory :account_recovery_request do
     user
-    flow_variant { AccountRecoveryRequest::FLOW_VARIANT_ACCOUNT_PRESERVING }
     state { AccountRecoveryRequest::REQUESTED }
     requested_at { Time.zone.now }
 
