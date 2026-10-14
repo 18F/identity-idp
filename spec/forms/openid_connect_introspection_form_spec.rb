@@ -63,9 +63,77 @@ RSpec.describe OpenidConnectIntrospectionForm do
     OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read)
   end
 
+  before do
+    allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:token_exchange_allowed_target_issuers)
+      .and_return([token_target_issuer])
+  end
+
   describe '#submit' do
     it 'is successful with valid private_key_jwt authentication' do
       expect(form.submit.success?).to eq(true)
+    end
+
+    context 'when token exchange is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(false)
+      end
+
+      it 'is invalid' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.errors[:client_id]).to include('is invalid')
+      end
+
+      it 'does not validate the client assertion' do
+        expect(OpenidConnectClientAssertionValidator).to_not receive(:new)
+
+        form.submit
+      end
+
+      it 'does not load the token from Redis' do
+        expect(TokenExchange::AccessToken).to_not receive(:load)
+
+        form.submit
+        form.response
+      end
+
+      it 'does not disclose whether the token is active' do
+        form.submit
+
+        expect(form.response[:error]).to eq('invalid_client')
+        expect(form.response).to_not have_key(:active)
+      end
+    end
+
+    context 'when the target is not on the allowlist' do
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_target_issuers)
+          .and_return([])
+      end
+
+      it 'is invalid' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.errors[:client_id]).to include('is invalid')
+      end
+
+      it 'does not disclose whether the token is active' do
+        form.submit
+
+        expect(form.response[:error]).to eq('invalid_client')
+        expect(form.response).to_not have_key(:active)
+      end
+    end
+
+    context 'when another target is on the allowlist' do
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_target_issuers)
+          .and_return(['some-other-target'])
+      end
+
+      it 'is invalid' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.errors[:client_id]).to include('is invalid')
+      end
     end
 
     %i[client_assertion client_assertion_type client_id token].each do |attribute|
@@ -157,6 +225,8 @@ RSpec.describe OpenidConnectIntrospectionForm do
           issuer: target_issuer,
           certs: ['saml_test_sp2', 'saml_test_sp'],
         )
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_target_issuers)
+          .and_return([token_target_issuer, target_issuer])
       end
 
       it 'returns inactive' do
