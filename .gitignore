@@ -45,6 +45,7 @@ Vagrantfile
 /config/aws.yml
 /config/service_providers.yml
 /config/agencies.yml
+/config/delegated_access.yml
 /config/iaa_gtcs.yml
 /config/iaa_orders.yml
 /config/iaa_statuses.yml
