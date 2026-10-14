@@ -8,8 +8,12 @@ Rails.application.routes.draw do
   get '/api/health/jobs' => 'health/health#index'
   get '/api/health/outbound' => 'health/outbound#index'
   get '/api/openid_connect/certs' => 'openid_connect/certs#index'
+  post '/api/openid_connect/revoke' => 'openid_connect/revoke#create'
+  match '/api/openid_connect/revoke' => 'openid_connect/revoke#options', via: :options
   post '/api/openid_connect/token' => 'openid_connect/token#create'
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
+  post '/api/openid_connect/introspect' => 'openid_connect/introspect#create'
+  match '/api/openid_connect/introspect' => 'openid_connect/introspect#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   get '/api/openid_connect/document_images/:image_type' =>
     'openid_connect/document_images#show',
@@ -266,6 +270,22 @@ Rails.application.routes.draw do
         as: :edit_connected_service_selected_email
     patch '/account/connected_services/:identity_id/selected_email' => 'accounts/connected_services/selected_email#update',
           as: :connected_services_selected_email
+    # delegated access: standing approvals for service providers to act at agency applications
+    get '/account/delegated_access' => 'accounts/delegated_access#show',
+        as: :account_delegated_access
+    get '/account/delegated_access/revoke' => 'accounts/delegated_access/revocations#show',
+        as: :account_delegated_access_revocation
+    delete '/account/delegated_access/revoke' => 'accounts/delegated_access/revocations#destroy'
+    get '/account/delegated_access/:service_provider_id/approve' => 'accounts/delegated_access/approvals#new',
+        as: :new_account_delegated_access_approval
+    post '/account/delegated_access/:service_provider_id/approve' => 'accounts/delegated_access/approvals#create',
+         as: :account_delegated_access_approval
+    get '/account/delegated_access/:service_provider_id/revoke' => 'accounts/delegated_access/revocations#show',
+        as: :account_delegated_access_service_provider_revocation
+    delete '/account/delegated_access/:service_provider_id/revoke' => 'accounts/delegated_access/revocations#destroy'
+    get '/account/delegated_access/:service_provider_id/applications/:application_id/revoke' => 'accounts/delegated_access/revocations#show',
+        as: :account_delegated_access_application_revocation
+    delete '/account/delegated_access/:service_provider_id/applications/:application_id/revoke' => 'accounts/delegated_access/revocations#destroy'
     # old routes kept alive for redirects (connected accounts)
     get '/account/connected_accounts', to: redirect('/account/connected_services')
     get '/account/connected_accounts/:identity_id/selected_email', to: redirect { |params, _req| "/account/connected_services/#{params[:identity_id]}/selected_email" }

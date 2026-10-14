@@ -6,6 +6,30 @@ RSpec.describe NavigationPresenter do
   subject(:navigation) { NavigationPresenter.new(user: user, url_options: {}) }
 
   describe '#navigation_items' do
+    describe 'delegated access' do
+      def delegated_link?
+        navigation.navigation_items.flat_map { |item| Array(item.children) }
+          .any? { |item| item.href == navigation.account_delegated_access_path }
+      end
+
+      it 'does not add navigation when disabled for an ordinary user' do
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(false)
+        expect(delegated_link?).to eq(false)
+      end
+
+      it 'adds navigation when enabled' do
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+        expect(delegated_link?).to eq(true)
+      end
+
+      it 'keeps existing standing approvals manageable after rollback' do
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(false)
+        user.save!
+        create(:token_exchange_grant, user:)
+        expect(delegated_link?).to eq(true)
+      end
+    end
+
     describe 'personal key' do
       context 'for a user with a personal key' do
         let(:user) { build(:user, :proofed) }
