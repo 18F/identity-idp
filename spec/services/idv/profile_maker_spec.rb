@@ -18,6 +18,29 @@ RSpec.describe Idv::ProfileMaker do
       )
     end
 
+    it 'wraps the site key root under the new personal key' do
+      allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+      root = create_site_key_root(user).root
+
+      profile = subject.save_profile(
+        fraud_pending_reason: nil,
+        gpo_verification_needed: false,
+        in_person_verification_needed: false,
+        selfie_check_performed: false,
+        proofing_components:,
+      )
+
+      expect(user.reload.site_key_root.encrypted_root_personal_key).to be_present
+      user.site_key_root.forget_password!
+      expect(
+        SiteKeys::Vault.new(
+          user: user.reload,
+          user_session: {},
+        ).recover(profile.personal_key),
+      )
+        .to eq(root)
+    end
+
     it 'creates an inactive Profile with encrypted PII' do
       profile = subject.save_profile(
         fraud_pending_reason: nil,

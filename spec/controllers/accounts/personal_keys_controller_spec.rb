@@ -60,6 +60,49 @@ RSpec.describe Accounts::PersonalKeysController do
       expect(flash[:error]).to eq t('errors.general')
     end
 
+    context 'for an identity-verified user with a site key root' do
+      let(:profile) { create(:profile, :active, :verified, pii: { ssn: '1234' }) }
+      let(:user) { profile.user }
+
+      before do
+        allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+        stub_sign_in(user)
+        Pii::Cacher.new(user, subject.user_session).save_decrypted_pii({ ssn: '1234' }, profile.id)
+      end
+
+      it 'prompts for the password when the root is locked' do
+        create_site_key_root(user)
+
+        post :create
+
+        expect(response).to redirect_to capture_password_url
+      end
+
+      it 'wraps the root under the new personal key' do
+        root = SiteKeys::Vault.new(user:, user_session: subject.user_session)
+          .unlock(user.password, create: true)
+
+        post :create
+
+        personal_key = subject.user_session[:personal_key]
+        user.reload.site_key_root.forget_password!
+        expect(SiteKeys::Vault.new(user: user.reload, user_session: {}).recover(personal_key))
+          .to eq(root)
+      end
+    end
+
+    it 'leaves site keys alone for a user who is not identity-verified' do
+      allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+      user = create(:user, :fully_registered)
+      create_site_key_root(user)
+      stub_sign_in(user)
+
+      post :create
+
+      expect(response).to redirect_to manage_personal_key_path
+      expect(user.reload.site_key_root.encrypted_root_personal_key).to be_nil
+    end
+
     it 'prompts for password if PII is not present' do
       user = create(:user, :fully_registered, :with_piv_or_cac)
       create(:profile, :active, :verified, user: user)

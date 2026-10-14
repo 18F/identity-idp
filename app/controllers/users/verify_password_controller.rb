@@ -35,6 +35,10 @@ module Users
 
     def handle_success(personal_key:)
       user_session[:personal_key] = personal_key
+      SiteKeys::Vault.new(user: current_user, user_session:).wrap_personal_key(
+        personal_key,
+        password: params.require(:user).permit(:password)[:password],
+      )
       reactivate_account_session.clear
       redirect_to manage_personal_key_url
     end
