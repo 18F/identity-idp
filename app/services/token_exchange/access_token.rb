@@ -24,5 +24,19 @@ module TokenExchange
     def self.digest(token)
       Digest::SHA256.hexdigest(token.to_s)
     end
+
+    # Redis expires delegated access tokens via TTL, but the TTL and the stored
+    # expiration can drift (clock skew between hosts, a configuration change
+    # between write and read). Assert the stored expiration explicitly so a
+    # logically expired token is never reported as active.
+    def expired?(now: Time.zone.now)
+      return true if expires_at.blank?
+
+      expires_at.to_i <= now.to_i
+    end
+
+    def active?(now: Time.zone.now)
+      !expired?(now:)
+    end
   end
 end

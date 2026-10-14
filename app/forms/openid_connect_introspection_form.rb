@@ -85,7 +85,9 @@ class OpenidConnectIntrospectionForm
   end
 
   def token_active_for_client?
-    access_token.present? && access_token.target_issuer == client_id
+    access_token.present? &&
+      access_token.target_issuer == client_id &&
+      access_token.active?
   end
 
   def active_response
