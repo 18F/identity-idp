@@ -33,6 +33,9 @@ Dir.chdir APP_ROOT do
   puts "== Linking agencies.yml =="
   run "test -r config/agencies.yml || ln -sv agencies.localdev.yml config/agencies.yml"
 
+  puts "== Linking delegated_access.yml =="
+  run "test -r config/delegated_access.yml || ln -sv delegated_access.localdev.yml config/delegated_access.yml"
+
   puts "== Linking Agreements YAML files =="
   run "test -r config/iaa_gtcs.yml || ln -sv iaa_gtcs.localdev.yml config/iaa_gtcs.yml"
   run "test -r config/iaa_orders.yml || ln -sv iaa_orders.localdev.yml config/iaa_orders.yml"
