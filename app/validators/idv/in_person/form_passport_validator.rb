@@ -23,7 +23,7 @@ module Idv::InPerson::FormPassportValidator
                         allow_blank: false
     # rubocop:enable Layout/LineLength
 
-    validates_with UspsInPersonProofing::TransliterableValidator,
+    validates_with TransliterableValidator,
                    fields: [:passport_surname, :passport_first_name],
                    reject_chars: /[^A-Za-z\-' ]/,
                    message: ->(invalid_chars) do

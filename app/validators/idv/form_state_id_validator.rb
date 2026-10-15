@@ -27,7 +27,7 @@ module Idv
                 inclusion: { in: Idv::StateIdForm::EXPIRATION_OPTIONS },
                 if: :expiration_edge_cases_enabled?
 
-      validates_with UspsInPersonProofing::TransliterableValidator,
+      validates_with TransliterableValidator,
                      fields: [:first_name, :last_name, :identity_doc_city],
                      reject_chars: /[^A-Za-z\-' ]/,
                      message: ->(invalid_chars) do
@@ -37,7 +37,7 @@ module Idv
                        )
                      end
 
-      validates_with UspsInPersonProofing::TransliterableValidator,
+      validates_with TransliterableValidator,
                      fields: [:identity_doc_address1, :identity_doc_address2],
                      reject_chars: /[^A-Za-z0-9\-' .\/#]/,
                      message: ->(invalid_chars) do
