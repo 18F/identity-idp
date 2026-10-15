@@ -1212,7 +1212,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
           .and_return([broker_issuer])
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_audiences)
-          .and_return(['passport'])
+          .and_return([{ issuer: 'passport-issuer', scope: 'passport' }])
         allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)
         params[:scope] = 'openid token_exchange:passport'
 
