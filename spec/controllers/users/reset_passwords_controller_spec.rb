@@ -828,6 +828,48 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           )
         end
       end
+
+      context 'forwarding JA3/JA4 fingerprints to reCAPTCHA' do
+        let(:recaptcha_mock_score) { 0.9 }
+        let(:ja3_fingerprint) { 'e7d705a3286e19ea42f587b344ee6865' }
+        let(:ja4_fingerprint) { 't13d1516h2_8daaf6152771_b186095e22b6' }
+
+        before do
+          allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(false)
+        end
+
+        it 'passes the CloudFront JA3/JA4 fingerprints to the reCAPTCHA form' do
+          request.headers['CloudFront-Viewer-JA3-Fingerprint'] = ja3_fingerprint
+          request.headers['CloudFront-Viewer-JA4-Fingerprint'] = ja4_fingerprint
+
+          recaptcha_form = instance_double(
+            PasswordResetRecaptchaForm,
+            submit: FormResponse.new(success: true),
+            exempt?: false,
+          )
+          expect(PasswordResetRecaptchaForm).to receive(:new).with(
+            hash_including(
+              ja3_fingerprint: ja3_fingerprint,
+              ja4_fingerprint: ja4_fingerprint,
+            ),
+          ).and_return(recaptcha_form)
+
+          response
+        end
+
+        it 'passes nil fingerprints when the CloudFront headers are absent' do
+          recaptcha_form = instance_double(
+            PasswordResetRecaptchaForm,
+            submit: FormResponse.new(success: true),
+            exempt?: false,
+          )
+          expect(PasswordResetRecaptchaForm).to receive(:new).with(
+            hash_including(ja3_fingerprint: nil, ja4_fingerprint: nil),
+          ).and_return(recaptcha_form)
+
+          response
+        end
+      end
     end
   end
 
