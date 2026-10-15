@@ -692,7 +692,7 @@ RSpec.describe OpenidConnectTokenForm do
           .and_return(600)
       end
 
-      it 'returns an opaque subject token response' do
+      it 'returns a subject token response' do
         expect(response).to include(
           access_token: be_present,
           token_type: 'Bearer',
