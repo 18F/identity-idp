@@ -307,6 +307,7 @@ Rails.application.routes.draw do
 
     get '/manage/password' => 'users/passwords#edit'
     patch '/manage/password' => 'users/passwords#update'
+    get '/.well-known/change-password', to: redirect('/manage/password')
 
     get '/add/email' => 'users/emails#show'
     post '/add/email' => 'users/emails#add'
