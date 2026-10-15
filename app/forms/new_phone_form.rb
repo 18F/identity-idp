@@ -35,7 +35,9 @@ class NewPhoneForm
     analytics: nil,
     setup_voice_preference: false,
     request_ip: nil,
-    request_user_agent: nil
+    request_user_agent: nil,
+    ja3_fingerprint: nil,
+    ja4_fingerprint: nil
   )
     @user = user
     @analytics = analytics
@@ -44,6 +46,8 @@ class NewPhoneForm
     @setup_voice_preference = setup_voice_preference
     @request_ip = request_ip
     @request_user_agent = request_user_agent
+    @ja3_fingerprint = ja3_fingerprint
+    @ja4_fingerprint = ja4_fingerprint
   end
 
   def submit(params)
@@ -190,7 +194,13 @@ class NewPhoneForm
   end
 
   def recaptcha_form_args
-    args = { analytics:, user_agent: @request_user_agent, user_ip_address: @request_ip }
+    args = {
+      analytics:,
+      user_agent: @request_user_agent,
+      user_ip_address: @request_ip,
+      ja3_fingerprint: @ja3_fingerprint,
+      ja4_fingerprint: @ja4_fingerprint,
+    }
     if IdentityConfig.store.recaptcha_mock_validator
       args.merge(form_class: RecaptchaMockForm, score: recaptcha_mock_score)
     else
