@@ -125,7 +125,7 @@ class OpenidConnectTokenExchangeForm
 
   def validate_target
     return if audience.blank?
-    return if token_exchange_allowed_target_issuers.include?(audience) && target.present?
+    return if token_exchange_allowed_targets.include?(audience) && target.present?
 
     errors.add(:audience, :invalid)
   end
@@ -194,8 +194,8 @@ class OpenidConnectTokenExchangeForm
     @loaded_subject_token = TokenExchange::SubjectToken.load(subject_token)
   end
 
-  def token_exchange_allowed_target_issuers
-    Array(IdentityConfig.store.token_exchange_allowed_target_issuers)
+  def token_exchange_allowed_targets
+    IdentityConfig.store.token_exchange_allowed_targets.map { |target| target.fetch(:issuer) }
   end
 
   def requested_scope

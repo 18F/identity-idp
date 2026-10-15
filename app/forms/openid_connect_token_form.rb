@@ -82,10 +82,8 @@ class OpenidConnectTokenForm
 
   def token_exchange_subject_token_response
     issued_token = TokenExchange::SubjectTokenIssuer.issue(identity:)
-    @ttl = issued_token.expires_in
-
     {
-      subject_token: issued_token.token,
+      access_token: issued_token.token,
       token_type: 'Bearer',
       expires_in: issued_token.expires_in,
       scope: identity.scope,
