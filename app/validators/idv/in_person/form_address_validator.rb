@@ -7,7 +7,7 @@ module Idv
       include Idv::FormAddressValidator
 
       included do
-        validates_with UspsInPersonProofing::TransliterableValidator,
+        validates_with TransliterableValidator,
                        fields: [:city],
                        reject_chars: /[^A-Za-z\-' ]/,
                        message: ->(invalid_chars) do
@@ -17,7 +17,7 @@ module Idv
                          )
                        end
 
-        validates_with UspsInPersonProofing::TransliterableValidator,
+        validates_with TransliterableValidator,
                        fields: [:address1, :address2],
                        reject_chars: /[^A-Za-z0-9\-' .\/#]/,
                        message: ->(invalid_chars) do
