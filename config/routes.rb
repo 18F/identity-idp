@@ -380,8 +380,8 @@ Rails.application.routes.draw do
     post '/user_authorization_confirmation' => 'users/authorization_confirmation#create'
     match '/user_authorization_confirmation/reset' => 'users/authorization_confirmation#destroy',
           as: :reset_user_authorization, via: %i[put delete]
-    get '/sts_consent' => 'users/sts_consent#new', as: :sts_consent
-    post '/sts_consent' => 'users/sts_consent#create'
+    get '/consent' => 'users/sts_consent#new', as: :sts_consent
+    post '/consent' => 'users/sts_consent#create'
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
     delete '/sign_up/cancel' => 'sign_up/cancellations#destroy', as: :sign_up_destroy
 
