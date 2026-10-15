@@ -16,6 +16,8 @@
         form: f,
         name: :consent_given,
         as: :boolean,
+        checked_value: StsConsentForm::CONSENT_GIVEN_VALUE,
+        unchecked_value: '',
         label: t('sts_consent.check_box_to_consent'),
         required: true,
       ) %>

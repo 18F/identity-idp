@@ -6,6 +6,8 @@ class StsConsentForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
 
+  CONSENT_GIVEN_VALUE = 'consented'
+
   validate :validate_consent_given
 
   attr_reader :consent_given
@@ -16,7 +18,7 @@ class StsConsentForm
   end
 
   def submit(params)
-    @consent_given = params[:consent_given] == '1'
+    @consent_given = params[:consent_given] == CONSENT_GIVEN_VALUE
 
     if valid?
       process_successful_submission

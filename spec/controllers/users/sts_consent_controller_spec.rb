@@ -48,7 +48,7 @@ RSpec.describe Users::StsConsentController do
     context 'when consent is given' do
       it 'persists consent and redirects to the sp request url' do
         expect do
-          post :create, params: { sts_consent_form: { consent_given: '1' } }
+          post :create, params: { sts_consent_form: { consent_given: 'consented' } }
         end.to change { UserConsentSts.count }.by(1)
 
         consent = UserConsentSts.last
@@ -66,7 +66,7 @@ RSpec.describe Users::StsConsentController do
     context 'when consent is not given' do
       it 'does not persist consent and re-renders the form' do
         expect do
-          post :create, params: { sts_consent_form: { consent_given: '0' } }
+          post :create, params: { sts_consent_form: { consent_given: '' } }
         end.not_to change { UserConsentSts.count }
 
         expect(response).to render_template(:new)
@@ -82,7 +82,7 @@ RSpec.describe Users::StsConsentController do
       let(:token_exchange_enabled) { false }
 
       it 'redirects to the account page' do
-        post :create, params: { sts_consent_form: { consent_given: '1' } }
+        post :create, params: { sts_consent_form: { consent_given: 'consented' } }
 
         expect(response).to redirect_to(account_url)
       end

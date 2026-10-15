@@ -12,7 +12,7 @@ RSpec.describe StsConsentForm do
 
   describe '#submit' do
     context 'when the consent box is checked' do
-      let(:params) { { consent_given: '1' } }
+      let(:params) { { consent_given: 'consented' } }
 
       it 'returns a successful response' do
         result = form.submit(params)
@@ -44,7 +44,7 @@ RSpec.describe StsConsentForm do
     end
 
     context 'when the consent box is not checked' do
-      let(:params) { { consent_given: '0' } }
+      let(:params) { { consent_given: '' } }
 
       it 'returns an unsuccessful response with a required_checkbox error' do
         result = form.submit(params)
