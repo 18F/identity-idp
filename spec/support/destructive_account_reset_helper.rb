@@ -1,0 +1,24 @@
+module DestructiveAccountResetHelper
+  def create_account_reset_request_for(user, requesting_issuer = nil)
+    request = DestructiveAccountResetRequest.create_or_find_by(user: user)
+    request_token = SecureRandom.uuid
+    request.update!(
+      request_token: request_token,
+      requested_at: Time.zone.now,
+      cancelled_at: nil,
+      granted_at: nil,
+      granted_token: nil,
+      requesting_issuer: requesting_issuer,
+    )
+    request_token
+  end
+
+  def cancel_request_for(user)
+    account_reset_request = DestructiveAccountResetRequest.find_by(user_id: user.id)
+    account_reset_request.update(cancelled_at: Time.zone.now)
+  end
+
+  def grant_request(user)
+    DestructiveAccountReset::GrantRequest.new(user).call
+  end
+end

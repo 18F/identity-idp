@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe GrantAccountResetRequestsAndSendEmailsJob do
-  include AccountResetHelper
+  include DestructiveAccountResetHelper
 
   let(:user) { create(:user) }
   let(:user2) { create(:user) }

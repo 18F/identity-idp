@@ -98,8 +98,8 @@ RSpec.feature 'Two Factor Authentication' do
 
         click_link t('two_factor_authentication.login_options_link_text')
         click_link t('two_factor_authentication.account_reset.link')
-        click_link t('account_reset.recover_options.yes_delete')
-        click_button t('account_reset.request.yes_continue')
+        click_link t('destructive_account_reset.recover_options.yes_delete')
+        click_button t('destructive_account_reset.request.yes_continue')
 
         reset_email
 
@@ -107,8 +107,8 @@ RSpec.feature 'Two Factor Authentication' do
           GrantAccountResetRequestsAndSendEmailsJob.new.perform(Time.zone.now)
           open_last_email
           click_email_link_matching(/delete_account\?token/)
-          click_button t('account_reset.request.yes_continue')
-          click_link t('account_reset.confirm_delete_account.link_text')
+          click_button t('destructive_account_reset.request.yes_continue')
+          click_link t('destructive_account_reset.confirm_delete_account.link_text')
           sign_up_with(email)
           open_last_email
           click_email_link_matching(/confirmation_token/)
