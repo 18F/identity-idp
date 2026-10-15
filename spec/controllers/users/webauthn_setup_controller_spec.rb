@@ -19,13 +19,13 @@ RSpec.describe Users::WebauthnSetupController do
     )
   end
 
-  def with_auto_passkey_prompted_default(attributes)
+  def with_defaults(attributes, defaults)
     if attributes.instance_of?(Hash)
-      { auto_passkey_prompted: false }.merge(attributes)
+      defaults.merge(attributes)
     elsif attributes.instance_of?(RSpec::Matchers::BuiltIn::Include)
-      include(auto_passkey_prompted: false, **attributes.expecteds.first)
+      include(**defaults, **attributes.expecteds.first)
     elsif attributes.instance_of?(RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher)
-      hash_including(auto_passkey_prompted: false, **attributes.instance_variable_get(:@expected))
+      hash_including(**defaults, **attributes.instance_variable_get(:@expected))
     else
       attributes
     end
@@ -34,14 +34,18 @@ RSpec.describe Users::WebauthnSetupController do
   def expect_multi_factor_authentication_setup(attributes)
     expect(@analytics).to have_logged_event(
       'Multi-Factor Authentication Setup',
-      with_auto_passkey_prompted_default(attributes),
+      with_defaults(
+        attributes,
+        auto_passkey_prompted: false,
+        created_via_auto_passkey_prompt: false,
+      ),
     )
   end
 
   def expect_webauthn_setup_submitted(attributes)
     expect(@analytics).to have_logged_event(
       :webauthn_setup_submitted,
-      with_auto_passkey_prompted_default(attributes),
+      with_defaults(attributes, auto_passkey_prompted: false),
     )
   end
 
@@ -175,6 +179,7 @@ RSpec.describe Users::WebauthnSetupController do
             auth_app: 1, phone: 1, webauthn: 1
           },
           multi_factor_auth_method: 'webauthn',
+          webauthn_configuration_id: user.reload.webauthn_configurations.take.id,
           success: true,
           in_account_creation_flow: false,
           authenticator_data_flags: {
@@ -626,6 +631,7 @@ RSpec.describe Users::WebauthnSetupController do
             in_account_creation_flow: true,
             mfa_method_counts: { webauthn: 1 },
             multi_factor_auth_method: 'webauthn',
+            webauthn_configuration_id: user.reload.webauthn_configurations.take.id,
             success: true,
             attempts: 1,
             transports: ['usb'],
@@ -685,6 +691,7 @@ RSpec.describe Users::WebauthnSetupController do
             in_account_creation_flow: true,
             mfa_method_counts: { webauthn_platform: 1 },
             multi_factor_auth_method: 'webauthn_platform',
+            webauthn_configuration_id: user.reload.webauthn_configurations.take.id,
             success: true,
             attempts: 1,
             transports: ['internal', 'hybrid'],
@@ -722,6 +729,51 @@ RSpec.describe Users::WebauthnSetupController do
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication Setup',
             hash_including(auto_passkey_prompted: true),
+          )
+        end
+
+        it 'attributes the credential to the prompt when created on the prompt page' do
+          request.headers['User-Agent'] = mobile_user_agent
+          controller.user_session[:auto_passkey_prompted] = true
+          expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn_platform')
+
+          patch :confirm, params: params.merge(passkey_upsell: 'true')
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication Setup',
+            hash_including(
+              created_via_auto_passkey_prompt: true,
+              webauthn_configuration_id: user.reload.webauthn_configurations.take.id,
+            ),
+          )
+        end
+
+        it 'does not attribute the credential to the prompt when created elsewhere' do
+          request.headers['User-Agent'] = mobile_user_agent
+          controller.user_session[:auto_passkey_prompted] = true
+          expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn_platform')
+
+          patch :confirm, params: params
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication Setup',
+            hash_including(
+              auto_passkey_prompted: true,
+              created_via_auto_passkey_prompt: false,
+            ),
+          )
+        end
+
+        it 'does not attribute the credential to the prompt outside account creation' do
+          request.headers['User-Agent'] = mobile_user_agent
+          controller.user_session[:in_account_creation_flow] = false
+          expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn_platform')
+
+          patch :confirm, params: params.merge(passkey_upsell: 'true')
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication Setup',
+            hash_including(created_via_auto_passkey_prompt: false),
           )
         end
 
@@ -816,6 +868,7 @@ RSpec.describe Users::WebauthnSetupController do
             webauthn: 1,
           },
           multi_factor_auth_method: 'webauthn',
+          webauthn_configuration_id: user.reload.webauthn_configurations.take.id,
           success: true,
           in_account_creation_flow: true,
           authenticator_data_flags: {

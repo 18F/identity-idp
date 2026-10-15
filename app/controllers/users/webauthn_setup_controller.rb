@@ -211,6 +211,7 @@ module Users
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         webauthn_platform_recommended: user_session[:webauthn_platform_recommended],
         auto_passkey_prompted:,
+        created_via_auto_passkey_prompt: passkey_upsell_request?,
         attempts: mfa_attempts_count,
       }
     end

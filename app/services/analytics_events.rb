@@ -7117,6 +7117,10 @@ module AnalyticsEvents
   # @param [Integer, nil] webauthn_setup_duration Duration of webauthn setup in seconds
   # @param [Boolean, nil] auto_passkey_prompted Whether the user arrived at setup via the automatic
   #   passkey prompt rather than selecting passkey from the MFA options
+  # @param [Boolean, nil] created_via_auto_passkey_prompt Whether this credential was created on the
+  #   automatic passkey prompt page itself.
+  # @param [Integer, nil] webauthn_configuration_id Database ID of the WebAuthn configuration
+  #   created by this submission, or nil if no credential was created.
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -7144,6 +7148,8 @@ module AnalyticsEvents
     webauthn_platform_recommended: nil,
     webauthn_setup_duration: nil,
     auto_passkey_prompted: nil,
+    created_via_auto_passkey_prompt: nil,
+    webauthn_configuration_id: nil,
     **extra
   )
     track_event(
@@ -7174,6 +7180,8 @@ module AnalyticsEvents
       webauthn_platform_recommended:,
       webauthn_setup_duration:,
       auto_passkey_prompted:,
+      created_via_auto_passkey_prompt:,
+      webauthn_configuration_id:,
       **extra,
     )
   end

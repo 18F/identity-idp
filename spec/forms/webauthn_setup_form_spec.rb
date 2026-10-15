@@ -47,10 +47,13 @@ RSpec.describe WebauthnSetupForm do
     context 'when the input is valid' do
       context 'security key' do
         it 'returns FormResponse with success: true and creates a webauthn configuration' do
+          response = result
+
           extra_attributes = {
             enabled_mfa_methods_count: 1,
             mfa_method_counts: { webauthn: 1 },
             multi_factor_auth_method: 'webauthn',
+            webauthn_configuration_id: form.webauthn_configuration.id,
             authenticator_data_flags: {
               up: true,
               uv: false,
@@ -64,7 +67,7 @@ RSpec.describe WebauthnSetupForm do
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
-          expect(result.to_h).to eq(
+          expect(response.to_h).to eq(
             success: true,
             transports: ['usb'],
             transports_mismatch: false,
@@ -80,6 +83,12 @@ RSpec.describe WebauthnSetupForm do
 
         it 'does not contains uuid' do
           expect(result.extra[:aaguid]).to eq nil
+        end
+
+        it 'includes the id of the created configuration' do
+          configuration_id = result.extra[:webauthn_configuration_id]
+
+          expect(configuration_id).to eq(user.reload.webauthn_configurations.take.id)
         end
       end
 
@@ -148,11 +157,14 @@ RSpec.describe WebauthnSetupForm do
         end
 
         it 'includes unknown transports in extra analytics' do
-          expect(result.to_h).to eq(
+          response = result
+
+          expect(response.to_h).to eq(
             success: true,
             enabled_mfa_methods_count: 1,
             mfa_method_counts: { webauthn: 1 },
             multi_factor_auth_method: 'webauthn',
+            webauthn_configuration_id: form.webauthn_configuration.id,
             authenticator_data_flags: {
               up: true,
               uv: false,
@@ -179,6 +191,7 @@ RSpec.describe WebauthnSetupForm do
           enabled_mfa_methods_count: 0,
           mfa_method_counts: {},
           multi_factor_auth_method: 'webauthn',
+          webauthn_configuration_id: nil,
           authenticator_data_flags: {
             up: true,
             uv: false,
@@ -225,6 +238,7 @@ RSpec.describe WebauthnSetupForm do
           enabled_mfa_methods_count: 0,
           mfa_method_counts: {},
           multi_factor_auth_method: 'webauthn',
+          webauthn_configuration_id: nil,
           authenticator_data_flags: {
             up: true,
             uv: false,
@@ -252,11 +266,14 @@ RSpec.describe WebauthnSetupForm do
       let(:params) { super().merge(transports: 'internal') }
 
       it 'returns setup as mismatched type' do
-        expect(result.to_h).to eq(
+        response = result
+
+        expect(response.to_h).to eq(
           success: true,
           enabled_mfa_methods_count: 1,
           mfa_method_counts: { webauthn_platform: 1 },
           multi_factor_auth_method: 'webauthn_platform',
+          webauthn_configuration_id: form.webauthn_configuration.id,
           authenticator_data_flags: {
             up: true,
             uv: false,

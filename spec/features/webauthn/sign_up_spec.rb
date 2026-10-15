@@ -83,6 +83,34 @@ RSpec.feature 'webauthn sign up' do
 
         expect(page).to have_current_path(authentication_methods_setup_path)
       end
+
+      it 'attributes the created credential to the prompt' do
+        fake_analytics = FakeAnalytics.new
+        allow_any_instance_of(ApplicationController).to receive(:analytics)
+          .and_return(fake_analytics)
+        allow(WebauthnSetupForm).to receive(:domain_name).and_return('localhost:3000')
+
+        mock_webauthn_setup_challenge
+        visit webauthn_setup_path(platform: true, passkey_upsell: true, auto_trigger: true)
+
+        set_hidden_field('webauthn_id', webauthn_id)
+        set_hidden_field('attestation_object', attestation_object)
+        set_hidden_field('client_data_json', setup_client_data_json)
+        click_button t('webauthn_platform_recommended.cta')
+
+        configuration = user.reload.webauthn_configurations.take
+
+        expect(configuration).to be_present
+        expect(fake_analytics).to have_logged_event(
+          'Multi-Factor Authentication Setup',
+          hash_including(
+            success: true,
+            multi_factor_auth_method: 'webauthn_platform',
+            created_via_auto_passkey_prompt: true,
+            webauthn_configuration_id: configuration.id,
+          ),
+        )
+      end
     end
 
     context 'when the rollout percentage is zero' do

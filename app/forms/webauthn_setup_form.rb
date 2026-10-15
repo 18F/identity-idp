@@ -201,6 +201,7 @@ class WebauthnSetupForm
       mfa_method_counts: mfa_user.enabled_two_factor_configuration_counts_hash,
       enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       multi_factor_auth_method:,
+      webauthn_configuration_id: webauthn_configuration&.id,
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
       authenticator_data_flags: authenticator_data_flags,
       unknown_transports: invalid_transports.presence,
