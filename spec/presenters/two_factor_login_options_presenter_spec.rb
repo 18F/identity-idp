@@ -94,6 +94,76 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       )
   end
 
+  describe 'account recovery entry point' do
+    let(:user) { create(:user, :fully_registered) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
+    end
+
+    context 'when the user is eligible' do
+      it 'reports the user as eligible' do
+        expect(presenter.account_recovery_eligible?).to eq(true)
+      end
+
+      it 'supplies a recover-your-account link' do
+        expect(presenter.account_recovery_link).to eq \
+          t(
+            'two_factor_authentication.account_recovery.recover_text_html',
+            link_html: view.link_to(
+              t('two_factor_authentication.account_recovery.recover_link'),
+              account_recovery_start_path(locale: LinkLocaleResolver.locale),
+            ),
+          )
+      end
+
+      it 'supplies a delete-your-account fallback link to the legacy flow' do
+        expect(presenter.account_recovery_delete_link).to eq \
+          t(
+            'two_factor_authentication.account_recovery.delete_text_html',
+            link_html: view.link_to(
+              t('two_factor_authentication.account_recovery.delete_link'),
+              account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
+            ),
+          )
+      end
+
+      context 'when the user already has a pending recovery request' do
+        before { create(:account_recovery_request, :waiting, user: user) }
+
+        it 'reports the user as ineligible' do
+          expect(presenter.account_recovery_eligible?).to eq(false)
+        end
+      end
+
+      context 'when the user is identity proofed' do
+        let(:user) { create(:user, :proofed) }
+
+        it 'reports the user as ineligible' do
+          expect(presenter.account_recovery_eligible?).to eq(false)
+        end
+      end
+    end
+
+    context 'when the user is not fully registered' do
+      let(:user) { create(:user, :with_phone) }
+
+      it 'reports the user as ineligible' do
+        expect(presenter.account_recovery_eligible?).to eq(false)
+      end
+    end
+
+    context 'when the feature is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+      end
+
+      it 'reports the user as ineligible' do
+        expect(presenter.account_recovery_eligible?).to eq(false)
+      end
+    end
+  end
+
   describe '#options' do
     let(:user) do
       create(

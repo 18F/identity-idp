@@ -18,6 +18,7 @@ class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
   include AccountResetConcern
+  include AccountRecoveryConcern
   include ActionView::Helpers::DateHelper
 
   class UserEmailAddressMismatchError < StandardError; end
@@ -127,6 +128,17 @@ class UserMailer < ActionMailer::Base
   def personal_key_regenerated
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.personal_key_regenerated.subject'))
+    end
+  end
+
+  def account_recovery_request
+    with_user_locale(user) do
+      @waiting_period_interval = account_recovery_wait_period_interval
+      @header = t('user_mailer.account_recovery_request.header', app_name: APP_NAME)
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.account_recovery_request.subject', app_name: APP_NAME),
+      )
     end
   end
 

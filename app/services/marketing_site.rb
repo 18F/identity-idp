@@ -17,6 +17,7 @@ class MarketingSite
     trouble-signing-in/face-or-touch-unlock
     trouble-signing-in/forgot-your-password
     trouble-signing-in/forgot-your-personal-key
+    trouble-signing-in/issues-with-authentication-methods
     trouble-signing-in/security-check-failed
     trouble-signing-in/authentication/issues-with-government-employee-id-piv-cac
     trouble-signing-in/authentication/issues-with-security-keys

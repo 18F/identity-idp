@@ -1,0 +1,33 @@
+<% self.title = t('account_recovery.pending.header') %>
+
+<%= render PageHeadingComponent.new.with_content(t('account_recovery.pending.header')) %>
+
+<p><%= t('account_recovery.pending.notification_html', email: @email) %></p>
+
+<%= link_to(
+      t('account_recovery.pending.return_home'),
+      root_path,
+      class: 'usa-button usa-button--unstyled',
+    ) %>
+
+<%= render TroubleshootingOptionsComponent.new do |c| %>
+  <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
+  <% c.with_option(component: FormLinkComponent) do %>
+    <%= t('account_recovery.pending.resend') %>
+    <%= simple_form_for(
+          :account_recovery,
+          url: account_recovery_resend_path,
+          method: :post,
+          html: { class: 'display-none' },
+        ) do |f| %>
+      <%= f.button :button, t('account_recovery.pending.resend') %>
+    <% end %>
+  <% end %>
+  <% c.with_option(
+       url: MarketingSite.help_center_article_url(
+         category: 'trouble-signing-in',
+         article: 'issues-with-authentication-methods',
+       ),
+       new_tab: true,
+     ).with_content(t('account_recovery.pending.help')) %>
+<% end %>

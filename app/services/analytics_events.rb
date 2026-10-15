@@ -90,6 +90,42 @@ module AnalyticsEvents
     track_event('Account Deletion Requested', request_came_from: request_came_from, **extra)
   end
 
+  # @param [Boolean] eligible Whether the user may use account-preserving MFA recovery
+  # Account-preserving MFA recovery eligibility was evaluated for a user
+  def account_recovery_eligibility_evaluated(eligible:, **extra)
+    track_event(:account_recovery_eligibility_evaluated, eligible:, **extra)
+  end
+
+  # A user visited the account-preserving MFA recovery start page
+  def account_recovery_options_visit(**extra)
+    track_event(:account_recovery_options_visit, **extra)
+  end
+
+  # @param [Boolean] success Whether the recovery request was created
+  # @param [Hash] errors Errors resulting from the request attempt
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [String, nil] recovery_state State of the recovery request after creation
+  # @param [Boolean] rate_limited Whether the request was blocked by rate limiting
+  # An account-preserving MFA recovery request was submitted
+  def account_recovery_request(
+    success:,
+    errors: nil,
+    error_details: nil,
+    recovery_state: nil,
+    rate_limited: false,
+    **extra
+  )
+    track_event(
+      :account_recovery_request,
+      success:,
+      errors:,
+      error_details:,
+      recovery_state:,
+      rate_limited:,
+      **extra,
+    )
+  end
+
   # @identity.idp.previous_event_name Account Reset
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation

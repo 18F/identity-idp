@@ -58,6 +58,9 @@ module I18n
       # List of keys allowed to be untranslated or are the same as English
       # rubocop:disable Layout/LineLength
       ALLOWED_UNTRANSLATED_KEYS = [
+        { key: /^account_recovery\./, locales: %i[es fr zh] }, # Recovery translations pending
+        { key: /^user_mailer\.account_recovery_request\./, locales: %i[es fr zh] }, # Recovery translations pending
+        { key: /^two_factor_authentication\.account_recovery\./, locales: %i[es fr zh] }, # Recovery translations pending
         { key: 'i18n.locale.en', locales: %i[es fr zh] },
         { key: 'forms.buttons.verify_with_clear1', locales: %i[es fr zh] }, # CLEAR branded button is not translated
         { key: 'forms.buttons.verify_with', locales: %i[es fr zh] }, # CLEAR branded button is not translated

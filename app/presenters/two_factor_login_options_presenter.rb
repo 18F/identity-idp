@@ -92,6 +92,34 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     account_reset_token_valid? ? account_reset_cancel_link : account_reset_link
   end
 
+  def account_recovery_eligible?
+    return @account_recovery_eligible if defined?(@account_recovery_eligible)
+
+    @account_recovery_eligible = AccountRecovery::EligibilityPolicy.new(
+      user: user,
+    ).eligible?
+  end
+
+  def account_recovery_link
+    t(
+      'two_factor_authentication.account_recovery.recover_text_html',
+      link_html: @view.link_to(
+        t('two_factor_authentication.account_recovery.recover_link'),
+        account_recovery_start_path(locale: LinkLocaleResolver.locale),
+      ),
+    )
+  end
+
+  def account_recovery_delete_link
+    t(
+      'two_factor_authentication.account_recovery.delete_text_html',
+      link_html: @view.link_to(
+        t('two_factor_authentication.account_recovery.delete_link'),
+        account_reset_url(locale: LinkLocaleResolver.locale),
+      ),
+    )
+  end
+
   def cancel_link
     if reauthentication_context?
       account_path

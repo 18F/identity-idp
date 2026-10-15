@@ -155,4 +155,38 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
         t('two_factor_authentication.login_intro_reauthentication')
     end
   end
+
+  describe 'account recovery entry point' do
+    it 'only offers the legacy delete-your-account link by default' do
+      expect(rendered).to have_link(t('two_factor_authentication.account_reset.link'))
+      expect(rendered).to_not have_link(
+        t('two_factor_authentication.account_recovery.recover_link'),
+      )
+    end
+
+    context 'when the user is eligible for account recovery' do
+      let(:user) { create(:user, :fully_registered) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
+      end
+
+      it 'offers both recovery and deletion links' do
+        expect(rendered).to have_link(
+          t('two_factor_authentication.account_recovery.recover_link'),
+          href: account_recovery_start_path(locale: LinkLocaleResolver.locale),
+        )
+        expect(rendered).to have_link(
+          t('two_factor_authentication.account_recovery.delete_link'),
+          href: account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
+        )
+      end
+
+      it 'does not render the legacy single-option text' do
+        expect(rendered).to_not have_content(
+          strip_tags(t('two_factor_authentication.account_reset.text_html')),
+        )
+      end
+    end
+  end
 end
