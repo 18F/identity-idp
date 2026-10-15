@@ -71,7 +71,7 @@ RSpec.describe Users::StsConsentController do
 
         expect(response).to render_template(:new)
         expect(@analytics).to have_logged_event(
-          'STS Consent Submitted',
+          :sts_consent_submitted,
           success: false,
           error_details: { consent_given: { required_checkbox: true } },
         )
