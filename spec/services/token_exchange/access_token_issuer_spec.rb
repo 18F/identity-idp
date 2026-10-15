@@ -21,7 +21,11 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
         issued_at: Time.zone.now.to_i,
       )
     end
-    let(:target_issuer) { 'target-issuer' }
+    let!(:target) { create(:service_provider, :active, issuer: 'target-issuer') }
+    let(:target_issuer) { target.issuer }
+    let(:target_private_key) do
+      OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read)
+    end
     let(:resource) { 'https://api.example.gov/passport' }
     let(:scope) { 'openid token_exchange:passport' }
 
@@ -30,9 +34,15 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
         .and_return(600)
     end
 
-    it 'returns an opaque token' do
-      expect(issued_token.token).to be_present
-      expect(issued_token.token).to be_a(String)
+    it 'returns a JWE access token encrypted for the target' do
+      payload = JSON.parse(JWE.decrypt(issued_token.token, target_private_key))
+
+      expect(payload).to include(
+        'sub' => 'identity-uuid',
+        'aud' => target_issuer,
+        'scope' => 'openid token_exchange:passport',
+        'act' => { 'sub' => 'broker-issuer' },
+      )
     end
 
     it 'returns the configured expiration' do
