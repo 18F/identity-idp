@@ -27,7 +27,6 @@ require_relative '../lib/mailer_sensitive_information_checker'
 
 APP_NAME = 'Login.gov'
 AMERICA_GOV_NAME = 'America.gov'
-AMERICA_GOV_URL = 'https://www.america.gov'
 
 module Identity
   class Application < Rails::Application

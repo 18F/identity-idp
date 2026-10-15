@@ -1887,9 +1887,9 @@ step_indicator.status.complete: Étape effectuée
 step_indicator.status.current: Étape en cours
 step_indicator.status.not_complete: Étape non effectuée
 step_indicator.substep: Sous-étape %{current} sur %{total}
-sts_consent.check_box_to_consent_html: I consent to allow %{america_gov_link_html} to access, share my information, and take actions on my behalf with MyTravelGov.
-sts_consent.content_html: '%{america_gov_link_html} uses AI to connect to your %{app_name} account, automatically signing you in and pre-filling government forms.'
-sts_consent.heading_html: Let %{america_gov_link_html} work with agencies on your behalf
+sts_consent.check_box_to_consent: I consent to allow %{america_gov_name} to access, share my information, and take actions on my behalf with MyTravelGov.
+sts_consent.content: '%{america_gov_name} uses AI to connect to your %{app_name} account, automatically signing you in and pre-filling government forms.'
+sts_consent.heading: Let %{america_gov_name} work with agencies on your behalf
 time.am: A.M.
 time.formats.event_date: '%-d %B %Y'
 time.formats.event_time: '%-l h %M %p'

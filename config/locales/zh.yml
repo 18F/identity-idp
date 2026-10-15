@@ -1899,9 +1899,9 @@ step_indicator.status.complete: 完成了
 step_indicator.status.current: 目前步骤
 step_indicator.status.not_complete: 未完成
 step_indicator.substep: 子步骤 %{current} / %{total}
-sts_consent.check_box_to_consent_html: I consent to allow %{america_gov_link_html} to access, share my information, and take actions on my behalf with MyTravelGov.
-sts_consent.content_html: '%{america_gov_link_html} uses AI to connect to your %{app_name} account, automatically signing you in and pre-filling government forms.'
-sts_consent.heading_html: Let %{america_gov_link_html} work with agencies on your behalf
+sts_consent.check_box_to_consent: I consent to allow %{america_gov_name} to access, share my information, and take actions on my behalf with MyTravelGov.
+sts_consent.content: '%{america_gov_name} uses AI to connect to your %{app_name} account, automatically signing you in and pre-filling government forms.'
+sts_consent.heading: Let %{america_gov_name} work with agencies on your behalf
 time.am: 上午
 time.formats.event_date: '%Y年%B%-d日'
 time.formats.event_time: '%-l:%M %p'
