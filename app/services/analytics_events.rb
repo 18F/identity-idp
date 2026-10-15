@@ -8416,6 +8416,10 @@ module AnalyticsEvents
   # @param [String, nil] exception_class Class name of exception, if error occurred
   # @param [String] recaptcha_action reCAPTCHA action name, for distinct user flow
   # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone results
+  # @param [Boolean, nil] ja3_present Whether a JA3 TLS fingerprint was available to forward
+  # @param [Boolean, nil] ja4_present Whether a JA4 TLS fingerprint was available to forward
+  # @param [Boolean, nil] recaptcha_enterprise_additional_context_enabled Whether additional
+  #   reCAPTCHA Enterprise context (including JA3/JA4 fingerprints) is enabled
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
@@ -8424,6 +8428,9 @@ module AnalyticsEvents
     exception_class:,
     recaptcha_action:,
     phone_country_code: nil,
+    ja3_present: nil,
+    ja4_present: nil,
+    recaptcha_enterprise_additional_context_enabled: nil,
     **extra
   )
     track_event(
@@ -8435,6 +8442,9 @@ module AnalyticsEvents
       exception_class:,
       recaptcha_action:,
       phone_country_code:,
+      ja3_present:,
+      ja4_present:,
+      recaptcha_enterprise_additional_context_enabled:,
       **extra,
     )
   end

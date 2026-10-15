@@ -84,6 +84,10 @@ class RecaptchaEnterpriseForm
       exception_class: error&.class&.name,
       form_class: self.class.name,
       recaptcha_action:,
+      ja3_present: ja3_fingerprint.present?,
+      ja4_present: ja4_fingerprint.present?,
+      recaptcha_enterprise_additional_context_enabled:
+        FeatureManagement.recaptcha_enterprise_additional_context_enabled?,
       **extra_analytics_properties,
     )
   end
