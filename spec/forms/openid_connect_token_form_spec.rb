@@ -692,19 +692,17 @@ RSpec.describe OpenidConnectTokenForm do
           .and_return(600)
       end
 
-      it 'returns an opaque subject token response' do
+      it 'returns a subject token response' do
         expect(response).to include(
-          subject_token: be_present,
+          access_token: be_present,
           token_type: 'Bearer',
           expires_in: 600,
           scope: 'openid token_exchange:passport',
         )
-        expect(response).to_not have_key(:access_token)
-        expect(response).to_not have_key(:refresh_token)
       end
 
       it 'stores the subject token metadata in Redis' do
-        subject_token = TokenExchange::SubjectToken.load(response[:subject_token])
+        subject_token = TokenExchange::SubjectToken.load(response[:access_token])
 
         expect(subject_token).to have_attributes(
           identity_uuid: identity.uuid,

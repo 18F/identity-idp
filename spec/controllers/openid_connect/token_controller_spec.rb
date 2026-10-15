@@ -232,8 +232,8 @@ RSpec.describe OpenidConnect::TokenController do
       allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
         .and_return([broker_issuer])
-      allow(IdentityConfig.store).to receive(:token_exchange_allowed_target_issuers)
-        .and_return([target_issuer])
+      allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+        .and_return([{ issuer: target_issuer, scope: 'passport' }])
     end
 
     context 'with valid params' do
@@ -321,7 +321,7 @@ RSpec.describe OpenidConnect::TokenController do
 
     context 'when the target audience is not allowlisted' do
       before do
-        allow(IdentityConfig.store).to receive(:token_exchange_allowed_target_issuers)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
           .and_return([])
       end
 

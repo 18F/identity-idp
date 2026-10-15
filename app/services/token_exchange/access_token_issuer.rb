@@ -21,9 +21,10 @@ module TokenExchange
     end
 
     def issue
-      token = SecureRandom.urlsafe_base64(32)
       expires_in = IdentityConfig.store.token_exchange_access_token_expires_in
       issued_at = Time.zone.now.to_i
+      expires_at = issued_at + expires_in
+      token = jwe(issued_at:, expires_at:)
       access_token = AccessToken.new(
         id: AccessToken.digest(token),
         identity_uuid: subject_token.identity_uuid,
@@ -32,7 +33,7 @@ module TokenExchange
         resource:,
         scope:,
         issued_at:,
-        expires_at: issued_at + expires_in,
+        expires_at:,
       )
 
       EncryptedRedisStructStorage.store(access_token, expires_in:)
@@ -43,5 +44,38 @@ module TokenExchange
     private
 
     attr_reader :subject_token, :target_issuer, :resource, :scope
+
+    def jwe(issued_at:, expires_at:)
+      public_key = target.ssl_certs.first.public_key
+      jwk = JWT::JWK.new(public_key)
+
+      JWE.encrypt(
+        payload(issued_at:, expires_at:).to_json,
+        public_key,
+        typ: 'JWT',
+        zip: 'DEF',
+        alg: 'RSA-OAEP',
+        enc: 'A256GCM',
+        kid: jwk.kid,
+      )
+    end
+
+    def payload(issued_at:, expires_at:)
+      {
+        iss: IdentityConfig.store.domain_name,
+        sub: subject_token.identity_uuid,
+        aud: target_issuer,
+        exp: expires_at,
+        iat: issued_at,
+        scope:,
+        act: {
+          sub: subject_token.broker_issuer,
+        },
+      }
+    end
+
+    def target
+      @target ||= ServiceProvider.find_by!(issuer: target_issuer)
+    end
   end
 end

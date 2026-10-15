@@ -64,8 +64,8 @@ RSpec.describe OpenidConnectIntrospectionForm do
 
   before do
     allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:token_exchange_allowed_target_issuers)
-      .and_return([token_target_issuer])
+    allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+      .and_return([{ issuer: token_target_issuer, scope: 'passport' }])
   end
 
   describe '#submit' do
@@ -106,7 +106,7 @@ RSpec.describe OpenidConnectIntrospectionForm do
 
     context 'when the target is not on the allowlist' do
       before do
-        allow(IdentityConfig.store).to receive(:token_exchange_allowed_target_issuers)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
           .and_return([])
       end
 
@@ -138,8 +138,8 @@ RSpec.describe OpenidConnectIntrospectionForm do
 
     context 'when another target is on the allowlist' do
       before do
-        allow(IdentityConfig.store).to receive(:token_exchange_allowed_target_issuers)
-          .and_return(['some-other-target'])
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+          .and_return([{ issuer: 'some-other-target', scope: 'other' }])
       end
 
       it 'is invalid' do
@@ -240,8 +240,11 @@ RSpec.describe OpenidConnectIntrospectionForm do
           issuer: target_issuer,
           certs: ['saml_test_sp2', 'saml_test_sp'],
         )
-        allow(IdentityConfig.store).to receive(:token_exchange_allowed_target_issuers)
-          .and_return([token_target_issuer, target_issuer])
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+          .and_return([
+            { issuer: token_target_issuer, scope: 'passport' },
+            { issuer: target_issuer, scope: 'other' },
+          ])
       end
 
       it 'returns inactive' do

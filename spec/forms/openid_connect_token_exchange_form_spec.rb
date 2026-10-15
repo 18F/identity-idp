@@ -42,8 +42,8 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
       .and_return([broker_issuer])
-    allow(IdentityConfig.store).to receive(:token_exchange_allowed_target_issuers)
-      .and_return([target_issuer])
+    allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+      .and_return([{ issuer: target_issuer, scope: 'passport' }])
   end
 
   describe '#submit' do
@@ -171,7 +171,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
     context 'when the target is not allowlisted' do
       before do
-        allow(IdentityConfig.store).to receive(:token_exchange_allowed_target_issuers)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
           .and_return([])
       end
 
@@ -335,7 +335,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
     context 'when the target is not allowlisted' do
       before do
-        allow(IdentityConfig.store).to receive(:token_exchange_allowed_target_issuers)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
           .and_return([])
       end
 
