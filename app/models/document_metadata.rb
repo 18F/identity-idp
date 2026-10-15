@@ -6,8 +6,6 @@
 # document_images scope + biometric-sharing consent gate as the images; held to
 # the same retention window.
 class DocumentMetadata < ApplicationRecord
-  self.table_name = 'document_metadata'
-
   FIELDS = %i[document_number document_issued document_expiration].freeze
 
   belongs_to :document_capture_session
