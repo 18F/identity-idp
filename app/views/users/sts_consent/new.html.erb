@@ -1,16 +1,22 @@
-<% self.title = t('titles.sts_consent') %>
+<% self.title = t('titles.sts_consent', america_gov_name: AMERICA_GOV_NAME) %>
+
+<% america_gov_link_html = new_tab_link_to(AMERICA_GOV_NAME, AMERICA_GOV_URL) %>
 
 <% if decorated_sp_session.sp_name %>
   <%= render 'sign_up/registrations/sp_registration_heading' %>
 <% else %>
-  <%= render PageHeadingComponent.new.with_content(t('sts_consent.heading')) %>
+  <%= render PageHeadingComponent.new.with_content(
+        t('sts_consent.heading_html', america_gov_link_html:),
+      ) %>
 <% end %>
+
+<%= t('sts_consent.content_html', america_gov_link_html:, app_name: APP_NAME) %>
 
 <%= simple_form_for(
       @sts_consent_form,
       url: sts_consent_path,
       method: :post,
-      html: { class: 'margin-top-4' },
+      html: { class: 'margin-top-2' },
     ) do |f| %>
   <%= render ValidatedFieldComponent.new(
         form: f,
@@ -18,7 +24,7 @@
         as: :boolean,
         checked_value: StsConsentForm::CONSENT_GIVEN_VALUE,
         unchecked_value: '',
-        label: t('sts_consent.check_box_to_consent'),
+        label: t('sts_consent.check_box_to_consent_html', america_gov_link_html:),
         required: true,
       ) %>
 

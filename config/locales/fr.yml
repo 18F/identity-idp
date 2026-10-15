@@ -1887,8 +1887,9 @@ step_indicator.status.complete: Étape effectuée
 step_indicator.status.current: Étape en cours
 step_indicator.status.not_complete: Étape non effectuée
 step_indicator.substep: Sous-étape %{current} sur %{total}
-sts_consent.check_box_to_consent: I agree to share my information
-sts_consent.heading: Consent to share your information
+sts_consent.check_box_to_consent_html: I consent to allow %{america_gov_link_html} to access, share my information, and take actions on my behalf with MyTravelGov.
+sts_consent.content_html: '%{america_gov_link_html} uses AI to connect to your %{app_name} account, automatically signing you in and pre-filling government forms.'
+sts_consent.heading_html: Let %{america_gov_link_html} work with agencies on your behalf
 time.am: A.M.
 time.formats.event_date: '%-d %B %Y'
 time.formats.event_time: '%-l h %M %p'
@@ -1961,7 +1962,7 @@ titles.sign_up.completion_new_attributes: '%{sp} demande de nouvelles informatio
 titles.sign_up.completion_new_sp: Vous vous connectez pour la première fois
 titles.sign_up.completion_reverified_consent: Partager vos informations mises à jour avec %{sp}
 titles.sign_up.confirmation: Continuer à vous connecter
-titles.sts_consent: Consent to share your information
+titles.sts_consent: Let %{america_gov_name} work with agencies on your behalf
 titles.totp_setup.new: Ajouter une appli d’authentification
 titles.two_factor_setup: Configuration de l’authentification à deux facteurs
 titles.verify_email: Consulter vos e-mails

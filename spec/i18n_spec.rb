@@ -123,8 +123,9 @@ module I18n
         { key: 'nds.footer.experience_notice_label', locales: %i[es fr zh] }, # Translations pending
         { key: 'nds.footer.experience_notice_link', locales: %i[es fr zh] }, # Translations pending
         { key: 'nds.footer.switch_to_legacy', locales: %i[es fr zh] }, # Translations pending
-        { key: 'sts_consent.check_box_to_consent', locales: %i[es fr zh] }, # Translations pending
-        { key: 'sts_consent.heading', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.check_box_to_consent_html', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.content_html', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.heading_html', locales: %i[es fr zh] }, # Translations pending
         { key: 'titles.sts_consent', locales: %i[es fr zh] }, # Translations pending
       ].freeze
       # rubocop:enable Layout/LineLength
