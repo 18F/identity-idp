@@ -78,7 +78,7 @@ class OpenidConnectIntrospectionForm
 
   def validate_target_allowlisted
     return if service_provider.blank?
-    return if token_exchange_allowed_target_issuers.include?(client_id)
+    return if token_exchange_allowed_targets.include?(client_id)
 
     errors.add(:client_id, :invalid)
   end
@@ -134,8 +134,8 @@ class OpenidConnectIntrospectionForm
     @service_provider ||= ServiceProvider.active.find_by(issuer: client_id)
   end
 
-  def token_exchange_allowed_target_issuers
-    IdentityConfig.store.token_exchange_allowed_target_issuers
+  def token_exchange_allowed_targets
+    IdentityConfig.store.token_exchange_allowed_targets.map { |target| target.fetch(:issuer) }
   end
 
   def access_token

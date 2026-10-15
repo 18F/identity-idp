@@ -353,8 +353,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
       before do
         allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(true)
-        allow(IdentityConfig.store).to receive(:token_exchange_allowed_audiences)
-          .and_return(token_exchange_allowed_audiences)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+          .and_return(token_exchange_allowed_targets)
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
           .and_return(token_exchange_allowed_broker_issuers)
         allow(IdentityConfig.store).to receive(:token_exchange_enabled)
@@ -363,7 +363,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
       context 'when token exchange is disabled' do
         let(:token_exchange_enabled) { false }
-        let(:token_exchange_allowed_audiences) do
+        let(:token_exchange_allowed_targets) do
           [{ issuer: 'passport-issuer', scope: 'passport' }]
         end
         let(:token_exchange_allowed_broker_issuers) { [client_id] }
@@ -377,7 +377,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
       context 'when the broker is not allowlisted' do
         let(:token_exchange_enabled) { true }
-        let(:token_exchange_allowed_audiences) do
+        let(:token_exchange_allowed_targets) do
           [{ issuer: 'passport-issuer', scope: 'passport' }]
         end
         let(:token_exchange_allowed_broker_issuers) { [] }
@@ -391,7 +391,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
       context 'when token exchange is enabled and the broker is allowlisted' do
         let(:token_exchange_enabled) { true }
-        let(:token_exchange_allowed_audiences) do
+        let(:token_exchange_allowed_targets) do
           [{ issuer: 'passport-issuer', scope: 'passport' }]
         end
         let(:token_exchange_allowed_broker_issuers) { [client_id] }
@@ -408,7 +408,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
         context 'when more than one configured audience is requested' do
           let(:scope) { 'openid token_exchange:passport token_exchange:benefits' }
-          let(:token_exchange_allowed_audiences) do
+          let(:token_exchange_allowed_targets) do
             [
               { issuer: 'passport-issuer', scope: 'passport' },
               { issuer: 'benefits-issuer', scope: 'benefits' },
@@ -447,7 +447,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
       context 'when the audience is not configured' do
         let(:token_exchange_enabled) { true }
-        let(:token_exchange_allowed_audiences) do
+        let(:token_exchange_allowed_targets) do
           [{ issuer: 'other-audience-issuer', scope: 'other_audience' }]
         end
         let(:token_exchange_allowed_broker_issuers) { [client_id] }
@@ -466,7 +466,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       before do
         allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
-        allow(IdentityConfig.store).to receive(:token_exchange_allowed_audiences)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
           .and_return([{ issuer: 'passport-issuer', scope: 'passport' }])
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
           .and_return(token_exchange_allowed_broker_issuers)
