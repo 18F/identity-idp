@@ -577,7 +577,7 @@ module IdentityConfig
     config.add(:team_ursula_email, type: :string)
     config.add(:telephony_adapter, type: :string)
     config.add(:test_ssn_allowed_list, type: :comma_separated_string_list)
-    config.add(:token_exchange_allowed_audiences, type: :json)
+    config.add(:token_exchange_allowed_audiences, type: :json, options: { symbolize_names: true })
     config.add(:token_exchange_allowed_broker_issuers, type: :json)
     config.add(:token_exchange_allowed_target_issuers, type: :json)
     config.add(:token_exchange_enabled, type: :boolean)
