@@ -8792,7 +8792,7 @@ module AnalyticsEvents
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   def sts_consent_submitted(success:, error_details: nil, **extra)
     track_event(
-      'STS Consent Submitted',
+      :sts_consent_submitted,
       success:,
       error_details:,
       **extra,
@@ -8801,7 +8801,7 @@ module AnalyticsEvents
 
   # Tracks when the STS (token exchange) consent form is visited
   def sts_consent_visited
-    track_event('STS Consent Visited')
+    track_event(:sts_consent_visited)
   end
 
   # Tracks when user clicks on same tab that user landed on.
