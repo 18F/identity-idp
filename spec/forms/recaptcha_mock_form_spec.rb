@@ -47,6 +47,9 @@ RSpec.describe RecaptchaMockForm do
           score_threshold: score_threshold,
           form_class: 'RecaptchaMockForm',
           recaptcha_action:,
+          ja3_present: false,
+          ja4_present: false,
+          recaptcha_enterprise_additional_context_enabled: false,
         )
       end
     end
@@ -79,6 +82,9 @@ RSpec.describe RecaptchaMockForm do
           score_threshold: score_threshold,
           form_class: 'RecaptchaMockForm',
           recaptcha_action:,
+          ja3_present: false,
+          ja4_present: false,
+          recaptcha_enterprise_additional_context_enabled: false,
         )
       end
 
