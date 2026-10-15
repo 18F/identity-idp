@@ -50,13 +50,22 @@ module TokenExchange
       jwk = JWT::JWK.new(public_key)
 
       JWE.encrypt(
-        payload(issued_at:, expires_at:).to_json,
+        jwt(issued_at:, expires_at:),
         public_key,
         typ: 'JWT',
         zip: 'DEF',
         alg: 'RSA-OAEP',
         enc: 'A256GCM',
         kid: jwk.kid,
+      )
+    end
+
+    def jwt(issued_at:, expires_at:)
+      JWT.encode(
+        payload(issued_at:, expires_at:),
+        AppArtifacts.store.oidc_primary_private_key,
+        IdTokenBuilder::JWT_SIGNING_ALGORITHM,
+        kid: JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,
       )
     end
 

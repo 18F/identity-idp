@@ -34,8 +34,14 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
         .and_return(600)
     end
 
-    it 'returns a JWE access token encrypted for the target' do
-      payload = JSON.parse(JWE.decrypt(issued_token.token, target_private_key))
+    it 'returns a signed JWE access token encrypted for the target' do
+      jwt = JWE.decrypt(issued_token.token, target_private_key)
+      payload = JWT.decode(
+        jwt,
+        Rails.application.config.oidc_public_key,
+        true,
+        algorithm: IdTokenBuilder::JWT_SIGNING_ALGORITHM,
+      ).first
 
       expect(payload).to include(
         'sub' => 'identity-uuid',
