@@ -66,7 +66,7 @@ RSpec.feature 'clear1 inherited proofing step', :js, allow_browser_log: true do
 
   context 'desktop flow', driver: :headless_chrome do
     before do
-      visit_idp_from_oidc_sp_with_ial2
+      visit_idp_from_oidc_sp_with_basic
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_hybrid_handoff_step
     end
@@ -114,7 +114,7 @@ RSpec.feature 'clear1 inherited proofing step', :js, allow_browser_log: true do
 
   context 'mobile flow', driver: :headless_chrome_mobile do
     before do
-      visit_idp_from_oidc_sp_with_ial2
+      visit_idp_from_oidc_sp_with_basic
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_hybrid_handoff_step
       expect(page).to have_current_path(idv_how_to_verify_path)

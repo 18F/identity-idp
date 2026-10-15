@@ -749,10 +749,16 @@ RSpec.describe UserMailer, type: :mailer do
     around { |ex| Time.use_zone('UTC') { ex.run } }
 
     let(:verified_at) { '2026-03-18 14:00:00 UTC' }
+    let(:validity_hours) { 48 }
 
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address)
         .agent_proofing_succeeded(verified_at: verified_at)
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:agent_proofed_user_time_validity_hours)
+        .and_return(validity_hours)
     end
 
     it_behaves_like 'a system email'
