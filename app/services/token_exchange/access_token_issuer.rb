@@ -27,7 +27,7 @@ module TokenExchange
       token = jwe(issued_at:, expires_at:)
       access_token = AccessToken.new(
         id: AccessToken.digest(token),
-        identity_uuid: subject_token.identity_uuid,
+        identity_uuid: target_identity.uuid,
         broker_issuer: subject_token.broker_issuer,
         target_issuer:,
         resource:,
@@ -72,7 +72,7 @@ module TokenExchange
     def payload(issued_at:, expires_at:)
       {
         iss: IdentityConfig.store.domain_name,
-        sub: subject_token.identity_uuid,
+        sub: target_identity.uuid,
         aud: target_issuer,
         exp: expires_at,
         iat: issued_at,
@@ -85,6 +85,17 @@ module TokenExchange
 
     def target
       @target ||= ServiceProvider.find_by!(issuer: target_issuer)
+    end
+
+    def target_identity
+      @target_identity ||= begin
+        user = ServiceProviderIdentity.find_by(
+          uuid: subject_token.identity_uuid,
+          service_provider: subject_token.broker_issuer,
+        ).user
+
+        ServiceProviderIdentity.find_by(user:, service_provider: target_issuer)
+      end
     end
   end
 end

@@ -23,6 +23,15 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       ial: 2,
     )
   end
+  let!(:target_identity) do
+    create(
+      :service_provider_identity,
+      user:,
+      service_provider: target_issuer,
+      scope: scope,
+      ial: 2,
+    )
+  end
   let(:scope) { 'openid token_exchange:passport' }
   let(:subject_token) { TokenExchange::SubjectTokenIssuer.issue(identity:).token }
   let(:params) do
@@ -262,7 +271,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       access_token = TokenExchange::AccessToken.load(response[:access_token])
 
       expect(access_token).to have_attributes(
-        identity_uuid: identity.uuid,
+        identity_uuid: target_identity.uuid,
         target_issuer:,
         resource:,
         scope:,

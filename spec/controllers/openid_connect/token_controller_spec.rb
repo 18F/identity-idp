@@ -219,9 +219,19 @@ RSpec.describe OpenidConnect::TokenController do
     let(:identity) do
       create(
         :service_provider_identity,
-        user: user,
+        user:,
         service_provider: broker_issuer,
-        scope: scope,
+        scope:,
+        ial: 2,
+      )
+    end
+
+    let!(:target_identity) do
+      create(
+        :service_provider_identity,
+        user:,
+        service_provider: target_issuer,
+        scope:,
         ial: 2,
       )
     end

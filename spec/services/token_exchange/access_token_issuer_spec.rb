@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe TokenExchange::AccessTokenIssuer do
   describe '.issue' do
-    subject(:issued_token) do
+    subject(:subject) do
       described_class.issue(
         subject_token:,
         target_issuer:,
@@ -14,17 +14,27 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
     let(:subject_token) do
       TokenExchange::SubjectToken.new(
         id: 'subject-token-digest',
-        identity_uuid: 'identity-uuid',
-        broker_issuer: 'broker-issuer',
-        scope: 'openid token_exchange:passport',
+        identity_uuid: broker_identity.uuid,
+        broker_issuer:,
+        scope:,
         ial: 2,
         issued_at: Time.zone.now.to_i,
       )
     end
+    let(:user) { create(:user) }
     let!(:target) { create(:service_provider, :active, issuer: 'target-issuer') }
+    let!(:broker) { create(:service_provider, :active, issuer: 'broker-issuer') }
     let(:target_issuer) { target.issuer }
+    let(:broker_issuer) { broker.issuer }
     let(:target_private_key) do
       OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read)
+    end
+    let(:broker_identity) do
+      create(:service_provider_identity, service_provider: broker_issuer, user:)
+    end
+
+    let!(:target_identity) do
+      create(:service_provider_identity, service_provider: target_issuer, user:)
     end
     let(:resource) { 'https://api.example.gov/passport' }
     let(:scope) { 'openid token_exchange:passport' }
@@ -35,7 +45,7 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
     end
 
     it 'returns a signed JWE access token encrypted for the target' do
-      jwt = JWE.decrypt(issued_token.token, target_private_key)
+      jwt = JWE.decrypt(subject.token, target_private_key)
       payload = JWT.decode(
         jwt,
         Rails.application.config.oidc_public_key,
@@ -44,26 +54,26 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
       ).first
 
       expect(payload).to include(
-        'sub' => 'identity-uuid',
+        'sub' => target_identity.uuid,
         'aud' => target_issuer,
         'scope' => 'openid token_exchange:passport',
-        'act' => { 'sub' => 'broker-issuer' },
+        'act' => { 'sub' => broker_issuer },
       )
     end
 
     it 'returns the configured expiration' do
-      expect(issued_token.expires_in).to eq(600)
+      expect(subject.expires_in).to eq(600)
     end
 
     it 'stores delegated access token metadata in Redis by token digest' do
-      loaded_access_token = TokenExchange::AccessToken.load(issued_token.token)
+      loaded_access_token = TokenExchange::AccessToken.load(subject.token)
 
       expect(loaded_access_token).to have_attributes(
-        identity_uuid: 'identity-uuid',
-        broker_issuer: 'broker-issuer',
-        target_issuer: 'target-issuer',
-        resource: 'https://api.example.gov/passport',
-        scope: 'openid token_exchange:passport',
+        identity_uuid: target_identity.uuid,
+        broker_issuer:,
+        target_issuer:,
+        resource:,
+        scope:,
         expires_at: loaded_access_token.issued_at + 600,
       )
     end
@@ -74,7 +84,7 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
         expires_in: 600,
       )
 
-      issued_token
+      subject
     end
   end
 end
