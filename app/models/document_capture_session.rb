@@ -253,7 +253,44 @@ class DocumentCaptureSession < ApplicationRecord
     document_type_requested == Idp::Constants::DocumentTypes::MDL
   end
 
+  # Takes the row lock so this serializes with Idv::DocumentArtifactsPersister:
+  # a job still in flight sees the profile stamp and links its own rows.
+  # @param [Profile] profile
+  def associate_document_artifacts_with_profile!(profile)
+    with_lock do
+      next if mdl_requested?
+
+      # rubocop:disable Rails/SkipsModelValidations
+      update_column(:profile_id, profile.id)
+      document_artifacts.where(profile_id: nil).update_all(profile_id: profile.id)
+      DocumentMetadata.where(document_capture_session_id: id, profile_id: nil)
+        .update_all(profile_id: profile.id)
+      # rubocop:enable Rails/SkipsModelValidations
+    end
+  end
+
+  def discard_document_artifacts!
+    return unless unlinked_document_artifacts?
+
+    self.class.transaction do
+      locked_session = self.class.lock.find_by(id:)
+      next if locked_session.nil?
+
+      locked_session.document_artifacts.where(profile_id: nil).destroy_all
+      DocumentMetadata.where(document_capture_session_id: id, profile_id: nil).destroy_all
+    end
+  end
+
+  def document_images_sharing_allowed?
+    !!ServiceProvider.find_by(issuer:)&.document_images_sharing_allowed?
+  end
+
   private
+
+  def unlinked_document_artifacts?
+    DocumentArtifact.exists?(document_capture_session_id: id, profile_id: nil) ||
+      DocumentMetadata.exists?(document_capture_session_id: id, profile_id: nil)
+  end
 
   def generate_result_id
     self.result_id = SecureRandom.uuid
