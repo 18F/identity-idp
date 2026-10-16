@@ -253,6 +253,26 @@ class DocumentCaptureSession < ApplicationRecord
     document_type_requested == Idp::Constants::DocumentTypes::MDL
   end
 
+  # Takes the row lock so this serializes with Idv::DocumentArtifactsPersister:
+  # a job still in flight sees the profile stamp and links its own rows.
+  # @param [Profile] profile
+  def associate_document_artifacts_with_profile!(profile)
+    with_lock do
+      next if mdl_requested?
+
+      # rubocop:disable Rails/SkipsModelValidations
+      update_column(:profile_id, profile.id)
+      document_artifacts.where(profile_id: nil).update_all(profile_id: profile.id)
+      DocumentMetadata.where(document_capture_session_id: id, profile_id: nil)
+        .update_all(profile_id: profile.id)
+      # rubocop:enable Rails/SkipsModelValidations
+    end
+  end
+
+  def document_images_sharing_allowed?
+    !!ServiceProvider.find_by(issuer:)&.document_images_sharing_allowed?
+  end
+
   private
 
   def generate_result_id

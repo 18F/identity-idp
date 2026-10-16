@@ -900,4 +900,70 @@ RSpec.describe DocumentCaptureSession do
       end
     end
   end
+
+  describe '#associate_document_artifacts_with_profile!' do
+    let(:session) { create(:document_capture_session) }
+    let(:profile) { create(:profile, user: session.user) }
+    let!(:artifact) { create(:document_artifact, document_capture_session: session) }
+    let!(:metadata) { create(:document_metadata, document_capture_session: session) }
+
+    it 'stamps the session and links its artifacts and metadata to the profile' do
+      session.associate_document_artifacts_with_profile!(profile)
+
+      expect(session.reload.profile_id).to eq(profile.id)
+      expect(artifact.reload.profile_id).to eq(profile.id)
+      expect(metadata.reload.profile_id).to eq(profile.id)
+    end
+
+    it 'takes the row lock' do
+      expect(session).to receive(:with_lock).and_call_original
+
+      session.associate_document_artifacts_with_profile!(profile)
+    end
+
+    context 'when an mDL was requested' do
+      before { session.update!(document_type_requested: Idp::Constants::DocumentTypes::MDL) }
+
+      it 'does not stamp or link anything' do
+        session.associate_document_artifacts_with_profile!(profile)
+
+        expect(session.reload.profile_id).to be_nil
+        expect(artifact.reload.profile_id).to be_nil
+        expect(metadata.reload.profile_id).to be_nil
+      end
+    end
+  end
+
+  describe '#document_images_sharing_allowed?' do
+    let(:service_provider) { create(:service_provider) }
+    let(:session) { create(:document_capture_session, issuer: service_provider.issuer) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:document_images_sharing_enabled).and_return(true)
+    end
+
+    context 'when the issuing SP is allow-listed' do
+      before do
+        allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+          .and_return([service_provider.issuer])
+      end
+
+      it { expect(session.document_images_sharing_allowed?).to eq(true) }
+    end
+
+    context 'when the issuing SP is not allow-listed' do
+      before do
+        allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+          .and_return([])
+      end
+
+      it { expect(session.document_images_sharing_allowed?).to eq(false) }
+    end
+
+    context 'when the capture session has no issuer' do
+      let(:session) { create(:document_capture_session, issuer: nil) }
+
+      it { expect(session.document_images_sharing_allowed?).to eq(false) }
+    end
+  end
 end

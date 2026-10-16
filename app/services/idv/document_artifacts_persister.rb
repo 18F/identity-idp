@@ -38,7 +38,7 @@ module Idv
     # @param [Array<Idv::IdvImage>] images the images returned for the verified document
     def call(images:)
       return unless document_capture_session
-      return unless sp&.document_images_sharing_allowed?
+      return unless document_capture_session.document_images_sharing_allowed?
 
       superseded_names = []
 
@@ -114,10 +114,6 @@ module Idv
       locked_session.document_metadata&.update_column(:profile_id, profile_id) if
         locked_session.document_metadata&.profile_id.nil?
       # rubocop:enable Rails/SkipsModelValidations
-    end
-
-    def sp
-      @sp ||= ServiceProvider.find_by(issuer: document_capture_session.issuer)
     end
 
     def document_image_writer

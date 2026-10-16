@@ -131,7 +131,10 @@ RSpec.describe Idv::Session do
     end
 
     context 'when escrowed document artifacts exist for the capture session' do
-      let(:document_capture_session) { create(:document_capture_session, user:) }
+      let(:service_provider) { create(:service_provider) }
+      let(:document_capture_session) do
+        create(:document_capture_session, user:, issuer: service_provider.issuer)
+      end
       let!(:artifact) do
         create(:document_artifact, document_capture_session:, image_type: 'front')
       end
@@ -139,7 +142,13 @@ RSpec.describe Idv::Session do
         create(:document_metadata, document_capture_session:)
       end
 
-      before { subject.document_capture_session_uuid = document_capture_session.uuid }
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          document_images_sharing_enabled: true,
+          document_images_sharing_service_providers: [service_provider.issuer],
+        )
+        subject.document_capture_session_uuid = document_capture_session.uuid
+      end
 
       it 'associates the artifacts with the newly created profile' do
         subject.create_profile_from_applicant_with_password(
@@ -163,6 +172,23 @@ RSpec.describe Idv::Session do
         )
 
         expect(document_capture_session.reload.profile_id).to eq(subject.profile.id)
+      end
+
+      context 'when the SP that started the capture session is not allow-listed' do
+        before do
+          allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+            .and_return([])
+        end
+
+        it 'does not stamp or link the capture session' do
+          subject.create_profile_from_applicant_with_password(
+            user.password, is_enhanced_ipp:, proofing_components:
+          )
+
+          expect(artifact.reload.profile_id).to be_nil
+          expect(metadata.reload.profile_id).to be_nil
+          expect(document_capture_session.reload.profile_id).to be_nil
+        end
       end
 
       context 'when the user abandoned remote proofing and is verifying in person instead' do
