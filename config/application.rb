@@ -26,6 +26,7 @@ Bundler.require(*Rails.groups)
 require_relative '../lib/mailer_sensitive_information_checker'
 
 APP_NAME = 'Login.gov'
+AMERICA_GOV_NAME = 'America.gov'
 
 module Identity
   class Application < Rails::Application

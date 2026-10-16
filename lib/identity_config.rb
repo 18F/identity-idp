@@ -573,6 +573,7 @@ module IdentityConfig
     config.add(:sp_registration_funnel_report_configs, type: :json)
     config.add(:sp_cred_metric_report_configs, type: :json)
     config.add(:state_tracking_enabled, type: :boolean)
+    config.add(:sts_consent_expiration_in_days, type: :integer)
     config.add(:team_ada_email, type: :string)
     config.add(:team_daily_fraud_metrics_emails, type: :json)
     config.add(:team_monthly_fraud_metrics_emails, type: :json)
