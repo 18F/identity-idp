@@ -20,13 +20,15 @@ module Users
 
     def index
       two_factor_options_form
+      prompt_passkey_setup = auto_passkey_prompt_eligible?
       analytics.user_registration_2fa_setup_visit(
         enabled_mfa_methods_count:,
         gov_or_mil_email: fed_or_mil_email?,
         in_account_creation_flow: in_account_creation_flow?,
-        auto_passkey_prompted: auto_passkey_prompted?,
+        auto_passkey_prompted: prompt_passkey_setup,
       )
-      if auto_passkey_prompt_eligible?
+
+      if prompt_passkey_setup
         trigger_auto_passkey_setup
       else
         render_index
@@ -93,37 +95,33 @@ module Users
     end
 
     def trigger_auto_passkey_setup
-      auto_bucket = auto_passkey_prompt_bucket == :auto_passkey_prompt
       user_session[:auto_passkey_prompted] = true
-      user_session[:auto_passkey_prompt_pending] = true if auto_bucket
+      user_session[:auto_passkey_prompt_pending] = true
       redirect_to webauthn_setup_url(
         platform: true,
         passkey_upsell: true,
-        auto_trigger: auto_bucket.presence,
+        auto_trigger: true,
       )
     end
 
     def auto_passkey_prompt_eligible?
-      auto_passkey_prompt_available? &&
-        [:auto_passkey_prompt, :passkey_setup_prompt_after_password_creation]
-          .include?(auto_passkey_prompt_bucket)
-    end
-
-    def auto_passkey_prompted?
-      user_session[:auto_passkey_prompted] == true
+      auto_passkey_prompt_available? && in_auto_passkey_prompt_rollout?
     end
 
     def auto_passkey_prompt_available?
       FeatureManagement.account_creation_passkey_auto_prompt_enabled? &&
+        mobile? &&
         in_account_creation_flow? &&
-        user_session[:platform_authenticator_available] == true &&
+        platform_authenticator_available? &&
         !auto_passkey_prompted?
     end
 
-    def auto_passkey_prompt_bucket
-      return unless auto_passkey_prompt_available?
+    def in_auto_passkey_prompt_rollout?
+      ab_test_bucket(:PASSKEY_AUTO_PROMPT) == :auto_passkey_prompt
+    end
 
-      @auto_passkey_prompt_bucket ||= ab_test_bucket(:PASSKEY_UPSELL)
+    def auto_passkey_prompted?
+      user_session[:auto_passkey_prompted] == true
     end
 
     def platform_authenticator_available?

@@ -107,26 +107,17 @@ module AbTests
     user&.uuid
   end.freeze
 
-  PASSKEY_UPSELL = AbTest.new(
-    experiment_name: 'Passkey Upsell',
-    should_log: [
-      'User Registration: 2FA Setup visited',
-      'User Registration: 2FA Setup',
-      'WebAuthn Setup Visited',
-      'Multi-Factor Authentication Setup',
-      'User Registration: User Fully Registered',
-      :webauthn_platform_signup_setup_ab_test_visited,
-      :webauthn_platform_signup_setup_ab_test_submitted,
-    ].to_set,
+  # Percentage rollout controlling which eligible mobile users are automatically prompted to set up
+  # a passkey during account creation. Buckets deterministically
+  # on user UUID, so a given user gets the same answer on every request, and raising the percent
+  # only ever adds users to the rollout.
+  PASSKEY_AUTO_PROMPT = AbTest.new(
+    experiment_name: 'Account Creation Passkey Auto Prompt',
     buckets: {
       auto_passkey_prompt: IdentityConfig.store.account_creation_passkey_auto_prompt_percent,
-      passkey_setup_prompt_after_password_creation: IdentityConfig
-        .store.account_creation_passkey_setup_after_password_percent,
     },
-    default_bucket: :mfa_selection,
-    persist: true,
-  ) do |user:, user_session:, **|
-    user.uuid
+  ) do |user:, **|
+    user&.uuid
   end.freeze
 
   PASSKEY_AUTH = AbTest.new(
