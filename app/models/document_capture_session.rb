@@ -273,11 +273,14 @@ class DocumentCaptureSession < ApplicationRecord
     return unless unlinked_document_artifacts?
 
     self.class.transaction do
-      locked_session = self.class.lock.find_by(id:)
+      locked_session = self.class.preload(:document_artifacts, :document_metadata)
+        .lock.find_by(id:)
       next if locked_session.nil?
 
-      locked_session.document_artifacts.where(profile_id: nil).destroy_all
-      DocumentMetadata.where(document_capture_session_id: id, profile_id: nil).destroy_all
+      locked_session.document_artifacts.select { |artifact| artifact.profile_id.nil? }
+        .each(&:destroy!)
+      metadata = locked_session.document_metadata
+      metadata.destroy! if metadata && metadata.profile_id.nil?
     end
   end
 

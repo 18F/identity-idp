@@ -935,6 +935,13 @@ RSpec.describe DocumentCaptureSession do
   end
 
   describe '#discard_document_artifacts!' do
+    def sql_for(&block)
+      statements = []
+      callback = ->(*, payload) { statements << payload[:sql] }
+      ActiveSupport::Notifications.subscribed(callback, 'sql.active_record', &block)
+      statements
+    end
+
     let(:session) { create(:document_capture_session) }
     let!(:unlinked_artifact) { create(:document_artifact, document_capture_session: session) }
     let!(:metadata) { create(:document_metadata, document_capture_session: session) }
@@ -959,13 +966,40 @@ RSpec.describe DocumentCaptureSession do
       end
     end
 
+    context 'when the metadata is already linked to a profile' do
+      let(:profile) { create(:profile, user: session.user) }
+
+      before { metadata.update!(profile:) }
+
+      it 'keeps the linked metadata' do
+        session.discard_document_artifacts!
+
+        expect(DocumentMetadata.exists?(metadata.id)).to eq(true)
+        expect(DocumentArtifact.exists?(unlinked_artifact.id)).to eq(false)
+      end
+    end
+
+    context 'when the capture session has no metadata' do
+      before { metadata.destroy! }
+
+      it 'destroys the unlinked artifacts' do
+        session.discard_document_artifacts!
+
+        expect(DocumentArtifact.exists?(unlinked_artifact.id)).to eq(false)
+      end
+    end
+
+    it 'locks the capture session row' do
+      expect(sql_for { session.discard_document_artifacts! })
+        .to include(a_string_matching(/FROM "document_capture_sessions".*FOR UPDATE/))
+    end
+
     context 'when there is nothing to discard' do
-      let(:other_session) { create(:document_capture_session) }
+      let!(:other_session) { create(:document_capture_session) }
 
       it 'does not lock the row' do
-        expect(DocumentCaptureSession).not_to receive(:lock)
-
-        other_session.discard_document_artifacts!
+        expect(sql_for { other_session.discard_document_artifacts! })
+          .not_to include(a_string_matching(/FOR UPDATE/))
       end
     end
   end
