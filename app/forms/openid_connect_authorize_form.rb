@@ -361,8 +361,8 @@ class OpenidConnectAuthorizeForm
   end
 
   def token_exchange_scopes
-    IdentityConfig.store.token_exchange_allowed_targets.map do |audience|
-      "#{TokenExchange::Constants::SCOPE_PREFIX}#{audience.fetch(:scope)}"
+    IdentityConfig.store.token_exchange_allowed_targets.map do |target|
+      "#{TokenExchange::Constants::SCOPE_PREFIX}#{target.fetch(:scope)}"
     end
   end
 

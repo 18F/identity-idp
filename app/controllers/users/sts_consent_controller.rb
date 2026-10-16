@@ -35,7 +35,7 @@ module Users
     end
 
     def target_app
-      sp_session[:issuer]
+      sp_session[:sts_target_app]
     end
 
     def permitted_params
@@ -49,7 +49,7 @@ module Users
     end
 
     def ensure_sp_in_session_with_request_url
-      return if sp_session&.dig(:request_url)
+      return if sp_session&.dig(:request_url) && target_app.present?
 
       redirect_to account_url
     end

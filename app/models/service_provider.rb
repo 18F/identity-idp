@@ -99,6 +99,12 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.token_exchange_allowed_broker_issuers.include?(issuer)
   end
 
+  def token_exchange_target?
+    IdentityConfig.store.token_exchange_allowed_targets.any? do |target|
+      target.fetch(:issuer) == issuer
+    end
+  end
+
   def create_prompt_allowed?
     IdentityConfig.store.allowed_create_prompt_providers.include?(issuer)
   end
