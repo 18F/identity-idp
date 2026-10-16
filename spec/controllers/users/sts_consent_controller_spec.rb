@@ -6,7 +6,10 @@ RSpec.describe Users::StsConsentController do
   let(:issuer) { sp.issuer }
   let(:sp_request_url) { 'http://example.com/request/url' }
   let(:sp_request_id) { '123abc' }
-  let(:sp_session) { { issuer: issuer, request_url: sp_request_url, request_id: sp_request_id } }
+  let(:target_app) { 'passport-issuer' }
+  let(:sp_session) do
+    { issuer: issuer, request_url: sp_request_url, request_id: sp_request_id, sts_target_app: target_app }
+  end
   let(:token_exchange_enabled) { true }
 
   before do
@@ -53,7 +56,7 @@ RSpec.describe Users::StsConsentController do
 
         consent = UserConsentSts.last
         expect(consent.user).to eq(user)
-        expect(consent.target_app).to eq(issuer)
+        expect(consent.target_app).to eq(target_app)
 
         expect(response).to redirect_to(sp_request_url)
         expect(@analytics).to have_logged_event(

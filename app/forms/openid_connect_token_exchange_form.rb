@@ -114,18 +114,14 @@ class OpenidConnectTokenExchangeForm
 
   def validate_broker
     return if client_id.blank?
-    return if broker_allowlisted? && broker.present?
+    return if broker&.token_exchange_broker?
 
     errors.add(:client_id, :invalid)
   end
 
-  def broker_allowlisted?
-    IdentityConfig.store.token_exchange_allowed_broker_issuers.include?(client_id)
-  end
-
   def validate_target
     return if audience.blank?
-    return if token_exchange_allowed_targets.include?(audience) && target.present?
+    return if target&.token_exchange_target?
 
     errors.add(:audience, :invalid)
   end
@@ -192,10 +188,6 @@ class OpenidConnectTokenExchangeForm
     return @loaded_subject_token if defined?(@loaded_subject_token)
 
     @loaded_subject_token = TokenExchange::SubjectToken.load(subject_token)
-  end
-
-  def token_exchange_allowed_targets
-    IdentityConfig.store.token_exchange_allowed_targets.map { |target| target.fetch(:issuer) }
   end
 
   def requested_scope
