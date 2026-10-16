@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_24_100500) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_15_190000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -675,6 +675,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_24_100500) do
     t.index ["email_address_id"], name: "index_suspended_emails_on_email_address_id"
   end
 
+  create_table "user_consent_sts", comment: "Records of user consent for STS token exchange flows", force: :cascade do |t|
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.string "target_app", null: false, comment: "Issuer of the broker SP the user consented to sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.bigint "user_id", null: false, comment: "sensitive=false"
+    t.index ["user_id", "target_app"], name: "index_user_consent_sts_on_user_id_and_target_app", unique: true
+    t.index ["user_id"], name: "index_user_consent_sts_on_user_id"
+  end
+
   create_table "user_proofing_events", id: :serial, force: :cascade do |t|
     t.string "cost", comment: "sensitive=true"
     t.datetime "created_at", null: false, comment: "sensitive=false"
@@ -775,4 +784,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_24_100500) do
   add_foreign_key "integrations", "service_providers"
   add_foreign_key "partner_accounts", "agencies"
   add_foreign_key "partner_accounts", "partner_account_statuses"
+  add_foreign_key "user_consent_sts", "users"
 end

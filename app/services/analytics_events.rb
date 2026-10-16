@@ -7547,6 +7547,40 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when a brokered token exchange request (RFC 8693) is made at the token endpoint
+  # @param [Boolean] success Whether the form was submitted successfully.
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [Hash] errors Any additional error information we have
+  # @param [String] client_id Issuer of the broker service provider making the exchange request
+  # @param [String, nil] audience Issuer of the target service provider the token is requested for
+  # @param [String, nil] resource URI the broker intends to use the delegated access token against
+  # @param [Integer, nil] expires_in Time to expiration of the delegated access token
+  # @param [Integer, nil] ial IAL level recorded on the subject token
+  def openid_connect_brokered_exchange_token(
+    client_id:,
+    success:,
+    audience:,
+    resource:,
+    expires_in:,
+    ial:,
+    errors: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :openid_connect_brokered_exchange_token,
+      success:,
+      error_details:,
+      errors:,
+      client_id:,
+      audience:,
+      resource:,
+      expires_in:,
+      ial:,
+      **extra,
+    )
+  end
+
   # Tracks when openid authorization request is made
   # @param [Boolean] success Whether form validations were succcessful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
@@ -8816,6 +8850,23 @@ module AnalyticsEvents
   #   if user is changing email in consent flow
   def sp_select_email_visited(needs_completion_screen_reason: nil, **extra)
     track_event(:sp_select_email_visited, needs_completion_screen_reason:, **extra)
+  end
+
+  # Tracks when the STS (token exchange) consent form is submitted
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  def sts_consent_submitted(success:, error_details: nil, **extra)
+    track_event(
+      :sts_consent_submitted,
+      success:,
+      error_details:,
+      **extra,
+    )
+  end
+
+  # Tracks when the STS (token exchange) consent form is visited
+  def sts_consent_visited
+    track_event(:sts_consent_visited)
   end
 
   # Tracks when user clicks on same tab that user landed on.
