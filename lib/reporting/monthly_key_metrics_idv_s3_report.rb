@@ -78,7 +78,7 @@ module Reporting
 
     # Get the last modified time for a specific file
     # @return [Time] last modified time
-    # @raise [Aws::S3::Errors::NoSuchKey] if the file doesn't exist
+    # @raise [Aws::S3::Errors::NotFound] if the file doesn't exist (head_object)
     def get_file_last_modified(report_name)
       key = "#{s3_path}_#{report_name}.csv"
       resp = s3_helper.s3_client.head_object(bucket: bucket_name, key: key)
