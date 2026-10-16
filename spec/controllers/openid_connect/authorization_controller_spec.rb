@@ -1247,7 +1247,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
       context 'when the user previously consented but the consent has expired' do
         before do
-          consent = UserConsentSts.create!(user: user, target_app: broker_issuer)
+          consent = UserConsentSts.create!(user: user, target_app: 'passport-issuer')
           consent.update!(created_at: 366.days.ago)
         end
 

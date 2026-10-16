@@ -8,7 +8,12 @@ RSpec.describe Users::StsConsentController do
   let(:sp_request_id) { '123abc' }
   let(:target_app) { 'passport-issuer' }
   let(:sp_session) do
-    { issuer: issuer, request_url: sp_request_url, request_id: sp_request_id, sts_target_app: target_app }
+    {
+      issuer: issuer,
+      request_url: sp_request_url,
+      request_id: sp_request_id,
+      sts_target_app: target_app,
+    }
   end
   let(:token_exchange_enabled) { true }
 
