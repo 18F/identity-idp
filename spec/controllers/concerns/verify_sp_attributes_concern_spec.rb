@@ -113,6 +113,66 @@ RSpec.describe VerifySpAttributesConcern do
     end
   end
 
+  describe '#update_verified_attributes' do
+    let(:user) { create(:user) }
+    let(:service_provider) { create(:service_provider) }
+    let(:email_address) { user.email_addresses.take }
+    let(:sp_session) do
+      { issuer: service_provider.issuer, requested_attributes: ['email'] }
+    end
+
+    before do
+      allow(controller).to receive(:current_user).and_return(user)
+      allow(controller).to receive(:current_sp).and_return(service_provider)
+      allow(controller).to receive(:sp_session).and_return(sp_session)
+      allow(controller).to receive(:selected_email_id_for_linked_identity).and_return(nil)
+      allow(controller).to receive(:resolved_authn_context_result)
+        .and_return(double(ialmax?: false, identity_proofing?: false))
+    end
+
+    context 'when the identity already has a selected email and consent has expired' do
+      before do
+        IdentityLinker.new(user, service_provider).link_identity(
+          verified_attributes: %i[email],
+          email_address_id: email_address.id,
+          last_consented_at: 2.years.ago,
+        )
+        allow(controller).to receive(:selected_email_id_for_linked_identity).and_return(nil)
+      end
+
+      it 're-consents without resetting the selected email' do
+        expect do
+          controller.update_verified_attributes
+        end.to_not change { user.reload.last_identity.email_address_id }
+          .from(email_address.id)
+      end
+
+      it 'updates last_consented_at' do
+        freeze_time do
+          controller.update_verified_attributes
+          expect(user.reload.last_identity.last_consented_at)
+            .to be_within(1.second).of(Time.zone.now)
+        end
+      end
+
+      context 'when the user selected a different email during re-consent' do
+        let(:newly_selected_email) { create(:email_address, user: user) }
+
+        before do
+          allow(controller).to receive(:selected_email_id_for_linked_identity)
+            .and_return(newly_selected_email.id)
+        end
+
+        it 'persists the newly selected email over the previously stored one' do
+          expect do
+            controller.update_verified_attributes
+          end.to change { user.reload.last_identity.email_address_id }
+            .from(email_address.id).to(newly_selected_email.id)
+        end
+      end
+    end
+  end
+
   describe '#needs_completion_screen_reason' do
     let(:sp_session_identity) do
       build(

@@ -102,6 +102,52 @@ RSpec.describe IdentityLinker do
       end
     end
 
+    context 'identity.email_address_id' do
+      let(:email_address) { user.email_addresses.take }
+
+      before do
+        IdentityLinker.new(user, service_provider).link_identity(
+          verified_attributes: %i[email],
+          email_address_id: email_address.id,
+        )
+      end
+
+      it 'sets email_address_id when a value is passed' do
+        expect(user.reload.last_identity.email_address_id).to eq(email_address.id)
+      end
+
+      it 'clears the existing email_address_id when the argument is omitted' do
+        expect do
+          IdentityLinker.new(user, service_provider).link_identity(
+            verified_attributes: %i[email],
+          )
+        end.to change { user.reload.last_identity.email_address_id }
+          .from(email_address.id).to(nil)
+      end
+
+      it 'clears the existing email_address_id when explicitly passed nil' do
+        expect do
+          IdentityLinker.new(user, service_provider).link_identity(
+            verified_attributes: %i[email],
+            email_address_id: nil,
+          )
+        end.to change { user.reload.last_identity.email_address_id }
+          .from(email_address.id).to(nil)
+      end
+
+      it 'updates email_address_id to a new value when a different id is passed' do
+        new_email = create(:email_address, user: user)
+
+        expect do
+          IdentityLinker.new(user, service_provider).link_identity(
+            verified_attributes: %i[email],
+            email_address_id: new_email.id,
+          )
+        end.to change { user.reload.last_identity.email_address_id }
+          .from(email_address.id).to(new_email.id)
+      end
+    end
+
     context ':clear_deleted_at' do
       let(:yesterday) { 1.day.ago }
 

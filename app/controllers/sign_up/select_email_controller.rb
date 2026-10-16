@@ -10,7 +10,7 @@ module SignUp
     def show
       @sp_name = current_sp.friendly_name || sp.agency&.name
       @user_emails = user_emails
-      @last_sign_in_email_address = last_email
+      @email_id = default_email_id
       @select_email_form = build_select_email_form
       @can_add_email = EmailPolicy.new(current_user).can_add_email?
       analytics.sp_select_email_visited(needs_completion_screen_reason:)
@@ -46,8 +46,10 @@ module SignUp
       params.fetch(:select_email_form, {}).permit(:selected_email_id)
     end
 
-    def last_email
-      selected_email_for_linked_identity&.email || current_user.last_sign_in_email_address.email
+    def default_email_id
+      selected_email_id_for_linked_identity ||
+        sp_session_identity_email_id ||
+        current_user.last_sign_in_email_address.id
     end
 
     def verify_needs_completions_screen
