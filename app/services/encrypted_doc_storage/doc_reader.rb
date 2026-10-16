@@ -3,7 +3,7 @@
 module EncryptedDocStorage
   class DocReader
     # @param [#read_image] storage backend the object was written to
-    def initialize(storage:)
+    def initialize(storage: RedisStorage.new)
       @storage = storage
     end
 

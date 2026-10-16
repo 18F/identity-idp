@@ -180,6 +180,17 @@ RSpec.describe OpenidConnect::DocumentImagesController do
         end
       end
 
+      context 'when the authorization requested IALMax' do
+        let(:acr_values) { Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF }
+        let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
+        let!(:artifact) { create(:document_artifact, profile:, image_type: 'front') }
+
+        it '403s even though the user has a verified profile and consent' do
+          action
+          expect(response).to be_forbidden
+        end
+      end
+
       context 'when the SP is not allow-listed for sharing' do
         let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
         let!(:artifact) { create(:document_artifact, profile:, image_type: 'front') }
