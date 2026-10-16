@@ -1,8 +1,13 @@
 <% self.title = t('titles.sts_consent', america_gov_name: AMERICA_GOV_NAME) %>
 
-<%= render PageHeadingComponent.new.with_content(
-      t('sts_consent.heading', america_gov_name: AMERICA_GOV_NAME),
-    ) %>
+<div class="text-center">
+  <%= image_tag(asset_url('user-access.svg'), width: '280', height: '91', alt: '', aria: { hidden: true }) %>
+  <h2 class="margin-bottom-4 text-primary text-normal">
+    <strong>
+    <%= t('sts_consent.heading', america_gov_name: AMERICA_GOV_NAME) %>
+    </strong>
+  </h2>
+</div>
 
 <p><%= t('sts_consent.content', america_gov_name: AMERICA_GOV_NAME, app_name: APP_NAME) %></p>
 
