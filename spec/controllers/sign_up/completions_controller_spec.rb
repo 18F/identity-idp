@@ -311,6 +311,14 @@ RSpec.describe SignUp::CompletionsController do
 
             expect(response).to have_http_status(:unprocessable_content)
           end
+
+          it 'also rejects a malformed idv_form param' do
+            expect(@linked_identity).not_to receive(:update!)
+
+            patch :update, params: { idv_form: '1' }
+
+            expect(response).to have_http_status(:unprocessable_content)
+          end
         end
       end
 

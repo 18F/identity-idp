@@ -33,7 +33,7 @@ module VerifySpAttributesConcern
     # only touched for allow-listed SPs, and set-or-cleared so stale consent
     # never carries over to a new proofing session or a dropped scope.
     if current_sp&.document_images_sharing_allowed?
-      identity&.update!(
+      identity.update!(
         biometric_sharing_consent_at: (Time.zone.now if biometric_sharing_consent_granted?),
       )
     end
@@ -51,10 +51,8 @@ module VerifySpAttributesConcern
   end
 
   def biometric_sharing_consent_checked?
-    form_params = params[:idv_form]
-    return false unless form_params.is_a?(ActionController::Parameters)
-
-    ActiveModel::Type::Boolean.new.cast(form_params[:biometric_sharing_consent])
+    params.permit(idv_form: [:biometric_sharing_consent])
+      .dig(:idv_form, :biometric_sharing_consent) == '1'
   end
 
   # Re-prompt the handoff screen whenever an allow-listed SP requests
