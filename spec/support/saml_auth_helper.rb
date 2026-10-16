@@ -309,6 +309,22 @@ module SamlAuthHelper
     )
   end
 
+  def visit_idp_from_oidc_sp_with_loa1
+    state = SecureRandom.hex
+    client_id = OidcAuthHelper::OIDC_IAL1_ISSUER
+    nonce = SecureRandom.hex
+    visit openid_connect_authorize_path(
+      client_id: client_id,
+      response_type: 'code',
+      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid email',
+      redirect_uri: 'http://localhost:7654/auth/result',
+      state: state,
+      prompt: 'select_account',
+      nonce: nonce,
+    )
+  end
+
   def visit_idp_from_oidc_sp_with_loa1_prompt_login
     state = SecureRandom.hex
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
@@ -355,7 +371,7 @@ module SamlAuthHelper
     )
   end
 
-  def visit_idp_from_oidc_sp_with_ialmax
+  def visit_idp_from_oidc_sp_with_ialmax(prompt: 'login')
     state = SecureRandom.hex
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     nonce = SecureRandom.hex
@@ -366,7 +382,7 @@ module SamlAuthHelper
       scope: 'openid email profile:name social_security_number',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,
-      prompt: 'login',
+      prompt: prompt,
       nonce: nonce,
     )
   end
