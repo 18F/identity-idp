@@ -242,9 +242,9 @@ RSpec.describe OpenidConnectIntrospectionForm do
         )
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
           .and_return([
-            { issuer: token_target_issuer, scope: 'passport' },
-            { issuer: target_issuer, scope: 'other' },
-          ])
+                        { issuer: token_target_issuer, scope: 'passport' },
+                        { issuer: target_issuer, scope: 'other' },
+                      ])
       end
 
       it 'returns inactive' do

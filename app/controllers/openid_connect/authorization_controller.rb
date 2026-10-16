@@ -44,6 +44,8 @@ module OpenidConnect
       return redirect_to sign_up_completed_url if needs_completion_screen_reason
       link_identity_to_service_provider
 
+      return redirect_to sts_consent_url if needs_sts_consent?
+
       result = @authorize_form.submit
 
       if auth_count == 1 && first_visit_for_sp?
@@ -98,6 +100,17 @@ module OpenidConnect
         rails_session_id: session.id,
         email_address_id: email_address_id,
       )
+    end
+
+    def needs_sts_consent?
+      return false unless IdentityConfig.store.token_exchange_enabled
+      return false unless token_exchange_scope_requested?
+
+      !UserConsentSts.consent_valid?(user: current_user, target_app: issuer)
+    end
+
+    def token_exchange_scope_requested?
+      @authorize_form.scope.any? { |scope| TokenExchange::Constants.in_scope?(scope) }
     end
 
     def email_address_id

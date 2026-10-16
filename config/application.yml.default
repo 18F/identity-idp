@@ -540,6 +540,7 @@ sp_registration_funnel_report_configs: '[]'
 sp_verification_demographics_report_configs: '[]'
 sp_verification_report_configs: '[]'
 state_tracking_enabled: true
+sts_consent_expiration_in_days: 365
 team_ada_email: ''
 team_daily_fraud_metrics_emails: '[]'
 team_monthly_fraud_metrics_emails: '[]'

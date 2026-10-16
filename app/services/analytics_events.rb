@@ -8790,6 +8790,23 @@ module AnalyticsEvents
     track_event(:sp_select_email_visited, needs_completion_screen_reason:, **extra)
   end
 
+  # Tracks when the STS (token exchange) consent form is submitted
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  def sts_consent_submitted(success:, error_details: nil, **extra)
+    track_event(
+      :sts_consent_submitted,
+      success:,
+      error_details:,
+      **extra,
+    )
+  end
+
+  # Tracks when the STS (token exchange) consent form is visited
+  def sts_consent_visited
+    track_event(:sts_consent_visited)
+  end
+
   # Tracks when user clicks on same tab that user landed on.
   # @param [String, nil] path that user was on when navigation tab was clicked
   def tab_navigation_current_page_clicked(path: nil, **extra)
