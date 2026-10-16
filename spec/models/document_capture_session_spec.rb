@@ -934,6 +934,42 @@ RSpec.describe DocumentCaptureSession do
     end
   end
 
+  describe '#discard_document_artifacts!' do
+    let(:session) { create(:document_capture_session) }
+    let!(:unlinked_artifact) { create(:document_artifact, document_capture_session: session) }
+    let!(:metadata) { create(:document_metadata, document_capture_session: session) }
+
+    it 'destroys artifacts and metadata not yet linked to a profile' do
+      session.discard_document_artifacts!
+
+      expect(DocumentArtifact.exists?(unlinked_artifact.id)).to eq(false)
+      expect(DocumentMetadata.exists?(metadata.id)).to eq(false)
+    end
+
+    context 'when an artifact is already linked to a profile' do
+      let(:profile) { create(:profile, user: session.user) }
+      let!(:linked_artifact) do
+        create(:document_artifact, document_capture_session: session, image_type: 'back', profile:)
+      end
+
+      it 'keeps the linked artifact' do
+        session.discard_document_artifacts!
+
+        expect(DocumentArtifact.exists?(linked_artifact.id)).to eq(true)
+      end
+    end
+
+    context 'when there is nothing to discard' do
+      let(:other_session) { create(:document_capture_session) }
+
+      it 'does not lock the row' do
+        expect(DocumentCaptureSession).not_to receive(:lock)
+
+        other_session.discard_document_artifacts!
+      end
+    end
+  end
+
   describe '#document_images_sharing_allowed?' do
     let(:service_provider) { create(:service_provider) }
     let(:session) { create(:document_capture_session, issuer: service_provider.issuer) }

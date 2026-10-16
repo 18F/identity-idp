@@ -483,6 +483,30 @@ RSpec.describe SocureDocvResultsJob do
           perform
         end
 
+        context 'when an earlier attempt left artifacts on the capture session' do
+          let!(:stale_artifact) { create(:document_artifact, document_capture_session:) }
+          let!(:stale_metadata) { create(:document_metadata, document_capture_session:) }
+
+          before { allow(SocureImageRetrievalJob).to receive(:perform_later) }
+
+          it 'discards them before retrieving the images for this attempt' do
+            perform
+
+            expect(DocumentArtifact.exists?(stale_artifact.id)).to eq(false)
+            expect(DocumentMetadata.exists?(stale_metadata.id)).to eq(false)
+          end
+
+          context 'and this attempt was not successful' do
+            let(:decision_value) { 'reject' }
+
+            it 'keeps them' do
+              perform
+
+              expect(DocumentArtifact.exists?(stale_artifact.id)).to eq(true)
+            end
+          end
+        end
+
         context 'when the verification was not successful' do
           let(:decision_value) { 'reject' }
 

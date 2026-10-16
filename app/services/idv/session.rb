@@ -62,6 +62,11 @@ module Idv
   # @attr_reader gpo_otp [String, nil]
   # @attr_reader service_provider [ServiceProvider]
   class Session
+    DOCUMENT_ARTIFACT_VENDORS = [
+      Idp::Constants::Vendors::SOCURE,
+      Idp::Constants::Vendors::SOCURE_MOCK,
+    ].freeze
+
     VALID_SESSION_ATTRIBUTES = %i[
       aamva_verified_attributes
       address_edited
@@ -492,9 +497,10 @@ module Idv
 
     attr_reader :user_session
 
-    # Skipped for in-person profiles: the USPS visit establishes the identity, and
-    # the capture session may hold artifacts from an abandoned remote attempt.
+    # Only link when the result this profile was built from came from the proofer
+    # that produced the artifacts, never from a redo through another proofer or IPP.
     def associate_document_artifacts_with_profile(profile)
+      return unless DOCUMENT_ARTIFACT_VENDORS.include?(doc_auth_vendor)
       return if document_capture_session_uuid.blank?
       return if profile.in_person_verification_pending?
 

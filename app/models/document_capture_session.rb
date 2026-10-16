@@ -269,11 +269,28 @@ class DocumentCaptureSession < ApplicationRecord
     end
   end
 
+  def discard_document_artifacts!
+    return unless unlinked_document_artifacts?
+
+    self.class.transaction do
+      locked_session = self.class.lock.find_by(id:)
+      next if locked_session.nil?
+
+      locked_session.document_artifacts.where(profile_id: nil).destroy_all
+      DocumentMetadata.where(document_capture_session_id: id, profile_id: nil).destroy_all
+    end
+  end
+
   def document_images_sharing_allowed?
     !!ServiceProvider.find_by(issuer:)&.document_images_sharing_allowed?
   end
 
   private
+
+  def unlinked_document_artifacts?
+    DocumentArtifact.exists?(document_capture_session_id: id, profile_id: nil) ||
+      DocumentMetadata.exists?(document_capture_session_id: id, profile_id: nil)
+  end
 
   def generate_result_id
     self.result_id = SecureRandom.uuid

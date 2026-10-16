@@ -132,7 +132,10 @@ class SocureDocvResultsJob < ApplicationJob
        docv_result_response.instance_of?(DocAuth::Socure::Responses::DocvResultResponse) &&
        !docv_result_response.document_type_mdl?
 
-      encrypted_document_metadata = encrypt_document_metadata(pii_from_doc) if persist_artifacts
+      if persist_artifacts
+        document_capture_session.discard_document_artifacts!
+        encrypted_document_metadata = encrypt_document_metadata(pii_from_doc)
+      end
       job_data = {
         document_capture_session_uuid:,
         reference_id: docv_result_response.to_h[:reference_id],

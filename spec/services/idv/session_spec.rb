@@ -148,6 +148,7 @@ RSpec.describe Idv::Session do
           document_images_sharing_service_providers: [service_provider.issuer],
         )
         subject.document_capture_session_uuid = document_capture_session.uuid
+        subject.doc_auth_vendor = Idp::Constants::Vendors::SOCURE
       end
 
       it 'associates the artifacts with the newly created profile' do
@@ -172,6 +173,20 @@ RSpec.describe Idv::Session do
         )
 
         expect(document_capture_session.reload.profile_id).to eq(subject.profile.id)
+      end
+
+      context 'when the profile was built from another proofer after a Socure attempt' do
+        before { subject.doc_auth_vendor = Idp::Constants::Vendors::LEXIS_NEXIS }
+
+        it 'does not stamp or link the Socure artifacts to the profile' do
+          subject.create_profile_from_applicant_with_password(
+            user.password, is_enhanced_ipp:, proofing_components:
+          )
+
+          expect(artifact.reload.profile_id).to be_nil
+          expect(metadata.reload.profile_id).to be_nil
+          expect(document_capture_session.reload.profile_id).to be_nil
+        end
       end
 
       context 'when the SP that started the capture session is not allow-listed' do
