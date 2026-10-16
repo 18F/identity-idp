@@ -17,8 +17,6 @@ module Rack
       paths << "/#{locale}"
     end.freeze
 
-    INTROSPECTION_PATH = '/api/openid_connect/introspect'
-
     # If the app is behind a load balancer, `ip` will return the IP of the
     # load balancer instead of the actual IP the request came from, and since
     # all requests will seem to come from the same IP, throttling will be
@@ -211,24 +209,6 @@ module Rack
       ) do |req|
         req.remote_ip if req.path.match?(%r{/add/phone|/phone_setup}) && !req.get?
       end
-    end
-
-    ### Prevent delegated access token fishing ###
-
-    # Target applications call the introspection endpoint to validate delegated
-    # access tokens issued by the token exchange endpoint. Because the endpoint
-    # reports whether an opaque token is active, rate limit it so it cannot be
-    # used to probe for valid tokens.
-
-    # Throttle token introspection requests by IP address
-    #
-    # Key: "rack::attack:#{Time.now.to_i/:period}:token_exchange_introspections/ip:#{req.remote_ip}"
-    throttle(
-      'token_exchange_introspections/ip',
-      limit: IdentityConfig.store.token_exchange_introspections_per_ip_limit,
-      period: IdentityConfig.store.token_exchange_introspections_per_ip_period,
-    ) do |req|
-      req.remote_ip if req.path == INTROSPECTION_PATH && req.post?
     end
 
     # Lockout IP addresses that are attempting to sign in with the same username
