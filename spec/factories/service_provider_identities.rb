@@ -13,10 +13,6 @@ FactoryBot.define do
     last_consented_at { Time.zone.now - 5.minutes }
   end
 
-  trait :token_exchange_consented do
-    token_exchange_consent_at { Time.zone.now - 5.minutes }
-  end
-
   trait :soft_deleted_5m_ago do
     deleted_at { Time.zone.now - 5.minutes }
   end

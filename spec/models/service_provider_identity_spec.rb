@@ -25,19 +25,6 @@ RSpec.describe ServiceProviderIdentity do
     end
   end
 
-  describe '#token_exchange_consent_at' do
-    it 'can store when token exchange consent was granted' do
-      consent_at = Time.zone.parse('2026-10-13 12:00:00 UTC')
-      identity.token_exchange_consent_at = consent_at
-
-      expect(identity.token_exchange_consent_at).to eq(consent_at)
-    end
-
-    it 'can be unset when token exchange consent has not been granted' do
-      expect(identity.token_exchange_consent_at).to be_nil
-    end
-  end
-
   describe '#happened_at' do
     context 'when last_authenticated_at is present' do
       it 'returns last_authenticated_at in UTC' do
