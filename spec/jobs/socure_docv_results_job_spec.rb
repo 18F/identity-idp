@@ -453,6 +453,26 @@ RSpec.describe SocureDocvResultsJob do
           perform
         end
 
+        it 'encrypts the document metadata before enqueueing it' do
+          job_args = nil
+          allow(SocureImageRetrievalJob).to receive(:perform_later) { |**args| job_args = args }
+
+          perform
+
+          expect(job_args).not_to have_key(:document_metadata)
+          encrypted = job_args[:encrypted_document_metadata]
+          expect(encrypted).to be_present
+          expect(encrypted).not_to include(pii_from_doc[:documentNumber])
+          decrypted = JSON.parse(
+            Encryption::Encryptors::BackgroundProofingArgEncryptor.new.decrypt(encrypted),
+            symbolize_names: true,
+          )
+          expect(decrypted.keys).to contain_exactly(
+            :document_number, :document_issued, :document_expiration
+          )
+          expect(decrypted[:document_number]).to eq(pii_from_doc[:documentNumber])
+        end
+
         it 'does not report escrow file ids to the attempts API' do
           allow(SocureImageRetrievalJob).to receive(:perform_later)
 
@@ -488,6 +508,19 @@ RSpec.describe SocureDocvResultsJob do
 
             perform
           end
+        end
+      end
+
+      context 'when only document escrow applies to the SP' do
+        let(:doc_escrow_enabled) { true }
+        let(:historical_attempts_api_enabled) { true }
+
+        it 'does not pass document metadata to SocureImageRetrievalJob' do
+          expect(SocureImageRetrievalJob).to receive(:perform_later).with(
+            hash_including(persist_artifacts: false, encrypted_document_metadata: nil),
+          )
+
+          perform
         end
       end
 

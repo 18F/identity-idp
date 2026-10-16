@@ -12,11 +12,11 @@ class SocureImageRetrievalJob < ApplicationJob
     passport_book:,
     persist_artifacts: false,
     docv_transaction_token: nil,
-    document_metadata: nil
+    encrypted_document_metadata: nil
   )
     @document_capture_session_uuid = document_capture_session_uuid
     @docv_transaction_token = docv_transaction_token
-    @document_metadata = document_metadata
+    @encrypted_document_metadata = encrypted_document_metadata
 
     return if document_capture_session&.mdl_requested?
 
@@ -84,8 +84,19 @@ class SocureImageRetrievalJob < ApplicationJob
     Idv::DocumentArtifactsPersister.new(
       document_capture_session:,
       docv_transaction_token: @docv_transaction_token,
-      document_metadata: @document_metadata,
+      document_metadata:,
     ).call(images: result.images)
+  end
+
+  def document_metadata
+    return if @encrypted_document_metadata.blank?
+
+    JSON.parse(
+      Encryption::Encryptors::BackgroundProofingArgEncryptor.new.decrypt(
+        @encrypted_document_metadata,
+      ),
+      symbolize_names: true,
+    )
   end
 
   def fetch_images(reference_id, passport_book:)

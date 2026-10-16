@@ -81,6 +81,9 @@ RSpec.describe SocureImageRetrievalJob do
         document_expiration: '2032-02-02',
       }
     end
+    let(:encrypted_document_metadata) do
+      Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(document_metadata.to_json)
+    end
 
     subject(:perform) do
       job.perform(
@@ -90,7 +93,7 @@ RSpec.describe SocureImageRetrievalJob do
         passport_book:,
         persist_artifacts:,
         docv_transaction_token:,
-        document_metadata:,
+        encrypted_document_metadata:,
       )
     end
 
@@ -161,7 +164,7 @@ RSpec.describe SocureImageRetrievalJob do
         end
       end
 
-      it 'delegates to Idv::DocumentArtifactsPersister with the retrieved images' do
+      it 'decrypts the document metadata and delegates to Idv::DocumentArtifactsPersister' do
         persister = instance_double(Idv::DocumentArtifactsPersister)
         expect(Idv::DocumentArtifactsPersister).to receive(:new).with(
           document_capture_session:,
@@ -193,7 +196,7 @@ RSpec.describe SocureImageRetrievalJob do
             passport_book:,
             persist_artifacts:,
             docv_transaction_token:,
-            document_metadata:,
+            encrypted_document_metadata:,
           )
         end.to change { document_capture_session.document_artifacts.count }.from(0).to(2)
       end

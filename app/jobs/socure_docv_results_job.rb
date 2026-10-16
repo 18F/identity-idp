@@ -125,13 +125,14 @@ class SocureDocvResultsJob < ApplicationJob
     success: false
   )
     image_data = {}
-    persist_artifacts = success && sp&.document_images_sharing_allowed?
+    persist_artifacts = success && !!sp&.document_images_sharing_allowed?
+    pii_from_doc = docv_result_response.pii_from_doc.to_h || {}
 
     if (doc_escrow_enabled? || persist_artifacts) &&
        docv_result_response.instance_of?(DocAuth::Socure::Responses::DocvResultResponse) &&
        !docv_result_response.document_type_mdl?
 
-      pii = docv_result_response.pii_from_doc.to_h || {}
+      encrypted_document_metadata = encrypt_document_metadata(pii_from_doc) if persist_artifacts
       job_data = {
         document_capture_session_uuid:,
         reference_id: docv_result_response.to_h[:reference_id],
@@ -142,11 +143,7 @@ class SocureDocvResultsJob < ApplicationJob
         passport_book:,
         persist_artifacts:,
         docv_transaction_token: document_capture_session.socure_docv_transaction_token,
-        document_metadata: {
-          document_number: pii[:state_id_number] || pii[:document_number],
-          document_issued: pii[:state_id_issued] || pii[:passport_issued],
-          document_expiration: pii[:state_id_expiration] || pii[:passport_expiration],
-        },
+        encrypted_document_metadata:,
       }
 
       image_data = job_data[:image_storage_data].values.reduce({}, :merge)
@@ -156,8 +153,6 @@ class SocureDocvResultsJob < ApplicationJob
         SocureImageRetrievalJob.perform_now(**job_data)
       end
     end
-
-    pii_from_doc = docv_result_response.pii_from_doc.to_h || {}
 
     attempts_api_tracker.idv_document_upload_submitted(
       **image_data,
@@ -197,6 +192,17 @@ class SocureDocvResultsJob < ApplicationJob
       conversation_id: docv_result_response.extra[:conversation_id],
       reference_id: docv_result_response.extra[:reference_id],
     )
+  end
+
+  def encrypt_document_metadata(pii)
+    document_metadata = {
+      document_number: pii[:state_id_number] || pii[:document_number],
+      document_issued: pii[:state_id_issued] || pii[:passport_issued],
+      document_expiration: pii[:state_id_expiration] || pii[:passport_expiration],
+    }
+    return if document_metadata.values.all?(&:blank?)
+
+    Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(document_metadata.to_json)
   end
 
   def escrow_image_storage_data(ial2:, passport_book:)
