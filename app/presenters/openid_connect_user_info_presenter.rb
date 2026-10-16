@@ -113,8 +113,8 @@ class OpenidConnectUserInfoPresenter
   end
 
   def document_images_shareable?
-    identity_proofing_requested_for_verified_user? &&
-      active_profile.present? &&
+    active_profile.present? &&
+      resolved_authn_context_result.identity_proofing? &&
       identity.service_provider_record&.document_images_sharing_allowed? &&
       identity.biometric_sharing_consented?(active_profile)
   end

@@ -63,12 +63,11 @@ module OpenidConnect
     # Mirrors the presenter's gate so the proxy never releases under an
     # authorization that did not actually request identity proofing.
     def identity_proofing_requested?
-      result = AuthnContextResolver.new(
+      AuthnContextResolver.new(
         user: current_identity.user,
         service_provider: current_identity.service_provider_record,
         acr_values: current_identity.acr_values,
-      ).result
-      result.identity_proofing? || result.ialmax?
+      ).result.identity_proofing?
     end
 
     def scoper
@@ -80,7 +79,7 @@ module OpenidConnect
     end
 
     def doc_reader
-      EncryptedDocStorage::DocReader.new(storage: EncryptedDocStorage::RedisStorage.new)
+      EncryptedDocStorage::DocReader.new
     end
 
     def authenticate_identity_via_bearer_token

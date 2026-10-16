@@ -494,6 +494,32 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         end
       end
 
+      context 'when the authorization requested IALMax' do
+        let(:acr_values) do
+          [
+            Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+          ].join(' ')
+        end
+
+        before do
+          create(
+            :document_artifact,
+            profile:,
+            image_type: 'front',
+            document_capture_session: create(:document_capture_session, user: identity.user),
+          )
+        end
+
+        it 'omits the document_images claim' do
+          expect(user_info).not_to have_key(:document_images)
+        end
+
+        it 'omits the document_metadata claim' do
+          expect(user_info).not_to have_key(:document_metadata)
+        end
+      end
+
       context 'when the SP is not allow-listed for sharing' do
         before do
           allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
