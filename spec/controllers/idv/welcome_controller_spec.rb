@@ -338,7 +338,7 @@ RSpec.describe Idv::WelcomeController do
         before do
           reload_ab_tests
         end
-        it 'passes passport_cards_supported as false to the presenter' do
+        it 'does not allow clear1 proofing' do
           put :update
 
           expect(subject.idv_session.clear1_allowed).to eq(false)
