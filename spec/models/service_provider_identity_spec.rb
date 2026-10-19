@@ -333,4 +333,66 @@ RSpec.describe ServiceProviderIdentity do
       end
     end
   end
+
+  describe '#biometric_sharing_consented?' do
+    let(:identity) { build(:service_provider_identity, biometric_sharing_consent_at: consent_at) }
+    let(:consent_at) { 1.hour.ago }
+
+    context 'when consent is absent' do
+      let(:consent_at) { nil }
+
+      it { expect(identity.biometric_sharing_consented?).to eq(false) }
+    end
+
+    context 'when consent is present and recent but no profile is supplied' do
+      it 'fails closed (cannot verify consent post-dates proofing)' do
+        expect(identity.biometric_sharing_consented?).to eq(false)
+      end
+    end
+
+    context 'when the identity has been revoked (soft-deleted)' do
+      let(:identity) do
+        build(
+          :service_provider_identity,
+          biometric_sharing_consent_at: 1.hour.ago,
+          deleted_at: 1.minute.ago,
+        )
+      end
+
+      it { expect(identity.biometric_sharing_consented?).to eq(false) }
+    end
+
+    context 'when consent is older than the consent expiration window' do
+      let(:consent_at) { (ServiceProviderIdentity::CONSENT_EXPIRATION + 1.day).ago }
+
+      it { expect(identity.biometric_sharing_consented?).to eq(false) }
+    end
+
+    context 'when an active profile is provided' do
+      let(:profile) { build(:profile, verified_at: verified_at) }
+
+      context 'and consent post-dates the most recent proofing' do
+        let(:consent_at) { 1.hour.ago }
+        let(:verified_at) { 2.hours.ago }
+
+        it { expect(identity.biometric_sharing_consented?(profile)).to eq(true) }
+      end
+
+      context 'and the user re-proofed after consenting' do
+        let(:consent_at) { 2.hours.ago }
+        let(:verified_at) { 1.hour.ago }
+
+        it { expect(identity.biometric_sharing_consented?(profile)).to eq(false) }
+      end
+
+      context 'and the profile has no verified_at' do
+        let(:consent_at) { 1.hour.ago }
+        let(:verified_at) { nil }
+
+        it 'fails closed' do
+          expect(identity.biometric_sharing_consented?(profile)).to eq(false)
+        end
+      end
+    end
+  end
 end

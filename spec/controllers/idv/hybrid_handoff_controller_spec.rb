@@ -474,11 +474,12 @@ RSpec.describe Idv::HybridHandoffController do
 
       let(:params) do
         {
-          type: 'clear1',
+          idv_how_to_verify_form: { selection: Idv::HowToVerifyForm::CLEAR1 },
         }
       end
 
       before do
+        allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(true)
         subject.idv_session.clear1_allowed = true
       end
 
@@ -492,6 +493,18 @@ RSpec.describe Idv::HybridHandoffController do
         put :update, params: params
 
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      end
+
+      context 'when clear1 is not enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(false)
+        end
+
+        it 'renders not found' do
+          put :update, params: params
+
+          expect(response).to be_not_found
+        end
       end
     end
   end

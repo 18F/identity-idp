@@ -14,6 +14,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
     allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
     allow(view).to receive(:user_signing_up?).and_return(false)
     assign(:presenter, presenter)
+    assign(:post_office_enabled, true)
     assign :idv_how_to_verify_form, idv_how_to_verify_form
   end
   context 'when selfie is not required' do

@@ -127,7 +127,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       user = nil
 
       perform_in_browser(:desktop) do
-        visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+        visit_idp_from_oidc_sp_with_enhanced
 
         user = sign_up_and_2fa_ial1_user
 
@@ -313,7 +313,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
           user = nil
 
           perform_in_browser(:desktop) do
-            visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+            visit_idp_from_oidc_sp_with_enhanced
 
             user = sign_up_and_2fa_ial1_user
 

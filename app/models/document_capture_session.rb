@@ -4,7 +4,14 @@ class DocumentCaptureSession < ApplicationRecord
   include NonNullUuid
   include ApplicationHelper
 
+  # Ignored ahead of dropping the column so running app servers stop selecting it
+  # before the remove_column migration deploys. Remove once the column is gone.
+  self.ignored_columns += ['passport_cards_supported']
+
   belongs_to :user
+  belongs_to :profile, optional: true
+  has_many :document_artifacts, dependent: :destroy
+  has_one :document_metadata, dependent: :destroy
 
   PASSPORT_STATUSES = [
     'not_requested',
@@ -250,7 +257,47 @@ class DocumentCaptureSession < ApplicationRecord
     document_type_requested == Idp::Constants::DocumentTypes::MDL
   end
 
+  # Takes the row lock so this serializes with Idv::DocumentArtifactsPersister:
+  # a job still in flight sees the profile stamp and links its own rows.
+  # @param [Profile] profile
+  def associate_document_artifacts_with_profile!(profile)
+    with_lock do
+      next if mdl_requested?
+
+      # rubocop:disable Rails/SkipsModelValidations
+      update_column(:profile_id, profile.id)
+      document_artifacts.where(profile_id: nil).update_all(profile_id: profile.id)
+      DocumentMetadata.where(document_capture_session_id: id, profile_id: nil)
+        .update_all(profile_id: profile.id)
+      # rubocop:enable Rails/SkipsModelValidations
+    end
+  end
+
+  def discard_document_artifacts!
+    return unless unlinked_document_artifacts?
+
+    self.class.transaction do
+      locked_session = self.class.preload(:document_artifacts, :document_metadata)
+        .lock.find_by(id:)
+      next if locked_session.nil?
+
+      locked_session.document_artifacts.select { |artifact| artifact.profile_id.nil? }
+        .each(&:destroy!)
+      metadata = locked_session.document_metadata
+      metadata.destroy! if metadata && metadata.profile_id.nil?
+    end
+  end
+
+  def document_images_sharing_allowed?
+    !!ServiceProvider.find_by(issuer:)&.document_images_sharing_allowed?
+  end
+
   private
+
+  def unlinked_document_artifacts?
+    DocumentArtifact.exists?(document_capture_session_id: id, profile_id: nil) ||
+      DocumentMetadata.exists?(document_capture_session_id: id, profile_id: nil)
+  end
 
   def generate_result_id
     self.result_id = SecureRandom.uuid

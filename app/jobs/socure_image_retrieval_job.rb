@@ -9,16 +9,22 @@ class SocureImageRetrievalJob < ApplicationJob
     document_capture_session_uuid:,
     reference_id:,
     image_storage_data:,
-    passport_book:
+    passport_book:,
+    persist_artifacts: false,
+    docv_transaction_token: nil,
+    encrypted_document_metadata: nil
   )
     @document_capture_session_uuid = document_capture_session_uuid
+    @docv_transaction_token = docv_transaction_token
+    @encrypted_document_metadata = encrypted_document_metadata
 
     return if document_capture_session&.mdl_requested?
 
     result = fetch_images(reference_id, passport_book:)
     if result.is_a?(Idv::IdvImages)
-      result.write_with_data(image_storage_data:)
-    else
+      result.write_with_data(image_storage_data:) if image_storage_data.present?
+      persist_document_artifacts(result:) if persist_artifacts
+    elsif image_storage_data.present?
       failure_msg = result.dig(:extra, :vendor_status_message, 'msg') || 'Unknown network error'
       attempts_api_tracker.idv_image_retrieval_failed(
         document_back_image_file_id: image_storage_data.dig(:back, :document_back_image_file_id),
@@ -72,6 +78,25 @@ class SocureImageRetrievalJob < ApplicationJob
   def document_capture_session
     @document_capture_session ||=
       DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+  end
+
+  def persist_document_artifacts(result:)
+    Idv::DocumentArtifactsPersister.new(
+      document_capture_session:,
+      docv_transaction_token: @docv_transaction_token,
+      document_metadata:,
+    ).call(images: result.images)
+  end
+
+  def document_metadata
+    return if @encrypted_document_metadata.blank?
+
+    JSON.parse(
+      Encryption::Encryptors::BackgroundProofingArgEncryptor.new.decrypt(
+        @encrypted_document_metadata,
+      ),
+      symbolize_names: true,
+    )
   end
 
   def fetch_images(reference_id, passport_book:)

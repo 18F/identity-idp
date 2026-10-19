@@ -696,6 +696,7 @@ doc_auth.headings.upload_from_phone: Utilisez votre téléphone
 doc_auth.headings.verify_at_post_office: Vous rendre à un bureau de poste participant
 doc_auth.headings.verify_identity: Confirmer votre identité
 doc_auth.headings.verify_online: Confirmer votre identité en ligne
+doc_auth.headings.verify_with_existing_account: Vérifiez avec votre compte existant
 doc_auth.headings.welcome: Vérifions votre identité auprès de %{sp_name}
 doc_auth.headings.welcome_sp_reproof: Vérifiez à nouveau votre identité pour %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Vous utilisez <strong>%{app_name}</strong> pour accéder à <strong>%{service_provider_name}</strong>. Ajoutez uniquement votre pièce d’identité si vous avez demandé à %{app_name} de vérifier votre identité à l’aide de votre téléphone.
@@ -767,6 +768,8 @@ doc_auth.info.verify_online_description_mdl_and_passport_card: Vous pouvez utili
 doc_auth.info.verify_online_instruction: Vous devrez photographier votre pièce d’identité pour vérifier votre identité en ligne.
 doc_auth.info.verify_online_instruction_selfie: Prenez un selfie et des photos de votre pièce d’identité.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
+doc_auth.info.verify_with_clear1: 'Vous avez déjà utilisé CLEAR® ? Vérifiez en quelques secondes en prenant un selfie.'
+doc_auth.info.verify_with_clear1_link_text: En savoir plus sur la liaison des comptes
 doc_auth.info.welcome_sp_reproof_alert: Pour votre sécurité, %{sp_name} exige que vous vérifiiez à nouveau votre identité.
 doc_auth.info.you_entered: 'Vous avez saisi :'
 doc_auth.instructions.bullet1: Posséder un passeport américain (livret ou carte), un permis de conduire américain ou une carte d’identité délivrée par un État.
@@ -993,6 +996,8 @@ forms.buttons.submit.confirm_change: Confirmer le changement
 forms.buttons.submit.default: Valider
 forms.buttons.submit.update: Mettre à jour
 forms.buttons.upload_photos: Télécharger des photos
+forms.buttons.verify_with: Verify with
+forms.buttons.verify_with_clear1: Verify with CLEAR
 forms.confirmation.show_hdr: Créer un mot de passe fort
 forms.email.buttons.delete: Supprimer l’adresse e-mail
 forms.example: 'Exemple :'
@@ -1112,6 +1117,7 @@ help_text.requested_attributes.all_emails: Adresses e-mail sur votre compte
 help_text.requested_attributes.birthdate: Date de naissance
 help_text.requested_attributes.change_email_link: Modifier
 help_text.requested_attributes.consent_reminder_html: Vous devez consentir chaque année au partage de vos informations avec %{sp_html}.
+help_text.requested_attributes.document_images_html: 'Pour appuyer votre demande, %{sp_html} recevra également les photos de vos pièces d’identité et le selfie que vous avez pris lors de la vérification de votre identité. Ces images ne sont partagées qu’à des fins de décision d’identité.'
 help_text.requested_attributes.email: Adresse e-mail
 help_text.requested_attributes.full_name: Nom complet
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Étant donné que vous avez revérifié votre identité, nous avons besoin de votre autorisation pour partager ces informations avec %{sp_html} :'
@@ -1591,7 +1597,7 @@ instructions.password.strength.strong: Forte
 instructions.password.strength.too_common: Trop courant
 instructions.sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à %{app_name}. Veuillez contacter %{sp_link} pour obtenir de l’aide.
 instructions.sp_handoff_bounced_with_no_sp: votre fournisseur de service
-links.accessibility_statement: Déclaration sur l’accessibilité
+links.accessibility_and_languages: Accessibilité et langues
 links.account.reactivate.with_key: J’ai ma clé
 links.account.reactivate.without_key: Je n’ai pas ma clé
 links.back_to_sp: Retour à %{sp}
@@ -1881,6 +1887,8 @@ sign_up.agree_and_continue: Accepter et continuer
 sign_up.cancel.success: Votre compte a été supprimé. Nous n’avons pas sauvegardé vos informations.
 sign_up.cancel.warning_header: 'Si vous annulez maintenant :'
 sign_up.completed.smiling_image_alt: Une personne souriante avec une coche verte indiquant la réussite de la procédure
+sign_up.document_images_sharing_consent_label: Je consens à partager les photos de mes pièces d’identité et mon selfie de vérification d’identité avec %{sp} à des fins de décision d’identité.
+sign_up.document_images_sharing_consent_required: Vous devez consentir au partage des photos de vos pièces d’identité et de votre selfie pour continuer, ou annuler.
 sign_up.information_sharing_html: Pour savoir comment %{app_name} partage vos informations, consultez notre déclaration relative à la %{link_html}.
 sign_up.nds_terms_intro: En continuant, vous acceptez les
 sign_up.terms: J’ai lu et j’accepte les %{app_name}
@@ -1908,6 +1916,9 @@ step_indicator.status.complete: Étape effectuée
 step_indicator.status.current: Étape en cours
 step_indicator.status.not_complete: Étape non effectuée
 step_indicator.substep: Sous-étape %{current} sur %{total}
+sts_consent.check_box_to_consent: I consent to allow %{america_gov_name} to access, share my information, and take actions on my behalf with MyTravelGov.
+sts_consent.content: '%{america_gov_name} uses AI to connect to your %{app_name} account, automatically signing you in and pre-filling government forms.'
+sts_consent.heading: Let %{america_gov_name} work with agencies on your behalf
 time.am: A.M.
 time.formats.event_date: '%-d %B %Y'
 time.formats.event_time: '%-l h %M %p'
@@ -1980,6 +1991,7 @@ titles.sign_up.completion_new_attributes: '%{sp} demande de nouvelles informatio
 titles.sign_up.completion_new_sp: Vous vous connectez pour la première fois
 titles.sign_up.completion_reverified_consent: Partager vos informations mises à jour avec %{sp}
 titles.sign_up.confirmation: Continuer à vous connecter
+titles.sts_consent: Let %{america_gov_name} work with agencies on your behalf
 titles.totp_setup.new: Ajouter une appli d’authentification
 titles.two_factor_setup: Configuration de l’authentification à deux facteurs
 titles.verify_email: Consulter vos e-mails
