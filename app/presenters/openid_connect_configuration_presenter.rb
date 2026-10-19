@@ -32,11 +32,17 @@ class OpenidConnectConfigurationPresenter
     }
   end
 
+  # The userinfo encryption members (OpenID Connect Discovery 1.0 §3) name the one JWE algorithm
+  # pair Login.gov encrypts user-information responses with. They are advertised unconditionally:
+  # they state what an encrypted response looks like, not whether any service provider receives
+  # one.
   def crypto_configuration
     {
       id_token_signing_alg_values_supported: %w[RS256],
       token_endpoint_auth_methods_supported: %w[private_key_jwt],
       token_endpoint_auth_signing_alg_values_supported: %w[RS256],
+      userinfo_encryption_alg_values_supported: [OpenidConnect::JweEncryptor::ALG],
+      userinfo_encryption_enc_values_supported: [OpenidConnect::JweEncryptor::ENC],
     }
   end
 

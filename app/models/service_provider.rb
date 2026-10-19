@@ -105,6 +105,13 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
+  # Whether this service provider receives its user-information response as an encrypted JWT
+  # (OpenID Connect Core 1.0 §5.3.2) instead of plain JSON. Login.gov keeps the list of such
+  # service providers in configuration; a partner cannot ask for it in a request.
+  def userinfo_encrypted_response?
+    IdentityConfig.store.userinfo_encryption_allowed_issuers.include?(issuer)
+  end
+
   def create_prompt_allowed?
     IdentityConfig.store.allowed_create_prompt_providers.include?(issuer)
   end
