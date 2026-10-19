@@ -253,6 +253,45 @@ module TwoFactorAuthenticatableMethods
   def mark_user_session_authenticated(auth_method:, authentication_type:)
     auth_methods_session.authenticate!(auth_method)
     mark_user_session_authenticated_analytics(authentication_type)
+    cancel_account_recovery_request_for_mfa_use
+  end
+
+  # A user who successfully authenticates with an existing method has regained
+  # access, so a recovery request that has not yet been redeemed is cancelled.
+  #
+  # Once the recovery link has been verified, normal authentication must not
+  # cancel it, even if password verification has not been completed yet.
+  #
+  # Deliberately not gated on the recovery feature flag: turning the flag off
+  # must not strand an in-flight request that this would otherwise cancel.
+  def cancel_account_recovery_request_for_mfa_use
+    return if current_user.blank? || current_user.is_a?(AnonymousUser)
+
+    recovery_request = AccountRecoveryRequest.active_for_user(current_user)
+    return if recovery_request.blank?
+
+    state_before_cancel = nil
+    recovery_request.with_lock do
+      return unless recovery_request.awaiting_link_redemption?
+
+      state_before_cancel = recovery_request.state
+      return if !recovery_request.cancel!(reason: AccountRecoveryRequest::CANCEL_REASON_MFA_USED)
+    end
+
+    analytics.account_recovery_cancelled(
+      reason: AccountRecoveryRequest::CANCEL_REASON_MFA_USED,
+      recovery_state: state_before_cancel,
+    )
+
+    notify_user_of_account_recovery_cancellation
+  end
+
+  def notify_user_of_account_recovery_cancellation
+    email_address = current_user.last_sign_in_email_address
+    return if email_address.blank?
+
+    UserMailer.with(user: current_user, email_address: email_address)
+      .account_recovery_cancelled.deliver_now_or_later
   end
 
   def mark_user_session_authenticated_analytics(authentication_type)

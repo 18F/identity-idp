@@ -219,6 +219,16 @@ class RateLimiter
         max_attempts: IdentityConfig.store.account_recovery_request_max_attempts,
         attempt_window: IdentityConfig.store.account_recovery_request_attempt_window_in_minutes,
       },
+      account_recovery_verify_password: {
+        max_attempts: IdentityConfig.store.account_recovery_verify_password_max_attempts,
+        attempt_window:
+          IdentityConfig.store.account_recovery_verify_password_attempt_window_in_minutes,
+      },
+      account_recovery_verify_token: {
+        max_attempts: IdentityConfig.store.account_recovery_verify_token_max_attempts,
+        attempt_window:
+          IdentityConfig.store.account_recovery_verify_token_attempt_window_in_minutes,
+      },
       account_reset_request: {
         max_attempts: IdentityConfig.store.account_reset_request_max_attempts,
         attempt_window: IdentityConfig.store.account_reset_request_attempt_window_in_minutes,

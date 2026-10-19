@@ -153,5 +153,35 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
         expect { policy.eligible? }.to raise_error(ActiveRecord::StatementInvalid)
       end
     end
+
+    # Re-checking eligibility for an in-flight request must not treat that
+    # request as a competing pending request.
+    context 'with ignore_pending_request' do
+      let!(:recovery_request) { create(:account_recovery_request, :waiting, user: user) }
+
+      subject(:policy) do
+        described_class.new(user: user, ignore_pending_request: recovery_request)
+      end
+
+      it 'ignores the named request' do
+        expect(policy.eligible?).to eq(true)
+      end
+
+      it 'still rejects a pending legacy account reset request' do
+        AccountResetRequest.create!(
+          user: user,
+          request_token: SecureRandom.uuid,
+          requested_at: Time.zone.now,
+        )
+
+        expect(policy.eligible?).to eq(false)
+      end
+
+      it 'still applies the other eligibility rules' do
+        allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+
+        expect(policy.eligible?).to eq(false)
+      end
+    end
   end
 end

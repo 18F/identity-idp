@@ -59,6 +59,8 @@ module I18n
       # rubocop:disable Layout/LineLength
       ALLOWED_UNTRANSLATED_KEYS = [
         { key: /^account_recovery\./, locales: %i[es fr zh] }, # Recovery translations pending
+        { key: /^user_mailer\.account_recovery_cancelled\./, locales: %i[es fr zh] }, # Recovery translations pending
+        { key: /^user_mailer\.account_recovery_granted\./, locales: %i[es fr zh] }, # Recovery translations pending
         { key: /^user_mailer\.account_recovery_request\./, locales: %i[es fr zh] }, # Recovery translations pending
         { key: /^two_factor_authentication\.account_recovery\./, locales: %i[es fr zh] }, # Recovery translations pending
         { key: 'i18n.locale.en', locales: %i[es fr zh] },

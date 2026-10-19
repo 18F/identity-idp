@@ -5,6 +5,7 @@ module AccountRecovery
     include TwoFactorAuthenticatable
     include AccountRecoveryConcern
 
+    before_action :reconcile_lapsed_request
     before_action :confirm_eligible_for_account_recovery
 
     def show
@@ -31,6 +32,17 @@ module AccountRecovery
     end
 
     private
+
+    # Expires a lapsed, unredeemed request before eligibility is evaluated, so
+    # a stale request does not permanently block the user from requesting
+    # recovery again.
+    def reconcile_lapsed_request
+      expired = AccountRecovery::ReconcileRequest.new(
+        account_recovery_request: AccountRecoveryRequest.active_for_user(current_user),
+      ).call
+
+      analytics.account_recovery_expired(count: 1) if expired
+    end
 
     def confirm_eligible_for_account_recovery
       eligible = AccountRecovery::EligibilityPolicy.new(user: current_user).eligible?

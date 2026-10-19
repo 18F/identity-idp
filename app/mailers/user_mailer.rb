@@ -142,6 +142,29 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  # @param token [String] raw single-use recovery link token
+  def account_recovery_granted(token:)
+    with_user_locale(user) do
+      @token = token
+      @token_valid_period = account_recovery_token_valid_period
+      @header = t('user_mailer.account_recovery_granted.header', app_name: APP_NAME)
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.account_recovery_granted.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
+  def account_recovery_cancelled
+    with_user_locale(user) do
+      @header = t('user_mailer.account_recovery_cancelled.header', app_name: APP_NAME)
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.account_recovery_cancelled.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
   def account_reset_request(account_reset)
     with_user_locale(user) do
       @token = account_reset&.request_token

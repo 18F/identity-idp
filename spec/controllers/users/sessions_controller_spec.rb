@@ -951,6 +951,68 @@ RSpec.describe Users::SessionsController, devise: true do
       post :create, params: { user: { email: user.email, password: user.password } }
       expect(response).to redirect_to account_reset_pending_url
     end
+
+    it 'redirects to the recovery pending page for a waiting recovery request' do
+      user = create(:user, :fully_registered)
+      create(:account_recovery_request, :waiting, user: user)
+
+      post :create, params: { user: { email: user.email, password: user.password } }
+
+      expect(response).to redirect_to account_recovery_pending_url
+    end
+
+    it 'redirects to the recovery pending page for a granted recovery request' do
+      user = create(:user, :fully_registered)
+      create(:account_recovery_request, :granted, user: user)
+
+      post :create, params: { user: { email: user.email, password: user.password } }
+
+      expect(response).to redirect_to account_recovery_pending_url
+    end
+
+    it 'does not resume recovery without token evidence before password verification' do
+      user = create(:user, :fully_registered)
+      create(:account_recovery_request, :link_verified, user: user)
+
+      post :create, params: { user: { email: user.email, password: user.password } }
+
+      expect(response).to redirect_to user_two_factor_authentication_url
+    end
+
+    it 'redirects a temporary recovery session to the verify continuation' do
+      user = create(:user, :fully_registered)
+      create(:account_recovery_request, :password_verified, user: user)
+
+      post :create, params: { user: { email: user.email, password: user.password } }
+
+      expect(response).to redirect_to account_recovery_verify_url
+    end
+
+    it 'redirects to 2FA when the recovery request reached a terminal state' do
+      user = create(:user, :fully_registered)
+      create(:account_recovery_request, :cancelled, user: user)
+
+      post :create, params: { user: { email: user.email, password: user.password } }
+
+      expect(response).to redirect_to user_two_factor_authentication_url
+    end
+
+    # A lapsed, unredeemed link must not hold the user on a pending page, and
+    # expiring it frees them to request recovery again.
+    it 'expires a lapsed recovery link and routes to 2FA' do
+      user = create(:user, :fully_registered)
+      recovery_request = create(
+        :account_recovery_request,
+        :granted,
+        user: user,
+        token_expires_at: Time.zone.now - 1.minute,
+      )
+
+      post :create, params: { user: { email: user.email, password: user.password } }
+
+      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::EXPIRED)
+      expect(response).to redirect_to user_two_factor_authentication_url
+    end
   end
 
   describe '#new' do
