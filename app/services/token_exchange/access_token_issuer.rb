@@ -45,19 +45,11 @@ module TokenExchange
 
     attr_reader :subject_token, :target_issuer, :resource, :scope
 
+    # The signed token is readable only by the target: it is encrypted to the target's registered
+    # certificate (RFC 7516), so neither the acting service provider that carries the token nor
+    # anything on the path can read its claims.
     def jwe(issued_at:, expires_at:)
-      public_key = target.ssl_certs.first.public_key
-      jwk = JWT::JWK.new(public_key)
-
-      JWE.encrypt(
-        jwt(issued_at:, expires_at:),
-        public_key,
-        typ: 'JWT',
-        zip: 'DEF',
-        alg: 'RSA-OAEP',
-        enc: 'A256GCM',
-        kid: jwk.kid,
-      )
+      OpenidConnect::JweEncryptor.encrypt(jwt(issued_at:, expires_at:), service_provider: target)
     end
 
     def jwt(issued_at:, expires_at:)
