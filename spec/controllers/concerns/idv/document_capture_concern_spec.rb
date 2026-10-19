@@ -6,11 +6,13 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
   end
   let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
   let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
+  let(:issuer) { 'best-sp-ever' }
   let(:document_capture_session) do
     create(
       :document_capture_session,
       doc_auth_vendor: Idp::Constants::Vendors::MOCK,
       document_type_requested:,
+      issuer:,
     )
   end
   let(:user) { document_capture_session.user }
@@ -73,6 +75,20 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         response = controller.handle_stored_result(user:)
         expect(response.success?).to eq(false)
       end
+
+      context 'when validation_requirments_met? is skipped' do
+        before do
+          allow(IdentityConfig.store).to receive_messages(
+            doc_auth_post_validations_skip: true,
+            allowed_ialmax_providers: [issuer],
+          )
+        end
+
+        it 'returns success response' do
+          response = controller.handle_stored_result(user:)
+          expect(response.success?).to eq(true)
+        end
+      end
     end
 
     context 'when document is a passport with passed MRZ check' do
@@ -131,6 +147,28 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
           response = controller.handle_stored_result(user:)
           expect(response.success?).to eq(true)
         end
+
+        context 'when a selfie is required' do
+          let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR }
+          it 'returns failed response' do
+            response = controller.handle_stored_result(user:)
+            expect(response.success?).to eq(false)
+          end
+
+          context 'when validation_requirments_met? is skipped' do
+            before do
+              allow(IdentityConfig.store).to receive_messages(
+                doc_auth_post_validations_skip: true,
+                allowed_ialmax_providers: [issuer],
+              )
+            end
+
+            it 'returns success response' do
+              response = controller.handle_stored_result(user:)
+              expect(response.success?).to eq(true)
+            end
+          end
+        end
       end
 
       context 'when AAMVA check fails' do
@@ -148,6 +186,20 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         it 'returns failure response' do
           response = controller.handle_stored_result(user:)
           expect(response.success?).to eq(false)
+        end
+
+        context 'when validation_requirments_met? is skipped' do
+          before do
+            allow(IdentityConfig.store).to receive_messages(
+              doc_auth_post_validations_skip: true,
+              allowed_ialmax_providers: [issuer],
+            )
+          end
+
+          it 'returns success response' do
+            response = controller.handle_stored_result(user:)
+            expect(response.success?).to eq(true)
+          end
         end
 
         context 'when mdL is requested' do
@@ -189,6 +241,80 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
             it 'returns failed response' do
               response = controller.handle_stored_result(user:)
               expect(response.success?).to eq(false)
+            end
+
+            context 'when validation_requirments_met? is skipped' do
+              before do
+                allow(IdentityConfig.store).to receive_messages(
+                  doc_auth_post_validations_skip: true,
+                  allowed_ialmax_providers: [issuer],
+                )
+              end
+
+              it 'returns success response' do
+                response = controller.handle_stored_result(user:)
+                expect(response.success?).to eq(true)
+              end
+            end
+          end
+        end
+
+        context 'when a selfie is required' do
+          let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR }
+          it 'returns failed response' do
+            response = controller.handle_stored_result(user:)
+            expect(response.success?).to eq(false)
+          end
+
+          context 'when doc_auth_post_validations_skip is false' do
+            before do
+              allow(IdentityConfig.store).to receive_messages(
+                doc_auth_post_validations_skip: false,
+                allowed_ialmax_providers: [issuer],
+              )
+            end
+
+            it 'returns failed response' do
+              response = controller.handle_stored_result(user:)
+              expect(response.success?).to eq(false)
+            end
+          end
+
+          context 'when not an allowed ialmax provider' do
+            before do
+              allow(IdentityConfig.store).to receive_messages(
+                doc_auth_post_validations_skip: true,
+                allowed_ialmax_providers: ['not-allowed'],
+              )
+            end
+            it 'returns failed response' do
+              response = controller.handle_stored_result(user:)
+              expect(response.success?).to eq(false)
+            end
+          end
+
+
+          context 'when validation_requirments_met? is skipped' do
+            before do
+              allow(IdentityConfig.store).to receive_messages(
+                doc_auth_post_validations_skip: true,
+                allowed_ialmax_providers: [issuer],
+              )
+            end
+
+            it 'returns success response' do
+              response = controller.handle_stored_result(user:)
+              expect(response.success?).to eq(true)
+            end
+          end
+        end
+
+        context 'SP requires facial_match' do
+          let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR }
+
+          context 'selfie check not processed' do
+            it 'returns false' do
+              expect(controller.selfie_requirement_met?).to eq(false)
             end
           end
         end
