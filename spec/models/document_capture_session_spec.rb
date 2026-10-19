@@ -575,7 +575,6 @@ RSpec.describe DocumentCaptureSession do
         doc_auth_vendor: nil,
         socure_docv_capture_app_url: nil,
         socure_docv_transaction_token: nil,
-        passport_cards_supported: false,
       )
 
       expect(record.passport_requested?).to eq(true)
@@ -668,7 +667,6 @@ RSpec.describe DocumentCaptureSession do
         doc_auth_vendor: nil,
         socure_docv_capture_app_url: nil,
         socure_docv_transaction_token: nil,
-        passport_cards_supported: false,
       )
 
       expect(record.passport_requested?).to eq(true)
