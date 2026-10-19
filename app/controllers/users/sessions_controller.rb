@@ -168,7 +168,7 @@ module Users
       if user_fully_authenticated?
         redirect_to signed_in_url
       elsif current_user
-        redirect_to user_two_factor_authentication_url
+        redirect_to account_recovery_url || user_two_factor_authentication_url
       end
     end
 
@@ -279,6 +279,8 @@ module Users
         device_profiling_failed_url
       elsif pending_account_reset_request.present?
         account_reset_pending_url
+      elsif account_recovery_url
+        account_recovery_url
       elsif current_user.accepted_rules_of_use_still_valid?
         user_two_factor_authentication_url
       else
@@ -290,6 +292,26 @@ module Users
       DestructiveAccountReset::PendingRequestForUser.new(
         current_user,
       ).get_account_reset_request
+    end
+
+    # A password-verified recovery resumes at the recovery continuation. An
+    # unredeemed request takes the normal first-MFA route, where the
+    # pending-recovery banner is shown and successful MFA cancels the request.
+    def account_recovery_url
+      return @account_recovery_url if defined?(@account_recovery_url)
+
+      recovery_request = AccountRecoveryRequest.active_for_user(current_user)
+      recovery_state = recovery_request&.state
+      expired = AccountRecovery::ReconcileRequest.new(
+        account_recovery_request: recovery_request,
+      ).call
+
+      analytics.account_recovery_expired(recovery_state:) if expired
+
+      @account_recovery_url =
+        if !expired && recovery_request&.state == AccountRecoveryRequest::PASSWORD_VERIFIED
+          account_recovery_new_mfa_setup_url
+        end
     end
 
     def override_csp_for_google_analytics

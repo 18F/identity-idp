@@ -5,7 +5,8 @@ module AccountRecovery
     include TwoFactorAuthenticatable
     include AccountRecoveryConcern
 
-    before_action :redirect_existing_request
+    before_action :reconcile_lapsed_request
+    before_action :redirect_pending_request
     before_action :confirm_eligible_for_account_recovery
 
     def show
@@ -25,7 +26,8 @@ module AccountRecovery
       analytics.account_recovery_request(**result.to_h)
 
       if result.success?
-        redirect_to account_recovery_pending_url
+        flash[:email] = current_user.last_sign_in_email_address.email
+        redirect_to account_recovery_confirm_request_url
       else
         flash[:error] = t('errors.general')
         redirect_to login_two_factor_options_url
@@ -34,10 +36,12 @@ module AccountRecovery
 
     private
 
-    def redirect_existing_request
-      return unless AccountRecoveryRequest.active_for_user(current_user)
+    # A user with an unredeemed request signs in normally; the MFA pages show
+    # the pending-recovery banner and successful MFA cancels the request.
+    def redirect_pending_request
+      return unless AccountRecoveryRequest.active_for_user(current_user)&.awaiting_link_redemption?
 
-      redirect_to account_recovery_pending_url
+      redirect_to login_two_factor_options_url
     end
 
     def confirm_eligible_for_account_recovery
@@ -59,13 +63,6 @@ module AccountRecovery
 
       flash[:error] = t('account_recovery.start.rate_limited')
       redirect_to account_recovery_start_url
-    end
-
-    def rate_limiter
-      @rate_limiter ||= RateLimiter.new(
-        user: current_user,
-        rate_limit_type: :account_recovery_request,
-      )
     end
   end
 end

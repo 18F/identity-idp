@@ -90,15 +90,94 @@ module AnalyticsEvents
     track_event('Account Deletion Requested', request_came_from: request_came_from, **extra)
   end
 
+  # @param [String] reason Bounded reason the request was cancelled
+  # @param [String, nil] recovery_state State of the recovery request when it was cancelled
+  # @param [String, nil] mfa_method Existing authentication method the user signed in with when
+  #   the reason is `mfa_used`
+  # An account-preserving MFA recovery request was cancelled
+  def account_recovery_cancelled(reason:, recovery_state: nil, mfa_method: nil, **extra)
+    track_event(:account_recovery_cancelled, reason:, recovery_state:, mfa_method:, **extra)
+  end
+
   # @param [Boolean] eligible Whether the user may use account-preserving MFA recovery
   # Account-preserving MFA recovery eligibility was evaluated for a user
   def account_recovery_eligibility_evaluated(eligible:, **extra)
     track_event(:account_recovery_eligibility_evaluated, eligible:, **extra)
   end
 
+  # @param [String, nil] recovery_state State of the recovery request before it expired, which
+  #   distinguishes a link that was never opened from one opened without password verification
+  # An account-preserving MFA recovery request was expired because the emailed
+  # recovery link was never redeemed
+  def account_recovery_expired(recovery_state: nil, **extra)
+    track_event(:account_recovery_expired, recovery_state:, **extra)
+  end
+
+  # @param [Boolean] success Whether the recovery request was granted
+  # @param [String, nil] failure_reason Bounded reason the grant did not happen
+  # An account-preserving MFA recovery request passed its waiting period and a
+  # recovery link was issued
+  def account_recovery_granted(success:, failure_reason: nil, **extra)
+    track_event(:account_recovery_granted, success:, failure_reason:, **extra)
+  end
+
+  # @param [Integer] count Number of expired account recovery requests
+  # Account recovery requests were expired because the emailed
+  # recovery link was never used
+  def account_recovery_job_mark_expired(count:, **extra)
+    track_event(:account_recovery_job_mark_expired, count:, **extra)
+  end
+
+  # @param [Boolean] success Whether the recovery link token was valid
+  # @param [Hash] errors Errors resulting from the validation attempt
+  # @param [String, nil] failure_reason Bounded reason the token was rejected
+  # @param [String, nil] recovery_state State of the recovery request
+  # @param [Boolean] rate_limited Whether the attempt was blocked by rate limiting
+  # An emailed account-preserving MFA recovery link was submitted for validation
+  def account_recovery_link_validation(
+    success:,
+    errors: nil,
+    failure_reason: nil,
+    recovery_state: nil,
+    rate_limited: false,
+    **extra
+  )
+    track_event(
+      :account_recovery_link_validation,
+      success:,
+      errors:,
+      failure_reason:,
+      recovery_state:,
+      rate_limited:,
+      **extra,
+    )
+  end
+
+  # @param [String] recovery_state State of the recovery request
+  # A user reached the replacement MFA setup page of account-preserving MFA
+  # recovery after their recovery link and password were verified
+  def account_recovery_new_mfa_setup_visit(recovery_state:, **extra)
+    track_event(:account_recovery_new_mfa_setup_visit, recovery_state:, **extra)
+  end
+
+  # @param [Integer] count Number of recovery link email notifications sent
+  # Account-preserving MFA recovery requests were granted, logs the number of
+  # email notifications sent
+  def account_recovery_notifications(count:, **extra)
+    track_event(:account_recovery_notifications, count:, **extra)
+  end
+
   # A user visited the account-preserving MFA recovery start page
   def account_recovery_options_visit(**extra)
     track_event(:account_recovery_options_visit, **extra)
+  end
+
+  # @param [Boolean] success Whether the password was correct
+  # @param [Boolean] rate_limited Whether the attempt was blocked by rate limiting
+  # A user re-entered their password after redeeming an account-preserving MFA
+  # recovery link
+  def account_recovery_password_verification(success:, rate_limited: false, **extra)
+    track_event(:account_recovery_password_verification, success:, rate_limited:, **extra)
   end
 
   # @param [Boolean] success Whether the recovery request was created
@@ -107,6 +186,13 @@ module AnalyticsEvents
   # @param [String, nil] recovery_state State of the recovery request after creation
   # @param [Boolean] rate_limited Whether the request was blocked by rate limiting
   # @param [Hash, nil] telephony_response Response from the recovery SMS notification
+  # @param [Integer, nil] account_age_in_days Days since the account was confirmed
+  # @param [Integer, nil] days_since_last_full_sign_in Days since the user last fully
+  #   authenticated with MFA, or nil if they never have
+  # @param [Integer, nil] enabled_mfa_methods_count Number of enabled MFA methods
+  # @param [Hash, nil] mfa_method_ages_in_days Days since the newest configuration of each
+  #   enabled MFA method type was added, e.g. { phone: 3, auth_app: 400 }
+  # @param [Hash, nil] mfa_method_counts Number of enabled configurations of each MFA method type
   # An account-preserving MFA recovery request was submitted
   def account_recovery_request(
     success:,
@@ -115,6 +201,11 @@ module AnalyticsEvents
     recovery_state: nil,
     rate_limited: false,
     telephony_response: nil,
+    account_age_in_days: nil,
+    days_since_last_full_sign_in: nil,
+    enabled_mfa_methods_count: nil,
+    mfa_method_ages_in_days: nil,
+    mfa_method_counts: nil,
     **extra
   )
     track_event(
@@ -125,6 +216,11 @@ module AnalyticsEvents
       recovery_state:,
       rate_limited:,
       telephony_response:,
+      account_age_in_days:,
+      days_since_last_full_sign_in:,
+      enabled_mfa_methods_count:,
+      mfa_method_ages_in_days:,
+      mfa_method_counts:,
       **extra,
     )
   end

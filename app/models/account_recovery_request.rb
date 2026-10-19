@@ -26,6 +26,12 @@ class AccountRecoveryRequest < ApplicationRecord
 
   STATES = (ACTIVE_STATES + TERMINAL_STATES).freeze
 
+  # Bounded cancellation and failure reasons, safe for analytics.
+  CANCEL_REASON_USER_CANCELLED = 'user_cancelled'
+  CANCEL_REASON_MFA_USED = 'mfa_used'
+  CANCEL_REASON_INELIGIBLE = 'ineligible'
+  FAILURE_REASON_TOKEN_NOT_REDEEMED = 'token_not_redeemed'
+
   TRANSITIONS = {
     REQUESTED => [WAITING, CANCELLED, EXPIRED],
     WAITING => [GRANTED, CANCELLED, EXPIRED],
@@ -57,6 +63,13 @@ class AccountRecoveryRequest < ApplicationRecord
 
   def self.active_for_user(user)
     active.where(user: user).order(requested_at: :asc).first
+  end
+
+  # @param fingerprint [String] keyed fingerprint of a raw token
+  def self.active_for_token_fingerprint(fingerprint)
+    return nil if fingerprint.blank?
+
+    active.find_by(token_fingerprint: fingerprint)
   end
 
   def active?
@@ -94,8 +107,8 @@ class AccountRecoveryRequest < ApplicationRecord
     transition_to!(WAITING)
   end
 
-  def cancel!
-    transition_to!(CANCELLED, **cleared_token_attributes)
+  def cancel!(reason:)
+    transition_to!(CANCELLED, cancel_reason: reason, **cleared_token_attributes)
   end
 
   def expire!(reason: nil)
@@ -110,9 +123,18 @@ class AccountRecoveryRequest < ApplicationRecord
     token_expires_at.blank? || token_expires_at <= Time.zone.now
   end
 
+  # User cancellation and automatic cancellation on MFA use stop at link
+  # verification. Token expiration still applies until password verification.
+  def awaiting_link_redemption?
+    [REQUESTED, WAITING, GRANTED].include?(state)
+  end
+
   private
 
   def cleared_token_attributes
-    { token_fingerprint: nil, token_expires_at: nil }
+    {
+      token_fingerprint: nil,
+      token_expires_at: nil,
+    }
   end
 end

@@ -10,35 +10,73 @@ RSpec.describe AccountRecovery::StartController do
   end
 
   context 'with an existing recovery request' do
-    before { stub_sign_in_before_2fa(user) }
+  [
+    AccountRecoveryRequest::REQUESTED,
+    AccountRecoveryRequest::WAITING,
+    AccountRecoveryRequest::GRANTED,
+  ].each do |state|
+    context "with an existing #{state} request" do
+      let!(:recovery_request) do
+        create(:account_recovery_request, :granted, state: state, user: user)
+      end
 
-    %i[waiting granted].each do |state|
-      context "when #{state}" do
-        let!(:recovery_request) { create(:account_recovery_request, state, user: user) }
+      before { stub_sign_in_before_2fa(user) }
 
-        it 'returns to the request confirmation when revisiting start' do
-          get :show
+      it 'returns to authentication options instead of restarting recovery' do
+        get :show
 
-          expect(response).to redirect_to account_recovery_pending_url
-        end
+        expect(response).to redirect_to login_two_factor_options_url
+      end
 
-        it 'does not restart the request or resend its email on resubmission' do
-          expect { post :create }.not_to change { AccountRecoveryRequest.count }
+      it 'does not restart the request or resend its email on resubmission' do
+        expect { post :create }.not_to change { AccountRecoveryRequest.count }
 
-          expect(response).to redirect_to account_recovery_pending_url
-          expect(ActionMailer::Base.deliveries).to be_empty
-          expect(recovery_request.reload.state).to eq(state.to_s)
-        end
+        expect(response).to redirect_to login_two_factor_options_url
+        expect(ActionMailer::Base.deliveries).to be_empty
+        expect(recovery_request.reload.state).to eq(state)
       end
     end
+  end
 
-    it 'does not resume another user’s request' do
-      create(:account_recovery_request, :waiting)
+  context 'with a granted request whose link has lapsed' do
+    let!(:recovery_request) do
+      create(
+        :account_recovery_request,
+        :granted,
+        user: user,
+        token_expires_at: 1.minute.ago,
+      )
+    end
+
+    before { stub_sign_in_before_2fa(user) }
+
+    it 'expires the request and allows the user to start a new recovery request' do
+      get :show
+
+      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::EXPIRED)
+      expect(response).to render_template(:show)
+    end
+
+    it 'logs the expiration with the state the request lapsed from' do
+      stub_analytics
 
       get :show
 
-      expect(response).to render_template(:show)
+      expect(@analytics).to have_logged_event(
+        :account_recovery_expired,
+        recovery_state: AccountRecoveryRequest::GRANTED,
+      )
     end
+  end
+
+  it 'does not resume another user’s request' do
+    stub_sign_in_before_2fa(user)
+    create(:account_recovery_request, :waiting)
+
+    get :show
+
+    expect(response).to render_template(:show)
+  end
   end
 
   describe '#show' do
@@ -127,16 +165,17 @@ RSpec.describe AccountRecovery::StartController do
     context 'when signed in before 2FA' do
       before { stub_sign_in_before_2fa(user) }
 
-      it 'creates a waiting recovery request and redirects to the pending page' do
+      it 'creates a waiting recovery request and continues to the email confirmation' do
         post :create
 
         request = AccountRecoveryRequest.active_for_user(user)
         expect(request).to be_present
         expect(request.state).to eq(AccountRecoveryRequest::WAITING)
-        expect(response).to redirect_to account_recovery_pending_url
+        expect(response).to redirect_to account_recovery_confirm_request_url
+        expect(flash[:email]).to eq(user.last_sign_in_email_address.email)
       end
 
-      it 'logs the request event' do
+      it 'logs the request event with the requesting user’s account and MFA profile' do
         stub_analytics
 
         post :create
@@ -152,6 +191,10 @@ RSpec.describe AccountRecovery::StartController do
             request_id: 'fake-message-request-id',
             message_id: 'fake-message-id',
           },
+          account_age_in_days: 0,
+          enabled_mfa_methods_count: 1,
+          mfa_method_ages_in_days: { phone: 0 },
+          mfa_method_counts: { phone: 1 },
         )
       end
 

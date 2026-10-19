@@ -35,6 +35,18 @@ else
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },
+      # Grant account-preserving MFA recovery requests past their waiting period
+      account_recovery_grant_requests_send_emails: {
+        class: 'GrantAccountRecoveryRequestsAndSendEmailsJob',
+        cron: cron_5m,
+        args: -> { [Time.zone.now] },
+      },
+      # Expire account-preserving MFA recovery links that were never redeemed
+      account_recovery_expire_requests: {
+        class: 'ExpireAccountRecoveryRequestsJob',
+        cron: cron_24h,
+        args: -> { [Time.zone.now] },
+      },
       # Send new device alert notifications
       create_new_device_alert_send_emails: {
         class: 'CreateNewDeviceAlertJob',

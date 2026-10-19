@@ -1,12 +1,11 @@
 ---
+account_recovery.confirm_request.header: We received your account recovery request
+account_recovery.confirm_request.notification_html: We sent an email to <strong>%{email}</strong> with instructions to recover your account.
+account_recovery.new_mfa_setup.header: Set up new authentication methods
+account_recovery.new_mfa_setup.intro: Your recovery link and password are confirmed. You are in a temporary session for account recovery. You cannot access your account or connected services until you set up new authentication methods.
+account_recovery.new_mfa_setup.not_available: Setting up new authentication methods is not available yet.
 account_recovery.pending.cancel_success: Your account recovery request has been canceled.
-account_recovery.pending.header: We received your account recovery request
-account_recovery.pending.help: How account recovery works
 account_recovery.pending.mfa_banner: You have a pending account recovery request. Sign in with an authentication method to cancel it.
-account_recovery.pending.notification_html: We sent an email to <strong>%{email}</strong> with instructions to recover your account.
-account_recovery.pending.resend: Resend the recovery request email
-account_recovery.pending.resend_rate_limited: You have requested too many recovery emails. Please wait a few minutes before trying again.
-account_recovery.pending.resend_success: We sent another account recovery request email.
 account_recovery.start.continue: Recover my account
 account_recovery.start.header: Are you sure you want to recover your account?
 account_recovery.start.intro: You must wait %{interval} to receive an account recovery link. After clicking the link, you will set up new authentication methods to replace your old ones.
@@ -14,6 +13,12 @@ account_recovery.start.keep_account_html: If you regain access to any of your au
 account_recovery.start.keep_account_link_text: Learn more about account recovery.
 account_recovery.start.rate_limited: You have requested account recovery too many times. Please wait a few minutes before trying again.
 account_recovery.start.unavailable: Account recovery is not available for your account.
+account_recovery.verify.continue: Continue
+account_recovery.verify.header: Confirm your password
+account_recovery.verify.intro_html: To continue recovering the account for <strong>%{email}</strong>, enter your password.
+account_recovery.verify.password_rate_limited: You have entered an incorrect password too many times. Please wait a few minutes before trying again.
+account_recovery.verify.token_invalid: This account recovery link is invalid or has expired. You can request account recovery again.
+account_recovery.verify.token_rate_limited: Too many account recovery links have been submitted. Please wait a few minutes before trying again.
 account.connected_apps.associated_attributes_html: '在 %{timestamp_html} 用以下电邮做的连接：'
 account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用您的 %{app_name} 帐户，您可以安全地在线连接到多个政府服务。以下是您当前已连接的所有服务列表。
@@ -2011,7 +2016,6 @@ titles.visitors.index: 欢迎。
 titles.webauthn_setup: 添加你的安全密钥
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> 要求一种高安全水平的身份证实方法。比如人脸或触摸解锁、安全密钥或政府雇员身份证件。'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> 要求你的政府雇员身份证件，这是一种高安全水平的身份证实方法。'
-two_factor_authentication.account_recovery.pending_link: View your account recovery request
 two_factor_authentication.account_recovery.recover_link: recover your account
 two_factor_authentication.account_recovery.recover_text_html: If you can’t use any of your authentication methods above to access your account, you can %{link_html} to reset your authentication methods.
 two_factor_authentication.account_reset.cancel_link: 取消你的请求
@@ -2188,6 +2192,14 @@ user_mailer.account_recovery_cancelled.details: Your account and authentication 
 user_mailer.account_recovery_cancelled.intro: You signed in to your %{app_name} account and your account recovery request was canceled.
 user_mailer.account_recovery_cancelled.subject: Your account recovery request was canceled
 user_mailer.account_recovery_cancelled.unrequested: If you did not sign in, contact us immediately and secure your account.
+user_mailer.account_recovery_granted.button: Recover my account
+user_mailer.account_recovery_granted.cancel_link_text: Sign in and authenticate with your %{app_name} to cancel your account recovery request
+user_mailer.account_recovery_granted.expires: This link expires in %{interval}.
+user_mailer.account_recovery_granted.header: Recover your %{app_name} account
+user_mailer.account_recovery_granted.intro: The waiting period for your %{app_name} account recovery request is over. Use the link below to add new authentication methods.
+user_mailer.account_recovery_granted.password_reminder: You will be asked to enter your password before you can add new authentication methods.
+user_mailer.account_recovery_granted.subject: Recover your %{app_name} account
+user_mailer.account_recovery_granted.unrequested_html: 'Don’t need to recover your account? %{cancel_link_html}.'
 user_mailer.account_recovery_request.change_password: Immediately change your password.
 user_mailer.account_recovery_request.header: How to recover your %{app_name} account
 user_mailer.account_recovery_request.intro: For your security, %{app_name} has a two-step process to recover your account.

@@ -61,10 +61,7 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_valid_verification_for_authentication_context(auth_method:)
-    if UserSessionContext.authentication_context?(context) &&
-       AccountRecovery::CancelRequest.new(user: current_user).call
-      flash[:success] = t('account_recovery.pending.cancel_success')
-    end
+    cancel_account_recovery_request_for_mfa_use(auth_method:)
     mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa)
     disavowal_event, disavowal_token = create_user_event_with_disavowal(:sign_in_after_2fa)
 
@@ -257,6 +254,27 @@ module TwoFactorAuthenticatableMethods
   def mark_user_session_authenticated(auth_method:, authentication_type:)
     auth_methods_session.authenticate!(auth_method)
     mark_user_session_authenticated_analytics(authentication_type)
+  end
+
+  # A user who authenticates with an existing method has regained access, so an
+  # unredeemed recovery request is cancelled. Deliberately not gated on the
+  # recovery feature flag: turning the flag off must not strand a request that
+  # this would otherwise cancel.
+  def cancel_account_recovery_request_for_mfa_use(auth_method:)
+    return unless UserSessionContext.authentication_context?(context)
+
+    cancellation = AccountRecovery::CancelRequest.new(
+      user: current_user,
+      reason: AccountRecoveryRequest::CANCEL_REASON_MFA_USED,
+    )
+    return unless cancellation.call
+
+    analytics.account_recovery_cancelled(
+      reason: AccountRecoveryRequest::CANCEL_REASON_MFA_USED,
+      recovery_state: cancellation.recovery_state,
+      mfa_method: auth_method,
+    )
+    flash[:success] = t('account_recovery.pending.cancel_success')
   end
 
   def mark_user_session_authenticated_analytics(authentication_type)

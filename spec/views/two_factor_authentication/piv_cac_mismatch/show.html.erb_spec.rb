@@ -45,16 +45,19 @@ RSpec.describe 'two_factor_authentication/piv_cac_mismatch/show.html.erb' do
 
     context 'with a pending recovery request' do
       before do
-        assign(:account_recovery_url, account_recovery_pending_url)
+        assign(:account_recovery_url, nil)
         assign(:account_recovery_pending, true)
       end
 
-      it 'links to the pending request without a legacy deletion link' do
-        expect(rendered).to have_link(
-          t('two_factor_authentication.account_recovery.pending_link'),
-          href: account_recovery_pending_url,
-        )
+      it 'offers neither a new recovery request nor legacy deletion' do
+        expect(rendered).not_to have_link(href: account_recovery_start_url)
         expect(rendered).not_to have_link(href: account_reset_recovery_options_url)
+        expect(rendered).not_to have_content(
+          t(
+            'two_factor_authentication.piv_cac_mismatch.instructions_no_other_method',
+            app_name: APP_NAME,
+          ),
+        )
       end
     end
   end

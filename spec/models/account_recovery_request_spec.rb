@@ -111,14 +111,14 @@ RSpec.describe AccountRecoveryRequest do
   end
 
   describe '#cancel!' do
-    it 'cancels and clears the token' do
+    it 'records the reason and clears the token' do
       request = create(:account_recovery_request, :granted, user: user)
 
-      expect(request.cancel!).to eq(true)
+      expect(request.cancel!(reason: AccountRecoveryRequest::CANCEL_REASON_MFA_USED)).to eq(true)
 
       request.reload
       expect(request.state).to eq(AccountRecoveryRequest::CANCELLED)
-      expect(request.cancel_reason).to be_nil
+      expect(request.cancel_reason).to eq('mfa_used')
       expect(request.cancelled_at).to be_present
       expect(request.token_fingerprint).to be_nil
       expect(request.token_expires_at).to be_nil
@@ -178,6 +178,60 @@ RSpec.describe AccountRecoveryRequest do
       )
 
       expect(request.token_valid?).to eq(true)
+    end
+  end
+
+  describe '#awaiting_link_redemption?' do
+    it 'is true before the emailed link is redeemed' do
+      [
+        AccountRecoveryRequest::REQUESTED,
+        AccountRecoveryRequest::WAITING,
+        AccountRecoveryRequest::GRANTED,
+      ].each do |state|
+        request = build(:account_recovery_request, state: state)
+
+        expect(request.awaiting_link_redemption?).to eq(true), "expected #{state} to be awaiting"
+      end
+    end
+
+    # Once the link is redeemed the request sticks until replacement MFA is
+    # added, so normal MFA use and token expiry must not act on it.
+    it 'is false once the link has been redeemed' do
+      [
+        AccountRecoveryRequest::LINK_VERIFIED,
+        AccountRecoveryRequest::PASSWORD_VERIFIED,
+        AccountRecoveryRequest::REPLACEMENT_MFA_PENDING,
+      ].each do |state|
+        request = build(:account_recovery_request, state: state)
+
+        expect(request.awaiting_link_redemption?).to eq(false),
+                                                     "expected #{state} not to be awaiting"
+      end
+    end
+  end
+
+  describe '.active_for_token_fingerprint' do
+    it 'finds an active request by recovery token fingerprint' do
+      request = create(:account_recovery_request, :granted, user: user)
+
+      expect(
+        described_class.active_for_token_fingerprint(request.token_fingerprint),
+      ).to eq(request)
+    end
+
+    it 'ignores terminal requests' do
+      request = create(:account_recovery_request, :granted, user: user)
+      fingerprint = request.token_fingerprint
+      request.update!(state: AccountRecoveryRequest::CANCELLED, cancelled_at: Time.zone.now)
+
+      expect(described_class.active_for_token_fingerprint(fingerprint)).to be_nil
+    end
+
+    it 'returns nil for a blank fingerprint' do
+      create(:account_recovery_request, :granted, user: user)
+
+      expect(described_class.active_for_token_fingerprint(nil)).to be_nil
+      expect(described_class.active_for_token_fingerprint('')).to be_nil
     end
   end
 

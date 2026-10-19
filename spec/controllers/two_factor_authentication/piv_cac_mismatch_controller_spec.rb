@@ -20,12 +20,13 @@ RSpec.describe TwoFactorAuthentication::PivCacMismatchController do
       expect(assigns(:account_recovery_url)).to eq(account_recovery_start_url)
     end
 
-    it 'links to the existing recovery request when one is active' do
+    it 'does not offer a new recovery request while one is active' do
       create(:account_recovery_request, :waiting, user: user)
 
       get :show
 
-      expect(assigns(:account_recovery_url)).to eq(account_recovery_pending_url)
+      expect(assigns(:account_recovery_pending)).to eq(true)
+      expect(assigns(:account_recovery_url)).to be_nil
     end
 
     context 'when the user is identity proofed' do
