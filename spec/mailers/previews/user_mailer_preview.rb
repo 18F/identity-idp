@@ -94,6 +94,16 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).account_recovery_request
   end
 
+  def account_recovery_granted
+    UserMailer.with(user: user, email_address: email_address_record).account_recovery_granted(
+      token: SecureRandom.uuid,
+    )
+  end
+
+  def account_recovery_cancelled
+    UserMailer.with(user: user, email_address: email_address_record).account_recovery_cancelled
+  end
+
   def account_reset_request
     UserMailer.with(user: user, email_address: email_address_record).account_reset_request(
       user.build_account_reset_request,

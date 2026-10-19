@@ -1,0 +1,91 @@
+<% self.title = 'Account recovery requests' %>
+
+<h1>Account recovery requests</h1>
+
+<p>
+  Development helper for the account-preserving MFA recovery flow. Granting a
+  request skips the waiting period and shows the links that would have been
+  emailed.
+</p>
+
+<% if @granted_links.present? %>
+  <div class="usa-alert usa-alert--success margin-bottom-4">
+    <div class="usa-alert__body">
+      <h2 class="usa-alert__heading">Request granted</h2>
+      <p class="usa-alert__text">
+        <strong>Recovery link:</strong>
+        <%= link_to @granted_links['verify'], @granted_links['verify'] %>
+      </p>
+    </div>
+  </div>
+<% end %>
+
+<% if flash[:error].present? %>
+  <div class="usa-alert usa-alert--error margin-bottom-4">
+    <div class="usa-alert__body">
+      <p class="usa-alert__text"><%= flash[:error] %></p>
+    </div>
+  </div>
+<% end %>
+
+<% if @requests.empty? %>
+  <p>No account recovery requests yet.</p>
+<% else %>
+  <table class="usa-table usa-table--borderless width-full">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">User</th>
+        <th scope="col">State</th>
+        <th scope="col">Requested</th>
+        <th scope="col">Granted</th>
+        <th scope="col">Link verified</th>
+        <th scope="col">Token expires</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @requests.each do |recovery_request| %>
+        <tr>
+          <td><%= recovery_request.id %></td>
+          <td><%= recovery_request.user.email_addresses.take&.email %></td>
+          <td><%= recovery_request.state %></td>
+          <td><%= recovery_request.requested_at %></td>
+          <td><%= recovery_request.granted_at %></td>
+          <td><%= recovery_request.link_verified_at %></td>
+          <td><%= recovery_request.token_expires_at %></td>
+          <td>
+            <% if recovery_request.state == AccountRecoveryRequest::WAITING %>
+              <%= button_to(
+                    'Grant now',
+                    test_account_recovery_grant_path(id: recovery_request.id),
+                    method: :post,
+                    class: 'usa-button usa-button--unstyled',
+                  ) %>
+            <% end %>
+            <% if recovery_request.active? %>
+              <%= button_to(
+                    'Cancel',
+                    test_account_recovery_cancel_path(id: recovery_request.id),
+                    method: :post,
+                    class: 'usa-button usa-button--unstyled',
+                  ) %>
+              <%= button_to(
+                    'Expire',
+                    test_account_recovery_expire_path(id: recovery_request.id),
+                    method: :post,
+                    class: 'usa-button usa-button--unstyled',
+                  ) %>
+            <% end %>
+            <%= button_to(
+                  'Delete',
+                  test_account_recovery_destroy_path(id: recovery_request.id),
+                  method: :delete,
+                  class: 'usa-button usa-button--unstyled',
+                ) %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

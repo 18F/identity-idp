@@ -25,6 +25,10 @@ RSpec.describe 'account_recovery/pending/show.html.erb' do
         expect(rendered).to have_css(
           "form[action=\"#{account_recovery_resend_path}\"][method=\"post\"]",
         )
+        expect(rendered).to have_css('lg-form-link a', text: t('account_recovery.pending.cancel'))
+        expect(rendered).to have_css(
+          "form[action=\"#{account_recovery_pending_cancel_path}\"][method=\"post\"]",
+        )
       end
     end
   end

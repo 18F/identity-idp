@@ -1,0 +1,37 @@
+<% self.title = t('account_recovery.verify.header') %>
+
+<%= render PageHeadingComponent.new.with_content(t('account_recovery.verify.header')) %>
+
+<p><%= t('account_recovery.verify.intro_html', email: @email) %></p>
+
+<%= simple_form_for(
+      :user,
+      url: account_recovery_verify_path,
+      method: :post,
+      html: { class: 'margin-top-4' },
+    ) do |f| %>
+  <%= hidden_field_tag :token, @token %>
+  <%= render PasswordToggleComponent.new(
+        form: f,
+        field_options: {
+          name: :password,
+          label: t('account.index.password'),
+          required: true,
+          input_html: {
+            autocomplete: 'current-password',
+          },
+        },
+      ) %>
+  <%= f.submit t('account_recovery.verify.continue'), class: 'display-block margin-y-5' %>
+<% end %>
+
+<%= render TroubleshootingOptionsComponent.new do |c| %>
+  <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
+  <% c.with_option(
+       url: MarketingSite.help_center_article_url(
+         category: 'trouble-signing-in',
+         article: 'issues-with-authentication-methods',
+       ),
+       new_tab: true,
+     ).with_content(t('account_recovery.verify.help')) %>
+<% end %>

@@ -216,6 +216,16 @@ RSpec.describe AccountRecovery::PendingController do
         end
       end
 
+      %i[link_verified password_verified replacement_mfa_pending].each do |state|
+        it "does not show pending cancellation for a #{state} request" do
+          create(:account_recovery_request, state, user: user)
+
+          get :show
+
+          expect(response).to render_template('pages/page_not_found')
+        end
+      end
+
       context 'when a terminal recovery request exists' do
         before { create(:account_recovery_request, :cancelled, user: user) }
 
@@ -265,6 +275,143 @@ RSpec.describe AccountRecovery::PendingController do
             get :show
             get :show
           end.not_to change { ActionMailer::Base.deliveries.size }
+        end
+      end
+
+      context 'with a granted request whose link has lapsed' do
+        let!(:recovery_request) do
+          create(
+            :account_recovery_request,
+            :granted,
+            user: user,
+            token_expires_at: Time.zone.now - 1.minute,
+          )
+        end
+
+        it 'expires the request on page load and renders a 404' do
+          get :show
+
+          expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::EXPIRED)
+          expect(response).to render_template('pages/page_not_found')
+        end
+
+        it 'frees the user to request recovery again' do
+          get :show
+
+          expect(AccountRecoveryRequest.active_for_user(user)).to be_nil
+        end
+      end
+
+      context 'with a granted request whose link is still valid' do
+        let!(:recovery_request) do
+          create(
+            :account_recovery_request,
+            :granted,
+            user: user,
+            token_expires_at: Time.zone.now + 1.hour,
+          )
+        end
+
+        it 'does not expire the request' do
+          get :show
+
+          expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::GRANTED)
+        end
+      end
+    end
+  end
+
+  describe '#cancel' do
+    before do
+      allow(IdentityConfig.store).to receive(:deliver_mail_async).and_return(false)
+    end
+
+    it 'requires password authentication' do
+      post :cancel
+
+      expect(response).to redirect_to(root_url)
+    end
+
+    context 'when signed in before 2FA' do
+      before { stub_sign_in_before_2fa(user) }
+
+      it 'renders a 404 without an active request' do
+        post :cancel
+
+        expect(response).to render_template('pages/page_not_found')
+      end
+
+      %i[link_verified password_verified replacement_mfa_pending].each do |state|
+        it "rejects cancellation of a #{state} request without sending a notification" do
+          recovery_request = create(:account_recovery_request, state, user: user)
+          original_attributes = recovery_request.attributes
+
+          expect { post :cancel }.not_to change { ActionMailer::Base.deliveries.size }
+
+          expect(response).to render_template('pages/page_not_found')
+          expect(recovery_request.reload.attributes).to eq(original_attributes)
+          expect(flash[:success]).to be_nil
+        end
+      end
+
+      it 'allows cancellation of an unredeemed granted request' do
+        recovery_request = create(:account_recovery_request, :granted, user: user)
+
+        post :cancel
+
+        expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::CANCELLED)
+      end
+
+      it 'rejects cancellation if token verification occurred after loading the request' do
+        recovery_request = create(:account_recovery_request, :granted, user: user)
+        allow(controller).to receive(:account_recovery_request).and_return(recovery_request)
+        AccountRecoveryRequest.find(recovery_request.id)
+          .transition_to!(AccountRecoveryRequest::LINK_VERIFIED)
+
+        expect { post :cancel }.not_to change { ActionMailer::Base.deliveries.size }
+
+        expect(response).to render_template('pages/page_not_found')
+        expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::LINK_VERIFIED)
+        expect(flash[:success]).to be_nil
+      end
+
+      context 'with an active recovery request' do
+        let!(:recovery_request) { create(:account_recovery_request, :waiting, user: user) }
+
+        it 'cancels the request and notifies the user' do
+          expect { post :cancel }.to change { ActionMailer::Base.deliveries.size }.by(1)
+
+          recovery_request.reload
+          expect(recovery_request.state).to eq(AccountRecoveryRequest::CANCELLED)
+          expect(recovery_request.cancel_reason).to eq('user_cancelled')
+          expect(flash[:success]).to eq(t('account_recovery.pending.cancel_success'))
+          expect(response).to redirect_to(login_two_factor_options_url)
+        end
+
+        it 'logs the cancellation' do
+          stub_analytics
+
+          post :cancel
+
+          expect(@analytics).to have_logged_event(
+            :account_recovery_cancelled,
+            reason: 'user_cancelled',
+            recovery_state: AccountRecoveryRequest::WAITING,
+          )
+        end
+
+        it 'frees the user to request recovery again' do
+          allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
+
+          post :cancel
+
+          expect(AccountRecoveryRequest.active_for_user(user)).to be_nil
+          expect(AccountRecovery::EligibilityPolicy.new(user: user).eligible?).to eq(true)
+        end
+
+        it 'does not alter the user’s authentication methods' do
+          expect { post :cancel }
+            .to_not change { user.reload.phone_configurations.count }
         end
       end
     end

@@ -1,24 +1,77 @@
 ---
-account_recovery.pending.cancel: Cancel recovery
-account_recovery.pending.cancel_instructions: If you can use one of your existing authentication methods, cancel your recovery request to try signing in with it.
-account_recovery.pending.cancel_success: Your account recovery request has been canceled. Choose an authentication method to continue signing in.
+account_recovery.pending_mfa_setup.header: Setting up new authentication methods is not available yet
+account_recovery.pending_mfa_setup.help: Learn more about recovering access to your account
+account_recovery.pending_mfa_setup.intro: Your recovery link and password are confirmed. You are in a temporary session for account recovery. You cannot access your account or connected services until you set up new authentication methods. Setting up new methods is not available yet.
+account_recovery.pending_mfa_setup.methods_still_work: Your existing authentication methods still work. Your recovery request can no longer be canceled after your recovery link has been verified.
+account_recovery.pending.cancel: Cancel my account recovery request
+account_recovery.pending.cancel_success: We canceled your account recovery request. You can continue using your existing authentication methods.
 account_recovery.pending.header: We received your account recovery request
-account_recovery.pending.help: How account recovery works
+account_recovery.pending.help: Learn more about recovering access to your account
 account_recovery.pending.instructions: Keep your password available. You will need to enter it again before setting up new authentication methods. Your account and existing authentication methods have not been changed.
+account_recovery.pending.methods_still_work: Your current authentication methods still work while your recovery request is pending.
 account_recovery.pending.notification_html: We sent an email to <strong>%{email}</strong> confirming your request to recover your account. Your account has not been recovered yet.
 account_recovery.pending.resend: Resend the recovery request email
 account_recovery.pending.resend_rate_limited: You have requested too many recovery emails. Please wait a few minutes before trying again.
 account_recovery.pending.resend_success: We sent another account recovery request email.
-account_recovery.pending.status_header: Your account recovery request is pending
-account_recovery.pending.time_remaining: You have %{interval} left to wait before we send an email with a link to continue recovering your account.
-account_recovery.pending.wait_ended: Your waiting period has ended. Check your email for a link with the next steps to recover your account. Your account has not been recovered yet.
+account_recovery.pending.return_home: Return to the home page
 account_recovery.start.continue: Recover my account
 account_recovery.start.header: Are you sure you want to recover your account?
 account_recovery.start.intro: You must wait %{interval} to receive an account recovery link. After clicking the link, you will set up new authentication methods to replace your old ones.
 account_recovery.start.keep_account_html: If you regain access to any of your authentication methods, sign in to restore your account and cancel recovery. %{link_html}
 account_recovery.start.keep_account_link_text: Learn more about account recovery.
-account_recovery.start.rate_limited: You have requested account recovery too many times. Please wait a few minutes before trying again.
-account_recovery.start.unavailable: Account recovery is not available for your account.
+account_recovery.verify.continue: Continue
+account_recovery.verify.header: Confirm your password
+account_recovery.verify.help: Learn more about recovering access to your account
+account_recovery.verify.intro_html: To continue recovering the account for <strong>%{email}</strong>, enter your password.
+account_recovery.verify.password_rate_limited: You have entered an incorrect password too many times. Please wait a few minutes before trying again.
+account_recovery.verify.token_invalid: This account recovery link is invalid or has expired. You can request account recovery again.
+account_recovery.verify.token_rate_limited: Too many account recovery links have been submitted. Please wait a few minutes before trying again.
+account_reset.cancel_request.are_you_sure: Êtes-vous sûr de vouloir annuler votre demande de suppression de compte ?
+account_reset.cancel_request.cancel: Quitter
+account_reset.cancel_request.cancel_button: Annuler la suppression du compte
+account_reset.cancel_request.title: Annuler la suppression du compte
+account_reset.confirm_delete_account.cta_html: Vous pouvez %{link_html} ou fermer cette fenêtre si vous avez terminé.
+account_reset.confirm_delete_account.info_html: Le compte pour <strong>%{email}</strong> a été supprimé. Nous avons envoyé un e-mail de confirmation de la suppression du compte.
+account_reset.confirm_delete_account.link_text: créer un nouveau compte
+account_reset.confirm_delete_account.title: Vous avez supprimé votre compte
+account_reset.confirm_request.close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
+account_reset.confirm_request.info_html:
+  - Nous avons envoyé un e-mail à <strong>%{email}</strong> pour lancer le processus de suppression du compte. Ce premier e-mail confirme que vous avez entamé le processus de suppression du compte. <strong>Cela ne signifie pas que votre compte a déjà été supprimé.</strong>
+  - Par mesure de sécurité, %{waiting_period} après le premier e-mail de confirmation, vous en recevrez un deuxième qui contiendra le lien permettant poursuivre la suppression de votre compte.
+  - Si vous changez d’avis, vous pouvez annuler la suppression de votre compte à tout moment
+account_reset.confirm_request.security_note: Par mesure de sécurité, nous avons également envoyé un SMS à votre numéro de téléphone enregistré.
+account_reset.delete_account.are_you_sure: Êtes-vous sûr de vouloir supprimer votre compte ?
+account_reset.delete_account.info: La suppression de votre compte devrait être votre dernier recours si vous vous êtes fait bloquer de votre compte. Vous ne pourrez pas récupérer les informations liées à votre compte. Nous informerons les organismes auxquels vous accédez avec %{app_name} que vous ne disposez plus d’un compte. Une fois votre compte supprimé, vous pouvez en créer un nouveau en utilisant la même adresse e-mail.
+account_reset.delete_account.title: La suppression de votre compte devrait être votre dernier recours
+account_reset.pending.cancel_request: Annuler la demande
+account_reset.pending.cancel_request_prompt_html: 'Si vous avez changé d’avis et souhaitez annuler la suppression de votre compte, cliquez sur le bouton «&nbsp;Annuler la demande&nbsp;» ci-dessous.'
+account_reset.pending.canceled: Nous avons annulé votre demande de suppression de votre compte.
+account_reset.pending.canceled_info: Votre demande de suppression de compte %{app_name} a été annulée. Vous pouvez continuer d’utiliser votre compte %{app_name} ou créer une nouvelle demande de suppression de compte.
+account_reset.pending.header: Vous avez demandé de supprimer votre compte
+account_reset.pending.wait_html: Il y a un délai d’attente de %{waiting_period} pour supprimer votre compte. Dans <strong>%{interval}</strong>, vous recevrez un e-mail avec des instructions pour terminer la suppression.
+account_reset.recover_options.yes_delete: Supprimer mon compte
+account_reset.recovery_option.cancel_deletion: Annuler la suppression
+account_reset.recovery_options.check_webauthn_platform_header: Utiliser le même appareil que celui sur lequel vous avez initialement configuré le déverrouillage facial ou tactile
+account_reset.recovery_options.check_webauthn_platform_help_link: déverrouillage facial ou tactile
+account_reset.recovery_options.check_webauthn_platform_info_html: Si vous aviez configuré le %{link_html} lors de la création de votre compte, veillez à utiliser le même appareil que celui sur lequel vous avez créé votre compte %{app_name}.
+account_reset.recovery_options.header: Êtes-vous sûr de vouloir supprimer votre compte ?
+account_reset.recovery_options.help_text: Si vous êtes bloqué et avez toujours besoin d’accéder à %{app_name}, essayez plutôt les mesures suivantes.
+account_reset.recovery_options.still_working: Cela ne fonctionne toujours pas ?
+account_reset.recovery_options.try_another_device: Essayer un autre appareil sur lequel vous avez peut-être sélectionné l’option « mémoriser l’appareil ».
+account_reset.recovery_options.try_method_again: Essayer à nouveau votre méthode d’authentification
+account_reset.recovery_options.try_method_description_html: Assurez-vous d’avoir accès aux méthodes d’authentification que vous aviez configurées lors de la création de votre compte, puis %{link_html}.
+account_reset.recovery_options.try_method_description_link: essayez à nouveau votre méthode d’authentification
+account_reset.recovery_options.use_device: Utiliser un autre appareil
+account_reset.request.account_delete_link: En savoir plus sur le processus de suppression d’un compte
+account_reset.request.choose_to_continue: 'Si vous décidez de mener à bien la suppression de votre compte, vous recevrez deux e-mails :'
+account_reset.request.continue_deletion: Voulez-vous poursuivre la suppression de votre compte ?
+account_reset.request.delete_account: Supprimer votre compte
+account_reset.request.delete_email1_html: <strong>E-mail 1:</strong> Vous recevrez tout d’abord un e-mail de confirmation. Cela <strong>ne signifie pas</strong> que votre compte a été supprimé à ce stade.
+account_reset.request.delete_email2_html: <strong>E-mail 2:</strong> %{interval} après le premier e-mail de confirmation, vous en recevrez un deuxième qui contiendra un lien vous permettant de poursuivre la suppression de votre compte. Pour cela, vous devez confirmer que vous voulez supprimer votre compte. Après cette étape, il n’est plus possible d’annuler la suppression d’un compte.
+account_reset.request.delete_request_details_html: Si vous ne parvenez toujours pas à vous connecter à l’aide des méthodes d’authentification que vous aviez configurées, vous pouvez supprimer votre compte puis en créer un nouveau. Supprimer votre compte n’efface aucune des informations que vous avez stockées auprès d’organismes publics.<br/>%{account_delete_link}.
+account_reset.request.no_cancel: Annuler
+account_reset.request.no_cancel2: Non, annuler la suppression du compte
+account_reset.request.yes_continue: Oui, continuer la suppression du compte
 account.connected_apps.associated_attributes_html: 'Connecté %{timestamp_html} avec :'
 account.connected_apps.associated_html: Connecté %{timestamp_html}
 account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs services de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos services actuellement connectés.
@@ -462,52 +515,6 @@ datetime.dotiw.seconds.one: 1 seconde
 datetime.dotiw.seconds.other: '%{count} secondes'
 datetime.dotiw.two_words_connector: ' et '
 datetime.dotiw.words_connector: ', '
-destructive_account_reset.cancel_request.are_you_sure: Êtes-vous sûr de vouloir annuler votre demande de suppression de compte ?
-destructive_account_reset.cancel_request.cancel: Quitter
-destructive_account_reset.cancel_request.cancel_button: Annuler la suppression du compte
-destructive_account_reset.cancel_request.title: Annuler la suppression du compte
-destructive_account_reset.confirm_delete_account.cta_html: Vous pouvez %{link_html} ou fermer cette fenêtre si vous avez terminé.
-destructive_account_reset.confirm_delete_account.info_html: Le compte pour <strong>%{email}</strong> a été supprimé. Nous avons envoyé un e-mail de confirmation de la suppression du compte.
-destructive_account_reset.confirm_delete_account.link_text: créer un nouveau compte
-destructive_account_reset.confirm_delete_account.title: Vous avez supprimé votre compte
-destructive_account_reset.confirm_request.close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
-destructive_account_reset.confirm_request.info_html:
-  - Nous avons envoyé un e-mail à <strong>%{email}</strong> pour lancer le processus de suppression du compte. Ce premier e-mail confirme que vous avez entamé le processus de suppression du compte. <strong>Cela ne signifie pas que votre compte a déjà été supprimé.</strong>
-  - Par mesure de sécurité, %{waiting_period} après le premier e-mail de confirmation, vous en recevrez un deuxième qui contiendra le lien permettant poursuivre la suppression de votre compte.
-  - Si vous changez d’avis, vous pouvez annuler la suppression de votre compte à tout moment
-destructive_account_reset.confirm_request.security_note: Par mesure de sécurité, nous avons également envoyé un SMS à votre numéro de téléphone enregistré.
-destructive_account_reset.delete_account.are_you_sure: Êtes-vous sûr de vouloir supprimer votre compte ?
-destructive_account_reset.delete_account.info: La suppression de votre compte devrait être votre dernier recours si vous vous êtes fait bloquer de votre compte. Vous ne pourrez pas récupérer les informations liées à votre compte. Nous informerons les organismes auxquels vous accédez avec %{app_name} que vous ne disposez plus d’un compte. Une fois votre compte supprimé, vous pouvez en créer un nouveau en utilisant la même adresse e-mail.
-destructive_account_reset.delete_account.title: La suppression de votre compte devrait être votre dernier recours
-destructive_account_reset.pending.cancel_request: Annuler la demande
-destructive_account_reset.pending.cancel_request_prompt_html: 'Si vous avez changé d’avis et souhaitez annuler la suppression de votre compte, cliquez sur le bouton «&nbsp;Annuler la demande&nbsp;» ci-dessous.'
-destructive_account_reset.pending.canceled: Nous avons annulé votre demande de suppression de votre compte.
-destructive_account_reset.pending.canceled_info: Votre demande de suppression de compte %{app_name} a été annulée. Vous pouvez continuer d’utiliser votre compte %{app_name} ou créer une nouvelle demande de suppression de compte.
-destructive_account_reset.pending.header: Vous avez demandé de supprimer votre compte
-destructive_account_reset.pending.wait_html: Il y a un délai d’attente de %{waiting_period} pour supprimer votre compte. Dans <strong>%{interval}</strong>, vous recevrez un e-mail avec des instructions pour terminer la suppression.
-destructive_account_reset.recover_options.yes_delete: Supprimer mon compte
-destructive_account_reset.recovery_option.cancel_deletion: Annuler la suppression
-destructive_account_reset.recovery_options.check_webauthn_platform_header: Utiliser le même appareil que celui sur lequel vous avez initialement configuré le déverrouillage facial ou tactile
-destructive_account_reset.recovery_options.check_webauthn_platform_help_link: déverrouillage facial ou tactile
-destructive_account_reset.recovery_options.check_webauthn_platform_info_html: Si vous aviez configuré le %{link_html} lors de la création de votre compte, veillez à utiliser le même appareil que celui sur lequel vous avez créé votre compte %{app_name}.
-destructive_account_reset.recovery_options.header: Êtes-vous sûr de vouloir supprimer votre compte ?
-destructive_account_reset.recovery_options.help_text: Si vous êtes bloqué et avez toujours besoin d’accéder à %{app_name}, essayez plutôt les mesures suivantes.
-destructive_account_reset.recovery_options.still_working: Cela ne fonctionne toujours pas ?
-destructive_account_reset.recovery_options.try_another_device: Essayer un autre appareil sur lequel vous avez peut-être sélectionné l’option « mémoriser l’appareil ».
-destructive_account_reset.recovery_options.try_method_again: Essayer à nouveau votre méthode d’authentification
-destructive_account_reset.recovery_options.try_method_description_html: Assurez-vous d’avoir accès aux méthodes d’authentification que vous aviez configurées lors de la création de votre compte, puis %{link_html}.
-destructive_account_reset.recovery_options.try_method_description_link: essayez à nouveau votre méthode d’authentification
-destructive_account_reset.recovery_options.use_device: Utiliser un autre appareil
-destructive_account_reset.request.account_delete_link: En savoir plus sur le processus de suppression d’un compte
-destructive_account_reset.request.choose_to_continue: 'Si vous décidez de mener à bien la suppression de votre compte, vous recevrez deux e-mails :'
-destructive_account_reset.request.continue_deletion: Voulez-vous poursuivre la suppression de votre compte ?
-destructive_account_reset.request.delete_account: Supprimer votre compte
-destructive_account_reset.request.delete_email1_html: <strong>E-mail 1:</strong> Vous recevrez tout d’abord un e-mail de confirmation. Cela <strong>ne signifie pas</strong> que votre compte a été supprimé à ce stade.
-destructive_account_reset.request.delete_email2_html: <strong>E-mail 2:</strong> %{interval} après le premier e-mail de confirmation, vous en recevrez un deuxième qui contiendra un lien vous permettant de poursuivre la suppression de votre compte. Pour cela, vous devez confirmer que vous voulez supprimer votre compte. Après cette étape, il n’est plus possible d’annuler la suppression d’un compte.
-destructive_account_reset.request.delete_request_details_html: Si vous ne parvenez toujours pas à vous connecter à l’aide des méthodes d’authentification que vous aviez configurées, vous pouvez supprimer votre compte puis en créer un nouveau. Supprimer votre compte n’efface aucune des informations que vous avez stockées auprès d’organismes publics.<br/>%{account_delete_link}.
-destructive_account_reset.request.no_cancel: Annuler
-destructive_account_reset.request.no_cancel2: Non, annuler la suppression du compte
-destructive_account_reset.request.yes_continue: Oui, continuer la suppression du compte
 devise.confirmations.already_confirmed: Votre adresse e-mail a déjà été confirmée. %{action}
 devise.confirmations.confirmed: Vous avez confirmé votre adresse e-mail
 devise.confirmations.confirmed_but_must_set_password: Vous avez confirmé votre adresse e-mail
@@ -690,7 +697,6 @@ doc_auth.headings.upload_from_phone: Utilisez votre téléphone
 doc_auth.headings.verify_at_post_office: Vous rendre à un bureau de poste participant
 doc_auth.headings.verify_identity: Confirmer votre identité
 doc_auth.headings.verify_online: Confirmer votre identité en ligne
-doc_auth.headings.verify_with_existing_account: Vérifiez avec votre compte existant
 doc_auth.headings.welcome: Vérifions votre identité auprès de %{sp_name}
 doc_auth.headings.welcome_sp_reproof: Vérifiez à nouveau votre identité pour %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Vous utilisez <strong>%{app_name}</strong> pour accéder à <strong>%{service_provider_name}</strong>. Ajoutez uniquement votre pièce d’identité si vous avez demandé à %{app_name} de vérifier votre identité à l’aide de votre téléphone.
@@ -762,8 +768,6 @@ doc_auth.info.verify_online_description_mdl_and_passport_card: Vous pouvez utili
 doc_auth.info.verify_online_instruction: Vous devrez photographier votre pièce d’identité pour vérifier votre identité en ligne.
 doc_auth.info.verify_online_instruction_selfie: Prenez un selfie et des photos de votre pièce d’identité.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
-doc_auth.info.verify_with_clear1: 'Vous avez déjà utilisé CLEAR® ? Vérifiez en quelques secondes en prenant un selfie.'
-doc_auth.info.verify_with_clear1_link_text: En savoir plus sur la liaison des comptes
 doc_auth.info.welcome_sp_reproof_alert: Pour votre sécurité, %{sp_name} exige que vous vérifiiez à nouveau votre identité.
 doc_auth.info.you_entered: 'Vous avez saisi :'
 doc_auth.instructions.bullet1: Posséder un passeport américain (livret ou carte), un permis de conduire américain ou une carte d’identité délivrée par un État.
@@ -990,8 +994,6 @@ forms.buttons.submit.confirm_change: Confirmer le changement
 forms.buttons.submit.default: Valider
 forms.buttons.submit.update: Mettre à jour
 forms.buttons.upload_photos: Télécharger des photos
-forms.buttons.verify_with: Verify with
-forms.buttons.verify_with_clear1: Verify with CLEAR
 forms.confirmation.show_hdr: Créer un mot de passe fort
 forms.email.buttons.delete: Supprimer l’adresse e-mail
 forms.example: 'Exemple :'
@@ -1111,7 +1113,6 @@ help_text.requested_attributes.all_emails: Adresses e-mail sur votre compte
 help_text.requested_attributes.birthdate: Date de naissance
 help_text.requested_attributes.change_email_link: Modifier
 help_text.requested_attributes.consent_reminder_html: Vous devez consentir chaque année au partage de vos informations avec %{sp_html}.
-help_text.requested_attributes.document_images_html: 'Pour appuyer votre demande, %{sp_html} recevra également les photos de vos pièces d’identité et le selfie que vous avez pris lors de la vérification de votre identité. Ces images ne sont partagées qu’à des fins de décision d’identité.'
 help_text.requested_attributes.email: Adresse e-mail
 help_text.requested_attributes.full_name: Nom complet
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Étant donné que vous avez revérifié votre identité, nous avons besoin de votre autorisation pour partager ces informations avec %{sp_html} :'
@@ -1591,7 +1592,7 @@ instructions.password.strength.strong: Forte
 instructions.password.strength.too_common: Trop courant
 instructions.sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à %{app_name}. Veuillez contacter %{sp_link} pour obtenir de l’aide.
 instructions.sp_handoff_bounced_with_no_sp: votre fournisseur de service
-links.accessibility_and_languages: Accessibilité et langues
+links.accessibility_statement: Déclaration sur l’accessibilité
 links.account.reactivate.with_key: J’ai ma clé
 links.account.reactivate.without_key: Je n’ai pas ma clé
 links.back_to_sp: Retour à %{sp}
@@ -1881,8 +1882,6 @@ sign_up.agree_and_continue: Accepter et continuer
 sign_up.cancel.success: Votre compte a été supprimé. Nous n’avons pas sauvegardé vos informations.
 sign_up.cancel.warning_header: 'Si vous annulez maintenant :'
 sign_up.completed.smiling_image_alt: Une personne souriante avec une coche verte indiquant la réussite de la procédure
-sign_up.document_images_sharing_consent_label: Je consens à partager les photos de mes pièces d’identité et mon selfie de vérification d’identité avec %{sp} à des fins de décision d’identité.
-sign_up.document_images_sharing_consent_required: Vous devez consentir au partage des photos de vos pièces d’identité et de votre selfie pour continuer, ou annuler.
 sign_up.information_sharing_html: Pour savoir comment %{app_name} partage vos informations, consultez notre déclaration relative à la %{link_html}.
 sign_up.nds_terms_intro: En continuant, vous acceptez les
 sign_up.terms: J’ai lu et j’accepte les %{app_name}
@@ -1910,9 +1909,6 @@ step_indicator.status.complete: Étape effectuée
 step_indicator.status.current: Étape en cours
 step_indicator.status.not_complete: Étape non effectuée
 step_indicator.substep: Sous-étape %{current} sur %{total}
-sts_consent.check_box_to_consent: I consent to allow %{america_gov_name} to access, share my information, and take actions on my behalf with MyTravelGov.
-sts_consent.content: '%{america_gov_name} uses AI to connect to your %{app_name} account, automatically signing you in and pre-filling government forms.'
-sts_consent.heading: Let %{america_gov_name} work with agencies on your behalf
 time.am: A.M.
 time.formats.event_date: '%-d %B %Y'
 time.formats.event_time: '%-l h %M %p'
@@ -1985,7 +1981,6 @@ titles.sign_up.completion_new_attributes: '%{sp} demande de nouvelles informatio
 titles.sign_up.completion_new_sp: Vous vous connectez pour la première fois
 titles.sign_up.completion_reverified_consent: Partager vos informations mises à jour avec %{sp}
 titles.sign_up.confirmation: Continuer à vous connecter
-titles.sts_consent: Let %{america_gov_name} work with agencies on your behalf
 titles.totp_setup.new: Ajouter une appli d’authentification
 titles.two_factor_setup: Configuration de l’authentification à deux facteurs
 titles.verify_email: Consulter vos e-mails
@@ -1993,6 +1988,9 @@ titles.visitors.index: Bienvenue
 titles.webauthn_setup: Ajouter votre clé de sécurité
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> nécessite une méthode d’authentification de haute sécurité, telle que le déverrouillage facial ou tactile, une clé de sécurité ou une carte d’employé fédéral.'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> nécessite votre carte d’employé fédéral, qui est une méthode d’authentification de haute sécurité.'
+two_factor_authentication.account_recovery.delete_link: delete your account
+two_factor_authentication.account_recovery.delete_text_html: If you can’t recover your account, you can %{link_html} and make a new one.
+two_factor_authentication.piv_cac_mismatch.instructions_recovery: If you cannot use your government employee ID, recover your account to replace your authentication methods.
 two_factor_authentication.account_recovery.pending_link: View your account recovery request
 two_factor_authentication.account_recovery.recover_link: recover your account
 two_factor_authentication.account_recovery.recover_text_html: If you can’t use any of your authentication methods above to access your account, you can %{link_html} to reset your authentication methods.
@@ -2088,7 +2086,6 @@ two_factor_authentication.piv_cac_mismatch.cta: S’authentifier et ajouter une 
 two_factor_authentication.piv_cac_mismatch.delete_account: Supprimer votre compte
 two_factor_authentication.piv_cac_mismatch.instructions: Cliquez sur « S’authentifier et ajouter une carte PIV/CAC » ci-dessous pour vous authentifier au moyen d’une autre méthode avant d’ajouter cette carte PIV/CAC à votre compte.
 two_factor_authentication.piv_cac_mismatch.instructions_no_other_method: Si l’on vous a à nouveau délivré une carte PIV/CAC, vous devez supprimer votre compte %{app_name} et en créer un nouveau pour l’utiliser.
-two_factor_authentication.piv_cac_mismatch.instructions_recovery: If you cannot use your government employee ID, recover your account to replace your authentication methods.
 two_factor_authentication.piv_cac_mismatch.skip: Sauter l’ajout de carte PIV/CAC
 two_factor_authentication.piv_cac_mismatch.title: Cette carte d’employé fédéral n’est pas associée à votre compte.
 two_factor_authentication.piv_cac_upsell.add_piv: Ajouter une carte PIV/CAC
@@ -2166,9 +2163,22 @@ user_mailer.account_connected_to_sp.sign_in_link: connectez-vous à votre compte
 user_mailer.account_connected_to_sp.subject: Vous avez connecté votre compte à %{sp_name}
 user_mailer.account_disconnected_from_sp.intro: Rendez-vous sur %{sp_name} si vous souhaitez réactiver votre compte.
 user_mailer.account_disconnected_from_sp.subject: Vous avez déconnecté %{sp_name} de votre compte.
+user_mailer.account_recovery_cancelled.header: Your %{app_name} account recovery request was canceled
+user_mailer.account_recovery_cancelled.intro: Your request to recover your %{app_name} account has been canceled. Your account has not been changed.
+user_mailer.account_recovery_cancelled.methods_unchanged: Your existing authentication methods still work. You can sign in as usual.
+user_mailer.account_recovery_cancelled.report_html: If you did not expect this, report suspicious activity by contacting %{contact_link_html}.
+user_mailer.account_recovery_cancelled.subject: Your %{app_name} account recovery request was canceled
+user_mailer.account_recovery_granted.button: Recover my account
+user_mailer.account_recovery_granted.cancel_link_text: Sign in and authenticate with your %{app_name} to cancel your account recovery request
+user_mailer.account_recovery_granted.expires: This link expires in %{interval}.
+user_mailer.account_recovery_granted.header: Recover your %{app_name} account
+user_mailer.account_recovery_granted.intro: The waiting period for your %{app_name} account recovery request is over. Use the link below to add new authentication methods.
+user_mailer.account_recovery_granted.password_reminder: You will be asked to enter your password before you can add new authentication methods.
+user_mailer.account_recovery_granted.subject: Recover your %{app_name} account
+user_mailer.account_recovery_granted.unrequested_html: 'Don’t need to recover your account? %{cancel_link_html}.'
 user_mailer.account_recovery_request.change_password: Immediately change your password.
 user_mailer.account_recovery_request.header: How to recover your %{app_name} account
-user_mailer.account_recovery_request.intro: For your security, %{app_name} has a two-step process to recover your account.
+user_mailer.account_recovery_request.intro: For your security, %{app_name} has a two-step process to recover your account. We received your request, but your account has not been recovered or deleted.
 user_mailer.account_recovery_request.report_html: Report suspicious activity by contacting %{contact_link_html}.
 user_mailer.account_recovery_request.review_history: Check your account activity by going to the “History” page in the side menu.
 user_mailer.account_recovery_request.review_methods: Review your authentication methods to ensure they are up to date and secure.
@@ -2177,7 +2187,7 @@ user_mailer.account_recovery_request.step_one.title: Wait %{interval}
 user_mailer.account_recovery_request.step_two.body: After %{interval}, you will receive a link to add new authentication methods and recover your account.
 user_mailer.account_recovery_request.step_two.title: Recover your account
 user_mailer.account_recovery_request.subject: Your request to recover your %{app_name} account
-user_mailer.account_recovery_request.unrequested_html: '<strong>If this wasn’t you:</strong> Do not use any recovery links. Sign in and authenticate with your %{app_name} account to cancel your account recovery request, then:'
+user_mailer.account_recovery_request.unrequested_html: '<strong>If this wasn’t you:</strong> Do not use any recovery links. Sign in and authenticate with your %{app_name} account, then:'
 user_mailer.account_reinstated.subject: Votre compte est déverrouillé
 user_mailer.account_reinstated.we_have_finished_reviewing: Nous avons terminé l’examen de votre compte %{app_name} et vous pouvez maintenant vous reconnecter avec les informations de votre compte.
 user_mailer.account_rejected.intro: Nous n’avons pas pu vérifier votre identité avec %{app_name}. Veuillez contacter l’organisme dont vous essayez d’accéder au service.

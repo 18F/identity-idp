@@ -1,0 +1,22 @@
+<% self.title = t('account_recovery.pending_mfa_setup.header') %>
+
+<%= render AlertIconComponent.new(icon_name: :info_question, class: 'margin-bottom-4') %>
+
+<%= render PageHeadingComponent.new.with_content(
+      t('account_recovery.pending_mfa_setup.header'),
+    ) %>
+
+<p><%= t('account_recovery.pending_mfa_setup.intro') %></p>
+
+<p><%= t('account_recovery.pending_mfa_setup.methods_still_work') %></p>
+
+<%= render TroubleshootingOptionsComponent.new do |c| %>
+  <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
+  <% c.with_option(
+       url: MarketingSite.help_center_article_url(
+         category: 'trouble-signing-in',
+         article: 'issues-with-authentication-methods',
+       ),
+       new_tab: true,
+     ).with_content(t('account_recovery.pending_mfa_setup.help')) %>
+<% end %>

@@ -274,6 +274,10 @@ module Users
         device_profiling_failed_url
       elsif pending_account_reset_request.present?
         account_reset_pending_url
+      elsif redeemed_account_recovery_request?
+        account_recovery_verify_url
+      elsif pending_account_recovery_request?
+        login_two_factor_options_url
       elsif current_user.accepted_rules_of_use_still_valid?
         pending_account_recovery_request? ?
           login_two_factor_options_url : user_two_factor_authentication_url
@@ -288,8 +292,33 @@ module Users
       ).get_account_reset_request
     end
 
+    # Only resume recovery without a token after both factors were verified.
+    def redeemed_account_recovery_request?
+      active_account_recovery_request&.state == AccountRecoveryRequest::PASSWORD_VERIFIED
+    end
+
     def pending_account_recovery_request?
-      AccountRecoveryRequest.active.exists?(user: current_user)
+      !!active_account_recovery_request&.awaiting_link_redemption?
+    end
+
+    # Expires a lapsed, unredeemed request before routing so the user is sent to
+    # the MFA challenge rather than to a pending page for a link that can no
+    # longer be redeemed.
+    def active_account_recovery_request
+      return @active_account_recovery_request if defined?(@active_account_recovery_request)
+
+      recovery_request = AccountRecoveryRequest.active_for_user(current_user)
+
+      expired = AccountRecovery::ReconcileRequest.new(
+        account_recovery_request: recovery_request,
+      ).call
+
+      if expired
+        analytics.account_recovery_expired(count: 1)
+        recovery_request = nil
+      end
+
+      @active_account_recovery_request = recovery_request
     end
 
     def override_csp_for_google_analytics
