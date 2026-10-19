@@ -69,6 +69,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_scope
   validate :validate_unauthorized_scope
   validate :validate_privileges
+  validate :validate_document_images_scope
   validate :validate_prompt
   validate :validate_verified_within_format, if: :verified_within_allowed?
   validate :validate_verified_within_duration, if: :verified_within_allowed?
@@ -201,9 +202,23 @@ class OpenidConnectAuthorizeForm
 
   def check_for_unauthorized_scope(params)
     param_value = params[:scope]
-    return false if identity_proofing_requested_or_default? || param_value.blank?
+    return false if param_value.blank?
+
+    requested_scopes = param_value.split(' ').compact
+
+    requested_token_exchange_scopes = requested_token_exchange_scopes(requested_scopes)
+
+    if token_exchange_scope_available? && requested_token_exchange_scopes.present?
+      return true unless broker_request?
+
+      # if there are any requested scopes that are not allowed
+      return true if (requested_token_exchange_scopes - token_exchange_scopes).present?
+    end
+
+    return false if identity_proofing_requested_or_default?
     return true if verified_at_requested? && !identity_proofing_service_provider?
-    @scope != param_value.split(' ').compact
+
+    @scope != requested_scopes
   end
 
   def parse_to_values(param_value, possible_values)
@@ -248,6 +263,16 @@ class OpenidConnectAuthorizeForm
     errors.add(
       :scope, t('openid_connect.authorization.errors.unauthorized_scope'),
       type: :unauthorized_scope
+    )
+  end
+
+  def validate_document_images_scope
+    return unless scope.include?('document_images')
+    return if service_provider&.document_images_sharing_allowed?
+
+    errors.add(
+      :scope, t('openid_connect.authorization.errors.no_valid_scope'),
+      type: :no_valid_scope
     )
   end
 
@@ -321,10 +346,35 @@ class OpenidConnectAuthorizeForm
   end
 
   def scopes
+    return base_scopes unless token_exchange_scope_available?
+
+    base_scopes + token_exchange_scopes
+  end
+
+  def requested_token_exchange_scopes(requested_scopes)
+    requested_scopes.select { |scope| TokenExchange::Constants.in_scope?(scope) }
+  end
+
+  def base_scopes
     if identity_proofing_requested_or_default?
-      return OpenidConnectAttributeScoper::VALID_SCOPES
+      OpenidConnectAttributeScoper::VALID_SCOPES
+    else
+      OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
     end
-    OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
+  end
+
+  def token_exchange_scope_available?
+    IdentityConfig.store.token_exchange_enabled
+  end
+
+  def broker_request?
+    service_provider&.token_exchange_broker?
+  end
+
+  def token_exchange_scopes
+    IdentityConfig.store.token_exchange_allowed_targets.map do |target|
+      "#{TokenExchange::Constants::SCOPE_PREFIX}#{target.fetch(:scope)}"
+    end
   end
 
   def validate_privileges

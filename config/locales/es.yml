@@ -708,6 +708,7 @@ doc_auth.headings.upload_from_phone: Use su teléfono
 doc_auth.headings.verify_at_post_office: Vaya a una oficina de correos participante
 doc_auth.headings.verify_identity: Verifique su identidad
 doc_auth.headings.verify_online: Verifique su identidad en línea
+doc_auth.headings.verify_with_existing_account: Verifique su identidad con una cuenta existente
 doc_auth.headings.welcome: Verifiquemos su identidad para %{sp_name}
 doc_auth.headings.welcome_sp_reproof: Verifique su identidad nuevamente para %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Está usando <strong>%{app_name}</strong> para acceder a <strong>%{service_provider_name}</strong>. Solo agregue su identificación si solicitó a %{app_name} verificar su identidad usando su teléfono.
@@ -779,6 +780,8 @@ doc_auth.info.verify_online_description_mdl_and_passport_card: Puede usar una li
 doc_auth.info.verify_online_instruction: Deberá tomar fotos de su documento de identidad para verificar su identidad en línea.
 doc_auth.info.verify_online_instruction_selfie: Tómese una selfi y fotos de su identificación.
 doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea
+doc_auth.info.verify_with_clear1: '¿Ha usado CLEAR® antes? Verifique su identidad en segundos con una selfi.'
+doc_auth.info.verify_with_clear1_link_text: Más información sobre cómo vincular cuentas
 doc_auth.info.welcome_sp_reproof_alert: Por su seguridad, %{sp_name} requiere que verifique su identidad nuevamente.
 doc_auth.info.you_entered: 'Usted ingresó:'
 doc_auth.instructions.bullet1: Tener un libreta o tarjeta de pasaporte, licencia de conducir o una tarjeta de identificación estatal de los EE. UU.
@@ -1005,6 +1008,8 @@ forms.buttons.submit.confirm_change: Confirmar cambio
 forms.buttons.submit.default: Enviar
 forms.buttons.submit.update: Actualizar
 forms.buttons.upload_photos: Cargar fotos
+forms.buttons.verify_with: Verify with
+forms.buttons.verify_with_clear1: Verify with CLEAR
 forms.confirmation.show_hdr: Crear una contraseña segura
 forms.email.buttons.delete: Eliminar dirección de correo electrónico
 forms.example: 'Ejemplo:'
@@ -1124,6 +1129,7 @@ help_text.requested_attributes.all_emails: Direcciones de correo electrónico en
 help_text.requested_attributes.birthdate: Fecha de nacimiento
 help_text.requested_attributes.change_email_link: Cambiar
 help_text.requested_attributes.consent_reminder_html: Debe dar su consentimiento cada año para divulgar su información a %{sp_html}.
+help_text.requested_attributes.document_images_html: 'Para respaldar su solicitud, %{sp_html} también recibirá las fotos de sus documentos de identidad y la selfie que tomó al verificar su identidad. Estas imágenes se comparten únicamente para la adjudicación de identidad.'
 help_text.requested_attributes.email: Dirección de correo electrónico
 help_text.requested_attributes.full_name: Nombre completo
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp_html}:'
@@ -1603,7 +1609,7 @@ instructions.password.strength.strong: Fuerte
 instructions.password.strength.too_common: Demasiado común
 instructions.sp_handoff_bounced: Logró iniciar sesión, pero %{sp_name} lo envió de nuevo a %{app_name}. Contacte con %{sp_link} para obtener ayuda.
 instructions.sp_handoff_bounced_with_no_sp: su proveedor de servicios
-links.accessibility_statement: Declaración de accesibilidad
+links.accessibility_and_languages: Accesibilidad e idiomas
 links.account.reactivate.with_key: Tengo mi clave
 links.account.reactivate.without_key: No tengo mi clave
 links.back_to_sp: Volver a %{sp}
@@ -1893,6 +1899,8 @@ sign_up.agree_and_continue: Aceptar y continuar
 sign_up.cancel.success: Su cuenta fue eliminada. No guardamos su información.
 sign_up.cancel.warning_header: 'Si cancela ahora:'
 sign_up.completed.smiling_image_alt: Una persona sonriente con una marca de verificación verde
+sign_up.document_images_sharing_consent_label: Doy mi consentimiento para compartir las fotos de mis documentos de identidad y la selfie de verificación de identidad con %{sp} para la adjudicación de identidad.
+sign_up.document_images_sharing_consent_required: Debe dar su consentimiento para compartir las fotos de sus documentos de identidad y su selfie para continuar, o cancelar.
 sign_up.information_sharing_html: Para saber cómo %{app_name} comparte su información, consulte nuestra %{link_html}.
 sign_up.nds_terms_intro: Al continuar, acepta las
 sign_up.terms: Leí y acepto %{app_name}
@@ -1920,7 +1928,10 @@ step_indicator.status.complete: Completado
 step_indicator.status.current: Este paso
 step_indicator.status.not_complete: No completado
 step_indicator.substep: Subpaso %{current} de %{total}
-time.am: a. m.
+sts_consent.check_box_to_consent: I consent to allow %{america_gov_name} to access, share my information, and take actions on my behalf with MyTravelGov.
+sts_consent.content: '%{america_gov_name} uses AI to connect to your %{app_name} account, automatically signing you in and pre-filling government forms.'
+sts_consent.heading: Let %{america_gov_name} work with agencies on your behalf
+time.am: a. m.
 time.formats.event_date: '%-d de %B de %Y'
 time.formats.event_time: '%-l:%M %p'
 time.formats.event_timestamp: '%B %-d, %Y a las %-l:%M %p'
@@ -1992,6 +2003,7 @@ titles.sign_up.completion_new_attributes: '%{sp} está solicitando nueva informa
 titles.sign_up.completion_new_sp: Está iniciando sesión por primera vez
 titles.sign_up.completion_reverified_consent: Comunique su información actualizada a %{sp}
 titles.sign_up.confirmation: Continuar para iniciar sesión
+titles.sts_consent: Let %{america_gov_name} work with agencies on your behalf
 titles.totp_setup.new: Agregar aplicación de autenticación
 titles.two_factor_setup: Configuración de autenticación de dos factores
 titles.verify_email: Revise su correo electrónico

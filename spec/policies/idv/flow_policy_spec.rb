@@ -385,7 +385,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         root: %i[welcome request_letter],
         welcome: %i[agreement hybrid_handoff choose_id_type document_capture how_to_verify],
         agreement: %i[hybrid_handoff choose_id_type document_capture how_to_verify],
-        how_to_verify: %i[choose_id_type document_capture],
+        how_to_verify: %i[choose_id_type document_capture clear1_session],
         hybrid_handoff: %i[choose_id_type link_sent document_capture socure_document_capture
                            clear1_session],
         choose_id_type: %i[document_capture],

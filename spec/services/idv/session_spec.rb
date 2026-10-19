@@ -130,6 +130,107 @@ RSpec.describe Idv::Session do
       subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
     end
 
+    context 'when escrowed document artifacts exist for the capture session' do
+      let(:service_provider) { create(:service_provider) }
+      let(:document_capture_session) do
+        create(:document_capture_session, user:, issuer: service_provider.issuer)
+      end
+      let!(:artifact) do
+        create(:document_artifact, document_capture_session:, image_type: 'front')
+      end
+      let!(:metadata) do
+        create(:document_metadata, document_capture_session:)
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          document_images_sharing_enabled: true,
+          document_images_sharing_service_providers: [service_provider.issuer],
+        )
+        subject.document_capture_session_uuid = document_capture_session.uuid
+        subject.doc_auth_vendor = Idp::Constants::Vendors::SOCURE
+      end
+
+      it 'associates the artifacts with the newly created profile' do
+        subject.create_profile_from_applicant_with_password(
+          user.password, is_enhanced_ipp:, proofing_components:
+        )
+
+        expect(artifact.reload.profile_id).to eq(subject.profile.id)
+      end
+
+      it 'associates the document metadata with the newly created profile' do
+        subject.create_profile_from_applicant_with_password(
+          user.password, is_enhanced_ipp:, proofing_components:
+        )
+
+        expect(metadata.reload.profile_id).to eq(subject.profile.id)
+      end
+
+      it 'stamps the capture session with the profile it produced, for late-arriving jobs' do
+        subject.create_profile_from_applicant_with_password(
+          user.password, is_enhanced_ipp:, proofing_components:
+        )
+
+        expect(document_capture_session.reload.profile_id).to eq(subject.profile.id)
+      end
+
+      context 'when the profile was built from another proofer after a Socure attempt' do
+        before { subject.doc_auth_vendor = Idp::Constants::Vendors::LEXIS_NEXIS }
+
+        it 'does not stamp or link the Socure artifacts to the profile' do
+          subject.create_profile_from_applicant_with_password(
+            user.password, is_enhanced_ipp:, proofing_components:
+          )
+
+          expect(artifact.reload.profile_id).to be_nil
+          expect(metadata.reload.profile_id).to be_nil
+          expect(document_capture_session.reload.profile_id).to be_nil
+        end
+      end
+
+      context 'when the SP that started the capture session is not allow-listed' do
+        before do
+          allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+            .and_return([])
+        end
+
+        it 'does not stamp or link the capture session' do
+          subject.create_profile_from_applicant_with_password(
+            user.password, is_enhanced_ipp:, proofing_components:
+          )
+
+          expect(artifact.reload.profile_id).to be_nil
+          expect(metadata.reload.profile_id).to be_nil
+          expect(document_capture_session.reload.profile_id).to be_nil
+        end
+      end
+
+      context 'when the user abandoned remote proofing and is verifying in person instead' do
+        let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user) }
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.with_indifferent_access
+          allow(UspsInPersonProofing::EnrollmentHelper)
+            .to receive(:schedule_in_person_enrollment) do
+              user.establishing_in_person_enrollment.update!(status: :pending)
+            end
+        end
+
+        it 'does not stamp or link the remote images to the in-person profile' do
+          subject.create_profile_from_applicant_with_password(
+            user.password, is_enhanced_ipp:, proofing_components:
+          )
+
+          expect(subject.profile.in_person_verification_pending?).to eq(true)
+          expect(artifact.reload.profile_id).to be_nil
+          expect(metadata.reload.profile_id).to be_nil
+          expect(document_capture_session.reload.profile_id).to be_nil
+        end
+      end
+    end
+
     context 'with phone verifed by vendor' do
       before do
         subject.address_verification_mechanism = 'phone'

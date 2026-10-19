@@ -575,7 +575,6 @@ RSpec.describe DocumentCaptureSession do
         doc_auth_vendor: nil,
         socure_docv_capture_app_url: nil,
         socure_docv_transaction_token: nil,
-        passport_cards_supported: false,
       )
 
       expect(record.passport_requested?).to eq(true)
@@ -668,7 +667,6 @@ RSpec.describe DocumentCaptureSession do
         doc_auth_vendor: nil,
         socure_docv_capture_app_url: nil,
         socure_docv_transaction_token: nil,
-        passport_cards_supported: false,
       )
 
       expect(record.passport_requested?).to eq(true)
@@ -898,6 +896,142 @@ RSpec.describe DocumentCaptureSession do
         expect(record.state_id_requested?).to eq(false)
         expect(record.mdl_requested?).to eq(true)
       end
+    end
+  end
+
+  describe '#associate_document_artifacts_with_profile!' do
+    let(:session) { create(:document_capture_session) }
+    let(:profile) { create(:profile, user: session.user) }
+    let!(:artifact) { create(:document_artifact, document_capture_session: session) }
+    let!(:metadata) { create(:document_metadata, document_capture_session: session) }
+
+    it 'stamps the session and links its artifacts and metadata to the profile' do
+      session.associate_document_artifacts_with_profile!(profile)
+
+      expect(session.reload.profile_id).to eq(profile.id)
+      expect(artifact.reload.profile_id).to eq(profile.id)
+      expect(metadata.reload.profile_id).to eq(profile.id)
+    end
+
+    it 'takes the row lock' do
+      expect(session).to receive(:with_lock).and_call_original
+
+      session.associate_document_artifacts_with_profile!(profile)
+    end
+
+    context 'when an mDL was requested' do
+      before { session.update!(document_type_requested: Idp::Constants::DocumentTypes::MDL) }
+
+      it 'does not stamp or link anything' do
+        session.associate_document_artifacts_with_profile!(profile)
+
+        expect(session.reload.profile_id).to be_nil
+        expect(artifact.reload.profile_id).to be_nil
+        expect(metadata.reload.profile_id).to be_nil
+      end
+    end
+  end
+
+  describe '#discard_document_artifacts!' do
+    def sql_for(&block)
+      statements = []
+      callback = ->(*, payload) { statements << payload[:sql] }
+      ActiveSupport::Notifications.subscribed(callback, 'sql.active_record', &block)
+      statements
+    end
+
+    let(:session) { create(:document_capture_session) }
+    let!(:unlinked_artifact) { create(:document_artifact, document_capture_session: session) }
+    let!(:metadata) { create(:document_metadata, document_capture_session: session) }
+
+    it 'destroys artifacts and metadata not yet linked to a profile' do
+      session.discard_document_artifacts!
+
+      expect(DocumentArtifact.exists?(unlinked_artifact.id)).to eq(false)
+      expect(DocumentMetadata.exists?(metadata.id)).to eq(false)
+    end
+
+    context 'when an artifact is already linked to a profile' do
+      let(:profile) { create(:profile, user: session.user) }
+      let!(:linked_artifact) do
+        create(:document_artifact, document_capture_session: session, image_type: 'back', profile:)
+      end
+
+      it 'keeps the linked artifact' do
+        session.discard_document_artifacts!
+
+        expect(DocumentArtifact.exists?(linked_artifact.id)).to eq(true)
+      end
+    end
+
+    context 'when the metadata is already linked to a profile' do
+      let(:profile) { create(:profile, user: session.user) }
+
+      before { metadata.update!(profile:) }
+
+      it 'keeps the linked metadata' do
+        session.discard_document_artifacts!
+
+        expect(DocumentMetadata.exists?(metadata.id)).to eq(true)
+        expect(DocumentArtifact.exists?(unlinked_artifact.id)).to eq(false)
+      end
+    end
+
+    context 'when the capture session has no metadata' do
+      before { metadata.destroy! }
+
+      it 'destroys the unlinked artifacts' do
+        session.discard_document_artifacts!
+
+        expect(DocumentArtifact.exists?(unlinked_artifact.id)).to eq(false)
+      end
+    end
+
+    it 'locks the capture session row' do
+      expect(sql_for { session.discard_document_artifacts! })
+        .to include(a_string_matching(/FROM "document_capture_sessions".*FOR UPDATE/))
+    end
+
+    context 'when there is nothing to discard' do
+      let!(:other_session) { create(:document_capture_session) }
+
+      it 'does not lock the row' do
+        expect(sql_for { other_session.discard_document_artifacts! })
+          .not_to include(a_string_matching(/FOR UPDATE/))
+      end
+    end
+  end
+
+  describe '#document_images_sharing_allowed?' do
+    let(:service_provider) { create(:service_provider) }
+    let(:session) { create(:document_capture_session, issuer: service_provider.issuer) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:document_images_sharing_enabled).and_return(true)
+    end
+
+    context 'when the issuing SP is allow-listed' do
+      before do
+        allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+          .and_return([service_provider.issuer])
+      end
+
+      it { expect(session.document_images_sharing_allowed?).to eq(true) }
+    end
+
+    context 'when the issuing SP is not allow-listed' do
+      before do
+        allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+          .and_return([])
+      end
+
+      it { expect(session.document_images_sharing_allowed?).to eq(false) }
+    end
+
+    context 'when the capture session has no issuer' do
+      let(:session) { create(:document_capture_session, issuer: nil) }
+
+      it { expect(session.document_images_sharing_allowed?).to eq(false) }
     end
   end
 end

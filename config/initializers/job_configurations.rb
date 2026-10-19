@@ -51,6 +51,12 @@ else
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },
+      # Remove document artifact rows once their stored images have expired
+      expire_document_artifacts: {
+        class: 'ExpireDocumentArtifactsJob',
+        cron: cron_1h,
+        args: -> { [Time.zone.now] },
+      },
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
         class: 'Reports::TotalMonthlyAuthsReport',

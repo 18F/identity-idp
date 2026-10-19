@@ -105,6 +105,15 @@ class CompletionsPresenter
     end
   end
 
+  def document_images_sharing?
+    current_sp.document_images_sharing_allowed? &&
+      requested_attributes.map(&:to_s).include?('document_images')
+  end
+
+  def document_images_sharing_disclosure
+    t('help_text.requested_attributes.document_images_html', sp_html: content_tag(:strong, sp_name))
+  end
+
   private
 
   def first_time_signing_in?
