@@ -3,8 +3,10 @@ require 'rails_helper'
 RSpec.describe Idv::DocAuthVendorConcern, :controller do
   let(:document_type_requested) { nil }
   let(:doc_auth_vendor) { nil }
+  let(:service_provider) { create(:service_provider) }
+  let(:issuer) { service_provider.issuer }
   let(:document_capture_session) do
-    create(:document_capture_session, document_type_requested:, doc_auth_vendor:)
+    create(:document_capture_session, document_type_requested:, doc_auth_vendor:, issuer:)
   end
   let(:user) { document_capture_session.user }
   let(:bucket) { :mock }
@@ -183,6 +185,20 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
               .to eq(Idp::Constants::Vendors::SOCURE)
           end
         end
+      end
+    end
+
+    context 'image sharing allowed for sp' do
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          document_images_sharing_enabled: true,
+          document_images_sharing_service_providers: [issuer],
+        )
+      end
+
+      it 'returns Socure as the vendor' do
+        controller.update_doc_auth_vendor
+        expect(document_capture_session.doc_auth_vendor).to eq(Idp::Constants::Vendors::SOCURE)
       end
     end
   end

@@ -21,7 +21,10 @@ module Idv
     def bucketed_doc_auth_vendor(user)
       @bucketed_doc_auth_vendor ||= begin
         bucket = nil
-        if document_capture_session.mdl_requested?
+
+        if document_capture_session.document_images_sharing_allowed?
+          bucket = :socure
+        elsif document_capture_session.mdl_requested?
           bucket = :socure
         elsif resolved_authn_context_result.facial_match?
           if document_capture_session.passport_requested?
