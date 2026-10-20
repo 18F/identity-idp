@@ -51,6 +51,20 @@ RSpec.describe AccountRecovery::GrantRequest do
       expect(result.failure_reason).to eq(described_class::NOT_WAITING)
     end
 
+    it 'does not regrant or cancel a request advanced by another worker' do
+      stale_request = AccountRecoveryRequest.find(recovery_request.id)
+      expect(service.call).to be_success
+      granted_attributes = recovery_request.reload.attributes
+      allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+
+      result = described_class.new(account_recovery_request: stale_request).call
+
+      expect(result).not_to be_success
+      expect(result.failure_reason).to eq(described_class::NOT_WAITING)
+      expect(result.token).to be_nil
+      expect(stale_request.reload.attributes).to eq(granted_attributes)
+    end
+
     context 'when the user became ineligible during the waiting period' do
       it 'cancels the request rather than granting it' do
         create(:profile, :active, user: user)

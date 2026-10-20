@@ -25,26 +25,25 @@ module AccountRecovery
 
     # @return [Result]
     def call
-      # Eligibility is re-evaluated at every transition rather than trusted from
-      # request creation. A user who became identity-proofed, suspended, or
-      # fraud-restricted during the waiting period must not be granted a link.
-      return cancel_ineligible_request if !still_eligible?
+      account_recovery_request.with_lock do
+        if account_recovery_request.state != AccountRecoveryRequest::WAITING
+          return failure(NOT_WAITING)
+        end
 
-      if account_recovery_request.state != AccountRecoveryRequest::WAITING
-        return failure(NOT_WAITING)
+        return cancel_ineligible_request if !still_eligible?
+
+        token = TokenCreator.call
+
+        transitioned = account_recovery_request.transition_to!(
+          AccountRecoveryRequest::GRANTED,
+          token_fingerprint: token.fingerprint,
+          token_expires_at: token.expires_at,
+        )
+
+        return failure(TRANSITION_FAILED) if !transitioned
+
+        Result.new(success: true, token: token)
       end
-
-      token = TokenCreator.call
-
-      transitioned = account_recovery_request.transition_to!(
-        AccountRecoveryRequest::GRANTED,
-        token_fingerprint: token.fingerprint,
-        token_expires_at: token.expires_at,
-      )
-
-      return failure(TRANSITION_FAILED) if !transitioned
-
-      Result.new(success: true, token: token)
     end
 
     private
