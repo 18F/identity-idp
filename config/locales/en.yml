@@ -5,15 +5,12 @@ account_recovery.pending.cancel_success: Your account recovery request has been 
 account_recovery.pending.header: We received your account recovery request
 account_recovery.pending.help: How account recovery works
 account_recovery.pending.instructions: Keep your password available. You will need to enter it again before setting up new authentication methods. Your account and existing authentication methods have not been changed.
-account_recovery.pending.methods_still_work: Your current authentication methods still work while your recovery request is pending.
 account_recovery.pending.notification_html: We sent an email to <strong>%{email}</strong> with instructions to recover your account.
 account_recovery.pending.resend: Resend the recovery request email
 account_recovery.pending.resend_rate_limited: You have requested too many recovery emails. Please wait a few minutes before trying again.
 account_recovery.pending.resend_success: We sent another account recovery request email.
-account_recovery.pending.return_home: Return to the home page
 account_recovery.pending.status_header: Your account recovery request is pending
 account_recovery.pending.time_remaining: You have %{interval} left to wait before we send an email with a link to continue recovering your account.
-account_recovery.pending.view_status: Check your recovery request status
 account_recovery.pending.wait_ended: Your waiting period has ended. Check your email for a link with the next steps to recover your account. Your account has not been recovered yet.
 account_recovery.start.continue: Recover my account
 account_recovery.start.header: Are you sure you want to recover your account?

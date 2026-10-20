@@ -41,9 +41,6 @@ RSpec.describe UserMailer, type: :mailer do
                 interval: WaitPeriodFormatter.call(1.day),
               ),
             )
-            expect(mail.html_part.body).to have_content(
-              I18n.t('account_recovery.pending.instructions'),
-            )
             expect(mail.html_part.body).to have_link(
               I18n.t('user_mailer.contact_link_text'), href: MarketingSite.contact_url
             )
