@@ -35,6 +35,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       idv_socure_reason_codes_docv_mdl:,
       ruby_workers_idv_enabled: false,
       socure_docv_document_request_endpoint: fake_socure_docv_document_request_endpoint,
+      socure_docv_images_request_endpoint: 'https://fake-socure.test/docv/images/',
       socure_docv_enabled: true,
       socure_docv_webhook_repeat_endpoints:,
       socure_docv_webhook_secret_key:,
@@ -48,6 +49,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       attempts_api_tracker,
     )
     allow_any_instance_of(SocureDocvResultsJob).to receive(:analytics).and_return(fake_analytics)
+    stub_request(:get, %r{#{IdentityConfig.store.socure_docv_images_request_endpoint}})
     @docv_transaction_token = stub_docv_document_request(user:)
     reload_ab_tests
   end
@@ -1021,7 +1023,8 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
               before do
                 allow(IdentityConfig.store).to receive_messages(
                   doc_auth_post_validations_skip: true,
-                  allowed_ialmax_providers: sp_oidc_issuer,
+                  document_images_sharing_enabled: true,
+                  document_images_sharing_service_providers: [sp_oidc_issuer],
                 )
               end
 
@@ -1284,7 +1287,8 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         before do
           allow(IdentityConfig.store).to receive_messages(
             doc_auth_post_validations_skip: true,
-            allowed_ialmax_providers: sp_oidc_issuer,
+            document_images_sharing_enabled: true,
+            document_images_sharing_service_providers: [sp_oidc_issuer],
           )
         end
 
