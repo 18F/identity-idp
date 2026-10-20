@@ -80,7 +80,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       context 'when validation_requirments_met? is skipped' do
         before do
           allow(IdentityConfig.store).to receive_messages(
-            doc_auth_post_validations_skip: true,
+            document_images_sharing_skip_doc_auth_post_validations: true,
             document_images_sharing_service_providers: [issuer],
             document_images_sharing_enabled: true,
           )
@@ -160,7 +160,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
           context 'when validation_requirments_met? is skipped' do
             before do
               allow(IdentityConfig.store).to receive_messages(
-                doc_auth_post_validations_skip: true,
+                document_images_sharing_skip_doc_auth_post_validations: true,
                 document_images_sharing_enabled: true,
                 document_images_sharing_service_providers: [issuer],
               )
@@ -194,7 +194,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         context 'when validation_requirments_met? is skipped' do
           before do
             allow(IdentityConfig.store).to receive_messages(
-              doc_auth_post_validations_skip: true,
+              document_images_sharing_skip_doc_auth_post_validations: true,
               document_images_sharing_enabled: true,
               document_images_sharing_service_providers: [issuer],
             )
@@ -250,7 +250,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
             context 'when validation_requirments_met? is skipped' do
               before do
                 allow(IdentityConfig.store).to receive_messages(
-                  doc_auth_post_validations_skip: true,
+                  document_images_sharing_skip_doc_auth_post_validations: true,
                   document_images_sharing_enabled: true,
                   document_images_sharing_service_providers: [issuer],
                 )
@@ -271,10 +271,10 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
             expect(response.success?).to eq(false)
           end
 
-          context 'when doc_auth_post_validations_skip is false' do
+          context 'when document_images_sharing_skip_doc_auth_post_validations is false' do
             before do
               allow(IdentityConfig.store).to receive_messages(
-                doc_auth_post_validations_skip: false,
+                document_images_sharing_skip_doc_auth_post_validations: false,
                 document_images_sharing_enabled: true,
                 document_images_sharing_service_providers: [issuer],
               )
@@ -289,7 +289,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
           context 'when not an image sharing service provider' do
             before do
               allow(IdentityConfig.store).to receive_messages(
-                doc_auth_post_validations_skip: true,
+                document_images_sharing_skip_doc_auth_post_validations: true,
                 document_images_sharing_enabled: true,
                 document_images_sharing_service_providers: ['not-allowed'],
               )
@@ -303,7 +303,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
           context 'when validation_requirments_met? is skipped' do
             before do
               allow(IdentityConfig.store).to receive_messages(
-                doc_auth_post_validations_skip: true,
+                document_images_sharing_skip_doc_auth_post_validations: true,
                 document_images_sharing_enabled: true,
                 document_images_sharing_service_providers: [issuer],
               )
