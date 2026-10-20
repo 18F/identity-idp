@@ -171,13 +171,12 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
         allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
       end
 
-      it 'offers both recovery and deletion links' do
+      it 'offers recovery without linking to the legacy deletion flow' do
         expect(rendered).to have_link(
           t('two_factor_authentication.account_recovery.recover_link'),
           href: account_recovery_start_path(locale: LinkLocaleResolver.locale),
         )
-        expect(rendered).to have_link(
-          t('two_factor_authentication.account_recovery.delete_link'),
+        expect(rendered).not_to have_link(
           href: account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
         )
       end

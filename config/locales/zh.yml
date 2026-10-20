@@ -6,7 +6,7 @@ account_recovery.pending.header: We received your account recovery request
 account_recovery.pending.help: How account recovery works
 account_recovery.pending.instructions: Keep your password available. You will need to enter it again before setting up new authentication methods. Your account and existing authentication methods have not been changed.
 account_recovery.pending.methods_still_work: Your current authentication methods still work while your recovery request is pending.
-account_recovery.pending.notification_html: We sent an email to <strong>%{email}</strong> confirming your request to recover your account. Your account has not been recovered yet.
+account_recovery.pending.notification_html: We sent an email to <strong>%{email}</strong> with instructions to recover your account.
 account_recovery.pending.resend: Resend the recovery request email
 account_recovery.pending.resend_rate_limited: You have requested too many recovery emails. Please wait a few minutes before trying again.
 account_recovery.pending.resend_success: We sent another account recovery request email.
@@ -20,6 +20,8 @@ account_recovery.start.header: Are you sure you want to recover your account?
 account_recovery.start.intro: You must wait %{interval} to receive an account recovery link. After clicking the link, you will set up new authentication methods to replace your old ones.
 account_recovery.start.keep_account_html: If you regain access to any of your authentication methods, sign in to restore your account and cancel recovery. %{link_html}
 account_recovery.start.keep_account_link_text: Learn more about account recovery.
+account_recovery.start.rate_limited: You have requested account recovery too many times. Please wait a few minutes before trying again.
+account_recovery.start.unavailable: Account recovery is not available for your account.
 account.connected_apps.associated_attributes_html: '在 %{timestamp_html} 用以下电邮做的连接：'
 account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用您的 %{app_name} 帐户，您可以安全地在线连接到多个政府服务。以下是您当前已连接的所有服务列表。
@@ -2006,8 +2008,6 @@ titles.visitors.index: 欢迎。
 titles.webauthn_setup: 添加你的安全密钥
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> 要求一种高安全水平的身份证实方法。比如人脸或触摸解锁、安全密钥或政府雇员身份证件。'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> 要求你的政府雇员身份证件，这是一种高安全水平的身份证实方法。'
-two_factor_authentication.account_recovery.delete_link: delete your account
-two_factor_authentication.account_recovery.delete_text_html: If you can’t recover your account, you can %{link_html} and make a new one.
 two_factor_authentication.account_recovery.recover_link: recover your account
 two_factor_authentication.account_recovery.recover_text_html: If you can’t use any of your authentication methods above to access your account, you can %{link_html} to reset your authentication methods.
 two_factor_authentication.account_reset.cancel_link: 取消你的请求

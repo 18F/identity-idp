@@ -110,16 +110,6 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     )
   end
 
-  def account_recovery_delete_link
-    t(
-      'two_factor_authentication.account_recovery.delete_text_html',
-      link_html: @view.link_to(
-        t('two_factor_authentication.account_recovery.delete_link'),
-        account_reset_url(locale: LinkLocaleResolver.locale),
-      ),
-    )
-  end
-
   def cancel_link
     if reauthentication_context?
       account_path

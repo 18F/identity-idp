@@ -5,6 +5,7 @@ module AccountRecovery
     include TwoFactorAuthenticatable
     include AccountRecoveryConcern
 
+    before_action :redirect_existing_request
     before_action :confirm_eligible_for_account_recovery
 
     def show
@@ -26,11 +27,18 @@ module AccountRecovery
       if result.success?
         redirect_to account_recovery_pending_url
       else
-        redirect_to account_reset_recovery_options_url
+        flash[:error] = t('errors.general')
+        redirect_to login_two_factor_options_url
       end
     end
 
     private
+
+    def redirect_existing_request
+      return unless AccountRecoveryRequest.active_for_user(current_user)
+
+      redirect_to account_recovery_status_url
+    end
 
     def confirm_eligible_for_account_recovery
       eligible = AccountRecovery::EligibilityPolicy.new(user: current_user).eligible?
@@ -39,7 +47,8 @@ module AccountRecovery
 
       return if eligible
 
-      redirect_to account_reset_recovery_options_url
+      flash[:error] = t('account_recovery.start.unavailable')
+      redirect_to login_two_factor_options_url
     end
 
     def handle_rate_limited
@@ -48,7 +57,8 @@ module AccountRecovery
         rate_limited: true,
       )
 
-      redirect_to account_reset_recovery_options_url
+      flash[:error] = t('account_recovery.start.rate_limited')
+      redirect_to account_recovery_start_url
     end
 
     def rate_limiter

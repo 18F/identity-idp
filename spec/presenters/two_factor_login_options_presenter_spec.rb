@@ -117,17 +117,6 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
           )
       end
 
-      it 'supplies a delete-your-account fallback link to the legacy flow' do
-        expect(presenter.account_recovery_delete_link).to eq \
-          t(
-            'two_factor_authentication.account_recovery.delete_text_html',
-            link_html: view.link_to(
-              t('two_factor_authentication.account_recovery.delete_link'),
-              account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
-            ),
-          )
-      end
-
       context 'when the user already has a pending recovery request' do
         before { create(:account_recovery_request, :waiting, user: user) }
 
