@@ -1022,7 +1022,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             context 'when validation_requirments_met? is skipped' do
               before do
                 allow(IdentityConfig.store).to receive_messages(
-                  doc_auth_post_validations_skip: true,
+                  document_images_sharing_skip_doc_auth_post_validations: true,
                   document_images_sharing_enabled: true,
                   document_images_sharing_service_providers: [sp_oidc_issuer],
                 )
@@ -1286,7 +1286,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       context 'when validation_requirments_met? is skipped' do
         before do
           allow(IdentityConfig.store).to receive_messages(
-            doc_auth_post_validations_skip: true,
+            document_images_sharing_skip_doc_auth_post_validations: true,
             document_images_sharing_enabled: true,
             document_images_sharing_service_providers: [sp_oidc_issuer],
           )
