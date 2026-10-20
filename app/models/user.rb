@@ -35,7 +35,9 @@ class User < ApplicationRecord
   # rubocop:enable Rails/HasManyOrHasOneDependent
   has_many :agency_identities, dependent: :destroy
   has_many :profiles, dependent: :destroy
-  has_one :account_reset_request, dependent: :destroy
+  has_one :account_reset_request,
+          class_name: 'DestructiveAccountResetRequest',
+          dependent: :destroy
   has_many :account_recovery_requests, dependent: :destroy, inverse_of: :user
   has_many :phone_configurations, dependent: :destroy, inverse_of: :user
   has_many :email_addresses, dependent: :destroy, inverse_of: :user

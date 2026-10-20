@@ -1,0 +1,119 @@
+require 'rails_helper'
+
+RSpec.describe DestructiveAccountReset::Cancel do
+  include DestructiveAccountResetHelper
+
+  let(:user) { create(:user, :fully_registered) }
+
+  it 'validates presence of token' do
+    request = DestructiveAccountReset::Cancel.new(nil).call
+
+    expect(request.success?).to eq false
+  end
+
+  it 'validates validity of token' do
+    request = DestructiveAccountReset::Cancel.new('foo').call
+
+    expect(request.success?).to eq false
+  end
+
+  context 'when the token is valid' do
+    context 'when the user has a phone enabled for SMS' do
+      before(:each) do
+        MfaContext.new(user).phone_configurations.first.update!(delivery_preference: :sms)
+      end
+
+      it 'notifies the user via SMS of the account reset cancellation' do
+        token = create_account_reset_request_for(user)
+        allow(Telephony).to receive(:perform_now)
+
+        DestructiveAccountReset::Cancel.new(token).call
+
+        expect(Telephony::Test::Message.messages.last.body).to eq(
+          I18n.t('telephony.account_reset_cancellation_notice.sms', app_name: APP_NAME),
+        )
+      end
+
+      it 'returns a FormResponse with message_id' do
+        token = create_account_reset_request_for(user)
+
+        response = DestructiveAccountReset::Cancel.new(token).call
+
+        expect(response.to_h[:message_id]).to be_present
+      end
+    end
+
+    context 'when the user does not have a phone enabled for SMS' do
+      it 'does not notify the user via SMS' do
+        token = create_account_reset_request_for(user)
+        MfaContext.new(user).phone_configurations.clear
+
+        DestructiveAccountReset::Cancel.new(token).call
+
+        expect(Telephony::Test::Message.messages.length).to eq(0)
+      end
+    end
+
+    it 'notifies the user via email of the account reset cancellation' do
+      token = create_account_reset_request_for(user)
+      DestructiveAccountReset::Cancel.new(token).call
+
+      expect_delivered_email_count(1)
+      expect_delivered_email(
+        to: [user.email_addresses.first.email],
+        subject: t('user_mailer.account_reset_cancel.subject', app_name: APP_NAME),
+      )
+    end
+
+    it 'updates the account_reset_request' do
+      token = create_account_reset_request_for(user)
+      account_reset_request = DestructiveAccountResetRequest.find_by(user_id: user.id)
+
+      DestructiveAccountReset::Cancel.new(token).call
+      account_reset_request.reload
+
+      expect(account_reset_request.request_token).to_not be_present
+      expect(account_reset_request.granted_token).to_not be_present
+      expect(account_reset_request.requested_at).to be_present
+      expect(account_reset_request.cancelled_at).to be_present
+    end
+  end
+
+  context 'when the token is not valid' do
+    context 'when the user has a phone enabled for SMS' do
+      it 'does not notify the user via SMS of the account reset cancellation' do
+        DestructiveAccountReset::Cancel.new('foo').call
+
+        expect(Telephony::Test::Message.messages.length).to eq(0)
+      end
+    end
+
+    context 'when the user does not have a phone enabled for SMS' do
+      it 'does not notify the user via SMS' do
+        MfaContext.new(user).phone_configurations.first.update!(mfa_enabled: false)
+
+        DestructiveAccountReset::Cancel.new('foo').call
+
+        expect(Telephony::Test::Message.messages.length).to eq(0)
+      end
+    end
+
+    it 'does not notify the user via email of the account reset cancellation' do
+      DestructiveAccountReset::Cancel.new('foo').call
+      expect_delivered_email_count(0)
+    end
+
+    it 'does not update the account_reset_request' do
+      create_account_reset_request_for(user)
+      account_reset_request = DestructiveAccountResetRequest.find_by(user_id: user.id)
+
+      DestructiveAccountReset::Cancel.new('foo').call
+      account_reset_request.reload
+
+      expect(account_reset_request.request_token).to be_present
+      expect(account_reset_request.granted_token).to_not be_present
+      expect(account_reset_request.requested_at).to be_present
+      expect(account_reset_request.cancelled_at).to_not be_present
+    end
+  end
+end

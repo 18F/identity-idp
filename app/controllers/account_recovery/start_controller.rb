@@ -28,7 +28,8 @@ module AccountRecovery
       if result.success?
         redirect_to account_recovery_pending_url
       else
-        redirect_to account_reset_recovery_options_url
+        flash[:error] = t('errors.general')
+        redirect_to login_two_factor_options_url
       end
     end
 
@@ -40,15 +41,13 @@ module AccountRecovery
       redirect_to account_recovery_pending_status_url
     end
 
-    # Expires a lapsed, unredeemed request before eligibility is evaluated, so
-    # a stale request does not permanently block the user from requesting
-    # recovery again.
+    # Expires a lapsed, unredeemed request before eligibility is evaluated
     def reconcile_lapsed_request
       expired = AccountRecovery::ReconcileRequest.new(
         account_recovery_request: AccountRecoveryRequest.active_for_user(current_user),
       ).call
 
-      analytics.account_recovery_expired(count: 1) if expired
+      analytics.account_recovery_expired if expired
     end
 
     def confirm_eligible_for_account_recovery
@@ -58,7 +57,8 @@ module AccountRecovery
 
       return if eligible
 
-      redirect_to account_reset_recovery_options_url
+      flash[:error] = t('account_recovery.start.unavailable')
+      redirect_to login_two_factor_options_url
     end
 
     def handle_rate_limited
@@ -67,7 +67,8 @@ module AccountRecovery
         rate_limited: true,
       )
 
-      redirect_to account_reset_recovery_options_url
+      flash[:error] = t('account_recovery.start.rate_limited')
+      redirect_to account_recovery_start_url
     end
 
     def rate_limiter

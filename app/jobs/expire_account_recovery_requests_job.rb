@@ -17,9 +17,7 @@ class ExpireAccountRecoveryRequestsJob < ApplicationJob
 
       expired_count += 1 if expired
     end
-
-    analytics.account_recovery_expired(count: expired_count)
-
+    analytics.account_recovery_job_mark_expired(count: expired_count) if expired_count.positive?
     expired_count
   end
 

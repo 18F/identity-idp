@@ -181,7 +181,7 @@ RSpec.describe AccountRecovery::CreateRequest do
 
     context 'when the user has a pending legacy account reset request' do
       before do
-        AccountResetRequest.create!(
+        DestructiveAccountResetRequest.create!(
           user: user,
           request_token: SecureRandom.uuid,
           requested_at: Time.zone.now,

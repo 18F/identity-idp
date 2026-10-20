@@ -287,7 +287,7 @@ module Users
     end
 
     def pending_account_reset_request
-      AccountReset::PendingRequestForUser.new(
+      DestructiveAccountReset::PendingRequestForUser.new(
         current_user,
       ).get_account_reset_request
     end
@@ -314,7 +314,7 @@ module Users
       ).call
 
       if expired
-        analytics.account_recovery_expired(count: 1)
+        analytics.account_recovery_expired
         recovery_request = nil
       end
 

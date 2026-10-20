@@ -103,11 +103,17 @@ module AnalyticsEvents
     track_event(:account_recovery_eligibility_evaluated, eligible:, **extra)
   end
 
-  # @param [Integer] count Number of recovery requests expired
   # Account-preserving MFA recovery requests were expired because the emailed
   # recovery link was never used
-  def account_recovery_expired(count:, **extra)
-    track_event(:account_recovery_expired, count:, **extra)
+  def account_recovery_expired(**extra)
+    track_event(:account_recovery_expired, **extra)
+  end
+
+  # @param [Integer] count Number of expired account recovery requests
+  # Account recovery requests were expired because the emailed
+  # recovery link was never used
+  def account_recovery_job_mark_expired(count:, **extra)
+    track_event(:account_recovery_job_mark_expired, count:, **extra)
   end
 
   # @param [Boolean] success Whether the recovery request was granted

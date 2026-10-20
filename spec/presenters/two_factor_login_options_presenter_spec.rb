@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe TwoFactorLoginOptionsPresenter do
-  include AccountResetHelper
+  include DestructiveAccountResetHelper
   include ActionView::Helpers::OutputSafetyHelper
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::DateHelper
@@ -113,17 +113,6 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
             link_html: view.link_to(
               t('two_factor_authentication.account_recovery.recover_link'),
               account_recovery_start_path(locale: LinkLocaleResolver.locale),
-            ),
-          )
-      end
-
-      it 'supplies a delete-your-account fallback link to the legacy flow' do
-        expect(presenter.account_recovery_delete_link).to eq \
-          t(
-            'two_factor_authentication.account_recovery.delete_text_html',
-            link_html: view.link_to(
-              t('two_factor_authentication.account_recovery.delete_link'),
-              account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
             ),
           )
       end

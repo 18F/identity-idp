@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
-  include AccountResetConcern
+  include DestructiveAccountResetConcern
   include ActionView::Helpers::TranslationHelper
 
   attr_reader :user,
@@ -106,16 +106,6 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
       link_html: @view.link_to(
         t('two_factor_authentication.account_recovery.recover_link'),
         account_recovery_start_path(locale: LinkLocaleResolver.locale),
-      ),
-    )
-  end
-
-  def account_recovery_delete_link
-    t(
-      'two_factor_authentication.account_recovery.delete_text_html',
-      link_html: @view.link_to(
-        t('two_factor_authentication.account_recovery.delete_link'),
-        account_reset_url(locale: LinkLocaleResolver.locale),
       ),
     )
   end

@@ -93,7 +93,7 @@ RSpec.describe ExpireAccountRecoveryRequestsJob do
 
       job.perform(now)
 
-      expect(@analytics).to have_logged_event(:account_recovery_expired, count: 1)
+      expect(@analytics).to have_logged_event(:account_recovery_expired)
     end
 
     it 'does not touch legacy account reset requests' do
