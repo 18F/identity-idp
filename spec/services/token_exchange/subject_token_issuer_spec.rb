@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe TokenExchange::SubjectTokenIssuer do
   describe '.issue' do
-    subject(:issued_token) { described_class.issue(identity:) }
+    subject(:issued_token) { described_class.issue(identity:, actor_return_log_id: 123) }
 
     let(:user) { create(:user) }
     let(:identity) do
@@ -32,10 +32,11 @@ RSpec.describe TokenExchange::SubjectTokenIssuer do
         broker_issuer: identity.service_provider,
         scope: 'openid token_exchange:passport',
         ial: 2,
+        actor_return_log_id: 123,
       )
     end
 
-    it 'does not store an internal database identifier' do
+    it 'does not store the user database identifier' do
       loaded_subject_token = TokenExchange::SubjectToken.load(issued_token.token)
 
       expect(loaded_subject_token.to_h.keys).to_not include(:user_id)

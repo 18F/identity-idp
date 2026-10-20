@@ -11,6 +11,7 @@ RSpec.describe BillableEventTrackable do
       :sp_session,
       :resolved_authn_context_result,
       :session,
+      :identity_authorization_code,
     ) do
       include BillableEventTrackable
     end
@@ -20,6 +21,7 @@ RSpec.describe BillableEventTrackable do
   let(:current_sp) { create(:service_provider) }
   let(:ial_context) { IalContext.new(ial: 1, service_provider: current_sp) }
   let(:request_id) { SecureRandom.hex }
+  let(:identity_authorization_code) { nil }
   let(:session_started_at) { 5.minutes.ago }
   let(:profile_sp) { create(:service_provider) }
   let(:active_profile) do
@@ -49,6 +51,7 @@ RSpec.describe BillableEventTrackable do
       session: {
         session_started_at:,
       },
+      identity_authorization_code:,
     )
   end
 
@@ -98,6 +101,42 @@ RSpec.describe BillableEventTrackable do
           expect(sp_return_log.profile_requested_service_provider)
             .to eq(active_profile.initiating_service_provider)
         end
+      end
+    end
+
+    context 'for a token-exchange actor' do
+      let(:identity_authorization_code) { SecureRandom.uuid }
+      let(:current_sp) { create(:service_provider) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return([current_sp.issuer])
+      end
+
+      it 'stores the actor return-log id under the authorization code' do
+        instance.track_billing_events
+
+        handoff = TokenExchange::ActorHandoff.load(identity_authorization_code)
+        expect(handoff.actor_return_log_id).to eq(SpReturnLog.last.id)
+        expect(SpReturnLog.last).to be_billable
+      end
+
+      it 'links each authorization code to its own handoff row' do
+        instance.track_billing_events
+        second_code = SecureRandom.uuid
+        second_instance = instance.class.new(
+          **instance.to_h.merge(
+            request_id: SecureRandom.hex,
+            identity_authorization_code: second_code,
+          ),
+        )
+
+        second_instance.track_billing_events
+
+        expect(SpReturnLog.last).to_not be_billable
+        handoff = TokenExchange::ActorHandoff.load(second_code)
+        expect(handoff.actor_return_log_id).to eq(SpReturnLog.last.id)
       end
     end
   end

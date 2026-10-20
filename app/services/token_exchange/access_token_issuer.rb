@@ -24,6 +24,7 @@ module TokenExchange
       expires_in = IdentityConfig.store.token_exchange_access_token_expires_in
       issued_at = Time.zone.now.to_i
       expires_at = issued_at + expires_in
+      delegation_id = DelegatedIssuance.generate_delegation_id
       token = jwe(issued_at:, expires_at:)
       access_token = AccessToken.new(
         id: AccessToken.digest(token),
@@ -36,6 +37,21 @@ module TokenExchange
         expires_at:,
       )
 
+      DelegatedIssuance.transaction do
+        target_return_log = create_target_return_log
+        DelegatedIssuance.create!(
+          delegation_id:,
+          user: target_identity.user,
+          actor_return_log_id: subject_token.actor_return_log_id,
+          target_return_log:,
+          actor_issuer: subject_token.broker_issuer,
+          target_issuer:,
+          resource:,
+          scope:,
+          issued_at: Time.zone.at(issued_at),
+          expires_at: Time.zone.at(expires_at),
+        )
+      end
       EncryptedRedisStructStorage.store(access_token, expires_in:)
 
       IssuedToken.new(token:, expires_in:)
@@ -81,6 +97,27 @@ module TokenExchange
           sub: subject_token.broker_issuer,
         },
       }
+    end
+
+    def create_target_return_log
+      billed_ial = IalContext.new(
+        ial: subject_token.ial,
+        service_provider: target,
+        user: target_identity.user,
+      ).bill_for_ial_1_or_2
+      profile = target_identity.user.active_profile if billed_ial > 1
+
+      SpReturnLog.create!(
+        request_id: SecureRandom.uuid,
+        user: target_identity.user,
+        billable: true,
+        ial: billed_ial,
+        issuer: target_issuer,
+        profile_id: profile&.id,
+        profile_verified_at: profile&.verified_at,
+        profile_requested_issuer: profile&.initiating_service_provider_issuer,
+        returned_at: Time.zone.now,
+      )
     end
 
     def target

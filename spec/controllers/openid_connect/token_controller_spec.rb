@@ -236,7 +236,17 @@ RSpec.describe OpenidConnect::TokenController do
       )
     end
 
-    let(:subject_token) { TokenExchange::SubjectTokenIssuer.issue(identity: identity).token }
+    let(:actor_return_log) do
+      create(
+        :sp_return_log,
+        user:, issuer: broker_issuer, ial: 2, billable: true, returned_at: Time.zone.now,
+      )
+    end
+    let(:subject_token) do
+      TokenExchange::SubjectTokenIssuer.issue(
+        identity:, actor_return_log_id: actor_return_log.id,
+      ).token
+    end
 
     before do
       allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
