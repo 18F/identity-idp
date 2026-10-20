@@ -289,7 +289,8 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def document_images_sharing_allowed?
-    !!ServiceProvider.find_by(issuer:)&.document_images_sharing_allowed?
+    IdentityConfig.store.document_images_sharing_enabled &&
+      IdentityConfig.store.document_images_sharing_service_providers.include?(issuer)
   end
 
   private
