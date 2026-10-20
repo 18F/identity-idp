@@ -25,13 +25,4 @@
   <%= f.submit t('account_recovery.verify.continue'), class: 'display-block margin-y-5' %>
 <% end %>
 
-<%= render TroubleshootingOptionsComponent.new do |c| %>
-  <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
-  <% c.with_option(
-       url: MarketingSite.help_center_article_url(
-         category: 'trouble-signing-in',
-         article: 'issues-with-authentication-methods',
-       ),
-       new_tab: true,
-     ).with_content(t('account_recovery.verify.help')) %>
-<% end %>
+<%= render 'shared/cancel', link: new_user_session_url %>

@@ -35,8 +35,11 @@ module AccountRecovery
       params[:token].presence
     end
 
+    # `no-referrer` makes browsers send `Origin: null` on the form POST, which
+    # fails Rails' CSRF origin check. `strict-origin` still keeps the token out
+    # of the Referer header by sending only the scheme and host.
     def prevent_token_referrer
-      response.headers['Referrer-Policy'] = 'no-referrer'
+      response.headers['Referrer-Policy'] = 'strict-origin'
     end
 
     def verify_token

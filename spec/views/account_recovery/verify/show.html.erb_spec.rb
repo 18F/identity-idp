@@ -4,6 +4,7 @@ RSpec.describe 'account_recovery/verify/show.html.erb' do
   before do
     assign(:email, 'signed-in@example.com')
     assign(:token, 'recovery-token')
+    allow(view).to receive(:user_signing_up?).and_return(false)
   end
 
   %i[en es fr zh].each do |locale|
@@ -26,9 +27,10 @@ RSpec.describe 'account_recovery/verify/show.html.erb' do
     end
   end
 
-  it 'does not offer cancellation after token verification' do
+  it 'links back to sign in without offering request cancellation' do
     render
 
+    expect(rendered).to have_link(t('links.cancel'), href: new_user_session_url)
     expect(rendered).not_to have_css('form[action*="cancel"], a[href*="cancel"]')
   end
 

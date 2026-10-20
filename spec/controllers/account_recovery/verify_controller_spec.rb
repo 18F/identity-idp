@@ -32,7 +32,7 @@ RSpec.describe AccountRecovery::VerifyController do
       expect(controller.current_user).to be_nil
       expect(session[:account_recovery_request_id]).to be_nil
       expect(controller.view_assigns['token']).to eq(raw_token)
-      expect(response.headers['Referrer-Policy']).to eq('no-referrer')
+      expect(response.headers['Referrer-Policy']).to eq('strict-origin')
       expect(response.headers['Cache-Control']).to include('no-store')
     end
 
