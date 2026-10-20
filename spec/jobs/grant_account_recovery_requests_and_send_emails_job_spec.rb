@@ -54,7 +54,8 @@ RSpec.describe GrantAccountRecoveryRequestsAndSendEmailsJob do
 
       described_class.new.perform(now)
 
-      expect(described_class.new.perform(now)).to eq(0)
+      expect { expect(described_class.new.perform(now)).to eq(0) }
+        .not_to change { ActionMailer::Base.deliveries.size }
     end
 
     it 'ignores requests that are not waiting' do
@@ -64,14 +65,14 @@ RSpec.describe GrantAccountRecoveryRequestsAndSendEmailsJob do
     end
 
     it 'ignores legacy account reset requests' do
-      AccountResetRequest.create!(
+      DestructiveAccountResetRequest.create!(
         user: user,
         requested_at: now - 2.days,
         request_token: SecureRandom.uuid,
       )
 
       expect { described_class.new.perform(now) }
-        .to_not change { AccountResetRequest.where.not(granted_at: nil).count }
+        .to_not change { DestructiveAccountResetRequest.where.not(granted_at: nil).count }
     end
 
     it 'stores only a token fingerprint, never a raw token' do
@@ -136,8 +137,10 @@ RSpec.describe GrantAccountRecoveryRequestsAndSendEmailsJob do
     it 'logs the number of notifications sent' do
       stub_analytics
       create_waiting_request_for(user, requested_at: now - 2.days)
+      job = described_class.new
+      allow(job).to receive(:analytics).and_return(@analytics)
 
-      described_class.new.perform(now)
+      job.perform(now)
 
       expect(@analytics).to have_logged_event(:account_recovery_notifications, count: 1)
       expect(@analytics).to have_logged_event(:account_recovery_granted, success: true)
