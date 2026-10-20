@@ -8,9 +8,6 @@ RSpec.describe 'account_recovery/verify/pending_mfa_setup.html.erb' do
 
         expect(rendered).to have_content(t('account_recovery.pending_mfa_setup.header'))
         expect(rendered).to have_content(t('account_recovery.pending_mfa_setup.intro'))
-        expect(rendered).to have_content(
-          t('account_recovery.pending_mfa_setup.methods_still_work'),
-        )
       end
     end
   end

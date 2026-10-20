@@ -8,8 +8,6 @@
 
 <p><%= t('account_recovery.pending_mfa_setup.intro') %></p>
 
-<p><%= t('account_recovery.pending_mfa_setup.methods_still_work') %></p>
-
 <%= render TroubleshootingOptionsComponent.new do |c| %>
   <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
   <% c.with_option(

@@ -2,18 +2,18 @@
 account_recovery.pending_mfa_setup.header: Setting up new authentication methods is not available yet
 account_recovery.pending_mfa_setup.help: Learn more about recovering access to your account
 account_recovery.pending_mfa_setup.intro: Your recovery link and password are confirmed. You are in a temporary session for account recovery. You cannot access your account or connected services until you set up new authentication methods. Setting up new methods is not available yet.
-account_recovery.pending_mfa_setup.methods_still_work: Your existing authentication methods still work. Your recovery request can no longer be canceled after your recovery link has been verified.
-account_recovery.pending.cancel: Cancel my account recovery request
 account_recovery.pending.cancel_success: We canceled your account recovery request. You can continue using your existing authentication methods.
-account_recovery.pending.header: We received your account recovery request
-account_recovery.pending.help: Learn more about recovering access to your account
-account_recovery.pending.instructions: Keep your password available. You will need to enter it again before setting up new authentication methods. Your account and existing authentication methods have not been changed.
-account_recovery.pending.methods_still_work: Your current authentication methods still work while your recovery request is pending.
-account_recovery.pending.notification_html: We sent an email to <strong>%{email}</strong> confirming your request to recover your account. Your account has not been recovered yet.
+account_recovery.pending.header: Check your email
+account_recovery.pending.help: How account recovery works
+account_recovery.pending.notification_html: We sent an email to <strong>%{email}</strong> with instructions to recover your account.
 account_recovery.pending.resend: Resend the recovery request email
 account_recovery.pending.resend_rate_limited: You have requested too many recovery emails. Please wait a few minutes before trying again.
 account_recovery.pending.resend_success: We sent another account recovery request email.
-account_recovery.pending.return_home: Return to the home page
+account_recovery.pending.status.cancel: Cancel request
+account_recovery.pending.status.cancel_prompt: If you have changed your mind and want to cancel your account recovery request, click the “Cancel request” button below.
+account_recovery.pending.status.granted: Your waiting period is over. Check your email for instructions to recover your account.
+account_recovery.pending.status.header: You requested to recover your account
+account_recovery.pending.status.wait_html: There is a waiting period of %{waiting_period} to recover your account. In <strong>%{interval}</strong>, you will receive an email with instructions to recover your account.
 account_recovery.start.continue: Recover my account
 account_recovery.start.header: Are you sure you want to recover your account?
 account_recovery.start.intro: You must wait %{interval} to receive an account recovery link. After clicking the link, you will set up new authentication methods to replace your old ones.
@@ -2178,7 +2178,7 @@ user_mailer.account_recovery_granted.subject: Recover your %{app_name} account
 user_mailer.account_recovery_granted.unrequested_html: 'Don’t need to recover your account? %{cancel_link_html}.'
 user_mailer.account_recovery_request.change_password: Immediately change your password.
 user_mailer.account_recovery_request.header: How to recover your %{app_name} account
-user_mailer.account_recovery_request.intro: For your security, %{app_name} has a two-step process to recover your account. We received your request, but your account has not been recovered or deleted.
+user_mailer.account_recovery_request.intro: For your security, %{app_name} has a two-step process to recover your account.
 user_mailer.account_recovery_request.report_html: Report suspicious activity by contacting %{contact_link_html}.
 user_mailer.account_recovery_request.review_history: Check your account activity by going to the “History” page in the side menu.
 user_mailer.account_recovery_request.review_methods: Review your authentication methods to ensure they are up to date and secure.

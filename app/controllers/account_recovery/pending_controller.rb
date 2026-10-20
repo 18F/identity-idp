@@ -15,19 +15,7 @@ module AccountRecovery
     end
 
     def status
-      waiting_period_ends_at = account_recovery_request.requested_at + account_recovery_wait_period
-      remaining = waiting_period_ends_at - Time.zone.now
-      @remaining_interval = WaitPeriodFormatter.call(remaining) if remaining.positive?
-    end
-
-    def cancel
-      if account_recovery_request.cancel!(reason: 'user_cancelled')
-        flash[:success] = t('account_recovery.pending.cancel_success')
-        redirect_to login_two_factor_options_url
-      else
-        flash[:error] = t('errors.general')
-        redirect_to account_recovery_status_url
-      end
+      @pending_presenter = AccountRecovery::PendingPresenter.new(account_recovery_request)
     end
 
     def resend

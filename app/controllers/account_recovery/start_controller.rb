@@ -6,6 +6,7 @@ module AccountRecovery
     include AccountRecoveryConcern
 
     before_action :reconcile_lapsed_request
+    before_action :redirect_pending_request
     before_action :confirm_eligible_for_account_recovery
 
     def show
@@ -33,6 +34,12 @@ module AccountRecovery
     end
 
     private
+
+    def redirect_pending_request
+      return unless AccountRecoveryRequest.active_for_user(current_user)&.awaiting_link_redemption?
+
+      redirect_to account_recovery_pending_status_url
+    end
 
     # Expires a lapsed, unredeemed request before eligibility is evaluated, so
     # a stale request does not permanently block the user from requesting

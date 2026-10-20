@@ -17,17 +17,6 @@
       <%= f.button :button, t('account_recovery.pending.resend') %>
     <% end %>
   <% end %>
-  <% c.with_option(component: FormLinkComponent) do %>
-    <%= t('account_recovery.pending.cancel') %>
-    <%= simple_form_for(
-          :account_recovery,
-          url: account_recovery_pending_cancel_path,
-          method: :post,
-          html: { class: 'display-none' },
-        ) do |f| %>
-      <%= f.button :button, t('account_recovery.pending.cancel') %>
-    <% end %>
-  <% end %>
   <% c.with_option(
        url: MarketingSite.help_center_article_url(
          category: 'trouble-signing-in',

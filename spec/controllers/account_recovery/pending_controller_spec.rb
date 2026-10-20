@@ -321,6 +321,67 @@ RSpec.describe AccountRecovery::PendingController do
     end
   end
 
+  describe '#status' do
+    it 'requires password authentication' do
+      get :status
+
+      expect(response).to redirect_to(root_url)
+    end
+
+    context 'when signed in before 2FA' do
+      before { stub_sign_in_before_2fa(user) }
+
+      it 'renders not found without an active request' do
+        get :status
+
+        expect(response).to render_template('pages/page_not_found')
+      end
+
+      it 'does not show another user’s request' do
+        create(:account_recovery_request, :waiting)
+
+        get :status
+
+        expect(response).to render_template('pages/page_not_found')
+      end
+
+      %i[waiting granted].each do |state|
+        it "renders for a #{state} request" do
+          recovery_request = create(:account_recovery_request, state, user: user)
+
+          get :status
+
+          expect(response).to render_template(:status)
+          expect(assigns(:pending_presenter).account_recovery_request).to eq(recovery_request)
+        end
+      end
+
+      %i[link_verified password_verified cancelled].each do |state|
+        it "renders not found for a #{state} request" do
+          create(:account_recovery_request, state, user: user)
+
+          get :status
+
+          expect(response).to render_template('pages/page_not_found')
+        end
+      end
+
+      it 'expires a lapsed grant instead of rendering' do
+        recovery_request = create(
+          :account_recovery_request,
+          :granted,
+          user: user,
+          token_expires_at: 1.minute.ago,
+        )
+
+        get :status
+
+        expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::EXPIRED)
+        expect(response).to render_template('pages/page_not_found')
+      end
+    end
+  end
+
   describe '#cancel' do
     before do
       allow(IdentityConfig.store).to receive(:deliver_mail_async).and_return(false)

@@ -161,9 +161,10 @@ module Users
     def check_user_needs_redirect
       if user_fully_authenticated?
         redirect_to signed_in_url
+      elsif current_user && pending_account_recovery_request?
+        redirect_to account_recovery_pending_status_url
       elsif current_user
-        redirect_to pending_account_recovery_request? ?
-          login_two_factor_options_url : user_two_factor_authentication_url
+        redirect_to user_two_factor_authentication_url
       end
     end
 
@@ -277,17 +278,16 @@ module Users
       elsif redeemed_account_recovery_request?
         account_recovery_verify_url
       elsif pending_account_recovery_request?
-        login_two_factor_options_url
+        account_recovery_pending_status_url
       elsif current_user.accepted_rules_of_use_still_valid?
-        pending_account_recovery_request? ?
-          login_two_factor_options_url : user_two_factor_authentication_url
+        user_two_factor_authentication_url
       else
         rules_of_use_url
       end
     end
 
     def pending_account_reset_request
-      DestructiveAccountReset::PendingRequestForUser.new(
+      AccountReset::PendingRequestForUser.new(
         current_user,
       ).get_account_reset_request
     end

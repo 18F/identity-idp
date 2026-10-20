@@ -85,13 +85,23 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
     end
   end
 
-  it 'lets the authenticated user cancel from the pending page' do
+  it 'returns to the status page until the request is granted and allows cancellation' do
     request_account_recovery
 
-    click_button t('account_recovery.pending.cancel')
+    expect(page).not_to have_css('form[action*="cancel"], a[href*="cancel"]')
+
+    [root_path, account_recovery_start_path].each do |path|
+      visit path
+
+      expect(page).to have_current_path(account_recovery_pending_status_path)
+      expect(page).to have_content t('account_recovery.pending.status.header')
+    end
+    expect(AccountRecoveryRequest.active_for_user(user).state)
+      .to eq(AccountRecoveryRequest::WAITING)
+
+    click_button t('account_recovery.pending.status.cancel')
 
     expect(page).to have_content t('account_recovery.pending.cancel_success')
-
     expect(AccountRecoveryRequest.active_for_user(user)).to be_nil
   end
 
@@ -111,7 +121,7 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
       # Signing in again returns the user to the in-flight request rather than
       # to an MFA challenge they cannot complete.
       visit root_path
-      click_on t('links.sign_out')
+      click_on t('links.cancel')
       signin(user_email, user.password)
 
       expect(page).to have_current_path(account_recovery_verify_path)

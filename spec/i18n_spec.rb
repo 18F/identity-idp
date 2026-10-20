@@ -200,6 +200,22 @@ module I18n
 end
 
 RSpec.describe 'I18n' do
+  %w[es fr zh].each do |locale|
+    it "keeps pending account recovery translations identical to English in #{locale}" do
+      recovery_prefixes = [
+        'account_recovery.',
+        'user_mailer.account_recovery_',
+        'two_factor_authentication.account_recovery.',
+      ]
+      english = YAML.load_file(Rails.root.join('config', 'locales', 'en.yml'))
+        .select { |key, _| key.start_with?(*recovery_prefixes) }
+      localized = YAML.load_file(Rails.root.join('config', 'locales', "#{locale}.yml"))
+        .select { |key, _| key.start_with?(*recovery_prefixes) }
+
+      expect(localized).to eq(english)
+    end
+  end
+
   let(:i18n) { I18n::Tasks::BaseTask.new }
   let(:missing_keys) { i18n.missing_keys }
   let(:unused_keys) { i18n.unused_keys }
