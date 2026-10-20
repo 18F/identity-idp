@@ -3,8 +3,7 @@ require 'rails_helper'
 RSpec.describe Idv::DocAuthVendorConcern, :controller do
   let(:document_type_requested) { nil }
   let(:doc_auth_vendor) { nil }
-  let(:service_provider) { create(:service_provider) }
-  let(:issuer) { service_provider.issuer }
+  let(:issuer) { 'the-best-issuer' }
   let(:document_capture_session) do
     create(:document_capture_session, document_type_requested:, doc_auth_vendor:, issuer:)
   end
