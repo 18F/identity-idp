@@ -161,6 +161,8 @@ module Users
     def check_user_needs_redirect
       if user_fully_authenticated?
         redirect_to signed_in_url
+      elsif current_user && pending_account_recovery_request?
+        redirect_to account_recovery_pending_status_url
       elsif current_user
         redirect_to user_two_factor_authentication_url
       end
@@ -276,7 +278,7 @@ module Users
       elsif redeemed_account_recovery_request?
         account_recovery_verify_url
       elsif pending_account_recovery_request?
-        account_recovery_pending_url
+        account_recovery_pending_status_url
       elsif current_user.accepted_rules_of_use_still_valid?
         user_two_factor_authentication_url
       else

@@ -14,6 +14,10 @@ module AccountRecovery
       @email = current_user.last_sign_in_email_address.email
     end
 
+    def status
+      @pending_presenter = AccountRecovery::PendingPresenter.new(account_recovery_request)
+    end
+
     def resend
       if rate_limiter.limited?
         flash[:error] = t('account_recovery.pending.resend_rate_limited')

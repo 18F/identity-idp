@@ -952,13 +952,16 @@ RSpec.describe Users::SessionsController, devise: true do
       expect(response).to redirect_to account_reset_pending_url
     end
 
-    it 'redirects to the recovery pending page for a waiting recovery request' do
-      user = create(:user, :fully_registered)
-      create(:account_recovery_request, :waiting, user: user)
+    [AccountRecoveryRequest::REQUESTED, AccountRecoveryRequest::WAITING].each do |state|
+      it "redirects to the recovery pending page for a #{state} recovery request" do
+        user = create(:user, :fully_registered)
+        recovery_request = create(:account_recovery_request, state: state, user: user)
 
-      post :create, params: { user: { email: user.email, password: user.password } }
+        post :create, params: { user: { email: user.email, password: user.password } }
 
-      expect(response).to redirect_to account_recovery_pending_url
+        expect(response).to redirect_to account_recovery_pending_status_url
+        expect(recovery_request.reload.state).to eq(state)
+      end
     end
 
     it 'redirects to the recovery pending page for a granted recovery request' do
@@ -967,7 +970,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
       post :create, params: { user: { email: user.email, password: user.password } }
 
-      expect(response).to redirect_to account_recovery_pending_url
+      expect(response).to redirect_to account_recovery_pending_status_url
     end
 
     it 'does not resume recovery without token evidence before password verification' do
@@ -1025,6 +1028,16 @@ RSpec.describe Users::SessionsController, devise: true do
         expect(response).to redirect_to account_path
         expect(subject.session[:logged_in]).to be true
       end
+
+      it 'does not interrupt full authentication for a pending ARR' do
+        user = create(:user, :fully_registered)
+        create(:account_recovery_request, :waiting, user: user)
+        stub_sign_in(user)
+
+        get :new
+
+        expect(response).to redirect_to account_path
+      end
     end
 
     context 'with current user' do
@@ -1033,6 +1046,60 @@ RSpec.describe Users::SessionsController, devise: true do
         get :new
 
         expect(response).to redirect_to user_two_factor_authentication_url
+      end
+
+      [
+        AccountRecoveryRequest::REQUESTED,
+        AccountRecoveryRequest::WAITING,
+        AccountRecoveryRequest::GRANTED,
+      ].each do |state|
+        it "returns to ARR pending for a #{state} request without sending another email" do
+          user = create(:user, :fully_registered)
+          recovery_request = create(:account_recovery_request, :granted, user: user, state: state)
+          stub_sign_in_before_2fa(user)
+
+          expect { get :new }.not_to change { ActionMailer::Base.deliveries.size }
+
+          expect(response).to redirect_to account_recovery_pending_status_url
+          expect(recovery_request.reload.state).to eq(state)
+        end
+      end
+
+      it 'does not redirect for another user’s pending ARR' do
+        stub_sign_in_before_2fa
+        create(:account_recovery_request, :waiting)
+
+        get :new
+
+        expect(response).to redirect_to user_two_factor_authentication_url
+      end
+
+      %i[cancelled expired link_verified password_verified].each do |state|
+        it "does not send a #{state} ARR back to the pending page" do
+          user = create(:user, :fully_registered)
+          create(:account_recovery_request, state, user: user)
+          stub_sign_in_before_2fa(user)
+
+          get :new
+
+          expect(response).to redirect_to user_two_factor_authentication_url
+        end
+      end
+
+      it 'expires a lapsed grant instead of returning to pending' do
+        user = create(:user, :fully_registered)
+        recovery_request = create(
+          :account_recovery_request,
+          :granted,
+          user: user,
+          token_expires_at: 1.minute.ago,
+        )
+        stub_sign_in_before_2fa(user)
+
+        get :new
+
+        expect(response).to redirect_to user_two_factor_authentication_url
+        expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::EXPIRED)
       end
     end
 

@@ -9,6 +9,35 @@ RSpec.describe AccountRecovery::StartController do
       .with(:NDS_LOOK_AND_FEEL, any_args).and_return(:default)
   end
 
+  [
+    AccountRecoveryRequest::REQUESTED,
+    AccountRecoveryRequest::WAITING,
+    AccountRecoveryRequest::GRANTED,
+  ].each do |state|
+    context "with an existing #{state} request" do
+      let!(:recovery_request) do
+        create(:account_recovery_request, :granted, state: state, user: user)
+      end
+
+      before { stub_sign_in_before_2fa(user) }
+
+      it 'returns to pending rather than restarting recovery' do
+        get :show
+
+        expect(response).to redirect_to(account_recovery_pending_status_url)
+      end
+
+      it 'does not create a duplicate request or send another email on resubmission' do
+        expect do
+          post :create
+        end.not_to change { AccountRecoveryRequest.count }
+        expect(ActionMailer::Base.deliveries).to be_empty
+        expect(recovery_request.reload.state).to eq(state)
+        expect(response).to redirect_to(account_recovery_pending_status_url)
+      end
+    end
+  end
+
   describe '#show' do
     it 'redirects to root if the user is not signed in' do
       get :show
