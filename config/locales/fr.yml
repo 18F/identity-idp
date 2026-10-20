@@ -1,50 +1,4 @@
 ---
-account_reset.cancel_request.are_you_sure: Êtes-vous sûr de vouloir annuler votre demande de suppression de compte ?
-account_reset.cancel_request.cancel: Quitter
-account_reset.cancel_request.cancel_button: Annuler la suppression du compte
-account_reset.cancel_request.title: Annuler la suppression du compte
-account_reset.confirm_delete_account.cta_html: Vous pouvez %{link_html} ou fermer cette fenêtre si vous avez terminé.
-account_reset.confirm_delete_account.info_html: Le compte pour <strong>%{email}</strong> a été supprimé. Nous avons envoyé un e-mail de confirmation de la suppression du compte.
-account_reset.confirm_delete_account.link_text: créer un nouveau compte
-account_reset.confirm_delete_account.title: Vous avez supprimé votre compte
-account_reset.confirm_request.close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
-account_reset.confirm_request.info_html:
-  - Nous avons envoyé un e-mail à <strong>%{email}</strong> pour lancer le processus de suppression du compte. Ce premier e-mail confirme que vous avez entamé le processus de suppression du compte. <strong>Cela ne signifie pas que votre compte a déjà été supprimé.</strong>
-  - Par mesure de sécurité, %{waiting_period} après le premier e-mail de confirmation, vous en recevrez un deuxième qui contiendra le lien permettant poursuivre la suppression de votre compte.
-  - Si vous changez d’avis, vous pouvez annuler la suppression de votre compte à tout moment
-account_reset.confirm_request.security_note: Par mesure de sécurité, nous avons également envoyé un SMS à votre numéro de téléphone enregistré.
-account_reset.delete_account.are_you_sure: Êtes-vous sûr de vouloir supprimer votre compte ?
-account_reset.delete_account.info: La suppression de votre compte devrait être votre dernier recours si vous vous êtes fait bloquer de votre compte. Vous ne pourrez pas récupérer les informations liées à votre compte. Nous informerons les organismes auxquels vous accédez avec %{app_name} que vous ne disposez plus d’un compte. Une fois votre compte supprimé, vous pouvez en créer un nouveau en utilisant la même adresse e-mail.
-account_reset.delete_account.title: La suppression de votre compte devrait être votre dernier recours
-account_reset.pending.cancel_request: Annuler la demande
-account_reset.pending.cancel_request_prompt_html: 'Si vous avez changé d’avis et souhaitez annuler la suppression de votre compte, cliquez sur le bouton «&nbsp;Annuler la demande&nbsp;» ci-dessous.'
-account_reset.pending.canceled: Nous avons annulé votre demande de suppression de votre compte.
-account_reset.pending.canceled_info: Votre demande de suppression de compte %{app_name} a été annulée. Vous pouvez continuer d’utiliser votre compte %{app_name} ou créer une nouvelle demande de suppression de compte.
-account_reset.pending.header: Vous avez demandé de supprimer votre compte
-account_reset.pending.wait_html: Il y a un délai d’attente de %{waiting_period} pour supprimer votre compte. Dans <strong>%{interval}</strong>, vous recevrez un e-mail avec des instructions pour terminer la suppression.
-account_reset.recover_options.yes_delete: Supprimer mon compte
-account_reset.recovery_option.cancel_deletion: Annuler la suppression
-account_reset.recovery_options.check_webauthn_platform_header: Utiliser le même appareil que celui sur lequel vous avez initialement configuré le déverrouillage facial ou tactile
-account_reset.recovery_options.check_webauthn_platform_help_link: déverrouillage facial ou tactile
-account_reset.recovery_options.check_webauthn_platform_info_html: Si vous aviez configuré le %{link_html} lors de la création de votre compte, veillez à utiliser le même appareil que celui sur lequel vous avez créé votre compte %{app_name}.
-account_reset.recovery_options.header: Êtes-vous sûr de vouloir supprimer votre compte ?
-account_reset.recovery_options.help_text: Si vous êtes bloqué et avez toujours besoin d’accéder à %{app_name}, essayez plutôt les mesures suivantes.
-account_reset.recovery_options.still_working: Cela ne fonctionne toujours pas ?
-account_reset.recovery_options.try_another_device: Essayer un autre appareil sur lequel vous avez peut-être sélectionné l’option « mémoriser l’appareil ».
-account_reset.recovery_options.try_method_again: Essayer à nouveau votre méthode d’authentification
-account_reset.recovery_options.try_method_description_html: Assurez-vous d’avoir accès aux méthodes d’authentification que vous aviez configurées lors de la création de votre compte, puis %{link_html}.
-account_reset.recovery_options.try_method_description_link: essayez à nouveau votre méthode d’authentification
-account_reset.recovery_options.use_device: Utiliser un autre appareil
-account_reset.request.account_delete_link: En savoir plus sur le processus de suppression d’un compte
-account_reset.request.choose_to_continue: 'Si vous décidez de mener à bien la suppression de votre compte, vous recevrez deux e-mails :'
-account_reset.request.continue_deletion: Voulez-vous poursuivre la suppression de votre compte ?
-account_reset.request.delete_account: Supprimer votre compte
-account_reset.request.delete_email1_html: <strong>E-mail 1:</strong> Vous recevrez tout d’abord un e-mail de confirmation. Cela <strong>ne signifie pas</strong> que votre compte a été supprimé à ce stade.
-account_reset.request.delete_email2_html: <strong>E-mail 2:</strong> %{interval} après le premier e-mail de confirmation, vous en recevrez un deuxième qui contiendra un lien vous permettant de poursuivre la suppression de votre compte. Pour cela, vous devez confirmer que vous voulez supprimer votre compte. Après cette étape, il n’est plus possible d’annuler la suppression d’un compte.
-account_reset.request.delete_request_details_html: Si vous ne parvenez toujours pas à vous connecter à l’aide des méthodes d’authentification que vous aviez configurées, vous pouvez supprimer votre compte puis en créer un nouveau. Supprimer votre compte n’efface aucune des informations que vous avez stockées auprès d’organismes publics.<br/>%{account_delete_link}.
-account_reset.request.no_cancel: Annuler
-account_reset.request.no_cancel2: Non, annuler la suppression du compte
-account_reset.request.yes_continue: Oui, continuer la suppression du compte
 account.connected_apps.associated_attributes_html: 'Connecté %{timestamp_html} avec :'
 account.connected_apps.associated_html: Connecté %{timestamp_html}
 account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs services de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos services actuellement connectés.
@@ -488,6 +442,52 @@ datetime.dotiw.seconds.one: 1 seconde
 datetime.dotiw.seconds.other: '%{count} secondes'
 datetime.dotiw.two_words_connector: ' et '
 datetime.dotiw.words_connector: ', '
+destructive_account_reset.cancel_request.are_you_sure: Êtes-vous sûr de vouloir annuler votre demande de suppression de compte ?
+destructive_account_reset.cancel_request.cancel: Quitter
+destructive_account_reset.cancel_request.cancel_button: Annuler la suppression du compte
+destructive_account_reset.cancel_request.title: Annuler la suppression du compte
+destructive_account_reset.confirm_delete_account.cta_html: Vous pouvez %{link_html} ou fermer cette fenêtre si vous avez terminé.
+destructive_account_reset.confirm_delete_account.info_html: Le compte pour <strong>%{email}</strong> a été supprimé. Nous avons envoyé un e-mail de confirmation de la suppression du compte.
+destructive_account_reset.confirm_delete_account.link_text: créer un nouveau compte
+destructive_account_reset.confirm_delete_account.title: Vous avez supprimé votre compte
+destructive_account_reset.confirm_request.close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
+destructive_account_reset.confirm_request.info_html:
+  - Nous avons envoyé un e-mail à <strong>%{email}</strong> pour lancer le processus de suppression du compte. Ce premier e-mail confirme que vous avez entamé le processus de suppression du compte. <strong>Cela ne signifie pas que votre compte a déjà été supprimé.</strong>
+  - Par mesure de sécurité, %{waiting_period} après le premier e-mail de confirmation, vous en recevrez un deuxième qui contiendra le lien permettant poursuivre la suppression de votre compte.
+  - Si vous changez d’avis, vous pouvez annuler la suppression de votre compte à tout moment
+destructive_account_reset.confirm_request.security_note: Par mesure de sécurité, nous avons également envoyé un SMS à votre numéro de téléphone enregistré.
+destructive_account_reset.delete_account.are_you_sure: Êtes-vous sûr de vouloir supprimer votre compte ?
+destructive_account_reset.delete_account.info: La suppression de votre compte devrait être votre dernier recours si vous vous êtes fait bloquer de votre compte. Vous ne pourrez pas récupérer les informations liées à votre compte. Nous informerons les organismes auxquels vous accédez avec %{app_name} que vous ne disposez plus d’un compte. Une fois votre compte supprimé, vous pouvez en créer un nouveau en utilisant la même adresse e-mail.
+destructive_account_reset.delete_account.title: La suppression de votre compte devrait être votre dernier recours
+destructive_account_reset.pending.cancel_request: Annuler la demande
+destructive_account_reset.pending.cancel_request_prompt_html: 'Si vous avez changé d’avis et souhaitez annuler la suppression de votre compte, cliquez sur le bouton «&nbsp;Annuler la demande&nbsp;» ci-dessous.'
+destructive_account_reset.pending.canceled: Nous avons annulé votre demande de suppression de votre compte.
+destructive_account_reset.pending.canceled_info: Votre demande de suppression de compte %{app_name} a été annulée. Vous pouvez continuer d’utiliser votre compte %{app_name} ou créer une nouvelle demande de suppression de compte.
+destructive_account_reset.pending.header: Vous avez demandé de supprimer votre compte
+destructive_account_reset.pending.wait_html: Il y a un délai d’attente de %{waiting_period} pour supprimer votre compte. Dans <strong>%{interval}</strong>, vous recevrez un e-mail avec des instructions pour terminer la suppression.
+destructive_account_reset.recover_options.yes_delete: Supprimer mon compte
+destructive_account_reset.recovery_option.cancel_deletion: Annuler la suppression
+destructive_account_reset.recovery_options.check_webauthn_platform_header: Utiliser le même appareil que celui sur lequel vous avez initialement configuré le déverrouillage facial ou tactile
+destructive_account_reset.recovery_options.check_webauthn_platform_help_link: déverrouillage facial ou tactile
+destructive_account_reset.recovery_options.check_webauthn_platform_info_html: Si vous aviez configuré le %{link_html} lors de la création de votre compte, veillez à utiliser le même appareil que celui sur lequel vous avez créé votre compte %{app_name}.
+destructive_account_reset.recovery_options.header: Êtes-vous sûr de vouloir supprimer votre compte ?
+destructive_account_reset.recovery_options.help_text: Si vous êtes bloqué et avez toujours besoin d’accéder à %{app_name}, essayez plutôt les mesures suivantes.
+destructive_account_reset.recovery_options.still_working: Cela ne fonctionne toujours pas ?
+destructive_account_reset.recovery_options.try_another_device: Essayer un autre appareil sur lequel vous avez peut-être sélectionné l’option « mémoriser l’appareil ».
+destructive_account_reset.recovery_options.try_method_again: Essayer à nouveau votre méthode d’authentification
+destructive_account_reset.recovery_options.try_method_description_html: Assurez-vous d’avoir accès aux méthodes d’authentification que vous aviez configurées lors de la création de votre compte, puis %{link_html}.
+destructive_account_reset.recovery_options.try_method_description_link: essayez à nouveau votre méthode d’authentification
+destructive_account_reset.recovery_options.use_device: Utiliser un autre appareil
+destructive_account_reset.request.account_delete_link: En savoir plus sur le processus de suppression d’un compte
+destructive_account_reset.request.choose_to_continue: 'Si vous décidez de mener à bien la suppression de votre compte, vous recevrez deux e-mails :'
+destructive_account_reset.request.continue_deletion: Voulez-vous poursuivre la suppression de votre compte ?
+destructive_account_reset.request.delete_account: Supprimer votre compte
+destructive_account_reset.request.delete_email1_html: <strong>E-mail 1:</strong> Vous recevrez tout d’abord un e-mail de confirmation. Cela <strong>ne signifie pas</strong> que votre compte a été supprimé à ce stade.
+destructive_account_reset.request.delete_email2_html: <strong>E-mail 2:</strong> %{interval} après le premier e-mail de confirmation, vous en recevrez un deuxième qui contiendra un lien vous permettant de poursuivre la suppression de votre compte. Pour cela, vous devez confirmer que vous voulez supprimer votre compte. Après cette étape, il n’est plus possible d’annuler la suppression d’un compte.
+destructive_account_reset.request.delete_request_details_html: Si vous ne parvenez toujours pas à vous connecter à l’aide des méthodes d’authentification que vous aviez configurées, vous pouvez supprimer votre compte puis en créer un nouveau. Supprimer votre compte n’efface aucune des informations que vous avez stockées auprès d’organismes publics.<br/>%{account_delete_link}.
+destructive_account_reset.request.no_cancel: Annuler
+destructive_account_reset.request.no_cancel2: Non, annuler la suppression du compte
+destructive_account_reset.request.yes_continue: Oui, continuer la suppression du compte
 devise.confirmations.already_confirmed: Votre adresse e-mail a déjà été confirmée. %{action}
 devise.confirmations.confirmed: Vous avez confirmé votre adresse e-mail
 devise.confirmations.confirmed_but_must_set_password: Vous avez confirmé votre adresse e-mail

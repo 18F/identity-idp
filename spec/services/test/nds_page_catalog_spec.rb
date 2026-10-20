@@ -66,7 +66,8 @@ RSpec.describe Test::NDSPageCatalog do
     end
 
     it 'classifies a known legacy page under :legacy' do
-      expect(inventory[:legacy].map(&:template)).to include('account_reset/pending/show')
+      expect(inventory[:legacy].map(&:template))
+        .to include('destructive_account_reset/pending/show')
     end
 
     it 'never lists the same template in both columns' do

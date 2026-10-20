@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe TwoFactorLoginOptionsPresenter do
-  include AccountResetHelper
+  include DestructiveAccountResetHelper
   include ActionView::Helpers::OutputSafetyHelper
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::DateHelper

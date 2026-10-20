@@ -281,7 +281,7 @@ module Users
     end
 
     def pending_account_reset_request
-      AccountReset::PendingRequestForUser.new(
+      DestructiveAccountReset::PendingRequestForUser.new(
         current_user,
       ).get_account_reset_request
     end
