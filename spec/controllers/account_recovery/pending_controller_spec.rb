@@ -3,6 +3,143 @@ require 'rails_helper'
 RSpec.describe AccountRecovery::PendingController do
   let(:user) { create(:user, :fully_registered) }
 
+  describe '#status' do
+    it 'requires password authentication' do
+      get :status
+
+      expect(response).to redirect_to(root_url)
+    end
+
+    context 'when signed in before 2FA' do
+      before { stub_sign_in_before_2fa(user) }
+
+      it 'does not use another user’s request' do
+        create(:account_recovery_request, :waiting)
+
+        get :status
+
+        expect(response).to render_template('pages/page_not_found')
+      end
+
+      it 'does not show a terminal request' do
+        create(:account_recovery_request, :cancelled, user: user)
+
+        get :status
+
+        expect(response).to render_template('pages/page_not_found')
+      end
+
+      it 'shows time remaining from the original request rather than restarting the wait' do
+        freeze_time do
+          allow(IdentityConfig.store).to receive(:account_recovery_wait_period_days).and_return(2)
+          recovery_request = create(
+            :account_recovery_request, :waiting, user: user, requested_at: 1.day.ago
+          )
+          original_attributes = recovery_request.attributes
+
+          expect { get :status }.not_to change { ActionMailer::Base.deliveries.size }
+
+          expect(response).to render_template(:status)
+          expect(controller.view_assigns['remaining_interval']).to eq(
+            WaitPeriodFormatter.call(1.day),
+          )
+          expect(recovery_request.reload.attributes).to eq(original_attributes)
+
+          travel 12.hours
+          get :status
+
+          expect(controller.view_assigns['remaining_interval']).to eq(
+            WaitPeriodFormatter.call(12.hours),
+          )
+        end
+      end
+
+      it 'does not display a negative countdown when the waiting period ends' do
+        freeze_time do
+          waiting_period = IdentityConfig.store.account_recovery_wait_period_days.days
+          recovery_request = create(
+            :account_recovery_request, :waiting,
+            user: user,
+            requested_at: Time.zone.now - waiting_period
+          )
+
+          get :status
+
+          expect(controller.view_assigns['remaining_interval']).to be_nil
+          travel 1.hour
+          get :status
+
+          expect(controller.view_assigns['remaining_interval']).to be_nil
+          expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::WAITING)
+        end
+      end
+    end
+  end
+
+  describe '#cancel' do
+    it 'requires password authentication' do
+      post :cancel
+
+      expect(response).to redirect_to(root_url)
+    end
+
+    context 'when signed in before 2FA' do
+      before { stub_sign_in_before_2fa(user) }
+
+      it 'does not cancel another user’s request' do
+        recovery_request = create(:account_recovery_request, :waiting)
+
+        post :cancel
+
+        expect(response).to render_template('pages/page_not_found')
+        expect(recovery_request.reload).to be_active
+      end
+
+      it 'does not report success without an active request' do
+        create(:account_recovery_request, :cancelled, user: user)
+
+        post :cancel
+
+        expect(response).to render_template('pages/page_not_found')
+        expect(flash[:success]).to be_nil
+      end
+
+      it 'cancels the request and returns to regular MFA without signing out or changing methods' do
+        recovery_request = create(:account_recovery_request, :granted, user: user)
+        original_methods = user.phone_configurations.map(&:attributes)
+
+        freeze_time do
+          post :cancel
+
+          expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::CANCELLED)
+          expect(recovery_request.cancelled_at).to eq(Time.zone.now)
+        end
+        expect(recovery_request.cancel_reason).to eq('user_cancelled')
+        expect(recovery_request.token_fingerprint).to be_nil
+        expect(recovery_request.token_expires_at).to be_nil
+        expect(user.phone_configurations.reload.map(&:attributes)).to eq(original_methods)
+        expect(controller.current_user).to eq(user)
+        expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq(true)
+        expect(flash[:success]).to eq(t('account_recovery.pending.cancel_success'))
+        expect(response).to redirect_to(login_two_factor_options_url)
+      end
+
+      it 'reports a failed transition instead of claiming the request was cancelled' do
+        recovery_request = create(:account_recovery_request, :waiting, user: user)
+        allow(AccountRecoveryRequest).to receive(:active_for_user).with(user)
+          .and_return(recovery_request)
+        allow(recovery_request).to receive(:cancel!).and_return(false)
+
+        post :cancel
+
+        expect(flash[:error]).to eq(t('errors.general'))
+        expect(flash[:success]).to be_nil
+        expect(response).to redirect_to(account_recovery_status_url)
+        expect(recovery_request.reload).to be_active
+      end
+    end
+  end
+
   describe '#resend' do
     before do
       allow(IdentityConfig.store).to receive(:deliver_mail_async).and_return(false)

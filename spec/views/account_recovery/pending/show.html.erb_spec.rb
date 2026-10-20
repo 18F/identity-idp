@@ -46,4 +46,13 @@ RSpec.describe 'account_recovery/pending/show.html.erb' do
       href: root_path,
     )
   end
+
+  it 'links to the remaining wait time and cancellation page' do
+    render
+
+    expect(rendered).to have_link(
+      t('account_recovery.pending.view_status'),
+      href: account_recovery_status_path,
+    )
+  end
 end

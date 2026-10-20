@@ -2,6 +2,19 @@
 
 The IDP is a Rails application, that follows many typical Rails conventions.
 
+## Pending account recovery
+
+With `account_recovery_v2_enabled`, creating an account recovery request shows an
+email confirmation page. Later password sign-ins with an active request show a
+separate status page. Its remaining waiting time is calculated from the original
+`requested_at` and `account_recovery_wait_period_days`; visiting either page or
+resending the confirmation does not restart the wait.
+
+The status page allows password-authenticated users to cancel their own active
+request. Cancellation clears recovery tokens and returns to MFA selection without
+signing out, changing existing authentication methods, or satisfying MFA.
+An ended waiting period does not itself complete recovery.
+
 ## Networking
 
 For consistency, we use [Faraday](https://github.com/lostisland/faraday)

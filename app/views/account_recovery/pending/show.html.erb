@@ -4,12 +4,6 @@
 
 <p><%= t('account_recovery.pending.notification_html', email: @email) %></p>
 
-<%= link_to(
-      t('account_recovery.pending.return_home'),
-      root_path,
-      class: 'usa-button usa-button--unstyled',
-    ) %>
-
 <%= render TroubleshootingOptionsComponent.new do |c| %>
   <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
   <% c.with_option(component: FormLinkComponent) do %>

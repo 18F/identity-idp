@@ -162,7 +162,8 @@ module Users
       if user_fully_authenticated?
         redirect_to signed_in_url
       elsif current_user
-        redirect_to user_two_factor_authentication_url
+        redirect_to pending_account_recovery_request? ?
+          account_recovery_status_url : user_two_factor_authentication_url
       end
     end
 
@@ -273,6 +274,8 @@ module Users
         device_profiling_failed_url
       elsif pending_account_reset_request.present?
         account_reset_pending_url
+      elsif pending_account_recovery_request?
+        account_recovery_status_url
       elsif current_user.accepted_rules_of_use_still_valid?
         user_two_factor_authentication_url
       else
@@ -284,6 +287,11 @@ module Users
       AccountReset::PendingRequestForUser.new(
         current_user,
       ).get_account_reset_request
+    end
+
+    def pending_account_recovery_request?
+      IdentityConfig.store.account_recovery_v2_enabled &&
+        AccountRecoveryRequest.active.exists?(user: current_user)
     end
 
     def override_csp_for_google_analytics
