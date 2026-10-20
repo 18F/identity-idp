@@ -348,6 +348,151 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
+    context 'with token exchange scope' do
+      let(:scope) { 'openid token_exchange:passport' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+          .and_return(token_exchange_allowed_targets)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return(token_exchange_allowed_broker_issuers)
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled)
+          .and_return(token_exchange_enabled)
+      end
+
+      context 'when token exchange is disabled' do
+        let(:token_exchange_enabled) { false }
+        let(:token_exchange_allowed_targets) do
+          [{ issuer: 'passport-issuer', scope: 'passport' }]
+        end
+        let(:token_exchange_allowed_broker_issuers) { [client_id] }
+
+        it 'rejects the scope' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:scope])
+            .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+        end
+      end
+
+      context 'when the broker is not allowlisted' do
+        let(:token_exchange_enabled) { true }
+        let(:token_exchange_allowed_targets) do
+          [{ issuer: 'passport-issuer', scope: 'passport' }]
+        end
+        let(:token_exchange_allowed_broker_issuers) { [] }
+
+        it 'rejects the scope' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:scope])
+            .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+        end
+      end
+
+      context 'when token exchange is enabled and the broker is allowlisted' do
+        let(:token_exchange_enabled) { true }
+        let(:token_exchange_allowed_targets) do
+          [{ issuer: 'passport-issuer', scope: 'passport' }]
+        end
+        let(:token_exchange_allowed_broker_issuers) { [client_id] }
+
+        it 'allows the configured audience scope' do
+          expect(valid?).to eq(true)
+          expect(form.errors[:scope]).to be_blank
+          expect(form.scope).to eq(%w[openid token_exchange:passport])
+        end
+
+        it 'reports the scope as authorized' do
+          expect(form.unauthorized_scope).to eq(false)
+        end
+
+        context 'when more than one configured audience is requested' do
+          let(:scope) { 'openid token_exchange:passport token_exchange:benefits' }
+          let(:token_exchange_allowed_targets) do
+            [
+              { issuer: 'passport-issuer', scope: 'passport' },
+              { issuer: 'benefits-issuer', scope: 'benefits' },
+            ]
+          end
+
+          it 'allows every configured audience scope' do
+            expect(valid?).to eq(true)
+            expect(form.errors[:scope]).to be_blank
+            expect(form.scope).to eq(
+              %w[openid token_exchange:passport token_exchange:benefits],
+            )
+          end
+        end
+
+        context 'when the base token exchange scope is requested' do
+          let(:scope) { 'openid token_exchange' }
+
+          it 'rejects the unqualified scope' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:scope])
+              .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+          end
+        end
+
+        context 'when a configured and an unconfigured audience are both requested' do
+          let(:scope) { 'openid token_exchange:passport token_exchange:benefits' }
+
+          it 'rejects the whole request' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:scope])
+              .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+          end
+        end
+      end
+
+      context 'when the audience is not configured' do
+        let(:token_exchange_enabled) { true }
+        let(:token_exchange_allowed_targets) do
+          [{ issuer: 'other-audience-issuer', scope: 'other_audience' }]
+        end
+        let(:token_exchange_allowed_broker_issuers) { [client_id] }
+
+        it 'rejects the scope' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:scope])
+            .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+        end
+      end
+    end
+
+    context 'when token exchange is enabled but no token exchange scope is requested' do
+      let(:scope) { 'email' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+          .and_return([{ issuer: 'passport-issuer', scope: 'passport' }])
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return(token_exchange_allowed_broker_issuers)
+      end
+
+      context 'when the service provider is not a broker' do
+        let(:token_exchange_allowed_broker_issuers) { [] }
+
+        it 'allows ordinary scopes' do
+          expect(valid?).to eq(true)
+          expect(form.errors[:scope]).to be_blank
+          expect(form.scope).to eq(%w[email])
+        end
+      end
+
+      context 'when the service provider is a broker' do
+        let(:token_exchange_allowed_broker_issuers) { [client_id] }
+
+        it 'allows ordinary scopes' do
+          expect(valid?).to eq(true)
+          expect(form.errors[:scope]).to be_blank
+          expect(form.scope).to eq(%w[email])
+        end
+      end
+    end
+
     context 'when scope is good and we block unauthorized scopes' do
       let(:scope) { 'email' }
 
@@ -375,6 +520,61 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(valid?).to eq(false)
         expect(form.errors[:scope])
           .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+      end
+    end
+
+    context 'when scope includes document_images' do
+      let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+      let(:scope) { 'openid document_images' }
+
+      context 'and the SP is not allow-listed for image sharing' do
+        it 'has errors' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:scope])
+            .to include(t('openid_connect.authorization.errors.no_valid_scope'))
+        end
+      end
+
+      context 'and the SP is allow-listed for image sharing' do
+        before do
+          allow(IdentityConfig.store).to receive(:document_images_sharing_enabled)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+            .and_return([client_id])
+        end
+
+        it 'is valid' do
+          expect(valid?).to eq(true)
+          expect(form.errors[:scope]).to be_empty
+        end
+      end
+    end
+
+    context 'when scope does not include document_images' do
+      let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+      let(:scope) { 'openid profile' }
+
+      context 'and the SP is not allow-listed for image sharing' do
+        it 'is valid and does not request document_images' do
+          expect(valid?).to eq(true)
+          expect(form.errors[:scope]).to be_empty
+          expect(form.scope).not_to include('document_images')
+        end
+      end
+
+      context 'and the SP is allow-listed for image sharing' do
+        before do
+          allow(IdentityConfig.store).to receive(:document_images_sharing_enabled)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+            .and_return([client_id])
+        end
+
+        it 'is valid and does not request document_images' do
+          expect(valid?).to eq(true)
+          expect(form.errors[:scope]).to be_empty
+          expect(form.scope).not_to include('document_images')
+        end
       end
     end
 

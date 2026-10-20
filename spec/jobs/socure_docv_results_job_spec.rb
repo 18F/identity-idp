@@ -430,6 +430,135 @@ RSpec.describe SocureDocvResultsJob do
         end
       end
 
+      context 'when the SP is allow-listed for document image sharing' do
+        let(:doc_escrow_enabled) { false }
+
+        before do
+          allow(IdentityConfig.store).to receive_messages(
+            document_images_sharing_enabled: true,
+            document_images_sharing_service_providers: [sp.issuer],
+          )
+        end
+
+        it 'runs SocureImageRetrievalJob to persist artifacts without any escrow data' do
+          expect(SocureImageRetrievalJob).to receive(:perform_later).with(
+            hash_including(
+              document_capture_session_uuid:,
+              image_storage_data: {},
+              persist_artifacts: true,
+              docv_transaction_token: socure_docv_transaction_token,
+            ),
+          )
+
+          perform
+        end
+
+        it 'encrypts the document metadata before enqueueing it' do
+          job_args = nil
+          allow(SocureImageRetrievalJob).to receive(:perform_later) { |**args| job_args = args }
+
+          perform
+
+          expect(job_args).not_to have_key(:document_metadata)
+          encrypted = job_args[:encrypted_document_metadata]
+          expect(encrypted).to be_present
+          expect(encrypted).not_to include(pii_from_doc[:documentNumber])
+          decrypted = JSON.parse(
+            Encryption::Encryptors::BackgroundProofingArgEncryptor.new.decrypt(encrypted),
+            symbolize_names: true,
+          )
+          expect(decrypted.keys).to contain_exactly(
+            :document_number, :document_issued, :document_expiration
+          )
+          expect(decrypted[:document_number]).to eq(pii_from_doc[:documentNumber])
+        end
+
+        it 'does not report escrow file ids to the attempts API' do
+          allow(SocureImageRetrievalJob).to receive(:perform_later)
+
+          expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            hash_excluding(:document_front_image_file_id, :document_back_image_file_id),
+          )
+
+          perform
+        end
+
+        context 'when an earlier attempt left artifacts on the capture session' do
+          let!(:stale_artifact) { create(:document_artifact, document_capture_session:) }
+          let!(:stale_metadata) { create(:document_metadata, document_capture_session:) }
+
+          before { allow(SocureImageRetrievalJob).to receive(:perform_later) }
+
+          it 'discards them before retrieving the images for this attempt' do
+            perform
+
+            expect(DocumentArtifact.exists?(stale_artifact.id)).to eq(false)
+            expect(DocumentMetadata.exists?(stale_metadata.id)).to eq(false)
+          end
+
+          context 'and this attempt was not successful' do
+            let(:decision_value) { 'reject' }
+
+            it 'keeps them' do
+              perform
+
+              expect(DocumentArtifact.exists?(stale_artifact.id)).to eq(true)
+            end
+          end
+        end
+
+        context 'when the verification was not successful' do
+          let(:decision_value) { 'reject' }
+
+          it 'does not run SocureImageRetrievalJob' do
+            expect(SocureImageRetrievalJob).not_to receive(:perform_later)
+            expect(SocureImageRetrievalJob).not_to receive(:perform_now)
+
+            perform
+          end
+        end
+
+        context 'when document escrow is also enabled' do
+          let(:doc_escrow_enabled) { true }
+          let(:historical_attempts_api_enabled) { true }
+
+          it 'passes both the escrow data and the persist flag' do
+            expect(SocureImageRetrievalJob).to receive(:perform_later).with(
+              hash_including(
+                image_storage_data: hash_including(:front, :back),
+                persist_artifacts: true,
+              ),
+            )
+
+            perform
+          end
+        end
+      end
+
+      context 'when only document escrow applies to the SP' do
+        let(:doc_escrow_enabled) { true }
+        let(:historical_attempts_api_enabled) { true }
+
+        it 'does not pass document metadata to SocureImageRetrievalJob' do
+          expect(SocureImageRetrievalJob).to receive(:perform_later).with(
+            hash_including(persist_artifacts: false, encrypted_document_metadata: nil),
+          )
+
+          perform
+        end
+      end
+
+      context 'when neither escrow nor image sharing applies to the SP' do
+        let(:doc_escrow_enabled) { false }
+
+        it 'does not run SocureImageRetrievalJob' do
+          expect(SocureImageRetrievalJob).not_to receive(:perform_later)
+          expect(SocureImageRetrievalJob).not_to receive(:perform_now)
+
+          perform
+        end
+      end
+
       context 'facial match' do
         let(:reason_codes_selfie_fail) { ['no match', 'not live'] }
         let(:reason_codes_selfie_not_processed) { ['not procesed'] }

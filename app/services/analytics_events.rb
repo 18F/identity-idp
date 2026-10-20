@@ -492,6 +492,29 @@ module AnalyticsEvents
     track_event('Banned User visited')
   end
 
+  # Tracks when the agency handoff was submitted for a service provider that
+  # requested document images but the user did not affirmatively consent; the
+  # submission is rejected and the screen re-rendered.
+  # @param [String] issuer issuer of the service provider requesting the images
+  def biometric_sharing_consent_declined(issuer:, **extra)
+    track_event(
+      :biometric_sharing_consent_declined,
+      issuer: issuer,
+      **extra,
+    )
+  end
+
+  # Tracks when a user grants consent to share proofing document images (biometric
+  # artifacts) with a service provider on the agency handoff screen.
+  # @param [String] issuer issuer of the service provider receiving the images
+  def biometric_sharing_consent_granted(issuer:, **extra)
+    track_event(
+      :biometric_sharing_consent_granted,
+      issuer: issuer,
+      **extra,
+    )
+  end
+
   # A user that had a broken personal key was routed to a page to regenerate their personal key,
   # so that they no longer have a broken one
   def broken_personal_key_regenerated
@@ -557,6 +580,45 @@ module AnalyticsEvents
       message:,
       unknown_alerts:,
       response_info:,
+      **extra,
+    )
+  end
+
+  # Emitted by the hourly job that removes document_artifacts rows whose stored
+  # images have aged past the retention window.
+  # @param [Integer] deleted_count number of artifact rows removed
+  # @param [Integer] deleted_metadata_count number of document metadata rows removed
+  def document_artifacts_expired(deleted_count:, deleted_metadata_count: 0, **extra)
+    track_event(
+      :document_artifacts_expired,
+      deleted_count:,
+      deleted_metadata_count:,
+      **extra,
+    )
+  end
+
+  # Audit record for every request to the document image proxy endpoint, whether
+  # an image was released or the request was refused.
+  # @param [Boolean] success whether image bytes were released
+  # @param [String] image_type which artifact was requested (front/back/passport/selfie)
+  # @param [String, nil] issuer issuer of the requesting service provider
+  # @param [Integer, nil] profile_id the verified profile whose artifact was requested
+  # @param [String, nil] denial_reason why the request was refused, if it was
+  def document_image_release(
+    success:,
+    image_type:,
+    issuer: nil,
+    profile_id: nil,
+    denial_reason: nil,
+    **extra
+  )
+    track_event(
+      :document_image_release,
+      success:,
+      image_type:,
+      issuer:,
+      profile_id:,
+      denial_reason:,
       **extra,
     )
   end
@@ -7485,6 +7547,40 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when a brokered token exchange request (RFC 8693) is made at the token endpoint
+  # @param [Boolean] success Whether the form was submitted successfully.
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [Hash] errors Any additional error information we have
+  # @param [String] client_id Issuer of the broker service provider making the exchange request
+  # @param [String, nil] audience Issuer of the target service provider the token is requested for
+  # @param [String, nil] resource URI the broker intends to use the delegated access token against
+  # @param [Integer, nil] expires_in Time to expiration of the delegated access token
+  # @param [Integer, nil] ial IAL level recorded on the subject token
+  def openid_connect_brokered_exchange_token(
+    client_id:,
+    success:,
+    audience:,
+    resource:,
+    expires_in:,
+    ial:,
+    errors: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :openid_connect_brokered_exchange_token,
+      success:,
+      error_details:,
+      errors:,
+      client_id:,
+      audience:,
+      resource:,
+      expires_in:,
+      ial:,
+      **extra,
+    )
+  end
+
   # Tracks when openid authorization request is made
   # @param [Boolean] success Whether form validations were succcessful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
@@ -8756,6 +8852,23 @@ module AnalyticsEvents
     track_event(:sp_select_email_visited, needs_completion_screen_reason:, **extra)
   end
 
+  # Tracks when the STS (token exchange) consent form is submitted
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  def sts_consent_submitted(success:, error_details: nil, **extra)
+    track_event(
+      :sts_consent_submitted,
+      success:,
+      error_details:,
+      **extra,
+    )
+  end
+
+  # Tracks when the STS (token exchange) consent form is visited
+  def sts_consent_visited
+    track_event(:sts_consent_visited)
+  end
+
   # Tracks when user clicks on same tab that user landed on.
   # @param [String, nil] path that user was on when navigation tab was clicked
   def tab_navigation_current_page_clicked(path: nil, **extra)
@@ -8917,8 +9030,9 @@ module AnalyticsEvents
   # @param [Integer] ialmax Whether the user registration was for an IALMax request
   # @param [String] service_provider_name The friendly name of the service provider
   # @param ['account-page','agency-page'] page_occurence Where the user concluded registration
-  # @param ['new_sp','new_attributes','reverified_after_consent'] needs_completion_screen_reason The
-  #   reason for the consent screen being shown
+  # @param [String] needs_completion_screen_reason The reason for the consent screen being
+  #   shown: new_sp, new_attributes, reverified_after_consent, consent_expired,
+  #   consent_revoked, or biometric_consent_needed
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
   # @param [String, nil] in_person_proofing_status In person proofing status
@@ -8965,8 +9079,9 @@ module AnalyticsEvents
   # @param [Boolean] ialmax Whether the user registration was for an IALMax request
   # @param [String] service_provider_name The friendly name of the service provider
   # @param ['account-page','agency-page'] page_occurence Where the user concluded registration
-  # @param ['new_sp','new_attributes','reverified_after_consent'] needs_completion_screen_reason The
-  #   reason for the consent screen being shown
+  # @param [String] needs_completion_screen_reason The reason for the consent screen being
+  #   shown: new_sp, new_attributes, reverified_after_consent, consent_expired,
+  #   consent_revoked, or biometric_consent_needed
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [String, nil] in_person_proofing_status In person proofing status

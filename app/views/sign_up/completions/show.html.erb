@@ -70,6 +70,10 @@
                 <% end %>
               </dl>
 
+              <% if @presenter.document_images_sharing? %>
+                <%= render 'sign_up/completions/biometric_sharing_consent', form: f, presenter: @presenter %>
+              <% end %>
+
               <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
                 <%= render ButtonComponent.new(type: :submit, full_width: true)
                       .with_content(t('forms.buttons.continue')) %>
@@ -179,6 +183,9 @@
 </p>
 
 <%= simple_form_for(:idv_form, url: sign_up_completed_path, html: { class: 'margin-y-5' }) do |f| %>
+  <% if @presenter.document_images_sharing? %>
+    <%= render 'sign_up/completions/biometric_sharing_consent', form: f, presenter: @presenter %>
+  <% end %>
   <%= f.submit t('sign_up.agree_and_continue') %>
 <% end %>
 

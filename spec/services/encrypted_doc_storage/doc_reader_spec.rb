@@ -8,6 +8,21 @@ RSpec.describe EncryptedDocStorage::DocReader do
 
   subject { described_class.new(storage:) }
 
+  describe '#initialize' do
+    context 'when no storage is given' do
+      subject { described_class.new }
+
+      it 'reads from the Redis store the images are written to' do
+        result = writer.write(image:)
+
+        read_image = subject.read(name: result.name, encryption_key: result.encryption_key)
+        storage.delete_image(name: result.name)
+
+        expect(read_image).to eq(image)
+      end
+    end
+  end
+
   describe '#read' do
     it 'decrypts an image previously written by DocWriter' do
       result = writer.write(image:)
