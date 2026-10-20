@@ -17,7 +17,7 @@
 class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
-  include AccountResetConcern
+  include DestructiveAccountResetConcern
   include AccountRecoveryConcern
   include ActionView::Helpers::DateHelper
 

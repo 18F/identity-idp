@@ -20,52 +20,6 @@ account_recovery.start.header: Are you sure you want to recover your account?
 account_recovery.start.intro: You must wait %{interval} to receive an account recovery link. After clicking the link, you will set up new authentication methods to replace your old ones.
 account_recovery.start.keep_account_html: If you regain access to any of your authentication methods, sign in to restore your account and cancel recovery. %{link_html}
 account_recovery.start.keep_account_link_text: Learn more about account recovery.
-account_reset.cancel_request.are_you_sure: 你确定要取消删除账户的请求吗？
-account_reset.cancel_request.cancel: 退出
-account_reset.cancel_request.cancel_button: 取消删除账户
-account_reset.cancel_request.title: 取消删除账户
-account_reset.confirm_delete_account.cta_html: 完成后可以 %{link_html} 或关闭这一窗口。
-account_reset.confirm_delete_account.info_html: '<strong>%{email}</strong> 的账户已删除。我们已发送了账户删除的确认电邮。'
-account_reset.confirm_delete_account.link_text: 设立新账户
-account_reset.confirm_delete_account.title: 你已删除自己的账户
-account_reset.confirm_request.close_window: 你完成后可以关闭这一窗口。
-account_reset.confirm_request.info_html:
-  - 我们向 <strong>%{email}</strong> 发送了电邮以开始帐户删除流程。第一封电邮确认你已启动帐户删除流程。 <strong>这并不意味着你的帐户已成功删除</strong>
-  - 作为一项安全措施，在首个确认电邮到达 %{waiting_period} 你将收到第二封电邮，其中包含继续删除帐户的链接。
-  - 如果你改变主意，可以随时取消帐户删除。
-account_reset.confirm_request.security_note: 作为一项安全措施，我们也向你登记的电话号码发了短信。
-account_reset.delete_account.are_you_sure: 你确定要删除账户吗？
-account_reset.delete_account.info: 被锁在账户之外时，取消账户应当是最后的选择。你将无法重获与自己账户链接的任何信息。我们将通知你通过 %{app_name} 访问的政府机构你不再有账户。账户删除后，你可以使用同一电邮地址来设立新账户。
-account_reset.delete_account.title: 删除账户应当是你最后的选择。
-account_reset.pending.cancel_request: 取消请求
-account_reset.pending.cancel_request_prompt_html: 如果你改变主意，希望取消删除帐户，请点击下面的“取消请求”按钮。
-account_reset.pending.canceled: 我们已取消了你删除帐户的请求。
-account_reset.pending.canceled_info: 你的删除 %{app_name} 请求已被取消。 你可以继续使用你的 %{app_name} 帐户，或提出新的删除帐户请求。
-account_reset.pending.header: 你已提出删除账户的请求。
-account_reset.pending.wait_html: 要删除你的账户，有一个%{waiting_period}的等待期。你会在 <strong>%{interval}</strong> 收到电邮，向你说明如何完成删除。
-account_reset.recover_options.yes_delete: 删除我的帐户
-account_reset.recovery_option.cancel_deletion: 取消删除
-account_reset.recovery_options.check_webauthn_platform_header: 使用你首次设置人脸或触摸解锁的同一设备
-account_reset.recovery_options.check_webauthn_platform_help_link: 人脸或触摸解锁
-account_reset.recovery_options.check_webauthn_platform_info_html: ​​如果你在创建帐户时设置了 %{link_html}，请确保使用你创建 %{app_name} 帐户的同一设备。
-account_reset.recovery_options.header: 你确定要删除账户吗？
-account_reset.recovery_options.help_text: 如果你被锁定在账户外而且仍然需要访问 %{app_name} ，请尝试以下步骤。
-account_reset.recovery_options.still_working: 仍然不行？
-account_reset.recovery_options.try_another_device: 使用你也许选择了“记住设备”选项的另一个设备。
-account_reset.recovery_options.try_method_again: 再次尝试你的身份证实方法。
-account_reset.recovery_options.try_method_description_html: 确保你可以使用创建帐户时设置的身份证实方法，%{link_html}
-account_reset.recovery_options.try_method_description_link: 再用你的身份证实方法试一次。
-account_reset.recovery_options.use_device: 使用另一个设备。
-account_reset.request.account_delete_link: 了解有关帐户删除流程的更多信息。
-account_reset.request.choose_to_continue: 如果你选择继续删除帐户，你将收到两封电邮：
-account_reset.request.continue_deletion: 你还要删除你的帐户吗？
-account_reset.request.delete_account: 删除你的账户
-account_reset.request.delete_email1_html: <strong>电邮 1:</strong> 你首先会收到一封确认电邮。<strong>这并不</strong>意味着你的帐户此时已被删除。
-account_reset.request.delete_email2_html: <strong>电邮 2:</strong> 在收到第一封确认电邮 %{interval} 你将收到另一封电邮，其中包含继续删除帐户的链接。这需要你确认你要删除帐户。这个步骤后，我们就无法撤消帐户删除了。
-account_reset.request.delete_request_details_html: 如果你无法使用你设置的身份证实方法登录，可以通过删除你的帐户并创建一个新帐户来重新获得访问权限。删除你的帐户不会删除你在其他政府机构存储的任何信息。<br/>%{account_delete_link}.
-account_reset.request.no_cancel: 取消
-account_reset.request.no_cancel2: 不要，取消删除帐户
-account_reset.request.yes_continue: 要，继续删除帐户
 account.connected_apps.associated_attributes_html: '在 %{timestamp_html} 用以下电邮做的连接：'
 account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用您的 %{app_name} 帐户，您可以安全地在线连接到多个政府服务。以下是您当前已连接的所有服务列表。
@@ -520,6 +474,52 @@ datetime.dotiw.weeks.other: '%{count} 周'
 datetime.dotiw.words_connector: ', '
 datetime.dotiw.years.one: 1 年
 datetime.dotiw.years.other: '%{count} 年'
+destructive_account_reset.cancel_request.are_you_sure: 你确定要取消删除账户的请求吗？
+destructive_account_reset.cancel_request.cancel: 退出
+destructive_account_reset.cancel_request.cancel_button: 取消删除账户
+destructive_account_reset.cancel_request.title: 取消删除账户
+destructive_account_reset.confirm_delete_account.cta_html: 完成后可以 %{link_html} 或关闭这一窗口。
+destructive_account_reset.confirm_delete_account.info_html: '<strong>%{email}</strong> 的账户已删除。我们已发送了账户删除的确认电邮。'
+destructive_account_reset.confirm_delete_account.link_text: 设立新账户
+destructive_account_reset.confirm_delete_account.title: 你已删除自己的账户
+destructive_account_reset.confirm_request.close_window: 你完成后可以关闭这一窗口。
+destructive_account_reset.confirm_request.info_html:
+  - 我们向 <strong>%{email}</strong> 发送了电邮以开始帐户删除流程。第一封电邮确认你已启动帐户删除流程。 <strong>这并不意味着你的帐户已成功删除</strong>
+  - 作为一项安全措施，在首个确认电邮到达 %{waiting_period} 你将收到第二封电邮，其中包含继续删除帐户的链接。
+  - 如果你改变主意，可以随时取消帐户删除。
+destructive_account_reset.confirm_request.security_note: 作为一项安全措施，我们也向你登记的电话号码发了短信。
+destructive_account_reset.delete_account.are_you_sure: 你确定要删除账户吗？
+destructive_account_reset.delete_account.info: 被锁在账户之外时，取消账户应当是最后的选择。你将无法重获与自己账户链接的任何信息。我们将通知你通过 %{app_name} 访问的政府机构你不再有账户。账户删除后，你可以使用同一电邮地址来设立新账户。
+destructive_account_reset.delete_account.title: 删除账户应当是你最后的选择。
+destructive_account_reset.pending.cancel_request: 取消请求
+destructive_account_reset.pending.cancel_request_prompt_html: 如果你改变主意，希望取消删除帐户，请点击下面的“取消请求”按钮。
+destructive_account_reset.pending.canceled: 我们已取消了你删除帐户的请求。
+destructive_account_reset.pending.canceled_info: 你的删除 %{app_name} 请求已被取消。 你可以继续使用你的 %{app_name} 帐户，或提出新的删除帐户请求。
+destructive_account_reset.pending.header: 你已提出删除账户的请求。
+destructive_account_reset.pending.wait_html: 要删除你的账户，有一个%{waiting_period}的等待期。你会在 <strong>%{interval}</strong> 收到电邮，向你说明如何完成删除。
+destructive_account_reset.recover_options.yes_delete: 删除我的帐户
+destructive_account_reset.recovery_option.cancel_deletion: 取消删除
+destructive_account_reset.recovery_options.check_webauthn_platform_header: 使用你首次设置人脸或触摸解锁的同一设备
+destructive_account_reset.recovery_options.check_webauthn_platform_help_link: 人脸或触摸解锁
+destructive_account_reset.recovery_options.check_webauthn_platform_info_html: ​​如果你在创建帐户时设置了 %{link_html}，请确保使用你创建 %{app_name} 帐户的同一设备。
+destructive_account_reset.recovery_options.header: 你确定要删除账户吗？
+destructive_account_reset.recovery_options.help_text: 如果你被锁定在账户外而且仍然需要访问 %{app_name} ，请尝试以下步骤。
+destructive_account_reset.recovery_options.still_working: 仍然不行？
+destructive_account_reset.recovery_options.try_another_device: 使用你也许选择了“记住设备”选项的另一个设备。
+destructive_account_reset.recovery_options.try_method_again: 再次尝试你的身份证实方法。
+destructive_account_reset.recovery_options.try_method_description_html: 确保你可以使用创建帐户时设置的身份证实方法，%{link_html}
+destructive_account_reset.recovery_options.try_method_description_link: 再用你的身份证实方法试一次。
+destructive_account_reset.recovery_options.use_device: 使用另一个设备。
+destructive_account_reset.request.account_delete_link: 了解有关帐户删除流程的更多信息。
+destructive_account_reset.request.choose_to_continue: 如果你选择继续删除帐户，你将收到两封电邮：
+destructive_account_reset.request.continue_deletion: 你还要删除你的帐户吗？
+destructive_account_reset.request.delete_account: 删除你的账户
+destructive_account_reset.request.delete_email1_html: <strong>电邮 1:</strong> 你首先会收到一封确认电邮。<strong>这并不</strong>意味着你的帐户此时已被删除。
+destructive_account_reset.request.delete_email2_html: <strong>电邮 2:</strong> 在收到第一封确认电邮 %{interval} 你将收到另一封电邮，其中包含继续删除帐户的链接。这需要你确认你要删除帐户。这个步骤后，我们就无法撤消帐户删除了。
+destructive_account_reset.request.delete_request_details_html: 如果你无法使用你设置的身份证实方法登录，可以通过删除你的帐户并创建一个新帐户来重新获得访问权限。删除你的帐户不会删除你在其他政府机构存储的任何信息。<br/>%{account_delete_link}.
+destructive_account_reset.request.no_cancel: 取消
+destructive_account_reset.request.no_cancel2: 不要，取消删除帐户
+destructive_account_reset.request.yes_continue: 要，继续删除帐户
 devise.confirmations.already_confirmed: 你的电邮地址已确认。%{action}
 devise.confirmations.confirmed: 你已确认了你的电邮地址。
 devise.confirmations.confirmed_but_must_set_password: 你已确认了你的电邮地址。

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
-  include AccountResetConcern
+  include DestructiveAccountResetConcern
   include ActionView::Helpers::TranslationHelper
 
   attr_reader :user,

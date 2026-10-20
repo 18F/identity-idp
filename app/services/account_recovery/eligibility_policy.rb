@@ -28,7 +28,7 @@ module AccountRecovery
     # request in either one blocks a new account-preserving request.
     def existing_request_pending?
       AccountRecoveryRequest.active.exists?(user: user) ||
-        AccountReset::PendingRequestForUser.new(user).get_account_reset_request.present?
+        DestructiveAccountReset::PendingRequestForUser.new(user).get_account_reset_request.present?
     end
   end
 end

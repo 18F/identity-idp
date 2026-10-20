@@ -120,19 +120,19 @@ Rails.application.routes.draw do
       get '/login/password' => 'password_capture#new', as: :capture_password
       post '/login/password' => 'password_capture#create'
 
-      get '/account_reset/recovery_options' => 'account_reset/recovery_options#show'
-      post '/account_reset/recovery_options/cancel' => 'account_reset/recovery_options#cancel'
-      get '/account_reset/request' => 'account_reset/request#show'
-      post '/account_reset/request' => 'account_reset/request#create'
-      get '/account_reset/cancel' => 'account_reset/cancel#show'
-      post '/account_reset/cancel' => 'account_reset/cancel#create'
-      get '/account_reset/confirm_request' => 'account_reset/confirm_request#show'
-      get '/account_reset/delete_account' => 'account_reset/delete_account#show'
-      post '/account_reset/delete_account/cancel' => 'account_reset/delete_account#cancel'
-      delete '/account_reset/delete_account' => 'account_reset/delete_account#delete'
-      get '/account_reset/confirm_delete_account' => 'account_reset/confirm_delete_account#show'
-      get '/account_reset/pending' => 'account_reset/pending#show'
-      post '/account_reset/pending/cancel' => 'account_reset/pending#cancel'
+      get '/account_reset/recovery_options' => 'destructive_account_reset/recovery_options#show'
+      post '/account_reset/recovery_options/cancel' => 'destructive_account_reset/recovery_options#cancel'
+      get '/account_reset/request' => 'destructive_account_reset/request#show'
+      post '/account_reset/request' => 'destructive_account_reset/request#create'
+      get '/account_reset/cancel' => 'destructive_account_reset/cancel#show'
+      post '/account_reset/cancel' => 'destructive_account_reset/cancel#create'
+      get '/account_reset/confirm_request' => 'destructive_account_reset/confirm_request#show'
+      get '/account_reset/delete_account' => 'destructive_account_reset/delete_account#show'
+      post '/account_reset/delete_account/cancel' => 'destructive_account_reset/delete_account#cancel'
+      delete '/account_reset/delete_account' => 'destructive_account_reset/delete_account#delete'
+      get '/account_reset/confirm_delete_account' => 'destructive_account_reset/confirm_delete_account#show'
+      get '/account_reset/pending' => 'destructive_account_reset/pending#show'
+      post '/account_reset/pending/cancel' => 'destructive_account_reset/pending#cancel'
       # Account-preserving MFA recovery.
       # `verify` and `new_mfa_setup` are committed but inert until later phases.
       scope 'account_recovery' do
