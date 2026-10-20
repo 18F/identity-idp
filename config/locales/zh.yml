@@ -5,7 +5,6 @@ account_recovery.pending_mfa_setup.intro: Your recovery link and password are co
 account_recovery.pending.cancel_success: We canceled your account recovery request. You can continue using your existing authentication methods.
 account_recovery.pending.header: Check your email
 account_recovery.pending.help: How account recovery works
-
 account_recovery.pending.notification_html: We sent an email to <strong>%{email}</strong> with instructions to recover your account.
 account_recovery.pending.resend: Resend the recovery request email
 account_recovery.pending.resend_rate_limited: You have requested too many recovery emails. Please wait a few minutes before trying again.
@@ -15,6 +14,7 @@ account_recovery.pending.status.cancel_prompt: If you have changed your mind and
 account_recovery.pending.status.granted: Your waiting period is over. Check your email for instructions to recover your account.
 account_recovery.pending.status.header: You requested to recover your account
 account_recovery.pending.status.wait_html: There is a waiting period of %{waiting_period} to recover your account. In <strong>%{interval}</strong>, you will receive an email with instructions to recover your account.
+
 account_recovery.start.continue: Recover my account
 account_recovery.start.header: Are you sure you want to recover your account?
 account_recovery.start.intro: You must wait %{interval} to receive an account recovery link. After clicking the link, you will set up new authentication methods to replace your old ones.

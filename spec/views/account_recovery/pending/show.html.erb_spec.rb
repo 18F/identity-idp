@@ -38,10 +38,11 @@ RSpec.describe 'account_recovery/pending/show.html.erb' do
     expect(rendered).to include('&lt;script&gt;')
   end
 
-  it 'does not offer home or cancellation navigation' do
+  it 'keeps confirmation separate from status and cancellation' do
     render
 
     expect(rendered).not_to have_link(href: root_path)
+    expect(rendered).not_to have_link(href: account_recovery_pending_status_path)
     expect(rendered).not_to have_css('form[action*="cancel"], a[href*="cancel"]')
   end
 end

@@ -5,8 +5,6 @@ module AccountRecovery
     INELIGIBLE = :ineligible
     REQUEST_NOT_PERSISTED = :request_not_persisted
 
-    # The created record, available to callers after a successful #call.
-    # @return [AccountRecoveryRequest, nil]
     attr_reader :account_recovery_request
 
     # @param user [User]
@@ -14,7 +12,6 @@ module AccountRecovery
       @user = user
     end
 
-    # @return [FormResponse]
     def call
       # Eligibility is re-checked here rather than trusted from the page that
       # rendered the link.
@@ -41,8 +38,6 @@ module AccountRecovery
         .account_recovery_request.deliver_now_or_later
     end
 
-    # @param reason [Symbol] bounded, non-PII reason safe for analytics
-    # @return [FormResponse]
     def failure(reason)
       FormResponse.new(
         success: false,
@@ -58,15 +53,11 @@ module AccountRecovery
           requested_at: Time.zone.now,
         )
 
-        # A request that cannot reach the waiting state is not usable, so fail
-        # closed rather than leaving a stranded row behind.
         raise ActiveRecord::Rollback if !request.wait!
 
         request
       end
     rescue ActiveRecord::RecordNotUnique
-      # Another request for this user became active between the eligibility
-      # check and the insert.
       nil
     end
   end
