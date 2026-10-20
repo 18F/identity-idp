@@ -106,7 +106,7 @@ RSpec.describe AccountRecovery::PendingController do
 
       it 'cancels the request and returns to regular MFA without signing out or changing methods' do
         recovery_request = create(:account_recovery_request, :granted, user: user)
-        original_methods = user.phone_configurations.map(&:attributes)
+        original_methods = user.phone_configurations.reload.map(&:attributes)
 
         freeze_time do
           post :cancel
