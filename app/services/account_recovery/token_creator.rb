@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module AccountRecovery
-  # Generates the single-use recovery token for an account-preserving MFA
-  # recovery request.
   class TokenCreator
     Token = Struct.new(:raw, :fingerprint, :expires_at, keyword_init: true)
 
@@ -22,8 +20,6 @@ module AccountRecovery
       )
     end
 
-    # @param raw_token [String]
-    # @return [String] keyed fingerprint suitable for persistence and lookup
     def self.fingerprint(raw_token)
       Pii::Fingerprinter.fingerprint(raw_token)
     end
