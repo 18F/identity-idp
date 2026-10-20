@@ -277,8 +277,8 @@ module DocAuth
         end
 
         def id_type_expected?
-          return true if IdentityConfig.store.doc_auth_post_validations_skip && IdentityConfig.store
-            .allowed_ialmax_providers.include?(document_capture_session.issuer)
+          return true if IdentityConfig.store.doc_auth_post_validations_skip &&
+                         document_capture_session.document_images_sharing_allowed?
 
           case document_type_received
           when *Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES

@@ -160,8 +160,8 @@ module Idv
     private
 
     def validation_requirements_met?
-      return true if IdentityConfig.store.doc_auth_post_validations_skip && IdentityConfig.store
-        .allowed_ialmax_providers.include?(document_capture_session.issuer)
+      return true if IdentityConfig.store.doc_auth_post_validations_skip &&
+                     document_capture_session.document_images_sharing_allowed?
 
       document_type_match? && selfie_requirement_met? &&
         mrz_requirement_met? && aamva_requirement_met?

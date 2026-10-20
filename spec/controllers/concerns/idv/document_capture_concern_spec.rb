@@ -6,7 +6,8 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
   end
   let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
   let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
-  let(:issuer) { 'best-sp-ever' }
+  let(:service_provider) { create(:service_provider) }
+  let(:issuer) { service_provider.issuer }
   let(:document_capture_session) do
     create(
       :document_capture_session,
@@ -80,7 +81,8 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         before do
           allow(IdentityConfig.store).to receive_messages(
             doc_auth_post_validations_skip: true,
-            allowed_ialmax_providers: [issuer],
+            document_images_sharing_service_providers: [issuer],
+            document_images_sharing_enabled: true,
           )
         end
 
@@ -159,7 +161,8 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
             before do
               allow(IdentityConfig.store).to receive_messages(
                 doc_auth_post_validations_skip: true,
-                allowed_ialmax_providers: [issuer],
+                document_images_sharing_enabled: true,
+                document_images_sharing_service_providers: [issuer],
               )
             end
 
@@ -192,7 +195,8 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
           before do
             allow(IdentityConfig.store).to receive_messages(
               doc_auth_post_validations_skip: true,
-              allowed_ialmax_providers: [issuer],
+              document_images_sharing_enabled: true,
+              document_images_sharing_service_providers: [issuer],
             )
           end
 
@@ -247,7 +251,8 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
               before do
                 allow(IdentityConfig.store).to receive_messages(
                   doc_auth_post_validations_skip: true,
-                  allowed_ialmax_providers: [issuer],
+                  document_images_sharing_enabled: true,
+                  document_images_sharing_service_providers: [issuer],
                 )
               end
 
@@ -270,7 +275,8 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
             before do
               allow(IdentityConfig.store).to receive_messages(
                 doc_auth_post_validations_skip: false,
-                allowed_ialmax_providers: [issuer],
+                document_images_sharing_enabled: true,
+                document_images_sharing_service_providers: [issuer],
               )
             end
 
@@ -280,11 +286,12 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
             end
           end
 
-          context 'when not an allowed ialmax provider' do
+          context 'when not an image sharing service provider' do
             before do
               allow(IdentityConfig.store).to receive_messages(
                 doc_auth_post_validations_skip: true,
-                allowed_ialmax_providers: ['not-allowed'],
+                document_images_sharing_enabled: true,
+                document_images_sharing_service_providers: ['not-allowed'],
               )
             end
             it 'returns failed response' do
@@ -292,13 +299,13 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
               expect(response.success?).to eq(false)
             end
           end
-
 
           context 'when validation_requirments_met? is skipped' do
             before do
               allow(IdentityConfig.store).to receive_messages(
                 doc_auth_post_validations_skip: true,
-                allowed_ialmax_providers: [issuer],
+                document_images_sharing_enabled: true,
+                document_images_sharing_service_providers: [issuer],
               )
             end
 
