@@ -197,6 +197,9 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
       end
 
       it 'returns Socure as the vendor' do
+        expect(document_capture_session).not_to receive(:mdl_requested?)
+        expect(document_capture_session).to receive(:passport_requested?).once.and_return(false)
+
         controller.update_doc_auth_vendor
         expect(document_capture_session.doc_auth_vendor).to eq(Idp::Constants::Vendors::SOCURE)
       end
