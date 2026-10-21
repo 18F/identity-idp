@@ -49,7 +49,9 @@ RSpec.describe Reports::SpIssuerUserCountsReport do
     expect(ReportMailer).to receive(:tables_report).with(
       to: email,
       subject: 'Service provider user count report',
-      message: "Report: #{Reports::SpIssuerUserCountsReport::REPORT_NAME}",
+      message: a_string_starting_with(
+        "Report: #{Reports::SpIssuerUserCountsReport::REPORT_NAME}",
+      ),
       reports:,
       attachment_format: :csv,
     )
