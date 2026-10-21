@@ -703,7 +703,8 @@ RSpec.describe Idv::VerifyInfoController do
 
             it 'sets the hybrid mobile review status in the idv session' do
               get :show
-              expect(controller.idv_session.hybrid_mobile_threatmetrix_review_status).to eq('reject')
+              expect(controller.idv_session.hybrid_mobile_threatmetrix_review_status)
+                .to eq('reject')
             end
 
             it 'tracks a failed hybrid mobile tmx fraud check' do
@@ -745,7 +746,7 @@ RSpec.describe Idv::VerifyInfoController do
 
           context 'user does not use hybrid flow' do
             let(:hybrid_mobile_threatmetrix) { {} }
-            it 'only does not try to track the hybrid attempts event' do
+            it 'does not track the hybrid attempts event' do
               expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).once
               get :show
             end
