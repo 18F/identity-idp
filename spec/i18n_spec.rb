@@ -64,10 +64,13 @@ module I18n
         { key: 'i18n.locale.es', locales: %i[es fr zh] },
         { key: 'i18n.locale.fr', locales: %i[es fr zh] },
         { key: 'i18n.locale.zh', locales: %i[es fr zh] },
+        { key: 'account.connected_delegation.description', locales: %i[es fr zh] },
         { key: 'account.email_language.name.en', locales: %i[es fr zh] },
         { key: 'account.email_language.name.es', locales: %i[es fr zh] },
         { key: 'account.email_language.name.fr', locales: %i[es fr zh] },
         { key: 'account.email_language.name.zh', locales: %i[es fr zh] },
+        { key: 'account.navigation.america_gov_services', locales: %i[es fr zh] },
+        { key: 'account.connected_delegation.disconnect', locales: %i[ es fr zh] },
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
         { key: /^countries/ }, # Some countries have the same name across languages
         { key: 'errors.messages.both_auth_and_logout_request', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing

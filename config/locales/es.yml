@@ -4,6 +4,8 @@ account.connected_apps.associated_html: 'Conectado: %{timestamp_html}'
 account.connected_apps.description: Con tu cuenta de %{app_name}, puedes conectarte de forma segura a múltiples servicios gubernamentales en línea. A continuación, encontrarás una lista de todos los servicios a los que estás conectado actualmente.
 account.connected_apps.email_not_selected: No se ha seleccionado aún una dirección de correo electrónico
 account.connected_apps.email_update_success_html: Se actualizó su correo electrónico para la <strong>%{sp_name}</strong>.
+account.connected_delegation.description: You allowed %{AMERICA_GOV_NAME} to act for you on these services. %{AMERICA_GOV_NAME} can’t see your personal information. Login.gov encrypts it so only the agency can read it.
+account.connected_delegation.disconnect: Disconnecting a service stops %{AMERICA_GOV_NAME} from acting for you there. It doesn’t change your own connection to that service.
 account.email_language.default: '%{language} (predeterminado)'
 account.email_language.edit_title: Editar la preferencia de idioma del correo electrónico
 account.email_language.languages_list: Recibirá mensajes de correo electrónico de %{app_name} en el idioma que elija.
@@ -79,6 +81,7 @@ account.navigation.add_federal_id: Agregue su identificación de empleado gubern
 account.navigation.add_phone_number: Agregar número de teléfono
 account.navigation.add_platform_authenticator: Agregar desbloqueo facial o táctil
 account.navigation.add_security_key: Agregar clave de seguridad
+account.navigation.america_gov_services: Services %{AMERICA_GOV_NAME} can use for you
 account.navigation.close: Cerrar
 account.navigation.connected_services: Sus servicios conectados
 account.navigation.customer_support: Atención al cliente

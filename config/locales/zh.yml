@@ -4,6 +4,8 @@ account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用您的 %{app_name} 帐户，您可以安全地在线连接到多个政府服务。以下是您当前已连接的所有服务列表。
 account.connected_apps.email_not_selected: 尚未选择电邮
 account.connected_apps.email_update_success_html: 你给<strong>%{sp_name}</strong>的电邮更新成功了。
+account.connected_delegation.description: You allowed %{AMERICA_GOV_NAME} to act for you on these services. %{AMERICA_GOV_NAME} can’t see your personal information. Login.gov encrypts it so only the agency can read it.
+account.connected_delegation.disconnect: Disconnecting a service stops %{AMERICA_GOV_NAME} from acting for you there. It doesn’t change your own connection to that service.
 account.email_language.default: '%{language}（默认）'
 account.email_language.edit_title: 编辑电邮语言选择
 account.email_language.languages_list: 您将收到%{app_name}用您选择的语言发送的电子邮件。
@@ -79,6 +81,7 @@ account.navigation.add_federal_id: 添加您的政府雇员身份证件
 account.navigation.add_phone_number: 添加电话号码
 account.navigation.add_platform_authenticator: 添加人脸或触摸解锁
 account.navigation.add_security_key: 添加安全密钥
+account.navigation.america_gov_services: Services %{AMERICA_GOV_NAME} can use for you
 account.navigation.close: 关闭
 account.navigation.connected_services: 您的互联服务
 account.navigation.customer_support: 客户支持
