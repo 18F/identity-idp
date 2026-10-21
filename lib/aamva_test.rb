@@ -37,14 +37,14 @@ class AamvaTest
   end
 
   def with_cleared_auth_token_cache
-    Rails.cache.delete(Proofing::Aamva::AuthenticationClient::AUTH_TOKEN_CACHE_KEY)
+    Rails.cache.delete(DocAuth::Aamva::AuthenticationClient::AUTH_TOKEN_CACHE_KEY)
 
     yield
   ensure
-    Rails.cache.delete(Proofing::Aamva::AuthenticationClient::AUTH_TOKEN_CACHE_KEY)
+    Rails.cache.delete(DocAuth::Aamva::AuthenticationClient::AUTH_TOKEN_CACHE_KEY)
   end
 
   def build_proofer
-    Proofing::Resolution::Plugins::AamvaPlugin.new.send(:proofer)
+    DocAuth::Aamva::Verifier.new.send(:proofer)
   end
 end

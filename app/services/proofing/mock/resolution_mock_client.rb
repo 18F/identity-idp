@@ -58,7 +58,7 @@ module Proofing
         resolution_result(
           success: false,
           errors: {},
-          exception: Proofing::Aamva::VerificationError.new(
+          exception: DocAuth::Aamva::VerificationError.new(
             'Unexpected status code in response: 504',
           ),
         )

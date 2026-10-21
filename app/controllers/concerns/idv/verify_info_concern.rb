@@ -496,7 +496,7 @@ module Idv
 
     def threatmetrix_check_failed?(result)
       threatmetrix_result = result.dig(:context, :stages, :threatmetrix)
-      return false unless threatmetrix_result
+      return false unless threatmetrix_result.present?
 
       success = (threatmetrix_result[:review_status] == 'pass')
       device_fingerprint = threatmetrix_result.dig(:device_fingerprint)
@@ -521,7 +521,7 @@ module Idv
       return false unless FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
 
       hybrid_mobile_threatmetrix_result = result.dig(:context, :stages, :hybrid_mobile_threatmetrix)
-      return false unless hybrid_mobile_threatmetrix_result
+      return false unless hybrid_mobile_threatmetrix_result.present?
 
       success = (hybrid_mobile_threatmetrix_result[:review_status] == 'pass')
 

@@ -7,8 +7,11 @@ module EncryptedDocStorage
       :encryption_key,
     )
 
-    def initialize(s3_enabled: false)
+    # @param [Boolean] s3_enabled write to the escrow S3 bucket instead of local disk
+    # @param [#write_image] storage explicit backend; overrides s3_enabled when given
+    def initialize(s3_enabled: false, storage: nil)
       @s3_enabled = s3_enabled
+      @storage = storage
     end
 
     def write(image: nil)

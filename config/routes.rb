@@ -11,6 +11,10 @@ Rails.application.routes.draw do
   post '/api/openid_connect/token' => 'openid_connect/token#create'
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
+  get '/api/openid_connect/document_images/:image_type' =>
+    'openid_connect/document_images#show',
+      as: :api_openid_connect_document_image,
+      constraints: { image_type: /(?:front|back|passport|selfie)/ }
   post '/api/risc/security_events' => 'risc/security_events#create'
 
   post '/api/usps_locations' => 'idv/in_person/public/usps_locations#index'
@@ -116,19 +120,19 @@ Rails.application.routes.draw do
       get '/login/password' => 'password_capture#new', as: :capture_password
       post '/login/password' => 'password_capture#create'
 
-      get '/account_reset/recovery_options' => 'account_reset/recovery_options#show'
-      post '/account_reset/recovery_options/cancel' => 'account_reset/recovery_options#cancel'
-      get '/account_reset/request' => 'account_reset/request#show'
-      post '/account_reset/request' => 'account_reset/request#create'
-      get '/account_reset/cancel' => 'account_reset/cancel#show'
-      post '/account_reset/cancel' => 'account_reset/cancel#create'
-      get '/account_reset/confirm_request' => 'account_reset/confirm_request#show'
-      get '/account_reset/delete_account' => 'account_reset/delete_account#show'
-      post '/account_reset/delete_account/cancel' => 'account_reset/delete_account#cancel'
-      delete '/account_reset/delete_account' => 'account_reset/delete_account#delete'
-      get '/account_reset/confirm_delete_account' => 'account_reset/confirm_delete_account#show'
-      get '/account_reset/pending' => 'account_reset/pending#show'
-      post '/account_reset/pending/cancel' => 'account_reset/pending#cancel'
+      get '/account_reset/recovery_options' => 'destructive_account_reset/recovery_options#show'
+      post '/account_reset/recovery_options/cancel' => 'destructive_account_reset/recovery_options#cancel'
+      get '/account_reset/request' => 'destructive_account_reset/request#show'
+      post '/account_reset/request' => 'destructive_account_reset/request#create'
+      get '/account_reset/cancel' => 'destructive_account_reset/cancel#show'
+      post '/account_reset/cancel' => 'destructive_account_reset/cancel#create'
+      get '/account_reset/confirm_request' => 'destructive_account_reset/confirm_request#show'
+      get '/account_reset/delete_account' => 'destructive_account_reset/delete_account#show'
+      post '/account_reset/delete_account/cancel' => 'destructive_account_reset/delete_account#cancel'
+      delete '/account_reset/delete_account' => 'destructive_account_reset/delete_account#delete'
+      get '/account_reset/confirm_delete_account' => 'destructive_account_reset/confirm_delete_account#show'
+      get '/account_reset/pending' => 'destructive_account_reset/pending#show'
+      post '/account_reset/pending/cancel' => 'destructive_account_reset/pending#cancel'
 
       get '/login/two_factor/options' => 'two_factor_authentication/options#index'
       post '/login/two_factor/options' => 'two_factor_authentication/options#create'
@@ -378,6 +382,8 @@ Rails.application.routes.draw do
     post '/user_authorization_confirmation' => 'users/authorization_confirmation#create'
     match '/user_authorization_confirmation/reset' => 'users/authorization_confirmation#destroy',
           as: :reset_user_authorization, via: %i[put delete]
+    get '/sts/consent' => 'users/sts_consent#new', as: :sts_consent
+    post '/sts/consent' => 'users/sts_consent#create'
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
     delete '/sign_up/cancel' => 'sign_up/cancellations#destroy', as: :sign_up_destroy
 
