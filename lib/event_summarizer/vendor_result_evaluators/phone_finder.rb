@@ -24,16 +24,20 @@ module EventSummarizer
         return [] unless pf_instances && !pf_instances.empty?
 
         pf_instances.each do |pf_instance|
-          next if pf_instance['ProductStatus'] != 'fail'
+          items = pf_instance['Items'] || []
 
-          items = pf_instance['Items']
-          failed_items.concat(items.select { |item| item['ItemStatus'] == 'fail' })
+          items.each do |item|
+            failed_items << item if item['ItemStatus'] == 'fail'
+          end
         end
 
-        failed_items
-          .map { |item| item.dig('ItemReason', 'Description').to_s.strip }
-          .reject(&:empty?)
-          .uniq
+        failed_items.filter_map { |item| failure_reason(item) }.uniq
+      end
+
+      def self.failure_reason(item)
+        reason = item.dig('ItemReason', 'Description').to_s.strip
+
+        reason unless reason.empty?
       end
 
       def self.general_error(result)
@@ -46,7 +50,7 @@ module EventSummarizer
       end
 
       def self.failure_payload(result)
-        fail_reasons = [*itemized_errors(result), general_error(result)].compact
+        fail_reasons = [general_error(result), *itemized_errors(result)].compact
 
         if fail_reasons.any?
           {

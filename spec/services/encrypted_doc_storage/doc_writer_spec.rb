@@ -57,6 +57,26 @@ RSpec.describe EncryptedDocStorage::DocWriter do
       end
     end
 
+    context 'when an explicit storage backend is given' do
+      let(:storage) { EncryptedDocStorage::RedisStorage.new }
+      subject { EncryptedDocStorage::DocWriter.new(s3_enabled: true, storage:) }
+
+      it 'writes there instead of S3 or local disk' do
+        expect_any_instance_of(EncryptedDocStorage::S3Storage).not_to receive(:write_image)
+        expect_any_instance_of(EncryptedDocStorage::LocalStorage).not_to receive(:write_image)
+
+        result = subject.write(image:)
+        encrypted_image = storage.read_image(name: result.name)
+        storage.delete_image(name: result.name)
+
+        decrypted = Encryption::AesCipherV2.new.decrypt(
+          encrypted_image,
+          Base64.strict_decode64(result.encryption_key),
+        )
+        expect(decrypted).to eq(image)
+      end
+    end
+
     context 'when an image is not passed in' do
       context 'when the image value is nil' do
         it 'returns a blank Result object' do

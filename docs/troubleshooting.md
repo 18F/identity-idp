@@ -185,3 +185,41 @@ After your Ruby is built, exit your shell and open a new one, to clear caches.
 
 `bundle install`
 
+### Errors relating to default gems after rebuilding Ruby
+
+If you see errors like these after upgrading or reinstalling Ruby via `rbenv`, `asdf`, `chruby`, or another version manager:
+
+```
+Source locally installed gems is ignoring #<Bundler::StubSpecification name=zlib version=3.2.3 platform=ruby> because it is missing extensions
+Source locally installed gems is ignoring #<Bundler::StubSpecification name=rbs version=3.9.4 platform=ruby> because it is missing extensions
+Source locally installed gems is ignoring #<Bundler::StubSpecification name=jaro_winkler version=1.6.1 platform=ruby> because it is missing extensions
+rake aborted!
+LoadError: cannot load such file -- /Users/username/.rbenv/versions/3.4.10/lib/ruby/gems/3.4.0/gems/securerandom-0.4.1/lib/securerandom.rb
+```
+
+This is caused by a **stale Bootsnap compile cache** holding references to paths from your previous Ruby installation. The cache lives in `tmp/cache/` inside the project directory, so rebuilding Ruby or reinstalling gems doesn't clear it.
+
+#### Fix
+
+Clear the Bootsnap cache:
+
+```bash
+rm -rf tmp/cache/bootsnap*
+```
+
+Then retry your command (e.g., `make setup`, `bin/rake db:create`, etc.). Bootsnap will regenerate the cache against your current Ruby installation.
+
+#### Why this happens
+
+Bootsnap caches Ruby's `$LOAD_PATH` resolution to speed up boot times. When you switch Ruby versions or reinstall Ruby, the cached paths can point to directories that no longer exist or have a different internal layout. Default gems like `securerandom`, `zlib`, `rbs`, and `jaro_winkler` are particularly affected because their layout changed between Ruby versions.
+
+#### Alternative workaround
+
+If clearing the cache doesn't resolve it, you can disable Bootsnap temporarily:
+
+```bash
+ENABLE_BOOTSNAP=false bin/rake db:create
+```
+
+This bypasses the cache entirely but will make subsequent commands slower. Clearing the cache is the preferred fix.
+

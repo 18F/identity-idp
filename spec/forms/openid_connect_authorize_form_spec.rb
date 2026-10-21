@@ -220,24 +220,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
         let(:acr_values) { facial_match_ial }
 
         context "when the IAL requested is #{facial_match_ial}" do
-          context 'when facial match general availability is turned off' do
-            before do
-              allow(IdentityConfig.store).to receive(
-                :facial_match_general_availability_enabled,
-              ).and_return(false)
-            end
-
-            it 'fails with a not authorized error' do
-              expect(form).not_to be_valid
-              expect(form.errors[:acr_values])
-                .to include(t('openid_connect.authorization.errors.no_auth'))
-            end
-          end
-
-          context 'when facial match general availability is turned on' do
-            it 'succeeds validation' do
-              expect(form).to be_valid
-            end
+          it 'succeeds validation' do
+            expect(form).to be_valid
           end
         end
       end
@@ -364,6 +348,151 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
+    context 'with token exchange scope' do
+      let(:scope) { 'openid token_exchange:passport' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+          .and_return(token_exchange_allowed_targets)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return(token_exchange_allowed_broker_issuers)
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled)
+          .and_return(token_exchange_enabled)
+      end
+
+      context 'when token exchange is disabled' do
+        let(:token_exchange_enabled) { false }
+        let(:token_exchange_allowed_targets) do
+          [{ issuer: 'passport-issuer', scope: 'passport' }]
+        end
+        let(:token_exchange_allowed_broker_issuers) { [client_id] }
+
+        it 'rejects the scope' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:scope])
+            .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+        end
+      end
+
+      context 'when the broker is not allowlisted' do
+        let(:token_exchange_enabled) { true }
+        let(:token_exchange_allowed_targets) do
+          [{ issuer: 'passport-issuer', scope: 'passport' }]
+        end
+        let(:token_exchange_allowed_broker_issuers) { [] }
+
+        it 'rejects the scope' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:scope])
+            .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+        end
+      end
+
+      context 'when token exchange is enabled and the broker is allowlisted' do
+        let(:token_exchange_enabled) { true }
+        let(:token_exchange_allowed_targets) do
+          [{ issuer: 'passport-issuer', scope: 'passport' }]
+        end
+        let(:token_exchange_allowed_broker_issuers) { [client_id] }
+
+        it 'allows the configured audience scope' do
+          expect(valid?).to eq(true)
+          expect(form.errors[:scope]).to be_blank
+          expect(form.scope).to eq(%w[openid token_exchange:passport])
+        end
+
+        it 'reports the scope as authorized' do
+          expect(form.unauthorized_scope).to eq(false)
+        end
+
+        context 'when more than one configured audience is requested' do
+          let(:scope) { 'openid token_exchange:passport token_exchange:benefits' }
+          let(:token_exchange_allowed_targets) do
+            [
+              { issuer: 'passport-issuer', scope: 'passport' },
+              { issuer: 'benefits-issuer', scope: 'benefits' },
+            ]
+          end
+
+          it 'allows every configured audience scope' do
+            expect(valid?).to eq(true)
+            expect(form.errors[:scope]).to be_blank
+            expect(form.scope).to eq(
+              %w[openid token_exchange:passport token_exchange:benefits],
+            )
+          end
+        end
+
+        context 'when the base token exchange scope is requested' do
+          let(:scope) { 'openid token_exchange' }
+
+          it 'rejects the unqualified scope' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:scope])
+              .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+          end
+        end
+
+        context 'when a configured and an unconfigured audience are both requested' do
+          let(:scope) { 'openid token_exchange:passport token_exchange:benefits' }
+
+          it 'rejects the whole request' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:scope])
+              .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+          end
+        end
+      end
+
+      context 'when the audience is not configured' do
+        let(:token_exchange_enabled) { true }
+        let(:token_exchange_allowed_targets) do
+          [{ issuer: 'other-audience-issuer', scope: 'other_audience' }]
+        end
+        let(:token_exchange_allowed_broker_issuers) { [client_id] }
+
+        it 'rejects the scope' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:scope])
+            .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+        end
+      end
+    end
+
+    context 'when token exchange is enabled but no token exchange scope is requested' do
+      let(:scope) { 'email' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+          .and_return([{ issuer: 'passport-issuer', scope: 'passport' }])
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return(token_exchange_allowed_broker_issuers)
+      end
+
+      context 'when the service provider is not a broker' do
+        let(:token_exchange_allowed_broker_issuers) { [] }
+
+        it 'allows ordinary scopes' do
+          expect(valid?).to eq(true)
+          expect(form.errors[:scope]).to be_blank
+          expect(form.scope).to eq(%w[email])
+        end
+      end
+
+      context 'when the service provider is a broker' do
+        let(:token_exchange_allowed_broker_issuers) { [client_id] }
+
+        it 'allows ordinary scopes' do
+          expect(valid?).to eq(true)
+          expect(form.errors[:scope]).to be_blank
+          expect(form.scope).to eq(%w[email])
+        end
+      end
+    end
+
     context 'when scope is good and we block unauthorized scopes' do
       let(:scope) { 'email' }
 
@@ -391,6 +520,61 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(valid?).to eq(false)
         expect(form.errors[:scope])
           .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+      end
+    end
+
+    context 'when scope includes document_images' do
+      let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+      let(:scope) { 'openid document_images' }
+
+      context 'and the SP is not allow-listed for image sharing' do
+        it 'has errors' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:scope])
+            .to include(t('openid_connect.authorization.errors.no_valid_scope'))
+        end
+      end
+
+      context 'and the SP is allow-listed for image sharing' do
+        before do
+          allow(IdentityConfig.store).to receive(:document_images_sharing_enabled)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+            .and_return([client_id])
+        end
+
+        it 'is valid' do
+          expect(valid?).to eq(true)
+          expect(form.errors[:scope]).to be_empty
+        end
+      end
+    end
+
+    context 'when scope does not include document_images' do
+      let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+      let(:scope) { 'openid profile' }
+
+      context 'and the SP is not allow-listed for image sharing' do
+        it 'is valid and does not request document_images' do
+          expect(valid?).to eq(true)
+          expect(form.errors[:scope]).to be_empty
+          expect(form.scope).not_to include('document_images')
+        end
+      end
+
+      context 'and the SP is allow-listed for image sharing' do
+        before do
+          allow(IdentityConfig.store).to receive(:document_images_sharing_enabled)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+            .and_return([client_id])
+        end
+
+        it 'is valid and does not request document_images' do
+          expect(valid?).to eq(true)
+          expect(form.errors[:scope]).to be_empty
+          expect(form.scope).not_to include('document_images')
+        end
       end
     end
 
@@ -441,86 +625,67 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    context 'PKCE' do
+    [[false, false], [false, true], [false, nil], [true, true], [true, nil]].each do |enabled, pkce|
+      context "with optional PKCE enabled: #{enabled} and SP pkce: #{pkce.inspect}" do
+        before do
+          form.service_provider.update!(pkce: pkce)
+          allow(IdentityConfig.store).to receive(
+            :openid_connect_private_key_jwt_pkce_enabled,
+          ).and_return(enabled)
+        end
+
+        [
+          [nil, nil, true],
+          [nil, 'S256', true],
+          ['abcdef', 'S256', true],
+          ['', 'S256', true],
+          ['abcdef', nil, false],
+          ['abcdef', 'plain', false],
+        ].each do |challenge, method, accepted|
+          context "with parameters #{[challenge, method].inspect}" do
+            let(:code_challenge) { challenge }
+            let(:code_challenge_method) { method }
+
+            it 'preserves the existing authorization result' do
+              expect(valid?).to eq(accepted)
+            end
+          end
+        end
+      end
+    end
+
+    context 'with optional PKCE enabled for private_key_jwt' do
       let(:code_challenge) { Digest::SHA256.urlsafe_base64digest('a' * 43) }
       let(:code_challenge_method) { 'S256' }
 
-      context 'with an SP whose PKCE setting is unset' do
-        before { form.service_provider.update!(pkce: nil) }
-
-        it 'accepts an S256 challenge' do
-          expect(valid?).to eq(true)
-        end
+      before do
+        form.service_provider.update!(pkce: false)
+        allow(IdentityConfig.store).to receive(
+          :openid_connect_private_key_jwt_pkce_enabled,
+        ).and_return(true)
       end
 
-      ['a' * 42, 'a' * 44, '+' * 43].each do |challenge|
-        context "with invalid challenge #{challenge.inspect}" do
-          let(:code_challenge) { challenge }
-
-          it 'rejects the request' do
-            expect(valid?).to eq(false)
-            expect(form.errors[:code_challenge]).to be_present
-          end
-        end
+      it 'accepts a complete S256 challenge' do
+        expect(valid?).to eq(true)
       end
 
-      context 'with an SP configured for private_key_jwt (pkce: false)' do
-        before { form.service_provider.update!(pkce: false) }
+      context 'without PKCE parameters' do
+        let(:code_challenge) { nil }
+        let(:code_challenge_method) { nil }
 
-        it 'rejects PKCE by default' do
-          expect(valid?).to eq(false)
-          expect(form.errors[:code_challenge]).to include(
-            t('openid_connect.authorization.errors.pkce_not_enabled'),
-          )
-        end
-
-        context 'with the feature enabled' do
-          before do
-            allow(IdentityConfig.store).to receive(
-              :openid_connect_private_key_jwt_pkce_enabled,
-            ).and_return(true)
-          end
-
-          it 'accepts PKCE' do
-            expect(valid?).to eq(true)
-          end
-        end
-
-        context 'without PKCE parameters' do
-          let(:code_challenge) { nil }
-          let(:code_challenge_method) { nil }
-
-          it 'continues to accept the existing flow' do
-            expect(valid?).to eq(true)
-          end
-        end
-      end
-
-      context 'with an SP configured for PKCE (pkce: true)' do
-        before { form.service_provider.update!(pkce: true) }
-
-        it 'accepts PKCE with the feature disabled' do
+        it 'continues to accept ordinary private_key_jwt' do
           expect(valid?).to eq(true)
         end
       end
 
       [
-        [nil, 'S256'],
-        ['', 'S256'],
-        [' ', 'S256'],
-        ['a' * 43, nil],
-        ['a' * 43, ''],
-        ['a' * 43, ' '],
-        ['', nil],
-        [nil, ''],
-        ['', ''],
-        [' ', ' '],
+        [nil, 'S256'], ['', 'S256'], [' ', 'S256'],
+        ['a' * 43, nil], ['a' * 43, ''], ['a' * 43, ' '],
+        ['', nil], [nil, ''], ['', ''], [' ', ' ']
       ].each do |challenge, method|
         context "with incomplete PKCE parameters #{[challenge, method].inspect}" do
           let(:code_challenge) { challenge }
           let(:code_challenge_method) { method }
-
-          before { form.service_provider.update!(pkce: false) }
 
           it 'returns only the parameter-pair error' do
             expect(valid?).to eq(false)
@@ -528,6 +693,39 @@ RSpec.describe OpenidConnectAuthorizeForm do
               base: [t('openid_connect.authorization.errors.pkce_parameter_pair')],
             )
           end
+        end
+      end
+
+      ['a' * 42, 'a' * 44, '+' * 43].each do |challenge|
+        context "with invalid challenge #{challenge.inspect}" do
+          let(:code_challenge) { challenge }
+
+          it 'rejects the challenge format' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:code_challenge]).to be_present
+          end
+        end
+      end
+
+      context 'with an unsupported challenge method' do
+        let(:code_challenge_method) { 'plain' }
+
+        it 'rejects the method' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code_challenge_method]).to be_present
+        end
+      end
+    end
+
+    context 'PKCE' do
+      let(:code_challenge) { 'abcdef' }
+      let(:code_challenge_method) { 'S256' }
+
+      context 'code_challenge but no code_challenge_method' do
+        let(:code_challenge_method) { nil }
+        it 'has errors' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code_challenge_method]).to be_present
         end
       end
 
@@ -819,25 +1017,55 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    context 'with PKCE' do
+    context 'with private_key_jwt and PKCE' do
       let(:code_challenge) { Digest::SHA256.urlsafe_base64digest('a' * 43) }
       let(:code_challenge_method) { 'S256' }
 
-      it 'clears the challenge when the next authorization does not request PKCE' do
-        args = {
-          current_user: user, ial: 1, rails_session_id: rails_session_id, email_address_id: 4
-        }
-        form.link_identity_to_service_provider(**args)
+      before do
+        form.service_provider.update!(pkce: false)
+        allow(IdentityConfig.store).to receive(
+          :openid_connect_private_key_jwt_pkce_enabled,
+        ).and_return(true)
+      end
+
+      it 'issues an unprefixed code when the next authorization is issued with the flag off' do
+        link_params = { current_user: user,
+                        ial: 1,
+                        rails_session_id: rails_session_id,
+                        email_address_id: nil }
+        form.link_identity_to_service_provider(**link_params)
         identity = user.identities.find_by!(service_provider: client_id)
         previous_code = identity.session_uuid
-        next_form = OpenidConnectAuthorizeForm.new(
-          client_id: client_id, scope: scope, acr_values: acr_values,
-        )
-        next_form.link_identity_to_service_provider(**args)
+        expect(identity.session_uuid).to start_with('pkce_')
 
-        expect(identity.reload.code_challenge).to be_nil
+        allow(IdentityConfig.store).to receive(
+          :openid_connect_private_key_jwt_pkce_enabled,
+        ).and_return(false)
+        form.link_identity_to_service_provider(**link_params)
+
+        expect(identity.reload.session_uuid).not_to start_with('pkce_')
+        expect(identity.code_challenge).to eq(code_challenge)
         expect(identity.session_uuid).not_to eq(previous_code)
       end
+
+      it 'clears the challenge and prefix when the next authorization omits PKCE' do
+        link_params = { current_user: user,
+                        ial: 1,
+                        rails_session_id: rails_session_id,
+                        email_address_id: nil }
+        form.link_identity_to_service_provider(**link_params)
+        next_form = OpenidConnectAuthorizeForm.new(client_id: client_id)
+        next_form.link_identity_to_service_provider(**link_params)
+
+        identity = user.identities.find_by!(service_provider: client_id)
+        expect(identity.session_uuid).not_to start_with('pkce_')
+        expect(identity.code_challenge).to be_nil
+      end
+    end
+
+    context 'with PKCE' do
+      let(:code_challenge) { 'abcdef' }
+      let(:code_challenge_method) { 'S256' }
 
       it 'records the code_challenge on the identity' do
         form.link_identity_to_service_provider(

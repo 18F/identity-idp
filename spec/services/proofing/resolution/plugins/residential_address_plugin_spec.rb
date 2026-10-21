@@ -19,7 +19,7 @@ RSpec.describe Proofing::Resolution::Plugins::ResidentialAddressPlugin do
     instance_double(Proofing::LexisNexis::InstantVerify::Proofer, proof: proofer_result)
   end
 
-  let(:sp_cost_token) { :test_cost_token }
+  let(:sp_cost_token) { :lexis_nexis_resolution }
 
   subject(:plugin) do
     described_class.new(
@@ -29,18 +29,6 @@ RSpec.describe Proofing::Resolution::Plugins::ResidentialAddressPlugin do
   end
 
   describe '#call' do
-    def sp_cost_count_for_issuer
-      SpCost.where(cost_type: :lexis_nexis_resolution, issuer: current_sp.issuer).count
-    end
-
-    def sp_cost_count_with_transaction_id
-      SpCost.where(
-        cost_type: :lexis_nexis_resolution,
-        issuer: current_sp.issuer,
-        transaction_id: proofer_transaction_id,
-      ).count
-    end
-
     subject(:call) do
       plugin.call(
         applicant_pii:,
@@ -54,6 +42,21 @@ RSpec.describe Proofing::Resolution::Plugins::ResidentialAddressPlugin do
       allow(plugin.proofer).to receive(:proof).and_return(proofer_result)
     end
 
+    let(:sp_costs_for_transaction) do
+      SpCost.where(
+        issuer: current_sp.issuer,
+        transaction_id: proofer_transaction_id,
+      )
+    end
+
+    let(:lexis_nexis_sp_costs) do
+      sp_costs_for_transaction.where(cost_type: :lexis_nexis_resolution)
+    end
+
+    let(:socure_sp_costs) do
+      sp_costs_for_transaction.where(cost_type: :socure_resolution)
+    end
+
     context 'remote unsupervised proofing' do
       let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
       let(:ipp_enrollment_in_progress) { false }
@@ -65,8 +68,16 @@ RSpec.describe Proofing::Resolution::Plugins::ResidentialAddressPlugin do
         end
       end
 
-      it 'does not record a LexisNexis SP cost' do
-        expect { call }.not_to change { sp_cost_count_for_issuer }
+      it 'does not record an SP cost' do
+        expect { call }.not_to change(SpCost, :count)
+      end
+
+      context 'when configured with the Socure cost token' do
+        let(:sp_cost_token) { :socure_resolution }
+
+        it 'does not record an SP cost' do
+          expect { call }.not_to change(SpCost, :count)
+        end
       end
     end
 
@@ -92,7 +103,7 @@ RSpec.describe Proofing::Resolution::Plugins::ResidentialAddressPlugin do
         end
 
         it 'records a LexisNexis SP cost' do
-          expect { call }.to change { sp_cost_count_with_transaction_id }.to(1)
+          expect { call }.to change(lexis_nexis_sp_costs, :count).from(0).to(1)
         end
       end
 
@@ -112,7 +123,7 @@ RSpec.describe Proofing::Resolution::Plugins::ResidentialAddressPlugin do
         end
 
         it 'records a LexisNexis SP cost' do
-          expect { call }.to change { sp_cost_count_with_transaction_id }.to(1)
+          expect { call }.to change(lexis_nexis_sp_costs, :count).from(0).to(1)
         end
       end
 
@@ -132,7 +143,29 @@ RSpec.describe Proofing::Resolution::Plugins::ResidentialAddressPlugin do
         end
 
         it 'records a LexisNexis SP cost' do
-          expect { call }.to change { sp_cost_count_with_transaction_id }.to(1)
+          expect { call }.to change(lexis_nexis_sp_costs, :count).from(0).to(1)
+        end
+      end
+
+      context 'when configured with the Socure cost token' do
+        let(:sp_cost_token) { :socure_resolution }
+
+        it 'records a Socure SP cost' do
+          expect { call }.to change(socure_sp_costs, :count).from(0).to(1)
+        end
+
+        it 'does not record a LexisNexis SP cost' do
+          expect { call }.not_to change(lexis_nexis_sp_costs, :count)
+        end
+
+        it 'records the vendor transaction id with the Socure cost' do
+          call
+
+          expect(SpCost.last).to have_attributes(
+            cost_type: 'socure_resolution',
+            issuer: current_sp.issuer,
+            transaction_id: proofer_transaction_id,
+          )
         end
       end
     end

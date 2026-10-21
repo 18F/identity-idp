@@ -18,6 +18,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
 
   let(:response_status) { 200 }
   let(:idv_socure_kyc_auto_failure_reason_codes) { ['R995'] }
+  let(:get_to_yes_blocking_reason_codes) { [] }
 
   let(:field_validation_overrides) { {} }
   let(:reason_codes) { %w[I919 I914 I905] }
@@ -54,6 +55,9 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
   before do
     allow(IdentityConfig.store).to receive(:idv_socure_kyc_auto_failure_reason_codes)
       .and_return(idv_socure_kyc_auto_failure_reason_codes)
+    allow(IdentityConfig.store)
+      .to receive(:idv_aamva_get_to_yes_socure_kyc_blocking_reason_codes)
+      .and_return(get_to_yes_blocking_reason_codes)
 
     using_json = !response_body.is_a?(String)
 
@@ -134,6 +138,51 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
           ].to_set,
         )
       end
+
+      it 'cannot pass with additional verification' do
+        expect(result.failed_result_can_pass_with_additional_verification).to eql(false)
+        expect(result.attributes_requiring_additional_verification).to eql([])
+      end
+    end
+  end
+
+  context 'when resolution fails on attributes AAMVA could cover' do
+    let(:field_validation_overrides) { { 'streetAddress' => 0.01 } }
+
+    it 'can pass with additional verification' do
+      expect(result.success).to eql(false)
+      expect(result.failed_result_can_pass_with_additional_verification).to eql(true)
+      expect(result.attributes_requiring_additional_verification).to eql([:address])
+    end
+  end
+
+  context 'when resolution fails on a name' do
+    let(:field_validation_overrides) { { 'firstName' => 0.01 } }
+
+    it 'reports the failure as unknown, which blocks a rescue downstream' do
+      expect(result.success).to eql(false)
+      expect(result.attributes_requiring_additional_verification).to eql([:unknown])
+    end
+  end
+
+  context 'when an autofail reason code is present alongside a failed attribute' do
+    let(:reason_codes) { ['R995'] }
+    let(:field_validation_overrides) { { 'streetAddress' => 0.01 } }
+
+    it 'cannot pass with additional verification' do
+      expect(result.success).to eql(false)
+      expect(result.failed_result_can_pass_with_additional_verification).to eql(false)
+    end
+  end
+
+  context 'when a rescue blocking reason code is present alongside a failed attribute' do
+    let(:get_to_yes_blocking_reason_codes) { ['R909'] }
+    let(:reason_codes) { %w[I919 R909] }
+    let(:field_validation_overrides) { { 'streetAddress' => 0.01 } }
+
+    it 'reports unknown, which blocks a rescue downstream' do
+      expect(result.success).to eql(false)
+      expect(result.attributes_requiring_additional_verification).to eql([:address, :unknown])
     end
   end
 

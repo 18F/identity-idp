@@ -35,7 +35,9 @@ class User < ApplicationRecord
   # rubocop:enable Rails/HasManyOrHasOneDependent
   has_many :agency_identities, dependent: :destroy
   has_many :profiles, dependent: :destroy
-  has_one :account_reset_request, dependent: :destroy
+  has_one :account_reset_request,
+          class_name: 'DestructiveAccountResetRequest',
+          dependent: :destroy
   has_many :phone_configurations, dependent: :destroy, inverse_of: :user
   has_many :email_addresses, dependent: :destroy, inverse_of: :user
   has_many :webauthn_configurations, dependent: :destroy, inverse_of: :user
@@ -63,6 +65,12 @@ class User < ApplicationRecord
           class_name: 'InPersonEnrollment', foreign_key: :user_id, inverse_of: :user,
           dependent: :destroy
   belongs_to :reset_password_email_address, class_name: 'EmailAddress', optional: true
+
+  has_one :current_proofing_agent_session,
+          -> {
+            where(doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT)
+              .order(requested_at: :desc)
+          }, class_name: 'DocumentCaptureSession', inverse_of: :user, dependent: :destroy
 
   attr_accessor :asserted_attributes, :email
 

@@ -183,5 +183,88 @@ RSpec.describe SummarizeUserEvents do
         * (10:42 AM) User abandoned identity verification
       END
     end
+
+    context 'when the source yields events out of chronological order' do
+      let(:cloudwatch_events) do
+        [
+          {
+            '@timestamp' => '2024-12-30 20:11:04.000',
+            '@message' => JSON.generate(
+              name: 'GetUspsProofingResultsJob: Enrollment status updated',
+              properties: {
+                event_properties: { passed: true, tmx_status: 'threatmetrix_pass' },
+              },
+            ),
+          },
+          {
+            '@timestamp' => '2024-12-30 15:42:51.336',
+            '@message' => JSON.generate(name: 'IdV: doc auth welcome submitted'),
+          },
+          {
+            '@timestamp' => '2024-12-30 15:44:10.000',
+            '@message' => JSON.generate(
+              name: 'idv_in_person_direct_start',
+              properties: { event_properties: {} },
+            ),
+          },
+        ]
+      end
+
+      it 'reports the IPP completion instead of dropping it' do
+        expect(command_output).to include(
+          'User visited the post office and completed IPP enrollment',
+        )
+        expect(command_output).to include('Identity verified')
+      end
+
+      it 'does not warn about a missing welcome event' do
+        expect { command_output }.to_not output.to_stderr
+      end
+
+      it 'yields events in timestamp order' do
+        yielded = []
+
+        instance.each_event_in_chronological_order do |event|
+          yielded << event['name']
+        end
+
+        expect(yielded).to eql(
+          [
+            'IdV: doc auth welcome submitted',
+            'idv_in_person_direct_start',
+            'GetUspsProofingResultsJob: Enrollment status updated',
+          ],
+        )
+      end
+    end
+
+    context 'when events share a timestamp' do
+      let(:cloudwatch_events) do
+        [
+          {
+            '@timestamp' => '2024-12-30 15:42:51.336',
+            '@message' => JSON.generate(name: 'IdV: doc auth welcome submitted'),
+          },
+        ] + Array.new(5) do |i|
+          {
+            '@timestamp' => '2024-12-30 15:43:00.000',
+            '@message' => JSON.generate(
+              name: 'Rate Limit Reached',
+              properties: { event_properties: { limiter_type: 'idv_doc_auth', step_name: i.to_s } },
+            ),
+          }
+        end
+      end
+
+      it 'preserves the order they arrived in' do
+        yielded = []
+
+        instance.each_event_in_chronological_order do |event|
+          yielded << event.dig('@message', 'properties', 'event_properties', 'step_name')
+        end
+
+        expect(yielded).to eql([nil, '0', '1', '2', '3', '4'])
+      end
+    end
   end
 end

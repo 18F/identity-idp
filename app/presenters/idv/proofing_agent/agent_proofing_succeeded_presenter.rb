@@ -9,8 +9,14 @@ module Idv
 
       # Per analysis linked on ticket: EOD UTC-5 + 2 days provides the best
       # coverage over all U.S. timezones (-11 to +10). +10 will be correct after 3pm local.
+      PARSE_TIME_ZONE = 'Etc/GMT+5'
+
       def self.deadline_for(verified_at:)
-        Time.zone.parse(verified_at).in_time_zone('Etc/GMT+5').end_of_day + 2.days
+        Time.zone.parse(verified_at).in_time_zone(PARSE_TIME_ZONE).end_of_day + validity_hours
+      end
+
+      def self.validity_hours
+        IdentityConfig.store.agent_proofed_user_time_validity_hours.hours
       end
 
       def initialize(verified_at:, url_options:, service_provider: nil)
@@ -36,7 +42,7 @@ module Idv
       end
 
       def verified_at
-        Time.zone.parse(@verified_at_string).in_time_zone('Etc/GMT+5')
+        Time.zone.parse(@verified_at_string).in_time_zone(PARSE_TIME_ZONE)
       end
 
       private

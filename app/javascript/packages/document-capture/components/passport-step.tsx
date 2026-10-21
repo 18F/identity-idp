@@ -21,11 +21,15 @@ import AcuantPassportInstructions from './acuant-passport-instructions';
 export function PassportCaptureStep({
   defaultSideProps,
   passportValue,
+  backValue,
+  isPassportCard = false,
   showHelp,
   isReviewStep = false,
 }: {
   defaultSideProps: DefaultSideProps;
   passportValue: ImageValue;
+  backValue?: ImageValue;
+  isPassportCard?: boolean;
   showHelp: boolean;
   isReviewStep: boolean;
 }) {
@@ -33,27 +37,49 @@ export function PassportCaptureStep({
     <>
       {showHelp && <AcuantPassportInstructions />}
       {!showHelp && (
-        <DocumentSideAcuantCapture
-          {...defaultSideProps}
-          key="passport"
-          side="passport"
-          value={passportValue}
-          isReviewStep={isReviewStep}
-          showSelfieHelp={() => undefined}
-        />
+        <>
+          <DocumentSideAcuantCapture
+            {...defaultSideProps}
+            key="passport"
+            side="passport"
+            value={passportValue}
+            isReviewStep={isReviewStep}
+            showSelfieHelp={() => undefined}
+          />
+          {isPassportCard && (
+            <DocumentSideAcuantCapture
+              {...defaultSideProps}
+              key="back"
+              side="back"
+              value={backValue}
+              isReviewStep={isReviewStep}
+              showSelfieHelp={() => undefined}
+            />
+          )}
+        </>
       )}
     </>
   );
 }
 
-export function PassportCaptureSubheaderOne() {
+export function PassportCaptureSubheaderOne({
+  isPassportCard = false,
+}: {
+  isPassportCard?: boolean;
+}) {
   const { t } = useI18n();
-  return <h1>{t('doc_auth.headings.passport_capture')}</h1>;
+  const heading = isPassportCard
+    ? t('doc_auth.headings.passport_card_capture')
+    : t('doc_auth.headings.passport_capture');
+  return <h1>{heading}</h1>;
 }
 
-export function PassportCaptureInfo() {
+export function PassportCaptureInfo({ isPassportCard = false }: { isPassportCard?: boolean }) {
   const { t } = useI18n();
-  return <p>{t('doc_auth.info.passport_capture')}</p>;
+  const content = isPassportCard
+    ? t('doc_auth.info.passport_card_capture')
+    : t('doc_auth.info.passport_capture');
+  return <p>{content}</p>;
 }
 
 export default function PassportStep({
@@ -66,9 +92,10 @@ export default function PassportStep({
   const { t } = useI18n();
   const { isLastStep } = useContext(FormStepsContext);
   const { isMobile } = useContext(DeviceContext);
-  const { flowPath } = useContext(UploadContext);
+  const { flowPath, idType } = useContext(UploadContext);
   const { showHelpInitially } = useContext(PassportCaptureContext);
   const [showHelp, setShowHelp] = useState(showHelpInitially && isMobile);
+  const isPassportCard = idType === 'passport_card';
 
   const defaultSideProps: DefaultSideProps = {
     registerField,
@@ -98,8 +125,8 @@ export default function PassportStep({
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
-      <PassportCaptureSubheaderOne />
-      <PassportCaptureInfo />
+      <PassportCaptureSubheaderOne isPassportCard={isPassportCard} />
+      <PassportCaptureInfo isPassportCard={isPassportCard} />
       {isMobile && (
         <TipList
           titleClassName="margin-bottom-0 text-bold"
@@ -125,6 +152,8 @@ export default function PassportStep({
       <PassportCaptureStep
         defaultSideProps={defaultSideProps}
         passportValue={value.passport}
+        backValue={value.back}
+        isPassportCard={isPassportCard}
         showHelp={showHelp}
         isReviewStep={false}
       />

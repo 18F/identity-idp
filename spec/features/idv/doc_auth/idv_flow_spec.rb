@@ -37,7 +37,7 @@ RSpec.describe 'Completing all IDV steps', :js, :allow_browser_log do
       let(:doc_auth_response) { LexisNexisFixtures.true_id_response_success }
 
       scenario 'When the user completes all IDV steps' do
-        visit_idp_from_oidc_sp_with_ial2
+        visit_idp_from_oidc_sp_with_basic
         sign_in_and_2fa_user(user)
         visit idv_welcome_path
         complete_welcome_step
@@ -94,7 +94,7 @@ RSpec.describe 'Completing all IDV steps', :js, :allow_browser_log do
       end
 
       scenario 'When the user completes all IDV steps' do
-        visit_idp_from_oidc_sp_with_ial2
+        visit_idp_from_oidc_sp_with_basic
         sign_in_and_2fa_user(user)
         visit idv_welcome_path
         complete_welcome_step
@@ -189,7 +189,7 @@ RSpec.describe 'Completing all IDV steps', :js, :allow_browser_log do
       let(:doc_auth_response) { SocureDocvFixtures.pass_json }
 
       it 'still steps through events that will log' do
-        visit_idp_from_oidc_sp_with_ial2
+        visit_idp_from_oidc_sp_with_basic
         sign_in_and_2fa_user(user)
         visit idv_welcome_path
         complete_welcome_step
@@ -210,7 +210,7 @@ RSpec.describe 'Completing all IDV steps', :js, :allow_browser_log do
       let(:doc_auth_response) { SocureDocvFixtures.pass_json }
 
       scenario 'When the user completes all IDV steps' do
-        visit_idp_from_oidc_sp_with_ial2
+        visit_idp_from_oidc_sp_with_basic
         sign_in_and_2fa_user(user)
         visit idv_welcome_path
         complete_welcome_step
@@ -265,7 +265,7 @@ RSpec.describe 'Completing all IDV steps', :js, :allow_browser_log do
       let(:doc_auth_response) { SocureDocvFixtures.pass_json(document_type: :passport) }
 
       scenario 'When the user completes all IDV steps' do
-        visit_idp_from_oidc_sp_with_ial2
+        visit_idp_from_oidc_sp_with_basic
         sign_in_and_2fa_user(user)
         visit idv_welcome_path
         complete_welcome_step

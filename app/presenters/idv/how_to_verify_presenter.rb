@@ -4,14 +4,17 @@ class Idv::HowToVerifyPresenter
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :selfie_required, :passport_cards_supported, :mdl_enabled, :clear1_enabled
+  attr_reader :selfie_required, :mdl_enabled
 
-  def initialize(selfie_check_required:, passport_cards_supported: false, mdl_enabled: false,
-                 clear1_enabled: false)
+  def initialize(
+    selfie_check_required:,
+    mdl_enabled: false,
+    clear1_allowed: false,
+    clear1_enabled: clear1_allowed
+  )
     @selfie_required = selfie_check_required
-    @passport_cards_supported = passport_cards_supported
     @mdl_enabled = mdl_enabled
-    @clear1_enabled = clear1_enabled
+    @clear1_allowed = clear1_allowed || clear1_enabled
   end
 
   def how_to_verify_info
@@ -49,12 +52,9 @@ class Idv::HowToVerifyPresenter
   end
 
   def verify_online_description
-    if mdl_enabled && passport_cards_supported
+    if mdl_enabled
       return t('doc_auth.info.verify_online_description_mdl_and_passport_card')
     end
-
-    return t('doc_auth.info.verify_online_description_mdl') if mdl_enabled
-    return t('doc_auth.info.verify_online_description_passport_card') if passport_cards_supported
 
     t('doc_auth.info.verify_online_description')
   end
@@ -95,7 +95,36 @@ class Idv::HowToVerifyPresenter
     t('forms.buttons.continue_ipp')
   end
 
-  def clear1_enabled?
-    clear1_enabled
+  def clear1_allowed?
+    @clear1_allowed
+  end
+  alias_method :clear1_enabled?, :clear1_allowed?
+
+  def verify_with_existing_account_text
+    t('doc_auth.headings.verify_with_existing_account')
+  end
+
+  def clear1_description
+    t('doc_auth.info.verify_with_clear1')
+  end
+
+  def clear1_link_text
+    t('doc_auth.info.verify_with_clear1_link_text')
+  end
+
+  def clear1_submit
+    t('forms.buttons.verify_with_clear1')
+  end
+
+  def clear1_submit_prefix
+    t('forms.buttons.verify_with')
+  end
+
+  def clear1_logo_url
+    'idv/clear-logo.svg'
+  end
+
+  def clear1_asset_url
+    'idv/clear-placeholder.svg'
   end
 end

@@ -450,9 +450,10 @@ module Idv
       attempts_api_tracker.idv_verification_submitted(
         success: success,
         document_state: pii_from_doc[:state],
-        document_number: pii_from_doc[:state_id_number],
-        document_issued: pii_from_doc[:state_id_issued],
-        document_expiration: pii_from_doc[:state_id_expiration],
+        document_number: pii_from_doc[:state_id_number] || pii_from_doc[:document_number],
+        document_issued: pii_from_doc[:state_id_issued] || pii_from_doc[:passport_issued],
+        document_expiration: pii_from_doc[:state_id_expiration] ||
+          pii_from_doc[:passport_expiration],
         first_name: pii_from_doc[:first_name],
         last_name: pii_from_doc[:last_name],
         date_of_birth: pii_from_doc[:dob],
@@ -468,9 +469,10 @@ module Idv
       fraud_ops_tracker.idv_verification_submitted(
         success: success,
         document_state: pii_from_doc[:state],
-        document_number: pii_from_doc[:state_id_number],
-        document_issued: pii_from_doc[:state_id_issued],
-        document_expiration: pii_from_doc[:state_id_expiration],
+        document_number: pii_from_doc[:state_id_number] || pii_from_doc[:document_number],
+        document_issued: pii_from_doc[:state_id_issued] || pii_from_doc[:passport_issued],
+        document_expiration: pii_from_doc[:state_id_expiration] ||
+          pii_from_doc[:passport_expiration],
         first_name: pii_from_doc[:first_name],
         last_name: pii_from_doc[:last_name],
         date_of_birth: pii_from_doc[:dob],
@@ -496,7 +498,7 @@ module Idv
 
     def threatmetrix_check_failed?(result)
       threatmetrix_result = result.dig(:context, :stages, :threatmetrix)
-      return false unless threatmetrix_result
+      return false unless threatmetrix_result.present?
 
       success = (threatmetrix_result[:review_status] == 'pass')
       device_fingerprint = threatmetrix_result.dig(:device_fingerprint)
@@ -521,7 +523,7 @@ module Idv
       return false unless FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
 
       hybrid_mobile_threatmetrix_result = result.dig(:context, :stages, :hybrid_mobile_threatmetrix)
-      return false unless hybrid_mobile_threatmetrix_result
+      return false unless hybrid_mobile_threatmetrix_result.present?
 
       success = (hybrid_mobile_threatmetrix_result[:review_status] == 'pass')
 

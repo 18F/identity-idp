@@ -312,29 +312,23 @@ RSpec.describe Idv::HybridHandoffController do
 
     it 'pass on correct flags and states and logs correct info' do
       get :show
-      expect(subject.idv_session.clear1_enabled).to be_nil
+      expect(subject.idv_session.clear1_allowed).to be_nil
     end
 
     context 'when clear1 is enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(true)
-        allow(IdentityConfig.store).to receive(:idv_clear1_enabled_percent).and_return(100)
-        reload_ab_tests
-      end
-
-      after do
-        reload_ab_tests
+        subject.idv_session.clear1_allowed = true
       end
 
       it 'pass on correct flags and states and logs correct info' do
         expect(Idv::HowToVerifyPresenter).to receive(:new).with(
           selfie_check_required: false,
           mdl_enabled: nil,
-          clear1_enabled: true,
+          clear1_allowed: true,
         )
         get :show
 
-        expect(subject.idv_session.clear1_enabled).to eq(true)
+        expect(subject.idv_session.clear1_allowed).to eq(true)
       end
     end
   end
@@ -395,7 +389,7 @@ RSpec.describe Idv::HybridHandoffController do
     context 'phone-first (NDS) flow' do
       before do
         subject.idv_session.phone_first_flow = true
-        stub_up_to(:choose_id_type, idv_session: subject.idv_session)
+        stub_up_to(:choose_id_type, idv_session: subject.idv_session, document_type_requested: Idp::Constants::DocumentTypes::PASSPORT)
       end
 
       it 'continues on this computer straight to document capture' do
@@ -480,18 +474,13 @@ RSpec.describe Idv::HybridHandoffController do
 
       let(:params) do
         {
-          type: 'clear1',
+          idv_how_to_verify_form: { selection: Idv::HowToVerifyForm::CLEAR1 },
         }
       end
 
       before do
         allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(true)
-        allow(IdentityConfig.store).to receive(:idv_clear1_enabled_percent).and_return(100)
-        reload_ab_tests
-      end
-
-      after do
-        reload_ab_tests
+        subject.idv_session.clear1_allowed = true
       end
 
       it 'redirects to clear1 url' do
@@ -504,6 +493,18 @@ RSpec.describe Idv::HybridHandoffController do
         put :update, params: params
 
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      end
+
+      context 'when clear1 is not enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(false)
+        end
+
+        it 'renders not found' do
+          put :update, params: params
+
+          expect(response).to be_not_found
+        end
       end
     end
   end

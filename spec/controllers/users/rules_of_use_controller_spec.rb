@@ -146,7 +146,7 @@ RSpec.describe Users::RulesOfUseController do
           request_url: "http://test.com?#{URI.encode_www_form(params)}",
         }
         action
-        expect(response.request.content_security_policy.form_action)
+        expect(response.request.content_security_policy.directives['form-action'])
           .to match_array(["'self'", 'https://example.com'])
       end
 
@@ -169,7 +169,7 @@ RSpec.describe Users::RulesOfUseController do
           request_url: "http://test.com?#{URI.encode_www_form(params)}",
         }
         action
-        expect(response.request.content_security_policy.form_action)
+        expect(response.request.content_security_policy.directives['form-action'])
           .to match_array(["'self'"])
       end
     end

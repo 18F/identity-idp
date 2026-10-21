@@ -304,6 +304,32 @@ RSpec.describe User do
       end
     end
 
+    describe '#current_prooing_agent_session' do
+      let!(:document_capture_sessions) do
+        create_list(
+          :document_capture_session,
+          4,
+          user:,
+          doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
+        ) do |session, i|
+          session.requested_at = (i + 1).minutes.ago
+          session.save!
+        end
+      end
+      let!(:current_proofing_agent_session) do
+        create(
+          :document_capture_session,
+          user:,
+          doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
+          requested_at: Time.zone.now,
+        )
+      end
+
+      it 'returns the most recently requested proofing agent document capture session' do
+        expect(user.current_proofing_agent_session).to eq(current_proofing_agent_session)
+      end
+    end
+
     describe '#has_in_person_enrollment?' do
       it 'returns the establishing IPP enrollment that has an address' do
         expect(user.has_in_person_enrollment?).to eq(true)

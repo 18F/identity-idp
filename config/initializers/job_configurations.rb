@@ -39,6 +39,12 @@ else
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },
+      # Remove document artifact rows once their stored images have expired
+      expire_document_artifacts: {
+        class: 'ExpireDocumentArtifactsJob',
+        cron: cron_1h,
+        args: -> { [Time.zone.now] },
+      },
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
         class: 'Reports::TotalMonthlyAuthsReport',
@@ -227,7 +233,7 @@ else
         class: 'GpoExpirationJob',
         cron: cron_24h,
       },
-      # Monthly report checking in on key metrics
+      # Disabled via email configs being empty. Redshift/S3 version replacing it, will delete soon
       monthly_key_metrics_report: {
         class: 'Reports::MonthlyKeyMetricsReport',
         cron: cron_24h,
@@ -380,6 +386,12 @@ else
         class: 'Reports::IdentityVerificationOutcomesReport',
         cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Proofing Agent send failure email
+      proofing_agent_send_failure_emails: {
+        class: 'ProofingAgentSendFailureEmailsJob',
+        cron: IdentityConfig.store.idv_proofing_agent_send_failure_emails_cron,
+        args: -> { [Time.zone.now] },
       },
     }.compact
   end

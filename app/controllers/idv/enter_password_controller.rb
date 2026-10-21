@@ -98,6 +98,9 @@ module Idv
         preconditions: ->(idv_session:, user:) do
           if idv_session.agent_proofed
             idv_session.proofing_agent_match? && idv_session.phone_or_address_step_complete?
+          elsif idv_session.doc_auth_vendor == Idp::Constants::Vendors::CLEAR1 &&
+                idv_session.clear1_verified
+            IdentityConfig.store.idv_clear1_enabled
           else
             idv_session.phone_or_address_step_complete?
           end

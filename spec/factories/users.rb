@@ -359,5 +359,18 @@ FactoryBot.define do
       suspended_at { Time.zone.now }
       reinstated_at { Time.zone.now + 1.hour }
     end
+
+    trait :with_proofing_agent_session do
+      after :create do |user|
+        create(
+          :document_capture_session,
+          user_id: user.id,
+          result_id: Faker::Internet.uuid,
+          issuer: 'sp-issuer',
+          requested_at: Time.zone.now,
+          doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
+        )
+      end
+    end
   end
 end

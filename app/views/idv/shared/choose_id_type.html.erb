@@ -1,4 +1,5 @@
 <% self.title = t('doc_auth.headings.choose_id_type') %>
+<% disable_mdl = local_assigns[:disable_mdl] %>
 
 <% if nds_layout? %>
   <% content_for(:nds_header_progress) do %>
@@ -11,8 +12,8 @@
        (if passport_cards_enabled
           [t('nds.choose_id_type.option_passport_card'), :passport_card, disable_passports]
         end),
-       (if mdl_enabled
-          [t('nds.choose_id_type.option_mdl'), :mobile_drivers_license, false]
+       (if mdl_enabled || disable_mdl
+          [t('nds.choose_id_type.option_mdl'), :mobile_drivers_license, disable_mdl]
         end),
      ].compact %>
 
@@ -153,7 +154,7 @@
               [t('doc_auth.forms.id_type_preference.drivers_license'), :state_id_card],
               [t('doc_auth.forms.id_type_preference.passport'), :passport, disabled: disable_passports],
               (passport_cards_enabled ? [t('doc_auth.forms.id_type_preference.passport_card'), :passport_card, disabled: disable_passports] : nil),
-              (mdl_enabled ? [t('doc_auth.forms.id_type_preference.mdl'), :mobile_drivers_license] : nil),
+              (mdl_enabled || disable_mdl ? [t('doc_auth.forms.id_type_preference.mdl'), :mobile_drivers_license, disabled: disable_mdl] : nil),
             ].compact,
             form: f,
             input_html: { class: 'usa-radio__input--tile' },

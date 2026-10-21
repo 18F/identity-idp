@@ -103,6 +103,18 @@ RSpec.describe 'IdvStepConcern' do
           expect(response).to redirect_to(idv_how_to_verify_url)
         end
       end
+
+      context 'clear1 is permitted for user' do
+        before do
+          idv_session.clear1_allowed = true
+        end
+
+        it 'redirects to how to verify' do
+          get :show
+
+          expect(response).to redirect_to(idv_how_to_verify_url)
+        end
+      end
     end
 
     context 'hybrid flow not available' do

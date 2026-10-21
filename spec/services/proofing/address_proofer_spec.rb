@@ -224,6 +224,25 @@ RSpec.describe Proofing::AddressProofer do
           end
         end
       end
+
+      context 'when proofing agent is true' do
+        subject { described_class.new(user_uuid:, user_email:, is_proofing_agent: true) }
+        before do
+          allow(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
+            .and_return(:socure)
+          expect(Db::SpCost::AddSpCost).to receive(:call).with(
+            service_provider,
+            :socure_address,
+            transaction_id: socure_phone_risk_result.transaction_id,
+          )
+        end
+
+        it 'calls set idv_proofing_agent_phone_vendor' do
+          expect(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
+            .and_return(:socure)
+          subject.proof(applicant_pii:, current_sp: service_provider)
+        end
+      end
     end
 
     context 'when dual vendor check is enabled' do
@@ -290,6 +309,16 @@ RSpec.describe Proofing::AddressProofer do
                     alternate_result: ddp_phone_finder_result.to_h,
                   ),
                 )
+              end
+              context 'when proofing agent is true' do
+                subject { described_class.new(user_uuid:, user_email:, is_proofing_agent: true) }
+                it 'falls back to dual vendor implementation' do
+                  expect(subject.proof(applicant_pii:, current_sp: service_provider)).to eq(
+                    socure_phone_risk_result.to_h.merge(
+                      alternate_result: ddp_phone_finder_result.to_h,
+                    ),
+                  )
+                end
               end
             end
 

@@ -13,9 +13,8 @@ RSpec.describe SocureDocvResultsJob do
   let(:socure_user_id) { 'socure_user_id' }
   let(:socure_reference_id) { SecureRandom.uuid }
   let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
-  let(:passport_cards_supported) { false }
   let(:document_capture_session) do
-    create(:document_capture_session, document_type_requested:, passport_cards_supported:)
+    create(:document_capture_session, document_type_requested:)
   end
   let(:user) { document_capture_session.user }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
@@ -29,8 +28,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:historical_attempts_api_enabled) { false }
   let(:selfie) { false }
   let(:mrz_response) { 'YES' }
-  let(:aamva_at_doc_auth_enabled) { false }
-  let(:aamva_proofer) { instance_double(Proofing::Resolution::Plugins::AamvaPlugin) }
+  let(:aamva_verifier) { instance_double(DocAuth::Aamva::Verifier) }
   let(:rate_limiter) do
     RateLimiter.new(user: document_capture_session.user, rate_limit_type: :idv_doc_auth)
   end
@@ -88,14 +86,16 @@ RSpec.describe SocureDocvResultsJob do
     allow(IdentityConfig.store).to receive_messages(
       socure_idplus_base_url:,
       dos_passport_mrz_endpoint:,
-      idv_aamva_at_doc_auth_enabled: aamva_at_doc_auth_enabled,
       idv_socure_reason_codes_docv_mdl: ['mdl_pass', 'mdl_fail'],
     )
     stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
       .to_return_json({ status: 200, body: { response: mrz_response } })
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
     allow(FraudOps::Tracker).to receive(:new).and_return(fraud_opt_tracker)
-    allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new).and_return(aamva_proofer)
+    allow(DocAuth::Aamva::Verifier).to receive(:new).and_return(aamva_verifier)
+    allow(aamva_verifier).to receive(:call).and_return(
+      DocAuth::StateIdResult.new(success: true, vendor_name: 'state_id:aamva'),
+    )
 
     rate_limiter.increment!
 
@@ -189,7 +189,7 @@ RSpec.describe SocureDocvResultsJob do
           expect(document_capture_session_result.attention_with_barcode).to eq(false)
           expect(document_capture_session_result.doc_auth_success).to eq(true)
           expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-          expect(document_capture_session_result.aamva_status).to eq(:not_processed)
+          expect(document_capture_session_result.aamva_status).to eq(:passed)
           expect(document_capture_session_result.attempt).to eq(1)
         end
 
@@ -296,7 +296,7 @@ RSpec.describe SocureDocvResultsJob do
           let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
 
           it 'doc auth fails' do
-            expect(Proofing::Resolution::Plugins::AamvaPlugin).not_to receive(:new)
+            expect(DocAuth::Aamva::Verifier).not_to receive(:new)
             perform
 
             document_capture_session.reload
@@ -308,6 +308,17 @@ RSpec.describe SocureDocvResultsJob do
             expect(document_capture_session_result.mrz_status).to eq(:not_processed)
             expect(document_capture_session_result.aamva_status).to eq(:not_processed)
             expect(document_capture_session_result.errors).to eq({ unexpected_id_type: true })
+          end
+
+          context 'when document escrow is enabled' do
+            let(:doc_escrow_enabled) { true }
+
+            it 'does not enqueue or perform SocureImageRetrievalJob' do
+              expect(SocureImageRetrievalJob).not_to receive(:perform_later)
+              expect(SocureImageRetrievalJob).not_to receive(:perform_now)
+
+              perform
+            end
           end
         end
       end
@@ -416,6 +427,135 @@ RSpec.describe SocureDocvResultsJob do
               end
             end
           end
+        end
+      end
+
+      context 'when the SP is allow-listed for document image sharing' do
+        let(:doc_escrow_enabled) { false }
+
+        before do
+          allow(IdentityConfig.store).to receive_messages(
+            document_images_sharing_enabled: true,
+            document_images_sharing_service_providers: [sp.issuer],
+          )
+        end
+
+        it 'runs SocureImageRetrievalJob to persist artifacts without any escrow data' do
+          expect(SocureImageRetrievalJob).to receive(:perform_later).with(
+            hash_including(
+              document_capture_session_uuid:,
+              image_storage_data: {},
+              persist_artifacts: true,
+              docv_transaction_token: socure_docv_transaction_token,
+            ),
+          )
+
+          perform
+        end
+
+        it 'encrypts the document metadata before enqueueing it' do
+          job_args = nil
+          allow(SocureImageRetrievalJob).to receive(:perform_later) { |**args| job_args = args }
+
+          perform
+
+          expect(job_args).not_to have_key(:document_metadata)
+          encrypted = job_args[:encrypted_document_metadata]
+          expect(encrypted).to be_present
+          expect(encrypted).not_to include(pii_from_doc[:documentNumber])
+          decrypted = JSON.parse(
+            Encryption::Encryptors::BackgroundProofingArgEncryptor.new.decrypt(encrypted),
+            symbolize_names: true,
+          )
+          expect(decrypted.keys).to contain_exactly(
+            :document_number, :document_issued, :document_expiration
+          )
+          expect(decrypted[:document_number]).to eq(pii_from_doc[:documentNumber])
+        end
+
+        it 'does not report escrow file ids to the attempts API' do
+          allow(SocureImageRetrievalJob).to receive(:perform_later)
+
+          expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            hash_excluding(:document_front_image_file_id, :document_back_image_file_id),
+          )
+
+          perform
+        end
+
+        context 'when an earlier attempt left artifacts on the capture session' do
+          let!(:stale_artifact) { create(:document_artifact, document_capture_session:) }
+          let!(:stale_metadata) { create(:document_metadata, document_capture_session:) }
+
+          before { allow(SocureImageRetrievalJob).to receive(:perform_later) }
+
+          it 'discards them before retrieving the images for this attempt' do
+            perform
+
+            expect(DocumentArtifact.exists?(stale_artifact.id)).to eq(false)
+            expect(DocumentMetadata.exists?(stale_metadata.id)).to eq(false)
+          end
+
+          context 'and this attempt was not successful' do
+            let(:decision_value) { 'reject' }
+
+            it 'keeps them' do
+              perform
+
+              expect(DocumentArtifact.exists?(stale_artifact.id)).to eq(true)
+            end
+          end
+        end
+
+        context 'when the verification was not successful' do
+          let(:decision_value) { 'reject' }
+
+          it 'does not run SocureImageRetrievalJob' do
+            expect(SocureImageRetrievalJob).not_to receive(:perform_later)
+            expect(SocureImageRetrievalJob).not_to receive(:perform_now)
+
+            perform
+          end
+        end
+
+        context 'when document escrow is also enabled' do
+          let(:doc_escrow_enabled) { true }
+          let(:historical_attempts_api_enabled) { true }
+
+          it 'passes both the escrow data and the persist flag' do
+            expect(SocureImageRetrievalJob).to receive(:perform_later).with(
+              hash_including(
+                image_storage_data: hash_including(:front, :back),
+                persist_artifacts: true,
+              ),
+            )
+
+            perform
+          end
+        end
+      end
+
+      context 'when only document escrow applies to the SP' do
+        let(:doc_escrow_enabled) { true }
+        let(:historical_attempts_api_enabled) { true }
+
+        it 'does not pass document metadata to SocureImageRetrievalJob' do
+          expect(SocureImageRetrievalJob).to receive(:perform_later).with(
+            hash_including(persist_artifacts: false, encrypted_document_metadata: nil),
+          )
+
+          perform
+        end
+      end
+
+      context 'when neither escrow nor image sharing applies to the SP' do
+        let(:doc_escrow_enabled) { false }
+
+        it 'does not run SocureImageRetrievalJob' do
+          expect(SocureImageRetrievalJob).not_to receive(:perform_later)
+          expect(SocureImageRetrievalJob).not_to receive(:perform_now)
+
+          perform
         end
       end
 
@@ -971,41 +1111,7 @@ RSpec.describe SocureDocvResultsJob do
                 context 'when passport card is submitted' do
                   let(:document_metadata_type) { 'Passport Card' }
 
-                  it 'doc auth fails' do
-                    perform
-
-                    document_capture_session.reload
-                    document_capture_session_result = document_capture_session.load_result
-                    expect(document_capture_session_result.success).to eq(false)
-                    expect(document_capture_session_result.pii).to be_nil
-                    expect(document_capture_session_result.doc_auth_success).to eq(false)
-                    expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-                    expect(document_capture_session_result.aamva_status).to eq(:not_processed)
-                    expect(document_capture_session_result.errors).to eq(
-                      { unaccepted_id_type: true },
-                    )
-                    expect(@analytics).to have_logged_event(
-                      :idv_socure_verification_data_requested,
-                      hash_including(
-                        :customer_user_id,
-                        :decision,
-                        :reference_id,
-                        :expiration_date,
-                      ),
-                    )
-                  end
-
                   context 'when passport cards are supported' do
-                    let(:passport_cards_supported) { true }
-
-                    it 'doc auth succeeds' do
-                      perform
-
-                      document_capture_session.reload
-                      document_capture_session_result = document_capture_session.load_result
-                      expect(document_capture_session_result.success).to eq(true)
-                    end
-
                     context 'when a passport card was requested' do
                       let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT_CARD }
 
@@ -1182,18 +1288,17 @@ RSpec.describe SocureDocvResultsJob do
       end
 
       context 'when aamva at doc auth is enabled' do
-        let(:aamva_at_doc_auth_enabled) { true }
         let(:aamva_success) { true }
         let(:aamva_errors) { {} }
         let(:aamva_proofing_result) do
-          Proofing::StateIdResult.new(
+          DocAuth::StateIdResult.new(
             success: aamva_success,
             errors: aamva_errors,
           )
         end
 
         before do
-          allow(aamva_proofer).to receive(:call).with(
+          allow(aamva_verifier).to receive(:call).with(
             applicant_pii: {
               address1: '123 Example Street',
               address2: 'Apt 4',
@@ -1220,16 +1325,14 @@ RSpec.describe SocureDocvResultsJob do
             },
             current_sp: sp,
             ipp_enrollment_in_progress: false,
-            state_id_address_resolution_result: nil,
             timer: an_instance_of(JobHelpers::Timer),
-            doc_auth_flow: true,
             analytics: @analytics,
           ).and_return(aamva_proofing_result)
         end
 
         context 'when aamva check is successful' do
           it 'doc auth succeeds' do
-            expect(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new).and_call_original
+            expect(DocAuth::Aamva::Verifier).to receive(:new).and_call_original
             perform
 
             document_capture_session.reload
@@ -1334,7 +1437,7 @@ RSpec.describe SocureDocvResultsJob do
           let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
           let(:reason_codes) { ['mdl_pass'] }
           it 'stores the result from the Socure DocV request' do
-            expect(Proofing::Resolution::Plugins::AamvaPlugin).not_to receive(:new)
+            expect(DocAuth::Aamva::Verifier).not_to receive(:new)
 
             perform
 
@@ -1406,6 +1509,36 @@ RSpec.describe SocureDocvResultsJob do
               failure_reason: nil,
             )
             perform
+          end
+
+          context 'when document escrow is enabled' do
+            let(:doc_escrow_enabled) { true }
+            let(:historical_attempts_api_enabled) { true }
+
+            it 'does not enqueue or perform SocureImageRetrievalJob and stores no escrow images' do
+              expect(SocureImageRetrievalJob).not_to receive(:perform_later)
+              expect(SocureImageRetrievalJob).not_to receive(:perform_now)
+              expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+
+              expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                success: true,
+                document_state: address_data[:state],
+                document_number: pii_from_doc[:documentNumber],
+                document_issued: Date.parse(pii_from_doc[:issueDate]),
+                document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+                first_name: pii_from_doc[:firstName],
+                last_name: pii_from_doc[:surName],
+                date_of_birth: Date.parse(pii_from_doc[:dob]),
+                address1: address_data[:physicalAddress],
+                address2: address_data[:physicalAddress2],
+                city: address_data[:city],
+                state: address_data[:state],
+                zip: address_data[:zip],
+                failure_reason: nil,
+              )
+
+              perform
+            end
           end
         end
 

@@ -12,10 +12,9 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   let(:context_analytics) { { step: step } }
   let(:document_type_requested) { nil }
   let(:mdl_enabled) { true }
-  let(:passport_cards_supported) { false }
   let(:document_capture_session) do
     create(
-      :document_capture_session, document_type_requested:, mdl_enabled:, passport_cards_supported:
+      :document_capture_session, document_type_requested:, mdl_enabled:
     )
   end
   let(:document_type_chosen) { 'state_id_card' }
@@ -117,7 +116,6 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
     context 'when chosen_id_type is "passport_card"' do
       let(:document_type_chosen) { 'passport_card' }
-      let(:passport_cards_supported) { true }
 
       before do
         allow(controller).to receive(:params).and_return(parameters)
@@ -333,7 +331,6 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
     context 'when passports are disabled but passport card is enabled' do
       let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
-      let(:passport_cards_supported) { true }
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
           .and_return(false)
@@ -353,8 +350,6 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     end
 
     context 'when passport cards are enabled' do
-      let(:passport_cards_supported) { true }
-
       context 'and the presenter allows passport cards' do
         it 'enables passport cards' do
           expect(

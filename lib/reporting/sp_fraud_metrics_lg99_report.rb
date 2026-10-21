@@ -20,10 +20,6 @@ module Reporting
       IDV_FINAL_RESOLUTION = 'IdV: final resolution'
       SUSPENDED_USERS = 'User Suspension: Suspended'
       REINSTATED_USERS = 'User Suspension: Reinstated'
-
-      def self.all_events
-        constants.map { |c| const_get(c) }
-      end
     end
 
     # @param [Array<String>] issuers
@@ -80,11 +76,11 @@ module Reporting
         ['Fraud Rules Catch Count', 'Count',
          'The count of unique accounts flagged for fraud review.'],
         ['Credentials Disabled', 'Count',
-         'The count of unique accounts suspended due to ' + '
-         suspected fraudulent activity within the reporting month.'],
+         'The count of unique accounts suspended due to ' \
+           'suspected fraudulent activity within the reporting month.'],
         ['Credentials Reinstated', 'Count',
-         'The count of unique suspended accounts ' + '
-         that are reinstated within the reporting month.'],
+         'The count of unique suspended accounts ' \
+           'that are reinstated within the reporting month.'],
       ]
     end
 
@@ -134,7 +130,20 @@ module Reporting
           h[uuid] = Set.new
         end
 
-        fetch_results.each do |row|
+        # IdV final resolution results are already issuer-scoped via the query itself
+        fetch_idv_final_resolution_results.each do |row|
+          event_users[row['name']] << row['user_id']
+        end
+
+        # Suspended/reinstated events have no issuer, so intersect against
+        # the set of user IDs known to have used the issuer in this time range
+        fetch_suspended_users_results.each do |row|
+          next unless issuer_user_ids.include?(row['user_id'])
+          event_users[row['name']] << row['user_id']
+        end
+
+        fetch_reinstated_users_results.each do |row|
+          next unless issuer_user_ids.include?(row['user_id'])
           event_users[row['name']] << row['user_id']
         end
 
@@ -142,14 +151,62 @@ module Reporting
       end
     end
 
-    def fetch_results
-      cloudwatch_client.fetch(query:, from: time_range.begin, to: time_range.end)
+    # Returns the set of unique user IDs that have any event associated with
+    # the issuer(s) in this time range. Used to filter suspended/reinstated
+    # events which do not carry a service_provider property.
+    # Uses a stats query to deduplicate at the CloudWatch level, keeping row
+    # counts low and well within the per-slice limit.
+    # @return [Set<String>]
+    def issuer_user_ids
+      @issuer_user_ids ||= fetch_issuer_users_results
+        .each_with_object(Set.new) { |row, set| set << row['user_id'] }
     end
 
-    def query
+    def fetch_issuer_users_results
+      cloudwatch_client.fetch(query: query_issuer_users, from: time_range.begin, to: time_range.end)
+    end
+
+    def fetch_idv_final_resolution_results
+      cloudwatch_client.fetch(
+        query: query_idv_final_resolution, from: time_range.begin,
+        to: time_range.end
+      )
+    end
+
+    def fetch_suspended_users_results
+      cloudwatch_client.fetch(
+        query: query_suspended_users, from: time_range.begin,
+        to: time_range.end
+      )
+    end
+
+    def fetch_reinstated_users_results
+      cloudwatch_client.fetch(
+        query: query_reinstated_users, from: time_range.begin,
+        to: time_range.end
+      )
+    end
+
+    # Fetches one row per unique user ID associated with the issuer(s) in this
+    # time range, regardless of event name. The stats aggregation deduplicates
+    # at the CloudWatch level so the per-slice row limit applies to unique users
+    # rather than raw events, making it far less likely to be hit.
+    def query_issuer_users
       params = {
         issuers: quote(issuers),
-        event_names: quote(Events.all_events),
+      }
+
+      format(<<~QUERY, params)
+        filter properties.service_provider IN %{issuers}
+        | stats count(*) as event_count by properties.user_id as user_id
+        | limit 10000
+      QUERY
+    end
+
+    # Queries IdV final resolution events filtered by issuer and fraud_review_pending flag.
+    def query_idv_final_resolution
+      params = {
+        issuers: quote(issuers),
         idv_final_resolution: quote(Events::IDV_FINAL_RESOLUTION),
       }
 
@@ -158,9 +215,40 @@ module Reporting
             name
           , properties.user_id as user_id
         | filter properties.service_provider IN %{issuers}
-        | filter name in %{event_names}
-        | filter (name = %{idv_final_resolution} and properties.event_properties.fraud_review_pending = 1)
-                 or (name != %{idv_final_resolution})        
+        | filter name = %{idv_final_resolution}
+        | filter properties.event_properties.fraud_review_pending = 1
+        | limit 10000
+      QUERY
+    end
+
+    # Queries suspension events — no issuer filter as these events do not carry service_provider.
+    # Results are later intersected with issuer_user_ids in the data method.
+    def query_suspended_users
+      params = {
+        suspended_users: quote(Events::SUSPENDED_USERS),
+      }
+
+      format(<<~QUERY, params)
+        fields
+            name
+          , properties.user_id as user_id
+        | filter name = %{suspended_users}
+        | limit 10000
+      QUERY
+    end
+
+    # Queries reinstatement events — no issuer filter as these events do not carry service_provider.
+    # Results are later intersected with issuer_user_ids in the data method.
+    def query_reinstated_users
+      params = {
+        reinstated_users: quote(Events::REINSTATED_USERS),
+      }
+
+      format(<<~QUERY, params)
+        fields
+            name
+          , properties.user_id as user_id
+        | filter name = %{reinstated_users}
         | limit 10000
       QUERY
     end

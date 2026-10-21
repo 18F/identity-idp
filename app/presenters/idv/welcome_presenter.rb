@@ -13,17 +13,15 @@ module Idv
     include ActionView::Helpers::UrlHelper
 
     attr_accessor :url_options
-    attr_reader :show_sp_reproof_banner, :passport_cards_supported, :mdl_enabled
+    attr_reader :show_sp_reproof_banner, :mdl_enabled
 
     def initialize(
       decorated_sp_session:,
       show_sp_reproof_banner: false,
-      passport_cards_supported: false,
       mdl_enabled: false
     )
       @decorated_sp_session = decorated_sp_session
       @show_sp_reproof_banner = show_sp_reproof_banner
-      @passport_cards_supported = passport_cards_supported
       @mdl_enabled = mdl_enabled
       @url_options = {}
     end
@@ -88,11 +86,7 @@ module Idv
     end
 
     def id_type_copy
-      return t('doc_auth.instructions.bullet1_mdl_and_passport_card') if mdl_enabled &&
-                                                                         passport_cards_supported
-      return t('doc_auth.instructions.bullet1_mdl') if mdl_enabled
-      return t('doc_auth.instructions.bullet1_passport_card') if passport_cards_supported
-
+      return t('doc_auth.instructions.bullet1_mdl_and_passport_card') if mdl_enabled
       t('doc_auth.instructions.bullet1')
     end
 

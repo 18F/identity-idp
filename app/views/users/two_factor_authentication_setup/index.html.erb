@@ -49,7 +49,7 @@
           <% end %>
         </div>
 
-        <%= hidden_field_tag :platform_authenticator_available, id: 'platform_authenticator_available' %>
+        <%= hidden_field_tag :platform_authenticator_available, nil, id: 'platform_authenticator_available' %>
         <% javascript_packs_tag_once('platform-authenticator-available', 'mfa-more-options') %>
         <% if FeatureManagement.account_creation_device_profiling_collecting_enabled? %>
           <div class="margin-bottom-2">
@@ -126,7 +126,7 @@
     </fieldset>
   </div>
 
-  <%= hidden_field_tag :platform_authenticator_available, id: 'platform_authenticator_available' %>
+  <%= hidden_field_tag :platform_authenticator_available, nil, id: 'platform_authenticator_available' %>
   <% javascript_packs_tag_once('platform-authenticator-available') %>
   <% if FeatureManagement.account_creation_device_profiling_collecting_enabled? %>
     <div class="margin-bottom-2">

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class IdentityLinker
+  PRIVATE_KEY_JWT_PKCE_CODE_PREFIX = 'pkce_'
+
   attr_reader :user, :service_provider
 
   def initialize(user, service_provider)
@@ -15,6 +17,7 @@ class IdentityLinker
 
   def link_identity(
     code_challenge: nil,
+    private_key_jwt_pkce: false,
     ial: nil,
     aal: nil,
     acr_values: nil,
@@ -33,7 +36,7 @@ class IdentityLinker
     process_ial(ial)
 
     identity.update!(
-      identity_attributes.merge(
+      identity_attributes(private_key_jwt_pkce: private_key_jwt_pkce).merge(
         code_challenge: code_challenge,
         ial: ial,
         aal: aal,
@@ -92,10 +95,15 @@ class IdentityLinker
     @now ||= Time.zone.now
   end
 
-  def identity_attributes
+  def identity_attributes(private_key_jwt_pkce: false)
+    authorization_code = SecureRandom.uuid
+    if private_key_jwt_pkce
+      authorization_code = PRIVATE_KEY_JWT_PKCE_CODE_PREFIX + authorization_code
+    end
+
     {
       last_authenticated_at: Time.zone.now,
-      session_uuid: SecureRandom.uuid,
+      session_uuid: authorization_code,
       access_token: SecureRandom.urlsafe_base64,
     }
   end

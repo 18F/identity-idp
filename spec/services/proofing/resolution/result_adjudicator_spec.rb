@@ -105,7 +105,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       end
     end
 
-    context 'InstantVerify fails on address verification' do
+    context 'resolution fails on address verification' do
       let(:resolution_success) { false }
       let(:can_pass_with_additional_verification) { true }
       let(:attributes_requiring_additional_verification) { [:address] }
@@ -121,7 +121,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
         context 'the address has not been edited' do
           let(:address_edited) { false }
 
-          it 'lets the verified AAMVA address override the InstantVerify failure' do
+          it 'lets the verified AAMVA address override the resolution failure' do
             result = subject.adjudicated_result
 
             expect(result.success?).to eq(true)
@@ -140,7 +140,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
         context 'the address has been edited' do
           let(:address_edited) { true }
 
-          it 'does not let the verified AAMVA address override the InstantVerify failure' do
+          it 'does not let the verified AAMVA address override the resolution failure' do
             result = subject.adjudicated_result
 
             expect(result.success?).to eq(false)
@@ -164,7 +164,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
               )
             end
 
-            it 'allows those attributes to cover the InstantVerify failure' do
+            it 'allows those attributes to cover the resolution failure' do
               result = subject.adjudicated_result
 
               expect(result.success?).to eq(true)
@@ -190,7 +190,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
           )
         end
 
-        it 'does not let AAMVA override the InstantVerify failure' do
+        it 'does not let AAMVA override the resolution failure' do
           result = subject.adjudicated_result
 
           expect(result.success?).to eq(false)
@@ -264,6 +264,31 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
             expect(result.success?).to eq(false)
             expect(result.extra[:context][:resolution_adjudication_reason])
               .to eq(:fail_resolution_without_state_id_coverage)
+          end
+        end
+
+        context 'when socure_kyc proofed the resolution result' do
+          let(:proofing_vendor) { :socure_kyc }
+          let(:get_to_yes_enabled_vendors) { ['socure_kyc'] }
+
+          it 'lets AAMVA cover the failure' do
+            result = subject.adjudicated_result
+
+            expect(result.success?).to eq(true)
+            expect(result.extra[:context][:resolution_adjudication_reason])
+              .to eq(:state_id_covers_failed_resolution)
+          end
+
+          context 'when the failed attributes include an unknown attribute' do
+            let(:attributes_requiring_additional_verification) { [:address, :unknown] }
+
+            it 'does not let AAMVA cover the failure' do
+              result = subject.adjudicated_result
+
+              expect(result.success?).to eq(false)
+              expect(result.extra[:context][:resolution_adjudication_reason])
+                .to eq(:fail_resolution_without_state_id_coverage)
+            end
           end
         end
       end

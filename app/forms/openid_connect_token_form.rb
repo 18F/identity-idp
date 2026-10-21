@@ -5,8 +5,6 @@ class OpenidConnectTokenForm
   include ActionView::Helpers::TranslationHelper
   include Rails.application.routes.url_helpers
 
-  ISSUED_AT_LEEWAY_SECONDS = 10
-
   ATTRS = %i[
     client_assertion
     client_assertion_type
@@ -49,6 +47,8 @@ class OpenidConnectTokenForm
 
   def response
     if valid?
+      return token_exchange_subject_token_response if token_exchange_authorization_code?
+
       id_token_builder = IdTokenBuilder.new(identity: identity, code: code)
       @ttl = id_token_builder.ttl
 
@@ -58,8 +58,9 @@ class OpenidConnectTokenForm
         expires_in: @ttl,
         id_token: id_token_builder.id_token,
       }
-    elsif errors.include?(:code_verifier)
-      { error: 'invalid_grant', error_description: errors.to_a.join(' ') }
+    elsif private_key_jwt_pkce? && errors.include?(:code_verifier)
+      { error: 'invalid_grant',
+        error_description: t('openid_connect.token.errors.invalid_code_verifier') }
     else
       { error: errors.to_a.join(' ') }
     end
@@ -69,9 +70,39 @@ class OpenidConnectTokenForm
     {}
   end
 
+  # The authorization code grant has always returned 400 for every failure.
+  # Preserved here so the token endpoint can ask either form for its status.
+  def http_status
+    valid? ? :ok : :bad_request
+  end
+
   private
 
   attr_reader :identity, :code_expiration
+
+  def token_exchange_subject_token_response
+    issued_token = TokenExchange::SubjectTokenIssuer.issue(identity:)
+    {
+      access_token: issued_token.token,
+      token_type: 'Bearer',
+      expires_in: issued_token.expires_in,
+      scope: identity.scope,
+    }
+  end
+
+  def token_exchange_authorization_code?
+    return false unless IdentityConfig.store.token_exchange_enabled &&
+                        service_provider&.token_exchange_broker?
+    return false if identity.blank?
+
+    token_exchange_scope_requested?
+  end
+
+  def token_exchange_scope_requested?
+    identity.scope.to_s.split(' ').any? do |scope|
+      TokenExchange::Constants.in_scope?(scope)
+    end
+  end
 
   def find_identity_with_code
     return if code.blank? || code.include?("\x00")
@@ -81,15 +112,20 @@ class OpenidConnectTokenForm
       .order(updated_at: :desc).first
   end
 
+  def private_key_jwt_pkce?
+    # Match the complete code before interpreting its prefix; never strip it for lookup.
+    # Use the submitted code because successful redemption clears identity.session_uuid.
+    identity.present? && code.start_with?(IdentityLinker::PRIVATE_KEY_JWT_PKCE_CODE_PREFIX)
+  end
+
   def pkce_verification_required?
-    # Enforce previously issued challenges even when admission of new PKCE requests is disabled.
-    !code_verifier.nil? || identity&.code_challenge.present?
+    private_key_jwt_pkce? ||
+      (pkce_authentication_allowed? &&
+        (code_verifier.present? || identity.try(:code_challenge).present?))
   end
 
   def client_assertion_required?
-    service_provider&.pkce == false ||
-      (service_provider&.pkce.nil? &&
-        client_assertion_provided?)
+    private_key_jwt_pkce? || (!service_provider&.pkce && client_assertion_provided?)
   end
 
   def client_assertion_provided?
@@ -124,7 +160,7 @@ class OpenidConnectTokenForm
   end
 
   def validate_code_verifier
-    if valid_code_verifier? && valid_code_challenge? && code_verifier_matches_challenge?
+    if valid_code_verifier? && expected_code_challenge && code_verifier_matches_challenge?
       return
     end
 
@@ -134,73 +170,32 @@ class OpenidConnectTokenForm
   end
 
   def valid_code_verifier?
+    # Existing PKCE integrations retain their previous verifier validation.
+    return true unless private_key_jwt_pkce?
     code_verifier.is_a?(String) && code_verifier.match?(/\A[A-Za-z0-9._~-]{43,128}\z/)
   end
 
-  def valid_code_challenge?
-    identity&.code_challenge.present? && expected_code_challenge.present?
-  end
-
   def expected_code_challenge
-    remove_base64_padding(identity&.code_challenge)
+    remove_base64_padding(identity.try(:code_challenge))
   end
 
   def code_verifier_matches_challenge?
-    given_code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier)
+    given_code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier.to_s)
     ActiveSupport::SecurityUtils.secure_compare(expected_code_challenge, given_code_challenge)
   end
 
   def validate_client_assertion
     return if identity.blank?
 
-    payload, _headers, err = nil
-
-    matching_cert = service_provider&.ssl_certs&.find do |ssl_cert|
-      err = nil
-      payload, _headers = JWT.decode(
-        client_assertion, ssl_cert.public_key, true,
-        algorithm: 'RS256', iss: client_id,
-        verify_iss: true, sub: client_id,
-        verify_sub: true
-      )
-    rescue JWT::DecodeError => err
-      next
-    end
-
-    if matching_cert && payload
-      validate_aud_claim(payload)
-      validate_iat(payload)
-    else
-      errors.add(
-        :client_assertion,
-        err&.message || t('openid_connect.token.errors.invalid_signature'),
-        type: :invalid_signature,
-      )
-    end
-  end
-
-  def validate_aud_claim(payload)
-    aud_claim = payload['aud']
-    aud_as_array = Array.wrap(aud_claim)
-    aud_as_array.map! { |aud| aud.to_s.chomp('/') }
-    return true if aud_as_array.include?(api_openid_connect_token_url)
-
-    errors.add(
-      :client_assertion,
-      t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url),
-      type: :invalid_aud,
+    validator = OpenidConnectClientAssertionValidator.new(
+      client_assertion:,
+      client_id:,
+      service_provider:,
+      audience_url: api_openid_connect_token_url,
     )
-  end
-
-  def validate_iat(payload)
-    return true unless payload.key?('iat')
-    iat = payload['iat']
-    return true if iat.is_a?(Numeric) && (iat.to_i - ISSUED_AT_LEEWAY_SECONDS) < Time.zone.now.to_i
-
-    errors.add(
-      :client_assertion, t('openid_connect.token.errors.invalid_iat'),
-      type: :invalid_iat
-    )
+    validator.errors.each do |error|
+      errors.add(error.attribute, error.message, type: error.type)
+    end
   end
 
   def service_provider
@@ -224,7 +219,6 @@ class OpenidConnectTokenForm
       user_id: identity&.user&.uuid,
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
       code_verifier_present: code_verifier.present?,
-      code_challenge_present: identity&.code_challenge.present?,
       service_provider_pkce: service_provider&.pkce,
       ial: identity&.ial,
       integration_errors:,

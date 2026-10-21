@@ -44,6 +44,8 @@ module OpenidConnect
       return redirect_to sign_up_completed_url if needs_completion_screen_reason
       link_identity_to_service_provider
 
+      return redirect_to_sts_consent if needs_sts_consent?
+
       result = @authorize_form.submit
 
       if auth_count == 1 && first_visit_for_sp?
@@ -98,6 +100,43 @@ module OpenidConnect
         rails_session_id: session.id,
         email_address_id: sp_email_preference_id_for_auth,
       )
+    end
+
+    def needs_sts_consent?
+      return false unless IdentityConfig.store.token_exchange_enabled
+      return false unless token_exchange_scope_requested?
+
+      !UserConsentSts.consent_valid?(user: current_user, target_app:)
+    end
+
+    def redirect_to_sts_consent
+      sp_session[:sts_target_app] = target_app
+      redirect_to sts_consent_url
+    end
+
+    def token_exchange_scope_requested?
+      token_exchange_scopes.present?
+    end
+
+    def target_app
+      IdentityConfig.store.token_exchange_allowed_targets
+        .find { |target| token_exchange_scopes.include?(target[:scope]) }[:issuer]
+    end
+
+    def token_exchange_scopes
+      @token_exchange_scopes ||= @authorize_form.scope
+        .select { |scope| TokenExchange::Constants.in_scope?(scope) }
+        .map { |scope| scope.delete_prefix(TokenExchange::Constants::SCOPE_PREFIX) }
+    end
+
+    def email_address_id
+      identity = current_user.identities.find_by(service_provider: sp_session[:issuer])
+      return nil if !identity&.verified_single_email_attribute?
+      if selected_email_id_for_linked_identity.present?
+        return selected_email_id_for_linked_identity
+      end
+
+      identity&.email_address_id
     end
 
     def ial_context

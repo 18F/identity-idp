@@ -27,6 +27,7 @@ class ServiceProvider < ApplicationRecord
           class_name: 'Agreements::Integration',
           dependent: nil
 
+  include IssuerMethods
   # Do not define validations in this model
   # See https://github.com/18F/identity_validations
   include IdentityValidations::ServiceProviderValidation
@@ -78,10 +79,6 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.allowed_ialmax_providers.include?(issuer)
   end
 
-  def facial_match_ial_allowed?
-    IdentityConfig.store.facial_match_general_availability_enabled
-  end
-
   def attempts_api_enabled?
     IdentityConfig.store.attempts_api_enabled && attempts_config.present?
   end
@@ -91,6 +88,16 @@ class ServiceProvider < ApplicationRecord
       OpenSSL::PKey::RSA.new(attempts_config['keys'].first)
     else
       ssl_certs.first.public_key
+    end
+  end
+
+  def token_exchange_broker?
+    IdentityConfig.store.token_exchange_allowed_broker_issuers.include?(issuer)
+  end
+
+  def token_exchange_target?
+    IdentityConfig.store.token_exchange_allowed_targets.any? do |target|
+      target.fetch(:issuer) == issuer
     end
   end
 

@@ -61,7 +61,8 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     form: PassportStep,
     title: t('doc_auth.headings.document_capture_passport'),
   };
-  const idFormStep: FormStep = idType === 'passport' ? passportFormStep : documentFormStep;
+  const idFormStep: FormStep =
+    idType === 'passport' || idType === 'passport_card' ? passportFormStep : documentFormStep;
   const selfieFormStep: FormStep = {
     name: 'selfie',
     form: SelfieStep,

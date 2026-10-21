@@ -248,16 +248,6 @@ module AbTests
     document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
   end.freeze
 
-  DOC_AUTH_PASSPORT_CARDS_ALLOWED = AbTest.new(
-    experiment_name: 'Doc Auth Passport Cards Allowed',
-    should_log: /^idv/i,
-    buckets: {
-      doc_auth_passport_cards_allowed: IdentityConfig.store.doc_auth_passport_cards_enabled_percent,
-    },
-  ) do |user:, user_session:, **|
-    user&.uuid
-  end.freeze
-
   DOC_AUTH_MDL = AbTest.new(
     experiment_name: 'Doc Auth Mobile Driver License Enabled',
     should_log: /^idv/i,
@@ -282,6 +272,16 @@ module AbTests
     should_log: /^idv/i,
     buckets: {
       idv_clear1_allowed: IdentityConfig.store.idv_clear1_enabled_percent,
+    },
+  ) do |user:, user_session:, **|
+    user&.uuid
+  end.freeze
+
+  SUPERIOR_EVIDENCE_SKIP_PHONE_VERIFICATION_ALLOWED = AbTest.new(
+    experiment_name: 'Skip phone verification with superior evidence',
+    should_log: /^idv/i,
+    buckets: {
+      allowed: IdentityConfig.store.idv_superior_evidence_skip_phone_verification_enabled_percent,
     },
   ) do |user:, user_session:, **|
     user&.uuid

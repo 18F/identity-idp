@@ -132,10 +132,6 @@ module Users
       FeatureManagement.sign_in_recaptcha_enabled?
     end
 
-    def captcha_validation_performed?
-      !recaptcha_form.exempt?
-    end
-
     def process_failed_captcha
       sign_out(:user)
       warden.lock!
@@ -285,7 +281,7 @@ module Users
     end
 
     def pending_account_reset_request
-      AccountReset::PendingRequestForUser.new(
+      DestructiveAccountReset::PendingRequestForUser.new(
         current_user,
       ).get_account_reset_request
     end

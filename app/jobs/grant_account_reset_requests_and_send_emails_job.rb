@@ -5,7 +5,7 @@ class GrantAccountResetRequestsAndSendEmailsJob < ApplicationJob
 
   def perform(now)
     notifications_sent = 0
-    AccountResetRequest.where(
+    DestructiveAccountResetRequest.where(
       sql_query_for_users_eligible_to_delete_their_accounts,
       tvalue: now - IdentityConfig.store.account_reset_wait_period_days.days,
     ).order('requested_at ASC').each do |arr|
@@ -40,7 +40,7 @@ class GrantAccountResetRequestsAndSendEmailsJob < ApplicationJob
 
   def grant_request_and_send_email(arr)
     user = arr.user
-    return false unless AccountReset::GrantRequest.new(user).call
+    return false unless DestructiveAccountReset::GrantRequest.new(user).call
 
     arr = arr.reload
     user.confirmed_email_addresses.each do |email_address|

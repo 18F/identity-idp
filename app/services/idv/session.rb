@@ -7,9 +7,11 @@ module Idv
   # @attr address_verification_mechanism [String, nil]
   # @attr agent_proofed [Boolean, nil]
   # @attr applicant [Struct, nil]
-  # @attr clear1_enabled [Boolean, nil]
+  # @attr clear1_allowed [Boolean, nil]
+  # @attr clear1_verification_session_id [String, nil]
   # @attr clear1_verification_state [String, nil]
   # @attr clear1_verification_token [String, nil]
+  # @attr clear1_verified [Boolean, nil]
   # @attr doc_auth_vendor [String, nil]
   # @attr document_capture_session_uuid [String, nil]
   # @attr flow_path [String, nil]
@@ -60,6 +62,11 @@ module Idv
   # @attr_reader gpo_otp [String, nil]
   # @attr_reader service_provider [ServiceProvider]
   class Session
+    DOCUMENT_ARTIFACT_VENDORS = [
+      Idp::Constants::Vendors::SOCURE,
+      Idp::Constants::Vendors::SOCURE_MOCK,
+    ].freeze
+
     VALID_SESSION_ATTRIBUTES = %i[
       aamva_verified_attributes
       address_edited
@@ -67,9 +74,11 @@ module Idv
       address_verification_mechanism
       agent_proofed
       applicant
-      clear1_enabled
+      clear1_allowed
+      clear1_verification_session_id
       clear1_verification_state
       clear1_verification_token
+      clear1_verified
       doc_auth_vendor
       document_capture_session_uuid
       flow_path
@@ -134,6 +143,9 @@ module Idv
       end
     end
 
+    alias_method :clear1_enabled, :clear1_allowed
+    alias_method :clear1_enabled=, :clear1_allowed=
+
     def initialize(user_session:, current_user:, service_provider:)
       @user_session = user_session
       @current_user = current_user
@@ -168,7 +180,7 @@ module Idv
       profile = ActiveRecord::Base.transaction do
         profile = profile_maker.save_profile(
           fraud_pending_reason: threatmetrix_fraud_pending_reason,
-          gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
+          gpo_verification_needed: gpo_verification_needed?,
           in_person_verification_needed: user_has_pending_enrollment,
           selfie_check_performed: session[:selfie_check_performed],
           proofing_components:,
@@ -179,6 +191,8 @@ module Idv
 
         # assign profile to the enrollment
         active_enrollment.update!(profile:) if profile.in_person_verification_pending?
+
+        associate_document_artifacts_with_profile(profile)
 
         profile
       end
@@ -387,6 +401,10 @@ module Idv
       verify_by_mail? || phone_confirmed?
     end
 
+    def inherited_proofed?
+      !!clear1_allowed && !!clear1_verified
+    end
+
     def address_mechanism_chosen?
       vendor_phone_confirmation == true || verify_by_mail?
     end
@@ -451,14 +469,52 @@ module Idv
       IdentityConfig.store.in_person_passports_enabled
     end
 
+    def ipp_passport_requested?
+      !!DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)&.passport_requested?
+    end
+
+    # Confirms the enrollment's document has been verified for its type. In-person
+    # AAMVA only runs on the state ID path, so a passport enrollment never produces
+    # an ipp_aamva_result and is considered complete once requested (a passport
+    # validity check will be added later), while a state ID enrollment must have a
+    # completed AAMVA check.
+    def ipp_document_verification_complete?
+      ipp_passport_requested? || ipp_aamva_result.present?
+    end
+
     def standard_flow_document_capture_eligible?
       flow_path == 'standard' &&
         (skip_hybrid_handoff || desktop_test_mode_enabled?)
     end
 
+    def gpo_verification_needed?
+      return false if clear1_allowed && clear1_verified
+
+      !phone_confirmed? || verify_by_mail?
+    end
+
+    def proofing_with_superior_evidence?
+      Idp::Constants::DocumentTypes::SUPERIOR_EVIDENCE_DOCUMENT_TYPES.include?(
+        pii_from_doc&.document_type_received,
+      )
+    end
+
     private
 
     attr_reader :user_session
+
+    # Only link when the result this profile was built from came from the proofer
+    # that produced the artifacts, never from a redo through another proofer or IPP.
+    def associate_document_artifacts_with_profile(profile)
+      return unless DOCUMENT_ARTIFACT_VENDORS.include?(doc_auth_vendor)
+      return if document_capture_session_uuid.blank?
+      return if profile.in_person_verification_pending?
+
+      document_capture_session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+      return unless document_capture_session&.document_images_sharing_allowed?
+
+      document_capture_session.associate_document_artifacts_with_profile!(profile)
+    end
 
     def set_idv_session
       user_session[:idv] = new_idv_session unless user_session.key?(:idv)

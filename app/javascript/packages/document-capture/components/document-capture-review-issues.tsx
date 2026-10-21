@@ -34,7 +34,7 @@ function DocumentCaptureReviewIssues({
   const { t } = useI18n();
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
   const { idType } = useContext(UploadContext);
-  const idIsPassport = idType === 'passport';
+  const idIsPassport = idType === 'passport' || idType === 'passport_card';
 
   const pageHeading = idIsPassport
     ? t('doc_auth.headings.review_issues_passport')

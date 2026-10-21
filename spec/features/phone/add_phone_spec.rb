@@ -208,6 +208,7 @@ RSpec.describe 'Add a new phone number' do
         score: 0.5,
         errors: [],
         reasons: [],
+        extended_verdict_reasons: [],
       },
       evaluated_as_valid: false,
       score_threshold: 0.6,

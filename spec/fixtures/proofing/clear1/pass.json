@@ -1,0 +1,326 @@
+{
+  "id": "verify_random_string",
+  "object_name": "verification_session",
+  "activated_authentication_methods": [],
+  "authenticated": true,
+  "authentication_methods": [
+    "selfie",
+    "sms"
+  ],
+  "check_metadata": [],
+  "checks": [
+    {
+      "name": "Biometric Verification",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Selfie matches portrait on Gov ID",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Selfie passes liveness check",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Document Authenticity",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Age on Gov ID is {{value}} or over",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Gov ID back is not suspicious",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Gov ID captured image is acceptable",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Gov ID front is not suspicious",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Gov ID full name was extracted",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Gov ID is likely authentic",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Gov ID is not expired",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Gov ID type is an eligible document type",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Gov ID was processed",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Source Validation",
+      "value": true,
+      "status": "completed",
+      "check_result": "success",
+      "reason_codes": [
+        "SV206"
+      ]
+    },
+    {
+      "name": "NFC Passport validated",
+      "value": false,
+      "status": "completed",
+      "check_result": "failure"
+    },
+    {
+      "name": "Phone number matches user's information",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "User is verified in country's database",
+      "value": null,
+      "status": "skipped",
+      "check_result": "not_applicable"
+    },
+    {
+      "name": "User is verified in country’s database",
+      "value": null,
+      "status": "skipped",
+      "check_result": "not_applicable"
+    },
+    {
+      "name": "User's information matches a trusted source",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Phone Number Validation",
+      "value": true,
+      "status": "completed",
+      "check_result": "success",
+      "reason_codes": [
+        "PV200"
+      ]
+    },
+    {
+      "name": "Phone number matches user's information",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "SSN Validation",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Gov ID Address matches SSN9",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Gov ID Full name matches SSN9",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Gov ID SSN9 is formatted correctly",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Gov ID SSN9 is not deceased",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Motor Vehicle Records Validation",
+      "value": true,
+      "status": "completed",
+      "check_result": "success",
+      "reason_codes": [
+        "MV204"
+      ]
+    },
+    {
+      "name": "Gov ID matches DMV records",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    },
+    {
+      "name": "Phone Line Intelligence",
+      "value": true,
+      "status": "completed",
+      "check_result": "success",
+      "reason_codes": [
+        "PL200"
+      ]
+    },
+    {
+      "name": "Phone number is a fixed or mobile phone (Document)",
+      "value": true,
+      "status": "completed",
+      "check_result": "success"
+    }
+  ],
+  "collected_traits": null,
+  "completed_at": null,
+  "created_at": 1789399978,
+  "custom_fields": {
+    "user_uuid": "a-user-uuid"
+  },
+  "email": "john@clear.test",
+  "expires_at": 1790263978,
+  "fields_to_collect": [
+    "device_v2"
+  ],
+  "ial_status": null,
+  "idv_status": "awaiting_user_input",
+  "ip": [
+    "127.0.0.1"
+  ],
+  "is_data_granted": null,
+  "legacy_clear_partner_information": {
+    "preferred_username": "a_preferred_username"
+  },
+  "phone": "+15555555555",
+  "project_id": "the_best_project_id",
+  "redirect_url": "http://localhost:3000/verify/clear1/session_update?state=the-best-state",
+  "report_id": null,
+  "sessions": [
+    {
+      "location": {
+        "country": "United States",
+        "country_iso": "US",
+        "subdivision": "California",
+        "subdivision_type": "State",
+        "city": "Sunnyville",
+        "lat": "0",
+        "lon": "0",
+        "ip": "127.0.0.1"
+      },
+      "user_agent": "your-agent",
+      "created_at": 1789399979,
+      "ip": "127.0.0.1",
+      "locale": "en-US",
+      "zoneinfo": "America/New_York"
+    }
+  ],
+  "status": "awaiting_user_input",
+  "status_details": null,
+  "status_reason": null,
+  "token": "a_verified_token",
+  "traits": {
+    "address": {
+      "line1": "123 Testing Ln",
+      "line2": "Apt. A",
+      "city": "Test City",
+      "state": "LA",
+      "postal_code": "12345",
+      "country": "USA"
+    },
+    "dob": null,
+    "email": "you@clear.test",
+    "first_name": null,
+    "last_name": null,
+    "middle_name": null,
+    "second_family_name": null,
+    "full_last_name": null,
+    "phone": "+15555555555",
+    "ssn4": null,
+    "ssn9": "REDACTED",
+    "identification_number": null,
+    "identification_type": null,
+    "document": {
+      "nationality": null,
+      "document_type": "drivers_license",
+      "document_subtypes": null,
+      "issuing_country": "USA",
+      "issuing_subdivision": "NJ",
+      "document_number": "0123456789",
+      "date_of_expiry": {
+        "day": 24,
+        "month": 12,
+        "year": 2031
+      },
+      "gender": "M",
+      "address": {
+        "line1": "123 Testing Ln",
+        "line2": "Apt A",
+        "city": "Test City",
+        "state": "LA",
+        "postal_code": "12345",
+        "country": "US"
+      },
+      "date_of_birth": {
+        "day": 31,
+        "month": 12,
+        "year": 1999
+      },
+      "first_name": "JOHN",
+      "last_name": "DOE",
+      "middle_name": null,
+      "full_name": "JOHN DOE"
+    },
+    "document_front": "REDACTED",
+    "document_back": "REDACTED",
+    "parsed_fields": [
+      "name",
+      "dob",
+      "address"
+    ],
+    "face_scan_preview": "REDACTED",
+    "member_type": null,
+    "health_insurance": null,
+    "verified_email": null,
+    "historical_data": null
+  },
+  "updated_at": 1789400001,
+  "user_agent": [
+    "your-agent"
+  ],
+  "user_created": false,
+  "user_id": "john-doe-user-id",
+  "user_profile_information": null,
+  "user_profile_match_status": "not_applicable",
+  "verified_info": null
+}

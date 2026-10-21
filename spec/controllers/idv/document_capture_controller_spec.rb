@@ -35,6 +35,7 @@ RSpec.describe Idv::DocumentCaptureController do
       id: SecureRandom.uuid,
       success: doc_auth_success,
       doc_auth_success: doc_auth_success,
+      aamva_status: doc_auth_success ? :passed : :not_processed,
       selfie_status: :none,
       pii: { first_name: 'Testy', last_name: 'Testerson', document_type_received: },
       attention_with_barcode: false,

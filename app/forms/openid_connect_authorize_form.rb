@@ -58,17 +58,18 @@ class OpenidConnectAuthorizeForm
 
   validates :response_type, inclusion: { in: %w[code] }
   validates :prompt, presence: true, inclusion: { in: %w[create login select_account] }
-  validate :validate_pkce_parameter_pair
-  validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :pkce_requested?
+  validates :code_challenge_method, inclusion: { in: %w[S256] },
+                                    if: :validate_code_challenge_method?
+  validate :validate_pkce_parameter_pair, if: :private_key_jwt_pkce_enabled?
   validates :code_challenge, format: { with: /\A[A-Za-z0-9_-]{43}\z/ },
-                             if: :pkce_requested?
-  validate :validate_private_key_jwt_pkce_enabled
+                             if: :private_key_jwt_pkce_requested?
 
   validate :validate_acr_values
   validate :validate_client_id
   validate :validate_scope
   validate :validate_unauthorized_scope
   validate :validate_privileges
+  validate :validate_document_images_scope
   validate :validate_prompt
   validate :validate_verified_within_format, if: :verified_within_allowed?
   validate :validate_verified_within_duration, if: :verified_within_allowed?
@@ -125,6 +126,7 @@ class OpenidConnectAuthorizeForm
       requested_aal_value: requested_aal_value,
       scope: scope.join(' '),
       code_challenge: code_challenge,
+      private_key_jwt_pkce: private_key_jwt_pkce_requested?,
       email_address_id: email_address_id,
     )
   end
@@ -157,6 +159,15 @@ class OpenidConnectAuthorizeForm
 
   attr_reader :identity, :success
 
+  def private_key_jwt_sp?
+    # Missing service providers are rejected by validate_client_id.
+    service_provider&.pkce == false
+  end
+
+  def private_key_jwt_pkce_enabled?
+    IdentityConfig.store.openid_connect_private_key_jwt_pkce_enabled && private_key_jwt_sp?
+  end
+
   def pkce_parameters_provided?
     [code_challenge, code_challenge_method].compact.present?
   end
@@ -165,9 +176,13 @@ class OpenidConnectAuthorizeForm
     code_challenge.present? && code_challenge_method.present?
   end
 
-  def private_key_jwt_sp?
-    # Missing service providers are rejected by validate_client_id.
-    service_provider&.pkce == false
+  def private_key_jwt_pkce_requested?
+    private_key_jwt_pkce_enabled? && pkce_requested?
+  end
+
+  def validate_code_challenge_method?
+    # Preserve the original truthiness check for disabled and legacy flows, including empty strings.
+    private_key_jwt_pkce_enabled? ? pkce_requested? : !!code_challenge
   end
 
   def validate_pkce_parameter_pair
@@ -181,27 +196,29 @@ class OpenidConnectAuthorizeForm
     )
   end
 
-  def validate_private_key_jwt_pkce_enabled
-    return unless private_key_jwt_sp?
-    return unless pkce_requested?
-    return if IdentityConfig.store.openid_connect_private_key_jwt_pkce_enabled
-
-    errors.add(
-      :code_challenge,
-      t('openid_connect.authorization.errors.pkce_not_enabled'),
-      type: :pkce_not_enabled,
-    )
-  end
-
   def code
     identity&.session_uuid
   end
 
   def check_for_unauthorized_scope(params)
     param_value = params[:scope]
-    return false if identity_proofing_requested_or_default? || param_value.blank?
+    return false if param_value.blank?
+
+    requested_scopes = param_value.split(' ').compact
+
+    requested_token_exchange_scopes = requested_token_exchange_scopes(requested_scopes)
+
+    if token_exchange_scope_available? && requested_token_exchange_scopes.present?
+      return true unless broker_request?
+
+      # if there are any requested scopes that are not allowed
+      return true if (requested_token_exchange_scopes - token_exchange_scopes).present?
+    end
+
+    return false if identity_proofing_requested_or_default?
     return true if verified_at_requested? && !identity_proofing_service_provider?
-    @scope != param_value.split(' ').compact
+
+    @scope != requested_scopes
   end
 
   def parse_to_values(param_value, possible_values)
@@ -246,6 +263,16 @@ class OpenidConnectAuthorizeForm
     errors.add(
       :scope, t('openid_connect.authorization.errors.unauthorized_scope'),
       type: :unauthorized_scope
+    )
+  end
+
+  def validate_document_images_scope
+    return unless scope.include?('document_images')
+    return if service_provider&.document_images_sharing_allowed?
+
+    errors.add(
+      :scope, t('openid_connect.authorization.errors.no_valid_scope'),
+      type: :no_valid_scope
     )
   end
 
@@ -319,16 +346,41 @@ class OpenidConnectAuthorizeForm
   end
 
   def scopes
+    return base_scopes unless token_exchange_scope_available?
+
+    base_scopes + token_exchange_scopes
+  end
+
+  def requested_token_exchange_scopes(requested_scopes)
+    requested_scopes.select { |scope| TokenExchange::Constants.in_scope?(scope) }
+  end
+
+  def base_scopes
     if identity_proofing_requested_or_default?
-      return OpenidConnectAttributeScoper::VALID_SCOPES
+      OpenidConnectAttributeScoper::VALID_SCOPES
+    else
+      OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
     end
-    OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
+  end
+
+  def token_exchange_scope_available?
+    IdentityConfig.store.token_exchange_enabled
+  end
+
+  def broker_request?
+    service_provider&.token_exchange_broker?
+  end
+
+  def token_exchange_scopes
+    IdentityConfig.store.token_exchange_allowed_targets.map do |target|
+      "#{TokenExchange::Constants::SCOPE_PREFIX}#{target.fetch(:scope)}"
+    end
   end
 
   def validate_privileges
     if (identity_proofing_requested? && !identity_proofing_service_provider?) ||
        (ialmax_requested? && !ialmax_allowed_for_sp?) ||
-       (facial_match_ial_requested? && !service_provider.facial_match_ial_allowed?)
+       (facial_match_ial_requested? && !identity_proofing_service_provider?)
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_auth'),
         type: :no_auth

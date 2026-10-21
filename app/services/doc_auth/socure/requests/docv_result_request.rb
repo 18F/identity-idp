@@ -36,7 +36,6 @@ module DocAuth
             http_response: http_response,
             document_capture_session:,
             passport_requested: document_capture_session.passport_requested?,
-            passport_cards_supported: document_capture_session.passport_cards_supported?,
           )
         end
 

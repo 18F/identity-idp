@@ -7,6 +7,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
   let(:passport_image) { 'passport_image_data' }
   let(:liveness_checking_required) { false }
   let(:document_type_requested) { DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE }
+  let(:passport_card_requested) { false }
   let(:account_id) { 'test_account' }
   let(:post_url) { 'https://example.com/authentication/v1/trueid/' }
   let(:post_url_liveness) { 'https://example.com/authentication/v1/trueid/' }
@@ -21,6 +22,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       passport_image:,
       document_type_requested:,
       liveness_checking_required:,
+      passport_card_requested:,
     }
   end
 
@@ -152,6 +154,22 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       end
     end
 
+    context 'when document type is passport and passport_card_requested' do
+      let(:document_type_requested) { DocAuth::LexisNexis::DocumentTypes::PASSPORT }
+      let(:passport_card_requested) { true }
+
+      it 'uses passport image as front and includes the back image' do
+        subject.fetch
+
+        expect(WebMock).to have_requested(:post, post_url)
+          .with { |req|
+            body = JSON.parse(req.body)
+            body['Trueid.image_data.white_front'] == Base64.strict_encode64(passport_image) &&
+              body['Trueid.image_data.white_back'] == Base64.strict_encode64(back_image)
+          }
+      end
+    end
+
     context 'with empty optional fields' do
       let(:applicant) do
         {
@@ -260,6 +278,27 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
         expect { subject.fetch }.to raise_error(
           ArgumentError,
           'passport_image is required for passport documents',
+        )
+      end
+    end
+
+    context 'when back_image is nil for a passport card' do
+      let(:applicant) do
+        {
+          email: 'test@email.test',
+          uuid: 'test_uuid',
+          passport_image: passport_image,
+          back_image: nil,
+          document_type_requested: DocAuth::LexisNexis::DocumentTypes::PASSPORT,
+          liveness_checking_required: false,
+          passport_card_requested: true,
+        }
+      end
+
+      it 'raises ArgumentError' do
+        expect { subject.fetch }.to raise_error(
+          ArgumentError,
+          'back_image is required for passport card documents',
         )
       end
     end

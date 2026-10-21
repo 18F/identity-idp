@@ -664,8 +664,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 before do
                   params[:acr_values] = Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
                   allow(IdentityConfig.store).to receive(:eligible_one_account_providers).and_return([service_provider.issuer])
-                  allow(IdentityConfig.store).to receive(:facial_match_general_availability_enabled)
-                    .and_return(true)
                   allow_any_instance_of(DuplicateProfileChecker)
                     .to receive(:dupe_profile_set_for_user).and_return(duplicate_profile_set)
                   allow(controller).to receive(:user_signed_in?).and_return(true)
@@ -1197,6 +1195,78 @@ RSpec.describe OpenidConnect::AuthorizationController do
           action
           identity.reload
           expect(identity.email_address_id).to eq(nil)
+        end
+      end
+    end
+
+    context 'STS token exchange consent' do
+      let(:user) { create(:user, :fully_registered) }
+      let(:broker_issuer) { 'urn:gov:gsa:openidconnect:test' }
+      let(:client_id) { broker_issuer }
+      let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
+
+      before do
+        stub_sign_in user
+        allow(controller).to receive(:auth_count).and_return(2)
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return([broker_issuer])
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+          .and_return([{ issuer: 'passport-issuer', scope: 'passport' }])
+        allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)
+        params[:scope] = 'openid token_exchange:passport'
+
+        # Link the identity ahead of time so the completions/consent screen is not
+        # triggered, allowing the request to reach the STS consent check.
+        IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+        user.identities.last.update!(
+          verified_attributes: %w[given_name family_name birthdate],
+        )
+      end
+
+      context 'when the user has not consented to STS for this target app' do
+        it 'redirects to the STS consent page and stores the target app' do
+          action
+
+          expect(response).to redirect_to(sts_consent_url)
+          expect(controller.session[:sp][:sts_target_app]).to eq('passport-issuer')
+        end
+      end
+
+      context 'when the user has already consented to STS for this target app' do
+        before do
+          UserConsentSts.create!(user: user, target_app: 'passport-issuer')
+        end
+
+        it 'does not redirect to the STS consent page' do
+          action
+
+          expect(response).not_to redirect_to(sts_consent_url)
+        end
+      end
+
+      context 'when the user previously consented but the consent has expired' do
+        before do
+          consent = UserConsentSts.create!(user: user, target_app: 'passport-issuer')
+          consent.update!(created_at: 366.days.ago)
+        end
+
+        it 'redirects to the STS consent page' do
+          action
+
+          expect(response).to redirect_to(sts_consent_url)
+        end
+      end
+
+      context 'when token exchange is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(false)
+        end
+
+        it 'does not redirect to the STS consent page' do
+          action
+
+          expect(response).not_to redirect_to(sts_consent_url)
         end
       end
     end

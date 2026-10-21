@@ -277,6 +277,14 @@ RSpec.describe 'devise/sessions/new.html.erb' do
     end
   end
 
+  it 'renders the platform authenticator hidden input with no preset value' do
+    render
+
+    field = Nokogiri::HTML(rendered).at_css('input#platform_authenticator_available')
+    expect(field).to_not be_nil
+    expect(field['value'].to_s).to eq('')
+  end
+
   context 'nds bucket' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
@@ -299,6 +307,15 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       expect(rendered).to have_link(t('links.create_account'), href: sign_up_email_path)
       expect(rendered).not_to have_css('.auth__media')
       expect(rendered).not_to include('ads-')
+    end
+
+    it 'renders the platform authenticator hidden input with no preset value' do
+      allow(view).to receive(:params).and_return(ActionController::Parameters.new({}))
+      render
+
+      field = Nokogiri::HTML(rendered).at_css('input#platform_authenticator_available')
+      expect(field).to_not be_nil
+      expect(field['value'].to_s).to eq('')
     end
   end
 end

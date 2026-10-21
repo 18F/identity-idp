@@ -41,23 +41,17 @@ module Idv
             **analytics_arguments.merge(**form_result),
           )
 
-          if aamva_enabled?
-            idv_session.ipp_aamva_pending_state_id_pii = pending_pii
-            idv_session.ipp_aamva_redirect_url = redirect_url
+          idv_session.ipp_aamva_pending_state_id_pii = pending_pii
+          idv_session.ipp_aamva_redirect_url = redirect_url
 
-            if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
-              clear_aamva_async_session
-              clear_aamva_pending_pii
-              return
-            end
-
-            start_aamva_async_state
-            redirect_to idv_in_person_state_id_url
+          if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
+            clear_aamva_async_session
+            clear_aamva_pending_pii
             return
           end
 
-          commit_state_id_data(pending_pii)
-          redirect_to redirect_url
+          start_aamva_async_state
+          redirect_to idv_in_person_state_id_url
         else
           render :show, locals: extra_view_variables
         end
