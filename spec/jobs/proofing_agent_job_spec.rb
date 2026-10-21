@@ -680,6 +680,64 @@ RSpec.describe ProofingAgentJob, type: :job do
       end
     end
 
+    context 'when the AAMVA check returns an exception' do
+      let(:pii) do
+        Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE.merge(
+          state_id_number: DocAuth::Mock::IdMockClient::TRIGGER_MVA_TIMEOUT,
+        )
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
+      end
+
+      it 'stores a failed result with id_exception' do
+        perform
+
+        result = document_capture_session.reload.load_agent_proofed_user
+        expect(result[:success]).to be false
+        expect(result[:reason]).to eq('id_exception')
+        expect(result[:aamva_status]).to eq 'failed'
+      end
+
+      it 'enqueues a ProofingAgentWebhookJob with success: false and id_exception reason' do
+        expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
+          success: false,
+          reason: 'id_exception',
+          transaction_id: transaction_id,
+          correlation_id: correlation_id,
+          analytics_attributes: an_instance_of(Hash),
+        )
+      end
+
+      context 'when the AAMVA exception is bypassed' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_aamva_bypass_exception_ids)
+            .and_return(['0047'])
+        end
+
+        it 'stores a successful result' do
+          perform
+
+          result = document_capture_session.reload.load_agent_proofed_user
+          expect(result[:success]).to be true
+          expect(result[:reason]).to be_nil
+          expect(result[:aamva_status]).to eq 'passed'
+          expect(result[:source_check_vendor]).to eq(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
+        end
+
+        it 'enqueues a ProofingAgentWebhookJob with success: true' do
+          expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
+            success: true,
+            reason: nil,
+            transaction_id: transaction_id,
+            correlation_id: correlation_id,
+            analytics_attributes: an_instance_of(Hash),
+          )
+        end
+      end
+    end
+
     context 'when phone check fails' do
       let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(phone: nil).freeze }
 

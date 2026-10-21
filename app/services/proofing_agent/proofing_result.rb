@@ -83,7 +83,9 @@ module ProofingAgent
       if resolution_result.present? && resolution_result[:exception].present?
         return 'profile_resolution_exception'
       end
-      return 'id_exception' if aamva_result.present? && aamva_result[:exception].present?
+      if aamva_result.present? && !aamva_success? && aamva_result[:exception].present?
+        return 'id_exception'
+      end
       return 'passport_exception' if mrz_result.present? && mrz_result[:exception].present?
 
       return 'profile_resolution_fail' if resolution_result.present? && !resolution_result[:success]
