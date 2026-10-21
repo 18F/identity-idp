@@ -277,7 +277,9 @@ module DocAuth
         end
 
         def id_type_expected?
-          return true if document_capture_session.document_images_sharing_skip_doc_auth_post_validations?
+          if document_capture_session.document_images_sharing_skip_doc_auth_post_validations?
+            return true
+          end
 
           case document_type_received
           when *Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES

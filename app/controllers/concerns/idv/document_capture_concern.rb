@@ -160,7 +160,9 @@ module Idv
     private
 
     def validation_requirements_met?
-      return true if document_capture_session.document_images_sharing_skip_doc_auth_post_validations?
+      if document_capture_session.document_images_sharing_skip_doc_auth_post_validations?
+        return true
+      end
 
       document_type_match? && selfie_requirement_met? &&
         mrz_requirement_met? && aamva_requirement_met?
