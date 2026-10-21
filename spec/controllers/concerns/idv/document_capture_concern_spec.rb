@@ -6,11 +6,14 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
   end
   let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
   let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
+  let(:service_provider) { create(:service_provider) }
+  let(:issuer) { service_provider.issuer }
   let(:document_capture_session) do
     create(
       :document_capture_session,
       doc_auth_vendor: Idp::Constants::Vendors::MOCK,
       document_type_requested:,
+      issuer:,
     )
   end
   let(:user) { document_capture_session.user }
@@ -73,6 +76,21 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         response = controller.handle_stored_result(user:)
         expect(response.success?).to eq(false)
       end
+
+      context 'when validation_requirments_met? is skipped' do
+        before do
+          allow(IdentityConfig.store).to receive_messages(
+            document_images_sharing_skip_doc_auth_post_validations: true,
+            document_images_sharing_service_providers: [issuer],
+            document_images_sharing_enabled: true,
+          )
+        end
+
+        it 'returns success response' do
+          response = controller.handle_stored_result(user:)
+          expect(response.success?).to eq(true)
+        end
+      end
     end
 
     context 'when document is a passport with passed MRZ check' do
@@ -131,6 +149,29 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
           response = controller.handle_stored_result(user:)
           expect(response.success?).to eq(true)
         end
+
+        context 'when a selfie is required' do
+          let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR }
+          it 'returns failed response' do
+            response = controller.handle_stored_result(user:)
+            expect(response.success?).to eq(false)
+          end
+
+          context 'when validation_requirments_met? is skipped' do
+            before do
+              allow(IdentityConfig.store).to receive_messages(
+                document_images_sharing_skip_doc_auth_post_validations: true,
+                document_images_sharing_enabled: true,
+                document_images_sharing_service_providers: [issuer],
+              )
+            end
+
+            it 'returns success response' do
+              response = controller.handle_stored_result(user:)
+              expect(response.success?).to eq(true)
+            end
+          end
+        end
       end
 
       context 'when AAMVA check fails' do
@@ -148,6 +189,21 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         it 'returns failure response' do
           response = controller.handle_stored_result(user:)
           expect(response.success?).to eq(false)
+        end
+
+        context 'when validation_requirments_met? is skipped' do
+          before do
+            allow(IdentityConfig.store).to receive_messages(
+              document_images_sharing_skip_doc_auth_post_validations: true,
+              document_images_sharing_enabled: true,
+              document_images_sharing_service_providers: [issuer],
+            )
+          end
+
+          it 'returns success response' do
+            response = controller.handle_stored_result(user:)
+            expect(response.success?).to eq(true)
+          end
         end
 
         context 'when mdL is requested' do
@@ -189,6 +245,83 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
             it 'returns failed response' do
               response = controller.handle_stored_result(user:)
               expect(response.success?).to eq(false)
+            end
+
+            context 'when validation_requirments_met? is skipped' do
+              before do
+                allow(IdentityConfig.store).to receive_messages(
+                  document_images_sharing_skip_doc_auth_post_validations: true,
+                  document_images_sharing_enabled: true,
+                  document_images_sharing_service_providers: [issuer],
+                )
+              end
+
+              it 'returns success response' do
+                response = controller.handle_stored_result(user:)
+                expect(response.success?).to eq(true)
+              end
+            end
+          end
+        end
+
+        context 'when a selfie is required' do
+          let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR }
+          it 'returns failed response' do
+            response = controller.handle_stored_result(user:)
+            expect(response.success?).to eq(false)
+          end
+
+          context 'when document_images_sharing_skip_doc_auth_post_validations is false' do
+            before do
+              allow(IdentityConfig.store).to receive_messages(
+                document_images_sharing_skip_doc_auth_post_validations: false,
+                document_images_sharing_enabled: true,
+                document_images_sharing_service_providers: [issuer],
+              )
+            end
+
+            it 'returns failed response' do
+              response = controller.handle_stored_result(user:)
+              expect(response.success?).to eq(false)
+            end
+          end
+
+          context 'when not an image sharing service provider' do
+            before do
+              allow(IdentityConfig.store).to receive_messages(
+                document_images_sharing_skip_doc_auth_post_validations: true,
+                document_images_sharing_enabled: true,
+                document_images_sharing_service_providers: ['not-allowed'],
+              )
+            end
+            it 'returns failed response' do
+              response = controller.handle_stored_result(user:)
+              expect(response.success?).to eq(false)
+            end
+          end
+
+          context 'when validation_requirments_met? is skipped' do
+            before do
+              allow(IdentityConfig.store).to receive_messages(
+                document_images_sharing_skip_doc_auth_post_validations: true,
+                document_images_sharing_enabled: true,
+                document_images_sharing_service_providers: [issuer],
+              )
+            end
+
+            it 'returns success response' do
+              response = controller.handle_stored_result(user:)
+              expect(response.success?).to eq(true)
+            end
+          end
+        end
+
+        context 'SP requires facial_match' do
+          let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR }
+
+          context 'selfie check not processed' do
+            it 'returns false' do
+              expect(controller.selfie_requirement_met?).to eq(false)
             end
           end
         end

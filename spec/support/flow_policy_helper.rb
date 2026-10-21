@@ -1,13 +1,13 @@
 module FlowPolicyHelper
-  def stub_up_to(key, idv_session:)
+  def stub_up_to(key, idv_session:, document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD)
     keys = keys_up_to(key: key)
 
     keys.each do |key|
-      stub_step(key: key, idv_session: idv_session)
+      stub_step(key:, idv_session:, document_type_requested:)
     end
   end
 
-  def stub_step(key:, idv_session:)
+  def stub_step(key:, idv_session:, document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD)
     case key
     when :welcome
       idv_session.welcome_visited = true
@@ -24,11 +24,11 @@ module FlowPolicyHelper
         uuid: idv_session.document_capture_session_uuid,
         user: idv_session.current_user,
         requested_at: Time.zone.now,
-        document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
+        document_type_requested:,
       )
     when :link_sent
       idv_session.flow_path = 'hybrid'
-      idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
+      idv_session.pii_from_doc = pii_from_doc(document_type_requested:)
     when :document_capture
       idv_session.flow_path = 'standard'
       unless idv_session.document_capture_session_uuid
@@ -37,10 +37,10 @@ module FlowPolicyHelper
           uuid: idv_session.document_capture_session_uuid,
           user: idv_session.current_user,
           requested_at: Time.zone.now,
-          document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
+          document_type_requested:,
         )
       end
-      idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
+      idv_session.pii_from_doc = pii_from_doc(document_type_requested:)
     when :ipp
       idv_session.send(:user_session)['idv/in_person'] = {
         pii_from_user: {},
@@ -53,7 +53,7 @@ module FlowPolicyHelper
           uuid: idv_session.document_capture_session_uuid,
           user: idv_session.current_user,
           requested_at: Time.zone.now,
-          document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
+          document_type_requested:,
         )
       end
       idv_session.send(:user_session)['idv/in_person'] = {
@@ -73,7 +73,7 @@ module FlowPolicyHelper
           uuid: idv_session.document_capture_session_uuid,
           user: idv_session.current_user,
           requested_at: Time.zone.now,
-          document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
+          document_type_requested:,
         )
       end
       idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
@@ -101,6 +101,15 @@ module FlowPolicyHelper
       idv_session.user_phone_confirmation = false
     when :enter_password
       # FINAL!
+    end
+  end
+
+  def pii_from_doc(document_type_requested:)
+    case document_type_requested
+    when Idp::Constants::DocumentTypes::STATE_ID_CARD
+      Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
+    when Idp::Constants::DocumentTypes::PASSPORT
+      Pii::Passport.new(**Idp::Constants::MOCK_IDV_APPLICANT_WITH_PASSPORT)
     end
   end
 
