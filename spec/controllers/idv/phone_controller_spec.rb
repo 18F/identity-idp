@@ -947,6 +947,75 @@ RSpec.describe Idv::PhoneController do
         end
       end
 
+      context 'when the user is proofing with superior evidence' do
+        let(:document_type) { Idp::Constants::DocumentTypes::MDL }
+
+        before do
+          subject.idv_session.pii_from_doc = Pii::StateId.new(
+            **Idp::Constants::MOCK_IDV_APPLICANT,
+            document_type_received: document_type,
+          )
+        end
+
+        context 'when superior evidence skip phone verification is enabled' do
+          before do
+            allow(IdentityConfig.store).to receive(
+              :idv_superior_evidence_skip_phone_verification_enabled_percent,
+            ).and_return(100)
+
+            reload_ab_tests
+          end
+
+          it 'redirects to otp page' do
+            put :create, params: { idv_phone_form: { phone: bad_phone } }
+
+            expect(response).to redirect_to idv_phone_path
+
+            get :new
+
+            expect(response).to redirect_to idv_otp_verification_path
+
+            expect(@analytics).to have_logged_event(
+              'IdV: phone confirmation vendor',
+              hash_including(
+                {
+                  success: false,
+                },
+              ),
+            )
+          end
+        end
+
+        context 'when superior evidence skip phone verification is disabled' do
+          before do
+            allow(IdentityConfig.store).to receive(
+              :idv_superior_evidence_skip_phone_verification_enabled_percent,
+            ).and_return(0)
+
+            reload_ab_tests
+          end
+
+          it 'prevents the user from proceeding to the otp page' do
+            put :create, params: { idv_phone_form: { phone: bad_phone } }
+
+            expect(response).to redirect_to idv_phone_path
+
+            get :new
+
+            expect(response).to redirect_to idv_phone_errors_warning_path
+
+            expect(@analytics).to have_logged_event(
+              'IdV: phone confirmation vendor',
+              hash_including(
+                {
+                  success: false,
+                },
+              ),
+            )
+          end
+        end
+      end
+
       context 'secondary vendor is successful' do
         before do
           allow(IdentityConfig.store).to receive(:idv_address_secondary_vendor).and_return(:socure)
