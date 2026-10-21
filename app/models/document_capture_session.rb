@@ -3,6 +3,7 @@
 class DocumentCaptureSession < ApplicationRecord
   include NonNullUuid
   include ApplicationHelper
+  include IssuerMethods
 
   # Ignored ahead of dropping the column so running app servers stop selecting it
   # before the remove_column migration deploys. Remove once the column is gone.
@@ -286,10 +287,6 @@ class DocumentCaptureSession < ApplicationRecord
       metadata = locked_session.document_metadata
       metadata.destroy! if metadata && metadata.profile_id.nil?
     end
-  end
-
-  def document_images_sharing_allowed?
-    !!ServiceProvider.find_by(issuer:)&.document_images_sharing_allowed?
   end
 
   private
