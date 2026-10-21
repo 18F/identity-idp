@@ -252,6 +252,25 @@ RSpec.describe SocureDocvResultsJob do
 
       context 'when the response is not successful' do
         let(:decision_value) { 'reject' }
+        let!(:socure_reason_code1) do
+          SocureReasonCode.create(
+            code: 'I831',
+            description: 'Document is valid',
+            group: 'ProductA',
+            added_at: 1.day.ago,
+            deactivated_at: nil,
+          )
+        end
+
+        let!(:socure_reason_code2) do
+          SocureReasonCode.create(
+            code: 'R810',
+            description: 'Document is expired',
+            group: 'ProductA',
+            added_at: 1.day.ago,
+            deactivated_at: nil,
+          )
+        end
 
         before do
           allow(attempts_api_tracker).to receive(:idv_document_upload_submitted)
@@ -287,7 +306,7 @@ RSpec.describe SocureDocvResultsJob do
             city: address_data[:city],
             state: address_data[:state],
             zip: address_data[:zip],
-            failure_reason: { reason_codes: },
+            failure_reason: ['Document is valid', 'Document is expired'],
           )
         end
 
@@ -561,7 +580,7 @@ RSpec.describe SocureDocvResultsJob do
 
       context 'facial match' do
         let(:reason_codes_selfie_fail) { ['no match', 'not live'] }
-        let(:reason_codes_selfie_not_processed) { ['not procesed'] }
+        let(:reason_codes_selfie_not_processed) { ['not processed'] }
         let(:reason_codes_selfie_pass) { ['match', 'live'] }
         let(:selfie) { true }
 
@@ -624,6 +643,10 @@ RSpec.describe SocureDocvResultsJob do
 
         context 'when facial match fails' do
           let(:reason_codes) { reason_codes_selfie_fail }
+          before do
+            create(:socure_reason_code, code: 'no match', description: 'images do not match')
+            create(:socure_reason_code, code: 'not live', description: 'selfie is not live')
+          end
 
           it 'selfies status is :fail' do
             perform
@@ -660,7 +683,7 @@ RSpec.describe SocureDocvResultsJob do
                   city: address_data[:city],
                   state: address_data[:state],
                   zip: address_data[:zip],
-                  failure_reason: { reason_codes: reason_codes_selfie_fail },
+                  failure_reason: ['images do not match', 'selfie is not live'],
                 )
 
                 perform
