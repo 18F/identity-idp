@@ -3,17 +3,21 @@
 class DisplayablePiiFormatter
   FormattedPii = Struct.new(
     :email, :all_emails, :verified_at, :x509_subject, :x509_issuer, :full_name,
-    :social_security_number, :address, :birthdate, :phone, keyword_init: true
+    :social_security_number, :address, :birthdate, :phone, :document_images, :document_metadata,
+    keyword_init: true
   )
 
   attr_reader :current_user
   attr_reader :pii
   attr_reader :selected_email_id
 
-  def initialize(current_user:, pii:, selected_email_id:)
+  def initialize(current_user:, pii:, selected_email_id:, document_images: nil,
+                 document_metadata: nil)
     @current_user = current_user
     @pii = pii
     @selected_email_id = selected_email_id
+    @document_images = document_images
+    @document_metadata = document_metadata
   end
 
   # @return [FormattedPii]
@@ -31,6 +35,8 @@ class DisplayablePiiFormatter
         formatted_pii.address = address
         formatted_pii.birthdate = dob
         formatted_pii.phone = phone
+        formatted_pii.document_images = @document_images
+        formatted_pii.document_metadata = @document_metadata
       end
     end
   end
