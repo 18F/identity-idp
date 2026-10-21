@@ -450,9 +450,10 @@ module Idv
       attempts_api_tracker.idv_verification_submitted(
         success: success,
         document_state: pii_from_doc[:state],
-        document_number: pii_from_doc[:state_id_number],
-        document_issued: pii_from_doc[:state_id_issued],
-        document_expiration: pii_from_doc[:state_id_expiration],
+        document_number: pii_from_doc[:state_id_number] || pii_from_doc[:document_number],
+        document_issued: pii_from_doc[:state_id_issued] || pii_from_doc[:passport_issued],
+        document_expiration: pii_from_doc[:state_id_expiration] ||
+          pii_from_doc[:passport_expiration],
         first_name: pii_from_doc[:first_name],
         last_name: pii_from_doc[:last_name],
         date_of_birth: pii_from_doc[:dob],
@@ -468,9 +469,10 @@ module Idv
       fraud_ops_tracker.idv_verification_submitted(
         success: success,
         document_state: pii_from_doc[:state],
-        document_number: pii_from_doc[:state_id_number],
-        document_issued: pii_from_doc[:state_id_issued],
-        document_expiration: pii_from_doc[:state_id_expiration],
+        document_number: pii_from_doc[:state_id_number] || pii_from_doc[:document_number],
+        document_issued: pii_from_doc[:state_id_issued] || pii_from_doc[:passport_issued],
+        document_expiration: pii_from_doc[:state_id_expiration] ||
+          pii_from_doc[:passport_expiration],
         first_name: pii_from_doc[:first_name],
         last_name: pii_from_doc[:last_name],
         date_of_birth: pii_from_doc[:dob],

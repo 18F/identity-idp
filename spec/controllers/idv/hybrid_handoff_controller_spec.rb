@@ -389,7 +389,7 @@ RSpec.describe Idv::HybridHandoffController do
     context 'phone-first (NDS) flow' do
       before do
         subject.idv_session.phone_first_flow = true
-        stub_up_to(:choose_id_type, idv_session: subject.idv_session)
+        stub_up_to(:choose_id_type, idv_session: subject.idv_session, document_type_requested: Idp::Constants::DocumentTypes::PASSPORT)
       end
 
       it 'continues on this computer straight to document capture' do
