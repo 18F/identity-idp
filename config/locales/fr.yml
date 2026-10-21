@@ -2198,6 +2198,7 @@ user_mailer.agent_proofing_succeeded.contact_link: nous contacter
 user_mailer.agent_proofing_succeeded.cta: Confirmer le compte
 user_mailer.agent_proofing_succeeded.footer_html: 'Si vous n’avez pas tenté de vérifier votre identité en personne, veuillez %{contact_link_html} et %{change_password_link_html} en vous connectant à votre compte.'
 user_mailer.agent_proofing_succeeded.header: Vous avez completé la vérification de votre identité avec succès.
+user_mailer.agent_proofing_succeeded.reminder_subject: 'Action requise : Plus que 24 heures pour confirmer votre compte vérifié'
 user_mailer.agent_proofing_succeeded.subject: 'Action requise : Confirmez votre compte vérifié'
 user_mailer.contact_link_text: nous contacter
 user_mailer.device_profiling_error_cleared.info: L’erreur concernant votre compte (LG22) a été résolue. Vous pouvez désormais vous connecter au site web de l’agence avec votre compte.

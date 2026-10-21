@@ -526,7 +526,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def agent_proofing_succeeded(verified_at:, service_provider: nil)
+  def agent_proofing_succeeded(verified_at:, service_provider: nil, reminder: false)
     return if verified_at.blank?
 
     attachments.inline['info.png'] =
@@ -544,9 +544,13 @@ class UserMailer < ActionMailer::Base
       @verified_at_display = I18n.l(@presenter.verified_at, format: :event_date)
       @deadline_display = I18n.l(@presenter.deadline, format: :event_date)
 
+      subject = reminder ?
+        t('user_mailer.agent_proofing_succeeded.reminder_subject') :
+        t('user_mailer.agent_proofing_succeeded.subject')
+
       mail(
         to: email_address.email,
-        subject: t('user_mailer.agent_proofing_succeeded.subject'),
+        subject: subject,
       )
     end
   end
