@@ -156,6 +156,7 @@ doc_escrow_enabled: false
 doc_escrow_s3_storage_enabled: false
 document_images_sharing_enabled: false
 document_images_sharing_service_providers: '[]'
+document_images_sharing_skip_doc_auth_post_validations: false
 document_images_ttl_seconds: 259_200
 domain_name: login.gov
 dos_passport_client_id: ''

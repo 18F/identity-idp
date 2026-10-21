@@ -35,10 +35,12 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       idv_socure_reason_codes_docv_mdl:,
       ruby_workers_idv_enabled: false,
       socure_docv_document_request_endpoint: fake_socure_docv_document_request_endpoint,
+      socure_docv_images_request_endpoint: 'https://fake-socure.test/docv/images/',
       socure_docv_enabled: true,
       socure_docv_webhook_repeat_endpoints:,
       socure_docv_webhook_secret_key:,
       idv_doc_auth_mdl_enabled_percent:,
+      dos_passport_mrz_endpoint: 'https://fake-socure.test/mrz',
     )
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return('Test SP')
     socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
@@ -47,6 +49,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       attempts_api_tracker,
     )
     allow_any_instance_of(SocureDocvResultsJob).to receive(:analytics).and_return(fake_analytics)
+    stub_request(:get, %r{#{IdentityConfig.store.socure_docv_images_request_endpoint}})
     @docv_transaction_token = stub_docv_document_request(user:)
     reload_ab_tests
   end
@@ -625,7 +628,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       end
 
       context 'when a passport is submitted' do
-        let(:docv_verifiction_document_type) { :passport }
+        let(:docv_verification_document_type) { :passport }
         before do
           allow(IdentityConfig.store).to receive_messages(
             doc_auth_passports_enabled: true,
@@ -637,11 +640,9 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           @docv_stub = stub_docv_verification_data_pass(
             docv_transaction_token: @docv_transaction_token,
             reason_codes: ['not_processed'],
-            document_type: docv_verifiction_document_type,
+            document_type: docv_verification_document_type,
             user:,
           )
-          allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
-            .and_return('https://fake-socure.test/mrz')
         end
 
         it 'proceeds to the next page with valid info' do
@@ -721,7 +722,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         end
 
         context 'when passport card is submitted' do
-          let(:docv_verifiction_document_type) { :passport_card }
+          let(:docv_verification_document_type) { :passport_card }
 
           it 'proceeds to the next page with valid info' do
             perform_in_browser(:mobile) do
@@ -881,7 +882,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         end
 
         context 'when a selfie is required' do
-          context ' when a passport id is submitted' do
+          context ' when a passport id is requested' do
             let(:socure_docv_webhook_repeat_endpoints) { [] }
             let(:max_attempts) { 4 }
 
@@ -1016,6 +1017,49 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
               click_idv_continue
 
               expect(page).to have_current_path(idv_verify_info_path)
+            end
+
+            context 'when validation_requirments_met? is skipped' do
+              before do
+                allow(IdentityConfig.store).to receive_messages(
+                  document_images_sharing_skip_doc_auth_post_validations: true,
+                  document_images_sharing_enabled: true,
+                  document_images_sharing_service_providers: [sp_oidc_issuer],
+                )
+              end
+
+              context 'a license is submitted' do
+                let(:docv_verification_document_type) { :drivers_license }
+                let(:aamva_response) { AamvaFixtures.verification_response }
+
+                before do
+                  stub_aamva_request(aamva_response)
+                end
+
+                it 'proceeds to the next page with valid info' do
+                  visit_idp_from_oidc_sp_with_enhanced
+                  sign_in_and_2fa_user(user)
+
+                  complete_doc_auth_steps_before_hybrid_handoff_step
+
+                  expect(page).to have_current_path(idv_choose_id_type_url)
+                  choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+                  click_on t('forms.buttons.continue')
+
+                  expect(page).to have_current_path(idv_socure_document_capture_url)
+                  expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+                  click_idv_continue
+                  socure_docv_upload_documents(
+                    docv_transaction_token: @docv_transaction_token,
+                  )
+                  visit idv_socure_document_capture_update_path
+                  expect(page).to have_current_path(idv_ssn_url)
+                  fill_out_ssn_form_ok
+                  click_idv_continue
+                  complete_verify_step
+                  expect(page).to have_current_path(idv_phone_url)
+                end
+              end
             end
           end
 
@@ -1237,6 +1281,110 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         click_idv_continue
         complete_verify_step
         expect(page).to have_current_path(idv_phone_url)
+      end
+
+      context 'when validation_requirments_met? is skipped' do
+        before do
+          allow(IdentityConfig.store).to receive_messages(
+            document_images_sharing_skip_doc_auth_post_validations: true,
+            document_images_sharing_enabled: true,
+            document_images_sharing_service_providers: [sp_oidc_issuer],
+          )
+        end
+
+        context 'a selfie is not submitted' do
+          it 'proceeds to the next page with valid info' do
+            expect(page).to have_current_path(idv_socure_document_capture_url)
+            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+            click_idv_continue
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+            )
+
+            visit idv_socure_document_capture_update_path
+
+            expect(page).to have_current_path(idv_ssn_url)
+
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_document_request_submitted,
+            )
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+            )
+            expect(fake_analytics).to have_logged_event(
+              'IdV: doc auth image upload vendor pii validation',
+            )
+
+            fill_out_ssn_form_ok
+            click_idv_continue
+            complete_verify_step
+            expect(page).to have_current_path(idv_phone_url)
+          end
+        end
+
+        context 'passport is submitted' do
+          let(:docv_verification_document_type) { :passport }
+          before do
+            allow(IdentityConfig.store).to receive_messages(
+              doc_auth_passports_enabled: true,
+              doc_auth_passports_percent: 100,
+            )
+            stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
+              .to_return_json({ status: 200, body: { status: 'UP' } })
+            stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+              .to_return_json({ status: 200, body: { response: 'YES' } })
+
+            DocAuth::Mock::DocAuthMockClient.reset!
+            @docv_stub = stub_docv_verification_data_pass(
+              docv_transaction_token: @docv_transaction_token,
+              reason_codes: ['pass'],
+              document_type: docv_verification_document_type,
+              user:,
+            )
+          end
+
+          it 'proceeds to the next page with valid info' do
+            expect(page).to have_current_path(idv_socure_document_capture_url)
+            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+            click_idv_continue
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+            )
+
+            visit idv_socure_document_capture_update_path
+
+            expect(page).to have_current_path(idv_ssn_url)
+
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_document_request_submitted,
+            )
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+            )
+            expect(fake_analytics).to have_logged_event(
+              'IdV: doc auth image upload vendor pii validation',
+            )
+
+            fill_out_ssn_form_ok
+            click_idv_continue
+            expect(page).to have_current_path(idv_address_path)
+
+            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+            expect(page).not_to have_content(t('forms.example'))
+            fill_in 'idv_form_address1', with: '123 Main St'
+            fill_in 'idv_form_city', with: 'Nowhere'
+            select 'Virginia', from: 'idv_form_state'
+            fill_in 'idv_form_zipcode', with: '66044'
+
+            click_idv_continue
+
+            expect(page).to have_current_path(idv_verify_info_path)
+            complete_verify_step
+            expect(page).to have_current_path(idv_phone_url)
+          end
+        end
       end
     end
   end
