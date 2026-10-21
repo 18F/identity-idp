@@ -14,12 +14,12 @@ RSpec.describe Idv::VerifyInfoController do
   end
 
   let(:hybrid_device_profiling) { :disabled }
-
+  let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
   before do
     allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
       .and_return(hybrid_device_profiling)
     stub_sign_in(user)
-    stub_up_to(:ssn, idv_session: subject.idv_session)
+    stub_up_to(:ssn, idv_session: subject.idv_session, document_type_requested:)
     stub_analytics
     stub_attempts_tracker
   end
@@ -335,6 +335,37 @@ RSpec.describe Idv::VerifyInfoController do
           )
 
           get :show
+        end
+
+        context 'when user proofs with a passport' do
+          let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
+          let(:applicant_pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT }
+          it 'tracks the attempts events' do
+            expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+              success: true,
+              device_fingerprint:,
+              failure_reason: nil,
+            )
+            expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+              success: true,
+              document_state: nil,
+              document_number: applicant_pii[:document_number],
+              document_issued: applicant_pii[:passport_issued],
+              document_expiration: applicant_pii[:passport_expiration],
+              first_name: applicant_pii[:first_name],
+              last_name: applicant_pii[:last_name],
+              date_of_birth: applicant_pii[:dob],
+              address1: nil,
+              address2: nil,
+              ssn: SsnFormatter.format(applicant_pii[:ssn]),
+              city: nil,
+              state: nil,
+              zip: applicant_pii[:zip],
+              failure_reason: nil,
+            )
+
+            get :show
+          end
         end
       end
 
