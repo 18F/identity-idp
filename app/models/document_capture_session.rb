@@ -289,6 +289,11 @@ class DocumentCaptureSession < ApplicationRecord
     end
   end
 
+  def document_images_sharing_skip_doc_auth_post_validations?
+    IdentityConfig.store.document_images_sharing_skip_doc_auth_post_validations &&
+      document_images_sharing_allowed?
+  end
+
   private
 
   def unlinked_document_artifacts?
