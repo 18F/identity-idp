@@ -71,6 +71,14 @@ RSpec.describe OpenidConnect::TokenController do
         expect(@analytics).to_not have_logged_event(:sp_integration_errors_present)
       end
 
+      it 'does not track the brokered exchange token event' do
+        stub_analytics
+
+        action
+
+        expect(@analytics).to_not have_logged_event(:openid_connect_brokered_exchange_token)
+      end
+
       context 'with an authentication event' do
         let(:authentication_event_at) { Time.zone.parse('2026-07-01 12:00:00 UTC') }
         let(:remember_device_at) { Time.zone.parse('2026-07-01 12:30:00 UTC') }
@@ -179,6 +187,227 @@ RSpec.describe OpenidConnect::TokenController do
         expect(json).to_not have_key(:id_token)
 
         expect(@analytics).to_not have_logged_event(:sp_integration_errors_present)
+      end
+    end
+  end
+
+  describe '#create with the token exchange grant type' do
+    subject(:action) do
+      post :create,
+           params: {
+             grant_type: grant_type,
+             client_id: broker_issuer,
+             subject_token: subject_token,
+             subject_token_type: TokenExchange::Constants::ACCESS_TOKEN_TYPE,
+             requested_token_type: TokenExchange::Constants::ACCESS_TOKEN_TYPE,
+             audience: audience,
+             resource: resource,
+           }
+    end
+
+    let(:grant_type) { TokenExchange::Constants::GRANT_TYPE }
+    let(:user) { create(:user, :proofed) }
+    let(:broker_issuer) { 'broker-issuer' }
+    let(:target_issuer) { 'target-issuer' }
+    let(:audience) { target_issuer }
+    let(:resource) { 'https://api.example.gov/passport' }
+    let(:scope) { 'openid token_exchange:passport' }
+
+    let!(:broker) { create(:service_provider, :active, issuer: broker_issuer) }
+    let!(:target) { create(:service_provider, :active, issuer: target_issuer) }
+
+    let(:identity) do
+      create(
+        :service_provider_identity,
+        user:,
+        service_provider: broker_issuer,
+        scope:,
+        ial: 2,
+      )
+    end
+
+    let!(:target_identity) do
+      create(
+        :service_provider_identity,
+        user:,
+        service_provider: target_issuer,
+        scope:,
+        ial: 2,
+      )
+    end
+
+    let(:subject_token) { TokenExchange::SubjectTokenIssuer.issue(identity: identity).token }
+
+    before do
+      allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+        .and_return([broker_issuer])
+      allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+        .and_return([{ issuer: target_issuer, scope: 'passport' }])
+    end
+
+    context 'with valid params' do
+      it 'is successful' do
+        action
+
+        expect(response).to be_ok
+      end
+
+      it 'tracks the brokered exchange token event' do
+        stub_analytics
+
+        action
+
+        expect(@analytics).to have_logged_event(
+          :openid_connect_brokered_exchange_token,
+          success: true,
+          client_id: broker_issuer,
+          audience: target_issuer,
+          resource: resource,
+          expires_in: IdentityConfig.store.token_exchange_access_token_expires_in,
+          ial: 2,
+        )
+      end
+
+      it 'does not track the authorization code token event' do
+        stub_analytics
+
+        action
+
+        expect(@analytics).to_not have_logged_event('OpenID Connect: token')
+      end
+
+      it 'does not track service provider integration errors' do
+        stub_analytics
+
+        action
+
+        expect(@analytics).to_not have_logged_event(:sp_integration_errors_present)
+      end
+    end
+
+    context 'when the subject token is invalid' do
+      let(:subject_token) { 'not-a-real-subject-token' }
+
+      it 'is a 400 with an invalid_grant error' do
+        action
+
+        expect(response).to be_bad_request
+
+        json = JSON.parse(response.body).with_indifferent_access
+        expect(json[:error]).to eq('invalid_grant')
+      end
+
+      it 'tracks an unsuccessful brokered exchange token event' do
+        stub_analytics
+
+        action
+
+        expect(@analytics).to have_logged_event(
+          :openid_connect_brokered_exchange_token,
+          success: false,
+          client_id: broker_issuer,
+          audience: target_issuer,
+          resource: resource,
+          error_details: hash_including(:subject_token),
+        )
+      end
+
+      it 'tracks service provider integration errors' do
+        stub_analytics
+
+        action
+
+        expect(@analytics).to have_logged_event(
+          :sp_integration_errors_present,
+          error_details: array_including('Subject token is invalid'),
+          error_types: { subject_token: true },
+          event: :oidc_token_request,
+          integration_exists: true,
+          request_issuer: broker_issuer,
+        )
+      end
+    end
+
+    context 'when the target audience is not allowlisted' do
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+          .and_return([])
+      end
+
+      it 'is a 400 with an invalid_target error' do
+        action
+
+        expect(response).to be_bad_request
+
+        json = JSON.parse(response.body).with_indifferent_access
+        expect(json[:error]).to eq('invalid_target')
+      end
+
+      it 'tracks an unsuccessful brokered exchange token event with the requested audience' do
+        stub_analytics
+
+        action
+
+        expect(@analytics).to have_logged_event(
+          :openid_connect_brokered_exchange_token,
+          success: false,
+          client_id: broker_issuer,
+          audience: target_issuer,
+          resource: resource,
+          error_details: hash_including(:audience),
+        )
+      end
+    end
+
+    context 'when token exchange is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(false)
+      end
+
+      it 'tracks an unsuccessful brokered exchange token event' do
+        stub_analytics
+
+        action
+
+        expect(@analytics).to have_logged_event(
+          :openid_connect_brokered_exchange_token,
+          success: false,
+          client_id: broker_issuer,
+          audience: target_issuer,
+          resource: resource,
+          error_details: hash_including(:grant_type),
+        )
+      end
+    end
+
+    context 'when the broker is not allowlisted' do
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return([])
+      end
+
+      it 'is a 401 with an invalid_client error' do
+        action
+
+        expect(response).to be_unauthorized
+
+        json = JSON.parse(response.body).with_indifferent_access
+        expect(json[:error]).to eq('invalid_client')
+        expect(json).to_not have_key(:access_token)
+      end
+    end
+
+    context 'when a required parameter is missing' do
+      let(:audience) { nil }
+
+      it 'is a 400 with an invalid_request error' do
+        action
+
+        expect(response).to be_bad_request
+
+        json = JSON.parse(response.body).with_indifferent_access
+        expect(json[:error]).to eq('invalid_request')
       end
     end
   end

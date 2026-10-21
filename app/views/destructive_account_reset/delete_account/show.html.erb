@@ -1,0 +1,30 @@
+<% self.title = t('destructive_account_reset.delete_account.title') %>
+
+<%= render PageHeadingComponent.new.with_content(t('destructive_account_reset.delete_account.title')) %>
+
+<p>
+  <%= t('destructive_account_reset.delete_account.info', app_name: APP_NAME) %>
+</p>
+
+<p class="margin-y-4">
+  <strong><%= t('destructive_account_reset.delete_account.are_you_sure') %></strong>
+</p>
+<% if IdentityConfig.store.update_cancel_account_reset_path %>
+
+  <%= button_to(
+        account_reset_delete_account_cancel_path,
+        method: :post,
+        class: 'usa-button usa-button--big usa-button--wide margin-bottom-2',
+      ) { t('destructive_account_reset.request.no_cancel') } %>
+<% else %>
+  <%= button_to(
+        root_url,
+        method: :get,
+        class: 'usa-button usa-button--big usa-button--wide margin-bottom-2',
+      ) { t('destructive_account_reset.request.no_cancel') } %>
+<% end %>
+<%= button_to(
+      account_reset_delete_account_path,
+      method: :delete,
+      class: 'usa-button usa-button--unstyled',
+    ) { t('destructive_account_reset.request.yes_continue') } %>

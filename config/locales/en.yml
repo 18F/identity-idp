@@ -1,50 +1,4 @@
 ---
-account_reset.cancel_request.are_you_sure: Are you sure you want to cancel your delete account request?
-account_reset.cancel_request.cancel: Exit
-account_reset.cancel_request.cancel_button: Cancel delete account
-account_reset.cancel_request.title: Cancel delete account
-account_reset.confirm_delete_account.cta_html: You may %{link_html} or close this window if you’re done.
-account_reset.confirm_delete_account.info_html: The account for <strong>%{email}</strong> has been deleted. We sent an email confirmation of the account deletion.
-account_reset.confirm_delete_account.link_text: create a new account
-account_reset.confirm_delete_account.title: You have deleted your account
-account_reset.confirm_request.close_window: You can close this window if you’re done.
-account_reset.confirm_request.info_html:
-  - We sent an email to <strong>%{email}</strong> to begin the account deletion process. This first email confirms that you’ve started the account deletion process. <strong>It does not mean your account has been successfully deleted.</strong>
-  - As a security measure, you will receive a second email with the link to continue deleting your account %{waiting_period} after the initial confirmation email arrives.
-  - If you change your mind, you can cancel out of account deletion any time.
-account_reset.confirm_request.security_note: As a security measure, we also sent a text to your registered phone number.
-account_reset.delete_account.are_you_sure: Are you sure you want to delete your account?
-account_reset.delete_account.info: Deleting your account should be your last resort if you are locked out of your account. You will not be able to recover any information linked to your account. We will notify the agencies you access with %{app_name} that you no longer have an account. Once your account is deleted, you can create a new one using the same email address.
-account_reset.delete_account.title: Deleting your account should be your last resort
-account_reset.pending.cancel_request: Cancel request
-account_reset.pending.cancel_request_prompt_html: If you have changed your mind and want to cancel account deletion click the “cancel request” button below.
-account_reset.pending.canceled: We have canceled your request to delete your account.
-account_reset.pending.canceled_info: Your request to delete your %{app_name} has been canceled. You may continue using your %{app_name} account, or create a new account deletion request.
-account_reset.pending.header: You requested to delete your account
-account_reset.pending.wait_html: There is a waiting period of %{waiting_period} to delete your account. In <strong>%{interval}</strong>, you will receive an email with instructions to complete the deletion.
-account_reset.recover_options.yes_delete: Delete my account
-account_reset.recovery_option.cancel_deletion: Cancel deletion
-account_reset.recovery_options.check_webauthn_platform_header: Use the same device you first set up face or touch unlock with
-account_reset.recovery_options.check_webauthn_platform_help_link: face or touch unlock
-account_reset.recovery_options.check_webauthn_platform_info_html: If you set up %{link_html} when you created your account make sure to use the same device you created your %{app_name} account on.
-account_reset.recovery_options.header: Are you sure you want to delete your account?
-account_reset.recovery_options.help_text: If you’re locked out and still need access to %{app_name}, try these steps instead.
-account_reset.recovery_options.still_working: Still not working?
-account_reset.recovery_options.try_another_device: Try another device where you might have selected the “remember device” option.
-account_reset.recovery_options.try_method_again: Try your authentication method again
-account_reset.recovery_options.try_method_description_html: Make sure you have access to the authentication method(s) you set up when you created your account, %{link_html}.
-account_reset.recovery_options.try_method_description_link: try your authentication method again
-account_reset.recovery_options.use_device: Use another device
-account_reset.request.account_delete_link: Learn more about our account deletion process
-account_reset.request.choose_to_continue: 'If you choose to continue with account deletion, you will receive two emails:'
-account_reset.request.continue_deletion: Did you still want to continue with account deletion?
-account_reset.request.delete_account: Delete your account
-account_reset.request.delete_email1_html: <strong>Email 1:</strong> You will first receive an email confirmation. This <strong>does not</strong> mean your account has been deleted at this point.
-account_reset.request.delete_email2_html: <strong>Email 2:</strong> After %{interval} of the initial email confirmation, you will receive another email with a link to continue deleting your account. This requires you to confirm you want to delete your account. We cannot undo account deletion after this step.
-account_reset.request.delete_request_details_html: If you can’t sign in using the authentication methods you set up, you can regain access by deleting your account and creating a new one. Deleting your account does not delete any information you have stored with other government agencies.<br/>%{account_delete_link}.
-account_reset.request.no_cancel: Cancel
-account_reset.request.no_cancel2: No, cancel account deletion
-account_reset.request.yes_continue: Yes, continue account deletion
 account.connected_apps.associated_attributes_html: 'Connected %{timestamp_html} with:'
 account.connected_apps.associated_html: Connected %{timestamp_html}
 account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government services online. Below is a list of all the services you currently have connected.
@@ -488,6 +442,52 @@ datetime.dotiw.seconds.one: 1 second
 datetime.dotiw.seconds.other: '%{count} seconds'
 datetime.dotiw.two_words_connector: ' and '
 datetime.dotiw.words_connector: ', '
+destructive_account_reset.cancel_request.are_you_sure: Are you sure you want to cancel your delete account request?
+destructive_account_reset.cancel_request.cancel: Exit
+destructive_account_reset.cancel_request.cancel_button: Cancel delete account
+destructive_account_reset.cancel_request.title: Cancel delete account
+destructive_account_reset.confirm_delete_account.cta_html: You may %{link_html} or close this window if you’re done.
+destructive_account_reset.confirm_delete_account.info_html: The account for <strong>%{email}</strong> has been deleted. We sent an email confirmation of the account deletion.
+destructive_account_reset.confirm_delete_account.link_text: create a new account
+destructive_account_reset.confirm_delete_account.title: You have deleted your account
+destructive_account_reset.confirm_request.close_window: You can close this window if you’re done.
+destructive_account_reset.confirm_request.info_html:
+  - We sent an email to <strong>%{email}</strong> to begin the account deletion process. This first email confirms that you’ve started the account deletion process. <strong>It does not mean your account has been successfully deleted.</strong>
+  - As a security measure, you will receive a second email with the link to continue deleting your account %{waiting_period} after the initial confirmation email arrives.
+  - If you change your mind, you can cancel out of account deletion any time.
+destructive_account_reset.confirm_request.security_note: As a security measure, we also sent a text to your registered phone number.
+destructive_account_reset.delete_account.are_you_sure: Are you sure you want to delete your account?
+destructive_account_reset.delete_account.info: Deleting your account should be your last resort if you are locked out of your account. You will not be able to recover any information linked to your account. We will notify the agencies you access with %{app_name} that you no longer have an account. Once your account is deleted, you can create a new one using the same email address.
+destructive_account_reset.delete_account.title: Deleting your account should be your last resort
+destructive_account_reset.pending.cancel_request: Cancel request
+destructive_account_reset.pending.cancel_request_prompt_html: If you have changed your mind and want to cancel account deletion click the “cancel request” button below.
+destructive_account_reset.pending.canceled: We have canceled your request to delete your account.
+destructive_account_reset.pending.canceled_info: Your request to delete your %{app_name} has been canceled. You may continue using your %{app_name} account, or create a new account deletion request.
+destructive_account_reset.pending.header: You requested to delete your account
+destructive_account_reset.pending.wait_html: There is a waiting period of %{waiting_period} to delete your account. In <strong>%{interval}</strong>, you will receive an email with instructions to complete the deletion.
+destructive_account_reset.recover_options.yes_delete: Delete my account
+destructive_account_reset.recovery_option.cancel_deletion: Cancel deletion
+destructive_account_reset.recovery_options.check_webauthn_platform_header: Use the same device you first set up face or touch unlock with
+destructive_account_reset.recovery_options.check_webauthn_platform_help_link: face or touch unlock
+destructive_account_reset.recovery_options.check_webauthn_platform_info_html: If you set up %{link_html} when you created your account make sure to use the same device you created your %{app_name} account on.
+destructive_account_reset.recovery_options.header: Are you sure you want to delete your account?
+destructive_account_reset.recovery_options.help_text: If you’re locked out and still need access to %{app_name}, try these steps instead.
+destructive_account_reset.recovery_options.still_working: Still not working?
+destructive_account_reset.recovery_options.try_another_device: Try another device where you might have selected the “remember device” option.
+destructive_account_reset.recovery_options.try_method_again: Try your authentication method again
+destructive_account_reset.recovery_options.try_method_description_html: Make sure you have access to the authentication method(s) you set up when you created your account, %{link_html}.
+destructive_account_reset.recovery_options.try_method_description_link: try your authentication method again
+destructive_account_reset.recovery_options.use_device: Use another device
+destructive_account_reset.request.account_delete_link: Learn more about our account deletion process
+destructive_account_reset.request.choose_to_continue: 'If you choose to continue with account deletion, you will receive two emails:'
+destructive_account_reset.request.continue_deletion: Did you still want to continue with account deletion?
+destructive_account_reset.request.delete_account: Delete your account
+destructive_account_reset.request.delete_email1_html: <strong>Email 1:</strong> You will first receive an email confirmation. This <strong>does not</strong> mean your account has been deleted at this point.
+destructive_account_reset.request.delete_email2_html: <strong>Email 2:</strong> After %{interval} of the initial email confirmation, you will receive another email with a link to continue deleting your account. This requires you to confirm you want to delete your account. We cannot undo account deletion after this step.
+destructive_account_reset.request.delete_request_details_html: If you can’t sign in using the authentication methods you set up, you can regain access by deleting your account and creating a new one. Deleting your account does not delete any information you have stored with other government agencies.<br/>%{account_delete_link}.
+destructive_account_reset.request.no_cancel: Cancel
+destructive_account_reset.request.no_cancel2: No, cancel account deletion
+destructive_account_reset.request.yes_continue: Yes, continue account deletion
 devise.confirmations.already_confirmed: Your email address has already been confirmed. %{action}
 devise.confirmations.confirmed: You have confirmed your email address
 devise.confirmations.confirmed_but_must_set_password: You have confirmed your email address
@@ -1091,6 +1091,7 @@ help_text.requested_attributes.all_emails: Email addresses on your account
 help_text.requested_attributes.birthdate: Date of birth
 help_text.requested_attributes.change_email_link: Change
 help_text.requested_attributes.consent_reminder_html: You must consent each year to share your information with %{sp_html}.
+help_text.requested_attributes.document_images_html: 'To support your application, %{sp_html} will also receive the photos of your identity documents and the selfie you took while verifying your identity. These images are shared only for identity adjudication.'
 help_text.requested_attributes.email: Email address
 help_text.requested_attributes.full_name: Full name
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Because you verified your identity again, we need your permission to share this information with %{sp_html}:'
@@ -1859,6 +1860,8 @@ sign_up.agree_and_continue: Agree and continue
 sign_up.cancel.success: Your account has been deleted. We did not save your information.
 sign_up.cancel.warning_header: 'If you cancel now:'
 sign_up.completed.smiling_image_alt: A smiling person with a green checkmark indicating success
+sign_up.document_images_sharing_consent_label: I consent to share the photos of my identity documents and my identity verification selfie with %{sp} for identity adjudication.
+sign_up.document_images_sharing_consent_required: You must consent to sharing your identity document photos and selfie to continue, or cancel.
 sign_up.information_sharing_html: To learn how %{app_name} shares your information, review our %{link_html}.
 sign_up.nds_terms_intro: By continuing, you accept the
 sign_up.terms: I read and accept the %{app_name}
@@ -1886,6 +1889,9 @@ step_indicator.status.complete: Completed
 step_indicator.status.current: Current step
 step_indicator.status.not_complete: Not completed
 step_indicator.substep: Substep %{current} of %{total}
+sts_consent.check_box_to_consent: I consent to allow %{america_gov_name} to access, share my information, and take actions on my behalf with MyTravelGov.
+sts_consent.content: '%{america_gov_name} uses AI to connect to your %{app_name} account, automatically signing you in and pre-filling government forms.'
+sts_consent.heading: Let %{america_gov_name} work with agencies on your behalf
 time.am: AM
 time.formats.event_date: '%B %-d, %Y'
 time.formats.event_time: '%-l:%M %p'
@@ -1958,6 +1964,7 @@ titles.sign_up.completion_new_attributes: '%{sp} is requesting new information'
 titles.sign_up.completion_new_sp: You are now signing in for the first time
 titles.sign_up.completion_reverified_consent: Share your updated information with %{sp}
 titles.sign_up.confirmation: Continue to sign in
+titles.sts_consent: Let %{america_gov_name} work with agencies on your behalf
 titles.totp_setup.new: Add authentication app
 titles.two_factor_setup: Two-factor authentication setup
 titles.verify_email: Check your email

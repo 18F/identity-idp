@@ -244,6 +244,66 @@ RSpec.describe ProofingAgent::ProofingResult do
     end
   end
 
+  context 'when aamva has an exception' do
+    let(:aamva_result) do
+      {
+        success: false,
+        errors: {},
+        exception: RuntimeError.new('ExceptionId: 0001'),
+        mva_exception: true,
+        requested_attributes: {},
+        timed_out: false,
+        transaction_id: 'abc123',
+        vendor_name: 'TestVendor',
+        verified_attributes: [],
+      }
+    end
+
+    it 'returns failure with id_exception reason' do
+      expect(subject.combined_result).to eq(
+        success: false,
+        reason: 'id_exception',
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+        transaction_id:,
+        service_provider_issuer:,
+        resolution: resolution_result,
+        aamva: aamva_result,
+      )
+    end
+
+    context 'when the aamva exception is bypassed' do
+      let(:aamva_result) do
+        {
+          success: true,
+          errors: {},
+          exception: RuntimeError.new('ExceptionId: 0001'),
+          mva_exception: true,
+          requested_attributes: {},
+          timed_out: false,
+          transaction_id: '',
+          vendor_name: Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED,
+          verified_attributes: [],
+        }
+      end
+
+      it 'returns success with no reason' do
+        expect(subject.combined_result).to eq(
+          success: true,
+          reason: nil,
+          proofing_agent_id:,
+          proofing_location_id:,
+          correlation_id:,
+          transaction_id:,
+          service_provider_issuer:,
+          resolution: resolution_result,
+          aamva: aamva_result,
+        )
+      end
+    end
+  end
+
   context 'when mrz fails' do
     let(:mrz_result) do
       DocAuth::Response.new(
