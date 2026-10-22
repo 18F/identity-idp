@@ -8,5 +8,10 @@ FactoryBot.define do
     trait :deactivated do
       deactivated_at { Time.zone.now }
     end
+
+    trait :failure do
+      # failure codes start with `R`
+      sequence(:code) { |n| "R#{n}" }
+    end
   end
 end

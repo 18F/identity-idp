@@ -252,24 +252,10 @@ RSpec.describe SocureDocvResultsJob do
 
       context 'when the response is not successful' do
         let(:decision_value) { 'reject' }
-        let!(:socure_reason_code1) do
-          SocureReasonCode.create(
-            code: 'I831',
-            description: 'Document is valid',
-            group: 'ProductA',
-            added_at: 1.day.ago,
-            deactivated_at: nil,
-          )
-        end
 
-        let!(:socure_reason_code2) do
-          SocureReasonCode.create(
-            code: 'R810',
-            description: 'Document is expired',
-            group: 'ProductA',
-            added_at: 1.day.ago,
-            deactivated_at: nil,
-          )
+        before do
+          create(:socure_reason_code, code: 'I831', description: 'Document is valid')
+          create(:socure_reason_code, code: 'R810', description: 'Document is expired')
         end
 
         before do
@@ -306,7 +292,7 @@ RSpec.describe SocureDocvResultsJob do
             city: address_data[:city],
             state: address_data[:state],
             zip: address_data[:zip],
-            failure_reason: ['Document is valid', 'Document is expired'],
+            failure_reason: ['Document is expired'],
           )
         end
 
@@ -579,9 +565,10 @@ RSpec.describe SocureDocvResultsJob do
       end
 
       context 'facial match' do
-        let(:reason_codes_selfie_fail) { ['no match', 'not live'] }
-        let(:reason_codes_selfie_not_processed) { ['not processed'] }
-        let(:reason_codes_selfie_pass) { ['match', 'live'] }
+        # Failure codes start with an `R`, everything else starts with an I
+        let(:reason_codes_selfie_fail) { ['R-no match', 'R-not live'] }
+        let(:reason_codes_selfie_not_processed) { ['I-not processed'] }
+        let(:reason_codes_selfie_pass) { ['I-match', 'I-live'] }
         let(:selfie) { true }
 
         before do
@@ -644,8 +631,8 @@ RSpec.describe SocureDocvResultsJob do
         context 'when facial match fails' do
           let(:reason_codes) { reason_codes_selfie_fail }
           before do
-            create(:socure_reason_code, code: 'no match', description: 'images do not match')
-            create(:socure_reason_code, code: 'not live', description: 'selfie is not live')
+            create(:socure_reason_code, code: 'R-no match', description: 'images do not match')
+            create(:socure_reason_code, code: 'R-not live', description: 'selfie is not live')
           end
 
           it 'selfies status is :fail' do
