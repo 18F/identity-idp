@@ -199,6 +199,7 @@ class SocureDocvResultsJob < ApplicationJob
 
   def translate_codes(failures: nil)
     return nil unless failures.present?
+    return nil unless failures[:reason_codes].present?
 
     # only codes that start with "R" are failures
     codes = failures[:reason_codes].select { |code| code.start_with?(/R/) }
