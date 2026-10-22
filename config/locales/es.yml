@@ -1102,7 +1102,9 @@ help_text.requested_attributes.all_emails: Direcciones de correo electrónico en
 help_text.requested_attributes.birthdate: Fecha de nacimiento
 help_text.requested_attributes.change_email_link: Cambiar
 help_text.requested_attributes.consent_reminder_html: Debe dar su consentimiento cada año para divulgar su información a %{sp_html}.
+help_text.requested_attributes.document_images: Imágenes captadas
 help_text.requested_attributes.document_images_html: 'Para respaldar su solicitud, %{sp_html} también recibirá las fotos de sus documentos de identidad y la selfie que tomó al verificar su identidad. Estas imágenes se comparten únicamente para la adjudicación de identidad.'
+help_text.requested_attributes.document_metadata: Detalles del documento
 help_text.requested_attributes.email: Dirección de correo electrónico
 help_text.requested_attributes.full_name: Nombre completo
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp_html}:'
@@ -1872,8 +1874,10 @@ shared.skip_link: Saltar al contenido principal
 sign_up.agree_and_continue: Aceptar y continuar
 sign_up.cancel.success: Su cuenta fue eliminada. No guardamos su información.
 sign_up.cancel.warning_header: 'Si cancela ahora:'
+sign_up.completed.document_images.description: ID y selfi
+sign_up.completed.document_metadata.description: Número de documento, fecha de emisión y fecha de vencimiento
 sign_up.completed.smiling_image_alt: Una persona sonriente con una marca de verificación verde
-sign_up.document_images_sharing_consent_label: Doy mi consentimiento para compartir las fotos de mis documentos de identidad y la selfie de verificación de identidad con %{sp} para la adjudicación de identidad.
+sign_up.document_images_sharing_consent_label_html: Doy mi consentimiento para compartir las fotos de mi documento de identidad y una selfie con <strong>%{sp}</strong> para la adjudicación de mi identidad.
 sign_up.document_images_sharing_consent_required: Debe dar su consentimiento para compartir las fotos de sus documentos de identidad y su selfie para continuar, o cancelar.
 sign_up.information_sharing_html: Para saber cómo %{app_name} comparte su información, consulte nuestra %{link_html}.
 sign_up.nds_terms_intro: Al continuar, acepta las

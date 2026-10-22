@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe CompletionsPresenter do
+  include ActionView::Helpers::TranslationHelper
   include ActionView::Helpers::OutputSafetyHelper
   include ActionView::Helpers::TagHelper
 
@@ -33,8 +34,8 @@ RSpec.describe CompletionsPresenter do
   let(:requested_attributes) do
     [
       :given_name, :family_name, :address, :phone, :email, :all_emails,
-      :birthdate, :social_security_number, :x509_subject, :x509_issuer,
-      :verified_at
+      :birthdate, :social_security_number, :document_images, :document_metadata, :x509_subject,
+      :x509_issuer, :verified_at
     ]
   end
   let(:idv_requested) { false }
@@ -315,32 +316,80 @@ RSpec.describe CompletionsPresenter do
       end
 
       context 'with all attributes requested' do
-        it 'properly scopes and resolve attributes' do
-          expect(pii).to eq(
-            full_name: 'Testy Testerson',
-            address: '123 main st apt 123 Washington, DC 20405',
-            phone: '+1 202-212-1000',
-            all_emails: [current_user.email],
-            birthdate: 'January 1, 1990',
-            social_security_number: '900-12-3456',
-            verified_at: nil,
-            x509_subject: nil,
-            x509_issuer: nil,
-          )
+        context 'when document_images_sharing is allowed' do
+          before do
+            allow(current_sp).to receive(:document_images_sharing_allowed?).and_return(true)
+          end
+
+          it 'properly scopes and resolve attributes' do
+            expect(pii).to eq(
+              full_name: 'Testy Testerson',
+              address: '123 main st apt 123 Washington, DC 20405',
+              phone: '+1 202-212-1000',
+              all_emails: [current_user.email],
+              birthdate: 'January 1, 1990',
+              social_security_number: '900-12-3456',
+              document_images: t('sign_up.completed.document_images.description'),
+              document_metadata: t('sign_up.completed.document_metadata.description'),
+              verified_at: nil,
+              x509_subject: nil,
+              x509_issuer: nil,
+            )
+          end
+
+          it 'builds hash with sorted keys' do
+            expect(pii.keys).to eq %i[
+              all_emails
+              full_name
+              address
+              phone
+              birthdate
+              social_security_number
+              document_images
+              document_metadata
+              x509_subject
+              x509_issuer
+              verified_at
+            ]
+          end
         end
 
-        it 'builds hash with sorted keys' do
-          expect(pii.keys).to eq %i[
-            all_emails
-            full_name
-            address
-            phone
-            birthdate
-            social_security_number
-            x509_subject
-            x509_issuer
-            verified_at
-          ]
+        context 'when document_images_sharing is not allowed' do
+          before do
+            allow(current_sp).to receive(:document_images_sharing_allowed?).and_return(false)
+          end
+
+          it 'properly scopes and resolve attributes' do
+            expect(pii).to eq(
+              full_name: 'Testy Testerson',
+              address: '123 main st apt 123 Washington, DC 20405',
+              phone: '+1 202-212-1000',
+              all_emails: [current_user.email],
+              birthdate: 'January 1, 1990',
+              social_security_number: '900-12-3456',
+              document_images: nil,
+              document_metadata: nil,
+              verified_at: nil,
+              x509_subject: nil,
+              x509_issuer: nil,
+            )
+          end
+
+          it 'builds hash with sorted keys' do
+            expect(pii.keys).to eq %i[
+              all_emails
+              full_name
+              address
+              phone
+              birthdate
+              social_security_number
+              document_images
+              document_metadata
+              x509_subject
+              x509_issuer
+              verified_at
+            ]
+          end
         end
       end
     end

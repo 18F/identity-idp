@@ -71,7 +71,7 @@
               </dl>
 
               <% if @presenter.document_images_sharing? %>
-                <%= render 'sign_up/completions/biometric_sharing_consent', form: f, presenter: @presenter %>
+                <%= render 'sign_up/completions/nds_biometric_sharing_consent', form: f, presenter: @presenter %>
               <% end %>
 
               <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
@@ -170,22 +170,22 @@
   <% end %>
 <% end %>
 
-<p class="margin-top-4 margin-bottom-4">
-  <%= t(
-        'sign_up.information_sharing_html',
-        app_name: APP_NAME,
-        link_html: new_tab_link_to(
-          t('notices.privacy.privacy_act_statement'),
-          MarketingSite.privacy_act_statement_url,
-        ),
-      )
-  %>
-</p>
-
-<%= simple_form_for(:idv_form, url: sign_up_completed_path, html: { class: 'margin-y-5' }) do |f| %>
+<%= simple_form_for(:idv_form, url: sign_up_completed_path, html: { class: 'margin-top-1' }) do |f| %>
   <% if @presenter.document_images_sharing? %>
     <%= render 'sign_up/completions/biometric_sharing_consent', form: f, presenter: @presenter %>
   <% end %>
+  <p class="margin-top-2 margin-bottom-4 <%= 'margin-left-205' if
+    @presenter.document_images_sharing? %>">
+    <%= t(
+          'sign_up.information_sharing_html',
+          app_name: APP_NAME,
+          link_html: new_tab_link_to(
+            t('notices.privacy.privacy_act_statement'),
+            MarketingSite.privacy_act_statement_url,
+          ),
+        )
+    %>
+  </p>
   <%= f.submit t('sign_up.agree_and_continue') %>
 <% end %>
 
