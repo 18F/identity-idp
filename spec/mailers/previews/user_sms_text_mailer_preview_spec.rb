@@ -18,4 +18,18 @@ RSpec.describe UserSmsTextMailerPreview do
     preview_methods = described_class.instance_methods(false)
     expect(sms_messages.count).to eq(preview_methods.count)
   end
+
+  it 'renders the recovery notice with the configured recovery waiting period' do
+    allow(IdentityConfig.store).to receive(:account_recovery_wait_period_days).and_return(3)
+
+    message = described_class.new.account_recovery_notice
+
+    expect(message.body.decoded.strip).to eq(
+      I18n.t(
+        'telephony.account_recovery_notice.sms',
+        app_name: APP_NAME,
+        interval: WaitPeriodFormatter.call(3.days),
+      ),
+    )
+  end
 end

@@ -1,4 +1,24 @@
 ---
+account_recovery.pending.cancel: Cancel recovery
+account_recovery.pending.cancel_instructions: If you can use one of your existing authentication methods, cancel your recovery request to try signing in with it.
+account_recovery.pending.cancel_success: Your account recovery request has been canceled. Choose an authentication method to continue signing in.
+account_recovery.pending.header: We received your account recovery request
+account_recovery.pending.help: How account recovery works
+account_recovery.pending.instructions: Keep your password available. You will need to enter it again before setting up new authentication methods. Your account and existing authentication methods have not been changed.
+account_recovery.pending.notification_html: We sent an email to <strong>%{email}</strong> with instructions to recover your account.
+account_recovery.pending.resend: Resend the recovery request email
+account_recovery.pending.resend_rate_limited: You have requested too many recovery emails. Please wait a few minutes before trying again.
+account_recovery.pending.resend_success: We sent another account recovery request email.
+account_recovery.pending.status_header: Your account recovery request is pending
+account_recovery.pending.time_remaining: You have %{interval} left to wait before we send an email with a link to continue recovering your account.
+account_recovery.pending.wait_ended: Your waiting period has ended. Check your email for a link with the next steps to recover your account. Your account has not been recovered yet.
+account_recovery.start.continue: Recover my account
+account_recovery.start.header: Are you sure you want to recover your account?
+account_recovery.start.intro: You must wait %{interval} to receive an account recovery link. After clicking the link, you will set up new authentication methods to replace your old ones.
+account_recovery.start.keep_account_html: If you regain access to any of your authentication methods, sign in to restore your account and cancel recovery. %{link_html}
+account_recovery.start.keep_account_link_text: Learn more about account recovery.
+account_recovery.start.rate_limited: You have requested account recovery too many times. Please wait a few minutes before trying again.
+account_recovery.start.unavailable: Account recovery is not available for your account.
 account.connected_apps.associated_attributes_html: 'Conectado el %{timestamp_html} con:'
 account.connected_apps.associated_html: 'Conectado: %{timestamp_html}'
 account.connected_apps.description: Con tu cuenta de %{app_name}, puedes conectarte de forma segura a múltiples servicios gubernamentales en línea. A continuación, encontrarás una lista de todos los servicios a los que estás conectado actualmente.
@@ -1990,6 +2010,9 @@ titles.visitors.index: Bienvenido
 titles.webauthn_setup: Añada su clave de seguridad
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> requiere un método de autenticación de alta seguridad, como desbloqueo facial o táctil, una clave de seguridad o una identificación de empleado de gobierno.'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> requiere su identificación de empleado de gobierno, un método de autenticación de alta seguridad.'
+two_factor_authentication.account_recovery.pending_link: View your account recovery request
+two_factor_authentication.account_recovery.recover_link: recover your account
+two_factor_authentication.account_recovery.recover_text_html: If you can’t use any of your authentication methods above to access your account, you can %{link_html} to reset your authentication methods.
 two_factor_authentication.account_reset.cancel_link: Cancelar su solicitud
 two_factor_authentication.account_reset.link: elimine su cuenta
 two_factor_authentication.account_reset.pending: Actualmente tiene una solicitud pendiente para eliminar su cuenta. Se necesitan %{interval} desde el momento en que realizó la solicitud para completar el proceso. Por favor, vuelva más tarde.
@@ -2082,6 +2105,7 @@ two_factor_authentication.piv_cac_mismatch.cta: Autenticar y añadir tarjeta PIV
 two_factor_authentication.piv_cac_mismatch.delete_account: Eliminar su cuenta
 two_factor_authentication.piv_cac_mismatch.instructions: Haga clic en “Autenticar y añadir tarjeta PIV o CAC” más abajo para autenticar con otro método antes de añadir esta tarjeta PIV o CAC a su cuenta.
 two_factor_authentication.piv_cac_mismatch.instructions_no_other_method: Si se le emitió una nueva tarjeta PIV o CAC, para poder usarla, deberá eliminar su cuenta de %{app_name} y crear una cuenta nueva.
+two_factor_authentication.piv_cac_mismatch.instructions_recovery: If you cannot use your government employee ID, recover your account to replace your authentication methods.
 two_factor_authentication.piv_cac_mismatch.skip: Omitir añadir tarjeta PIV o CAC
 two_factor_authentication.piv_cac_mismatch.title: Esta tarjeta de identificación de empleado gubernamental no está conectada a su cuenta
 two_factor_authentication.piv_cac_upsell.add_piv: Agregar tarjeta PIV/CAC
@@ -2159,6 +2183,18 @@ user_mailer.account_connected_to_sp.sign_in_link: inicie sesión en su cuenta
 user_mailer.account_connected_to_sp.subject: Usted conectó su cuenta a %{sp_name}
 user_mailer.account_disconnected_from_sp.intro: Visite %{sp_name} si desea volver a conectar su cuenta.
 user_mailer.account_disconnected_from_sp.subject: Usted ha desconectado a %{sp_name} de su cuenta
+user_mailer.account_recovery_request.change_password: Immediately change your password.
+user_mailer.account_recovery_request.header: How to recover your %{app_name} account
+user_mailer.account_recovery_request.intro: For your security, %{app_name} has a two-step process to recover your account.
+user_mailer.account_recovery_request.report_html: Report suspicious activity by contacting %{contact_link_html}.
+user_mailer.account_recovery_request.review_history: Check your account activity by going to the “History” page in the side menu.
+user_mailer.account_recovery_request.review_methods: Review your authentication methods to ensure they are up to date and secure.
+user_mailer.account_recovery_request.step_one.body: This delay gives you time to find your authentication method or take action if you did not make the request.
+user_mailer.account_recovery_request.step_one.title: Wait %{interval}
+user_mailer.account_recovery_request.step_two.body: After %{interval}, you will receive a link to add new authentication methods and recover your account.
+user_mailer.account_recovery_request.step_two.title: Recover your account
+user_mailer.account_recovery_request.subject: Your request to recover your %{app_name} account
+user_mailer.account_recovery_request.unrequested_html: '<strong>If this wasn’t you:</strong> Do not use any recovery links. Sign in and authenticate with your %{app_name} account to cancel your account recovery request, then:'
 user_mailer.account_reinstated.subject: Su cuenta está desbloqueada
 user_mailer.account_reinstated.we_have_finished_reviewing: Terminamos de revisar su cuenta de %{app_name} y ya puede volver a iniciar sesión con los datos de su cuenta.
 user_mailer.account_rejected.intro: No pudimos verificar su identidad con %{app_name}. Contacte con la agencia a cuyo servicio está intentando acceder.

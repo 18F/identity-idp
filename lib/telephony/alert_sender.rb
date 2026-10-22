@@ -11,6 +11,17 @@ module Telephony
       response
     end
 
+    def send_account_recovery_notice(to:, country_code:, interval:)
+      message = I18n.t(
+        'telephony.account_recovery_notice.sms',
+        app_name: APP_NAME,
+        interval: interval,
+      )
+      response = adapter.deliver(message: message, to: to, country_code: country_code)
+      log_response(response, context: __method__.to_s.gsub(/^send_/, ''))
+      response
+    end
+
     def send_account_reset_notice(to:, country_code:, interval:)
       message = I18n.t(
         'telephony.account_reset_notice.sms',

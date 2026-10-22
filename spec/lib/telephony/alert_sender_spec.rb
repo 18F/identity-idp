@@ -22,6 +22,25 @@ RSpec.describe Telephony::AlertSender do
     end
   end
 
+  describe 'send_account_recovery_notice' do
+    it 'sends a recovery notice without describing account deletion' do
+      expect(Telephony).to receive(:log_info).with(
+        event: hash_including(context: 'account_recovery_notice', success: true),
+      )
+      response = subject.send_account_recovery_notice(
+        to: recipient, country_code: 'US', interval: interval,
+      )
+
+      message = Telephony::Test::Message.messages.last
+      expect(message.to).to eq(recipient)
+      expect(message.body).to eq(
+        I18n.t('telephony.account_recovery_notice.sms', app_name: APP_NAME, interval: interval),
+      )
+      expect(message.body).not_to include('deleted', '%{')
+      expect(response).to be_success
+    end
+  end
+
   describe 'send_account_reset_notice' do
     it 'sends the correct message' do
       subject.send_account_reset_notice(to: recipient, country_code: 'US', interval: interval)

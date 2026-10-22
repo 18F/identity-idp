@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class UserSmsTextMailer < ActionMailer::Base
+  include AccountRecoveryConcern
   include ActionView::Helpers::DateHelper
   include Rails.application.routes.url_helpers
 
@@ -17,6 +18,11 @@ class UserSmsTextMailer < ActionMailer::Base
 
   def account_deletion_started
     @interval = account_reset_wait_period
+    mail_to
+  end
+
+  def account_recovery_notice
+    @interval = account_recovery_wait_period_interval
     mail_to
   end
 

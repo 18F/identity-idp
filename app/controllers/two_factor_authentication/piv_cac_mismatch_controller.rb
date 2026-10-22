@@ -12,6 +12,12 @@ module TwoFactorAuthentication
 
       @piv_cac_required = piv_cac_required?
       @has_other_authentication_methods = has_other_authentication_methods?
+      recovery_policy = AccountRecovery::EligibilityPolicy.new(user: current_user)
+      if !recovery_policy.legacy_reset_allowed?
+        @account_recovery_pending = recovery_policy.recovery_pending?
+        @account_recovery_url = @account_recovery_pending ?
+          account_recovery_status_url : account_recovery_start_url
+      end
     end
 
     def create

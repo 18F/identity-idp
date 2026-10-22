@@ -1,0 +1,20 @@
+<% self.title = t('account_recovery.pending.status_header') %>
+
+<%= render PageHeadingComponent.new.with_content(t('account_recovery.pending.status_header')) %>
+
+<% if @remaining_interval %>
+  <p><%= t('account_recovery.pending.time_remaining', interval: @remaining_interval) %></p>
+<% else %>
+  <p><%= t('account_recovery.pending.wait_ended') %></p>
+<% end %>
+
+<p><%= t('account_recovery.pending.instructions') %></p>
+<p><%= t('account_recovery.pending.cancel_instructions') %></p>
+
+<%= simple_form_for(
+      :account_recovery,
+      url: account_recovery_cancel_path,
+      method: :post,
+    ) do |f| %>
+  <%= f.submit t('account_recovery.pending.cancel') %>
+<% end %>
