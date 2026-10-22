@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class BackupCodeConfiguration < ApplicationRecord
+  include AccountRecoverySuspendable
   NUM_WORDS = 3
 
   include BackupCodeEncryptedAttributeOverrides
@@ -12,10 +13,12 @@ class BackupCodeConfiguration < ApplicationRecord
   end
 
   def mfa_enabled?
-    persisted? && used_at.nil?
+    !suspended_for_account_recovery? && persisted? && used_at.nil?
   end
 
   def selection_presenters
+    return [] unless mfa_enabled?
+
     [TwoFactorAuthentication::SignInBackupCodeSelectionPresenter.new(user:, configuration: self)]
   end
 
@@ -37,7 +40,8 @@ class BackupCodeConfiguration < ApplicationRecord
       code = RandomPhrase.normalize(code)
       user_salted_fingerprints = self.salted_fingerprints(code: code, user_id: user_id)
 
-      where(salted_code_fingerprint: user_salted_fingerprints).find_by(user_id: user_id)
+      available_for_authentication.where(salted_code_fingerprint: user_salted_fingerprints)
+        .find_by(user_id: user_id)
     end
 
     def salted_fingerprints(code:, user_id:)

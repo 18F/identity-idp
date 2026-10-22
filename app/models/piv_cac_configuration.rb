@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 class PivCacConfiguration < ApplicationRecord
+  include AccountRecoverySuspendable
   include UserSuppliedNameAttributes
 
   belongs_to :user
   validates :name, presence: true, length: { maximum: UserSuppliedNameAttributes::MAX_NAME_LENGTH }
 
   def mfa_enabled?
-    x509_dn_uuid.present?
+    !suspended_for_account_recovery? && x509_dn_uuid.present?
   end
 
   def selection_presenters

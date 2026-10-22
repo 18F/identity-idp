@@ -49,8 +49,8 @@ RSpec.describe 'Account recovery password verification', type: :request do
     post account_recovery_verify_path,
          params: { request_id: request_id, user: { password: password } }
 
-    expect(response).to redirect_to(account_recovery_verify_url)
-    expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
+    expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
+    expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
     expect(recovery_request.token_fingerprint).to be_nil
 
     follow_redirect!
@@ -60,7 +60,7 @@ RSpec.describe 'Account recovery password verification', type: :request do
 
     get account_path
 
-    expect(response).to redirect_to(user_two_factor_authentication_url)
+    expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
   end
 
   it 'does not allow the previous pending page to cancel after token verification' do
@@ -146,8 +146,8 @@ RSpec.describe 'Account recovery password verification', type: :request do
            },
            headers: { 'Origin' => origin }
 
-      expect(response).to redirect_to(account_recovery_verify_url)
-      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
+      expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
+      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
     end
 
     it 'rejects a cross-origin password submission even with the form CSRF token' do

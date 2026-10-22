@@ -45,7 +45,7 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
     end
 
     recovery_request = AccountRecoveryRequest.active_for_user(user)
-    expect(recovery_request.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
+    expect(recovery_request.state).to eq(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
     expect(recovery_request.password_verified_at).to be_present
   end
 
@@ -121,12 +121,12 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
 
       visit root_path
 
-      expect(page).to have_current_path(account_recovery_verify_path)
+      expect(page).to have_current_path(account_recovery_new_mfa_setup_path)
 
       Capybara.reset_sessions!
       signin(user_email, user.password)
 
-      expect(page).to have_current_path(account_recovery_verify_path)
+      expect(page).to have_current_path(account_recovery_new_mfa_setup_path)
     end
   end
 
@@ -180,7 +180,7 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
       click_button t('account_recovery.verify.continue')
 
       expect(page).to have_content(t('account_recovery.pending_mfa_setup.header'))
-      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
+      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
 
       visit account_path
 

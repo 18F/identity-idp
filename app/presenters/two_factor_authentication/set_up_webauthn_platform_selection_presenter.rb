@@ -36,7 +36,7 @@ module TwoFactorAuthentication
     end
 
     def mfa_configuration_count
-      user.webauthn_configurations.where(platform_authenticator: true).count
+      MfaContext.new(user).webauthn_platform_configurations.count
     end
   end
 end

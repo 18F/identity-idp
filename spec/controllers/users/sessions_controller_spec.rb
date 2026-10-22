@@ -993,6 +993,16 @@ RSpec.describe Users::SessionsController, devise: true do
       expect(response).to redirect_to account_recovery_verify_url
     end
 
+    it 'resumes replacement enrollment after existing MFA has been suspended' do
+      user = create(:user, :fully_registered)
+      recovery_request = create(:account_recovery_request, :password_verified, user: user)
+      AccountRecovery::SuspendExistingMfa.new(account_recovery_request: recovery_request).call
+
+      post :create, params: { user: { email: user.email, password: user.password } }
+
+      expect(response).to redirect_to account_recovery_new_mfa_setup_url
+    end
+
     it 'redirects to 2FA when the recovery request reached a terminal state' do
       user = create(:user, :fully_registered)
       create(:account_recovery_request, :cancelled, user: user)

@@ -61,7 +61,8 @@ class WebauthnVerificationForm
 
   def webauthn_configuration
     return @webauthn_configuration if defined?(@webauthn_configuration)
-    @webauthn_configuration = user.webauthn_configurations.find_by(credential_id: credential_id)
+    @webauthn_configuration = user.webauthn_configurations.available_for_authentication
+      .find_by(credential_id: credential_id)
   end
 
   # this gives us a hook to override the domain embedded in the attestation test object

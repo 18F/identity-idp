@@ -164,7 +164,7 @@ class NewPhoneForm
   end
 
   def validate_not_duplicate
-    current_user_phones = user.phone_configurations.map do |phone_configuration|
+    current_user_phones = MfaContext.new(user).phone_configurations.map do |phone_configuration|
       PhoneFormatter.format(phone_configuration.phone)
     end
 

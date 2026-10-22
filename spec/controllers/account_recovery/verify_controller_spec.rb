@@ -191,20 +191,22 @@ RSpec.describe AccountRecovery::VerifyController do
 
       expect(controller.current_user).to eq(user)
       expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq(true)
-      expect(response).to redirect_to(account_recovery_verify_url)
+      expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
       expect(response.location).not_to include(raw_token)
       expect(session[:account_recovery_request_id]).to be_nil
       expect(session[:account_recovery_granted_token]).to be_nil
-      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
+      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
       expect(recovery_request.link_verified_at).to be_present
       expect(recovery_request.password_verified_at).to be_present
       expect(recovery_request.token_fingerprint).to be_nil
       expect(recovery_request.token_expires_at).to be_nil
     end
 
-    it 'does not change existing MFA methods' do
+    it 'suspends existing MFA methods without deleting them' do
       expect { post :create, params: password_params }
         .not_to change { user.reload.phone_configurations.count }
+      expect(user.phone_configurations.first.account_recovery_request_id).to eq(recovery_request.id)
+      expect(MfaContext.new(user).two_factor_enabled?).to eq(false)
     end
 
     it 'logs successful password verification' do
@@ -238,7 +240,7 @@ RSpec.describe AccountRecovery::VerifyController do
       post :create, params: password_params
 
       expect(controller.current_user).to eq(user)
-      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
+      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
     end
 
     it 'rejects a posted token without session evidence' do
@@ -314,7 +316,7 @@ RSpec.describe AccountRecovery::VerifyController do
       post :create, params: password_params.merge(request_id: other_request.id, token: raw_token)
 
       expect(controller.current_user).to eq(other_request.user)
-      expect(other_request.reload.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
+      expect(other_request.reload.state).to eq(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
       expect(recovery_request.reload.password_verified_at).to be_nil
       expect(session[:account_recovery_granted_token]).to be_nil
     end
@@ -437,7 +439,7 @@ RSpec.describe AccountRecovery::VerifyController do
 
       get :show
 
-      expect(response).to render_template(:pending_mfa_setup)
+      expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
       expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq(true)
     end
 

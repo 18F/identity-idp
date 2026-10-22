@@ -300,6 +300,8 @@ module Users
 
       @account_recovery_url = if expired || recovery_request.blank?
                                 nil
+                             elsif recovery_request.replacement_mfa_pending?
+                               account_recovery_new_mfa_setup_url
                              elsif recovery_request.state == AccountRecoveryRequest::PASSWORD_VERIFIED
                                account_recovery_verify_url
                              elsif recovery_request.awaiting_link_redemption?

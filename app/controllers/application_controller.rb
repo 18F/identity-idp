@@ -333,6 +333,8 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(_user)
+    return account_recovery_new_mfa_setup_url if replacement_mfa_pending?
+
     return rules_of_use_path if !current_user.accepted_rules_of_use_still_valid?
     return user_please_call_url if current_user.suspended?
     return duplicate_profiles_detected_url(source: :sign_in) if user_duplicate_profiles_detected?
@@ -417,6 +419,7 @@ class ApplicationController < ActionController::Base
 
   def user_fully_authenticated?
     user_signed_in? &&
+      !replacement_mfa_pending? &&
       session['warden.user.user.session'] &&
       !session['warden.user.user.session'][TwoFactorAuthenticatable::NEED_AUTHENTICATION] &&
       two_factor_enabled?
@@ -424,6 +427,7 @@ class ApplicationController < ActionController::Base
 
   def confirm_two_factor_authenticated
     authenticate_user!(force: true)
+    return redirect_to account_recovery_new_mfa_setup_url if replacement_mfa_pending?
 
     if !two_factor_enabled?
       return prompt_to_setup_mfa

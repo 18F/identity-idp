@@ -155,7 +155,7 @@ module Users
     end
 
     def current_cac_count
-      current_user.piv_cac_configurations.count
+      mfa_context.piv_cac_configurations.count
     end
 
     def enabled_mfa_methods_count

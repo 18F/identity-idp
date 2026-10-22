@@ -118,7 +118,7 @@ module Users
 
     def check_max_phone_numbers_per_account
       max_phones_count = IdentityConfig.store.max_phone_numbers_per_account
-      return if current_user.phone_configurations.count < max_phones_count
+      return if mfa_context.phone_configurations.count < max_phones_count
       flash[:phone_error] = t('users.phones.error_message')
       redirect_path = request.referer.match(account_two_factor_authentication_url) ?
                         account_two_factor_authentication_url(anchor: 'phones') :

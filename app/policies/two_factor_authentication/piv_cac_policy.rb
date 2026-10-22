@@ -7,7 +7,7 @@ module TwoFactorAuthentication
     end
 
     def configured?
-      user&.piv_cac_configurations&.any?
+      user&.piv_cac_configurations&.available_for_authentication&.any?
     end
 
     def enabled?
