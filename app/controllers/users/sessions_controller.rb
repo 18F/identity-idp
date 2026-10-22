@@ -161,10 +161,8 @@ module Users
     def check_user_needs_redirect
       if user_fully_authenticated?
         redirect_to signed_in_url
-      elsif current_user && pending_account_recovery_request?
-        redirect_to account_recovery_pending_status_url
       elsif current_user
-        redirect_to user_two_factor_authentication_url
+        redirect_to account_recovery_url || user_two_factor_authentication_url
       end
     end
 
@@ -275,10 +273,8 @@ module Users
         device_profiling_failed_url
       elsif pending_account_reset_request.present?
         account_reset_pending_url
-      elsif redeemed_account_recovery_request?
-        account_recovery_verify_url
-      elsif pending_account_recovery_request?
-        account_recovery_pending_status_url
+      elsif account_recovery_url
+        account_recovery_url
       elsif current_user.accepted_rules_of_use_still_valid?
         user_two_factor_authentication_url
       else
@@ -292,33 +288,23 @@ module Users
       ).get_account_reset_request
     end
 
-    # Only resume recovery without a token after both factors were verified.
-    def redeemed_account_recovery_request?
-      active_account_recovery_request&.state == AccountRecoveryRequest::PASSWORD_VERIFIED
-    end
-
-    def pending_account_recovery_request?
-      !!active_account_recovery_request&.awaiting_link_redemption?
-    end
-
-    # Expires a lapsed, unredeemed request before routing so the user is sent to
-    # the MFA challenge rather than to a pending page for a link that can no
-    # longer be redeemed.
-    def active_account_recovery_request
-      return @active_account_recovery_request if defined?(@active_account_recovery_request)
+    def account_recovery_url
+      return @account_recovery_url if defined?(@account_recovery_url)
 
       recovery_request = AccountRecoveryRequest.active_for_user(current_user)
-
       expired = AccountRecovery::ReconcileRequest.new(
         account_recovery_request: recovery_request,
       ).call
 
-      if expired
-        analytics.account_recovery_expired
-        recovery_request = nil
-      end
+      analytics.account_recovery_expired if expired
 
-      @active_account_recovery_request = recovery_request
+      @account_recovery_url = if expired || recovery_request.blank?
+                                nil
+                             elsif recovery_request.state == AccountRecoveryRequest::PASSWORD_VERIFIED
+                               account_recovery_verify_url
+                             elsif recovery_request.awaiting_link_redemption?
+                               account_recovery_pending_status_url
+                             end
     end
 
     def override_csp_for_google_analytics

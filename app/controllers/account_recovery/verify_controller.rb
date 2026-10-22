@@ -1,18 +1,19 @@
 # frozen_string_literal: true
 
 module AccountRecovery
-  # A correct password creates a partial, pre-2FA session. The user is
-  # recognized and routed, but `NEED_AUTHENTICATION` stays true, so every
-  # surface guarded by `confirm_two_factor_authenticated` stays closed and no
-  # service provider assertion can be released. The emailed link and the
-  # password never add up to a fully authenticated session.
+  # The session token keeps the password URL clean; it does not authenticate
+  # the user. Only a correct password consumes it and creates a pre-2FA session.
   class VerifyController < ApplicationController
-    before_action :prevent_token_referrer
-    before_action :verify_token, if: -> { action_name == 'create' || token_param }
+    before_action :verify_token, if: -> {
+      action_name == 'create' || token_param || session[:account_recovery_granted_token]
+    }
     before_action :confirm_recovery_request
+    before_action :confirm_password_form, only: :create
 
     def show
       if token_param
+        redirect_to account_recovery_verify_url
+      elsif session[:account_recovery_granted_token]
         render_password_form
       else
         render :pending_mfa_setup
@@ -32,24 +33,18 @@ module AccountRecovery
     private
 
     def token_param
-      params[:token].presence
-    end
-
-    # `no-referrer` makes browsers send `Origin: null` on the form POST, which
-    # fails Rails' CSRF origin check. `strict-origin` still keeps the token out
-    # of the Referer header by sending only the scheme and host.
-    def prevent_token_referrer
-      response.headers['Referrer-Policy'] = 'strict-origin'
+      params[:token].presence if action_name == 'show'
     end
 
     def verify_token
+      @token = token_param || session[:account_recovery_granted_token]
       sign_out if user_signed_in?
 
       return handle_rate_limited_token if token_rate_limiter.limited?
 
       token_rate_limiter.increment!
 
-      validator = AccountRecovery::ValidateGrantedToken.new(token: token_param)
+      validator = AccountRecovery::ValidateGrantedToken.new(token: @token)
       result = validator.call
 
       analytics.account_recovery_link_validation(**result.to_h)
@@ -70,14 +65,17 @@ module AccountRecovery
         end
       end
       @account_recovery_request = recovery_request
+      session[:account_recovery_granted_token] = @token
     end
 
     def handle_invalid_token
+      session.delete(:account_recovery_granted_token)
       flash[:error] = t('account_recovery.verify.token_invalid')
       redirect_to root_url
     end
 
     def handle_rate_limited_token
+      session.delete(:account_recovery_granted_token)
       analytics.account_recovery_link_validation(success: false, rate_limited: true)
 
       flash[:error] = t('account_recovery.verify.token_rate_limited')
@@ -85,8 +83,7 @@ module AccountRecovery
     end
 
     def handle_valid_password
-      # Recheck under the row lock so expiry, token replacement, and concurrent
-      # password submissions cannot create a session from stale token evidence.
+      # Consume the token atomically only after the password succeeds.
       account_recovery_request.with_lock do
         return handle_invalid_token unless valid_token?(account_recovery_request)
         return handle_invalid_token unless account_recovery_request.transition_to!(
@@ -99,6 +96,7 @@ module AccountRecovery
       password_rate_limiter.reset!
       analytics.account_recovery_password_verification(success: true)
 
+      session.delete(:account_recovery_granted_token)
       sign_in_partially
 
       redirect_to account_recovery_verify_url
@@ -128,12 +126,11 @@ module AccountRecovery
     end
 
     def valid_token?(recovery_request)
-      validator = AccountRecovery::ValidateGrantedToken.new(token: token_param)
+      validator = AccountRecovery::ValidateGrantedToken.new(token: @token)
       validator.call.success? && validator.account_recovery_request == recovery_request
     end
 
     def render_password_form
-      @token = token_param
       @email = recovery_user.last_sign_in_email_address&.email
       render :show
     end
@@ -142,8 +139,12 @@ module AccountRecovery
       render_not_found if account_recovery_request.blank?
     end
 
-    # Before password verification, only the submitted token selects the ARR.
-    # The token-free continuation requires a signed-in owner and verified password.
+    def confirm_password_form
+      return if params[:request_id].to_s == account_recovery_request.id.to_s
+
+      handle_invalid_token
+    end
+
     def account_recovery_request
       return @account_recovery_request if defined?(@account_recovery_request)
       return unless user_signed_in?
