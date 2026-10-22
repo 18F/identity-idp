@@ -66,6 +66,38 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       expect(response.status).to eq(302)
       expect(response.location).to eq(authentication_methods_setup_url)
     end
+
+    context 'personal key deprecation warning' do
+      let(:user) { build(:user, :with_personal_key, password: ControllerHelper::VALID_PASSWORD) }
+
+      before { stub_sign_in_before_2fa(user) }
+
+      context 'when personal key MFA deprecation phase 1 is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:personal_key_mfa_deprecation_phase_1_enabled)
+            .and_return(true)
+        end
+
+        it 'assigns the deprecation warning to be shown for personal key MFA users' do
+          get :show
+
+          expect(assigns(:show_deprecation_warning)).to eq(true)
+        end
+      end
+
+      context 'when personal key MFA deprecation phase 1 is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:personal_key_mfa_deprecation_phase_1_enabled)
+            .and_return(false)
+        end
+
+        it 'does not assign the deprecation warning to be shown' do
+          get :show
+
+          expect(assigns(:show_deprecation_warning)).to eq(false)
+        end
+      end
+    end
   end
 
   describe '#create' do
@@ -187,6 +219,115 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       expect(user.encrypted_recovery_code_digest).to_not be_present
       expect(user.encrypted_recovery_code_digest_multi_region).to be_present
       expect(user.encrypted_recovery_code_digest_multi_region).to_not eq old_key
+    end
+
+    context 'when personal key MFA deprecation phase 1 is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:personal_key_mfa_deprecation_phase_1_enabled)
+          .and_return(true)
+      end
+
+      it 'does not issue a new personal key for a personal key MFA user' do
+        user = create(:user, :with_phone)
+        raw_key = PersonalKeyGenerator.new(user).generate!
+        stub_sign_in_before_2fa(user)
+
+        post :create, params: { personal_key_form: { personal_key: raw_key } }
+        user.reload
+
+        # The personal key is consumed on use: no new key is issued and the
+        # existing recovery code is cleared.
+        expect(user.has_recovery_code?).to eq(false)
+        expect(user.encrypted_recovery_code_digest).to be_blank
+        expect(user.encrypted_recovery_code_digest_multi_region).to be_blank
+      end
+
+      it 'redirects a personal key MFA user to authentication method setup' do
+        user = create(:user, :with_phone)
+        raw_key = PersonalKeyGenerator.new(user).generate!
+        stub_sign_in_before_2fa(user)
+
+        post :create, params: { personal_key_form: { personal_key: raw_key } }
+
+        expect(response).to redirect_to(authentication_methods_setup_url)
+      end
+
+      it 'does not affect an identity-verified (IDV) user' do
+        profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
+        user = profile.user
+        raw_key = PersonalKeyGenerator.new(user).generate!
+        stub_sign_in_before_2fa(user)
+
+        post :create, params: { personal_key_form: { personal_key: raw_key } }
+
+        # IDV users have a profile, so PersonalKeyPolicy#enabled? is false and the
+        # check_personal_key_enabled before_action redirects them away before the
+        # phase 1 logic can run. They are therefore unaffected by phase 1.
+        expect(response).to redirect_to(authentication_methods_setup_url)
+      end
+
+      # Regression: a legacy user whose ONLY credential is a personal key (no
+      # phone/TOTP/etc.) must not have that key consumed, or they would be locked
+      # out of their account. These users can reach this controller via a direct
+      # URL (see spec/features/legacy_passwords_spec.rb), so the phase 1 consume
+      # path must be guarded by MfaPolicy#two_factor_enabled?.
+      context 'when the user has only a personal key (no other MFA method)' do
+        it 'does not consume the personal key' do
+          user = create(:user)
+          raw_key = PersonalKeyGenerator.new(user).generate!
+          stub_sign_in_before_2fa(user)
+
+          expect(MfaPolicy.new(user).two_factor_enabled?).to eq(false)
+
+          post :create, params: { personal_key_form: { personal_key: raw_key } }
+          user.reload
+
+          # The personal key is preserved so the user retains a usable credential.
+          expect(user.has_recovery_code?).to eq(true)
+          expect(TwoFactorAuthentication::PersonalKeyPolicy.new(user).enabled?).to eq(true)
+        end
+      end
+    end
+
+    context 'when the flow feature flags are off (default configuration)' do
+      before do
+        allow(FeatureManagement)
+          .to receive(:personal_key_mfa_deprecation_phase_1_enabled?).and_return(false)
+        allow(FeatureManagement)
+          .to receive(:enable_additional_mfa_redirect_for_personal_key_mfa?).and_return(false)
+      end
+
+      it 'does not prompt a personal key MFA user to add a new method' do
+        user = create(:user, :with_phone)
+        raw_key = PersonalKeyGenerator.new(user).generate!
+        stub_sign_in_before_2fa(user)
+
+        post :create, params: { personal_key_form: { personal_key: raw_key } }
+
+        expect(response).to redirect_to(account_path)
+      end
+    end
+
+    context 'when the personal key belongs to an identity-verified user' do
+      before do
+        allow(FeatureManagement)
+          .to receive(:personal_key_mfa_deprecation_phase_1_enabled?).and_return(true)
+      end
+
+      it 'sends the user to manage their personal key rather than MFA setup' do
+        profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
+        user = profile.user
+        # The verified user reaches #show/#create via the manage flow, so the
+        # check_personal_key_enabled before_action must let them through.
+        allow_any_instance_of(TwoFactorAuthentication::PersonalKeyPolicy)
+          .to receive(:enabled?).and_return(true)
+        raw_key = PersonalKeyGenerator.new(user).generate!
+        stub_sign_in_before_2fa(user)
+
+        post :create, params: { personal_key_form: { personal_key: raw_key } }
+
+        expect(response).to redirect_to(manage_personal_key_url)
+      end
     end
 
     it 'redirects to the two_factor_options page if user is IAL2' do

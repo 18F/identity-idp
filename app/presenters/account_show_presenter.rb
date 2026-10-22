@@ -39,6 +39,22 @@ class AccountShowPresenter
     user.has_recovery_code? && user.password_reset_profile.blank?
   end
 
+  # During Phase 1 of personal key MFA deprecation, personal key MFA users can no
+  # longer regenerate their personal key, so the reset/regenerate link is hidden.
+  # Identity-verified users use their personal key for account recovery/IDV and are
+  # unaffected because PersonalKeyPolicy#enabled? is false for them (they have profiles).
+  # Legacy users whose only credential is a personal key are also excluded (via
+  # MfaPolicy#two_factor_enabled?) so the deprecation never hides their key management.
+  def show_regenerate_personal_key_action?
+    !personal_key_mfa_deprecated?
+  end
+
+  def personal_key_mfa_deprecated?
+    FeatureManagement.personal_key_mfa_deprecation_phase_1_enabled? &&
+      TwoFactorAuthentication::PersonalKeyPolicy.new(user).enabled? &&
+      MfaPolicy.new(user).two_factor_enabled?
+  end
+
   def show_service_provider_continue_partial?
     sp_name.present? && sp_session_request_url.present? && !sp_handoff_already_occurred
   end

@@ -9,6 +9,7 @@ module Accounts
     before_action :confirm_two_factor_authenticated
     before_action :prompt_for_password_if_pii_locked
     before_action :confirm_recently_authenticated_2fa
+    before_action :confirm_personal_key_regeneration_allowed
 
     def new
       analytics.profile_personal_key_visit
@@ -26,6 +27,23 @@ module Accounts
     end
 
     private
+
+    # During Phase 1 of personal key MFA deprecation, personal key MFA users can no
+    # longer generate another personal key. Identity-verified users are unaffected
+    # because PersonalKeyPolicy#enabled? is false for them (they have profiles).
+    # Legacy users whose only credential is a personal key are also excluded (via
+    # MfaPolicy#two_factor_enabled?) so the deprecation never leaves an account
+    # without a usable credential.
+    def confirm_personal_key_regeneration_allowed
+      return unless personal_key_mfa_deprecated?
+      redirect_to account_url
+    end
+
+    def personal_key_mfa_deprecated?
+      FeatureManagement.personal_key_mfa_deprecation_phase_1_enabled? &&
+        TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled? &&
+        MfaPolicy.new(current_user).two_factor_enabled?
+    end
 
     def prompt_for_password_if_pii_locked
       return unless pii_locked?
