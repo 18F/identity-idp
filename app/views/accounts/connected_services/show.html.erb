@@ -14,20 +14,26 @@
   </ul>
 </div>
 
-<h2 class="margin-top-6"><%= t('account.navigation.america_gov_services', AMERICA_GOV_NAME: AMERICA_GOV_NAME) %></h2>
+<% if @presenter.show_connected_delegations? %>
+  <h2 class="margin-top-6"><%= t('account.navigation.america_gov_services', america_gov_name: AMERICA_GOV_NAME) %></h2>
 
-<p>
-  <%= t('account.connected_delegation.description', AMERICA_GOV_NAME: AMERICA_GOV_NAME) %>
-</p>
+  <p>
+    <%= t(
+          'account.connected_delegation.description',
+          america_gov_name: AMERICA_GOV_NAME,
+          app_name: APP_NAME,
+        ) %>
+  </p>
 
-<p>
-  <%= t('account.connected_delegation.disconnect', AMERICA_GOV_NAME: AMERICA_GOV_NAME) %>
-</p>
+  <p>
+    <%= t('account.connected_delegation.disconnect', america_gov_name: AMERICA_GOV_NAME) %>
+  </p>
 
-<div class="card border-bottom border-primary-light">
-  <ul class="add-list-reset border-bottom border-primary-light">
-    <% @presenter.connected_apps.each do |identity| %>
-      <li><%= render 'accounts/connected_delegation', identity: identity %></li>
-    <% end %>
-  </ul>
-</div>
+  <div class="card border-bottom border-primary-light">
+    <ul class="add-list-reset border-bottom border-primary-light">
+      <% @presenter.connected_delegations.each do |delegation| %>
+        <li><%= render 'accounts/connected_delegation', delegation: delegation %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

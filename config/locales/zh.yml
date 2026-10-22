@@ -5,10 +5,9 @@ account.connected_apps.description: 使用您的 %{app_name} 帐户，您可以�
 account.connected_apps.email_not_selected: 尚未选择电邮
 account.connected_apps.email_update_success_html: 你给<strong>%{sp_name}</strong>的电邮更新成功了。
 account.connected_delegation.associated_html: Connected through America.gov on %{timestamp_html}
-account.connected_delegation.description: You allowed %{AMERICA_GOV_NAME} to act for you on these services. %{AMERICA_GOV_NAME} can’t see your personal information. Login.gov encrypts it so only the agency can read it.
-account.connected_delegation.disconnect: Disconnecting a service stops %{AMERICA_GOV_NAME} from acting for you there. It doesn’t change your own connection to that service.
-account.connected_delegation.permission1_html: <strong>%{AMERICA_GOV_NAME} can:</strong> Start and submit your passport renewal
-account.connected_delegation.permission2_html: <strong>%{AMERICA_GOV_NAME} can:</strong> Check your benefits and request a replacement card
+account.connected_delegation.description: You allowed %{america_gov_name} to act for you on these services. %{america_gov_name} can’t see your personal information. %{app_name} encrypts it so only the agency can read it.
+account.connected_delegation.disconnect: Disconnecting a service stops %{america_gov_name} from acting for you there. It doesn’t change your own connection to that service.
+account.connected_delegation.permission1_html: <strong>%{america_gov_name} can:</strong> Start and submit your passport renewal
 account.email_language.languages_list: 您将收到%{app_name}用您选择的语言发送的电子邮件。
 account.email_language.name.en: English
 account.email_language.name.es: Español
@@ -82,7 +81,7 @@ account.navigation.add_federal_id: 添加您的政府雇员身份证件
 account.navigation.add_phone_number: 添加电话号码
 account.navigation.add_platform_authenticator: 添加人脸或触摸解锁
 account.navigation.add_security_key: 添加安全密钥
-account.navigation.america_gov_services: Services %{AMERICA_GOV_NAME} can use for you
+account.navigation.america_gov_services: Services %{america_gov_name} can use for you
 account.navigation.close: 关闭
 account.navigation.connected_services: 您的互联服务
 account.navigation.customer_support: 客户支持

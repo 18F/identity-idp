@@ -108,6 +108,10 @@ Rails.application.routes.draw do
           as: :service_provider_revoke
       delete '/account/service_providers/:sp_id/revoke' => 'users/service_provider_revoke#destroy'
 
+      get '/account/delegations/:id/revoke' => 'users/sts_consent_revoke#show',
+          as: :sts_consent_revoke
+      delete '/account/delegations/:id/revoke' => 'users/sts_consent_revoke#destroy'
+
       get '/' => 'users/sessions#new', as: :new_user_session
       get '/bounced' => 'users/sp_handoff_bounced#bounced'
       post '/' => 'users/sessions#create', as: :user_session

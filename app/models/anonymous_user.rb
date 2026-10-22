@@ -80,4 +80,8 @@ class AnonymousUser
   def connected_apps
     ServiceProviderIdentity.none
   end
+
+  def connected_delegations
+    UserConsentSts.none
+  end
 end
