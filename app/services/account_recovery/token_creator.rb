@@ -11,7 +11,7 @@ module AccountRecovery
 
     # @return [Token]
     def call
-      raw = SecureRandom.uuid
+      raw = SecureRandom.urlsafe_base64(32)
 
       Token.new(
         raw: raw,

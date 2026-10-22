@@ -157,6 +157,8 @@ RSpec.describe AccountRecovery::PendingController do
         end
 
         it 'resends only to the sign-in email without changing the request or waiting period' do
+          expect(Telephony).not_to receive(:send_account_recovery_notice)
+
           original_attributes = recovery_request.attributes
           request_count = AccountRecoveryRequest.count
 

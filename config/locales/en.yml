@@ -1992,6 +1992,7 @@ titles.visitors.index: Welcome
 titles.webauthn_setup: Add your security key
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> requires a high-security authentication method, such as face or touch unlock, a security key or a government employee ID.'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> requires your government employee ID, a high-security authentication method.'
+two_factor_authentication.account_recovery.pending_link: View your account recovery request
 two_factor_authentication.account_recovery.recover_link: recover your account
 two_factor_authentication.account_recovery.recover_text_html: If you can’t use any of your authentication methods above to access your account, you can %{link_html} to reset your authentication methods.
 two_factor_authentication.account_reset.cancel_link: Cancel your request
@@ -2086,6 +2087,7 @@ two_factor_authentication.piv_cac_mismatch.cta: Authenticate and add PIV/CAC
 two_factor_authentication.piv_cac_mismatch.delete_account: Delete your account
 two_factor_authentication.piv_cac_mismatch.instructions: Click “Authenticate and add PIV/CAC” below to authenticate with another method before adding this PIV/CAC to your account.
 two_factor_authentication.piv_cac_mismatch.instructions_no_other_method: If you were reissued your PIV/CAC, you will need to delete your %{app_name} account and create a new account to use your reissued PIV/CAC.
+two_factor_authentication.piv_cac_mismatch.instructions_recovery: If you cannot use your government employee ID, recover your account to replace your authentication methods.
 two_factor_authentication.piv_cac_mismatch.skip: Skip adding PIV/CAC
 two_factor_authentication.piv_cac_mismatch.title: This government employee ID is not connected to your account
 two_factor_authentication.piv_cac_upsell.add_piv: Add PIV/CAC card

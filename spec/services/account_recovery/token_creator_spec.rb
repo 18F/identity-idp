@@ -6,10 +6,12 @@ RSpec.describe AccountRecovery::TokenCreator do
   end
 
   describe '.call' do
-    it 'returns a UUID raw token, matching the account reset token format' do
+    it 'generates a URL-safe token with 256 random bits' do
+      expect(SecureRandom).to receive(:urlsafe_base64).with(32).and_call_original
+
       token = described_class.call
 
-      expect(token.raw).to match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
+      expect(token.raw).to match(/\A[A-Za-z0-9_-]{43}\z/)
     end
 
     it 'returns a fingerprint that is not the raw token' do

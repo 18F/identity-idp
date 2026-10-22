@@ -24,7 +24,13 @@ RSpec.describe 'account_recovery/start/show.html.erb' do
           t('account_recovery.start.intro', interval: '24 hours'),
         )
         expect(rendered).to have_button(t('account_recovery.start.continue'))
-        expect(rendered).to have_link(t('account_recovery.start.keep_account_link_text'), href: '#')
+        expect(rendered).to have_link(
+          t('account_recovery.start.keep_account_link_text'),
+          href: MarketingSite.help_center_article_url(
+            category: 'trouble-signing-in',
+            article: 'issues-with-authentication-methods',
+          ),
+        )
         expect(rendered).not_to include('%{interval}', '%{link_html}', '&lt;a')
       end
     end

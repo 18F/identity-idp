@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.feature 'Pending account recovery request' do
-  it 'keeps confirmation separate, shows the remaining wait on sign-in, and allows cancellation' do
+  it 'offers existing MFA on sign-in and links to the recovery status and cancellation page' do
     allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:account_recovery_wait_period_days).and_return(2)
     user = create(:user, :fully_registered)
@@ -18,6 +18,10 @@ RSpec.feature 'Pending account recovery request' do
 
     travel_to recovery_request.requested_at + 1.day do
       sign_in_user(user)
+
+      expect(page).to have_current_path(login_two_factor_options_path)
+      expect(page).not_to have_link(t('two_factor_authentication.account_reset.link'))
+      click_link t('two_factor_authentication.account_recovery.pending_link')
 
       expect(page).to have_current_path(account_recovery_status_path)
       expect(page).to have_content(

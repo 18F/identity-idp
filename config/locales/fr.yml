@@ -1993,6 +1993,7 @@ titles.visitors.index: Bienvenue
 titles.webauthn_setup: Ajouter votre clé de sécurité
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> nécessite une méthode d’authentification de haute sécurité, telle que le déverrouillage facial ou tactile, une clé de sécurité ou une carte d’employé fédéral.'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> nécessite votre carte d’employé fédéral, qui est une méthode d’authentification de haute sécurité.'
+two_factor_authentication.account_recovery.pending_link: View your account recovery request
 two_factor_authentication.account_recovery.recover_link: recover your account
 two_factor_authentication.account_recovery.recover_text_html: If you can’t use any of your authentication methods above to access your account, you can %{link_html} to reset your authentication methods.
 two_factor_authentication.account_reset.cancel_link: Annuler votre demande
@@ -2087,6 +2088,7 @@ two_factor_authentication.piv_cac_mismatch.cta: S’authentifier et ajouter une 
 two_factor_authentication.piv_cac_mismatch.delete_account: Supprimer votre compte
 two_factor_authentication.piv_cac_mismatch.instructions: Cliquez sur « S’authentifier et ajouter une carte PIV/CAC » ci-dessous pour vous authentifier au moyen d’une autre méthode avant d’ajouter cette carte PIV/CAC à votre compte.
 two_factor_authentication.piv_cac_mismatch.instructions_no_other_method: Si l’on vous a à nouveau délivré une carte PIV/CAC, vous devez supprimer votre compte %{app_name} et en créer un nouveau pour l’utiliser.
+two_factor_authentication.piv_cac_mismatch.instructions_recovery: If you cannot use your government employee ID, recover your account to replace your authentication methods.
 two_factor_authentication.piv_cac_mismatch.skip: Sauter l’ajout de carte PIV/CAC
 two_factor_authentication.piv_cac_mismatch.title: Cette carte d’employé fédéral n’est pas associée à votre compte.
 two_factor_authentication.piv_cac_upsell.add_piv: Ajouter une carte PIV/CAC

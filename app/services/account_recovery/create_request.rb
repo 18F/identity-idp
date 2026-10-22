@@ -2,6 +2,8 @@
 
 module AccountRecovery
   class CreateRequest
+    include AccountRecoveryConcern
+
     INELIGIBLE = :ineligible
     REQUEST_NOT_PERSISTED = :request_not_persisted
 
@@ -22,10 +24,14 @@ module AccountRecovery
       return failure(REQUEST_NOT_PERSISTED) if account_recovery_request.blank?
 
       notify_user_by_email
+      telephony_response = notify_user_by_sms_if_applicable
 
       FormResponse.new(
         success: true,
-        extra: { recovery_state: account_recovery_request.state },
+        extra: {
+          recovery_state: account_recovery_request.state,
+          telephony_response: telephony_response&.to_h,
+        },
       )
     end
 
@@ -45,8 +51,25 @@ module AccountRecovery
       )
     end
 
+    def notify_user_by_sms_if_applicable
+      phone = MfaContext.new(user).phone_configurations.take&.phone
+      return unless phone
+
+      response = Telephony.send_account_recovery_notice(
+        to: phone,
+        country_code: Phonelib.parse(phone).country,
+        interval: account_recovery_wait_period_interval,
+      )
+      if !response.success? && response.error.is_a?(Telephony::OptOutError)
+        PhoneNumberOptOut.mark_opted_out(phone)
+      end
+      response
+    end
+
     def create_request
       user.with_lock do
+        next unless EligibilityPolicy.new(user: user).eligible?
+
         request = AccountRecoveryRequest.create!(
           user: user,
           state: AccountRecoveryRequest::REQUESTED,

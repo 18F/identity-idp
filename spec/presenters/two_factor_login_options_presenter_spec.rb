@@ -102,6 +102,10 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
     end
 
     context 'when the user is eligible' do
+      it 'does not supply a legacy reset link' do
+        expect(presenter.account_reset_or_cancel_link).to be_nil
+      end
+
       it 'reports the user as eligible' do
         expect(presenter.account_recovery_eligible?).to eq(true)
       end
@@ -123,6 +127,12 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
         it 'reports the user as ineligible' do
           expect(presenter.account_recovery_eligible?).to eq(false)
         end
+
+        it 'links to the pending request instead of legacy recovery' do
+          expect(presenter.account_recovery_pending?).to eq(true)
+          expect(presenter.account_recovery_status_link).to include(account_recovery_status_path)
+          expect(presenter.account_reset_or_cancel_link).to be_nil
+        end
       end
 
       context 'when the user is identity proofed' do
@@ -130,6 +140,11 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
 
         it 'reports the user as ineligible' do
           expect(presenter.account_recovery_eligible?).to eq(false)
+        end
+
+        it 'supplies a legacy reset link' do
+          expect(presenter.account_reset_or_cancel_link)
+            .to include(account_reset_recovery_options_path)
         end
       end
     end

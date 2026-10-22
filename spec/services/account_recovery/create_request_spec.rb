@@ -74,6 +74,81 @@ RSpec.describe AccountRecovery::CreateRequest do
         expect { service.call }.to raise_error(Net::SMTPFatalError)
         expect(AccountRecoveryRequest.active_for_user(user)).to be_present
       end
+
+      it 'sends an SMS notice to the stored MFA phone' do
+        expect(Telephony).to receive(:send_account_recovery_notice).with(
+          to: user.phone_configurations.first.phone,
+          country_code: 'US',
+          interval: WaitPeriodFormatter.call(
+            IdentityConfig.store.account_recovery_wait_period_days.days,
+          ),
+        ).and_call_original
+
+        result = service.call
+
+        expect(result).to be_success
+        expect(result.to_h[:telephony_response])
+          .to include(success: true, message_id: 'fake-message-id')
+      end
+
+      it 'does not send another SMS when a request already exists' do
+        service.call
+
+        expect(Telephony).not_to receive(:send_account_recovery_notice)
+        expect(service.call).not_to be_success
+      end
+
+      it 'does not send an SMS for an ineligible user' do
+        allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+
+        expect(Telephony).not_to receive(:send_account_recovery_notice)
+        expect(service.call).not_to be_success
+      end
+
+      context 'without a phone' do
+        let(:user) { create(:user, :fully_registered, :with_authentication_app) }
+
+        before { user.phone_configurations.destroy_all }
+
+        it 'still creates the request and sends only email' do
+          expect(Telephony).not_to receive(:send_account_recovery_notice)
+
+          result = service.call
+
+          expect(result).to be_success
+          expect(result.to_h[:telephony_response]).to be_nil
+        end
+      end
+
+      context 'when SMS delivery fails' do
+        let(:error) { Telephony::TelephonyError.new('SMS delivery failed') }
+        let(:telephony_response) { Telephony::Response.new(success: false, error: error) }
+
+        before do
+          allow(Telephony).to receive(:send_account_recovery_notice).and_return(telephony_response)
+        end
+
+        it 'reports the SMS failure separately from successful request creation' do
+          result = service.call
+
+          expect(result).to be_success
+          expect(result.to_h[:errors]).to be_blank
+          expect(result.to_h[:telephony_response]).to eq(telephony_response.to_h)
+          expect(result.to_h[:telephony_response][:success]).to eq(false)
+          expect(AccountRecoveryRequest.active_for_user(user)).to be_present
+        end
+
+        context 'when the phone opted out' do
+          let(:error) { Telephony::OptOutError.new }
+
+          it 'records the opt-out without losing the pending request' do
+            expect(PhoneNumberOptOut).to receive(:mark_opted_out)
+              .with(user.phone_configurations.first.phone)
+
+            expect(service.call).to be_success
+          end
+        end
+      end
     end
 
     it 'creates a waiting request for an eligible user' do
@@ -154,6 +229,17 @@ RSpec.describe AccountRecovery::CreateRequest do
         expect(result.errors[:base]).to eq(['ineligible'])
         expect(AccountRecoveryRequest.where(user: user)).to be_empty
       end
+    end
+
+    it 'rechecks eligibility under the user lock before creating or notifying' do
+      policy = instance_double(AccountRecovery::EligibilityPolicy)
+      allow(AccountRecovery::EligibilityPolicy).to receive(:new).with(user: user).and_return(policy)
+      allow(policy).to receive(:eligible?).and_return(true, false)
+
+      expect(UserMailer).not_to receive(:with)
+      expect(Telephony).not_to receive(:send_account_recovery_notice)
+      expect(service.call).not_to be_success
+      expect(AccountRecoveryRequest.where(user: user)).to be_empty
     end
 
     context 'when eligibility evaluation raises an unexpected error' do

@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe 'Account Reset Request: Delete Account', email: true do
+  before do
+    allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+  end
+
   include PushNotificationsHelper
   include OidcAuthHelper
 

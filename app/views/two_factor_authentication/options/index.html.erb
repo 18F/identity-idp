@@ -48,7 +48,11 @@
   <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
 <% end %>
 
-<% if @presenter.account_recovery_eligible? %>
+<% if @presenter.account_recovery_pending? %>
+  <p>
+    <%= @presenter.account_recovery_status_link %>
+  </p>
+<% elsif @presenter.account_recovery_eligible? %>
   <p>
     <%= @presenter.account_recovery_link %>
   </p>

@@ -106,6 +106,7 @@ module AnalyticsEvents
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String, nil] recovery_state State of the recovery request after creation
   # @param [Boolean] rate_limited Whether the request was blocked by rate limiting
+  # @param [Hash, nil] telephony_response Response from the recovery SMS notification
   # An account-preserving MFA recovery request was submitted
   def account_recovery_request(
     success:,
@@ -113,6 +114,7 @@ module AnalyticsEvents
     error_details: nil,
     recovery_state: nil,
     rate_limited: false,
+    telephony_response: nil,
     **extra
   )
     track_event(
@@ -122,6 +124,7 @@ module AnalyticsEvents
       error_details:,
       recovery_state:,
       rate_limited:,
+      telephony_response:,
       **extra,
     )
   end
@@ -249,6 +252,7 @@ module AnalyticsEvents
   # @param [Boolean] totp does the user have an authentication app as a 2FA option?
   # @param [Boolean] piv_cac does the user have PIV/CAC as a 2FA option?
   # @param [Integer] email_addresses number of email addresses the user has
+  # @param [Hash, nil] errors Errors preventing creation of a legacy reset request
   # @param [String, nil] message_id from AWS Pinpoint API
   # @param [String, nil] request_id from AWS Pinpoint API
   # An account reset has been requested
@@ -258,6 +262,7 @@ module AnalyticsEvents
     totp:,
     piv_cac:,
     email_addresses:,
+    errors: nil,
     request_id: nil,
     message_id: nil,
     **extra
@@ -269,6 +274,7 @@ module AnalyticsEvents
       totp:,
       piv_cac:,
       email_addresses:,
+      errors:,
       request_id:,
       message_id:,
       **extra,

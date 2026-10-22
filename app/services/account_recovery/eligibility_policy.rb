@@ -20,6 +20,15 @@ module AccountRecovery
       !existing_request_pending?
     end
 
+    def recovery_pending?
+      user.present? && !user.is_a?(AnonymousUser) &&
+        AccountRecoveryRequest.active.exists?(user: user)
+    end
+
+    def legacy_reset_allowed?
+      !recovery_pending? && !eligible?
+    end
+
     private
 
     attr_reader :user
@@ -27,8 +36,11 @@ module AccountRecovery
     # A user may not hold active requests in both workflows, so an in-flight
     # request in either one blocks a new account-preserving request.
     def existing_request_pending?
-      AccountRecoveryRequest.active.exists?(user: user) ||
-        DestructiveAccountReset::PendingRequestForUser.new(user).get_account_reset_request.present?
+      return true if recovery_pending?
+
+      legacy_request = DestructiveAccountResetRequest.find_by(user: user, cancelled_at: nil)
+      legacy_request&.requested_at.present? &&
+        (legacy_request.granted_at.blank? || legacy_request.granted_token_valid?)
     end
   end
 end

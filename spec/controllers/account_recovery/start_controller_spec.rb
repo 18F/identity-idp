@@ -146,6 +146,12 @@ RSpec.describe AccountRecovery::StartController do
           success: true,
           recovery_state: AccountRecoveryRequest::WAITING,
           rate_limited: false,
+          telephony_response: {
+            success: true,
+            errors: {},
+            request_id: 'fake-message-request-id',
+            message_id: 'fake-message-id',
+          },
         )
       end
 
@@ -186,6 +192,8 @@ RSpec.describe AccountRecovery::StartController do
         end
 
         it 'does not create a request and returns to the recovery start page' do
+          expect(Telephony).not_to receive(:send_account_recovery_notice)
+
           post :create
 
           expect(AccountRecoveryRequest.where(user: user).count).to eq(0)

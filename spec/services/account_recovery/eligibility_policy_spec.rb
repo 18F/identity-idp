@@ -9,6 +9,58 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
     allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
   end
 
+  describe '#legacy_reset_allowed?' do
+    it 'blocks legacy reset for eligible users' do
+      expect(policy.legacy_reset_allowed?).to eq(false)
+    end
+
+    context 'with the feature disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+      end
+
+      it 'allows legacy reset' do
+        expect(policy.legacy_reset_allowed?).to eq(true)
+      end
+
+      it 'still blocks legacy reset for an active recovery request' do
+        create(:account_recovery_request, :waiting, user: user)
+
+        expect(policy.legacy_reset_allowed?).to eq(false)
+      end
+    end
+
+    context 'for an identity-proofed user' do
+      let(:user) { create(:user, :proofed) }
+
+      it 'allows legacy reset' do
+        expect(policy.legacy_reset_allowed?).to eq(true)
+      end
+    end
+
+    context 'for a pending-profile user' do
+      let(:user) { create(:user, :fully_registered, :with_pending_gpo_profile) }
+
+      it 'allows legacy reset' do
+        expect(policy.legacy_reset_allowed?).to eq(true)
+      end
+    end
+
+    it 'blocks legacy reset when an active recovery request makes the user ineligible' do
+      create(:account_recovery_request, :waiting, user: user)
+
+      expect(policy.legacy_reset_allowed?).to eq(false)
+    end
+
+    it 'preserves an existing legacy request' do
+      DestructiveAccountResetRequest.create!(
+        user: user, request_token: SecureRandom.uuid, requested_at: Time.zone.now,
+      )
+
+      expect(policy.legacy_reset_allowed?).to eq(true)
+    end
+  end
+
   describe '#eligible?' do
     it 'is eligible for a fully registered, non-proofed user' do
       expect(policy.eligible?).to eq(true)
@@ -140,6 +192,43 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
       end
 
       it 'is still eligible' do
+        expect(policy.eligible?).to eq(true)
+      end
+    end
+
+    context 'with a legacy request past its waiting period' do
+      let!(:legacy_request) do
+        DestructiveAccountResetRequest.create!(
+          user: user,
+          request_token: SecureRandom.uuid,
+          requested_at: 10.days.ago,
+        )
+      end
+
+      it 'keeps the request in the legacy flow while waiting for the grant job' do
+        expect(policy.eligible?).to eq(false)
+        expect(policy.legacy_reset_allowed?).to eq(true)
+      end
+
+      it 'keeps a usable granted deletion link in the legacy flow' do
+        legacy_request.update!(granted_at: Time.zone.now, granted_token: SecureRandom.uuid)
+
+        expect(policy.eligible?).to eq(false)
+        expect(policy.legacy_reset_allowed?).to eq(true)
+      end
+
+      it 'allows new recovery after the legacy request is cancelled' do
+        legacy_request.update!(cancelled_at: Time.zone.now)
+
+        expect(policy.eligible?).to eq(true)
+      end
+
+      it 'allows new recovery after the legacy granted token expires' do
+        legacy_request.update!(
+          granted_at: (IdentityConfig.store.account_reset_token_valid_for_days + 1).days.ago,
+          granted_token: SecureRandom.uuid,
+        )
+
         expect(policy.eligible?).to eq(true)
       end
     end

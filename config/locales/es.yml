@@ -2004,6 +2004,7 @@ titles.visitors.index: Bienvenido
 titles.webauthn_setup: Añada su clave de seguridad
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> requiere un método de autenticación de alta seguridad, como desbloqueo facial o táctil, una clave de seguridad o una identificación de empleado de gobierno.'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> requiere su identificación de empleado de gobierno, un método de autenticación de alta seguridad.'
+two_factor_authentication.account_recovery.pending_link: View your account recovery request
 two_factor_authentication.account_recovery.recover_link: recover your account
 two_factor_authentication.account_recovery.recover_text_html: If you can’t use any of your authentication methods above to access your account, you can %{link_html} to reset your authentication methods.
 two_factor_authentication.account_reset.cancel_link: Cancelar su solicitud
@@ -2098,6 +2099,7 @@ two_factor_authentication.piv_cac_mismatch.cta: Autenticar y añadir tarjeta PIV
 two_factor_authentication.piv_cac_mismatch.delete_account: Eliminar su cuenta
 two_factor_authentication.piv_cac_mismatch.instructions: Haga clic en “Autenticar y añadir tarjeta PIV o CAC” más abajo para autenticar con otro método antes de añadir esta tarjeta PIV o CAC a su cuenta.
 two_factor_authentication.piv_cac_mismatch.instructions_no_other_method: Si se le emitió una nueva tarjeta PIV o CAC, para poder usarla, deberá eliminar su cuenta de %{app_name} y crear una cuenta nueva.
+two_factor_authentication.piv_cac_mismatch.instructions_recovery: If you cannot use your government employee ID, recover your account to replace your authentication methods.
 two_factor_authentication.piv_cac_mismatch.skip: Omitir añadir tarjeta PIV o CAC
 two_factor_authentication.piv_cac_mismatch.title: Esta tarjeta de identificación de empleado gubernamental no está conectada a su cuenta
 two_factor_authentication.piv_cac_upsell.add_piv: Agregar tarjeta PIV/CAC

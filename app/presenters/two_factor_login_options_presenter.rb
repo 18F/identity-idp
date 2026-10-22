@@ -89,7 +89,21 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def account_reset_or_cancel_link
-    account_reset_token_valid? ? account_reset_cancel_link : account_reset_link
+    return account_reset_cancel_link if account_reset_token_valid?
+    return unless AccountRecovery::EligibilityPolicy.new(user: user).legacy_reset_allowed?
+
+    account_reset_link
+  end
+
+  def account_recovery_pending?
+    AccountRecovery::EligibilityPolicy.new(user: user).recovery_pending?
+  end
+
+  def account_recovery_status_link
+    @view.link_to(
+      t('two_factor_authentication.account_recovery.pending_link'),
+      account_recovery_status_path(locale: LinkLocaleResolver.locale),
+    )
   end
 
   def account_recovery_eligible?

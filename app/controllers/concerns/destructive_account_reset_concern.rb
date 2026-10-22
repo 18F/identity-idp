@@ -21,4 +21,12 @@ module DestructiveAccountResetConcern
   def fraud_state?(user)
     user.fraud_review_pending? || user.fraud_rejection?
   end
+
+  private
+
+  def confirm_legacy_account_reset_allowed
+    return if AccountRecovery::EligibilityPolicy.new(user: current_user).legacy_reset_allowed?
+
+    redirect_to login_two_factor_options_url
+  end
 end

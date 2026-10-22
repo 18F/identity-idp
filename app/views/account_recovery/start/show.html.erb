@@ -8,7 +8,13 @@
 
 <p><%= t(
          'account_recovery.start.keep_account_html',
-         link_html: link_to(t('account_recovery.start.keep_account_link_text'), '#'),
+         link_html: link_to(
+           t('account_recovery.start.keep_account_link_text'),
+           MarketingSite.help_center_article_url(
+             category: 'trouble-signing-in',
+             article: 'issues-with-authentication-methods',
+           ),
+         ),
        ) %></p>
 
 <%= simple_form_for(
