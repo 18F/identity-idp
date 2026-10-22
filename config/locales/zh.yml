@@ -4,10 +4,11 @@ account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用您的 %{app_name} 帐户，您可以安全地在线连接到多个政府服务。以下是您当前已连接的所有服务列表。
 account.connected_apps.email_not_selected: 尚未选择电邮
 account.connected_apps.email_update_success_html: 你给<strong>%{sp_name}</strong>的电邮更新成功了。
+account.connected_delegation.associated_html: Connected through America.gov on %{timestamp_html}
 account.connected_delegation.description: You allowed %{AMERICA_GOV_NAME} to act for you on these services. %{AMERICA_GOV_NAME} can’t see your personal information. Login.gov encrypts it so only the agency can read it.
 account.connected_delegation.disconnect: Disconnecting a service stops %{AMERICA_GOV_NAME} from acting for you there. It doesn’t change your own connection to that service.
-account.email_language.default: '%{language}（默认）'
-account.email_language.edit_title: 编辑电邮语言选择
+account.connected_delegation.permission1_html: <strong>%{AMERICA_GOV_NAME} can:</strong> Start and submit your passport renewal
+account.connected_delegation.permission2_html: <strong>%{AMERICA_GOV_NAME} can:</strong> Check your benefits and request a replacement card
 account.email_language.languages_list: 您将收到%{app_name}用您选择的语言发送的电子邮件。
 account.email_language.name.en: English
 account.email_language.name.es: Español

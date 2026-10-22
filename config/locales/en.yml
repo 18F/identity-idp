@@ -4,8 +4,11 @@ account.connected_apps.associated_html: Connected %{timestamp_html}
 account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government services online. Below is a list of all the services you currently have connected.
 account.connected_apps.email_not_selected: Email not yet selected
 account.connected_apps.email_update_success_html: Your email for <strong>%{sp_name}</strong> was updated successfully.
+account.connected_delegation.associated_html: Connected through America.gov on %{timestamp_html}
 account.connected_delegation.description: You allowed %{AMERICA_GOV_NAME} to act for you on these services. %{AMERICA_GOV_NAME} can’t see your personal information. Login.gov encrypts it so only the agency can read it.
 account.connected_delegation.disconnect: Disconnecting a service stops %{AMERICA_GOV_NAME} from acting for you there. It doesn’t change your own connection to that service.
+account.connected_delegation.permission1_html: <strong>%{AMERICA_GOV_NAME} can:</strong> Start and submit your passport renewal
+account.connected_delegation.permission2_html: <strong>%{AMERICA_GOV_NAME} can:</strong> Check your benefits and request a replacement card
 account.email_language.default: '%{language} (default)'
 account.email_language.edit_title: Edit email language preference
 account.email_language.languages_list: You will receive emails from %{app_name} in the language you choose.
