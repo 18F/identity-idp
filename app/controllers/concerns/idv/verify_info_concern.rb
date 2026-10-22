@@ -556,7 +556,7 @@ module Idv
       end
 
       def threatmetrix_exception?
-        threatmetrix_stage[:exception].present?
+        threatmetrix_stage[:exception].present? || hybrid_threatmetrix_stage[:exception].present?
       end
 
       def resolution_failed?
@@ -565,6 +565,10 @@ module Idv
 
       def threatmetrix_stage
         stages.dig(:threatmetrix) || {}
+      end
+
+      def hybrid_threatmetrix_stage
+        stages.dig(:hybrid_threatmetrix) || {}
       end
 
       def resolution_stage
@@ -590,7 +594,7 @@ module Idv
 
       def failed_stages
         stages.keys.select { |k| !stages[k][:success] }.map do |stage|
-          stage == :threatmetrix ? :device_risk_assesment : stage
+          threatmetrix_stage?(stage) ? :device_risk_assesment : stage
         end
       end
 
@@ -603,15 +607,22 @@ module Idv
       end
 
       def device_profiling_adjudication_reason
+        reason = {}
         if threatmetrix_stage[:review_status] != 'pass'
-          {
-            device_profiling_adjudication_reason: [
-              result.extra.dig(:proofing_results, :context, :device_profiling_adjudication_reason),
-            ],
-          }
-        else
-          {}
+          reason = device_adjudication(:device_profiling_adjudication_reason)
+        elsif hybrid_threatmetrix_stage[:review_stage] != 'pass'
+          reason.merge!(device_adjudication(:hybrid_mobile_device_profiling_adjudication_reason))
         end
+
+        reason
+      end
+
+      def device_adjudication(key)
+        {
+          key => [
+            result.extra.dig(:proofing_results, :context, key),
+          ],
+        }
       end
 
       def formatted_failure_reasons
@@ -624,6 +635,13 @@ module Idv
           .merge(resolution_adjudication_reason)
           .merge(device_profiling_adjudication_reason)
           .compact_blank
+      end
+
+      def threatmetrix_stage?(stage)
+        return true if stage == :threatmetrix
+        return true if stage == :hybrid_mobile_threatmetrix
+
+        false
       end
     end
   end

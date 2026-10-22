@@ -765,6 +765,29 @@ RSpec.describe Idv::VerifyInfoController do
                 },
               )
 
+              expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+                success: true,
+                document_state: applicant_pii[:state],
+                document_number: applicant_pii[:state_id_number],
+                document_issued: applicant_pii[:state_id_issued],
+                document_expiration: applicant_pii[:state_id_expiration],
+                first_name: applicant_pii[:first_name],
+                last_name: applicant_pii[:last_name],
+                date_of_birth: applicant_pii[:dob],
+                address1: applicant_pii[:address1],
+                address2: applicant_pii[:address2],
+                ssn: SsnFormatter.format(applicant_pii[:ssn]),
+                city: applicant_pii[:city],
+                state: applicant_pii[:state],
+                zip: applicant_pii[:zip],
+                failure_reason: {
+                  failed_stages: [:device_risk_assesment],
+                  hybrid_mobile_device_profiling_adjudication_reason:
+                    ['hybrid_mobile_device_profiling_result'],
+                  resolution_adjudication_reason: ['pass_resolution_and_state_id'],
+                },
+              )
+
               get :show
             end
 
