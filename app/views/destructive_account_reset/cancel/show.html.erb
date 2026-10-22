@@ -1,0 +1,19 @@
+<% self.title = t('destructive_account_reset.cancel_request.title') %>
+
+<%= render PageHeadingComponent.new.with_content(t('destructive_account_reset.cancel_request.title')) %>
+
+<h4 class='margin-y-2'>
+  <%= t('destructive_account_reset.cancel_request.are_you_sure') %>
+</h4>
+
+<%= button_to(
+      account_reset_cancel_path,
+      method: :post,
+      class: 'usa-button usa-button--big usa-button--wide',
+    ) { t('destructive_account_reset.cancel_request.cancel_button') } %>
+
+<br/><br/>
+
+<hr/>
+
+<%= link_to t('destructive_account_reset.cancel_request.cancel'), root_url %>

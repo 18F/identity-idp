@@ -393,6 +393,12 @@ else
         cron: IdentityConfig.store.idv_proofing_agent_send_failure_emails_cron,
         args: -> { [Time.zone.now] },
       },
+      # Proofing Agent send reminder email
+      proofing_agent_send_reminder_emails: {
+        class: 'ProofingAgentSendReminderEmailsJob',
+        cron: IdentityConfig.store.idv_proofing_agent_send_reminder_emails_cron,
+        args: -> { [Time.zone.now] },
+      },
     }.compact
   end
   # rubocop:enable Metrics/BlockLength

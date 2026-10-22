@@ -41,7 +41,7 @@ class SocureDocvResultsJob < ApplicationJob
       )
 
       failure_reason = attempts_api_tracker.parse_failure_reason(docv_result_response) || {}
-      failure_reason = failure_reason[:socure].presence || failure_reason
+      failure_reason = translate_codes(failures: failure_reason[:socure].presence) || failure_reason
       record_attempt(docv_result_response:, failure_reason:)
       return
     end
@@ -195,6 +195,15 @@ class SocureDocvResultsJob < ApplicationJob
       conversation_id: docv_result_response.extra[:conversation_id],
       reference_id: docv_result_response.extra[:reference_id],
     )
+  end
+
+  def translate_codes(failures: nil)
+    return nil unless failures.present?
+    return nil unless failures[:reason_codes].present?
+
+    # only codes that start with "R" are failures
+    codes = failures[:reason_codes].select { |code| code.start_with?(/R/) }
+    SocureReasonCode.with_definitions(codes).values
   end
 
   def encrypt_document_metadata(pii)

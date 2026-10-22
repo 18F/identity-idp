@@ -109,6 +109,8 @@ module DocAuthHelper
 
     if choose_id_type == Idp::Constants::DocumentTypes::PASSPORT
       choose(t('doc_auth.forms.id_type_preference.passport'))
+    elsif choose_id_type == Idp::Constants::DocumentTypes::MDL
+      choose(t('doc_auth.forms.id_type_preference.mdl'))
     else
       choose(t('doc_auth.forms.id_type_preference.drivers_license'))
     end

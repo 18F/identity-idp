@@ -1,0 +1,17 @@
+<% self.title = t('titles.verify_email') %>
+
+<%= render PageHeadingComponent.new.with_content(t('headings.verify_email')) %>
+
+<% t('destructive_account_reset.confirm_request.info_html', email: email, waiting_period: waiting_period).each do |info_p| %>
+  <p><%= info_p %></p>
+<% end %>
+
+<div class="width-10">
+  <hr class="margin-y-4 border-width-05 border-info">
+</div>
+
+<% if sms_phone %>
+  <p><%= t('destructive_account_reset.confirm_request.security_note') %></p>
+<% end %>
+
+<p><%= t('destructive_account_reset.confirm_request.close_window') %></p>

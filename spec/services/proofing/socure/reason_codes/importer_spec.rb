@@ -35,24 +35,23 @@ RSpec.describe Proofing::Socure::ReasonCodes::Importer do
     end
 
     it 'deactivates reason codes that have been removed by Socure', :freeze_time do
-      SocureReasonCode.create(
-        code: 'C3',
-        group: 'ProductC',
-        description: 'test3',
-        added_at: 1.day.ago,
-      )
+      reason_code = create(:socure_reason_code)
 
       allow(subject.api_client).to receive(:download_reason_codes)
         .and_return(downloaded_reason_codes)
 
       result = subject.synchronize
       expect(result.to_h[:deactivated_reason_codes]).to eq(
-        [{ 'code' => 'C3', 'group' => 'ProductC', 'description' => 'test3' }],
+        [
+          { 'code' => reason_code.code,
+            'group' => reason_code.group,
+            'description' => reason_code.description },
+        ],
       )
 
       expect(result.success?).to eq(true)
 
-      deactivated_reason_code = SocureReasonCode.find_by(code: 'C3')
+      deactivated_reason_code = SocureReasonCode.find_by(code: reason_code.code)
       expect(deactivated_reason_code.deactivated_at).to be_within(1.second).of(Time.zone.now)
     end
 

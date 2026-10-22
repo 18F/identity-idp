@@ -27,6 +27,7 @@ class ServiceProvider < ApplicationRecord
           class_name: 'Agreements::Integration',
           dependent: nil
 
+  include IssuerMethods
   # Do not define validations in this model
   # See https://github.com/18F/identity_validations
   include IdentityValidations::ServiceProviderValidation
@@ -76,11 +77,6 @@ class ServiceProvider < ApplicationRecord
 
   def ialmax_allowed?
     IdentityConfig.store.allowed_ialmax_providers.include?(issuer)
-  end
-
-  def document_images_sharing_allowed?
-    IdentityConfig.store.document_images_sharing_enabled &&
-      IdentityConfig.store.document_images_sharing_service_providers.include?(issuer)
   end
 
   def attempts_api_enabled?

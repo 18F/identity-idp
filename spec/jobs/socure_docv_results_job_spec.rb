@@ -254,6 +254,11 @@ RSpec.describe SocureDocvResultsJob do
         let(:decision_value) { 'reject' }
 
         before do
+          create(:socure_reason_code, code: 'I831', description: 'Document is valid')
+          create(:socure_reason_code, code: 'R810', description: 'Document is expired')
+        end
+
+        before do
           allow(attempts_api_tracker).to receive(:idv_document_upload_submitted)
           perform
         end
@@ -287,7 +292,7 @@ RSpec.describe SocureDocvResultsJob do
             city: address_data[:city],
             state: address_data[:state],
             zip: address_data[:zip],
-            failure_reason: { reason_codes: },
+            failure_reason: ['Document is expired'],
           )
         end
 
@@ -560,9 +565,10 @@ RSpec.describe SocureDocvResultsJob do
       end
 
       context 'facial match' do
-        let(:reason_codes_selfie_fail) { ['no match', 'not live'] }
-        let(:reason_codes_selfie_not_processed) { ['not procesed'] }
-        let(:reason_codes_selfie_pass) { ['match', 'live'] }
+        # Failure codes start with an `R`, everything else starts with an I
+        let(:reason_codes_selfie_fail) { ['R-no match', 'R-not live'] }
+        let(:reason_codes_selfie_not_processed) { ['I-not processed'] }
+        let(:reason_codes_selfie_pass) { ['I-match', 'I-live'] }
         let(:selfie) { true }
 
         before do
@@ -624,6 +630,10 @@ RSpec.describe SocureDocvResultsJob do
 
         context 'when facial match fails' do
           let(:reason_codes) { reason_codes_selfie_fail }
+          before do
+            create(:socure_reason_code, code: 'R-no match', description: 'images do not match')
+            create(:socure_reason_code, code: 'R-not live', description: 'selfie is not live')
+          end
 
           it 'selfies status is :fail' do
             perform
@@ -660,7 +670,7 @@ RSpec.describe SocureDocvResultsJob do
                   city: address_data[:city],
                   state: address_data[:state],
                   zip: address_data[:zip],
-                  failure_reason: { reason_codes: reason_codes_selfie_fail },
+                  failure_reason: ['images do not match', 'selfie is not live'],
                 )
 
                 perform

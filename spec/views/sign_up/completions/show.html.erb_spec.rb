@@ -136,6 +136,24 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
       )
       expect(rendered).to include(formatted_verified_at)
     end
+
+    context 'when document_images and document_metadata is in the requested attributes' do
+      let(:requested_attributes) { [:document_images, :document_metadata] }
+
+      before do
+        allow(service_provider).to receive(:document_images_sharing_allowed?).and_return(true)
+      end
+
+      it 'renders the document images and metadata display sections' do
+        render
+
+        expect(rendered).to include(t('help_text.requested_attributes.document_images'))
+        expect(rendered).to include(t('sign_up.completed.document_images.description'))
+
+        expect(rendered).to include(t('help_text.requested_attributes.document_metadata'))
+        expect(rendered).to include(t('sign_up.completed.document_metadata.description'))
+      end
+    end
   end
 
   describe 'MFA CTA banner' do

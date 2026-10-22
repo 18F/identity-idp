@@ -1,2 +1,21 @@
 <%= t('report_mailer.deleted_accounts_report.name') %>: <%= @name %><br>
 <%= t('report_mailer.deleted_accounts_report.issuers') %>: <%= @issuers.join(',') %><br>
+
+<%# TODO: remove this notice and its surrounding markup once the deleted user
+    accounts report is decommissioned. %>
+<div class="usa-alert usa-alert--warning usa-alert--email">
+  <div class="usa-alert__body">
+    <p class="usa-alert__text">
+      <strong>This automated report will be decommissioned beginning <%= IdentityConfig.store.decommissioned_reports_notice_date %>.</strong>
+      <br>
+      We have recently launched a new reporting feature in our production partner 
+      portal and will therefore be decommissioning subsequent emailed reports.
+      The reporting in the <a href="http://portal.login.gov">partner portal</a> includes our 
+      most up-to-date statistics, models, and functionality being added frequently.
+      To view reports in the portal, you must be an Admin or a Reports-only user. Admins 
+      can create Reports-only users or you can reach out to us at
+      <a href="mailto:partners@login.gov">partners@login.gov</a> for assistance.
+    </p>
+  </div>
+</div> http://portal.login.gov
+

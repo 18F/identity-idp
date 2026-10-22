@@ -1,50 +1,4 @@
 ---
-account_reset.cancel_request.are_you_sure: 你确定要取消删除账户的请求吗？
-account_reset.cancel_request.cancel: 退出
-account_reset.cancel_request.cancel_button: 取消删除账户
-account_reset.cancel_request.title: 取消删除账户
-account_reset.confirm_delete_account.cta_html: 完成后可以 %{link_html} 或关闭这一窗口。
-account_reset.confirm_delete_account.info_html: '<strong>%{email}</strong> 的账户已删除。我们已发送了账户删除的确认电邮。'
-account_reset.confirm_delete_account.link_text: 设立新账户
-account_reset.confirm_delete_account.title: 你已删除自己的账户
-account_reset.confirm_request.close_window: 你完成后可以关闭这一窗口。
-account_reset.confirm_request.info_html:
-  - 我们向 <strong>%{email}</strong> 发送了电邮以开始帐户删除流程。第一封电邮确认你已启动帐户删除流程。 <strong>这并不意味着你的帐户已成功删除</strong>
-  - 作为一项安全措施，在首个确认电邮到达 %{waiting_period} 你将收到第二封电邮，其中包含继续删除帐户的链接。
-  - 如果你改变主意，可以随时取消帐户删除。
-account_reset.confirm_request.security_note: 作为一项安全措施，我们也向你登记的电话号码发了短信。
-account_reset.delete_account.are_you_sure: 你确定要删除账户吗？
-account_reset.delete_account.info: 被锁在账户之外时，取消账户应当是最后的选择。你将无法重获与自己账户链接的任何信息。我们将通知你通过 %{app_name} 访问的政府机构你不再有账户。账户删除后，你可以使用同一电邮地址来设立新账户。
-account_reset.delete_account.title: 删除账户应当是你最后的选择。
-account_reset.pending.cancel_request: 取消请求
-account_reset.pending.cancel_request_prompt_html: 如果你改变主意，希望取消删除帐户，请点击下面的“取消请求”按钮。
-account_reset.pending.canceled: 我们已取消了你删除帐户的请求。
-account_reset.pending.canceled_info: 你的删除 %{app_name} 请求已被取消。 你可以继续使用你的 %{app_name} 帐户，或提出新的删除帐户请求。
-account_reset.pending.header: 你已提出删除账户的请求。
-account_reset.pending.wait_html: 要删除你的账户，有一个%{waiting_period}的等待期。你会在 <strong>%{interval}</strong> 收到电邮，向你说明如何完成删除。
-account_reset.recover_options.yes_delete: 删除我的帐户
-account_reset.recovery_option.cancel_deletion: 取消删除
-account_reset.recovery_options.check_webauthn_platform_header: 使用你首次设置人脸或触摸解锁的同一设备
-account_reset.recovery_options.check_webauthn_platform_help_link: 人脸或触摸解锁
-account_reset.recovery_options.check_webauthn_platform_info_html: ​​如果你在创建帐户时设置了 %{link_html}，请确保使用你创建 %{app_name} 帐户的同一设备。
-account_reset.recovery_options.header: 你确定要删除账户吗？
-account_reset.recovery_options.help_text: 如果你被锁定在账户外而且仍然需要访问 %{app_name} ，请尝试以下步骤。
-account_reset.recovery_options.still_working: 仍然不行？
-account_reset.recovery_options.try_another_device: 使用你也许选择了“记住设备”选项的另一个设备。
-account_reset.recovery_options.try_method_again: 再次尝试你的身份证实方法。
-account_reset.recovery_options.try_method_description_html: 确保你可以使用创建帐户时设置的身份证实方法，%{link_html}
-account_reset.recovery_options.try_method_description_link: 再用你的身份证实方法试一次。
-account_reset.recovery_options.use_device: 使用另一个设备。
-account_reset.request.account_delete_link: 了解有关帐户删除流程的更多信息。
-account_reset.request.choose_to_continue: 如果你选择继续删除帐户，你将收到两封电邮：
-account_reset.request.continue_deletion: 你还要删除你的帐户吗？
-account_reset.request.delete_account: 删除你的账户
-account_reset.request.delete_email1_html: <strong>电邮 1:</strong> 你首先会收到一封确认电邮。<strong>这并不</strong>意味着你的帐户此时已被删除。
-account_reset.request.delete_email2_html: <strong>电邮 2:</strong> 在收到第一封确认电邮 %{interval} 你将收到另一封电邮，其中包含继续删除帐户的链接。这需要你确认你要删除帐户。这个步骤后，我们就无法撤消帐户删除了。
-account_reset.request.delete_request_details_html: 如果你无法使用你设置的身份证实方法登录，可以通过删除你的帐户并创建一个新帐户来重新获得访问权限。删除你的帐户不会删除你在其他政府机构存储的任何信息。<br/>%{account_delete_link}.
-account_reset.request.no_cancel: 取消
-account_reset.request.no_cancel2: 不要，取消删除帐户
-account_reset.request.yes_continue: 要，继续删除帐户
 account.connected_apps.associated_attributes_html: '在 %{timestamp_html} 用以下电邮做的连接：'
 account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用您的 %{app_name} 帐户，您可以安全地在线连接到多个政府服务。以下是您当前已连接的所有服务列表。
@@ -499,6 +453,52 @@ datetime.dotiw.weeks.other: '%{count} 周'
 datetime.dotiw.words_connector: ', '
 datetime.dotiw.years.one: 1 年
 datetime.dotiw.years.other: '%{count} 年'
+destructive_account_reset.cancel_request.are_you_sure: 你确定要取消删除账户的请求吗？
+destructive_account_reset.cancel_request.cancel: 退出
+destructive_account_reset.cancel_request.cancel_button: 取消删除账户
+destructive_account_reset.cancel_request.title: 取消删除账户
+destructive_account_reset.confirm_delete_account.cta_html: 完成后可以 %{link_html} 或关闭这一窗口。
+destructive_account_reset.confirm_delete_account.info_html: '<strong>%{email}</strong> 的账户已删除。我们已发送了账户删除的确认电邮。'
+destructive_account_reset.confirm_delete_account.link_text: 设立新账户
+destructive_account_reset.confirm_delete_account.title: 你已删除自己的账户
+destructive_account_reset.confirm_request.close_window: 你完成后可以关闭这一窗口。
+destructive_account_reset.confirm_request.info_html:
+  - 我们向 <strong>%{email}</strong> 发送了电邮以开始帐户删除流程。第一封电邮确认你已启动帐户删除流程。 <strong>这并不意味着你的帐户已成功删除</strong>
+  - 作为一项安全措施，在首个确认电邮到达 %{waiting_period} 你将收到第二封电邮，其中包含继续删除帐户的链接。
+  - 如果你改变主意，可以随时取消帐户删除。
+destructive_account_reset.confirm_request.security_note: 作为一项安全措施，我们也向你登记的电话号码发了短信。
+destructive_account_reset.delete_account.are_you_sure: 你确定要删除账户吗？
+destructive_account_reset.delete_account.info: 被锁在账户之外时，取消账户应当是最后的选择。你将无法重获与自己账户链接的任何信息。我们将通知你通过 %{app_name} 访问的政府机构你不再有账户。账户删除后，你可以使用同一电邮地址来设立新账户。
+destructive_account_reset.delete_account.title: 删除账户应当是你最后的选择。
+destructive_account_reset.pending.cancel_request: 取消请求
+destructive_account_reset.pending.cancel_request_prompt_html: 如果你改变主意，希望取消删除帐户，请点击下面的“取消请求”按钮。
+destructive_account_reset.pending.canceled: 我们已取消了你删除帐户的请求。
+destructive_account_reset.pending.canceled_info: 你的删除 %{app_name} 请求已被取消。 你可以继续使用你的 %{app_name} 帐户，或提出新的删除帐户请求。
+destructive_account_reset.pending.header: 你已提出删除账户的请求。
+destructive_account_reset.pending.wait_html: 要删除你的账户，有一个%{waiting_period}的等待期。你会在 <strong>%{interval}</strong> 收到电邮，向你说明如何完成删除。
+destructive_account_reset.recover_options.yes_delete: 删除我的帐户
+destructive_account_reset.recovery_option.cancel_deletion: 取消删除
+destructive_account_reset.recovery_options.check_webauthn_platform_header: 使用你首次设置人脸或触摸解锁的同一设备
+destructive_account_reset.recovery_options.check_webauthn_platform_help_link: 人脸或触摸解锁
+destructive_account_reset.recovery_options.check_webauthn_platform_info_html: ​​如果你在创建帐户时设置了 %{link_html}，请确保使用你创建 %{app_name} 帐户的同一设备。
+destructive_account_reset.recovery_options.header: 你确定要删除账户吗？
+destructive_account_reset.recovery_options.help_text: 如果你被锁定在账户外而且仍然需要访问 %{app_name} ，请尝试以下步骤。
+destructive_account_reset.recovery_options.still_working: 仍然不行？
+destructive_account_reset.recovery_options.try_another_device: 使用你也许选择了“记住设备”选项的另一个设备。
+destructive_account_reset.recovery_options.try_method_again: 再次尝试你的身份证实方法。
+destructive_account_reset.recovery_options.try_method_description_html: 确保你可以使用创建帐户时设置的身份证实方法，%{link_html}
+destructive_account_reset.recovery_options.try_method_description_link: 再用你的身份证实方法试一次。
+destructive_account_reset.recovery_options.use_device: 使用另一个设备。
+destructive_account_reset.request.account_delete_link: 了解有关帐户删除流程的更多信息。
+destructive_account_reset.request.choose_to_continue: 如果你选择继续删除帐户，你将收到两封电邮：
+destructive_account_reset.request.continue_deletion: 你还要删除你的帐户吗？
+destructive_account_reset.request.delete_account: 删除你的账户
+destructive_account_reset.request.delete_email1_html: <strong>电邮 1:</strong> 你首先会收到一封确认电邮。<strong>这并不</strong>意味着你的帐户此时已被删除。
+destructive_account_reset.request.delete_email2_html: <strong>电邮 2:</strong> 在收到第一封确认电邮 %{interval} 你将收到另一封电邮，其中包含继续删除帐户的链接。这需要你确认你要删除帐户。这个步骤后，我们就无法撤消帐户删除了。
+destructive_account_reset.request.delete_request_details_html: 如果你无法使用你设置的身份证实方法登录，可以通过删除你的帐户并创建一个新帐户来重新获得访问权限。删除你的帐户不会删除你在其他政府机构存储的任何信息。<br/>%{account_delete_link}.
+destructive_account_reset.request.no_cancel: 取消
+destructive_account_reset.request.no_cancel2: 不要，取消删除帐户
+destructive_account_reset.request.yes_continue: 要，继续删除帐户
 devise.confirmations.already_confirmed: 你的电邮地址已确认。%{action}
 devise.confirmations.confirmed: 你已确认了你的电邮地址。
 devise.confirmations.confirmed_but_must_set_password: 你已确认了你的电邮地址。
@@ -1104,7 +1104,9 @@ help_text.requested_attributes.all_emails: 你账户上的电邮地址
 help_text.requested_attributes.birthdate: 生日
 help_text.requested_attributes.change_email_link: 更改
 help_text.requested_attributes.consent_reminder_html: 你每年都必须授权同意与 %{sp_html} 分享信息。
+help_text.requested_attributes.document_images: 拍摄的图像
 help_text.requested_attributes.document_images_html: '为支持你的申请，%{sp_html} 还将收到你的身份证件照片以及你在验证身份时拍摄的自拍照。这些图像仅用于身份裁定。'
+help_text.requested_attributes.document_metadata: 文件详情
 help_text.requested_attributes.email: 电邮地址
 help_text.requested_attributes.full_name: 姓名
 help_text.requested_attributes.ial2_reverified_consent_info_html: '因为你重新验证了身份，我们需要得到你的许可才能与 %{sp_html} 分享该信息。'
@@ -1281,6 +1283,7 @@ idv.messages.gpo.verify_address_again_link_text: 再次验证你的地址
 idv.messages.otp_delivery_method_description: 如果你在上面输入的是座机电话，请在下边选择“接听电话”。
 idv.messages.phone.alert_html: '<strong>输入一个符合以下条件的电话号码：</strong>'
 idv.messages.phone.description: 我们会检查记录以验证你的电话号码是否与你验证过的信息相符，并发送一个一次性代码。
+idv.messages.phone.description_skip_verification: 我们会将您的手机号码添加到您的个人资料中，并向您发送一次性验证码。
 idv.messages.phone.failed_number.alert_text: 我们无法将你与该号码匹配。
 idv.messages.phone.failed_number.gpo_alert_html: 试试 <strong>另一个</strong>号码或者%{link_html}。
 idv.messages.phone.failed_number.gpo_verify_link: 通过普通邮件验证
@@ -1872,8 +1875,10 @@ shared.skip_link: 跳到主要内容
 sign_up.agree_and_continue: 同意并继续
 sign_up.cancel.success: 你的账户已被删除。我们没有存储你的信息。
 sign_up.cancel.warning_header: 如果你现在取消：
+sign_up.completed.document_images.description: 身份证和自拍照
+sign_up.completed.document_metadata.description: 文件编号、签发日期和到期日期
 sign_up.completed.smiling_image_alt: 面带笑容的一个人加上绿勾说明成功了
-sign_up.document_images_sharing_consent_label: 我同意将我的身份证件照片和身份验证自拍照与 %{sp} 共享，用于身份裁定。
+sign_up.document_images_sharing_consent_label_html: 我同意与<strong>%{sp}</strong>分享我的身份证照片和自拍照，以便进行身份鉴定。
 sign_up.document_images_sharing_consent_required: 你必须同意共享身份证件照片和自拍照才能继续，或者取消。
 sign_up.information_sharing_html: 如需了解 %{app_name} 如何共享您的信息，请查阅我们的《%{link_html}》。
 sign_up.nds_terms_intro: 继续即表示您接受
@@ -1948,6 +1953,7 @@ titles.idv.enter_password_letter: 重新输入你的密码来给你发信
 titles.idv.get_letter: 收信
 titles.idv.personal_key: 保存你的个人密钥
 titles.idv.phone: 验证你的电话号码
+titles.idv.phone_skip_verification: 输入您的电话号码
 titles.idv.reset_password: 重设密码
 titles.idv.verify_info: 验证你的信息
 titles.mfa_setup.face_touch_unlock_confirmation: 人脸或触摸解锁已添加
@@ -2210,6 +2216,7 @@ user_mailer.agent_proofing_succeeded.contact_link: 联系我们
 user_mailer.agent_proofing_succeeded.cta: 确认账户
 user_mailer.agent_proofing_succeeded.footer_html: 如果您并未亲自尝试进行身份验证，请%{contact_link_html}，并登录您的账户以%{change_password_link_html}。
 user_mailer.agent_proofing_succeeded.header: 您已成功完成身份验证
+user_mailer.agent_proofing_succeeded.reminder_subject: 请勿错失权限：请在 24 小时内确认您的验证账户
 user_mailer.agent_proofing_succeeded.subject: 需采取行动：确认您的已验证账户
 user_mailer.contact_link_text: 联系我们
 user_mailer.device_profiling_error_cleared.info: 您的账户（LG22）错误已解决。您现在可以使用您的账户登录机构网站。
