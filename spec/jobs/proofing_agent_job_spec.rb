@@ -27,6 +27,7 @@ RSpec.describe ProofingAgentJob, type: :job do
   let(:webhook_status) { 200 }
   let(:webhook_headers) { nil }
   let(:failure_email_users) { instance_double(Idv::ProofingAgent::FailureEmailUserSet) }
+  let(:reminder_email_users) { instance_double(Idv::ProofingAgent::ReminderEmailUserSet) }
   let(:idv_proofing_agent_config) do
     [
       {
@@ -56,6 +57,11 @@ RSpec.describe ProofingAgentJob, type: :job do
       )
       allow(failure_email_users).to receive(:add)
       allow(failure_email_users).to receive(:remove)
+      allow(Idv::ProofingAgent::ReminderEmailUserSet).to receive(:new).and_return(
+        reminder_email_users,
+      )
+      allow(reminder_email_users).to receive(:add)
+      allow(reminder_email_users).to receive(:remove)
       allow(IdentityConfig.store).to receive(:idv_proofing_agent_config)
         .and_return(idv_proofing_agent_config)
       allow(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor).and_return(:mock)
@@ -117,6 +123,12 @@ RSpec.describe ProofingAgentJob, type: :job do
         perform
 
         expect(failure_email_users).to have_received(:remove).with(user.uuid)
+      end
+
+      it 'adds the user uuid to the reminder email users' do
+        perform
+
+        expect(reminder_email_users).to have_received(:add).with(user.uuid)
       end
 
       it 'sends a profile confirmation email to the user' do

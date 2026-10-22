@@ -2203,6 +2203,7 @@ user_mailer.agent_proofing_succeeded.contact_link: contact us
 user_mailer.agent_proofing_succeeded.cta: Confirm account
 user_mailer.agent_proofing_succeeded.footer_html: If you did not attempt to verify your identity in person, please %{contact_link_html} and sign in to %{change_password_link_html}.
 user_mailer.agent_proofing_succeeded.header: You have successfully completed identity verification
+user_mailer.agent_proofing_succeeded.reminder_subject: 'Don’t lose access: Confirm your verified account within 24 hours'
 user_mailer.agent_proofing_succeeded.subject: 'Action Required: Confirm Your Verified Account'
 user_mailer.contact_link_text: contact us
 user_mailer.device_profiling_error_cleared.info: The error on your account (LG22) has been resolved. You can now sign into the agency website with your account.

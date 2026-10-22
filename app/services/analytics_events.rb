@@ -5570,6 +5570,30 @@ module AnalyticsEvents
     )
   end
 
+  # Logs when the agent-proofing profile reminder email was sent to a user who had not yet
+  # confirmed their account
+  # @param [String] user_id UUID of the user who was successfully agent-proofed
+  # @param [Hash] proofing_agent The proofing agent information
+  # @option proofing_agent [String] :correlation_id
+  # @option proofing_agent [String] :transaction_id
+  # @option proofing_agent [String] :agent_id
+  # @option proofing_agent [String] :location_id
+  # @param [Time] expiration_date When the user must confirm their account by
+  def idv_proofing_agent_profile_reminder_email_sent(
+    user_id:,
+    proofing_agent:,
+    expiration_date:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_profile_reminder_email_sent,
+      user_id:,
+      proofing_agent:,
+      expiration_date:,
+      **extra,
+    )
+  end
+
   # Logs when a proofing agent begins proofing a user
   # @param [Hash] response_body The body of the response from the proofing agent's proofing request
   # @param [Hash] proofing_agent The proofing agent information
@@ -8223,6 +8247,28 @@ module AnalyticsEvents
   def proofing_agent_failure_email_job_error(exception:, **extra)
     track_event(
       :proofing_agent_failure_email_job_error,
+      exception:,
+      **extra,
+    )
+  end
+
+  # Signifies the completion of the proofing agent reminder email job
+  # @param [Integer] processed_count The number of items processed during the job
+  # @param [Float] duration_sec The duration of the job in seconds
+  def proofing_agent_reminder_email_job_completed(processed_count:, duration_sec:, **extra)
+    track_event(
+      :proofing_agent_reminder_email_job_completed,
+      processed_count:,
+      duration_sec:,
+      **extra,
+    )
+  end
+
+  # Logs the error received when during reminder email processing
+  # @param [String] exception The message from the exception raised.
+  def proofing_agent_reminder_email_job_error(exception:, **extra)
+    track_event(
+      :proofing_agent_reminder_email_job_error,
       exception:,
       **extra,
     )

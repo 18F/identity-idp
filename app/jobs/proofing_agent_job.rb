@@ -17,7 +17,8 @@ class ProofingAgentJob < ApplicationJob
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
-  attr_reader :document_capture_session, :proofing_components, :proofing_agent, :failure_email_users
+  attr_reader :document_capture_session, :proofing_components, :proofing_agent,
+              :failure_email_users, :reminder_email_users
 
   def perform(
     encrypted_arguments:,
@@ -40,6 +41,7 @@ class ProofingAgentJob < ApplicationJob
     }
     @proofing_components = {}
     @failure_email_users = Idv::ProofingAgent::FailureEmailUserSet.new
+    @reminder_email_users = Idv::ProofingAgent::ReminderEmailUserSet.new
     webhook_enqueued = false
 
     @document_capture_session = DocumentCaptureSession.find_by(uuid: transaction_id)
@@ -87,16 +89,20 @@ class ProofingAgentJob < ApplicationJob
 
     if success
       failure_email_users.remove(user.uuid)
+      verified_at = document_capture_session.load_agent_proofed_user&.verified_at
       ProofingAgent::SuccessEmailSender.new(
         user: user, analytics: analytics,
         service_provider: current_sp
       ).call(
-        verified_at: document_capture_session.load_agent_proofed_user&.verified_at,
+        verified_at: verified_at,
         proofing_agent_id: proofing_agent_id,
         proofing_location_id: proofing_location_id,
         correlation_id: correlation_id,
         transaction_id: transaction_id,
       )
+      # Queue a reminder email for the user if they have not confirmed their account; only
+      # when the confirmation email was actually sent (verified_at present).
+      reminder_email_users.add(user.uuid) if verified_at.present?
     elsif final_attempt
       failure_email_users.remove(user.uuid)
       ProofingAgent::FailureEmailSender.new(user: user, analytics: analytics).call(
