@@ -23,12 +23,12 @@ RSpec.feature 'Pending account recovery request' do
       expect(page).not_to have_link(t('two_factor_authentication.account_reset.link'))
       click_link t('two_factor_authentication.account_recovery.pending_link')
 
-      expect(page).to have_current_path(account_recovery_status_path)
+      expect(page).to have_current_path(account_recovery_pending_status_path)
       expect(page).to have_content(
-        t('account_recovery.pending.time_remaining', interval: WaitPeriodFormatter.call(1.day)),
+        AccountRecovery::PendingPresenter.new(recovery_request).time_remaining_until_granted,
       )
 
-      click_button t('account_recovery.pending.cancel')
+      click_button t('account_recovery.pending.status.cancel')
 
       expect(page).to have_current_path(login_two_factor_options_path)
       expect(page).to have_content(t('account_recovery.pending.cancel_success'))

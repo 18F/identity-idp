@@ -92,11 +92,18 @@ RSpec.describe 'Test::AccountRecovery', type: :request do
   context 'when test routes are disabled' do
     before do
       allow(IdentityConfig.store).to receive(:enable_test_routes).and_return(false)
+      Rails.application.reload_routes!
+    end
+
+    after do
+      allow(IdentityConfig.store).to receive(:enable_test_routes).and_return(true)
+      Rails.application.reload_routes!
     end
 
     it 'does not route' do
-      expect { get '/test/account_recovery' }
-        .to raise_error(ActionController::RoutingError)
+      get '/test/account_recovery'
+
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

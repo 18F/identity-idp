@@ -41,15 +41,13 @@ module AccountRecovery
       redirect_to account_recovery_pending_status_url
     end
 
-    # Expires a lapsed, unredeemed request before eligibility is evaluated, so
-    # a stale request does not permanently block the user from requesting
-    # recovery again.
+    # Expires a lapsed, unredeemed request before eligibility is evaluated
     def reconcile_lapsed_request
       expired = AccountRecovery::ReconcileRequest.new(
         account_recovery_request: AccountRecoveryRequest.active_for_user(current_user),
       ).call
 
-      analytics.account_recovery_expired(count: 1) if expired
+      analytics.account_recovery_expired if expired
     end
 
     def confirm_eligible_for_account_recovery

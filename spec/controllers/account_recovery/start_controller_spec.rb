@@ -38,6 +38,15 @@ RSpec.describe AccountRecovery::StartController do
     end
   end
 
+  it 'does not resume another user’s request' do
+    stub_sign_in_before_2fa(user)
+    create(:account_recovery_request, :waiting)
+
+    get :show
+
+    expect(response).to render_template(:show)
+  end
+
   describe '#show' do
     it 'redirects to root if the user is not signed in' do
       get :show
@@ -71,10 +80,11 @@ RSpec.describe AccountRecovery::StartController do
           allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
         end
 
-        it 'redirects to the legacy account reset flow' do
+        it 'returns to authentication options with an error' do
           get :show
 
-          expect(response).to redirect_to account_reset_recovery_options_url
+          expect(response).to redirect_to login_two_factor_options_url
+          expect(flash[:error]).to eq(t('account_recovery.start.unavailable'))
         end
 
         it 'logs the ineligibility reason' do
@@ -92,20 +102,22 @@ RSpec.describe AccountRecovery::StartController do
       context 'when the user is not fully registered' do
         let(:user) { create(:user, :with_phone) }
 
-        it 'redirects to the legacy account reset flow' do
+        it 'returns to authentication options with an error' do
           get :show
 
-          expect(response).to redirect_to account_reset_recovery_options_url
+          expect(response).to redirect_to login_two_factor_options_url
+          expect(flash[:error]).to eq(t('account_recovery.start.unavailable'))
         end
       end
 
       context 'when the user is identity proofed' do
         let(:user) { create(:user, :proofed) }
 
-        it 'redirects to the legacy account reset flow' do
+        it 'returns to authentication options with an error' do
           get :show
 
-          expect(response).to redirect_to account_reset_recovery_options_url
+          expect(response).to redirect_to login_two_factor_options_url
+          expect(flash[:error]).to eq(t('account_recovery.start.unavailable'))
         end
       end
     end
@@ -140,6 +152,12 @@ RSpec.describe AccountRecovery::StartController do
           success: true,
           recovery_state: AccountRecoveryRequest::WAITING,
           rate_limited: false,
+          telephony_response: {
+            success: true,
+            errors: {},
+            request_id: 'fake-message-request-id',
+            message_id: 'fake-message-id',
+          },
           account_age_in_days: 0,
           enabled_mfa_methods_count: 1,
           mfa_method_ages_in_days: { phone: 0 },
@@ -151,14 +169,27 @@ RSpec.describe AccountRecovery::StartController do
         expect { post :create }.to_not change { user.reload.phone_configurations.count }
       end
 
+      it 'reports a failed request without redirecting to account deletion' do
+        service = instance_double(AccountRecovery::CreateRequest)
+        allow(AccountRecovery::CreateRequest).to receive(:new).with(user: user).and_return(service)
+        allow(service).to receive(:call).and_return(FormResponse.new(success: false))
+
+        post :create
+
+        expect(response).to redirect_to login_two_factor_options_url
+        expect(flash[:error]).to eq(t('errors.general'))
+        expect(AccountRecoveryRequest.active_for_user(user)).to be_nil
+      end
+
       context 'when the user is ineligible' do
         let(:user) { create(:user, :proofed) }
 
-        it 'redirects to the legacy flow without creating a request' do
+        it 'returns to authentication options without creating a request' do
           post :create
 
           expect(AccountRecoveryRequest.where(user: user).count).to eq(0)
-          expect(response).to redirect_to account_reset_recovery_options_url
+          expect(response).to redirect_to login_two_factor_options_url
+          expect(flash[:error]).to eq(t('account_recovery.start.unavailable'))
         end
       end
 
@@ -170,11 +201,12 @@ RSpec.describe AccountRecovery::StartController do
           ).increment_to_limited!
         end
 
-        it 'does not create a request and redirects to the legacy flow' do
+        it 'does not create a request and returns to the recovery start page' do
           post :create
 
           expect(AccountRecoveryRequest.where(user: user).count).to eq(0)
-          expect(response).to redirect_to account_reset_recovery_options_url
+          expect(response).to redirect_to account_recovery_start_url
+          expect(flash[:error]).to eq(t('account_recovery.start.rate_limited'))
         end
 
         it 'logs the rate limited request' do

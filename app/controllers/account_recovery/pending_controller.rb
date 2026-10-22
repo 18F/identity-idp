@@ -79,7 +79,7 @@ module AccountRecovery
 
       return if !expired
 
-      analytics.account_recovery_expired(count: 1)
+      analytics.account_recovery_expired
       remove_instance_variable(:@account_recovery_request)
     end
 

@@ -25,7 +25,7 @@ RSpec.describe TwoFactorAuthentication::PivCacMismatchController do
 
       get :show
 
-      expect(assigns(:account_recovery_url)).to eq(account_recovery_status_url)
+      expect(assigns(:account_recovery_url)).to eq(account_recovery_pending_status_url)
     end
 
     context 'when the user is identity proofed' do

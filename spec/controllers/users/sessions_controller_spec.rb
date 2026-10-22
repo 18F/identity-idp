@@ -71,7 +71,7 @@ RSpec.describe Users::SessionsController, devise: true do
   end
 
   describe 'POST /create' do
-    include AccountResetHelper
+    include DestructiveAccountResetHelper
     before do
       stub_attempts_tracker
     end
@@ -953,24 +953,24 @@ RSpec.describe Users::SessionsController, devise: true do
     end
 
     [AccountRecoveryRequest::REQUESTED, AccountRecoveryRequest::WAITING].each do |state|
-      it "redirects to the recovery pending page for a #{state} recovery request" do
+      it "offers existing MFA methods for a #{state} recovery request" do
         user = create(:user, :fully_registered)
         recovery_request = create(:account_recovery_request, state: state, user: user)
 
         post :create, params: { user: { email: user.email, password: user.password } }
 
-        expect(response).to redirect_to account_recovery_pending_status_url
+        expect(response).to redirect_to login_two_factor_options_url
         expect(recovery_request.reload.state).to eq(state)
       end
     end
 
-    it 'redirects to the recovery pending page for a granted recovery request' do
+    it 'offers existing MFA methods for a granted recovery request' do
       user = create(:user, :fully_registered)
       create(:account_recovery_request, :granted, user: user)
 
       post :create, params: { user: { email: user.email, password: user.password } }
 
-      expect(response).to redirect_to account_recovery_pending_status_url
+      expect(response).to redirect_to login_two_factor_options_url
     end
 
     it 'does not resume recovery without token evidence before password verification' do
@@ -1055,14 +1055,14 @@ RSpec.describe Users::SessionsController, devise: true do
         AccountRecoveryRequest::WAITING,
         AccountRecoveryRequest::GRANTED,
       ].each do |state|
-        it "returns to ARR pending for a #{state} request without sending another email" do
+        it "offers existing MFA for a #{state} request without sending another email" do
           user = create(:user, :fully_registered)
           recovery_request = create(:account_recovery_request, :granted, user: user, state: state)
           stub_sign_in_before_2fa(user)
 
           expect { get :new }.not_to change { ActionMailer::Base.deliveries.size }
 
-          expect(response).to redirect_to account_recovery_pending_status_url
+          expect(response).to redirect_to login_two_factor_options_url
           expect(recovery_request.reload.state).to eq(state)
         end
       end

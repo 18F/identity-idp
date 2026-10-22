@@ -93,18 +93,18 @@ RSpec.describe ExpireAccountRecoveryRequestsJob do
 
       job.perform(now)
 
-      expect(@analytics).to have_logged_event(:account_recovery_expired, count: 1)
+      expect(@analytics).to have_logged_event(:account_recovery_job_mark_expired, count: 1)
     end
 
     it 'does not touch legacy account reset requests' do
-      AccountResetRequest.create!(
+      DestructiveAccountResetRequest.create!(
         user: user,
         requested_at: now - 10.days,
         request_token: SecureRandom.uuid,
       )
 
       expect { described_class.new.perform(now) }
-        .to_not change { AccountResetRequest.where.not(cancelled_at: nil).count }
+        .to_not change { DestructiveAccountResetRequest.where.not(cancelled_at: nil).count }
     end
   end
 end

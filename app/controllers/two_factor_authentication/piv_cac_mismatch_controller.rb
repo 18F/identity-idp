@@ -16,7 +16,7 @@ module TwoFactorAuthentication
       if !recovery_policy.legacy_reset_allowed?
         @account_recovery_pending = recovery_policy.recovery_pending?
         @account_recovery_url = @account_recovery_pending ?
-          account_recovery_status_url : account_recovery_start_url
+          account_recovery_pending_status_url : account_recovery_start_url
       end
     end
 

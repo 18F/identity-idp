@@ -86,17 +86,20 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
     end
   end
 
-  it 'returns to the status page until the request is granted and allows cancellation' do
+  it 'offers existing MFA on sign-in and keeps status and cancellation accessible' do
     request_account_recovery
 
     expect(page).not_to have_css('form[action*="cancel"], a[href*="cancel"]')
 
-    [root_path, account_recovery_start_path].each do |path|
-      visit path
+    visit root_path
 
-      expect(page).to have_current_path(account_recovery_pending_status_path)
-      expect(page).to have_content t('account_recovery.pending.status.header')
-    end
+    expect(page).to have_current_path(login_two_factor_options_path)
+    click_link t('two_factor_authentication.account_recovery.pending_link')
+    expect(page).to have_current_path(account_recovery_pending_status_path)
+    expect(page).to have_content t('account_recovery.pending.status.header')
+
+    visit account_recovery_start_path
+    expect(page).to have_current_path(account_recovery_pending_status_path)
     expect(AccountRecoveryRequest.active_for_user(user).state)
       .to eq(AccountRecoveryRequest::WAITING)
 
