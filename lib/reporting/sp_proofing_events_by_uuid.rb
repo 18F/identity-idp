@@ -107,7 +107,7 @@ module Reporting
             sortsFirst(properties.sp_request.app_differentiator) as app_differentiator,
             toMillis(min(@timestamp)) as first_event
             by properties.user_id as login_uuid
-        | filter workflow_started > 0 or ipp_updated > 0 or verified_by_mail > 0 or verified_fraud_review > 0
+        | filter workflow_started > 0 or ipp_updated > 0 or verified_by_mail > 0 or verified_fraud_review > 0 or agency_handoff > 0
         | limit 10000
         | sort first_event asc
       QUERY
