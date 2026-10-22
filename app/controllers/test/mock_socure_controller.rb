@@ -45,19 +45,19 @@ module Test
       render json: DocAuth::Mock::Socure.instance.selected_fixture_body
     end
 
-    def image_request_endpoint
-      respond_to do |format|
-        format.zip do
-          send_data(
-            DocAuthImageFixtures.zipped_files(
-              passport: params['fixture']['passport'],
-              selfie: params['fixture']['selfie'],
-            ),
-            filename: "#{params['reference_id']}.zip",
-            type: :zip,
-          )
-        end
-      end
+    # Local Socure simulator only: use the same ZIP format as the vendor API.
+    def images_request
+      require Rails.root.join('spec/support/doc_auth_image_fixtures')
+      selected = DocAuth::Mock::Socure.instance.selected_fixture.to_s
+      send_data(
+        DocAuthImageFixtures.zipped_files(
+          reference_id: 'local-socure',
+          passport: selected == 'passport_pass.json',
+          selfie: false,
+        ),
+        filename: 'document.zip',
+        type: 'application/zip',
+      )
     end
 
     private
