@@ -302,6 +302,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     let(:response) { double(DocAuth::Dos::Responses::HealthCheckResponse) }
 
     before do
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(
         :dos_passport_composite_healthcheck_endpoint,
       ).and_return('http://dostest.com/status')

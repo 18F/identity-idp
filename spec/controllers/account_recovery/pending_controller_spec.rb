@@ -40,17 +40,15 @@ RSpec.describe AccountRecovery::PendingController do
           expect { get :status }.not_to change { ActionMailer::Base.deliveries.size }
 
           expect(response).to render_template(:status)
-          expect(controller.view_assigns['remaining_interval']).to eq(
-            WaitPeriodFormatter.call(1.day),
-          )
+          expect(controller.view_assigns['pending_presenter'].time_remaining_until_granted)
+            .to eq('1 day')
           expect(recovery_request.reload.attributes).to eq(original_attributes)
 
           travel 12.hours
           get :status
 
-          expect(controller.view_assigns['remaining_interval']).to eq(
-            WaitPeriodFormatter.call(12.hours),
-          )
+          expect(controller.view_assigns['pending_presenter'].time_remaining_until_granted)
+            .to eq('12 hours')
         end
       end
 
@@ -65,11 +63,13 @@ RSpec.describe AccountRecovery::PendingController do
 
           get :status
 
-          expect(controller.view_assigns['remaining_interval']).to be_nil
+          expect(controller.view_assigns['pending_presenter'].time_remaining_until_granted)
+            .to eq('1 minute')
           travel 1.hour
           get :status
 
-          expect(controller.view_assigns['remaining_interval']).to be_nil
+          expect(controller.view_assigns['pending_presenter'].time_remaining_until_granted)
+            .to eq('1 minute')
           expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::WAITING)
         end
       end

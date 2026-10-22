@@ -1,6 +1,5 @@
 ---
 account_recovery.pending_mfa_setup.header: Setting up new authentication methods is not available yet
-account_recovery.pending_mfa_setup.help: Learn more about recovering access to your account
 account_recovery.pending_mfa_setup.intro: Your recovery link and password are confirmed. You are in a temporary session for account recovery. You cannot access your account or connected services until you set up new authentication methods. Setting up new methods is not available yet.
 account_recovery.pending.cancel_success: We canceled your account recovery request. You can continue using your existing authentication methods.
 account_recovery.pending.header: Check your email
@@ -21,7 +20,6 @@ account_recovery.start.keep_account_html: If you regain access to any of your au
 account_recovery.start.keep_account_link_text: Learn more about account recovery.
 account_recovery.verify.continue: Continue
 account_recovery.verify.header: Confirm your password
-account_recovery.verify.help: Learn more about recovering access to your account
 account_recovery.verify.intro_html: To continue recovering the account for <strong>%{email}</strong>, enter your password.
 account_recovery.verify.password_rate_limited: You have entered an incorrect password too many times. Please wait a few minutes before trying again.
 account_recovery.verify.token_invalid: This account recovery link is invalid or has expired. You can request account recovery again.
