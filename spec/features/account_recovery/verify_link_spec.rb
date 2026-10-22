@@ -33,7 +33,8 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
 
       # The link is sessionless, so the user confirms their password to sign in.
       expect(page).to have_content t('account_recovery.verify.header')
-      expect(page).to have_current_path(account_recovery_verify_path, ignore_query: true)
+      expect(page).to have_current_path(account_recovery_verify_path)
+      expect(page).not_to have_css('input[name="token"]', visible: false)
 
       fill_in t('account.index.password'), with: user.password
       click_button t('account_recovery.verify.continue')
@@ -118,10 +119,11 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
       fill_in t('account.index.password'), with: user.password
       click_button t('account_recovery.verify.continue')
 
-      # Signing in again returns the user to the in-flight request rather than
-      # to an MFA challenge they cannot complete.
       visit root_path
-      click_on t('links.cancel')
+
+      expect(page).to have_current_path(account_recovery_verify_path)
+
+      Capybara.reset_sessions!
       signin(user_email, user.password)
 
       expect(page).to have_current_path(account_recovery_verify_path)
@@ -139,6 +141,50 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
       signin(user_email, user.password)
 
       expect(AccountRecoveryRequest.active_for_user(user)).to be_nil
+    end
+  end
+
+  context 'in a browser', js: true do
+    around do |example|
+      original_protection = ActionController::Base.allow_forgery_protection
+      original_origin_check = ActionController::Base.forgery_protection_origin_check
+      ActionController::Base.allow_forgery_protection = true
+      ActionController::Base.forgery_protection_origin_check = true
+      example.run
+    ensure
+      ActionController::Base.allow_forgery_protection = original_protection
+      ActionController::Base.forgery_protection_origin_check = original_origin_check
+    end
+
+    it 'submits and retries the clean password form with CSRF protection' do
+      token = SecureRandom.uuid
+      recovery_request = create(
+        :account_recovery_request,
+        :granted,
+        user: user,
+        token_fingerprint: AccountRecovery::TokenCreator.fingerprint(token),
+      )
+
+      visit account_recovery_verify_path(token: token)
+
+      expect(page).to have_current_path(account_recovery_verify_path)
+      expect(page).not_to have_css('input[name="token"]', visible: false)
+
+      fill_in t('account.index.password'), with: 'wrong password'
+      click_button t('account_recovery.verify.continue')
+
+      expect(page).to have_content(t('errors.confirm_password_incorrect'))
+      expect(page).to have_current_path(account_recovery_verify_path)
+
+      fill_in t('account.index.password'), with: user.password
+      click_button t('account_recovery.verify.continue')
+
+      expect(page).to have_content(t('account_recovery.pending_mfa_setup.header'))
+      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
+
+      visit account_path
+
+      expect(page).not_to have_current_path(account_path)
     end
   end
 end

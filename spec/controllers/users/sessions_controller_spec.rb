@@ -975,11 +975,13 @@ RSpec.describe Users::SessionsController, devise: true do
 
     it 'does not resume recovery without token evidence before password verification' do
       user = create(:user, :fully_registered)
-      create(:account_recovery_request, :link_verified, user: user)
+      recovery_request = create(:account_recovery_request, :link_verified, user: user)
 
       post :create, params: { user: { email: user.email, password: user.password } }
 
       expect(response).to redirect_to user_two_factor_authentication_url
+      expect(recovery_request.reload).to be_token_valid
+      expect(recovery_request.password_verified_at).to be_nil
     end
 
     it 'redirects a temporary recovery session to the verify continuation' do
@@ -1074,7 +1076,17 @@ RSpec.describe Users::SessionsController, devise: true do
         expect(response).to redirect_to user_two_factor_authentication_url
       end
 
-      %i[cancelled expired link_verified password_verified].each do |state|
+      it 'resumes a password-verified recovery session at the same continuation as sign-in' do
+        user = create(:user, :fully_registered)
+        create(:account_recovery_request, :password_verified, user: user)
+        stub_sign_in_before_2fa(user)
+
+        get :new
+
+        expect(response).to redirect_to account_recovery_verify_url
+      end
+
+      %i[cancelled expired link_verified].each do |state|
         it "does not send a #{state} ARR back to the pending page" do
           user = create(:user, :fully_registered)
           create(:account_recovery_request, state, user: user)

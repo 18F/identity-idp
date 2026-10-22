@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'account_recovery/verify/show.html.erb' do
   before do
     assign(:email, 'signed-in@example.com')
-    assign(:token, 'recovery-token')
+    assign(:account_recovery_request, build_stubbed(:account_recovery_request))
     allow(view).to receive(:user_signing_up?).and_return(false)
   end
 
@@ -19,10 +19,7 @@ RSpec.describe 'account_recovery/verify/show.html.erb' do
           "form[action=\"#{account_recovery_verify_path}\"][method=\"post\"]",
         )
         expect(rendered).to_not include('%{email}', '&lt;a')
-        expect(rendered).to have_css(
-          'input[type="hidden"][name="token"][value="recovery-token"]',
-          visible: false,
-        )
+        expect(rendered).not_to have_css('input[name="token"]', visible: false)
       end
     end
   end

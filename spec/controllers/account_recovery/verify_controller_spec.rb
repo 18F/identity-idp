@@ -4,7 +4,7 @@ RSpec.describe AccountRecovery::VerifyController do
   let(:password) { ControllerHelper::VALID_PASSWORD }
   let(:user) { create(:user, :fully_registered, password: password) }
   let(:raw_token) { SecureRandom.uuid }
-  let(:password_params) { { token: raw_token, user: { password: password } } }
+  let(:password_params) { { request_id: recovery_request.id, user: { password: password } } }
   let!(:recovery_request) do
     create(
       :account_recovery_request,
@@ -25,14 +25,13 @@ RSpec.describe AccountRecovery::VerifyController do
     it 'verifies the link without consuming the token or creating a user session' do
       get :show, params: { token: raw_token }
 
-      expect(response).to render_template(:show)
+      expect(response).to redirect_to(account_recovery_verify_url)
       expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::LINK_VERIFIED)
       expect(recovery_request.link_verified_at).to be_present
       expect(recovery_request).to be_token_valid
       expect(controller.current_user).to be_nil
       expect(session[:account_recovery_request_id]).to be_nil
-      expect(controller.view_assigns['token']).to eq(raw_token)
-      expect(response.headers['Referrer-Policy']).to eq('strict-origin')
+      expect(session[:account_recovery_granted_token]).to eq(raw_token)
       expect(response.headers['Cache-Control']).to include('no-store')
     end
 
@@ -72,7 +71,7 @@ RSpec.describe AccountRecovery::VerifyController do
 
       get :show, params: { token: raw_token }
 
-      expect(response).to render_template(:show)
+      expect(response).to redirect_to(account_recovery_verify_url)
       expect(recovery_request.reload.link_verified_at).to eq(verified_at)
       expect(controller.current_user).to be_nil
     end
@@ -83,7 +82,7 @@ RSpec.describe AccountRecovery::VerifyController do
       get :show, params: { token: raw_token }
 
       expect(controller.current_user).to be_nil
-      expect(response).to render_template(:show)
+      expect(response).to redirect_to(account_recovery_verify_url)
     end
 
     it 'signs out another user before displaying the token owner’s password prompt' do
@@ -92,6 +91,10 @@ RSpec.describe AccountRecovery::VerifyController do
       get :show, params: { token: raw_token }
 
       expect(controller.current_user).to be_nil
+      expect(response).to redirect_to(account_recovery_verify_url)
+
+      get :show
+
       expect(controller.view_assigns['email']).to eq(user.last_sign_in_email_address.email)
     end
 
@@ -109,6 +112,46 @@ RSpec.describe AccountRecovery::VerifyController do
   end
 
   describe '#show without a token' do
+    it 'renders the password form using the session token at a clean URL' do
+      get :show, params: { token: raw_token }
+
+      get :show
+
+      expect(response).to render_template(:show)
+      expect(response.headers['Referrer-Policy']).to eq('strict-origin-when-cross-origin')
+      expect(controller.view_assigns['email']).to eq(user.last_sign_in_email_address.email)
+      expect(controller.current_user).to be_nil
+    end
+
+    it 'clears an expired session token' do
+      get :show, params: { token: raw_token }
+      recovery_request.update!(token_expires_at: Time.zone.now)
+
+      get :show
+
+      expect(response).to redirect_to(root_url)
+      expect(session[:account_recovery_granted_token]).to be_nil
+    end
+
+    it 'clears a previous session token when a new link is invalid' do
+      get :show, params: { token: raw_token }
+
+      get :show, params: { token: 'invalid' }
+
+      expect(response).to redirect_to(root_url)
+      expect(session[:account_recovery_granted_token]).to be_nil
+    end
+
+    it 'revalidates the session token before rendering the password form' do
+      get :show, params: { token: raw_token }
+      recovery_request.reload.cancel!(reason: AccountRecoveryRequest::CANCEL_REASON_USER_CANCELLED)
+
+      get :show
+
+      expect(response).to redirect_to(root_url)
+      expect(session[:account_recovery_granted_token]).to be_nil
+    end
+
     it 'does not use a previously stored ARR id as token evidence' do
       recovery_request.transition_to!(AccountRecoveryRequest::LINK_VERIFIED)
       session[:account_recovery_request_id] = recovery_request.id
@@ -139,6 +182,10 @@ RSpec.describe AccountRecovery::VerifyController do
   end
 
   describe '#create' do
+    before do
+      get :show, params: { token: raw_token }
+    end
+
     it 'consumes the token and creates only a partial session after both checks succeed' do
       post :create, params: password_params
 
@@ -147,6 +194,7 @@ RSpec.describe AccountRecovery::VerifyController do
       expect(response).to redirect_to(account_recovery_verify_url)
       expect(response.location).not_to include(raw_token)
       expect(session[:account_recovery_request_id]).to be_nil
+      expect(session[:account_recovery_granted_token]).to be_nil
       expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
       expect(recovery_request.link_verified_at).to be_present
       expect(recovery_request.password_verified_at).to be_present
@@ -173,12 +221,12 @@ RSpec.describe AccountRecovery::VerifyController do
 
     it 'retains the token for retry after an incorrect password without signing in' do
       stub_analytics
-      post :create, params: { token: raw_token, user: { password: 'wrong password' } }
+      post :create, params: password_params.merge(user: { password: 'wrong password' })
 
       expect(controller.current_user).to be_nil
       expect(flash[:error]).to eq(t('errors.confirm_password_incorrect'))
       expect(response).to render_template(:show)
-      expect(controller.view_assigns['token']).to eq(raw_token)
+      expect(session[:account_recovery_granted_token]).to eq(raw_token)
       expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::LINK_VERIFIED)
       expect(recovery_request).to be_token_valid
       expect(@analytics).to have_logged_event(
@@ -193,22 +241,82 @@ RSpec.describe AccountRecovery::VerifyController do
       expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
     end
 
-    it 'requires the token again on password submission' do
-      get :show, params: { token: raw_token }
+    it 'rejects a posted token without session evidence' do
+      session.delete(:account_recovery_granted_token)
 
-      post :create, params: { user: { password: password } }
+      post :create, params: password_params.merge(token: raw_token)
 
       expect(response).to redirect_to(root_url)
       expect(controller.current_user).to be_nil
       expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::LINK_VERIFIED)
     end
 
-    it 'rejects a substituted token even with the correct password' do
-      post :create, params: password_params.merge(token: SecureRandom.uuid)
+    it 'rejects an invalid session token even with the correct password' do
+      session[:account_recovery_granted_token] = SecureRandom.uuid
+
+      post :create, params: password_params
 
       expect(response).to redirect_to(root_url)
       expect(controller.current_user).to be_nil
-      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::GRANTED)
+      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::LINK_VERIFIED)
+      expect(session[:account_recovery_granted_token]).to be_nil
+    end
+
+    it 'does not accept a request id without session evidence' do
+      session.delete(:account_recovery_granted_token)
+
+      post :create, params: password_params
+
+      expect(response).to redirect_to(root_url)
+      expect(controller.current_user).to be_nil
+      expect(recovery_request.reload.password_verified_at).to be_nil
+    end
+
+    it 'requires the displayed request id even with a valid session token' do
+      post :create, params: { user: { password: password } }
+
+      expect(response).to redirect_to(root_url)
+      expect(controller.current_user).to be_nil
+      expect(recovery_request.reload.password_verified_at).to be_nil
+    end
+
+    it 'replaces the pending link but rejects a stale form from another tab' do
+      other_request = create(
+        :account_recovery_request,
+        :granted,
+        user: create(:user, :fully_registered, password: password),
+        token_fingerprint: AccountRecovery::TokenCreator.fingerprint('another-token'),
+      )
+
+      get :show, params: { token: 'another-token' }
+
+      expect(session[:account_recovery_granted_token]).to eq('another-token')
+      expect(recovery_request.reload).to be_token_valid
+      expect(other_request.reload).to be_token_valid
+
+      post :create, params: password_params
+
+      expect(response).to redirect_to(root_url)
+      expect(controller.current_user).to be_nil
+      expect(recovery_request.reload.password_verified_at).to be_nil
+      expect(other_request.reload.password_verified_at).to be_nil
+    end
+
+    it 'uses the latest link rather than a token supplied with the password' do
+      other_request = create(
+        :account_recovery_request,
+        :granted,
+        user: create(:user, :fully_registered, password: password),
+        token_fingerprint: AccountRecovery::TokenCreator.fingerprint('another-token'),
+      )
+      get :show, params: { token: 'another-token' }
+
+      post :create, params: password_params.merge(request_id: other_request.id, token: raw_token)
+
+      expect(controller.current_user).to eq(other_request.user)
+      expect(other_request.reload.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
+      expect(recovery_request.reload.password_verified_at).to be_nil
+      expect(session[:account_recovery_granted_token]).to be_nil
     end
 
     it 'requires the password of the token owner, not the previously signed-in user' do
@@ -219,7 +327,7 @@ RSpec.describe AccountRecovery::VerifyController do
       )
       sign_in_as_user(other_user)
 
-      post :create, params: { token: raw_token, user: { password: other_user.password } }
+      post :create, params: password_params.merge(user: { password: other_user.password })
 
       expect(controller.current_user).to be_nil
       expect(response).to render_template(:show)
@@ -279,6 +387,7 @@ RSpec.describe AccountRecovery::VerifyController do
     it 'rejects replay after password verification' do
       post :create, params: password_params
       sign_out(user)
+      session[:account_recovery_granted_token] = raw_token
 
       post :create, params: password_params
 
@@ -319,7 +428,7 @@ RSpec.describe AccountRecovery::VerifyController do
       post :create, params: password_params
 
       expect(controller.current_user).to be_nil
-      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::GRANTED)
+      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::LINK_VERIFIED)
       expect(flash[:error]).to eq(t('account_recovery.verify.token_rate_limited'))
     end
 

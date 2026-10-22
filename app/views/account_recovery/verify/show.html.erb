@@ -10,7 +10,7 @@
       method: :post,
       html: { class: 'margin-top-4' },
     ) do |f| %>
-  <%= hidden_field_tag :token, @token %>
+  <%= hidden_field_tag :request_id, @account_recovery_request.id %>
   <%= render PasswordToggleComponent.new(
         form: f,
         field_options: {
