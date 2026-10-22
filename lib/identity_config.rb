@@ -261,6 +261,7 @@ module IdentityConfig
     config.add(:idv_phone_verification_dual_vendor_check_socure_percent, type: :integer)
     config.add(:idv_phone_verification_dual_vendor_check_socure_reason_codes, type: :json)
     config.add(:idv_proofing_agent_config, type: :json)
+    config.add(:idv_proofing_agent_confirmation_url, type: :string)
     config.add(:idv_proofing_agent_enabled, type: :boolean)
     config.add(:idv_proofing_agent_passport_enabled, type: :boolean)
     config.add(:idv_proofing_agent_phone_vendor, type: :symbol, enum: [:mock, :lexis_nexis, :lexis_nexis_ddp, :socure])
