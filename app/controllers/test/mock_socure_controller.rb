@@ -53,7 +53,7 @@ module Test
         DocAuthImageFixtures.zipped_files(
           reference_id: 'local-socure',
           passport: selected == 'passport_pass.json',
-          selfie: false,
+          selfie: selected == 'license_selfie_pass.json',
         ),
         filename: 'document.zip',
         type: 'application/zip',

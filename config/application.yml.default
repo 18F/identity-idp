@@ -593,6 +593,8 @@ voice_otp_speech_rate: 'slow'
 weekly_auth_funnel_report_config: '[]'
 
 development:
+  # Synthetic success code used only by the local Socure selfie fixture.
+  idv_socure_reason_codes_docv_selfie_pass: '["LOCAL_SELFIE_PASS"]'
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   account_creation_device_profiling: collect_only

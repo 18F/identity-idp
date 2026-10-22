@@ -8,6 +8,7 @@ module DocAuth
       SocureError = Struct.new(:id, :text)
 
       ERRORS = [
+        SocureError.new('LOCAL_SELFIE_PASS', 'Local selfie match passed'),
         SocureError.new('I848', 'I848'),
         SocureError.new('I854', 'I854'),
         SocureError.new('R810', 'R810'),
