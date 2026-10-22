@@ -1,0 +1,5 @@
+<% if account_recovery_cancellable_by_authentication? %>
+  <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4').with_content(
+        t('two_factor_authentication.account_recovery.pending_alert', app_name: APP_NAME),
+      ) %>
+<% end %>

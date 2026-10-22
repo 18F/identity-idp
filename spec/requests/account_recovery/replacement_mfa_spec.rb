@@ -45,7 +45,7 @@ RSpec.describe 'Account recovery replacement enrollment', type: :request do
           params: { backup_code_accepted_form: { backup_code_notice_accepted: '1' } }
 
     expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::COMPLETED)
-    expect(user.phone_configurations).to be_empty
+    expect(user.reload.phone_configurations).to be_empty
     expect(user.backup_code_configurations.count).to eq(BackupCodeGenerator::NUMBER_OF_CODES)
     get account_path
     expect(response).to have_http_status(:ok)
@@ -65,7 +65,7 @@ RSpec.describe 'Account recovery replacement enrollment', type: :request do
     patch authenticator_setup_path, params: { name: 'Replacement app', code: code }
 
     expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::COMPLETED)
-    expect(user.phone_configurations).to be_empty
+    expect(user.reload.phone_configurations).to be_empty
     expect(user.auth_app_configurations.available_for_authentication.count).to eq(1)
     get account_path
     expect(response).to have_http_status(:ok)

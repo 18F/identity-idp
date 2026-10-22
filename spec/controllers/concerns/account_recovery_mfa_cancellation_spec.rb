@@ -71,6 +71,27 @@ RSpec.describe TwoFactorAuthenticatableMethods do
       create(:account_recovery_request, :waiting, user: user)
 
       expect { authenticate }.to change { ActionMailer::Base.deliveries.size }.by(1)
+
+      mail = ActionMailer::Base.deliveries.last
+      expect(mail.subject).to eq(
+        t('user_mailer.account_recovery_cancelled.mfa_used.subject', app_name: APP_NAME),
+      )
+    end
+
+    it 'tells the user on the next page that the request was cancelled' do
+      create(:account_recovery_request, :waiting, user: user)
+
+      authenticate
+
+      expect(controller.flash[:success]).to eq(
+        t('account_recovery.cancelled_by_mfa_html', app_name: APP_NAME),
+      )
+    end
+
+    it 'does not set a flash when there is nothing to cancel' do
+      authenticate
+
+      expect(controller.flash[:success]).to be_nil
     end
 
     it 'logs the cancellation' do

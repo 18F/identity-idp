@@ -56,7 +56,7 @@ RSpec.describe 'Account recovery password verification', type: :request do
     follow_redirect!
 
     expect(response).to have_http_status(:ok)
-    expect(password_form).to have_content(t('account_recovery.pending_mfa_setup.intro'))
+    expect(password_form).to have_content(t('account_recovery.new_mfa_setup.alert'))
 
     get account_path
 
@@ -165,6 +165,27 @@ RSpec.describe 'Account recovery password verification', type: :request do
 
       expect(recovery_request.reload.password_verified_at).to be_nil
       expect(response).to redirect_to(root_url)
+    end
+  end
+
+  it 'does not return the user to the single-use link after a session timeout' do
+    post new_user_session_path, params: { user: { email: user.email, password: password } }
+
+    travel_to(Time.zone.now + 2.days) do
+      recovery_request.update!(token_expires_at: Time.zone.now + 1.hour)
+
+      get account_recovery_verify_path, params: { token: token }
+      expect(session['user_return_to']).to include(token)
+
+      get account_recovery_verify_path, params: { token: token }
+      follow_redirect!
+      request_id = password_form.find('input[name="request_id"]', visible: false).value
+
+      post account_recovery_verify_path,
+           params: { request_id: request_id, user: { password: password } }
+
+      expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
+      expect(session['user_return_to']).to be_nil
     end
   end
 end

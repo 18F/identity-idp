@@ -101,7 +101,15 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def account_recovery_cancelled
-    UserMailer.with(user: user, email_address: email_address_record).account_recovery_cancelled
+    UserMailer.with(user: user, email_address: email_address_record).account_recovery_cancelled(
+      reason: AccountRecoveryRequest::CANCEL_REASON_USER_CANCELLED,
+    )
+  end
+
+  def account_recovery_cancelled_by_mfa_use
+    UserMailer.with(user: user, email_address: email_address_record).account_recovery_cancelled(
+      reason: AccountRecoveryRequest::CANCEL_REASON_MFA_USED,
+    )
   end
 
   def account_reset_request

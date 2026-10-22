@@ -155,12 +155,14 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def account_recovery_cancelled
+  # @param reason [String] one of AccountRecoveryRequest::CANCEL_REASON_* values
+  def account_recovery_cancelled(reason:)
     with_user_locale(user) do
-      @header = t('user_mailer.account_recovery_cancelled.header', app_name: APP_NAME)
+      @reason = reason
+      @header = t("user_mailer.account_recovery_cancelled.#{reason}.header", app_name: APP_NAME)
       mail(
         to: email_address.email,
-        subject: t('user_mailer.account_recovery_cancelled.subject', app_name: APP_NAME),
+        subject: t("user_mailer.account_recovery_cancelled.#{reason}.subject", app_name: APP_NAME),
       )
     end
   end

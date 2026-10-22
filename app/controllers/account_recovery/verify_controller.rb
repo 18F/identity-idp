@@ -125,6 +125,9 @@ module AccountRecovery
     def sign_in_partially
       sign_in(:user, recovery_user)
 
+      # Opening the emailed link with a timed-out session makes Devise store
+      # that single-use URL as the return location; it must not be revisited.
+      session.delete(stored_location_key_for(:user))
       %i[unconfirmed_phone phone_id new_totp_secret backup_codes mfa_selections
          next_mfa_selection_choice webauthn_challenge].each { |key| user_session.delete(key) }
       user_session[:context] = 'authentication'

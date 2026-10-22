@@ -1,31 +1,45 @@
-<% self.title = t('account_recovery.pending_mfa_setup.header') %>
+<% self.title = t('two_factor_authentication.two_factor_choice') %>
 
-<%= render PageHeadingComponent.new.with_content(
-      t('account_recovery.pending_mfa_setup.header'),
+<%= render AlertComponent.new(type: :info, class: 'margin-bottom-4').with_content(
+      t('account_recovery.new_mfa_setup.alert'),
     ) %>
-<p><%= t('account_recovery.pending_mfa_setup.intro') %></p>
+
+<%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.two_factor_choice')) %>
+
+<p><%= t('mfa.info', app_name: APP_NAME) %></p>
+
 <%= render VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :voice, only_if_all: true) %>
 
 <%= simple_form_for @two_factor_options_form,
                     method: :post,
                     url: account_recovery_new_mfa_setup_path do |f| %>
-  <fieldset class="margin-0 padding-0 border-0 margin-bottom-4">
-    <legend class="usa-sr-only"><%= t('two_factor_authentication.form_legend') %></legend>
-    <% @presenter.options.each do |option| %>
-      <%= render(option) do %>
-        <div class="usa-radio">
-          <%= radio_button_tag 'two_factor_options_form[selection][]', option.type, false,
-                               id: "recovery_mfa_#{option.type}",
-                               class: 'usa-radio__input usa-radio__input--tile',
-                               disabled: option.disabled? %>
-          <%= label_tag "recovery_mfa_#{option.type}", class: 'usa-radio__label' do %>
+  <div class="margin-bottom-4">
+    <fieldset class="margin-0 padding-0 border-0">
+      <legend class="margin-bottom-2 usa-sr-only">
+        <%= t('two_factor_authentication.form_legend') %>
+      </legend>
+      <% @presenter.options.each do |option| %>
+        <%= render(option) do %>
+          <%= check_box_tag(
+                'two_factor_options_form[selection][]',
+                option.type,
+                false,
+                disabled: option.disabled?,
+                class: 'usa-checkbox__input usa-checkbox__input--tile',
+                id: "recovery_mfa_#{option.type}",
+                aria: { describedby: "recovery_mfa_info_#{option.type}" },
+              ) %>
+          <%= label_tag "recovery_mfa_#{option.type}", class: 'usa-checkbox__label' do %>
             <%= option.label %>
-            <span class="usa-radio__label-description"><%= option.info %></span>
+            <span id="recovery_mfa_info_<%= option.type %>" class="usa-checkbox__label-description">
+              <%= option.info %>
+            </span>
           <% end %>
-        </div>
+        <% end %>
       <% end %>
-    <% end %>
-  </fieldset>
+    </fieldset>
+  </div>
+
   <%= hidden_field_tag :platform_authenticator_available, nil, id: 'platform_authenticator_available' %>
   <% javascript_packs_tag_once('platform-authenticator-available') %>
   <%= f.submit t('forms.buttons.continue') %>

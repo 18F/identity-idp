@@ -257,8 +257,6 @@ module TwoFactorAuthenticatableMethods
     ).call
     raise ActiveRecord::RecordInvalid.new(recovery_request) unless completed
 
-    user_session.delete(:mfa_selections)
-    user_session.delete(:next_mfa_selection_choice)
     user_session[:account_recovery_completed] = true
   end
 
@@ -302,6 +300,7 @@ module TwoFactorAuthenticatableMethods
       recovery_state: state_before_cancel,
     )
 
+    flash[:success] = t('account_recovery.cancelled_by_mfa_html', app_name: APP_NAME)
     notify_user_of_account_recovery_cancellation
   end
 
@@ -310,7 +309,8 @@ module TwoFactorAuthenticatableMethods
     return if email_address.blank?
 
     UserMailer.with(user: current_user, email_address: email_address)
-      .account_recovery_cancelled.deliver_now_or_later
+      .account_recovery_cancelled(reason: AccountRecoveryRequest::CANCEL_REASON_MFA_USED)
+      .deliver_now_or_later
   end
 
   def mark_user_session_authenticated_analytics(authentication_type)

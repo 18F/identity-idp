@@ -4,7 +4,7 @@ module MfaSetupConcern
   extend ActiveSupport::Concern
 
   def next_setup_path
-    return after_sign_in_path_for(current_user) if user_session.delete(:account_recovery_completed)
+    return next_account_recovery_setup_path if user_session[:account_recovery_completed]
 
     if next_setup_choice
       confirmation_path
@@ -158,6 +158,19 @@ module MfaSetupConcern
   end
 
   private
+
+  # Recovery completes on the first verified replacement; any remaining
+  # selections enroll as a normally authenticated user. Account creation
+  # prompts (second MFA, passkey recommendation) do not apply here.
+  def next_account_recovery_setup_path
+    return confirmation_path if next_setup_choice
+
+    user_session.delete(:account_recovery_completed)
+    user_session.delete(:mfa_selections)
+    user_session.delete(:next_mfa_selection_choice)
+    flash[:success] = t('account_recovery.new_mfa_setup.completed_html')
+    after_sign_in_path_for(current_user)
+  end
 
   def track_user_registration_mfa_setup_complete_event
     analytics.user_registration_mfa_setup_complete(

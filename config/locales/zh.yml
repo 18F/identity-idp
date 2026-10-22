@@ -1,7 +1,7 @@
 ---
-account_recovery.pending_mfa_setup.header: Setting up new authentication methods is not available yet
-account_recovery.pending_mfa_setup.help: Learn more about recovering access to your account
-account_recovery.pending_mfa_setup.intro: Your recovery link and password are confirmed. You are in a temporary session for account recovery. You cannot access your account or connected services until you set up new authentication methods. Setting up new methods is not available yet.
+account_recovery.cancelled_by_mfa_html: '<strong>Your account recovery request was canceled</strong><br>We canceled account recovery because there was a successful sign in and authentication to your %{app_name} account.'
+account_recovery.new_mfa_setup.alert: Add new authentication methods to replace your old ones and finish account recovery.
+account_recovery.new_mfa_setup.completed_html: '<strong>Your account is now recovered</strong><br>Review your authentication methods often to make sure they’re up to date.'
 account_recovery.pending.cancel_success: We canceled your account recovery request. You can continue using your existing authentication methods.
 account_recovery.pending.header: Check your email
 account_recovery.pending.help: How account recovery works
@@ -2015,6 +2015,7 @@ titles.visitors.index: 欢迎。
 titles.webauthn_setup: 添加你的安全密钥
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> 要求一种高安全水平的身份证实方法。比如人脸或触摸解锁、安全密钥或政府雇员身份证件。'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> 要求你的政府雇员身份证件，这是一种高安全水平的身份证实方法。'
+two_factor_authentication.account_recovery.pending_alert: You’ve requested to recover your %{app_name} account. Authenticating now will cancel the request and restore your access.
 two_factor_authentication.account_recovery.recover_link: recover your account
 two_factor_authentication.account_recovery.recover_text_html: If you can’t use any of your authentication methods above to access your account, you can %{link_html} to reset your authentication methods.
 two_factor_authentication.account_reset.cancel_link: 取消你的请求
@@ -2186,11 +2187,16 @@ user_mailer.account_connected_to_sp.sign_in_link: 请登录您的帐户
 user_mailer.account_connected_to_sp.subject: 您已将您的帐户关联到 %{sp_name}。
 user_mailer.account_disconnected_from_sp.intro: 如果您想重新关联您的账户，请访问%{sp_name}。
 user_mailer.account_disconnected_from_sp.subject: 您已将%{sp_name}从您的帐户中移除。
-user_mailer.account_recovery_cancelled.header: Your %{app_name} account recovery request was canceled
-user_mailer.account_recovery_cancelled.intro: Your request to recover your %{app_name} account has been canceled. Your account has not been changed.
-user_mailer.account_recovery_cancelled.methods_unchanged: Your existing authentication methods still work. You can sign in as usual.
-user_mailer.account_recovery_cancelled.report_html: If you did not expect this, report suspicious activity by contacting %{contact_link_html}.
-user_mailer.account_recovery_cancelled.subject: Your %{app_name} account recovery request was canceled
+user_mailer.account_recovery_cancelled.mfa_used.header: Your %{app_name} account recovery was canceled
+user_mailer.account_recovery_cancelled.mfa_used.intro: We canceled account recovery because there was a successful sign in and authentication to your %{app_name} account.
+user_mailer.account_recovery_cancelled.mfa_used.recognized: If you recognize this activity, you don’t need to do anything.
+user_mailer.account_recovery_cancelled.mfa_used.subject: Your %{app_name} account recovery was canceled
+user_mailer.account_recovery_cancelled.mfa_used.unrequested_html: '<strong>If this wasn’t you:</strong> go to %{app_name} and click “Sign in with %{app_name}” in the top right menu then:'
+user_mailer.account_recovery_cancelled.user_cancelled.header: Your %{app_name} account recovery request was canceled
+user_mailer.account_recovery_cancelled.user_cancelled.intro: Your request to recover your %{app_name} account has been canceled. Your account has not been changed.
+user_mailer.account_recovery_cancelled.user_cancelled.methods_unchanged: Your existing authentication methods still work. You can sign in as usual.
+user_mailer.account_recovery_cancelled.user_cancelled.report_html: If you did not expect this, report suspicious activity by contacting %{contact_link_html}.
+user_mailer.account_recovery_cancelled.user_cancelled.subject: Your %{app_name} account recovery request was canceled
 user_mailer.account_recovery_granted.button: Recover my account
 user_mailer.account_recovery_granted.cancel_link_text: Sign in and authenticate with your %{app_name} to cancel your account recovery request
 user_mailer.account_recovery_granted.expires: This link expires in %{interval}.

@@ -89,7 +89,8 @@ module AccountRecovery
       return if email_address.blank?
 
       UserMailer.with(user: current_user, email_address: email_address)
-        .account_recovery_cancelled.deliver_now_or_later
+        .account_recovery_cancelled(reason: AccountRecoveryRequest::CANCEL_REASON_USER_CANCELLED)
+        .deliver_now_or_later
     end
 
     def confirm_account_recovery_request_exists

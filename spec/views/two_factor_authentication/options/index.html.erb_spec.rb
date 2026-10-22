@@ -188,4 +188,37 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
       end
     end
   end
+
+  describe 'pending account recovery request banner' do
+    let(:user) { create(:user, :fully_registered) }
+    let(:pending_alert) do
+      t('two_factor_authentication.account_recovery.pending_alert', app_name: APP_NAME)
+    end
+
+    it 'is not shown without a request' do
+      expect(rendered).not_to have_content(pending_alert)
+    end
+
+    %i[waiting granted].each do |state|
+      it "warns that authenticating cancels a #{state} request" do
+        create(:account_recovery_request, state, user: user)
+
+        expect(rendered).to have_css('.usa-alert--info', text: pending_alert)
+      end
+    end
+
+    it 'warns that authenticating cancels a newly requested request' do
+      create(:account_recovery_request, user: user)
+
+      expect(rendered).to have_css('.usa-alert--info', text: pending_alert)
+    end
+
+    %i[link_verified password_verified cancelled].each do |state|
+      it "is not shown for a #{state} request" do
+        create(:account_recovery_request, state, user: user)
+
+        expect(rendered).not_to have_content(pending_alert)
+      end
+    end
+  end
 end

@@ -14,6 +14,7 @@ RSpec.describe 'Account Recovery: replace inaccessible MFA', email: true do
     click_link t('two_factor_authentication.account_recovery.recover_link')
     click_button t('account_recovery.start.continue')
 
+    secret = nil
     travel_to(Time.zone.now + 2.days) do
       GrantAccountRecoveryRequestsAndSendEmailsJob.new.perform(Time.zone.now)
       open_last_email
@@ -22,35 +23,46 @@ RSpec.describe 'Account Recovery: replace inaccessible MFA', email: true do
       click_button t('account_recovery.verify.continue')
 
       expect(page).to have_current_path(account_recovery_new_mfa_setup_path)
+      expect(page).to have_content(t('account_recovery.new_mfa_setup.alert'))
       expect(user.reload.phone_configurations.first).to be_suspended_for_account_recovery
-      choose 'recovery_mfa_auth_app'
+      check 'recovery_mfa_auth_app'
+      check 'recovery_mfa_backup_code'
       click_button t('forms.buttons.continue')
 
       secret = find('#qr-code').text.strip
       fill_in 'name', with: 'Replacement authenticator'
       fill_in 'code', with: 'invalid'
-      click_button t('forms.buttons.continue')
+      click_submit_default
       expect(user.reload.phone_configurations).not_to be_empty
 
       code = ROTP::TOTP.new(secret, interval: IdentityConfig.store.totp_code_interval).now
       fill_in 'name', with: 'Replacement authenticator'
       fill_in 'code', with: code
-      click_button t('forms.buttons.continue')
+      click_submit_default
 
+      # Recovery completes on the first verified replacement; the second
+      # selection continues as a normal, authenticated enrollment.
       expect(user.reload.phone_configurations).to be_empty
       expect(user.account_recovery_requests.last.state).to eq(AccountRecoveryRequest::COMPLETED)
-      visit account_path
-      expect(page).to have_current_path(account_path)
+      expect(page).to have_current_path(backup_code_setup_path)
 
-      Capybara.reset_sessions!
-      travel 1.minute do
-        signin(user.email, user.password)
-        code = ROTP::TOTP.new(secret, interval: IdentityConfig.store.totp_code_interval).now
-        fill_in 'code', with: code
-        click_button t('forms.buttons.submit.default')
-        visit account_path
-        expect(page).to have_current_path(account_path)
+      click_continue
+
+      expect(page).to have_current_path(account_path)
+      t('account_recovery.new_mfa_setup.completed_html').split('<br>').each do |part|
+        expect(page).to have_content(strip_tags(part))
       end
+      expect(user.reload.backup_code_configurations).not_to be_empty
+    end
+
+    Capybara.reset_sessions!
+    travel_to(Time.zone.now + 2.days + 1.minute) do
+      signin(user.email, user.password)
+      code = ROTP::TOTP.new(secret, interval: IdentityConfig.store.totp_code_interval).now
+      fill_in 'code', with: code
+      click_button t('forms.buttons.submit.default')
+
+      expect(page).to have_current_path(account_path)
     end
   end
 end

@@ -93,38 +93,100 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#account_recovery_cancelled' do
     let(:mail) do
       described_class.with(user: user, email_address: email_address)
-        .account_recovery_cancelled
+        .account_recovery_cancelled(reason: reason)
     end
 
-    it_behaves_like 'a system email'
-    it_behaves_like 'an email that respects user email locale preference'
+    context 'when the user cancelled the request themselves' do
+      let(:reason) { AccountRecoveryRequest::CANCEL_REASON_USER_CANCELLED }
 
-    it 'sends to the confirmed email address' do
-      expect(mail.to).to eq([email_address.email])
+      it_behaves_like 'a system email'
+      it_behaves_like 'an email that respects user email locale preference'
+
+      it 'sends to the confirmed email address' do
+        expect(mail.to).to eq([email_address.email])
+      end
+
+      it 'never contains a recovery link' do
+        expect(mail.html_part.body).to_not have_link(href: %r{/account_recovery/verify})
+      end
+
+      %i[en es fr zh].each do |locale|
+        context "with #{locale} as the preferred language" do
+          before { user.update!(email_language: locale.to_s) }
+
+          it 'confirms the cancellation and that methods are unchanged' do
+            I18n.with_locale(locale) do
+              expect(mail.subject).to eq(
+                I18n.t(
+                  'user_mailer.account_recovery_cancelled.user_cancelled.subject',
+                  app_name: APP_NAME,
+                ),
+              )
+              expect(mail.html_part.body).to have_content(
+                I18n.t(
+                  'user_mailer.account_recovery_cancelled.user_cancelled.intro',
+                  app_name: APP_NAME,
+                ),
+              )
+              expect(mail.html_part.body).to have_content(
+                I18n.t('user_mailer.account_recovery_cancelled.user_cancelled.methods_unchanged'),
+              )
+              expect(mail.html_part.body).to have_link(
+                I18n.t('user_mailer.contact_link_text'), href: MarketingSite.contact_url
+              )
+              expect(mail.html_part.body).not_to have_css('ul li')
+            end
+          end
+        end
+      end
     end
 
-    it 'never contains a recovery link' do
-      expect(mail.html_part.body).to_not have_link(href: %r{/account_recovery/verify})
-    end
+    context 'when the request was cancelled by authenticating with an existing method' do
+      let(:reason) { AccountRecoveryRequest::CANCEL_REASON_MFA_USED }
 
-    %i[en es fr zh].each do |locale|
-      context "with #{locale} as the preferred language" do
-        before { user.update!(email_language: locale.to_s) }
+      it_behaves_like 'a system email'
+      it_behaves_like 'an email that respects user email locale preference'
 
-        it 'confirms the cancellation and that methods are unchanged' do
-          I18n.with_locale(locale) do
-            expect(mail.subject).to eq(
-              I18n.t('user_mailer.account_recovery_cancelled.subject', app_name: APP_NAME),
-            )
-            expect(mail.html_part.body).to have_content(
-              I18n.t('user_mailer.account_recovery_cancelled.intro', app_name: APP_NAME),
-            )
-            expect(mail.html_part.body).to have_content(
-              I18n.t('user_mailer.account_recovery_cancelled.methods_unchanged'),
-            )
-            expect(mail.html_part.body).to have_link(
-              I18n.t('user_mailer.contact_link_text'), href: MarketingSite.contact_url
-            )
+      it 'never contains a recovery link' do
+        expect(mail.html_part.body).to_not have_link(href: %r{/account_recovery/verify})
+      end
+
+      %i[en es fr zh].each do |locale|
+        context "with #{locale} as the preferred language" do
+          before { user.update!(email_language: locale.to_s) }
+
+          it 'explains the automatic cancellation and what to do if it was not them' do
+            I18n.with_locale(locale) do
+              expect(mail.subject).to eq(
+                I18n.t(
+                  'user_mailer.account_recovery_cancelled.mfa_used.subject',
+                  app_name: APP_NAME,
+                ),
+              )
+              expect(mail.html_part.body).to have_css(
+                'h1',
+                text: I18n.t(
+                  'user_mailer.account_recovery_cancelled.mfa_used.header',
+                  app_name: APP_NAME,
+                ),
+              )
+              expect(mail.html_part.body).to have_content(
+                I18n.t(
+                  'user_mailer.account_recovery_cancelled.mfa_used.intro',
+                  app_name: APP_NAME,
+                ),
+              )
+              expect(mail.html_part.body).to have_content(
+                I18n.t('user_mailer.account_recovery_cancelled.mfa_used.recognized'),
+              )
+              expect(mail.html_part.body).to have_css('ul li', count: 4)
+              expect(mail.html_part.body).to have_link(
+                I18n.t('user_mailer.contact_link_text'), href: MarketingSite.contact_url
+              )
+              expect(mail.html_part.body).not_to have_content(
+                I18n.t('user_mailer.account_recovery_cancelled.user_cancelled.methods_unchanged'),
+              )
+            end
           end
         end
       end

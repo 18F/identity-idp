@@ -1,5 +1,7 @@
 <% self.title = @presenter.webauthn_title %>
 
+<%= render 'two_factor_authentication/account_recovery_pending_alert' %>
+
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
 
 <p>
