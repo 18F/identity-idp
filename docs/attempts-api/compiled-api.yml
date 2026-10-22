@@ -1444,6 +1444,7 @@ paths:
                                                 * `MITB`: Rules that check the presence of malware tags.
                                                 * `Level_1_Link_Reject`: Rules that indicate that there is a direct link to historic confirmed fraud.
                                                 * `Level_1_Link_Accept`: Indicates the user has passed fraud check
+                                                * `Fraud risk assessment has failed for unknown reasons` The device profiling has failed but the vendor has not supplied a reason.
                                               items:
                                                 type: string
                                                 enum:
@@ -1456,6 +1457,7 @@ paths:
                                                   - Level_1_Link_Accept
                                                   - Level_1_Link_Reject
                                                   - MITB
+                                                  - Fraud risk assessment has failed for unknown reasons
                                         success:
                                           type: boolean
                                           description: |
