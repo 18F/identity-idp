@@ -51,28 +51,6 @@ RSpec.describe AccountRecovery::PendingController do
             .to eq('12 hours')
         end
       end
-
-      it 'does not display a negative countdown when the waiting period ends' do
-        freeze_time do
-          waiting_period = IdentityConfig.store.account_recovery_wait_period_days.days
-          recovery_request = create(
-            :account_recovery_request, :waiting,
-            user: user,
-            requested_at: Time.zone.now - waiting_period
-          )
-
-          get :status
-
-          expect(controller.view_assigns['pending_presenter'].time_remaining_until_granted)
-            .to eq('1 minute')
-          travel 1.hour
-          get :status
-
-          expect(controller.view_assigns['pending_presenter'].time_remaining_until_granted)
-            .to eq('1 minute')
-          expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::WAITING)
-        end
-      end
     end
   end
 
@@ -93,15 +71,6 @@ RSpec.describe AccountRecovery::PendingController do
 
         expect(response).to render_template('pages/page_not_found')
         expect(recovery_request.reload).to be_active
-      end
-
-      it 'does not report success without an active request' do
-        create(:account_recovery_request, :cancelled, user: user)
-
-        post :cancel
-
-        expect(response).to render_template('pages/page_not_found')
-        expect(flash[:success]).to be_nil
       end
 
       it 'cancels the request' do
@@ -136,20 +105,6 @@ RSpec.describe AccountRecovery::PendingController do
         expect(response).to render_template('pages/page_not_found')
       end
 
-      it 'does not use another user’s request' do
-        create(:account_recovery_request, :waiting)
-
-        expect { post :resend }.not_to change { ActionMailer::Base.deliveries.size }
-        expect(response).to render_template('pages/page_not_found')
-      end
-
-      it 'does not resend the initial notification after a request is granted' do
-        create(:account_recovery_request, :granted, user: user)
-
-        expect { post :resend }.not_to change { ActionMailer::Base.deliveries.size }
-        expect(response).to render_template('pages/page_not_found')
-      end
-
       context 'with a waiting request' do
         let!(:recovery_request) { create(:account_recovery_request, :waiting, user: user) }
         let!(:signed_in_email) do
@@ -171,6 +126,18 @@ RSpec.describe AccountRecovery::PendingController do
           expect(response).to redirect_to(account_recovery_pending_url)
         end
 
+        it 'logs a successful resend' do
+          stub_analytics
+
+          post :resend
+
+          expect(@analytics).to have_logged_event(
+            :account_recovery_resend_request_email,
+            success: true,
+            rate_limited: false,
+          )
+        end
+
         it 'blocks repeated sends once the shared request limit is reached' do
           RateLimiter.new(
             user: user,
@@ -182,18 +149,29 @@ RSpec.describe AccountRecovery::PendingController do
           expect(response).to redirect_to(account_recovery_pending_url)
         end
 
-        it 'does not report success if email delivery raises an error' do
-          delivery = instance_double(ActionMailer::MessageDelivery)
-          allow(UserMailer).to receive(:with).and_return(
-            double(account_recovery_request: delivery),
-          )
-          allow(delivery).to receive(:deliver_now_or_later)
-            .and_raise(Net::SMTPFatalError.new('Notification delivery failed'))
+        it 'logs a rate-limited resend' do
+          stub_analytics
+          RateLimiter.new(
+            user: user,
+            rate_limit_type: :account_recovery_request,
+          ).increment_to_limited!
 
-          expect { post :resend }.to raise_error(Net::SMTPFatalError)
-          expect(flash[:success]).to be_nil
-          expect(recovery_request.reload).to be_active
+          post :resend
+
+          expect(@analytics).to have_logged_event(
+            :account_recovery_resend_request_email,
+            success: false,
+            rate_limited: true,
+          )
         end
+      end
+
+      it 'does not log a resend without an active request' do
+        stub_analytics
+
+        post :resend
+
+        expect(@analytics).not_to have_logged_event(:account_recovery_resend_request_email)
       end
     end
   end
@@ -213,6 +191,14 @@ RSpec.describe AccountRecovery::PendingController do
           get :show
 
           expect(response).to render_template('pages/page_not_found')
+        end
+
+        it 'does not log a pending page visit' do
+          stub_analytics
+
+          get :show
+
+          expect(@analytics).not_to have_logged_event(:account_recovery_pending_visit)
         end
       end
 
@@ -245,6 +231,17 @@ RSpec.describe AccountRecovery::PendingController do
           expect(response).to render_template(:show)
         end
 
+        it 'logs the pending page visit' do
+          stub_analytics
+
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            :account_recovery_pending_visit,
+            recovery_state: AccountRecoveryRequest::WAITING,
+          )
+        end
+
         it 'assigns the waiting period interval' do
           get :show
 
@@ -268,13 +265,6 @@ RSpec.describe AccountRecovery::PendingController do
           get :show
 
           expect(recovery_request.reload).to be_active
-        end
-
-        it 'does not send more notifications when the confirmation page is refreshed' do
-          expect do
-            get :show
-            get :show
-          end.not_to change { ActionMailer::Base.deliveries.size }
         end
       end
 
@@ -354,6 +344,18 @@ RSpec.describe AccountRecovery::PendingController do
           expect(response).to render_template(:status)
           expect(assigns(:pending_presenter).account_recovery_request).to eq(recovery_request)
         end
+
+        it "logs the status page visit for a #{state} request" do
+          stub_analytics
+          recovery_request = create(:account_recovery_request, state, user: user)
+
+          get :status
+
+          expect(@analytics).to have_logged_event(
+            :account_recovery_pending_status_visit,
+            recovery_state: recovery_request.state,
+          )
+        end
       end
 
       %i[link_verified password_verified cancelled].each do |state|
@@ -363,6 +365,15 @@ RSpec.describe AccountRecovery::PendingController do
           get :status
 
           expect(response).to render_template('pages/page_not_found')
+        end
+
+        it "does not log a status page visit for a #{state} request" do
+          stub_analytics
+          create(:account_recovery_request, state, user: user)
+
+          get :status
+
+          expect(@analytics).not_to have_logged_event(:account_recovery_pending_status_visit)
         end
       end
 

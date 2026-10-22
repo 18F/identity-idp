@@ -103,11 +103,10 @@ module AnalyticsEvents
     track_event(:account_recovery_eligibility_evaluated, eligible:, **extra)
   end
 
-  # @param [Integer] count Number of recovery requests expired
   # Account-preserving MFA recovery requests were expired because the emailed
   # recovery link was never used
-  def account_recovery_expired(count:, **extra)
-    track_event(:account_recovery_expired, count:, **extra)
+  def account_recovery_expired(**extra)
+    track_event(:account_recovery_expired, **extra)
   end
 
   # @param [Boolean] success Whether the recovery request was granted
@@ -116,6 +115,13 @@ module AnalyticsEvents
   # recovery link was issued
   def account_recovery_granted(success:, failure_reason: nil, **extra)
     track_event(:account_recovery_granted, success:, failure_reason:, **extra)
+  end
+
+  # @param [Integer] count Number of expired account recovery requests
+  # Account recovery requests were expired because the emailed
+  # recovery link was never used
+  def account_recovery_job_mark_expired(count:, **extra)
+    track_event(:account_recovery_job_mark_expired, count:, **extra)
   end
 
   # @param [Boolean] success Whether the recovery link token was valid
@@ -163,12 +169,33 @@ module AnalyticsEvents
     track_event(:account_recovery_password_verification, success:, rate_limited:, **extra)
   end
 
+  # @param [String] recovery_state State of the recovery request
+  # A user visited the account-preserving MFA recovery status page while their
+  # request was waiting or granted
+  def account_recovery_pending_status_visit(recovery_state:, **extra)
+    track_event(:account_recovery_pending_status_visit, recovery_state:, **extra)
+  end
+
+  # @param [String] recovery_state State of the recovery request
+  # A user visited the account-preserving MFA recovery "check your email" page
+  # after submitting a request
+  def account_recovery_pending_visit(recovery_state:, **extra)
+    track_event(:account_recovery_pending_visit, recovery_state:, **extra)
+  end
+
   # @param [Boolean] success Whether the recovery request was created
   # @param [Hash] errors Errors resulting from the request attempt
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String, nil] recovery_state State of the recovery request after creation
   # @param [Boolean] rate_limited Whether the request was blocked by rate limiting
   # @param [Hash, nil] telephony_response Response from the recovery SMS notification
+  # @param [Integer, nil] account_age_in_days Days since the account was confirmed
+  # @param [Integer, nil] days_since_last_full_sign_in Days since the user last fully
+  #   authenticated with MFA, or nil if they never have
+  # @param [Integer, nil] enabled_mfa_methods_count Number of enabled MFA methods
+  # @param [Hash, nil] mfa_method_ages_in_days Days since the newest configuration of each
+  #   enabled MFA method type was added, e.g. { phone: 3, auth_app: 400 }
+  # @param [Hash, nil] mfa_method_counts Number of enabled configurations of each MFA method type
   # An account-preserving MFA recovery request was submitted
   def account_recovery_request(
     success:,
@@ -177,6 +204,11 @@ module AnalyticsEvents
     recovery_state: nil,
     rate_limited: false,
     telephony_response: nil,
+    account_age_in_days: nil,
+    days_since_last_full_sign_in: nil,
+    enabled_mfa_methods_count: nil,
+    mfa_method_ages_in_days: nil,
+    mfa_method_counts: nil,
     **extra
   )
     track_event(
@@ -187,8 +219,20 @@ module AnalyticsEvents
       recovery_state:,
       rate_limited:,
       telephony_response:,
+      account_age_in_days:,
+      days_since_last_full_sign_in:,
+      enabled_mfa_methods_count:,
+      mfa_method_ages_in_days:,
+      mfa_method_counts:,
       **extra,
     )
+  end
+
+  # @param [Boolean] success Whether the request notification email was resent
+  # @param [Boolean] rate_limited Whether the resend was blocked by rate limiting
+  # A user asked to resend their account-preserving MFA recovery request email
+  def account_recovery_resend_request_email(success:, rate_limited: false, **extra)
+    track_event(:account_recovery_resend_request_email, success:, rate_limited:, **extra)
   end
 
   # @identity.idp.previous_event_name Account Reset

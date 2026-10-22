@@ -130,7 +130,7 @@ RSpec.describe AccountRecovery::StartController do
         expect(response).to redirect_to account_recovery_pending_url
       end
 
-      it 'logs the request event' do
+      it 'logs the request event with the requesting user’s account and MFA profile' do
         stub_analytics
 
         post :create
@@ -140,6 +140,10 @@ RSpec.describe AccountRecovery::StartController do
           success: true,
           recovery_state: AccountRecoveryRequest::WAITING,
           rate_limited: false,
+          account_age_in_days: 0,
+          enabled_mfa_methods_count: 1,
+          mfa_method_ages_in_days: { phone: 0 },
+          mfa_method_counts: { phone: 1 },
         )
       end
 

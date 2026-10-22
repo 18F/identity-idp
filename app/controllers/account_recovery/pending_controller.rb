@@ -10,21 +10,27 @@ module AccountRecovery
     before_action :confirm_waiting_request, only: :resend
 
     def show
+      analytics.account_recovery_pending_visit(recovery_state: account_recovery_request.state)
       @waiting_period_interval = account_recovery_wait_period_interval
       @email = current_user.last_sign_in_email_address.email
     end
 
     def status
+      analytics.account_recovery_pending_status_visit(
+        recovery_state: account_recovery_request.state,
+      )
       @pending_presenter = AccountRecovery::PendingPresenter.new(account_recovery_request)
     end
 
     def resend
       if rate_limiter.limited?
+        analytics.account_recovery_resend_request_email(success: false, rate_limited: true)
         flash[:error] = t('account_recovery.pending.resend_rate_limited')
       else
         rate_limiter.increment!
         UserMailer.with(user: current_user, email_address: current_user.last_sign_in_email_address)
           .account_recovery_request.deliver_now_or_later
+        analytics.account_recovery_resend_request_email(success: true)
         flash[:success] = t('account_recovery.pending.resend_success')
       end
 
