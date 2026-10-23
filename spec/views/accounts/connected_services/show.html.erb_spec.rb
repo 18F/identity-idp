@@ -70,6 +70,16 @@ RSpec.describe 'accounts/connected_services/show.html.erb' do
         )
       end
 
+      it 'links the card heading to the service in a new tab' do
+        render
+
+        expect(rendered).to have_css(
+          "a.usa-link--external[href='https://mytravel.state.gov/'][target=_blank]",
+          text: 'MyTravelGov',
+        )
+        expect(rendered).to have_content(t('links.new_tab'))
+      end
+
       it 'renders one card per consent' do
         create(:user_consent_sts, user:)
 
