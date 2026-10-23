@@ -22,10 +22,6 @@ module OpenidConnect
 
     class NoUsableKeyError < StandardError; end
 
-    # @param payload [String] the plaintext: a compact JWS or a JSON claims set
-    # @param service_provider [ServiceProvider] the record whose certificate the JWE is encrypted to
-    # @return [String] the compact-serialized JWE
-    # @raise [NoUsableKeyError] when the record has no usable RSA public key
     def self.encrypt(payload, service_provider:)
       new(service_provider:).encrypt(payload)
     end
@@ -42,8 +38,6 @@ module OpenidConnect
 
     attr_reader :service_provider
 
-    # RSA-OAEP wraps the content key with an RSA key, so a certificate carrying any other key type
-    # is as good as no certificate.
     def public_key
       @public_key ||= begin
         key = service_provider.ssl_certs.first&.public_key
