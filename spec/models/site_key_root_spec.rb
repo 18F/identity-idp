@@ -3,7 +3,9 @@ require 'rails_helper'
 RSpec.describe SiteKeyRoot do
   describe 'validations' do
     it 'requires at least one wrap' do
-      expect(build(:site_key_root, encrypted_root: nil)).not_to be_valid
+      record = build(:site_key_root, encrypted_root: nil)
+
+      expect(record).not_to be_valid
     end
 
     it 'requires a public key' do
@@ -27,12 +29,18 @@ RSpec.describe SiteKeyRoot do
 
       expect(record.recoverable?).to eq(true)
     end
+
+    it 'is true for a personal key wrap' do
+      record = build(:site_key_root, encrypted_root_personal_key: 'wrap')
+
+      expect(record.recoverable?).to eq(true)
+    end
   end
 
   describe '#forget_password!' do
     let(:user) { create(:user) }
 
-    context 'when the root is recoverable' do
+    context 'when the recovery code can open the root' do
       let!(:record) do
         create(
           :site_key_root,
@@ -48,6 +56,21 @@ RSpec.describe SiteKeyRoot do
         expect(record.reload).to have_attributes(
           encrypted_root: nil,
           encrypted_root_recovery_code: 'wrap',
+        )
+      end
+    end
+
+    context 'when the root is recoverable' do
+      let!(:record) do
+        create(:site_key_root, user:, encrypted_root_personal_key: 'wrap')
+      end
+
+      it 'drops only the password wrap' do
+        record.forget_password!
+
+        expect(record.reload).to have_attributes(
+          encrypted_root: nil,
+          encrypted_root_personal_key: 'wrap',
         )
       end
     end
