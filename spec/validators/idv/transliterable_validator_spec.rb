@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UspsInPersonProofing::TransliterableValidator do
+RSpec.describe Idv::TransliterableValidator do
   let(:errors) { ActiveModel::Errors.new(nil) }
   let(:valid_field) { nil }
   let(:invalid_field) { nil }
