@@ -61,6 +61,24 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
       )
     end
 
+    it 'encrypts to the target through the shared encryptor, naming the key in the header' do
+      header = JSON.parse(Base64.urlsafe_decode64(subject.token.split('.').first))
+
+      expect(header).to include(
+        'alg' => OpenidConnect::JweEncryptor::ALG,
+        'enc' => OpenidConnect::JweEncryptor::ENC,
+        'kid' => JWT::JWK.new(target_private_key.public_key).kid,
+      )
+    end
+
+    context 'when the target has no registered certificate' do
+      let!(:target) { create(:service_provider, :active, issuer: 'target-issuer', certs: []) }
+
+      it 'raises rather than issuing a token nobody can read' do
+        expect { subject }.to raise_error(OpenidConnect::JweEncryptor::NoUsableKeyError)
+      end
+    end
+
     it 'returns the configured expiration' do
       expect(subject.expires_in).to eq(600)
     end

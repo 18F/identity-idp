@@ -46,18 +46,7 @@ module TokenExchange
     attr_reader :subject_token, :target_issuer, :resource, :scope
 
     def jwe(issued_at:, expires_at:)
-      public_key = target.ssl_certs.first.public_key
-      jwk = JWT::JWK.new(public_key)
-
-      JWE.encrypt(
-        jwt(issued_at:, expires_at:),
-        public_key,
-        typ: 'JWT',
-        zip: 'DEF',
-        alg: 'RSA-OAEP',
-        enc: 'A256GCM',
-        kid: jwk.kid,
-      )
+      OpenidConnect::JweEncryptor.encrypt(jwt(issued_at:, expires_at:), service_provider: target)
     end
 
     def jwt(issued_at:, expires_at:)
