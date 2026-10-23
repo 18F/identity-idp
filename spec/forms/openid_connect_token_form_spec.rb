@@ -690,6 +690,11 @@ RSpec.describe OpenidConnectTokenForm do
           .and_return([client_id])
         allow(IdentityConfig.store).to receive(:token_exchange_subject_token_expires_in)
           .and_return(600)
+        TokenExchange::ActorHandoff.store(
+          code:,
+          actor_return_log_id: 123,
+          expires_in: IdentityConfig.store.openid_connect_authorization_code_expiration_seconds,
+        )
       end
 
       it 'returns a subject token response' do
@@ -709,6 +714,7 @@ RSpec.describe OpenidConnectTokenForm do
           broker_issuer: identity.service_provider,
           scope: 'openid token_exchange:passport',
           ial: 2,
+          actor_return_log_id: 123,
         )
       end
 

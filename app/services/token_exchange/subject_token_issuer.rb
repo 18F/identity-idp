@@ -4,12 +4,13 @@ module TokenExchange
   class SubjectTokenIssuer
     IssuedToken = Struct.new(:token, :expires_in, keyword_init: true)
 
-    def self.issue(identity:)
-      new(identity:).issue
+    def self.issue(identity:, actor_return_log_id: nil)
+      new(identity:, actor_return_log_id:).issue
     end
 
-    def initialize(identity:)
+    def initialize(identity:, actor_return_log_id:)
       @identity = identity
+      @actor_return_log_id = actor_return_log_id
     end
 
     def issue
@@ -21,6 +22,7 @@ module TokenExchange
         broker_issuer: identity.service_provider,
         scope: identity.scope,
         ial: identity.ial,
+        actor_return_log_id:,
         issued_at: Time.zone.now.to_i,
       )
 
@@ -31,6 +33,6 @@ module TokenExchange
 
     private
 
-    attr_reader :identity
+    attr_reader :identity, :actor_return_log_id
   end
 end
