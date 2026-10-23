@@ -146,6 +146,14 @@ class AccountShowPresenter
     user.connected_apps.includes([:service_provider_record, :email_address])
   end
 
+  def connected_delegations
+    @connected_delegations ||= user.connected_delegations.to_a
+  end
+
+  def show_connected_delegations?
+    connected_delegations.any?
+  end
+
   delegate :recent_events, :recent_devices, to: :user
 
   private

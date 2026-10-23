@@ -71,6 +71,25 @@ RSpec.describe UserConsentSts do
     end
   end
 
+  describe '.unexpired' do
+    before do
+      allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)
+    end
+
+    it 'includes consents within the expiration window' do
+      consent = described_class.create!(user:, target_app: 'issuer')
+
+      expect(described_class.unexpired).to eq([consent])
+    end
+
+    it 'excludes consents older than the expiration window' do
+      consent = described_class.create!(user:, target_app: 'issuer')
+      consent.update!(created_at: 366.days.ago)
+
+      expect(described_class.unexpired).to be_empty
+    end
+  end
+
   describe '.consent_valid?' do
     before do
       allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)

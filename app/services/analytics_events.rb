@@ -8915,6 +8915,18 @@ module AnalyticsEvents
     track_event(:sts_consent_visited)
   end
 
+  # Tracks when a user's STS (token exchange) consent is revoked
+  # @param [String] target_app Issuer of the target app the consent was revoked for
+  def sts_revoke_consent_revoked(target_app:, **extra)
+    track_event(:sts_revoke_consent_revoked, target_app:, **extra)
+  end
+
+  # Tracks when the page to revoke an STS (token exchange) consent is visited
+  # @param [String] target_app Issuer of the target app the consent would be revoked for
+  def sts_revoke_consent_visited(target_app:, **extra)
+    track_event(:sts_revoke_consent_visited, target_app:, **extra)
+  end
+
   # Tracks when user clicks on same tab that user landed on.
   # @param [String, nil] path that user was on when navigation tab was clicked
   def tab_navigation_current_page_clicked(path: nil, **extra)

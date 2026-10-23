@@ -1953,6 +1953,33 @@ RSpec.describe User do
     end
   end
 
+  describe '#connected_delegations' do
+    let(:user) { create(:user) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)
+    end
+
+    it 'returns unexpired STS consents, newest first' do
+      older = create(:user_consent_sts, user:, created_at: 2.days.ago)
+      newer = create(:user_consent_sts, user:, created_at: 1.day.ago)
+      create(:user_consent_sts, user:, created_at: 366.days.ago)
+      create(:user_consent_sts)
+
+      expect(user.connected_delegations).to eq([newer, older])
+    end
+
+    it 'is empty when the user has no consents' do
+      expect(user.connected_delegations).to be_empty
+    end
+
+    it 'is destroyed along with the user' do
+      create(:user_consent_sts, user:)
+
+      expect { user.destroy! }.to change { UserConsentSts.count }.by(-1)
+    end
+  end
+
   describe '#sign_in_count' do
     it 'returns sign-in event count since the given time' do
       freeze_time do

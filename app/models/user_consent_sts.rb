@@ -5,10 +5,12 @@
 class UserConsentSts < ApplicationRecord
   self.table_name = :user_consent_sts
 
-  belongs_to :user
+  belongs_to :user, inverse_of: :sts_consents
 
   validates :user, presence: true
   validates :target_app, presence: true
+
+  scope :unexpired, -> { where(created_at: consent_expiration.ago..) }
 
   # Returns true when an unexpired consent exists for the given user and target_app.
   def self.consent_valid?(user:, target_app:)
