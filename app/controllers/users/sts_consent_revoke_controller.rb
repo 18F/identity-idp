@@ -11,12 +11,12 @@ module Users
     end
 
     def show
-      @consent = load_consent!
+      @consent = load_consent
       analytics.sts_revoke_consent_visited(target_app: @consent.target_app)
     end
 
     def destroy
-      consent = load_consent!
+      consent = load_consent
       target_app = consent.target_app
 
       consent.destroy!
@@ -27,7 +27,7 @@ module Users
 
     private
 
-    def load_consent!
+    def load_consent
       current_user.connected_delegations.find(params[:id])
     end
   end
