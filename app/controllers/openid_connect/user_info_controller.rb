@@ -9,11 +9,6 @@ module OpenidConnect
 
     attr_reader :current_identity
 
-    # The claims are released as plain JSON unless the service provider is configured for
-    # encrypted responses (OpenID Connect Core 1.0 §5.3.2), in which case the same claims, exactly
-    # what the presenter released for the granted scopes, are served as one compact JWE with the
-    # content type `application/jwt`. The presenter is not told about encryption, so an encrypted
-    # response carries precisely the claims a plain one would.
     def show
       user_info = OpenidConnectUserInfoPresenter.new(current_identity).user_info
 
@@ -30,9 +25,6 @@ module OpenidConnect
       current_identity.service_provider_record
     end
 
-    # Fails closed: when the configured record has no usable key, the request is refused with
-    # `server_error` (the RFC 6749 §4.1.2.1 vocabulary) and the claims are never written to the
-    # response in the clear. The refusal is logged so the record can be repaired.
     def render_encrypted_user_info(user_info)
       jwe = OpenidConnect::JweEncryptor.encrypt(user_info.to_json, service_provider:)
       render plain: jwe, content_type: 'application/jwt'

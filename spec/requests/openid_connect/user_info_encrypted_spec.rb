@@ -1,7 +1,5 @@
 require 'rails_helper'
 
-# Encrypted user-information responses (OpenID Connect Core 1.0 §5.3.2) for the service providers
-# named in configuration; the plain JSON response for every other service provider is unchanged.
 RSpec.describe 'OpenID Connect userinfo encrypted responses' do
   let(:access_token) { SecureRandom.hex }
   let(:certs) { ['saml_test_sp'] }
