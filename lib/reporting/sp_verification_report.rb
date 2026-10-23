@@ -157,11 +157,15 @@ module Reporting
         issuers: quote(issuers),
       }
 
+      # Note: adding stats count(*) to try and resolve CW bug/inconsistency where some queries
+      # show an undercount for certain time periods / events
       format(<<~QUERY, params)
         filter properties.sp_request.facial_match 
         and name = %{event_name}
         and properties.service_provider in %{issuers}
         | fields properties.user_id
+        | stats count(*) as event_count by properties.user_id
+        | display properties.user_id
         | limit 10000
       QUERY
     end
