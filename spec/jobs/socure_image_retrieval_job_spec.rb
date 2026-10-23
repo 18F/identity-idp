@@ -133,6 +133,22 @@ RSpec.describe SocureImageRetrievalJob do
       end
     end
 
+    context 'when the document capture session was deleted before the job runs' do
+      before do
+        document_capture_session_uuid
+        docv_transaction_token
+        document_capture_session.destroy!
+      end
+
+      it 'returns early without fetching images or writing to storage' do
+        expect(DocAuth::Socure::Requests::ImagesRequest).not_to receive(:new)
+        expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+        expect(Idv::DocumentArtifactsPersister).not_to receive(:new)
+
+        perform
+      end
+    end
+
     context 'when document_capture_session has mdl_requested?' do
       before do
         document_capture_session.update(

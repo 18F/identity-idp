@@ -43,7 +43,7 @@ module DocAuth
         end
 
         def analytics
-          Analytics.new(user:, request: nil, session: {}, sp: nil)
+          @analytics ||= Analytics.new(user:, request: nil, session: {}, sp: nil)
         end
 
         def content_type
