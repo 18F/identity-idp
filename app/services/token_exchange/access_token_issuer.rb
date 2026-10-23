@@ -101,7 +101,7 @@ module TokenExchange
 
     def create_target_return_log
       billed_ial = IalContext.new(
-        ial: subject_token.ial,
+        ial: Idp::Constants::IAL_MAX,
         service_provider: target,
         user: target_identity.user,
       ).bill_for_ial_1_or_2
