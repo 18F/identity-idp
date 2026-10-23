@@ -28,6 +28,13 @@ RSpec.describe SiteKeys::Vault do
         expect(analytics).to have_logged_event(:site_key_root_created, replaced: false)
       end
 
+      it 'stores the public key of the root' do
+        root = vault.unlock(password, create: true)
+
+        expect(user.reload.site_key_root.public_key)
+          .to eq(SiteKeys::RootKeyPair.from_private_bytes(root).public_jwk)
+      end
+
       it 'does not keep the plaintext root in the session' do
         root = vault.unlock(password, create: true)
 
@@ -70,6 +77,13 @@ RSpec.describe SiteKeys::Vault do
     it 'starts a new root' do
       expect(vault.replace!(password)).not_to eq(created.root)
       expect(analytics).to have_logged_event(:site_key_root_created, replaced: true)
+    end
+
+    it 'stores the public key of the new root' do
+      root = vault.replace!(password)
+
+      expect(user.reload.site_key_root.public_key)
+        .to eq(SiteKeys::RootKeyPair.from_private_bytes(root).public_jwk)
     end
 
     it 'leaves a root another session changed since alone' do

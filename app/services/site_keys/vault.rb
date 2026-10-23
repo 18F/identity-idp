@@ -8,7 +8,6 @@ module SiteKeys
     SESSION_KEY = :encrypted_site_key_root
     FINGERPRINT_SESSION_KEY = :site_key_root_fingerprint
     UNAVAILABLE_SESSION_KEY = :site_key_root_unavailable
-    ROOT_BYTES = 32
     SITE_KEY_SALT = 'login.gov site key v1'
 
     attr_reader :user, :user_session
@@ -136,13 +135,17 @@ module SiteKeys
     end
 
     def create_root!(password, replace: nil)
-      root = SecureRandom.random_bytes(ROOT_BYTES)
+      key_pair = RootKeyPair.generate
+      root = key_pair.private_bytes
       replaced = replace.present?
-      encrypted_root = cipher.wrap(root, password)
+      attributes = {
+        encrypted_root: cipher.wrap(root, password),
+        public_key: key_pair.public_jwk,
+      }
       if replaced
-        replace.update!(encrypted_root:)
+        replace.update!(**attributes)
       else
-        SiteKeyRoot.transaction(requires_new: true) { SiteKeyRoot.create!(user:, encrypted_root:) }
+        SiteKeyRoot.transaction(requires_new: true) { SiteKeyRoot.create!(user:, **attributes) }
         user.reload_site_key_root
       end
       analytics&.site_key_root_created(replaced:)
