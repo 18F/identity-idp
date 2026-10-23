@@ -64,7 +64,13 @@ Rails.application.routes.draw do
     post '/api/saml/finalauthpost(:path_year)' => 'saml_idp#auth', as: :api_saml_finalauthpost
     get '/api/saml/auth(:path_year)' => 'saml_idp#auth'
   end
+
   get '/api/saml/complete' => 'saml_completion#index', as: :complete_saml
+
+  # Catch-all for SAML paths that did not match a live endpoint above, e.g. a
+  # decommissioned year such as /api/saml/auth2024. Must stay below every real
+  # SAML route: a glob placed earlier would shadow them.
+  get '/api/saml/*rest' => 'saml_decommissioned#show', as: :saml_decommissioned
 
   post '/api/service_provider' => 'service_provider#update'
   post '/api/verify/images' => 'idv/image_uploads#create'
