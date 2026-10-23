@@ -5,6 +5,10 @@ RSpec.describe SiteKeyRoot do
     it 'requires a wrapped root' do
       expect(build(:site_key_root, encrypted_root: nil)).not_to be_valid
     end
+
+    it 'requires a public key' do
+      expect(build(:site_key_root, public_key: nil)).not_to be_valid
+    end
   end
 
   describe '#forget_password!' do
