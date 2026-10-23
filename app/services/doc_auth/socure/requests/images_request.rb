@@ -6,14 +6,45 @@ module DocAuth
       class ImagesRequest < DocAuth::Socure::Request
         MAX_IMAGE_SIZE = 5 * 1024 * 1024 # 5 MB
 
-        def initialize(reference_id:, passport_book:)
+        def initialize(reference_id:, passport_book:, user:)
           @reference_id = reference_id
           @passport_book = passport_book
+          @user = user
+        end
+
+        def fetch
+          result = super
+        ensure
+          log_images_requested(result)
         end
 
         private
 
-        attr_reader :reference_id
+        attr_reader :reference_id, :user
+
+        def send_http_request
+          @http_response = super
+        end
+
+        def log_images_requested(result)
+          analytics.idv_socure_images_requested(
+            http_status: @http_response&.status,
+            user_id: user.uuid,
+            reference_id:,
+            image_types_present: image_types_present(result),
+            passport_book: !!@passport_book,
+          )
+        rescue StandardError => e
+          NewRelic::Agent.notice_error(e)
+        end
+
+        def image_types_present(result)
+          result.is_a?(Idv::IdvImages) ? result.images.map(&:type) : []
+        end
+
+        def analytics
+          Analytics.new(user:, request: nil, session: {}, sp: nil)
+        end
 
         def content_type
           'application/zip'

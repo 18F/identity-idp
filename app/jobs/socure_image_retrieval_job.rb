@@ -103,6 +103,7 @@ class SocureImageRetrievalJob < ApplicationJob
     DocAuth::Socure::Requests::ImagesRequest.new(
       reference_id:,
       passport_book:,
+      user: document_capture_session.user,
     ).fetch
   end
 
