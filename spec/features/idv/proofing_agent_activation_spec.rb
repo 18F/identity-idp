@@ -85,6 +85,7 @@ RSpec.describe 'Proofing agent activation', :js do
     visit idv_welcome_path
     expect(page).to have_current_path idv_enter_dob_ssn_path
 
+    # User attempts to navigate to the enter_password page without completing the enter_dob_ssn form
     visit idv_enter_password_path
     expect(page).to have_current_path idv_enter_dob_ssn_path
 
