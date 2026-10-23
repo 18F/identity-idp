@@ -12,7 +12,8 @@ module Proofing
                   :ipp_current_address_matches_id,
                   :applicant_pii,
                   :precheck_phone_number,
-                  :proofing_vendor
+                  :proofing_vendor,
+                  :resolution_attempts
 
       def initialize(
         resolution_result:, # InstantVerify
@@ -24,7 +25,8 @@ module Proofing
         applicant_pii:,
         precheck_phone_number:,
         hybrid_mobile_device_profiling_result: nil, # ThreatMetrix (Hybrid Mobile)
-        proofing_vendor: nil # resolution vendor that produced resolution_result
+        proofing_vendor: nil, # resolution vendor that produced resolution_result
+        resolution_attempts: nil
       )
         @resolution_result = resolution_result
         @ipp_enrollment_in_progress = ipp_enrollment_in_progress
@@ -36,6 +38,7 @@ module Proofing
         @applicant_pii = applicant_pii
         @precheck_phone_number = precheck_phone_number
         @proofing_vendor = proofing_vendor
+        @resolution_attempts = resolution_attempts
       end
 
       def adjudicated_result
@@ -56,6 +59,7 @@ module Proofing
               hybrid_mobile_device_profiling_result&.review_status,
             phone_precheck_passed: !!phone_result[:success],
             context: {
+              **(resolution_attempts ? { resolution_attempts: } : {}),
               device_profiling_adjudication_reason: device_profiling_reason,
               hybrid_mobile_device_profiling_adjudication_reason: hybrid_mobile_profiling_reason,
               resolution_adjudication_reason: resolution_reason,
@@ -72,7 +76,28 @@ module Proofing
         )
       end
 
+      def resolution_success?
+        resolution_result_and_reason.first
+      end
+
+      # Keep attempt history free of provider error messages, reason codes, and applicant PII.
+      def resolution_attempt_summary
+        success, reason = resolution_result_and_reason
+        {
+          vendor: proofing_vendor,
+          success:,
+          reason:,
+          resolution: summarize_attempt_result(resolution_result),
+          residential_address: summarize_attempt_result(residential_resolution_result),
+        }
+      end
+
       private
+
+      def summarize_attempt_result(result)
+        result.to_h.slice(:vendor_name, :success, :transaction_id, :timed_out)
+          .merge(exception_class: result.exception&.class&.name)
+      end
 
       def errors
         resolution_result.errors
