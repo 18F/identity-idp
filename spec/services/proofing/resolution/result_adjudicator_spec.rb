@@ -76,7 +76,37 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
     )
   end
 
+  describe '#resolution_attempt_summary' do
+    it 'includes only compact metadata rather than provider errors or reason codes' do
+      summary = subject.resolution_attempt_summary
+
+      expect(summary).to eq(
+        vendor: :instant_verify_ddp,
+        success: true,
+        reason: :pass_resolution_and_state_id,
+        resolution: {
+          vendor_name: 'test-resolution-vendor',
+          success: true,
+          transaction_id: '',
+          timed_out: false,
+          exception_class: nil,
+        },
+        residential_address: {
+          vendor_name: 'test-resolution-vendor',
+          success: true,
+          transaction_id: '',
+          timed_out: false,
+          exception_class: nil,
+        },
+      )
+    end
+  end
+
   describe '#adjudicated_result' do
+    it 'omits attempt history by default' do
+      expect(subject.adjudicated_result.extra[:context]).not_to have_key(:resolution_attempts)
+    end
+
     context 'IPP enrollment is in progress' do
       let(:ipp_enrollment_in_progress) { true }
       context 'residential address and id address are different' do

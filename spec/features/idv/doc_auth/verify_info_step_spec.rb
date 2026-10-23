@@ -777,6 +777,105 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       complete_ssn_step
     end
 
+    context 'with resolution failover enabled' do
+      let(:primary_response) { LexisNexisFixtures.ddp_instant_verify_error_response_json }
+      let(:socure_status) { 200 }
+      let(:socure_stub) do
+        stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore').to_return(
+          status: socure_status,
+          headers: { 'Content-Type' => 'application/json' },
+          body: {
+            referenceId: 'failover-reference',
+            kyc: {
+              reasonCodes: ['I200'],
+              fieldValidations: {
+                firstName: 0.99,
+                surName: 0.99,
+                streetAddress: 0.99,
+                city: 0.99,
+                state: 0.99,
+                zip: 0.99,
+                dob: 0.99,
+                ssn: 0.99,
+              },
+            },
+          }.to_json,
+        )
+      end
+      let(:ddp_stub) do
+        stub_request(:post, 'https://example.com/api/attribute-query')
+          .to_return(body: primary_response)
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          idv_resolution_failover_enabled: true,
+          idv_resolution_vendor_switching_enabled: true,
+          idv_resolution_vendor_instant_verify_percent: 0,
+          idv_resolution_vendor_instant_verify_ddp_percent: 50,
+          idv_resolution_vendor_socure_kyc_percent: 50,
+          lexisnexis_threatmetrix_base_url: 'https://example.com',
+          lexisnexis_threatmetrix_org_id: 'test_org_id',
+          lexisnexis_instant_verify_ddp_policy: 'test-policy',
+          idv_phone_precheck_percent: 0,
+        )
+        reload_ab_tests
+        allow_any_instance_of(Idv::VerifyInfoController).to receive(:proofing_vendor)
+          .and_return(:instant_verify_ddp)
+        ddp_stub
+        socure_stub
+      end
+
+      it 'continues after failover and logs the selected vendor and both attempts' do
+        complete_verify_step
+
+        expect(page).to have_current_path(idv_phone_path)
+        expect(ddp_stub).to have_been_requested.once
+        expect(socure_stub).to have_been_requested.once
+        expect(fake_analytics).to have_logged_event(
+          'IdV: doc auth verify proofing results',
+          hash_including(
+            success: true,
+            proofing_results: hash_including(
+              context: hash_including(
+                resolution_attempts: [
+                  hash_including(vendor: 'instant_verify_ddp', success: false),
+                  hash_including(vendor: 'socure_kyc', success: true),
+                ],
+                stages: hash_including(resolution: hash_including(vendor_name: 'socure_kyc')),
+              ),
+            ),
+          ),
+        )
+      end
+
+      context 'when AAMVA rescues the primary' do
+        let(:primary_response) do
+          LexisNexisFixtures.ddp_instant_verify_date_of_birth_fail_response_json
+        end
+
+        it 'continues without calling the fallback provider' do
+          complete_verify_step
+
+          expect(page).to have_current_path(idv_phone_path)
+          expect(ddp_stub).to have_been_requested.once
+          expect(socure_stub).not_to have_been_requested
+        end
+      end
+
+      context 'when both providers fail' do
+        let(:socure_status) { 500 }
+
+        it 'shows the existing exception page after exhausting providers' do
+          complete_verify_step
+
+          expect(page).to have_current_path(idv_session_errors_exception_path)
+          expect(ddp_stub).to have_been_requested.once
+          expect(socure_stub).to have_been_requested.once
+        end
+      end
+    end
+
     context 'when instant verify fails with attributes covered by AAMVA' do
       let(:instant_verify_response) do
         LexisNexisFixtures.instant_verify_date_of_birth_fail_response_json
