@@ -94,7 +94,6 @@ RSpec.describe Idv::DocumentCaptureController do
           idv_session.had_barcode_attention_error = true
           idv_session.had_barcode_read_failure = false
           idv_session.selfie_check_performed = true
-          idv_session.doc_auth_vendor = 'TrueID'
           idv_session.source_check_vendor = 'aamva'
         end
       end
@@ -106,7 +105,6 @@ RSpec.describe Idv::DocumentCaptureController do
           expect(idv_session.had_barcode_attention_error).to be(nil)
           expect(idv_session.had_barcode_read_failure).to be(nil)
           expect(idv_session.selfie_check_performed).to be(nil)
-          expect(idv_session.doc_auth_vendor).to be(nil)
           expect(idv_session.source_check_vendor).to be(nil)
         end
       end
@@ -552,7 +550,6 @@ RSpec.describe Idv::DocumentCaptureController do
 
         put :update
         expect(subject.idv_session.applicant).to be_nil
-        expect(subject.idv_session.doc_auth_vendor).to match(idv_vendor)
       end
     end
 
@@ -592,7 +589,6 @@ RSpec.describe Idv::DocumentCaptureController do
         it 'stays on document capture' do
           subject.idv_session.skip_hybrid_handoff = true
           put :update
-          expect(subject.idv_session.doc_auth_vendor).to be_nil
           expect(response).to redirect_to idv_document_capture_url
         end
       end
@@ -607,11 +603,6 @@ RSpec.describe Idv::DocumentCaptureController do
 
         it 'redirects to ssn' do
           expect(response).to redirect_to idv_ssn_url
-        end
-
-        it 'correctly updates Idv::Session' do
-          expect(subject.idv_session.doc_auth_vendor).to_not be_nil
-          expect(subject.idv_session.doc_auth_vendor).to match(idv_vendor)
         end
       end
     end

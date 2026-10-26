@@ -11,7 +11,11 @@ module Idv
     end
 
     def document_check
-      idv_session.doc_auth_vendor
+      if idv_session.ipp_state_id_complete? || idv_session.ipp_aamva_pending_state_id_pii.present?
+        Idp::Constants::Vendors::USPS
+      elsif idv_session.remote_document_capture_complete? || idv_session.inherited_proofed?
+        idv_session.document_capture_session&.doc_auth_vendor
+      end
     end
 
     def document_type_received
