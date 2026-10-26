@@ -29,6 +29,8 @@ RSpec.describe OpenidConnectConfigurationPresenter do
         expect(configuration[:id_token_signing_alg_values_supported]).to eq(%w[RS256])
         expect(configuration[:token_endpoint_auth_methods_supported]).to eq(%w[private_key_jwt])
         expect(configuration[:token_endpoint_auth_signing_alg_values_supported]).to eq(%w[RS256])
+        expect(configuration[:userinfo_encryption_alg_values_supported]).to eq(%w[RSA-OAEP])
+        expect(configuration[:userinfo_encryption_enc_values_supported]).to eq(%w[A256GCM])
         expect(configuration[:scopes_supported]).to_not include(TokenExchange::Constants::SCOPE)
 
         claims = OpenidConnectAttributeScoper::UNSCOPED_CLAIMS +
