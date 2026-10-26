@@ -20,7 +20,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       user:,
       service_provider: broker_issuer,
       scope: scope,
-      ial: 2,
+      ial: 1,
     )
   end
   let!(:target_identity) do
@@ -238,9 +238,9 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when the subject token was not issued at IAL2' do
+    context 'when the target identity is not IAL2' do
       before do
-        identity.update!(ial: 1)
+        target_identity.update!(ial: 1)
       end
 
       it 'is invalid' do
