@@ -101,5 +101,18 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
 
       subject
     end
+
+    context 'when storing the access token fails' do
+      before do
+        allow(EncryptedRedisStructStorage).to receive(:store).and_raise(Redis::BaseError)
+      end
+
+      it 'leaves no target return log or issuance behind' do
+        expect { subject }
+          .to raise_error(Redis::BaseError)
+          .and change { SpReturnLog.where(issuer: target_issuer).count }.by(0)
+          .and change { DelegatedIssuance.count }.by(0)
+      end
+    end
   end
 end

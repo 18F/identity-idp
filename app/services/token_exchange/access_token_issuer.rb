@@ -51,8 +51,8 @@ module TokenExchange
           issued_at: Time.zone.at(issued_at),
           expires_at: Time.zone.at(expires_at),
         )
+        EncryptedRedisStructStorage.store(access_token, expires_in:)
       end
-      EncryptedRedisStructStorage.store(access_token, expires_in:)
 
       IssuedToken.new(token:, expires_in:)
     end
