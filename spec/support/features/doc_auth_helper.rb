@@ -84,8 +84,17 @@ module DocAuthHelper
   end
 
   def complete_agreement_step
-    check t('doc_auth.instructions.consent', app_name: APP_NAME)
+    check doc_auth_consent_label
     click_on t('doc_auth.buttons.continue')
+  end
+
+  def doc_auth_consent_label
+    t(
+      'doc_auth.instructions.consent_html',
+      app_name: APP_NAME,
+      privacy_link: t('notices.privacy.privacy_act_statement'),
+      rules_of_use_link: t('titles.rules_of_use'),
+    )
   end
 
   def complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: false)
