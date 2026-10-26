@@ -37,7 +37,7 @@ module AccountRecovery
     def redirect_existing_request
       return unless AccountRecoveryRequest.active_for_user(current_user)
 
-      redirect_to account_recovery_status_url
+      redirect_to account_recovery_pending_url
     end
 
     def confirm_eligible_for_account_recovery

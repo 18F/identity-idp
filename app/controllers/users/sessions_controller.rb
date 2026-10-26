@@ -168,8 +168,7 @@ module Users
       if user_fully_authenticated?
         redirect_to signed_in_url
       elsif current_user
-        redirect_to pending_account_recovery_request? ?
-          login_two_factor_options_url : user_two_factor_authentication_url
+        redirect_to user_two_factor_authentication_url
       end
     end
 
@@ -281,8 +280,7 @@ module Users
       elsif pending_account_reset_request.present?
         account_reset_pending_url
       elsif current_user.accepted_rules_of_use_still_valid?
-        pending_account_recovery_request? ?
-          login_two_factor_options_url : user_two_factor_authentication_url
+        user_two_factor_authentication_url
       else
         rules_of_use_url
       end
@@ -292,10 +290,6 @@ module Users
       DestructiveAccountReset::PendingRequestForUser.new(
         current_user,
       ).get_account_reset_request
-    end
-
-    def pending_account_recovery_request?
-      AccountRecoveryRequest.active.exists?(user: current_user)
     end
 
     def override_csp_for_google_analytics

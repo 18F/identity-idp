@@ -94,8 +94,8 @@ class AccountRecoveryRequest < ApplicationRecord
     transition_to!(WAITING)
   end
 
-  def cancel!(reason:)
-    transition_to!(CANCELLED, cancel_reason: reason, **cleared_token_attributes)
+  def cancel!
+    transition_to!(CANCELLED, **cleared_token_attributes)
   end
 
   def expire!(reason: nil)

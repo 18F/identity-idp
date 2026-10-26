@@ -99,10 +99,10 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     AccountRecovery::EligibilityPolicy.new(user: user).recovery_pending?
   end
 
-  def account_recovery_status_link
+  def account_recovery_pending_link
     @view.link_to(
       t('two_factor_authentication.account_recovery.pending_link'),
-      account_recovery_status_path(locale: LinkLocaleResolver.locale),
+      account_recovery_pending_path(locale: LinkLocaleResolver.locale),
     )
   end
 

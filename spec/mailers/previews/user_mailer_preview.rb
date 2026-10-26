@@ -118,6 +118,10 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).account_reset_cancel
   end
 
+  def account_recovery_cancelled
+    UserMailer.with(user: user, email_address: email_address_record).account_recovery_cancelled
+  end
+
   def please_reset_password
     UserMailer.with(user: user, email_address: email_address_record).please_reset_password
   end

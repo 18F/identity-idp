@@ -18,6 +18,7 @@ module RememberDeviceConcern
   def check_remember_device_preference
     return unless UserSessionContext.authentication_context?(context)
     return if remember_device_cookie.nil?
+    return if AccountRecoveryRequest.active.exists?(user: current_user)
 
     expiration_time = mfa_expiration_interval
     return unless remember_device_cookie.valid_for_user?(

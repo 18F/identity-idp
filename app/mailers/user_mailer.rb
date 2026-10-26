@@ -131,6 +131,13 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def account_recovery_cancelled
+    with_user_locale(user) do
+      @header = t('user_mailer.account_recovery_cancelled.subject', app_name: APP_NAME)
+      mail(to: email_address.email, subject: @header)
+    end
+  end
+
   def account_recovery_request
     with_user_locale(user) do
       @waiting_period_interval = account_recovery_wait_period_interval

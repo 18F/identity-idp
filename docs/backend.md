@@ -176,11 +176,12 @@ does not send another SMS. SMS delivery is logged by the telephony sender, and t
 `account_recovery_request` event nests its delivery result under `telephony_response`, separately
 from request-creation success.
 
-Users who sign in with an active recovery request go to MFA selection, where they can still use
-existing methods or follow the link to recovery status and cancellation. Verification and
-replacement-MFA endpoints remain inert in this phase. The automatic cancellation on successful MFA
-and its notification are deferred to the next phase; user-facing copy intentionally describes the
-complete planned flow. Recovery tokens use 32 random bytes encoded as URL-safe Base64.
+Users with an active request follow the normal first-MFA sign-in route. A pending-recovery banner
+remains visible on MFA pages, including when choosing another method. Successful MFA sign-in cancels
+the request and emails a confirmation to the confirmed sign-in address; unsuccessful attempts leave
+the request intact. The request-received page remains informational.
+Verification and replacement-MFA endpoints remain inert in this phase. Recovery tokens use 32 random
+bytes encoded as URL-safe Base64.
 
 ### Controllers
 

@@ -130,7 +130,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
 
         it 'links to the pending request instead of legacy recovery' do
           expect(presenter.account_recovery_pending?).to eq(true)
-          expect(presenter.account_recovery_status_link).to include(account_recovery_status_path)
+          expect(presenter.account_recovery_pending_link).to include(account_recovery_pending_path)
           expect(presenter.account_reset_or_cancel_link).to be_nil
         end
       end

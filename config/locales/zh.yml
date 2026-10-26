@@ -1,17 +1,13 @@
 ---
-account_recovery.pending.cancel: Cancel recovery
-account_recovery.pending.cancel_instructions: If you can use one of your existing authentication methods, cancel your recovery request to try signing in with it.
-account_recovery.pending.cancel_success: Your account recovery request has been canceled. Choose an authentication method to continue signing in.
+account_recovery.pending.cancel_success: Your account recovery request has been canceled.
 account_recovery.pending.header: We received your account recovery request
 account_recovery.pending.help: How account recovery works
 account_recovery.pending.instructions: Keep your password available. You will need to enter it again before setting up new authentication methods. Your account and existing authentication methods have not been changed.
+account_recovery.pending.mfa_banner: You have a pending account recovery request. Sign in with an authentication method to cancel it.
 account_recovery.pending.notification_html: We sent an email to <strong>%{email}</strong> with instructions to recover your account.
 account_recovery.pending.resend: Resend the recovery request email
 account_recovery.pending.resend_rate_limited: You have requested too many recovery emails. Please wait a few minutes before trying again.
 account_recovery.pending.resend_success: We sent another account recovery request email.
-account_recovery.pending.status_header: Your account recovery request is pending
-account_recovery.pending.time_remaining: You have %{interval} left to wait before we send an email with a link to continue recovering your account.
-account_recovery.pending.wait_ended: Your waiting period has ended. Check your email for a link with the next steps to recover your account. Your account has not been recovered yet.
 account_recovery.start.continue: Recover my account
 account_recovery.start.header: Are you sure you want to recover your account?
 account_recovery.start.intro: You must wait %{interval} to receive an account recovery link. After clicking the link, you will set up new authentication methods to replace your old ones.
@@ -2190,6 +2186,10 @@ user_mailer.account_connected_to_sp.sign_in_link: 请登录您的帐户
 user_mailer.account_connected_to_sp.subject: 您已将您的帐户关联到 %{sp_name}。
 user_mailer.account_disconnected_from_sp.intro: 如果您想重新关联您的账户，请访问%{sp_name}。
 user_mailer.account_disconnected_from_sp.subject: 您已将%{sp_name}从您的帐户中移除。
+user_mailer.account_recovery_cancelled.details: Your account and authentication methods have not been changed.
+user_mailer.account_recovery_cancelled.intro: You signed in to your %{app_name} account and your account recovery request was canceled.
+user_mailer.account_recovery_cancelled.subject: Your account recovery request was canceled
+user_mailer.account_recovery_cancelled.unrequested: If you did not sign in, contact us immediately and secure your account.
 user_mailer.account_recovery_request.change_password: Immediately change your password.
 user_mailer.account_recovery_request.header: How to recover your %{app_name} account
 user_mailer.account_recovery_request.intro: For your security, %{app_name} has a two-step process to recover your account.

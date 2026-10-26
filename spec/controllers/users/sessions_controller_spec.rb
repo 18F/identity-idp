@@ -946,12 +946,12 @@ RSpec.describe Users::SessionsController, devise: true do
         allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
       end
 
-      it 'offers existing MFA methods after password authentication' do
+      it 'routes to the first MFA method after password authentication' do
         create(:account_recovery_request, :waiting, user: user)
 
         post :create, params: { user: { email: user.email, password: user.password } }
 
-        expect(response).to redirect_to(login_two_factor_options_url)
+        expect(response).to redirect_to(user_two_factor_authentication_url)
       end
 
       it 'still offers existing MFA methods when the feature is disabled' do
@@ -960,7 +960,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
         post :create, params: { user: { email: user.email, password: user.password } }
 
-        expect(response).to redirect_to(login_two_factor_options_url)
+        expect(response).to redirect_to(user_two_factor_authentication_url)
       end
 
       %i[cancelled completed expired].each do |state|
@@ -1008,7 +1008,7 @@ RSpec.describe Users::SessionsController, devise: true do
         expect(response).to redirect_to user_two_factor_authentication_url
       end
 
-      it 'offers existing MFA methods for an active request' do
+      it 'routes an active request to the normal first MFA method' do
         user = create(:user, :fully_registered)
         stub_sign_in_before_2fa(user)
         allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
@@ -1016,7 +1016,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
         get :new
 
-        expect(response).to redirect_to(login_two_factor_options_url)
+        expect(response).to redirect_to(user_two_factor_authentication_url)
       end
     end
 

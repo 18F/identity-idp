@@ -16,16 +16,16 @@ RSpec.describe AccountRecovery::StartController do
       context "when #{state}" do
         let!(:recovery_request) { create(:account_recovery_request, state, user: user) }
 
-        it 'returns to recovery status when revisiting start' do
+        it 'returns to the request confirmation when revisiting start' do
           get :show
 
-          expect(response).to redirect_to account_recovery_status_url
+          expect(response).to redirect_to account_recovery_pending_url
         end
 
         it 'does not restart the request or resend its email on resubmission' do
           expect { post :create }.not_to change { AccountRecoveryRequest.count }
 
-          expect(response).to redirect_to account_recovery_status_url
+          expect(response).to redirect_to account_recovery_pending_url
           expect(ActionMailer::Base.deliveries).to be_empty
           expect(recovery_request.reload.state).to eq(state.to_s)
         end

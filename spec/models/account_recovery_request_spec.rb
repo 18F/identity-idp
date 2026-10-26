@@ -111,14 +111,14 @@ RSpec.describe AccountRecoveryRequest do
   end
 
   describe '#cancel!' do
-    it 'records the reason and clears the token' do
+    it 'cancels and clears the token' do
       request = create(:account_recovery_request, :granted, user: user)
 
-      expect(request.cancel!(reason: 'mfa_used')).to eq(true)
+      expect(request.cancel!).to eq(true)
 
       request.reload
       expect(request.state).to eq(AccountRecoveryRequest::CANCELLED)
-      expect(request.cancel_reason).to eq('mfa_used')
+      expect(request.cancel_reason).to be_nil
       expect(request.cancelled_at).to be_present
       expect(request.token_fingerprint).to be_nil
       expect(request.token_expires_at).to be_nil

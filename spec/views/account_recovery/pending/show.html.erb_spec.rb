@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe 'account_recovery/pending/show.html.erb' do
   before do
-    assign(:waiting_period_interval, '1 day')
     assign(:email, 'signed-in@example.com')
   end
 
@@ -38,11 +37,10 @@ RSpec.describe 'account_recovery/pending/show.html.erb' do
     expect(rendered).to include('&lt;script&gt;')
   end
 
-  it 'keeps confirmation separate from status and cancellation' do
+  it 'does not offer manual cancellation or a countdown' do
     render
 
     expect(rendered).not_to have_link(href: root_path)
-    expect(rendered).not_to have_link(href: account_recovery_status_path)
     expect(rendered).not_to have_css('form[action*="cancel"], a[href*="cancel"]')
   end
 end

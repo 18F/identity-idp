@@ -50,7 +50,7 @@
 
 <% if @presenter.account_recovery_pending? %>
   <p>
-    <%= @presenter.account_recovery_status_link %>
+    <%= @presenter.account_recovery_pending_link %>
   </p>
 <% elsif @presenter.account_recovery_eligible? %>
   <p>
