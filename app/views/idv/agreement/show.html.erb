@@ -31,7 +31,7 @@
           label: t(
             'doc_auth.instructions.consent_html',
             app_name: APP_NAME,
-            privacy_link: link_to(
+            privacy_link: new_tab_link_to(
               t('notices.privacy.privacy_act_statement'),
               policy_redirect_url(
                 policy: :privacy_act_statement,
@@ -40,7 +40,7 @@
                 location: :consent,
               ),
             ),
-            rules_of_use_link: link_to(
+            rules_of_use_link: new_tab_link_to(
               t('titles.rules_of_use'),
               MarketingSite.rules_of_use_url,
             ),
