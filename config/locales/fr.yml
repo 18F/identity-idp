@@ -1754,7 +1754,7 @@ notices.password_changed: Vous avez changé votre mot de passe.
 notices.phishing_warning_html: Les téléphones sont vulnérables %{common_scams_link_html}. Si possible, %{ft_unlock_setup_link_html} pour une meilleure sécurité de votre compte.
 notices.phone_confirmed: Un téléphone a été ajouté à votre compte.
 notices.piv_cac_configured: Ajouter votre carte d’employé fédéral.
-notices.privacy.privacy_act_statement: Déclaration relative à la loi sur la confidentialité
+notices.privacy.privacy_act_statement: Déclaration en vertu de la loi sur la protection de la vie privée
 notices.privacy.security_and_privacy_practices: Déclaration relatives à la loi sur les pratiques de sécurité et la confidentialité
 notices.resend_confirmation_email.success: Nous avons envoyé un autre e-mail de confirmation.
 notices.session_cleared: Pour votre sécurité, nous effaçons les informations que vous avez saisies si vous ne passez pas à une nouvelle page dans les %{minutes} minutes.

@@ -1765,7 +1765,7 @@ notices.password_changed: Cambió su contraseña.
 notices.phishing_warning_html: Los teléfonos son vulnerables a %{common_scams_link_html}. Si es posible, %{ft_unlock_setup_link_html} para mayor seguridad de la cuenta.
 notices.phone_confirmed: Se agregó un teléfono a su cuenta.
 notices.piv_cac_configured: Agregue su identificación de empleado gubernamental.
-notices.privacy.privacy_act_statement: Declaración de privacidad
+notices.privacy.privacy_act_statement: Declaración de Privacidad y seguridad
 notices.privacy.security_and_privacy_practices: Prácticas de seguridad y declaración de privacidad
 notices.resend_confirmation_email.success: Enviamos otro correo electrónico de confirmación.
 notices.session_cleared: Por su seguridad, borramos lo que usted ingresó si usted no pasa a una página nueva en %{minutes} minutos.

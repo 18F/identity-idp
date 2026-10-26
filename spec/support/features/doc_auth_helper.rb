@@ -1,9 +1,11 @@
 require_relative 'document_capture_step_helper'
 require_relative 'interaction_helper'
+require_relative 'javascript_driver_helper'
 require_relative '../user_agent_helper'
 
 module DocAuthHelper
   include InteractionHelper
+  include JavascriptDriverHelper
   include DocumentCaptureStepHelper
   include UserAgentHelper
 
@@ -92,8 +94,8 @@ module DocAuthHelper
     t(
       'doc_auth.instructions.consent_html',
       app_name: APP_NAME,
-      privacy_link: t('notices.privacy.privacy_act_statement'),
-      rules_of_use_link: t('titles.rules_of_use'),
+      privacy_link: "#{t('notices.privacy.privacy_act_statement')}#{t('links.new_tab')}",
+      rules_of_use_link: "#{t('titles.rules_of_use')}#{t('links.new_tab')}",
     )
   end
 
