@@ -37,6 +37,8 @@ class OpenidConnectConfigurationPresenter
       id_token_signing_alg_values_supported: %w[RS256],
       token_endpoint_auth_methods_supported: %w[private_key_jwt],
       token_endpoint_auth_signing_alg_values_supported: %w[RS256],
+      userinfo_encryption_alg_values_supported: [OpenidConnect::JweEncryptor::ALG],
+      userinfo_encryption_enc_values_supported: [OpenidConnect::JweEncryptor::ENC],
     }
   end
 

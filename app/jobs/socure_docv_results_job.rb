@@ -302,12 +302,6 @@ class SocureDocvResultsJob < ApplicationJob
     ).fetch
   end
 
-  def fetch_images(reference_id)
-    DocAuth::Socure::Requests::ImagesRequest.new(
-      reference_id:,
-    ).fetch
-  end
-
   def document_capture_session
     @document_capture_session ||=
       DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)

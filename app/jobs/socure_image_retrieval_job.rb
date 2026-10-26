@@ -18,7 +18,7 @@ class SocureImageRetrievalJob < ApplicationJob
     @docv_transaction_token = docv_transaction_token
     @encrypted_document_metadata = encrypted_document_metadata
 
-    return if document_capture_session&.mdl_requested?
+    return if document_capture_session.nil? || document_capture_session.mdl_requested?
 
     result = fetch_images(reference_id, passport_book:)
     if result.is_a?(Idv::IdvImages)
@@ -103,6 +103,7 @@ class SocureImageRetrievalJob < ApplicationJob
     DocAuth::Socure::Requests::ImagesRequest.new(
       reference_id:,
       passport_book:,
+      user: document_capture_session.user,
     ).fetch
   end
 

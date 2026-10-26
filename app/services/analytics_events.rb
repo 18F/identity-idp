@@ -6247,6 +6247,31 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Integer, nil] http_status HTTP status returned by Socure, nil if no response received
+  # @param [String] user_id UUID of the user the images belong to
+  # @param [String] reference_id Socure reference ID the images were requested for
+  # @param [Array<Symbol>] image_types_present Image types returned (front, back, passport, selfie)
+  # @param [Boolean] passport_book Whether the document was a passport book
+  # Images were requested from Socure for a completed DocV transaction
+  def idv_socure_images_requested(
+    http_status:,
+    user_id:,
+    reference_id:,
+    image_types_present:,
+    passport_book:,
+    **extra
+  )
+    track_event(
+      :idv_socure_images_requested,
+      http_status:,
+      user_id:,
+      reference_id:,
+      image_types_present:,
+      passport_book:,
+      **extra,
+    )
+  end
+
   # Socure KYC API was called with the following results
   # @param [Boolean] success Result from Socure KYC API call
   # @param [Hash] errors Result from resolution proofing
@@ -7560,13 +7585,23 @@ module AnalyticsEvents
   # @param [Integer] ial
   # @param [String] client_id Service Provider issuer
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  def openid_connect_bearer_token(success:, ial:, client_id:, error_details: nil, **extra)
+  # @param [Boolean, nil] encrypted Whether the service provider receives its userinfo response
+  #   as an encrypted JWT; nil when the token did not authenticate
+  def openid_connect_bearer_token(
+    success:,
+    ial:,
+    client_id:,
+    error_details: nil,
+    encrypted: nil,
+    **extra
+  )
     track_event(
       'OpenID Connect: bearer token authentication',
       success:,
       ial:,
       client_id:,
       error_details:,
+      encrypted:,
       **extra,
     )
   end
@@ -7691,6 +7726,19 @@ module AnalyticsEvents
       ial:,
       code_verifier_present:,
       service_provider_pkce:,
+      **extra,
+    )
+  end
+
+  # Tracks a userinfo request from a service provider configured for encrypted responses but
+  # with no usable key to encrypt to; the request was refused rather than answered in the clear
+  # @param [String] client_id Service Provider issuer
+  # @param [String] error Class of the error that prevented encryption
+  def openid_connect_userinfo_encryption_failed(client_id:, error:, **extra)
+    track_event(
+      :openid_connect_userinfo_encryption_failed,
+      client_id:,
+      error:,
       **extra,
     )
   end
