@@ -101,6 +101,10 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
+  def dpop_required?
+    pkce == true && IdentityConfig.store.dpop_required_issuers.include?(issuer)
+  end
+
   def userinfo_encrypted_response?
     IdentityConfig.store.userinfo_encryption_allowed_issuers.include?(issuer)
   end

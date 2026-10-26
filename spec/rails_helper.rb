@@ -37,6 +37,7 @@ RSpec.configure do |config|
   config.include EmailSpec::Matchers
   config.include AbstractController::Translation
   config.include MailerHelper
+  config.include DpopHelper
   config.include Features::SessionHelper, type: :feature
   config.include Features::StripTagsHelper, type: :feature
   config.include ViewComponent::TestHelpers, type: :component

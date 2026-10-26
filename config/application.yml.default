@@ -160,6 +160,8 @@ document_images_sharing_service_providers: '[]'
 document_images_sharing_skip_doc_auth_post_validations: false
 document_images_ttl_seconds: 259_200
 domain_name: login.gov
+dpop_proof_max_age_seconds: 300
+dpop_required_issuers: '[]'
 dos_passport_client_id: ''
 dos_passport_client_secret: ''
 dos_passport_composite_healthcheck_endpoint: ''

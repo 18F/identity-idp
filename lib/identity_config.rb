@@ -177,6 +177,8 @@ module IdentityConfig
     config.add(:document_images_ttl_seconds, type: :integer)
     config.add(:drop_off_report_config, type: :json)
     config.add(:domain_name, type: :string)
+    config.add(:dpop_proof_max_age_seconds, type: :integer)
+    config.add(:dpop_required_issuers, type: :json)
     config.add(:dos_passport_client_id, type: :string)
     config.add(:dos_passport_client_secret, type: :string)
     config.add(:dos_passport_composite_healthcheck_endpoint, type: :string)
