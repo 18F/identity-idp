@@ -767,7 +767,7 @@ doc_auth.instructions.bullet1_mdl_and_passport_card: 持有美国护照本或护
 doc_auth.instructions.bullet2: 输入你的社会保障号码
 doc_auth.instructions.bullet3: 与你电话号码匹配
 doc_auth.instructions.bullet4: 重新输入你 %{app_name} 密码
-doc_auth.instructions.consent_html: 勾选此框即表示您允许 %{app_name} 按照我们《%{privacy_link}》中所述的方式索取、使用、保留和共享您的个人信息，并且您同意我们的《%{rules_of_use_link}》。我们将用它来验证您的身份并帮助防止欺诈。
+doc_auth.instructions.consent: 勾选此框即表示您允许 %{app_name} 按照我们《%{privacy_link}》中所述的方式索取、使用、保留和共享您的个人信息，并且您同意我们的《%{rules_of_use_link}》。我们将用它来验证您的身份并帮助防止欺诈。
 doc_auth.instructions.getting_started: '你需要：'
 doc_auth.instructions.switch_back: 然后再返回你的电脑完成验证身份
 doc_auth.instructions.switch_back_image: 从手机指向电脑的箭头

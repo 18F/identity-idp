@@ -767,7 +767,7 @@ doc_auth.instructions.bullet1_mdl_and_passport_card: Debe tener una libreta or t
 doc_auth.instructions.bullet2: Ingresar su número de Seguro Social
 doc_auth.instructions.bullet3: Hacer coincidir su número de teléfono
 doc_auth.instructions.bullet4: Volver a ingresar su contraseña de %{app_name}
-doc_auth.instructions.consent_html: Al marcar esta casilla, usted permite que %{app_name} solicite, use, conserve y comparta su información personal, tal como se describe en nuestra %{privacy_link}, y acepta nuestras %{rules_of_use_link}. La usaremos para verificar su identidad y ayudar a prevenir el fraude.
+doc_auth.instructions.consent: Al marcar esta casilla, usted permite que %{app_name} solicite, use, conserve y comparta su información personal, tal como se describe en nuestra %{privacy_link}, y acepta nuestras %{rules_of_use_link}. La usaremos para verificar su identidad y ayudar a prevenir el fraude.
 doc_auth.instructions.getting_started: 'Necesitará:'
 doc_auth.instructions.switch_back: Vuelva a su computadora para finalizar la verificación de su identidad
 doc_auth.instructions.switch_back_image: Flecha que apunta del teléfono a la computadora
