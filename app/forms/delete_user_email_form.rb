@@ -28,7 +28,6 @@ class DeleteUserEmailForm
   end
 
   def notify_subscribers
-    email = email_address.email
     recovery_information_changed = PushNotification::RecoveryInformationChangedEvent.new(user: user)
     PushNotification::HttpPush.deliver(recovery_information_changed)
   end
