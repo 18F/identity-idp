@@ -100,18 +100,13 @@ module TokenExchange
     end
 
     def create_target_return_log
-      billed_ial = IalContext.new(
-        ial: Idp::Constants::IAL_MAX,
-        service_provider: target,
-        user: target_identity.user,
-      ).bill_for_ial_1_or_2
-      profile = target_identity.user.active_profile if billed_ial > 1
+      profile = target_identity.user.active_profile
 
       SpReturnLog.create!(
         request_id: SecureRandom.uuid,
         user: target_identity.user,
         billable: true,
-        ial: billed_ial,
+        ial: profile ? 2 : 1,
         issuer: target_issuer,
         profile_id: profile&.id,
         profile_verified_at: profile&.verified_at,
