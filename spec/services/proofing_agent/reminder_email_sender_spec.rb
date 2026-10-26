@@ -1,0 +1,110 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe ProofingAgent::ReminderEmailSender do
+  let(:user) { create(:user, :fully_registered) }
+  let(:analytics) { FakeAnalytics.new }
+  let(:verified_at) { Time.zone.now.iso8601 }
+  let(:proofing_agent_id) { SecureRandom.uuid }
+  let(:proofing_location_id) { SecureRandom.uuid }
+  let(:correlation_id) { SecureRandom.uuid }
+  let(:transaction_id) { SecureRandom.uuid }
+  let(:validity_hours) { 72 }
+
+  subject(:sender) { described_class.new(user: user, analytics: analytics) }
+
+  describe '#call' do
+    before do
+      ActionMailer::Base.deliveries.clear
+      allow(IdentityConfig.store).to receive(:agent_proofed_user_time_validity_hours)
+        .and_return(validity_hours)
+    end
+
+    it 'delivers a reminder email to each confirmed email address with the reminder subject' do
+      expect do
+        sender.call(
+          verified_at: verified_at,
+          proofing_agent_id: proofing_agent_id,
+          proofing_location_id: proofing_location_id,
+          correlation_id: correlation_id,
+          transaction_id: transaction_id,
+        )
+      end.to change { ActionMailer::Base.deliveries.count }.by(user.confirmed_email_addresses.count)
+
+      deliveries = ActionMailer::Base.deliveries
+      user.confirmed_email_addresses.each_with_index do |email_address, idx|
+        expect(deliveries[idx].to).to eq([email_address.email])
+        expect(deliveries[idx].subject).to eq(
+          I18n.t('user_mailer.agent_proofing_succeeded.reminder_subject'),
+        )
+      end
+    end
+
+    it 'logs the idv_proofing_agent_profile_reminder_email_sent analytics event' do
+      sender.call(
+        verified_at: verified_at,
+        proofing_agent_id: proofing_agent_id,
+        proofing_location_id: proofing_location_id,
+        correlation_id: correlation_id,
+        transaction_id: transaction_id,
+      )
+
+      expected_expiration = Idv::ProofingAgent::AgentProofingSucceededPresenter
+        .deadline_for(verified_at: verified_at)
+
+      expect(analytics).to have_logged_event(
+        :idv_proofing_agent_profile_reminder_email_sent,
+        user_id: user.uuid,
+        proofing_agent: {
+          correlation_id: correlation_id,
+          transaction_id: transaction_id,
+          agent_id: proofing_agent_id,
+          location_id: proofing_location_id,
+        },
+        expiration_date: expected_expiration,
+      )
+    end
+
+    context 'with a service provider' do
+      let(:service_provider) do
+        create(:service_provider, return_to_sp_url: 'https://partner.example.gov')
+      end
+
+      subject(:sender) do
+        described_class.new(user: user, analytics: analytics, service_provider: service_provider)
+      end
+
+      it 'delivers an email whose confirmation link routes to the partner' do
+        sender.call(
+          verified_at: verified_at,
+          proofing_agent_id: proofing_agent_id,
+          proofing_location_id: proofing_location_id,
+          correlation_id: correlation_id,
+          transaction_id: transaction_id,
+        )
+
+        mail = ActionMailer::Base.deliveries.last
+        expect(mail.html_part.body.decoded).to include('href="https://partner.example.gov"')
+      end
+    end
+
+    context 'when verified_at is blank' do
+      it 'does not deliver an email or log the analytics event' do
+        expect do
+          sender.call(
+            verified_at: nil,
+            proofing_agent_id: proofing_agent_id,
+            proofing_location_id: proofing_location_id,
+            correlation_id: correlation_id,
+            transaction_id: transaction_id,
+          )
+        end.to_not change { ActionMailer::Base.deliveries.count }
+
+        expect(analytics).to_not have_logged_event(
+          :idv_proofing_agent_profile_reminder_email_sent,
+        )
+      end
+    end
+  end
+end

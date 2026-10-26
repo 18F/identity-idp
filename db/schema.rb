@@ -243,7 +243,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_190000) do
     t.string "last_doc_auth_result", comment: "sensitive=false"
     t.boolean "mdl_enabled", comment: "sensitive=false"
     t.boolean "ocr_confirmation_pending", default: false, comment: "sensitive=false"
-    t.boolean "passport_cards_supported", default: false, comment: "sensitive=false"
     t.string "passport_status", comment: "sensitive=false"
     t.datetime "pending_agent_proofed_user_at", comment: "sensitive=false"
     t.bigint "profile_id", comment: "sensitive=false"

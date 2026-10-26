@@ -24,6 +24,10 @@ account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用您的 %{app_name} 帐户，您可以安全地在线连接到多个政府服务。以下是您当前已连接的所有服务列表。
 account.connected_apps.email_not_selected: 尚未选择电邮
 account.connected_apps.email_update_success_html: 你给<strong>%{sp_name}</strong>的电邮更新成功了。
+account.connected_delegation.associated_html: Connected through America.gov on %{timestamp_html}
+account.connected_delegation.description: You allowed %{america_gov_name} to act for you on these services. %{america_gov_name} can’t see your personal information. %{app_name} encrypts it so only the agency can read it.
+account.connected_delegation.disconnect: Disconnecting a service stops %{america_gov_name} from acting for you there. It doesn’t change your own connection to that service.
+account.connected_delegation.permission1_html: <strong>%{america_gov_name} can:</strong> Start and submit your passport renewal
 account.email_language.default: '%{language}（默认）'
 account.email_language.edit_title: 编辑电邮语言选择
 account.email_language.languages_list: 您将收到%{app_name}用您选择的语言发送的电子邮件。
@@ -99,6 +103,7 @@ account.navigation.add_federal_id: 添加您的政府雇员身份证件
 account.navigation.add_phone_number: 添加电话号码
 account.navigation.add_platform_authenticator: 添加人脸或触摸解锁
 account.navigation.add_security_key: 添加安全密钥
+account.navigation.america_gov_services: Services %{america_gov_name} can use for you
 account.navigation.close: 关闭
 account.navigation.connected_services: 您的互联服务
 account.navigation.customer_support: 客户支持
@@ -1124,7 +1129,9 @@ help_text.requested_attributes.all_emails: 你账户上的电邮地址
 help_text.requested_attributes.birthdate: 生日
 help_text.requested_attributes.change_email_link: 更改
 help_text.requested_attributes.consent_reminder_html: 你每年都必须授权同意与 %{sp_html} 分享信息。
+help_text.requested_attributes.document_images: 拍摄的图像
 help_text.requested_attributes.document_images_html: '为支持你的申请，%{sp_html} 还将收到你的身份证件照片以及你在验证身份时拍摄的自拍照。这些图像仅用于身份裁定。'
+help_text.requested_attributes.document_metadata: 文件详情
 help_text.requested_attributes.email: 电邮地址
 help_text.requested_attributes.full_name: 姓名
 help_text.requested_attributes.ial2_reverified_consent_info_html: '因为你重新验证了身份，我们需要得到你的许可才能与 %{sp_html} 分享该信息。'
@@ -1301,6 +1308,7 @@ idv.messages.gpo.verify_address_again_link_text: 再次验证你的地址
 idv.messages.otp_delivery_method_description: 如果你在上面输入的是座机电话，请在下边选择“接听电话”。
 idv.messages.phone.alert_html: '<strong>输入一个符合以下条件的电话号码：</strong>'
 idv.messages.phone.description: 我们会检查记录以验证你的电话号码是否与你验证过的信息相符，并发送一个一次性代码。
+idv.messages.phone.description_skip_verification: 我们会将您的手机号码添加到您的个人资料中，并向您发送一次性验证码。
 idv.messages.phone.failed_number.alert_text: 我们无法将你与该号码匹配。
 idv.messages.phone.failed_number.gpo_alert_html: 试试 <strong>另一个</strong>号码或者%{link_html}。
 idv.messages.phone.failed_number.gpo_verify_link: 通过普通邮件验证
@@ -1837,6 +1845,7 @@ openid_connect.token.errors.invalid_code: 无效，因为与任何用户都匹�
 openid_connect.token.errors.invalid_code_verifier: code_verifier 与 code_challenge 不匹配。请参阅我们的文档：https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat 必须是整数或者浮动点 Unix 时间印章来代表过去的一个时间。请参阅我们的文档：https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: 无法根据任何已注册的公钥验证这个说法。请参阅我们的文档：https://developers.login.gov/support/#invalid-token-signature
+openid_connect.user_info.errors.encryption_unavailable: '此服务提供商已配置为接收加密的 userinfo 响应，但没有为其登记可用的加密密钥：响应未发送。'
 openid_connect.user_info.errors.malformed_authorization: 授权标头畸形。请参阅我们的文档：https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: 未提供授权标头。请参阅我们的文档：https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: 就提供的 access_token 内容找不到授权或者授权已过期。请参阅我们的文档：https://developers.login.gov/support/#auth-header-contents-not-found
@@ -1892,8 +1901,10 @@ shared.skip_link: 跳到主要内容
 sign_up.agree_and_continue: 同意并继续
 sign_up.cancel.success: 你的账户已被删除。我们没有存储你的信息。
 sign_up.cancel.warning_header: 如果你现在取消：
+sign_up.completed.document_images.description: 身份证和自拍照
+sign_up.completed.document_metadata.description: 文件编号、签发日期和到期日期
 sign_up.completed.smiling_image_alt: 面带笑容的一个人加上绿勾说明成功了
-sign_up.document_images_sharing_consent_label: 我同意将我的身份证件照片和身份验证自拍照与 %{sp} 共享，用于身份裁定。
+sign_up.document_images_sharing_consent_label_html: 我同意与<strong>%{sp}</strong>分享我的身份证照片和自拍照，以便进行身份鉴定。
 sign_up.document_images_sharing_consent_required: 你必须同意共享身份证件照片和自拍照才能继续，或者取消。
 sign_up.information_sharing_html: 如需了解 %{app_name} 如何共享您的信息，请查阅我们的《%{link_html}》。
 sign_up.nds_terms_intro: 继续即表示您接受
@@ -1968,6 +1979,7 @@ titles.idv.enter_password_letter: 重新输入你的密码来给你发信
 titles.idv.get_letter: 收信
 titles.idv.personal_key: 保存你的个人密钥
 titles.idv.phone: 验证你的电话号码
+titles.idv.phone_skip_verification: 输入您的电话号码
 titles.idv.reset_password: 重设密码
 titles.idv.verify_info: 验证你的信息
 titles.mfa_setup.face_touch_unlock_confirmation: 人脸或触摸解锁已添加
@@ -2246,6 +2258,7 @@ user_mailer.agent_proofing_succeeded.contact_link: 联系我们
 user_mailer.agent_proofing_succeeded.cta: 确认账户
 user_mailer.agent_proofing_succeeded.footer_html: 如果您并未亲自尝试进行身份验证，请%{contact_link_html}，并登录您的账户以%{change_password_link_html}。
 user_mailer.agent_proofing_succeeded.header: 您已成功完成身份验证
+user_mailer.agent_proofing_succeeded.reminder_subject: 请勿错失权限：请在 24 小时内确认您的验证账户
 user_mailer.agent_proofing_succeeded.subject: 需采取行动：确认您的已验证账户
 user_mailer.contact_link_text: 联系我们
 user_mailer.device_profiling_error_cleared.info: 您的账户（LG22）错误已解决。您现在可以使用您的账户登录机构网站。

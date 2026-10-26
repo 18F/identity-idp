@@ -41,7 +41,7 @@ class SocureDocvResultsJob < ApplicationJob
       )
 
       failure_reason = attempts_api_tracker.parse_failure_reason(docv_result_response) || {}
-      failure_reason = failure_reason[:socure].presence || failure_reason
+      failure_reason = translate_codes(failures: failure_reason[:socure].presence) || failure_reason
       record_attempt(docv_result_response:, failure_reason:)
       return
     end
@@ -197,6 +197,15 @@ class SocureDocvResultsJob < ApplicationJob
     )
   end
 
+  def translate_codes(failures: nil)
+    return nil unless failures.present?
+    return nil unless failures[:reason_codes].present?
+
+    # only codes that start with "R" are failures
+    codes = failures[:reason_codes].select { |code| code.start_with?(/R/) }
+    SocureReasonCode.with_definitions(codes).values
+  end
+
   def encrypt_document_metadata(pii)
     document_metadata = {
       document_number: pii[:state_id_number] || pii[:document_number],
@@ -290,12 +299,6 @@ class SocureDocvResultsJob < ApplicationJob
       document_capture_session_uuid:,
       docv_transaction_token_override:,
       user_email: document_capture_session&.user&.last_sign_in_email_address&.email,
-    ).fetch
-  end
-
-  def fetch_images(reference_id)
-    DocAuth::Socure::Requests::ImagesRequest.new(
-      reference_id:,
     ).fetch
   end
 

@@ -772,6 +772,25 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.subject).to eq t('user_mailer.agent_proofing_succeeded.subject')
     end
 
+    context 'when sent as a reminder' do
+      let(:mail) do
+        UserMailer.with(user: user, email_address: email_address)
+          .agent_proofing_succeeded(verified_at: verified_at, reminder: true)
+      end
+
+      it 'renders the reminder subject' do
+        expect(mail.subject).to eq t('user_mailer.agent_proofing_succeeded.reminder_subject')
+      end
+
+      it 'renders the same body as the confirmation email' do
+        expect(mail.html_part.body).to have_content('March 18, 2026')
+        expect(mail.html_part.body).to have_link(
+          t('user_mailer.agent_proofing_succeeded.cta'),
+          href: new_user_session_url,
+        )
+      end
+    end
+
     it 'renders the formatted verified date in the body' do
       expect(mail.html_part.body).to have_content('March 18, 2026')
     end

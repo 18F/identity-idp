@@ -26,6 +26,10 @@ module Idv
       end
 
       def confirmation_url
+        if IdentityConfig.store.idv_proofing_agent_confirmation_url.present?
+          return IdentityConfig.store.idv_proofing_agent_confirmation_url
+        end
+
         service_provider_homepage_url || new_user_session_url
       end
 

@@ -5612,6 +5612,30 @@ module AnalyticsEvents
     )
   end
 
+  # Logs when the agent-proofing profile reminder email was sent to a user who had not yet
+  # confirmed their account
+  # @param [String] user_id UUID of the user who was successfully agent-proofed
+  # @param [Hash] proofing_agent The proofing agent information
+  # @option proofing_agent [String] :correlation_id
+  # @option proofing_agent [String] :transaction_id
+  # @option proofing_agent [String] :agent_id
+  # @option proofing_agent [String] :location_id
+  # @param [Time] expiration_date When the user must confirm their account by
+  def idv_proofing_agent_profile_reminder_email_sent(
+    user_id:,
+    proofing_agent:,
+    expiration_date:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_profile_reminder_email_sent,
+      user_id:,
+      proofing_agent:,
+      expiration_date:,
+      **extra,
+    )
+  end
+
   # Logs when a proofing agent begins proofing a user
   # @param [Hash] response_body The body of the response from the proofing agent's proofing request
   # @param [Hash] proofing_agent The proofing agent information
@@ -6261,6 +6285,31 @@ module AnalyticsEvents
     track_event(
       :idv_socure_docv_redirect_requested,
       document_type_requested:,
+      **extra,
+    )
+  end
+
+  # @param [Integer, nil] http_status HTTP status returned by Socure, nil if no response received
+  # @param [String] user_id UUID of the user the images belong to
+  # @param [String] reference_id Socure reference ID the images were requested for
+  # @param [Array<Symbol>] image_types_present Image types returned (front, back, passport, selfie)
+  # @param [Boolean] passport_book Whether the document was a passport book
+  # Images were requested from Socure for a completed DocV transaction
+  def idv_socure_images_requested(
+    http_status:,
+    user_id:,
+    reference_id:,
+    image_types_present:,
+    passport_book:,
+    **extra
+  )
+    track_event(
+      :idv_socure_images_requested,
+      http_status:,
+      user_id:,
+      reference_id:,
+      image_types_present:,
+      passport_book:,
       **extra,
     )
   end
@@ -7578,13 +7627,23 @@ module AnalyticsEvents
   # @param [Integer] ial
   # @param [String] client_id Service Provider issuer
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  def openid_connect_bearer_token(success:, ial:, client_id:, error_details: nil, **extra)
+  # @param [Boolean, nil] encrypted Whether the service provider receives its userinfo response
+  #   as an encrypted JWT; nil when the token did not authenticate
+  def openid_connect_bearer_token(
+    success:,
+    ial:,
+    client_id:,
+    error_details: nil,
+    encrypted: nil,
+    **extra
+  )
     track_event(
       'OpenID Connect: bearer token authentication',
       success:,
       ial:,
       client_id:,
       error_details:,
+      encrypted:,
       **extra,
     )
   end
@@ -7709,6 +7768,19 @@ module AnalyticsEvents
       ial:,
       code_verifier_present:,
       service_provider_pkce:,
+      **extra,
+    )
+  end
+
+  # Tracks a userinfo request from a service provider configured for encrypted responses but
+  # with no usable key to encrypt to; the request was refused rather than answered in the clear
+  # @param [String] client_id Service Provider issuer
+  # @param [String] error Class of the error that prevented encryption
+  def openid_connect_userinfo_encryption_failed(client_id:, error:, **extra)
+    track_event(
+      :openid_connect_userinfo_encryption_failed,
+      client_id:,
+      error:,
       **extra,
     )
   end
@@ -8265,6 +8337,28 @@ module AnalyticsEvents
   def proofing_agent_failure_email_job_error(exception:, **extra)
     track_event(
       :proofing_agent_failure_email_job_error,
+      exception:,
+      **extra,
+    )
+  end
+
+  # Signifies the completion of the proofing agent reminder email job
+  # @param [Integer] processed_count The number of items processed during the job
+  # @param [Float] duration_sec The duration of the job in seconds
+  def proofing_agent_reminder_email_job_completed(processed_count:, duration_sec:, **extra)
+    track_event(
+      :proofing_agent_reminder_email_job_completed,
+      processed_count:,
+      duration_sec:,
+      **extra,
+    )
+  end
+
+  # Logs the error received when during reminder email processing
+  # @param [String] exception The message from the exception raised.
+  def proofing_agent_reminder_email_job_error(exception:, **extra)
+    track_event(
+      :proofing_agent_reminder_email_job_error,
       exception:,
       **extra,
     )
@@ -8909,6 +9003,18 @@ module AnalyticsEvents
   # Tracks when the STS (token exchange) consent form is visited
   def sts_consent_visited
     track_event(:sts_consent_visited)
+  end
+
+  # Tracks when a user's STS (token exchange) consent is revoked
+  # @param [String] target_app Issuer of the target app the consent was revoked for
+  def sts_revoke_consent_revoked(target_app:, **extra)
+    track_event(:sts_revoke_consent_revoked, target_app:, **extra)
+  end
+
+  # Tracks when the page to revoke an STS (token exchange) consent is visited
+  # @param [String] target_app Issuer of the target app the consent would be revoked for
+  def sts_revoke_consent_visited(target_app:, **extra)
+    track_event(:sts_revoke_consent_visited, target_app:, **extra)
   end
 
   # Tracks when user clicks on same tab that user landed on.

@@ -36,7 +36,7 @@ RSpec.describe Reports::DropOffReport do
           expect(value.last.to_json).to eq(empty_emailable_report.last.to_json)
           expect(value.count).to be(3)
         end,
-        message: "<h2>\n  Drop Off Report\n</h2>\n",
+        message: a_string_starting_with("<h2>\n  Drop Off Report\n</h2>\n"),
         attachment_format: :csv,
       ).and_call_original
 
@@ -126,7 +126,7 @@ RSpec.describe Reports::DropOffReport do
         to: 'ursula@example.com',
         subject: "Drop Off Report - #{report_date.to_date}",
         reports: anything,
-        message: "<h2>\n  Drop Off Report\n</h2>\n",
+        message: a_string_starting_with("<h2>\n  Drop Off Report\n</h2>\n"),
         attachment_format: :csv,
       ).and_call_original
 

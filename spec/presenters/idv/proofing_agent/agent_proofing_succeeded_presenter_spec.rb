@@ -49,6 +49,17 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
         end
       end
     end
+
+    context 'when the idv_proofing_agent_confirmation_url config is set' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_proofing_agent_confirmation_url)
+          .and_return('https://example.com/confirmation')
+      end
+
+      it 'returns the configured confirmation url' do
+        expect(presenter.confirmation_url).to eq('https://example.com/confirmation')
+      end
+    end
   end
 
   describe '#contact_us_url' do

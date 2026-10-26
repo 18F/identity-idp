@@ -55,6 +55,10 @@ class User < ApplicationRecord
   has_many :fraud_review_requests, dependent: :destroy
   has_many :gpo_confirmation_codes, through: :profiles
   has_many :device_profiling_results, dependent: :destroy
+  has_many :sts_consents,
+           class_name: 'UserConsentSts',
+           inverse_of: :user,
+           dependent: :destroy
 
   has_one :pending_in_person_enrollment,
           -> { where(status: :pending).order(created_at: :desc) },
@@ -516,6 +520,12 @@ class User < ApplicationRecord
 
   def connected_apps
     identities.not_deleted.joins(:service_provider_record).order(created_at: :desc)
+  end
+
+  # Unexpired STS (token exchange) consents, which represent the services a
+  # broker is allowed to act on the user's behalf for.
+  def connected_delegations
+    sts_consents.unexpired.order(created_at: :desc)
   end
 
   def delete_account_bullet_key

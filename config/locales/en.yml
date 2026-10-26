@@ -24,6 +24,10 @@ account.connected_apps.associated_html: Connected %{timestamp_html}
 account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government services online. Below is a list of all the services you currently have connected.
 account.connected_apps.email_not_selected: Email not yet selected
 account.connected_apps.email_update_success_html: Your email for <strong>%{sp_name}</strong> was updated successfully.
+account.connected_delegation.associated_html: Connected through America.gov on %{timestamp_html}
+account.connected_delegation.description: You allowed %{america_gov_name} to act for you on these services. %{america_gov_name} can’t see your personal information. %{app_name} encrypts it so only the agency can read it.
+account.connected_delegation.disconnect: Disconnecting a service stops %{america_gov_name} from acting for you there. It doesn’t change your own connection to that service.
+account.connected_delegation.permission1_html: <strong>%{america_gov_name} can:</strong> Start and submit your passport renewal
 account.email_language.default: '%{language} (default)'
 account.email_language.edit_title: Edit email language preference
 account.email_language.languages_list: You will receive emails from %{app_name} in the language you choose.
@@ -99,6 +103,7 @@ account.navigation.add_federal_id: Add your government employee ID
 account.navigation.add_phone_number: Add phone number
 account.navigation.add_platform_authenticator: Add face or touch unlock
 account.navigation.add_security_key: Add security key
+account.navigation.america_gov_services: Services %{america_gov_name} can use for you
 account.navigation.close: Close
 account.navigation.connected_services: Your connected services
 account.navigation.customer_support: Customer support
@@ -1111,7 +1116,9 @@ help_text.requested_attributes.all_emails: Email addresses on your account
 help_text.requested_attributes.birthdate: Date of birth
 help_text.requested_attributes.change_email_link: Change
 help_text.requested_attributes.consent_reminder_html: You must consent each year to share your information with %{sp_html}.
+help_text.requested_attributes.document_images: Captured images
 help_text.requested_attributes.document_images_html: 'To support your application, %{sp_html} will also receive the photos of your identity documents and the selfie you took while verifying your identity. These images are shared only for identity adjudication.'
+help_text.requested_attributes.document_metadata: Document details
 help_text.requested_attributes.email: Email address
 help_text.requested_attributes.full_name: Full name
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Because you verified your identity again, we need your permission to share this information with %{sp_html}:'
@@ -1288,6 +1295,7 @@ idv.messages.gpo.verify_address_again_link_text: verify your address again
 idv.messages.otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
 idv.messages.phone.alert_html: '<strong>Enter a phone number that is:</strong>'
 idv.messages.phone.description: We will check records to verify that your phone number matches your verified information, and send a one-time code.
+idv.messages.phone.description_skip_verification: We will add your phone number to your profile and send a one-time code.
 idv.messages.phone.failed_number.alert_text: We couldn’t match you to this number.
 idv.messages.phone.failed_number.gpo_alert_html: Try <strong>another</strong> number or %{link_html}.
 idv.messages.phone.failed_number.gpo_verify_link: verify by mail
@@ -1824,6 +1832,7 @@ openid_connect.token.errors.invalid_code: is invalid because doesn’t match any
 openid_connect.token.errors.invalid_code_verifier: code_verifier did not match code_challenge. Please see our documentation at https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat must be an integer or floating point Unix timestamp representing a time in the past. Please see our documentation at https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: Could not validate assertion against any registered public keys. Please see our documentation at https://developers.login.gov/support/#invalid-token-signature
+openid_connect.user_info.errors.encryption_unavailable: 'This service provider is configured to receive encrypted userinfo responses, but no usable encryption key is registered for it: the response was not sent.'
 openid_connect.user_info.errors.malformed_authorization: Malformed Authorization header. Please see our documentation at https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No Authorization header provided. Please see our documentation at https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: Could not find authorization for the contents of the provided access_token or it may have expired. Please see our documentation at https://developers.login.gov/support/#auth-header-contents-not-found
@@ -1879,8 +1888,10 @@ shared.skip_link: Skip to main content
 sign_up.agree_and_continue: Agree and continue
 sign_up.cancel.success: Your account has been deleted. We did not save your information.
 sign_up.cancel.warning_header: 'If you cancel now:'
+sign_up.completed.document_images.description: ID and selfie
+sign_up.completed.document_metadata.description: Document number, issue date and expiration date
 sign_up.completed.smiling_image_alt: A smiling person with a green checkmark indicating success
-sign_up.document_images_sharing_consent_label: I consent to share the photos of my identity documents and my identity verification selfie with %{sp} for identity adjudication.
+sign_up.document_images_sharing_consent_label_html: I consent to share the photos of my identity document and selfie with <strong>%{sp}</strong> for identity adjudication.
 sign_up.document_images_sharing_consent_required: You must consent to sharing your identity document photos and selfie to continue, or cancel.
 sign_up.information_sharing_html: To learn how %{app_name} shares your information, review our %{link_html}.
 sign_up.nds_terms_intro: By continuing, you accept the
@@ -1955,6 +1966,7 @@ titles.idv.enter_password_letter: Re-enter your password to send your letter
 titles.idv.get_letter: Get a letter
 titles.idv.personal_key: Save your personal key
 titles.idv.phone: Verify your phone number
+titles.idv.phone_skip_verification: Enter your phone number
 titles.idv.reset_password: Reset Password
 titles.idv.verify_info: Verify your information
 titles.mfa_setup.face_touch_unlock_confirmation: Face or touch unlock added
@@ -2233,6 +2245,7 @@ user_mailer.agent_proofing_succeeded.contact_link: contact us
 user_mailer.agent_proofing_succeeded.cta: Confirm account
 user_mailer.agent_proofing_succeeded.footer_html: If you did not attempt to verify your identity in person, please %{contact_link_html} and sign in to %{change_password_link_html}.
 user_mailer.agent_proofing_succeeded.header: You have successfully completed identity verification
+user_mailer.agent_proofing_succeeded.reminder_subject: 'Don’t lose access: Confirm your verified account within 24 hours'
 user_mailer.agent_proofing_succeeded.subject: 'Action Required: Confirm Your Verified Account'
 user_mailer.contact_link_text: contact us
 user_mailer.device_profiling_error_cleared.info: The error on your account (LG22) has been resolved. You can now sign into the agency website with your account.

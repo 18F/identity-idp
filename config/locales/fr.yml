@@ -24,6 +24,10 @@ account.connected_apps.associated_html: Connecté %{timestamp_html}
 account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs services de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos services actuellement connectés.
 account.connected_apps.email_not_selected: Adresse e-mail non encore sélectionnée
 account.connected_apps.email_update_success_html: Vous avez réussi à modifier votre adresse e-mail pour <strong>%{sp_name}</strong>.
+account.connected_delegation.associated_html: Connected through America.gov on %{timestamp_html}
+account.connected_delegation.description: You allowed %{america_gov_name} to act for you on these services. %{america_gov_name} can’t see your personal information. %{app_name} encrypts it so only the agency can read it.
+account.connected_delegation.disconnect: Disconnecting a service stops %{america_gov_name} from acting for you there. It doesn’t change your own connection to that service.
+account.connected_delegation.permission1_html: <strong>%{america_gov_name} can:</strong> Start and submit your passport renewal
 account.email_language.default: '%{language} (par défaut)'
 account.email_language.edit_title: Modifier la langue dans laquelle vous préférez recevoir les e-mails
 account.email_language.languages_list: Vous recevrez des e-mails de %{app_name} dans la langue de votre choix.
@@ -99,6 +103,7 @@ account.navigation.add_federal_id: Ajouter votre carte d’employé fédéral
 account.navigation.add_phone_number: Ajouter un numéro de téléphone
 account.navigation.add_platform_authenticator: Ajouter le déverrouillage facial ou tactile
 account.navigation.add_security_key: Ajouter une clé de sécurité
+account.navigation.america_gov_services: Services %{america_gov_name} can use for you
 account.navigation.close: Fermer
 account.navigation.connected_services: Vos services connectés
 account.navigation.customer_support: Service client
@@ -1111,7 +1116,9 @@ help_text.requested_attributes.all_emails: Adresses e-mail sur votre compte
 help_text.requested_attributes.birthdate: Date de naissance
 help_text.requested_attributes.change_email_link: Modifier
 help_text.requested_attributes.consent_reminder_html: Vous devez consentir chaque année au partage de vos informations avec %{sp_html}.
+help_text.requested_attributes.document_images: Images capturées
 help_text.requested_attributes.document_images_html: 'Pour appuyer votre demande, %{sp_html} recevra également les photos de vos pièces d’identité et le selfie que vous avez pris lors de la vérification de votre identité. Ces images ne sont partagées qu’à des fins de décision d’identité.'
+help_text.requested_attributes.document_metadata: Détails du document
 help_text.requested_attributes.email: Adresse e-mail
 help_text.requested_attributes.full_name: Nom complet
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Étant donné que vous avez revérifié votre identité, nous avons besoin de votre autorisation pour partager ces informations avec %{sp_html} :'
@@ -1288,6 +1295,7 @@ idv.messages.gpo.verify_address_again_link_text: confirmer à nouveau votre adre
 idv.messages.otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus, veuillez sélectionner « Appel téléphonique » ci-dessous.
 idv.messages.phone.alert_html: '<strong>Saisissez un numéro de téléphone qui est :</strong>'
 idv.messages.phone.description: Nous vérifierons que votre numéro de téléphone correspond aux renseignements figurant sur votre pièce d’identité.
+idv.messages.phone.description_skip_verification: Nous ajouterons votre numéro de téléphone à votre profil et vous enverrons un code à usage unique.
 idv.messages.phone.failed_number.alert_text: Nous n’avons pas pu vous associer à ce numéro.
 idv.messages.phone.failed_number.gpo_alert_html: Essayez un <strong>autre</strong> numéro ou %{link_html}.
 idv.messages.phone.failed_number.gpo_verify_link: vérifiez par courrier
@@ -1825,6 +1833,7 @@ openid_connect.token.errors.invalid_code: n’est pas valide, car il ne correspo
 openid_connect.token.errors.invalid_code_verifier: code_verifier ne correspondait pas à code_challenge. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat doit être un horodatage Unix entier ou à virgule flottante représentant une heure dans le passé. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: Impossible de valider l’assertion contre les clés publiques enregistrées. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-token-signature
+openid_connect.user_info.errors.encryption_unavailable: 'Ce fournisseur de services est configuré pour recevoir des réponses userinfo chiffrées, mais aucune clé de chiffrement utilisable n’est enregistrée pour lui : la réponse n’a pas été envoyée.'
 openid_connect.user_info.errors.malformed_authorization: Forme de l’en-tête d’autorisation non valide. Veuillez consulter notre documentation à https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: Aucune en-tête d’autorisation fournie. Veuillez consulter notre documentation à https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: L’autorisation pour le contenu du access_token fourni introuvable ou il peut être expiré. Veuillez consulter notre documentation à https://developers.login.gov/support/#auth-header-contents-not-found
@@ -1880,8 +1889,10 @@ shared.skip_link: Passer au contenu principal
 sign_up.agree_and_continue: Accepter et continuer
 sign_up.cancel.success: Votre compte a été supprimé. Nous n’avons pas sauvegardé vos informations.
 sign_up.cancel.warning_header: 'Si vous annulez maintenant :'
+sign_up.completed.document_images.description: Carte d’identité et selfie
+sign_up.completed.document_metadata.description: Numéro du document, date d’émission et date d’expiration
 sign_up.completed.smiling_image_alt: Une personne souriante avec une coche verte indiquant la réussite de la procédure
-sign_up.document_images_sharing_consent_label: Je consens à partager les photos de mes pièces d’identité et mon selfie de vérification d’identité avec %{sp} à des fins de décision d’identité.
+sign_up.document_images_sharing_consent_label_html: Je consens à partager les photos de ma pièce d’identité et un selfie avec <strong>%{sp}</strong> aux fins de vérification d’identité.
 sign_up.document_images_sharing_consent_required: Vous devez consentir au partage des photos de vos pièces d’identité et de votre selfie pour continuer, ou annuler.
 sign_up.information_sharing_html: Pour savoir comment %{app_name} partage vos informations, consultez notre déclaration relative à la %{link_html}.
 sign_up.nds_terms_intro: En continuant, vous acceptez les
@@ -1956,6 +1967,7 @@ titles.idv.enter_password_letter: Ressaisissez votre mot de passe pour envoyer v
 titles.idv.get_letter: Obtenir une lettre
 titles.idv.personal_key: Sauvegarder votre clé personnelle
 titles.idv.phone: Vérifier votre numéro de téléphone
+titles.idv.phone_skip_verification: Entrez votre numéro de téléphone
 titles.idv.reset_password: Réinitialiser le mot de passe
 titles.idv.verify_info: Vérifier vos informations
 titles.mfa_setup.face_touch_unlock_confirmation: Déverrouillage facial ou tactile ajouté
@@ -2234,6 +2246,7 @@ user_mailer.agent_proofing_succeeded.contact_link: nous contacter
 user_mailer.agent_proofing_succeeded.cta: Confirmer le compte
 user_mailer.agent_proofing_succeeded.footer_html: 'Si vous n’avez pas tenté de vérifier votre identité en personne, veuillez %{contact_link_html} et %{change_password_link_html} en vous connectant à votre compte.'
 user_mailer.agent_proofing_succeeded.header: Vous avez completé la vérification de votre identité avec succès.
+user_mailer.agent_proofing_succeeded.reminder_subject: 'Action requise : Plus que 24 heures pour confirmer votre compte vérifié'
 user_mailer.agent_proofing_succeeded.subject: 'Action requise : Confirmez votre compte vérifié'
 user_mailer.contact_link_text: nous contacter
 user_mailer.device_profiling_error_cleared.info: L’erreur concernant votre compte (LG22) a été résolue. Vous pouvez désormais vous connecter au site web de l’agence avec votre compte.

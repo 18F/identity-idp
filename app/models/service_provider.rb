@@ -101,6 +101,10 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
+  def userinfo_encrypted_response?
+    IdentityConfig.store.userinfo_encryption_allowed_issuers.include?(issuer)
+  end
+
   def create_prompt_allowed?
     IdentityConfig.store.allowed_create_prompt_providers.include?(issuer)
   end

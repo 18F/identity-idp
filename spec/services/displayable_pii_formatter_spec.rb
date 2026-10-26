@@ -38,6 +38,8 @@ RSpec.describe DisplayablePiiFormatter do
   let(:zipcode) { '20405' }
   let(:dob) { '1990-01-01' }
   let(:phone) { '+12022121000' }
+  let(:document_images) { 'Document images' }
+  let(:document_metadata) { 'Document metadata' }
 
   let(:current_user) do
     create(
@@ -70,6 +72,8 @@ RSpec.describe DisplayablePiiFormatter do
       current_user:,
       pii:,
       selected_email_id:,
+      document_images:,
+      document_metadata:,
     )
   end
 
@@ -90,6 +94,8 @@ RSpec.describe DisplayablePiiFormatter do
         expect(result.address).to be_nil
         expect(result.birthdate).to be_nil
         expect(result.phone).to be_nil
+        expect(result.document_images).to be_nil
+        expect(result.document_metadata).to be_nil
       end
     end
 
@@ -107,6 +113,8 @@ RSpec.describe DisplayablePiiFormatter do
         expect(result.address).to eq('123 main st Washington, DC 20405')
         expect(result.birthdate).to eq('January 1, 1990')
         expect(result.phone).to eq('+1 202-212-1000')
+        expect(result.document_images).to eq(document_images)
+        expect(result.document_metadata).to eq(document_metadata)
       end
 
       context 'when the selected email is no longer confirmed' do

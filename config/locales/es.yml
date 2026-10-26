@@ -24,6 +24,10 @@ account.connected_apps.associated_html: 'Conectado: %{timestamp_html}'
 account.connected_apps.description: Con tu cuenta de %{app_name}, puedes conectarte de forma segura a múltiples servicios gubernamentales en línea. A continuación, encontrarás una lista de todos los servicios a los que estás conectado actualmente.
 account.connected_apps.email_not_selected: No se ha seleccionado aún una dirección de correo electrónico
 account.connected_apps.email_update_success_html: Se actualizó su correo electrónico para la <strong>%{sp_name}</strong>.
+account.connected_delegation.associated_html: Connected through America.gov on %{timestamp_html}
+account.connected_delegation.description: You allowed %{america_gov_name} to act for you on these services. %{america_gov_name} can’t see your personal information. %{app_name} encrypts it so only the agency can read it.
+account.connected_delegation.disconnect: Disconnecting a service stops %{america_gov_name} from acting for you there. It doesn’t change your own connection to that service.
+account.connected_delegation.permission1_html: <strong>%{america_gov_name} can:</strong> Start and submit your passport renewal
 account.email_language.default: '%{language} (predeterminado)'
 account.email_language.edit_title: Editar la preferencia de idioma del correo electrónico
 account.email_language.languages_list: Recibirá mensajes de correo electrónico de %{app_name} en el idioma que elija.
@@ -99,6 +103,7 @@ account.navigation.add_federal_id: Agregue su identificación de empleado gubern
 account.navigation.add_phone_number: Agregar número de teléfono
 account.navigation.add_platform_authenticator: Agregar desbloqueo facial o táctil
 account.navigation.add_security_key: Agregar clave de seguridad
+account.navigation.america_gov_services: Services %{america_gov_name} can use for you
 account.navigation.close: Cerrar
 account.navigation.connected_services: Sus servicios conectados
 account.navigation.customer_support: Atención al cliente
@@ -1122,7 +1127,9 @@ help_text.requested_attributes.all_emails: Direcciones de correo electrónico en
 help_text.requested_attributes.birthdate: Fecha de nacimiento
 help_text.requested_attributes.change_email_link: Cambiar
 help_text.requested_attributes.consent_reminder_html: Debe dar su consentimiento cada año para divulgar su información a %{sp_html}.
+help_text.requested_attributes.document_images: Imágenes captadas
 help_text.requested_attributes.document_images_html: 'Para respaldar su solicitud, %{sp_html} también recibirá las fotos de sus documentos de identidad y la selfie que tomó al verificar su identidad. Estas imágenes se comparten únicamente para la adjudicación de identidad.'
+help_text.requested_attributes.document_metadata: Detalles del documento
 help_text.requested_attributes.email: Dirección de correo electrónico
 help_text.requested_attributes.full_name: Nombre completo
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp_html}:'
@@ -1299,6 +1306,7 @@ idv.messages.gpo.verify_address_again_link_text: volver a verificar su direcció
 idv.messages.otp_delivery_method_description: Si introdujo un teléfono fijo arriba, seleccione “Llamada telefónica” a continuación.
 idv.messages.phone.alert_html: '<strong>Introduzca un número de teléfono que sea:</strong>'
 idv.messages.phone.description: Revisaremos los registros para verificar que su número de teléfono coincida con su información verificada, y enviaremos un código de un solo uso.
+idv.messages.phone.description_skip_verification: Añadiremos su número de teléfono a su perfil y le enviaremos un código de un solo uso.
 idv.messages.phone.failed_number.alert_text: No pudimos asociarlo a este número.
 idv.messages.phone.failed_number.gpo_alert_html: Intente con <strong>otro</strong> número o %{link_html}.
 idv.messages.phone.failed_number.gpo_verify_link: verificar por correo
@@ -1836,6 +1844,7 @@ openid_connect.token.errors.invalid_code: no es válido porque no coincide con n
 openid_connect.token.errors.invalid_code_verifier: code_verifier no coincide con code_challenge. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat debe ser una marca de tiempo Unix de punto flotante o un entero que represente un momento en el pasado. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: No se pudo validar la afirmación contra ninguna clave pública registrada. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-token-signature
+openid_connect.user_info.errors.encryption_unavailable: 'Este proveedor de servicios está configurado para recibir respuestas userinfo cifradas, pero no tiene registrada ninguna clave de cifrado utilizable: la respuesta no se envió.'
 openid_connect.user_info.errors.malformed_authorization: Encabezado de autorización mal formado. Consulte nuestra documentación en https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No se proporcionó ningún encabezado de autorización. Consulte nuestra documentación en https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: No se pudo encontrar la autorización para el contenido del access_token proporcionado o puede ser que este haya vencido. Consulte nuestra documentación en https://developers.login.gov/support/#auth-header-contents-not-found
@@ -1891,8 +1900,10 @@ shared.skip_link: Saltar al contenido principal
 sign_up.agree_and_continue: Aceptar y continuar
 sign_up.cancel.success: Su cuenta fue eliminada. No guardamos su información.
 sign_up.cancel.warning_header: 'Si cancela ahora:'
+sign_up.completed.document_images.description: ID y selfi
+sign_up.completed.document_metadata.description: Número de documento, fecha de emisión y fecha de vencimiento
 sign_up.completed.smiling_image_alt: Una persona sonriente con una marca de verificación verde
-sign_up.document_images_sharing_consent_label: Doy mi consentimiento para compartir las fotos de mis documentos de identidad y la selfie de verificación de identidad con %{sp} para la adjudicación de identidad.
+sign_up.document_images_sharing_consent_label_html: Doy mi consentimiento para compartir las fotos de mi documento de identidad y una selfie con <strong>%{sp}</strong> para la adjudicación de mi identidad.
 sign_up.document_images_sharing_consent_required: Debe dar su consentimiento para compartir las fotos de sus documentos de identidad y su selfie para continuar, o cancelar.
 sign_up.information_sharing_html: Para saber cómo %{app_name} comparte su información, consulte nuestra %{link_html}.
 sign_up.nds_terms_intro: Al continuar, acepta las
@@ -1967,6 +1978,7 @@ titles.idv.enter_password_letter: Vuelva a ingresar su contraseña para enviar s
 titles.idv.get_letter: Obtenga una carta
 titles.idv.personal_key: Guarde su clave personal
 titles.idv.phone: Verifique su número de teléfono
+titles.idv.phone_skip_verification: Introduzca su número de teléfono
 titles.idv.reset_password: Restablecer la contraseña
 titles.idv.verify_info: Verifique su información
 titles.mfa_setup.face_touch_unlock_confirmation: Se agregó el desbloqueo facial o táctil
@@ -2245,6 +2257,7 @@ user_mailer.agent_proofing_succeeded.contact_link: contáctenos
 user_mailer.agent_proofing_succeeded.cta: Confirmar cuenta
 user_mailer.agent_proofing_succeeded.footer_html: Si usted no intentó verificar su identidad en persona, por favor %{contact_link_html} e inicie sesión para %{change_password_link_html}.
 user_mailer.agent_proofing_succeeded.header: Ha completado con éxito su verificación de identidad
+user_mailer.agent_proofing_succeeded.reminder_subject: 'No pierda su acceso: Confirme su cuenta verificada en las próximas 24 horas'
 user_mailer.agent_proofing_succeeded.subject: 'Acción requerida: Confirme su cuenta verificada'
 user_mailer.contact_link_text: contáctenos
 user_mailer.device_profiling_error_cleared.info: El error en su cuenta (LG22) se ha solucionado. Ahora puede iniciar sesión en el sitio web de la agencia con su cuenta.

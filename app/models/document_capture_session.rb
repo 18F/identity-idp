@@ -5,10 +5,6 @@ class DocumentCaptureSession < ApplicationRecord
   include ApplicationHelper
   include IssuerMethods
 
-  # Ignored ahead of dropping the column so running app servers stop selecting it
-  # before the remove_column migration deploys. Remove once the column is gone.
-  self.ignored_columns += ['passport_cards_supported']
-
   belongs_to :user
   belongs_to :profile, optional: true
   has_many :document_artifacts, dependent: :destroy

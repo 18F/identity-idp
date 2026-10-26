@@ -196,7 +196,7 @@ module Reports
           )
 
           true
-        rescue Aws::S3::Errors::NoSuchKey
+        rescue Aws::S3::Errors::NotFound, Aws::S3::Errors::NoSuchKey
           Rails.logger.error(
             "#{REPORT_NAME}: IDV S3 report '#{file_name}' not found - " \
             "key: #{idv_s3_path}_#{file_name}.csv, bucket: #{bucket}",

@@ -108,6 +108,7 @@ database_worker_jobs_name: ''
 database_worker_jobs_password: ''
 database_worker_jobs_sslmode: 'verify-full'
 database_worker_jobs_username: ''
+decommissioned_reports_notice_date: 'November 1, 2026'
 deleted_user_accounts_report_configs: '[]'
 deliver_mail_async: false
 demographics_metrics_s3_report_configs: '[]'
@@ -253,6 +254,7 @@ idv_phone_verification_dual_vendor_check_enabled: false
 idv_phone_verification_dual_vendor_check_socure_percent: 0
 idv_phone_verification_dual_vendor_check_socure_reason_codes: '[]'
 idv_proofing_agent_config: '[]'
+idv_proofing_agent_confirmation_url: ''
 idv_proofing_agent_enabled: false
 idv_proofing_agent_passport_enabled: false
 idv_proofing_agent_phone_vendor: mock
@@ -260,6 +262,8 @@ idv_proofing_agent_proof_user_with_enhanced_profile: false
 idv_proofing_agent_result_expiration_seconds: 10
 idv_proofing_agent_send_failure_email_after_min: 30
 idv_proofing_agent_send_failure_emails_cron: '*/30 * * * *'
+idv_proofing_agent_send_reminder_email_after_hours: 48
+idv_proofing_agent_send_reminder_emails_cron: '0 * * * *'
 idv_rdp_version_default: rdp_v2
 idv_rdp_version_switching_enabled: false
 idv_rdp_version_v2_percent: 100
@@ -284,6 +288,7 @@ idv_socure_reason_codes_docv_selfie_fail: '[]'
 idv_socure_reason_codes_docv_selfie_not_processed: '[]'
 idv_socure_reason_codes_docv_selfie_pass: '[]'
 idv_sp_required: false
+idv_superior_evidence_skip_phone_verification_enabled_percent: 0
 in_person_completion_survey_delivery_enabled: false
 in_person_completion_survey_url: 'https://login.gov'
 in_person_eipp_enrollment_validity_in_days: 7
@@ -567,6 +572,7 @@ update_cancel_account_reset_path: false
 use_dashboard_service_providers: false
 use_kms: false
 use_vot_in_sp_requests: true
+userinfo_encryption_allowed_issuers: '[]'
 usps_auth_token_refresh_job_enabled: false
 usps_confirmation_max_days: 30
 usps_confirmation_max_days_contiguous_states: 21
@@ -595,6 +601,7 @@ vendor_status_lexisnexis_trueid: 'operational'
 vendor_status_sms: 'operational'
 vendor_status_voice: 'operational'
 verification_errors_report_configs: '[]'
+verification_funnel_s3_report_configs: '[]'
 verify_gpo_key_attempt_window_in_minutes: 10
 verify_gpo_key_max_attempts: 5
 verify_personal_key_attempt_window_in_minutes: 15
