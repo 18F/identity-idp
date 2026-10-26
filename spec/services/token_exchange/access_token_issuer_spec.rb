@@ -83,6 +83,33 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
       end
     end
 
+    it 'carries no cnf claim when the token is not bound to a key' do
+      jwt = JWE.decrypt(subject.token, target_private_key)
+      payload = JWT.decode(
+        jwt, Rails.application.config.oidc_public_key, true,
+        algorithm: IdTokenBuilder::JWT_SIGNING_ALGORITHM
+      ).first
+
+      expect(payload).not_to have_key('cnf')
+    end
+
+    context 'when the token is bound to the actor\'s key' do
+      subject(:subject) do
+        described_class.issue(subject_token:, target_issuer:, resource:, scope:, dpop_jkt: 'a' * 43)
+      end
+
+      it 'carries the key thumbprint as cnf.jkt and stores it on the record' do
+        jwt = JWE.decrypt(subject.token, target_private_key)
+        payload = JWT.decode(
+          jwt, Rails.application.config.oidc_public_key, true,
+          algorithm: IdTokenBuilder::JWT_SIGNING_ALGORITHM
+        ).first
+
+        expect(payload['cnf']).to eq('jkt' => 'a' * 43)
+        expect(TokenExchange::AccessToken.load(subject.token).dpop_jkt).to eq('a' * 43)
+      end
+    end
+
     it 'returns the configured expiration' do
       expect(subject.expires_in).to eq(600)
     end

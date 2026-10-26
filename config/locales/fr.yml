@@ -1805,6 +1805,7 @@ openid_connect.logout.errors.no_client_id_or_id_token_hint: Cette application es
 openid_connect.logout.heading: Voulez-vous vous déconnecter de %{app_name}?
 openid_connect.logout.heading_with_sp: Souhaitez-vous vous déconnecter de %{app_name} et revenir à %{service_provider_name}?
 
+openid_connect.token.errors.dpop_subject_token_unbound: Le jeton sujet a été émis sans liaison de clé, mais les jetons de ce client doivent être liés à sa clé DPoP. Reconnectez la personne en indiquant l’empreinte de la clé comme dpop_jkt.
 openid_connect.token.errors.expired_code: est expiré. Veuillez consulter notre documentation à https://developers.login.gov/support/#token-expired
 openid_connect.token.errors.invalid_aud: Affirmation liée à l’auditoire non valide, attendu %{url}. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: Le client doit s’authentifier par PKCE ou private_key_jwt, code_challenge ou client_assertion manquant. Veuillez consulter notre documentation à https://developers.login.gov/support/#pkce-or-private-key

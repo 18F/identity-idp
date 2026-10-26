@@ -1817,6 +1817,7 @@ openid_connect.logout.errors.id_token_hint_present: 本应用程序配置错误�
 openid_connect.logout.errors.no_client_id_or_id_token_hint: 本应用程序配置错误，必须发送 client_id 或者 id_token_hint。请参阅我们的文档：https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: 你想登出 %{app_name} 吗？
 openid_connect.logout.heading_with_sp: 你想登出 %{app_name} 并回到 %{service_provider_name} 吗？
+openid_connect.token.errors.dpop_subject_token_unbound: 主体令牌签发时没有密钥绑定，但此客户端的令牌必须绑定到其 DPoP 密钥。请重新为该用户登录，并将密钥指纹作为 dpop_jkt 提供。
 openid_connect.token.errors.expired_code: 过期了。请参阅我们的文档：https://developers.login.gov/support/#token-expired
 openid_connect.token.errors.invalid_aud: 受众声明有误，预期 %{url}。请参阅我们的文档：https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: 客户必须通过 PKCE 或 private_key_jwt 来验证，缺失 code_challenge 或者 client_assertion。请参阅我们的文档：https://developers.login.gov/support/#pkce-or-private-key
