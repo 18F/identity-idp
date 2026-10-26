@@ -63,8 +63,6 @@ module Users
 
     def notify_subscribers(email_address)
       user = email_address.user
-      email_event = PushNotification::EmailChangedEvent.new(user: user, email: email_address.email)
-      PushNotification::HttpPush.deliver(email_event)
       recovery_event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
       PushNotification::HttpPush.deliver(recovery_event)
     end
