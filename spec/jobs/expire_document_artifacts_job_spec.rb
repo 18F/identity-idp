@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ExpireDocumentArtifactsJob do
   let(:ttl) { 3.days }
+  let(:retention_cutoff) { ttl.to_i.seconds.ago }
   let(:analytics) { FakeAnalytics.new }
 
   subject(:job) { described_class.new }
@@ -13,11 +14,11 @@ RSpec.describe ExpireDocumentArtifactsJob do
   end
 
   describe '#perform' do
-    let!(:fresh) { create(:document_artifact, created_at: (ttl - 1.hour).ago) }
-    let!(:expired) { create(:document_artifact, created_at: (ttl + 1.hour).ago) }
-    let!(:fresh_metadata) { create(:document_metadata, created_at: (ttl - 1.hour).ago) }
+    let!(:fresh) { create(:document_artifact, created_at: retention_cutoff + 1.hour) }
+    let!(:expired) { create(:document_artifact, created_at: retention_cutoff - 1.hour) }
+    let!(:fresh_metadata) { create(:document_metadata, created_at: retention_cutoff + 1.hour) }
     let!(:expired_metadata) do
-      create(:document_metadata, created_at: (ttl + 1.hour).ago)
+      create(:document_metadata, created_at: retention_cutoff - 1.hour)
     end
 
     it 'deletes only aged artifacts and metadata and logs the counts' do
