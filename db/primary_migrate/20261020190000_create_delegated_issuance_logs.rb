@@ -2,9 +2,9 @@
 
 # Immutable history of delegated access tokens issued by Login.gov. Each row represents one
 # DAT mint and links the actor's browser handoff to the target agency's billable return log.
-class CreateDelegatedIssuances < ActiveRecord::Migration[8.1]
+class CreateDelegatedIssuanceLogs < ActiveRecord::Migration[8.1]
   def change
-    create_table :delegated_issuances do |t|
+    create_table :delegated_issuance_logs do |t|
       t.string :delegation_id, null: false, comment: 'sensitive=false'
       t.bigint :user_id, null: false, comment: 'sensitive=false'
       t.bigint :actor_return_log_id, null: false, comment: 'sensitive=false'
@@ -22,14 +22,14 @@ class CreateDelegatedIssuances < ActiveRecord::Migration[8.1]
       t.index :actor_return_log_id
       t.index :target_return_log_id, unique: true
       t.index %i[user_id target_issuer issued_at],
-              name: 'idx_delegated_issuances_user_target_issued'
+              name: 'idx_delegated_issuance_logs_user_target_issued'
       t.index %i[user_id actor_issuer issued_at],
-              name: 'idx_delegated_issuances_user_actor_issued'
+              name: 'idx_delegated_issuance_logs_user_actor_issued'
     end
 
-    add_foreign_key :delegated_issuances, :sp_return_logs,
+    add_foreign_key :delegated_issuance_logs, :sp_return_logs,
                     column: :actor_return_log_id, validate: false
-    add_foreign_key :delegated_issuances, :sp_return_logs,
+    add_foreign_key :delegated_issuance_logs, :sp_return_logs,
                     column: :target_return_log_id, validate: false
   end
 end

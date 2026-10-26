@@ -291,9 +291,9 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     it 'creates a billable target return log and historical issuance for every DAT' do
       expect { response }
         .to change { SpReturnLog.where(issuer: target_issuer).count }.by(1)
-        .and change { user.delegated_issuances.count }.by(1)
+        .and change { user.delegated_issuance_logs.count }.by(1)
 
-      issuance = user.delegated_issuances.last
+      issuance = user.delegated_issuance_logs.last
       expect(issuance).to have_attributes(
         actor_return_log_id: actor_return_log.id,
         actor_issuer: broker_issuer,
@@ -312,8 +312,8 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       response
       described_class.new(params).response
 
-      expect(user.delegated_issuances.count).to eq(2)
-      expect(user.delegated_issuances.pluck(:delegation_id).uniq.count).to eq(2)
+      expect(user.delegated_issuance_logs.count).to eq(2)
+      expect(user.delegated_issuance_logs.pluck(:delegation_id).uniq.count).to eq(2)
     end
 
     context 'when the subject token has no originating actor return log' do
@@ -321,7 +321,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
       it 'rejects the exchange and writes no issuance or target return log' do
         expect { expect(response[:error]).to eq('invalid_grant') }
-          .to change { DelegatedIssuance.count }.by(0)
+          .to change { DelegatedIssuanceLog.count }.by(0)
           .and change { SpReturnLog.where(issuer: target_issuer).count }.by(0)
       end
     end

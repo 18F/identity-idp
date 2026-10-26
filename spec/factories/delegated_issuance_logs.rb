@@ -1,6 +1,6 @@
 FactoryBot.define do
-  factory :delegated_issuance do
-    delegation_id { DelegatedIssuance.generate_delegation_id }
+  factory :delegated_issuance_log do
+    delegation_id { DelegatedIssuanceLog.generate_delegation_id }
     user
     actor_return_log do
       association(:sp_return_log, user:, issuer: actor_issuer, ial: 2, billable: true)

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe DelegatedIssuance do
+RSpec.describe DelegatedIssuanceLog do
   describe 'associations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:actor_return_log) }
@@ -20,7 +20,7 @@ RSpec.describe DelegatedIssuance do
 
   describe '#readonly?' do
     it 'makes historical issuance rows immutable after creation' do
-      issuance = create(:delegated_issuance)
+      issuance = create(:delegated_issuance_log)
 
       expect(issuance).to be_readonly
       expect { issuance.update!(scope: 'changed') }.to raise_error(ActiveRecord::ReadOnlyRecord)
@@ -29,7 +29,7 @@ RSpec.describe DelegatedIssuance do
 
   describe 'return-log consistency' do
     it 'requires the actor return log to belong to the same user and actor' do
-      issuance = build(:delegated_issuance)
+      issuance = build(:delegated_issuance_log)
       issuance.actor_return_log = build(:sp_return_log, user: create(:user), issuer: 'other')
 
       expect(issuance).to_not be_valid
@@ -37,7 +37,7 @@ RSpec.describe DelegatedIssuance do
     end
 
     it 'requires the target return log to belong to the same user and target' do
-      issuance = build(:delegated_issuance)
+      issuance = build(:delegated_issuance_log)
       issuance.target_return_log = build(:sp_return_log, user: create(:user), issuer: 'other')
 
       expect(issuance).to_not be_valid

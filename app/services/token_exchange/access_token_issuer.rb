@@ -24,7 +24,7 @@ module TokenExchange
       expires_in = IdentityConfig.store.token_exchange_access_token_expires_in
       issued_at = Time.zone.now.to_i
       expires_at = issued_at + expires_in
-      delegation_id = DelegatedIssuance.generate_delegation_id
+      delegation_id = DelegatedIssuanceLog.generate_delegation_id
       token = jwe(issued_at:, expires_at:)
       access_token = AccessToken.new(
         id: AccessToken.digest(token),
@@ -37,9 +37,9 @@ module TokenExchange
         expires_at:,
       )
 
-      DelegatedIssuance.transaction do
+      DelegatedIssuanceLog.transaction do
         target_return_log = create_target_return_log
-        DelegatedIssuance.create!(
+        DelegatedIssuanceLog.create!(
           delegation_id:,
           user: target_identity.user,
           actor_return_log_id: subject_token.actor_return_log_id,

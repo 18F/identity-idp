@@ -32,7 +32,7 @@ class User < ApplicationRecord
   has_many :identities, class_name: 'ServiceProviderIdentity'
   has_many :events # we are retaining events after delete
   has_many :devices # we are retaining devices after delete
-  has_many :delegated_issuances # retained as issuance history after delete
+  has_many :delegated_issuance_logs # retained as issuance history after delete
   # rubocop:enable Rails/HasManyOrHasOneDependent
   has_many :agency_identities, dependent: :destroy
   has_many :profiles, dependent: :destroy

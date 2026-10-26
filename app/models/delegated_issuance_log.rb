@@ -2,7 +2,7 @@
 
 # One immutable delegated access token issuance. A new row is written for every DAT minted,
 # even when the same user, actor and target have appeared in earlier issuances.
-class DelegatedIssuance < ApplicationRecord
+class DelegatedIssuanceLog < ApplicationRecord
   DELEGATION_ID_PREFIX = 'dlg_'
 
   belongs_to :user

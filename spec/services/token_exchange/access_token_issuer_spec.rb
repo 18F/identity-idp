@@ -84,7 +84,7 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
 
     it 'creates a historical issuance linking the actor and target return logs' do
       subject
-      issuance = user.delegated_issuances.last
+      issuance = user.delegated_issuance_logs.last
 
       expect(issuance.actor_return_log).to eq(actor_return_log)
       expect(issuance.target_return_log).to have_attributes(
@@ -111,7 +111,7 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
         expect { subject }
           .to raise_error(Redis::BaseError)
           .and change { SpReturnLog.where(issuer: target_issuer).count }.by(0)
-          .and change { DelegatedIssuance.count }.by(0)
+          .and change { DelegatedIssuanceLog.count }.by(0)
       end
     end
   end
