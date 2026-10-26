@@ -86,9 +86,13 @@ module DocAuthHelper
   end
 
   def complete_agreement_step
-    # Click the checkbox at the start of the label, avoiding the links within the label.
     unless find_field('doc_auth_idv_consent_given', visible: :all).checked?
-      find('label[for="doc_auth_idv_consent_given"]').click(x: 10, y: 10)
+      if javascript_enabled?
+        # Click the checkbox at the start of the label, avoiding the links within the label.
+        find('label[for="doc_auth_idv_consent_given"]').click(x: 10, y: 10)
+      else
+        check 'doc_auth_idv_consent_given'
+      end
     end
     expect(page).to have_checked_field('doc_auth_idv_consent_given', visible: :all)
     click_on t('doc_auth.buttons.continue')
