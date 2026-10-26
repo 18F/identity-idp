@@ -8,6 +8,7 @@ module TokenExchange
     :target_issuer,
     :resource,
     :scope,
+    :dpop_jkt,
     :issued_at,
     :expires_at,
     keyword_init: true,
