@@ -86,17 +86,12 @@ module DocAuthHelper
   end
 
   def complete_agreement_step
-    check doc_auth_consent_label
+    # Click the checkbox at the start of the label, avoiding the links within the label.
+    unless find_field('doc_auth_idv_consent_given', visible: :all).checked?
+      find('label[for="doc_auth_idv_consent_given"]').click(x: 10, y: 10)
+    end
+    expect(page).to have_checked_field('doc_auth_idv_consent_given', visible: :all)
     click_on t('doc_auth.buttons.continue')
-  end
-
-  def doc_auth_consent_label
-    t(
-      'doc_auth.instructions.consent_html',
-      app_name: APP_NAME,
-      privacy_link: "#{t('notices.privacy.privacy_act_statement')}#{t('links.new_tab')}",
-      rules_of_use_link: "#{t('titles.rules_of_use')}#{t('links.new_tab')}",
-    )
   end
 
   def complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: false)
