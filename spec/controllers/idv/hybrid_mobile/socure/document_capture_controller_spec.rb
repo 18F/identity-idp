@@ -286,6 +286,37 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           end
         end
 
+        context 'when document images sharing is allowed' do
+          before do
+            allow(IdentityConfig.store).to receive_messages(
+              document_images_sharing_enabled: true,
+              document_images_sharing_service_providers: [issuer],
+            )
+          end
+
+          it 'request the flow for selfie with image sharing' do
+            get(:show)
+
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'license',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_hybrid_mobile_socure_document_capture_update_url,
+                      },
+                      language: expected_language,
+                      useCaseKey: idv_socure_docv_flow_id_only,
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
+
         context 'renders the interstital page' do
           render_views
 
