@@ -41,6 +41,19 @@ RSpec.describe OpenidConnect::TokenController do
       )
     end
 
+    it 'adds subject token fingerprint to subject-token analytics attributes' do
+      analytics_attributes = {
+        token_endpoint_operation: TokenExchange::Constants::STAGE_SUBJECT_TOKEN,
+      }
+      response = { access_token: 'subject-token' }
+
+      controller.send(:add_subject_token_fingerprint, analytics_attributes, response)
+
+      expect(analytics_attributes).to include(
+        subject_token_fingerprint: TokenExchange::SubjectToken.digest('subject-token'),
+      )
+    end
+
     context 'with valid params' do
       it 'is successful and has a response with the id_token' do
         action
@@ -65,6 +78,7 @@ RSpec.describe OpenidConnect::TokenController do
             code_verifier_present: false,
             expires_in: 0,
             ial: 1,
+            token_endpoint_operation: 'authorization_code',
           }
         )
 
@@ -157,6 +171,7 @@ RSpec.describe OpenidConnect::TokenController do
             code_verifier_present: false,
             error_details: hash_including(:grant_type),
             ial: 1,
+            token_endpoint_operation: 'authorization_code',
           }
         )
 

@@ -7713,6 +7713,12 @@ module AnalyticsEvents
   # @param [Boolean] code_verifier_present Whether code verifier parameter was present
   # @param [Boolean, nil] service_provider_pkce Whether service provider is configured for PKCE. Nil
   # if the service provider is unknown.
+  # @param [String, nil] token_exchange_stage Token exchange flow stage for filtering
+  # @param [String, nil] token_endpoint_operation Token endpoint operation
+  #   (authorization_code or subject_token)
+  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope values
+  # @param [String, nil] subject_token_fingerprint SHA-256 digest of the issued subject
+  #   token
   def openid_connect_token(
     client_id:,
     success:,
@@ -7723,6 +7729,10 @@ module AnalyticsEvents
     code_verifier_present:,
     service_provider_pkce:,
     error_details: nil,
+    token_exchange_stage: nil,
+    token_endpoint_operation: nil,
+    token_exchange_scopes: nil,
+    subject_token_fingerprint: nil,
     **extra
   )
     track_event(
@@ -7736,6 +7746,10 @@ module AnalyticsEvents
       ial:,
       code_verifier_present:,
       service_provider_pkce:,
+      token_exchange_stage:,
+      token_endpoint_operation:,
+      token_exchange_scopes:,
+      subject_token_fingerprint:,
       **extra,
     )
   end

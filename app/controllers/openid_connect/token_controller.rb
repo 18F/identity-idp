@@ -14,6 +14,7 @@ module OpenidConnect
 
       analytics_attributes = result.to_h
       analytics_attributes[:expires_in] = response[:expires_in]
+      add_subject_token_fingerprint(analytics_attributes, response)
 
       track_analytics(**analytics_attributes.except(:integration_errors))
 
@@ -61,6 +62,15 @@ module OpenidConnect
       else
         analytics.openid_connect_token(**analytics_attributes)
       end
+    end
+
+    def add_subject_token_fingerprint(analytics_attributes, response)
+      return unless analytics_attributes[:token_endpoint_operation] ==
+                    TokenExchange::Constants::STAGE_SUBJECT_TOKEN
+      return if response[:access_token].blank?
+
+      analytics_attributes[:subject_token_fingerprint] =
+        TokenExchange::SubjectToken.digest(response[:access_token])
     end
 
     def brokered_token_exchange?
