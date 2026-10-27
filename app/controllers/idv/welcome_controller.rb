@@ -138,6 +138,7 @@ module Idv
 
     def mdl_enabled?
       return false if IdentityConfig.store.idv_doc_auth_mdl_enabled_percent.zero?
+      return false if current_sp&.document_images_sharing_allowed?
 
       ab_test_bucket(:DOC_AUTH_MDL, user: current_user) == :mdl_enabled
     end
