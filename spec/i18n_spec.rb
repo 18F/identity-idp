@@ -60,6 +60,7 @@ module I18n
       ALLOWED_UNTRANSLATED_KEYS = [
         { key: /^account_recovery\./, locales: %i[es fr zh] }, # Recovery translations pending
         { key: /^user_mailer\.account_recovery_request\./, locales: %i[es fr zh] }, # Recovery translations pending
+        { key: /^user_mailer\.account_recovery_cancelled\./, locales: %i[es fr zh] }, # Recovery translations pending
         { key: /^two_factor_authentication\.account_recovery\./, locales: %i[es fr zh] }, # Recovery translations pending
         { key: 'telephony.account_recovery_notice.sms', locales: %i[es fr zh] }, # Recovery translations pending
         { key: 'two_factor_authentication.piv_cac_mismatch.instructions_recovery', locales: %i[es fr zh] }, # Recovery translations pending
