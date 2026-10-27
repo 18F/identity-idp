@@ -2,7 +2,7 @@
 
 module TokenExchange
   class AccessTokenIssuer
-    IssuedToken = Struct.new(:token, :expires_in, keyword_init: true)
+    IssuedToken = Struct.new(:token, :expires_in, :delegation_id, keyword_init: true)
 
     def self.issue(subject_token:, target_issuer:, resource:, scope:)
       new(
@@ -54,7 +54,7 @@ module TokenExchange
         EncryptedRedisStructStorage.store(access_token, expires_in:)
       end
 
-      IssuedToken.new(token:, expires_in:)
+      IssuedToken.new(token:, expires_in:, delegation_id:)
     end
 
     private

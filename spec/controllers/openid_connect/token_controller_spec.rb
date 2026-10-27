@@ -294,6 +294,7 @@ RSpec.describe OpenidConnect::TokenController do
           token_exchange_stage: 'delegated_token',
           token_exchange_scopes: ['passport'],
           subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
+          delegation_id: DelegatedIssuanceLog.last.delegation_id,
         )
       end
 

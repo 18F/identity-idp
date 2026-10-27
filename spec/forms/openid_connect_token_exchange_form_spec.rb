@@ -325,6 +325,12 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       )
     end
 
+    it 'exposes the historical issuance delegation id' do
+      response
+
+      expect(form.delegation_id).to eq(user.delegated_issuance_logs.last.delegation_id)
+    end
+
     it 'creates distinct historical issuances for repeated DAT mints to the same target' do
       response
       described_class.new(params).response

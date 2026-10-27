@@ -7621,6 +7621,7 @@ module AnalyticsEvents
   # @param [String, nil] token_exchange_stage Token exchange flow stage
   # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
   # @param [String, nil] subject_token_fingerprint Fingerprint of the submitted subject token
+  # @param [String, nil] delegation_id Internal delegated-token issuance identifier
   # @param [String, nil] oauth_error_code Protocol-level OAuth error code returned for
   #   unsuccessful requests
   def openid_connect_delegated_token_exchange(
@@ -7635,6 +7636,7 @@ module AnalyticsEvents
     token_exchange_stage: nil,
     token_exchange_scopes: nil,
     subject_token_fingerprint: nil,
+    delegation_id: nil,
     oauth_error_code: nil,
     **extra
   )
@@ -7651,6 +7653,7 @@ module AnalyticsEvents
       token_exchange_stage:,
       token_exchange_scopes:,
       subject_token_fingerprint:,
+      delegation_id:,
       oauth_error_code:,
       **extra,
     )

@@ -68,12 +68,6 @@ class OpenidConnectTokenExchangeForm
   def response
     return error_response unless valid?
 
-    issued_token = TokenExchange::AccessTokenIssuer.issue(
-      subject_token: loaded_subject_token,
-      target_issuer: audience,
-      resource:,
-      scope: requested_scope,
-    )
     {
       access_token: issued_token.token,
       issued_token_type: TokenExchange::Constants::ACCESS_TOKEN_TYPE,
@@ -81,6 +75,10 @@ class OpenidConnectTokenExchangeForm
       expires_in: issued_token.expires_in,
       scope: requested_scope,
     }
+  end
+
+  def delegation_id
+    @issued_token&.delegation_id
   end
 
   # `invalid_client` indicates a client authentication failure, which RFC 6749
@@ -252,6 +250,15 @@ class OpenidConnectTokenExchangeForm
       oauth_error_code: (oauth_error unless valid?),
       integration_errors:,
     }
+  end
+
+  def issued_token
+    @issued_token ||= TokenExchange::AccessTokenIssuer.issue(
+      subject_token: loaded_subject_token,
+      target_issuer: audience,
+      resource:,
+      scope: requested_scope,
+    )
   end
 
   def token_exchange_scope_values

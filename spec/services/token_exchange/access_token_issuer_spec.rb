@@ -111,6 +111,10 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
       )
     end
 
+    it 'returns the historical issuance delegation id' do
+      expect(subject.delegation_id).to eq(user.delegated_issuance_logs.last.delegation_id)
+    end
+
     it 'stores the token with the configured expiration' do
       expect(EncryptedRedisStructStorage).to receive(:store).with(
         instance_of(TokenExchange::AccessToken),

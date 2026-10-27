@@ -15,6 +15,7 @@ module OpenidConnect
       analytics_attributes = result.to_h
       analytics_attributes[:expires_in] = response[:expires_in]
       add_subject_token_fingerprint(analytics_attributes, response)
+      add_delegation_id(analytics_attributes)
 
       track_analytics(**analytics_attributes.except(:integration_errors))
 
@@ -71,6 +72,13 @@ module OpenidConnect
 
       analytics_attributes[:subject_token_fingerprint] =
         TokenExchange::SubjectToken.digest(response[:access_token])
+    end
+
+    def add_delegation_id(analytics_attributes)
+      return unless brokered_token_exchange?
+      return if @token_form.delegation_id.blank?
+
+      analytics_attributes[:delegation_id] = @token_form.delegation_id
     end
 
     def brokered_token_exchange?
