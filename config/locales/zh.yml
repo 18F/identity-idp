@@ -2,7 +2,6 @@
 account_recovery.pending.cancel_success: Your account recovery request has been canceled.
 account_recovery.pending.header: We received your account recovery request
 account_recovery.pending.help: How account recovery works
-account_recovery.pending.instructions: Keep your password available. You will need to enter it again before setting up new authentication methods. Your account and existing authentication methods have not been changed.
 account_recovery.pending.mfa_banner: You have a pending account recovery request. Sign in with an authentication method to cancel it.
 account_recovery.pending.notification_html: We sent an email to <strong>%{email}</strong> with instructions to recover your account.
 account_recovery.pending.resend: Resend the recovery request email
