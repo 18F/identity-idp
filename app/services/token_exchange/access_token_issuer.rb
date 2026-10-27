@@ -24,6 +24,7 @@ module TokenExchange
       expires_in = IdentityConfig.store.token_exchange_access_token_expires_in
       issued_at = Time.zone.now.to_i
       expires_at = issued_at + expires_in
+      delegation_id = DelegatedIssuanceLog.generate_delegation_id
       token = jwe(issued_at:, expires_at:)
       access_token = AccessToken.new(
         id: AccessToken.digest(token),
@@ -36,7 +37,22 @@ module TokenExchange
         expires_at:,
       )
 
-      EncryptedRedisStructStorage.store(access_token, expires_in:)
+      DelegatedIssuanceLog.transaction do
+        target_return_log = create_target_return_log
+        DelegatedIssuanceLog.create!(
+          delegation_id:,
+          user: target_identity.user,
+          actor_return_log_id: subject_token.actor_return_log_id,
+          target_return_log:,
+          actor_issuer: subject_token.broker_issuer,
+          target_issuer:,
+          resource:,
+          scope:,
+          issued_at: Time.zone.at(issued_at),
+          expires_at: Time.zone.at(expires_at),
+        )
+        EncryptedRedisStructStorage.store(access_token, expires_in:)
+      end
 
       IssuedToken.new(token:, expires_in:)
     end
@@ -46,18 +62,7 @@ module TokenExchange
     attr_reader :subject_token, :target_issuer, :resource, :scope
 
     def jwe(issued_at:, expires_at:)
-      public_key = target.ssl_certs.first.public_key
-      jwk = JWT::JWK.new(public_key)
-
-      JWE.encrypt(
-        jwt(issued_at:, expires_at:),
-        public_key,
-        typ: 'JWT',
-        zip: 'DEF',
-        alg: 'RSA-OAEP',
-        enc: 'A256GCM',
-        kid: jwk.kid,
-      )
+      OpenidConnect::JweEncryptor.encrypt(jwt(issued_at:, expires_at:), service_provider: target)
     end
 
     def jwt(issued_at:, expires_at:)
@@ -81,6 +86,22 @@ module TokenExchange
           sub: subject_token.broker_issuer,
         },
       }
+    end
+
+    def create_target_return_log
+      profile = target_identity.user.active_profile
+
+      SpReturnLog.create!(
+        request_id: SecureRandom.uuid,
+        user: target_identity.user,
+        billable: true,
+        ial: profile ? 2 : 1,
+        issuer: target_issuer,
+        profile_id: profile&.id,
+        profile_verified_at: profile&.verified_at,
+        profile_requested_issuer: profile&.initiating_service_provider_issuer,
+        returned_at: Time.zone.now,
+      )
     end
 
     def target

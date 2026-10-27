@@ -4,6 +4,10 @@ account.connected_apps.associated_html: Connected %{timestamp_html}
 account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government services online. Below is a list of all the services you currently have connected.
 account.connected_apps.email_not_selected: Email not yet selected
 account.connected_apps.email_update_success_html: Your email for <strong>%{sp_name}</strong> was updated successfully.
+account.connected_delegation.associated_html: Connected through America.gov on %{timestamp_html}
+account.connected_delegation.description: You allowed %{america_gov_name} to act for you on these services. %{america_gov_name} can’t see your personal information. %{app_name} encrypts it so only the agency can read it.
+account.connected_delegation.disconnect: Disconnecting a service stops %{america_gov_name} from acting for you there. It doesn’t change your own connection to that service.
+account.connected_delegation.permission1_html: <strong>%{america_gov_name} can:</strong> Start and submit your passport renewal
 account.email_language.default: '%{language} (default)'
 account.email_language.edit_title: Edit email language preference
 account.email_language.languages_list: You will receive emails from %{app_name} in the language you choose.
@@ -79,6 +83,7 @@ account.navigation.add_federal_id: Add your government employee ID
 account.navigation.add_phone_number: Add phone number
 account.navigation.add_platform_authenticator: Add face or touch unlock
 account.navigation.add_security_key: Add security key
+account.navigation.america_gov_services: Services %{america_gov_name} can use for you
 account.navigation.close: Close
 account.navigation.connected_services: Your connected services
 account.navigation.customer_support: Customer support
@@ -712,7 +717,7 @@ doc_auth.info.passport_capture_help_2: Hold still and wait for the tool to captu
 doc_auth.info.passport_card_capture: Take a photo of the data page of your passport card. This page has your passport photo and personal information.
 doc_auth.info.review_examples_of_photos: Review examples of how to take clear photos of your ID.
 doc_auth.info.review_passport: We couldn’t find records matching the information from your passport. Add a new photo of your ID in case your passport information was read incorrectly.
-doc_auth.info.secure_account: We’ll encrypt your account when you re-enter your password. Encryption means your data is protected and only you will be able to access or change your information.
+doc_auth.info.secure_account: We’ll encrypt your account when you re-enter your password. Encryption protects your account information - you’re the only on who can change your information.
 doc_auth.info.selfie_capture_content: We’ll check that you are the person on your ID.
 doc_auth.info.selfie_capture_help_1: Line up your face with the green circle. Hold still and wait for the tool to capture a photo.
 doc_auth.info.selfie_capture_help_2: After your photo is automatically captured, tap the green checkmark to accept the photo.
@@ -751,9 +756,8 @@ doc_auth.instructions.bullet1_mdl_and_passport_card: Have a U.S. passport book o
 doc_auth.instructions.bullet2: Enter your Social Security number
 doc_auth.instructions.bullet3: Match to your phone number
 doc_auth.instructions.bullet4: Re-enter your %{app_name} password
-doc_auth.instructions.consent: By checking this box, you are letting %{app_name} ask for, use, keep, and share your personal information. We will use it to verify your identity.
+doc_auth.instructions.consent_html: By checking this box, you are letting %{app_name} ask for, use, keep, and share your personal information, as described in our %{privacy_link_html} and you are agreeing to our %{rules_of_use_link_html}. We will use it to verify your identity and help prevent fraud.
 doc_auth.instructions.getting_started: 'You’ll need to:'
-doc_auth.instructions.learn_more: Learn more about our privacy and security measures
 doc_auth.instructions.switch_back: Switch back to your computer to finish verifying your identity
 doc_auth.instructions.switch_back_image: Arrow pointing from phone to computer
 doc_auth.instructions.test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are considered valid. Do not enter real PII in this field.
@@ -1283,7 +1287,7 @@ idv.messages.sessions.enter_password_message: When you re-enter your password, %
 idv.messages.sessions.no_pii: TEST SITE - Do not use real personal information (demo purposes only) - TEST SITE
 idv.messages.verify_info: We will check records to verify that your address and Social Security number match the information on your ID.
 idv.messages.verifying: Verifying…
-idv.proofing_agent_expired.body: For your security, the ‘confirm account’ email we sent has expired. It was valid for 48 hours. To continue, please complete the identity verification step again.
+idv.proofing_agent_expired.body: For your security, the ‘confirm account’ email we sent has expired. It was valid for %{validity_hours} hours. To continue, please complete the identity verification step again.
 idv.proofing_agent_expired.continue: Continue
 idv.proofing_agent_expired.heading: Let’s finish setting up your identity verification
 idv.titles.activated: Your identity has already been verified
@@ -1807,6 +1811,7 @@ openid_connect.token.errors.invalid_code: is invalid because doesn’t match any
 openid_connect.token.errors.invalid_code_verifier: code_verifier did not match code_challenge. Please see our documentation at https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat must be an integer or floating point Unix timestamp representing a time in the past. Please see our documentation at https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: Could not validate assertion against any registered public keys. Please see our documentation at https://developers.login.gov/support/#invalid-token-signature
+openid_connect.user_info.errors.encryption_unavailable: 'This service provider is configured to receive encrypted userinfo responses, but no usable encryption key is registered for it: the response was not sent.'
 openid_connect.user_info.errors.malformed_authorization: Malformed Authorization header. Please see our documentation at https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No Authorization header provided. Please see our documentation at https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: Could not find authorization for the contents of the provided access_token or it may have expired. Please see our documentation at https://developers.login.gov/support/#auth-header-contents-not-found

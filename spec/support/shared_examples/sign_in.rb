@@ -353,6 +353,9 @@ RSpec.shared_examples 'logs reCAPTCHA event and redirects appropriately' do |suc
       score_threshold: 0.2,
       recaptcha_action: 'sign_in',
       form_class: 'RecaptchaMockForm',
+      ja3_present: false,
+      ja4_present: false,
+      recaptcha_enterprise_additional_context_enabled: false,
     )
     asserted_expected_user = false
     fake_analytics.reset!
@@ -374,6 +377,9 @@ RSpec.shared_examples 'logs reCAPTCHA event and redirects appropriately' do |suc
       score_threshold: 0.2,
       recaptcha_action: 'sign_in',
       form_class: 'RecaptchaMockForm',
+      ja3_present: false,
+      ja4_present: false,
+      recaptcha_enterprise_additional_context_enabled: false,
     )
     expect(fake_analytics).to have_logged_event(
       'Email and Password Authentication',

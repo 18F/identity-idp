@@ -27,6 +27,69 @@ RSpec.describe 'accounts/connected_services/show.html.erb' do
     expect(rendered).to have_css('ul:not(:has(li))')
   end
 
+  describe 'the America.gov delegation section' do
+    before do
+      allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)
+    end
+
+    let(:heading) do
+      t('account.navigation.america_gov_services', america_gov_name: AMERICA_GOV_NAME)
+    end
+
+    context 'without an STS consent' do
+      it 'hides the section' do
+        render
+
+        expect(rendered).to_not have_content(heading)
+      end
+    end
+
+    context 'with an expired STS consent' do
+      before { create(:user_consent_sts, user:, created_at: 366.days.ago) }
+
+      it 'hides the section' do
+        render
+
+        expect(rendered).to_not have_content(heading)
+      end
+    end
+
+    context 'with an unexpired STS consent' do
+      let!(:consent) { create(:user_consent_sts, user:, created_at: 3.days.ago) }
+
+      it 'shows the section with the consent date and a disconnect link' do
+        render
+
+        expect(rendered).to have_content(heading)
+        expect(rendered).to have_content(
+          consent.created_at.in_time_zone.utc.strftime(t('time.formats.event_timestamp')),
+        )
+        expect(rendered).to have_link(t('account.revoke_consent.link_title'))
+        expect(rendered).to have_css(
+          "a[href*='#{sts_consent_revoke_path(id: consent.id)}']",
+        )
+      end
+
+      it 'links the card heading to the service in a new tab' do
+        render
+
+        expect(rendered).to have_css(
+          "a.usa-link--external[href='https://mytravel.state.gov/'][target=_blank]",
+          text: 'MyTravelGov',
+        )
+        expect(rendered).to have_content(t('links.new_tab'))
+      end
+
+      it 'renders one card per consent' do
+        create(:user_consent_sts, user:)
+
+        render
+
+        expect(rendered).to have_css('li', text: 'MyTravelGov', count: 2)
+      end
+    end
+  end
+
   context 'with a connected app' do
     let!(:identity) { create(:service_provider_identity, user:, verified_attributes: ['email']) }
 

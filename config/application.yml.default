@@ -567,6 +567,7 @@ update_cancel_account_reset_path: false
 use_dashboard_service_providers: false
 use_kms: false
 use_vot_in_sp_requests: true
+userinfo_encryption_allowed_issuers: '[]'
 usps_auth_token_refresh_job_enabled: false
 usps_confirmation_max_days: 30
 usps_confirmation_max_days_contiguous_states: 21
@@ -595,6 +596,7 @@ vendor_status_lexisnexis_trueid: 'operational'
 vendor_status_sms: 'operational'
 vendor_status_voice: 'operational'
 verification_errors_report_configs: '[]'
+verification_funnel_s3_report_configs: '[]'
 verify_gpo_key_attempt_window_in_minutes: 10
 verify_gpo_key_max_attempts: 5
 verify_personal_key_attempt_window_in_minutes: 15

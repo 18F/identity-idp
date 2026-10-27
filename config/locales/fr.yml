@@ -4,6 +4,10 @@ account.connected_apps.associated_html: Connecté %{timestamp_html}
 account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs services de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos services actuellement connectés.
 account.connected_apps.email_not_selected: Adresse e-mail non encore sélectionnée
 account.connected_apps.email_update_success_html: Vous avez réussi à modifier votre adresse e-mail pour <strong>%{sp_name}</strong>.
+account.connected_delegation.associated_html: Connected through America.gov on %{timestamp_html}
+account.connected_delegation.description: You allowed %{america_gov_name} to act for you on these services. %{america_gov_name} can’t see your personal information. %{app_name} encrypts it so only the agency can read it.
+account.connected_delegation.disconnect: Disconnecting a service stops %{america_gov_name} from acting for you there. It doesn’t change your own connection to that service.
+account.connected_delegation.permission1_html: <strong>%{america_gov_name} can:</strong> Start and submit your passport renewal
 account.email_language.default: '%{language} (par défaut)'
 account.email_language.edit_title: Modifier la langue dans laquelle vous préférez recevoir les e-mails
 account.email_language.languages_list: Vous recevrez des e-mails de %{app_name} dans la langue de votre choix.
@@ -79,6 +83,7 @@ account.navigation.add_federal_id: Ajouter votre carte d’employé fédéral
 account.navigation.add_phone_number: Ajouter un numéro de téléphone
 account.navigation.add_platform_authenticator: Ajouter le déverrouillage facial ou tactile
 account.navigation.add_security_key: Ajouter une clé de sécurité
+account.navigation.america_gov_services: Services %{america_gov_name} can use for you
 account.navigation.close: Fermer
 account.navigation.connected_services: Vos services connectés
 account.navigation.customer_support: Service client
@@ -712,7 +717,7 @@ doc_auth.info.passport_capture_help_2: Ne bougez pas et attendez que l’apparei
 doc_auth.info.passport_card_capture: Prenez une photo de la page d’informations de votre carte de passeport. Cette page comporte votre photo d’identité et vos informations personnelles.
 doc_auth.info.review_examples_of_photos: Voir des exemples qui montrent comment prendre des photos nettes de votre pièce d’identité.
 doc_auth.info.review_passport: Nous n’avons pas trouvé dans nos données enregistrées d’informations correspondant aux informations figurant sur votre passeport. Ajouter une nouvelle photo de votre pièce d’identité au cas où les informations figurant sur votre passeport auraient été lues de façon incorrecte.
-doc_auth.info.secure_account: Nous chiffrons votre compte lorsque vous ressaisissez votre mot de passe. Avec le chiffrement, vos données sont protégées et vous seul pouvez modifier vos informations.
+doc_auth.info.secure_account: 'Nous chiffrons votre compte lorsque vous saisissez à nouveau votre mot de passe. Le chiffrement protège les informations de votre compte: vous êtes la seule personne à pouvoir modifier vos informations.'
 doc_auth.info.selfie_capture_content: Nous vérifierons que vous êtes la personne figurant sur la pièce d’identité.
 doc_auth.info.selfie_capture_help_1: Placez votre visage à l’intérieur du cercle vert. Ne bougez pas et attendez que l’appareil se déclenche.
 doc_auth.info.selfie_capture_help_2: Une fois la photo prise automatiquement, cochez la case sous la photo pour l’accepter (la case deviendra verte).
@@ -751,9 +756,8 @@ doc_auth.instructions.bullet1_mdl_and_passport_card: Posséder un passeport ou u
 doc_auth.instructions.bullet2: Saisir votre numéro de sécurité sociale
 doc_auth.instructions.bullet3: Vérifier la correspondance avec votre numéro de téléphone
 doc_auth.instructions.bullet4: Saisir à nouveau votre mot de passe %{app_name}
-doc_auth.instructions.consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser, conserver et partager vos renseignements personnels. Nous les utiliserons pour confirmer votre identité.
+doc_auth.instructions.consent_html: En cochant cette case, vous autorisez %{app_name} à demander, utiliser, conserver et partager vos informations personnelles, comme décrit dans notre %{privacy_link_html}, et vous acceptez nos %{rules_of_use_link_html}. Nous les utiliserons pour vérifier votre identité et aider à prévenir la fraude.
 doc_auth.instructions.getting_started: 'Vous devrez :'
-doc_auth.instructions.learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
 doc_auth.instructions.switch_back: Revenir à votre ordinateur pour continuer à confirmer votre identité
 doc_auth.instructions.switch_back_image: Flèche pointant du téléphone vers l’ordinateur
 doc_auth.instructions.test_ssn: Dans l’environnement de test, seuls les numéros de sécurité sociale commençant par “900-” ou “666-” sont considérés comme valides. Ne saisissez pas de vraies IPI dans ce champ.
@@ -1283,7 +1287,7 @@ idv.messages.sessions.enter_password_message: Lorsque vous ressaisirez votre mot
 idv.messages.sessions.no_pii: SITE DE TEST - N’utilisez pas de véritables informations personnelles (à des fins de démonstration uniquement) - SITE DE TEST
 idv.messages.verify_info: Nous vérifierons que votre adresse et votre numéro de sécurité sociale correspondent aux informations figurant sur votre pièce d’identité.
 idv.messages.verifying: Vérification en cours…
-idv.proofing_agent_expired.body: Pour votre sécurité, l’e-mail de confirmation de compte que nous vous avons envoyé a expiré. Les informations contenues dans cet email avaient une durée de validité de 48 heures. Veuillez effectuer une nouvelle demande de vérification d’identité.
+idv.proofing_agent_expired.body: Pour votre sécurité, l’e-mail de confirmation de compte que nous vous avons envoyé a expiré. Les informations contenues dans cet email avaient une durée de validité de %{validity_hours} heures. Veuillez effectuer une nouvelle demande de vérification d’identité.
 idv.proofing_agent_expired.continue: Suite
 idv.proofing_agent_expired.heading: Finalisons la configuration de votre vérification d’identité.
 idv.titles.activated: Votre identité a déjà été vérifiée
@@ -1750,7 +1754,7 @@ notices.password_changed: Vous avez changé votre mot de passe.
 notices.phishing_warning_html: Les téléphones sont vulnérables %{common_scams_link_html}. Si possible, %{ft_unlock_setup_link_html} pour une meilleure sécurité de votre compte.
 notices.phone_confirmed: Un téléphone a été ajouté à votre compte.
 notices.piv_cac_configured: Ajouter votre carte d’employé fédéral.
-notices.privacy.privacy_act_statement: Déclaration relative à la loi sur la confidentialité
+notices.privacy.privacy_act_statement: Déclaration en vertu de la loi sur la protection de la vie privée
 notices.privacy.security_and_privacy_practices: Déclaration relatives à la loi sur les pratiques de sécurité et la confidentialité
 notices.resend_confirmation_email.success: Nous avons envoyé un autre e-mail de confirmation.
 notices.session_cleared: Pour votre sécurité, nous effaçons les informations que vous avez saisies si vous ne passez pas à une nouvelle page dans les %{minutes} minutes.
@@ -1808,6 +1812,7 @@ openid_connect.token.errors.invalid_code: n’est pas valide, car il ne correspo
 openid_connect.token.errors.invalid_code_verifier: code_verifier ne correspondait pas à code_challenge. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat doit être un horodatage Unix entier ou à virgule flottante représentant une heure dans le passé. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: Impossible de valider l’assertion contre les clés publiques enregistrées. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-token-signature
+openid_connect.user_info.errors.encryption_unavailable: 'Ce fournisseur de services est configuré pour recevoir des réponses userinfo chiffrées, mais aucune clé de chiffrement utilisable n’est enregistrée pour lui : la réponse n’a pas été envoyée.'
 openid_connect.user_info.errors.malformed_authorization: Forme de l’en-tête d’autorisation non valide. Veuillez consulter notre documentation à https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: Aucune en-tête d’autorisation fournie. Veuillez consulter notre documentation à https://developers.login.gov/support/#no-auth-header
 openid_connect.user_info.errors.not_found: L’autorisation pour le contenu du access_token fourni introuvable ou il peut être expiré. Veuillez consulter notre documentation à https://developers.login.gov/support/#auth-header-contents-not-found

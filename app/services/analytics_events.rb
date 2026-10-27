@@ -5821,18 +5821,15 @@ module AnalyticsEvents
   #   :reproof_forcing_sp — current SP forces reproof for users not originally proofed through it.
   #   :unsupervised_with_selfie_required — SP requires unsupervised-with-selfie and user's profile
   #     was not created at that level.
-  # @param [String, nil] initiating_sp_issuer Issuer of the SP that originally created the profile.
   # @param [String, nil] previous_idv_level The IDV level of the user's existing active profile.
   def idv_reproof_needed(
     reproof_reason:,
-    initiating_sp_issuer: nil,
     previous_idv_level: nil,
     **extra
   )
     track_event(
       :idv_reproof_needed,
       reproof_reason:,
-      initiating_sp_issuer:,
       previous_idv_level:,
       **extra,
     )
@@ -6243,6 +6240,31 @@ module AnalyticsEvents
     track_event(
       :idv_socure_docv_redirect_requested,
       document_type_requested:,
+      **extra,
+    )
+  end
+
+  # @param [Integer, nil] http_status HTTP status returned by Socure, nil if no response received
+  # @param [String] user_id UUID of the user the images belong to
+  # @param [String] reference_id Socure reference ID the images were requested for
+  # @param [Array<Symbol>] image_types_present Image types returned (front, back, passport, selfie)
+  # @param [Boolean] passport_book Whether the document was a passport book
+  # Images were requested from Socure for a completed DocV transaction
+  def idv_socure_images_requested(
+    http_status:,
+    user_id:,
+    reference_id:,
+    image_types_present:,
+    passport_book:,
+    **extra
+  )
+    track_event(
+      :idv_socure_images_requested,
+      http_status:,
+      user_id:,
+      reference_id:,
+      image_types_present:,
+      passport_book:,
       **extra,
     )
   end
@@ -7560,13 +7582,23 @@ module AnalyticsEvents
   # @param [Integer] ial
   # @param [String] client_id Service Provider issuer
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  def openid_connect_bearer_token(success:, ial:, client_id:, error_details: nil, **extra)
+  # @param [Boolean, nil] encrypted Whether the service provider receives its userinfo response
+  #   as an encrypted JWT; nil when the token did not authenticate
+  def openid_connect_bearer_token(
+    success:,
+    ial:,
+    client_id:,
+    error_details: nil,
+    encrypted: nil,
+    **extra
+  )
     track_event(
       'OpenID Connect: bearer token authentication',
       success:,
       ial:,
       client_id:,
       error_details:,
+      encrypted:,
       **extra,
     )
   end
@@ -7691,6 +7723,19 @@ module AnalyticsEvents
       ial:,
       code_verifier_present:,
       service_provider_pkce:,
+      **extra,
+    )
+  end
+
+  # Tracks a userinfo request from a service provider configured for encrypted responses but
+  # with no usable key to encrypt to; the request was refused rather than answered in the clear
+  # @param [String] client_id Service Provider issuer
+  # @param [String] error Class of the error that prevented encryption
+  def openid_connect_userinfo_encryption_failed(client_id:, error:, **extra)
+    track_event(
+      :openid_connect_userinfo_encryption_failed,
+      client_id:,
+      error:,
       **extra,
     )
   end
@@ -8368,6 +8413,10 @@ module AnalyticsEvents
   # @param [String, nil] exception_class Class name of exception, if error occurred
   # @param [String] recaptcha_action reCAPTCHA action name, for distinct user flow
   # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone results
+  # @param [Boolean, nil] ja3_present Whether a JA3 TLS fingerprint was available to forward
+  # @param [Boolean, nil] ja4_present Whether a JA4 TLS fingerprint was available to forward
+  # @param [Boolean, nil] recaptcha_enterprise_additional_context_enabled Whether additional
+  #   reCAPTCHA Enterprise context (including JA3/JA4 fingerprints) is enabled
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
@@ -8376,6 +8425,9 @@ module AnalyticsEvents
     exception_class:,
     recaptcha_action:,
     phone_country_code: nil,
+    ja3_present: nil,
+    ja4_present: nil,
+    recaptcha_enterprise_additional_context_enabled: nil,
     **extra
   )
     track_event(
@@ -8387,6 +8439,9 @@ module AnalyticsEvents
       exception_class:,
       recaptcha_action:,
       phone_country_code:,
+      ja3_present:,
+      ja4_present:,
+      recaptcha_enterprise_additional_context_enabled:,
       **extra,
     )
   end
@@ -8913,6 +8968,18 @@ module AnalyticsEvents
   # Tracks when the STS (token exchange) consent form is visited
   def sts_consent_visited
     track_event(:sts_consent_visited)
+  end
+
+  # Tracks when a user's STS (token exchange) consent is revoked
+  # @param [String] target_app Issuer of the target app the consent was revoked for
+  def sts_revoke_consent_revoked(target_app:, **extra)
+    track_event(:sts_revoke_consent_revoked, target_app:, **extra)
+  end
+
+  # Tracks when the page to revoke an STS (token exchange) consent is visited
+  # @param [String] target_app Issuer of the target app the consent would be revoked for
+  def sts_revoke_consent_visited(target_app:, **extra)
+    track_event(:sts_revoke_consent_visited, target_app:, **extra)
   end
 
   # Tracks when user clicks on same tab that user landed on.

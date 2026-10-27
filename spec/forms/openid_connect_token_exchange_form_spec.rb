@@ -33,7 +33,17 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     )
   end
   let(:scope) { 'openid token_exchange:passport' }
-  let(:subject_token) { TokenExchange::SubjectTokenIssuer.issue(identity:).token }
+  let(:actor_return_log) do
+    create(
+      :sp_return_log,
+      user:, issuer: broker_issuer, ial: 2, billable: true, returned_at: Time.zone.now,
+    )
+  end
+  let(:subject_token) do
+    TokenExchange::SubjectTokenIssuer.issue(
+      identity:, actor_return_log_id: actor_return_log.id,
+    ).token
+  end
   let(:params) do
     {
       client_id:,
@@ -276,6 +286,44 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         resource:,
         scope:,
       )
+    end
+
+    it 'creates a billable target return log and historical issuance for every DAT' do
+      expect { response }
+        .to change { SpReturnLog.where(issuer: target_issuer).count }.by(1)
+        .and change { user.delegated_issuance_logs.count }.by(1)
+
+      issuance = user.delegated_issuance_logs.last
+      expect(issuance).to have_attributes(
+        actor_return_log_id: actor_return_log.id,
+        actor_issuer: broker_issuer,
+        target_issuer:,
+        resource:,
+        scope:,
+      )
+      expect(issuance.target_return_log).to have_attributes(
+        issuer: target_issuer,
+        billable: true,
+        user_id: user.id,
+      )
+    end
+
+    it 'creates distinct historical issuances for repeated DAT mints to the same target' do
+      response
+      described_class.new(params).response
+
+      expect(user.delegated_issuance_logs.count).to eq(2)
+      expect(user.delegated_issuance_logs.pluck(:delegation_id).uniq.count).to eq(2)
+    end
+
+    context 'when the subject token has no originating actor return log' do
+      let(:subject_token) { TokenExchange::SubjectTokenIssuer.issue(identity:).token }
+
+      it 'rejects the exchange and writes no issuance or target return log' do
+        expect { expect(response[:error]).to eq('invalid_grant') }
+          .to change { DelegatedIssuanceLog.count }.by(0)
+          .and change { SpReturnLog.where(issuer: target_issuer).count }.by(0)
+      end
     end
 
     context 'when invalid' do

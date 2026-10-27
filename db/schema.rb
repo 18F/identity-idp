@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_15_190000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_20_190050) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -78,6 +78,27 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_190000) do
     t.integer "user_id", null: false, comment: "sensitive=false"
     t.index ["user_id", "created_at"], name: "index_backup_code_configurations_on_user_id_and_created_at"
     t.index ["user_id", "salted_code_fingerprint"], name: "index_backup_codes_on_user_id_and_salted_code_fingerprint"
+  end
+
+  create_table "delegated_issuance_logs", force: :cascade do |t|
+    t.string "actor_issuer", null: false, comment: "sensitive=false"
+    t.bigint "actor_return_log_id", null: false, comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.string "delegation_id", null: false, comment: "sensitive=false"
+    t.datetime "expires_at", null: false, comment: "sensitive=false"
+    t.datetime "issued_at", null: false, comment: "sensitive=false"
+    t.string "resource", null: false, comment: "sensitive=false"
+    t.string "scope", comment: "sensitive=false"
+    t.string "target_issuer", null: false, comment: "sensitive=false"
+    t.bigint "target_return_log_id", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.bigint "user_id", null: false, comment: "sensitive=false"
+    t.index ["actor_return_log_id"], name: "index_delegated_issuance_logs_on_actor_return_log_id"
+    t.index ["delegation_id"], name: "index_delegated_issuance_logs_on_delegation_id", unique: true
+    t.index ["target_return_log_id"], name: "index_delegated_issuance_logs_on_target_return_log_id", unique: true
+    t.index ["user_id", "actor_issuer", "issued_at"], name: "idx_delegated_issuance_logs_user_actor_issued"
+    t.index ["user_id", "target_issuer", "issued_at"], name: "idx_delegated_issuance_logs_user_target_issued"
+    t.index ["user_id"], name: "index_delegated_issuance_logs_on_user_id"
   end
 
   create_table "deleted_users", force: :cascade do |t|
@@ -764,6 +785,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_190000) do
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 
+  add_foreign_key "delegated_issuance_logs", "sp_return_logs", column: "actor_return_log_id"
+  add_foreign_key "delegated_issuance_logs", "sp_return_logs", column: "target_return_log_id"
   add_foreign_key "device_profiling_results", "users"
   add_foreign_key "document_artifacts", "document_capture_sessions"
   add_foreign_key "document_artifacts", "profiles"

@@ -26,6 +26,7 @@ RSpec.describe Analytics do
       browser_device_name: 'Unknown',
       browser_mobile: false,
       browser_bot: false,
+      accept_language: nil,
       hostname: FakeRequest.new.host,
       pid: Process.pid,
       trace_id: nil,
@@ -107,6 +108,20 @@ RSpec.describe Analytics do
       it 'includes the tracing header as trace_id' do
         expect(ahoy).to receive(:track)
           .with('Trackable Event', hash_including(trace_id: amazon_trace_id))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'when the request has an Accept-Language header' do
+      let(:accept_language) { 'en-US' }
+      let(:request) do
+        FakeRequest.new(headers: { 'Accept-Language' => accept_language })
+      end
+
+      it 'includes the header as accept_language' do
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(accept_language: accept_language))
 
         analytics.track_event('Trackable Event')
       end

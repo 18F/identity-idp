@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
-module UspsInPersonProofing
-  # Validator that can be attached to a form or other model
-  # to verify that specific supported fields are transliterable
-  # and conform to additional character requirements
-  #
-  # == Example
-  #
-  #   validates_with UspsInPersonProofing::TransliterableValidator,
-  #     fields: [:first_name, :last_name],
-  #     reject_chars: /[^A-Za-z\-' ]/,
-  #     message: ->(invalid_chars)
-  #       "Rejected chars: #{invalid_chars.join(', ')}"
-  #     end
-  #
+# Validator that can be attached to a form or other model
+# to verify that specific supported fields are transliterable
+# and conform to additional character requirements
+#
+# == Example
+#
+#   validates_with Idv::TransliterableValidator,
+#     fields: [:first_name, :last_name],
+#     reject_chars: /[^A-Za-z\-' ]/,
+#     message: ->(invalid_chars)
+#       "Rejected chars: #{invalid_chars.join(', ')}"
+#     end
+#
+module Idv
   class TransliterableValidator < ActiveModel::Validator
     # Initialize the validator with the given fields configured
     # for transliteration validation
@@ -60,7 +60,7 @@ module UspsInPersonProofing
     end
 
     def transliterator
-      @transliterator ||= Transliterator.new
+      @transliterator ||= UspsInPersonProofing::Transliterator.new
     end
 
     private
@@ -82,8 +82,9 @@ module UspsInPersonProofing
 
       # Remove question marks corresponding with unsupported chars
       # for transliteration
-      unless transliterated.count(Transliterator::REPLACEMENT) > result.unsupported_chars.length
-        transliterated = transliterated.gsub(Transliterator::REPLACEMENT, '')
+      replacement = UspsInPersonProofing::Transliterator::REPLACEMENT
+      unless transliterated.count(replacement) > result.unsupported_chars.length
+        transliterated = transliterated.gsub(replacement, '')
       end
 
       # Scan for unsupported chars for the field

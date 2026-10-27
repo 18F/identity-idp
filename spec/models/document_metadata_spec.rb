@@ -54,12 +54,14 @@ RSpec.describe DocumentMetadata do
   end
 
   describe 'retention scopes' do
+    let(:ttl) { 3.days.to_i }
+    let(:retention_cutoff) { ttl.seconds.ago }
     before do
-      allow(IdentityConfig.store).to receive(:document_images_ttl_seconds).and_return(3.days.to_i)
+      allow(IdentityConfig.store).to receive(:document_images_ttl_seconds).and_return(ttl)
     end
 
-    let!(:fresh) { create(:document_metadata, created_at: 3.days.ago + 1.hour) }
-    let!(:stale) { create(:document_metadata, created_at: 3.days.ago - 1.hour) }
+    let!(:fresh) { create(:document_metadata, created_at: retention_cutoff + 1.hour) }
+    let!(:stale) { create(:document_metadata, created_at: retention_cutoff - 1.hour) }
 
     it 'separates retained from expired around the retention window' do
       expect(DocumentMetadata.retained).to contain_exactly(fresh)

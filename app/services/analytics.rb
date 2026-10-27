@@ -67,6 +67,7 @@ class Analytics
       pid: Process.pid,
       trace_id: request.headers['X-Amzn-Trace-Id'],
       referer: referer,
+      accept_language: request.headers['Accept-Language'],
     }
 
     attributes[:git_sha] = IdentityConfig::GIT_SHA

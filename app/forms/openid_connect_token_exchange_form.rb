@@ -41,6 +41,7 @@ class OpenidConnectTokenExchangeForm
   validate :validate_target
   validate :validate_resource
   validate :validate_subject_token, unless: :client_rejected?
+  validate :validate_actor_return_log, unless: :client_rejected?
   validate :validate_scope, unless: :client_rejected?
   validate :validate_ial2, unless: :client_rejected?
 
@@ -73,7 +74,6 @@ class OpenidConnectTokenExchangeForm
       resource:,
       scope: requested_scope,
     )
-
     {
       access_token: issued_token.token,
       issued_token_type: TokenExchange::Constants::ACCESS_TOKEN_TYPE,
@@ -134,6 +134,13 @@ class OpenidConnectTokenExchangeForm
     errors.add(:subject_token, :invalid)
   end
 
+  def validate_actor_return_log
+    return if loaded_subject_token.blank?
+    return if actor_return_log.present?
+
+    errors.add(:subject_token, :invalid)
+  end
+
   def validate_resource
     return if resource.blank?
 
@@ -173,7 +180,21 @@ class OpenidConnectTokenExchangeForm
     return @identity if defined?(@identity)
     return @identity = nil if loaded_subject_token.blank?
 
-    @identity = ServiceProviderIdentity.find_by(uuid: loaded_subject_token.identity_uuid)
+    @identity = ServiceProviderIdentity.find_by(
+      uuid: loaded_subject_token.identity_uuid,
+      service_provider: loaded_subject_token.broker_issuer,
+    )
+  end
+
+  def actor_return_log
+    return @actor_return_log if defined?(@actor_return_log)
+    return @actor_return_log = nil if identity.blank?
+
+    @actor_return_log = SpReturnLog.find_by(
+      id: loaded_subject_token.actor_return_log_id,
+      user_id: identity.user_id,
+      issuer: loaded_subject_token.broker_issuer,
+    )
   end
 
   def broker

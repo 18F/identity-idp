@@ -70,30 +70,35 @@ RSpec.describe 'Proofing agent activation', :js do
     document_capture_session.store_agent_proofed_user(agent_proofing_result)
   end
 
-  context 'user tries going to welcome page' do
-    scenario 'user is redirected to binding page' do
-      visit_idp_from_ial2_oidc_sp
-      sign_in_live_with_2fa(user)
-      expect(page).to have_current_path idv_enter_dob_ssn_path
-      visit idv_welcome_path
-      expect(page).to have_current_path idv_enter_dob_ssn_path
-    end
-  end
+  scenario 'user activates their profile after signing in directly' do
+    # staging/prod require an sp to request proofing, but the binding email is
+    # a plain sign in link so agent proofed users arrive with no sp session.
+    # collect_only runs the tmx job but never stores a DeviceProfilingResult,
+    # so the enter password step has no stored result to read.
+    allow(IdentityConfig.store).to receive(:idv_sp_required).and_return(true)
+    allow(IdentityConfig.store).to receive(:proofing_agent_device_profiling)
+      .and_return(:collect_only)
 
-  context 'user tries going to enter password page without binding' do
-    scenario 'user is redirected to binding page' do
-      visit_idp_from_ial2_oidc_sp
-      sign_in_live_with_2fa(user)
-      expect(page).to have_current_path idv_enter_dob_ssn_path
-      visit idv_enter_password_path
-      expect(page).to have_current_path idv_enter_dob_ssn_path
-    end
-  end
-
-  scenario 'user activates their profile and connects it to the service provider' do
     sign_in_live_with_2fa(user)
     expect(page).to have_current_path idv_enter_dob_ssn_path
+
+    visit idv_welcome_path
+    expect(page).to have_current_path idv_enter_dob_ssn_path
+
+    # User attempts to navigate to the enter_password page without completing the enter_dob_ssn form
+    visit idv_enter_password_path
+    expect(page).to have_current_path idv_enter_dob_ssn_path
+
+    fill_in t('idv.form.ssn_label'), with: '000-00-0000'
+    fill_out_dob_form_ok
+    click_idv_continue
+
+    expect(page).to have_current_path idv_enter_dob_ssn_path
+    expect(page).to have_content t('idv.failure.dob_ssn.warning')
+
     complete_idv_enter_dob_ssn_step
+    expect(page).to have_current_path idv_enter_password_path
+
     complete_enter_password_step(user)
     acknowledge_and_confirm_personal_key
     expect(page).to have_current_path(account_path)
@@ -104,9 +109,7 @@ RSpec.describe 'Proofing agent activation', :js do
       visit_idp_from_ial2_oidc_sp(client_id: service_provider.issuer)
       sign_in_live_with_2fa(user)
 
-      # the redirect from sign in to the binding page ships separately; this
-      # covers the sp session surviving the binding step
-      visit idv_enter_dob_ssn_path
+      expect(page).to have_current_path idv_enter_dob_ssn_path
       complete_idv_enter_dob_ssn_step
       complete_enter_password_step(user)
       acknowledge_and_confirm_personal_key
@@ -120,66 +123,6 @@ RSpec.describe 'Proofing agent activation', :js do
         ignore_query: true,
         wait: 10,
       )
-    end
-  end
-
-  context 'when the user enters an incorrect SSN' do
-    scenario 'stays on the confirmation page and shows a warning' do
-      sign_in_live_with_2fa(user)
-      expect(page).to have_current_path idv_enter_dob_ssn_path
-
-      fill_in t('idv.form.ssn_label'), with: '000-00-0000'
-      fill_out_dob_form_ok
-      click_idv_continue
-
-      expect(page).to have_current_path idv_enter_dob_ssn_path
-      expect(page).to have_content t('idv.failure.dob_ssn.warning')
-    end
-  end
-
-  context 'when idv_sp_required is enabled' do
-    # staging/prod require an sp to request proofing, but the binding email is
-    # a plain sign in link so agent proofed users arrive with no sp session
-    before do
-      allow(IdentityConfig.store).to receive(:idv_sp_required).and_return(true)
-    end
-
-    scenario 'user lands on the binding page after sign in' do
-      sign_in_live_with_2fa(user)
-
-      expect(page).to have_current_path idv_enter_dob_ssn_path
-    end
-
-    scenario 'user completes binding through personal key' do
-      sign_in_live_with_2fa(user)
-      expect(page).to have_current_path idv_enter_dob_ssn_path
-
-      complete_idv_enter_dob_ssn_step
-      expect(page).to have_current_path idv_enter_password_path
-
-      complete_enter_password_step(user)
-      acknowledge_and_confirm_personal_key
-      expect(page).to have_current_path account_path
-    end
-  end
-
-  context 'when device profiling is collect_only' do
-    # collect_only runs the tmx job but never stores a DeviceProfilingResult,
-    # so the enter password step has no stored result to read
-    before do
-      allow(IdentityConfig.store).to receive(:proofing_agent_device_profiling)
-        .and_return(:collect_only)
-    end
-
-    scenario 'enter password renders with no stored result' do
-      sign_in_live_with_2fa(user)
-      complete_idv_enter_dob_ssn_step
-
-      expect(page).to have_current_path idv_enter_password_path
-
-      complete_enter_password_step(user)
-      acknowledge_and_confirm_personal_key
-      expect(page).to have_current_path account_path
     end
   end
 

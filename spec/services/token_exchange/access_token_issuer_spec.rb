@@ -18,6 +18,7 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
         broker_issuer:,
         scope:,
         ial: 2,
+        actor_return_log_id: actor_return_log.id,
         issued_at: Time.zone.now.to_i,
       )
     end
@@ -31,6 +32,9 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
     end
     let(:broker_identity) do
       create(:service_provider_identity, service_provider: broker_issuer, user:)
+    end
+    let(:actor_return_log) do
+      create(:sp_return_log, user:, issuer: broker_issuer, ial: 2, billable: true)
     end
 
     let!(:target_identity) do
@@ -61,6 +65,24 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
       )
     end
 
+    it 'encrypts to the target through the shared encryptor, naming the key in the header' do
+      header = JSON.parse(Base64.urlsafe_decode64(subject.token.split('.').first))
+
+      expect(header).to include(
+        'alg' => OpenidConnect::JweEncryptor::ALG,
+        'enc' => OpenidConnect::JweEncryptor::ENC,
+        'kid' => JWT::JWK.new(target_private_key.public_key).kid,
+      )
+    end
+
+    context 'when the target has no registered certificate' do
+      let!(:target) { create(:service_provider, :active, issuer: 'target-issuer', certs: []) }
+
+      it 'raises rather than issuing a token nobody can read' do
+        expect { subject }.to raise_error(OpenidConnect::JweEncryptor::NoUsableKeyError)
+      end
+    end
+
     it 'returns the configured expiration' do
       expect(subject.expires_in).to eq(600)
     end
@@ -78,6 +100,17 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
       )
     end
 
+    it 'creates a historical issuance linking the actor and target return logs' do
+      subject
+      issuance = user.delegated_issuance_logs.last
+
+      expect(issuance.actor_return_log).to eq(actor_return_log)
+      expect(issuance.target_return_log).to have_attributes(
+        issuer: target_issuer,
+        billable: true,
+      )
+    end
+
     it 'stores the token with the configured expiration' do
       expect(EncryptedRedisStructStorage).to receive(:store).with(
         instance_of(TokenExchange::AccessToken),
@@ -85,6 +118,19 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
       )
 
       subject
+    end
+
+    context 'when storing the access token fails' do
+      before do
+        allow(EncryptedRedisStructStorage).to receive(:store).and_raise(Redis::BaseError)
+      end
+
+      it 'leaves no target return log or issuance behind' do
+        expect { subject }
+          .to raise_error(Redis::BaseError)
+          .and change { SpReturnLog.where(issuer: target_issuer).count }.by(0)
+          .and change { DelegatedIssuanceLog.count }.by(0)
+      end
     end
   end
 end
