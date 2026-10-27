@@ -5,6 +5,7 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
     subject(:subject) do
       described_class.issue(
         subject_token:,
+        target_identity:,
         target_issuer:,
         resource:,
         scope:,

@@ -4,17 +4,22 @@ module TokenExchange
   class AccessTokenIssuer
     IssuedToken = Struct.new(:token, :expires_in, keyword_init: true)
 
-    def self.issue(subject_token:, target_issuer:, resource:, scope:)
+    def self.issue(subject_token:, target_identity:, target_issuer:, resource:, scope:)
       new(
         subject_token:,
+        target_identity:,
         target_issuer:,
         resource:,
         scope:,
       ).issue
     end
 
-    def initialize(subject_token:, target_issuer:, resource:, scope:)
+    # `target_identity` is the person's identity at the application named in the audience, the
+    # `identities` row a direct sign-in there created; the caller has already refused a person
+    # without one, so delegation never creates it. Its `uuid` is the token's `sub`.
+    def initialize(subject_token:, target_identity:, target_issuer:, resource:, scope:)
       @subject_token = subject_token
+      @target_identity = target_identity
       @target_issuer = target_issuer
       @resource = resource
       @scope = scope
@@ -43,7 +48,7 @@ module TokenExchange
 
     private
 
-    attr_reader :subject_token, :target_issuer, :resource, :scope
+    attr_reader :subject_token, :target_identity, :target_issuer, :resource, :scope
 
     def jwe(issued_at:, expires_at:)
       OpenidConnect::JweEncryptor.encrypt(jwt(issued_at:, expires_at:), service_provider: target)
@@ -74,17 +79,6 @@ module TokenExchange
 
     def target
       @target ||= ServiceProvider.find_by!(issuer: target_issuer)
-    end
-
-    def target_identity
-      @target_identity ||= begin
-        user = ServiceProviderIdentity.find_by(
-          uuid: subject_token.identity_uuid,
-          service_provider: subject_token.broker_issuer,
-        ).user
-
-        ServiceProviderIdentity.find_by(user:, service_provider: target_issuer)
-      end
     end
   end
 end

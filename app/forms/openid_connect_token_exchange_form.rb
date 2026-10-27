@@ -2,6 +2,7 @@
 
 class OpenidConnectTokenExchangeForm
   include ActiveModel::Model
+  include ActionView::Helpers::TranslationHelper
 
   ATTRS = %i[
     client_id
@@ -43,6 +44,7 @@ class OpenidConnectTokenExchangeForm
   validate :validate_subject_token, unless: :client_rejected?
   validate :validate_scope, unless: :client_rejected?
   validate :validate_ial2, unless: :client_rejected?
+  validate :validate_target_identity, unless: :client_rejected?
 
   def initialize(params)
     ATTRS.each do |key|
@@ -69,6 +71,7 @@ class OpenidConnectTokenExchangeForm
 
     issued_token = TokenExchange::AccessTokenIssuer.issue(
       subject_token: loaded_subject_token,
+      target_identity:,
       target_issuer: audience,
       resource:,
       scope: requested_scope,
@@ -165,6 +168,32 @@ class OpenidConnectTokenExchangeForm
     errors.add(:subject_token, :invalid)
   end
 
+  # Delegation never creates the person's identity at the application: `sub` is the `identities`
+  # row the person's own sign-in there created, read as it stands. A person without one is refused,
+  # and the actor is told where that sign-in starts (`initiate_login_uri`, OpenID Connect Core 1.0
+  # §4) so it can send the person there and ask again. Runs after every check on the subject token,
+  # so a request already refused never reaches the lookup.
+  def validate_target_identity
+    return if errors.any?
+    return if target_identity.present?
+
+    errors.add(
+      :audience, :no_identity_at_target,
+      message: t('openid_connect.token.errors.no_identity_at_target')
+    )
+  end
+
+  def target_identity
+    return @target_identity if defined?(@target_identity)
+    return @target_identity = nil if user.blank?
+
+    @target_identity = ServiceProviderIdentity.find_by(user:, service_provider: audience)
+  end
+
+  def no_identity_at_target?
+    errors.where(:audience, :no_identity_at_target).any?
+  end
+
   def user
     identity&.user
   end
@@ -194,11 +223,28 @@ class OpenidConnectTokenExchangeForm
     scope.presence || loaded_subject_token&.scope
   end
 
+  # A refusal for a missing identity at the application also names the application's
+  # login-initiation address when one is registered, so the actor can send the person to sign in
+  # there (OpenID Connect Core 1.0 §4). The actor is authenticated and the application registered
+  # by the time that check runs, so the address is told to no one else.
   def error_response
-    {
+    response = {
       error: oauth_error,
-      error_description: errors.full_messages.join(' '),
+      error_description:,
     }
+    initiate_login_uri = target&.token_exchange_initiate_login_uri
+    if no_identity_at_target? && initiate_login_uri.present?
+      response[:initiate_login_uri] = initiate_login_uri
+    end
+    response
+  end
+
+  # A missing identity at the application is described by its own message; every other failure
+  # keeps the attribute-prefixed messages the endpoint has always returned.
+  def error_description
+    return errors[:audience].join(' ') if no_identity_at_target?
+
+    errors.full_messages.join(' ')
   end
 
   # Maps validation failures onto the OAuth error codes defined by RFC 6749

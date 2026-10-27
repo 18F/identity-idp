@@ -1812,6 +1812,7 @@ openid_connect.token.errors.invalid_code: is invalid because doesn’t match any
 openid_connect.token.errors.invalid_code_verifier: code_verifier did not match code_challenge. Please see our documentation at https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat must be an integer or floating point Unix timestamp representing a time in the past. Please see our documentation at https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: Could not validate assertion against any registered public keys. Please see our documentation at https://developers.login.gov/support/#invalid-token-signature
+openid_connect.token.errors.no_identity_at_target: 'The person has not signed in at the application named in audience, so there is no identity to delegate: send the person to sign in there (initiate_login_uri) and request the exchange again.'
 openid_connect.user_info.errors.encryption_unavailable: 'This service provider is configured to receive encrypted userinfo responses, but no usable encryption key is registered for it: the response was not sent.'
 openid_connect.user_info.errors.malformed_authorization: Malformed Authorization header. Please see our documentation at https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No Authorization header provided. Please see our documentation at https://developers.login.gov/support/#no-auth-header
