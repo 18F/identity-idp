@@ -7747,6 +7747,9 @@ module AnalyticsEvents
   # @param [Integer] ial
   # @param [String] client_id Service Provider issuer
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [Boolean, nil] dpop_bound Whether the token belongs to a client whose tokens are bound
+  #   to a key it holds (RFC 9449), so a DPoP proof was required with the request
+  # @param [Symbol, nil] dpop_error_type Which DPoP check refused the request, when one did
   # @param [Boolean, nil] encrypted Whether the service provider receives its userinfo response
   #   as an encrypted JWT; nil when the token did not authenticate
   def openid_connect_bearer_token(
@@ -7755,6 +7758,8 @@ module AnalyticsEvents
     client_id:,
     error_details: nil,
     encrypted: nil,
+    dpop_bound: nil,
+    dpop_error_type: nil,
     **extra
   )
     track_event(
@@ -7764,6 +7769,8 @@ module AnalyticsEvents
       client_id:,
       error_details:,
       encrypted:,
+      dpop_bound:,
+      dpop_error_type:,
       **extra,
     )
   end

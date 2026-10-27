@@ -134,6 +134,70 @@ RSpec.describe OpenidConnect::UserInfoController do
       end
     end
 
+    context 'with a token of a client listed for key binding' do
+      let(:service_provider) do
+        create(:service_provider, :active, issuer: 'bound-client', pkce: true)
+      end
+      let(:access_token) { SecureRandom.hex }
+      let(:identity) do
+        create(
+          :service_provider_identity,
+          service_provider: service_provider.issuer,
+          rails_session_id: SecureRandom.hex,
+          access_token:,
+          user: create(:user),
+        )
+      end
+      let(:url) { 'http://www.example.com/api/openid_connect/userinfo' }
+      let(:authorization_header) { "DPoP #{access_token}" }
+
+      before do
+        allow(IdentityConfig.store).to receive(:dpop_required_issuers)
+          .and_return([service_provider.issuer])
+        OutOfBandSessionAccessor.new(identity.rails_session_id).put_empty_user_session(50)
+        AccessTokenBinding.store(access_token:, dpop_jkt: dpop_thumbprint, expires_in: 50)
+      end
+
+      context 'under the DPoP scheme with a proof from the bound key' do
+        before do
+          request.headers['DPoP'] =
+            build_dpop_proof(http_url: url, http_method: 'POST', access_token:)
+        end
+
+        it 'renders user info' do
+          action
+          expect(response).to be_ok
+          expect(json_response[:sub]).to eq(identity.uuid)
+        end
+      end
+
+      context 'presented as a Bearer token' do
+        let(:authorization_header) { "Bearer #{access_token}" }
+
+        it '401s with a DPoP challenge' do
+          action
+          expect(response.status).to eq(401)
+          expect(response.headers['WWW-Authenticate']).to eq(
+            'DPoP algs="ES256 RS256", error="invalid_token"',
+          )
+          expect(json_response[:error]).to eq(
+            t('openid_connect.user_info.errors.dpop_bearer_presented'),
+          )
+        end
+      end
+
+      context 'under the DPoP scheme without a proof' do
+        it '401s as an invalid proof' do
+          action
+          expect(response.status).to eq(401)
+          expect(response.headers['WWW-Authenticate']).to eq(
+            'DPoP algs="ES256 RS256", error="invalid_dpop_proof"',
+          )
+          expect(json_response[:error]).to eq(t('openid_connect.token.errors.dpop_proof_required'))
+        end
+      end
+    end
+
     context 'with a valid bearer token' do
       let(:authorization_header) { "Bearer #{access_token}" }
       let(:access_token) { SecureRandom.hex }

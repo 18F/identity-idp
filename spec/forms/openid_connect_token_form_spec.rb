@@ -662,12 +662,24 @@ RSpec.describe OpenidConnectTokenForm do
         end
       end
 
-      it 'redeems the code with a proof from the bound key' do
+      it 'redeems the code with a proof from the bound key and returns a key-bound access token' do
         expect(form.valid?).to eq(true)
         response = form.response
         expect(response[:access_token]).to eq(identity.access_token)
         expect(response[:id_token]).to be_present
-        expect(response[:token_type]).to eq('Bearer')
+        expect(response[:token_type]).to eq('DPoP')
+      end
+
+      it 'records the key the access token is bound to, for as long as the token lives' do
+        expect(AccessTokenBinding).to receive(:store).with(
+          access_token: identity.access_token,
+          dpop_jkt: stored_thumbprint,
+          expires_in: kind_of(Integer),
+        ).and_call_original
+
+        form.response
+
+        expect(AccessTokenBinding.load(identity.access_token).dpop_jkt).to eq(stored_thumbprint)
       end
 
       context 'when the sign-in requested delegation' do
@@ -785,6 +797,7 @@ RSpec.describe OpenidConnectTokenForm do
           expect(form.valid?).to eq(true)
           expect(form.response[:token_type]).to eq('Bearer')
           expect(form.submit.extra[:dpop_bound]).to eq(false)
+          expect(AccessTokenBinding.load(identity.access_token)).to be_nil
         end
       end
     end
