@@ -717,7 +717,7 @@ doc_auth.info.passport_capture_help_2: Hold still and wait for the tool to captu
 doc_auth.info.passport_card_capture: Take a photo of the data page of your passport card. This page has your passport photo and personal information.
 doc_auth.info.review_examples_of_photos: Review examples of how to take clear photos of your ID.
 doc_auth.info.review_passport: We couldn’t find records matching the information from your passport. Add a new photo of your ID in case your passport information was read incorrectly.
-doc_auth.info.secure_account: We’ll encrypt your account when you re-enter your password. Encryption means your data is protected and only you will be able to access or change your information.
+doc_auth.info.secure_account: We’ll encrypt your account when you re-enter your password. Encryption protects your account information - you’re the only on who can change your information.
 doc_auth.info.selfie_capture_content: We’ll check that you are the person on your ID.
 doc_auth.info.selfie_capture_help_1: Line up your face with the green circle. Hold still and wait for the tool to capture a photo.
 doc_auth.info.selfie_capture_help_2: After your photo is automatically captured, tap the green checkmark to accept the photo.
@@ -756,9 +756,8 @@ doc_auth.instructions.bullet1_mdl_and_passport_card: Have a U.S. passport book o
 doc_auth.instructions.bullet2: Enter your Social Security number
 doc_auth.instructions.bullet3: Match to your phone number
 doc_auth.instructions.bullet4: Re-enter your %{app_name} password
-doc_auth.instructions.consent: By checking this box, you are letting %{app_name} ask for, use, keep, and share your personal information. We will use it to verify your identity.
+doc_auth.instructions.consent_html: By checking this box, you are letting %{app_name} ask for, use, keep, and share your personal information, as described in our %{privacy_link_html} and you are agreeing to our %{rules_of_use_link_html}. We will use it to verify your identity and help prevent fraud.
 doc_auth.instructions.getting_started: 'You’ll need to:'
-doc_auth.instructions.learn_more: Learn more about our privacy and security measures
 doc_auth.instructions.switch_back: Switch back to your computer to finish verifying your identity
 doc_auth.instructions.switch_back_image: Arrow pointing from phone to computer
 doc_auth.instructions.test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are considered valid. Do not enter real PII in this field.
