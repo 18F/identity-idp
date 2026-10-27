@@ -26,9 +26,13 @@ module OpenidConnect
     end
 
     def render_encrypted_user_info(user_info)
-      jwe = OpenidConnect::JweEncryptor.encrypt(user_info.to_json, service_provider:)
+      jwe = JweEncryptor.encrypt(
+        user_info.to_json,
+        public_key: service_provider.encryption_public_key,
+        typ: 'JWT',
+      )
       render plain: jwe, content_type: 'application/jwt'
-    rescue OpenidConnect::JweEncryptor::NoUsableKeyError, OpenSSL::OpenSSLError => e
+    rescue JweEncryptor::NoUsableKeyError, OpenSSL::OpenSSLError => e
       analytics.openid_connect_userinfo_encryption_failed(
         client_id: service_provider.issuer,
         error: e.class.name,

@@ -104,8 +104,8 @@ RSpec.describe OpenidConnect::DocumentImagesController do
 
         context 'when the registered key cannot be used for encryption' do
           before do
-            allow(OpenidConnect::JweEncryptor).to receive(:encrypt)
-              .and_raise(OpenidConnect::JweEncryptor::NoUsableKeyError)
+            allow(JweEncryptor).to receive(:encrypt)
+              .and_raise(JweEncryptor::NoUsableKeyError)
           end
 
           it 'refuses with server_error and never sends the bytes in the clear' do
