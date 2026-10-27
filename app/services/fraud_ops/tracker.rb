@@ -77,29 +77,15 @@ module FraudOps
     end
 
     def jwe(event)
-      to_jwe(
-        event: event,
-        issuer: event_issuer,
-        public_key: public_key,
+      JweEncryptor.encrypt(
+        event.payload(issuer: event_issuer).to_json,
+        public_key:,
+        typ: 'secevent+jwe',
       )
     end
 
     def event_issuer
       sp&.issuer || NO_PROVIDER_ISSUER
-    end
-
-    def to_jwe(event:, issuer:, public_key:)
-      jwk = JWT::JWK.new(public_key)
-
-      JWE.encrypt(
-        event.payload(issuer:).to_json,
-        public_key,
-        typ: 'secevent+jwe',
-        zip: 'DEF',
-        alg: 'RSA-OAEP',
-        enc: 'A256GCM',
-        kid: jwk.kid,
-      )
     end
   end
 end
