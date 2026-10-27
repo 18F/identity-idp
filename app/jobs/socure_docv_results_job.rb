@@ -151,7 +151,7 @@ class SocureDocvResultsJob < ApplicationJob
 
       image_data = job_data[:image_storage_data].values.reduce({}, :merge)
       if IdentityConfig.store.ruby_workers_idv_enabled
-        SocureImageRetrievalJob.perform_later(**job_data)
+        SocureImageRetrievalJobset(wait: image_retrieval_job_wait).perform_later(**job_data)
       else
         SocureImageRetrievalJob.perform_now(**job_data)
       end
@@ -392,5 +392,9 @@ class SocureDocvResultsJob < ApplicationJob
       uuid: user_uuid,
       uuid_prefix: sp&.app_id,
     )
+  end
+
+  def image_retrieval_job_wait
+    IdentityConfig.store.socure_docv_image_retrieval_job_wait_seconds.seconds
   end
 end
