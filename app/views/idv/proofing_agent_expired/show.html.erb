@@ -18,7 +18,7 @@
         <hr class="divider" />
 
         <p>
-          <%= t('idv.proofing_agent_expired.body') %>
+          <%= t('idv.proofing_agent_expired.body', validity_hours: @validity_hours) %>
         </p>
       <% end %>
 
@@ -43,7 +43,7 @@
   <%= render PageHeadingComponent.new.with_content(t('idv.proofing_agent_expired.heading')) %>
 
   <p class="margin-bottom-5">
-    <%= t('idv.proofing_agent_expired.body') %>
+    <%= t('idv.proofing_agent_expired.body', validity_hours: @validity_hours) %>
   </p>
 
   <%= simple_form_for(
