@@ -7615,6 +7615,11 @@ module AnalyticsEvents
   # @param [String, nil] resource URI the broker intends to use the delegated access token against
   # @param [Integer, nil] expires_in Time to expiration of the delegated access token
   # @param [Integer, nil] ial IAL level recorded on the subject token
+  # @param [String, nil] token_exchange_stage Token exchange flow stage for filtering
+  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope values
+  # @param [String, nil] subject_token_fingerprint SHA-256 digest of the submitted
+  #   subject token
+  # @param [String, nil] oauth_error_code OAuth error code returned for unsuccessful requests
   def openid_connect_brokered_exchange_token(
     client_id:,
     success:,
@@ -7624,6 +7629,10 @@ module AnalyticsEvents
     ial:,
     errors: nil,
     error_details: nil,
+    token_exchange_stage: nil,
+    token_exchange_scopes: nil,
+    subject_token_fingerprint: nil,
+    oauth_error_code: nil,
     **extra
   )
     track_event(
@@ -7636,6 +7645,10 @@ module AnalyticsEvents
       resource:,
       expires_in:,
       ial:,
+      token_exchange_stage:,
+      token_exchange_scopes:,
+      subject_token_fingerprint:,
+      oauth_error_code:,
       **extra,
     )
   end

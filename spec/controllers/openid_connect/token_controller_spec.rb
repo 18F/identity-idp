@@ -291,6 +291,9 @@ RSpec.describe OpenidConnect::TokenController do
           resource: resource,
           expires_in: IdentityConfig.store.token_exchange_access_token_expires_in,
           ial: 2,
+          token_exchange_stage: 'delegated_token',
+          token_exchange_scopes: ['passport'],
+          subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
         )
       end
 
@@ -330,11 +333,13 @@ RSpec.describe OpenidConnect::TokenController do
 
         expect(@analytics).to have_logged_event(
           :openid_connect_brokered_exchange_token,
-          success: false,
-          client_id: broker_issuer,
-          audience: target_issuer,
-          resource: resource,
-          error_details: hash_including(:subject_token),
+          hash_including(
+            success: false,
+            error_details: hash_including(:subject_token),
+            token_exchange_stage: 'delegated_token',
+            subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
+            oauth_error_code: 'invalid_grant',
+          ),
         )
       end
 
@@ -381,6 +386,10 @@ RSpec.describe OpenidConnect::TokenController do
           audience: target_issuer,
           resource: resource,
           error_details: hash_including(:audience),
+          token_exchange_stage: 'delegated_token',
+          token_exchange_scopes: ['passport'],
+          subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
+          oauth_error_code: 'invalid_target',
         )
       end
     end
@@ -402,6 +411,10 @@ RSpec.describe OpenidConnect::TokenController do
           audience: target_issuer,
           resource: resource,
           error_details: hash_including(:grant_type),
+          token_exchange_stage: 'delegated_token',
+          token_exchange_scopes: ['passport'],
+          subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
+          oauth_error_code: 'unsupported_grant_type',
         )
       end
     end

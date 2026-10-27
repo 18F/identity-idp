@@ -70,6 +70,15 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       expect(form.submit.success?).to eq(true)
     end
 
+    it 'surfaces delegated token exchange analytics fields' do
+      expect(form.submit.to_h).to include(
+        token_exchange_stage: 'delegated_token',
+        token_exchange_scopes: ['passport'],
+        subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
+        oauth_error_code: nil,
+      )
+    end
+
     %i[
       client_id
       grant_type
@@ -133,6 +142,14 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       it 'is invalid' do
         expect(form.submit.success?).to eq(false)
         expect(form.errors[:resource]).to include('is invalid')
+      end
+
+      it 'surfaces OAuth error code and failure reason' do
+        expect(form.submit.to_h).to include(
+          token_exchange_stage: 'delegated_token',
+          subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
+          oauth_error_code: 'invalid_target',
+        )
       end
     end
 

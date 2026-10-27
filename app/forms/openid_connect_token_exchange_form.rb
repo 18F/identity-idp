@@ -246,8 +246,25 @@ class OpenidConnectTokenExchangeForm
       audience:,
       resource:,
       ial: subject_token_ial,
+      token_exchange_stage: TokenExchange::Constants::STAGE_DELEGATED_TOKEN,
+      token_exchange_scopes: token_exchange_scope_values,
+      subject_token_fingerprint: subject_token_fingerprint,
+      oauth_error_code: (oauth_error unless valid?),
       integration_errors:,
     }
+  end
+
+  def token_exchange_scope_values
+    scopes = requested_scope.to_s.split(' ').select do |scope|
+      TokenExchange::Constants.in_scope?(scope)
+    end
+    return if scopes.blank?
+
+    scopes.map { |scope| scope.delete_prefix(TokenExchange::Constants::SCOPE_PREFIX) }
+  end
+
+  def subject_token_fingerprint
+    TokenExchange::SubjectToken.digest(subject_token) if subject_token.present?
   end
 
   # Reports the IAL only when a validation already loaded the subject token.
