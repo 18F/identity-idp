@@ -3,9 +3,12 @@ require 'rails_helper'
 RSpec.describe 'idv/proofing_agent_expired/show.html.erb' do
   subject(:rendered) { render }
 
+  let(:hours) { 100 }
+
   before do
     allow(view).to receive(:nds_layout?).and_return(false)
     allow(view).to receive(:user_signing_up?).and_return(false)
+    assign(:validity_hours, hours)
   end
 
   it 'sets a title' do
@@ -16,6 +19,10 @@ RSpec.describe 'idv/proofing_agent_expired/show.html.erb' do
   it 'renders the heading and continue button' do
     expect(rendered).to have_selector('h1', text: t('idv.proofing_agent_expired.heading'))
     expect(rendered).to have_button(t('idv.proofing_agent_expired.continue'))
+  end
+
+  it 'renders the body' do
+    expect(rendered).to have_content(t('idv.proofing_agent_expired.body', validity_hours: hours))
   end
 
   it 'does not render the NDS form-page card in the default layout' do
@@ -47,7 +54,7 @@ RSpec.describe 'idv/proofing_agent_expired/show.html.erb' do
     it 'renders the body copy' do
       expect(rendered).to have_selector(
         '.auth__form-page-body',
-        text: t('idv.proofing_agent_expired.body'),
+        text: t('idv.proofing_agent_expired.body', validity_hours: hours),
       )
     end
 
