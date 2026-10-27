@@ -31,6 +31,14 @@ RSpec.describe TokenExchange::Constants do
     end
   end
 
+  describe 'analytics stage constants' do
+    it 'defines token exchange lifecycle stages' do
+      expect(described_class::STAGE_ACTOR_AUTHORIZATION).to eq('actor_authorization')
+      expect(described_class::STAGE_SUBJECT_TOKEN).to eq('subject_token')
+      expect(described_class::STAGE_DELEGATED_TOKEN).to eq('delegated_token')
+    end
+  end
+
   describe '.in_scope?' do
     it 'matches the base scope' do
       expect(described_class.in_scope?('token_exchange')).to eq(true)
