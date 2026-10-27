@@ -3,7 +3,9 @@ require 'rails_helper'
 RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
   let(:document_type_requested) { nil }
   let(:issuer) { 'the-issuer' }
-  let(:document_capture_session) { build(:document_capture_session, document_type_requested:, issuer: ) }
+  let(:document_capture_session) do
+    build(:document_capture_session, document_type_requested:, issuer:)
+  end
   let(:redirect_url) { 'https://idv.test' }
   let(:language) { :en }
   let(:idv_socure_docv_flow_id_only) { 'id_only_flow' }
@@ -234,7 +236,8 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
             document_images_sharing_enabled: true,
             document_images_sharing_service_providers: [issuer],
           )
-          expected_request_body[:config][:useCaseKey] = idv_socure_docv_flow_id_w_selfie_image_sharing
+          expected_request_body[:config][:useCaseKey] =
+            idv_socure_docv_flow_id_w_selfie_image_sharing
         end
 
         it 'fetches from the correct url' do
