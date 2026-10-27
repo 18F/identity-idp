@@ -7606,22 +7606,23 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when a delegated token exchange request (RFC 8693) is made at the token endpoint
-  # @param [Boolean] success Whether the form was submitted successfully.
+  # Tracks an RFC 8693 delegated token exchange request at the token endpoint
+  # @param [Boolean] success Whether the exchange request passed validation and returned a
+  #   delegated token response
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Hash] errors Any additional error information we have
   # @param [String] actor_issuer Issuer of the actor service provider making the exchange
   #   request
-  # @param [String, nil] target_issuer Issuer of the target service provider the token is
-  #   requested for
-  # @param [String, nil] resource URI the actor intends to use the delegated access token against
+  # @param [String, nil] target_issuer Issuer string for the target service provider the token
+  #   is requested for
+  # @param [String, nil] resource URL submitted by the actor for the target resource
   # @param [Integer, nil] expires_in Time to expiration of the delegated access token
   # @param [Integer, nil] ial IAL level recorded on the subject token
-  # @param [String, nil] token_exchange_stage Token exchange flow stage for filtering
-  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope values
-  # @param [String, nil] subject_token_fingerprint SHA-256 digest of the submitted
-  #   subject token
-  # @param [String, nil] oauth_error_code OAuth error code returned for unsuccessful requests
+  # @param [String, nil] token_exchange_stage Token exchange flow stage
+  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
+  # @param [String, nil] subject_token_fingerprint Fingerprint of the submitted subject token
+  # @param [String, nil] oauth_error_code Protocol-level OAuth error code returned for
+  #   unsuccessful requests
   def openid_connect_delegated_token_exchange(
     actor_issuer:,
     success:,
@@ -7670,10 +7671,11 @@ module AnalyticsEvents
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
-  # @param [String, nil] token_exchange_stage Token exchange flow stage for filtering
+  # @param [String, nil] token_exchange_stage Actor authorization stage for a request that
+  #   can produce a subject token
   # @param [Boolean, nil] token_exchange_requested Whether the authorize request included a
   #   token_exchange scope
-  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope values
+  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
   def openid_connect_request_authorization(
     success:,
     prompt:,
@@ -7728,12 +7730,11 @@ module AnalyticsEvents
   # @param [Boolean] code_verifier_present Whether code verifier parameter was present
   # @param [Boolean, nil] service_provider_pkce Whether service provider is configured for PKCE. Nil
   # if the service provider is unknown.
-  # @param [String, nil] token_exchange_stage Token exchange flow stage for filtering
+  # @param [String, nil] token_exchange_stage Token exchange flow stage
   # @param [String, nil] token_endpoint_operation Token endpoint operation
   #   (authorization_code or subject_token)
-  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope values
-  # @param [String, nil] subject_token_fingerprint SHA-256 digest of the issued subject
-  #   token
+  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
+  # @param [String, nil] subject_token_fingerprint Fingerprint of the issued subject token
   def openid_connect_token(
     client_id:,
     success:,
