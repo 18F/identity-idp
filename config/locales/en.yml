@@ -756,7 +756,7 @@ doc_auth.instructions.bullet1_mdl_and_passport_card: Have a U.S. passport book o
 doc_auth.instructions.bullet2: Enter your Social Security number
 doc_auth.instructions.bullet3: Match to your phone number
 doc_auth.instructions.bullet4: Re-enter your %{app_name} password
-doc_auth.instructions.consent: By checking this box, you are letting %{app_name} ask for, use, keep, and share your personal information, as described in our %{privacy_link} and you are agreeing to our %{rules_of_use_link}. We will use it to verify your identity and help prevent fraud.
+doc_auth.instructions.consent_html: By checking this box, you are letting %{app_name} ask for, use, keep, and share your personal information, as described in our %{privacy_link} and you are agreeing to our %{rules_of_use_link}. We will use it to verify your identity and help prevent fraud.
 doc_auth.instructions.getting_started: 'You’ll need to:'
 doc_auth.instructions.switch_back: Switch back to your computer to finish verifying your identity
 doc_auth.instructions.switch_back_image: Arrow pointing from phone to computer

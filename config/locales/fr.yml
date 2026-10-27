@@ -756,7 +756,7 @@ doc_auth.instructions.bullet1_mdl_and_passport_card: Posséder un passeport ou u
 doc_auth.instructions.bullet2: Saisir votre numéro de sécurité sociale
 doc_auth.instructions.bullet3: Vérifier la correspondance avec votre numéro de téléphone
 doc_auth.instructions.bullet4: Saisir à nouveau votre mot de passe %{app_name}
-doc_auth.instructions.consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser, conserver et partager vos informations personnelles, comme décrit dans notre %{privacy_link}, et vous acceptez nos %{rules_of_use_link}. Nous les utiliserons pour vérifier votre identité et aider à prévenir la fraude.
+doc_auth.instructions.consent_html: En cochant cette case, vous autorisez %{app_name} à demander, utiliser, conserver et partager vos informations personnelles, comme décrit dans notre %{privacy_link}, et vous acceptez nos %{rules_of_use_link}. Nous les utiliserons pour vérifier votre identité et aider à prévenir la fraude.
 doc_auth.instructions.getting_started: 'Vous devrez :'
 doc_auth.instructions.switch_back: Revenir à votre ordinateur pour continuer à confirmer votre identité
 doc_auth.instructions.switch_back_image: Flèche pointant du téléphone vers l’ordinateur
