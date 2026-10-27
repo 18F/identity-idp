@@ -158,13 +158,12 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
         context 'with ial2 requested using acr values' do
           let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
-          let(:initiating_service_provider_issuer) { nil }
           let(:idv_level) { :legacy_unsupervised }
 
           context 'account is already verified' do
             let(:user) do
               create(
-                :profile, :active, :verified, proofing_components: { liveness_check: true }, initiating_service_provider_issuer:, idv_level:
+                :profile, :active, :verified, proofing_components: { liveness_check: true }, idv_level:
               ).user
             end
 
@@ -271,16 +270,15 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
               end
 
-              context 'when the existing profile was initiated by the requesting service provider' do
-                let(:initiating_service_provider_issuer) { service_provider.issuer }
-
+              context 'when the existing profile has proofing events' do
+                let!(:user_proofing_event) { create(:user_proofing_event, profile: user.active_profile) }
                 it 'redirects to the service provider' do
                   action
                   expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
                 end
               end
 
-              context 'when the existing profile has no initiating service provider' do
+              context 'when the existing profile does not have proofing events' do
                 it 'redirects to have the user verify their account' do
                   action
                   expect(controller).to redirect_to(idv_url)
@@ -292,26 +290,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   expect(@analytics).to have_logged_event(
                     :idv_reproof_needed,
                     reproof_reason: :reproof_forcing_sp,
-                    previous_idv_level: user.active_profile.idv_level,
-                  )
-                end
-              end
-
-              context 'when the existing profile was initiated by a different service provider' do
-                let(:initiating_service_provider_issuer) { 'saml_sp_ial2' }
-
-                it 'redirects to have the user verify their account' do
-                  action
-                  expect(controller).to redirect_to(idv_url)
-                end
-
-                it 'tracks idv_reproof_needed with reproof_forcing_sp reason' do
-                  stub_analytics
-                  action
-                  expect(@analytics).to have_logged_event(
-                    :idv_reproof_needed,
-                    reproof_reason: :reproof_forcing_sp,
-                    initiating_sp_issuer: 'saml_sp_ial2',
                     previous_idv_level: user.active_profile.idv_level,
                   )
                 end
