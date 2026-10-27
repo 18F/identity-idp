@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe SocureDocvResultsJob do
+  include ActiveJob::TestHelper
+
   let(:job) { described_class.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:attempts_api_enabled) { true }
@@ -111,6 +113,7 @@ RSpec.describe SocureDocvResultsJob do
       attempts_api_enabled:,
       doc_escrow_enabled:,
       allowed_attempts_providers:,
+      ruby_workers_idv_enabled: false,
     )
 
     if doc_escrow_enabled
@@ -319,7 +322,7 @@ RSpec.describe SocureDocvResultsJob do
             let(:doc_escrow_enabled) { true }
 
             it 'does not enqueue or perform SocureImageRetrievalJob' do
-              expect(SocureImageRetrievalJob).not_to receive(:perform_later)
+              expect(SocureImageRetrievalJob).not_to receive(:set)
               expect(SocureImageRetrievalJob).not_to receive(:perform_now)
 
               perform
@@ -439,14 +442,21 @@ RSpec.describe SocureDocvResultsJob do
         let(:doc_escrow_enabled) { false }
 
         before do
+          ActiveJob::Base.queue_adapter = :test
+          SocureImageRetrievalJob.queue_adapter = ActiveJob::Base.queue_adapter
+          ActiveJob::Base.queue_adapter.enqueued_jobs.clear
+          ActiveJob::Base.queue_adapter.performed_jobs.clear
           allow(IdentityConfig.store).to receive_messages(
             document_images_sharing_enabled: true,
             document_images_sharing_service_providers: [sp.issuer],
+            ruby_workers_idv_enabled: true,
           )
         end
 
         it 'runs SocureImageRetrievalJob to persist artifacts without any escrow data' do
-          expect(SocureImageRetrievalJob).to receive(:perform_later).with(
+          expect do
+            perform
+          end.to have_enqueued_job(SocureImageRetrievalJob).with(
             hash_including(
               document_capture_session_uuid:,
               image_storage_data: {},
@@ -454,15 +464,15 @@ RSpec.describe SocureDocvResultsJob do
               docv_transaction_token: socure_docv_transaction_token,
             ),
           )
-
-          perform
         end
 
         it 'encrypts the document metadata before enqueueing it' do
           job_args = nil
-          allow(SocureImageRetrievalJob).to receive(:perform_later) { |**args| job_args = args }
-
-          perform
+          expect do
+            perform
+          end.to have_enqueued_job(SocureImageRetrievalJob).with { |args|
+            job_args = args
+          }
 
           expect(job_args).not_to have_key(:document_metadata)
           encrypted = job_args[:encrypted_document_metadata]
@@ -479,23 +489,19 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         it 'does not report escrow file ids to the attempts API' do
-          allow(SocureImageRetrievalJob).to receive(:perform_later)
-
           expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
             hash_excluding(:document_front_image_file_id, :document_back_image_file_id),
           )
 
-          perform
+          expect { perform }.to have_enqueued_job(SocureImageRetrievalJob)
         end
 
         context 'when an earlier attempt left artifacts on the capture session' do
           let!(:stale_artifact) { create(:document_artifact, document_capture_session:) }
           let!(:stale_metadata) { create(:document_metadata, document_capture_session:) }
 
-          before { allow(SocureImageRetrievalJob).to receive(:perform_later) }
-
           it 'discards them before retrieving the images for this attempt' do
-            perform
+            expect { perform }.to have_enqueued_job(SocureImageRetrievalJob)
 
             expect(DocumentArtifact.exists?(stale_artifact.id)).to eq(false)
             expect(DocumentMetadata.exists?(stale_metadata.id)).to eq(false)
@@ -516,10 +522,8 @@ RSpec.describe SocureDocvResultsJob do
           let(:decision_value) { 'reject' }
 
           it 'does not run SocureImageRetrievalJob' do
-            expect(SocureImageRetrievalJob).not_to receive(:perform_later)
+            expect { perform }.not_to have_enqueued_job(SocureImageRetrievalJob)
             expect(SocureImageRetrievalJob).not_to receive(:perform_now)
-
-            perform
           end
         end
 
@@ -528,14 +532,14 @@ RSpec.describe SocureDocvResultsJob do
           let(:historical_attempts_api_enabled) { true }
 
           it 'passes both the escrow data and the persist flag' do
-            expect(SocureImageRetrievalJob).to receive(:perform_later).with(
+            expect do
+              perform
+            end.to have_enqueued_job(SocureImageRetrievalJob).with(
               hash_including(
                 image_storage_data: hash_including(:front, :back),
                 persist_artifacts: true,
               ),
             )
-
-            perform
           end
         end
       end
@@ -545,9 +549,12 @@ RSpec.describe SocureDocvResultsJob do
         let(:historical_attempts_api_enabled) { true }
 
         it 'does not pass document metadata to SocureImageRetrievalJob' do
-          expect(SocureImageRetrievalJob).to receive(:perform_later).with(
-            hash_including(persist_artifacts: false, encrypted_document_metadata: nil),
-          )
+          expect(SocureImageRetrievalJob).to receive(:perform_now)
+            .with(hash_including(
+              persist_artifacts: false,
+              encrypted_document_metadata: nil,
+            ))
+            .and_call_original
 
           perform
         end
@@ -557,7 +564,7 @@ RSpec.describe SocureDocvResultsJob do
         let(:doc_escrow_enabled) { false }
 
         it 'does not run SocureImageRetrievalJob' do
-          expect(SocureImageRetrievalJob).not_to receive(:perform_later)
+          expect(SocureImageRetrievalJob).not_to receive(:set)
           expect(SocureImageRetrievalJob).not_to receive(:perform_now)
 
           perform
@@ -1526,7 +1533,7 @@ RSpec.describe SocureDocvResultsJob do
             let(:historical_attempts_api_enabled) { true }
 
             it 'does not enqueue or perform SocureImageRetrievalJob and stores no escrow images' do
-              expect(SocureImageRetrievalJob).not_to receive(:perform_later)
+              expect(SocureImageRetrievalJob).not_to receive(:set)
               expect(SocureImageRetrievalJob).not_to receive(:perform_now)
               expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
 
