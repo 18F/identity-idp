@@ -58,7 +58,7 @@ module OpenidConnect
 
     def track_analytics(analytics_attributes)
       if brokered_token_exchange?
-        analytics.openid_connect_brokered_exchange_token(**analytics_attributes)
+        analytics.openid_connect_delegated_token_exchange(**analytics_attributes)
       else
         analytics.openid_connect_token(**analytics_attributes)
       end

@@ -242,8 +242,8 @@ class OpenidConnectTokenExchangeForm
 
   def extra_analytics_attributes
     {
-      client_id:,
-      audience:,
+      actor_issuer: client_id,
+      target_issuer: audience,
       resource:,
       ial: subject_token_ial,
       token_exchange_stage: TokenExchange::Constants::STAGE_DELEGATED_TOKEN,
