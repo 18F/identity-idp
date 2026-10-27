@@ -32,6 +32,8 @@ class DelegatedIssuanceLog < ApplicationRecord
   def validate_return_log(return_log, issuer, attribute)
     return if return_log.blank?
 
-    errors.add(attribute, :invalid) if return_log.user_id != user_id || return_log.issuer != issuer
+    if return_log.user_id != user_id || return_log.issuer != issuer
+      errors.add(attribute, :invalid)
+    end
   end
 end

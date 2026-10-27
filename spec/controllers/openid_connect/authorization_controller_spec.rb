@@ -1243,6 +1243,26 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
           expect(response).not_to redirect_to(sts_consent_url)
         end
+
+        it 'stores the actor handoff for the authorization code' do
+          action
+
+          code = user.identities.find_by(service_provider: broker_issuer).session_uuid
+          handoff = TokenExchange::ActorHandoff.load(code)
+          expect(handoff.actor_return_log_id).to eq(SpReturnLog.find_by(user:).id)
+        end
+
+        context 'when the request does not ask for token exchange' do
+          before { params[:scope] = 'openid' }
+
+          it 'does not store an actor handoff' do
+            expect(TokenExchange::ActorHandoff).to_not receive(:store)
+
+            action
+
+            expect(SpReturnLog.where(user:).count).to eq(1)
+          end
+        end
       end
 
       context 'when the user previously consented but the consent has expired' do

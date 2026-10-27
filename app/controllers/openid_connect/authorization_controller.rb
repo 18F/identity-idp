@@ -103,6 +103,8 @@ module OpenidConnect
     end
 
     def identity_authorization_code
+      return unless IdentityConfig.store.token_exchange_enabled && token_exchange_scope_requested?
+
       @linked_identity&.session_uuid
     end
 
