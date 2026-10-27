@@ -7655,6 +7655,10 @@ module AnalyticsEvents
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
+  # @param [String, nil] token_exchange_stage Token exchange flow stage for filtering
+  # @param [Boolean, nil] token_exchange_requested Whether the authorize request included a
+  #   token_exchange scope
+  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope values
   def openid_connect_request_authorization(
     success:,
     prompt:,
@@ -7670,6 +7674,9 @@ module AnalyticsEvents
     user_fully_authenticated:,
     error_details: nil,
     unknown_authn_contexts: nil,
+    token_exchange_stage: nil,
+    token_exchange_requested: nil,
+    token_exchange_scopes: nil,
     **extra
   )
     track_event(
@@ -7688,6 +7695,9 @@ module AnalyticsEvents
       unauthorized_scope:,
       user_fully_authenticated:,
       unknown_authn_contexts:,
+      token_exchange_stage:,
+      token_exchange_requested:,
+      token_exchange_scopes:,
       **extra,
     )
   end
