@@ -7,6 +7,7 @@ module TokenExchange
     :broker_issuer,
     :scope,
     :ial,
+    :actor_return_log_id,
     :issued_at,
     keyword_init: true,
   ) do
