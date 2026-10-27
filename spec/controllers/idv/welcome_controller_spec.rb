@@ -260,6 +260,40 @@ RSpec.describe Idv::WelcomeController do
         end
       end
     end
+
+    context 'when mDL is enabled' do
+      let(:sp) { create(:service_provider, friendly_name: 'Test Service Provider') }
+
+      before do
+        allow(IdentityConfig.store).to receive(:idv_doc_auth_mdl_enabled_percent).and_return(100)
+        reload_ab_tests
+        session[:sp] = {
+          issuer: sp.issuer,
+          acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        }
+      end
+
+      it 'passes mdl_enabled as true to the presenter' do
+        get :show
+
+        expect(assigns(:presenter).mdl_enabled).to eq(true)
+      end
+
+      context 'when document images sharing is allowed for the service provider' do
+        before do
+          allow(IdentityConfig.store).to receive_messages(
+            document_images_sharing_enabled: true,
+            document_images_sharing_service_providers: [sp.issuer],
+          )
+        end
+
+        it 'passes mdl_enabled as false to the presenter' do
+          get :show
+
+          expect(assigns(:presenter).mdl_enabled).to eq(false)
+        end
+      end
+    end
   end
 
   describe '#update' do
@@ -356,6 +390,46 @@ RSpec.describe Idv::WelcomeController do
           put :update
 
           expect(subject.idv_session.clear1_allowed).to eq(true)
+        end
+      end
+    end
+
+    context 'when mDL is enabled' do
+      let(:sp) { create(:service_provider, friendly_name: 'Test Service Provider') }
+
+      before do
+        allow(IdentityConfig.store).to receive(:idv_doc_auth_mdl_enabled_percent).and_return(100)
+        reload_ab_tests
+        session[:sp] = {
+          issuer: sp.issuer,
+          acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        }
+      end
+
+      it 'creates a document capture session with mdl_enabled as true' do
+        put :update
+
+        document_capture_session = DocumentCaptureSession.find_by(
+          uuid: subject.idv_session.document_capture_session_uuid,
+        )
+        expect(document_capture_session.mdl_enabled).to eq(true)
+      end
+
+      context 'when document images sharing is allowed for the service provider' do
+        before do
+          allow(IdentityConfig.store).to receive_messages(
+            document_images_sharing_enabled: true,
+            document_images_sharing_service_providers: [sp.issuer],
+          )
+        end
+
+        it 'creates a document capture session with mdl_enabled as false' do
+          put :update
+
+          document_capture_session = DocumentCaptureSession.find_by(
+            uuid: subject.idv_session.document_capture_session_uuid,
+          )
+          expect(document_capture_session.mdl_enabled).to eq(false)
         end
       end
     end

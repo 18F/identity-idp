@@ -100,7 +100,8 @@ module Idv
     end
 
     def mdl_enabled?
-      document_capture_session.mdl_enabled
+      document_capture_session.mdl_enabled &&
+        !document_capture_session.document_images_sharing_allowed?
     end
 
     def mdl_disabled?
