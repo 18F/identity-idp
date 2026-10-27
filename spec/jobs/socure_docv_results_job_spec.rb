@@ -440,6 +440,7 @@ RSpec.describe SocureDocvResultsJob do
 
       context 'when the SP is allow-listed for document image sharing' do
         let(:doc_escrow_enabled) { false }
+        let(:image_retrieval_job_wait_seconds) { 37 }
 
         before do
           ActiveJob::Base.queue_adapter = :test
@@ -450,20 +451,23 @@ RSpec.describe SocureDocvResultsJob do
             document_images_sharing_enabled: true,
             document_images_sharing_service_providers: [sp.issuer],
             ruby_workers_idv_enabled: true,
+            socure_docv_image_retrieval_job_wait_seconds: image_retrieval_job_wait_seconds,
           )
         end
 
         it 'runs SocureImageRetrievalJob to persist artifacts without any escrow data' do
-          expect do
-            perform
-          end.to have_enqueued_job(SocureImageRetrievalJob).with(
-            hash_including(
-              document_capture_session_uuid:,
-              image_storage_data: {},
-              persist_artifacts: true,
-              docv_transaction_token: socure_docv_transaction_token,
-            ),
-          )
+          freeze_time do
+            expect do
+              perform
+            end.to have_enqueued_job(SocureImageRetrievalJob).with(
+              hash_including(
+                document_capture_session_uuid:,
+                image_storage_data: {},
+                persist_artifacts: true,
+                docv_transaction_token: socure_docv_transaction_token,
+              ),
+            ).at(image_retrieval_job_wait_seconds.seconds.from_now)
+          end
         end
 
         it 'encrypts the document metadata before enqueueing it' do
