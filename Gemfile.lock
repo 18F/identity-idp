@@ -223,7 +223,7 @@ GEM
       erubi (~> 1.4)
       parser (>= 2.4)
       smart_properties
-    bigdecimal (4.1.2)
+    bigdecimal (4.1.3)
     bindata (2.5.1)
     bootsnap (1.25.0)
       msgpack (~> 1.5)
@@ -278,7 +278,7 @@ GEM
     crack (1.0.1)
       bigdecimal
       rexml
-    crass (1.0.7)
+    crass (1.0.8)
     css_parser (3.3.0)
       addressable
       base64
@@ -470,7 +470,6 @@ GEM
     grpc (1.81.0-x86_64-linux-musl)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    hana (1.3.7)
     hashdiff (1.2.1)
     heapy (0.2.0)
       thor
@@ -503,19 +502,14 @@ GEM
     jmespath (1.6.2)
     jsbundling-rails (1.3.1)
       railties (>= 6.0.0)
-    json (2.19.9)
-    json_schemer (2.5.0)
-      bigdecimal
-      hana (~> 1.3)
-      regexp_parser (~> 2.0)
-      simpleidn (~> 0.2)
+    json (3.1.0)
     jwe (1.1.1)
       base64
     jwt (3.2.0)
       base64
     knapsack (4.0.0)
       rake
-    language_server-protocol (3.17.0.5)
+    language_server-protocol (3.17.0.6)
     launchy (3.1.1)
       addressable (~> 2.8)
       childprocess (~> 5.0)
@@ -558,8 +552,6 @@ GEM
     marcel (1.2.1)
     matrix (0.4.3)
     maxminddb (0.1.22)
-    mcp (0.25.0)
-      json_schemer (>= 2.4)
     memory_profiler (1.1.0)
     method_source (1.1.0)
     mini_histogram (0.3.1)
@@ -582,11 +574,13 @@ GEM
       net-protocol
     net-protocol (0.2.2)
       timeout
-    net-sftp (4.0.0)
-      net-ssh (>= 5.0.0, < 8.0.0)
+    net-sftp (4.0.2)
+      net-ssh (>= 5.0.0, < 9.0.0)
     net-smtp (0.5.1)
       net-protocol
-    net-ssh (6.1.0)
+    net-ssh (8.0.4)
+      logger
+      openssl (>= 3.2.0)
     newrelic_rpm (9.24.0)
     nio4r (2.7.5)
     nokogiri (1.19.4)
@@ -618,8 +612,8 @@ GEM
     orm_adapter (0.5.0)
     os (1.1.4)
     ostruct (0.6.3)
-    parallel (1.27.0)
-    parser (3.3.10.2)
+    parallel (2.3.0)
+    parser (3.3.13.0)
       ast (~> 2.4.1)
       racc
     pg (1.6.3)
@@ -750,7 +744,7 @@ GEM
       redis-client (>= 0.22.0)
     redis-client (0.26.4)
       connection_pool
-    regexp_parser (2.11.3)
+    regexp_parser (2.13.1)
     reline (0.7.0)
       io-console (~> 0.5)
     request_store (1.7.0)
@@ -789,19 +783,18 @@ GEM
     rspec-support (3.13.7)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
-    rubocop (1.85.1)
-      json (~> 2.3)
+    rubocop (1.92.1)
+      json (>= 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
-      mcp (~> 0.6)
-      parallel (~> 1.10)
+      parallel (>= 1.10)
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 2.9.3, < 3.0)
+      regexp_parser (>= 2.11.3, < 3.0)
       rubocop-ast (>= 1.49.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.49.0)
+    rubocop-ast (1.50.0)
       parser (>= 3.3.7.2)
       prism (~> 1.7)
     rubocop-capybara (2.22.1)
@@ -863,7 +856,7 @@ GEM
       simplecov (~> 0.19)
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
-    simpleidn (0.2.3)
+    simpleidn (0.3.0)
     smart_properties (1.17.0)
     sqlite3 (2.9.6)
       mini_portile2 (~> 2.8.0)
@@ -895,17 +888,17 @@ GEM
     tsort (0.2.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (3.2.0)
-      unicode-emoji (~> 4.1)
-    unicode-emoji (4.2.0)
+    unicode-display_width (3.3.0)
+      unicode-emoji (~> 4.3)
+    unicode-emoji (4.3.0)
     uniform_notifier (1.18.0)
-    uri (1.1.1)
+    uri (1.1.2)
     useragent (0.16.11)
     valid_email (0.2.1)
       activemodel
       mail (>= 2.6.1)
       simpleidn
-    view_component (4.12.0)
+    view_component (4.14.0)
       actionview (>= 7.1.0)
       activesupport (>= 7.1.0)
       concurrent-ruby (~> 1)
@@ -1082,7 +1075,7 @@ DEPENDENCIES
   tableparser
   terminal-table
   valid_email (>= 0.1.3)
-  view_component (~> 4.12.0)
+  view_component (~> 4.14.0)
   webauthn (~> 3.0)
   webmock
   xmldsig (~> 0.6)
