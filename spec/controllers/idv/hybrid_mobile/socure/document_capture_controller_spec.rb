@@ -294,7 +294,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
             )
           end
 
-          it 'request the flow for selfie with image sharing' do
+          it 'request the flow for id only' do
             get(:show)
 
             expect(WebMock).to have_requested(:post, fake_socure_endpoint)

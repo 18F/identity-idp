@@ -425,7 +425,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
             )
           end
 
-          it 'creates a DocumentRequest with image sharing enabled' do
+          it 'creates a DocumentRequest for id only' do
             get(:show)
 
             expect(WebMock).to have_requested(:post, fake_socure_endpoint)
