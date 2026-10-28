@@ -50,6 +50,7 @@ class IdvController < ApplicationController
   def track_reproof_redirect
     analytics.idv_reproof_needed(
       reproof_reason: reproofing_policy.reproof_reason,
+      initiating_sp_issuer: current_user.active_profile&.initiating_service_provider_issuer,
       previous_idv_level: current_user.active_profile&.idv_level,
     )
   end

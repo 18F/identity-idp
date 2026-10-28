@@ -86,15 +86,13 @@ RSpec.describe IdvController do
       end
 
       context 'when the service provider forces reproofing' do
-        let(:service_provider) { create(:service_provider) }
-
         before do
           allow(IdentityConfig.store).to receive(:reproof_forcing_service_provider)
             .and_return(service_provider.issuer)
         end
 
-        context 'when the existing profile has user proofing events' do
-          let!(:user_proofing_event) { create(:user_proofing_event, profile: user.active_profile) }
+        context 'when the existing profile was initiated by the requesting service provider' do
+          let(:service_provider) { user.active_profile.initiating_service_provider }
 
           it 'redirects to activated' do
             get :index
@@ -102,7 +100,9 @@ RSpec.describe IdvController do
           end
         end
 
-        context 'when the existing profile does not have user proofing events' do
+        context 'when the existing profile was initiated by a different service provider' do
+          let(:service_provider) { create(:service_provider) }
+
           it 'redirects to welcome' do
             get :index
             expect(response).to redirect_to idv_welcome_url
@@ -114,6 +114,7 @@ RSpec.describe IdvController do
             expect(@analytics).to have_logged_event(
               :idv_reproof_needed,
               reproof_reason: :reproof_forcing_sp,
+              initiating_sp_issuer: user.active_profile.initiating_service_provider_issuer,
               previous_idv_level: user.active_profile.idv_level,
             )
           end
