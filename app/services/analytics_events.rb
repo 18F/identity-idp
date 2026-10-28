@@ -7606,36 +7606,55 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when a brokered token exchange request (RFC 8693) is made at the token endpoint
-  # @param [Boolean] success Whether the form was submitted successfully.
+  # Tracks an RFC 8693 delegated token exchange request at the token endpoint
+  # @param [Boolean] success Whether the exchange request passed validation and returned a
+  #   delegated token response
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Hash] errors Any additional error information we have
-  # @param [String] client_id Issuer of the broker service provider making the exchange request
-  # @param [String, nil] audience Issuer of the target service provider the token is requested for
-  # @param [String, nil] resource URI the broker intends to use the delegated access token against
+  # @param [String] actor_issuer Issuer of the actor service provider making the exchange
+  #   request
+  # @param [String, nil] target_issuer Issuer string for the target service provider the token
+  #   is requested for
+  # @param [String, nil] resource URL submitted by the actor for the target resource
   # @param [Integer, nil] expires_in Time to expiration of the delegated access token
   # @param [Integer, nil] ial IAL level recorded on the subject token
-  def openid_connect_brokered_exchange_token(
-    client_id:,
+  # @param [String, nil] token_exchange_stage Token exchange flow stage
+  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
+  # @param [String, nil] subject_token_fingerprint Fingerprint of the submitted subject token
+  # @param [String, nil] delegation_id Internal delegated-token issuance identifier
+  # @param [String, nil] oauth_error_code Protocol-level OAuth error code returned for
+  #   unsuccessful requests
+  def openid_connect_delegated_token_exchange(
+    actor_issuer:,
     success:,
-    audience:,
+    target_issuer:,
     resource:,
     expires_in:,
     ial:,
     errors: nil,
     error_details: nil,
+    token_exchange_stage: nil,
+    token_exchange_scopes: nil,
+    subject_token_fingerprint: nil,
+    delegation_id: nil,
+    oauth_error_code: nil,
     **extra
   )
     track_event(
-      :openid_connect_brokered_exchange_token,
+      :openid_connect_delegated_token_exchange,
       success:,
       error_details:,
       errors:,
-      client_id:,
-      audience:,
+      actor_issuer:,
+      target_issuer:,
       resource:,
       expires_in:,
       ial:,
+      token_exchange_stage:,
+      token_exchange_scopes:,
+      subject_token_fingerprint:,
+      delegation_id:,
+      oauth_error_code:,
       **extra,
     )
   end
@@ -7655,6 +7674,11 @@ module AnalyticsEvents
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
+  # @param [String, nil] token_exchange_stage Actor authorization stage for a request that
+  #   can produce a subject token
+  # @param [Boolean, nil] token_exchange_requested Whether the authorize request included a
+  #   token_exchange scope
+  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
   def openid_connect_request_authorization(
     success:,
     prompt:,
@@ -7670,6 +7694,9 @@ module AnalyticsEvents
     user_fully_authenticated:,
     error_details: nil,
     unknown_authn_contexts: nil,
+    token_exchange_stage: nil,
+    token_exchange_requested: nil,
+    token_exchange_scopes: nil,
     **extra
   )
     track_event(
@@ -7688,6 +7715,9 @@ module AnalyticsEvents
       unauthorized_scope:,
       user_fully_authenticated:,
       unknown_authn_contexts:,
+      token_exchange_stage:,
+      token_exchange_requested:,
+      token_exchange_scopes:,
       **extra,
     )
   end
@@ -7703,6 +7733,11 @@ module AnalyticsEvents
   # @param [Boolean] code_verifier_present Whether code verifier parameter was present
   # @param [Boolean, nil] service_provider_pkce Whether service provider is configured for PKCE. Nil
   # if the service provider is unknown.
+  # @param [String, nil] token_exchange_stage Token exchange flow stage
+  # @param [String, nil] token_endpoint_operation Token endpoint operation
+  #   (authorization_code or subject_token)
+  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
+  # @param [String, nil] subject_token_fingerprint Fingerprint of the issued subject token
   def openid_connect_token(
     client_id:,
     success:,
@@ -7713,6 +7748,10 @@ module AnalyticsEvents
     code_verifier_present:,
     service_provider_pkce:,
     error_details: nil,
+    token_exchange_stage: nil,
+    token_endpoint_operation: nil,
+    token_exchange_scopes: nil,
+    subject_token_fingerprint: nil,
     **extra
   )
     track_event(
@@ -7726,6 +7765,10 @@ module AnalyticsEvents
       ial:,
       code_verifier_present:,
       service_provider_pkce:,
+      token_exchange_stage:,
+      token_endpoint_operation:,
+      token_exchange_scopes:,
+      subject_token_fingerprint:,
       **extra,
     )
   end

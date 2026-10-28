@@ -595,6 +595,9 @@ RSpec.describe OpenidConnectTokenForm do
           code_verifier_present: false,
           service_provider_pkce: nil,
           ial: 1,
+          token_exchange_stage: nil,
+          token_endpoint_operation: 'authorization_code',
+          token_exchange_scopes: nil,
           integration_errors: nil,
         )
       end
@@ -612,6 +615,9 @@ RSpec.describe OpenidConnectTokenForm do
           client_id: nil,
           user_id: nil,
           code_digest: nil,
+          token_exchange_stage: nil,
+          token_endpoint_operation: 'authorization_code',
+          token_exchange_scopes: nil,
         )
       end
     end
@@ -631,6 +637,9 @@ RSpec.describe OpenidConnectTokenForm do
           code_verifier_present: false,
           service_provider_pkce: nil,
           ial: 1,
+          token_exchange_stage: nil,
+          token_endpoint_operation: 'authorization_code',
+          token_exchange_scopes: nil,
           integration_errors: {
             error_details: ['Grant type is not included in the list'],
             error_types: [:grant_type],
@@ -715,6 +724,14 @@ RSpec.describe OpenidConnectTokenForm do
           scope: 'openid token_exchange:passport',
           ial: 2,
           actor_return_log_id: 123,
+        )
+      end
+
+      it 'surfaces subject token analytics fields on the token event' do
+        expect(form.submit.to_h).to include(
+          token_exchange_stage: 'subject_token',
+          token_endpoint_operation: 'subject_token',
+          token_exchange_scopes: ['passport'],
         )
       end
 

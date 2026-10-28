@@ -68,12 +68,6 @@ class OpenidConnectTokenExchangeForm
   def response
     return error_response unless valid?
 
-    issued_token = TokenExchange::AccessTokenIssuer.issue(
-      subject_token: loaded_subject_token,
-      target_issuer: audience,
-      resource:,
-      scope: requested_scope,
-    )
     {
       access_token: issued_token.token,
       issued_token_type: TokenExchange::Constants::ACCESS_TOKEN_TYPE,
@@ -81,6 +75,10 @@ class OpenidConnectTokenExchangeForm
       expires_in: issued_token.expires_in,
       scope: requested_scope,
     }
+  end
+
+  def delegation_id
+    @issued_token&.delegation_id
   end
 
   # `invalid_client` indicates a client authentication failure, which RFC 6749
@@ -242,12 +240,38 @@ class OpenidConnectTokenExchangeForm
 
   def extra_analytics_attributes
     {
-      client_id:,
-      audience:,
+      actor_issuer: client_id,
+      target_issuer: audience,
       resource:,
       ial: subject_token_ial,
+      token_exchange_stage: TokenExchange::Constants::STAGE_DELEGATED_TOKEN,
+      token_exchange_scopes: token_exchange_scope_values,
+      subject_token_fingerprint: subject_token_fingerprint,
+      oauth_error_code: (oauth_error unless valid?),
       integration_errors:,
     }
+  end
+
+  def issued_token
+    @issued_token ||= TokenExchange::AccessTokenIssuer.issue(
+      subject_token: loaded_subject_token,
+      target_issuer: audience,
+      resource:,
+      scope: requested_scope,
+    )
+  end
+
+  def token_exchange_scope_values
+    scopes = requested_scope.to_s.split(' ').select do |scope|
+      TokenExchange::Constants.in_scope?(scope)
+    end
+    return if scopes.blank?
+
+    scopes.map { |scope| scope.delete_prefix(TokenExchange::Constants::SCOPE_PREFIX) }
+  end
+
+  def subject_token_fingerprint
+    TokenExchange::SubjectToken.digest(subject_token) if subject_token.present?
   end
 
   # Reports the IAL only when a validation already loaded the subject token.
