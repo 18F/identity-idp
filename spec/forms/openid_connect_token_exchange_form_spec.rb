@@ -249,6 +249,15 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
+    context 'when the user does not have an identity on the target aud' do
+      before { target_identity.destroy! }
+
+      it 'is invalid' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.errors[:subject_token]).to include('is invalid')
+      end
+    end
+
     context 'when the user is no longer identity verified' do
       before do
         subject_token
