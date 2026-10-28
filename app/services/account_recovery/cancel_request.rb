@@ -8,15 +8,11 @@ module AccountRecovery
 
     def call
       request = AccountRecoveryRequest.active_for_user(user)
-      return false unless request
+      return false unless request&.cancel!
 
-      request.transaction do
-        next false unless request.cancel!
-
-        UserMailer.with(user: user, email_address: user.last_sign_in_email_address)
-          .account_recovery_cancelled.deliver_now_or_later
-        true
-      end
+      UserMailer.with(user: user, email_address: user.last_sign_in_email_address)
+        .account_recovery_cancelled.deliver_now_or_later
+      true
     end
 
     private

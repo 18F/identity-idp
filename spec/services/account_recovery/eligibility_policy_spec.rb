@@ -9,6 +9,25 @@ RSpec.describe AccountRecovery::EligibilityPolicy do
     allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
   end
 
+  describe '#recovery_pending?' do
+    it 'finds an existing request when new recovery is disabled' do
+      create(:account_recovery_request, :waiting, user: user)
+      allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+
+      expect(policy.recovery_pending?).to eq(true)
+    end
+
+    it 'ignores terminal requests' do
+      create(:account_recovery_request, :cancelled, user: user)
+
+      expect(policy.recovery_pending?).to eq(false)
+    end
+
+    it 'does not query for an anonymous user' do
+      expect(described_class.new(user: AnonymousUser.new).recovery_pending?).to eq(false)
+    end
+  end
+
   describe '#legacy_reset_allowed?' do
     it 'blocks legacy reset for eligible users' do
       expect(policy.legacy_reset_allowed?).to eq(false)

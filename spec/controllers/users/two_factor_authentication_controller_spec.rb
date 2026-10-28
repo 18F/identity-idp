@@ -144,6 +144,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         user = create(:user, :with_phone, **with_default_phone)
         stub_sign_in_before_2fa(user)
         request = create(:account_recovery_request, :waiting, user: user)
+        allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
         cookies.encrypted[:remember_device] = {
           value: RememberDeviceCookie.new(user_id: user.id, created_at: Time.zone.now).to_json,
           expires: 1.day.from_now,

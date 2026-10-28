@@ -14,6 +14,7 @@ RSpec.feature 'Pending account recovery request' do
     expect(page).not_to have_css('form[action*="cancel"], a[href*="cancel"]')
     recovery_request = AccountRecoveryRequest.active_for_user(user)
     Capybara.reset_session!
+    allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
 
     sign_in_user(user)
 
