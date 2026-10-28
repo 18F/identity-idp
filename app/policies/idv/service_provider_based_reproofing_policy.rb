@@ -30,7 +30,7 @@ module Idv
     end
 
     def reproof_forcing_sp?
-      current_sp_is_reproof_forcing? && current_sp_is_not_initiating_sp?
+      current_sp_is_reproof_forcing? && active_profile.user_proofing_event.nil?
     end
 
     def current_sp_is_reproof_forcing?
@@ -47,10 +47,6 @@ module Idv
     def eligible_sp_for_unsupervised_with_selfie_reproofing?
       IdentityConfig.store.reproof_if_not_unsupervised_with_selfie_service_providers
         .include?(service_provider.issuer)
-    end
-
-    def current_sp_is_not_initiating_sp?
-      service_provider.issuer != active_profile.initiating_service_provider_issuer
     end
 
     def initiating_sp_isnt_reproof_forcing?

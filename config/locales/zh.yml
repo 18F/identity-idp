@@ -743,7 +743,7 @@ doc_auth.info.passport_capture_help_2: 拿稳相机，等待工具拍照。
 doc_auth.info.passport_card_capture: 拍摄一张你护照卡的数据页的照片。数据页上有你的护照照片和个人信息。
 doc_auth.info.review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
 doc_auth.info.review_passport: 我们找不到与你护照信息匹配的记录。添加你ID的新照片，以防你护照信息没被正确读取。
-doc_auth.info.secure_account: 你重输密码时我们会对你的账户加密。加密意味着你的数据受到保护，只有你才能更改你的信息。
+doc_auth.info.secure_account: 当您重新输入密码时，我们会对您的账户进行加密。加密可保护您的账户信息——只有您才能更改您的信息
 doc_auth.info.selfie_capture_content: 我们会查看你是身份证件上的人。
 doc_auth.info.selfie_capture_help_1: 把你的面部放在绿色圆圈里。请保持静止，等待工具拍照。
 doc_auth.info.selfie_capture_help_2: 你的照片被自动拍后，点击绿色勾选标志来接受照片。
@@ -782,9 +782,8 @@ doc_auth.instructions.bullet1_mdl_and_passport_card: 持有美国护照本或护
 doc_auth.instructions.bullet2: 输入你的社会保障号码
 doc_auth.instructions.bullet3: 与你电话号码匹配
 doc_auth.instructions.bullet4: 重新输入你 %{app_name} 密码
-doc_auth.instructions.consent: 在此框打勾，意味着你允许 %{app_name} 索要、使用、保留并分享你的个人信息。我们会使用这些信息来验证你的身份。
+doc_auth.instructions.consent_html: 勾选此框即表示您允许 %{app_name} 按照我们《%{privacy_link_html}》中所述的方式索取、使用、保留和共享您的个人信息，并且您同意我们的《%{rules_of_use_link_html}》。我们将用它来验证您的身份并帮助防止欺诈。
 doc_auth.instructions.getting_started: '你需要：'
-doc_auth.instructions.learn_more: 了解有关我们隐私和安全措施的更多信息。
 doc_auth.instructions.switch_back: 然后再返回你的电脑完成验证身份
 doc_auth.instructions.switch_back_image: 从手机指向电脑的箭头
 doc_auth.instructions.test_ssn: 在测试环境中只有以 900- 或者 666- 打头的社保号才被视为是对的。请勿在该字段中输入你真实的显示个人身份的信息。
@@ -1316,7 +1315,7 @@ idv.messages.sessions.enter_password_message: 你重新输入密码时， %{app_
 idv.messages.sessions.no_pii: 测试站点 - 请勿使用真实个人信息（仅为演示目的）- 测试站点
 idv.messages.verify_info: 我们会检查记录以验证你的地址和社会保障号码是否与你身份证件上的信息相符。
 idv.messages.verifying: 验证中。。。
-idv.proofing_agent_expired.body: 为了您的账户安全，我们发送的“确认账户”邮件有效期为48小时，现已过期。请重新完成身份验证步骤，以便继续操作。
+idv.proofing_agent_expired.body: 为了您的账户安全，我们发送的“确认账户”邮件有效期为%{validity_hours}小时，现已过期。请重新完成身份验证步骤，以便继续操作。
 idv.proofing_agent_expired.continue: 继续
 idv.proofing_agent_expired.heading: 请完成身份验证设置
 idv.titles.activated: 你的身份已验证

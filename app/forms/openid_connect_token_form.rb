@@ -81,7 +81,11 @@ class OpenidConnectTokenForm
   attr_reader :identity, :code_expiration
 
   def token_exchange_subject_token_response
-    issued_token = TokenExchange::SubjectTokenIssuer.issue(identity:)
+    actor_handoff = TokenExchange::ActorHandoff.load(code)
+    issued_token = TokenExchange::SubjectTokenIssuer.issue(
+      identity:,
+      actor_return_log_id: actor_handoff&.actor_return_log_id,
+    )
     {
       access_token: issued_token.token,
       token_type: 'Bearer',

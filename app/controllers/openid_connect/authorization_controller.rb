@@ -94,12 +94,18 @@ module OpenidConnect
     end
 
     def link_identity_to_service_provider
-      @authorize_form.link_identity_to_service_provider(
+      @linked_identity = @authorize_form.link_identity_to_service_provider(
         current_user: current_user,
         ial: resolved_authn_context_int_ial,
         rails_session_id: session.id,
         email_address_id: email_address_id,
       )
+    end
+
+    def identity_authorization_code
+      return unless IdentityConfig.store.token_exchange_enabled && token_exchange_scope_requested?
+
+      @linked_identity&.session_uuid
     end
 
     def needs_sts_consent?
@@ -326,7 +332,6 @@ module OpenidConnect
     def track_reproof_redirect
       analytics.idv_reproof_needed(
         reproof_reason: reproofing_policy.reproof_reason,
-        initiating_sp_issuer: current_user.active_profile&.initiating_service_provider_issuer,
         previous_idv_level: current_user.active_profile&.idv_level,
       )
     end

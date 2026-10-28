@@ -452,7 +452,7 @@ RSpec.describe 'Identity verification', :js do
     complete_welcome_step
     expect(page).to have_current_path(idv_agreement_path)
     expect(page).not_to have_checked_field(
-      t('doc_auth.instructions.consent', app_name: APP_NAME),
+      'doc_auth_idv_consent_given',
       visible: :all,
     )
   end
@@ -461,7 +461,7 @@ RSpec.describe 'Identity verification', :js do
     go_back
     expect(page).to have_current_path(idv_agreement_path)
     expect(page).to have_checked_field(
-      t('doc_auth.instructions.consent', app_name: APP_NAME),
+      'doc_auth_idv_consent_given',
       visible: :all,
     )
     visit idv_welcome_path
@@ -469,7 +469,7 @@ RSpec.describe 'Identity verification', :js do
     complete_welcome_step
     expect(page).to have_current_path(idv_agreement_path)
     expect(page).not_to have_checked_field(
-      t('doc_auth.instructions.consent', app_name: APP_NAME),
+      'doc_auth_idv_consent_given',
       visible: :all,
     )
     complete_agreement_step
@@ -481,7 +481,7 @@ RSpec.describe 'Identity verification', :js do
     go_back
     expect(page).to have_current_path(idv_agreement_path)
     expect(page).to have_checked_field(
-      t('doc_auth.instructions.consent', app_name: APP_NAME),
+      'doc_auth_idv_consent_given',
       visible: :all,
     )
 

@@ -42,10 +42,23 @@ RSpec.describe Idv::ProofingAgentExpiredController do
     end
 
     describe '#show' do
+      let(:hours) { 50 }
+
+      before do
+        allow(IdentityConfig.store).to receive(:agent_proofed_user_time_validity_hours)
+          .and_return(hours)
+      end
+
       it 'renders the show template' do
         get :show
 
         expect(response).to render_template :show
+      end
+
+      it 'sets validity_hours the value from config' do
+        get :show
+
+        expect(subject.validity_hours).to eq(hours)
       end
 
       it 'sends idv_proofing_agent_expired_visited event' do

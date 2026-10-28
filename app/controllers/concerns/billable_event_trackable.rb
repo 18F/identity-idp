@@ -2,12 +2,14 @@
 
 module BillableEventTrackable
   def track_billing_events
-    if current_session_has_been_billed?
-      create_sp_return_log(billable: false)
-    else
-      create_sp_return_log(billable: true)
+    billable = !current_session_has_been_billed?
+    return_log = create_sp_return_log(billable:)
+
+    if billable
       mark_current_session_billed
     end
+
+    store_actor_handoff(return_log || SpReturnLog.find_by(request_id:))
   end
 
   private
@@ -27,6 +29,25 @@ module BillableEventTrackable
       returned_at: Time.zone.now,
     )
   rescue ActiveRecord::RecordNotUnique
+    nil
+  end
+
+  def store_actor_handoff(return_log)
+    return unless IdentityConfig.store.token_exchange_enabled
+    return unless current_sp.token_exchange_broker?
+    return if identity_authorization_code.blank? || return_log.blank?
+
+    TokenExchange::ActorHandoff.store(
+      code: identity_authorization_code,
+      actor_return_log_id: return_log.id,
+      expires_in: IdentityConfig.store.openid_connect_authorization_code_expiration_seconds,
+    )
+  rescue StandardError => error
+    NewRelic::Agent.notice_error(error)
+  end
+
+  # OIDC overrides this after linking the identity. SAML issues no authorization code.
+  def identity_authorization_code
     nil
   end
 
