@@ -295,6 +295,12 @@ RSpec.describe Idv::EnterDobSsnController do
       let(:ssn) { '000000000' }
 
       it 'renders new' do
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:idv_proofing_agent_confirmation_failure).with(
+          reason: [['ssn mismatch']],
+        )
+
         post :create, params: params
 
         expect(response).to render_template(:new)
@@ -315,6 +321,12 @@ RSpec.describe Idv::EnterDobSsnController do
       let(:year) { '2000' }
 
       it 'renders new' do
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:idv_proofing_agent_confirmation_failure).with(
+          reason: [['date of birth mismatch']],
+        )
+
         post :create, params: params
 
         expect(response).to render_template(:new)

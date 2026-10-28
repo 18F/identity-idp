@@ -1,0 +1,77 @@
+description: |
+  The initial interaction of an Agent initiating the process of the identity proofing agent flow.
+allOf:
+  - type: object
+    properties:
+      proofing_agent_id:
+        type: string
+        description: The identification number of the agent that sent the request
+      proofing_location_id:
+        type: string
+        description: The location ID of the agent that sent the request
+      correlation_id:
+        type: string
+        description: The ID of the request
+      transaction_id:
+        type: string
+        description: The ID of the request transaction
+      first_name:
+        type: string
+      last_name:
+        type: string
+      date_of_birth:
+        type: string
+      address1:
+        type: string
+        description: Residential address line 1
+      address2:
+        type: string
+        description: Residential address line 2
+      city:
+        type: string
+        description: Residential address city
+      state:
+        type: string
+        description: Residential address state
+      zip:
+        type: string
+        description: Residential address zip
+      phone:
+        type: string
+      ssn:
+        type: string
+      document_state_jurisdiction:
+        type: string
+        description: Driver's licenses document_state
+      document_number:
+        type: string
+        description: Driver's license number or Passport Number
+      document_issued:
+        type: string
+        description: Driver's license or passport date issued
+      document_expiration:
+        type: string
+        description: Driver's license or passport expiration date
+      document_address1:
+        type: string
+        description: Driver's license address line 1
+      document_address2:
+        type: string
+        description: Driver's license address line 2
+      document_city:
+        type: string
+        description: Driver's license address city
+      document_state:
+        type: string
+        description: Driver's license address state
+      document_zip:
+        type: string
+        description: Driver's license address zip
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+      success:
+        type: boolean
+        description: |
+          Indicates whether the verification form was submitted successfully

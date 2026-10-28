@@ -45,6 +45,7 @@ module Api
         if proofing_rate_limiter.limited? || ssn_rate_limiter.limited?
           analytics.rate_limit_reached(limiter_type: :idv_resolution, step_name: 'proof_user')
           analytics.rate_limit_reached(limiter_type: :proof_ssn, step_name: 'proof_user')
+          attempts_api_tracker.idv_rate_limited(limiter_type: :idv_resolution)
           ::ProofingAgent::FailureEmailSender.new(user: user, analytics: analytics).call(
             visited_at: Time.zone.now.iso8601,
             reason: 'maximum_attempts_reached',
@@ -81,6 +82,8 @@ module Api
           remaining_attempts: proofing_rate_limiter.remaining_count,
           final_attempt:,
         )
+
+        track_attempt(success: pii_validation.success?, transaction_id:)
 
         proofing_rate_limiter&.increment!
         ssn_rate_limiter&.increment!
@@ -365,6 +368,7 @@ module Api
       def render_bad_request(errors: nil, failure_type: :body_validation)
         errors = { base: ['There was a problem with your request.'] } if errors.blank?
         track_failure(failure_type:, errors:)
+        track_attempt(success: false, failure_reason: errors)
 
         render json: errors, status: :bad_request
       end
@@ -421,6 +425,102 @@ module Api
 
       def ssn_rate_limiter
         @ssn_rate_limiter ||= RateLimiter.new(user: user, rate_limit_type: :proof_ssn)
+      end
+
+      def track_attempt(success:, transaction_id: nil, failure_reason: nil)
+        attempts_api_tracker.idv_proofing_agent_verification_requested(
+          success:,
+          agent_info: {
+            agent_id:,
+            location_id:,
+            correlation_id:,
+          },
+          pii: attempts_api_pii,
+          transaction_id:,
+          failure_reason:,
+        )
+      end
+
+      def attempts_api_tracker
+        AttemptsApi::Tracker.new(
+          enabled_for_session: service_provider.attempts_api_enabled?,
+          session_id: nil,
+          request:,
+          user:,
+          sp: issuer,
+          cookie_device_uuid: nil,
+          sp_redirect_uri: nil,
+        )
+      end
+
+      def service_provider
+        @service_provider ||= ServiceProvider.find_by(issuer:)
+      end
+
+      def attempts_api_pii
+        {
+          first_name: proof_params[:first_name],
+          last_name: proof_params[:last_name],
+          date_of_birth: proof_params[:dob],
+          phone: proof_params[:phone],
+          ssn: SsnFormatter.format(proof_params[:ssn]),
+          **attempts_api_residential_address,
+          **attempts_api_document_info,
+        }
+      end
+
+      def attempts_api_residential_address
+        address = {}
+
+        if proof_params[:residential_address].present?
+          address.merge!(
+            {
+              address1: proof_params[:residential_address][:address1],
+              address2: proof_params[:residential_address][:address2],
+              city: proof_params[:residential_address][:city],
+              state: proof_params[:residential_address][:state],
+              zip: proof_params[:residential_address][:zip_code],
+            },
+          )
+        elsif proof_params[:state_id].present?
+          address.merge!(
+            {
+              address1: proof_params[:state_id][:address1],
+              address2: proof_params[:state_id][:address2],
+              city: proof_params[:state_id][:city],
+              state: proof_params[:state_id][:state],
+              zip: proof_params[:state_id][:zip_code],
+            },
+          )
+        end
+
+        address
+      end
+
+      def attempts_api_document_info
+        info = { document_type: proof_params[:id_type] }
+
+        if proof_params[:state_id].present?
+          info.merge!(
+            document_state_jurisdiction: proof_params[:state_id][:jurisdiction],
+            document_number: proof_params[:state_id][:document_number],
+            document_expiration: proof_params[:state_id][:expiration_date],
+            document_issued: proof_params[:state_id][:issued_date],
+            document_address1: proof_params[:state_id][:address1],
+            document_address2: proof_params[:state_id][:address2],
+            document_city: proof_params[:state_id][:city],
+            document_state: proof_params[:state_id][:state],
+            document_zip: proof_params[:state_id][:zip_code],
+          )
+        elsif proof_params[:passport].present?
+          info.merge!(
+            document_number: proof_params[:passport][:document_number],
+            document_expiration: proof_params[:passport][:expiration_date],
+            document_issued: proof_params[:passport][:issued_date],
+          )
+        end
+
+        info
       end
     end
   end

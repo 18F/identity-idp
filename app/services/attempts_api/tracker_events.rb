@@ -172,6 +172,126 @@ module AttemptsApi
       )
     end
 
+    # @param [Array<String>] reason The reason for confirmation failure.
+    def idv_proofing_agent_confirmation_failure(reason:)
+      track_event('idv-proofing-agent-confirmation-failure', reason)
+    end
+
+    # @param [Boolean] success
+    # @param [Hash<Symbol,String>] agent_info Data of the agent that made the request
+    # @option agent_info [String] agent_id
+    # @option agent_info [String] location_id
+    # @option agent_info [String] correlation_id
+    # @param [String] transaction_id
+    # @param [Hash<Symbol,String>] pii Data used for identity verification request
+    # @option pii [String] first_name
+    # @option pii [String] last_name
+    # @option pii [String] date_of_birth
+    # @option pii [String] ssn
+    # @option pii [String] address_1
+    # @option pii [String] address_2
+    # @option pii [String] city
+    # @option pii [String] state
+    # @option pii [String] zip
+    # @option pii [String] document_type
+    # @option pii [String] document_number
+    # @option pii [String] document_issued
+    # @option pii [String] document_expiration
+    # @option pii [String] document_address_1
+    # @option pii [String] document_address_2
+    # @option pii [String] document_city
+    # @option pii [String] document_state
+    # @option pii [String] document_zip
+    # @param [Hash<Symbol,Array<String>>] failure_reason
+    # @param [String] user_id The user's uuid
+    def idv_proofing_agent_verification_requested(success:, transaction_id:, pii:, agent_info:,
+                                                  failure_reason:, user_id: nil)
+      track_event(
+        'idv-proofing-agent-verification-requested',
+        user_id:,
+        success:,
+        proofing_agent_id: agent_info[:agent_id],
+        proofing_location_id: agent_info[:location_id],
+        correlation_id: agent_info[:correlation_id],
+        transaction_id:,
+        first_name: pii[:first_name],
+        last_name: pii[:last_name],
+        date_of_birth: pii[:date_of_birth],
+        ssn: pii[:ssn],
+        address1: pii[:address_1],
+        address2: pii[:address_2],
+        city: pii[:city],
+        state: pii[:state],
+        zip: pii[:zip],
+        phone: pii[:phone],
+        document_type: pii[:document_type],
+        document_state_jurisdiction: pii[:document_state_jurisdiction],
+        document_number: pii[:document_number],
+        document_issued: pii[:document_issued],
+        document_expiration: pii[:document_expiration],
+        document_address1: pii[:document_address_1],
+        document_address2: pii[:document_address_2],
+        document_city: pii[:document_city],
+        document_state: pii[:document_state],
+        document_zip: pii[:document_zip],
+        failure_reason:,
+      )
+    end
+
+    # @param [String, nil] user_id The user's uuid (will not be used in Redis event)
+    # @param [Boolean] success
+    # @param [String] transaction_id
+    # @param [Hash<Symbol,String>] pii Data used for identity verification request
+    # @option pii [String] first_name
+    # @option pii [String] last_name
+    # @option pii [String] date_of_birth
+    # @option pii [String] ssn
+    # @option pii [String] address_1
+    # @option pii [String] address_2
+    # @option pii [String] city
+    # @option pii [String] state
+    # @option pii [String] zip
+    # @option pii [String] document_type
+    # @option pii [String] document_number
+    # @option pii [String] document_issued
+    # @option pii [String] document_expiration
+    # @option pii [String] document_address_1
+    # @option pii [String] document_address_2
+    # @option pii [String] document_city
+    # @option pii [String] document_state
+    # @option pii [String] document_zip
+    # @param [String] failure_reason
+    def idv_proofing_agent_verification_submitted(success:, transaction_id:, pii:, failure_reason:,
+                                                  user_id: nil)
+      track_event(
+        'idv-proofing-agent-verification-submitted',
+        user_id:,
+        success:,
+        transaction_id:,
+        first_name: pii[:first_name],
+        last_name: pii[:last_name],
+        date_of_birth: pii[:date_of_birth],
+        ssn: pii[:ssn],
+        address1: pii[:address_1],
+        address2: pii[:address_2],
+        city: pii[:city],
+        state: pii[:state],
+        zip: pii[:zip],
+        phone: pii[:phone],
+        document_type: pii[:document_type],
+        document_state_jurisdiction: pii[:document_state_jurisdiction],
+        document_number: pii[:document_number],
+        document_issued: pii[:document_issued],
+        document_expiration: pii[:document_expiration],
+        document_address1: pii[:document_address_1],
+        document_address2: pii[:document_address_2],
+        document_city: pii[:document_city],
+        document_state: pii[:document_state],
+        document_zip: pii[:document_zip],
+        failure_reason:,
+      )
+    end
+
     # @param [Boolean] success True if the link user clicked on is valid and not expired
     # @param [String] email The user's email address
     # @param [String] user_id The user's uuid (will not be used in Redis event)

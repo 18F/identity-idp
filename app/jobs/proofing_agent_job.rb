@@ -13,6 +13,8 @@ class ProofingAgentJob < ApplicationJob
   # a resolution failure for an address it never saw.
   PA_BEHAVES_LIKE_IPP = true
 
+  SYSTEM_ERROR_REASON = 'system_error'
+
   STORAGE_CONNECTION_ERRORS = [Redis::BaseConnectionError, ActiveRecord::StatementInvalid].freeze
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
@@ -87,6 +89,10 @@ class ProofingAgentJob < ApplicationJob
     success = combined_result[:success]
     reason = combined_result[:reason]
 
+    log_attempt(
+      user_id: user.id, success:, pii: applicant_pii, transaction_id:, failure_reason: reason,
+    )
+
     if success
       failure_email_users.remove(user.uuid)
       verified_at = document_capture_session.load_agent_proofed_user&.verified_at
@@ -136,6 +142,17 @@ class ProofingAgentJob < ApplicationJob
         transaction_id:,
       )
     end
+
+    if document_capture_session.present? && applicant_pii.present?
+      log_attempt(
+        user_id: user.id,
+        success: false,
+        pii: applicant_pii,
+        transaction_id:,
+        failure_reason: SYSTEM_ERROR_REASON,
+      )
+    end
+
     notify_system_error(source: 'unexpected', exception: e, transaction_id:)
     unless webhook_enqueued
       enqueue_system_error_webhook(transaction_id:, correlation_id:)
@@ -322,7 +339,7 @@ class ProofingAgentJob < ApplicationJob
       mrz_result:,
       system_error: (
         @proofing_exception_occurred || (source_check_succeeded && resolution_result.nil?)
-      ) ? 'system_error' : nil,
+      ) ? SYSTEM_ERROR_REASON : nil,
       service_provider_issuer:,
     )
   end
@@ -438,7 +455,7 @@ class ProofingAgentJob < ApplicationJob
   rescue *STORAGE_CONNECTION_ERRORS => e
     logger_info_hash(
       name: 'ProofingAgent',
-      reason: 'system_error',
+      reason: SYSTEM_ERROR_REASON,
       error: e.message,
       transaction_id:,
     )
@@ -448,7 +465,7 @@ class ProofingAgentJob < ApplicationJob
   def notify_system_error(source:, exception:, transaction_id:)
     logger_info_hash(
       name: 'ProofingAgent',
-      reason: 'system_error',
+      reason: SYSTEM_ERROR_REASON,
       source:,
       error: exception.message,
       transaction_id:,
@@ -469,7 +486,7 @@ class ProofingAgentJob < ApplicationJob
 
     ProofingAgentWebhookJob.perform_later(
       success: false,
-      reason: 'system_error',
+      reason: SYSTEM_ERROR_REASON,
       transaction_id:,
       correlation_id:,
       analytics_attributes: {
@@ -489,5 +506,74 @@ class ProofingAgentJob < ApplicationJob
 
   def result_id
     document_capture_session&.result_id
+  end
+
+  def service_provider
+    ServiceProvider.find_by(issuer: service_provider_issuer)
+  end
+
+  def attempts_api_tracker
+    AttemptsApi::Tracker.new(
+      enabled_for_session: service_provider.attempts_api_enabled?,
+      session_id: nil,
+      request: nil,
+      user:,
+      sp: service_provider_issuer,
+      cookie_device_uuid: nil,
+      sp_redirect_uri: nil,
+    )
+  end
+
+  def log_attempt(user_id:, success:, pii:, transaction_id:, failure_reason:)
+    attempts_api_tracker.idv_proofing_agent_verification_submitted(
+      user_id:,
+      success:,
+      transaction_id:,
+      pii: {
+        first_name: pii[:first_name],
+        last_name: pii[:last_name],
+        date_of_birth: pii[:dob],
+        ssn: SsnFormatter.format(pii[:ssn]),
+        address_1: pii[:address1],
+        address_2: pii[:address2],
+        city: pii[:city],
+        state: pii[:state],
+        zip: pii[:zipcode],
+        phone: pii[:phone],
+        **document_pii(pii),
+      },
+      failure_reason:,
+    )
+  end
+
+  def document_pii(pii)
+    if pii[:document_type_received] == Idp::Constants::DocumentTypes::PASSPORT
+      passport_document_pii(pii)
+    else
+      state_id_document_pii(pii)
+    end
+  end
+
+  def passport_document_pii(pii)
+    {
+      document_type: pii[:document_type_received],
+      document_number: pii[:document_number],
+      document_expiration: pii[:passport_expiration],
+      document_issued: pii[:passport_issued],
+    }
+  end
+
+  def state_id_document_pii(pii)
+    {
+      document_type: pii[:document_type_received],
+      document_number: pii[:state_id_number],
+      document_expiration: pii[:state_id_expiration],
+      document_issued: pii[:state_id_issued],
+      document_address_1: pii[:identity_doc_address1],
+      document_address_2: pii[:identity_doc_address2],
+      document_city: pii[:identity_doc_address_city],
+      document_state: pii[:identity_doc_address_state],
+      document_zip: pii[:identity_doc_address_zipcode],
+    }
   end
 end

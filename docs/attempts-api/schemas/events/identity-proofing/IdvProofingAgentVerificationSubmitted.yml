@@ -1,0 +1,65 @@
+description: |
+  When a users information for the identity proofing agent flow is proccessed.
+allOf:
+  - type: object
+    properties:
+      transaction_id:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      date_of_birth:
+        type: string
+      address1:
+        type: string
+        description: Residential address line 1
+      address2:
+        type: string
+        description: Residential address line 2
+      city:
+        type: string
+        description: Residential address city
+      state:
+        type: string
+        description: Residential address state
+      zip:
+        type: string
+        description: Residential address zip
+      ssn:
+        type: string
+      document_state_jurisdiction:
+        type: string
+        description: Driver's licenses document_state
+      document_number:
+        type: string
+        description: Driver's license number
+      document_issued:
+        type: string
+        description: Driver's license date issued
+      document_expiration:
+        type: string
+        description: Driver's license expiration date
+      document_address1:
+        type: string
+        description: Driver's license address line 1
+      document_address2:
+        type: string
+        description: Driver's license address line 2
+      document_city:
+        type: string
+        description: Driver's license address city
+      document_state:
+        type: string
+        description: Driver's license address state
+      document_zip:
+        type: string
+        description: Driver's license address zip
+      failure_reason:
+        type: String
+        description: |
+          An OPTIONAL String. The name of the verificaiton step that failed if success is false
+      success:
+        type: boolean
+        description: |
+          Indicates whether the verification form was submitted successfully

@@ -1,0 +1,11 @@
+description: |
+  User failed to enter in the correct information to start binding their account to the proofing
+  session.
+allOf:
+  - type: object
+    properties:
+      failure_reason:
+        type: array
+        description: Describes errors of the confirmation submission.
+        items:
+          type: string
