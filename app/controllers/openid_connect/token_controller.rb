@@ -33,7 +33,7 @@ module OpenidConnect
     end
 
     def token_form
-      if brokered_token_exchange?
+      if delegated_token_exchange?
         OpenidConnectTokenExchangeForm.new(token_params)
       else
         OpenidConnectTokenForm.new(token_params)
@@ -58,7 +58,7 @@ module OpenidConnect
     end
 
     def track_analytics(analytics_attributes)
-      if brokered_token_exchange?
+      if delegated_token_exchange?
         analytics.openid_connect_delegated_token_exchange(**analytics_attributes)
       else
         analytics.openid_connect_token(**analytics_attributes)
@@ -75,13 +75,12 @@ module OpenidConnect
     end
 
     def add_delegation_id(analytics_attributes)
-      return unless brokered_token_exchange?
-      return if @token_form.delegation_id.blank?
+      return unless delegated_token_exchange?
 
-      analytics_attributes[:delegation_id] = @token_form.delegation_id
+      analytics_attributes[:delegation_id] = @token_form.delegation_id.presence
     end
 
-    def brokered_token_exchange?
+    def delegated_token_exchange?
       params[:grant_type] == TokenExchange::Constants::GRANT_TYPE
     end
   end
