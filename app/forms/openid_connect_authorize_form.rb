@@ -330,7 +330,7 @@ class OpenidConnectAuthorizeForm
       code_challenge_present: code_challenge.present?,
       service_provider_pkce: service_provider&.pkce,
       token_exchange_stage: token_exchange_stage,
-      token_exchange_requested: token_exchange_requested?,
+      token_exchange_requested: token_exchange_requested?.presence,
       token_exchange_scopes: token_exchange_scope_values,
       integration_errors:,
     }

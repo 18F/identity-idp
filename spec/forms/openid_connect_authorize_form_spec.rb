@@ -54,7 +54,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
           code_challenge_present: false,
           service_provider_pkce: nil,
           token_exchange_stage: nil,
-          token_exchange_requested: false,
+          token_exchange_requested: nil,
           token_exchange_scopes: nil,
           integration_errors: nil,
         )
@@ -82,7 +82,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
             code_challenge_present: false,
             service_provider_pkce: nil,
             token_exchange_stage: nil,
-            token_exchange_requested: false,
+            token_exchange_requested: nil,
             token_exchange_scopes: nil,
             integration_errors: {
               error_details: ['Response type is not included in the list'],
