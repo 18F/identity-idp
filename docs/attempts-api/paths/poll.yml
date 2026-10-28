@@ -56,7 +56,6 @@ post:
                 type: object
                 description: The key is the event JTI; the value is an encoded JWT
                 additionalProperties:
-                  type: object
                   $ref: '../schemas/DecodedJWTPayload.yml'
     400:
       description: |
