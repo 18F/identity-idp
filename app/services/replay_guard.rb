@@ -18,9 +18,11 @@ module ReplayGuard
   def self.first_use?(namespace:, scope:, value:, ttl:)
     return false unless value.is_a?(String) && value.present?
 
+    # this method returns true if the value has been set
+    # and false if it has not been (because it was already set)
     REDIS_POOL.with do |client|
       client.set(key(namespace:, scope:, value:), '1', nx: true, ex: ttl)
-    end ? true : false
+    end
   end
 
   # The Redis key for one value. Hashing keeps caller-supplied strings of any length or content
