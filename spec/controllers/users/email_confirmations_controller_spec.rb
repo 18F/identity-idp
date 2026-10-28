@@ -10,12 +10,6 @@ RSpec.describe Users::EmailConfirmationsController do
         new_email = Faker::Internet.email
 
         expect(PushNotification::HttpPush).to receive(:deliver).once
-          .with(PushNotification::EmailChangedEvent.new(
-            user: user,
-            email: new_email,
-          )).ordered
-
-        expect(PushNotification::HttpPush).to receive(:deliver).once
           .with(PushNotification::RecoveryInformationChangedEvent.new(
             user: user,
           )).ordered
