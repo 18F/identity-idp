@@ -76,6 +76,7 @@ module Idv
           },
           undo_step: ->(idv_session:, user:) do
             idv_session.pii_from_doc = nil
+            idv_session.doc_auth_vendor = nil
             idv_session.source_check_vendor = nil
             idv_session.clear1_verification_token = nil
             idv_session.clear1_verification_session_id = nil
@@ -106,6 +107,7 @@ module Idv
       end
 
       def extract_pii_from_result(result)
+        idv_session.doc_auth_vendor = document_capture_session.doc_auth_vendor
         idv_session.applicant = result.pii
       end
     end

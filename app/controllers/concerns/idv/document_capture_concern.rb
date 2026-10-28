@@ -45,6 +45,8 @@ module Idv
     def extract_pii_from_doc(user)
       if defined?(idv_session) # hybrid mobile does not have idv_session
         idv_session.had_barcode_read_failure = stored_result.attention_with_barcode?
+        # See also Idv::InPerson::StateIdController#update
+        idv_session.doc_auth_vendor = document_capture_session.doc_auth_vendor
         idv_session.pii_from_doc = stored_result.pii_from_doc
         idv_session.aamva_verified_attributes = stored_result.aamva_verified_attributes
         idv_session.selfie_check_performed = stored_result.selfie_check_passed?

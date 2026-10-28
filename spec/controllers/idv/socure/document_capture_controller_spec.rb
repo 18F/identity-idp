@@ -84,6 +84,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         ).tap do |idv_session|
           idv_session.pii_from_doc = { name: 'test' }
           idv_session.socure_docv_wait_polling_started_at = Time.zone.now
+          idv_session.doc_auth_vendor = 'TrueID'
           idv_session.source_check_vendor = 'aamva'
         end
       end
@@ -93,6 +94,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         aggregate_failures do
           expect(idv_session.pii_from_doc).to be(nil)
           expect(idv_session.socure_docv_wait_polling_started_at).to be(nil)
+          expect(idv_session.doc_auth_vendor).to be(nil)
           expect(idv_session.source_check_vendor).to be(nil)
         end
       end
@@ -657,6 +659,13 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     end
 
     context 'when doc auth succeeds' do
+      it 'correctly stores doc_auth_vendor in Idv::Session' do
+        get :update
+
+        expect(subject.idv_session.doc_auth_vendor).to_not be_nil
+        expect(subject.idv_session.doc_auth_vendor).to match(idv_vendor)
+      end
+
       it 'returns FOUND (302) and redirects to SSN' do
         get :update
 

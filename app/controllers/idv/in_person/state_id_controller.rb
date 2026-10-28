@@ -35,6 +35,7 @@ module Idv
         if form_result.success?
           pending_pii = build_pending_pii
           redirect_url = determine_redirect_url(pending_pii, initial_current_address_matches_id)
+          idv_session.doc_auth_vendor = Idp::Constants::Vendors::USPS
           idv_session.ipp_aamva_pending_state_id_pii = pending_pii
           idv_session.ipp_aamva_redirect_url = redirect_url
 
