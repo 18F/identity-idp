@@ -23,11 +23,12 @@ class SocureWebhookController < ApplicationController
   private
 
   def process_webhook_event
-    case event[:eventType]
-    when 'DOCUMENTS_UPLOADED'
+    if event[:eventType] == 'SESSION_COMPLETE'
       increment_rate_limiter
       fetch_results
-    when 'SESSION_EXPIRED', 'SESSION_COMPLETE'
+    end
+
+    if ['SESSION_EXPIRED', 'SESSION_COMPLETE'].include?(event[:eventType])
       reset_docv_url
     end
   end
