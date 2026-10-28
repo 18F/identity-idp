@@ -32,10 +32,11 @@ RSpec.describe Idv::ServiceProviderBasedReproofingPolicy do
       let(:reproof_forcing_issuer) { 'reproof-forcing-sp' }
       let(:other_issuer) { 'other-sp' }
       let(:service_provider) { create(:service_provider, issuer: reproof_forcing_issuer) }
-      let(:other_service_provider) { create(:service_provider, issuer: other_issuer) }
+      let(:initiating_sp) { create(:service_provider, issuer: other_issuer) }
       let(:active_profile) do
         create(
-          :profile, :active
+          :profile, :active,
+          initiating_service_provider_issuer: initiating_sp.issuer
         )
       end
 
@@ -44,38 +45,40 @@ RSpec.describe Idv::ServiceProviderBasedReproofingPolicy do
           .and_return(reproof_forcing_issuer)
       end
 
-      context 'when current SP is the reproof-forcing SP' do
-        context 'when the profile has no associated user_proofing_event' do
-          let(:active_profile) do
-            create(
-              :profile, :active
-            )
-          end
-
-          it 'returns true' do
-            expect(policy.needs_to_reproof?).to eq true
-          end
-        end
-
-        context 'when the profile has an associated user_proofing_event' do
-          let(:active_profile) do
-            create(
-              :profile, :active
-            )
-          end
-          let!(:user_proofing_event) { create(:user_proofing_event, profile: active_profile) }
-
-          it 'returns false' do
-            expect(policy.needs_to_reproof?).to eq false
-          end
+      context 'when current SP is the reproof-forcing SP and initiating SP is different' do
+        it 'returns true' do
+          expect(policy.needs_to_reproof?).to eq true
         end
       end
 
       context 'when current SP is not the reproof-forcing SP' do
-        let(:service_provider) { other_service_provider }
+        let(:service_provider) { initiating_sp }
 
         it 'returns false' do
           expect(policy.needs_to_reproof?).to eq false
+        end
+      end
+
+      context 'when current SP is the reproof-forcing SP and initiating SP is the same' do
+        let(:active_profile) do
+          create(
+            :profile, :active,
+            initiating_service_provider_issuer: reproof_forcing_issuer
+          )
+        end
+
+        it 'returns false' do
+          expect(policy.needs_to_reproof?).to eq false
+        end
+      end
+
+      context 'when active profile has no initiating service provider' do
+        let(:active_profile) do
+          create(:profile, :active, initiating_service_provider_issuer: nil)
+        end
+
+        it 'returns true because initiating SP is not the reproof-forcing SP' do
+          expect(policy.needs_to_reproof?).to eq true
         end
       end
 
