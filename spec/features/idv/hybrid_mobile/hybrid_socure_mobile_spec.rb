@@ -1065,7 +1065,7 @@ RSpec.describe 'Hybrid Flow' do
           click_idv_continue
           expect(page).to have_current_path(fake_socure_document_capture_app_url)
 
-          # Fail to receive the DOCUMENTS_UPLOADED and SESSION_COMPLETE webhooks
+          # Fail to receive the DOCUMENTS_UPLOADED, SESSION_EXPIRED nor SESSION_COMPLETE webhooks
           socure_docv_upload_documents(
             docv_transaction_token: @docv_transaction_token,
             webhooks: %w[
