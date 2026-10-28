@@ -41,6 +41,10 @@ module Idv
         dob_and_ssn_match: @dob_ssn_form.ssn_match? && @dob_ssn_form.dob_match?,
       )
 
+      attempts_api_tracker.idv_proofing_agent_confirmation_submitted(
+        success: form_response.success?, failure_reason: failure_reason_details,
+      )
+
       if form_response.success?
         set_idv_session_proofing_components
 
@@ -113,6 +117,15 @@ module Idv
         current_sp:,
         workflow: :proofing_agent,
       }
+    end
+
+    def failure_reason_details
+      reasons = []
+
+      reasons << 'ssn mismatch' unless @dob_ssn_form.ssn_match?
+      reasons << 'date of birth mismatch' unless @dob_ssn_form.dob_match?
+
+      reasons
     end
   end
 end
