@@ -131,8 +131,7 @@ module Idv
 
     def document_type_received_valid?
       case document_type_received
-      when *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES,
-           Idp::Constants::DocumentTypes::MDL
+      when *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
         validate_state_id
       when *Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES
         validate_passport

@@ -11,10 +11,9 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   let(:step) { 'choose_id_type' }
   let(:context_analytics) { { step: step } }
   let(:document_type_requested) { nil }
-  let(:mdl_enabled) { true }
   let(:document_capture_session) do
     create(
-      :document_capture_session, document_type_requested:, mdl_enabled:
+      :document_capture_session, document_type_requested:
     )
   end
   let(:document_type_chosen) { 'state_id_card' }

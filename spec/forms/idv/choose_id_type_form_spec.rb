@@ -5,9 +5,12 @@ RSpec.describe Idv::ChooseIdTypeForm do
   let(:subject) { Idv::ChooseIdTypeForm.new(passport_cards_enabled:) }
 
   describe '#submit' do
+    # mDL is a supported state ID type but is gated per-flow, so it is covered by
+    # its own context below rather than the always-allowed loop.
     allowed_id_types =
       Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES +
-      Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
+      (Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES -
+       [Idp::Constants::DocumentTypes::MDL])
     allowed_id_types.each do |id_type|
       context "when the choose_id_type_preference is '#{id_type}'" do
         let(:params) { { choose_id_type_preference: id_type } }

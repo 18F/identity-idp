@@ -121,7 +121,6 @@ module Idv
       document_capture_session = DocumentCaptureSession.create!(
         user_id: current_user.id,
         issuer: sp_session[:issuer],
-        mdl_enabled: mdl_enabled?,
       )
       idv_session.document_capture_session_uuid = document_capture_session.uuid
     end

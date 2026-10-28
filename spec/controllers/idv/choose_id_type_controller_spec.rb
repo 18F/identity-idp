@@ -63,7 +63,6 @@ RSpec.describe Idv::ChooseIdTypeController do
         create(
           :document_capture_session,
           user:,
-          mdl_enabled: false,
           document_type_requested: Idp::Constants::DocumentTypes::MDL,
         )
       end

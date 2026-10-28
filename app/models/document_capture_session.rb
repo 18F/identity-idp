@@ -5,6 +5,10 @@ class DocumentCaptureSession < ApplicationRecord
   include ApplicationHelper
   include IssuerMethods
 
+  # mdl_enabled is being dropped; ignore it so code tolerates the column during
+  # the deploy window before the remove-column migration runs.
+  self.ignored_columns += %w[mdl_enabled]
+
   belongs_to :user
   belongs_to :profile, optional: true
   has_many :document_artifacts, dependent: :destroy

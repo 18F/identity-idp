@@ -100,7 +100,9 @@ module Idv
     end
 
     def mdl_enabled?
-      document_capture_session.mdl_enabled
+      # mDL is generally available in the online flows; in-person proofing opts
+      # out by passing mdl_enabled: false explicitly.
+      true
     end
 
     def mdl_disabled?

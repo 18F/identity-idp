@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_20_190050) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_27_190000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -242,7 +242,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_190050) do
     t.string "hybrid_mobile_threatmetrix_session_id", comment: "sensitive=false"
     t.string "issuer", comment: "sensitive=false"
     t.string "last_doc_auth_result", comment: "sensitive=false"
-    t.boolean "mdl_enabled", comment: "sensitive=false"
     t.boolean "ocr_confirmation_pending", default: false, comment: "sensitive=false"
     t.string "passport_status", comment: "sensitive=false"
     t.datetime "pending_agent_proofed_user_at", comment: "sensitive=false"

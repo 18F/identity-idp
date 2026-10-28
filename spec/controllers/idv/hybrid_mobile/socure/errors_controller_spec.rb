@@ -8,7 +8,6 @@ RSpec.describe Idv::HybridMobile::Socure::ErrorsController do
       user:,
       requested_at: Time.zone.now,
       doc_auth_vendor: Idp::Constants::Vendors::SOCURE,
-      mdl_enabled: true,
       document_type_requested: Idp::Constants::DocumentTypes::MDL,
     )
   end
@@ -26,12 +25,6 @@ RSpec.describe Idv::HybridMobile::Socure::ErrorsController do
         get(:show, params: { error_code: 'mdl_not_found' })
 
         expect(response).to redirect_to idv_hybrid_mobile_choose_id_type_url(disable_mdl: true)
-      end
-
-      it 'disables mdl on the document capture session' do
-        expect { get(:show, params: { error_code: 'mdl_not_found' }) }
-          .to change { document_capture_session.reload.mdl_enabled }
-          .from(true).to(false)
       end
 
       it 'logs an event with the error code' do

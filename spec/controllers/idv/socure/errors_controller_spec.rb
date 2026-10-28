@@ -32,7 +32,6 @@ RSpec.describe Idv::Socure::ErrorsController do
         create(
           :document_capture_session,
           user:,
-          mdl_enabled: true,
           document_type_requested: Idp::Constants::DocumentTypes::MDL,
         )
       end
@@ -45,12 +44,6 @@ RSpec.describe Idv::Socure::ErrorsController do
         get(:show, params: { error_code: 'mdl_not_found' })
 
         expect(response).to redirect_to idv_choose_id_type_url(disable_mdl: true)
-      end
-
-      it 'disables mdl on the document capture session' do
-        expect { get(:show, params: { error_code: 'mdl_not_found' }) }
-          .to change { document_capture_session.reload.mdl_enabled }
-          .from(true).to(false)
       end
 
       it 'logs an event with the error code' do

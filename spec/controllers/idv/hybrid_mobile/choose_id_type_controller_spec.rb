@@ -127,10 +127,6 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
     context 'when redirected after mDL was not detected (with disable_mdl param)' do
       let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
 
-      before do
-        document_capture_session.update!(mdl_enabled: false)
-      end
-
       it 'renders the choose_id_type template with disable_mdl and auto_check_value' do
         expect(controller).to receive(:render).with(
           'idv/shared/choose_id_type',

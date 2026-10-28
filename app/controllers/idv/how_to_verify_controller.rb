@@ -115,7 +115,7 @@ module Idv
       @post_office_enabled = in_person_proofing_route_enabled?
       @presenter = Idv::HowToVerifyPresenter.new(
         selfie_check_required: @selfie_required,
-        mdl_enabled: document_capture_session.mdl_enabled,
+        mdl_enabled: true,
         clear1_enabled: clear1_enabled?,
       )
     end

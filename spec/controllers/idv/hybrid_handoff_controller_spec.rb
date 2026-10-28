@@ -323,7 +323,7 @@ RSpec.describe Idv::HybridHandoffController do
       it 'pass on correct flags and states and logs correct info' do
         expect(Idv::HowToVerifyPresenter).to receive(:new).with(
           selfie_check_required: false,
-          mdl_enabled: nil,
+          mdl_enabled: true,
           clear1_allowed: true,
         )
         get :show

@@ -36,11 +36,19 @@ module Idv
 
     def allowed_types
       @allowed_types ||= [
-        *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES,
+        *state_id_types,
         Idp::Constants::DocumentTypes::PASSPORT,
         @passport_cards_enabled ? Idp::Constants::DocumentTypes::PASSPORT_CARD : nil,
-        @mdl_enabled ? Idp::Constants::DocumentTypes::MDL : nil,
       ].compact
+    end
+
+    # mDL is a supported state ID type, but is not offered in every flow (e.g.
+    # in-person proofing), so exclude it unless this flow enables it.
+    def state_id_types
+      types = Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
+      return types if @mdl_enabled
+
+      types - [Idp::Constants::DocumentTypes::MDL]
     end
   end
 end
