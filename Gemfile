@@ -37,6 +37,8 @@ gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.1'
 gem 'identity_validations', github: '18F/identity-validations', tag: 'v0.7.2'
 gem 'jsbundling-rails', '~> 1.1'
 gem 'jwe'
+# Active Support 8.1 passes JSON.parse options positionally, which json 3.x no longer accepts.
+gem 'json', '< 3.0'
 gem 'jwt'
 gem 'lograge', '>= 0.11.2'
 gem 'lookbook', '~> 2.2', require: false
@@ -77,7 +79,7 @@ gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'terminal-table', require: false
 gem 'valid_email', '>= 0.1.3'
-gem 'view_component', '~> 4.12.0'
+gem 'view_component', '~> 4.14.0'
 gem 'webauthn', '~> 3.0'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '0.8.0'

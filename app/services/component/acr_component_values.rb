@@ -118,10 +118,10 @@ module Component
       return false unless acr_values.present?
       # @type [Array]
       values = (
-                 acr_values.is_a?(String) && acr_values.split(DELIM) ||
-                (acr_values.is_a?(Array) || acr_values.is_a?(Set)) && acr_values ||
-                [acr_values].compact
-               ).to_a
+        acr_values.is_a?(String) && acr_values.split(DELIM) ||
+        (acr_values.is_a?(Array) || acr_values.is_a?(Set)) && acr_values ||
+        [acr_values].compact
+      ).to_a
       Saml::Idp::Constants::SEMANTIC_ACRS.intersect?(values)
     end
   end

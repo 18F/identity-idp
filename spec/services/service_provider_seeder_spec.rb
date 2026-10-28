@@ -242,7 +242,7 @@ RSpec.describe ServiceProviderSeeder do
 
     context 'with an instance-specific service_providers.yml file' do
       let(:sp_yaml) do
-        <<~"SP_YAML"
+        <<~SP_YAML
           production:
             'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard':
               friendly_name: 'Review App Dashboard Instance'
