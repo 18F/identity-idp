@@ -154,9 +154,9 @@ class DpopProofForm
 
   def validate_http_url
     htu = payload['htu']
-    expected = self.class.normalize_url(http_url)
+    expected = DpopProofForm.normalize_url(http_url)
     return if htu.is_a?(String) && expected.present? &&
-              self.class.normalize_url(htu) == expected
+              DpopProofForm.normalize_url(htu) == expected
 
     reject(:dpop_proof_uri)
   end
@@ -165,7 +165,7 @@ class DpopProofForm
   def validate_issued_at
     iat = payload['iat']
     now = Time.zone.now.to_i
-    window = self.class.max_age_seconds
+    window = DpopProofForm.max_age_seconds
     return if iat.is_a?(Integer) && iat.between?(now - window, now + window)
 
     reject(:dpop_proof_issued_at)
@@ -175,7 +175,7 @@ class DpopProofForm
   # different token, and must not appear otherwise.
   def validate_token_hash
     ath = payload['ath']
-    expected = access_token.blank? ? nil : self.class.token_hash(access_token)
+    expected = access_token.blank? ? nil : DpopProofForm.token_hash(access_token)
     reject(:dpop_proof_token_hash) unless ath == expected
   end
 
@@ -196,7 +196,7 @@ class DpopProofForm
       namespace: JTI_NAMESPACE,
       scope: thumbprint,
       value: payload['jti'],
-      ttl: self.class.max_age_seconds * 2,
+      ttl: DpopProofForm.max_age_seconds * 2,
     )
     reject(:dpop_proof_replayed) unless first_use
   end
@@ -258,7 +258,7 @@ class DpopProofForm
   end
 
   def thumbprint
-    @thumbprint ||= self.class.thumbprint(jwk)
+    @thumbprint ||= DpopProofForm.thumbprint(jwk)
   end
 
   # The `error_description` for `invalid_dpop_proof`. Three cases get their own wording because
