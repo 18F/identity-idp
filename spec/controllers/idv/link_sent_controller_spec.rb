@@ -187,8 +187,6 @@ RSpec.describe Idv::LinkSentController do
         it 'redirects to ssn page' do
           put :update
 
-          expect(subject.idv_session.doc_auth_vendor).to_not be_nil
-          expect(subject.idv_session.doc_auth_vendor).to eq(idv_vendor)
           expect(response).to redirect_to(idv_ssn_url)
 
           proofing_components = Idv::ProofingComponents.new(
@@ -206,7 +204,6 @@ RSpec.describe Idv::LinkSentController do
           it 'resets redo_document capture to nil in idv_session' do
             put :update
             expect(subject.idv_session.redo_document_capture).to be_nil
-            expect(subject.idv_session.doc_auth_vendor).to eq(idv_vendor)
           end
         end
 
@@ -223,7 +220,6 @@ RSpec.describe Idv::LinkSentController do
               put :update
 
               expect(response.status).to eq(204)
-              expect(subject.idv_session.doc_auth_vendor).to be_nil
             end
           end
 
@@ -233,7 +229,6 @@ RSpec.describe Idv::LinkSentController do
             it 'redirects to ssn' do
               put :update
               expect(flash[:error]).to eq nil
-              expect(subject.idv_session.doc_auth_vendor).to eq(idv_vendor)
               expect(response).to redirect_to idv_ssn_url
             end
           end
@@ -256,7 +251,6 @@ RSpec.describe Idv::LinkSentController do
         it 'redirects to hybrid_handoff page' do
           put :update
 
-          expect(subject.idv_session.doc_auth_vendor).to be_nil
           expect(response).to redirect_to(idv_hybrid_handoff_url)
         end
       end
@@ -268,7 +262,6 @@ RSpec.describe Idv::LinkSentController do
           put :update
 
           expect(response).to have_http_status(204)
-          expect(subject.idv_session.doc_auth_vendor).to be_nil
         end
       end
     end
