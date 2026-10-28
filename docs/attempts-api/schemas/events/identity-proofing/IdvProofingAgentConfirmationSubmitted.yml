@@ -1,0 +1,16 @@
+description: |
+  User submits their information to start binding their account to the proofing session.
+allOf:
+  - type: object
+    properties:
+      success:
+        type: boolean
+        description: Whether the confirmation successful
+      failure_reason:
+        type: array
+        description: Describes errors of the confirmation submission.
+        items:
+          type: string
+          enum:
+            - 'ssn mismatch'
+            - 'date of birth mismatch'
