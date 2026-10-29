@@ -43,6 +43,17 @@ RSpec.describe SiteKeys::RecoveriesController do
       end
     end
 
+    describe 'the recovery code field' do
+      render_views
+
+      it 'reports a malformed value as a recovery code, not a personal key' do
+        get :new
+
+        expect(response.body).to include(t('forms.site_key_recovery.confirmation_error'))
+        expect(response.body).not_to include(t('users.personal_key.confirmation_error'))
+      end
+    end
+
     describe '#create' do
       let(:code) { created.recovery_code }
 

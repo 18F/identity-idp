@@ -1016,12 +1016,14 @@ forms.registration.labels.email: Enter your email address
 forms.registration.labels.email_language: Select your email language preference
 forms.site_key_recovery_code.acknowledgement.header: This code is the only way to keep encrypted site data if you reset your password.
 forms.site_key_recovery_code.acknowledgement.text: Treat it like a second password. Keep it safe and don’t share it with anyone.
+forms.site_key_recovery_code.generated_on_html: Your site key recovery code was generated on <strong>%{date_html}</strong>
 forms.site_key_recovery_code.get_new: Get a new site key recovery code
 forms.site_key_recovery_code.get_new_description: Your old recovery code will stop working. You’ll see the new code on the next page; save it somewhere safe.
 forms.site_key_recovery_code.header: Save your site key recovery code
 forms.site_key_recovery_code.required_checkbox: I saved my site key recovery code with the date it was generated.
 forms.site_key_recovery.alternative: Don’t have your recovery code?
 forms.site_key_recovery.code_label: Recovery code
+forms.site_key_recovery.confirmation_error: You’ve entered an incorrect recovery code.
 forms.site_key_recovery.header: Enter your site key recovery code
 forms.site_key_recovery.instructions: You reset your password, so this site’s encrypted data is locked. Enter the site key recovery code you saved to keep it.
 forms.site_key_recovery.start_over: Start over without my old data

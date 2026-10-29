@@ -22,7 +22,8 @@
     <%= render 'shared/personal_key_input',
                form: f,
                name: :code,
-               label: t('forms.site_key_recovery.code_label') %>
+               label: t('forms.site_key_recovery.code_label'),
+               error_message: t('forms.site_key_recovery.confirmation_error') %>
   </div>
 
   <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>

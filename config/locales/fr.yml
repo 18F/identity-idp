@@ -1016,12 +1016,14 @@ forms.registration.labels.email: Saisissez votre adresse e-mail
 forms.registration.labels.email_language: Sélectionnez votre langue de préférence pour les e-mails
 forms.site_key_recovery_code.acknowledgement.header: Ce code est le seul moyen de conserver les données chiffrées du site si vous réinitialisez votre mot de passe.
 forms.site_key_recovery_code.acknowledgement.text: Traitez-le comme un second mot de passe. Conservez-le en lieu sûr et ne le partagez avec personne.
+forms.site_key_recovery_code.generated_on_html: Votre code de récupération de clé de site a été généré le <strong>%{date_html}</strong>
 forms.site_key_recovery_code.get_new: Obtenir un nouveau code de récupération de clé de site
 forms.site_key_recovery_code.get_new_description: Votre ancien code de récupération cessera de fonctionner. Le nouveau code s’affichera sur la page suivante ; conservez-le en lieu sûr.
 forms.site_key_recovery_code.header: Enregistrez votre code de récupération de clé de site
 forms.site_key_recovery_code.required_checkbox: J’ai enregistré mon code de récupération de clé de site avec la date à laquelle il a été généré.
 forms.site_key_recovery.alternative: Vous n’avez pas votre code de récupération ?
 forms.site_key_recovery.code_label: Code de récupération
+forms.site_key_recovery.confirmation_error: Vous avez saisi un code de récupération erroné.
 forms.site_key_recovery.header: Saisissez votre code de récupération de clé de site
 forms.site_key_recovery.instructions: Vous avez réinitialisé votre mot de passe ; les données chiffrées de ce site sont donc verrouillées. Saisissez le code de récupération de clé de site que vous avez enregistré pour les conserver.
 forms.site_key_recovery.start_over: Recommencer sans mes anciennes données

@@ -32,7 +32,7 @@ module SiteKeys
                cipher.unwrap(record.encrypted_root, password)
              elsif record && repair
                rewrap_recovered_root(password) || replace_dead_root(password, create:)
-             elsif create
+             elsif create && record.nil?
                create_root!(password)
              end
       return if root.nil?
@@ -122,12 +122,17 @@ module SiteKeys
       ensure_recovery_code_shown(root) if root
     end
 
+    # The code minted in this session, as long as it still opens the stored recovery wrap. A
+    # code another session has since replaced is discarded rather than shown.
     def pending_recovery_code
-      user_session[RECOVERY_CODE_SESSION_KEY]
+      code, wrap_digest = user_session[RECOVERY_CODE_SESSION_KEY]
+      return code if code && wrap_digest == recovery_wrap_digest
+
+      user_session.delete(RECOVERY_CODE_SESSION_KEY)
+      nil
     end
 
-    # Only counts when the code shown is still the one stored; a code another session has
-    # replaced is discarded.
+    # Only counts when the code shown is still the one stored.
     # @return [Boolean]
     def acknowledge_recovery_code
       current = unlocked? && pending_recovery_code.present?
@@ -246,9 +251,9 @@ module SiteKeys
         replace.update!(attributes)
       else
         SiteKeyRoot.transaction(requires_new: true) { SiteKeyRoot.create!(user:, **attributes) }
-        user.reload_site_key_root
       end
-      user_session[RECOVERY_CODE_SESSION_KEY] = code
+      user.reload_site_key_root
+      remember_pending_recovery_code(code)
       analytics&.site_key_root_created(replaced: replace.present?)
       root
     rescue ActiveRecord::RecordNotUnique
@@ -260,7 +265,18 @@ module SiteKeys
       code = RecoveryCode.generate
       record.update!(recovery_code_attributes(root, code))
       remember_fingerprint
-      user_session[RECOVERY_CODE_SESSION_KEY] = code
+      remember_pending_recovery_code(code)
+      code
+    end
+
+    # Ties the code to the wrap it opens, so it is dropped once another session replaces it.
+    def remember_pending_recovery_code(code)
+      user_session[RECOVERY_CODE_SESSION_KEY] = [code, recovery_wrap_digest]
+    end
+
+    def recovery_wrap_digest
+      wrap = record&.encrypted_root_recovery_code
+      Digest::SHA256.hexdigest(wrap) if wrap
     end
 
     def recovery_code_attributes(root, code)
