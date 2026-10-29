@@ -1207,7 +1207,7 @@ RSpec.describe OpenidConnectAuthorizeForm, 'dpop_jkt (RFC 9449 section 10)' do
       expect(form.dpop_binding_required?).to eq(true)
       expect(result.success?).to eq(false)
       expect(result.errors[:dpop_jkt])
-        .to eq([t('openid_connect.authorization.errors.dpop_jkt_required')])
+        .to eq(['dpop_jkt_required'])
     end
 
     context 'with a well-formed thumbprint' do
@@ -1226,7 +1226,7 @@ RSpec.describe OpenidConnectAuthorizeForm, 'dpop_jkt (RFC 9449 section 10)' do
       it 'fails' do
         expect(result.success?).to eq(false)
         expect(result.errors[:dpop_jkt])
-          .to eq([t('openid_connect.authorization.errors.dpop_jkt_invalid')])
+          .to eq(['dpop_jkt_invalid'])
       end
     end
 
