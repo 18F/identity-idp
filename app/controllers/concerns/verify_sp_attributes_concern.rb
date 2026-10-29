@@ -27,6 +27,7 @@ module VerifySpAttributesConcern
       verified_attributes: sp_session[:requested_attributes],
       last_consented_at: Time.zone.now,
       clear_deleted_at: true,
+      email_address_id: sp_email_preference_id,
     )
 
     # Record biometric sharing consent as a distinct, purpose-specific decision;
