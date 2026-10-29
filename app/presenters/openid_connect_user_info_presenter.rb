@@ -92,30 +92,56 @@ class OpenidConnectUserInfoPresenter
     }
   end
 
-  # Signed-in RP fetches each URL with the same bearer access token; the proxy
-  # endpoint enforces scope + ownership. mDL profiles have no artifacts.
-  # Only released when the SP is allow-listed and the user granted biometric
-  # sharing consent on the agency handoff screen.
+  # The images travel inside the user-information claims, so a service provider receives
+  # them only within the response sealed to its registered certificate (RFC 7516). There is
+  # no separate download: a URL fetched under the access token would carry the biometric
+  # across Login.gov's edge under TLS alone. Each image is an object with its media type and
+  # the bytes in base64url (RFC 4648 section 5, without padding), the encoding JOSE uses for
+  # binary content. An artifact whose stored object is gone or can no longer be decrypted
+  # is left out, so the claim names only what the service provider actually receives; an
+  # empty object means authorized with nothing retrieved yet. mDL profiles have no artifacts.
   def document_images
     return @document_images if defined?(@document_images)
 
     @document_images =
       if document_images_shareable?
         active_profile.document_artifacts.retained.order(:image_type)
-          .each_with_object({}) do |a, hash|
-          hash[a.image_type.to_sym] = api_openid_connect_document_image_url(
-            image_type: a.image_type,
-          )
+          .each_with_object({}) do |artifact, images|
+          bytes = read_image(artifact)
+          next if bytes.blank?
+
+          images[artifact.image_type.to_sym] = {
+            content_type: artifact.content_type,
+            data: Base64.urlsafe_encode64(bytes, padding: false),
+          }
         end
       else
         {}
       end
   end
 
+  # Unwrapping the stored key and fetching the object from Redis can each fail apart from
+  # the object simply being absent; every case means this image is not released.
+  def read_image(artifact)
+    doc_reader.read(name: artifact.storage_name, encryption_key: artifact.encryption_key)
+  rescue Encryption::EncryptionError, Redis::BaseError
+    nil
+  end
+
+  def doc_reader
+    @doc_reader ||= EncryptedDocStorage::DocReader.new
+  end
+
+  # The images and the document identifiers are released only to a service provider on the
+  # document-images list whose user-information response is also encrypted to its
+  # registered certificate: the biometric must never leave Login.gov readable by the edge,
+  # the logs or an intermediary, and TLS alone does not give that. A service provider on
+  # the images list alone receives neither claim.
   def document_images_shareable?
     active_profile.present? &&
       resolved_authn_context_result.identity_proofing? &&
       identity.service_provider_record&.document_images_sharing_allowed? &&
+      identity.service_provider_record.userinfo_encrypted_response? &&
       identity.biometric_sharing_consented?(active_profile)
   end
 

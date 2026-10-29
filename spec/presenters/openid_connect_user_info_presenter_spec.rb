@@ -436,30 +436,85 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         allow(IdentityConfig.store).to receive(:document_images_sharing_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
           .and_return([service_provider.issuer])
+        allow(IdentityConfig.store).to receive(:userinfo_encryption_allowed_issuers)
+          .and_return([service_provider.issuer])
         identity.biometric_sharing_consent_at = profile.verified_at + 1.second
       end
 
       context 'when sharing is authorized and the profile has stored artifacts' do
+        let(:redis_storage) { EncryptedDocStorage::RedisStorage.new }
+        let(:front_image) { File.read(Rails.root.join('app', 'assets', 'images', 'logo.svg')) }
+        let(:selfie_image) { 'selfie bytes' }
+        let!(:written_front) do
+          EncryptedDocStorage::DocWriter.new(storage: redis_storage).write(image: front_image)
+        end
+        let!(:written_selfie) do
+          EncryptedDocStorage::DocWriter.new(storage: redis_storage).write(image: selfie_image)
+        end
+
         before do
           create(
             :document_artifact,
             profile:,
             image_type: 'selfie',
+            storage_name: written_selfie.name,
+            encryption_key: written_selfie.encryption_key,
             document_capture_session: create(:document_capture_session, user: identity.user),
           )
           create(
             :document_artifact,
             profile:,
             image_type: 'front',
+            storage_name: written_front.name,
+            encryption_key: written_front.encryption_key,
             document_capture_session: create(:document_capture_session, user: identity.user),
           )
         end
 
-        it 'returns a URL per artifact pointing at the proxy endpoint' do
+        after do
+          redis_storage.delete_image(name: written_front.name)
+          redis_storage.delete_image(name: written_selfie.name)
+        end
+
+        it 'returns each image inline, base64url-encoded with its media type' do
           expect(user_info[:document_images]).to eq(
-            front: api_openid_connect_document_image_url(image_type: 'front'),
-            selfie: api_openid_connect_document_image_url(image_type: 'selfie'),
+            front: {
+              content_type: 'image/jpeg',
+              data: Base64.urlsafe_encode64(front_image, padding: false),
+            },
+            selfie: {
+              content_type: 'image/jpeg',
+              data: Base64.urlsafe_encode64(selfie_image, padding: false),
+            },
           )
+        end
+
+        it 'leaves out an image whose stored object is no longer available' do
+          redis_storage.delete_image(name: written_selfie.name)
+
+          expect(user_info[:document_images].keys).to eq([:front])
+        end
+
+        it 'leaves out an image whose stored key can no longer decrypt the object' do
+          allow_any_instance_of(EncryptedDocStorage::DocReader)
+            .to receive(:read).and_return(nil)
+
+          expect(user_info[:document_images]).to eq({})
+        end
+
+        context 'when the service provider is not listed for encrypted responses' do
+          before do
+            allow(IdentityConfig.store).to receive(:userinfo_encryption_allowed_issuers)
+              .and_return([])
+          end
+
+          it 'omits the document_images claim' do
+            expect(user_info).not_to have_key(:document_images)
+          end
+
+          it 'omits the document_metadata claim' do
+            expect(user_info).not_to have_key(:document_metadata)
+          end
         end
 
         it 'returns the document metadata inline when present' do
