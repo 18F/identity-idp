@@ -1704,6 +1704,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
         expect(Rack::Utils.parse_query(URI(redirect_target).query))
           .to include('error' => 'temporarily_unavailable')
+        expect(@analytics).to have_logged_event(
+          :site_key_release_failed, client_id:, error: 'root needs_password'
+        )
       end
 
       it 'asks again for a different authorization request' do
@@ -1748,6 +1751,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
         expect(Rack::Utils.parse_query(URI(redirect_target).query))
           .to include('error' => 'temporarily_unavailable', 'state' => params[:state])
+        expect(@analytics).to have_logged_event(
+          :site_key_release_failed, client_id:, error: 'root unavailable'
+        )
       end
     end
 
