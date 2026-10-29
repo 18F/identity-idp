@@ -72,7 +72,6 @@ allOf:
                 - fail_resolution_skip_state_id
                 - pass_resolution_and_state_id
                 - fail_state_id
-                - fail_resolution_skip_state_id
                 - state_id_covers_failed_resolution
                 - fail_resolution_without_state_id_coverage
           device_profiling_adjudication_reason:
