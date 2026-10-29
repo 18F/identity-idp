@@ -103,8 +103,9 @@ module SiteKeys
 
     # Keeps the personal key wrap in step with a newly minted personal key. While the root is
     # locked the previous key's wrap is dropped instead, unless nothing else could open the
-    # root. Runs in a savepoint and never raises, so site keys cannot break identity
-    # verification.
+    # root. The row is re-read under a lock, so a root another session has replaced counts as
+    # locked here. Runs in a savepoint and never raises, so site keys cannot break identity
+    # verification; failures are reported instead.
     def wrap_personal_key(personal_key, password: nil)
       return unless enabled? && record
 
@@ -112,6 +113,9 @@ module SiteKeys
       return if secret.nil?
 
       SiteKeyRoot.transaction(requires_new: true) do
+        user.association(:site_key_root).target = SiteKeyRoot.lock.find_by(user_id: user.id)
+        next if record.nil?
+
         root = unlock(password, show_recovery_code: false) if password.present?
         root ||= cached_root
         if root
@@ -120,7 +124,8 @@ module SiteKeys
           clear_personal_key_wrap
         end
       end
-    rescue Encryption::EncryptionError, ActiveRecord::ActiveRecordError
+    rescue StandardError => err
+      NewRelic::Agent.notice_error(err)
       nil
     end
 
