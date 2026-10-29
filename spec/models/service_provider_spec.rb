@@ -384,4 +384,31 @@ RSpec.describe ServiceProvider do
       end
     end
   end
+
+  describe '#token_exchange_initiate_login_uri' do
+    let(:service_provider) { create(:service_provider) }
+
+    it 'is the address of the application entry in the allowed targets' do
+      allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets).and_return(
+        [{
+          issuer: service_provider.issuer,
+          scope: 'records',
+          initiate_login_uri: 'https://records.example.gov/initiate_login',
+        }],
+      )
+
+      expect(service_provider.token_exchange_initiate_login_uri)
+        .to eq('https://records.example.gov/initiate_login')
+    end
+
+    it 'is nil when the entry carries no address or the issuer is not listed' do
+      allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets).and_return(
+        [{ issuer: service_provider.issuer, scope: 'records' }],
+      )
+      expect(service_provider.token_exchange_initiate_login_uri).to be_nil
+
+      allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets).and_return([])
+      expect(service_provider.token_exchange_initiate_login_uri).to be_nil
+    end
+  end
 end

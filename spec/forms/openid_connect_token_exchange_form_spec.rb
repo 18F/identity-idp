@@ -561,6 +561,56 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         expect(response[:error_description]).to be_present
       end
     end
+
+    context 'when the person has no identity at the target' do
+      before { target_identity.destroy! }
+
+      context 'and the target entry carries a login-initiation address' do
+        before do
+          allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets).and_return(
+            [{
+              issuer: target_issuer,
+              scope: 'passport',
+              initiate_login_uri: 'https://records.example.gov/initiate_login',
+            }],
+          )
+        end
+
+        it 'refuses with invalid_target and tells the actor where the person signs in' do
+          expect(response).to include(
+            error: 'invalid_target',
+            initiate_login_uri: 'https://records.example.gov/initiate_login',
+          )
+          expect(response[:error_description]).to include('no identity')
+        end
+      end
+
+      context 'and the target entry carries no login-initiation address' do
+        it 'refuses with invalid_target and no address' do
+          expect(response).to include(error: 'invalid_target')
+          expect(response).not_to have_key(:initiate_login_uri)
+        end
+      end
+    end
+
+    context 'when the refusal is not about a missing identity' do
+      let(:subject_token) { 'unknown' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets).and_return(
+          [{
+            issuer: target_issuer,
+            scope: 'passport',
+            initiate_login_uri: 'https://records.example.gov/initiate_login',
+          }],
+        )
+      end
+
+      it 'does not tell the actor the address' do
+        expect(response[:error]).to eq('invalid_grant')
+        expect(response).not_to have_key(:initiate_login_uri)
+      end
+    end
   end
 
   describe 'OAuth error codes' do

@@ -277,11 +277,25 @@ class OpenidConnectTokenExchangeForm
     scope.presence || loaded_subject_token&.scope
   end
 
+  # A person with no identity at the application named in the audience is refused, because
+  # delegation never creates that identity: it is the row the person's own sign-in at the
+  # application created. The refusal carries the application's login-initiation address
+  # (`initiate_login_uri`, OpenID Connect Core 1.0 §4) when its configuration entry has one, so
+  # the actor can send the person there to sign in and ask again.
   def error_response
-    {
+    response = {
       error: oauth_error,
       error_description:,
     }
+    initiate_login_uri = target&.token_exchange_initiate_login_uri
+    if no_identity_at_target? && initiate_login_uri.present?
+      response[:initiate_login_uri] = initiate_login_uri
+    end
+    response
+  end
+
+  def no_identity_at_target?
+    errors.where(:audience, :no_identity_at_target).any?
   end
 
   def error_description
