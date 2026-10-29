@@ -4,9 +4,10 @@
 # HTTP request, so that a token Login.gov issues can be bound to that key. A token bound this way
 # is useless to anyone who copies it: every later use needs a fresh proof from the same key.
 #
-# The result carries the key thumbprint, which is what Login.gov stores on the token (`dpop_jkt`)
-# and returns to resource servers as `cnf.jkt` (RFC 7800). Every failure maps to the RFC 9449 §5
-# error `invalid_dpop_proof`; the result's message is the `error_description`.
+# The response carries the key thumbprint (`extra[:dpop_thumbprint]`), which is what Login.gov
+# stores with the artifact it binds and returns to resource servers as `cnf.jkt` (RFC 7800). Every
+# failure maps to the RFC 9449 §5 error `invalid_dpop_proof`; the first error message is the
+# `error_description`, and `extra[:dpop_error_type]` names the failed check for analytics.
 class DpopProofForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
@@ -34,18 +35,6 @@ class DpopProofForm
   validate :validate_key_binding, unless: :failed?
   validate :validate_jti_unused, unless: :failed?
 
-  # @!attribute thumbprint
-  #   @return [String, nil] RFC 7638 thumbprint of the proof key, on success
-  # @!attribute error_type
-  #   @return [Symbol, nil] machine-readable failure reason, for analytics
-  # @!attribute error_message
-  #   @return [String, nil] human-readable failure reason, for `error_description`
-  Result = Struct.new(:thumbprint, :error_type, :error_message, keyword_init: true) do
-    def success?
-      thumbprint.present? && error_type.nil?
-    end
-  end
-
   # @param proof [String, nil] the `DPoP` request header value
   # @param http_method [String] method of the request the proof accompanies
   # @param http_url [String] absolute URL of that request
@@ -62,14 +51,20 @@ class DpopProofForm
 
   # Memoized because the jti check consumes the jti: validating twice would reject the proof the
   # form just accepted.
-  # @return [Result]
+  # @return [FormResponse] success with `extra[:dpop_thumbprint]`, or failure whose first error
+  #   message is the `error_description` and whose `extra[:dpop_error_type]` names the check
   def submit
     return @submit if defined?(@submit)
-    return @submit = Result.new(thumbprint:) if valid?
 
-    # The message is the error itself and the symbol rides in `type:`, as in the other forms.
-    error = errors.first
-    @submit = Result.new(error_type: error.options[:type], error_message: error.message)
+    success = valid?
+    @submit = FormResponse.new(
+      success:,
+      errors:,
+      extra: {
+        dpop_thumbprint: (thumbprint if success),
+        dpop_error_type: errors.first&.options&.dig(:type),
+      },
+    )
   end
 
   # RFC 7638 thumbprint of a key: base64url of the SHA-256 over the key's required public members
@@ -88,14 +83,16 @@ class DpopProofForm
   end
 
   # The URL as `htu` must name it (RFC 9449 §4.3): scheme, host and path, with no query or
-  # fragment, scheme and host lowercased, default ports dropped and a trailing slash ignored.
+  # fragment, after the syntax-based and scheme-based normalization of RFC 3986 §6.2.2 and §6.2.3
+  # that RFC 9449 asks servers to apply: scheme and host lowercased, a default port dropped and an
+  # empty path read as `/`. Nothing else is normalized, so `/a` and `/a/` are different URLs.
   def self.normalize_url(url)
     uri = URI.parse(url.to_s)
     return nil unless uri.is_a?(URI::HTTP) && uri.host.present?
 
     port = uri.port == uri.default_port ? '' : ":#{uri.port}"
     path = uri.path.presence || '/'
-    "#{uri.scheme.downcase}://#{uri.host.downcase}#{port}#{path.chomp('/')}"
+    "#{uri.scheme.downcase}://#{uri.host.downcase}#{port}#{path}"
   rescue URI::InvalidURIError
     nil
   end
