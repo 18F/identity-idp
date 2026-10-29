@@ -518,7 +518,7 @@ class ProofingAgentJob < ApplicationJob
       session_id: nil,
       request: nil,
       user:,
-      sp: service_provider_issuer,
+      sp: service_provider,
       cookie_device_uuid: nil,
       sp_redirect_uri: nil,
     )
@@ -566,6 +566,7 @@ class ProofingAgentJob < ApplicationJob
   def state_id_document_pii(pii)
     {
       document_type: pii[:document_type_received],
+      document_state_jurisdiction: pii[:state_id_jurisdiction],
       document_number: pii[:state_id_number],
       document_expiration: pii[:state_id_expiration],
       document_issued: pii[:state_id_issued],

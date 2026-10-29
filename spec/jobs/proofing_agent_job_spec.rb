@@ -26,6 +26,7 @@ RSpec.describe ProofingAgentJob, type: :job do
       zip: pii[:zipcode],
       phone: pii[:phone],
       document_type: pii[:document_type_received],
+      document_state_jurisdiction: pii[:state_id_jurisdiction],
       document_number: pii[:state_id_number],
       document_issued: pii[:state_id_issued],
       document_expiration: pii[:state_id_expiration],

@@ -174,7 +174,7 @@ module AttemptsApi
 
     # @param [Array<String>] reason The reason for confirmation failure.
     def idv_proofing_agent_confirmation_failure(reason:)
-      track_event('idv-proofing-agent-confirmation-failure', reason)
+      track_event('idv-proofing-agent-confirmation-failure', reason:)
     end
 
     # @param [Boolean] success
@@ -194,6 +194,7 @@ module AttemptsApi
     # @option pii [String] state
     # @option pii [String] zip
     # @option pii [String] document_type
+    # @option pii [String] document_state_jurisdiction
     # @option pii [String] document_number
     # @option pii [String] document_issued
     # @option pii [String] document_expiration
@@ -252,6 +253,7 @@ module AttemptsApi
     # @option pii [String] state
     # @option pii [String] zip
     # @option pii [String] document_type
+    # @option pii [String] document_state_jurisdiction
     # @option pii [String] document_number
     # @option pii [String] document_issued
     # @option pii [String] document_expiration

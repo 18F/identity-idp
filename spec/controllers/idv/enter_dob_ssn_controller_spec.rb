@@ -298,7 +298,7 @@ RSpec.describe Idv::EnterDobSsnController do
         stub_attempts_tracker
 
         expect(@attempts_api_tracker).to receive(:idv_proofing_agent_confirmation_failure).with(
-          reason: [['ssn mismatch']],
+          reason: ['ssn mismatch'],
         )
 
         post :create, params: params
@@ -324,7 +324,7 @@ RSpec.describe Idv::EnterDobSsnController do
         stub_attempts_tracker
 
         expect(@attempts_api_tracker).to receive(:idv_proofing_agent_confirmation_failure).with(
-          reason: [['date of birth mismatch']],
+          reason: ['date of birth mismatch'],
         )
 
         post :create, params: params

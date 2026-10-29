@@ -119,8 +119,8 @@ module Idv
     def failure_reason_details
       reasons = []
 
-      reasons << ['ssn mismatch'] unless @dob_ssn_form.ssn_match?
-      reasons << ['date of birth mismatch'] unless @dob_ssn_form.dob_match?
+      reasons << 'ssn mismatch' unless @dob_ssn_form.ssn_match?
+      reasons << 'date of birth mismatch' unless @dob_ssn_form.dob_match?
 
       reasons
     end

@@ -77,7 +77,7 @@ class ProofingAgentThreatMetrixJob < ApplicationJob
       session_id: nil,
       request: nil,
       user:,
-      sp: sp.issuer,
+      sp: sp,
       cookie_device_uuid: nil,
       sp_redirect_uri: nil,
     )

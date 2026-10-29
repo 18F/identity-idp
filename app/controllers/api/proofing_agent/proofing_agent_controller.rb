@@ -368,7 +368,7 @@ module Api
       def render_bad_request(errors: nil, failure_type: :body_validation)
         errors = { base: ['There was a problem with your request.'] } if errors.blank?
         track_failure(failure_type:, errors:)
-        track_attempt(success: false, failure_reason: errors)
+        track_attempt(success: false, failure_reason: errors) if action_name == 'proof_user'
 
         render json: errors, status: :bad_request
       end
@@ -443,11 +443,11 @@ module Api
 
       def attempts_api_tracker
         AttemptsApi::Tracker.new(
-          enabled_for_session: service_provider.attempts_api_enabled?,
+          enabled_for_session: service_provider&.attempts_api_enabled?,
           session_id: nil,
           request:,
           user:,
-          sp: issuer,
+          sp: service_provider,
           cookie_device_uuid: nil,
           sp_redirect_uri: nil,
         )
@@ -505,7 +505,7 @@ module Api
             document_state_jurisdiction: proof_params[:state_id][:jurisdiction],
             document_number: proof_params[:state_id][:document_number],
             document_expiration: proof_params[:state_id][:expiration_date],
-            document_issued: proof_params[:state_id][:issued_date],
+            document_issued: proof_params[:state_id][:issue_date],
             document_address1: proof_params[:state_id][:address1],
             document_address2: proof_params[:state_id][:address2],
             document_city: proof_params[:state_id][:city],
@@ -516,7 +516,7 @@ module Api
           info.merge!(
             document_number: proof_params[:passport][:document_number],
             document_expiration: proof_params[:passport][:expiration_date],
-            document_issued: proof_params[:passport][:issued_date],
+            document_issued: proof_params[:passport][:issue_date],
           )
         end
 
