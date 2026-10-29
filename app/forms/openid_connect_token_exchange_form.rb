@@ -14,6 +14,19 @@ class OpenidConnectTokenExchangeForm
     scope
     dpop_proof
     token_url
+    acr_values
+  ].freeze
+
+  # The identity assurance levels an actor may ask for on the exchange, in the authorization
+  # request's vocabulary: the verified values require an identity-verified identity at the
+  # application, the others require nothing beyond the identity's existence.
+  VERIFIED_ACR_VALUES = [
+    Saml::Idp::Constants::IAL_VERIFIED_ACR,
+    Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+  ].freeze
+  UNVERIFIED_ACR_VALUES = [
+    Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+    Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
   ].freeze
 
   # Parameters RFC 8693 section 2.1 requires on every token exchange request.
@@ -42,11 +55,13 @@ class OpenidConnectTokenExchangeForm
   validate :validate_broker
   validate :validate_target
   validate :validate_resource
+  validate :validate_acr_values
   validate :validate_consent, unless: :client_rejected?
   validate :validate_subject_token, unless: :client_rejected?
   validate :validate_actor_return_log, unless: :client_rejected?
   validate :validate_scope, unless: :client_rejected?
-  validate :validate_target_identity_ial2, unless: :client_rejected?
+  validate :validate_target_identity, unless: :client_rejected?
+  validate :validate_assurance, unless: :client_rejected?
   validate :validate_dpop_proof, unless: :client_rejected?
 
   def initialize(params)
@@ -210,25 +225,66 @@ class OpenidConnectTokenExchangeForm
     loaded_subject_token.dpop_jkt if dpop_binding_required?
   end
 
-  def validate_target_identity_ial2
-    return if subject_token.blank?
-    return if loaded_subject_token.blank?
+  # Delegation never creates the person's identity at the application: `sub` is the `identities`
+  # row the person's own sign-in there created, read as it stands. A person without one is refused,
+  # and the actor is told where that sign-in starts (`initiate_login_uri`, OpenID Connect Core 1.0
+  # §4) so it can send the person there and ask again. Runs after every check on the subject token,
+  # so a request already refused never reaches the lookup.
+  def validate_target_identity
+    return if errors.any?
     return errors.add(:subject_token, :invalid) if user.blank?
-    if target_identity.blank?
-      return errors.add(
-        :audience, :no_identity_at_target,
-        message: 'no identity'
-      )
-    end
+    return if target_identity.present?
+
+    errors.add(
+      :audience, :no_identity_at_target,
+      message: 'no identity'
+    )
+  end
+
+  def validate_acr_values
+    return if acr_values.blank?
+    return if (acr_values.split(' ') - VERIFIED_ACR_VALUES - UNVERIFIED_ACR_VALUES).empty?
+
+    errors.add(
+      :acr_values, :invalid,
+      message: 'acr_values_invalid'
+    )
+  end
+
+  # The level the actor asked for is checked against the person's identity at the application,
+  # which only that agency's own sign-in sets; the subject token's level is not, because a sign-in
+  # at any level may delegate. A verified request also needs the person's Login.gov profile to be
+  # active: the agency row is a snapshot set at the person's last identity-verified sign-in there,
+  # and a password reset without the personal key or an encryption error deactivates the profile
+  # since. A direct identity-verified sign-in at the agency would send the person to verify again,
+  # so the hand-off does the same. Either shortfall is refused the way a missing identity is, with
+  # the level named, so the actor can send the person to sign in at the agency at that level. A
+  # request that asks for no level checks neither.
+  def validate_assurance
+    return if errors.any? || !verified_identity_requested?
     if user.active_profile.blank?
-      return errors.add(
-        :audience, :no_active_profile,
-        message: 'no active profile'
-      )
+      return errors.add(:audience, :no_active_profile, message: 'no active profile')
     end
     return unless target_identity.ial.to_i < 2
 
     errors.add(:audience, :invalid_target_identity_assurance, message: 'invalid identity assurance')
+  end
+
+  def verified_identity_requested?
+    acr_values.to_s.split(' ').intersect?(VERIFIED_ACR_VALUES)
+  end
+
+  def no_identity_at_target?
+    errors.where(:audience, :no_identity_at_target).any?
+  end
+
+  def assurance_shortfall?
+    errors.where(:audience, :no_active_profile).any? ||
+      errors.where(:audience, :invalid_target_identity_assurance).any?
+  end
+
+  def sign_in_at_agency_needed?
+    no_identity_at_target? || assurance_shortfall?
   end
 
   def user
@@ -278,11 +334,11 @@ class OpenidConnectTokenExchangeForm
     scope.presence || loaded_subject_token&.scope
   end
 
-  # A person with no identity at the application named in the audience is refused, because
-  # delegation never creates that identity: it is the row the person's own sign-in at the
-  # application created. The refusal carries the application's login-initiation address
-  # (`initiate_login_uri`, OpenID Connect Core 1.0 §4) when its configuration entry has one, so
-  # the actor can send the person there to sign in and ask again.
+  # A refusal that sends the person to sign in at the agency, for a missing identity there or one
+  # below the level asked, also names the level asked and the application's login-initiation
+  # address when one is registered (OpenID Connect Core 1.0 §4), so the actor can start that
+  # sign-in. The actor is authenticated and the application registered by the time these checks
+  # run, so the address is told to no one else.
   #
   # A person without delegation consent for the application is refused with `scope` naming the
   # application's delegation scope value: the actor sends the person to sign in through Login.gov
@@ -293,16 +349,13 @@ class OpenidConnectTokenExchangeForm
       error: oauth_error,
       error_description:,
     }
-    initiate_login_uri = target&.token_exchange_initiate_login_uri
-    if no_identity_at_target? && initiate_login_uri.present?
-      response[:initiate_login_uri] = initiate_login_uri
-    end
     response[:scope] = target.token_exchange_scope if no_delegation_consent?
-    response
-  end
+    return response unless sign_in_at_agency_needed?
 
-  def no_identity_at_target?
-    errors.where(:audience, :no_identity_at_target).any?
+    response[:acr_values] = acr_values if assurance_shortfall?
+    initiate_login_uri = target&.token_exchange_initiate_login_uri
+    response[:initiate_login_uri] = initiate_login_uri if initiate_login_uri.present?
+    response
   end
 
   def no_delegation_consent?
@@ -324,6 +377,7 @@ class OpenidConnectTokenExchangeForm
     return 'invalid_request' if missing_required_attrs?
     return 'unsupported_grant_type' if errors.include?(:grant_type)
     return 'invalid_client' if errors.include?(:client_id)
+    return 'invalid_request' if errors.include?(:acr_values)
     return 'invalid_target' if errors.include?(:audience) || errors.include?(:resource)
     return 'invalid_dpop_proof' if errors.include?(:dpop_proof)
     return 'invalid_scope' if errors.include?(:scope)
