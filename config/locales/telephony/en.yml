@@ -3,6 +3,9 @@ en:
   telephony:
     account_deleted_notice:
       sms: This text message confirms you have deleted your %{app_name} account.
+    account_recovery_notice:
+      sms: |-
+        You requested to recover your %{app_name} account. Check your email in %{interval} for next steps. Not you? Sign in and authenticate to cancel recovery.
     account_reset_cancellation_notice:
       sms: |-
         You have canceled your request to delete your %{app_name} account.

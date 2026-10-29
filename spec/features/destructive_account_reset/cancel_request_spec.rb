@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe 'Account Reset Request: Cancellation' do
+  before do
+    allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+  end
+
   context 'user cancels from the second email after the request has been granted' do
     it 'cancels the request and does not delete the user', email: true do
       user = create(:user, :fully_registered)

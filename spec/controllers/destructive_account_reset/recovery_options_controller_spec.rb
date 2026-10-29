@@ -2,6 +2,44 @@ require 'rails_helper'
 
 RSpec.describe DestructiveAccountReset::RecoveryOptionsController do
   let(:user) { create(:user, :with_authentication_app) }
+
+  before do
+    allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+  end
+
+  context 'when account recovery is enabled' do
+    let(:user) { create(:user, :fully_registered) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
+      stub_sign_in_before_2fa(user)
+    end
+
+    it 'blocks the legacy options page for eligible users' do
+      get :show
+
+      expect(response).to redirect_to(login_two_factor_options_url)
+    end
+
+    it 'blocks the legacy options page for an active recovery request' do
+      create(:account_recovery_request, :waiting, user: user)
+
+      get :show
+
+      expect(response).to redirect_to(login_two_factor_options_url)
+    end
+
+    context 'when the user is identity proofed' do
+      let(:user) { create(:user, :proofed) }
+
+      it 'keeps legacy recovery available' do
+        get :show
+
+        expect(response).to render_template(:show)
+      end
+    end
+  end
+
   describe '#show' do
     it 'renders the page' do
       stub_sign_in_before_2fa(user)

@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.feature 'Pending account reset request sign in' do
+  before do
+    allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+  end
+
   it 'gives the option to cancel the request on sign in' do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
 
@@ -19,6 +23,7 @@ RSpec.feature 'Pending account reset request sign in' do
       )
     click_button t('destructive_account_reset.request.yes_continue')
 
+    allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
     Capybara.reset_session!
 
     sign_in_user(user)

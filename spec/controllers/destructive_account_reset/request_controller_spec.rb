@@ -3,6 +3,62 @@ require 'rails_helper'
 RSpec.describe DestructiveAccountReset::RequestController do
   include ActionView::Helpers::DateHelper
   let(:user) { create(:user, :with_authentication_app) }
+
+  before do
+    allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+  end
+
+  context 'when account recovery is enabled' do
+    let(:user) { create(:user, :fully_registered) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
+      stub_sign_in_before_2fa(user)
+    end
+
+    %i[show create].each do |action|
+      it "blocks direct #{action} access for eligible users" do
+        expect(DestructiveAccountReset::CreateRequest).not_to receive(:new)
+
+        action == :show ? get(:show) : post(:create)
+
+        expect(response).to redirect_to(login_two_factor_options_url)
+        expect(DestructiveAccountResetRequest.find_by(user: user)).to be_nil
+      end
+    end
+
+    it 'blocks creation when an account recovery request is already active' do
+      create(:account_recovery_request, :waiting, user: user)
+
+      expect { post :create }.not_to change { DestructiveAccountResetRequest.count }
+      expect(response).to redirect_to(login_two_factor_options_url)
+    end
+
+    it 'preserves active recovery ownership when the feature is disabled' do
+      create(:account_recovery_request, :waiting, user: user)
+      allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+
+      expect { post :create }.not_to change { DestructiveAccountResetRequest.count }
+      expect(response).to redirect_to(login_two_factor_options_url)
+    end
+
+    context 'when the user is ineligible for account recovery' do
+      let(:user) { create(:user, :proofed) }
+
+      it 'keeps the legacy request page available' do
+        get :show
+
+        expect(response).to render_template(:show)
+      end
+
+      it 'allows legacy request creation' do
+        expect { post :create }.to change { DestructiveAccountResetRequest.count }.by(1)
+
+        expect(response).to redirect_to(account_reset_confirm_request_url)
+      end
+    end
+  end
+
   describe '#show' do
     it 'renders the page' do
       stub_sign_in_before_2fa(user)
@@ -94,6 +150,30 @@ RSpec.describe DestructiveAccountReset::RequestController do
   end
 
   describe '#create' do
+    it 'reports a rejected service request instead of showing a confirmation' do
+      stub_sign_in_before_2fa(user)
+      stub_analytics
+      service = instance_double(
+        DestructiveAccountReset::CreateRequest,
+        call: FormResponse.new(success: false, errors: { base: ['account_recovery_required'] }),
+      )
+      allow(DestructiveAccountReset::CreateRequest).to receive(:new).and_return(service)
+
+      post :create
+
+      expect(response).to redirect_to(login_two_factor_options_url)
+      expect(flash[:error]).to eq(t('errors.general'))
+      expect(@analytics).to have_logged_event(
+        'Account Reset: request',
+        success: false,
+        errors: { base: ['account_recovery_required'] },
+        sms_phone: false,
+        totp: true,
+        piv_cac: false,
+        email_addresses: 1,
+      )
+    end
+
     it 'logs totp user in the analytics' do
       stub_sign_in_before_2fa(user)
       stub_analytics

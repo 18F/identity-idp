@@ -6,6 +6,7 @@ module DestructiveAccountReset
     include DestructiveAccountResetConcern
 
     before_action :confirm_two_factor_enabled
+    before_action :confirm_legacy_account_reset_allowed
 
     def show
       analytics.account_reset_visit
@@ -17,7 +18,7 @@ module DestructiveAccountReset
       rate_limiter.increment!
 
       unless account_reset_max_attempts_exceeded? || rate_limiter.limited?
-        create_account_reset_request
+        return redirect_to(login_two_factor_options_url) if !create_account_reset_request.success?
       end
       flash[:email] = current_user.email_addresses.take.email
 
@@ -29,6 +30,8 @@ module DestructiveAccountReset
     def create_account_reset_request
       response = DestructiveAccountReset::CreateRequest.new(current_user, sp_session[:issuer]).call
       analytics.account_reset_request(**response, **analytics_attributes)
+      flash[:error] = t('errors.general') if !response.success?
+      response
     end
 
     def confirm_two_factor_enabled

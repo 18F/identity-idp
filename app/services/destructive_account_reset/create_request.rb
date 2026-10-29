@@ -12,6 +12,10 @@ module DestructiveAccountReset
 
     def call
       request = create_request
+      if !request
+        return FormResponse.new(success: false, errors: { base: ['account_recovery_required'] })
+      end
+
       notify_user_by_email(request)
       notify_user_by_sms_if_applicable
 
@@ -26,16 +30,20 @@ module DestructiveAccountReset
     attr_reader :user, :requesting_issuer
 
     def create_request
-      request = DestructiveAccountResetRequest.create_or_find_by(user: user)
-      request.update!(
-        request_token: SecureRandom.uuid,
-        requested_at: Time.zone.now,
-        cancelled_at: nil,
-        granted_at: nil,
-        granted_token: nil,
-        requesting_issuer: requesting_issuer,
-      )
-      request
+      user.with_lock do
+        next unless AccountRecovery::EligibilityPolicy.new(user: user).legacy_reset_allowed?
+
+        request = DestructiveAccountResetRequest.create_or_find_by(user: user)
+        request.update!(
+          request_token: SecureRandom.uuid,
+          requested_at: Time.zone.now,
+          cancelled_at: nil,
+          granted_at: nil,
+          granted_token: nil,
+          requesting_issuer: requesting_issuer,
+        )
+        request
+      end
     end
 
     def notify_user_by_email(request)

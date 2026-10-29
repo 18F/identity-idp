@@ -1,0 +1,6 @@
+<% if current_user && !user_fully_authenticated? &&
+      AccountRecovery::EligibilityPolicy.new(user: current_user).recovery_pending? %>
+  <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
+    <%= t('account_recovery.pending.mfa_banner') %>
+  <% end %>
+<% end %>

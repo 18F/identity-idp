@@ -90,6 +90,10 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).personal_key_regenerated
   end
 
+  def account_recovery_request
+    UserMailer.with(user: user, email_address: email_address_record).account_recovery_request
+  end
+
   def account_reset_request
     UserMailer.with(user: user, email_address: email_address_record).account_reset_request(
       user.build_account_reset_request,
@@ -112,6 +116,10 @@ class UserMailerPreview < ActionMailer::Preview
 
   def account_reset_cancel
     UserMailer.with(user: user, email_address: email_address_record).account_reset_cancel
+  end
+
+  def account_recovery_cancelled
+    UserMailer.with(user: user, email_address: email_address_record).account_recovery_cancelled
   end
 
   def please_reset_password

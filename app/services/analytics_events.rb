@@ -90,6 +90,45 @@ module AnalyticsEvents
     track_event('Account Deletion Requested', request_came_from: request_came_from, **extra)
   end
 
+  # @param [Boolean] eligible Whether the user may use account-preserving MFA recovery
+  # Account-preserving MFA recovery eligibility was evaluated for a user
+  def account_recovery_eligibility_evaluated(eligible:, **extra)
+    track_event(:account_recovery_eligibility_evaluated, eligible:, **extra)
+  end
+
+  # A user visited the account-preserving MFA recovery start page
+  def account_recovery_options_visit(**extra)
+    track_event(:account_recovery_options_visit, **extra)
+  end
+
+  # @param [Boolean] success Whether the recovery request was created
+  # @param [Hash] errors Errors resulting from the request attempt
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [String, nil] recovery_state State of the recovery request after creation
+  # @param [Boolean] rate_limited Whether the request was blocked by rate limiting
+  # @param [Hash, nil] telephony_response Response from the recovery SMS notification
+  # An account-preserving MFA recovery request was submitted
+  def account_recovery_request(
+    success:,
+    errors: nil,
+    error_details: nil,
+    recovery_state: nil,
+    rate_limited: false,
+    telephony_response: nil,
+    **extra
+  )
+    track_event(
+      :account_recovery_request,
+      success:,
+      errors:,
+      error_details:,
+      recovery_state:,
+      rate_limited:,
+      telephony_response:,
+      **extra,
+    )
+  end
+
   # @identity.idp.previous_event_name Account Reset
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
@@ -213,6 +252,7 @@ module AnalyticsEvents
   # @param [Boolean] totp does the user have an authentication app as a 2FA option?
   # @param [Boolean] piv_cac does the user have PIV/CAC as a 2FA option?
   # @param [Integer] email_addresses number of email addresses the user has
+  # @param [Hash, nil] errors Errors preventing creation of a legacy reset request
   # @param [String, nil] message_id from AWS Pinpoint API
   # @param [String, nil] request_id from AWS Pinpoint API
   # An account reset has been requested
@@ -222,6 +262,7 @@ module AnalyticsEvents
     totp:,
     piv_cac:,
     email_addresses:,
+    errors: nil,
     request_id: nil,
     message_id: nil,
     **extra
@@ -233,6 +274,7 @@ module AnalyticsEvents
       totp:,
       piv_cac:,
       email_addresses:,
+      errors:,
       request_id:,
       message_id:,
       **extra,

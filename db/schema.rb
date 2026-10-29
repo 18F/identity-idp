@@ -25,6 +25,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_190050) do
     t.index ["experiment", "discriminator"], name: "index_ab_test_assignments_on_experiment_and_discriminator", unique: true
   end
 
+  create_table "account_recovery_requests", force: :cascade do |t|
+    t.string "cancel_reason", comment: "sensitive=false"
+    t.datetime "cancelled_at", comment: "sensitive=false"
+    t.datetime "completed_at", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "expired_at", comment: "sensitive=false"
+    t.string "failure_reason", comment: "sensitive=false"
+    t.datetime "granted_at", comment: "sensitive=false"
+    t.datetime "link_verified_at", comment: "sensitive=false"
+    t.datetime "password_verified_at", comment: "sensitive=false"
+    t.datetime "requested_at", comment: "sensitive=false"
+    t.string "state", null: false, comment: "sensitive=false"
+    t.datetime "token_expires_at", comment: "sensitive=false"
+    t.string "token_fingerprint", comment: "sensitive=true"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.integer "user_id", null: false, comment: "sensitive=false"
+    t.index ["user_id"], name: "index_account_recovery_requests_on_active_user_id", unique: true, where: "((completed_at IS NULL) AND (cancelled_at IS NULL) AND (expired_at IS NULL))"
+    t.index ["user_id"], name: "index_account_recovery_requests_on_user_id"
+  end
+
   create_table "account_reset_requests", force: :cascade do |t|
     t.datetime "cancelled_at", precision: nil, comment: "sensitive=false"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"

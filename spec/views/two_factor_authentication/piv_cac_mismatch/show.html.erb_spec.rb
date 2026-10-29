@@ -27,6 +27,36 @@ RSpec.describe 'two_factor_authentication/piv_cac_mismatch/show.html.erb' do
         href: account_reset_recovery_options_url,
       )
     end
+
+    context 'when account-preserving recovery is available' do
+      before { assign(:account_recovery_url, account_recovery_start_url) }
+
+      it 'offers recovery without a legacy deletion link' do
+        expect(rendered).to have_link(
+          t('two_factor_authentication.account_recovery.recover_link'),
+          href: account_recovery_start_url,
+        )
+        expect(rendered).not_to have_link(href: account_reset_recovery_options_url)
+        expect(rendered).to have_content(
+          t('two_factor_authentication.piv_cac_mismatch.instructions_recovery'),
+        )
+      end
+    end
+
+    context 'with a pending recovery request' do
+      before do
+        assign(:account_recovery_url, account_recovery_pending_url)
+        assign(:account_recovery_pending, true)
+      end
+
+      it 'links to the pending request without a legacy deletion link' do
+        expect(rendered).to have_link(
+          t('two_factor_authentication.account_recovery.pending_link'),
+          href: account_recovery_pending_url,
+        )
+        expect(rendered).not_to have_link(href: account_reset_recovery_options_url)
+      end
+    end
   end
 
   context 'when user has other authentication methods' do

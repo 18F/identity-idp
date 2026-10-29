@@ -26,6 +26,11 @@ account_creation_device_profiling: disabled
 account_creation_passkey_auto_prompt_percent: 0
 account_creation_recaptcha_score_threshold: 0.0
 account_creation_tmx_processed_percent: 0
+account_recovery_request_attempt_window_in_minutes: 2
+account_recovery_request_max_attempts: 2
+account_recovery_token_valid_for_hours: 24
+account_recovery_v2_enabled: false
+account_recovery_wait_period_days: 1
 account_reset_attempt_window_in_minutes: 1_440
 account_reset_fraud_user_wait_period_days:
 account_reset_max_attempts: 10
