@@ -68,6 +68,8 @@ module TwoFactorAuthentication
     end
 
     def remove_personal_key
+      SiteKeys::Vault.new(user: current_user, user_session:)
+        .consume_personal_key(personal_key_param)
       # for now we will regenerate a key and not show it to them so retire personal key page shows
       PersonalKeyGenerator.new(current_user).generate!
       user_session.delete(:personal_key)

@@ -47,6 +47,13 @@ module Users
 
     private
 
+    def recover_site_key_root
+      vault = SiteKeys::Vault.new(user: current_user, user_session:)
+      vault.recover(personal_key_params) if vault.recoverable?
+    rescue Encryption::EncryptionError
+      nil
+    end
+
     def rate_limiter
       @rate_limiter ||= RateLimiter.new(
         user: current_user,
@@ -74,6 +81,7 @@ module Users
     def handle_success(decrypted_pii:)
       analytics.personal_key_reactivation
       reactivate_account_session.store_decrypted_pii(decrypted_pii)
+      recover_site_key_root
       cache_attempt_events
       redirect_to verify_password_url
     end
