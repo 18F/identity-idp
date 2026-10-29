@@ -326,7 +326,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         expect(form.submit.success?).to eq(false)
         expect(form.response).to eq(
           error: 'invalid_dpop_proof',
-          error_description: t('openid_connect.token.errors.dpop_proof_required'),
+          error_description: 'dpop_proof_missing',
         )
         expect(form.http_status).to eq(:bad_request)
       end
@@ -343,7 +343,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       it 'answers invalid_dpop_proof naming the key mismatch' do
         expect(form.submit.success?).to eq(false)
         expect(form.response[:error_description])
-          .to eq(t('openid_connect.token.errors.dpop_key_mismatch'))
+          .to eq('dpop_key_mismatch')
       end
     end
 
@@ -366,7 +366,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       it 'refuses the exchange and tells the actor to sign the person in again' do
         expect(form.submit.success?).to eq(false)
         expect(form.response[:error_description])
-          .to eq(t('openid_connect.token.errors.dpop_subject_token_unbound'))
+          .to eq('dpop_subject_token_unbound')
       end
     end
 

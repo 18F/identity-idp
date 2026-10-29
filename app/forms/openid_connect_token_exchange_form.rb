@@ -182,7 +182,7 @@ class OpenidConnectTokenExchangeForm
 
     if loaded_subject_token.dpop_jkt.blank?
       errors.add(
-        :dpop_proof, t('openid_connect.token.errors.dpop_subject_token_unbound'),
+        :dpop_proof, 'dpop_subject_token_unbound',
         type: :dpop_subject_token_unbound
       )
       return
