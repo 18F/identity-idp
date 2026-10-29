@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe OpenidConnectTokenExchangeForm do
+  include Rails.application.routes.url_helpers
+
   subject(:form) { described_class.new(params) }
 
   let(:broker) { create(:service_provider, :active, issuer: 'broker-issuer') }
@@ -54,8 +56,10 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       resource:,
       requested_token_type:,
       scope:,
+      dpop_proof:,
     }
   end
+  let(:dpop_proof) { nil }
 
   before do
     allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
@@ -278,6 +282,123 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         expect(form.submit.success?).to eq(false)
         expect(form.errors[:subject_token]).to include('is invalid')
       end
+    end
+  end
+
+  describe 'for an actor registered for key binding' do
+    let(:target_private_key) do
+      OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read)
+    end
+    let(:subject_token) do
+      TokenExchange::SubjectTokenIssuer.issue(
+        identity:, actor_return_log_id: actor_return_log.id, dpop_jkt: dpop_thumbprint,
+      ).token
+    end
+    let(:dpop_proof) do
+      build_dpop_proof(http_url: api_openid_connect_token_url, access_token: subject_token)
+    end
+
+    before do
+      broker.update!(pkce: true)
+      allow(IdentityConfig.store).to receive(:dpop_required_issuers).and_return([broker_issuer])
+    end
+
+    it 'issues a token bound to the key the subject token was bound to' do
+      expect(form.submit.success?).to eq(true)
+
+      response = form.response
+      expect(response[:token_type]).to eq('DPoP')
+
+      jwt = JWE.decrypt(response[:access_token], target_private_key)
+      payload = JWT.decode(
+        jwt, Rails.application.config.oidc_public_key, true,
+        algorithm: IdTokenBuilder::JWT_SIGNING_ALGORITHM
+      ).first
+      expect(payload['cnf']).to eq('jkt' => dpop_thumbprint)
+      expect(TokenExchange::AccessToken.load(response[:access_token]).dpop_jkt)
+        .to eq(dpop_thumbprint)
+    end
+
+    context 'without a proof' do
+      let(:dpop_proof) { nil }
+
+      it 'answers invalid_dpop_proof with a 400' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.response).to eq(
+          error: 'invalid_dpop_proof',
+          error_description: 'dpop_proof_missing',
+        )
+        expect(form.http_status).to eq(:bad_request)
+      end
+    end
+
+    context 'with a proof signed by a key other than the one the subject token is bound to' do
+      let(:dpop_proof) do
+        build_dpop_proof(
+          http_url: api_openid_connect_token_url, access_token: subject_token,
+          key: OpenSSL::PKey::EC.generate('prime256v1')
+        )
+      end
+
+      it 'answers invalid_dpop_proof naming the key mismatch' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.response[:error_description])
+          .to eq('dpop_key_mismatch')
+      end
+    end
+
+    context 'with a proof that does not carry the hash of the subject token' do
+      let(:dpop_proof) { build_dpop_proof(http_url: api_openid_connect_token_url) }
+
+      it 'answers invalid_dpop_proof' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.response[:error]).to eq('invalid_dpop_proof')
+      end
+    end
+
+    context 'when the subject token was issued without a binding' do
+      let(:subject_token) do
+        TokenExchange::SubjectTokenIssuer.issue(
+          identity:, actor_return_log_id: actor_return_log.id,
+        ).token
+      end
+
+      it 'refuses the exchange and tells the actor to sign the person in again' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.response[:error_description])
+          .to eq('dpop_subject_token_unbound')
+      end
+    end
+
+    context 'when the request fails an earlier check' do
+      let(:audience) { 'unknown-issuer' }
+
+      it 'does not verify the proof, so its jti is not consumed' do
+        expect(DpopProofForm).not_to receive(:new)
+        expect(form.submit.success?).to eq(false)
+        expect(form.response[:error]).to eq('invalid_target')
+      end
+    end
+  end
+
+  describe 'for an actor not registered for key binding' do
+    let(:dpop_proof) { 'not-read' }
+
+    it 'ignores a DPoP header and issues a bearer token without cnf' do
+      expect(DpopProofForm).not_to receive(:new)
+      expect(form.submit.success?).to eq(true)
+
+      response = form.response
+      expect(response[:token_type]).to eq('Bearer')
+      jwt = JWE.decrypt(
+        response[:access_token],
+        OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read),
+      )
+      payload = JWT.decode(
+        jwt, Rails.application.config.oidc_public_key, true,
+        algorithm: IdTokenBuilder::JWT_SIGNING_ALGORITHM
+      ).first
+      expect(payload).not_to have_key('cnf')
     end
   end
 

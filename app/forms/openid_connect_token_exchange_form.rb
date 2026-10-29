@@ -2,6 +2,8 @@
 
 class OpenidConnectTokenExchangeForm
   include ActiveModel::Model
+  include ActionView::Helpers::TranslationHelper
+  include Rails.application.routes.url_helpers
 
   ATTRS = %i[
     client_id
@@ -12,6 +14,7 @@ class OpenidConnectTokenExchangeForm
     resource
     requested_token_type
     scope
+    dpop_proof
   ].freeze
 
   # Parameters RFC 8693 section 2.1 requires on every token exchange request.
@@ -44,6 +47,7 @@ class OpenidConnectTokenExchangeForm
   validate :validate_actor_return_log, unless: :client_rejected?
   validate :validate_scope, unless: :client_rejected?
   validate :validate_ial2, unless: :client_rejected?
+  validate :validate_dpop_proof, unless: :client_rejected?
 
   def initialize(params)
     ATTRS.each do |key|
@@ -71,7 +75,9 @@ class OpenidConnectTokenExchangeForm
     {
       access_token: issued_token.token,
       issued_token_type: TokenExchange::Constants::ACCESS_TOKEN_TYPE,
-      token_type: 'Bearer',
+      # RFC 9449 §5: a token bound to the actor's key is presented with a proof, never as a bearer
+      # token.
+      token_type: bound_thumbprint ? 'DPoP' : 'Bearer',
       expires_in: issued_token.expires_in,
       scope: requested_scope,
     }
@@ -87,6 +93,10 @@ class OpenidConnectTokenExchangeForm
     return :ok if valid?
 
     oauth_error == 'invalid_client' ? :unauthorized : :bad_request
+  end
+
+  def url_options
+    {}
   end
 
   private
@@ -160,6 +170,52 @@ class OpenidConnectTokenExchangeForm
     errors.add(:scope, :invalid)
   end
 
+  # An actor registered for key binding proves possession of the key its subject token is bound to
+  # (RFC 9449 §7.1): the proof is for POST to this endpoint, carries `ath` over the subject token as
+  # presented, and is signed by the key whose thumbprint the subject token recorded at the code
+  # exchange. It runs last, so a request refused for any other reason never consumes the proof's
+  # single-use jti. An actor not registered for key binding is a bearer client; a DPoP header it
+  # sends is not read.
+  def validate_dpop_proof
+    return unless dpop_binding_required?
+    return if errors.any?
+
+    if loaded_subject_token.dpop_jkt.blank?
+      errors.add(
+        :dpop_proof, 'dpop_subject_token_unbound',
+        type: :dpop_subject_token_unbound
+      )
+      return
+    end
+
+    return if dpop_result.success?
+
+    errors.add(
+      :dpop_proof, dpop_result.first_error_message, type: dpop_result.extra[:dpop_error_type]
+    )
+  end
+
+  def dpop_binding_required?
+    broker.present? && broker.dpop_required?
+  end
+
+  # Verified once per form: the proof's jti is single-use, so a second run of the check on the
+  # same proof (validations run on every `valid?`) would report a replay of our own check.
+  def dpop_result
+    @dpop_result ||= DpopProofForm.new(
+      proof: dpop_proof,
+      http_method: 'POST',
+      http_url: api_openid_connect_token_url,
+      access_token: subject_token,
+      expected_thumbprint: loaded_subject_token.dpop_jkt,
+    ).submit
+  end
+
+  # The thumbprint the delegated token is bound to (its `cnf.jkt`), when the actor is key-bound.
+  def bound_thumbprint
+    loaded_subject_token.dpop_jkt if dpop_binding_required?
+  end
+
   def validate_ial2
     return if subject_token.blank?
     return if loaded_subject_token.blank?
@@ -216,8 +272,16 @@ class OpenidConnectTokenExchangeForm
   def error_response
     {
       error: oauth_error,
-      error_description: errors.full_messages.join(' '),
+      error_description:,
     }
+  end
+
+  # A proof problem is described by the verifier's own message (RFC 9449 §5); every other
+  # failure keeps the attribute-prefixed messages the endpoint has always returned.
+  def error_description
+    return errors[:dpop_proof].join(' ') if errors.include?(:dpop_proof)
+
+    errors.full_messages.join(' ')
   end
 
   # Maps validation failures onto the OAuth error codes defined by RFC 6749
@@ -227,6 +291,7 @@ class OpenidConnectTokenExchangeForm
     return 'unsupported_grant_type' if errors.include?(:grant_type)
     return 'invalid_client' if errors.include?(:client_id)
     return 'invalid_target' if errors.include?(:audience) || errors.include?(:resource)
+    return 'invalid_dpop_proof' if errors.include?(:dpop_proof)
     return 'invalid_scope' if errors.include?(:scope)
 
     'invalid_grant'
@@ -249,6 +314,8 @@ class OpenidConnectTokenExchangeForm
       subject_token_fingerprint: subject_token_fingerprint,
       oauth_error_code: (oauth_error unless valid?),
       integration_errors:,
+      dpop_bound: dpop_binding_required? || nil,
+      dpop_error_type: errors.details[:dpop_proof]&.first&.dig(:type),
     }
   end
 
@@ -258,6 +325,7 @@ class OpenidConnectTokenExchangeForm
       target_issuer: audience,
       resource:,
       scope: requested_scope,
+      dpop_jkt: bound_thumbprint,
     )
   end
 
