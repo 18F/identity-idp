@@ -132,8 +132,9 @@ RSpec.describe Idv::Session do
 
     context 'when escrowed document artifacts exist for the capture session' do
       let(:service_provider) { create(:service_provider) }
+      let(:doc_auth_vendor) { Idp::Constants::Vendors::SOCURE }
       let(:document_capture_session) do
-        create(:document_capture_session, user:, issuer: service_provider.issuer)
+        create(:document_capture_session, user:, issuer: service_provider.issuer, doc_auth_vendor:)
       end
       let!(:artifact) do
         create(:document_artifact, document_capture_session:, image_type: 'front')
@@ -148,7 +149,6 @@ RSpec.describe Idv::Session do
           document_images_sharing_service_providers: [service_provider.issuer],
         )
         subject.document_capture_session_uuid = document_capture_session.uuid
-        subject.doc_auth_vendor = Idp::Constants::Vendors::SOCURE
       end
 
       it 'associates the artifacts with the newly created profile' do
@@ -176,7 +176,7 @@ RSpec.describe Idv::Session do
       end
 
       context 'when the profile was built from another proofer after a Socure attempt' do
-        before { subject.doc_auth_vendor = Idp::Constants::Vendors::LEXIS_NEXIS }
+        let(:doc_auth_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
 
         it 'does not stamp or link the Socure artifacts to the profile' do
           subject.create_profile_from_applicant_with_password(

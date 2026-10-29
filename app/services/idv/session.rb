@@ -469,8 +469,14 @@ module Idv
       IdentityConfig.store.in_person_passports_enabled
     end
 
+    def document_capture_session
+      return nil if document_capture_session_uuid.blank?
+
+      DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+    end
+
     def ipp_passport_requested?
-      !!DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)&.passport_requested?
+      !!document_capture_session&.passport_requested?
     end
 
     # Confirms the enrollment's document has been verified for its type. In-person
@@ -506,14 +512,14 @@ module Idv
     # Only link when the result this profile was built from came from the proofer
     # that produced the artifacts, never from a redo through another proofer or IPP.
     def associate_document_artifacts_with_profile(profile)
-      return unless DOCUMENT_ARTIFACT_VENDORS.include?(doc_auth_vendor)
       return if document_capture_session_uuid.blank?
       return if profile.in_person_verification_pending?
 
-      document_capture_session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
-      return unless document_capture_session&.document_images_sharing_allowed?
+      capture_session = document_capture_session
+      return unless DOCUMENT_ARTIFACT_VENDORS.include?(capture_session&.doc_auth_vendor)
+      return unless capture_session&.document_images_sharing_allowed?
 
-      document_capture_session.associate_document_artifacts_with_profile!(profile)
+      capture_session.associate_document_artifacts_with_profile!(profile)
     end
 
     def set_idv_session
