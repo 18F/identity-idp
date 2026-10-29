@@ -16,6 +16,7 @@ RSpec.describe SiteKeys::RecoveryCodesController do
         :before,
         :confirm_two_factor_authenticated,
         :confirm_recently_authenticated_2fa,
+        :confirm_site_key_root_present,
         :redirect_if_recoverable,
       )
     end
@@ -30,6 +31,15 @@ RSpec.describe SiteKeys::RecoveryCodesController do
       get :show
 
       expect(response.body).to include('name="acknowledgment"')
+    end
+
+    it 'describes the code as a site key recovery code, not a personal key' do
+      vault.unlock(user.password, create: true)
+
+      get :show
+
+      expect(response.body).to include('Your site key recovery code was generated on')
+      expect(response.body).not_to include('Your personal key was generated on')
     end
   end
 
@@ -129,6 +139,33 @@ RSpec.describe SiteKeys::RecoveryCodesController do
 
         expect(response).to redirect_to(site_key_recovery_url)
       end
+    end
+  end
+
+  describe 'without a site key root' do
+    it 'sends the user to the account page instead of offering a new code' do
+      get :new
+
+      expect(response).to redirect_to(account_url)
+    end
+
+    it 'does not try to mint a code' do
+      post :create
+
+      expect(response).to redirect_to(account_url)
+    end
+  end
+
+  describe 'when site keys are disabled' do
+    before do
+      create_site_key_root(user)
+      allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(false)
+    end
+
+    it 'sends the user to the account page' do
+      get :new
+
+      expect(response).to redirect_to(account_url)
     end
   end
 

@@ -11,7 +11,10 @@
 <div class="full-width-box margin-y-5">
   <%= render 'partials/personal_key/key',
              code: @code,
-             personal_key_generated_at: @recovery_code_generated_at,
+             generated_on_html: t(
+               'forms.site_key_recovery_code.generated_on_html',
+               date_html: l(@recovery_code_generated_at, format: t('time.formats.event_date')),
+             ),
              show_save_buttons: true,
              download_file_name: 'site_key_recovery_code.txt',
              download_event_name: 'Site key: download recovery code' %>

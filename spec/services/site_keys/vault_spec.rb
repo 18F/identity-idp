@@ -115,6 +115,8 @@ RSpec.describe SiteKeys::Vault do
       end
 
       it 'leaves it alone before the second factor' do
+        expect(SiteKeys::RootKeyPair).not_to receive(:generate)
+
         expect(vault.unlock(password, create: true, repair: false)).to be_nil
         expect(user.reload.site_key_root.encrypted_root).to be_nil
       end
@@ -236,6 +238,26 @@ RSpec.describe SiteKeys::Vault do
       it 'refuses the acknowledgement' do
         expect(vault.acknowledge_recovery_code).to eq(false)
         expect(user.site_key_root.recovery_code_acknowledged_at).to be_nil
+      end
+    end
+
+    context 'when this session unlocks again after another session replaced the code' do
+      let!(:replaced_code) { vault.pending_recovery_code }
+
+      before do
+        described_class.new(user: User.find(user.id), user_session: {}).unlock(password)
+        user.reload
+        vault.unlock(password)
+      end
+
+      it 'shows a code that still opens the root instead of the replaced one' do
+        code = vault.pending_recovery_code
+        expect(code).not_to eq(replaced_code)
+
+        vault.acknowledge_recovery_code
+        user.site_key_root.forget_password!
+        fresh = described_class.new(user: user.reload, user_session: {})
+        expect(fresh.recover(code)).to be_present
       end
     end
   end

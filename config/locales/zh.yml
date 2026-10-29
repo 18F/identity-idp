@@ -1029,12 +1029,14 @@ forms.registration.labels.email: 输入你的电邮地址
 forms.registration.labels.email_language: 选择你的电邮语言偏好
 forms.site_key_recovery_code.acknowledgement.header: 如果你重设密码，此代码是保留加密站点数据的唯一方法。
 forms.site_key_recovery_code.acknowledgement.text: 请像第二个密码一样对待它。妥善保管，不要与任何人分享。
+forms.site_key_recovery_code.generated_on_html: 你的站点密钥恢复代码在 <strong>%{date_html}</strong> 生成。
 forms.site_key_recovery_code.get_new: 获取新的站点密钥恢复代码
 forms.site_key_recovery_code.get_new_description: 你的旧恢复代码将失效。新代码会显示在下一页，请妥善保存。
 forms.site_key_recovery_code.header: 保存你的站点密钥恢复代码
 forms.site_key_recovery_code.required_checkbox: 我已保存站点密钥恢复代码及其生成日期。
 forms.site_key_recovery.alternative: 没有恢复代码？
 forms.site_key_recovery.code_label: 恢复代码
+forms.site_key_recovery.confirmation_error: 你输入的恢复代码不对
 forms.site_key_recovery.header: 输入你的站点密钥恢复代码
 forms.site_key_recovery.instructions: 你重设了密码，因此该网站的加密数据已被锁定。输入你保存的站点密钥恢复代码以保留这些数据。
 forms.site_key_recovery.start_over: 放弃旧数据重新开始

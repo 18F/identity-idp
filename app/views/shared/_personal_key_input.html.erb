@@ -3,12 +3,14 @@ locals:
 * form: SimpleForm form builder
 * name: field name (default :personal_key)
 * label: field label (default personal key label)
+* error_message: shown for a value in the wrong format (default personal key message)
 %>
 <%= render ValidatedFieldComponent.new(
       form: form,
       name: local_assigns.fetch(:name, :personal_key),
       error_messages: {
-        patternMismatch: t('users.personal_key.confirmation_error'),
+        patternMismatch: local_assigns[:error_message] ||
+          t('users.personal_key.confirmation_error'),
       },
       label: local_assigns.fetch(:label, t('forms.personal_key.confirmation_label')),
       required: true,

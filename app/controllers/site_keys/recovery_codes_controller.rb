@@ -9,6 +9,7 @@ module SiteKeys
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_recently_authenticated_2fa, only: [:new, :create]
+    before_action :confirm_site_key_root_present, only: [:new, :create]
     before_action :redirect_if_recoverable, only: [:new, :create]
     before_action :apply_secure_headers_override, only: :show
 
@@ -46,6 +47,12 @@ module SiteKeys
     end
 
     private
+
+    def confirm_site_key_root_present
+      return if IdentityConfig.store.site_key_enabled && current_user.site_key_root.present?
+
+      redirect_to account_url
+    end
 
     def redirect_if_recoverable
       redirect_to site_key_recovery_url if site_key_vault.recoverable?

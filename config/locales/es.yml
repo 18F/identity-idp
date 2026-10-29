@@ -1027,12 +1027,14 @@ forms.registration.labels.email: Ingrese su dirección de correo electrónico
 forms.registration.labels.email_language: Seleccione su preferencia de idioma del correo electrónico
 forms.site_key_recovery_code.acknowledgement.header: Este código es la única manera de conservar los datos cifrados del sitio si restablece su contraseña.
 forms.site_key_recovery_code.acknowledgement.text: Trátelo como una segunda contraseña. Guárdelo en un lugar seguro y no lo comparta con nadie.
+forms.site_key_recovery_code.generated_on_html: Su código de recuperación de clave de sitio fue generado el <strong>%{date_html}</strong>
 forms.site_key_recovery_code.get_new: Obtener un nuevo código de recuperación de clave de sitio
 forms.site_key_recovery_code.get_new_description: Su código de recuperación anterior dejará de funcionar. Verá el nuevo código en la siguiente página; guárdelo en un lugar seguro.
 forms.site_key_recovery_code.header: Guarde su código de recuperación de clave de sitio
 forms.site_key_recovery_code.required_checkbox: Guardé mi código de recuperación de clave de sitio con la fecha en que se generó.
 forms.site_key_recovery.alternative: ¿No tiene su código de recuperación?
 forms.site_key_recovery.code_label: Código de recuperación
+forms.site_key_recovery.confirmation_error: Ingresó un código de recuperación incorrecto.
 forms.site_key_recovery.header: Ingrese su código de recuperación de clave de sitio
 forms.site_key_recovery.instructions: Restableció su contraseña, por lo que los datos cifrados de este sitio están bloqueados. Ingrese el código de recuperación de clave de sitio que guardó para conservarlos.
 forms.site_key_recovery.start_over: Empezar de nuevo sin mis datos anteriores
