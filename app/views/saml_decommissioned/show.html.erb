@@ -18,7 +18,7 @@
                 <h1>Decommissioned Access</h1>
                 <p>This sign in page for <%= @friendly_name %> has been decommissioned. (404)</p>
                 <% if @return_to_sp_url.present? %>
-                    <p>Please visit <%= link_to @return_to_sp_url, @return_to_sp_url, target: '_blank', rel: 'noopener noreferrer' %> and navigate to the button to sign in with Login.gov. If this resolves the issue, ensure that you update your bookmarks.</p>
+                    <p>Please visit <%= link_to @friendly_name, @return_to_sp_url, target: '_blank', rel: 'noopener noreferrer' %> and navigate to the button to sign in with Login.gov. If this resolves the issue, ensure that you update your bookmarks.</p>
                 <% else %>
                     <p>Please return to your service provider&rsquo;s homepage and navigate to the button to sign in with Login.gov. If this resolves the issue, ensure that you update your bookmarks.</p>
                 <% end %>
