@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 module AccountRecovery
-  # Continuation reached only after the recovery link and a fresh password have
-  # been verified. Replacement MFA selection and enrollment are added in a later
-  # phase; until then this page explains the temporary recovery session.
   class NewMfaSetupController < ApplicationController
     before_action :confirm_password_verified_request
 
@@ -23,8 +20,7 @@ module AccountRecovery
       render_not_found if account_recovery_request.blank?
     end
 
-    # Only the temporary pre-2FA session created by password verification may
-    # continue; a fully authenticated session has no recovery authorization.
+    # confirms that the current request is associated with a password-verified
     def account_recovery_request
       return @account_recovery_request if defined?(@account_recovery_request)
       return if !user_signed_in? || user_fully_authenticated?

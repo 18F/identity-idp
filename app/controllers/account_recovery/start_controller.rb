@@ -36,8 +36,6 @@ module AccountRecovery
 
     private
 
-    # A user with an unredeemed request signs in normally; the MFA pages show
-    # the pending-recovery banner and successful MFA cancels the request.
     def redirect_pending_request
       return unless AccountRecoveryRequest.active_for_user(current_user)&.awaiting_link_redemption?
 
