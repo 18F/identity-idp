@@ -6,6 +6,7 @@ FactoryBot.define do
         document_number: '1234567890',
         document_issued: '2020-01-01',
         document_expiration: '2030-01-01',
+        document_jurisdiction: 'WA',
       }
     end
   end

@@ -79,6 +79,7 @@ RSpec.describe SocureImageRetrievalJob do
         document_number: 'D-9988',
         document_issued: '2022-02-02',
         document_expiration: '2032-02-02',
+        document_jurisdiction: 'WA',
       }
     end
     let(:encrypted_document_metadata) do
