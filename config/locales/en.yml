@@ -1804,10 +1804,6 @@ openid_connect.logout.errors.id_token_hint_present: This application is misconfi
 openid_connect.logout.errors.no_client_id_or_id_token_hint: This application is misconfigured and must send either client_id or id_token_hint. Please see our documentation at https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: Do you want to sign out of %{app_name}?
 openid_connect.logout.heading_with_sp: Do you want to sign out of %{app_name} and return to %{service_provider_name}?
-openid_connect.token.errors.dpop_key_mismatch: The DPoP proof is signed with a different key than the one this token is bound to.
-openid_connect.token.errors.dpop_proof_invalid: 'The DPoP proof could not be verified: it must be a dpop+jwt signed with ES256 or RS256 by the public key in its jwk header, name the method and URL of this request, be recent, carry an unused jti and, when a token is presented, the ath hash of that token.'
-openid_connect.token.errors.dpop_proof_replayed: The jti of the DPoP proof has already been used; each proof must carry a unique jti.
-openid_connect.token.errors.dpop_proof_required: 'A DPoP proof is required: this client’s tokens are bound to its key, so send a DPoP header signed by that key with the request (RFC 9449).'
 openid_connect.token.errors.expired_code: is expired. Please see our documentation at https://developers.login.gov/support/#token-expired
 openid_connect.token.errors.invalid_aud: Invalid audience claim, expected %{url}. Please see our documentation at https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: Client must authenticate via PKCE or private_key_jwt, missing either code_challenge or client_assertion. Please see our documentation at https://developers.login.gov/support/#pkce-or-private-key

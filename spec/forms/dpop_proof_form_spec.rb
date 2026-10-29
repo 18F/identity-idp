@@ -116,7 +116,7 @@ RSpec.describe DpopProofForm do
         it 'returns :dpop_proof_missing' do
           expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_missing)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_proof_required'))
+            .to eq('dpop_proof_missing')
         end
       end
 
@@ -125,7 +125,7 @@ RSpec.describe DpopProofForm do
         it 'returns the invalid proof error' do
           expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_malformed)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+            .to eq('dpop_proof_malformed')
         end
       end
 
@@ -134,7 +134,7 @@ RSpec.describe DpopProofForm do
         it 'rejects the proof type' do
           expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_type)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+            .to eq('dpop_proof_type')
         end
       end
 
@@ -145,7 +145,7 @@ RSpec.describe DpopProofForm do
         it 'rejects the algorithm' do
           expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_algorithm)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+            .to eq('dpop_proof_algorithm')
         end
       end
 
@@ -156,7 +156,7 @@ RSpec.describe DpopProofForm do
         it 'rejects the algorithm' do
           expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_algorithm)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+            .to eq('dpop_proof_algorithm')
         end
       end
 
@@ -165,7 +165,7 @@ RSpec.describe DpopProofForm do
         it 'rejects the key' do
           expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_key)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+            .to eq('dpop_proof_key')
         end
       end
 
@@ -175,7 +175,7 @@ RSpec.describe DpopProofForm do
         it 'rejects the key' do
           expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_private_key)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+            .to eq('dpop_proof_private_key')
         end
       end
 
@@ -185,7 +185,7 @@ RSpec.describe DpopProofForm do
         it 'rejects the signature' do
           expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_signature)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+            .to eq('dpop_proof_signature')
         end
       end
 
@@ -194,7 +194,7 @@ RSpec.describe DpopProofForm do
         it 'rejects the signature' do
           expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_signature)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+            .to eq('dpop_proof_signature')
         end
       end
 
@@ -203,7 +203,7 @@ RSpec.describe DpopProofForm do
         it 'rejects the method' do
           expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_method)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+            .to eq('dpop_proof_method')
         end
       end
 
@@ -214,7 +214,7 @@ RSpec.describe DpopProofForm do
         it 'rejects the URI' do
           expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_uri)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+            .to eq('dpop_proof_uri')
         end
       end
 
@@ -225,7 +225,7 @@ RSpec.describe DpopProofForm do
         it 'rejects the URI' do
           expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_uri)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+            .to eq('dpop_proof_uri')
         end
       end
 
@@ -234,7 +234,7 @@ RSpec.describe DpopProofForm do
         it 'rejects issued at' do
           expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_issued_at)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+            .to eq('dpop_proof_issued_at')
         end
       end
 
@@ -243,7 +243,7 @@ RSpec.describe DpopProofForm do
         it 'rejects issued at' do
           expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_issued_at)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+            .to eq('dpop_proof_issued_at')
         end
       end
 
@@ -252,7 +252,7 @@ RSpec.describe DpopProofForm do
         it 'rejects issued at' do
           expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_issued_at)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+            .to eq('dpop_proof_issued_at')
         end
       end
 
@@ -264,7 +264,7 @@ RSpec.describe DpopProofForm do
           it 'rejects the token hash' do
             expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_token_hash)
             expect(result.first_error_message)
-              .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+              .to eq('dpop_proof_token_hash')
           end
         end
 
@@ -273,7 +273,7 @@ RSpec.describe DpopProofForm do
           it 'rejects the token hash' do
             expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_token_hash)
             expect(result.first_error_message)
-              .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+              .to eq('dpop_proof_token_hash')
           end
         end
       end
@@ -284,7 +284,7 @@ RSpec.describe DpopProofForm do
           it 'rejects the token hash' do
             expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_token_hash)
             expect(result.first_error_message)
-              .to eq(t('openid_connect.token.errors.dpop_proof_invalid'))
+              .to eq('dpop_proof_token_hash')
           end
         end
       end
@@ -296,7 +296,7 @@ RSpec.describe DpopProofForm do
           expect(ReplayGuard).not_to receive(:first_use?)
           expect(result.extra[:dpop_error_type]).to eq(:dpop_key_mismatch)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_key_mismatch'))
+            .to eq('dpop_key_mismatch')
         end
       end
 
@@ -306,7 +306,7 @@ RSpec.describe DpopProofForm do
         it 'rejects the replayed proof' do
           expect(result.extra[:dpop_error_type]).to eq(:dpop_proof_replayed)
           expect(result.first_error_message)
-            .to eq(t('openid_connect.token.errors.dpop_proof_replayed'))
+            .to eq('dpop_proof_replayed')
         end
       end
     end

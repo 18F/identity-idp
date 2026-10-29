@@ -1805,10 +1805,6 @@ openid_connect.logout.errors.no_client_id_or_id_token_hint: Cette application es
 openid_connect.logout.heading: Voulez-vous vous déconnecter de %{app_name}?
 openid_connect.logout.heading_with_sp: Souhaitez-vous vous déconnecter de %{app_name} et revenir à %{service_provider_name}?
 
-openid_connect.token.errors.dpop_key_mismatch: La preuve DPoP est signée avec une clé différente de celle à laquelle ce jeton est lié.
-openid_connect.token.errors.dpop_proof_invalid: 'La preuve DPoP n’a pas pu être vérifiée : elle doit être un dpop+jwt signé en ES256 ou RS256 par la clé publique de son en-tête jwk, indiquer la méthode et l’URL de cette requête, être récente, porter un jti inutilisé et, lorsqu’un jeton est présenté, le hachage ath de ce jeton.'
-openid_connect.token.errors.dpop_proof_replayed: Le jti de la preuve DPoP a déjà été utilisé ; chaque preuve doit porter un jti unique.
-openid_connect.token.errors.dpop_proof_required: 'Une preuve DPoP est requise : les jetons de ce client sont liés à sa clé, envoyez donc avec la requête un en-tête DPoP signé avec cette clé (RFC 9449).'
 openid_connect.token.errors.expired_code: est expiré. Veuillez consulter notre documentation à https://developers.login.gov/support/#token-expired
 openid_connect.token.errors.invalid_aud: Affirmation liée à l’auditoire non valide, attendu %{url}. Veuillez consulter notre documentation à https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: Le client doit s’authentifier par PKCE ou private_key_jwt, code_challenge ou client_assertion manquant. Veuillez consulter notre documentation à https://developers.login.gov/support/#pkce-or-private-key

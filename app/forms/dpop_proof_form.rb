@@ -6,11 +6,11 @@
 #
 # The response carries the key thumbprint (`extra[:dpop_thumbprint]`), which is what Login.gov
 # stores with the artifact it binds and returns to resource servers as `cnf.jkt` (RFC 7800). Every
-# failure maps to the RFC 9449 §5 error `invalid_dpop_proof`; the first error message is the
-# `error_description`, and `extra[:dpop_error_type]` names the failed check for analytics.
+# failure maps to the RFC 9449 §5 error `invalid_dpop_proof`; the first error message is the failed
+# check's symbol, which is also `extra[:dpop_error_type]`. It goes to the client's developer as the
+# `error_description`, never to a person, so it is a stable token to look up rather than a sentence.
 class DpopProofForm
   include ActiveModel::Model
-  include ActionView::Helpers::TranslationHelper
 
   PROOF_TYPE = 'dpop+jwt'
   ALLOWED_ALGORITHMS = %w[ES256 RS256].freeze
@@ -52,7 +52,7 @@ class DpopProofForm
   # Memoized because the jti check consumes the jti: validating twice would reject the proof the
   # form just accepted.
   # @return [FormResponse] success with `extra[:dpop_thumbprint]`, or failure whose first error
-  #   message is the `error_description` and whose `extra[:dpop_error_type]` names the check
+  #   message and `extra[:dpop_error_type]` both name the failed check
   def submit
     return @submit if defined?(@submit)
 
@@ -203,9 +203,10 @@ class DpopProofForm
   end
 
   # The app's convention for forms: the message is the second argument and the machine-readable
-  # symbol rides in `type:`, which is where `errors.details` and FormResponse read it from.
+  # symbol rides in `type:`, which is where `errors.details` and FormResponse read it from. The
+  # message is the symbol itself: the error reaches another program, not a person.
   def reject(error_type)
-    errors.add(:proof, message_for(error_type), type: error_type)
+    errors.add(:proof, error_type.to_s, type: error_type)
   end
 
   # Read the header without trusting anything yet: it tells us which key and algorithm the client
@@ -256,18 +257,5 @@ class DpopProofForm
 
   def thumbprint
     @thumbprint ||= DpopProofForm.thumbprint(jwk)
-  end
-
-  # The `error_description` for `invalid_dpop_proof`. Three cases get their own wording because
-  # the client's fix differs: send a proof, sign with the bound key, or use a fresh jti. Every
-  # other failure gets the one description listing what a valid proof must satisfy, so the
-  # response does not help an attacker tune a forged proof check by check.
-  def message_for(error_type)
-    case error_type
-    when :dpop_proof_missing then t('openid_connect.token.errors.dpop_proof_required')
-    when :dpop_key_mismatch then t('openid_connect.token.errors.dpop_key_mismatch')
-    when :dpop_proof_replayed then t('openid_connect.token.errors.dpop_proof_replayed')
-    else t('openid_connect.token.errors.dpop_proof_invalid')
-    end
   end
 end
