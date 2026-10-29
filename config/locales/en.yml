@@ -1804,6 +1804,7 @@ openid_connect.logout.errors.id_token_hint_present: This application is misconfi
 openid_connect.logout.errors.no_client_id_or_id_token_hint: This application is misconfigured and must send either client_id or id_token_hint. Please see our documentation at https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: Do you want to sign out of %{app_name}?
 openid_connect.logout.heading_with_sp: Do you want to sign out of %{app_name} and return to %{service_provider_name}?
+openid_connect.token.errors.acr_values_invalid: 'acr_values must name an assurance level of the authorization request: urn:acr.login.gov:verified or http://idmanagement.gov/ns/assurance/ial/2 for an identity-verified identity at the application, urn:acr.login.gov:auth-only or http://idmanagement.gov/ns/assurance/ial/1 for none.'
 openid_connect.token.errors.expired_code: is expired. Please see our documentation at https://developers.login.gov/support/#token-expired
 openid_connect.token.errors.invalid_aud: Invalid audience claim, expected %{url}. Please see our documentation at https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: Client must authenticate via PKCE or private_key_jwt, missing either code_challenge or client_assertion. Please see our documentation at https://developers.login.gov/support/#pkce-or-private-key
@@ -1812,6 +1813,7 @@ openid_connect.token.errors.invalid_code_verifier: code_verifier did not match c
 openid_connect.token.errors.invalid_iat: iat must be an integer or floating point Unix timestamp representing a time in the past. Please see our documentation at https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: Could not validate assertion against any registered public keys. Please see our documentation at https://developers.login.gov/support/#invalid-token-signature
 openid_connect.token.errors.no_identity_at_target: 'The person has not signed in at the application named in audience, so there is no identity to delegate: send the person to sign in there (initiate_login_uri) and request the exchange again.'
+openid_connect.token.errors.target_identity_assurance: 'The person''s identity at the application named in audience is not identity-verified, and acr_values asks for one that is: send the person to sign in there at that level (initiate_login_uri) and request the exchange again.'
 openid_connect.user_info.errors.encryption_unavailable: 'This service provider is configured to receive encrypted userinfo responses, but no usable encryption key is registered for it: the response was not sent.'
 openid_connect.user_info.errors.malformed_authorization: Malformed Authorization header. Please see our documentation at https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No Authorization header provided. Please see our documentation at https://developers.login.gov/support/#no-auth-header

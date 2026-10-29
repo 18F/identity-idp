@@ -1816,6 +1816,7 @@ openid_connect.logout.errors.no_client_id_or_id_token_hint: Esta aplicación est
 openid_connect.logout.heading: ¿Desea cerrar sesión en %{app_name}?
 openid_connect.logout.heading_with_sp: ¿Desea cerrar sesión en %{app_name} y volver a %{service_provider_name}?
 
+openid_connect.token.errors.acr_values_invalid: 'acr_values debe indicar un nivel de garantía de la solicitud de autorización: urn:acr.login.gov:verified o http://idmanagement.gov/ns/assurance/ial/2 para una identidad verificada en la aplicación, urn:acr.login.gov:auth-only o http://idmanagement.gov/ns/assurance/ial/1 para ninguna.'
 openid_connect.token.errors.expired_code: venció. Consulte nuestra documentación en https://developers.login.gov/support/#token-expired
 openid_connect.token.errors.invalid_aud: Notificación de audiencia no válida, %{url} prevista. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: El cliente debe autenticarse a través de PKCE o private_key_jwt, omitiendo code_challenge o client_assertion. Consulte nuestra documentación en https://developers.login.gov/support/#pkce-or-private-key
@@ -1824,6 +1825,7 @@ openid_connect.token.errors.invalid_code_verifier: code_verifier no coincide con
 openid_connect.token.errors.invalid_iat: iat debe ser una marca de tiempo Unix de punto flotante o un entero que represente un momento en el pasado. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: No se pudo validar la afirmación contra ninguna clave pública registrada. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-token-signature
 openid_connect.token.errors.no_identity_at_target: 'La persona no ha iniciado sesión en la aplicación indicada en audience, por lo que no hay identidad que delegar: envíe a la persona a iniciar sesión allí (initiate_login_uri) y vuelva a solicitar el intercambio.'
+openid_connect.token.errors.target_identity_assurance: 'La identidad de la persona en la aplicación indicada en audience no está verificada, y acr_values exige una que lo esté: envíe a la persona a iniciar sesión allí con ese nivel (initiate_login_uri) y vuelva a solicitar el intercambio.'
 openid_connect.user_info.errors.encryption_unavailable: 'Este proveedor de servicios está configurado para recibir respuestas userinfo cifradas, pero no tiene registrada ninguna clave de cifrado utilizable: la respuesta no se envió.'
 openid_connect.user_info.errors.malformed_authorization: Encabezado de autorización mal formado. Consulte nuestra documentación en https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No se proporcionó ningún encabezado de autorización. Consulte nuestra documentación en https://developers.login.gov/support/#no-auth-header

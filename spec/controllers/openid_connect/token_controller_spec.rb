@@ -302,6 +302,44 @@ RSpec.describe OpenidConnect::TokenController do
       end
     end
 
+    context 'when acr_values asks for a level the identity at the agency lacks' do
+      subject(:action) do
+        post :create,
+             params: {
+               grant_type: grant_type,
+               client_id: broker_issuer,
+               subject_token: subject_token,
+               subject_token_type: TokenExchange::Constants::ACCESS_TOKEN_TYPE,
+               requested_token_type: TokenExchange::Constants::ACCESS_TOKEN_TYPE,
+               audience: audience,
+               resource: resource,
+               acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+             }
+      end
+
+      before do
+        target_identity.update!(ial: 1)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets).and_return(
+          [{
+            issuer: target_issuer,
+            scope: 'passport',
+            initiate_login_uri: 'https://records.example.gov/initiate_login',
+          }],
+        )
+      end
+
+      it 'refuses with invalid_target, the level asked and the login-initiation address' do
+        action
+
+        expect(response).to have_http_status(:bad_request)
+        expect(JSON.parse(response.body, symbolize_names: true)).to include(
+          error: 'invalid_target',
+          acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+          initiate_login_uri: 'https://records.example.gov/initiate_login',
+        )
+      end
+    end
+
     context 'when the subject token is invalid' do
       let(:subject_token) { 'not-a-real-subject-token' }
 

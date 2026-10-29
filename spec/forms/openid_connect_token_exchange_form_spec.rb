@@ -238,14 +238,83 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when the target identity is not IAL2' do
-      before do
-        target_identity.update!(ial: 1)
+    context 'when the target identity is IAL1 and no level is asked for' do
+      before { target_identity.update!(ial: 1) }
+
+      it 'is valid: a sign-in at any level may delegate to an IAL1 identity' do
+        expect(form.submit.success?).to eq(true)
+      end
+    end
+
+    context 'when the actor asks for an identity-verified identity at the agency' do
+      let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
+      let(:params) { super().merge(acr_values:) }
+
+      it 'is valid when the identity at the agency is identity-verified' do
+        expect(form.submit.success?).to eq(true)
       end
 
-      it 'is invalid' do
+      context 'and the identity at the agency is IAL1' do
+        before { target_identity.update!(ial: 1) }
+
+        it 'is refused with the level asked and no login-initiation address' do
+          expect(form.submit.success?).to eq(false)
+          expect(form.response).to eq(
+            error: 'invalid_target',
+            error_description: t('openid_connect.token.errors.target_identity_assurance'),
+            acr_values:,
+          )
+        end
+
+        it 'names the login-initiation address the target registers' do
+          allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets).and_return(
+            [{
+              issuer: target_issuer,
+              scope: 'passport',
+              initiate_login_uri: 'https://records.example.gov/initiate_login',
+            }],
+          )
+
+          expect(form.response).to include(
+            error: 'invalid_target',
+            acr_values:,
+            initiate_login_uri: 'https://records.example.gov/initiate_login',
+          )
+        end
+
+        it 'does not raise the identity to the level asked' do
+          expect { form.submit }.to_not(change { target_identity.reload.ial })
+        end
+      end
+
+      context 'with the legacy IAL2 value' do
+        let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+        before { target_identity.update!(ial: 1) }
+
+        it 'is refused the same way' do
+          expect(form.response).to include(error: 'invalid_target', acr_values:)
+        end
+      end
+    end
+
+    context 'when the actor asks for no more than an identity at the agency' do
+      let(:params) { super().merge(acr_values: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR) }
+      before { target_identity.update!(ial: 1) }
+
+      it 'is valid' do
+        expect(form.submit.success?).to eq(true)
+      end
+    end
+
+    context 'with an acr_values Login.gov does not know' do
+      let(:params) { super().merge(acr_values: 'urn:example:gold') }
+
+      it 'is an invalid request' do
         expect(form.submit.success?).to eq(false)
-        expect(form.errors[:subject_token]).to include('is invalid')
+        expect(form.response).to include(
+          error: 'invalid_request',
+          error_description: t('openid_connect.token.errors.acr_values_invalid'),
+        )
       end
     end
 
@@ -303,22 +372,35 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when the user is no longer identity verified' do
+    context 'when the person is no longer identity verified at Login.gov' do
       before do
         subject_token
         user.active_profile.deactivate(:password_reset)
       end
 
-      it 'is invalid' do
-        expect(form.submit.success?).to eq(false)
-        expect(form.errors[:subject_token]).to include('is invalid')
+      it 'is valid when no level is asked for' do
+        expect(form.submit.success?).to eq(true)
       end
 
-      it 'does not issue a delegated access token' do
-        expect(TokenExchange::AccessTokenIssuer).to_not receive(:issue)
+      context 'and the actor asks for an identity-verified identity at the agency' do
+        let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
+        let(:params) { super().merge(acr_values:) }
 
-        form.submit
-        form.response
+        it 'is refused like an assurance shortfall, so the person verifies again at the agency' do
+          expect(form.submit.success?).to eq(false)
+          expect(form.response).to eq(
+            error: 'invalid_target',
+            error_description: t('openid_connect.token.errors.target_identity_assurance'),
+            acr_values:,
+          )
+        end
+
+        it 'does not issue a delegated access token' do
+          expect(TokenExchange::AccessTokenIssuer).to_not receive(:issue)
+
+          form.submit
+          form.response
+        end
       end
     end
 

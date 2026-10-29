@@ -42,6 +42,7 @@ module OpenidConnect
 
     def token_params
       params.permit(
+        :acr_values,
         :audience,
         :client_assertion,
         :client_assertion_type,

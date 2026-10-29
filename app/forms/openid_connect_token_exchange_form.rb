@@ -13,6 +13,19 @@ class OpenidConnectTokenExchangeForm
     resource
     requested_token_type
     scope
+    acr_values
+  ].freeze
+
+  # The identity assurance levels an actor may ask for on the exchange, in the authorization
+  # request's vocabulary: the verified values require an identity-verified identity at the
+  # application, the others require nothing beyond the identity's existence.
+  VERIFIED_ACR_VALUES = [
+    Saml::Idp::Constants::IAL_VERIFIED_ACR,
+    Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+  ].freeze
+  UNVERIFIED_ACR_VALUES = [
+    Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+    Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
   ].freeze
 
   # Parameters RFC 8693 section 2.1 requires on every token exchange request.
@@ -41,11 +54,12 @@ class OpenidConnectTokenExchangeForm
   validate :validate_broker
   validate :validate_target
   validate :validate_resource
+  validate :validate_acr_values
   validate :validate_subject_token, unless: :client_rejected?
   validate :validate_actor_return_log, unless: :client_rejected?
   validate :validate_scope, unless: :client_rejected?
   validate :validate_target_identity, unless: :client_rejected?
-  validate :validate_target_identity_ial2, unless: :client_rejected?
+  validate :validate_assurance, unless: :client_rejected?
 
   def initialize(params)
     ATTRS.each do |key|
@@ -178,16 +192,49 @@ class OpenidConnectTokenExchangeForm
     )
   end
 
-  def validate_target_identity_ial2
-    return if errors.any?
-    return errors.add(:subject_token, :invalid) if user.active_profile.blank?
-    return unless target_identity.ial.to_i < 2
+  def validate_acr_values
+    return if acr_values.blank?
+    return if (acr_values.split(' ') - VERIFIED_ACR_VALUES - UNVERIFIED_ACR_VALUES).empty?
 
-    errors.add(:subject_token, :invalid)
+    errors.add(
+      :acr_values, :invalid,
+      message: t('openid_connect.token.errors.acr_values_invalid')
+    )
+  end
+
+  # The level the actor asked for is checked against the person's identity at the application,
+  # which only that agency's own sign-in sets; the subject token's level is not, because a sign-in
+  # at any level may delegate. A verified request also needs the person's Login.gov profile to be
+  # active: the agency row is a snapshot set at the person's last identity-verified sign-in there,
+  # and a password reset without the personal key or an encryption error deactivates the profile
+  # since. A direct identity-verified sign-in at the agency would send the person to verify again,
+  # so the hand-off does the same. Either shortfall is refused the way a missing identity is, with
+  # the level named, so the actor can send the person to sign in at the agency at that level. A
+  # request that asks for no level checks neither.
+  def validate_assurance
+    return if errors.any? || !verified_identity_requested?
+    return if target_identity.ial.to_i >= 2 && user.active_profile.present?
+
+    errors.add(
+      :audience, :target_identity_assurance,
+      message: t('openid_connect.token.errors.target_identity_assurance')
+    )
+  end
+
+  def verified_identity_requested?
+    acr_values.to_s.split(' ').intersect?(VERIFIED_ACR_VALUES)
   end
 
   def no_identity_at_target?
     errors.where(:audience, :no_identity_at_target).any?
+  end
+
+  def assurance_shortfall?
+    errors.where(:audience, :target_identity_assurance).any?
+  end
+
+  def sign_in_at_agency_needed?
+    no_identity_at_target? || assurance_shortfall?
   end
 
   def user
@@ -240,26 +287,30 @@ class OpenidConnectTokenExchangeForm
     scope.presence || loaded_subject_token&.scope
   end
 
-  # A refusal for a missing identity at the application also names the application's
-  # login-initiation address when one is registered, so the actor can send the person to sign in
-  # there (OpenID Connect Core 1.0 §4). The actor is authenticated and the application registered
-  # by the time that check runs, so the address is told to no one else.
+  # A refusal that sends the person to sign in at the agency, for a missing identity there or one
+  # below the level asked, also names the level asked and the application's login-initiation
+  # address when one is registered (OpenID Connect Core 1.0 §4), so the actor can start that
+  # sign-in. The actor is authenticated and the application registered by the time these checks
+  # run, so the address is told to no one else.
   def error_response
     response = {
       error: oauth_error,
       error_description:,
     }
+    return response unless sign_in_at_agency_needed?
+
+    response[:acr_values] = acr_values if assurance_shortfall?
     initiate_login_uri = target&.token_exchange_initiate_login_uri
-    if no_identity_at_target? && initiate_login_uri.present?
-      response[:initiate_login_uri] = initiate_login_uri
-    end
+    response[:initiate_login_uri] = initiate_login_uri if initiate_login_uri.present?
     response
   end
 
-  # A missing identity at the application is described by its own message; every other failure
-  # keeps the attribute-prefixed messages the endpoint has always returned.
+  # A refusal that sends the person to the agency, or an `acr_values` Login.gov does not know, is
+  # described by its own message; every other failure keeps the attribute-prefixed messages the
+  # endpoint has always returned.
   def error_description
-    return errors[:audience].join(' ') if no_identity_at_target?
+    return errors[:audience].join(' ') if sign_in_at_agency_needed?
+    return errors[:acr_values].join(' ') if errors.include?(:acr_values)
 
     errors.full_messages.join(' ')
   end
@@ -270,6 +321,7 @@ class OpenidConnectTokenExchangeForm
     return 'invalid_request' if missing_required_attrs?
     return 'unsupported_grant_type' if errors.include?(:grant_type)
     return 'invalid_client' if errors.include?(:client_id)
+    return 'invalid_request' if errors.include?(:acr_values)
     return 'invalid_target' if errors.include?(:audience) || errors.include?(:resource)
     return 'invalid_scope' if errors.include?(:scope)
 

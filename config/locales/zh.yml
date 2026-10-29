@@ -1817,6 +1817,7 @@ openid_connect.logout.errors.id_token_hint_present: 本应用程序配置错误�
 openid_connect.logout.errors.no_client_id_or_id_token_hint: 本应用程序配置错误，必须发送 client_id 或者 id_token_hint。请参阅我们的文档：https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: 你想登出 %{app_name} 吗？
 openid_connect.logout.heading_with_sp: 你想登出 %{app_name} 并回到 %{service_provider_name} 吗？
+openid_connect.token.errors.acr_values_invalid: 'acr_values 必须指定授权请求所用的保证级别：urn:acr.login.gov:verified 或 http://idmanagement.gov/ns/assurance/ial/2 表示需要在该应用经过身份验证的身份，urn:acr.login.gov:auth-only 或 http://idmanagement.gov/ns/assurance/ial/1 表示无此要求。'
 openid_connect.token.errors.expired_code: 过期了。请参阅我们的文档：https://developers.login.gov/support/#token-expired
 openid_connect.token.errors.invalid_aud: 受众声明有误，预期 %{url}。请参阅我们的文档：https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: 客户必须通过 PKCE 或 private_key_jwt 来验证，缺失 code_challenge 或者 client_assertion。请参阅我们的文档：https://developers.login.gov/support/#pkce-or-private-key
@@ -1825,6 +1826,7 @@ openid_connect.token.errors.invalid_code_verifier: code_verifier 与 code_challe
 openid_connect.token.errors.invalid_iat: iat 必须是整数或者浮动点 Unix 时间印章来代表过去的一个时间。请参阅我们的文档：https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: 无法根据任何已注册的公钥验证这个说法。请参阅我们的文档：https://developers.login.gov/support/#invalid-token-signature
 openid_connect.token.errors.no_identity_at_target: '此人尚未在 audience 所指的应用登录，因此没有可委托的身份：请将此人送往该应用登录（initiate_login_uri），然后重新请求交换。'
+openid_connect.token.errors.target_identity_assurance: '此人在 audience 所指应用中的身份未经身份验证，而 acr_values 要求已验证的身份：请将此人送往该应用以该级别登录（initiate_login_uri），然后重新请求交换。'
 openid_connect.user_info.errors.encryption_unavailable: '此服务提供商已配置为接收加密的 userinfo 响应，但没有为其登记可用的加密密钥：响应未发送。'
 openid_connect.user_info.errors.malformed_authorization: 授权标头畸形。请参阅我们的文档：https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: 未提供授权标头。请参阅我们的文档：https://developers.login.gov/support/#no-auth-header

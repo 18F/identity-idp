@@ -60,6 +60,7 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
 
       expect(payload).to include(
         'sub' => target_identity.uuid,
+        'acr' => "#{Saml::Idp::Constants::IAL_AUTHN_CONTEXT_PREFIX}/#{target_identity.ial.to_i}",
         'aud' => target_issuer,
         'scope' => 'openid token_exchange:passport',
         'act' => { 'sub' => broker_issuer },

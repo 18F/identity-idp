@@ -90,6 +90,9 @@ module TokenExchange
         act: {
           sub: subject_token.broker_issuer,
         },
+        # The level of the identity the token names, as that agency's own sign-in set it; the
+        # agency's API reads it from the token instead of asking.
+        acr: "#{Saml::Idp::Constants::IAL_AUTHN_CONTEXT_PREFIX}/#{target_identity.ial.to_i}",
       }
     end
 
