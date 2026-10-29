@@ -181,7 +181,7 @@ RSpec.describe OpenidConnect::UserInfoController do
             'DPoP algs="ES256 RS256", error="invalid_token"',
           )
           expect(json_response[:error]).to eq(
-            t('openid_connect.user_info.errors.dpop_bearer_presented'),
+            'dpop_bearer_presented',
           )
         end
       end
@@ -193,7 +193,7 @@ RSpec.describe OpenidConnect::UserInfoController do
           expect(response.headers['WWW-Authenticate']).to eq(
             'DPoP algs="ES256 RS256", error="invalid_dpop_proof"',
           )
-          expect(json_response[:error]).to eq(t('openid_connect.token.errors.dpop_proof_required'))
+          expect(json_response[:error]).to eq('dpop_proof_missing')
         end
       end
     end

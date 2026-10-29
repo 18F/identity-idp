@@ -128,11 +128,11 @@ RSpec.describe AccessTokenVerifier do
           expect(response.success?).to eq(false)
           expect(result_identity).to be_nil
           expect(response.errors[:dpop_proof]).to eq(
-            [t('openid_connect.user_info.errors.dpop_bearer_presented')],
+            ['dpop_bearer_presented'],
           )
           expect(verifier.www_authenticate).to eq('DPoP algs="ES256 RS256", error="invalid_token"')
           expect(verifier.error_message).to eq(
-            t('openid_connect.user_info.errors.dpop_bearer_presented'),
+            'dpop_bearer_presented',
           )
         end
       end
@@ -146,7 +146,7 @@ RSpec.describe AccessTokenVerifier do
 
           expect(response.success?).to eq(false)
           expect(response.errors[:dpop_proof]).to eq(
-            [t('openid_connect.token.errors.dpop_proof_required')],
+            ['dpop_proof_missing'],
           )
           expect(verifier.www_authenticate).to eq(
             'DPoP algs="ES256 RS256", error="invalid_dpop_proof"',
@@ -167,7 +167,7 @@ RSpec.describe AccessTokenVerifier do
 
           expect(response.success?).to eq(false)
           expect(response.errors[:dpop_proof]).to eq(
-            [t('openid_connect.token.errors.dpop_key_mismatch')],
+            ['dpop_key_mismatch'],
           )
           expect(response.extra[:dpop_error_type]).to eq(:dpop_key_mismatch)
         end
@@ -186,7 +186,7 @@ RSpec.describe AccessTokenVerifier do
 
           expect(response.success?).to eq(false)
           expect(response.errors[:dpop_proof]).to eq(
-            [t('openid_connect.token.errors.dpop_proof_invalid')],
+            ['dpop_proof_uri'],
           )
         end
       end
@@ -200,7 +200,7 @@ RSpec.describe AccessTokenVerifier do
 
           expect(response.success?).to eq(false)
           expect(response.errors[:dpop_proof]).to eq(
-            [t('openid_connect.user_info.errors.dpop_token_unbound')],
+            ['dpop_token_unbound'],
           )
           expect(verifier.www_authenticate).to eq('DPoP algs="ES256 RS256", error="invalid_token"')
         end
