@@ -132,7 +132,7 @@ class OpenidConnectTokenForm
 
     if bound_thumbprint.blank?
       errors.add(
-        :dpop_proof, t('openid_connect.token.errors.dpop_code_unbound'), type: :dpop_code_unbound
+        :dpop_proof, 'dpop_code_unbound', type: :dpop_code_unbound
       )
       return
     end

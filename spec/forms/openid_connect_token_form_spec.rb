@@ -856,7 +856,7 @@ RSpec.describe OpenidConnectTokenForm, 'for a public client registered for key b
       expect(form.submit.success?).to eq(false)
       expect(form.response).to eq(
         error: 'invalid_dpop_proof',
-        error_description: t('openid_connect.token.errors.dpop_proof_required'),
+        error_description: 'dpop_proof_missing',
       )
       expect(identity.reload.session_uuid).to be_present
     end
@@ -873,7 +873,7 @@ RSpec.describe OpenidConnectTokenForm, 'for a public client registered for key b
       expect(form.valid?).to eq(false)
       expect(form.response[:error]).to eq('invalid_dpop_proof')
       expect(form.response[:error_description])
-        .to eq(t('openid_connect.token.errors.dpop_key_mismatch'))
+        .to eq('dpop_key_mismatch')
     end
   end
 
@@ -892,7 +892,7 @@ RSpec.describe OpenidConnectTokenForm, 'for a public client registered for key b
     it 'fails with invalid_dpop_proof naming the missing binding' do
       expect(form.valid?).to eq(false)
       expect(form.response[:error_description])
-        .to eq(t('openid_connect.token.errors.dpop_code_unbound'))
+        .to eq('dpop_code_unbound')
     end
   end
 

@@ -1794,8 +1794,6 @@ notices.verify_email.use_different_email: Usar un correo electrónico diferente
 notices.webauthn_configured: Se agregó una clave de seguridad a su cuenta.
 notices.webauthn_platform_configured: Usó el bloqueo de pantalla de su dispositivo para agregar el desbloqueo facial o táctil a su cuenta.
 openid_connect.authorization.errors.bad_client_id: client_id incorrecto. Consulte nuestra documentación en https://developers.login.gov/support/#bad-client-id
-openid_connect.authorization.errors.dpop_jkt_invalid: 'dpop_jkt debe ser la huella digital RFC 7638 en base64url de la clave pública DPoP del cliente: 43 caracteres, sin relleno.'
-openid_connect.authorization.errors.dpop_jkt_required: 'dpop_jkt es obligatorio: este cliente está registrado para la vinculación de claves DPoP, por lo que el código de autorización debe vincularse a la huella digital de su clave DPoP (RFC 9449, sección 10).'
 openid_connect.authorization.errors.invalid_verified_within_duration.one: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_duration.other: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_format: Formato no reconocido de verified_within
@@ -1818,7 +1816,6 @@ openid_connect.logout.errors.no_client_id_or_id_token_hint: Esta aplicación est
 openid_connect.logout.heading: ¿Desea cerrar sesión en %{app_name}?
 openid_connect.logout.heading_with_sp: ¿Desea cerrar sesión en %{app_name} y volver a %{service_provider_name}?
 
-openid_connect.token.errors.dpop_code_unbound: El código de autorización se emitió sin una vinculación dpop_jkt. Inicie una nueva solicitud de autorización que indique la huella digital de la clave DPoP.
 openid_connect.token.errors.expired_code: venció. Consulte nuestra documentación en https://developers.login.gov/support/#token-expired
 openid_connect.token.errors.invalid_aud: Notificación de audiencia no válida, %{url} prevista. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-aud-claim
 openid_connect.token.errors.invalid_authentication: El cliente debe autenticarse a través de PKCE o private_key_jwt, omitiendo code_challenge o client_assertion. Consulte nuestra documentación en https://developers.login.gov/support/#pkce-or-private-key

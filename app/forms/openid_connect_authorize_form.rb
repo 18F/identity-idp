@@ -281,12 +281,12 @@ class OpenidConnectAuthorizeForm
 
     if dpop_jkt.blank?
       errors.add(
-        :dpop_jkt, t('openid_connect.authorization.errors.dpop_jkt_required'),
+        :dpop_jkt, 'dpop_jkt_required',
         type: :dpop_jkt_required
       )
     elsif !dpop_jkt.match?(DPOP_JKT_FORMAT)
       errors.add(
-        :dpop_jkt, t('openid_connect.authorization.errors.dpop_jkt_invalid'),
+        :dpop_jkt, 'dpop_jkt_invalid',
         type: :dpop_jkt_invalid
       )
     end
