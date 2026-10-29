@@ -268,6 +268,10 @@ module OpenidConnect
       if site_key_vault.status == :ready
         user_session.delete(:site_key_password_prompt)
       elsif user_session.delete(:site_key_password_prompt) == site_key_request_digest
+        analytics.site_key_release_failed(
+          client_id: @authorize_form.client_id,
+          error: "root #{site_key_vault.status}",
+        )
         redirect_user(site_key_error_redirect_uri)
       else
         remember_site_key_password_prompt
