@@ -188,8 +188,8 @@ module AttemptsApi
     # @option pii [String] last_name
     # @option pii [String] date_of_birth
     # @option pii [String] ssn
-    # @option pii [String] address_1
-    # @option pii [String] address_2
+    # @option pii [String] address1
+    # @option pii [String] address2
     # @option pii [String] city
     # @option pii [String] state
     # @option pii [String] zip
@@ -198,8 +198,8 @@ module AttemptsApi
     # @option pii [String] document_number
     # @option pii [String] document_issued
     # @option pii [String] document_expiration
-    # @option pii [String] document_address_1
-    # @option pii [String] document_address_2
+    # @option pii [String] document_address1
+    # @option pii [String] document_address2
     # @option pii [String] document_city
     # @option pii [String] document_state
     # @option pii [String] document_zip
@@ -219,8 +219,8 @@ module AttemptsApi
         last_name: pii[:last_name],
         date_of_birth: pii[:date_of_birth],
         ssn: pii[:ssn],
-        address1: pii[:address_1],
-        address2: pii[:address_2],
+        address1: pii[:address1],
+        address2: pii[:address2],
         city: pii[:city],
         state: pii[:state],
         zip: pii[:zip],
@@ -230,8 +230,8 @@ module AttemptsApi
         document_number: pii[:document_number],
         document_issued: pii[:document_issued],
         document_expiration: pii[:document_expiration],
-        document_address1: pii[:document_address_1],
-        document_address2: pii[:document_address_2],
+        document_address1: pii[:document_address1],
+        document_address2: pii[:document_address2],
         document_city: pii[:document_city],
         document_state: pii[:document_state],
         document_zip: pii[:document_zip],
@@ -247,8 +247,8 @@ module AttemptsApi
     # @option pii [String] last_name
     # @option pii [String] date_of_birth
     # @option pii [String] ssn
-    # @option pii [String] address_1
-    # @option pii [String] address_2
+    # @option pii [String] address1
+    # @option pii [String] address2
     # @option pii [String] city
     # @option pii [String] state
     # @option pii [String] zip
@@ -257,8 +257,8 @@ module AttemptsApi
     # @option pii [String] document_number
     # @option pii [String] document_issued
     # @option pii [String] document_expiration
-    # @option pii [String] document_address_1
-    # @option pii [String] document_address_2
+    # @option pii [String] document_address1
+    # @option pii [String] document_address2
     # @option pii [String] document_city
     # @option pii [String] document_state
     # @option pii [String] document_zip
