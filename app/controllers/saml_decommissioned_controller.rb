@@ -35,38 +35,13 @@ class SamlDecommissionedController < ApplicationController
   # Extracts the issuer from a SAMLRequest without verifying its signature. This
   # is display-only: the value is used to look up a service provider by exact
   # match, never to make an authorization decision.
-  #
   # @return [String, nil]
   def decode_issuer(raw_request)
     return nil if raw_request.blank?
 
-    xml = decode_saml_request(raw_request)
-    return nil if xml.blank?
-
-    document = REXML::Document.new(xml)
-    # Match on the local name so we accept any namespace prefix the SP chose.
-    REXML::XPath.first(document, "/*/*[local-name()='Issuer']")&.text&.strip.presence
+    SamlIdp::Request.from_deflated_request(raw_request).issuer
   rescue StandardError
     # Malformed input is expected here; the caller renders generic copy.
     nil
-  end
-
-  # HTTP-Redirect binding deflates the request (raw DEFLATE, no zlib wrapper);
-  # HTTP-POST binding does not. Try inflating, and fall back to the raw bytes if
-  # that does not yield something XML-ish. Zlib does not reliably raise on
-  # non-deflated input, so we check the result rather than trusting it.
-  #
-  # @return [String, nil]
-  def decode_saml_request(raw_request)
-    decoded = Base64.decode64(raw_request)
-    return nil if decoded.blank?
-
-    inflated = begin
-      Zlib::Inflate.new(-Zlib::MAX_WBITS).inflate(decoded)
-    rescue Zlib::Error
-      nil
-    end
-
-    inflated.to_s.include?('<') ? inflated : decoded
   end
 end
