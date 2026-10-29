@@ -43,7 +43,7 @@ class OpenidConnectTokenExchangeForm
   validate :validate_subject_token, unless: :client_rejected?
   validate :validate_actor_return_log, unless: :client_rejected?
   validate :validate_scope, unless: :client_rejected?
-  validate :validate_ial2, unless: :client_rejected?
+  validate :validate_target_identity_ial2, unless: :client_rejected?
 
   def initialize(params)
     ATTRS.each do |key|
@@ -160,12 +160,13 @@ class OpenidConnectTokenExchangeForm
     errors.add(:scope, :invalid)
   end
 
-  def validate_ial2
+  def validate_target_identity_ial2
     return if subject_token.blank?
     return if loaded_subject_token.blank?
-    return errors.add(:subject_token, :invalid) if loaded_subject_token.ial.to_i < 2
     return errors.add(:subject_token, :invalid) if user.blank?
-    return if user.identity_verified?
+    return errors.add(:subject_token, :invalid) if target_identity.blank?
+    return errors.add(:subject_token, :invalid) if user.active_profile.blank?
+    return unless target_identity.ial.to_i < 2
 
     errors.add(:subject_token, :invalid)
   end
@@ -201,6 +202,10 @@ class OpenidConnectTokenExchangeForm
 
   def target
     @target ||= ServiceProvider.active.find_by(issuer: audience)
+  end
+
+  def target_identity
+    @target_identity ||= user.identities.find_by(service_provider: audience)
   end
 
   def loaded_subject_token
