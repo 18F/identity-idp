@@ -266,6 +266,26 @@ RSpec.describe SiteKeys::Vault do
       end
     end
 
+    it 'reports a KMS outage instead of raising it' do
+      allow(NewRelic::Agent).to receive(:notice_error)
+      allow_any_instance_of(SiteKeys::RootCipher).to receive(:wrap)
+        .and_raise(Seahorse::Client::NetworkingError.new(Errno::ECONNRESET.new))
+
+      expect(vault.wrap_personal_key(personal_key, password:)).to be_nil
+      expect(NewRelic::Agent).to have_received(:notice_error)
+        .with(instance_of(Seahorse::Client::NetworkingError))
+    end
+
+    it 'does not wrap a root another session has replaced since this one unlocked it' do
+      vault.unlock(password)
+      described_class.new(user: User.find(user.id), user_session: {}).replace!(password)
+
+      vault.wrap_personal_key(personal_key)
+
+      fresh = described_class.new(user: user.reload, user_session: {})
+      expect(fresh.recover(personal_key)).not_to eq(created.root)
+    end
+
     it 'never wraps under a malformed personal key' do
       vault.unlock(password)
       vault.wrap_personal_key('too short')

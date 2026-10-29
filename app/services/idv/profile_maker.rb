@@ -42,8 +42,12 @@ module Idv
       )
 
       profile.save!
-      SiteKeys::Vault.new(user:, user_session: user_session || {})
-        .wrap_personal_key(profile.personal_key, password: user_password)
+      # A profile verified by mail gets a new personal key when the letter code is entered, and
+      # that is the key the user sees, so it is the one wrapped then.
+      unless gpo_verification_needed
+        SiteKeys::Vault.new(user:, user_session: user_session || {})
+          .wrap_personal_key(profile.personal_key, password: user_password)
+      end
       profile.deactivate_for_gpo_verification if gpo_verification_needed
 
       if fraud_pending_reason.present? && !gpo_verification_needed && !in_person_verification_needed

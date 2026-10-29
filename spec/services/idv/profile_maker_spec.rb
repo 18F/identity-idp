@@ -41,6 +41,21 @@ RSpec.describe Idv::ProfileMaker do
         .to eq(root)
     end
 
+    it 'leaves the personal key wrap alone for a profile verified by mail' do
+      allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+      create_site_key_root(user)
+
+      subject.save_profile(
+        fraud_pending_reason: nil,
+        gpo_verification_needed: true,
+        in_person_verification_needed: false,
+        selfie_check_performed: false,
+        proofing_components:,
+      )
+
+      expect(user.reload.site_key_root.encrypted_root_personal_key).to be_nil
+    end
+
     it 'creates an inactive Profile with encrypted PII' do
       profile = subject.save_profile(
         fraud_pending_reason: nil,
