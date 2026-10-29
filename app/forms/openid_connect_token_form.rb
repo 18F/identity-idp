@@ -53,10 +53,13 @@ class OpenidConnectTokenForm
 
       id_token_builder = IdTokenBuilder.new(identity: identity, code: code)
       @ttl = id_token_builder.ttl
+      bind_access_token
 
       {
         access_token: identity.access_token,
-        token_type: 'Bearer',
+        # RFC 9449 §5: a listed client's access token is bound to its key and is presented with a
+        # proof, never as a bearer token.
+        token_type: dpop_binding_required? ? 'DPoP' : 'Bearer',
         expires_in: @ttl,
         id_token: id_token_builder.id_token,
       }
@@ -113,6 +116,17 @@ class OpenidConnectTokenForm
     identity.scope.to_s.split(' ').any? do |scope|
       TokenExchange::Constants.in_scope?(scope)
     end
+  end
+
+  # Records, for the access token's lifetime, the key the code was bound to, so the
+  # user-information and document-image endpoints can require a proof from that key (RFC 9449
+  # §7.1). The record expires with the token; a bearer client's token gets none.
+  def bind_access_token
+    return unless dpop_binding_required?
+
+    AccessTokenBinding.store(
+      access_token: identity.access_token, dpop_jkt: bound_thumbprint, expires_in: @ttl,
+    )
   end
 
   # Whether the code being redeemed must be accompanied by a DPoP proof (RFC 9449 §5, §10). A
