@@ -22,9 +22,7 @@ class OpenidConnectUserInfoPresenter
     info[:all_emails] = all_emails_from_sp_identity(identity) if scoper.all_emails_requested?
     info[:locale] = web_locale if scoper.locale_requested?
     info.merge!(ial2_attributes) if identity_proofing_requested_for_verified_user?
-    # Emitted whenever sharing is authorized, even if empty: an empty hash tells
-    # the RP "authorized, but the artifacts have not landed yet, retry", whereas
-    # omitting the claim means sharing is not authorized for this identity.
+
     if scoper.document_images_requested? && document_images_shareable?
       info[:document_images] = document_images
       info[:document_metadata] = document_metadata
@@ -119,9 +117,6 @@ class OpenidConnectUserInfoPresenter
       identity.biometric_sharing_consented?(active_profile)
   end
 
-  # Document identifiers (number, issue/expiration dates) released inline
-  # alongside the images, under the same sharing gate. Empty until the retrieval
-  # job has persisted them (same async window as the images). mDL has none.
   def document_metadata
     return {} unless document_images_shareable?
 

@@ -471,6 +471,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
               document_number: 'D-5',
               document_issued: '2020-03-03',
               document_expiration: '2030-03-03',
+              document_jurisdiction: 'WA',
             },
           )
 
@@ -478,6 +479,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             document_number: 'D-5',
             document_issued: '2020-03-03',
             document_expiration: '2030-03-03',
+            document_jurisdiction: 'WA',
           )
         end
       end

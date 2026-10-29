@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-# Document identifiers captured during proofing (document number, issue date,
-# expiration date) that an allow-listed relying party needs for adjudication,
-# alongside the document images. Encrypted at rest and released under the same
-# document_images scope + biometric-sharing consent gate as the images; held to
-# the same retention window.
 class DocumentMetadata < ApplicationRecord
-  FIELDS = %i[document_number document_issued document_expiration].freeze
+  FIELDS = %i[
+    document_number
+    document_issued
+    document_expiration
+    document_jurisdiction
+  ].freeze
 
   belongs_to :document_capture_session
   belongs_to :profile, optional: true
