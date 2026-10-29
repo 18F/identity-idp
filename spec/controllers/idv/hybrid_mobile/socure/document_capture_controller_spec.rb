@@ -10,6 +10,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   let(:socure_docv_enabled) { true }
   let(:socure_docv_verification_data_test_mode) { false }
   let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
+  let(:issuer) { 'the-issuer' }
   let(:document_capture_session) do
     create(
       :document_capture_session,
@@ -17,6 +18,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       requested_at: Time.zone.now,
       doc_auth_vendor: idv_vendor,
       document_type_requested:,
+      issuer:,
     )
   end
   let(:document_capture_session_uuid) { document_capture_session&.uuid }
@@ -25,6 +27,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   end
   let(:idv_socure_docv_flow_id_only) { 'id only flow' }
   let(:idv_socure_docv_flow_id_w_selfie) { 'selfie flow' }
+  let(:idv_socure_docv_flow_id_w_selfie_image_sharing) { 'selfie image sharing flow' }
 
   before do
     allow(IdentityConfig.store).to receive(:socure_docv_enabled)
@@ -33,6 +36,8 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       .and_return(fake_socure_endpoint)
     allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_w_selfie)
       .and_return(idv_socure_docv_flow_id_w_selfie)
+    allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_w_selfie_image_sharing)
+      .and_return(idv_socure_docv_flow_id_w_selfie_image_sharing)
     allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_only)
       .and_return(idv_socure_docv_flow_id_only)
 
@@ -172,7 +177,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                         url: idv_hybrid_mobile_socure_document_capture_update_url,
                       },
                       language: expected_language,
-                      useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
+                      useCaseKey: 'id only flow',
                     },
                     customerUserId: user.uuid,
                   },
@@ -195,7 +200,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                         url: idv_hybrid_mobile_socure_document_capture_update_url,
                       },
                       language: expected_language,
-                      useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
+                      useCaseKey: 'id only flow',
                     },
                     customerUserId: user.uuid,
                   },
@@ -218,7 +223,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                         url: idv_hybrid_mobile_socure_document_capture_update_url,
                       },
                       language: expected_language,
-                      useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
+                      useCaseKey: 'id only flow',
                       errorRedirect: {
                         method: 'GET',
                         url: idv_hybrid_mobile_socure_document_capture_errors_url(
@@ -248,7 +253,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                         url: idv_hybrid_mobile_socure_document_capture_update_url,
                       },
                       language: expected_language,
-                      useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
+                      useCaseKey: 'id only flow',
                     },
                     customerUserId: user.uuid,
                   },
@@ -272,7 +277,38 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                         url: idv_hybrid_mobile_socure_document_capture_update_url,
                       },
                       language: 'zh-cn',
-                      useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
+                      useCaseKey: 'id only flow',
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
+
+        context 'when document images sharing is allowed' do
+          before do
+            allow(IdentityConfig.store).to receive_messages(
+              document_images_sharing_enabled: true,
+              document_images_sharing_service_providers: [issuer],
+            )
+          end
+
+          it 'request the flow for id only' do
+            get(:show)
+
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'license',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_hybrid_mobile_socure_document_capture_update_url,
+                      },
+                      language: expected_language,
+                      useCaseKey: idv_socure_docv_flow_id_only,
                     },
                     customerUserId: user.uuid,
                   },
@@ -327,10 +363,11 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
             acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
           ).parse
           allow(subject).to receive(:resolved_authn_context_result).and_return(authn_context_result)
-          get(:show)
         end
 
         it 'request the flow for selfie' do
+          get(:show)
+
           expect(WebMock).to have_requested(:post, fake_socure_endpoint)
             .with(
               body: JSON.generate(
@@ -342,7 +379,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                       url: idv_hybrid_mobile_socure_document_capture_update_url,
                     },
                     language: expected_language,
-                    useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_w_selfie,
+                    useCaseKey: 'selfie flow',
                   },
                   customerUserId: user.uuid,
                 },
@@ -353,6 +390,8 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         context 'when document type requested is a mobile drivers license' do
           let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
           it 'requested documentType is digital_id' do
+            get(:show)
+
             expect(WebMock).to have_requested(:post, fake_socure_endpoint)
               .with(
                 body: JSON.generate(
@@ -364,13 +403,44 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                         url: idv_hybrid_mobile_socure_document_capture_update_url,
                       },
                       language: expected_language,
-                      useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
+                      useCaseKey: 'id only flow',
                       errorRedirect: {
                         method: 'GET',
                         url: idv_hybrid_mobile_socure_document_capture_errors_url(
                           error_code: :mdl_not_found,
                         ),
                       },
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
+
+        context 'when document images sharing is allowed' do
+          before do
+            allow(IdentityConfig.store).to receive_messages(
+              document_images_sharing_enabled: true,
+              document_images_sharing_service_providers: [issuer],
+            )
+          end
+
+          it 'request the flow for selfie with image sharing' do
+            get(:show)
+
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'license',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_hybrid_mobile_socure_document_capture_update_url,
+                      },
+                      language: expected_language,
+                      useCaseKey: 'selfie image sharing flow',
                     },
                     customerUserId: user.uuid,
                   },
