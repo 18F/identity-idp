@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe TwoFactorLoginOptionsPresenter do
-  include AccountResetHelper
+  include DestructiveAccountResetHelper
   include ActionView::Helpers::OutputSafetyHelper
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::DateHelper
@@ -92,6 +92,80 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
           account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
         ),
       )
+  end
+
+  describe 'account recovery entry point' do
+    let(:user) { create(:user, :fully_registered) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
+    end
+
+    context 'when the user is eligible' do
+      it 'does not supply a legacy reset link' do
+        expect(presenter.account_reset_or_cancel_link).to be_nil
+      end
+
+      it 'reports the user as eligible' do
+        expect(presenter.account_recovery_eligible?).to eq(true)
+      end
+
+      it 'supplies a recover-your-account link' do
+        expect(presenter.account_recovery_link).to eq \
+          t(
+            'two_factor_authentication.account_recovery.recover_text_html',
+            link_html: view.link_to(
+              t('two_factor_authentication.account_recovery.recover_link'),
+              account_recovery_start_path(locale: LinkLocaleResolver.locale),
+            ),
+          )
+      end
+
+      context 'when the user already has a pending recovery request' do
+        before { create(:account_recovery_request, :waiting, user: user) }
+
+        it 'reports the user as ineligible' do
+          expect(presenter.account_recovery_eligible?).to eq(false)
+        end
+
+        it 'links to the pending request instead of legacy recovery' do
+          expect(presenter.account_recovery_pending?).to eq(true)
+          expect(presenter.account_recovery_pending_link).to include(account_recovery_pending_path)
+          expect(presenter.account_reset_or_cancel_link).to be_nil
+        end
+      end
+
+      context 'when the user is identity proofed' do
+        let(:user) { create(:user, :proofed) }
+
+        it 'reports the user as ineligible' do
+          expect(presenter.account_recovery_eligible?).to eq(false)
+        end
+
+        it 'supplies a legacy reset link' do
+          expect(presenter.account_reset_or_cancel_link)
+            .to include(account_reset_recovery_options_path)
+        end
+      end
+    end
+
+    context 'when the user is not fully registered' do
+      let(:user) { create(:user, :with_phone) }
+
+      it 'reports the user as ineligible' do
+        expect(presenter.account_recovery_eligible?).to eq(false)
+      end
+    end
+
+    context 'when the feature is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+      end
+
+      it 'reports the user as ineligible' do
+        expect(presenter.account_recovery_eligible?).to eq(false)
+      end
+    end
   end
 
   describe '#options' do

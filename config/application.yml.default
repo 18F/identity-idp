@@ -24,9 +24,13 @@ aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 account_creation_device_profiling: disabled
 account_creation_passkey_auto_prompt_percent: 0
-account_creation_passkey_setup_after_password_percent: 0
 account_creation_recaptcha_score_threshold: 0.0
 account_creation_tmx_processed_percent: 0
+account_recovery_request_attempt_window_in_minutes: 2
+account_recovery_request_max_attempts: 2
+account_recovery_token_valid_for_hours: 24
+account_recovery_v2_enabled: false
+account_recovery_wait_period_days: 1
 account_reset_attempt_window_in_minutes: 1_440
 account_reset_fraud_user_wait_period_days:
 account_reset_max_attempts: 10
@@ -103,6 +107,7 @@ database_worker_jobs_name: ''
 database_worker_jobs_password: ''
 database_worker_jobs_sslmode: 'verify-full'
 database_worker_jobs_username: ''
+decommissioned_reports_notice_date: 'November 1, 2026'
 deleted_user_accounts_report_configs: '[]'
 deliver_mail_async: false
 demographics_metrics_s3_report_configs: '[]'
@@ -154,6 +159,10 @@ doc_capture_polling_enabled: true
 doc_capture_request_valid_for_minutes: 15
 doc_escrow_enabled: false
 doc_escrow_s3_storage_enabled: false
+document_images_sharing_enabled: false
+document_images_sharing_service_providers: '[]'
+document_images_sharing_skip_doc_auth_post_validations: false
+document_images_ttl_seconds: 259_200
 domain_name: login.gov
 dos_passport_client_id: ''
 dos_passport_client_secret: ''
@@ -244,6 +253,7 @@ idv_phone_verification_dual_vendor_check_enabled: false
 idv_phone_verification_dual_vendor_check_socure_percent: 0
 idv_phone_verification_dual_vendor_check_socure_reason_codes: '[]'
 idv_proofing_agent_config: '[]'
+idv_proofing_agent_confirmation_url: ''
 idv_proofing_agent_enabled: false
 idv_proofing_agent_passport_enabled: false
 idv_proofing_agent_phone_vendor: mock
@@ -251,6 +261,8 @@ idv_proofing_agent_proof_user_with_enhanced_profile: false
 idv_proofing_agent_result_expiration_seconds: 10
 idv_proofing_agent_send_failure_email_after_min: 30
 idv_proofing_agent_send_failure_emails_cron: '*/30 * * * *'
+idv_proofing_agent_send_reminder_email_after_hours: 48
+idv_proofing_agent_send_reminder_emails_cron: '0 * * * *'
 idv_rdp_version_default: rdp_v2
 idv_rdp_version_switching_enabled: false
 idv_rdp_version_v2_percent: 100
@@ -264,6 +276,7 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_socure_docv_flow_id_only: ''
 idv_socure_docv_flow_id_w_selfie: ''
+idv_socure_docv_flow_id_w_selfie_image_sharing: ''
 idv_socure_kyc_auto_failure_reason_codes: '[]'
 idv_socure_phonerisk_auto_failure_reason_codes: '[]'
 idv_socure_phonerisk_name_correlation_score_threshold: 1.0
@@ -275,6 +288,7 @@ idv_socure_reason_codes_docv_selfie_fail: '[]'
 idv_socure_reason_codes_docv_selfie_not_processed: '[]'
 idv_socure_reason_codes_docv_selfie_pass: '[]'
 idv_sp_required: false
+idv_superior_evidence_skip_phone_verification_enabled_percent: 0
 in_person_completion_survey_delivery_enabled: false
 in_person_completion_survey_url: 'https://login.gov'
 in_person_eipp_enrollment_validity_in_days: 7
@@ -518,6 +532,7 @@ sign_in_user_id_per_ip_max_attempts: 50
 skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
 socure_docv_document_request_endpoint: ''
 socure_docv_enabled: false
+socure_docv_image_retrieval_job_wait_seconds: 15
 socure_docv_images_request_endpoint: ''
 socure_docv_verification_data_test_mode: false
 socure_docv_verification_data_test_mode_tokens: '[]'
@@ -540,12 +555,18 @@ sp_registration_funnel_report_configs: '[]'
 sp_verification_demographics_report_configs: '[]'
 sp_verification_report_configs: '[]'
 state_tracking_enabled: true
+sts_consent_expiration_in_days: 365
 team_ada_email: ''
 team_daily_fraud_metrics_emails: '[]'
 team_monthly_fraud_metrics_emails: '[]'
 team_ursula_email: ''
 telephony_adapter: test
 test_ssn_allowed_list: ''
+token_exchange_access_token_expires_in: 600
+token_exchange_allowed_broker_issuers: '[]'
+token_exchange_allowed_targets: '[]'
+token_exchange_enabled: false
+token_exchange_subject_token_expires_in: 600
 totp_code_interval: 30
 ui_test_bucket_params_enabled: true
 unauthorized_scope_enabled: false
@@ -553,6 +574,7 @@ update_cancel_account_reset_path: false
 use_dashboard_service_providers: false
 use_kms: false
 use_vot_in_sp_requests: true
+userinfo_encryption_allowed_issuers: '[]'
 usps_auth_token_refresh_job_enabled: false
 usps_confirmation_max_days: 30
 usps_confirmation_max_days_contiguous_states: 21
@@ -581,6 +603,7 @@ vendor_status_lexisnexis_trueid: 'operational'
 vendor_status_sms: 'operational'
 vendor_status_voice: 'operational'
 verification_errors_report_configs: '[]'
+verification_funnel_s3_report_configs: '[]'
 verify_gpo_key_attempt_window_in_minutes: 10
 verify_gpo_key_max_attempts: 5
 verify_personal_key_attempt_window_in_minutes: 15
@@ -751,6 +774,7 @@ test:
   sign_in_recaptcha_annotation_enabled: true
   skip_encryption_allowed_list: '[]'
   socure_docv_document_request_endpoint: 'https://sandbox.socure.test/documnt-request'
+  socure_docv_image_retrieval_job_wait_seconds: 0
   socure_docv_images_request_endpoint: 'https://upload.socure.us/api/5.0/documents/'
   socure_docv_webhook_secret_key: 'secret-key'
   socure_docv_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'

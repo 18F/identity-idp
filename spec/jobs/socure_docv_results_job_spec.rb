@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe SocureDocvResultsJob do
+  include ActiveJob::TestHelper
+
   let(:job) { described_class.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:attempts_api_enabled) { true }
@@ -23,6 +25,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:decision_value) { 'accept' }
   let(:expiration_date) { "#{1.year.from_now.year}-01-01" }
   let(:document_metadata_type) { 'Drivers License' }
+  let(:issuing_state) { 'NY' }
   let(:reason_codes) { %w[I831 R810] }
   let(:writer) { EncryptedDocStorage::DocWriter.new }
   let(:historical_attempts_api_enabled) { false }
@@ -45,7 +48,7 @@ RSpec.describe SocureDocvResultsJob do
         documentType: {
           type: document_metadata_type,
           country: 'USA',
-          state: 'NY',
+          state: issuing_state,
         },
         decision: {
           name: 'lenient',
@@ -111,6 +114,7 @@ RSpec.describe SocureDocvResultsJob do
       attempts_api_enabled:,
       doc_escrow_enabled:,
       allowed_attempts_providers:,
+      ruby_workers_idv_enabled: false,
     )
 
     if doc_escrow_enabled
@@ -254,6 +258,11 @@ RSpec.describe SocureDocvResultsJob do
         let(:decision_value) { 'reject' }
 
         before do
+          create(:socure_reason_code, code: 'I831', description: 'Document is valid')
+          create(:socure_reason_code, code: 'R810', description: 'Document is expired')
+        end
+
+        before do
           allow(attempts_api_tracker).to receive(:idv_document_upload_submitted)
           perform
         end
@@ -287,7 +296,7 @@ RSpec.describe SocureDocvResultsJob do
             city: address_data[:city],
             state: address_data[:state],
             zip: address_data[:zip],
-            failure_reason: { reason_codes: },
+            failure_reason: ['Document is expired'],
           )
         end
 
@@ -314,7 +323,7 @@ RSpec.describe SocureDocvResultsJob do
             let(:doc_escrow_enabled) { true }
 
             it 'does not enqueue or perform SocureImageRetrievalJob' do
-              expect(SocureImageRetrievalJob).not_to receive(:perform_later)
+              expect(SocureImageRetrievalJob).not_to receive(:set)
               expect(SocureImageRetrievalJob).not_to receive(:perform_now)
 
               perform
@@ -430,10 +439,151 @@ RSpec.describe SocureDocvResultsJob do
         end
       end
 
+      context 'when the SP is allow-listed for document image sharing' do
+        let(:doc_escrow_enabled) { false }
+        let(:image_retrieval_job_wait_seconds) { 37 }
+        let(:issuing_state) { 'VA' }
+
+        before do
+          ActiveJob::Base.queue_adapter = :test
+          SocureImageRetrievalJob.queue_adapter = ActiveJob::Base.queue_adapter
+          ActiveJob::Base.queue_adapter.enqueued_jobs.clear
+          ActiveJob::Base.queue_adapter.performed_jobs.clear
+          allow(IdentityConfig.store).to receive_messages(
+            document_images_sharing_enabled: true,
+            document_images_sharing_service_providers: [sp.issuer],
+            ruby_workers_idv_enabled: true,
+            socure_docv_image_retrieval_job_wait_seconds: image_retrieval_job_wait_seconds,
+          )
+        end
+
+        it 'runs SocureImageRetrievalJob to persist artifacts without any escrow data' do
+          freeze_time do
+            expect do
+              perform
+            end.to have_enqueued_job(SocureImageRetrievalJob).with(
+              hash_including(
+                document_capture_session_uuid:,
+                image_storage_data: {},
+                persist_artifacts: true,
+                docv_transaction_token: socure_docv_transaction_token,
+              ),
+            ).at(image_retrieval_job_wait_seconds.seconds.from_now)
+          end
+        end
+
+        it 'encrypts the document metadata before enqueueing it' do
+          job_args = nil
+          expect do
+            perform
+          end.to have_enqueued_job(SocureImageRetrievalJob).with { |args|
+            job_args = args
+          }
+
+          expect(job_args).not_to have_key(:document_metadata)
+          encrypted = job_args[:encrypted_document_metadata]
+          expect(encrypted).to be_present
+          expect(encrypted).not_to include(pii_from_doc[:documentNumber])
+          decrypted = JSON.parse(
+            Encryption::Encryptors::BackgroundProofingArgEncryptor.new.decrypt(encrypted),
+            symbolize_names: true,
+          )
+          expect(decrypted.keys).to contain_exactly(
+            :document_number, :document_issued, :document_expiration, :document_jurisdiction
+          )
+          expect(decrypted[:document_number]).to eq(pii_from_doc[:documentNumber])
+          expect(decrypted[:document_jurisdiction]).to eq(issuing_state)
+          expect(decrypted[:document_jurisdiction]).not_to eq(address_data[:state])
+        end
+
+        it 'does not report escrow file ids to the attempts API' do
+          expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            hash_excluding(:document_front_image_file_id, :document_back_image_file_id),
+          )
+
+          expect { perform }.to have_enqueued_job(SocureImageRetrievalJob)
+        end
+
+        context 'when an earlier attempt left artifacts on the capture session' do
+          let!(:stale_artifact) { create(:document_artifact, document_capture_session:) }
+          let!(:stale_metadata) { create(:document_metadata, document_capture_session:) }
+
+          it 'discards them before retrieving the images for this attempt' do
+            expect { perform }.to have_enqueued_job(SocureImageRetrievalJob)
+
+            expect(DocumentArtifact.exists?(stale_artifact.id)).to eq(false)
+            expect(DocumentMetadata.exists?(stale_metadata.id)).to eq(false)
+          end
+
+          context 'and this attempt was not successful' do
+            let(:decision_value) { 'reject' }
+
+            it 'keeps them' do
+              perform
+
+              expect(DocumentArtifact.exists?(stale_artifact.id)).to eq(true)
+            end
+          end
+        end
+
+        context 'when the verification was not successful' do
+          let(:decision_value) { 'reject' }
+
+          it 'does not run SocureImageRetrievalJob' do
+            expect { perform }.not_to have_enqueued_job(SocureImageRetrievalJob)
+            expect(SocureImageRetrievalJob).not_to receive(:perform_now)
+          end
+        end
+
+        context 'when document escrow is also enabled' do
+          let(:doc_escrow_enabled) { true }
+          let(:historical_attempts_api_enabled) { true }
+
+          it 'passes both the escrow data and the persist flag' do
+            expect do
+              perform
+            end.to have_enqueued_job(SocureImageRetrievalJob).with(
+              hash_including(
+                image_storage_data: hash_including(:front, :back),
+                persist_artifacts: true,
+              ),
+            )
+          end
+        end
+      end
+
+      context 'when only document escrow applies to the SP' do
+        let(:doc_escrow_enabled) { true }
+        let(:historical_attempts_api_enabled) { true }
+
+        it 'does not pass document metadata to SocureImageRetrievalJob' do
+          expect(SocureImageRetrievalJob).to receive(:perform_now)
+            .with(hash_including(
+              persist_artifacts: false,
+              encrypted_document_metadata: nil,
+            ))
+            .and_call_original
+
+          perform
+        end
+      end
+
+      context 'when neither escrow nor image sharing applies to the SP' do
+        let(:doc_escrow_enabled) { false }
+
+        it 'does not run SocureImageRetrievalJob' do
+          expect(SocureImageRetrievalJob).not_to receive(:set)
+          expect(SocureImageRetrievalJob).not_to receive(:perform_now)
+
+          perform
+        end
+      end
+
       context 'facial match' do
-        let(:reason_codes_selfie_fail) { ['no match', 'not live'] }
-        let(:reason_codes_selfie_not_processed) { ['not procesed'] }
-        let(:reason_codes_selfie_pass) { ['match', 'live'] }
+        # Failure codes start with an `R`, everything else starts with an I
+        let(:reason_codes_selfie_fail) { ['R-no match', 'R-not live'] }
+        let(:reason_codes_selfie_not_processed) { ['I-not processed'] }
+        let(:reason_codes_selfie_pass) { ['I-match', 'I-live'] }
         let(:selfie) { true }
 
         before do
@@ -495,6 +645,10 @@ RSpec.describe SocureDocvResultsJob do
 
         context 'when facial match fails' do
           let(:reason_codes) { reason_codes_selfie_fail }
+          before do
+            create(:socure_reason_code, code: 'R-no match', description: 'images do not match')
+            create(:socure_reason_code, code: 'R-not live', description: 'selfie is not live')
+          end
 
           it 'selfies status is :fail' do
             perform
@@ -531,7 +685,7 @@ RSpec.describe SocureDocvResultsJob do
                   city: address_data[:city],
                   state: address_data[:state],
                   zip: address_data[:zip],
-                  failure_reason: { reason_codes: reason_codes_selfie_fail },
+                  failure_reason: ['images do not match', 'selfie is not live'],
                 )
 
                 perform
@@ -1387,7 +1541,7 @@ RSpec.describe SocureDocvResultsJob do
             let(:historical_attempts_api_enabled) { true }
 
             it 'does not enqueue or perform SocureImageRetrievalJob and stores no escrow images' do
-              expect(SocureImageRetrievalJob).not_to receive(:perform_later)
+              expect(SocureImageRetrievalJob).not_to receive(:set)
               expect(SocureImageRetrievalJob).not_to receive(:perform_now)
               expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
 

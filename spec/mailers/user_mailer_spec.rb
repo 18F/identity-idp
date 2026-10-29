@@ -749,10 +749,16 @@ RSpec.describe UserMailer, type: :mailer do
     around { |ex| Time.use_zone('UTC') { ex.run } }
 
     let(:verified_at) { '2026-03-18 14:00:00 UTC' }
+    let(:validity_hours) { 48 }
 
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address)
         .agent_proofing_succeeded(verified_at: verified_at)
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:agent_proofed_user_time_validity_hours)
+        .and_return(validity_hours)
     end
 
     it_behaves_like 'a system email'
@@ -764,6 +770,25 @@ RSpec.describe UserMailer, type: :mailer do
 
     it 'renders the subject' do
       expect(mail.subject).to eq t('user_mailer.agent_proofing_succeeded.subject')
+    end
+
+    context 'when sent as a reminder' do
+      let(:mail) do
+        UserMailer.with(user: user, email_address: email_address)
+          .agent_proofing_succeeded(verified_at: verified_at, reminder: true)
+      end
+
+      it 'renders the reminder subject' do
+        expect(mail.subject).to eq t('user_mailer.agent_proofing_succeeded.reminder_subject')
+      end
+
+      it 'renders the same body as the confirmation email' do
+        expect(mail.html_part.body).to have_content('March 18, 2026')
+        expect(mail.html_part.body).to have_link(
+          t('user_mailer.agent_proofing_succeeded.cta'),
+          href: new_user_session_url,
+        )
+      end
     end
 
     it 'renders the formatted verified date in the body' do

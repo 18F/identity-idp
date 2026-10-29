@@ -40,7 +40,7 @@ RSpec.describe Reports::MfaReport do
       expect(ReportMailer).to receive(:tables_report).with(
         to: email,
         subject: "Monthly MFA Report - #{report_date}",
-        message: "Report: mfa-report #{report_date}",
+        message: a_string_starting_with("Report: mfa-report #{report_date}"),
         reports:,
         attachment_format: :csv,
       )

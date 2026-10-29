@@ -24,6 +24,7 @@ module Idp
       AAMVA_CHECK_SKIPPED = 'AamvaCheckSkipped'
       SOURCE_CHECK = [AAMVA, AAMVA_UNSUPPORTED_JURISDICTION, STATE_ID_MOCK].freeze
       CLEAR1 = 'clear1'
+      PHONE_CHECK_SUPERIOR_EVIDENCE_SKIPPED = 'SuperiorEvidenceSkipped'
     end
 
     module DocumentTypes
@@ -40,6 +41,7 @@ module Idp
       SUPPORTED_ID_TYPES = [*SUPPORTED_PASSPORT_TYPES, *SUPPORTED_STATE_ID_TYPES].freeze
       PASSPORT_TYPES = SUPPORTED_PASSPORT_TYPES
       DIGITAL_ID_TYPES = [MDL].freeze
+      SUPERIOR_EVIDENCE_DOCUMENT_TYPES = [MDL].freeze
     end
 
     SUPPORTED_PASSPORT_ISSUING_COUNTRY_CODES = %w[US USA].freeze
@@ -252,15 +254,15 @@ module Idp
       dob: '1938-10-06',
       sex: 'Male',
       birth_place: 'birthplace',
-      passport_expiration: '2030-03-15',
+      passport_expiration: (DateTime.now.utc + 10.years).to_date.to_s,
       issuing_country_code: 'USA',
       mrz:
       'P<UTOSAMPLE<<COMPANY<<<<<<<<<<<<<<<<<<<<<<<<ACU1234P<5UTO0003067F4003065<<<<<<<<<<<<<<02',
-      passport_issued: '2015-03-15',
+      passport_issued: (DateTime.now.utc - 1.year).to_date.to_s,
       nationality_code: 'USA',
       document_number: '000000',
       document_type_received: 'passport',
-      ssn: '666111111',
+      ssn: '900661234',
       consent_given_at: '2025-06-12 20:16:23 UTC',
       state: 'VA',
       zipcode: '12345-4321',
@@ -280,9 +282,9 @@ module Idp
       mrz:
       'P<UTOSAMPLE<<COMPANY<<<<<<<<<<<<<<<<<<<<<<<<ACU1234P<5UTO0003067F4003065<<<<<<<<<<<<<<02',
       birth_place: 'Birthplace',
-      passport_expiration: (DateTime.now.utc + 10.years).to_s,
+      passport_expiration: (DateTime.now.utc + 10.years).to_date.to_s,
       issuing_country_code: 'USA',
-      passport_issued: (DateTime.new.utc - 1.year).to_s,
+      passport_issued: (DateTime.now.utc - 1.year).to_date.to_s,
       nationality_code: 'USA',
       document_number: '000000',
     ).freeze

@@ -1,0 +1,70 @@
+# frozen_string_literal: true
+
+module DestructiveAccountReset
+  class CreateRequest
+    include DestructiveAccountResetConcern
+    include ActionView::Helpers::DateHelper
+
+    def initialize(user, requesting_issuer)
+      @user = user
+      @requesting_issuer = requesting_issuer
+    end
+
+    def call
+      request = create_request
+      if !request
+        return FormResponse.new(success: false, errors: { base: ['account_recovery_required'] })
+      end
+
+      notify_user_by_email(request)
+      notify_user_by_sms_if_applicable
+
+      FormResponse.new(
+        success: true,
+        extra: extra_analytics_attributes,
+      )
+    end
+
+    private
+
+    attr_reader :user, :requesting_issuer
+
+    def create_request
+      user.with_lock do
+        next unless AccountRecovery::EligibilityPolicy.new(user: user).legacy_reset_allowed?
+
+        request = DestructiveAccountResetRequest.create_or_find_by(user: user)
+        request.update!(
+          request_token: SecureRandom.uuid,
+          requested_at: Time.zone.now,
+          cancelled_at: nil,
+          granted_at: nil,
+          granted_token: nil,
+          requesting_issuer: requesting_issuer,
+        )
+        request
+      end
+    end
+
+    def notify_user_by_email(request)
+      user.confirmed_email_addresses.each do |email_address|
+        UserMailer.with(user: user, email_address: email_address).account_reset_request(request)
+          .deliver_now_or_later
+      end
+    end
+
+    def notify_user_by_sms_if_applicable
+      phone = MfaContext.new(user).phone_configurations.take&.phone
+      return unless phone
+      @telephony_response = Telephony.send_account_reset_notice(
+        to: phone,
+        country_code: Phonelib.parse(phone).country,
+        interval: account_reset_deletion_period_interval(user),
+      )
+    end
+
+    def extra_analytics_attributes
+      @telephony_response&.extra&.slice(:request_id, :message_id) || {}
+    end
+  end
+end

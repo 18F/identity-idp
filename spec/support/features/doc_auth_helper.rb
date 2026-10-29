@@ -1,9 +1,11 @@
 require_relative 'document_capture_step_helper'
 require_relative 'interaction_helper'
+require_relative 'javascript_driver_helper'
 require_relative '../user_agent_helper'
 
 module DocAuthHelper
   include InteractionHelper
+  include JavascriptDriverHelper
   include DocumentCaptureStepHelper
   include UserAgentHelper
 
@@ -84,7 +86,15 @@ module DocAuthHelper
   end
 
   def complete_agreement_step
-    check t('doc_auth.instructions.consent', app_name: APP_NAME)
+    unless find_field('doc_auth_idv_consent_given', visible: :all).checked?
+      if javascript_enabled?
+        # Click the checkbox at the start of the label, avoiding the links within the label.
+        find('label[for="doc_auth_idv_consent_given"]').click(x: 10, y: 10)
+      else
+        check 'doc_auth_idv_consent_given'
+      end
+    end
+    expect(page).to have_checked_field('doc_auth_idv_consent_given', visible: :all)
     click_on t('doc_auth.buttons.continue')
   end
 
@@ -109,6 +119,8 @@ module DocAuthHelper
 
     if choose_id_type == Idp::Constants::DocumentTypes::PASSPORT
       choose(t('doc_auth.forms.id_type_preference.passport'))
+    elsif choose_id_type == Idp::Constants::DocumentTypes::MDL
+      choose(t('doc_auth.forms.id_type_preference.mdl'))
     else
       choose(t('doc_auth.forms.id_type_preference.drivers_license'))
     end

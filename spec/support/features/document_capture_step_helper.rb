@@ -121,7 +121,7 @@ module DocumentCaptureStepHelper
 
   def socure_docv_send_webhook(
     docv_transaction_token:,
-    event_type: 'DOCUMENTS_UPLOADED'
+    event_type: 'SESSION_COMPLETE'
   )
     Faraday.post "http://#{[page.server.host,
                             page.server.port].join(':')}/api/webhooks/socure/event" do |req|

@@ -12,9 +12,10 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   let(:context_analytics) { { step: step } }
   let(:document_type_requested) { nil }
   let(:mdl_enabled) { true }
+  let(:issuer) { 'the-best-issuer' }
   let(:document_capture_session) do
     create(
-      :document_capture_session, document_type_requested:, mdl_enabled:
+      :document_capture_session, document_type_requested:, mdl_enabled:, issuer:
     )
   end
   let(:document_type_chosen) { 'state_id_card' }
@@ -371,6 +372,23 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
           auto_check_value: :mobile_drivers_license,
           mdl_enabled: true,
         )
+      end
+
+      context 'when document images sharing is allowed for the service provider' do
+        before do
+          allow(IdentityConfig.store).to receive_messages(
+            document_images_sharing_enabled: true,
+            document_images_sharing_service_providers: [document_capture_session.issuer],
+          )
+        end
+
+        it 'sets mdl_enabled to false' do
+          expect(
+            subject.locals_attrs(presenter:, form_submit_url:),
+          ).to include(
+            mdl_enabled: false,
+          )
+        end
       end
     end
 

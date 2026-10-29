@@ -155,6 +155,34 @@ EVENT_NAME="piv_cac_disabled" make watch_events
 
 [analytics-handbook]: https://handbook.login.gov/articles/analytics-events.html
 
+### Account recovery (phase 1)
+
+Account-preserving MFA recovery is disabled by default with
+`account_recovery_v2_enabled`. When enabled, eligible non-proofed users enter
+[AccountRecovery::StartController](../app/controllers/account_recovery/start_controller.rb).
+Identity-proofed and other ineligible users retain destructive account reset. Existing legacy
+requests keep their original completion and cancellation routes.
+
+[AccountRecovery::EligibilityPolicy](../app/services/account_recovery/eligibility_policy.rb)
+controls both recovery eligibility and whether a new legacy reset is allowed. Both request
+services check this policy under the user lock so an active account-preserving request cannot
+overlap a new legacy reset. Uncancelled legacy requests awaiting a grant, and unexpired granted
+legacy links, also block new account-preserving requests.
+
+Request creation emails only the confirmed address used to sign in
+(`last_sign_in_email_address`) and sends an informational SMS to a configured MFA phone, if one
+exists. The SMS contains no recovery code or link and does not authorize recovery. Email resend
+does not send another SMS. SMS delivery is logged by the telephony sender, and the
+`account_recovery_request` event nests its delivery result under `telephony_response`, separately
+from request-creation success.
+
+Users with an active request follow the normal first-MFA sign-in route. A pending-recovery banner
+remains visible on MFA pages, including when choosing another method. Successful MFA sign-in cancels
+the request and emails a confirmation to the confirmed sign-in address; unsuccessful attempts leave
+the request intact. The request-received page remains informational.
+Verification and replacement-MFA endpoints remain inert in this phase. Recovery tokens use 32 random
+bytes encoded as URL-safe Base64.
+
 ### Controllers
 
 These tie everything together! We aim for lean, "RESTful" controllers

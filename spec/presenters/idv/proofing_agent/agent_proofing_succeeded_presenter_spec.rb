@@ -5,6 +5,13 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
 
   around { |ex| Time.use_zone('UTC') { ex.run } }
 
+  let(:validity_hours) { 48 }
+
+  before do
+    allow(IdentityConfig.store).to receive(:agent_proofed_user_time_validity_hours)
+      .and_return(validity_hours)
+  end
+
   subject(:presenter) do
     described_class.new(
       verified_at: '2026-04-02 16:24:00 -0500',
@@ -40,6 +47,17 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
         it 'falls back to the sign-in screen' do
           expect(presenter.confirmation_url).to eq(new_user_session_url(host: 'example.com'))
         end
+      end
+    end
+
+    context 'when the idv_proofing_agent_confirmation_url config is set' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_proofing_agent_confirmation_url)
+          .and_return('https://example.com/confirmation')
+      end
+
+      it 'returns the configured confirmation url' do
+        expect(presenter.confirmation_url).to eq('https://example.com/confirmation')
       end
     end
   end

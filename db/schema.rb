@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_20_190050) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -23,6 +23,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
     t.string "experiment", null: false, comment: "sensitive=false"
     t.datetime "updated_at", comment: "sensitive=false"
     t.index ["experiment", "discriminator"], name: "index_ab_test_assignments_on_experiment_and_discriminator", unique: true
+  end
+
+  create_table "account_recovery_requests", force: :cascade do |t|
+    t.string "cancel_reason", comment: "sensitive=false"
+    t.datetime "cancelled_at", comment: "sensitive=false"
+    t.datetime "completed_at", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "expired_at", comment: "sensitive=false"
+    t.string "failure_reason", comment: "sensitive=false"
+    t.datetime "granted_at", comment: "sensitive=false"
+    t.datetime "link_verified_at", comment: "sensitive=false"
+    t.datetime "password_verified_at", comment: "sensitive=false"
+    t.datetime "requested_at", comment: "sensitive=false"
+    t.string "state", null: false, comment: "sensitive=false"
+    t.datetime "token_expires_at", comment: "sensitive=false"
+    t.string "token_fingerprint", comment: "sensitive=true"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.integer "user_id", null: false, comment: "sensitive=false"
+    t.index ["user_id"], name: "index_account_recovery_requests_on_active_user_id", unique: true, where: "((completed_at IS NULL) AND (cancelled_at IS NULL) AND (expired_at IS NULL))"
+    t.index ["user_id"], name: "index_account_recovery_requests_on_user_id"
   end
 
   create_table "account_reset_requests", force: :cascade do |t|
@@ -78,6 +98,27 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
     t.integer "user_id", null: false, comment: "sensitive=false"
     t.index ["user_id", "created_at"], name: "index_backup_code_configurations_on_user_id_and_created_at"
     t.index ["user_id", "salted_code_fingerprint"], name: "index_backup_codes_on_user_id_and_salted_code_fingerprint"
+  end
+
+  create_table "delegated_issuance_logs", force: :cascade do |t|
+    t.string "actor_issuer", null: false, comment: "sensitive=false"
+    t.bigint "actor_return_log_id", null: false, comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.string "delegation_id", null: false, comment: "sensitive=false"
+    t.datetime "expires_at", null: false, comment: "sensitive=false"
+    t.datetime "issued_at", null: false, comment: "sensitive=false"
+    t.string "resource", null: false, comment: "sensitive=false"
+    t.string "scope", comment: "sensitive=false"
+    t.string "target_issuer", null: false, comment: "sensitive=false"
+    t.bigint "target_return_log_id", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.bigint "user_id", null: false, comment: "sensitive=false"
+    t.index ["actor_return_log_id"], name: "index_delegated_issuance_logs_on_actor_return_log_id"
+    t.index ["delegation_id"], name: "index_delegated_issuance_logs_on_delegation_id", unique: true
+    t.index ["target_return_log_id"], name: "index_delegated_issuance_logs_on_target_return_log_id", unique: true
+    t.index ["user_id", "actor_issuer", "issued_at"], name: "idx_delegated_issuance_logs_user_actor_issued"
+    t.index ["user_id", "target_issuer", "issued_at"], name: "idx_delegated_issuance_logs_user_target_issued"
+    t.index ["user_id"], name: "index_delegated_issuance_logs_on_user_id"
   end
 
   create_table "deleted_users", force: :cascade do |t|
@@ -197,6 +238,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
 
+  create_table "document_artifacts", force: :cascade do |t|
+    t.string "content_type", default: "image/jpeg", null: false, comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.bigint "document_capture_session_id", null: false, comment: "sensitive=false"
+    t.string "encrypted_encryption_key", null: false, comment: "sensitive=true"
+    t.string "image_type", null: false, comment: "sensitive=false"
+    t.bigint "profile_id", comment: "sensitive=false"
+    t.string "storage_name", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.index ["document_capture_session_id", "image_type"], name: "index_document_artifacts_on_capture_session_and_image_type", unique: true
+    t.index ["document_capture_session_id"], name: "index_document_artifacts_on_document_capture_session_id"
+    t.index ["profile_id", "image_type"], name: "index_document_artifacts_on_profile_id_and_image_type", unique: true
+    t.index ["profile_id"], name: "index_document_artifacts_on_profile_id"
+  end
+
   create_table "document_capture_sessions", force: :cascade do |t|
     t.datetime "cancelled_at", precision: nil, comment: "sensitive=false"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
@@ -208,9 +264,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
     t.string "last_doc_auth_result", comment: "sensitive=false"
     t.boolean "mdl_enabled", comment: "sensitive=false"
     t.boolean "ocr_confirmation_pending", default: false, comment: "sensitive=false"
-    t.boolean "passport_cards_supported", default: false, comment: "sensitive=false"
     t.string "passport_status", comment: "sensitive=false"
     t.datetime "pending_agent_proofed_user_at", comment: "sensitive=false"
+    t.bigint "profile_id", comment: "sensitive=false"
     t.datetime "requested_at", precision: nil, comment: "sensitive=false"
     t.string "result_id", comment: "sensitive=false"
     t.string "socure_docv_capture_app_url", comment: "sensitive=false"
@@ -219,11 +275,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
     t.bigint "user_id", comment: "sensitive=false"
     t.string "uuid", comment: "sensitive=false"
     t.index ["passport_status"], name: "idx_document_capture_sessions_on_passport_status_null_doc_type", where: "((document_type_requested IS NULL) AND (passport_status IS NOT NULL))"
+    t.index ["profile_id"], name: "index_document_capture_sessions_on_profile_id"
     t.index ["result_id"], name: "index_document_capture_sessions_on_result_id"
     t.index ["socure_docv_transaction_token"], name: "index_socure_docv_transaction_token", unique: true
     t.index ["user_id", "pending_agent_proofed_user_at"], name: "idx_on_user_id_pending_agent_proofed_user_at_9c062ecb7b"
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
+  end
+
+  create_table "document_metadata", force: :cascade do |t|
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.bigint "document_capture_session_id", null: false, comment: "sensitive=false"
+    t.string "encrypted_document_data", null: false, comment: "sensitive=true"
+    t.bigint "profile_id", comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.index ["document_capture_session_id"], name: "index_document_metadata_on_document_capture_session_id", unique: true
+    t.index ["profile_id"], name: "index_document_metadata_on_profile_id", unique: true
   end
 
   create_table "duplicate_profile_sets", force: :cascade do |t|
@@ -315,6 +382,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
     t.integer "aal", comment: "sensitive=false"
     t.string "access_token", comment: "sensitive=true"
     t.string "acr_values", comment: "sensitive=false"
+    t.datetime "biometric_sharing_consent_at", comment: "sensitive=false"
     t.string "code_challenge", comment: "sensitive=true"
     t.datetime "created_at", precision: nil, comment: "sensitive=false"
     t.datetime "deleted_at", precision: nil, comment: "sensitive=false"
@@ -647,6 +715,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
     t.index ["email_address_id"], name: "index_suspended_emails_on_email_address_id"
   end
 
+  create_table "user_consent_sts", comment: "Records of user consent for STS token exchange flows", force: :cascade do |t|
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.string "target_app", null: false, comment: "Issuer of the broker SP the user consented to sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.bigint "user_id", null: false, comment: "sensitive=false"
+    t.index ["user_id", "target_app"], name: "index_user_consent_sts_on_user_id_and_target_app", unique: true
+    t.index ["user_id"], name: "index_user_consent_sts_on_user_id"
+  end
+
   create_table "user_proofing_events", id: :serial, force: :cascade do |t|
     t.string "cost", comment: "sensitive=true"
     t.datetime "created_at", null: false, comment: "sensitive=false"
@@ -728,8 +805,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 
+  add_foreign_key "delegated_issuance_logs", "sp_return_logs", column: "actor_return_log_id"
+  add_foreign_key "delegated_issuance_logs", "sp_return_logs", column: "target_return_log_id"
   add_foreign_key "device_profiling_results", "users"
+  add_foreign_key "document_artifacts", "document_capture_sessions"
+  add_foreign_key "document_artifacts", "profiles"
+  add_foreign_key "document_capture_sessions", "profiles", on_delete: :nullify
   add_foreign_key "document_capture_sessions", "users"
+  add_foreign_key "document_metadata", "document_capture_sessions"
+  add_foreign_key "document_metadata", "profiles", on_delete: :nullify
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"
   add_foreign_key "in_person_enrollments", "profiles"
@@ -742,4 +826,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_23_212325) do
   add_foreign_key "integrations", "service_providers"
   add_foreign_key "partner_accounts", "agencies"
   add_foreign_key "partner_accounts", "partner_account_statuses"
+  add_foreign_key "user_consent_sts", "users"
 end

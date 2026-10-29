@@ -17,7 +17,8 @@
 class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
-  include AccountResetConcern
+  include DestructiveAccountResetConcern
+  include AccountRecoveryConcern
   include ActionView::Helpers::DateHelper
 
   class UserEmailAddressMismatchError < StandardError; end
@@ -127,6 +128,24 @@ class UserMailer < ActionMailer::Base
   def personal_key_regenerated
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.personal_key_regenerated.subject'))
+    end
+  end
+
+  def account_recovery_cancelled
+    with_user_locale(user) do
+      @header = t('user_mailer.account_recovery_cancelled.subject', app_name: APP_NAME)
+      mail(to: email_address.email, subject: @header)
+    end
+  end
+
+  def account_recovery_request
+    with_user_locale(user) do
+      @waiting_period_interval = account_recovery_wait_period_interval
+      @header = t('user_mailer.account_recovery_request.header', app_name: APP_NAME)
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.account_recovery_request.subject', app_name: APP_NAME),
+      )
     end
   end
 
@@ -526,7 +545,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def agent_proofing_succeeded(verified_at:, service_provider: nil)
+  def agent_proofing_succeeded(verified_at:, service_provider: nil, reminder: false)
     return if verified_at.blank?
 
     attachments.inline['info.png'] =
@@ -544,9 +563,13 @@ class UserMailer < ActionMailer::Base
       @verified_at_display = I18n.l(@presenter.verified_at, format: :event_date)
       @deadline_display = I18n.l(@presenter.deadline, format: :event_date)
 
+      subject = reminder ?
+        t('user_mailer.agent_proofing_succeeded.reminder_subject') :
+        t('user_mailer.agent_proofing_succeeded.subject')
+
       mail(
         to: email_address.email,
-        subject: t('user_mailer.agent_proofing_succeeded.subject'),
+        subject: subject,
       )
     end
   end

@@ -62,7 +62,7 @@ RSpec.describe Reports::AuthenticationReport do
       expect(ReportMailer).to receive(:tables_report).with(
         to: email,
         subject: "Weekly Authentication Report - #{report_date}",
-        message: "Report: authentication-report #{report_date}",
+        message: a_string_starting_with("Report: authentication-report #{report_date}"),
         reports:,
         attachment_format: :csv,
       )

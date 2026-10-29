@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
-  include AccountResetConcern
+  include DestructiveAccountResetConcern
   include ActionView::Helpers::TranslationHelper
 
   attr_reader :user,
@@ -89,7 +89,39 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def account_reset_or_cancel_link
-    account_reset_token_valid? ? account_reset_cancel_link : account_reset_link
+    return account_reset_cancel_link if account_reset_token_valid?
+    return unless AccountRecovery::EligibilityPolicy.new(user: user).legacy_reset_allowed?
+
+    account_reset_link
+  end
+
+  def account_recovery_pending?
+    AccountRecovery::EligibilityPolicy.new(user: user).recovery_pending?
+  end
+
+  def account_recovery_pending_link
+    @view.link_to(
+      t('two_factor_authentication.account_recovery.pending_link'),
+      account_recovery_pending_path(locale: LinkLocaleResolver.locale),
+    )
+  end
+
+  def account_recovery_eligible?
+    return @account_recovery_eligible if defined?(@account_recovery_eligible)
+
+    @account_recovery_eligible = AccountRecovery::EligibilityPolicy.new(
+      user: user,
+    ).eligible?
+  end
+
+  def account_recovery_link
+    t(
+      'two_factor_authentication.account_recovery.recover_text_html',
+      link_html: @view.link_to(
+        t('two_factor_authentication.account_recovery.recover_link'),
+        account_recovery_start_path(locale: LinkLocaleResolver.locale),
+      ),
+    )
   end
 
   def cancel_link

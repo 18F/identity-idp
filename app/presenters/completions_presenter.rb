@@ -15,6 +15,8 @@ class CompletionsPresenter
     [[:phone], :phone],
     [[:birthdate], :birthdate],
     [[:social_security_number], :social_security_number],
+    [[:document_images], :document_images],
+    [[:document_metadata], :document_metadata],
     [[:x509_subject], :x509_subject],
     [[:x509_issuer], :x509_issuer],
     [[:verified_at], :verified_at],
@@ -105,6 +107,15 @@ class CompletionsPresenter
     end
   end
 
+  def document_images_sharing?
+    current_sp.document_images_sharing_allowed? &&
+      requested_attributes.map(&:to_s).include?('document_images')
+  end
+
+  def document_images_sharing_disclosure
+    t('help_text.requested_attributes.document_images_html', sp_html: content_tag(:strong, sp_name))
+  end
+
   private
 
   def first_time_signing_in?
@@ -116,7 +127,17 @@ class CompletionsPresenter
       current_user: current_user,
       pii: decrypted_pii,
       selected_email_id: @selected_email_id,
+      **displayable_document_info,
     ).format
+  end
+
+  def displayable_document_info
+    return {} unless document_images_sharing?
+
+    {
+      document_images: t('sign_up.completed.document_images.description'),
+      document_metadata: t('sign_up.completed.document_metadata.description'),
+    }
   end
 
   def consent_has_expired?

@@ -1,0 +1,7 @@
+<%= form.input(
+      :biometric_sharing_consent,
+      as: :boolean,
+      required: false,
+      label: t('sign_up.document_images_sharing_consent_label_html', sp: presenter.sp_name),
+      wrapper_html: { class: 'margin-bottom-2' },
+    ) %>

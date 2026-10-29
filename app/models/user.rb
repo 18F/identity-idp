@@ -32,10 +32,14 @@ class User < ApplicationRecord
   has_many :identities, class_name: 'ServiceProviderIdentity'
   has_many :events # we are retaining events after delete
   has_many :devices # we are retaining devices after delete
+  has_many :delegated_issuance_logs # retained as issuance history after delete
   # rubocop:enable Rails/HasManyOrHasOneDependent
   has_many :agency_identities, dependent: :destroy
   has_many :profiles, dependent: :destroy
-  has_one :account_reset_request, dependent: :destroy
+  has_one :account_reset_request,
+          class_name: 'DestructiveAccountResetRequest',
+          dependent: :destroy
+  has_many :account_recovery_requests, dependent: :destroy, inverse_of: :user
   has_many :phone_configurations, dependent: :destroy, inverse_of: :user
   has_many :email_addresses, dependent: :destroy, inverse_of: :user
   has_many :webauthn_configurations, dependent: :destroy, inverse_of: :user
@@ -52,6 +56,10 @@ class User < ApplicationRecord
   has_many :fraud_review_requests, dependent: :destroy
   has_many :gpo_confirmation_codes, through: :profiles
   has_many :device_profiling_results, dependent: :destroy
+  has_many :sts_consents,
+           class_name: 'UserConsentSts',
+           inverse_of: :user,
+           dependent: :destroy
 
   has_one :pending_in_person_enrollment,
           -> { where(status: :pending).order(created_at: :desc) },
@@ -513,6 +521,12 @@ class User < ApplicationRecord
 
   def connected_apps
     identities.not_deleted.joins(:service_provider_record).order(created_at: :desc)
+  end
+
+  # Unexpired STS (token exchange) consents, which represent the services a
+  # broker is allowed to act on the user's behalf for.
+  def connected_delegations
+    sts_consents.unexpired.order(created_at: :desc)
   end
 
   def delete_account_bullet_key

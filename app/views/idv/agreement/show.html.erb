@@ -28,21 +28,26 @@
           form: f,
           name: :idv_consent_given,
           as: :boolean,
-          label: t('doc_auth.instructions.consent', app_name: APP_NAME),
+          label: t(
+            'doc_auth.instructions.consent_html',
+            app_name: APP_NAME,
+            privacy_link_html: new_tab_link_to(
+              t('notices.privacy.privacy_act_statement'),
+              policy_redirect_url(
+                policy: :privacy_act_statement,
+                flow: :idv,
+                step: :agreement,
+                location: :consent,
+              ),
+            ),
+            rules_of_use_link_html: new_tab_link_to(
+              t('titles.rules_of_use'),
+              MarketingSite.rules_of_use_url,
+            ),
+          ),
           required: true,
         ) %>
   <% end %>
-  <p class="margin-top-2">
-    <%= new_tab_link_to(
-          t('doc_auth.instructions.learn_more'),
-          policy_redirect_url(
-            policy: :privacy_act_statement,
-            flow: :idv,
-            step: :agreement,
-            location: :consent,
-          ),
-        ) %>
-  </p>
   <div class="margin-top-4">
     <%= render(
           SpinnerButtonComponent.new(

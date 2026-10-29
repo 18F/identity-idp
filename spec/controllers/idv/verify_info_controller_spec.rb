@@ -14,12 +14,12 @@ RSpec.describe Idv::VerifyInfoController do
   end
 
   let(:hybrid_device_profiling) { :disabled }
-
+  let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
   before do
     allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
       .and_return(hybrid_device_profiling)
     stub_sign_in(user)
-    stub_up_to(:ssn, idv_session: subject.idv_session)
+    stub_up_to(:ssn, idv_session: subject.idv_session, document_type_requested:)
     stub_analytics
     stub_attempts_tracker
   end
@@ -336,6 +336,37 @@ RSpec.describe Idv::VerifyInfoController do
 
           get :show
         end
+
+        context 'when user proofs with a passport' do
+          let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
+          let(:applicant_pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT }
+          it 'tracks the attempts events' do
+            expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+              success: true,
+              device_fingerprint:,
+              failure_reason: nil,
+            )
+            expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+              success: true,
+              document_state: nil,
+              document_number: applicant_pii[:document_number],
+              document_issued: applicant_pii[:passport_issued],
+              document_expiration: applicant_pii[:passport_expiration],
+              first_name: applicant_pii[:first_name],
+              last_name: applicant_pii[:last_name],
+              date_of_birth: applicant_pii[:dob],
+              address1: nil,
+              address2: nil,
+              ssn: SsnFormatter.format(applicant_pii[:ssn]),
+              city: nil,
+              state: nil,
+              zip: applicant_pii[:zip],
+              failure_reason: nil,
+            )
+
+            get :show
+          end
+        end
       end
 
       context 'when threatmetrix response is No Result' do
@@ -572,6 +603,19 @@ RSpec.describe Idv::VerifyInfoController do
         let(:hybrid_mobile_tmx_summary_reason_code) { [] }
         let(:threatmetrix_review_status) { 'pass' }
         let(:threatmetrix_success) { true }
+        let(:hybrid_mobile_threatmetrix) do
+          {
+            success: hybrid_mobile_success,
+            device_fingerprint: hybrid_mobile_device_fingerprint,
+            client: threatmetrix_client_id,
+            transaction_id: 2,
+            review_status: hybrid_mobile_review_status,
+            response_body: {
+              client: threatmetrix_client_id,
+              tmx_summary_reason_code: hybrid_mobile_tmx_summary_reason_code,
+            },
+          }
+        end
 
         let(:idv_result) do
           {
@@ -592,17 +636,7 @@ RSpec.describe Idv::VerifyInfoController do
                     tmx_summary_reason_code: ['Identity_Negative_History'],
                   },
                 },
-                hybrid_mobile_threatmetrix: {
-                  success: hybrid_mobile_success,
-                  device_fingerprint: hybrid_mobile_device_fingerprint,
-                  client: threatmetrix_client_id,
-                  transaction_id: 2,
-                  review_status: hybrid_mobile_review_status,
-                  response_body: {
-                    client: threatmetrix_client_id,
-                    tmx_summary_reason_code: hybrid_mobile_tmx_summary_reason_code,
-                  },
-                },
+                hybrid_mobile_threatmetrix:,
               },
             },
             errors: {},
@@ -613,130 +647,163 @@ RSpec.describe Idv::VerifyInfoController do
           }
         end
 
-        context 'when hybrid mobile threatmetrix response is Pass' do
+        context 'when hybrid_device_profiling is enabled' do
           let(:hybrid_device_profiling) { :enabled }
 
-          it 'sets the hybrid mobile review status in the idv session' do
-            get :show
-            expect(controller.idv_session.hybrid_mobile_threatmetrix_review_status).to eq('pass')
-          end
+          context 'when hybrid mobile threatmetrix response is Pass' do
+            it 'sets the hybrid mobile review status in the idv session' do
+              get :show
+              expect(controller.idv_session.hybrid_mobile_threatmetrix_review_status).to eq('pass')
+            end
 
-          # we use the client name for some error tracking, so make sure
-          # it gets through to the analytics event log.
-          it 'logs the analytics event, including the client' do
-            get :show
+            # we use the client name for some error tracking, so make sure
+            # it gets through to the analytics event log.
+            it 'logs the analytics event, including the client' do
+              get :show
 
-            expect(@analytics).to have_logged_event(
-              'IdV: doc auth verify proofing results',
-              hash_including(
-                proofing_results: hash_including(
-                  context: hash_including(
-                    stages: hash_including(
-                      hybrid_mobile_threatmetrix: hash_including(
-                        client: threatmetrix_client_id,
+              expect(@analytics).to have_logged_event(
+                'IdV: doc auth verify proofing results',
+                hash_including(
+                  proofing_results: hash_including(
+                    context: hash_including(
+                      stages: hash_including(
+                        hybrid_mobile_threatmetrix: hash_including(
+                          client: threatmetrix_client_id,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            )
-            expect(@analytics).to have_logged_event(
-              'IdV: doc auth verify proofing results',
-              hash_including(
-                proofing_results: hash_including(
-                  context: hash_including(
-                    stages: hash_including(
-                      hybrid_mobile_threatmetrix: hash_excluding(device_fingerprint:),
+              )
+              expect(@analytics).to have_logged_event(
+                'IdV: doc auth verify proofing results',
+                hash_including(
+                  proofing_results: hash_including(
+                    context: hash_including(
+                      stages: hash_including(
+                        hybrid_mobile_threatmetrix: hash_excluding(device_fingerprint:),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            )
+              )
 
-            expect(@analytics).to have_logged_event(
-              :idv_threatmetrix_hybrid_mobile_response_body,
-              response_body: hash_including(
-                client: threatmetrix_client_id,
-              ),
-            )
+              expect(@analytics).to have_logged_event(
+                :idv_threatmetrix_hybrid_mobile_response_body,
+                response_body: hash_including(
+                  client: threatmetrix_client_id,
+                ),
+              )
+            end
+
+            it 'tracks a successful hybrid mobile tmx fraud check' do
+              expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+                success: true,
+                device_fingerprint:,
+                failure_reason: nil,
+              )
+              expect(@fraud_ops_tracker).to receive(:idv_device_risk_assessment).with(
+                success: true,
+                device_fingerprint:,
+                failure_reason: nil,
+              )
+
+              expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+                success: true,
+                device_fingerprint: hybrid_mobile_device_fingerprint,
+                failure_reason: nil,
+              )
+              expect(@fraud_ops_tracker).to receive(:idv_device_risk_assessment).with(
+                success: true,
+                device_fingerprint: hybrid_mobile_device_fingerprint,
+                failure_reason: nil,
+              )
+
+              get :show
+            end
+
+            it 'does not create a FraudReviewRequest' do
+              expect { get :show }.not_to change(FraudReviewRequest, :count)
+            end
           end
 
-          it 'tracks a successful hybrid mobile tmx fraud check' do
-            expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
-              success: true,
-              device_fingerprint:,
-              failure_reason: nil,
-            )
-            expect(@fraud_ops_tracker).to receive(:idv_device_risk_assessment).with(
-              success: true,
-              device_fingerprint:,
-              failure_reason: nil,
-            )
+          context 'when hybrid mobile threatmetrix response is Reject' do
+            let(:hybrid_mobile_review_status) { 'reject' }
+            let(:hybrid_mobile_success) { false }
+            let(:hybrid_mobile_tmx_summary_reason_code) { ['Identity_Negative_History'] }
 
-            expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
-              success: true,
-              device_fingerprint: hybrid_mobile_device_fingerprint,
-              failure_reason: nil,
-            )
-            expect(@fraud_ops_tracker).to receive(:idv_device_risk_assessment).with(
-              success: true,
-              device_fingerprint: hybrid_mobile_device_fingerprint,
-              failure_reason: nil,
-            )
+            it 'sets the hybrid mobile review status in the idv session' do
+              get :show
+              expect(controller.idv_session.hybrid_mobile_threatmetrix_review_status)
+                .to eq('reject')
+            end
 
-            get :show
+            it 'tracks a failed hybrid mobile tmx fraud check' do
+              expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+                success: true,
+                device_fingerprint:,
+                failure_reason: nil,
+              )
+              expect(@fraud_ops_tracker).to receive(:idv_device_risk_assessment).with(
+                success: true,
+                device_fingerprint:,
+                failure_reason: nil,
+              )
+
+              expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+                success: false,
+                device_fingerprint: hybrid_mobile_device_fingerprint,
+                failure_reason: {
+                  fraud_risk_summary_reason_code: ['Identity_Negative_History'],
+                },
+              )
+              expect(@fraud_ops_tracker).to receive(:idv_device_risk_assessment).with(
+                success: false,
+                device_fingerprint: hybrid_mobile_device_fingerprint,
+                failure_reason: {
+                  fraud_risk_summary_reason_code: ['Identity_Negative_History'],
+                },
+              )
+
+              expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+                success: true,
+                document_state: applicant_pii[:state],
+                document_number: applicant_pii[:state_id_number],
+                document_issued: applicant_pii[:state_id_issued],
+                document_expiration: applicant_pii[:state_id_expiration],
+                first_name: applicant_pii[:first_name],
+                last_name: applicant_pii[:last_name],
+                date_of_birth: applicant_pii[:dob],
+                address1: applicant_pii[:address1],
+                address2: applicant_pii[:address2],
+                ssn: SsnFormatter.format(applicant_pii[:ssn]),
+                city: applicant_pii[:city],
+                state: applicant_pii[:state],
+                zip: applicant_pii[:zip],
+                failure_reason: {
+                  failed_stages: [:device_risk_assesment],
+                  hybrid_mobile_device_profiling_adjudication_reason:
+                    ['hybrid_mobile_device_profiling_result'],
+                  resolution_adjudication_reason: ['pass_resolution_and_state_id'],
+                },
+              )
+
+              get :show
+            end
+
+            it 'creates a FraudReviewRequest' do
+              expect { get :show }.to change(FraudReviewRequest, :count).by(1)
+              fraud_review_request = FraudReviewRequest.last
+              expect(fraud_review_request.user).to eq(user)
+            end
           end
 
-          it 'does not create a FraudReviewRequest' do
-            expect { get :show }.not_to change(FraudReviewRequest, :count)
-          end
-        end
-
-        context 'when hybrid mobile threatmetrix response is Reject' do
-          let(:hybrid_device_profiling) { :enabled }
-          let(:hybrid_mobile_review_status) { 'reject' }
-          let(:hybrid_mobile_success) { false }
-          let(:hybrid_mobile_tmx_summary_reason_code) { ['Identity_Negative_History'] }
-
-          it 'sets the hybrid mobile review status in the idv session' do
-            get :show
-            expect(controller.idv_session.hybrid_mobile_threatmetrix_review_status).to eq('reject')
-          end
-
-          it 'tracks a failed hybrid mobile tmx fraud check' do
-            expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
-              success: true,
-              device_fingerprint:,
-              failure_reason: nil,
-            )
-            expect(@fraud_ops_tracker).to receive(:idv_device_risk_assessment).with(
-              success: true,
-              device_fingerprint:,
-              failure_reason: nil,
-            )
-
-            expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
-              success: false,
-              device_fingerprint: hybrid_mobile_device_fingerprint,
-              failure_reason: {
-                fraud_risk_summary_reason_code: ['Identity_Negative_History'],
-              },
-            )
-            expect(@fraud_ops_tracker).to receive(:idv_device_risk_assessment).with(
-              success: false,
-              device_fingerprint: hybrid_mobile_device_fingerprint,
-              failure_reason: {
-                fraud_risk_summary_reason_code: ['Identity_Negative_History'],
-              },
-            )
-
-            get :show
-          end
-
-          it 'creates a FraudReviewRequest' do
-            expect { get :show }.to change(FraudReviewRequest, :count).by(1)
-            fraud_review_request = FraudReviewRequest.last
-            expect(fraud_review_request.user).to eq(user)
+          context 'user does not use hybrid flow' do
+            let(:hybrid_mobile_threatmetrix) { {} }
+            it 'does not track the hybrid attempts event' do
+              expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).once
+              get :show
+            end
           end
         end
 

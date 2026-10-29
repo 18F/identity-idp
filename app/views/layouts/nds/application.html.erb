@@ -33,6 +33,7 @@
           <%= render FlashComponent.new(flash: flash) %>
         </div>
       <% end %>
+      <%= render 'shared/account_recovery_pending_banner' if controller_path.start_with?('two_factor_authentication/') %>
       <%= yield %>
     <% end %>
   <% end %>

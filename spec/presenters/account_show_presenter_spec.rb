@@ -444,6 +444,44 @@ RSpec.describe AccountShowPresenter do
     end
   end
 
+  describe '#connected_delegations' do
+    let(:user) { create(:user) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)
+    end
+
+    it 'delegates to user' do
+      consent = create(:user_consent_sts, user:)
+
+      expect(presenter.connected_delegations).to eq([consent])
+    end
+  end
+
+  describe '#show_connected_delegations?' do
+    let(:user) { create(:user) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)
+    end
+
+    it 'is true when the user has an unexpired consent' do
+      create(:user_consent_sts, user:)
+
+      expect(presenter.show_connected_delegations?).to eq(true)
+    end
+
+    it 'is false when the user has no consent' do
+      expect(presenter.show_connected_delegations?).to eq(false)
+    end
+
+    it 'is false when the user only has an expired consent' do
+      create(:user_consent_sts, user:, created_at: 366.days.ago)
+
+      expect(presenter.show_connected_delegations?).to eq(false)
+    end
+  end
+
   describe '#backup_codes_generated_at' do
     it 'returns the created_at date of the oldest backup code' do
       user = create(:user)

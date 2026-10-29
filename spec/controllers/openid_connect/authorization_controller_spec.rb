@@ -1199,6 +1199,98 @@ RSpec.describe OpenidConnect::AuthorizationController do
       end
     end
 
+    context 'STS token exchange consent' do
+      let(:user) { create(:user, :fully_registered) }
+      let(:broker_issuer) { 'urn:gov:gsa:openidconnect:test' }
+      let(:client_id) { broker_issuer }
+      let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
+
+      before do
+        stub_sign_in user
+        allow(controller).to receive(:auth_count).and_return(2)
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return([broker_issuer])
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+          .and_return([{ issuer: 'passport-issuer', scope: 'passport' }])
+        allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)
+        params[:scope] = 'openid token_exchange:passport'
+
+        # Link the identity ahead of time so the completions/consent screen is not
+        # triggered, allowing the request to reach the STS consent check.
+        IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+        user.identities.last.update!(
+          verified_attributes: %w[given_name family_name birthdate],
+        )
+      end
+
+      context 'when the user has not consented to STS for this target app' do
+        it 'redirects to the STS consent page and stores the target app' do
+          action
+
+          expect(response).to redirect_to(sts_consent_url)
+          expect(controller.session[:sp][:sts_target_app]).to eq('passport-issuer')
+        end
+      end
+
+      context 'when the user has already consented to STS for this target app' do
+        before do
+          UserConsentSts.create!(user: user, target_app: 'passport-issuer')
+        end
+
+        it 'does not redirect to the STS consent page' do
+          action
+
+          expect(response).not_to redirect_to(sts_consent_url)
+        end
+
+        it 'stores the actor handoff for the authorization code' do
+          action
+
+          code = user.identities.find_by(service_provider: broker_issuer).session_uuid
+          handoff = TokenExchange::ActorHandoff.load(code)
+          expect(handoff.actor_return_log_id).to eq(SpReturnLog.find_by(user:).id)
+        end
+
+        context 'when the request does not ask for token exchange' do
+          before { params[:scope] = 'openid' }
+
+          it 'does not store an actor handoff' do
+            expect(TokenExchange::ActorHandoff).to_not receive(:store)
+
+            action
+
+            expect(SpReturnLog.where(user:).count).to eq(1)
+          end
+        end
+      end
+
+      context 'when the user previously consented but the consent has expired' do
+        before do
+          consent = UserConsentSts.create!(user: user, target_app: 'passport-issuer')
+          consent.update!(created_at: 366.days.ago)
+        end
+
+        it 'redirects to the STS consent page' do
+          action
+
+          expect(response).to redirect_to(sts_consent_url)
+        end
+      end
+
+      context 'when token exchange is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(false)
+        end
+
+        it 'does not redirect to the STS consent page' do
+          action
+
+          expect(response).not_to redirect_to(sts_consent_url)
+        end
+      end
+    end
+
     context 'user is not signed in' do
       context 'using acr_values' do
         let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }

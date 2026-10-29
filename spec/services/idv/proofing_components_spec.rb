@@ -35,6 +35,9 @@ RSpec.describe Idv::ProofingComponents do
 
   describe '#to_h' do
     let(:hybrid_device_profiling) { :enabled }
+    let(:document_capture_session) do
+      create(:document_capture_session, user:, doc_auth_vendor: 'feedabee')
+    end
 
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('test_vendor')
@@ -46,7 +49,7 @@ RSpec.describe Idv::ProofingComponents do
       idv_session.threatmetrix_review_status = 'pass'
       idv_session.source_check_vendor = 'aamva'
       idv_session.resolution_vendor = 'lexis_nexis'
-      idv_session.doc_auth_vendor = 'feedabee'
+      idv_session.document_capture_session_uuid = document_capture_session.uuid
       idv_session.hybrid_mobile_threatmetrix_review_status = hybrid_mobile_tmx_review_status
     end
 
@@ -200,10 +203,38 @@ RSpec.describe Idv::ProofingComponents do
   end
 
   describe '#document_check' do
-    before { idv_session.doc_auth_vendor = 'feedabee' }
+    let(:document_capture_session) do
+      create(:document_capture_session, user:, doc_auth_vendor: 'feedabee')
+    end
 
-    it 'returns doc_auth_vendor' do
-      expect(subject.document_check).to eql('feedabee')
+    before do
+      idv_session.document_capture_session_uuid = document_capture_session.uuid
+    end
+
+    context 'before doc auth complete' do
+      it 'returns nil' do
+        expect(subject.document_check).to be_nil
+      end
+    end
+
+    context 'after doc auth completed successfully' do
+      let(:pii_from_doc) { Idp::Constants.mock_idv_applicant }
+
+      it 'returns doc_auth_vendor from document_capture_session' do
+        expect(subject.document_check).to eql('feedabee')
+      end
+    end
+
+    context 'in-person proofing state id complete' do
+      before do
+        user_session['idv/in_person'] = {
+          pii_from_user: { identity_doc_address1: '123 Main St' },
+        }
+      end
+
+      it 'returns USPS' do
+        expect(subject.document_check).to eql(Idp::Constants::Vendors::USPS)
+      end
     end
   end
 

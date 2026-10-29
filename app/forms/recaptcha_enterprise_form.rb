@@ -12,7 +12,9 @@ class RecaptchaEnterpriseForm
               :analytics,
               :extra_analytics_properties,
               :user_agent,
-              :user_ip_address
+              :user_ip_address,
+              :ja3_fingerprint,
+              :ja4_fingerprint
 
   validate :validate_token_exists
   validate :validate_recaptcha_result
@@ -23,7 +25,9 @@ class RecaptchaEnterpriseForm
     analytics: nil,
     extra_analytics_properties: {},
     user_agent: nil,
-    user_ip_address: nil
+    user_ip_address: nil,
+    ja3_fingerprint: nil,
+    ja4_fingerprint: nil
   )
     @score_threshold = score_threshold
     @analytics = analytics
@@ -31,6 +35,8 @@ class RecaptchaEnterpriseForm
     @extra_analytics_properties = extra_analytics_properties
     @user_agent = user_agent
     @user_ip_address = user_ip_address
+    @ja3_fingerprint = ja3_fingerprint
+    @ja4_fingerprint = ja4_fingerprint
   end
 
   def exempt?
@@ -65,6 +71,8 @@ class RecaptchaEnterpriseForm
       recaptcha_action:,
       user_agent:,
       user_ip_address:,
+      ja3_fingerprint:,
+      ja4_fingerprint:,
     )
   end
 
@@ -76,6 +84,10 @@ class RecaptchaEnterpriseForm
       exception_class: error&.class&.name,
       form_class: self.class.name,
       recaptcha_action:,
+      ja3_present: ja3_fingerprint.present?,
+      ja4_present: ja4_fingerprint.present?,
+      recaptcha_enterprise_additional_context_enabled:
+        FeatureManagement.recaptcha_enterprise_additional_context_enabled?,
       **extra_analytics_properties,
     )
   end

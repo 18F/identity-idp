@@ -3,6 +3,9 @@ zh:
   telephony:
     account_deleted_notice:
       sms: 这条信息确认你已删除了你的 %{app_name} 账户。
+    account_recovery_notice:
+      sms: |-
+        You requested to recover your %{app_name} account. Check your email in %{interval} for next steps. Not you? Sign in and authenticate to cancel recovery.
     account_reset_cancellation_notice:
       sms: 删除你 %{app_name} 账户的请求已被取消。
     account_reset_notice:

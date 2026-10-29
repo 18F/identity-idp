@@ -58,14 +58,27 @@ module I18n
       # List of keys allowed to be untranslated or are the same as English
       # rubocop:disable Layout/LineLength
       ALLOWED_UNTRANSLATED_KEYS = [
+        { key: /^account_recovery\./, locales: %i[es fr zh] }, # Recovery translations pending
+        { key: /^user_mailer\.account_recovery_request\./, locales: %i[es fr zh] }, # Recovery translations pending
+        { key: /^user_mailer\.account_recovery_cancelled\./, locales: %i[es fr zh] }, # Recovery translations pending
+        { key: /^two_factor_authentication\.account_recovery\./, locales: %i[es fr zh] }, # Recovery translations pending
+        { key: 'telephony.account_recovery_notice.sms', locales: %i[es fr zh] }, # Recovery translations pending
+        { key: 'two_factor_authentication.piv_cac_mismatch.instructions_recovery', locales: %i[es fr zh] }, # Recovery translations pending
         { key: 'i18n.locale.en', locales: %i[es fr zh] },
+        { key: 'forms.buttons.verify_with_clear1', locales: %i[es fr zh] }, # CLEAR branded button is not translated
+        { key: 'forms.buttons.verify_with', locales: %i[es fr zh] }, # CLEAR branded button is not translated
         { key: 'i18n.locale.es', locales: %i[es fr zh] },
         { key: 'i18n.locale.fr', locales: %i[es fr zh] },
         { key: 'i18n.locale.zh', locales: %i[es fr zh] },
+        { key: 'account.connected_delegation.associated_html', locales: %i[es fr zh] },
+        { key: 'account.connected_delegation.description', locales: %i[es fr zh] },
+        { key: 'account.connected_delegation.permission1_html', locales: %i[es fr zh] },
         { key: 'account.email_language.name.en', locales: %i[es fr zh] },
         { key: 'account.email_language.name.es', locales: %i[es fr zh] },
         { key: 'account.email_language.name.fr', locales: %i[es fr zh] },
         { key: 'account.email_language.name.zh', locales: %i[es fr zh] },
+        { key: 'account.navigation.america_gov_services', locales: %i[es fr zh] },
+        { key: 'account.connected_delegation.disconnect', locales: %i[ es fr zh] },
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
         { key: /^countries/ }, # Some countries have the same name across languages
         { key: 'errors.messages.both_auth_and_logout_request', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing
@@ -121,6 +134,10 @@ module I18n
         { key: 'nds.footer.experience_notice_label', locales: %i[es fr zh] }, # Translations pending
         { key: 'nds.footer.experience_notice_link', locales: %i[es fr zh] }, # Translations pending
         { key: 'nds.footer.switch_to_legacy', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.check_box_to_consent', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.content', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.heading', locales: %i[es fr zh] }, # Translations pending
+        { key: 'titles.sts_consent', locales: %i[es fr zh] }, # Translations pending
       ].freeze
       # rubocop:enable Layout/LineLength
 

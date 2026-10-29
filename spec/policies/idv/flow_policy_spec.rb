@@ -193,7 +193,7 @@ RSpec.describe 'Idv::FlowPolicy' do
 
     context 'preconditions for document_capture are present' do
       it 'returns document_capture' do
-        stub_up_to(:choose_id_type, idv_session: idv_session)
+        stub_up_to(:choose_id_type, idv_session: idv_session, document_type_requested: Idp::Constants::DocumentTypes::PASSPORT)
 
         expect(subject.info_for_latest_step.key).to eq(:document_capture)
         expect(subject.controller_allowed?(controller: Idv::DocumentCaptureController)).to be
@@ -385,7 +385,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         root: %i[welcome request_letter],
         welcome: %i[agreement hybrid_handoff choose_id_type document_capture how_to_verify],
         agreement: %i[hybrid_handoff choose_id_type document_capture how_to_verify],
-        how_to_verify: %i[choose_id_type document_capture],
+        how_to_verify: %i[choose_id_type document_capture clear1_session],
         hybrid_handoff: %i[choose_id_type link_sent document_capture socure_document_capture
                            clear1_session],
         choose_id_type: %i[document_capture],

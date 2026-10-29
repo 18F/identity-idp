@@ -27,6 +27,7 @@ class ServiceProvider < ApplicationRecord
           class_name: 'Agreements::Integration',
           dependent: nil
 
+  include IssuerMethods
   # Do not define validations in this model
   # See https://github.com/18F/identity_validations
   include IdentityValidations::ServiceProviderValidation
@@ -88,6 +89,20 @@ class ServiceProvider < ApplicationRecord
     else
       ssl_certs.first.public_key
     end
+  end
+
+  def token_exchange_broker?
+    IdentityConfig.store.token_exchange_allowed_broker_issuers.include?(issuer)
+  end
+
+  def token_exchange_target?
+    IdentityConfig.store.token_exchange_allowed_targets.any? do |target|
+      target.fetch(:issuer) == issuer
+    end
+  end
+
+  def userinfo_encrypted_response?
+    IdentityConfig.store.userinfo_encryption_allowed_issuers.include?(issuer)
   end
 
   def create_prompt_allowed?

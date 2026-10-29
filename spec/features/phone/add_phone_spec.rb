@@ -215,6 +215,9 @@ RSpec.describe 'Add a new phone number' do
       phone_country_code: 'AU',
       recaptcha_action: 'phone_setup',
       form_class: 'RecaptchaMockForm',
+      ja3_present: false,
+      ja4_present: false,
+      recaptcha_enterprise_additional_context_enabled: false,
     )
 
     # Passing international should display OTP confirmation

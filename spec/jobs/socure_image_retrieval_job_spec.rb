@@ -22,12 +22,16 @@ RSpec.describe SocureImageRetrievalJob do
   let(:result) do
     EncryptedDocStorage::DocWriter::Result.new(name: 'name', encryption_key: '12345')
   end
+  let(:redis_storage) { EncryptedDocStorage::RedisStorage.new }
   let(:selfie) { false }
 
   before do
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
     allow(FraudOps::Tracker).to receive(:new).and_return(fraud_ops_tracker)
-    allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+    allow(EncryptedDocStorage::DocWriter).to receive(:new).and_call_original
+    allow(EncryptedDocStorage::DocWriter).to receive(:new)
+      .with(s3_enabled: anything).and_return(writer)
+    allow(EncryptedDocStorage::RedisStorage).to receive(:new).and_return(redis_storage)
 
     document_capture_session.update(issuer: sp.issuer)
 
@@ -68,22 +72,80 @@ RSpec.describe SocureImageRetrievalJob do
   end
 
   describe '#perform' do
+    let(:persist_artifacts) { false }
+    let(:docv_transaction_token) { document_capture_session.socure_docv_transaction_token }
+    let(:document_metadata) do
+      {
+        document_number: 'D-9988',
+        document_issued: '2022-02-02',
+        document_expiration: '2032-02-02',
+        document_jurisdiction: 'WA',
+      }
+    end
+    let(:encrypted_document_metadata) do
+      Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(document_metadata.to_json)
+    end
+
     subject(:perform) do
       job.perform(
         reference_id:,
         document_capture_session_uuid:,
         image_storage_data:,
         passport_book:,
+        persist_artifacts:,
+        docv_transaction_token:,
+        encrypted_document_metadata:,
       )
     end
 
     context 'we get a 200-http response from the image endpoint' do
       before do
-        expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+        expect(EncryptedDocStorage::DocWriter).to receive(:new)
+          .with(s3_enabled: anything).and_return(writer)
         expect(writer).to receive(:write_with_data).exactly(2).times
       end
 
       it 'stores the images via doc escrow' do
+        perform
+      end
+    end
+
+    context 'when no escrow data was provided (escrow disabled for the SP)' do
+      let(:image_storage_data) { {} }
+
+      it 'does not write to escrow' do
+        expect(writer).not_to receive(:write_with_data)
+
+        perform
+      end
+
+      context 'and Socure returns an error' do
+        before do
+          stub_request(:get, socure_image_endpoint)
+            .to_return(status: 500, headers: { 'Content-Type' => 'application/json' }, body: '{}')
+        end
+
+        it 'does not report an escrow retrieval failure for files that were never requested' do
+          expect(attempts_api_tracker).not_to receive(:idv_image_retrieval_failed)
+          expect(fraud_ops_tracker).not_to receive(:idv_image_retrieval_failed)
+
+          perform
+        end
+      end
+    end
+
+    context 'when the document capture session was deleted before the job runs' do
+      before do
+        document_capture_session_uuid
+        docv_transaction_token
+        document_capture_session.destroy!
+      end
+
+      it 'returns early without fetching images or writing to storage' do
+        expect(DocAuth::Socure::Requests::ImagesRequest).not_to receive(:new)
+        expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+        expect(Idv::DocumentArtifactsPersister).not_to receive(:new)
+
         perform
       end
     end
@@ -103,12 +165,91 @@ RSpec.describe SocureImageRetrievalJob do
       end
     end
 
+    context 'persisting document artifacts' do
+      let(:persist_artifacts) { true }
+
+      before do
+        allow(IdentityConfig.store).to receive(:document_images_sharing_enabled)
+          .and_return(true)
+        allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
+          .and_return([sp.issuer])
+      end
+
+      after do
+        DocumentArtifact.find_each do |artifact|
+          redis_storage.delete_image(name: artifact.storage_name)
+        end
+      end
+
+      it 'decrypts the document metadata and delegates to Idv::DocumentArtifactsPersister' do
+        persister = instance_double(Idv::DocumentArtifactsPersister)
+        expect(Idv::DocumentArtifactsPersister).to receive(:new).with(
+          document_capture_session:,
+          docv_transaction_token:,
+          document_metadata:,
+        ).and_return(persister)
+        expect(persister).to receive(:call) do |images:|
+          expect(images.map(&:type)).to contain_exactly(:front, :back)
+        end
+
+        perform
+      end
+
+      it 'creates one artifact per returned image, separate from the escrow objects' do
+        expect { perform }.to change { document_capture_session.document_artifacts.count }
+          .from(0).to(2)
+
+        expect(document_capture_session.document_artifacts.pluck(:storage_name))
+          .not_to include('name')
+        expect(document_capture_session.document_metadata.document_data).to eq(document_metadata)
+      end
+
+      it 'persists artifacts even when escrow is disabled for the SP' do
+        expect do
+          job.perform(
+            reference_id:,
+            document_capture_session_uuid:,
+            image_storage_data: {},
+            passport_book:,
+            persist_artifacts:,
+            docv_transaction_token:,
+            encrypted_document_metadata:,
+          )
+        end.to change { document_capture_session.document_artifacts.count }.from(0).to(2)
+      end
+
+      context 'when the verification attempt was not successful' do
+        let(:persist_artifacts) { false }
+
+        it 'still escrows the images but never persists shareable artifacts' do
+          expect(writer).to receive(:write_with_data).exactly(2).times
+          expect(Idv::DocumentArtifactsPersister).not_to receive(:new)
+
+          expect { perform }.not_to change { DocumentArtifact.count }
+        end
+      end
+
+      context 'when Socure returns an error' do
+        before do
+          stub_request(:get, socure_image_endpoint)
+            .to_return(status: 500, headers: { 'Content-Type' => 'application/json' }, body: '{}')
+        end
+
+        it 'does not persist artifacts' do
+          expect(Idv::DocumentArtifactsPersister).not_to receive(:new)
+
+          perform
+        end
+      end
+    end
+
     context 'when we get a non-200 HTTP response back from the image endpoint' do
       let(:referenceId) { '360ae43f-123f-47ab-8e05-6af79752e76c' }
 
       before do
-        expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+        expect(EncryptedDocStorage::DocWriter).not_to receive(:new).with(s3_enabled: anything)
         expect(writer).not_to receive(:write_with_data)
+        expect(redis_storage).not_to receive(:write_image)
       end
 
       context 'when we get an error without a socure response body' do

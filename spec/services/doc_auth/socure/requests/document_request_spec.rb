@@ -2,11 +2,15 @@ require 'rails_helper'
 
 RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
   let(:document_type_requested) { nil }
-  let(:document_capture_session) { build(:document_capture_session, document_type_requested:) }
+  let(:issuer) { 'the-issuer' }
+  let(:document_capture_session) do
+    build(:document_capture_session, document_type_requested:, issuer:)
+  end
   let(:redirect_url) { 'https://idv.test' }
   let(:language) { :en }
   let(:idv_socure_docv_flow_id_only) { 'id_only_flow' }
   let(:idv_socure_docv_flow_id_w_selfie) { 'selfie_flow' }
+  let(:idv_socure_docv_flow_id_w_selfie_image_sharing) { 'selfie_with_image_sharing_flow' }
   let(:use_case_key) { idv_socure_docv_flow_id_only }
   let(:customer_user_id) { SecureRandom.uuid }
 
@@ -60,6 +64,8 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
         .and_return(idv_socure_docv_flow_id_only)
       allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_w_selfie)
         .and_return(idv_socure_docv_flow_id_w_selfie)
+      allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_w_selfie_image_sharing)
+        .and_return(idv_socure_docv_flow_id_w_selfie_image_sharing)
       allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
         .and_return(fake_socure_endpoint)
       stub_request(:post, fake_socure_endpoint)
@@ -222,6 +228,24 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
 
         expect(WebMock).to have_requested(:post, fake_socure_endpoint)
           .with(body: JSON.generate(expected_request_body))
+      end
+
+      context 'when document images sharing is allowed' do
+        before do
+          allow(IdentityConfig.store).to receive_messages(
+            document_images_sharing_enabled: true,
+            document_images_sharing_service_providers: [issuer],
+          )
+          expected_request_body[:config][:useCaseKey] =
+            idv_socure_docv_flow_id_w_selfie_image_sharing
+        end
+
+        it 'fetches from the correct url' do
+          document_request.fetch
+
+          expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+            .with(body: JSON.generate(expected_request_body))
+        end
       end
     end
   end

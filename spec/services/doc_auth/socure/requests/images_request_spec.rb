@@ -9,8 +9,10 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
     ).to_s
   end
   let(:passport_book) { false }
+  let(:user) { create(:user) }
+  let(:analytics) { FakeAnalytics.new(user:) }
 
-  subject(:images_request) { described_class.new(reference_id:, passport_book:) }
+  subject(:images_request) { described_class.new(reference_id:, passport_book:, user:) }
   let(:body) { DocAuthImageFixtures.zipped_files(reference_id:, passport: passport_book).to_s }
   let(:status) { 200 }
   let(:message) do
@@ -36,6 +38,7 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
 
   describe '#fetch' do
     before do
+      allow(Analytics).to receive(:new).and_return(analytics)
       stub_request(:get, images_request_endpoint)
         .to_return(
           status:,
@@ -58,8 +61,46 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
       expect(response.images.map(&:type)).to contain_exactly(:back, :front)
     end
 
+    it 'logs an analytics event' do
+      subject.fetch
+
+      expect(analytics).to have_logged_event(
+        :idv_socure_images_requested,
+        http_status: 200,
+        user_id: user.uuid,
+        reference_id:,
+        image_types_present: [:front, :back],
+        passport_book: false,
+      )
+    end
+
+    context 'when analytics logging raises' do
+      before do
+        allow(analytics).to receive(:idv_socure_images_requested).and_raise('boom')
+      end
+
+      it 'still returns the images and notifies NewRelic' do
+        expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(RuntimeError))
+
+        expect(subject.fetch).to be_a(Idv::IdvImages)
+      end
+    end
+
     context 'when passport_book is true' do
       let(:passport_book) { true }
+
+      it 'logs passport_book and the passport image type' do
+        subject.fetch
+
+        expect(analytics).to have_logged_event(
+          :idv_socure_images_requested,
+          http_status: 200,
+          user_id: user.uuid,
+          reference_id:,
+          image_types_present: [:passport],
+          passport_book: true,
+        )
+      end
 
       it 'creates an IdvImages object with the binary data including passport' do
         response = subject.fetch
@@ -86,6 +127,19 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
 
       it 'does not raise an exception' do
         expect { subject.fetch }.not_to raise_error
+      end
+
+      it 'logs the http status with no image types' do
+        subject.fetch
+
+        expect(analytics).to have_logged_event(
+          :idv_socure_images_requested,
+          http_status: 403,
+          user_id: user.uuid,
+          reference_id:,
+          image_types_present: [],
+          passport_book: false,
+        )
       end
     end
 
@@ -129,6 +183,18 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
         expect(result[:errors]).to eq(connection_error_attributes[:errors])
         expect(result[:exception]).to be_a Faraday::ConnectionFailed
         expect(result[:extra]).to eq(connection_error_attributes[:extra])
+      end
+
+      it 'logs the event without an http status' do
+        subject.fetch
+
+        expect(analytics).to have_logged_event(
+          :idv_socure_images_requested,
+          user_id: user.uuid,
+          reference_id:,
+          image_types_present: [],
+          passport_book: false,
+        )
       end
     end
   end

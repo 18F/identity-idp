@@ -27,6 +27,7 @@ RSpec.describe ProofingAgentJob, type: :job do
   let(:webhook_status) { 200 }
   let(:webhook_headers) { nil }
   let(:failure_email_users) { instance_double(Idv::ProofingAgent::FailureEmailUserSet) }
+  let(:reminder_email_users) { instance_double(Idv::ProofingAgent::ReminderEmailUserSet) }
   let(:idv_proofing_agent_config) do
     [
       {
@@ -56,6 +57,11 @@ RSpec.describe ProofingAgentJob, type: :job do
       )
       allow(failure_email_users).to receive(:add)
       allow(failure_email_users).to receive(:remove)
+      allow(Idv::ProofingAgent::ReminderEmailUserSet).to receive(:new).and_return(
+        reminder_email_users,
+      )
+      allow(reminder_email_users).to receive(:add)
+      allow(reminder_email_users).to receive(:remove)
       allow(IdentityConfig.store).to receive(:idv_proofing_agent_config)
         .and_return(idv_proofing_agent_config)
       allow(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor).and_return(:mock)
@@ -117,6 +123,12 @@ RSpec.describe ProofingAgentJob, type: :job do
         perform
 
         expect(failure_email_users).to have_received(:remove).with(user.uuid)
+      end
+
+      it 'adds the user uuid to the reminder email users' do
+        perform
+
+        expect(reminder_email_users).to have_received(:add).with(user.uuid)
       end
 
       it 'sends a profile confirmation email to the user' do
@@ -677,6 +689,64 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'does not log idv_phone_confirmation_vendor_submitted' do
         perform
         expect(@analytics).not_to have_logged_event('IdV: phone confirmation vendor')
+      end
+    end
+
+    context 'when the AAMVA check returns an exception' do
+      let(:pii) do
+        Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE.merge(
+          state_id_number: DocAuth::Mock::IdMockClient::TRIGGER_MVA_TIMEOUT,
+        )
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
+      end
+
+      it 'stores a failed result with id_exception' do
+        perform
+
+        result = document_capture_session.reload.load_agent_proofed_user
+        expect(result[:success]).to be false
+        expect(result[:reason]).to eq('id_exception')
+        expect(result[:aamva_status]).to eq 'failed'
+      end
+
+      it 'enqueues a ProofingAgentWebhookJob with success: false and id_exception reason' do
+        expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
+          success: false,
+          reason: 'id_exception',
+          transaction_id: transaction_id,
+          correlation_id: correlation_id,
+          analytics_attributes: an_instance_of(Hash),
+        )
+      end
+
+      context 'when the AAMVA exception is bypassed' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_aamva_bypass_exception_ids)
+            .and_return(['0047'])
+        end
+
+        it 'stores a successful result' do
+          perform
+
+          result = document_capture_session.reload.load_agent_proofed_user
+          expect(result[:success]).to be true
+          expect(result[:reason]).to be_nil
+          expect(result[:aamva_status]).to eq 'passed'
+          expect(result[:source_check_vendor]).to eq(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
+        end
+
+        it 'enqueues a ProofingAgentWebhookJob with success: true' do
+          expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
+            success: true,
+            reason: nil,
+            transaction_id: transaction_id,
+            correlation_id: correlation_id,
+            analytics_attributes: an_instance_of(Hash),
+          )
+        end
       end
     end
 

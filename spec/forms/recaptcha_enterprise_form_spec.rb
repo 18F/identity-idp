@@ -7,6 +7,8 @@ RSpec.describe RecaptchaEnterpriseForm do
   let(:recaptcha_action) { 'example_action' }
   let(:user_agent) { 'Example/1.0' }
   let(:user_ip_address) { '127.0.0.1' }
+  let(:ja3_fingerprint) { 'e7d705a3286e19ea42f587b344ee6865' }
+  let(:ja4_fingerprint) { 't13d1516h2_8daaf6152771_b186095e22b6' }
 
   subject(:form) do
     described_class.new(
@@ -16,6 +18,8 @@ RSpec.describe RecaptchaEnterpriseForm do
       extra_analytics_properties:,
       user_agent:,
       user_ip_address:,
+      ja3_fingerprint:,
+      ja4_fingerprint:,
     )
   end
 
@@ -106,7 +110,14 @@ RSpec.describe RecaptchaEnterpriseForm do
       before do
         allow(RecaptchaService).to receive(:new).and_return(recaptcha_service)
         allow(recaptcha_service).to receive(:create_assessment)
-          .with(recaptcha_token: token, recaptcha_action:, user_agent:, user_ip_address:)
+          .with(
+            recaptcha_token: token,
+            recaptcha_action:,
+            user_agent:,
+            user_ip_address:,
+            ja3_fingerprint:,
+            ja4_fingerprint:,
+          )
           .and_return(RecaptchaService::RecaptchaResult.new(success: false, reasons: ['EXPIRED']))
       end
 
@@ -136,6 +147,9 @@ RSpec.describe RecaptchaEnterpriseForm do
           score_threshold: score_threshold,
           form_class: 'RecaptchaEnterpriseForm',
           recaptcha_action:,
+          ja3_present: true,
+          ja4_present: true,
+          recaptcha_enterprise_additional_context_enabled: false,
         )
       end
     end
@@ -152,7 +166,14 @@ RSpec.describe RecaptchaEnterpriseForm do
       before do
         allow(RecaptchaService).to receive(:new).and_return(recaptcha_service)
         allow(recaptcha_service).to receive(:create_assessment)
-          .with(recaptcha_token: token, recaptcha_action:, user_agent:, user_ip_address:)
+          .with(
+            recaptcha_token: token,
+            recaptcha_action:,
+            user_agent:,
+            user_ip_address:,
+            ja3_fingerprint:,
+            ja4_fingerprint:,
+          )
           .and_return(RecaptchaService::RecaptchaResult.new(
             success: true,
             reasons: [risk_analysis_reason],
@@ -189,6 +210,9 @@ RSpec.describe RecaptchaEnterpriseForm do
           score_threshold: score_threshold,
           form_class: 'RecaptchaEnterpriseForm',
           recaptcha_action:,
+          ja3_present: true,
+          ja4_present: true,
+          recaptcha_enterprise_additional_context_enabled: false,
         )
       end
 
@@ -219,6 +243,9 @@ RSpec.describe RecaptchaEnterpriseForm do
             score_threshold: score_threshold,
             form_class: 'RecaptchaEnterpriseForm',
             recaptcha_action:,
+            ja3_present: true,
+            ja4_present: true,
+            recaptcha_enterprise_additional_context_enabled: false,
           )
         end
       end
@@ -234,7 +261,14 @@ RSpec.describe RecaptchaEnterpriseForm do
       before do
         allow(RecaptchaService).to receive(:new).and_return(recaptcha_service)
         allow(recaptcha_service).to receive(:create_assessment)
-          .with(recaptcha_token: token, recaptcha_action:, user_agent:, user_ip_address:)
+          .with(
+            recaptcha_token: token,
+            recaptcha_action:,
+            user_agent:,
+            user_ip_address:,
+            ja3_fingerprint:,
+            ja4_fingerprint:,
+          )
           .and_return(RecaptchaService::RecaptchaResult.new(
             success: true,
             reasons: ['LOW_CONFIDENCE'],
@@ -267,6 +301,9 @@ RSpec.describe RecaptchaEnterpriseForm do
           score_threshold: score_threshold,
           form_class: 'RecaptchaEnterpriseForm',
           recaptcha_action:,
+          ja3_present: true,
+          ja4_present: true,
+          recaptcha_enterprise_additional_context_enabled: false,
         )
       end
 
@@ -291,6 +328,42 @@ RSpec.describe RecaptchaEnterpriseForm do
             form_class: 'RecaptchaEnterpriseForm',
             recaptcha_action:,
             phone_country_code: true,
+            ja3_present: true,
+            ja4_present: true,
+            recaptcha_enterprise_additional_context_enabled: false,
+          )
+        end
+      end
+
+      context 'when the JA3 and JA4 fingerprints are not provided' do
+        let(:ja3_fingerprint) { nil }
+        let(:ja4_fingerprint) { nil }
+
+        it 'logs the fingerprints as not present' do
+          result
+
+          expect(analytics).to have_logged_event(
+            'reCAPTCHA verify result received',
+            hash_including(
+              ja3_present: false,
+              ja4_present: false,
+            ),
+          )
+        end
+      end
+
+      context 'when reCAPTCHA Enterprise additional context is enabled' do
+        before do
+          allow(FeatureManagement).to receive(:recaptcha_enterprise_additional_context_enabled?)
+            .and_return(true)
+        end
+
+        it 'logs the flag as enabled' do
+          result
+
+          expect(analytics).to have_logged_event(
+            'reCAPTCHA verify result received',
+            hash_including(recaptcha_enterprise_additional_context_enabled: true),
           )
         end
       end

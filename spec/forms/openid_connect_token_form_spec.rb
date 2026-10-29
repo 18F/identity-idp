@@ -595,6 +595,9 @@ RSpec.describe OpenidConnectTokenForm do
           code_verifier_present: false,
           service_provider_pkce: nil,
           ial: 1,
+          token_exchange_stage: nil,
+          token_endpoint_operation: 'authorization_code',
+          token_exchange_scopes: nil,
           integration_errors: nil,
         )
       end
@@ -612,6 +615,9 @@ RSpec.describe OpenidConnectTokenForm do
           client_id: nil,
           user_id: nil,
           code_digest: nil,
+          token_exchange_stage: nil,
+          token_endpoint_operation: 'authorization_code',
+          token_exchange_scopes: nil,
         )
       end
     end
@@ -631,6 +637,9 @@ RSpec.describe OpenidConnectTokenForm do
           code_verifier_present: false,
           service_provider_pkce: nil,
           ial: 1,
+          token_exchange_stage: nil,
+          token_endpoint_operation: 'authorization_code',
+          token_exchange_scopes: nil,
           integration_errors: {
             error_details: ['Grant type is not included in the list'],
             error_types: [:grant_type],
@@ -676,6 +685,83 @@ RSpec.describe OpenidConnectTokenForm do
 
       it 'specifies its token type' do
         expect(response[:token_type]).to eq('Bearer')
+      end
+    end
+
+    context 'with a token exchange authorization code' do
+      before do
+        identity.update!(
+          scope: 'openid token_exchange:passport',
+          ial: 2,
+        )
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return([client_id])
+        allow(IdentityConfig.store).to receive(:token_exchange_subject_token_expires_in)
+          .and_return(600)
+        TokenExchange::ActorHandoff.store(
+          code:,
+          actor_return_log_id: 123,
+          expires_in: IdentityConfig.store.openid_connect_authorization_code_expiration_seconds,
+        )
+      end
+
+      it 'returns a subject token response' do
+        expect(response).to include(
+          access_token: be_present,
+          token_type: 'Bearer',
+          expires_in: 600,
+          scope: 'openid token_exchange:passport',
+        )
+      end
+
+      it 'stores the subject token metadata in Redis' do
+        subject_token = TokenExchange::SubjectToken.load(response[:access_token])
+
+        expect(subject_token).to have_attributes(
+          identity_uuid: identity.uuid,
+          broker_issuer: identity.service_provider,
+          scope: 'openid token_exchange:passport',
+          ial: 2,
+          actor_return_log_id: 123,
+        )
+      end
+
+      it 'surfaces subject token analytics fields on the token event' do
+        expect(form.submit.to_h).to include(
+          token_exchange_stage: 'subject_token',
+          token_endpoint_operation: 'subject_token',
+          token_exchange_scopes: ['passport'],
+        )
+      end
+
+      context 'when the service provider is not an allowlisted broker' do
+        before do
+          allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+            .and_return(['some-other-issuer'])
+        end
+
+        it 'returns the normal access token response' do
+          expect(response).to_not have_key(:subject_token)
+          expect(response[:access_token]).to eq(identity.access_token)
+        end
+
+        it 'does not issue a subject token' do
+          expect(TokenExchange::SubjectTokenIssuer).to_not receive(:issue)
+
+          response
+        end
+      end
+
+      context 'when token exchange is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(false)
+        end
+
+        it 'returns the normal access token response' do
+          expect(response).to_not have_key(:subject_token)
+          expect(response[:access_token]).to eq(identity.access_token)
+        end
       end
     end
 

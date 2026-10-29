@@ -62,6 +62,11 @@ module Idv
   # @attr_reader gpo_otp [String, nil]
   # @attr_reader service_provider [ServiceProvider]
   class Session
+    DOCUMENT_ARTIFACT_VENDORS = [
+      Idp::Constants::Vendors::SOCURE,
+      Idp::Constants::Vendors::SOCURE_MOCK,
+    ].freeze
+
     VALID_SESSION_ATTRIBUTES = %i[
       aamva_verified_attributes
       address_edited
@@ -138,6 +143,9 @@ module Idv
       end
     end
 
+    alias_method :clear1_enabled, :clear1_allowed
+    alias_method :clear1_enabled=, :clear1_allowed=
+
     def initialize(user_session:, current_user:, service_provider:)
       @user_session = user_session
       @current_user = current_user
@@ -183,6 +191,8 @@ module Idv
 
         # assign profile to the enrollment
         active_enrollment.update!(profile:) if profile.in_person_verification_pending?
+
+        associate_document_artifacts_with_profile(profile)
 
         profile
       end
@@ -459,8 +469,14 @@ module Idv
       IdentityConfig.store.in_person_passports_enabled
     end
 
+    def document_capture_session
+      return nil if document_capture_session_uuid.blank?
+
+      DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+    end
+
     def ipp_passport_requested?
-      !!DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)&.passport_requested?
+      !!document_capture_session&.passport_requested?
     end
 
     # Confirms the enrollment's document has been verified for its type. In-person
@@ -483,9 +499,28 @@ module Idv
       !phone_confirmed? || verify_by_mail?
     end
 
+    def proofing_with_superior_evidence?
+      Idp::Constants::DocumentTypes::SUPERIOR_EVIDENCE_DOCUMENT_TYPES.include?(
+        pii_from_doc&.document_type_received,
+      )
+    end
+
     private
 
     attr_reader :user_session
+
+    # Only link when the result this profile was built from came from the proofer
+    # that produced the artifacts, never from a redo through another proofer or IPP.
+    def associate_document_artifacts_with_profile(profile)
+      return if document_capture_session_uuid.blank?
+      return if profile.in_person_verification_pending?
+
+      capture_session = document_capture_session
+      return unless DOCUMENT_ARTIFACT_VENDORS.include?(capture_session&.doc_auth_vendor)
+      return unless capture_session&.document_images_sharing_allowed?
+
+      capture_session.associate_document_artifacts_with_profile!(profile)
+    end
 
     def set_idv_session
       user_session[:idv] = new_idv_session unless user_session.key?(:idv)
