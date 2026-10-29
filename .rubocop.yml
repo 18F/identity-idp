@@ -533,7 +533,7 @@ Lint/Loop:
 
 Lint/MissingCopEnableDirective:
   Enabled: true
-  MaximumRangeSize: .inf
+  MaxRangeSize: .inf
 
 Lint/MixedRegexpCaptureTypes:
   Enabled: true

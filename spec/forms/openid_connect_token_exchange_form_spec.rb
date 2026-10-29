@@ -20,7 +20,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       user:,
       service_provider: broker_issuer,
       scope: scope,
-      ial: 2,
+      ial: 1,
     )
   end
   let!(:target_identity) do
@@ -68,6 +68,15 @@ RSpec.describe OpenidConnectTokenExchangeForm do
   describe '#submit' do
     it 'returns success for a valid token exchange request' do
       expect(form.submit.success?).to eq(true)
+    end
+
+    it 'surfaces delegated token exchange analytics fields' do
+      expect(form.submit.to_h).to include(
+        token_exchange_stage: 'delegated_token',
+        token_exchange_scopes: ['passport'],
+        subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
+        oauth_error_code: nil,
+      )
     end
 
     %i[
@@ -133,6 +142,14 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       it 'is invalid' do
         expect(form.submit.success?).to eq(false)
         expect(form.errors[:resource]).to include('is invalid')
+      end
+
+      it 'surfaces OAuth error code and failure reason' do
+        expect(form.submit.to_h).to include(
+          token_exchange_stage: 'delegated_token',
+          subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
+          oauth_error_code: 'invalid_target',
+        )
       end
     end
 
@@ -221,10 +238,19 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when the subject token was not issued at IAL2' do
+    context 'when the target identity is not IAL2' do
       before do
-        identity.update!(ial: 1)
+        target_identity.update!(ial: 1)
       end
+
+      it 'is invalid' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.errors[:subject_token]).to include('is invalid')
+      end
+    end
+
+    context 'when the user does not have an identity on the target aud' do
+      before { target_identity.destroy! }
 
       it 'is invalid' do
         expect(form.submit.success?).to eq(false)
@@ -306,6 +332,12 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         billable: true,
         user_id: user.id,
       )
+    end
+
+    it 'exposes the historical issuance delegation id' do
+      response
+
+      expect(form.delegation_id).to eq(user.delegated_issuance_logs.last.delegation_id)
     end
 
     it 'creates distinct historical issuances for repeated DAT mints to the same target' do

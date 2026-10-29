@@ -2,6 +2,7 @@ class UserSmsTextMailerPreview < ActionMailer::Preview
   delegate :account_deleted_notice,
            :account_deletion_started,
            :account_deletion_cancelled,
+           :account_recovery_notice,
            :authentication_otp,
            :confirmation_ipp_enrollment_result,
            :confirmation_otp,

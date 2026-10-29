@@ -90,6 +90,45 @@ module AnalyticsEvents
     track_event('Account Deletion Requested', request_came_from: request_came_from, **extra)
   end
 
+  # @param [Boolean] eligible Whether the user may use account-preserving MFA recovery
+  # Account-preserving MFA recovery eligibility was evaluated for a user
+  def account_recovery_eligibility_evaluated(eligible:, **extra)
+    track_event(:account_recovery_eligibility_evaluated, eligible:, **extra)
+  end
+
+  # A user visited the account-preserving MFA recovery start page
+  def account_recovery_options_visit(**extra)
+    track_event(:account_recovery_options_visit, **extra)
+  end
+
+  # @param [Boolean] success Whether the recovery request was created
+  # @param [Hash] errors Errors resulting from the request attempt
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [String, nil] recovery_state State of the recovery request after creation
+  # @param [Boolean] rate_limited Whether the request was blocked by rate limiting
+  # @param [Hash, nil] telephony_response Response from the recovery SMS notification
+  # An account-preserving MFA recovery request was submitted
+  def account_recovery_request(
+    success:,
+    errors: nil,
+    error_details: nil,
+    recovery_state: nil,
+    rate_limited: false,
+    telephony_response: nil,
+    **extra
+  )
+    track_event(
+      :account_recovery_request,
+      success:,
+      errors:,
+      error_details:,
+      recovery_state:,
+      rate_limited:,
+      telephony_response:,
+      **extra,
+    )
+  end
+
   # @identity.idp.previous_event_name Account Reset
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
@@ -213,6 +252,7 @@ module AnalyticsEvents
   # @param [Boolean] totp does the user have an authentication app as a 2FA option?
   # @param [Boolean] piv_cac does the user have PIV/CAC as a 2FA option?
   # @param [Integer] email_addresses number of email addresses the user has
+  # @param [Hash, nil] errors Errors preventing creation of a legacy reset request
   # @param [String, nil] message_id from AWS Pinpoint API
   # @param [String, nil] request_id from AWS Pinpoint API
   # An account reset has been requested
@@ -222,6 +262,7 @@ module AnalyticsEvents
     totp:,
     piv_cac:,
     email_addresses:,
+    errors: nil,
     request_id: nil,
     message_id: nil,
     **extra
@@ -233,6 +274,7 @@ module AnalyticsEvents
       totp:,
       piv_cac:,
       email_addresses:,
+      errors:,
       request_id:,
       message_id:,
       **extra,
@@ -7255,8 +7297,12 @@ module AnalyticsEvents
   #   set up a platform authenticator through the Security Key setup flow.
   # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
   # @param [Integer, nil] webauthn_setup_duration Duration of webauthn setup in seconds
-  # @param [Boolean, nil] auto_passkey_prompted Whether the WebAuthn setup came from the auto prompt
-  # @param [Boolean, nil] passkey_signup_setup_recommended user is recommended to add passkey
+  # @param [Boolean, nil] auto_passkey_prompted Whether the user arrived at setup via the automatic
+  #   passkey prompt rather than selecting passkey from the MFA options
+  # @param [Boolean, nil] created_via_auto_passkey_prompt Whether this credential was created on the
+  #   automatic passkey prompt page itself.
+  # @param [Integer, nil] webauthn_configuration_id Database ID of the WebAuthn configuration
+  #   created by this submission, or nil if no credential was created.
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -7284,7 +7330,8 @@ module AnalyticsEvents
     webauthn_platform_recommended: nil,
     webauthn_setup_duration: nil,
     auto_passkey_prompted: nil,
-    passkey_signup_setup_recommended: nil,
+    created_via_auto_passkey_prompt: nil,
+    webauthn_configuration_id: nil,
     **extra
   )
     track_event(
@@ -7315,7 +7362,8 @@ module AnalyticsEvents
       webauthn_platform_recommended:,
       webauthn_setup_duration:,
       auto_passkey_prompted:,
-      passkey_signup_setup_recommended:,
+      created_via_auto_passkey_prompt:,
+      webauthn_configuration_id:,
       **extra,
     )
   end
@@ -7606,36 +7654,55 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when a brokered token exchange request (RFC 8693) is made at the token endpoint
-  # @param [Boolean] success Whether the form was submitted successfully.
+  # Tracks an RFC 8693 delegated token exchange request at the token endpoint
+  # @param [Boolean] success Whether the exchange request passed validation and returned a
+  #   delegated token response
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Hash] errors Any additional error information we have
-  # @param [String] client_id Issuer of the broker service provider making the exchange request
-  # @param [String, nil] audience Issuer of the target service provider the token is requested for
-  # @param [String, nil] resource URI the broker intends to use the delegated access token against
+  # @param [String] actor_issuer Issuer of the actor service provider making the exchange
+  #   request
+  # @param [String, nil] target_issuer Issuer string for the target service provider the token
+  #   is requested for
+  # @param [String, nil] resource URL submitted by the actor for the target resource
   # @param [Integer, nil] expires_in Time to expiration of the delegated access token
   # @param [Integer, nil] ial IAL level recorded on the subject token
-  def openid_connect_brokered_exchange_token(
-    client_id:,
+  # @param [String, nil] token_exchange_stage Token exchange flow stage
+  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
+  # @param [String, nil] subject_token_fingerprint Fingerprint of the submitted subject token
+  # @param [String, nil] delegation_id Internal delegated-token issuance identifier
+  # @param [String, nil] oauth_error_code Protocol-level OAuth error code returned for
+  #   unsuccessful requests
+  def openid_connect_delegated_token_exchange(
+    actor_issuer:,
     success:,
-    audience:,
+    target_issuer:,
     resource:,
     expires_in:,
     ial:,
     errors: nil,
     error_details: nil,
+    token_exchange_stage: nil,
+    token_exchange_scopes: nil,
+    subject_token_fingerprint: nil,
+    delegation_id: nil,
+    oauth_error_code: nil,
     **extra
   )
     track_event(
-      :openid_connect_brokered_exchange_token,
+      :openid_connect_delegated_token_exchange,
       success:,
       error_details:,
       errors:,
-      client_id:,
-      audience:,
+      actor_issuer:,
+      target_issuer:,
       resource:,
       expires_in:,
       ial:,
+      token_exchange_stage:,
+      token_exchange_scopes:,
+      subject_token_fingerprint:,
+      delegation_id:,
+      oauth_error_code:,
       **extra,
     )
   end
@@ -7655,6 +7722,11 @@ module AnalyticsEvents
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
+  # @param [String, nil] token_exchange_stage Actor authorization stage for a request that
+  #   can produce a subject token
+  # @param [Boolean, nil] token_exchange_requested Whether the authorize request included a
+  #   token_exchange scope
+  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
   def openid_connect_request_authorization(
     success:,
     prompt:,
@@ -7670,6 +7742,9 @@ module AnalyticsEvents
     user_fully_authenticated:,
     error_details: nil,
     unknown_authn_contexts: nil,
+    token_exchange_stage: nil,
+    token_exchange_requested: nil,
+    token_exchange_scopes: nil,
     **extra
   )
     track_event(
@@ -7688,6 +7763,9 @@ module AnalyticsEvents
       unauthorized_scope:,
       user_fully_authenticated:,
       unknown_authn_contexts:,
+      token_exchange_stage:,
+      token_exchange_requested:,
+      token_exchange_scopes:,
       **extra,
     )
   end
@@ -7703,6 +7781,11 @@ module AnalyticsEvents
   # @param [Boolean] code_verifier_present Whether code verifier parameter was present
   # @param [Boolean, nil] service_provider_pkce Whether service provider is configured for PKCE. Nil
   # if the service provider is unknown.
+  # @param [String, nil] token_exchange_stage Token exchange flow stage
+  # @param [String, nil] token_endpoint_operation Token endpoint operation
+  #   (authorization_code or subject_token)
+  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
+  # @param [String, nil] subject_token_fingerprint Fingerprint of the issued subject token
   def openid_connect_token(
     client_id:,
     success:,
@@ -7713,6 +7796,10 @@ module AnalyticsEvents
     code_verifier_present:,
     service_provider_pkce:,
     error_details: nil,
+    token_exchange_stage: nil,
+    token_endpoint_operation: nil,
+    token_exchange_scopes: nil,
+    subject_token_fingerprint: nil,
     **extra
   )
     track_event(
@@ -7726,6 +7813,10 @@ module AnalyticsEvents
       ial:,
       code_verifier_present:,
       service_provider_pkce:,
+      token_exchange_stage:,
+      token_endpoint_operation:,
+      token_exchange_scopes:,
+      subject_token_fingerprint:,
       **extra,
     )
   end
@@ -9123,7 +9214,8 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] gov_or_mil_email Whether registered user has government email
   # @param [Boolean, nil] in_account_creation_flow Whether user is going through account creation
-  # @param [Boolean, nil] auto_passkey_prompted Whether the user was auto-redirected to WebAuthn
+  # @param [Boolean, nil] auto_passkey_prompted Whether this visit automatically prompted the user
+  #   to set up a passkey
   def user_registration_2fa_setup_visit(
     enabled_mfa_methods_count:,
     gov_or_mil_email:,
@@ -9295,6 +9387,7 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] second_mfa_reminder_conversion Whether it is a result of second MFA reminder.
   # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
+  # @param [Boolean, nil] auto_passkey_prompted Whether the user was prompted to set up passkey
   # Tracks when a user has completed MFA setup
   def user_registration_mfa_setup_complete(
     success:,
@@ -9302,6 +9395,7 @@ module AnalyticsEvents
     enabled_mfa_methods_count:,
     in_account_creation_flow: nil,
     second_mfa_reminder_conversion: nil,
+    auto_passkey_prompted: nil,
     **extra
   )
     track_event(
@@ -9311,6 +9405,7 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       in_account_creation_flow:,
       second_mfa_reminder_conversion:,
+      auto_passkey_prompted:,
       **extra,
     )
   end
@@ -9449,24 +9544,6 @@ module AnalyticsEvents
     track_event(:webauthn_platform_recommended_visited)
   end
 
-  # User submits form to add passkey to account during account creation
-  # @param [String] upsell_bucket Which bucket user landed on or submitted with
-  def webauthn_platform_signup_setup_ab_test_submitted(upsell_bucket:, **extra)
-    track_event(
-      :webauthn_platform_signup_setup_ab_test_submitted, upsell_bucket: upsell_bucket,
-                                                         **extra
-    )
-  end
-
-  # User visits webauthn platform upsell after sign up
-  # @param [String] upsell_bucket Which bucket user landed on
-  def webauthn_platform_signup_setup_ab_test_visited(upsell_bucket:, **extra)
-    track_event(
-      :webauthn_platform_signup_setup_ab_test_visited, upsell_bucket: upsell_bucket,
-                                                       **extra
-    )
-  end
-
   # @param [Boolean] platform_authenticator Whether authentication method was registered as platform
   #   authenticator
   # @param [Number] configuration_id Database ID of WebAuthn configuration
@@ -9521,12 +9598,15 @@ module AnalyticsEvents
   # @param [Boolean] success Whether the submission was successful
   # @param [Hash, nil] errors Errors resulting from form validation, or nil if successful.
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
+  # @param [Boolean, nil] auto_passkey_prompted Whether the submission came from the automatic
+  #   passkey prompt rather than the user selecting passkey from the MFA options
   # Tracks whether or not Webauthn setup was successful
   def webauthn_setup_submitted(
     platform_authenticator:,
     success:,
     in_account_creation_flow: nil,
     errors: nil,
+    auto_passkey_prompted: nil,
     **extra
   )
     track_event(
@@ -9535,6 +9615,7 @@ module AnalyticsEvents
       success:,
       errors:,
       in_account_creation_flow:,
+      auto_passkey_prompted:,
       **extra,
     )
   end
@@ -9542,15 +9623,14 @@ module AnalyticsEvents
   # @param [Boolean] platform_authenticator Whether setup is for platform authenticator
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
-  # @param [Boolean, nil] auto_passkey_prompted Whether the user was auto-redirected to setup
-  # @param [Boolean, nil] webauthn_platform_signup_recommended passkey setup after password creation
+  # @param [Boolean, nil] auto_passkey_prompted Whether the user arrived at setup via the automatic
+  #   passkey prompt rather than selecting passkey from the MFA options
   # Tracks when WebAuthn setup is visited
   def webauthn_setup_visit(
     platform_authenticator:,
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
     auto_passkey_prompted: nil,
-    webauthn_platform_signup_recommended: nil,
     **extra
   )
     track_event(
@@ -9559,7 +9639,6 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       in_account_creation_flow:,
       auto_passkey_prompted:,
-      webauthn_platform_signup_recommended:,
       **extra,
     )
   end

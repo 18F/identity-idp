@@ -78,6 +78,9 @@ class OpenidConnectAuthorizeForm
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
     SIMPLE_ATTRS.each { |key| instance_variable_set(:"@#{key}", params[key]) }
     @prompt ||= 'select_account'
+    @analytics_token_exchange_scopes = requested_token_exchange_scopes(
+      params[:scope].to_s.split(' ').compact,
+    )
     @scope = parse_to_values(params[:scope], scopes)
     @unauthorized_scope = check_for_unauthorized_scope(params)
 
@@ -157,7 +160,7 @@ class OpenidConnectAuthorizeForm
 
   private
 
-  attr_reader :identity, :success
+  attr_reader :identity, :success, :analytics_token_exchange_scopes
 
   def private_key_jwt_sp?
     # Missing service providers are rejected by validate_client_id.
@@ -326,12 +329,31 @@ class OpenidConnectAuthorizeForm
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
       code_challenge_present: code_challenge.present?,
       service_provider_pkce: service_provider&.pkce,
+      token_exchange_stage: token_exchange_stage,
+      token_exchange_requested: token_exchange_requested?.presence,
+      token_exchange_scopes: token_exchange_scope_values,
       integration_errors:,
     }
   end
 
   def result_uri
     success ? success_redirect_uri : error_redirect_uri
+  end
+
+  def token_exchange_requested?
+    analytics_token_exchange_scopes.present?
+  end
+
+  def token_exchange_stage
+    TokenExchange::Constants::STAGE_ACTOR_AUTHORIZATION if token_exchange_requested?
+  end
+
+  def token_exchange_scope_values
+    return if analytics_token_exchange_scopes.blank?
+
+    analytics_token_exchange_scopes.map do |scope|
+      scope.delete_prefix(TokenExchange::Constants::SCOPE_PREFIX)
+    end
   end
 
   def error_redirect_uri

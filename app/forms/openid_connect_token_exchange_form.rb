@@ -43,7 +43,7 @@ class OpenidConnectTokenExchangeForm
   validate :validate_subject_token, unless: :client_rejected?
   validate :validate_actor_return_log, unless: :client_rejected?
   validate :validate_scope, unless: :client_rejected?
-  validate :validate_ial2, unless: :client_rejected?
+  validate :validate_target_identity_ial2, unless: :client_rejected?
 
   def initialize(params)
     ATTRS.each do |key|
@@ -68,12 +68,6 @@ class OpenidConnectTokenExchangeForm
   def response
     return error_response unless valid?
 
-    issued_token = TokenExchange::AccessTokenIssuer.issue(
-      subject_token: loaded_subject_token,
-      target_issuer: audience,
-      resource:,
-      scope: requested_scope,
-    )
     {
       access_token: issued_token.token,
       issued_token_type: TokenExchange::Constants::ACCESS_TOKEN_TYPE,
@@ -81,6 +75,10 @@ class OpenidConnectTokenExchangeForm
       expires_in: issued_token.expires_in,
       scope: requested_scope,
     }
+  end
+
+  def delegation_id
+    @issued_token&.delegation_id
   end
 
   # `invalid_client` indicates a client authentication failure, which RFC 6749
@@ -162,12 +160,13 @@ class OpenidConnectTokenExchangeForm
     errors.add(:scope, :invalid)
   end
 
-  def validate_ial2
+  def validate_target_identity_ial2
     return if subject_token.blank?
     return if loaded_subject_token.blank?
-    return errors.add(:subject_token, :invalid) if loaded_subject_token.ial.to_i < 2
     return errors.add(:subject_token, :invalid) if user.blank?
-    return if user.identity_verified?
+    return errors.add(:subject_token, :invalid) if target_identity.blank?
+    return errors.add(:subject_token, :invalid) if user.active_profile.blank?
+    return unless target_identity.ial.to_i < 2
 
     errors.add(:subject_token, :invalid)
   end
@@ -203,6 +202,10 @@ class OpenidConnectTokenExchangeForm
 
   def target
     @target ||= ServiceProvider.active.find_by(issuer: audience)
+  end
+
+  def target_identity
+    @target_identity ||= user.identities.find_by(service_provider: audience)
   end
 
   def loaded_subject_token
@@ -242,12 +245,38 @@ class OpenidConnectTokenExchangeForm
 
   def extra_analytics_attributes
     {
-      client_id:,
-      audience:,
+      actor_issuer: client_id,
+      target_issuer: audience,
       resource:,
       ial: subject_token_ial,
+      token_exchange_stage: TokenExchange::Constants::STAGE_DELEGATED_TOKEN,
+      token_exchange_scopes: token_exchange_scope_values,
+      subject_token_fingerprint: subject_token_fingerprint,
+      oauth_error_code: (oauth_error unless valid?),
       integration_errors:,
     }
+  end
+
+  def issued_token
+    @issued_token ||= TokenExchange::AccessTokenIssuer.issue(
+      subject_token: loaded_subject_token,
+      target_issuer: audience,
+      resource:,
+      scope: requested_scope,
+    )
+  end
+
+  def token_exchange_scope_values
+    scopes = requested_scope.to_s.split(' ').select do |scope|
+      TokenExchange::Constants.in_scope?(scope)
+    end
+    return if scopes.blank?
+
+    scopes.map { |scope| scope.delete_prefix(TokenExchange::Constants::SCOPE_PREFIX) }
+  end
+
+  def subject_token_fingerprint
+    TokenExchange::SubjectToken.digest(subject_token) if subject_token.present?
   end
 
   # Reports the IAL only when a validation already loaded the subject token.

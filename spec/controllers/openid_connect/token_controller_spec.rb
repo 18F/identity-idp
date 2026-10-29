@@ -65,6 +65,7 @@ RSpec.describe OpenidConnect::TokenController do
             code_verifier_present: false,
             expires_in: 0,
             ial: 1,
+            token_endpoint_operation: 'authorization_code',
           }
         )
 
@@ -76,7 +77,7 @@ RSpec.describe OpenidConnect::TokenController do
 
         action
 
-        expect(@analytics).to_not have_logged_event(:openid_connect_brokered_exchange_token)
+        expect(@analytics).to_not have_logged_event(:openid_connect_delegated_token_exchange)
       end
 
       context 'with an authentication event' do
@@ -157,6 +158,7 @@ RSpec.describe OpenidConnect::TokenController do
             code_verifier_present: false,
             error_details: hash_including(:grant_type),
             ial: 1,
+            token_endpoint_operation: 'authorization_code',
           }
         )
 
@@ -269,13 +271,17 @@ RSpec.describe OpenidConnect::TokenController do
         action
 
         expect(@analytics).to have_logged_event(
-          :openid_connect_brokered_exchange_token,
+          :openid_connect_delegated_token_exchange,
           success: true,
-          client_id: broker_issuer,
-          audience: target_issuer,
+          actor_issuer: broker_issuer,
+          target_issuer: target_issuer,
           resource: resource,
           expires_in: IdentityConfig.store.token_exchange_access_token_expires_in,
           ial: 2,
+          token_exchange_stage: 'delegated_token',
+          token_exchange_scopes: ['passport'],
+          subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
+          delegation_id: DelegatedIssuanceLog.last.delegation_id,
         )
       end
 
@@ -314,12 +320,14 @@ RSpec.describe OpenidConnect::TokenController do
         action
 
         expect(@analytics).to have_logged_event(
-          :openid_connect_brokered_exchange_token,
-          success: false,
-          client_id: broker_issuer,
-          audience: target_issuer,
-          resource: resource,
-          error_details: hash_including(:subject_token),
+          :openid_connect_delegated_token_exchange,
+          hash_including(
+            success: false,
+            error_details: hash_including(:subject_token),
+            token_exchange_stage: 'delegated_token',
+            subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
+            oauth_error_code: 'invalid_grant',
+          ),
         )
       end
 
@@ -360,12 +368,16 @@ RSpec.describe OpenidConnect::TokenController do
         action
 
         expect(@analytics).to have_logged_event(
-          :openid_connect_brokered_exchange_token,
+          :openid_connect_delegated_token_exchange,
           success: false,
-          client_id: broker_issuer,
-          audience: target_issuer,
+          actor_issuer: broker_issuer,
+          target_issuer: target_issuer,
           resource: resource,
           error_details: hash_including(:audience),
+          token_exchange_stage: 'delegated_token',
+          token_exchange_scopes: ['passport'],
+          subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
+          oauth_error_code: 'invalid_target',
         )
       end
     end
@@ -381,12 +393,16 @@ RSpec.describe OpenidConnect::TokenController do
         action
 
         expect(@analytics).to have_logged_event(
-          :openid_connect_brokered_exchange_token,
+          :openid_connect_delegated_token_exchange,
           success: false,
-          client_id: broker_issuer,
-          audience: target_issuer,
+          actor_issuer: broker_issuer,
+          target_issuer: target_issuer,
           resource: resource,
           error_details: hash_including(:grant_type),
+          token_exchange_stage: 'delegated_token',
+          token_exchange_scopes: ['passport'],
+          subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
+          oauth_error_code: 'unsupported_grant_type',
         )
       end
     end

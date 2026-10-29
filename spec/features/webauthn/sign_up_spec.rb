@@ -54,32 +54,19 @@ RSpec.feature 'webauthn sign up' do
   end
 
   describe 'account creation passkey prompt' do
+    after { reload_ab_tests }
+
     context 'when feature flag is enabled' do
       let!(:user) do
         allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
           .and_return(true)
+        allow(IdentityConfig.store)
+          .to receive(:account_creation_passkey_auto_prompt_percent)
+          .and_return(100)
+        reload_ab_tests
         allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
-          .to receive(:ab_test_bucket)
-          .and_call_original
-        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
-          .to receive(:ab_test_bucket)
-          .with(:NDS_LOOK_AND_FEEL, any_args)
-          .and_return(:default)
-        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
-          .to receive(:ab_test_bucket)
-          .with(:PASSKEY_UPSELL)
-          .and_return(:auto_passkey_prompt)
-        allow_any_instance_of(Users::WebauthnSetupController)
-          .to receive(:ab_test_bucket)
-          .and_call_original
-        allow_any_instance_of(Users::WebauthnSetupController)
-          .to receive(:ab_test_bucket)
-          .with(:NDS_LOOK_AND_FEEL, any_args)
-          .and_return(:default)
-        allow_any_instance_of(Users::WebauthnSetupController)
-          .to receive(:ab_test_bucket)
-          .with(:PASSKEY_UPSELL)
-          .and_return(:auto_passkey_prompt)
+          .to receive(:mobile?)
+          .and_return(true)
         user = sign_up
         set_hidden_field('platform_authenticator_available', 'true')
         set_password(user)
@@ -96,6 +83,55 @@ RSpec.feature 'webauthn sign up' do
 
         expect(page).to have_current_path(authentication_methods_setup_path)
       end
+
+      it 'attributes the created credential to the prompt' do
+        fake_analytics = FakeAnalytics.new
+        allow_any_instance_of(ApplicationController).to receive(:analytics)
+          .and_return(fake_analytics)
+        allow(WebauthnSetupForm).to receive(:domain_name).and_return('localhost:3000')
+
+        mock_webauthn_setup_challenge
+        visit webauthn_setup_path(platform: true, passkey_upsell: true, auto_trigger: true)
+
+        set_hidden_field('webauthn_id', webauthn_id)
+        set_hidden_field('attestation_object', attestation_object)
+        set_hidden_field('client_data_json', setup_client_data_json)
+        click_button t('webauthn_platform_recommended.cta')
+
+        configuration = user.reload.webauthn_configurations.take
+
+        expect(configuration).to be_present
+        expect(fake_analytics).to have_logged_event(
+          'Multi-Factor Authentication Setup',
+          hash_including(
+            success: true,
+            multi_factor_auth_method: 'webauthn_platform',
+            created_via_auto_passkey_prompt: true,
+            webauthn_configuration_id: configuration.id,
+          ),
+        )
+      end
+    end
+
+    context 'when the rollout percentage is zero' do
+      let!(:user) do
+        allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
+          .and_return(true)
+        allow(IdentityConfig.store)
+          .to receive(:account_creation_passkey_auto_prompt_percent)
+          .and_return(0)
+        reload_ab_tests
+        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
+          .to receive(:mobile?)
+          .and_return(true)
+        user = sign_up
+        set_hidden_field('platform_authenticator_available', 'true')
+        set_password(user)
+      end
+
+      it 'redirects new user to MFA selection page' do
+        expect(page).to have_current_path(authentication_methods_setup_path)
+      end
     end
 
     context 'when feature flag is disabled' do
@@ -107,46 +143,6 @@ RSpec.feature 'webauthn sign up' do
 
       it 'redirects new user to MFA selection page' do
         expect(page).to have_current_path(authentication_methods_setup_path)
-      end
-    end
-  end
-
-  describe 'account creation setup after password setup' do
-    context 'when the A/B test is enabled' do
-      let!(:user) do
-        allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-          .and_return(true)
-        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
-          .to receive(:ab_test_bucket)
-          .and_call_original
-        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
-          .to receive(:ab_test_bucket)
-          .with(:NDS_LOOK_AND_FEEL, any_args)
-          .and_return(:default)
-        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
-          .to receive(:ab_test_bucket)
-          .with(:PASSKEY_UPSELL)
-          .and_return(:passkey_setup_prompt_after_password_creation)
-        allow_any_instance_of(Users::WebauthnSetupController)
-          .to receive(:ab_test_bucket)
-          .and_call_original
-        allow_any_instance_of(Users::WebauthnSetupController)
-          .to receive(:ab_test_bucket)
-          .with(:NDS_LOOK_AND_FEEL, any_args)
-          .and_return(:default)
-        allow_any_instance_of(Users::WebauthnSetupController)
-          .to receive(:ab_test_bucket)
-          .with(:PASSKEY_UPSELL)
-          .and_return(:passkey_setup_prompt_after_password_creation)
-        user = sign_up
-        set_hidden_field('platform_authenticator_available', 'true')
-        set_password(user)
-      end
-
-      it 'redirects to webauthn platform setup upsell page' do
-        expect(page).to have_current_path(
-          webauthn_setup_path(platform: true, passkey_upsell: true),
-        )
       end
     end
   end

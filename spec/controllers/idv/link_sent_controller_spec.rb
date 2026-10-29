@@ -178,6 +178,7 @@ RSpec.describe Idv::LinkSentController do
           cancelled_at: session_canceled_at,
           doc_auth_vendor: Idp::Constants::Vendors::MOCK,
         )
+        subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
         allow(document_capture_session).to receive(:load_result).and_return(load_result)
         allow(subject).to receive(:document_capture_session).and_return(document_capture_session)
       end

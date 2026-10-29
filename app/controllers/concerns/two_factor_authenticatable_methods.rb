@@ -61,6 +61,10 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_valid_verification_for_authentication_context(auth_method:)
+    if UserSessionContext.authentication_context?(context) &&
+       AccountRecovery::CancelRequest.new(user: current_user).call
+      flash[:success] = t('account_recovery.pending.cancel_success')
+    end
     mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa)
     disavowal_event, disavowal_token = create_user_event_with_disavowal(:sign_in_after_2fa)
 

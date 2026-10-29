@@ -139,6 +139,24 @@ RSpec.describe Users::TwoFactorAuthenticationController do
       end
     end
 
+    context 'when a remembered device has a pending recovery request' do
+      it 'requires an authentication method without canceling recovery' do
+        user = create(:user, :with_phone, **with_default_phone)
+        stub_sign_in_before_2fa(user)
+        request = create(:account_recovery_request, :waiting, user: user)
+        allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+        cookies.encrypted[:remember_device] = {
+          value: RememberDeviceCookie.new(user_id: user.id, created_at: Time.zone.now).to_json,
+          expires: 1.day.from_now,
+        }
+
+        get :show
+
+        expect(response).to redirect_to(login_two_factor_path(**otp_preference_sms))
+        expect(request.reload).to be_active
+      end
+    end
+
     context 'when user is authenticated with an expired remembered device' do
       it 'redirects to 2FA' do
         user = create(:user, :with_phone, **with_default_phone)

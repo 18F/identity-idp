@@ -20,8 +20,8 @@ RSpec.describe 'OpenID Connect token endpoint' do
 
       let(:extra) do
         {
-          client_id:,
-          audience:,
+          actor_issuer: client_id,
+          target_issuer: audience,
           resource:,
           ial: 2,
         }
@@ -37,6 +37,7 @@ RSpec.describe 'OpenID Connect token endpoint' do
             token_type: 'Bearer',
             expires_in: 600,
           },
+          delegation_id: nil,
         )
         allow(OpenidConnectTokenExchangeForm).to receive(:new).and_return(form)
         allow(form).to receive(:http_status).and_return(:ok)

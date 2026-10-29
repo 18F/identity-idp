@@ -24,9 +24,13 @@ aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 account_creation_device_profiling: disabled
 account_creation_passkey_auto_prompt_percent: 0
-account_creation_passkey_setup_after_password_percent: 0
 account_creation_recaptcha_score_threshold: 0.0
 account_creation_tmx_processed_percent: 0
+account_recovery_request_attempt_window_in_minutes: 2
+account_recovery_request_max_attempts: 2
+account_recovery_token_valid_for_hours: 24
+account_recovery_v2_enabled: false
+account_recovery_wait_period_days: 1
 account_reset_attempt_window_in_minutes: 1_440
 account_reset_fraud_user_wait_period_days:
 account_reset_max_attempts: 10
@@ -526,6 +530,7 @@ sign_in_user_id_per_ip_max_attempts: 50
 skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
 socure_docv_document_request_endpoint: ''
 socure_docv_enabled: false
+socure_docv_image_retrieval_job_wait_seconds: 15
 socure_docv_images_request_endpoint: ''
 socure_docv_verification_data_test_mode: false
 socure_docv_verification_data_test_mode_tokens: '[]'
@@ -767,6 +772,7 @@ test:
   sign_in_recaptcha_annotation_enabled: true
   skip_encryption_allowed_list: '[]'
   socure_docv_document_request_endpoint: 'https://sandbox.socure.test/documnt-request'
+  socure_docv_image_retrieval_job_wait_seconds: 0
   socure_docv_images_request_endpoint: 'https://upload.socure.us/api/5.0/documents/'
   socure_docv_webhook_secret_key: 'secret-key'
   socure_docv_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'

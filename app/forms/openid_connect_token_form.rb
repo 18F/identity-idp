@@ -225,8 +225,32 @@ class OpenidConnectTokenForm
       code_verifier_present: code_verifier.present?,
       service_provider_pkce: service_provider&.pkce,
       ial: identity&.ial,
+      token_exchange_stage: token_exchange_stage,
+      token_endpoint_operation: token_endpoint_operation,
+      token_exchange_scopes: token_exchange_scope_values,
       integration_errors:,
     }
+  end
+
+  def token_endpoint_operation
+    if token_exchange_authorization_code?
+      TokenExchange::Constants::STAGE_SUBJECT_TOKEN
+    else
+      'authorization_code'
+    end
+  end
+
+  def token_exchange_stage
+    TokenExchange::Constants::STAGE_SUBJECT_TOKEN if token_exchange_authorization_code?
+  end
+
+  def token_exchange_scope_values
+    scopes = identity&.scope.to_s.split(' ').select do |scope|
+      TokenExchange::Constants.in_scope?(scope)
+    end
+    return if scopes.blank?
+
+    scopes.map { |scope| scope.delete_prefix(TokenExchange::Constants::SCOPE_PREFIX) }
   end
 
   def integration_errors

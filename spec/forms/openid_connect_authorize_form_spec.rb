@@ -53,6 +53,9 @@ RSpec.describe OpenidConnectAuthorizeForm do
           code_digest: nil,
           code_challenge_present: false,
           service_provider_pkce: nil,
+          token_exchange_stage: nil,
+          token_exchange_requested: nil,
+          token_exchange_scopes: nil,
           integration_errors: nil,
         )
       end
@@ -78,6 +81,9 @@ RSpec.describe OpenidConnectAuthorizeForm do
             code_digest: nil,
             code_challenge_present: false,
             service_provider_pkce: nil,
+            token_exchange_stage: nil,
+            token_exchange_requested: nil,
+            token_exchange_scopes: nil,
             integration_errors: {
               error_details: ['Response type is not included in the list'],
               error_types: [:response_type],
@@ -404,6 +410,14 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
         it 'reports the scope as authorized' do
           expect(form.unauthorized_scope).to eq(false)
+        end
+
+        it 'surfaces token exchange authorization analytics fields' do
+          expect(form.submit.to_h).to include(
+            token_exchange_stage: 'actor_authorization',
+            token_exchange_requested: true,
+            token_exchange_scopes: ['passport'],
+          )
         end
 
         context 'when more than one configured audience is requested' do

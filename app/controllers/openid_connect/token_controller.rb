@@ -14,6 +14,8 @@ module OpenidConnect
 
       analytics_attributes = result.to_h
       analytics_attributes[:expires_in] = response[:expires_in]
+      add_subject_token_fingerprint(analytics_attributes, response)
+      add_delegation_id(analytics_attributes)
 
       track_analytics(**analytics_attributes.except(:integration_errors))
 
@@ -31,7 +33,7 @@ module OpenidConnect
     end
 
     def token_form
-      if brokered_token_exchange?
+      if delegated_token_exchange?
         OpenidConnectTokenExchangeForm.new(token_params)
       else
         OpenidConnectTokenForm.new(token_params)
@@ -56,14 +58,29 @@ module OpenidConnect
     end
 
     def track_analytics(analytics_attributes)
-      if brokered_token_exchange?
-        analytics.openid_connect_brokered_exchange_token(**analytics_attributes)
+      if delegated_token_exchange?
+        analytics.openid_connect_delegated_token_exchange(**analytics_attributes)
       else
         analytics.openid_connect_token(**analytics_attributes)
       end
     end
 
-    def brokered_token_exchange?
+    def add_subject_token_fingerprint(analytics_attributes, response)
+      return unless analytics_attributes[:token_endpoint_operation] ==
+                    TokenExchange::Constants::STAGE_SUBJECT_TOKEN
+      return if response[:access_token].blank?
+
+      analytics_attributes[:subject_token_fingerprint] =
+        TokenExchange::SubjectToken.digest(response[:access_token])
+    end
+
+    def add_delegation_id(analytics_attributes)
+      return unless delegated_token_exchange?
+
+      analytics_attributes[:delegation_id] = @token_form.delegation_id.presence
+    end
+
+    def delegated_token_exchange?
       params[:grant_type] == TokenExchange::Constants::GRANT_TYPE
     end
   end

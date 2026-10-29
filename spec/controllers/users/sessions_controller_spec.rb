@@ -939,6 +939,41 @@ RSpec.describe Users::SessionsController, devise: true do
       end
     end
 
+    context 'with an account recovery request' do
+      let(:user) { create(:user, :fully_registered) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
+      end
+
+      it 'routes to the first MFA method after password authentication' do
+        create(:account_recovery_request, :waiting, user: user)
+
+        post :create, params: { user: { email: user.email, password: user.password } }
+
+        expect(response).to redirect_to(user_two_factor_authentication_url)
+      end
+
+      it 'still offers existing MFA methods when the feature is disabled' do
+        create(:account_recovery_request, :waiting, user: user)
+        allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+
+        post :create, params: { user: { email: user.email, password: user.password } }
+
+        expect(response).to redirect_to(user_two_factor_authentication_url)
+      end
+
+      %i[cancelled completed expired].each do |state|
+        it "continues regular sign-in for a #{state} request" do
+          create(:account_recovery_request, state, user: user)
+
+          post :create, params: { user: { email: user.email, password: user.password } }
+
+          expect(response).to redirect_to(user_two_factor_authentication_url)
+        end
+      end
+    end
+
     it 'redirects to 2FA if there are no pending account reset requests' do
       user = create(:user, :fully_registered)
       post :create, params: { user: { email: user.email, password: user.password } }
@@ -971,6 +1006,17 @@ RSpec.describe Users::SessionsController, devise: true do
         get :new
 
         expect(response).to redirect_to user_two_factor_authentication_url
+      end
+
+      it 'routes an active request to the normal first MFA method' do
+        user = create(:user, :fully_registered)
+        stub_sign_in_before_2fa(user)
+        allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
+        create(:account_recovery_request, :waiting, user: user)
+
+        get :new
+
+        expect(response).to redirect_to(user_two_factor_authentication_url)
       end
     end
 

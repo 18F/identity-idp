@@ -7,6 +7,38 @@ RSpec.describe TwoFactorAuthentication::PivCacMismatchController do
     stub_sign_in_before_2fa(user) if user
   end
 
+  context 'when account recovery is enabled' do
+    let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
+    end
+
+    it 'offers recovery rather than legacy deletion to eligible users' do
+      get :show
+
+      expect(assigns(:account_recovery_url)).to eq(account_recovery_start_url)
+    end
+
+    it 'links to the existing recovery request when one is active' do
+      create(:account_recovery_request, :waiting, user: user)
+
+      get :show
+
+      expect(assigns(:account_recovery_url)).to eq(account_recovery_pending_url)
+    end
+
+    context 'when the user is identity proofed' do
+      let(:user) { create(:user, :proofed, :with_piv_or_cac) }
+
+      it 'preserves legacy recovery' do
+        get :show
+
+        expect(assigns(:account_recovery_url)).to be_nil
+      end
+    end
+  end
+
   describe '#show' do
     subject(:response) { get :show }
 

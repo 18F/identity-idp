@@ -3,6 +3,9 @@ fr:
   telephony:
     account_deleted_notice:
       sms: Cet SMS confirme que vous avez supprimé votre compte %{app_name}.
+    account_recovery_notice:
+      sms: |-
+        You requested to recover your %{app_name} account. Check your email in %{interval} for next steps. Not you? Sign in and authenticate to cancel recovery.
     account_reset_cancellation_notice:
       sms: Votre demande de suppression de votre compte %{app_name} a été annulée.
     account_reset_notice:

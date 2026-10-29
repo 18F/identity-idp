@@ -155,4 +155,67 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
         t('two_factor_authentication.login_intro_reauthentication')
     end
   end
+
+  describe 'account recovery entry point' do
+    before do
+      allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
+    end
+
+    it 'only offers the legacy delete-your-account link by default' do
+      expect(rendered).to have_link(t('two_factor_authentication.account_reset.link'))
+      expect(rendered).to_not have_link(
+        t('two_factor_authentication.account_recovery.recover_link'),
+      )
+    end
+
+    context 'when the user is eligible for account recovery' do
+      let(:user) { create(:user, :fully_registered) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
+      end
+
+      it 'offers recovery without linking to the legacy deletion flow' do
+        expect(rendered).to have_link(
+          t('two_factor_authentication.account_recovery.recover_link'),
+          href: account_recovery_start_path(locale: LinkLocaleResolver.locale),
+        )
+        expect(rendered).not_to have_link(
+          href: account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
+        )
+      end
+
+      it 'does not render the legacy single-option text' do
+        expect(rendered).to_not have_content(
+          strip_tags(t('two_factor_authentication.account_reset.text_html')),
+        )
+      end
+
+      context 'with an active recovery request' do
+        before { create(:account_recovery_request, :waiting, user: user) }
+
+        it 'links to request confirmation without offering legacy deletion or a second recovery' do
+          expect(rendered).to have_link(
+            t('two_factor_authentication.account_recovery.pending_link'),
+            href: account_recovery_pending_path(locale: LinkLocaleResolver.locale),
+          )
+          expect(rendered).not_to have_link(t('two_factor_authentication.account_reset.link'))
+          expect(rendered).not_to have_link(
+            t('two_factor_authentication.account_recovery.recover_link'),
+          )
+        end
+      end
+
+      context 'with an identity-proofed user' do
+        let(:user) { create(:user, :proofed) }
+
+        it 'retains legacy recovery for ineligible users' do
+          expect(rendered).to have_link(t('two_factor_authentication.account_reset.link'))
+          expect(rendered).not_to have_link(
+            t('two_factor_authentication.account_recovery.recover_link'),
+          )
+        end
+      end
+    end
+  end
 end

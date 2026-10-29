@@ -68,7 +68,13 @@ Rails.application.routes.draw do
     post '/api/saml/finalauthpost(:path_year)' => 'saml_idp#auth', as: :api_saml_finalauthpost
     get '/api/saml/auth(:path_year)' => 'saml_idp#auth'
   end
+
   get '/api/saml/complete' => 'saml_completion#index', as: :complete_saml
+
+  # Catch-all for SAML paths that did not match a live endpoint above, e.g. a
+  # decommissioned year such as /api/saml/auth2024. Must stay below every real
+  # SAML route: a glob placed earlier would shadow them.
+  get '/api/saml/*rest' => 'saml_decommissioned#show', as: :saml_decommissioned
 
   post '/api/service_provider' => 'service_provider#update'
   post '/api/verify/images' => 'idv/image_uploads#create'
@@ -137,6 +143,20 @@ Rails.application.routes.draw do
       get '/account_reset/confirm_delete_account' => 'destructive_account_reset/confirm_delete_account#show'
       get '/account_reset/pending' => 'destructive_account_reset/pending#show'
       post '/account_reset/pending/cancel' => 'destructive_account_reset/pending#cancel'
+      # Account-preserving MFA recovery.
+      # `verify` and `new_mfa_setup` are committed but inert until later phases.
+      scope 'account_recovery' do
+        get '/start' => 'account_recovery/start#show', as: :account_recovery_start
+        post '/start' => 'account_recovery/start#create'
+        get '/pending' => 'account_recovery/pending#show', as: :account_recovery_pending
+        post '/pending/resend' => 'account_recovery/pending#resend',
+             as: :account_recovery_resend
+        get '/verify' => 'account_recovery/verify#show', as: :account_recovery_verify
+        post '/verify' => 'account_recovery/verify#create'
+        get '/new_mfa_setup' => 'account_recovery/new_mfa_setup#show',
+            as: :account_recovery_new_mfa_setup
+        post '/new_mfa_setup' => 'account_recovery/new_mfa_setup#create'
+      end
 
       get '/login/two_factor/options' => 'two_factor_authentication/options#index'
       post '/login/two_factor/options' => 'two_factor_authentication/options#create'
