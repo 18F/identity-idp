@@ -111,6 +111,7 @@ module TwoFactorAuthentication
     def confirm_eligible_for_platform_upsell?
       user_session[:platform_authenticator_available] &&
         !current_user.webauthn_platform_recommended_dismissed_at? &&
+        !user_session[:auto_passkey_prompted] &&
         phone_configuration.delivery_preference == 'sms' &&
         mobile? &&
         current_user.webauthn_configurations.where(platform_authenticator: [false, nil])
