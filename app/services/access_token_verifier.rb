@@ -82,13 +82,13 @@ class AccessTokenVerifier
     bound_thumbprint = AccessTokenBinding.load(access_token)&.dpop_jkt
     if bound_thumbprint.blank?
       return refuse_binding(
-        'invalid_token', t('openid_connect.user_info.errors.dpop_token_unbound'),
+        'invalid_token', 'dpop_token_unbound',
         :dpop_token_unbound
       )
     end
     unless scheme == 'DPoP'
       return refuse_binding(
-        'invalid_token', t('openid_connect.user_info.errors.dpop_bearer_presented'),
+        'invalid_token', 'dpop_bearer_presented',
         :dpop_bearer_presented
       )
     end
