@@ -49,6 +49,14 @@ RSpec.describe Users::PasswordsController do
       expect(controller.user_session[:stored_location]).to eq(manage_password_url)
     end
 
+    it 'still asks for the password while site keys are disabled, so the root is not deleted' do
+      allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(false)
+
+      get :edit
+
+      expect(response).to redirect_to capture_password_url
+    end
+
     it 'does not ask again when the root already failed to unlock in this session' do
       controller.user_session[SiteKeys::Vault::UNAVAILABLE_SESSION_KEY] = true
 

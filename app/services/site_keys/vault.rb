@@ -19,15 +19,15 @@ module SiteKeys
     end
 
     # Unwraps the root with the password just entered. A root is only created when `create`
-    # is set, so users who never sign in to a site key SP never get one.
+    # is set, so users who never sign in to a site key SP never get one. Turning site keys off
+    # stops new roots from being created, but an existing root still unlocks, so a password
+    # change can re-wrap it instead of deleting it.
     # @return [String, nil] the root
     # @raise [RootMismatchError, Encryption::EncryptionError]
     def unlock(password, create: false)
-      return unless enabled?
-
       root = if record
                cipher.unwrap(record.encrypted_root, password)
-             elsif create
+             elsif create && enabled?
                create_root!(password)
              end
       cache(root) if root
@@ -35,10 +35,9 @@ module SiteKeys
     end
 
     # Replaces the root whose stored wrap had `expected_fingerprint`; does nothing when another
-    # session has changed or deleted it since.
+    # session has changed or deleted it since. This repairs a root the user already has, so it
+    # runs while site keys are off too.
     def replace!(password, expected_fingerprint: fingerprint)
-      return unless enabled?
-
       root = SiteKeyRoot.transaction do
         current = SiteKeyRoot.lock.find_by(user_id: user.id)
         next if current.nil? || fingerprint_of(current) != expected_fingerprint
@@ -90,9 +89,11 @@ module SiteKeys
         user_session[FINGERPRINT_SESSION_KEY] == fingerprint
     end
 
-    # The password would unlock the root but has not been entered in this session.
+    # The password would unlock the root but has not been entered in this session. This holds
+    # while site keys are off too, so a password change still asks for the password it needs to
+    # re-wrap the root.
     def locked?
-      enabled? && record.present? && !unlocked?
+      record.present? && !unlocked?
     end
 
     def needs_password?

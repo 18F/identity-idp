@@ -47,7 +47,7 @@ RSpec.describe SiteKeys::Vault do
         allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(false)
       end
 
-      it 'does nothing' do
+      it 'does not create a root' do
         expect(vault.unlock(password, create: true)).to be_nil
         expect(user.reload.site_key_root).to be_nil
       end
@@ -67,6 +67,12 @@ RSpec.describe SiteKeys::Vault do
       it 'does not create a second root' do
         expect(vault.unlock(password, create: true)).to eq(created.root)
         expect(SiteKeyRoot.where(user:).count).to eq(1)
+      end
+
+      it 'still unlocks it while site keys are disabled' do
+        allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(false)
+
+        expect(vault.unlock(password)).to eq(created.root)
       end
     end
   end
@@ -107,6 +113,15 @@ RSpec.describe SiteKeys::Vault do
 
       expect(vault.replace!(password)).to be_nil
       expect(SiteKeyRoot.where(user:).count).to eq(0)
+    end
+
+    it 'repairs an existing root while site keys are disabled' do
+      allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(false)
+
+      root = vault.replace!(password)
+
+      expect(root).to be_present
+      expect(root).not_to eq(created.root)
     end
   end
 
@@ -161,6 +176,12 @@ RSpec.describe SiteKeys::Vault do
       vault.mark_unavailable
 
       expect(vault.needs_password?).to eq(false)
+    end
+
+    it 'is true while site keys are disabled, so a password change can re-wrap the root' do
+      allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(false)
+
+      expect(vault.needs_password?).to eq(true)
     end
   end
 
