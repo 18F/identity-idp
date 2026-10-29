@@ -1824,6 +1824,7 @@ openid_connect.token.errors.invalid_code: 无效，因为与任何用户都匹�
 openid_connect.token.errors.invalid_code_verifier: code_verifier 与 code_challenge 不匹配。请参阅我们的文档：https://developers.login.gov/support/#invalid-code-verifier
 openid_connect.token.errors.invalid_iat: iat 必须是整数或者浮动点 Unix 时间印章来代表过去的一个时间。请参阅我们的文档：https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: 无法根据任何已注册的公钥验证这个说法。请参阅我们的文档：https://developers.login.gov/support/#invalid-token-signature
+openid_connect.token.errors.no_identity_at_target: '此人尚未在 audience 所指的应用登录，因此没有可委托的身份：请将此人送往该应用登录（initiate_login_uri），然后重新请求交换。'
 openid_connect.user_info.errors.encryption_unavailable: '此服务提供商已配置为接收加密的 userinfo 响应，但没有为其登记可用的加密密钥：响应未发送。'
 openid_connect.user_info.errors.malformed_authorization: 授权标头畸形。请参阅我们的文档：https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: 未提供授权标头。请参阅我们的文档：https://developers.login.gov/support/#no-auth-header

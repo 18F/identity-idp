@@ -96,7 +96,18 @@ class ServiceProvider < ApplicationRecord
   end
 
   def token_exchange_target?
-    IdentityConfig.store.token_exchange_allowed_targets.any? do |target|
+    token_exchange_target_entry.present?
+  end
+
+  # The login-initiation address (OpenID Connect Core 1.0 §4) a person who holds no identity at
+  # this application is sent to before delegation; carried on the configuration list until the
+  # registry exists.
+  def token_exchange_initiate_login_uri
+    token_exchange_target_entry&.dig(:initiate_login_uri)
+  end
+
+  def token_exchange_target_entry
+    IdentityConfig.store.token_exchange_allowed_targets.find do |target|
       target.fetch(:issuer) == issuer
     end
   end

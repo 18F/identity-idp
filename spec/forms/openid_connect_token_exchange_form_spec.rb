@@ -249,12 +249,57 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when the user does not have an identity on the target aud' do
-      before { target_identity.destroy! }
+    context 'when the person has no identity at the target application' do
+      let!(:target_identity) { nil }
 
-      it 'is invalid' do
+      it 'is invalid and names the missing identity' do
         expect(form.submit.success?).to eq(false)
-        expect(form.errors[:subject_token]).to include('is invalid')
+        expect(form.errors[:audience]).to include(
+          t('openid_connect.token.errors.no_identity_at_target'),
+        )
+      end
+
+      it 'answers invalid_target with the message alone and no login-initiation address' do
+        expect(form.response).to eq(
+          error: 'invalid_target',
+          error_description: t('openid_connect.token.errors.no_identity_at_target'),
+        )
+        expect(form.http_status).to eq(:bad_request)
+      end
+
+      it 'reports invalid_target to analytics' do
+        expect(form.submit.to_h).to include(oauth_error_code: 'invalid_target')
+      end
+
+      context 'when the target registers a login-initiation address' do
+        before do
+          allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets).and_return(
+            [{
+              issuer: target_issuer,
+              scope: 'passport',
+              initiate_login_uri: 'https://records.example.gov/initiate_login',
+            }],
+          )
+        end
+
+        it 'tells the actor where the person signs in at the agency' do
+          expect(form.response).to include(
+            error: 'invalid_target',
+            initiate_login_uri: 'https://records.example.gov/initiate_login',
+          )
+        end
+
+        it 'does not tell it when the request failed for another reason' do
+          allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets).and_return([])
+
+          expect(form.response).to_not have_key(:initiate_login_uri)
+        end
+      end
+
+      it 'does not create an identity at the target' do
+        expect { form.submit }.to_not change {
+          ServiceProviderIdentity.where(service_provider: target_issuer).count
+        }
       end
     end
 
