@@ -27,10 +27,12 @@
   </p>
   <% if show_save_buttons %>
     <%= render ClipboardButtonComponent.new(clipboard_text: code, unstyled: true) %>
-    <%= render ClickObserverComponent.new(event_name: 'IdV: download personal key') do %>
+    <%= render ClickObserverComponent.new(
+          event_name: local_assigns.fetch(:download_event_name, 'IdV: download personal key'),
+        ) do %>
       <%= render DownloadButtonComponent.new(
             file_data: code,
-            file_name: 'personal_key.txt',
+            file_name: local_assigns.fetch(:download_file_name, 'personal_key.txt'),
             unstyled: true,
             class: 'margin-x-2 display-inline-block',
           ).with_content(t('forms.personal_key.download')) %>

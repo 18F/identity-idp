@@ -29,4 +29,29 @@ RSpec.describe SiteKeys::RootCipher do
       expect(encrypted_root).not_to include(Base64.strict_encode64(root))
     end
   end
+
+  describe '#recover' do
+    let(:recovery_code) { SiteKeys::RecoveryCode.generate }
+    let(:record) do
+      build(
+        :site_key_root,
+        user:,
+        encrypted_root_recovery_code: cipher.wrap(
+          root, SiteKeys::RecoveryCode.normalize(recovery_code)
+        ),
+      )
+    end
+
+    it 'opens the root with the recovery code' do
+      expect(cipher.recover(record, recovery_code.downcase)).to eq(root)
+    end
+
+    it 'returns nil for another code' do
+      expect(cipher.recover(record, SiteKeys::RecoveryCode.generate)).to be_nil
+    end
+
+    it 'returns nil for a malformed code' do
+      expect(cipher.recover(record, 'UUUU-UUUU-UUUU-UUUU')).to be_nil
+    end
+  end
 end

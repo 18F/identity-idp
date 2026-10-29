@@ -1,0 +1,8 @@
+<%= link_to(
+      @presenter.site_key_recovery_needed? ? site_key_recovery_path : new_site_key_recovery_code_path,
+    ) do %>
+  <span class='usa-sr-only'>
+    <%= t('account.items.site_key_recovery_code') %>
+  </span>
+  <%= t('account.links.regenerate_site_key_recovery_code') %>
+<% end %>
