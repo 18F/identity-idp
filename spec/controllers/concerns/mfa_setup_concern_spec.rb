@@ -230,4 +230,62 @@ RSpec.describe MfaSetupConcern do
       send_mfa_added_email
     end
   end
+
+  describe '#retire_deprecated_personal_key_after_mfa_setup' do
+    subject(:retire) { controller.retire_deprecated_personal_key_after_mfa_setup }
+
+    let(:user) { create(:user, :with_phone) }
+
+    before do
+      PersonalKeyGenerator.new(user).generate!
+      stub_sign_in(user)
+    end
+
+    context 'when personal key MFA deprecation phase 1 is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:personal_key_mfa_deprecation_phase_1_enabled)
+          .and_return(true)
+      end
+
+      context 'when retirement was deferred during forced personal key verification' do
+        before do
+          controller.user_session[:retire_personal_key_after_mfa_setup] = true
+        end
+
+        it 'retires the personal key and clears the deferral flag' do
+          expect(user.has_recovery_code?).to eq(true)
+
+          retire
+          user.reload
+
+          expect(user.has_recovery_code?).to eq(false)
+          expect(controller.user_session[:retire_personal_key_after_mfa_setup]).to be_nil
+        end
+      end
+
+      context 'when retirement was not deferred' do
+        it 'leaves the personal key intact' do
+          retire
+          user.reload
+
+          expect(user.has_recovery_code?).to eq(true)
+        end
+      end
+    end
+
+    context 'when personal key MFA deprecation phase 1 is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:personal_key_mfa_deprecation_phase_1_enabled)
+          .and_return(false)
+        controller.user_session[:retire_personal_key_after_mfa_setup] = true
+      end
+
+      it 'does not retire the personal key' do
+        retire
+        user.reload
+
+        expect(user.has_recovery_code?).to eq(true)
+      end
+    end
+  end
 end

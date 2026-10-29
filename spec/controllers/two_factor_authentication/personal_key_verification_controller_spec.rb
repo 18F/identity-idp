@@ -266,13 +266,13 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         expect(response).to redirect_to(authentication_methods_setup_url)
       end
 
-      # Regression: a legacy user whose ONLY credential is a personal key (no
-      # phone/TOTP/etc.) must not have that key consumed, or they would be locked
-      # out of their account. These users can reach this controller via a direct
-      # URL (see spec/features/legacy_passwords_spec.rb), so the phase 1 consume
-      # path must be guarded by MfaPolicy#two_factor_enabled?.
+      # A legacy user whose ONLY credential is a personal key (no phone/TOTP/etc.)
+      # is forced to authenticate with their key, but it must be PRESERVED at
+      # verification time — consuming it immediately would leave them with zero
+      # credentials if they abandon MFA setup. The key is retired later, once a
+      # replacement MFA method is confirmed (see MfaSetupConcern).
       context 'when the user has only a personal key (no other MFA method)' do
-        it 'does not consume the personal key' do
+        it 'preserves the personal key and defers retirement until MFA setup' do
           user = create(:user)
           raw_key = PersonalKeyGenerator.new(user).generate!
           stub_sign_in_before_2fa(user)
@@ -285,6 +285,18 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
           # The personal key is preserved so the user retains a usable credential.
           expect(user.has_recovery_code?).to eq(true)
           expect(TwoFactorAuthentication::PersonalKeyPolicy.new(user).enabled?).to eq(true)
+          # Retirement is deferred to MFA setup via a session flag.
+          expect(subject.user_session[:retire_personal_key_after_mfa_setup]).to eq(true)
+        end
+
+        it 'redirects the user to authentication method setup' do
+          user = create(:user)
+          raw_key = PersonalKeyGenerator.new(user).generate!
+          stub_sign_in_before_2fa(user)
+
+          post :create, params: { personal_key_form: { personal_key: raw_key } }
+
+          expect(response).to redirect_to(authentication_methods_setup_url)
         end
       end
     end

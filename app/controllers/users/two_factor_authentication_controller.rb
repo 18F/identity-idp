@@ -16,6 +16,7 @@ module Users
         non_phone_redirect ||
         phone_redirect ||
         backup_code_redirect ||
+        personal_key_redirect ||
         redirect_on_nothing_enabled
     end
 
@@ -55,6 +56,16 @@ module Users
     def backup_code_redirect
       return unless TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured?
       redirect_to login_two_factor_backup_code_url
+    end
+
+    # During Phase 1 of personal key MFA deprecation, a user whose only credential
+    # is a personal key must authenticate with it before being routed to add a
+    # replacement MFA method. Without this they would fall through to
+    # redirect_on_nothing_enabled and be sent to setup without proving possession
+    # of the personal key.
+    def personal_key_redirect
+      return unless TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).mfa_required?
+      redirect_to login_two_factor_personal_key_url
     end
 
     def redirect_on_nothing_enabled

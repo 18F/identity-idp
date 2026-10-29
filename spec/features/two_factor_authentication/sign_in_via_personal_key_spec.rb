@@ -118,26 +118,73 @@ RSpec.feature 'Signing in via one-time use personal key' do
       expect(page).to have_current_path authentication_methods_setup_path
     end
 
-    # Regression for the direct-URL lockout gap: a legacy user whose ONLY
-    # credential is a personal key can reach login_two_factor_personal_key via a
-    # direct URL (see spec/features/legacy_passwords_spec.rb). Phase 1 must NOT
-    # consume their key, since that would leave them with zero credentials.
-    it 'does not consume the key of a user whose only credential is a personal key' do
+    # A user whose only credential is a personal key must be forced to
+    # authenticate with that key at sign-in (proving identity) before being
+    # routed to add a replacement MFA method. They must not be sent straight to
+    # MFA setup without authenticating.
+    it 'forces a personal-key-only user to verify their key before adding MFA' do
       user = create(:user)
       raw_key = PersonalKeyGenerator.new(user).generate!
 
       expect(MfaPolicy.new(user).two_factor_enabled?).to eq(false)
 
       sign_in_before_2fa(user)
-      visit login_two_factor_personal_key_path
+
+      # Forced to the personal key verification page without choosing it.
+      expect(page).to have_current_path login_two_factor_personal_key_path
+
+      enter_personal_key(personal_key: raw_key)
+      click_submit_default
+
+      # Only after proving possession of the key are they routed to add a new MFA.
+      expect(page).to have_current_path authentication_methods_setup_path
+    end
+
+    # Deferred retirement: the personal-key-only user's key must be PRESERVED when
+    # they verify it, so they are not left without a credential if they abandon
+    # MFA setup. The key is only retired once a replacement MFA method is confirmed.
+    it 'preserves the key after verification until a replacement MFA is confirmed' do
+      user = create(:user)
+      raw_key = PersonalKeyGenerator.new(user).generate!
+
+      sign_in_before_2fa(user)
+      expect(page).to have_current_path login_two_factor_personal_key_path
       enter_personal_key(personal_key: raw_key)
       click_submit_default
 
       user.reload
-
-      # The personal key is preserved so the user retains a usable credential.
+      # Key is preserved at this point — the user has no other credential yet.
       expect(user.has_recovery_code?).to eq(true)
       expect(TwoFactorAuthentication::PersonalKeyPolicy.new(user).enabled?).to eq(true)
+      expect(page).to have_current_path authentication_methods_setup_path
+      expect(page).to have_content(t('mfa.personal_key_deprecation_warning'))
+    end
+
+    # Once the replacement MFA method is confirmed, the legacy personal key is
+    # retired (recovery code cleared) so it can no longer be used.
+    it 'retires the key after the user confirms a replacement MFA method' do
+      user = create(:user)
+      raw_key = PersonalKeyGenerator.new(user).generate!
+
+      sign_in_before_2fa(user)
+      expect(page).to have_current_path login_two_factor_personal_key_path
+      enter_personal_key(personal_key: raw_key)
+      click_submit_default
+      expect(page).to have_current_path authentication_methods_setup_path
+
+      # Add a replacement MFA method (phone).
+      select_2fa_option('phone')
+      fill_in 'new_phone_form_phone', with: '202-555-1212'
+      click_send_one_time_code
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      user.reload
+      # The legacy personal key is now retired.
+      expect(user.has_recovery_code?).to eq(false)
+      expect(TwoFactorAuthentication::PersonalKeyPolicy.new(user).enabled?).to eq(false)
+      # ...and the user has a usable replacement MFA method.
+      expect(MfaPolicy.new(user).two_factor_enabled?).to eq(true)
     end
   end
 

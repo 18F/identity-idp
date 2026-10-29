@@ -81,7 +81,17 @@ module TwoFactorAuthentication
     end
 
     def remove_personal_key
-      if skip_personal_key_regeneration?
+      if retire_personal_key_after_mfa_setup?
+        # Phase 1 of personal key MFA deprecation: a user whose ONLY credential is
+        # a personal key is forced to authenticate with it, but we must NOT consume
+        # it here — doing so would leave them with zero credentials if they abandon
+        # MFA setup. Instead we preserve the key and defer retiring it until the
+        # user confirms a replacement MFA method (see
+        # MfaSetupConcern#retire_deprecated_personal_key_after_mfa_setup).
+        user_session[:retire_personal_key_after_mfa_setup] = true
+        # Show the Phase 1 deprecation warning on the add-MFA setup page.
+        user_session[:personal_key_mfa_deprecated] = true
+      elsif skip_personal_key_regeneration?
         # During Phase 1 of personal key MFA deprecation we consume the personal
         # key on use: it is neither shown again nor regenerated, and the existing
         # recovery code is cleared so the user can no longer use or manage it.
@@ -95,6 +105,14 @@ module TwoFactorAuthentication
         PersonalKeyGenerator.new(current_user).generate!
       end
       user_session.delete(:personal_key)
+    end
+
+    # During Phase 1 of personal key MFA deprecation, a user whose only credential
+    # is a personal key is forced to authenticate with it. We preserve the key and
+    # defer retiring it until they confirm a replacement MFA method, so they are
+    # never left without a usable credential. See PersonalKeyPolicy#mfa_required?.
+    def retire_personal_key_after_mfa_setup?
+      TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).mfa_required?
     end
 
     # During Phase 1 of personal key MFA deprecation, users who use a personal key
