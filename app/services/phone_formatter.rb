@@ -12,6 +12,16 @@ module PhoneFormatter
     return '' if phone.blank?
 
     formatted = Phonelib.parse(phone).national
-    formatted[0..-5].gsub(/\d/, '*') + formatted[-4..-1]
+    # Mask all but the last four digits, preserving spaces and punctuation.
+    digits_to_mask = formatted.count('0-9') - 4
+
+    formatted.gsub(/\d/) do |digit|
+      if digits_to_mask.positive?
+        digits_to_mask -= 1
+        '*'
+      else
+        digit
+      end
+    end
   end
 end
