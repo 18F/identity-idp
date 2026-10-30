@@ -4,10 +4,10 @@ module Users
   class StsConsentController < ApplicationController
     include SecureHeadersConcern
 
-    # before_action :ensure_sp_in_session_with_request_url, only: [:new, :create]
-    # before_action :confirm_two_factor_authenticated
-    # before_action :confirm_token_exchange_enabled
-    # before_action :apply_secure_headers_override, only: [:new]
+    before_action :ensure_sp_in_session_with_request_url, only: [:new, :create]
+    before_action :confirm_two_factor_authenticated
+    before_action :confirm_token_exchange_enabled
+    before_action :apply_secure_headers_override, only: [:new]
 
     def new
       analytics.sts_consent_visited
