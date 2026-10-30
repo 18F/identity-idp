@@ -12,7 +12,6 @@ module Idv
   # @attr clear1_verification_state [String, nil]
   # @attr clear1_verification_token [String, nil]
   # @attr clear1_verified [Boolean, nil]
-  # @attr doc_auth_vendor [String, nil]
   # @attr document_capture_session_uuid [String, nil]
   # @attr flow_path [String, nil]
   # @attr go_back_path [String, nil]
@@ -79,7 +78,6 @@ module Idv
       clear1_verification_state
       clear1_verification_token
       clear1_verified
-      doc_auth_vendor
       document_capture_session_uuid
       flow_path
       go_back_path
