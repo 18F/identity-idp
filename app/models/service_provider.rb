@@ -91,6 +91,12 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
+  # The public key responses to this service provider are encrypted to: the key of its first
+  # registered certificate, the one its `private_key_jwt` client assertions are verified against.
+  def encryption_public_key
+    ssl_certs.first&.public_key
+  end
+
   def token_exchange_broker?
     IdentityConfig.store.token_exchange_allowed_broker_issuers.include?(issuer)
   end

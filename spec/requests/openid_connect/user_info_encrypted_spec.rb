@@ -146,7 +146,7 @@ RSpec.describe 'OpenID Connect userinfo encrypted responses' do
         expect(@analytics).to have_logged_event(
           :openid_connect_userinfo_encryption_failed,
           client_id: service_provider.issuer,
-          error: 'OpenidConnect::JweEncryptor::NoUsableKeyError',
+          error: 'JweEncryptor::NoUsableKeyError',
         )
       end
     end
