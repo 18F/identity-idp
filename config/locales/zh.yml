@@ -1927,9 +1927,18 @@ step_indicator.status.complete: 完成了
 step_indicator.status.current: 目前步骤
 step_indicator.status.not_complete: 未完成
 step_indicator.substep: 子步骤 %{current} / %{total}
-sts_consent.check_box_to_consent: I consent to allow %{america_gov_name} to access, share my information, and take actions on my behalf with MyTravelGov.
-sts_consent.content: '%{america_gov_name} uses AI to connect to your %{app_name} account, automatically signing you in and pre-filling government forms.'
-sts_consent.heading: Let %{america_gov_name} work with agencies on your behalf
+sts_consent.about_description: Use MyTravelGov to apply for, renew, or track a U.S. passport online
+sts_consent.about_heading: About
+sts_consent.allow_and_continue: Allow and continue
+sts_consent.cancel_and_return: Cancel and return to %{america_gov_name}
+sts_consent.content: '%{america_gov_name}’s Super Intelligence will do this task for you. It only uses the services you approve, and it doesn’t store your personal information.'
+sts_consent.heading: Let %{america_gov_name} act for you
+sts_consent.learn_more: Learn more about MyTravelGov
+sts_consent.permissions_description: See and change your passport applications. See your uploaded documents （but not change them）.
+sts_consent.permissions_heading: What %{america_gov_name} can do
+sts_consent.service_permission: Start and submit your passport renewal
+sts_consent.shared_information_description: Full name, date of birth, Social Security number, mailing address
+sts_consent.shared_information_heading: Information shared with %{america_gov_name}
 time.am: 上午
 time.formats.event_date: '%Y年%B%-d日'
 time.formats.event_time: '%-l:%M %p'
@@ -2003,7 +2012,7 @@ titles.sign_up.completion_new_attributes: '%{sp} 在要求新信息'
 titles.sign_up.completion_new_sp: 你现在正在首次登入
 titles.sign_up.completion_reverified_consent: 与 %{sp}分享你更新后的信息
 titles.sign_up.confirmation: 继续登录
-titles.sts_consent: Let %{america_gov_name} work with agencies on your behalf
+titles.sts_consent: Let %{america_gov_name} act for you
 titles.totp_setup.new: 添加身份证实应用程序
 titles.two_factor_setup: 设立双因素身份证实
 titles.verify_email: 检查你的电邮
