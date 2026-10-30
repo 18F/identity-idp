@@ -134,9 +134,18 @@ module I18n
         { key: 'nds.footer.experience_notice_label', locales: %i[es fr zh] }, # Translations pending
         { key: 'nds.footer.experience_notice_link', locales: %i[es fr zh] }, # Translations pending
         { key: 'nds.footer.switch_to_legacy', locales: %i[es fr zh] }, # Translations pending
-        { key: 'sts_consent.check_box_to_consent', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.about_description', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.about_heading', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.allow_and_continue', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.cancel_and_return', locales: %i[es fr zh] }, # Translations pending
         { key: 'sts_consent.content', locales: %i[es fr zh] }, # Translations pending
         { key: 'sts_consent.heading', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.learn_more', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.permissions_description', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.permissions_heading', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.service_permission', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.shared_information_description', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.shared_information_heading', locales: %i[es fr zh] }, # Translations pending
         { key: 'titles.sts_consent', locales: %i[es fr zh] }, # Translations pending
       ].freeze
       # rubocop:enable Layout/LineLength

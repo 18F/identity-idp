@@ -1,15 +1,40 @@
 <% self.title = t('titles.sts_consent', america_gov_name: AMERICA_GOV_NAME) %>
 
-<div class="text-center">
-  <%= image_tag(asset_url('user-access.svg'), width: '280', height: '91', alt: '', aria: { hidden: true }) %>
-  <h2 class="margin-bottom-4 text-primary text-normal">
-    <strong>
-    <%= t('sts_consent.heading', america_gov_name: AMERICA_GOV_NAME) %>
-    </strong>
-  </h2>
-</div>
+<%= render PageHeadingComponent.new.with_content(t('sts_consent.heading', america_gov_name: AMERICA_GOV_NAME)) %>
 
-<p><%= t('sts_consent.content', america_gov_name: AMERICA_GOV_NAME, app_name: APP_NAME) %></p>
+<p><%= t('sts_consent.content', america_gov_name: AMERICA_GOV_NAME) %></p>
+
+<%= render AccordionComponent.new(class: 'margin-top-4') do |c| %>
+  <% c.with_header do %>
+    <%= image_tag(
+          asset_url('sp-logos/generic.svg'),
+          width: 132,
+          height: 46,
+          alt: '',
+          aria: { hidden: true },
+        ) %>
+    <span class="display-block"><strong>MyTravelGov</strong></span>
+    <span class="display-block"><%= t('sts_consent.service_permission') %></span>
+  <% end %>
+  <h3 class="h5 margin-top-0 margin-bottom-05"><%= t('sts_consent.about_heading') %></h3>
+  <p class="margin-top-0 margin-bottom-2"><%= t('sts_consent.about_description') %></p>
+
+  <h3 class="h5 margin-top-0 margin-bottom-05">
+    <%= t('sts_consent.permissions_heading', america_gov_name: AMERICA_GOV_NAME) %>
+  </h3>
+  <p class="margin-top-0 margin-bottom-2"><%= t('sts_consent.permissions_description') %></p>
+
+  <h3 class="h5 margin-top-0 margin-bottom-05">
+    <%= t('sts_consent.shared_information_heading', america_gov_name: AMERICA_GOV_NAME) %>
+  </h3>
+  <p class="margin-top-0 margin-bottom-2">
+    <%= t('sts_consent.shared_information_description') %>
+  </p>
+
+  <p class="margin-y-0">
+    <%= new_tab_link_to(t('sts_consent.learn_more'), 'https://mytravel.state.gov/s/') %>
+  </p>
+<% end %>
 
 <%= simple_form_for(
       @sts_consent_form,
@@ -17,15 +42,17 @@
       method: :post,
       html: { class: 'margin-top-2' },
     ) do |f| %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :consent_given,
-        as: :boolean,
-        checked_value: StsConsentForm::CONSENT_GIVEN_VALUE,
-        unchecked_value: '',
-        label: t('sts_consent.check_box_to_consent', america_gov_name: AMERICA_GOV_NAME),
-        required: true,
+  <%= f.hidden_field(
+        :consent_given,
+        value: StsConsentForm::CONSENT_GIVEN_VALUE,
       ) %>
 
-  <%= f.submit t('forms.buttons.continue'), class: 'margin-y-5' %>
+  <%= f.submit t('sts_consent.allow_and_continue'), class: 'margin-top-2' %>
+<% end %>
+
+<%= render PageFooterComponent.new do %>
+  <%= link_to(
+        t('sts_consent.cancel_and_return', america_gov_name: AMERICA_GOV_NAME),
+        'https://www.america.gov',
+      ) %>
 <% end %>
