@@ -39,6 +39,17 @@ class AccountShowPresenter
     user.has_recovery_code? && user.password_reset_profile.blank?
   end
 
+  # During Phase 1 of personal key MFA deprecation, personal key MFA users can no
+  # longer regenerate their personal key, so the reset/regenerate link is hidden.
+  # See PersonalKeyPolicy#mfa_deprecated? for the full rationale.
+  def show_regenerate_personal_key_action?
+    !personal_key_mfa_deprecated?
+  end
+
+  def personal_key_mfa_deprecated?
+    TwoFactorAuthentication::PersonalKeyPolicy.new(user).mfa_deprecated?
+  end
+
   def show_service_provider_continue_partial?
     sp_name.present? && sp_session_request_url.present? && !sp_handoff_already_occurred
   end

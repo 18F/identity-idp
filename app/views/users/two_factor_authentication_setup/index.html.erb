@@ -79,6 +79,13 @@
 <% else %>
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :voice, only_if_all: true)) %>
 
+<% if @presenter.show_personal_key_deprecation_warning? %>
+  <%= render AlertComponent.new(
+        type: :info,
+        class: 'margin-bottom-4',
+      ).with_content(t('mfa.personal_key_deprecation_warning')) %>
+<% end %>
+
 <% if @presenter.icon %>
   <%= image_tag(
         asset_url(@presenter.icon),

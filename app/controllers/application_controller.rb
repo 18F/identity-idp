@@ -431,7 +431,9 @@ class ApplicationController < ActionController::Base
   def confirm_two_factor_authenticated
     authenticate_user!(force: true)
 
-    if !two_factor_enabled?
+    if personal_key_mfa_verification_required?
+      return redirect_to login_two_factor_personal_key_url
+    elsif !two_factor_enabled?
       return prompt_to_setup_mfa
     elsif !user_fully_authenticated?
       return prompt_to_verify_mfa
@@ -444,6 +446,17 @@ class ApplicationController < ActionController::Base
     enforce_total_session_duration_timeout
 
     true
+  end
+
+  # During Phase 1 of personal key MFA deprecation, a user whose only credential
+  # is a personal key must prove possession of it before being routed to add a
+  # replacement MFA method. Without this they would hit the !two_factor_enabled?
+  # branch below and be sent straight to MFA setup without authenticating. The
+  # redirect is skipped once they have authenticated (user_fully_authenticated?)
+  # so they can proceed to add a new method.
+  def personal_key_mfa_verification_required?
+    TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).mfa_required? &&
+      !user_fully_authenticated?
   end
 
   def enforce_total_session_duration_timeout
