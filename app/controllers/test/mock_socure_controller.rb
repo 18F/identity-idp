@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Test
+  require_relative '../../../spec/support/doc_auth_image_fixtures'
   class MockSocureController < ApplicationController
     layout 'no_card'
 
@@ -45,13 +46,30 @@ module Test
       render json: DocAuth::Mock::Socure.instance.selected_fixture_body
     end
 
-    def image_request_endpoint
+    def local_image_request
       respond_to do |format|
         format.zip do
           send_data(
             DocAuthImageFixtures.zipped_files(
-              passport: params['fixture']['passport'],
-              selfie: params['fixture']['selfie'],
+              reference_id: params['reference_id'],
+              passport: false,
+              selfie: true,
+            ),
+            filename: "#{params['reference_id']}.zip",
+            type: :zip,
+          )
+        end
+      end
+    end
+
+    def images_request
+      respond_to do |format|
+        format.zip do
+          send_data(
+            DocAuthImageFixtures.zipped_files(
+              reference_id: params['reference_id'],
+              passport: params.dig(['fixture']['passport']),
+              selfie: params.dig(['fixture']['selfie']),
             ),
             filename: "#{params['reference_id']}.zip",
             type: :zip,
