@@ -158,6 +158,64 @@ RSpec.describe Idv::ServiceProviderBasedReproofingPolicy do
         end
       end
     end
+
+    context 'expired document images reproofing logic' do
+      let(:service_provider) { create(:service_provider) }
+
+      before do
+        allow(IdentityConfig.store)
+          .to receive(:document_images_sharing_service_providers)
+          .and_return(document_images_sharing_service_providers)
+      end
+
+      context 'when the SP is not in document_images_sharing_service_providers' do
+        let(:document_images_sharing_service_providers) { ['some-other-issuer'] }
+        let(:active_profile) { create(:profile, :facial_match_proof) }
+
+        it 'returns false' do
+          expect(policy.needs_to_reproof?).to eq false
+        end
+      end
+
+      context 'when the SP is in document_images_sharing_service_providers' do
+        let(:document_images_sharing_service_providers) { [service_provider.issuer] }
+        let(:active_profile) { create(:profile, :facial_match_proof) }
+        let(:ttl) { 3.days.to_i }
+        let(:retention_cutoff) { ttl.seconds.ago }
+
+        before do
+          allow(IdentityConfig.store).to receive(:document_images_ttl_seconds).and_return(ttl)
+        end
+
+        context 'when the document artifacts are still retained' do
+          let!(:fresh) do
+            create(
+              :document_artifact,
+              created_at: retention_cutoff + 1.hour,
+              profile: active_profile,
+            )
+          end
+
+          it 'returns false' do
+            expect(policy.needs_to_reproof?).to eq false
+          end
+        end
+
+        context 'when the document artifacts are no longer retained' do
+          let!(:stale) do
+            create(
+              :document_artifact,
+              created_at: retention_cutoff - 1.hour,
+              profile: active_profile,
+            )
+          end
+
+          it 'returns true' do
+            expect(policy.needs_to_reproof?).to eq true
+          end
+        end
+      end
+    end
   end
 
   describe '#reproof_reason' do
