@@ -45,6 +45,14 @@ RSpec.describe AccordionComponent, type: :component do
     end
   end
 
+  context 'text-black' do
+    let(:tag_options) { { class: 'text-black' } }
+
+    it 'renders the opt-in color class on the accordion' do
+      expect(rendered).to have_css('.usa-accordion.text-black')
+    end
+  end
+
   context 'tag options' do
     let(:tag_options) { { data: { foo: 'bar' } } }
 

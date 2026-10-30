@@ -21,7 +21,7 @@ RSpec.describe 'users/sts_consent/new.html.erb' do
     render
 
     expect(rendered).to have_css(
-      'h2',
+      'h1.page-heading',
       text: t('sts_consent.heading', america_gov_name: AMERICA_GOV_NAME),
     )
     expect(rendered).to have_content(
@@ -33,27 +33,31 @@ RSpec.describe 'users/sts_consent/new.html.erb' do
     render
 
     expect(rendered).to have_css('.usa-accordion')
-    expect(rendered).to have_css(".usa-accordion__heading img[src*='sp-logos/generic']")
-    expect(rendered).to have_css('.usa-accordion__heading strong', text: 'MyTravelGov')
+    expect(rendered).to have_css('.usa-accordion.text-black')
     expect(rendered).to have_css(
-      '.usa-accordion__heading',
+      ".usa-accordion__heading .accordion-header-media img[src*='sp-logos/DOS']",
+    )
+    expect(rendered).to have_css('.accordion-header-media strong', text: 'MyTravelGov')
+    expect(rendered).to have_css(
+      '.accordion-header-media',
       text: t('sts_consent.service_permission'),
     )
+    expect(rendered).to_not have_css('.usa-accordion__button div')
   end
 
   it 'displays the service details in the accordion content' do
     render
 
     expect(rendered).to have_css(
-      '.usa-accordion__content h3',
+      '.usa-accordion__content h2',
       text: t('sts_consent.about_heading'),
     )
     expect(rendered).to have_css(
-      '.usa-accordion__content h3',
+      '.usa-accordion__content h2',
       text: t('sts_consent.permissions_heading', america_gov_name: AMERICA_GOV_NAME),
     )
     expect(rendered).to have_css(
-      '.usa-accordion__content h3',
+      '.usa-accordion__content h2',
       text: t('sts_consent.shared_information_heading', america_gov_name: AMERICA_GOV_NAME),
     )
 

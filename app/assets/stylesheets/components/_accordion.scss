@@ -1,0 +1,28 @@
+@use 'uswds-core' as *;
+
+// The USWDS accordion sets `color` directly on its button and content, so a
+// color utility on the accordion root never reaches the visible text. Opt in
+// by adding `text-black` to the accordion.
+.usa-accordion.text-black {
+  .usa-accordion__button,
+  .usa-accordion__content {
+    color: color('black');
+  }
+}
+
+// Accordion header showing a service logo beside its stacked name and summary.
+// A grid keeps this to a single container: the image spans both rows in the
+// first column, and each following child stacks in the second column.
+// Rendered as a `span` because the header's parent is a `button`, which only
+// accepts phrasing content.
+.accordion-header-media {
+  align-items: center;
+  column-gap: units(1);
+  display: grid;
+  grid-template-columns: auto 1fr;
+
+  img {
+    align-self: start;
+    grid-row: 1 / span 2;
+  }
+}

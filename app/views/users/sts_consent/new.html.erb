@@ -4,29 +4,31 @@
 
 <p><%= t('sts_consent.content', america_gov_name: AMERICA_GOV_NAME) %></p>
 
-<%= render AccordionComponent.new(class: 'margin-top-4') do |c| %>
+<%= render AccordionComponent.new(class: 'text-black margin-top-4') do |c| %>
   <% c.with_header do %>
-    <%= image_tag(
-          asset_url('sp-logos/generic.svg'),
-          width: 132,
-          height: 46,
-          alt: '',
-          aria: { hidden: true },
-        ) %>
-    <span class="display-block"><strong>MyTravelGov</strong></span>
-    <span class="display-block"><%= t('sts_consent.service_permission') %></span>
+    <span class="accordion-header-media">
+      <%= image_tag(
+            asset_url('sp-logos/DOS.svg'),
+            width: 40,
+            height: 40,
+            alt: 'Logo for Department of State',
+            aria: { hidden: true },
+          ) %>
+      <span><strong>MyTravelGov</strong></span>
+      <span><%= t('sts_consent.service_permission') %></span>
+    </span>
   <% end %>
-  <h3 class="h5 margin-top-0 margin-bottom-05"><%= t('sts_consent.about_heading') %></h3>
+  <h2 class="h5 margin-top-0 margin-bottom-05"><%= t('sts_consent.about_heading') %></h2>
   <p class="margin-top-0 margin-bottom-2"><%= t('sts_consent.about_description') %></p>
 
-  <h3 class="h5 margin-top-0 margin-bottom-05">
+  <h2 class="h5 margin-top-0 margin-bottom-05">
     <%= t('sts_consent.permissions_heading', america_gov_name: AMERICA_GOV_NAME) %>
-  </h3>
+  </h2>
   <p class="margin-top-0 margin-bottom-2"><%= t('sts_consent.permissions_description') %></p>
 
-  <h3 class="h5 margin-top-0 margin-bottom-05">
+  <h2 class="h5 margin-top-0 margin-bottom-05">
     <%= t('sts_consent.shared_information_heading', america_gov_name: AMERICA_GOV_NAME) %>
-  </h3>
+  </h2>
   <p class="margin-top-0 margin-bottom-2">
     <%= t('sts_consent.shared_information_description') %>
   </p>
