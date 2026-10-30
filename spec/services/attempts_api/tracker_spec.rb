@@ -540,4 +540,59 @@ RSpec.describe AttemptsApi::Tracker do
       end
     end
   end
+
+  describe '.device_risk_failure_reason' do
+    context 'when success is false' do
+      let(:success) { false }
+
+      context 'when result has a response_body' do
+        let(:result) { { response_body: {} } }
+
+        context 'when response_body has tmx_summary_reason_code' do
+          let(:reason_code) { ['I AM ERROR'] }
+          let(:result) { { response_body: { tmx_summary_reason_code: reason_code } } }
+
+          it 'returns a hash containing a generic failure reason' do
+            expect(described_class.device_risk_failure_reason(success, result)).to eq(
+              {
+                fraud_risk_summary_reason_code: reason_code,
+              },
+            )
+          end
+        end
+
+        context 'when response_body does not have tmx_summary_reason_code' do
+          it 'returns a hash containing a generic failure reason' do
+            expect(described_class.device_risk_failure_reason(success, result)).to eq(
+              {
+                fraud_risk_summary_reason_code:
+                  ['Fraud risk assessment has failed for unknown reasons'],
+              },
+            )
+          end
+        end
+      end
+
+      context 'when result does not have a response_body' do
+        let(:result) { {} }
+
+        it 'returns a hash containing a generic failure reason' do
+          expect(described_class.device_risk_failure_reason(success, {})).to eq(
+            {
+              fraud_risk_summary_reason_code:
+                ['Fraud risk assessment has failed for unknown reasons'],
+            },
+          )
+        end
+      end
+    end
+
+    context 'when success is true' do
+      let(:success) { true }
+
+      it 'returns nil' do
+        expect(described_class.device_risk_failure_reason(success, {})).to be_nil
+      end
+    end
+  end
 end

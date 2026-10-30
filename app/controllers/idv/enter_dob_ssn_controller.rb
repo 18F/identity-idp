@@ -49,6 +49,7 @@ module Idv
         end
         return redirect_to idv_enter_password_url
       else
+        attempts_api_tracker.idv_proofing_agent_confirmation_failure(reason: failure_reason_details)
         flash.now[:error] = form_response.first_error_message
       end
 
@@ -113,6 +114,15 @@ module Idv
         current_sp:,
         workflow: :proofing_agent,
       }
+    end
+
+    def failure_reason_details
+      reasons = []
+
+      reasons << 'ssn mismatch' unless @dob_ssn_form.ssn_match?
+      reasons << 'date of birth mismatch' unless @dob_ssn_form.dob_match?
+
+      reasons
     end
   end
 end

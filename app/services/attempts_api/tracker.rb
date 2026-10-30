@@ -41,6 +41,25 @@ module AttemptsApi
       end
     end
 
+    # Helper for pulling error messages from Threat Metrix API responses. Used for the
+    # `idv_device_risk_assessment` event `failure_reason` param.
+    #
+    # @params [Boolean] success
+    # @params [Hash] result The TMX response results
+    #   * :response_body [Hash]
+    #     * :tmx_summary_reason_code [String]
+    # @return [Hash, nil] Failure reasons. Nil if success is false.
+    def self.device_risk_failure_reason(success, result)
+      return nil if success
+
+      fraud_risk_summary_reason_code = result.dig(
+        :response_body,
+        :tmx_summary_reason_code,
+      ) || ['Fraud risk assessment has failed for unknown reasons']
+
+      { fraud_risk_summary_reason_code: }
+    end
+
     def track_event(event_type, metadata = {})
       return unless should_track?(event_type)
 
