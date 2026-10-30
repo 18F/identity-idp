@@ -429,17 +429,6 @@ module Idv
       hybrid_threatmetrix_result.delete(:response_body)
     end
 
-    def device_risk_failure_reason(success, result)
-      return nil if success
-
-      fraud_risk_summary_reason_code = result.dig(
-        :response_body,
-        :tmx_summary_reason_code,
-      ) || ['Fraud risk assessment has failed for unknown reasons']
-
-      { fraud_risk_summary_reason_code: }
-    end
-
     def add_cost(token, transaction_id: nil)
       Db::SpCost::AddSpCost.call(current_sp, token, transaction_id: transaction_id)
     end
@@ -502,7 +491,7 @@ module Idv
 
       success = (threatmetrix_result[:review_status] == 'pass')
       device_fingerprint = threatmetrix_result.dig(:device_fingerprint)
-      failure_reason = device_risk_failure_reason(success, threatmetrix_result)
+      failure_reason = AttemptsApi::Tracker.device_risk_failure_reason(success, threatmetrix_result)
 
       attempts_api_tracker.idv_device_risk_assessment(
         device_fingerprint:,
@@ -526,17 +515,22 @@ module Idv
       return false unless hybrid_mobile_threatmetrix_result.present?
 
       success = (hybrid_mobile_threatmetrix_result[:review_status] == 'pass')
+      device_fingerprint = hybrid_mobile_threatmetrix_result.dig(:device_fingerprint)
+      failure_reason = AttemptsApi::Tracker.device_risk_failure_reason(
+        success,
+        hybrid_mobile_threatmetrix_result,
+      )
 
       attempts_api_tracker.idv_device_risk_assessment(
-        device_fingerprint: hybrid_mobile_threatmetrix_result.dig(:device_fingerprint),
+        device_fingerprint:,
         success:,
-        failure_reason: device_risk_failure_reason(success, hybrid_mobile_threatmetrix_result),
+        failure_reason:,
       )
 
       fraud_ops_tracker.idv_device_risk_assessment(
-        device_fingerprint: hybrid_mobile_threatmetrix_result.dig(:device_fingerprint),
+        device_fingerprint:,
         success:,
-        failure_reason: device_risk_failure_reason(success, hybrid_mobile_threatmetrix_result),
+        failure_reason:,
       )
 
       !success

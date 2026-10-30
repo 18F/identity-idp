@@ -67,7 +67,9 @@ class ProofingAgentThreatMetrixJob < ApplicationJob
     attempts_api_tracker(user, sp).idv_device_risk_assessment(
       success: result.success,
       device_fingerprint: result.device_fingerprint,
-      failure_reason: device_risk_failure_reason(result),
+      failure_reason: AttemptsApi::Tracker.device_risk_failure_reason(
+        result.success, result.to_h.with_indifferent_access
+      ),
     )
   end
 
@@ -81,15 +83,5 @@ class ProofingAgentThreatMetrixJob < ApplicationJob
       cookie_device_uuid: nil,
       sp_redirect_uri: nil,
     )
-  end
-
-  def device_risk_failure_reason(result)
-    return nil if result.success
-
-    fraud_risk_summary_reason_code = result.response_body&.dig(
-      'tmx_summary_reason_code',
-    ) || ['Fraud risk assessment has failed for unknown reasons']
-
-    { fraud_risk_summary_reason_code: }
   end
 end
