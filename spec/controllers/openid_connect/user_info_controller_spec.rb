@@ -180,7 +180,7 @@ RSpec.describe OpenidConnect::UserInfoController do
         expect(request.session.to_h).to eq(session_hash)
       end
 
-      context 'when document image sharing is authorized but artifacts have not landed' do
+      context 'when document image sharing is listed but the response is not encrypted' do
         let(:user) { create(:user) }
         let(:identity) do
           create(
@@ -202,12 +202,12 @@ RSpec.describe OpenidConnect::UserInfoController do
             .and_return([identity.service_provider])
         end
 
-        it 'serializes an empty document_images object through to the JSON response' do
+        it 'carries neither document claim in the plain response' do
           action
 
           expect(response).to be_ok
-          expect(json_response).to have_key(:document_images)
-          expect(json_response[:document_images]).to eq({})
+          expect(json_response).not_to have_key(:document_images)
+          expect(json_response).not_to have_key(:document_metadata)
         end
       end
 
