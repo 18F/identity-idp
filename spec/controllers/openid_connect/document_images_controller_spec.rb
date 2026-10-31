@@ -7,11 +7,27 @@ RSpec.describe OpenidConnect::DocumentImagesController do
   describe '#show' do
     subject(:action) do
       request.headers['HTTP_AUTHORIZATION'] = authorization_header
-      get :show, params: { image_type: 'front' }
+      post :show, params: { image_type: 'front', client_assertion:, client_assertion_type: }
+    end
+
+    let(:client_assertion_type) { OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE }
+    let(:client_assertion) { JWT.encode(assertion_payload, assertion_key, 'RS256') }
+    let(:assertion_key) { OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read) }
+    let(:assertion_audience) { api_openid_connect_document_image_url(image_type: 'front') }
+    let(:assertion_payload) do
+      {
+        iss: identity.service_provider,
+        sub: identity.service_provider,
+        aud: assertion_audience,
+        jti: SecureRandom.hex,
+        exp: 5.minutes.from_now.to_i,
+        iat: Time.zone.now.to_i,
+      }
     end
 
     context 'without an authorization header' do
       let(:authorization_header) { nil }
+      let(:client_assertion) { 'unused' }
 
       it '401s' do
         action
@@ -84,8 +100,11 @@ RSpec.describe OpenidConnect::DocumentImagesController do
           expect { JWE.decrypt(response.body, other_key) }.to raise_error(OpenSSL::PKey::RSAError)
         end
 
-        context 'when the service provider has no usable RSA key' do
-          before { identity.service_provider_record.update!(certs: []) }
+        context 'when the registered key cannot be used for encryption' do
+          before do
+            allow(OpenidConnect::JweEncryptor).to receive(:encrypt)
+              .and_raise(OpenidConnect::JweEncryptor::NoUsableKeyError)
+          end
 
           it 'refuses with server_error and never sends the bytes in the clear' do
             stub_analytics
@@ -189,6 +208,54 @@ RSpec.describe OpenidConnect::DocumentImagesController do
             action
             expect(response).to be_not_found
           end
+        end
+      end
+
+      context 'without a client assertion' do
+        let(:client_assertion) { nil }
+        let(:client_assertion_type) { nil }
+        let!(:artifact) { create(:document_artifact, profile:, image_type: 'front') }
+        let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
+
+        it '401s with invalid_client and audits the refusal' do
+          stub_analytics
+
+          action
+
+          expect(response).to be_unauthorized
+          expect(json_response).to eq(
+            'error' => 'invalid_client', 'error_description' => 'client_assertion_required',
+          )
+          expect(@analytics).to have_logged_event(
+            :document_image_release,
+            hash_including(success: false, denial_reason: :client_assertion_required),
+          )
+        end
+      end
+
+      context 'with a client assertion signed by a key that is not registered' do
+        let(:assertion_key) { OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp2.key').read) }
+        let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
+        let!(:artifact) { create(:document_artifact, profile:, image_type: 'front') }
+
+        it '401s with invalid_signature' do
+          action
+
+          expect(response).to be_unauthorized
+          expect(json_response['error_description']).to eq('invalid_signature')
+        end
+      end
+
+      context 'with a client assertion for another audience' do
+        let(:assertion_audience) { api_openid_connect_token_url }
+        let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
+        let!(:artifact) { create(:document_artifact, profile:, image_type: 'front') }
+
+        it '401s with invalid_aud' do
+          action
+
+          expect(response).to be_unauthorized
+          expect(json_response['error_description']).to eq('invalid_aud')
         end
       end
 
