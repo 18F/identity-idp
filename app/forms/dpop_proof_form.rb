@@ -56,6 +56,13 @@ class DpopProofForm
     )
   end
 
+  # The P-256 (or RSA) public key the proof was signed with, for a caller that must encrypt to the
+  # same key the holder proved possession of.
+  # @return [OpenSSL::PKey::PKey]
+  def public_key
+    jwk.verify_key
+  end
+
   # RFC 7638 thumbprint of a key: base64url of the SHA-256 over the key's required public members
   # in lexicographic order, which is how the JWK library computes it.
   # @param key [JWT::JWK::KeyBase, OpenSSL::PKey::PKey, Hash] a JWK or something one can be built
