@@ -83,48 +83,48 @@ RSpec.describe Users::SessionsController, devise: true do
         post :create, params: { user: { email: user.email, password: user.password } }
       end
 
-      context 'with site keys enabled' do
-        let(:service_provider) { create(:service_provider, site_key_allowed:) }
+      context 'with a service provider in the session' do
+        let(:service_provider) { create(:service_provider, pkce: true) }
 
         before do
-          allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
+          allow_site_keys_for(service_provider) if listed
           session[:sp] = { issuer: service_provider.issuer }
         end
 
-        context 'signing in to an SP that uses site keys' do
-          let(:site_key_allowed) { true }
+        context 'signing in to a listed client' do
+          let(:listed) { true }
 
-          it 'creates and unlocks a site key root' do
+          it 'creates and unlocks a site key' do
             response
 
-            expect(user.reload.site_key_root).to be_present
-            expect(controller.user_session[:encrypted_site_key_root]).to be_present
+            expect(user.reload.site_key).to be_present
+            expect(controller.user_session[:encrypted_site_key]).to be_present
           end
         end
 
-        context 'with a password wrap that no longer opens the root' do
-          let(:site_key_allowed) { true }
+        context 'with a password wrap that no longer opens the key' do
+          let(:listed) { true }
 
-          before { create_site_key_root(user, password: 'some other password') }
+          before { create_site_key(user, password: 'some other password') }
 
-          it 'leaves the root alone until the second factor' do
-            encrypted_root = user.site_key_root.encrypted_root
+          it 'leaves the key alone until the second factor' do
+            encrypted_private_key = user.site_key.encrypted_private_key
 
             response
 
-            expect(user.reload.site_key_root.encrypted_root).to eq(encrypted_root)
+            expect(user.reload.site_key.encrypted_private_key).to eq(encrypted_private_key)
           end
         end
 
-        context 'signing in to an SP that does not use site keys' do
-          let(:site_key_allowed) { false }
+        context 'signing in to a client that is not listed' do
+          let(:listed) { false }
 
           it 'does not touch site keys' do
-            create_site_key_root(user)
+            create_site_key(user)
 
             response
 
-            expect(controller.user_session[:encrypted_site_key_root]).to be_nil
+            expect(controller.user_session[:encrypted_site_key]).to be_nil
           end
         end
       end

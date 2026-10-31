@@ -30,7 +30,7 @@ module EventDisavowal
     def update_user
       ActiveRecord::Base.transaction do
         user.update!(password: password)
-        user.site_key_root&.forget_password!
+        user.site_key&.forget_password!
       end
     end
 
