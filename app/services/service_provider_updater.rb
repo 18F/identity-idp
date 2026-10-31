@@ -10,7 +10,6 @@ class ServiceProviderUpdater
 
   SP_IGNORED_ATTRIBUTES = %i[
     cert
-    site_key_allowed
   ].freeze
 
   def run(service_provider = nil)

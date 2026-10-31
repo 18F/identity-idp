@@ -41,7 +41,7 @@ class PasswordCaptureController < ApplicationController
 
   def handle_valid_password
     cache_profiles(password)
-    unlock_site_key_root(password)
+    unlock_site_key(password)
     cache_user_proofing_events(password:)
     session[:password_attempts] = 0
     redirect_to after_sign_in_path_for(current_user)

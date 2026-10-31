@@ -79,7 +79,7 @@ module SignUp
 
     def sign_in_and_redirect_user
       sign_in @user
-      unlock_site_key_root(permitted_params[:password])
+      unlock_site_key(permitted_params[:password])
       set_new_device_session(false)
       user_session[:in_account_creation_flow] = true
       user_session[:platform_authenticator_available] =

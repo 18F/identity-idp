@@ -1,38 +1,17 @@
 module SiteKeyHelper
-  # Written out independently of SiteKeys::Sealer so that specs pin the wire format a relying
-  # party's browser implements.
-  SITE_KEY_WRAP_INFO = 'login.gov site key wrap v1'.freeze
+  CreatedSiteKey = Struct.new(:record, :private_key, keyword_init: true)
 
-  CreatedSiteKeyRoot = Struct.new(:root, keyword_init: true)
-
-  def create_site_key_root(user, password: user.password)
-    root = SiteKeys::Vault.new(user:, user_session: {}).unlock(password, create: true)
-    user.reload
-    CreatedSiteKeyRoot.new(root:)
+  # Creates the user's site key wrapped under the password, as a sign-in to a listed client would.
+  def create_site_key(user, password: user.password)
+    private_key = SiteKeys::Vault.new(user:, user_session: {}).unlock(password, create: true)
+    CreatedSiteKey.new(record: user.reload.site_key, private_key:)
   end
 
-  def derive_site_key(root, issuer)
-    OpenSSL::KDF.hkdf(
-      root, salt: SiteKeys::Vault::SITE_KEY_SALT, info: issuer, length: 32, hash: 'SHA256'
-    )
-  end
-
-  def open_sealed_site_key(sealed, recipient:, issuer:)
-    payload = JSON.parse(Base64.urlsafe_decode64(sealed))
-    epk = JWT::JWK.import(payload['epk'].transform_keys(&:to_sym)).public_key
-    kek = OpenSSL::KDF.hkdf(
-      recipient.derive(epk),
-      salt: '',
-      info: "#{SITE_KEY_WRAP_INFO}\n#{issuer}",
-      length: 32,
-      hash: 'SHA256',
-    )
-    raw = Base64.urlsafe_decode64(payload['ct'])
-    cipher = OpenSSL::Cipher.new('aes-256-gcm').decrypt
-    cipher.key = kek
-    cipher.iv = Base64.urlsafe_decode64(payload['iv'])
-    cipher.auth_tag = raw[-16..]
-    cipher.auth_data = "#{SITE_KEY_WRAP_INFO}\n#{issuer}"
-    JSON.parse(cipher.update(raw[0...-16]) + cipher.final)
+  # Lists the service provider for site keys and for key binding, which the listing requires.
+  def allow_site_keys_for(service_provider)
+    allow(IdentityConfig.store).to receive(:site_key_allowed_issuers)
+      .and_return([service_provider.issuer])
+    allow(IdentityConfig.store).to receive(:dpop_required_issuers)
+      .and_return([service_provider.issuer])
   end
 end

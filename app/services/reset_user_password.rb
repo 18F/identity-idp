@@ -20,7 +20,7 @@ class ResetUserPassword
   def reset_user_password
     ActiveRecord::Base.transaction do
       user.update!(password: SecureRandom.hex(8))
-      user.site_key_root&.forget_password!
+      user.site_key&.forget_password!
     end
   end
 

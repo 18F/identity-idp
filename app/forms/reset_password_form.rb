@@ -68,7 +68,7 @@ class ResetPasswordForm
 
     ActiveRecord::Base.transaction do
       user.update!(attributes)
-      user.site_key_root&.forget_password!
+      user.site_key&.forget_password!
     end
   end
 
