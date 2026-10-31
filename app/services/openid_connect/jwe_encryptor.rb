@@ -8,8 +8,9 @@ module OpenidConnect
   # registered certificate under RSA-OAEP (RFC 7518 §4.3), and the payload is encrypted with
   # AES-256-GCM (RFC 7518 §5.3) after DEFLATE compression (RFC 7516 §4.1.3). The header names the
   # key by its JWK thumbprint (`kid`, RFC 7638), so a partner holding more than one key knows which
-  # to use, and carries `typ: JWT` because every payload Login.gov encrypts this way is a JWT
-  # (RFC 7519 §5.1): either a signed token or a bare claims set.
+  # to use. By default it carries `typ: JWT`, because a signed token or a bare claims set is a JWT
+  # (RFC 7519 §5.1); a caller sealing something else, such as an image, passes `typ: nil` and the
+  # payload's media type as `cty` (RFC 7516 §4.1.12) so the recipient knows what it decrypted.
   #
   # The certificate is the one the service provider's `private_key_jwt` client assertions are
   # verified against (RFC 7523), so the partner decrypts with a key it already holds. A record with
@@ -22,16 +23,19 @@ module OpenidConnect
 
     class NoUsableKeyError < StandardError; end
 
-    def self.encrypt(payload, service_provider:)
-      new(service_provider:).encrypt(payload)
+    def self.encrypt(payload, service_provider:, typ: 'JWT', cty: nil)
+      new(service_provider:).encrypt(payload, typ:, cty:)
     end
 
     def initialize(service_provider:)
       @service_provider = service_provider
     end
 
-    def encrypt(payload)
-      JWE.encrypt(payload, public_key, typ: 'JWT', zip: ZIP, alg: ALG, enc: ENC, kid:)
+    def encrypt(payload, typ: 'JWT', cty: nil)
+      header = { zip: ZIP, alg: ALG, enc: ENC, kid: }
+      header[:typ] = typ if typ
+      header[:cty] = cty if cty
+      JWE.encrypt(payload, public_key, **header)
     end
 
     private

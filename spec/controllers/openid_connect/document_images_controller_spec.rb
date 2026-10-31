@@ -60,12 +60,52 @@ RSpec.describe OpenidConnect::DocumentImagesController do
 
         after { redis_storage.delete_image(name: written.name) }
 
-        it 'streams the decrypted image bytes' do
+        let(:private_key) { OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read) }
+
+        it 'returns the image sealed to the registered certificate as a JWE naming its type' do
           action
 
           expect(response).to be_ok
-          expect(response.media_type).to eq('image/jpeg')
-          expect(response.body).to eq(image)
+          expect(response.media_type).to eq('application/jose')
+          header = JSON.parse(Base64.urlsafe_decode64(response.body.split('.').first))
+          expect(header).to include(
+            'alg' => 'RSA-OAEP', 'enc' => 'A256GCM', 'zip' => 'DEF', 'cty' => 'image/jpeg',
+            'kid' => JWT::JWK.new(private_key.public_key).kid
+          )
+          expect(header).not_to have_key('typ')
+          expect(JWE.decrypt(response.body, private_key)).to eq(image)
+        end
+
+        it 'cannot be decrypted with another key' do
+          other_key = OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp2.key').read)
+
+          action
+
+          expect { JWE.decrypt(response.body, other_key) }.to raise_error(OpenSSL::PKey::RSAError)
+        end
+
+        context 'when the service provider has no usable RSA key' do
+          before { identity.service_provider_record.update!(certs: []) }
+
+          it 'refuses with server_error and never sends the bytes in the clear' do
+            stub_analytics
+
+            action
+
+            expect(response).to have_http_status(:internal_server_error)
+            expect(json_response).to eq(
+              'error' => 'server_error', 'error_description' => 'encryption_unavailable',
+            )
+            expect(response.body).not_to include(image)
+            expect(@analytics).to have_logged_event(
+              :document_image_release,
+              success: false,
+              image_type: 'front',
+              issuer: identity.service_provider,
+              profile_id: profile.id,
+              denial_reason: :encryption_unavailable,
+            )
+          end
         end
 
         it 'forbids caching of the biometric image anywhere downstream' do
@@ -87,6 +127,7 @@ RSpec.describe OpenidConnect::DocumentImagesController do
             image_type: 'front',
             issuer: identity.service_provider,
             profile_id: profile.id,
+            encrypted: true,
           )
         end
 
