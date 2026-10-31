@@ -79,9 +79,10 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.allowed_ialmax_providers.include?(issuer)
   end
 
-  # Whether this SP may request a sealed per-site key (`site_key_jwk`).
+  # Whether this service provider's page may request the person's site key: listed for it, and
+  # listed for key binding, because the key is released sealed to the page's DPoP key.
   def site_key_allowed?
-    IdentityConfig.store.site_key_enabled && site_key_allowed
+    IdentityConfig.store.site_key_allowed_issuers.include?(issuer) && dpop_required?
   end
 
   def attempts_api_enabled?

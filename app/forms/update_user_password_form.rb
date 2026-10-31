@@ -28,18 +28,18 @@ class UpdateUserPasswordForm
   def process_valid_submission
     vault = SiteKeys::Vault.new(user:, user_session: user_session || {})
     expected_fingerprint = vault.stored_fingerprint
-    rewrapped_root = rewrap_site_key_root(vault)
+    rewrapped_site_key = rewrap_site_key(vault)
     ActiveRecord::Base.transaction do
       user.update!(password: password)
-      vault.store_root_or_forget!(rewrapped_root, expected_fingerprint:)
+      vault.store_rewrapped!(rewrapped_site_key, expected_fingerprint:)
     end
     encrypt_user_profiles
   end
 
-  # A root that cannot be re-wrapped right now is deleted rather than left behind wrapped under
-  # the old password.
-  def rewrap_site_key_root(vault)
-    vault.wrap_cached_root(password)
+  # A key whose session copy cannot be read right now keeps its old wrap; the next sign-in finds
+  # it stale and starts over.
+  def rewrap_site_key(vault)
+    vault.wrap_cached_key(password)
   rescue Encryption::EncryptionError
     nil
   end

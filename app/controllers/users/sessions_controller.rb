@@ -204,7 +204,7 @@ module Users
       rate_limiter&.reset!
       sign_in(resource_name, resource)
       cache_profiles(auth_params[:password])
-      unlock_site_key_root(auth_params[:password], repair: false) if site_key_root_wanted?
+      unlock_site_key(auth_params[:password], repair: false) if site_key_wanted?
       cache_user_proofing_events(password: auth_params[:password])
       set_new_device_session(nil)
       event, = create_user_event(:sign_in_before_2fa)

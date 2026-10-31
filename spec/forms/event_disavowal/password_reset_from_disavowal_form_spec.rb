@@ -16,13 +16,12 @@ RSpec.describe EventDisavowal::PasswordResetFromDisavowalForm, type: :model do
       expect(user.reload.valid_password?(new_password)).to eq(true)
     end
 
-    it 'deletes the site key root, which cannot be re-wrapped without the old password' do
-      allow(IdentityConfig.store).to receive(:site_key_enabled).and_return(true)
-      create_site_key_root(user, password: 'salty pickles')
+    it 'deletes the site key, which cannot be rewrapped without the old password' do
+      create_site_key(user, password: 'salty pickles')
 
       subject.submit(password: new_password)
 
-      expect(user.reload.site_key_root).to be_nil
+      expect(user.reload.site_key).to be_nil
     end
   end
 
