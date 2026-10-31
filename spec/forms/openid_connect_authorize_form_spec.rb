@@ -1245,3 +1245,47 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
   end
 end
+
+RSpec.describe OpenidConnectAuthorizeForm, 'the site_key scope' do
+  subject(:form) do
+    OpenidConnectAuthorizeForm.new(
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+      client_id: 'urn:gov:gsa:openidconnect:test',
+      nonce: SecureRandom.hex,
+      prompt: 'select_account',
+      redirect_uri: 'gov.gsa.openidconnect.test://result',
+      response_type: 'code',
+      scope: 'openid site_key',
+      state: SecureRandom.hex,
+      code_challenge: Digest::SHA256.urlsafe_base64digest(SecureRandom.urlsafe_base64(32)),
+      code_challenge_method: 'S256',
+      # A site-key client is key-bound, so its page sends the DPoP key thumbprint.
+      dpop_jkt: Base64.urlsafe_encode64(SecureRandom.random_bytes(32), padding: false),
+    )
+  end
+
+  let(:service_provider) { form.service_provider }
+
+  context 'for a client listed for site keys and key binding' do
+    before do
+      service_provider.update!(pkce: true)
+      allow(IdentityConfig.store).to receive(:site_key_allowed_issuers)
+        .and_return([service_provider.issuer])
+      allow(IdentityConfig.store).to receive(:dpop_required_issuers)
+        .and_return([service_provider.issuer])
+    end
+
+    it 'is valid and requests a site key' do
+      expect(form.valid?).to eq(true)
+      expect(form.site_key_requested?).to eq(true)
+    end
+  end
+
+  context 'for a client not listed' do
+    it 'refuses the scope and does not request a site key' do
+      expect(form.valid?).to eq(false)
+      expect(form.errors.attribute_names).to include(:scope)
+      expect(form.site_key_requested?).to eq(false)
+    end
+  end
+end
