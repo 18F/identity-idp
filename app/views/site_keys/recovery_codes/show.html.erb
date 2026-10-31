@@ -1,0 +1,31 @@
+<% self.title = t('titles.site_key_recovery_code') %>
+
+<%= render PageHeadingComponent.new.with_content(t('forms.site_key_recovery_code.header')) %>
+
+<p>
+  <strong><%= t('forms.site_key_recovery_code.acknowledgement.header') %></strong>
+</p>
+
+<p><%= t('forms.site_key_recovery_code.acknowledgement.text') %></p>
+
+<div class="full-width-box margin-y-5">
+  <%= render 'partials/personal_key/key',
+             code: @code,
+             personal_key_generated_at: @recovery_code_generated_at,
+             show_save_buttons: true,
+             download_file_name: 'site_key_recovery_code.txt',
+             download_event_name: 'Site key: download recovery code' %>
+</div>
+
+<%= simple_form_for('', url: site_key_recovery_code_path, method: :put) do |f| %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :acknowledgment,
+        as: :boolean,
+        label: t('forms.site_key_recovery_code.required_checkbox'),
+        label_html: { class: 'margin-bottom-105' },
+        required: true,
+      ) %>
+
+  <%= f.submit(t('forms.buttons.continue'), class: 'margin-top-3') %>
+<% end %>

@@ -22,6 +22,21 @@ module SiteKeys
       raise Encryption::EncryptionError, "site key wrap is malformed: #{err.class}"
     end
 
+    # Opens the key with a recovery code, from its recovery-code wrap.
+    # @return [String, nil] the private scalar, or nil when the code does not open it
+    def recover(record, code)
+      secret = RecoveryCode.normalize(code)
+      try_unwrap(record.encrypted_private_key_recovery_code, secret) if secret
+    end
+
+    def try_unwrap(wrap, secret)
+      return if wrap.blank? || secret.blank?
+
+      unwrap(wrap, secret)
+    rescue MismatchError
+      nil
+    end
+
     private
 
     attr_reader :user

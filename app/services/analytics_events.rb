@@ -9013,6 +9013,51 @@ module AnalyticsEvents
     track_event(:site_key_created, **extra)
   end
 
+  # The user chose to start over with a new site key instead of entering their recovery code
+  def site_key_recovery_abandoned(**extra)
+    track_event(:site_key_recovery_abandoned, **extra)
+  end
+
+  # @param [Boolean] matched Whether the acknowledged code was still the one stored
+  # The user confirmed saving their site key recovery code
+  def site_key_recovery_code_acknowledged(matched:, **extra)
+    track_event(:site_key_recovery_code_acknowledged, matched:, **extra)
+  end
+
+  # The user downloaded their site key recovery code
+  def site_key_recovery_code_downloaded(**extra)
+    track_event(:site_key_recovery_code_downloaded, **extra)
+  end
+
+  # The user visited the page offering a new site key recovery code
+  def site_key_recovery_code_new_visited(**extra)
+    track_event(:site_key_recovery_code_new_visited, **extra)
+  end
+
+  # The user generated a new site key recovery code, replacing the old one
+  def site_key_recovery_code_regenerated(**extra)
+    track_event(:site_key_recovery_code_regenerated, **extra)
+  end
+
+  # @param [Boolean] present Whether a recovery code was available to show
+  # The user was shown their site key recovery code
+  def site_key_recovery_code_viewed(present:, **extra)
+    track_event(:site_key_recovery_code_viewed, present:, **extra)
+  end
+
+  # @param [Boolean] success Whether the recovery code opened the site key
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # The user submitted a site key recovery code after a password reset
+  def site_key_recovery_submitted(success:, errors: nil, error_details: nil, **extra)
+    track_event(:site_key_recovery_submitted, success:, errors:, error_details:, **extra)
+  end
+
+  # The user visited the site key recovery page after a password reset
+  def site_key_recovery_visited(**extra)
+    track_event(:site_key_recovery_visited, **extra)
+  end
+
   # @param [String] error
   # @param [Boolean] replaced Whether the key that failed to open was replaced with a new one
   # The user's site key could not be unwrapped with the password they entered
