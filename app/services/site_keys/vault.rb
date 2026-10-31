@@ -94,6 +94,15 @@ module SiteKeys
       user_session.delete(UNAVAILABLE_SESSION_KEY)
     end
 
+    # What the person must do before the site key can be released in this session.
+    # @return [Symbol] :ready, :needs_password or :unavailable
+    def status
+      return :ready if unlocked?
+      return :unavailable if unavailable?
+
+      :needs_password
+    end
+
     # @return [String, nil] the private scalar, while it is unlocked in this session
     def private_key
       cached_private_key
