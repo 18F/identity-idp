@@ -6,6 +6,7 @@ module OpenidConnect
     prepend_before_action :skip_session_expiration
     skip_before_action :verify_authenticity_token
     before_action :authenticate_identity_via_bearer_token
+    before_action :authenticate_client_via_assertion
 
     attr_reader :current_identity
 
@@ -100,6 +101,35 @@ module OpenidConnect
 
     def doc_reader
       EncryptedDocStorage::DocReader.new
+    end
+
+    # Holding the access token is not enough to receive an image: the request also carries a
+    # client assertion (RFC 7523 section 2.2), a JWT signed with the private key of the service
+    # provider's registered certificate, sent as the form fields the token endpoint already
+    # accepts and verified the same way, with this URL as its audience. A token copied from a
+    # log or an intermediary is useless without that key, and a public client, which has no
+    # registered key, cannot use this endpoint at all. Every refusal is audited.
+    def authenticate_client_via_assertion
+      if params[:client_assertion].blank? ||
+         params[:client_assertion_type] != OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE
+        return refuse_client(:client_assertion_required)
+      end
+
+      validator = OpenidConnectClientAssertionValidator.new(
+        client_assertion: params[:client_assertion],
+        client_id: current_identity.service_provider,
+        service_provider: current_identity.service_provider_record,
+        audience_url: api_openid_connect_document_image_url(image_type: params[:image_type]),
+      )
+      return if validator.valid?
+
+      refuse_client(validator.errors.first.type)
+    end
+
+    def refuse_client(reason)
+      audit(success: false, denial_reason: reason)
+      render json: { error: 'invalid_client', error_description: reason.to_s },
+             status: :unauthorized
     end
 
     def authenticate_identity_via_bearer_token
