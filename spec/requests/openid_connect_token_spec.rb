@@ -2,6 +2,18 @@ require 'rails_helper'
 
 RSpec.describe 'OpenID Connect token endpoint' do
   describe 'POST /api/openid_connect/token' do
+    context 'with a DPoP header' do
+      it 'hands the proof to the form from the header, never from the body' do
+        expect(OpenidConnectTokenForm).to receive(:new)
+          .with(hash_including(dpop_proof: 'proof-from-header', grant_type: 'authorization_code'))
+          .and_call_original
+
+        post api_openid_connect_token_path,
+             params: { grant_type: 'authorization_code', code: 'x', dpop_proof: 'from-body' },
+             headers: { 'DPoP' => 'proof-from-header' }
+      end
+    end
+
     context 'with token exchange grant type' do
       let(:client_id) { 'broker-issuer' }
       let(:audience) { 'target-issuer' }

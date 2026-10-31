@@ -32,22 +32,39 @@ module BillableEventTrackable
     nil
   end
 
+  # Writes the record that travels with the authorization code for the code's lifetime: the
+  # return log a token-exchange actor's subject token will be billed against, and, for a client
+  # whose tokens are key-bound (RFC 9449 §10), the thumbprint of the key named at authorization.
+  # A code issued to any other client has no record.
   def store_actor_handoff(return_log)
-    return unless IdentityConfig.store.token_exchange_enabled
-    return unless current_sp.token_exchange_broker?
-    return if identity_authorization_code.blank? || return_log.blank?
+    return if identity_authorization_code.blank?
+
+    actor_return_log_id = return_log&.id if token_exchange_actor?
+    dpop_jkt = authorization_dpop_jkt
+    return if actor_return_log_id.blank? && dpop_jkt.blank?
 
     TokenExchange::ActorHandoff.store(
       code: identity_authorization_code,
-      actor_return_log_id: return_log.id,
+      actor_return_log_id:,
+      dpop_jkt:,
       expires_in: IdentityConfig.store.openid_connect_authorization_code_expiration_seconds,
     )
   rescue StandardError => error
     NewRelic::Agent.notice_error(error)
   end
 
+  def token_exchange_actor?
+    IdentityConfig.store.token_exchange_enabled && current_sp.token_exchange_broker?
+  end
+
   # OIDC overrides this after linking the identity. SAML issues no authorization code.
   def identity_authorization_code
+    nil
+  end
+
+  # OIDC overrides this with the thumbprint a key-bound client named on the authorization request.
+  # SAML has no key binding.
+  def authorization_dpop_jkt
     nil
   end
 

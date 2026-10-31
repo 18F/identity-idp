@@ -10,6 +10,7 @@ class OpenidConnectTokenForm
     client_assertion_type
     code
     code_verifier
+    dpop_proof
     grant_type
   ].freeze
 
@@ -27,6 +28,7 @@ class OpenidConnectTokenForm
   validate :validate_pkce_or_private_key_jwt
   validate :validate_code_verifier, if: :pkce_verification_required?
   validate :validate_client_assertion, if: :client_assertion_required?
+  validate :validate_dpop_proof, if: :dpop_binding_required?
 
   def initialize(params)
     ATTRS.each do |key|
@@ -58,6 +60,9 @@ class OpenidConnectTokenForm
         expires_in: @ttl,
         id_token: id_token_builder.id_token,
       }
+    elsif errors.include?(:dpop_proof)
+      # RFC 9449 §5: one error code for every proof problem, with the reason as the description.
+      { error: 'invalid_dpop_proof', error_description: errors[:dpop_proof].join(' ') }
     elsif private_key_jwt_pkce? && errors.include?(:code_verifier)
       { error: 'invalid_grant',
         error_description: t('openid_connect.token.errors.invalid_code_verifier') }
@@ -81,14 +86,16 @@ class OpenidConnectTokenForm
   attr_reader :identity, :code_expiration
 
   def token_exchange_subject_token_response
-    actor_handoff = TokenExchange::ActorHandoff.load(code)
     issued_token = TokenExchange::SubjectTokenIssuer.issue(
       identity:,
       actor_return_log_id: actor_handoff&.actor_return_log_id,
+      dpop_jkt: bound_thumbprint,
     )
     {
       access_token: issued_token.token,
-      token_type: 'Bearer',
+      # RFC 9449 §5: a token bound to the client's key is presented with a proof, never as a
+      # bearer token.
+      token_type: dpop_binding_required? ? 'DPoP' : 'Bearer',
       expires_in: issued_token.expires_in,
       scope: identity.scope,
     }
@@ -106,6 +113,61 @@ class OpenidConnectTokenForm
     identity.scope.to_s.split(' ').any? do |scope|
       TokenExchange::Constants.in_scope?(scope)
     end
+  end
+
+  # Whether the code being redeemed must be accompanied by a DPoP proof (RFC 9449 §5, §10). A
+  # property of the client, not of the request: a public client registered for key binding holds
+  # its tokens in the person's browser, so its authorization code was bound to its key's
+  # thumbprint at the authorization request. Every other client is unaffected.
+  def dpop_binding_required?
+    identity.present? && service_provider.present? && service_provider.dpop_required?
+  end
+
+  # Runs after every other check so a proof problem is reported only for an otherwise valid
+  # redemption and a rejected request never consumes the proof's single-use jti. The proof must be
+  # for POST to this endpoint and signed by the key whose thumbprint the authorization request
+  # named; no token accompanies a code redemption, so the proof carries no `ath`.
+  def validate_dpop_proof
+    return if errors.any?
+
+    if bound_thumbprint.blank?
+      errors.add(
+        :dpop_proof, 'dpop_code_unbound', type: :dpop_code_unbound
+      )
+      return
+    end
+
+    return if dpop_result.success?
+
+    errors.add(
+      :dpop_proof, dpop_result.first_error_message, type: dpop_result.extra[:dpop_error_type]
+    )
+  end
+
+  # Verified once per form: a proof's jti is single-use, so running the check again on the same
+  # proof (validations run on every `valid?`) would report a replay of our own check.
+  def dpop_result
+    @dpop_result ||= DpopProofForm.new(
+      proof: dpop_proof,
+      http_method: 'POST',
+      http_url: api_openid_connect_token_url,
+      expected_thumbprint: bound_thumbprint,
+    ).submit
+  end
+
+  # The thumbprint the authorization request named (RFC 9449 §10), kept with the code in its
+  # hand-off record for the code's lifetime, so the binding expires with the code and nothing
+  # about the key is written to the identity. Nil when the code was issued to a bearer client.
+  def bound_thumbprint
+    actor_handoff&.dpop_jkt if dpop_binding_required?
+  end
+
+  # The record Login.gov wrote when it issued this code: the actor's return log for a delegation
+  # and the key thumbprint for a bound client. Loaded once; the code is the lookup key.
+  def actor_handoff
+    return @actor_handoff if defined?(@actor_handoff)
+
+    @actor_handoff = TokenExchange::ActorHandoff.load(code)
   end
 
   def find_identity_with_code
@@ -229,6 +291,8 @@ class OpenidConnectTokenForm
       token_endpoint_operation: token_endpoint_operation,
       token_exchange_scopes: token_exchange_scope_values,
       integration_errors:,
+      dpop_bound: dpop_binding_required? || nil,
+      dpop_error_type: errors.details[:dpop_proof]&.first&.dig(:type),
     }
   end
 

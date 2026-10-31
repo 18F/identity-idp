@@ -1163,3 +1163,97 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
   end
 end
+
+RSpec.describe OpenidConnectAuthorizeForm, 'dpop_jkt (RFC 9449 section 10)' do
+  subject(:form) do
+    OpenidConnectAuthorizeForm.new(
+      acr_values: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+      client_id: service_provider.issuer,
+      nonce: SecureRandom.hex,
+      prompt: 'select_account',
+      redirect_uri: redirect_uri,
+      response_type: 'code',
+      scope: 'openid email',
+      state: SecureRandom.hex,
+      code_challenge: Digest::SHA256.urlsafe_base64digest(SecureRandom.urlsafe_base64(32)),
+      code_challenge_method: 'S256',
+      dpop_jkt: dpop_jkt,
+    )
+  end
+
+  let(:redirect_uri) { 'https://sp.example.gov/result' }
+  let(:service_provider) do
+    create(
+      :service_provider,
+      :active,
+      pkce: pkce,
+      redirect_uris: [redirect_uri],
+      issuer: 'urn:gov:gsa:openidconnect:sp:bound_client',
+    )
+  end
+  let(:pkce) { true }
+  let(:dpop_jkt) { nil }
+  let(:thumbprint) { Base64.urlsafe_encode64(SecureRandom.random_bytes(32), padding: false) }
+  let(:user) { create(:user, :fully_registered) }
+  let(:result) { form.submit }
+
+  context 'for a public client registered for key binding' do
+    before do
+      allow(IdentityConfig.store).to receive(:dpop_required_issuers)
+        .and_return([service_provider.issuer])
+    end
+
+    it 'is required' do
+      expect(form.dpop_binding_required?).to eq(true)
+      expect(result.success?).to eq(false)
+      expect(result.errors[:dpop_jkt])
+        .to eq(['dpop_jkt_required'])
+    end
+
+    context 'with a well-formed thumbprint' do
+      let(:dpop_jkt) { thumbprint }
+
+      it 'succeeds and exposes the thumbprint for the authorization code to carry' do
+        expect(result.success?).to eq(true)
+        expect(form.dpop_binding_required?).to eq(true)
+        expect(form.dpop_jkt).to eq(thumbprint)
+      end
+    end
+
+    context 'with a malformed thumbprint' do
+      let(:dpop_jkt) { 'not-a-thumbprint' }
+
+      it 'fails' do
+        expect(result.success?).to eq(false)
+        expect(result.errors[:dpop_jkt])
+          .to eq(['dpop_jkt_invalid'])
+      end
+    end
+
+    context 'when the client is confidential' do
+      let(:pkce) { false }
+      let(:dpop_jkt) { thumbprint }
+
+      it 'is not read: the setting applies to public clients only' do
+        expect(form.dpop_binding_required?).to eq(false)
+        expect(result.success?).to eq(true)
+      end
+    end
+  end
+
+  context 'for a public client not registered for key binding' do
+    it 'is not required' do
+      expect(form.dpop_binding_required?).to eq(false)
+      expect(result.success?).to eq(true)
+    end
+
+    context 'when sent anyway, well-formed or not' do
+      let(:dpop_jkt) { 'x' }
+
+      it 'is not read, since bearer tokens are issued to this client' do
+        expect(form.dpop_binding_required?).to eq(false)
+        expect(result.success?).to eq(true)
+      end
+    end
+  end
+end

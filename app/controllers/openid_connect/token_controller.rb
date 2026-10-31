@@ -34,10 +34,16 @@ module OpenidConnect
 
     def token_form
       if delegated_token_exchange?
-        OpenidConnectTokenExchangeForm.new(token_params)
+        OpenidConnectTokenExchangeForm.new(form_params)
       else
-        OpenidConnectTokenForm.new(token_params)
+        OpenidConnectTokenForm.new(form_params)
       end
+    end
+
+    # The RFC 9449 proof travels in the DPoP request header (§4.1), never in the body: a dpop_proof
+    # body field is not permitted below, so only the header can supply one.
+    def form_params
+      token_params.to_h.merge(dpop_proof: request.headers['DPoP'].presence)
     end
 
     def token_params

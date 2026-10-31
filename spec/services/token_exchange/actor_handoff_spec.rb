@@ -8,7 +8,14 @@ RSpec.describe TokenExchange::ActorHandoff do
       described_class.store(code:, actor_return_log_id: 123, expires_in: 60)
 
       expect(described_class.load(code).actor_return_log_id).to eq(123)
+      expect(described_class.load(code).dpop_jkt).to be_nil
       expect(described_class.digest(code)).to_not include(code)
+    end
+
+    it 'round trips the key thumbprint a bound client named at authorization' do
+      described_class.store(code:, actor_return_log_id: nil, dpop_jkt: 'a' * 43, expires_in: 60)
+
+      expect(described_class.load(code).dpop_jkt).to eq('a' * 43)
     end
 
     it 'uses the requested expiration' do
