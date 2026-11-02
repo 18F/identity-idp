@@ -9,10 +9,13 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
     ).to_s
   end
   let(:passport_book) { false }
+  let(:image_types) { [:front, :back] }
   let(:user) { create(:user) }
   let(:analytics) { FakeAnalytics.new(user:) }
 
-  subject(:images_request) { described_class.new(reference_id:, passport_book:, user:) }
+  subject(:images_request) do
+    described_class.new(reference_id:, passport_book:, user:, image_types:)
+  end
   let(:body) { DocAuthImageFixtures.zipped_files(reference_id:, passport: passport_book).to_s }
   let(:status) { 200 }
   let(:message) do
@@ -53,6 +56,29 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
         .with(body: {})
     end
 
+    context 'when mock Socure is enabled' do
+      let(:mock_images_request_endpoint) do
+        DocAuth::Mock::Socure.instance.images_endpoint(reference_id:)
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('mock_socure')
+        stub_request(:get, mock_images_request_endpoint)
+          .with(query: { types: image_types.map(&:to_s) })
+          .to_return(
+            status:,
+            body:,
+          )
+      end
+
+      it 'fetches from the mock endpoint with image types' do
+        subject.fetch
+
+        expect(WebMock).to have_requested(:get, mock_images_request_endpoint)
+          .with(query: { types: image_types.map(&:to_s) })
+      end
+    end
+
     it 'creates an IdvImages object with the binary data' do
       response = subject.fetch
 
@@ -88,6 +114,7 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
 
     context 'when passport_book is true' do
       let(:passport_book) { true }
+      let(:image_types) { [:passport] }
 
       it 'logs passport_book and the passport image type' do
         subject.fetch
