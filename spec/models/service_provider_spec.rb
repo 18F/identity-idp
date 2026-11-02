@@ -191,6 +191,27 @@ RSpec.describe ServiceProvider do
     end
   end
 
+  describe '#dpop_required?' do
+    let(:issuer) { 'urn:gov:gsa:openidconnect:sp:bound_client' }
+
+    before do
+      allow(IdentityConfig.store).to receive(:dpop_required_issuers).and_return([issuer])
+    end
+
+    it 'is true for a public client whose issuer is on the configured list' do
+      expect(build(:service_provider, issuer:, pkce: true).dpop_required?).to eq(true)
+    end
+
+    it 'is false for a public client that is not listed' do
+      expect(build(:service_provider, pkce: true).dpop_required?).to eq(false)
+    end
+
+    it 'is false for a listed confidential client, which keeps bearer tokens' do
+      expect(build(:service_provider, issuer:, pkce: false).dpop_required?).to eq(false)
+      expect(build(:service_provider, issuer:, pkce: nil).dpop_required?).to eq(false)
+    end
+  end
+
   describe '#token_exchange_broker?' do
     context 'when the sp is not on the token exchange broker allowlist' do
       before do
