@@ -64,7 +64,7 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('mock_socure')
         stub_request(:get, mock_images_request_endpoint)
-          .with(query: { types: image_types.map(&:to_s) })
+          .with(query: { mock_image_types: image_types.map(&:to_s) })
           .to_return(
             status:,
             body:,
@@ -75,7 +75,7 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
         subject.fetch
 
         expect(WebMock).to have_requested(:get, mock_images_request_endpoint)
-          .with(query: { types: image_types.map(&:to_s) })
+          .with(query: { mock_image_types: image_types.map(&:to_s) })
       end
     end
 

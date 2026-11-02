@@ -83,7 +83,7 @@ module DocAuth
         def endpoint
           if DocAuth::Mock::Socure.instance.enabled?
             uri = URI(DocAuth::Mock::Socure.instance.images_endpoint(reference_id:))
-            params = { types: @image_types.map(&:to_s) }.to_query
+            params = { mock_image_types: @image_types.map(&:to_s) }.to_query
             uri.query = params
             return uri
           end

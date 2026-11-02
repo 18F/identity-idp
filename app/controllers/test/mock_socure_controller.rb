@@ -52,8 +52,8 @@ module Test
           send_data(
             DocAuthImageFixtures.zipped_files(
               reference_id: params['reference_id'],
-              passport: params.fetch('types', []).include?('passport'),
-              selfie: params.fetch('types', []).include?('selfie'),
+              passport: params.fetch('mock_image_types', []).include?('passport'),
+              selfie: params.fetch('mock_image_types', []).include?('selfie'),
             ),
             filename: "#{params['reference_id']}.zip",
             type: :zip,

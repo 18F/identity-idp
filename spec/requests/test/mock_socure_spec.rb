@@ -9,7 +9,7 @@ RSpec.describe 'Test::MockSocureController' do
 
   describe 'GET /test/mock_socure/api/5.0/documents/:reference_id.zip' do
     let(:reference_id) { 'fake-reference-id' }
-    let(:params) { { types: %w[front back] } }
+    let(:params) { { mock_image_types: %w[front back] } }
 
     subject(:request_images) do
       get test_mock_socure_images_request_path(reference_id:, format: :zip), params:
@@ -39,7 +39,7 @@ RSpec.describe 'Test::MockSocureController' do
       end
 
       context 'and a selfie type' do
-        let(:params) { { types: %w[front back selfie] } }
+        let(:params) { { mock_image_types: %w[front back selfie] } }
         it 'returns front, back and selfie document images' do
           request_images
 
@@ -54,7 +54,7 @@ RSpec.describe 'Test::MockSocureController' do
     end
 
     context 'with passport and selfie image types' do
-      let(:params) { { types: %w[passport selfie] } }
+      let(:params) { { mock_image_types: %w[passport selfie] } }
 
       it 'returns passport and selfie images' do
         request_images
