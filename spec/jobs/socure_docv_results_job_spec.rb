@@ -25,6 +25,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:decision_value) { 'accept' }
   let(:expiration_date) { "#{1.year.from_now.year}-01-01" }
   let(:document_metadata_type) { 'Drivers License' }
+  let(:issuing_state) { 'NY' }
   let(:reason_codes) { %w[I831 R810] }
   let(:writer) { EncryptedDocStorage::DocWriter.new }
   let(:historical_attempts_api_enabled) { false }
@@ -47,7 +48,7 @@ RSpec.describe SocureDocvResultsJob do
         documentType: {
           type: document_metadata_type,
           country: 'USA',
-          state: 'NY',
+          state: issuing_state,
         },
         decision: {
           name: 'lenient',
@@ -441,6 +442,7 @@ RSpec.describe SocureDocvResultsJob do
       context 'when the SP is allow-listed for document image sharing' do
         let(:doc_escrow_enabled) { false }
         let(:image_retrieval_job_wait_seconds) { 37 }
+        let(:issuing_state) { 'VA' }
 
         before do
           ActiveJob::Base.queue_adapter = :test
@@ -487,9 +489,11 @@ RSpec.describe SocureDocvResultsJob do
             symbolize_names: true,
           )
           expect(decrypted.keys).to contain_exactly(
-            :document_number, :document_issued, :document_expiration
+            :document_number, :document_issued, :document_expiration, :document_jurisdiction
           )
           expect(decrypted[:document_number]).to eq(pii_from_doc[:documentNumber])
+          expect(decrypted[:document_jurisdiction]).to eq(issuing_state)
+          expect(decrypted[:document_jurisdiction]).not_to eq(address_data[:state])
         end
 
         it 'does not report escrow file ids to the attempts API' do

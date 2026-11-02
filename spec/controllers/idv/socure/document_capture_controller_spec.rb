@@ -20,8 +20,10 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   end
   let(:idv_socure_docv_flow_id_only) { 'id only flow' }
   let(:idv_socure_docv_flow_id_w_selfie) { 'selfie flow' }
+  let(:idv_socure_docv_flow_id_w_selfie_image_sharing) { 'selfie image sharing flow' }
   let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
   let(:document_type_received) { document_type_requested }
+  let(:issuer) { 'standard-issuer' }
 
   let(:stored_result) do
     DocumentCaptureSessionResult.new(
@@ -42,6 +44,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       requested_at: Time.zone.now,
       doc_auth_vendor: idv_vendor,
       document_type_requested:,
+      issuer:,
     )
     allow(IdentityConfig.store).to receive_messages(
       socure_docv_enabled:,
@@ -52,6 +55,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       doc_auth_selfie_vendor_default: idv_vendor,
       doc_auth_selfie_vendor_switching_enabled: vendor_switching_enabled,
       idv_socure_docv_flow_id_w_selfie:,
+      idv_socure_docv_flow_id_w_selfie_image_sharing:,
       idv_socure_docv_flow_id_only:,
     )
 
@@ -84,7 +88,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         ).tap do |idv_session|
           idv_session.pii_from_doc = { name: 'test' }
           idv_session.socure_docv_wait_polling_started_at = Time.zone.now
-          idv_session.doc_auth_vendor = 'TrueID'
           idv_session.source_check_vendor = 'aamva'
         end
       end
@@ -94,7 +97,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         aggregate_failures do
           expect(idv_session.pii_from_doc).to be(nil)
           expect(idv_session.socure_docv_wait_polling_started_at).to be(nil)
-          expect(idv_session.doc_auth_vendor).to be(nil)
           expect(idv_session.source_check_vendor).to be(nil)
         end
       end
@@ -180,10 +182,9 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       end
 
       context 'selfie not required' do
-        before do
-          get(:show)
-        end
         it 'creates a DocumentRequest' do
+          get(:show)
+
           expect(request_class).to have_received(:new)
             .with(
               customer_user_id: user.uuid,
@@ -196,16 +197,22 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         end
 
         it 'sets any docv timeouts to nil' do
+          get(:show)
+
           expect(subject.idv_session.socure_docv_wait_polling_started_at).to eq nil
         end
 
         it 'logs correct info' do
+          get(:show)
+
           expect(@analytics).to have_logged_event(
             :idv_socure_document_request_submitted,
           )
         end
 
         it 'sets DocumentCaptureSession socure_docv_capture_app_url value' do
+          get(:show)
+
           expect(subject.document_capture_session.reload.socure_docv_capture_app_url)
             .to eq(socure_capture_app_url)
         end
@@ -214,6 +221,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           let(:expected_language) { :en }
 
           it 'does the correct POST to Socure' do
+            get(:show)
+
             expect(WebMock).to have_requested(:post, fake_socure_endpoint)
               .with(
                 body: JSON.generate(
@@ -238,6 +247,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           let(:expected_language) { :zh }
 
           it 'does the correct POST to Socure' do
+            get(:show)
+
             expect(WebMock).to have_requested(:post, fake_socure_endpoint)
               .with(
                 body: JSON.generate(
@@ -262,11 +273,15 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           render_views
 
           it 'response includes the socure capture app url' do
+            get(:show)
+
             expect(response).to have_http_status 200
             expect(response.body).to have_link(href: socure_capture_app_url)
           end
 
           it 'puts the docvTransactionToken into the document capture session' do
+            get(:show)
+
             expect(subject.document_capture_session.reload.socure_docv_transaction_token)
               .to eq(socure_docv_transaction_token)
           end
@@ -276,6 +291,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
 
           it 'creates a DocumentRequest' do
+            get(:show)
+
             expect(request_class).to have_received(:new)
               .with(
                 customer_user_id: user.uuid,
@@ -288,6 +305,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           end
 
           it 'creates a DocumentRequest with passport requested' do
+            get(:show)
+
             expect(WebMock).to have_requested(:post, fake_socure_endpoint)
               .with(
                 body: JSON.generate(
@@ -312,6 +331,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT_CARD }
 
           it 'creates a DocumentRequest' do
+            get(:show)
+
             expect(request_class).to have_received(:new)
               .with(
                 customer_user_id: user.uuid,
@@ -324,6 +345,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           end
 
           it 'creates a DocumentRequest for a license (card) requested' do
+            get(:show)
+
             expect(WebMock).to have_requested(:post, fake_socure_endpoint)
               .with(
                 body: JSON.generate(
@@ -348,6 +371,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
 
           it 'creates a DocumentRequest' do
+            get(:show)
+
             expect(request_class).to have_received(:new)
               .with(
                 customer_user_id: user.uuid,
@@ -362,6 +387,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           end
 
           it 'creates a DocumentRequest with mdl requested' do
+            get(:show)
+
             expect(WebMock).to have_requested(:post, fake_socure_endpoint)
               .with(
                 body: JSON.generate(
@@ -387,6 +414,37 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
               )
           end
         end
+
+        context 'image sharing is enabled' do
+          before do
+            allow(IdentityConfig.store).to receive_messages(
+              document_images_sharing_enabled: true,
+              document_images_sharing_service_providers: [issuer],
+            )
+          end
+
+          it 'creates a DocumentRequest for id only' do
+            get(:show)
+
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'license',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_update_url,
+                      },
+                      language: :en,
+                      useCaseKey: idv_socure_docv_flow_id_only,
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
       end
 
       context 'selfie required' do
@@ -395,10 +453,11 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
             acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
           ).parse
           allow(subject).to receive(:resolved_authn_context_result).and_return(authn_context_result)
-          get(:show)
         end
 
         it 'creates a DocumentRequest' do
+          get(:show)
+
           expect(request_class).to have_received(:new)
             .with(
               customer_user_id: user.uuid,
@@ -411,6 +470,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         end
 
         it 'request the flow for selfie' do
+          get(:show)
+
           expect(WebMock).to have_requested(:post, fake_socure_endpoint)
             .with(
               body: JSON.generate(
@@ -434,6 +495,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
 
           it 'creates a DocumentRequest' do
+            get(:show)
+
             expect(request_class).to have_received(:new)
               .with(
                 customer_user_id: user.uuid,
@@ -446,6 +509,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           end
 
           it 'creates a DocumentRequest with passport requested' do
+            get(:show)
+
             expect(WebMock).to have_requested(:post, fake_socure_endpoint)
               .with(
                 body: JSON.generate(
@@ -470,6 +535,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
 
           it 'creates a DocumentRequest' do
+            get(:show)
+
             expect(request_class).to have_received(:new)
               .with(
                 customer_user_id: user.uuid,
@@ -484,6 +551,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           end
 
           it 'creates a DocumentRequest with mdl requested' do
+            get(:show)
+
             expect(WebMock).to have_requested(:post, fake_socure_endpoint)
               .with(
                 body: JSON.generate(
@@ -502,6 +571,37 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                           error_code: :mdl_not_found,
                         ),
                       },
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
+
+        context 'image sharing is enabled' do
+          before do
+            allow(IdentityConfig.store).to receive_messages(
+              document_images_sharing_enabled: true,
+              document_images_sharing_service_providers: [issuer],
+            )
+          end
+
+          it 'creates a DocumentRequest with image sharing enabled' do
+            get(:show)
+
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'license',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_update_url,
+                      },
+                      language: :en,
+                      useCaseKey: 'selfie image sharing flow',
                     },
                     customerUserId: user.uuid,
                   },
@@ -659,13 +759,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     end
 
     context 'when doc auth succeeds' do
-      it 'correctly stores doc_auth_vendor in Idv::Session' do
-        get :update
-
-        expect(subject.idv_session.doc_auth_vendor).to_not be_nil
-        expect(subject.idv_session.doc_auth_vendor).to match(idv_vendor)
-      end
-
       it 'returns FOUND (302) and redirects to SSN' do
         get :update
 

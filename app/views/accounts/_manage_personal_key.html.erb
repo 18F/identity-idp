@@ -10,9 +10,11 @@
   <div class="grid-col-7">
     ************
   </div>
-  <div class="grid-col-5 text-right">
-    <%= render 'accounts/actions/manage_personal_key' %>
-  </div>
+  <% if @presenter.show_regenerate_personal_key_action? %>
+    <div class="grid-col-5 text-right">
+      <%= render 'accounts/actions/manage_personal_key' %>
+    </div>
+  <% end %>
 </div>
 <% if @presenter.personal_key_generated_at %>
   <p class="margin-top-1 margin-bottom-0 font-body-2xs">

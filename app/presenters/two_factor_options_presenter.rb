@@ -18,7 +18,8 @@ class TwoFactorOptionsPresenter
     piv_cac_required: false,
     show_skip_additional_mfa_link: true,
     after_mfa_setup_path: nil,
-    return_to_sp_cancel_path: nil
+    return_to_sp_cancel_path: nil,
+    personal_key_mfa_deprecated: false
   )
     @user_agent = user_agent
     @user = user
@@ -27,6 +28,7 @@ class TwoFactorOptionsPresenter
     @show_skip_additional_mfa_link = show_skip_additional_mfa_link
     @after_mfa_setup_path = after_mfa_setup_path
     @return_to_sp_cancel_path = return_to_sp_cancel_path
+    @personal_key_mfa_deprecated = personal_key_mfa_deprecated
   end
 
   def options
@@ -89,6 +91,19 @@ class TwoFactorOptionsPresenter
 
   def show_skip_additional_mfa_link?
     @show_skip_additional_mfa_link
+  end
+
+  # Phase 1 of personal key MFA deprecation: warn users who authenticate with a
+  # personal key (an MFA method) to replace it. Identity-verified users use their
+  # personal key for account recovery/IDV and are excluded via PersonalKeyPolicy.
+  # Also show the warning when the user just consumed their personal key this
+  # session, since the recovery code has been cleared and PersonalKeyPolicy#enabled?
+  # would otherwise be false.
+  def show_personal_key_deprecation_warning?
+    return false unless FeatureManagement.personal_key_mfa_deprecation_phase_1_enabled?
+
+    @personal_key_mfa_deprecated ||
+      TwoFactorAuthentication::PersonalKeyPolicy.new(user).enabled?
   end
 
   def skip_path

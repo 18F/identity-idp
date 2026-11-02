@@ -86,7 +86,11 @@ module DocAuth
           if document_capture_session.mdl_requested?
             IdentityConfig.store.idv_socure_docv_flow_id_only
           elsif liveness_checking_required
-            IdentityConfig.store.idv_socure_docv_flow_id_w_selfie
+            if document_capture_session.document_images_sharing_allowed?
+              IdentityConfig.store.idv_socure_docv_flow_id_w_selfie_image_sharing
+            else
+              IdentityConfig.store.idv_socure_docv_flow_id_w_selfie
+            end
           else
             IdentityConfig.store.idv_socure_docv_flow_id_only
           end
