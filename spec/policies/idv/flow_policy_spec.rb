@@ -42,7 +42,6 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.phone_for_mobile_flow = '201-555-1212'
 
         idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
-        idv_session.doc_auth_vendor = 'test_vendor'
         idv_session.had_barcode_read_failure = true
         idv_session.had_barcode_attention_error = true
 
@@ -64,7 +63,6 @@ RSpec.describe 'Idv::FlowPolicy' do
         expect(idv_session.phone_for_mobile_flow).to be_nil
 
         expect(idv_session.pii_from_doc).to be_nil
-        expect(idv_session.doc_auth_vendor).to be_nil
         expect(idv_session.had_barcode_read_failure).to be_nil
         expect(idv_session.had_barcode_attention_error).to be_nil
 
@@ -88,7 +86,6 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.pii_from_doc = nil
         idv_session.had_barcode_read_failure = true
         idv_session.had_barcode_attention_error = true
-        idv_session.doc_auth_vendor = 'test_vendor'
 
         idv_session.ssn = nil
 
@@ -133,7 +130,6 @@ RSpec.describe 'Idv::FlowPolicy' do
         end.not_to change {
           idv_session.welcome_visited
           idv_session.document_capture_session_uuid
-          idv_session.doc_auth_vendor
           idv_session.idv_consent_given_at
           idv_session.idv_consent_given?
           idv_session.skip_hybrid_handoff

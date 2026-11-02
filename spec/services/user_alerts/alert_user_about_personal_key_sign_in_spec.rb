@@ -37,5 +37,37 @@ RSpec.describe UserAlerts::AlertUserAboutPersonalKeySignIn do
         body: [disavowal_token],
       )
     end
+
+    context 'when personal key MFA deprecation phase 1 is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:personal_key_mfa_deprecation_phase_1_enabled)
+          .and_return(true)
+      end
+
+      it 'sends the sms notice but does not send the sign-in email' do
+        user = create(:user)
+        disavowal_token = 'asdf1234'
+        user.email_addresses.destroy_all
+        create_list(:email_address, 2, user: user)
+        phone_configurations = [
+          create(:phone_configuration, user: user, phone: '(202) 111-1111'),
+          create(:phone_configuration, user: user, phone: '(202) 222-2222'),
+        ]
+
+        allow(Telephony).to receive(:send_personal_key_sign_in_notice)
+
+        response = described_class.call(user, disavowal_token)
+
+        expect(Telephony).to have_received(:send_personal_key_sign_in_notice)
+          .with(to: phone_configurations[0].phone, country_code: 'US')
+        expect(Telephony).to have_received(:send_personal_key_sign_in_notice)
+          .with(to: phone_configurations[1].phone, country_code: 'US')
+
+        expect(response.to_h[:emails]).to eq(0)
+        expect(response.to_h[:sms_message_ids].size).to eq(2)
+
+        expect_delivered_email_count(0)
+      end
+    end
   end
 end

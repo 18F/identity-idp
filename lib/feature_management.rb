@@ -48,6 +48,10 @@ class FeatureManagement
     IdentityConfig.store.enable_add_mfa_redirect_for_personal_key
   end
 
+  def self.personal_key_mfa_deprecation_phase_1_enabled?
+    IdentityConfig.store.personal_key_mfa_deprecation_phase_1_enabled
+  end
+
   def self.use_kms?
     IdentityConfig.store.use_kms
   end

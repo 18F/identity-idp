@@ -15,6 +15,7 @@ module TwoFactorAuthentication
       analytics.multi_factor_auth_enter_personal_key_visit(context: context, recaptcha_annotation:)
       @presenter = TwoFactorAuthCode::PersonalKeyPresenter.new
       @personal_key_form = PersonalKeyForm.new(current_user)
+      @show_deprecation_warning = show_personal_key_deprecation_warning?
     end
 
     def create
@@ -40,6 +41,13 @@ module TwoFactorAuthentication
       redirect_to authentication_methods_setup_url
     end
 
+    # Personal key MFA users see a Phase 1 deprecation warning telling them to set
+    # up another authentication method before personal keys stop being supported.
+    def show_personal_key_deprecation_warning?
+      FeatureManagement.personal_key_mfa_deprecation_phase_1_enabled? &&
+        TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled?
+    end
+
     def presenter_for_two_factor_authentication_method
       TwoFactorAuthCode::PersonalKeyPresenter.new
     end
@@ -52,6 +60,11 @@ module TwoFactorAuthentication
       )
 
       if result.success?
+        # Capture the deprecation state before consuming the personal key, since
+        # removing the recovery code changes PersonalKeyPolicy#enabled? and would
+        # otherwise skip the Phase 1 add-MFA redirect below.
+        @personal_key_mfa_deprecated = skip_personal_key_regeneration?
+
         _event, disavowal_token = create_user_event_with_disavowal(:personal_key_used)
         alert_user_about_personal_key_sign_in(disavowal_token)
         remove_personal_key
@@ -68,9 +81,46 @@ module TwoFactorAuthentication
     end
 
     def remove_personal_key
-      # for now we will regenerate a key and not show it to them so retire personal key page shows
-      PersonalKeyGenerator.new(current_user).generate!
+      if retire_personal_key_after_mfa_setup?
+        # Phase 1 of personal key MFA deprecation: a user whose ONLY credential is
+        # a personal key is forced to authenticate with it, but we must NOT consume
+        # it here — doing so would leave them with zero credentials if they abandon
+        # MFA setup. Instead we preserve the key and defer retiring it until the
+        # user confirms a replacement MFA method (see
+        # MfaSetupConcern#retire_deprecated_personal_key_after_mfa_setup).
+        user_session[:retire_personal_key_after_mfa_setup] = true
+        # Show the Phase 1 deprecation warning on the add-MFA setup page.
+        user_session[:personal_key_mfa_deprecated] = true
+      elsif skip_personal_key_regeneration?
+        # During Phase 1 of personal key MFA deprecation we consume the personal
+        # key on use: it is neither shown again nor regenerated, and the existing
+        # recovery code is cleared so the user can no longer use or manage it.
+        current_user.remove_recovery_code
+        # Record that the key was just consumed so the add-MFA setup page can still
+        # show the Phase 1 deprecation warning, even though the user no longer has
+        # a recovery code (PersonalKeyPolicy#enabled? is now false).
+        user_session[:personal_key_mfa_deprecated] = true
+      else
+        # for now we will regenerate a key and not show it to them so retire personal key page shows
+        PersonalKeyGenerator.new(current_user).generate!
+      end
       user_session.delete(:personal_key)
+    end
+
+    # During Phase 1 of personal key MFA deprecation, a user whose only credential
+    # is a personal key is forced to authenticate with it. We preserve the key and
+    # defer retiring it until they confirm a replacement MFA method, so they are
+    # never left without a usable credential. See PersonalKeyPolicy#mfa_required?.
+    def retire_personal_key_after_mfa_setup?
+      TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).mfa_required?
+    end
+
+    # During Phase 1 of personal key MFA deprecation, users who use a personal key
+    # as an MFA method are no longer issued a new personal key after authenticating
+    # with the old one. See PersonalKeyPolicy#mfa_deprecated? for the full rationale
+    # (identity-verified and personal-key-only legacy users are excluded).
+    def skip_personal_key_regeneration?
+      TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).mfa_deprecated?
     end
 
     def personal_key_param
@@ -81,11 +131,20 @@ module TwoFactorAuthentication
       if current_user.identity_verified? || current_user.password_reset_profile.present?
         redirect_to manage_personal_key_url
       elsif MfaPolicy.new(current_user).two_factor_enabled? &&
-            !FeatureManagement.enable_additional_mfa_redirect_for_personal_key_mfa?
+            !redirect_to_add_mfa_after_personal_key?
         redirect_to after_mfa_setup_path
       else
         redirect_to authentication_methods_setup_url
       end
+    end
+
+    # Route personal key MFA users to the authentication method setup page so they
+    # see the Phase 1 deprecation warning and are prompted to add another method.
+    # Uses the state captured before the personal key was consumed, because
+    # removing the recovery code flips PersonalKeyPolicy#enabled? to false.
+    def redirect_to_add_mfa_after_personal_key?
+      FeatureManagement.enable_additional_mfa_redirect_for_personal_key_mfa? ||
+        !!@personal_key_mfa_deprecated
     end
   end
 end

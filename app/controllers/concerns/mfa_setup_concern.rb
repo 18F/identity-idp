@@ -104,6 +104,8 @@ module MfaSetupConcern
   end
 
   def send_mfa_added_email(event_type:)
+    retire_deprecated_personal_key_after_mfa_setup
+
     _event, disavowal_token = create_user_event_with_disavowal(
       event_type,
       current_user,
@@ -128,6 +130,25 @@ module MfaSetupConcern
       UserMailer.with(user: current_user, email_address: email_address)
         .mfa_added(subject: subject, disavowal_token: disavowal_token).deliver_now_or_later
     end
+  end
+
+  # Phase 1 of personal key MFA deprecation: when a personal-key-only user was
+  # forced to authenticate with their personal key at sign-in, we deferred
+  # retiring that key until they confirmed a replacement MFA method (so they were
+  # never left without a usable credential). Now that a new MFA method has just
+  # been added, retire the legacy personal key: clear its recovery code and the
+  # deferral flag so it can no longer be used or managed.
+  #
+  # The guard checks the session flag set during the forced personal key
+  # verification (PersonalKeyVerificationController#remove_personal_key) rather
+  # than re-deriving it, because the user now has a real MFA method and the
+  # original "personal-key-only" condition no longer holds.
+  def retire_deprecated_personal_key_after_mfa_setup
+    return unless FeatureManagement.personal_key_mfa_deprecation_phase_1_enabled?
+    return unless user_session[:retire_personal_key_after_mfa_setup]
+
+    current_user.remove_recovery_code
+    user_session.delete(:retire_personal_key_after_mfa_setup)
   end
 
   private

@@ -66,7 +66,6 @@ RSpec.describe Idv::Clear1::SessionController do
           service_provider: nil,
         ).tap do |idv_session|
           idv_session.pii_from_doc = { name: 'test' }
-          idv_session.doc_auth_vendor = Idp::Constants::Vendors::CLEAR1
           idv_session.source_check_vendor = Idp::Constants::Vendors::CLEAR1
           idv_session.clear1_verification_state = 'myState'
           idv_session.clear1_verification_token = 'myToken'
@@ -77,7 +76,6 @@ RSpec.describe Idv::Clear1::SessionController do
         described_class.step_info.undo_step.call(idv_session:, user:)
         aggregate_failures do
           expect(idv_session.pii_from_doc).to be_nil
-          expect(idv_session.doc_auth_vendor).to be_nil
           expect(idv_session.source_check_vendor).to be_nil
           expect(idv_session.clear1_verification_state).to be_nil
           expect(idv_session.clear1_verification_token).to be_nil
@@ -209,7 +207,6 @@ RSpec.describe Idv::Clear1::SessionController do
 
       expect(response).to redirect_to(idv_enter_password_path)
       expect(subject.idv_session.applicant).not_to be_empty
-      expect(subject.idv_session.doc_auth_vendor).to eq(Idp::Constants::Vendors::CLEAR1)
     end
 
     context 'when inherited proofing fails' do
@@ -219,7 +216,6 @@ RSpec.describe Idv::Clear1::SessionController do
 
         expect(response).to redirect_to(idv_clear1_session_url)
         expect(subject.idv_session.applicant).to be_nil
-        expect(subject.idv_session.doc_auth_vendor).to be_nil
       end
     end
   end
