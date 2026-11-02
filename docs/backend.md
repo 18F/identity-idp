@@ -155,48 +155,6 @@ EVENT_NAME="piv_cac_disabled" make watch_events
 
 [analytics-handbook]: https://handbook.login.gov/articles/analytics-events.html
 
-### Account recovery (phases 1 and 2)
-Account-preserving MFA recovery is disabled by default with
-`account_recovery_v2_enabled`. When enabled, eligible non-proofed users enter
-[AccountRecovery::StartController](../app/controllers/account_recovery/start_controller.rb).
-Identity-proofed and other ineligible users retain destructive account reset. Existing legacy
-requests keep their original completion and cancellation routes.
-
-[AccountRecovery::EligibilityPolicy](../app/services/account_recovery/eligibility_policy.rb)
-controls both recovery eligibility and whether a new legacy reset is allowed. Both request
-services check this policy under the user lock so an active account-preserving request cannot
-overlap a new legacy reset. Uncancelled legacy requests awaiting a grant, and unexpired granted
-legacy links, also block new account-preserving requests.
-
-Request creation emails only the confirmed address used to sign in
-(`last_sign_in_email_address`) and sends an informational SMS to a configured MFA phone, if one
-exists. The SMS contains no recovery code or link and does not authorize recovery. There is no
-resend. SMS delivery is logged by the telephony sender, and the `account_recovery_request` event
-nests its delivery result under `telephony_response`, separately from request-creation success.
-The event also records the requesting account's MFA profile (`mfa_method_counts`,
-`mfa_method_ages_in_days`), which are the methods the user is asking to replace.
-
-After the request, [AccountRecovery::ConfirmRequestController](../app/controllers/account_recovery/confirm_request_controller.rb)
-shows a "check your email" confirmation and signs the user out, mirroring the legacy
-`account_reset/confirm_request` page. There is no pending or status page and no manual
-cancellation. Users with an unredeemed request sign in normally and are routed to their first MFA
-method; a pending-recovery banner remains visible on MFA pages, including when choosing another
-method, and no new recovery or legacy reset link is offered. Successful MFA sign-in cancels the
-request through [AccountRecovery::CancelRequest](../app/services/account_recovery/cancel_request.rb)
-with the bounded reason `mfa_used`, emails a confirmation to the confirmed sign-in address, and logs
-`account_recovery_cancelled` with `recovery_state` and the `mfa_method` that was used. Unsuccessful
-attempts leave the request intact. Requests past link redemption are not cancelled by MFA use.
-
-After the wait period, the grant job emails a single-use link. Recovery tokens use 32 random bytes
-encoded as URL-safe Base64 and only their fingerprint is stored.
-[AccountRecovery::VerifyController](../app/controllers/account_recovery/verify_controller.rb)
-validates the link, requires the existing password, consumes the token, and creates a temporary
-pre-2FA session that continues to
-[AccountRecovery::NewMfaSetupController](../app/controllers/account_recovery/new_mfa_setup_controller.rb).
-That page is informational until replacement MFA selection is added; `new_mfa_setup#create` is
-inert. Lapsed links are expired on the next sign-in or recovery page load and logged as
-`account_recovery_expired` with the `recovery_state` they lapsed from.
-
 ### Controllers
 
 These tie everything together! We aim for lean, "RESTful" controllers
