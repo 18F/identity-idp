@@ -46,6 +46,7 @@ module AccountRecovery
       legacy_request&.requested_at.present? &&
         (legacy_request.granted_at.blank? || legacy_request.granted_token_valid?)
     end
+
     def other_active_recovery_requests
       scope = AccountRecoveryRequest.active.where(user: user)
       return scope if ignore_pending_request.blank?

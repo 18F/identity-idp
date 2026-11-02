@@ -120,7 +120,7 @@ RSpec.describe UserMailer, type: :mailer do
               I18n.t('user_mailer.account_recovery_cancelled.intro', app_name: APP_NAME),
             )
             expect(mail.html_part.body).to have_content(
-              I18n.t('user_mailer.account_recovery_cancelled.methods_unchanged'),
+              I18n.t('user_mailer.account_recovery_cancelled.details'),
             )
             expect(mail.html_part.body).to have_link(
               I18n.t('user_mailer.contact_link_text'), href: MarketingSite.contact_url

@@ -2190,7 +2190,7 @@ user_mailer.account_disconnected_from_sp.subject: Usted ha desconectado a %{sp_n
 user_mailer.account_recovery_cancelled.details: Your account and authentication methods have not been changed.
 user_mailer.account_recovery_cancelled.intro: You signed in to your %{app_name} account and your account recovery request was canceled.
 user_mailer.account_recovery_cancelled.subject: Your account recovery request was canceled
-user_mailer.account_recovery_cancelled.unrequested: If you did not sign in, contact us immediately and secure your account.
+user_mailer.account_recovery_cancelled.unrequested_html: If you did not sign in, %{contact_link_html} immediately and secure your account.
 user_mailer.account_recovery_granted.button: Recover my account
 user_mailer.account_recovery_granted.cancel_link_text: Sign in and authenticate with your %{app_name} to cancel your account recovery request
 user_mailer.account_recovery_granted.expires: This link expires in %{interval}.

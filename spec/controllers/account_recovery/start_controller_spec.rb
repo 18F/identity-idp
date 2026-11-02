@@ -10,73 +10,73 @@ RSpec.describe AccountRecovery::StartController do
   end
 
   context 'with an existing recovery request' do
-  [
-    AccountRecoveryRequest::REQUESTED,
-    AccountRecoveryRequest::WAITING,
-    AccountRecoveryRequest::GRANTED,
-  ].each do |state|
-    context "with an existing #{state} request" do
+    [
+      AccountRecoveryRequest::REQUESTED,
+      AccountRecoveryRequest::WAITING,
+      AccountRecoveryRequest::GRANTED,
+    ].each do |state|
+      context "with an existing #{state} request" do
+        let!(:recovery_request) do
+          create(:account_recovery_request, :granted, state: state, user: user)
+        end
+
+        before { stub_sign_in_before_2fa(user) }
+
+        it 'returns to authentication options instead of restarting recovery' do
+          get :show
+
+          expect(response).to redirect_to login_two_factor_options_url
+        end
+
+        it 'does not restart the request or resend its email on resubmission' do
+          expect { post :create }.not_to change { AccountRecoveryRequest.count }
+
+          expect(response).to redirect_to login_two_factor_options_url
+          expect(ActionMailer::Base.deliveries).to be_empty
+          expect(recovery_request.reload.state).to eq(state)
+        end
+      end
+    end
+
+    context 'with a granted request whose link has lapsed' do
       let!(:recovery_request) do
-        create(:account_recovery_request, :granted, state: state, user: user)
+        create(
+          :account_recovery_request,
+          :granted,
+          user: user,
+          token_expires_at: 1.minute.ago,
+        )
       end
 
       before { stub_sign_in_before_2fa(user) }
 
-      it 'returns to authentication options instead of restarting recovery' do
+      it 'expires the request and allows the user to start a new recovery request' do
         get :show
 
-        expect(response).to redirect_to login_two_factor_options_url
+        expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::EXPIRED)
+        expect(response).to render_template(:show)
       end
 
-      it 'does not restart the request or resend its email on resubmission' do
-        expect { post :create }.not_to change { AccountRecoveryRequest.count }
+      it 'logs the expiration with the state the request lapsed from' do
+        stub_analytics
 
-        expect(response).to redirect_to login_two_factor_options_url
-        expect(ActionMailer::Base.deliveries).to be_empty
-        expect(recovery_request.reload.state).to eq(state)
+        get :show
+
+        expect(@analytics).to have_logged_event(
+          :account_recovery_expired,
+          recovery_state: AccountRecoveryRequest::GRANTED,
+        )
       end
     end
-  end
 
-  context 'with a granted request whose link has lapsed' do
-    let!(:recovery_request) do
-      create(
-        :account_recovery_request,
-        :granted,
-        user: user,
-        token_expires_at: 1.minute.ago,
-      )
-    end
+    it 'does not resume another user’s request' do
+      stub_sign_in_before_2fa(user)
+      create(:account_recovery_request, :waiting)
 
-    before { stub_sign_in_before_2fa(user) }
-
-    it 'expires the request and allows the user to start a new recovery request' do
       get :show
 
-      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::EXPIRED)
       expect(response).to render_template(:show)
     end
-
-    it 'logs the expiration with the state the request lapsed from' do
-      stub_analytics
-
-      get :show
-
-      expect(@analytics).to have_logged_event(
-        :account_recovery_expired,
-        recovery_state: AccountRecoveryRequest::GRANTED,
-      )
-    end
-  end
-
-  it 'does not resume another user’s request' do
-    stub_sign_in_before_2fa(user)
-    create(:account_recovery_request, :waiting)
-
-    get :show
-
-    expect(response).to render_template(:show)
-  end
   end
 
   describe '#show' do

@@ -1,3 +1,8 @@
 <p class="lead"><%= t('user_mailer.account_recovery_cancelled.intro', app_name: APP_NAME) %></p>
 <p><%= t('user_mailer.account_recovery_cancelled.details') %></p>
-<p><%= t('user_mailer.account_recovery_cancelled.unrequested') %></p>
+<p><%= t(
+         'user_mailer.account_recovery_cancelled.unrequested_html',
+         contact_link_html: link_to(
+           t('user_mailer.contact_link_text'), MarketingSite.contact_url
+         ),
+       ) %></p>
