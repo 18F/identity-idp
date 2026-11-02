@@ -1,13 +1,25 @@
-import zxcvbn from 'zxcvbn';
 import { t } from '@18f/identity-i18n';
 import type { ZXCVBNResult, ZXCVBNScore } from 'zxcvbn';
 
 const MINIMUM_STRENGTH: ZXCVBNScore = 3;
 
+/**
+ * Loads zxcvbn on demand. Its frequency lists are ~800 KiB minified, which is far too large to
+ * ship in the entry bundle for a progressive enhancement. Webpack caches the module after the
+ * first call, so repeated calls resolve from memory.
+ */
+const loadZxcvbn = async () => (await import(/* webpackChunkName: "zxcvbn" */ 'zxcvbn')).default;
+
 const snakeCase = (string: string): string =>
   string.replace(/[ -]/g, '_').replace(/\W/g, '').toLowerCase();
 
 class PasswordStrengthElement extends HTMLElement {
+  /**
+   * Increments on each input event, so an in-flight async update can detect that it has been
+   * superseded and avoid rendering a stale result.
+   */
+  #changeToken = 0;
+
   connectedCallback() {
     this.input.addEventListener('input', () => this.#handleValueChange());
   }
@@ -152,12 +164,21 @@ class PasswordStrengthElement extends HTMLElement {
   /**
    * Updates the current strength and feedback indicators in response to a changed input value.
    */
-  #handleValueChange() {
+  async #handleValueChange() {
+    const token = ++this.#changeToken;
     const hasValue = !!this.input.value;
     const inputDescribedBy = this.input.getAttribute('aria-describedby');
     this.classList.toggle('display-none', !hasValue);
     this.removeAttribute('score');
     if (hasValue) {
+      const zxcvbn = await loadZxcvbn();
+
+      // Another input event was handled while zxcvbn was loading, so this result is stale and the
+      // newer handler owns the rendered state.
+      if (token !== this.#changeToken) {
+        return;
+      }
+
       const result = zxcvbn(this.input.value, this.forbiddenPasswords);
       const score = this.#getNormalizedScore(result);
       this.setAttribute('score', String(score));
