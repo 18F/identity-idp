@@ -121,8 +121,8 @@ RSpec.describe OpenidConnect::DocumentImagesController do
               success: false,
               image_type: 'front',
               issuer: identity.service_provider,
+              error_details: { encryption: ['encryption_unavailable'] },
               profile_id: profile.id,
-              denial_reason: :encryption_unavailable,
             )
           end
         end
@@ -157,15 +157,22 @@ RSpec.describe OpenidConnect::DocumentImagesController do
             )
           end
 
-          it '404s and audits the denial' do
+          it '404s and tracks the denial' do
             stub_analytics
 
             action
 
             expect(response).to be_not_found
+            expect(json_response).to eq(
+              'error' => 'images not found',
+              'error_description' => 'Artifact not_found',
+            )
             expect(@analytics).to have_logged_event(
               :document_image_release,
-              hash_including(success: false, denial_reason: :artifact_not_found),
+              hash_including(
+                success: false,
+                error_details: { artifact: { not_found: true } },
+              ),
             )
           end
         end
@@ -185,15 +192,22 @@ RSpec.describe OpenidConnect::DocumentImagesController do
         context 'when the Redis object has expired out from under the row' do
           before { redis_storage.delete_image(name: written.name) }
 
-          it '404s and audits the denial' do
+          it '404s and tracks the denial' do
             stub_analytics
 
             action
 
             expect(response).to be_not_found
+            expect(json_response).to eq(
+              'error' => 'images not found',
+              'error_description' => 'Image object_unavailable',
+            )
             expect(@analytics).to have_logged_event(
               :document_image_release,
-              hash_including(success: false, denial_reason: :object_unavailable),
+              hash_including(
+                success: false,
+                error_details: { image: { object_unavailable: true } },
+              ),
             )
           end
         end
@@ -217,18 +231,22 @@ RSpec.describe OpenidConnect::DocumentImagesController do
         let!(:artifact) { create(:document_artifact, profile:, image_type: 'front') }
         let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
 
-        it '401s with invalid_client and audits the refusal' do
+        it '401s with invalid_client and tracks the refusal' do
           stub_analytics
 
           action
 
           expect(response).to be_unauthorized
           expect(json_response).to eq(
-            'error' => 'invalid_client', 'error_description' => 'client_assertion_required',
+            'error' => 'invalid_client',
+            'error_description' => 'Code verifier client_assertion_required',
           )
           expect(@analytics).to have_logged_event(
             :document_image_release,
-            hash_including(success: false, denial_reason: :client_assertion_required),
+            hash_including(
+              success: false,
+              error_details: { code_verifier: { client_assertion_required: true } },
+            ),
           )
         end
       end
@@ -242,7 +260,9 @@ RSpec.describe OpenidConnect::DocumentImagesController do
           action
 
           expect(response).to be_unauthorized
-          expect(json_response['error_description']).to eq('invalid_signature')
+          expect(json_response['error_description']).to eq(
+            'Client assertion Signature verification failed',
+          )
         end
       end
 
@@ -255,7 +275,12 @@ RSpec.describe OpenidConnect::DocumentImagesController do
           action
 
           expect(response).to be_unauthorized
-          expect(json_response['error_description']).to eq('invalid_aud')
+          expect(json_response['error_description']).to eq(
+            "Client assertion #{t(
+              'openid_connect.token.errors.invalid_aud',
+              url: api_openid_connect_document_image_url(image_type: 'front'),
+)}",
+          )
         end
       end
 
@@ -264,15 +289,22 @@ RSpec.describe OpenidConnect::DocumentImagesController do
         let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
         let!(:artifact) { create(:document_artifact, profile:, image_type: 'front') }
 
-        it '403s and audits the denial' do
+        it '403s and tracks the denial' do
           stub_analytics
 
           action
 
           expect(response).to be_forbidden
+          expect(json_response).to eq(
+            'error' => 'document_images sharing is not authorized',
+            'error_description' => 'Scope no_valid_scope',
+          )
           expect(@analytics).to have_logged_event(
             :document_image_release,
-            hash_including(success: false, denial_reason: :not_authorized),
+            hash_including(
+              success: false,
+              error_details: { scope: { no_valid_scope: true } },
+            ),
           )
         end
       end
@@ -285,6 +317,10 @@ RSpec.describe OpenidConnect::DocumentImagesController do
         it '403s even though the user has a verified profile and consent' do
           action
           expect(response).to be_forbidden
+          expect(json_response).to eq(
+            'error' => 'document_images sharing is not authorized',
+            'error_description' => 'Acr values no_identity_verification',
+          )
         end
       end
 
@@ -296,6 +332,10 @@ RSpec.describe OpenidConnect::DocumentImagesController do
         it '403s even though the user has a verified profile and consent' do
           action
           expect(response).to be_forbidden
+          expect(json_response).to eq(
+            'error' => 'document_images sharing is not authorized',
+            'error_description' => 'Acr values no_identity_verification',
+          )
         end
       end
 
@@ -311,6 +351,10 @@ RSpec.describe OpenidConnect::DocumentImagesController do
         it '403s' do
           action
           expect(response).to be_forbidden
+          expect(json_response).to eq(
+            'error' => 'document_images sharing is not authorized',
+            'error_description' => 'Scope unauthorized_scope',
+          )
         end
       end
 
@@ -323,6 +367,10 @@ RSpec.describe OpenidConnect::DocumentImagesController do
         it '403s' do
           action
           expect(response).to be_forbidden
+          expect(json_response).to eq(
+            'error' => 'document_images sharing is not authorized',
+            'error_description' => 'Scope not_consented_to',
+          )
         end
       end
 
@@ -332,6 +380,10 @@ RSpec.describe OpenidConnect::DocumentImagesController do
         it '404s' do
           action
           expect(response).to be_not_found
+          expect(json_response).to eq(
+            'error' => 'images not found',
+            'error_description' => 'Artifact not_found',
+          )
         end
       end
 
@@ -342,6 +394,10 @@ RSpec.describe OpenidConnect::DocumentImagesController do
         it '404s' do
           action
           expect(response).to be_not_found
+          expect(json_response).to eq(
+            'error' => 'images not found',
+            'error_description' => 'Image object_unavailable',
+          )
         end
       end
     end
