@@ -387,6 +387,7 @@ RSpec.describe SocureShadowModePhoneRiskJob do
         api_key: 'an-api-key',
         base_url: 'https://example.org',
         timeout: 6,
+        is_proofing_agent: nil,
       )
     end
   end
