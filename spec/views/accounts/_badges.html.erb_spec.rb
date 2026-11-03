@@ -20,7 +20,7 @@ RSpec.describe 'accounts/_badges.html.erb' do
   end
 
   context 'with user having only non-phishable mfa methods' do
-    let(:user) { build(:user, :with_webauthn) }
+    let(:user) { create(:user, :with_webauthn) }
 
     it 'renders unphishable badge' do
       expect(rendered).to have_content(t('headings.account.unphishable'))

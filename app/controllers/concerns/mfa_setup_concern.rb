@@ -2,6 +2,7 @@
 
 module MfaSetupConcern
   extend ActiveSupport::Concern
+  include AccountRecoveryConcern
 
   def next_setup_path
     return next_account_recovery_setup_path if user_session[:account_recovery_completed]
@@ -50,25 +51,6 @@ module MfaSetupConcern
     return if user_fully_authenticated?
     return unless MfaPolicy.new(current_user).two_factor_enabled?
     redirect_to user_two_factor_authentication_url
-  end
-
-  def replacement_mfa_pending?
-    return false if current_user.blank? || current_user.is_a?(AnonymousUser)
-
-    AccountRecoveryRequest.active_for_user(current_user)&.replacement_mfa_pending? || false
-  end
-
-  # Only enrollment actions are permitted in the password-only recovery session.
-  # In particular, backup-code deletion/editing is not part of replacement setup.
-  def recovery_enrollment_action?
-    actions = {
-      'users/phone_setup' => %w[index create],
-      'users/totp_setup' => %w[new confirm],
-      'users/webauthn_setup' => %w[new confirm],
-      'users/piv_cac_authentication_setup' => %w[new error submit_new_piv_cac],
-      'users/backup_code_setup' => %w[index new create continue refreshed confirm_backup_codes],
-    }
-    actions.fetch(controller_path, []).include?(action_name)
   end
 
   def in_multi_mfa_selection_flow?
@@ -179,19 +161,6 @@ module MfaSetupConcern
   end
 
   private
-
-  # Recovery completes on the first verified replacement; any remaining
-  # selections enroll as a normally authenticated user. Account creation
-  # prompts (second MFA, passkey recommendation) do not apply here.
-  def next_account_recovery_setup_path
-    return confirmation_path if next_setup_choice
-
-    user_session.delete(:account_recovery_completed)
-    user_session.delete(:mfa_selections)
-    user_session.delete(:next_mfa_selection_choice)
-    flash[:success] = t('account_recovery.new_mfa_setup.completed_html')
-    after_sign_in_path_for(current_user)
-  end
 
   def track_user_registration_mfa_setup_complete_event
     analytics.user_registration_mfa_setup_complete(

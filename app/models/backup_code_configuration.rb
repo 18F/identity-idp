@@ -17,7 +17,7 @@ class BackupCodeConfiguration < ApplicationRecord
   end
 
   def selection_presenters
-    return [] unless mfa_enabled?
+    return [] if suspended_for_account_recovery?
 
     [TwoFactorAuthentication::SignInBackupCodeSelectionPresenter.new(user:, configuration: self)]
   end

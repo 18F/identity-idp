@@ -7,6 +7,8 @@ module Users
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
+    allow_account_recovery_enrollment only: %i[new confirm]
+
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :set_totp_setup_presenter

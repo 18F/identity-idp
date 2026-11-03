@@ -8,6 +8,8 @@ module Users
     include RecaptchaConcern
     include ReauthenticationRequiredConcern
 
+    allow_account_recovery_enrollment only: %i[index create]
+
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :set_setup_presenter

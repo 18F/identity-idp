@@ -8,6 +8,11 @@ module Users
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
+    # Deleting or regenerating backup codes is not part of replacement setup.
+    allow_account_recovery_enrollment only: %i[
+      index new create continue refreshed confirm_backup_codes
+    ]
+
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :ensure_backup_codes_in_session, only: %i[continue refreshed]
