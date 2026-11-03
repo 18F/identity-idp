@@ -62,7 +62,7 @@ RSpec.describe OpenidConnect::DocumentImagesController do
 
         let(:private_key) { OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read) }
 
-        it 'returns the image sealed to the registered certificate as a JWE naming its type' do
+        it "returns the image as a JWE encrypted with the SP's public cert" do
           action
 
           expect(response).to be_ok

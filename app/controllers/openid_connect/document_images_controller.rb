@@ -33,11 +33,6 @@ module OpenidConnect
 
     private
 
-    # The image leaves only sealed to the service provider's registered certificate: one compact
-    # JWE (RFC 7516 §7.1) whose `cty` header names the image's media type, served as
-    # `application/jose` (RFC 7516 §9.2), so the edge, the logs and any intermediary see
-    # ciphertext and the holder of the private key decrypts the same bytes the storage held.
-    # A record with no usable RSA key is refused rather than answered in the clear.
     def render_encrypted_image(image, content_type)
       jwe = OpenidConnect::JweEncryptor.encrypt(
         image,
@@ -45,10 +40,13 @@ module OpenidConnect
         typ: nil,
         cty: content_type,
       )
+
       audit(success: true, encrypted: true)
-      render plain: jwe, content_type: 'application/jose'
+
+      render body: jwe, content_type: 'application/jose'
     rescue OpenidConnect::JweEncryptor::NoUsableKeyError, OpenSSL::OpenSSLError
       audit(success: false, denial_reason: :encryption_unavailable)
+
       render json: { error: 'server_error', error_description: 'encryption_unavailable' },
              status: :internal_server_error
     end
