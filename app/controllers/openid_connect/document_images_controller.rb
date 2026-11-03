@@ -17,19 +17,19 @@ module OpenidConnect
         return render_document_images_error
       end
 
-      render_encrypted_image
+      render_encrypted_image(result)
     end
 
     private
 
-    def render_encrypted_image
+    def render_encrypted_image(result)
       jwe = OpenidConnect::JweEncryptor.encrypt(
-        document_images_form.image,
+        result.extra[:image],
         service_provider: current_identity.service_provider_record,
         typ: nil,
-        cty: document_images_form.artifact.content_type,
+        cty: result.extra[:artifact].content_type,
       )
-      track_analytics({ success: true }, encrypted: true)
+      track_analytics(result.to_h.except(:artifact, :image), encrypted: true)
 
       render plain: jwe, content_type: 'application/jose'
     rescue OpenidConnect::JweEncryptor::NoUsableKeyError, OpenSSL::OpenSSLError

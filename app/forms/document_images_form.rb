@@ -30,6 +30,10 @@ class DocumentImagesForm
     FormResponse.new(
       success:,
       errors:,
+      extra: {
+        artifact: success ? artifact : nil,
+        image: success ? image : nil,
+      }.compact,
     )
   end
 
@@ -62,14 +66,6 @@ class DocumentImagesForm
         error_description: errors.map { |e| e.type }.join(' '),
       )
     end
-  end
-
-  def artifact
-    @artifact ||= active_profile&.document_artifacts&.retained&.find_by(image_type: image_type)
-  end
-
-  def image
-    @image ||= read_image(artifact)
   end
 
   private
@@ -171,5 +167,13 @@ class DocumentImagesForm
     doc_reader.read(name: artifact&.storage_name, encryption_key: artifact&.encryption_key)
   rescue Encryption::EncryptionError, Redis::BaseError
     nil
+  end
+
+  def artifact
+    @artifact ||= active_profile&.document_artifacts&.retained&.find_by(image_type: image_type)
+  end
+
+  def image
+    @image ||= read_image(artifact)
   end
 end

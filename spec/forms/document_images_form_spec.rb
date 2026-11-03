@@ -63,8 +63,7 @@ RSpec.describe DocumentImagesForm do
   describe '#submit' do
     it 'returns the image and artifact' do
       expect(response).to be_success
-      expect(subject.image).to eq image
-      expect(subject.artifact).to eq artifact
+      expect(response.extra).to include(image:, artifact:)
       expect(form.errors).to be_blank
     end
 
