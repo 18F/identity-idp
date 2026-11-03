@@ -2,30 +2,52 @@
 
 module AccountRecovery
   class NewMfaSetupController < ApplicationController
-    before_action :confirm_password_verified_request
+    before_action :confirm_replacement_mfa_pending
 
     def show
       analytics.account_recovery_new_mfa_setup_visit(
-        recovery_state: account_recovery_request.state,
+        recovery_state: AccountRecoveryRequest::REPLACEMENT_MFA_PENDING,
       )
+      prepare_selection
     end
 
     def create
-      render_not_found
+      prepare_selection
+      result = @two_factor_options_form.submit(selection: Array(selection_params[:selection]))
+
+      if result.success?
+        set_mfa_selections(@two_factor_options_form.selection)
+        redirect_to first_mfa_selection_path
+      else
+        flash.now[:error] = result.first_error_message
+        render :show
+      end
     end
 
     private
 
-    def confirm_password_verified_request
-      render_not_found if account_recovery_request.blank?
+    def confirm_replacement_mfa_pending
+      render_not_found unless replacement_mfa_pending?
     end
 
-    # confirms that the current request is associated with a password-verified
-    def account_recovery_request
-      return @account_recovery_request if defined?(@account_recovery_request)
-      return if !user_signed_in? || user_fully_authenticated?
+    def prepare_selection
+      @two_factor_options_form = TwoFactorOptionsForm.new(
+        user: current_user,
+        phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
+        piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
+      )
+      @presenter = TwoFactorOptionsPresenter.new(
+        user: current_user,
+        user_agent: request.user_agent,
+        phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
+        piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
+        show_skip_additional_mfa_link: false,
+      )
+    end
 
-      @account_recovery_request = AccountRecoveryRequest.password_verified_for_user(current_user)
+    def selection_params
+      params.fetch(:two_factor_options_form, ActionController::Parameters.new)
+        .permit(selection: [])
     end
   end
 end

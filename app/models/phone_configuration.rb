@@ -1,12 +1,17 @@
 # frozen_string_literal: true
 
 class PhoneConfiguration < ApplicationRecord
+  include AccountRecoverySuspendable
   include EncryptableAttribute
 
   belongs_to :user, inverse_of: :phone_configurations
   validates :encrypted_phone, presence: true
 
   encrypted_attribute(name: :phone)
+
+  def mfa_enabled?
+    !suspended_for_account_recovery? && self[:mfa_enabled]
+  end
 
   enum :delivery_preference, { sms: 0, voice: 1 }
 
@@ -19,6 +24,8 @@ class PhoneConfiguration < ApplicationRecord
   end
 
   def selection_presenters
+    return [] if suspended_for_account_recovery?
+
     options = []
 
     if capabilities.supports_sms?

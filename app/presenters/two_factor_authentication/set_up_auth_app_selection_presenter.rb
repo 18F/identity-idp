@@ -7,7 +7,7 @@ module TwoFactorAuthentication
     end
 
     def mfa_configuration_count
-      user.auth_app_configurations.count
+      MfaContext.new(user).auth_app_configurations.count
     end
 
     def label

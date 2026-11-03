@@ -8,6 +8,11 @@ module Users
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
+    # Deleting or regenerating backup codes is not part of replacement setup.
+    allow_account_recovery_enrollment only: %i[
+      index new create continue refreshed confirm_backup_codes
+    ]
+
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :ensure_backup_codes_in_session, only: %i[continue refreshed]
@@ -54,6 +59,14 @@ module Users
     end
 
     def continue
+      if replacement_mfa_pending?
+        unless params.dig(:backup_code_accepted_form, :backup_code_notice_accepted) == '1'
+          return redirect_to backup_code_refreshed_url
+        end
+        handle_valid_verification_for_confirmation_context(
+          auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
+        )
+      end
       send_mfa_added_email(event_type: :backup_codes_added)
       flash[:success] = t('notices.backup_codes_configured')
       analytics.multi_factor_auth_setup(**analytics_properties)
@@ -83,6 +96,8 @@ module Users
     private
 
     def validate_multi_mfa_selection
+      return if replacement_mfa_pending?
+
       redirect_to backup_code_confirm_setup_url unless in_multi_mfa_selection_flow?
     end
 
@@ -91,9 +106,11 @@ module Users
     end
 
     def track_backup_codes_created
-      handle_valid_verification_for_confirmation_context(
-        auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
-      )
+      unless replacement_mfa_pending?
+        handle_valid_verification_for_confirmation_context(
+          auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
+        )
+      end
 
       analytics.backup_code_created(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,

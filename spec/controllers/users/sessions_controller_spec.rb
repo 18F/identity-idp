@@ -1018,7 +1018,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
     it 'redirects a temporary recovery session to replacement MFA setup' do
       user = create(:user, :fully_registered)
-      create(:account_recovery_request, :password_verified, user: user)
+      create(:account_recovery_request, :replacement_mfa_pending, user: user)
 
       post :create, params: { user: { email: user.email, password: user.password } }
 
@@ -1112,9 +1112,9 @@ RSpec.describe Users::SessionsController, devise: true do
         expect(response).to redirect_to user_two_factor_authentication_url
       end
 
-      it 'resumes a password-verified recovery session at the same continuation as sign-in' do
+      it 'resumes a recovery awaiting replacement MFA at the same continuation as sign-in' do
         user = create(:user, :fully_registered)
-        create(:account_recovery_request, :password_verified, user: user)
+        create(:account_recovery_request, :replacement_mfa_pending, user: user)
         stub_sign_in_before_2fa(user)
 
         get :new

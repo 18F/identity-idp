@@ -2,8 +2,11 @@
 
 module MfaSetupConcern
   extend ActiveSupport::Concern
+  include AccountRecoveryConcern
 
   def next_setup_path
+    return next_account_recovery_setup_path if user_session[:account_recovery_completed]
+
     if next_setup_choice
       confirmation_path
     elsif recommend_webauthn_platform_for_sms_user?
@@ -39,6 +42,12 @@ module MfaSetupConcern
 
   def confirm_user_authenticated_for_2fa_setup
     authenticate_user!(force: true)
+    return if performed?
+    if replacement_mfa_pending?
+      return if recovery_enrollment_action?
+
+      return redirect_to account_recovery_new_mfa_setup_url
+    end
     return if user_fully_authenticated?
     return unless MfaPolicy.new(current_user).two_factor_enabled?
     redirect_to user_two_factor_authentication_url

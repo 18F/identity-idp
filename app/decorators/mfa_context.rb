@@ -9,20 +9,22 @@ class MfaContext
 
   def phone_configurations
     if user.present?
-      user.phone_configurations
+      user.phone_configurations.available_for_authentication
     else
       PhoneConfiguration.none
     end
   end
 
   def phone_configuration(id = nil)
-    return user.default_phone_configuration if id.blank?
+    if id.blank?
+      return phone_configurations.order('made_default_at DESC NULLS LAST, created_at').first
+    end
     phone_configurations.find { |cfg| cfg.id.to_s == id.to_s }
   end
 
   def webauthn_configurations
     if user.present?
-      user.webauthn_configurations
+      user.webauthn_configurations.available_for_authentication
     else
       WebauthnConfiguration.none
     end
@@ -30,7 +32,7 @@ class MfaContext
 
   def webauthn_roaming_configurations
     if user.present?
-      user.webauthn_configurations.where(platform_authenticator: [false, nil])
+      webauthn_configurations.where(platform_authenticator: [false, nil])
     else
       WebauthnConfiguration.none
     end
@@ -38,7 +40,7 @@ class MfaContext
 
   def webauthn_platform_configurations
     if user.present?
-      user.webauthn_configurations.where(platform_authenticator: true)
+      webauthn_configurations.where(platform_authenticator: true)
     else
       WebauthnConfiguration.none
     end
@@ -46,7 +48,7 @@ class MfaContext
 
   def backup_code_configurations
     if user.present?
-      user.backup_code_configurations.unused
+      user.backup_code_configurations.available_for_authentication.unused
     else
       BackupCodeConfiguration.none
     end
@@ -54,7 +56,7 @@ class MfaContext
 
   def piv_cac_configurations
     if user.present?
-      user.piv_cac_configurations
+      user.piv_cac_configurations.available_for_authentication
     else
       PivCacConfiguration.none
     end
@@ -62,7 +64,7 @@ class MfaContext
 
   def auth_app_configurations
     if user.present?
-      user.auth_app_configurations
+      user.auth_app_configurations.available_for_authentication
     else
       AuthAppConfiguration.none
     end
