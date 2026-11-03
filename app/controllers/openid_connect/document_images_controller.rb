@@ -36,7 +36,7 @@ module OpenidConnect
       track_analytics(
         {
           success: false,
-          error_details: { encryption: ['encryption_unavailable'] },
+          error_details: { encryption: { encryption_unavailable: true } },
         },
       )
 
@@ -48,6 +48,8 @@ module OpenidConnect
       @document_images_form ||= DocumentImagesForm.new(
         identity: current_identity,
         document_images_params:,
+        audience_url:
+           api_openid_connect_document_image_url(image_type: params[:image_type]),
       )
     end
 

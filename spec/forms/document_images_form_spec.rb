@@ -33,27 +33,24 @@ RSpec.describe DocumentImagesForm do
       iat: Time.zone.now.to_i,
     }
   end
-  let(:document_images_params) do
-    {
-      image_type:,
-      client_assertion:,
-      client_assertion_type:,
-    }
-  end
+  let(:document_images_params) { { image_type:, client_assertion:, client_assertion_type: } }
   let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
-  let(:redis_storage) { EncryptedDocStorage::RedisStorage.new }
-  let(:written) { EncryptedDocStorage::DocWriter.new(storage: redis_storage).write(image:) }
+  let(:storage_name) { 'encrypted_images/test-image' }
+  let(:encryption_key) { Base64.strict_encode64('x' * 32) }
+  let(:doc_reader) { instance_double(EncryptedDocStorage::DocReader, read: image) }
   let!(:artifact) do
     create(
       :document_artifact,
       profile:,
       image_type: artifact_image_type,
-      storage_name: written.name,
-      encryption_key: written.encryption_key,
+      storage_name:,
+      encryption_key:,
     )
   end
 
-  subject(:form) { described_class.new(identity:, document_images_params:) }
+  subject(:form) do
+    described_class.new(identity:, document_images_params:, audience_url: aud, doc_reader:)
+  end
 
   before do
     allow(IdentityConfig.store).to receive(:document_images_sharing_enabled).and_return(true)
@@ -61,18 +58,13 @@ RSpec.describe DocumentImagesForm do
       .and_return([identity.service_provider])
   end
 
-  after { redis_storage.delete_image(name: written.name) }
-
   let(:response) { form.submit }
 
   describe '#submit' do
     it 'returns the image and artifact' do
       expect(response).to be_success
-      expect(response.extra).to include(
-        image:,
-        artifact:,
-        profile_id: profile.id,
-      )
+      expect(subject.image).to eq image
+      expect(subject.artifact).to eq artifact
       expect(form.errors).to be_blank
     end
 
@@ -82,7 +74,7 @@ RSpec.describe DocumentImagesForm do
 
       it 'is invalid' do
         expect(response).to_not be_success
-        expect(form.errors.details[:code_verifier]).to include(
+        expect(form.errors.details[:client_assertion]).to include(
           error: 'client_assertion_required',
           type: :client_assertion_required,
         )
@@ -101,17 +93,23 @@ RSpec.describe DocumentImagesForm do
     end
 
     context 'with a client assertion for another audience' do
-      let(:aud) do
-        Rails.application.routes.url_helpers.api_openid_connect_token_url
+      let(:assertion_payload) do
+        {
+          iss: identity.service_provider,
+          sub: identity.service_provider,
+          aud: wrong_aud,
+          jti: SecureRandom.hex,
+          exp: 5.minutes.from_now.to_i,
+          iat: Time.zone.now.to_i,
+        }
       end
-
-      let(:url) do
-        Rails.application.routes.url_helpers.api_openid_connect_document_image_url(image_type:)
+      let(:wrong_aud) do
+        Rails.application.routes.url_helpers.api_openid_connect_token_url
       end
       it 'is invalid' do
         expect(response).to_not be_success
         expect(form.errors.details[:client_assertion]).to include(
-          error: I18n.t('openid_connect.token.errors.invalid_aud', url:),
+          error: I18n.t('openid_connect.token.errors.invalid_aud', url: aud),
           type: :invalid_aud,
         )
       end
@@ -189,7 +187,7 @@ RSpec.describe DocumentImagesForm do
     end
 
     context 'when the image object is unavailable' do
-      before { redis_storage.delete_image(name: written.name) }
+      let(:doc_reader) { instance_double(EncryptedDocStorage::DocReader, read: nil) }
 
       it 'is invalid' do
         response = form.submit
@@ -223,7 +221,7 @@ RSpec.describe DocumentImagesForm do
         expect(error_response).to have_attributes(
           status: :unauthorized,
           error: 'invalid_client',
-          error_description: 'Code verifier client_assertion_required',
+          error_description: 'client_assertion_required',
         )
       end
     end
@@ -237,28 +235,31 @@ RSpec.describe DocumentImagesForm do
         expect(error_response).to have_attributes(
           status: :unauthorized,
           error: 'invalid_client',
-          error_description: 'Client assertion Signature verification failed',
+          error_description: 'Signature verification failed',
         )
       end
     end
 
     context 'with a client assertion for another audience' do
-      let(:aud) do
-        Rails.application.routes.url_helpers.api_openid_connect_token_url
+      let(:assertion_payload) do
+        {
+          iss: identity.service_provider,
+          sub: identity.service_provider,
+          aud: wrong_aud,
+          jti: SecureRandom.hex,
+          exp: 5.minutes.from_now.to_i,
+          iat: Time.zone.now.to_i,
+        }
       end
-
-      let(:url) do
-        Rails.application.routes.url_helpers.api_openid_connect_document_image_url(image_type:)
+      let(:wrong_aud) do
+        Rails.application.routes.url_helpers.api_openid_connect_token_url
       end
 
       it 'returns an invalid client response' do
         expect(error_response).to have_attributes(
           status: :unauthorized,
           error: 'invalid_client',
-          error_description: "Client assertion #{I18n.t(
-            'openid_connect.token.errors.invalid_aud',
-            url:,
-          )}",
+          error_description: I18n.t('openid_connect.token.errors.invalid_aud', url: aud).to_s,
         )
       end
     end
@@ -266,11 +267,11 @@ RSpec.describe DocumentImagesForm do
     context 'when the document_images scope was not granted' do
       let(:scope) { 'openid profile' }
 
-      it 'returns a forbidden response' do
+      it 'returns an insufficient_scope response' do
         expect(error_response).to have_attributes(
           status: :forbidden,
-          error: 'document_images sharing is not authorized',
-          error_description: 'Scope no_valid_scope',
+          error: 'insufficient_scope',
+          error_description: 'no_valid_scope',
         )
       end
     end
@@ -281,8 +282,8 @@ RSpec.describe DocumentImagesForm do
       it 'returns a forbidden response' do
         expect(error_response).to have_attributes(
           status: :forbidden,
-          error: 'document_images sharing is not authorized',
-          error_description: 'Acr values no_identity_verification',
+          error: 'insufficient_scope',
+          error_description: 'no_identity_verification',
         )
       end
     end
@@ -293,11 +294,11 @@ RSpec.describe DocumentImagesForm do
           .and_return([])
       end
 
-      it 'returns a forbidden response' do
+      it 'returns an insufficient_scope response' do
         expect(error_response).to have_attributes(
           status: :forbidden,
-          error: 'document_images sharing is not authorized',
-          error_description: 'Scope unauthorized_scope',
+          error: 'insufficient_scope',
+          error_description: 'unauthorized_scope',
         )
       end
     end
@@ -305,11 +306,11 @@ RSpec.describe DocumentImagesForm do
     context 'when the user has not consented to biometric sharing' do
       before { identity.update!(biometric_sharing_consent_at: nil) }
 
-      it 'returns a forbidden response' do
+      it 'returns an insufficient_scope response' do
         expect(error_response).to have_attributes(
           status: :forbidden,
-          error: 'document_images sharing is not authorized',
-          error_description: 'Scope not_consented_to',
+          error: 'insufficient_scope',
+          error_description: 'not_consented_to',
         )
       end
     end
@@ -321,20 +322,20 @@ RSpec.describe DocumentImagesForm do
       it 'returns a not found response' do
         expect(error_response).to have_attributes(
           status: :not_found,
-          error: 'images not found',
-          error_description: 'Artifact not_found',
+          error: 'image not found',
+          error_description: 'not_found',
         )
       end
     end
 
     context 'when the image object is unavailable' do
-      before { redis_storage.delete_image(name: written.name) }
+      let(:doc_reader) { instance_double(EncryptedDocStorage::DocReader, read: nil) }
 
       it 'returns a not found response' do
         expect(error_response).to have_attributes(
           status: :not_found,
-          error: 'images not found',
-          error_description: 'Image object_unavailable',
+          error: 'image not found',
+          error_description: 'object_unavailable',
         )
       end
     end
