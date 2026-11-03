@@ -6,10 +6,14 @@ module DocAuth
       class ImagesRequest < DocAuth::Socure::Request
         MAX_IMAGE_SIZE = 5 * 1024 * 1024 # 5 MB
 
-        def initialize(reference_id:, passport_book:, user:)
+        def initialize(reference_id:, passport_book:, user:, image_types: nil)
           @reference_id = reference_id
           @passport_book = passport_book
           @user = user
+
+          # image_types is used for historic attempts, but may not be present
+          # in the case of persisting artifacts
+          @image_types = image_types
         end
 
         def fetch
@@ -77,6 +81,13 @@ module DocAuth
         end
 
         def endpoint
+          if DocAuth::Mock::Socure.instance.enabled?
+            uri = URI(DocAuth::Mock::Socure.instance.images_endpoint(reference_id:))
+            params = { mock_image_types: @image_types.map(&:to_s) }.to_query
+            uri.query = params
+            return uri
+          end
+
           @endpoint ||= URI.join(
             IdentityConfig.store.socure_docv_images_request_endpoint,
             reference_id,
