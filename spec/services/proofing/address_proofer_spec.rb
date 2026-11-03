@@ -227,20 +227,45 @@ RSpec.describe Proofing::AddressProofer do
 
       context 'when proofing agent is true' do
         subject { described_class.new(user_uuid:, user_email:, is_proofing_agent: true) }
-        before do
-          allow(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
-            .and_return(:socure)
-          expect(Db::SpCost::AddSpCost).to receive(:call).with(
-            service_provider,
-            :socure_address,
-            transaction_id: socure_phone_risk_result.transaction_id,
-          )
+
+        context 'when idv_proofing_agent_phone_vendor is socure' do
+          before do
+            allow(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
+              .and_return(:socure)
+            expect(Db::SpCost::AddSpCost).to receive(:call).with(
+              service_provider,
+              :socure_address,
+              transaction_id: socure_phone_risk_result.transaction_id,
+            )
+          end
+
+          it 'uses idv_proofing_agent_phone_vendor and passes is_proofing_agent to the config' do
+            expect(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
+              .and_return(:socure)
+            expect(Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer).to receive(:new)
+              .with(have_attributes(is_proofing_agent: true))
+              .and_return(phone_risk_proofer)
+            subject.proof(applicant_pii:, current_sp: service_provider)
+          end
         end
 
-        it 'calls set idv_proofing_agent_phone_vendor' do
-          expect(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
-            .and_return(:socure)
-          subject.proof(applicant_pii:, current_sp: service_provider)
+        context 'when idv_proofing_agent_phone_vendor is lexis_nexis_ddp' do
+          before do
+            allow(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
+              .and_return(:lexis_nexis_ddp)
+            expect(Db::SpCost::AddSpCost).to receive(:call).with(
+              service_provider,
+              :lexis_nexis_address,
+              transaction_id: ddp_phone_finder_result.transaction_id,
+            )
+          end
+
+          it 'passes is_proofing_agent to PhoneFinderProofer' do
+            expect(Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer).to receive(:new)
+              .with(hash_including(is_proofing_agent: true))
+              .and_return(ddp_phone_finder_proofer)
+            subject.proof(applicant_pii:, current_sp: service_provider)
+          end
         end
       end
     end

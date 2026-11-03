@@ -5,6 +5,13 @@ module Proofing
     module IdPlus
       module Responses
         class PhoneRiskResponse < Proofing::Socure::IdPlus::Response
+          PROOFING_AGENT_BYPASSED_REASON_CODES = %w[R613 R614 R615 R616 R617].freeze
+
+          def initialize(http_response, is_proofing_agent: false)
+            super(http_response)
+            @is_proofing_agent = is_proofing_agent
+          end
+
           def to_h
             {
               phonerisk: {
@@ -35,7 +42,7 @@ module Proofing
 
           private
 
-          attr_reader :http_response
+          attr_reader :http_response, :is_proofing_agent
 
           def phonerisk
             phonerisk_object = http_response.body['phoneRisk']
@@ -100,7 +107,7 @@ module Proofing
           end
 
           def has_additional_verification_error_reason_codes?
-            (error_reason_codes - name_verification_error_reason_codes).any?
+            (error_reason_codes - name_verification_error_reason_codes - bypassed_reason_codes).any?
           end
 
           def error_reason_codes
@@ -114,7 +121,12 @@ module Proofing
           end
 
           def auto_failure_reason_codes
-            IdentityConfig.store.idv_socure_phonerisk_auto_failure_reason_codes
+            IdentityConfig.store.idv_socure_phonerisk_auto_failure_reason_codes -
+              bypassed_reason_codes
+          end
+
+          def bypassed_reason_codes
+            is_proofing_agent ? PROOFING_AGENT_BYPASSED_REASON_CODES : []
           end
         end
       end
