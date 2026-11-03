@@ -32,6 +32,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       ial: 2,
     )
   end
+  let!(:sts_consent) { create(:user_consent_sts, user:, target_app: target_issuer) }
   let(:scope) { 'openid token_exchange:passport' }
   let(:actor_return_log) do
     create(
@@ -236,6 +237,15 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       it 'is invalid' do
         expect(form.submit.success?).to eq(false)
         expect(form.errors[:subject_token]).to include('is invalid')
+      end
+    end
+
+    context 'when the user has not consented to the target app' do
+      before { sts_consent.destroy! }
+
+      it 'is invalid' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.errors.details[:subject_token]).to include(error: :invalid_audience)
       end
     end
 

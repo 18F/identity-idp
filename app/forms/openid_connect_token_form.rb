@@ -202,14 +202,11 @@ class OpenidConnectTokenForm
   end
 
   def validate_consent
-    if identity.user.blank?
-      errors.add(:code, :user_not_found)
-      return
-    end
+    return if identity.user.blank?
 
     return if UserConsentSts.consent_valid?(user: identity.user, target_app:)
 
-    errors.add(:code, :sts_consent_required, message: 'STS consent required')
+    errors.add(:code, :delegation_consent_required, message: 'Delegation consent required')
   end
 
   def target_app
