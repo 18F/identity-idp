@@ -47,7 +47,7 @@ RSpec.describe 'Test::AccountRecovery', type: :request do
       post test_account_recovery_grant_path(id: recovery_request.id)
 
       token = flash[:granted_links]['verify'][/token=([^&]+)/, 1]
-      result = AccountRecovery::ValidateGrantedToken.new(token: token).call
+      result = AccountRecovery::VerifyLink.new(token: token).call
 
       expect(result).to be_success
     end

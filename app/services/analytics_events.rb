@@ -172,12 +172,30 @@ module AnalyticsEvents
     track_event(:account_recovery_options_visit, **extra)
   end
 
-  # @param [Boolean] success Whether the password was correct
+  # @param [Boolean] success Whether the password was correct and the recovery link was consumed
+  # @param [Hash] errors Errors resulting from the verification attempt
+  # @param [String, nil] failure_reason Bounded reason the verification was rejected
+  # @param [String, nil] recovery_state State of the recovery request after verification
   # @param [Boolean] rate_limited Whether the attempt was blocked by rate limiting
   # A user re-entered their password after redeeming an account-preserving MFA
   # recovery link
-  def account_recovery_password_verification(success:, rate_limited: false, **extra)
-    track_event(:account_recovery_password_verification, success:, rate_limited:, **extra)
+  def account_recovery_password_verification(
+    success:,
+    errors: nil,
+    failure_reason: nil,
+    recovery_state: nil,
+    rate_limited: false,
+    **extra
+  )
+    track_event(
+      :account_recovery_password_verification,
+      success:,
+      errors:,
+      failure_reason:,
+      recovery_state:,
+      rate_limited:,
+      **extra,
+    )
   end
 
   # @param [Boolean] success Whether the recovery request was created

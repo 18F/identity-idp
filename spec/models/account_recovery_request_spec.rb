@@ -235,6 +235,28 @@ RSpec.describe AccountRecoveryRequest do
     end
   end
 
+  describe '.password_verified_for_user' do
+    it 'returns the user’s password-verified request' do
+      request = create(:account_recovery_request, :password_verified, user: user)
+
+      expect(described_class.password_verified_for_user(user)).to eq(request)
+    end
+
+    it 'ignores requests in other states' do
+      (AccountRecoveryRequest::STATES - [AccountRecoveryRequest::PASSWORD_VERIFIED]).each do |state|
+        request = create(:account_recovery_request, user: create(:user), state: state)
+
+        expect(described_class.password_verified_for_user(request.user)).to be_nil, state
+      end
+    end
+
+    it 'ignores requests belonging to other users' do
+      create(:account_recovery_request, :password_verified)
+
+      expect(described_class.password_verified_for_user(user)).to be_nil
+    end
+  end
+
   describe 'one active request per user' do
     it 'rejects a second active request at the database level' do
       create(:account_recovery_request, :waiting, user: user)

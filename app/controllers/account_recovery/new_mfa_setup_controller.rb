@@ -25,10 +25,7 @@ module AccountRecovery
       return @account_recovery_request if defined?(@account_recovery_request)
       return if !user_signed_in? || user_fully_authenticated?
 
-      @account_recovery_request = AccountRecoveryRequest.active.find_by(
-        user: current_user,
-        state: AccountRecoveryRequest::PASSWORD_VERIFIED,
-      )
+      @account_recovery_request = AccountRecoveryRequest.password_verified_for_user(current_user)
     end
   end
 end

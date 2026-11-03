@@ -215,6 +215,7 @@ RSpec.describe AccountRecovery::VerifyController do
       expect(@analytics).to have_logged_event(
         :account_recovery_password_verification,
         success: true,
+        recovery_state: AccountRecoveryRequest::PASSWORD_VERIFIED,
         rate_limited: false,
       )
     end
@@ -232,6 +233,8 @@ RSpec.describe AccountRecovery::VerifyController do
       expect(@analytics).to have_logged_event(
         :account_recovery_password_verification,
         success: false,
+        errors: { password: ['incorrect_password'] },
+        failure_reason: 'incorrect_password',
         rate_limited: false,
       )
 

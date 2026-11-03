@@ -4,16 +4,14 @@ module AccountRecovery
   # The session token keeps the password URL clean; it does not authenticate
   # the user. Only a correct password consumes it and creates a pre-2FA session.
   class VerifyController < ApplicationController
-    before_action :verify_token, if: -> {
-      action_name == 'create' || token_param || session[:account_recovery_granted_token]
-    }
+    before_action :verify_link, if: :link_evidence_present?
     before_action :confirm_recovery_request
     before_action :confirm_password_form, only: :create
 
     def show
       if token_param
         redirect_to account_recovery_verify_url
-      elsif session[:account_recovery_granted_token]
+      elsif session_token
         render_password_form
       else
         redirect_to account_recovery_new_mfa_setup_url
@@ -23,49 +21,53 @@ module AccountRecovery
     def create
       return handle_rate_limited_password if password_rate_limiter.limited?
 
-      if recovery_user.valid_password?(password)
-        handle_valid_password
+      result = AccountRecovery::VerifyPassword.new(
+        account_recovery_request: account_recovery_request,
+        password: password,
+      ).call
+
+      analytics.account_recovery_password_verification(**result.to_h)
+
+      if result.success?
+        handle_password_verified
+      elsif result.errors.key?(:password)
+        handle_incorrect_password
       else
-        handle_invalid_password
+        handle_invalid_token
       end
     end
 
     private
 
+    def link_evidence_present?
+      action_name == 'create' || token_param.present? || session_token.present?
+    end
+
     def token_param
       params[:token].presence if action_name == 'show'
     end
 
-    def verify_token
-      @token = token_param || session[:account_recovery_granted_token]
+    def session_token
+      session[:account_recovery_granted_token]
+    end
+
+    def verify_link
+      token = token_param || session_token
       sign_out if user_signed_in?
 
       return handle_rate_limited_token if token_rate_limiter.limited?
 
       token_rate_limiter.increment!
 
-      validator = AccountRecovery::ValidateGrantedToken.new(token: @token)
-      result = validator.call
+      verifier = AccountRecovery::VerifyLink.new(token: token)
+      result = verifier.call
 
       analytics.account_recovery_link_validation(**result.to_h)
 
-      if result.success?
-        handle_valid_token(validator.account_recovery_request)
-      else
-        handle_invalid_token
-      end
-    end
+      return handle_invalid_token unless result.success?
 
-    def handle_valid_token(recovery_request)
-      recovery_request.with_lock do
-        return handle_invalid_token unless valid_token?(recovery_request)
-
-        if recovery_request.state == AccountRecoveryRequest::GRANTED
-          recovery_request.transition_to!(AccountRecoveryRequest::LINK_VERIFIED)
-        end
-      end
-      @account_recovery_request = recovery_request
-      session[:account_recovery_granted_token] = @token
+      @account_recovery_request = verifier.account_recovery_request
+      session[:account_recovery_granted_token] = token
     end
 
     def handle_invalid_token
@@ -82,30 +84,16 @@ module AccountRecovery
       redirect_to root_url
     end
 
-    def handle_valid_password
-      # Consume the token atomically only after the password succeeds.
-      account_recovery_request.with_lock do
-        return handle_invalid_token unless valid_token?(account_recovery_request)
-        return handle_invalid_token unless account_recovery_request.transition_to!(
-          AccountRecoveryRequest::PASSWORD_VERIFIED,
-          token_fingerprint: nil,
-          token_expires_at: nil,
-        )
-      end
-
+    def handle_password_verified
       password_rate_limiter.reset!
-      analytics.account_recovery_password_verification(success: true)
-
       session.delete(:account_recovery_granted_token)
       sign_in_partially
 
       redirect_to account_recovery_new_mfa_setup_url
     end
 
-    def handle_invalid_password
+    def handle_incorrect_password
       password_rate_limiter.increment!
-
-      analytics.account_recovery_password_verification(success: false)
 
       flash.now[:error] = t('errors.confirm_password_incorrect')
       render_password_form
@@ -123,11 +111,6 @@ module AccountRecovery
       sign_in(:user, recovery_user)
 
       user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = true
-    end
-
-    def valid_token?(recovery_request)
-      validator = AccountRecovery::ValidateGrantedToken.new(token: @token)
-      validator.call.success? && validator.account_recovery_request == recovery_request
     end
 
     def render_password_form
@@ -149,10 +132,7 @@ module AccountRecovery
       return @account_recovery_request if defined?(@account_recovery_request)
       return unless user_signed_in?
 
-      @account_recovery_request = AccountRecoveryRequest.active.find_by(
-        user: current_user,
-        state: AccountRecoveryRequest::PASSWORD_VERIFIED,
-      )
+      @account_recovery_request = AccountRecoveryRequest.password_verified_for_user(current_user)
     end
 
     def recovery_user
