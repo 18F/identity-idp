@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module AccountRecovery
-  # Called inside the password-verification transaction. Do not delete credentials
-  # here: the user has not yet verified a replacement.
+  # Runs inside the password-verification lock. Credentials are retained, not
+  # deleted: the user has not yet verified a replacement.
   class SuspendExistingMfa
     CONFIGURATION_ASSOCIATIONS = %i[
       phone_configurations auth_app_configurations webauthn_configurations
@@ -13,25 +13,21 @@ module AccountRecovery
       @account_recovery_request = account_recovery_request
     end
 
+    # @return [Boolean] whether the request advanced to replacement_mfa_pending
     def call
-      account_recovery_request.with_lock do
-        return false unless account_recovery_request.state ==
-                            AccountRecoveryRequest::PASSWORD_VERIFIED
-
-        CONFIGURATION_ASSOCIATIONS.each do |association|
-          # Suspend the stored set atomically without running credential enrollment callbacks.
-          # rubocop:disable Rails/SkipsModelValidations
-          user.public_send(association).update_all(
-            account_recovery_request_id: account_recovery_request.id,
-          )
-          # rubocop:enable Rails/SkipsModelValidations
-        end
-        user.direct_otp = nil
-        user.direct_otp_sent_at = nil
-        user.remember_device_revoked_at = Time.zone.now
-        user.save!
-        account_recovery_request.transition_to!(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
+      CONFIGURATION_ASSOCIATIONS.each do |association|
+        # rubocop:disable Rails/SkipsModelValidations
+        user.public_send(association).update_all(
+          account_recovery_request_id: account_recovery_request.id,
+        )
+        # rubocop:enable Rails/SkipsModelValidations
       end
+      user.update!(
+        direct_otp: nil,
+        direct_otp_sent_at: nil,
+        remember_device_revoked_at: Time.zone.now,
+      )
+      account_recovery_request.transition_to!(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
     end
 
     private

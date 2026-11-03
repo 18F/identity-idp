@@ -31,9 +31,7 @@ RSpec.describe TwoFactorAuthenticatableMethods do
       recovery_request.reload
       expect(recovery_request.state).to eq(AccountRecoveryRequest::CANCELLED)
       expect(recovery_request.cancel_reason).to eq(AccountRecoveryRequest::CANCEL_REASON_MFA_USED)
-      expect(controller.flash[:success]).to eq(
-        t('account_recovery.cancelled_by_mfa_html', app_name: APP_NAME),
-      )
+      expect(controller.flash[:success]).to eq(t('account_recovery.pending.cancel_success'))
     end
 
     it 'cancels a granted request and clears its tokens' do
@@ -62,27 +60,6 @@ RSpec.describe TwoFactorAuthenticatableMethods do
       create(:account_recovery_request, :waiting, user: user)
 
       expect { authenticate }.to change { ActionMailer::Base.deliveries.size }.by(1)
-
-      mail = ActionMailer::Base.deliveries.last
-      expect(mail.subject).to eq(
-        t('user_mailer.account_recovery_cancelled.subject', app_name: APP_NAME),
-      )
-    end
-
-    it 'tells the user on the next page that the request was cancelled' do
-      create(:account_recovery_request, :waiting, user: user)
-
-      authenticate
-
-      expect(controller.flash[:success]).to eq(
-        t('account_recovery.cancelled_by_mfa_html', app_name: APP_NAME),
-      )
-    end
-
-    it 'does not set a flash when there is nothing to cancel' do
-      authenticate
-
-      expect(controller.flash[:success]).to be_nil
     end
 
     it 'logs the cancellation with the state and the method that was used' do

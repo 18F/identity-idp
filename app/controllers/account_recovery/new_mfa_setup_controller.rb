@@ -15,15 +15,11 @@ module AccountRecovery
       prepare_selection
       result = @two_factor_options_form.submit(selection: Array(selection_params[:selection]))
 
-      if result.success? && allowed_selection?(@two_factor_options_form.selection)
-        user_session[:platform_authenticator_available] =
-          params[:platform_authenticator_available] == 'true'
-        user_session[:context] = 'confirmation'
+      if result.success?
         set_mfa_selections(@two_factor_options_form.selection)
         redirect_to first_mfa_selection_path
       else
-        flash.now[:error] = result.first_error_message ||
-                            t('errors.two_factor_auth_setup.must_select_option')
+        flash.now[:error] = result.first_error_message
         render :show
       end
     end
@@ -32,11 +28,6 @@ module AccountRecovery
 
     def confirm_replacement_mfa_pending
       render_not_found unless replacement_mfa_pending?
-    end
-
-    def allowed_selection?(selection)
-      allowed_choices = @presenter.options.reject(&:disabled?).map { |option| option.type.to_s }
-      selection.present? && (selection - allowed_choices).empty?
     end
 
     def prepare_selection

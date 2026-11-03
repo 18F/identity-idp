@@ -946,12 +946,12 @@ RSpec.describe Users::SessionsController, devise: true do
         allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
       end
 
-      it 'offers existing MFA methods after password authentication' do
+      it 'routes to the first MFA method after password authentication' do
         create(:account_recovery_request, :waiting, user: user)
 
         post :create, params: { user: { email: user.email, password: user.password } }
 
-        expect(response).to redirect_to(login_two_factor_options_url)
+        expect(response).to redirect_to(user_two_factor_authentication_url)
       end
 
       it 'still offers existing MFA methods when the feature is disabled' do
@@ -960,7 +960,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
         post :create, params: { user: { email: user.email, password: user.password } }
 
-        expect(response).to redirect_to(login_two_factor_options_url)
+        expect(response).to redirect_to(user_two_factor_authentication_url)
       end
 
       %i[cancelled completed expired].each do |state|
@@ -992,7 +992,7 @@ RSpec.describe Users::SessionsController, devise: true do
       AccountRecoveryRequest::WAITING,
       AccountRecoveryRequest::GRANTED,
     ].each do |state|
-      it "offers existing MFA methods for a #{state} recovery request without changing it" do
+      it "routes a #{state} recovery request to the first MFA method without changing it" do
         user = create(:user, :fully_registered)
         recovery_request = create(:account_recovery_request, :granted, state: state, user: user)
 
@@ -1000,7 +1000,7 @@ RSpec.describe Users::SessionsController, devise: true do
           post :create, params: { user: { email: user.email, password: user.password } }
         end.not_to change { ActionMailer::Base.deliveries.size }
 
-        expect(response).to redirect_to login_two_factor_options_url
+        expect(response).to redirect_to user_two_factor_authentication_url
         expect(recovery_request.reload.state).to eq(state)
       end
     end
@@ -1016,19 +1016,9 @@ RSpec.describe Users::SessionsController, devise: true do
       expect(recovery_request.password_verified_at).to be_nil
     end
 
-    it 'redirects a temporary recovery session to the verify continuation' do
+    it 'redirects a temporary recovery session to replacement MFA setup' do
       user = create(:user, :fully_registered)
-      create(:account_recovery_request, :password_verified, user: user)
-
-      post :create, params: { user: { email: user.email, password: user.password } }
-
-      expect(response).to redirect_to account_recovery_verify_url
-    end
-
-    it 'resumes replacement enrollment after existing MFA has been suspended' do
-      user = create(:user, :fully_registered)
-      recovery_request = create(:account_recovery_request, :password_verified, user: user)
-      AccountRecovery::SuspendExistingMfa.new(account_recovery_request: recovery_request).call
+      create(:account_recovery_request, :replacement_mfa_pending, user: user)
 
       post :create, params: { user: { email: user.email, password: user.password } }
 
@@ -1101,14 +1091,14 @@ RSpec.describe Users::SessionsController, devise: true do
         AccountRecoveryRequest::WAITING,
         AccountRecoveryRequest::GRANTED,
       ].each do |state|
-        it "offers existing MFA for a #{state} request without sending another email" do
+        it "routes a #{state} request to the first MFA method without sending another email" do
           user = create(:user, :fully_registered)
           recovery_request = create(:account_recovery_request, :granted, user: user, state: state)
           stub_sign_in_before_2fa(user)
 
           expect { get :new }.not_to change { ActionMailer::Base.deliveries.size }
 
-          expect(response).to redirect_to login_two_factor_options_url
+          expect(response).to redirect_to user_two_factor_authentication_url
           expect(recovery_request.reload.state).to eq(state)
         end
       end
@@ -1122,14 +1112,14 @@ RSpec.describe Users::SessionsController, devise: true do
         expect(response).to redirect_to user_two_factor_authentication_url
       end
 
-      it 'resumes a password-verified recovery session at the same continuation as sign-in' do
+      it 'resumes a recovery awaiting replacement MFA at the same continuation as sign-in' do
         user = create(:user, :fully_registered)
-        create(:account_recovery_request, :password_verified, user: user)
+        create(:account_recovery_request, :replacement_mfa_pending, user: user)
         stub_sign_in_before_2fa(user)
 
         get :new
 
-        expect(response).to redirect_to account_recovery_verify_url
+        expect(response).to redirect_to account_recovery_new_mfa_setup_url
       end
 
       %i[cancelled expired link_verified].each do |state|

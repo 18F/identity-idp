@@ -26,12 +26,8 @@ RSpec.describe 'account_recovery/new_mfa_setup/show.html.erb' do
   it 'explains that new methods replace the old ones and finish recovery' do
     render
 
-    expect(rendered).to have_css(
-      '.usa-alert--info',
-      text: t('account_recovery.new_mfa_setup.alert'),
-    )
-    expect(rendered).to have_content(t('two_factor_authentication.two_factor_choice'))
-    expect(rendered).to have_content(t('mfa.info', app_name: APP_NAME))
+    expect(rendered).to have_content(t('account_recovery.new_mfa_setup.header'))
+    expect(rendered).to have_content(t('account_recovery.new_mfa_setup.intro'))
   end
 
   it 'offers every enrollment method as a checkbox' do

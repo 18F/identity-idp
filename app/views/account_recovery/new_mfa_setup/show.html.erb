@@ -1,12 +1,8 @@
-<% self.title = t('two_factor_authentication.two_factor_choice') %>
+<% self.title = t('account_recovery.new_mfa_setup.header') %>
 
-<%= render AlertComponent.new(type: :info, class: 'margin-bottom-4').with_content(
-      t('account_recovery.new_mfa_setup.alert'),
-    ) %>
+<%= render PageHeadingComponent.new.with_content(t('account_recovery.new_mfa_setup.header')) %>
 
-<%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.two_factor_choice')) %>
-
-<p><%= t('mfa.info', app_name: APP_NAME) %></p>
+<p><%= t('account_recovery.new_mfa_setup.intro') %></p>
 
 <%= render VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :voice, only_if_all: true) %>
 
@@ -40,7 +36,5 @@
     </fieldset>
   </div>
 
-  <%= hidden_field_tag :platform_authenticator_available, nil, id: 'platform_authenticator_available' %>
-  <% javascript_packs_tag_once('platform-authenticator-available') %>
   <%= f.submit t('forms.buttons.continue') %>
 <% end %>

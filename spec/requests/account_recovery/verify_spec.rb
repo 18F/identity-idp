@@ -56,7 +56,7 @@ RSpec.describe 'Account recovery password verification', type: :request do
     follow_redirect!
 
     expect(response).to have_http_status(:ok)
-    expect(password_form).to have_content(t('account_recovery.new_mfa_setup.alert'))
+    expect(password_form).to have_content(t('account_recovery.new_mfa_setup.header'))
 
     get account_path
 

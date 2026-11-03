@@ -23,7 +23,7 @@ RSpec.describe 'Account Recovery: replace inaccessible MFA', email: true do
       click_button t('account_recovery.verify.continue')
 
       expect(page).to have_current_path(account_recovery_new_mfa_setup_path)
-      expect(page).to have_content(t('account_recovery.new_mfa_setup.alert'))
+      expect(page).to have_content(t('account_recovery.new_mfa_setup.header'))
       expect(user.reload.phone_configurations.first).to be_suspended_for_account_recovery
       check 'recovery_mfa_auth_app'
       check 'recovery_mfa_backup_code'

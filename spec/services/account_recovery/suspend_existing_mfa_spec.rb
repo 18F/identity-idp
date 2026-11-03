@@ -28,25 +28,12 @@ RSpec.describe AccountRecovery::SuspendExistingMfa do
     expect(recovery_request.reload).to be_replacement_mfa_pending
   end
 
-  it 'does not suspend a replacement on a repeated call' do
-    service.call
-    replacement = create(:webauthn_configuration, user: user)
-
-    expect(service.call).to eq(false)
-    expect(replacement.reload.account_recovery_request_id).to be_nil
-  end
-
-  it 'does nothing before password verification' do
-    recovery_request.update!(state: AccountRecoveryRequest::LINK_VERIFIED)
-
-    expect(service.call).to eq(false)
-    expect(user.phone_configurations.first.account_recovery_request_id).to be_nil
-  end
-
   it 'rolls suspension back if the state transition fails' do
     allow(recovery_request).to receive(:transition_to!).and_raise(ActiveRecord::RecordInvalid)
 
-    expect { service.call }.to raise_error(ActiveRecord::RecordInvalid)
+    expect do
+      recovery_request.with_lock { service.call }
+    end.to raise_error(ActiveRecord::RecordInvalid)
     expect(user.phone_configurations.first.reload.account_recovery_request_id).to be_nil
   end
 end

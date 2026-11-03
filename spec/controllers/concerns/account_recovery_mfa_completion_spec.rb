@@ -50,7 +50,11 @@ RSpec.describe TwoFactorAuthenticatableMethods do
     expect(controller.flash[:success]).to eq(t('account_recovery.new_mfa_setup.completed_html'))
   end
 
-  it 'fails closed when the replacement was not persisted' do
+  it 'fails closed when the request could not be completed' do
+    create(:auth_app_configuration, user: user)
+    allow_any_instance_of(AccountRecovery::CompleteReplacementMfa).to receive(:call)
+      .and_return(false)
+
     expect do
       controller.send(:handle_valid_verification_for_confirmation_context, auth_method: 'totp')
     end.to raise_error(ActiveRecord::RecordInvalid)

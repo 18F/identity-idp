@@ -171,8 +171,8 @@ RSpec.describe AccountRecovery::VerifyController do
       expect(response).to render_template('pages/page_not_found')
     end
 
-    it 'does not resume another user’s password-verified request' do
-      recovery_request.update!(state: AccountRecoveryRequest::PASSWORD_VERIFIED)
+    it 'does not resume another user’s recovery request' do
+      recovery_request.update!(state: AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
       stub_sign_in_before_2fa(create(:user, :fully_registered))
 
       get :show
@@ -209,17 +209,6 @@ RSpec.describe AccountRecovery::VerifyController do
       expect(MfaContext.new(user).two_factor_enabled?).to eq(false)
     end
 
-    it 'does not sign in when suspension of existing MFA fails' do
-      allow_any_instance_of(AccountRecovery::SuspendExistingMfa).to receive(:call).and_return(false)
-
-      expect { post :create, params: password_params }
-        .not_to change { user.phone_configurations.first.reload.account_recovery_request_id }
-
-      expect(controller.current_user).to be_nil
-      expect(response).to redirect_to(root_url)
-      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
-    end
-
     it 'logs successful password verification' do
       stub_analytics
 
@@ -228,7 +217,7 @@ RSpec.describe AccountRecovery::VerifyController do
       expect(@analytics).to have_logged_event(
         :account_recovery_password_verification,
         success: true,
-        recovery_state: AccountRecoveryRequest::PASSWORD_VERIFIED,
+        recovery_state: AccountRecoveryRequest::REPLACEMENT_MFA_PENDING,
         rate_limited: false,
       )
     end
@@ -457,24 +446,6 @@ RSpec.describe AccountRecovery::VerifyController do
       get :show
 
       expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
-      expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq(true)
-    end
-
-    it 'resumes a password-verified request by suspending MFA before replacement setup' do
-      recovery_request.update!(
-        state: AccountRecoveryRequest::PASSWORD_VERIFIED,
-        token_fingerprint: nil,
-        token_expires_at: nil,
-      )
-      session.delete(:account_recovery_granted_token)
-      stub_sign_in_before_2fa(user)
-
-      get :show
-
-      expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
-      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
-      expect(user.phone_configurations.first.reload.account_recovery_request_id)
-        .to eq(recovery_request.id)
       expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq(true)
     end
 

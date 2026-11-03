@@ -16,8 +16,6 @@ module RememberDeviceConcern
   end
 
   def check_remember_device_preference
-    return if replacement_mfa_pending?
-
     return unless UserSessionContext.authentication_context?(context)
     return if remember_device_cookie.nil?
     return if AccountRecovery::EligibilityPolicy.new(user: current_user).recovery_pending?

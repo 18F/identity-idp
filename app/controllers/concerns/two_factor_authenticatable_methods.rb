@@ -242,19 +242,18 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_valid_verification_for_confirmation_context(auth_method:)
-    complete_account_recovery_after_enrollment(auth_method:)
+    complete_account_recovery_after_enrollment
     send_recovery_information_risc_event
     mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa_confirmation)
     reset_second_factor_attempts_count
   end
 
-  def complete_account_recovery_after_enrollment(auth_method:)
+  def complete_account_recovery_after_enrollment
     return unless replacement_mfa_pending?
 
     recovery_request = AccountRecoveryRequest.active_for_user(current_user)
     completed = AccountRecovery::CompleteReplacementMfa.new(
       account_recovery_request: recovery_request,
-      auth_method: auth_method,
     ).call
     raise ActiveRecord::RecordInvalid.new(recovery_request) unless completed
 
@@ -291,7 +290,7 @@ module TwoFactorAuthenticatableMethods
       recovery_state: cancellation.recovery_state,
       mfa_method: auth_method,
     )
-    flash[:success] = t('account_recovery.cancelled_by_mfa_html', app_name: APP_NAME)
+    flash[:success] = t('account_recovery.pending.cancel_success')
   end
 
   def mark_user_session_authenticated_analytics(authentication_type)
