@@ -52,30 +52,32 @@ RSpec.describe OpenidConnect::DocumentImagesController do
           biometric_sharing_consent_at: Time.zone.now,
         )
       end
+      let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
+      let(:artifact_image_type) { 'front' }
+      let(:storage_name) { 'encrypted_images/test-image' }
+      let(:encryption_key) { Base64.strict_encode64('x' * 32) }
+      let(:doc_reader_response) { image }
+      let!(:artifact) do
+        create(
+          :document_artifact,
+          profile:,
+          image_type: artifact_image_type,
+          storage_name:,
+          encryption_key:,
+        )
+      end
 
       before do
         OutOfBandSessionAccessor.new(identity.rails_session_id).put_empty_user_session(50)
         allow(IdentityConfig.store).to receive(:document_images_sharing_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
           .and_return([identity.service_provider])
+
+        allow_any_instance_of(EncryptedDocStorage::DocReader).to receive(:read)
+          .with(name: storage_name, encryption_key:).and_return(doc_reader_response)
       end
 
       context 'when the user has a matching stored artifact' do
-        let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
-        let(:redis_storage) { EncryptedDocStorage::RedisStorage.new }
-        let!(:written) { EncryptedDocStorage::DocWriter.new(storage: redis_storage).write(image:) }
-        let!(:artifact) do
-          create(
-            :document_artifact,
-            profile:,
-            image_type: 'front',
-            storage_name: written.name,
-            encryption_key: written.encryption_key,
-          )
-        end
-
-        after { redis_storage.delete_image(name: written.name) }
-
         let(:private_key) { OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read) }
 
         it 'returns the image sealed to the registered certificate as a JWE naming its type' do
@@ -121,7 +123,7 @@ RSpec.describe OpenidConnect::DocumentImagesController do
               success: false,
               image_type: 'front',
               issuer: identity.service_provider,
-              error_details: { encryption: ['encryption_unavailable'] },
+              error_details: { encryption: { encryption_unavailable: true } },
               profile_id: profile.id,
             )
           end
@@ -135,7 +137,7 @@ RSpec.describe OpenidConnect::DocumentImagesController do
           expect(response.headers['X-Content-Type-Options']).to eq('nosniff')
         end
 
-        it 'writes an audit event recording the release' do
+        it 'tracks the image release with an analytic event' do
           stub_analytics
 
           action
@@ -164,8 +166,8 @@ RSpec.describe OpenidConnect::DocumentImagesController do
 
             expect(response).to be_not_found
             expect(json_response).to eq(
-              'error' => 'images not found',
-              'error_description' => 'Artifact not_found',
+              'error' => 'image not found',
+              'error_description' => 'not_found',
             )
             expect(@analytics).to have_logged_event(
               :document_image_release,
@@ -178,10 +180,7 @@ RSpec.describe OpenidConnect::DocumentImagesController do
         end
 
         context 'when the stored key can no longer decrypt the object' do
-          before do
-            allow_any_instance_of(EncryptedDocStorage::DocReader)
-              .to receive(:read).and_return(nil)
-          end
+          let(:doc_reader_response) { nil }
 
           it '404s instead of raising' do
             action
@@ -189,8 +188,8 @@ RSpec.describe OpenidConnect::DocumentImagesController do
           end
         end
 
-        context 'when the Redis object has expired out from under the row' do
-          before { redis_storage.delete_image(name: written.name) }
+        context 'when the stored object has expired out from under the row' do
+          let(:doc_reader_response) { nil }
 
           it '404s and tracks the denial' do
             stub_analytics
@@ -199,8 +198,8 @@ RSpec.describe OpenidConnect::DocumentImagesController do
 
             expect(response).to be_not_found
             expect(json_response).to eq(
-              'error' => 'images not found',
-              'error_description' => 'Image object_unavailable',
+              'error' => 'image not found',
+              'error_description' => 'object_unavailable',
             )
             expect(@analytics).to have_logged_event(
               :document_image_release,
@@ -212,10 +211,11 @@ RSpec.describe OpenidConnect::DocumentImagesController do
           end
         end
 
-        context 'when Redis is unavailable' do
+        context 'when storage is unavailable' do
           before do
-            allow_any_instance_of(EncryptedDocStorage::RedisStorage)
-              .to receive(:read_image).and_raise(Redis::CannotConnectError)
+            allow_any_instance_of(EncryptedDocStorage::DocReader)
+              .to receive(:read).with(name: storage_name, encryption_key:)
+              .and_raise(Redis::CannotConnectError)
           end
 
           it '404s instead of raising' do
@@ -228,8 +228,6 @@ RSpec.describe OpenidConnect::DocumentImagesController do
       context 'without a client assertion' do
         let(:client_assertion) { nil }
         let(:client_assertion_type) { nil }
-        let!(:artifact) { create(:document_artifact, profile:, image_type: 'front') }
-        let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
 
         it '401s with invalid_client and tracks the refusal' do
           stub_analytics
@@ -239,13 +237,13 @@ RSpec.describe OpenidConnect::DocumentImagesController do
           expect(response).to be_unauthorized
           expect(json_response).to eq(
             'error' => 'invalid_client',
-            'error_description' => 'Code verifier client_assertion_required',
+            'error_description' => 'client_assertion_required',
           )
           expect(@analytics).to have_logged_event(
             :document_image_release,
             hash_including(
               success: false,
-              error_details: { code_verifier: { client_assertion_required: true } },
+              error_details: { client_assertion: { client_assertion_required: true } },
             ),
           )
         end
@@ -253,41 +251,33 @@ RSpec.describe OpenidConnect::DocumentImagesController do
 
       context 'with a client assertion signed by a key that is not registered' do
         let(:assertion_key) { OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp2.key').read) }
-        let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
-        let!(:artifact) { create(:document_artifact, profile:, image_type: 'front') }
 
         it '401s with invalid_signature' do
           action
 
           expect(response).to be_unauthorized
           expect(json_response['error_description']).to eq(
-            'Client assertion Signature verification failed',
+            'Signature verification failed',
           )
         end
       end
 
       context 'with a client assertion for another audience' do
         let(:assertion_audience) { api_openid_connect_token_url }
-        let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
-        let!(:artifact) { create(:document_artifact, profile:, image_type: 'front') }
+        let(:url) { api_openid_connect_document_image_url(image_type: 'front') }
 
         it '401s with invalid_aud' do
           action
 
           expect(response).to be_unauthorized
           expect(json_response['error_description']).to eq(
-            "Client assertion #{t(
-              'openid_connect.token.errors.invalid_aud',
-              url: api_openid_connect_document_image_url(image_type: 'front'),
-)}",
+            t('openid_connect.token.errors.invalid_aud', url:).to_s,
           )
         end
       end
 
       context 'when the document_images scope was not granted' do
         let(:scope) { 'openid profile' }
-        let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
-        let!(:artifact) { create(:document_artifact, profile:, image_type: 'front') }
 
         it '403s and tracks the denial' do
           stub_analytics
@@ -296,8 +286,8 @@ RSpec.describe OpenidConnect::DocumentImagesController do
 
           expect(response).to be_forbidden
           expect(json_response).to eq(
-            'error' => 'document_images sharing is not authorized',
-            'error_description' => 'Scope no_valid_scope',
+            'error' => 'insufficient_scope',
+            'error_description' => 'no_valid_scope',
           )
           expect(@analytics).to have_logged_event(
             :document_image_release,
@@ -311,38 +301,31 @@ RSpec.describe OpenidConnect::DocumentImagesController do
 
       context 'when the authorization did not request identity proofing (auth-only ACR)' do
         let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
-        let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
-        let!(:artifact) { create(:document_artifact, profile:, image_type: 'front') }
 
         it '403s even though the user has a verified profile and consent' do
           action
           expect(response).to be_forbidden
           expect(json_response).to eq(
-            'error' => 'document_images sharing is not authorized',
-            'error_description' => 'Acr values no_identity_verification',
+            'error' => 'insufficient_scope',
+            'error_description' => 'no_identity_verification',
           )
         end
       end
 
       context 'when the authorization requested IALMax' do
         let(:acr_values) { Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF }
-        let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
-        let!(:artifact) { create(:document_artifact, profile:, image_type: 'front') }
 
         it '403s even though the user has a verified profile and consent' do
           action
           expect(response).to be_forbidden
           expect(json_response).to eq(
-            'error' => 'document_images sharing is not authorized',
-            'error_description' => 'Acr values no_identity_verification',
+            'error' => 'insufficient_scope',
+            'error_description' => 'no_identity_verification',
           )
         end
       end
 
       context 'when the SP is not allow-listed for sharing' do
-        let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
-        let!(:artifact) { create(:document_artifact, profile:, image_type: 'front') }
-
         before do
           allow(IdentityConfig.store).to receive(:document_images_sharing_service_providers)
             .and_return([])
@@ -352,51 +335,47 @@ RSpec.describe OpenidConnect::DocumentImagesController do
           action
           expect(response).to be_forbidden
           expect(json_response).to eq(
-            'error' => 'document_images sharing is not authorized',
-            'error_description' => 'Scope unauthorized_scope',
+            'error' => 'insufficient_scope',
+            'error_description' => 'unauthorized_scope',
           )
         end
       end
 
       context 'when the user has not consented to biometric sharing' do
-        let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
-        let!(:artifact) { create(:document_artifact, profile:, image_type: 'front') }
-
         before { identity.update!(biometric_sharing_consent_at: nil) }
 
         it '403s' do
           action
           expect(response).to be_forbidden
           expect(json_response).to eq(
-            'error' => 'document_images sharing is not authorized',
-            'error_description' => 'Scope not_consented_to',
+            'error' => 'insufficient_scope',
+            'error_description' => 'not_consented_to',
           )
         end
       end
 
       context 'when there is no artifact for the requested type' do
-        let!(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
+        let(:artifact_image_type) { 'back' }
 
         it '404s' do
           action
           expect(response).to be_not_found
           expect(json_response).to eq(
-            'error' => 'images not found',
-            'error_description' => 'Artifact not_found',
+            'error' => 'image not found',
+            'error_description' => 'not_found',
           )
         end
       end
 
       context 'when the underlying object is missing from storage' do
-        let(:profile) { create(:profile, :active, user:, verified_at: 1.hour.ago) }
-        let!(:artifact) { create(:document_artifact, profile:, image_type: 'front') }
+        let(:doc_reader_response) { nil }
 
         it '404s' do
           action
           expect(response).to be_not_found
           expect(json_response).to eq(
-            'error' => 'images not found',
-            'error_description' => 'Image object_unavailable',
+            'error' => 'image not found',
+            'error_description' => 'object_unavailable',
           )
         end
       end

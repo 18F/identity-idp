@@ -645,7 +645,7 @@ module AnalyticsEvents
   # @param [String] image_type which artifact was requested (front/back/passport/selfie)
   # @param [String, nil] issuer issuer of the requesting service provider
   # @param [Integer, nil] profile_id the verified profile whose artifact was requested
-  # @param [String, nil] error_details why the request was refused, if it was
+  # @param [Hash, nil] error_details why the request was refused, if it was
   # @param [Boolean, nil] encrypted whether the image was released sealed to the service
   #   provider's registered certificate
   def document_image_release(

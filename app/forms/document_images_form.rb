@@ -2,19 +2,24 @@
 
 class DocumentImagesForm
   include ActiveModel::Model
-  include Rails.application.routes.url_helpers
 
   validate :validate_client_assertion
   validate :validate_authorized
   validate :validate_artifact
   validate :validate_image
 
-  def initialize(identity:, document_images_params:, doc_reader: EncryptedDocStorage::DocReader.new)
+  def initialize(
+    audience_url:,
+    document_images_params:,
+    identity:,
+    doc_reader: EncryptedDocStorage::DocReader.new
+  )
     @identity = identity
     @image_type = document_images_params[:image_type]
     @client_assertion = document_images_params[:client_assertion]
     @client_assertion_type = document_images_params[:client_assertion_type]
     @doc_reader = doc_reader
+    @audience_url = audience_url
   end
 
   ErrorResponse = Struct.new(:status, :error, :error_description, keyword_init: true)
@@ -32,34 +37,35 @@ class DocumentImagesForm
     return nil if errors.blank?
     error_attribute = errors.attribute_names.first
 
-    if [:code_verifier, :client_assertion].include?(error_attribute)
+    if [:client_assertion].include?(error_attribute)
       ErrorResponse.new(
         status: :unauthorized,
         error: 'invalid_client',
-        error_description: errors.full_messages.join(' '),
+        error_description: errors.map { |e| e.type }.join(' '),
       )
     elsif [:scope, :acr_values].include?(error_attribute)
       ErrorResponse.new(
         status: :forbidden,
-        error: 'document_images sharing is not authorized',
-        error_description: errors.full_messages.join(' '),
+        error: 'insufficient_scope',
+        error_description: errors.map { |e| e.type }.join(' '),
       )
     elsif [:artifact, :image].include?(error_attribute)
       ErrorResponse.new(
         status: :not_found,
-        error: 'images not found',
-        error_description: errors.full_messages.join(' '),
+        error: 'image not found',
+        error_description: errors.map { |e| e.type }.join(' '),
       )
     else
       ErrorResponse.new(
-        status: :not_found, error: 'something went wrong',
-        error_description: errors.full_messages.join(' ')
+        status: :not_found,
+        error: 'something went wrong',
+        error_description: errors.map { |e| e.type }.join(' '),
       )
     end
   end
 
   def artifact
-    @artifact ||= active_profile.document_artifacts&.retained&.find_by(image_type: image_type)
+    @artifact ||= active_profile&.document_artifacts&.retained&.find_by(image_type: image_type)
   end
 
   def image
@@ -69,12 +75,12 @@ class DocumentImagesForm
   private
 
   attr_reader :identity, :image_type, :client_assertion, :client_assertion_type,
-              :doc_reader, :scope, :acr_values
+              :doc_reader, :scope, :acr_values, :audience_url
 
   def validate_client_assertion
     if client_assertion.blank? || client_assertion_type != OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE
       return errors.add(
-        :code_verifier, 'client_assertion_required',
+        :client_assertion, 'client_assertion_required',
         type: :client_assertion_required
       )
     end
@@ -165,13 +171,5 @@ class DocumentImagesForm
     doc_reader.read(name: artifact&.storage_name, encryption_key: artifact&.encryption_key)
   rescue Encryption::EncryptionError, Redis::BaseError
     nil
-  end
-
-  def audience_url
-    Rails.application.routes.url_helpers.api_openid_connect_document_image_url(image_type:)
-  end
-
-  def url_options
-    {}
   end
 end
