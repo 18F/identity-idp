@@ -16,7 +16,7 @@ RSpec.describe OpenidConnectTokenForm do
   end
 
   let(:grant_type) { 'authorization_code' }
-  let(:code) { identity.session_uuid }
+  let(:code) { identity&.session_uuid }
   let(:code_verifier) { nil }
   let(:client_assertion_type) { OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE }
   let(:client_assertion) { JWT.encode(jwt_payload, client_private_key, 'RS256') }
@@ -32,6 +32,7 @@ RSpec.describe OpenidConnectTokenForm do
 
   let(:nonce) { SecureRandom.hex }
   let(:code_challenge) { nil }
+  let(:scope) { nil }
   let(:private_key_jwt_pkce) { false }
   let(:jwt_payload) do
     {
@@ -60,6 +61,7 @@ RSpec.describe OpenidConnectTokenForm do
         ial: 1,
         code_challenge: code_challenge,
         private_key_jwt_pkce: private_key_jwt_pkce,
+        scope:,
       )
   end
 
@@ -138,6 +140,46 @@ RSpec.describe OpenidConnectTokenForm do
         it 'is invalid' do
           expect(valid?).to eq(false)
           expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+        end
+      end
+    end
+
+    context 'with a token exchange authorization code' do
+      let(:target_app) { 'passport-issuer' }
+      let(:scope) { 'token_exchange:passport' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return([client_id])
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+          .and_return([{ issuer: target_app, scope: 'passport' }])
+      end
+
+      context 'when the user does not exist' do
+        let!(:identity) { nil }
+        let(:user) { nil }
+
+        it 'returns the invalid_code error' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+        end
+      end
+
+      context 'when the user has not consented to the target app' do
+        it 'adds a missing consent error' do
+          expect(valid?).to be false
+          expect(form.errors.details[:code]).to include(error: :sts_consent_required)
+        end
+      end
+
+      context 'when the user has consented to the target app' do
+        before do
+          create(:user_consent_sts, user:, target_app:)
+        end
+
+        it 'is valid' do
+          expect(valid?).to be true
         end
       end
     end
@@ -689,21 +731,24 @@ RSpec.describe OpenidConnectTokenForm do
     end
 
     context 'with a token exchange authorization code' do
+      let(:target_app) { 'passport-issuer' }
+      let(:scope) { 'openid token_exchange:passport' }
+
       before do
-        identity.update!(
-          scope: 'openid token_exchange:passport',
-          ial: 2,
-        )
+        identity.update!(ial: 2)
         allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
           .and_return([client_id])
         allow(IdentityConfig.store).to receive(:token_exchange_subject_token_expires_in)
           .and_return(600)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+          .and_return([{ issuer: target_app, scope: 'passport' }])
         TokenExchange::ActorHandoff.store(
           code:,
           actor_return_log_id: 123,
           expires_in: IdentityConfig.store.openid_connect_authorization_code_expiration_seconds,
         )
+        create(:user_consent_sts, user:, target_app:)
       end
 
       it 'returns a subject token response' do
@@ -711,7 +756,7 @@ RSpec.describe OpenidConnectTokenForm do
           access_token: be_present,
           token_type: 'Bearer',
           expires_in: 600,
-          scope: 'openid token_exchange:passport',
+          scope:,
         )
       end
 
@@ -721,7 +766,7 @@ RSpec.describe OpenidConnectTokenForm do
         expect(subject_token).to have_attributes(
           identity_uuid: identity.uuid,
           broker_issuer: identity.service_provider,
-          scope: 'openid token_exchange:passport',
+          scope:,
           ial: 2,
           actor_return_log_id: 123,
         )

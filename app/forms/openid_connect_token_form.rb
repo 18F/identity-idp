@@ -27,6 +27,7 @@ class OpenidConnectTokenForm
   validate :validate_pkce_or_private_key_jwt
   validate :validate_code_verifier, if: :pkce_verification_required?
   validate :validate_client_assertion, if: :client_assertion_required?
+  validate :validate_consent, if: :token_exchange_authorization_code?
 
   def initialize(params)
     ATTRS.each do |key|
@@ -103,9 +104,7 @@ class OpenidConnectTokenForm
   end
 
   def token_exchange_scope_requested?
-    identity.scope.to_s.split(' ').any? do |scope|
-      TokenExchange::Constants.in_scope?(scope)
-    end
+    token_exchange_scope_values.present?
   end
 
   def find_identity_with_code
@@ -200,6 +199,23 @@ class OpenidConnectTokenForm
     validator.errors.each do |error|
       errors.add(error.attribute, error.message, type: error.type)
     end
+  end
+
+  def validate_consent
+    if identity.user.blank?
+      errors.add(:code, :user_not_found)
+      return
+    end
+
+    return if UserConsentSts.consent_valid?(user: identity.user, target_app:)
+
+    errors.add(:code, :sts_consent_required, message: 'STS consent required')
+  end
+
+  def target_app
+    IdentityConfig.store.token_exchange_allowed_targets
+      .find { |target| token_exchange_scope_values.include?(target.fetch(:scope)) }
+      &.fetch(:issuer)
   end
 
   def service_provider
