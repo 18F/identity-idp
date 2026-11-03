@@ -6,16 +6,19 @@
 
 <%= render AccordionComponent.new(class: 'text-black margin-top-4') do |c| %>
   <% c.with_header do %>
-    <span class="accordion-header-media">
+    <span class="grid-row grid-gap">
       <%= image_tag(
-            asset_url('sp-logos/generic.svg'),
+            asset_url('sp-logos/DOS.svg'),
             width: 40,
             height: 40,
+            class: 'flex-align-center align-self-start grid-col-auto',
             alt: 'Logo for Department of State',
             aria: { hidden: true },
           ) %>
-      <span><strong>MyTravelGov</strong></span>
-      <span><%= t('sts_consent.service_permission') %></span>
+      <span class="grid-col text-black">
+        <span class="grid-row"><strong>MyTravelGov</strong></span>
+        <span class="grid-row"><%= t('sts_consent.service_permission') %></span>
+      </span>
     </span>
   <% end %>
   <h2 class="h5 margin-top-0 margin-bottom-05"><%= t('sts_consent.about_heading') %></h2>
