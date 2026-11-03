@@ -646,12 +646,15 @@ module AnalyticsEvents
   # @param [String, nil] issuer issuer of the requesting service provider
   # @param [Integer, nil] profile_id the verified profile whose artifact was requested
   # @param [String, nil] denial_reason why the request was refused, if it was
+  # @param [Boolean, nil] encrypted whether the image was released sealed to the service
+  #   provider's registered certificate
   def document_image_release(
     success:,
     image_type:,
     issuer: nil,
     profile_id: nil,
     denial_reason: nil,
+    encrypted: nil,
     **extra
   )
     track_event(
@@ -661,6 +664,7 @@ module AnalyticsEvents
       issuer:,
       profile_id:,
       denial_reason:,
+      encrypted:,
       **extra,
     )
   end

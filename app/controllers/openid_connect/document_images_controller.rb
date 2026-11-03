@@ -28,11 +28,28 @@ module OpenidConnect
         return head :not_found
       end
 
-      audit(success: true)
-      send_data image, type: artifact.content_type, disposition: 'inline'
+      render_encrypted_image(image, artifact.content_type)
     end
 
     private
+
+    def render_encrypted_image(image, content_type)
+      jwe = OpenidConnect::JweEncryptor.encrypt(
+        image,
+        service_provider: current_identity.service_provider_record,
+        typ: nil,
+        cty: content_type,
+      )
+
+      audit(success: true, encrypted: true)
+
+      render body: jwe, content_type: 'application/jose'
+    rescue OpenidConnect::JweEncryptor::NoUsableKeyError, OpenSSL::OpenSSLError
+      audit(success: false, denial_reason: :encryption_unavailable)
+
+      render json: { error: 'server_error', error_description: 'encryption_unavailable' },
+             status: :internal_server_error
+    end
 
     # Unwrapping the stored key (KMS/rotation) and fetching from Redis can each
     # fail independently of the object simply being absent; all of these must
@@ -43,13 +60,14 @@ module OpenidConnect
       nil
     end
 
-    def audit(success:, denial_reason: nil)
+    def audit(success:, denial_reason: nil, encrypted: nil)
       analytics.document_image_release(
         success:,
         image_type: params[:image_type],
         issuer: current_identity.service_provider,
         profile_id: active_profile&.id,
         denial_reason:,
+        encrypted:,
       )
     end
 
