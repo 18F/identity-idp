@@ -169,7 +169,7 @@ RSpec.describe OpenidConnectTokenForm do
       context 'when the user has not consented to the target app' do
         it 'adds a missing consent error' do
           expect(valid?).to be false
-          expect(form.errors.details[:code]).to include(error: :sts_consent_required)
+          expect(form.errors.details[:code]).to include(error: :delegation_consent_required)
         end
       end
 

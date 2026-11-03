@@ -155,7 +155,12 @@ class OpenidConnectTokenExchangeForm
     return if user.blank?
 
     return if UserConsentSts.consent_valid?(user: identity.user, target_app: audience)
-    errors.add(:subject_token, :invalid_audience, message: 'invalid audience for this subject token')
+
+    errors.add(
+      :subject_token,
+      :invalid_audience,
+      message: 'invalid audience for this subject token',
+    )
   end
 
   def validate_scope
