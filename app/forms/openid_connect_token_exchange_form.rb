@@ -136,7 +136,7 @@ class OpenidConnectTokenExchangeForm
     return if loaded_subject_token.blank?
     return if actor_return_log.present?
 
-    errors.add(:subject_token, :invalid)
+    errors.add(:actor_return_log, :blank)
   end
 
   def validate_resource
@@ -164,11 +164,21 @@ class OpenidConnectTokenExchangeForm
     return if subject_token.blank?
     return if loaded_subject_token.blank?
     return errors.add(:subject_token, :invalid) if user.blank?
-    return errors.add(:subject_token, :invalid) if target_identity.blank?
-    return errors.add(:subject_token, :invalid) if user.active_profile.blank?
+    if target_identity.blank?
+      return errors.add(
+        :audience, :no_identity_at_target,
+        message: 'no identity'
+      )
+    end
+    if user.active_profile.blank?
+      return errors.add(
+        :audience, :no_active_profile,
+        message: 'no active profile'
+      )
+    end
     return unless target_identity.ial.to_i < 2
 
-    errors.add(:subject_token, :invalid)
+    errors.add(:audience, :invalid_target_identity_assurance, message: 'invalid identity assurance')
   end
 
   def user

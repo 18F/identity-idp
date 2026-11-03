@@ -59,6 +59,17 @@ module UserAccessKeyOverrides
     self.encrypted_recovery_code_digest_generated_at = Time.zone.now
   end
 
+  # Clears a user's personal key (recovery code) so that `has_recovery_code?`
+  # returns false. Used during Phase 1 of personal key MFA deprecation, where a
+  # personal key MFA user's key is consumed (not regenerated) after they use it.
+  def remove_recovery_code
+    update!(
+      encrypted_recovery_code_digest: nil,
+      encrypted_recovery_code_digest_multi_region: nil,
+      encrypted_recovery_code_digest_generated_at: nil,
+    )
+  end
+
   def recovery_code_regional_digest_pair
     Encryption::RegionalCiphertextPair.new(
       single_region_ciphertext: encrypted_recovery_code_digest,

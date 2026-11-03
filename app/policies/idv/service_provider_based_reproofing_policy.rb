@@ -14,13 +14,16 @@ module Idv
       return false unless active_profile.present?
       return false unless service_provider.present?
       return false unless resolved_authn_context_result&.facial_match?
-      reproof_forcing_sp? || unsupervised_with_selfie_reproofing_required?
+      reproof_forcing_sp? ||
+        unsupervised_with_selfie_reproofing_required? ||
+        reproof_for_expired_documents?
     end
 
     def reproof_reason
       return nil unless needs_to_reproof?
       return :reproof_forcing_sp if reproof_forcing_sp?
-      :unsupervised_with_selfie_required
+      return :unsupervised_with_selfie_required if unsupervised_with_selfie_reproofing_required?
+      :unexpired_document_artifacts_required
     end
 
     private
@@ -56,6 +59,11 @@ module Idv
     def initiating_sp_isnt_reproof_forcing?
       active_profile.initiating_service_provider_issuer !=
         IdentityConfig.store.reproof_forcing_service_provider
+    end
+
+    def reproof_for_expired_documents?
+      IdentityConfig.store.document_images_sharing_service_providers
+        .include?(service_provider.issuer) && active_profile.document_artifacts.retained.empty?
     end
   end
 end

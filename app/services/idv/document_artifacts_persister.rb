@@ -1,28 +1,6 @@
 # frozen_string_literal: true
 
 module Idv
-  # Persists the shareable document artifacts (encrypted images + document
-  # metadata) for a successful verification on a document capture session.
-  #
-  # Only called for a successful verification, so the persisted set always
-  # reflects the document that actually passed. Any artifacts left over from an
-  # earlier failed attempt on this capture session (e.g. a rejected DL before a
-  # successful passport) are pruned so they can never be shared.
-  # Idempotent on retry: keyed on capture session + image type.
-  # Persisted only when the initiating SP is allow-listed for image sharing
-  # (data minimization: nothing is stored for anyone else) and never for mDL
-  # flows, which produce no shareable artifacts.
-  #
-  # Images are encrypted under a fresh per-image AES key and written to the IdV
-  # Redis instance with a TTL (document_images_ttl_seconds); this is independent
-  # of the doc escrow S3 bucket, which may not be enabled for the SP at all.
-  #
-  # Runs inside a transaction that first takes a row lock on the capture session.
-  # Idv::Session stamps the same row (update_column) inside ITS transaction when
-  # it creates the profile, so the two serialize on that lock: whichever runs
-  # second sees the other's committed work, and the artifacts always end up
-  # linked. Without the lock a READ COMMITTED re-read can observe the stamp as
-  # nil while the stamping transaction is still open, orphaning the rows.
   class DocumentArtifactsPersister
     attr_reader :document_capture_session, :docv_transaction_token, :document_metadata
 
@@ -43,13 +21,8 @@ module Idv
       superseded_names = []
 
       DocumentCaptureSession.transaction do
-        # All state checks read the FOR UPDATE row, never the caller's record.
         locked_session = DocumentCaptureSession.lock.find_by(id: document_capture_session.id)
         return if locked_session.nil? || locked_session.mdl_requested?
-        # A redo starts a new Socure transaction on the same capture session. If the
-        # session has moved on since this job was enqueued, this job describes a
-        # superseded attempt and must not overwrite the newer verification's images.
-        # A blank token cannot prove which attempt this is, so it also skips.
         return if docv_transaction_token.blank?
         return if locked_session.socure_docv_transaction_token != docv_transaction_token
 
@@ -80,15 +53,11 @@ module Idv
         associate_artifacts_with_producing_profile(locked_session)
       end
 
-      # Only after commit: a rollback must leave the previously served objects intact.
       superseded_names.each { |name| redis_storage.delete_image(name:) }
     end
 
     private
 
-    # Document identifiers (number, issue/expiration dates) accompany the images
-    # for adjudication. Stored encrypted, one row per capture session, refreshed on
-    # each successful attempt so it always reflects the document that passed.
     def persist_document_metadata(locked_session)
       return if document_metadata.blank?
 
@@ -99,12 +68,6 @@ module Idv
       metadata.save!
     end
 
-    # Normally Idv::Session links artifacts when it creates the profile, but under
-    # worker backlog this can run AFTER that. Idv::Session also stamps the
-    # capture session with the profile it produced, so we reconcile strictly from
-    # that stamp: only this session's rows, only to the profile this exact session
-    # produced. Never inferred from timestamps or from the user's active profile.
-    # `locked_session` was loaded FOR UPDATE, so its profile_id is authoritative.
     def associate_artifacts_with_producing_profile(locked_session)
       profile_id = locked_session.profile_id
       return if profile_id.nil?

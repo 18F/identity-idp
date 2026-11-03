@@ -211,6 +211,7 @@ class SocureDocvResultsJob < ApplicationJob
       document_number: pii[:state_id_number] || pii[:document_number],
       document_issued: pii[:state_id_issued] || pii[:passport_issued],
       document_expiration: pii[:state_id_expiration] || pii[:passport_expiration],
+      document_jurisdiction: pii[:state_id_jurisdiction],
     }
     return if document_metadata.values.all?(&:blank?)
 

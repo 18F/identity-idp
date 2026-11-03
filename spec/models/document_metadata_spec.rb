@@ -6,6 +6,7 @@ RSpec.describe DocumentMetadata do
       document_number: 'D1234567',
       document_issued: '2021-05-05',
       document_expiration: '2031-05-05',
+      document_jurisdiction: 'WA',
     }
   end
 

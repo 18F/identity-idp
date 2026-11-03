@@ -39,9 +39,10 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       user:, issuer: broker_issuer, ial: 2, billable: true, returned_at: Time.zone.now,
     )
   end
+  let(:actor_return_log_id) { actor_return_log.id }
   let(:subject_token) do
     TokenExchange::SubjectTokenIssuer.issue(
-      identity:, actor_return_log_id: actor_return_log.id,
+      identity:, actor_return_log_id:,
     ).token
   end
   let(:params) do
@@ -238,6 +239,52 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
+    context 'when the subject token has no originating actor return log' do
+      let(:actor_return_log_id) { nil }
+
+      it 'is invalid' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.errors[:actor_return_log]).to include('Please fill in this field.')
+      end
+    end
+
+    context 'when the originating actor return log belongs to another user' do
+      let(:other_user) { create(:user) }
+      let(:actor_return_log) do
+        create(
+          :sp_return_log,
+          user: other_user,
+          issuer: broker_issuer,
+          ial: 2,
+          billable: true,
+          returned_at: Time.zone.now,
+        )
+      end
+
+      it 'is invalid' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.errors[:actor_return_log]).to include('Please fill in this field.')
+      end
+    end
+
+    context 'when the originating actor return log belongs to another issuer' do
+      let(:actor_return_log) do
+        create(
+          :sp_return_log,
+          user:,
+          issuer: 'other-broker-issuer',
+          ial: 2,
+          billable: true,
+          returned_at: Time.zone.now,
+        )
+      end
+
+      it 'is invalid' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.errors[:actor_return_log]).to include('Please fill in this field.')
+      end
+    end
+
     context 'when the target identity is not IAL2' do
       before do
         target_identity.update!(ial: 1)
@@ -245,7 +292,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
       it 'is invalid' do
         expect(form.submit.success?).to eq(false)
-        expect(form.errors[:subject_token]).to include('is invalid')
+        expect(form.errors[:audience]).to include('invalid identity assurance')
       end
     end
 
@@ -254,7 +301,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
       it 'is invalid' do
         expect(form.submit.success?).to eq(false)
-        expect(form.errors[:subject_token]).to include('is invalid')
+        expect(form.errors[:audience]).to include('no identity')
       end
     end
 
@@ -266,7 +313,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
       it 'is invalid' do
         expect(form.submit.success?).to eq(false)
-        expect(form.errors[:subject_token]).to include('is invalid')
+        expect(form.errors[:audience]).to include('no active profile')
       end
 
       it 'does not issue a delegated access token' do
