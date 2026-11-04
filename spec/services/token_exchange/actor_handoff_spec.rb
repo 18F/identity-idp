@@ -12,10 +12,14 @@ RSpec.describe TokenExchange::ActorHandoff do
       expect(described_class.digest(code)).to_not include(code)
     end
 
-    it 'round trips the key thumbprint a bound client named at authorization' do
-      described_class.store(code:, actor_return_log_id: nil, dpop_jkt: 'a' * 43, expires_in: 60)
+    context 'with the thumbprint of the key named at authorization' do
+      let(:dpop_jkt) { SecureRandom.urlsafe_base64(32) }
 
-      expect(described_class.load(code).dpop_jkt).to eq('a' * 43)
+      it 'round trips the thumbprint' do
+        described_class.store(code:, actor_return_log_id: nil, dpop_jkt:, expires_in: 60)
+
+        expect(described_class.load(code).dpop_jkt).to eq(dpop_jkt)
+      end
     end
 
     it 'uses the requested expiration' do

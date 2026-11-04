@@ -15,6 +15,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       code_challenge: code_challenge,
       code_challenge_method: code_challenge_method,
       verified_within: verified_within,
+      dpop_jkt: dpop_jkt,
     )
   end
 
@@ -30,6 +31,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
   let(:code_challenge) { nil }
   let(:code_challenge_method) { nil }
   let(:verified_within) { nil }
+  let(:dpop_jkt) { nil }
 
   before do
     allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
@@ -140,6 +142,87 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
         it 'uses the acr_values param' do
           expect(form.valid?).to eq(true)
+        end
+      end
+    end
+
+    context 'for a public client registered for key binding' do
+      let(:client_id) { service_provider.issuer }
+      let(:redirect_uri) { 'https://sp.example.gov/result' }
+      let(:code_challenge) { Digest::SHA256.urlsafe_base64digest(SecureRandom.urlsafe_base64(32)) }
+      let(:code_challenge_method) { 'S256' }
+      let(:scope) { 'openid email' }
+      let(:pkce) { true }
+      let(:service_provider) do
+        create(
+          :service_provider,
+          :active,
+          pkce: pkce,
+          redirect_uris: [redirect_uri],
+          issuer: 'urn:gov:gsa:openidconnect:sp:bound_client',
+        )
+      end
+      let(:thumbprint) { SecureRandom.urlsafe_base64(32) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:dpop_required_issuers)
+          .and_return([service_provider.issuer])
+      end
+
+      context 'when no dpop_jkt is passed in' do
+        it 'fails with dpop_jkt_required' do
+          expect(form.dpop_binding_required?).to eq(true)
+          expect(result.success?).to eq(false)
+          expect(result.errors[:dpop_jkt]).to eq(['dpop_jkt_required'])
+        end
+      end
+
+      context 'with a well-formed thumbprint' do
+        let(:dpop_jkt) { thumbprint }
+
+        it 'succeeds and exposes the thumbprint for the authorization code to carry' do
+          expect(result.success?).to eq(true)
+          expect(form.dpop_binding_required?).to eq(true)
+          expect(form.dpop_jkt).to eq(thumbprint)
+        end
+      end
+
+      context 'with a malformed thumbprint' do
+        let(:dpop_jkt) { 'not-a-thumbprint' }
+
+        it 'fails with dpop_jkt_invalid' do
+          expect(result.success?).to eq(false)
+          expect(result.errors[:dpop_jkt]).to eq(['dpop_jkt_invalid'])
+        end
+      end
+
+      context 'when the client is confidential' do
+        let(:pkce) { false }
+        let(:dpop_jkt) { thumbprint }
+
+        it 'does not require key binding' do
+          expect(form.dpop_binding_required?).to eq(false)
+          expect(result.success?).to eq(true)
+        end
+      end
+
+      context 'when the client is not on the key-binding list' do
+        before do
+          allow(IdentityConfig.store).to receive(:dpop_required_issuers).and_return([])
+        end
+
+        it 'does not require key binding' do
+          expect(form.dpop_binding_required?).to eq(false)
+          expect(result.success?).to eq(true)
+        end
+
+        context 'with a malformed dpop_jkt sent anyway' do
+          let(:dpop_jkt) { 'x' }
+
+          it 'ignores it and issues a bearer token' do
+            expect(form.dpop_binding_required?).to eq(false)
+            expect(result.success?).to eq(true)
+          end
         end
       end
     end
@@ -1159,100 +1242,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
       let(:prompt) { 'select_account' }
       it 'returns false' do
         expect(form.initiate_user_registration?).to be false
-      end
-    end
-  end
-end
-
-RSpec.describe OpenidConnectAuthorizeForm, 'dpop_jkt (RFC 9449 section 10)' do
-  subject(:form) do
-    OpenidConnectAuthorizeForm.new(
-      acr_values: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
-      client_id: service_provider.issuer,
-      nonce: SecureRandom.hex,
-      prompt: 'select_account',
-      redirect_uri: redirect_uri,
-      response_type: 'code',
-      scope: 'openid email',
-      state: SecureRandom.hex,
-      code_challenge: Digest::SHA256.urlsafe_base64digest(SecureRandom.urlsafe_base64(32)),
-      code_challenge_method: 'S256',
-      dpop_jkt: dpop_jkt,
-    )
-  end
-
-  let(:redirect_uri) { 'https://sp.example.gov/result' }
-  let(:service_provider) do
-    create(
-      :service_provider,
-      :active,
-      pkce: pkce,
-      redirect_uris: [redirect_uri],
-      issuer: 'urn:gov:gsa:openidconnect:sp:bound_client',
-    )
-  end
-  let(:pkce) { true }
-  let(:dpop_jkt) { nil }
-  let(:thumbprint) { Base64.urlsafe_encode64(SecureRandom.random_bytes(32), padding: false) }
-  let(:user) { create(:user, :fully_registered) }
-  let(:result) { form.submit }
-
-  context 'for a public client registered for key binding' do
-    before do
-      allow(IdentityConfig.store).to receive(:dpop_required_issuers)
-        .and_return([service_provider.issuer])
-    end
-
-    it 'is required' do
-      expect(form.dpop_binding_required?).to eq(true)
-      expect(result.success?).to eq(false)
-      expect(result.errors[:dpop_jkt])
-        .to eq(['dpop_jkt_required'])
-    end
-
-    context 'with a well-formed thumbprint' do
-      let(:dpop_jkt) { thumbprint }
-
-      it 'succeeds and exposes the thumbprint for the authorization code to carry' do
-        expect(result.success?).to eq(true)
-        expect(form.dpop_binding_required?).to eq(true)
-        expect(form.dpop_jkt).to eq(thumbprint)
-      end
-    end
-
-    context 'with a malformed thumbprint' do
-      let(:dpop_jkt) { 'not-a-thumbprint' }
-
-      it 'fails' do
-        expect(result.success?).to eq(false)
-        expect(result.errors[:dpop_jkt])
-          .to eq(['dpop_jkt_invalid'])
-      end
-    end
-
-    context 'when the client is confidential' do
-      let(:pkce) { false }
-      let(:dpop_jkt) { thumbprint }
-
-      it 'is not read: the setting applies to public clients only' do
-        expect(form.dpop_binding_required?).to eq(false)
-        expect(result.success?).to eq(true)
-      end
-    end
-  end
-
-  context 'for a public client not registered for key binding' do
-    it 'is not required' do
-      expect(form.dpop_binding_required?).to eq(false)
-      expect(result.success?).to eq(true)
-    end
-
-    context 'when sent anyway, well-formed or not' do
-      let(:dpop_jkt) { 'x' }
-
-      it 'is not read, since bearer tokens are issued to this client' do
-        expect(form.dpop_binding_required?).to eq(false)
-        expect(result.success?).to eq(true)
       end
     end
   end

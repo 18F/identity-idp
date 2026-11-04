@@ -102,8 +102,6 @@ module OpenidConnect
       )
     end
 
-    # The code's hand-off record is written for a delegation and for a key-bound client; every
-    # other code travels with nothing.
     def identity_authorization_code
       return unless delegation_requested? || @authorize_form.dpop_binding_required?
 

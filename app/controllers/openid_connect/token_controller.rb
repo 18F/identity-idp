@@ -40,10 +40,8 @@ module OpenidConnect
       end
     end
 
-    # The RFC 9449 proof travels in the DPoP request header (§4.1), never in the body: a dpop_proof
-    # body field is not permitted below, so only the header can supply one.
     def form_params
-      token_params.to_h.merge(dpop_proof: request.headers['DPoP'].presence)
+      token_params.merge(dpop_proof: request.headers['DPoP'].presence)
     end
 
     def token_params

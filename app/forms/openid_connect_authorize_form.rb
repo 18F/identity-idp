@@ -48,7 +48,7 @@ class OpenidConnectAuthorizeForm
   attr_reader(*ATTRS)
 
   RANDOM_VALUE_MINIMUM_LENGTH = 22
-  # An RFC 7638 thumbprint: base64url of a SHA-256, 43 characters without padding.
+  # A base64url-encoded SHA-256 key thumbprint: 43 characters, no padding.
   DPOP_JKT_FORMAT = /\A[A-Za-z0-9_-]{43}\z/
   MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS = 30
 
@@ -71,7 +71,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_client_id
   validate :validate_scope
   validate :validate_unauthorized_scope
-  validate :validate_dpop_jkt
+  validate :validate_dpop_jkt, if: :dpop_binding_required?
   validate :validate_privileges
   validate :validate_document_images_scope
   validate :validate_prompt
@@ -138,9 +138,6 @@ class OpenidConnectAuthorizeForm
     )
   end
 
-  # Whether this client's tokens are bound to a key it holds (RFC 9449): a public client Login.gov
-  # lists for key binding. Its authorization request must name the key, and the thumbprint
-  # travels with the authorization code rather than with the identity.
   def dpop_binding_required?
     service_provider.present? && service_provider.dpop_required?
   end
@@ -272,23 +269,11 @@ class OpenidConnectAuthorizeForm
     )
   end
 
-  # RFC 9449 §10: a client whose tokens are key-bound names the thumbprint of its DPoP key in the
-  # authorization request, so the code it receives can be redeemed only with a proof from that key
-  # and an intercepted code is worthless. A client without key binding is a bearer client, and
-  # whatever it sends as dpop_jkt is not read.
   def validate_dpop_jkt
-    return unless dpop_binding_required?
-
     if dpop_jkt.blank?
-      errors.add(
-        :dpop_jkt, 'dpop_jkt_required',
-        type: :dpop_jkt_required
-      )
+      errors.add(:dpop_jkt, 'dpop_jkt_required', type: :dpop_jkt_required)
     elsif !dpop_jkt.match?(DPOP_JKT_FORMAT)
-      errors.add(
-        :dpop_jkt, 'dpop_jkt_invalid',
-        type: :dpop_jkt_invalid
-      )
+      errors.add(:dpop_jkt, 'dpop_jkt_invalid', type: :dpop_jkt_invalid)
     end
   end
 

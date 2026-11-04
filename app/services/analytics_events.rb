@@ -7900,8 +7900,8 @@ module AnalyticsEvents
   #   (authorization_code or subject_token)
   # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
   # @param [String, nil] subject_token_fingerprint Fingerprint of the issued subject token
-  # @param [Boolean, nil] dpop_bound Whether the client's tokens are bound to a key it holds
-  #   (RFC 9449), so a DPoP proof was required with this request
+  # @param [Boolean, nil] dpop_bound Whether the client's tokens are bound to a key it holds, so a
+  #   DPoP proof was required with this request
   # @param [Symbol, nil] dpop_error_type Which DPoP check refused the request, when one did
   def openid_connect_token(
     client_id:,

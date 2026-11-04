@@ -32,10 +32,6 @@ module BillableEventTrackable
     nil
   end
 
-  # Writes the record that travels with the authorization code for the code's lifetime: the
-  # return log a token-exchange actor's subject token will be billed against, and, for a client
-  # whose tokens are key-bound (RFC 9449 §10), the thumbprint of the key named at authorization.
-  # A code issued to any other client has no record.
   def store_actor_handoff(return_log)
     return if identity_authorization_code.blank?
 
