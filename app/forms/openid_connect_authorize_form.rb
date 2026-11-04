@@ -139,7 +139,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def dpop_binding_required?
-    service_provider.present? && service_provider.dpop_required?
+    !!service_provider&.dpop_required?
   end
 
   def success_redirect_uri

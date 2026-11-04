@@ -112,7 +112,7 @@ class OpenidConnectTokenForm
   end
 
   def dpop_binding_required?
-    identity.present? && service_provider.present? && service_provider.dpop_required?
+    identity.present? && !!service_provider&.dpop_required?
   end
 
   def validate_dpop_proof

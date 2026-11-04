@@ -37,6 +37,8 @@ module BillableEventTrackable
 
     actor_return_log_id = return_log&.id if token_exchange_actor?
     dpop_jkt = authorization_dpop_jkt
+    # Either piece alone warrants a record: a key-bound client that is not an actor has only
+    # the thumbprint, a confidential actor has only the return log.
     return if actor_return_log_id.blank? && dpop_jkt.blank?
 
     TokenExchange::ActorHandoff.store(
