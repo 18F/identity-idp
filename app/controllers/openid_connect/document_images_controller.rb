@@ -23,16 +23,16 @@ module OpenidConnect
     private
 
     def render_encrypted_image(result)
-      jwe = OpenidConnect::JweEncryptor.encrypt(
+      jwe = JweEncryptor.encrypt(
         result.extra[:image],
-        service_provider: current_identity.service_provider_record,
+        public_key: current_identity.service_provider_record&.encryption_public_key,
         typ: nil,
         cty: result.extra[:artifact].content_type,
       )
       track_analytics(result.to_h.except(:artifact, :image), encrypted: true)
 
       render plain: jwe, content_type: 'application/jose'
-    rescue OpenidConnect::JweEncryptor::NoUsableKeyError, OpenSSL::OpenSSLError
+    rescue JweEncryptor::NoUsableKeyError, OpenSSL::OpenSSLError
       track_analytics(
         {
           success: false,
