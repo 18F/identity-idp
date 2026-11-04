@@ -266,21 +266,23 @@ class ProofingAgentJob < ApplicationJob
           step: 'Proofing Agent Job',
           flow_path: 'Proofing Agent',
         }.to_h.merge(
-          pii_like_keypaths: [
-            [:proofing_results, :biographical_info],
-            [:proofing_results, :errors, :zipcode],
-            [:proofing_results, :errors, :ssn],
-            [:proofing_results, :biographical_info, :identity_doc_address_state],
-            [:proofing_results, :biographical_info, :state_id_jurisdiction],
-            [:proofing_results, :context, :stages, :resolution, :errors, :zipcode],
-            [:proofing_results, :biographical_info, :ipp_current_address_matches_id],
-            [:proofing_results, :biographical_info, :phone],
-            [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
-            [:proofing_results, :context, :stages, :residential_address, :errors, :zipcode],
-            [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
-            [:errors, :zipcode],
-            [:errors, :ssn],
-          ],
+          pii_like_keypaths: Proofing::Resolution::ProgressiveProofer.with_attempt_keypaths(
+            [
+              [:proofing_results, :biographical_info],
+              [:proofing_results, :errors, :zipcode],
+              [:proofing_results, :errors, :ssn],
+              [:proofing_results, :biographical_info, :identity_doc_address_state],
+              [:proofing_results, :biographical_info, :state_id_jurisdiction],
+              [:proofing_results, :context, :stages, :resolution, :errors, :zipcode],
+              [:proofing_results, :biographical_info, :ipp_current_address_matches_id],
+              [:proofing_results, :biographical_info, :phone],
+              [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
+              [:proofing_results, :context, :stages, :residential_address, :errors, :zipcode],
+              [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
+              [:errors, :zipcode],
+              [:errors, :ssn],
+            ],
+          ),
         ),
       )
 

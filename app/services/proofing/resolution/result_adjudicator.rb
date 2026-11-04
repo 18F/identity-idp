@@ -12,7 +12,9 @@ module Proofing
                   :ipp_current_address_matches_id,
                   :applicant_pii,
                   :precheck_phone_number,
-                  :proofing_vendor
+                  :proofing_vendor,
+                  :resolution_attempts,
+                  :failover_available
 
       def initialize(
         resolution_result:, # InstantVerify
@@ -24,7 +26,10 @@ module Proofing
         applicant_pii:,
         precheck_phone_number:,
         hybrid_mobile_device_profiling_result: nil, # ThreatMetrix (Hybrid Mobile)
-        proofing_vendor: nil # resolution vendor that produced resolution_result
+        proofing_vendor: nil, # resolution vendor that produced resolution_result
+        # Ordered by attempt: { vendor => { resolution_result:, residential_resolution_result: } }
+        resolution_attempts: nil,
+        failover_available: false
       )
         @resolution_result = resolution_result
         @ipp_enrollment_in_progress = ipp_enrollment_in_progress
@@ -36,6 +41,8 @@ module Proofing
         @applicant_pii = applicant_pii
         @precheck_phone_number = precheck_phone_number
         @proofing_vendor = proofing_vendor
+        @resolution_attempts = resolution_attempts
+        @failover_available = failover_available
       end
 
       def adjudicated_result
@@ -60,8 +67,10 @@ module Proofing
               hybrid_mobile_device_profiling_adjudication_reason: hybrid_mobile_profiling_reason,
               resolution_adjudication_reason: resolution_reason,
               stages: {
-                resolution: resolution_result.to_h,
-                residential_address: residential_resolution_result.to_h,
+                resolution: resolution_stage(resolution_result, :resolution_result),
+                residential_address: resolution_stage(
+                  residential_resolution_result, :residential_resolution_result
+                ),
                 threatmetrix:,
                 hybrid_mobile_threatmetrix:,
                 phone_precheck: phone_result,
@@ -72,7 +81,25 @@ module Proofing
         )
       end
 
+      def resolution_success?
+        resolution_result_and_reason.first
+      end
+
       private
+
+      # The deciding attempt stays at the top level of the stage, unchanged. Failover details are
+      # added alongside it. Without attempt data (e.g. specs building results directly), the stage
+      # is the single deciding attempt.
+      def resolution_stage(result, attempt_key)
+        attempts = resolution_attempts.presence ||
+                   (proofing_vendor ? { proofing_vendor => { attempt_key => result } } : {})
+        result.to_h.merge(
+          attempts: attempts.to_h { |vendor, attempt| [vendor, attempt[attempt_key].to_h] },
+          attempted_vendors: attempts.keys,
+          failover_available: !!failover_available,
+          failover_used: attempts.many?,
+        )
+      end
 
       def errors
         resolution_result.errors

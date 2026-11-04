@@ -2439,6 +2439,10 @@ module AnalyticsEvents
   # @option proofing_results [String,nil] context.stages.resolution.vendor_id Vendor's internal ID for resolution proofing requests, e.g. socureId
   # @option proofing_results [String] context.stages.resolution.vendor_name Vendor used (e.g. lexisnexis:instant_verify)
   # @option proofing_results [String] context.stages.resolution.vendor_workflow ID of workflow or configuration the vendor used for this transaction
+  # @option proofing_results [Hash] context.stages.resolution.attempts Every resolution vendor attempt for this submission, including the final attempt also shown at the top level of the stage. Keyed by internal proofing vendor identifier (e.g. socure_kyc, instant_verify_ddp), which differs from the vendor-reported vendor_name inside each entry. Each entry has the same shape as the stage itself. Each vendor appears at most once. Order is given by attempted_vendors, since object keys are unordered
+  # @option proofing_results [Array<String>] context.stages.resolution.attempted_vendors Internal proofing vendor identifiers in the order they were tried. Values are the keys of attempts
+  # @option proofing_results [Boolean] context.stages.resolution.failover_available Whether failover could have run for this submission: true only when the submission was selected by the idv_resolution_failover_enabled_percent rollout and at least one other eligible vendor existed
+  # @option proofing_results [Boolean] context.stages.resolution.failover_used Whether more than one vendor was tried for this submission
   # @option proofing_results [Boolean] context.stages.residential_address.success Whether the residential address passed proofing
   # @option proofing_results [Hash] context.stages.residential_address.errors Object holding error details returned by the residential address proofing vendor.
   # @option proofing_results [String,nil] context.stages.residential_address.exception If an exception occured during residential address verification its message is provided here
@@ -2450,6 +2454,10 @@ module AnalyticsEvents
   # @option proofing_results [String,nil] context.stages.residential_address.vendor_id Vendor's internal ID for residential address proofing requests, e.g. socureId
   # @option proofing_results [String] context.stages.residential_address.vendor_name Vendor used for residential address proofing
   # @option proofing_results [String] context.stages.residential_address.vendor_workflow Vendor-specific workflow or configuration ID associated with the request made.
+  # @option proofing_results [Hash] context.stages.residential_address.attempts Every residential address attempt for this submission, structured the same as context.stages.resolution.attempts. Outside in-person proofing, entries report ResidentialAddressNotRequired
+  # @option proofing_results [Array<String>] context.stages.residential_address.attempted_vendors Same value as context.stages.resolution.attempted_vendors
+  # @option proofing_results [Boolean] context.stages.residential_address.failover_available Same value as context.stages.resolution.failover_available
+  # @option proofing_results [Boolean] context.stages.residential_address.failover_used Same value as context.stages.resolution.failover_used
   # @option proofing_results [Hash] context.stages.threatmetrix Object holding details about the call made to the device profiling vendor
   # @option proofing_results [String] context.stages.threatmetrix.client Identifier string indicating which client was used.
   # @option proofing_results [Boolean] context.stages.threatmetrix.success Whether the request to the vendor succeeded.

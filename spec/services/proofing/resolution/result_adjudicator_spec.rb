@@ -76,6 +76,84 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
     )
   end
 
+  describe 'resolution stage failover fields' do
+    let(:summary_keys) { %i[attempts attempted_vendors failover_available failover_used] }
+
+    it 'keeps each stage result unchanged at the top level' do
+      stages = subject.adjudicated_result.extra[:context][:stages]
+
+      expect(stages[:resolution].except(*summary_keys)).to eq(resolution_result.to_h)
+      expect(stages[:residential_address].except(*summary_keys))
+        .to eq(residential_resolution_result.to_h)
+    end
+
+    it 'treats a single result as one attempt by the deciding vendor' do
+      stages = subject.adjudicated_result.extra[:context][:stages]
+
+      expect(stages[:resolution]).to include(
+        attempts: { instant_verify_ddp: resolution_result.to_h },
+        attempted_vendors: [:instant_verify_ddp],
+        failover_available: false,
+        failover_used: false,
+      )
+    end
+
+    context 'with failover attempts' do
+      let(:failed_result) { Proofing::Resolution::Result.new(success: false, vendor_name: 'socure_kyc') }
+      let(:failed_residential_result) do
+        Proofing::Resolution::Result.new(
+          success: true,
+          vendor_name: 'ResidentialAddressNotRequired',
+        )
+      end
+
+      subject do
+        described_class.new(
+          resolution_result:,
+          residential_resolution_result:,
+          ipp_enrollment_in_progress:,
+          device_profiling_result:,
+          phone_result:,
+          ipp_current_address_matches_id:,
+          applicant_pii:,
+          precheck_phone_number: nil,
+          proofing_vendor:,
+          failover_available: true,
+          resolution_attempts: {
+            socure_kyc: {
+              resolution_result: failed_result,
+              residential_resolution_result: failed_residential_result,
+            },
+            instant_verify_ddp: {
+              resolution_result:,
+              residential_resolution_result:,
+            },
+          },
+        )
+      end
+
+      it 'logs every attempt in order, with identical summary fields in both stages' do
+        stages = subject.adjudicated_result.extra[:context][:stages]
+
+        expect(stages[:resolution]).to include(
+          attempts: {
+            socure_kyc: failed_result.to_h,
+            instant_verify_ddp: resolution_result.to_h,
+          },
+          attempted_vendors: [:socure_kyc, :instant_verify_ddp],
+          failover_available: true,
+          failover_used: true,
+        )
+        expect(stages[:residential_address][:attempts]).to eq(
+          socure_kyc: failed_residential_result.to_h,
+          instant_verify_ddp: residential_resolution_result.to_h,
+        )
+        expect(stages[:residential_address].slice(*summary_keys.drop(1)))
+          .to eq(stages[:resolution].slice(*summary_keys.drop(1)))
+      end
+    end
+  end
+
   describe '#adjudicated_result' do
     context 'IPP enrollment is in progress' do
       let(:ipp_enrollment_in_progress) { true }
