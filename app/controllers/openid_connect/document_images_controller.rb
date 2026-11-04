@@ -29,9 +29,10 @@ module OpenidConnect
         typ: nil,
         cty: result.extra[:artifact].content_type,
       )
-      track_analytics(result.to_h.except(:artifact, :image), encrypted: true)
 
-      render plain: jwe, content_type: 'application/jose'
+      track_analytics(result.to_h.except(:artifact, :image))
+
+      render body: jwe, content_type: 'application/jose'
     rescue OpenidConnect::JweEncryptor::NoUsableKeyError, OpenSSL::OpenSSLError
       track_analytics(
         {
@@ -66,10 +67,9 @@ module OpenidConnect
       }.compact, status: error_response.status
     end
 
-    def track_analytics(result, encrypted: nil)
+    def track_analytics(result)
       analytics.document_image_release(
         **result,
-        encrypted:,
         image_type: params[:image_type],
         issuer: current_identity.service_provider,
         profile_id: current_identity.user&.active_profile&.id,

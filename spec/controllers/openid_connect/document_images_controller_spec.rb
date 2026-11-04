@@ -148,7 +148,6 @@ RSpec.describe OpenidConnect::DocumentImagesController do
             image_type: 'front',
             issuer: identity.service_provider,
             profile_id: profile.id,
-            encrypted: true,
           )
         end
 
