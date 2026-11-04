@@ -555,6 +555,8 @@ sp_proofing_events_by_uuid_report_configs: '[]'
 sp_registration_funnel_report_configs: '[]'
 sp_verification_demographics_report_configs: '[]'
 sp_verification_report_configs: '[]'
+ssa_proofing_agent_as_authoritative_source: false
+ssa_socure_bypass_reason_codes: '[]'
 state_tracking_enabled: true
 sts_consent_expiration_in_days: 365
 team_ada_email: ''

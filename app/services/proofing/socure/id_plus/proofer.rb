@@ -8,9 +8,11 @@ module Proofing
 
         # @param [Proofing::Socure::IdPlus::Config] config
         # @param [Analytics,nil] analytics
-        def initialize(config, analytics = nil)
+        # @param [Boolean] is_proofing_agent
+        def initialize(config, analytics = nil, is_proofing_agent: false)
           @config = config
           @analytics = analytics
+          @is_proofing_agent = is_proofing_agent
         end
 
         # @param [Hash] applicant
