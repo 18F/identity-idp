@@ -674,7 +674,6 @@ RSpec.describe OpenidConnectTokenForm do
         let(:scope) { 'openid email token_exchange:records' }
 
         before do
-          identity.update!(ial: 2)
           allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
           allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
             .and_return([service_provider.issuer])

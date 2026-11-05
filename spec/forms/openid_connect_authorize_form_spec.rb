@@ -165,8 +165,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       let(:thumbprint) { SecureRandom.urlsafe_base64(32) }
 
       before do
-        allow(IdentityConfig.store).to receive(:dpop_required_issuers)
-          .and_return([service_provider.issuer])
+        allow(IdentityConfig.store).to receive(:dpop_required_issuers).and_return([client_id])
       end
 
       context 'when no dpop_jkt is passed in' do
