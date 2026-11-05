@@ -41,7 +41,10 @@ module OpenidConnect
     end
 
     def form_params
-      token_params.merge(dpop_proof: request.headers['DPoP'].presence)
+      token_params.merge(
+        dpop_proof: request.headers['DPoP'].presence,
+        token_url: api_openid_connect_token_url,
+      )
     end
 
     def token_params
