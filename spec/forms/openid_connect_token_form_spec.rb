@@ -750,15 +750,6 @@ RSpec.describe OpenidConnectTokenForm do
 
       it 'reports the binding on the analytics attributes' do
         expect(form.submit.extra[:dpop_bound]).to eq(true)
-        expect(form.submit.extra[:dpop_error_type]).to be_nil
-      end
-
-      context 'with a proof that fails' do
-        let(:dpop_proof) { nil }
-
-        it 'names the failed check on the analytics attributes' do
-          expect(form.submit.extra[:dpop_error_type]).to eq(:dpop_proof_missing)
-        end
       end
 
       context 'when the code verifier is wrong' do
@@ -817,7 +808,6 @@ RSpec.describe OpenidConnectTokenForm do
           token_exchange_scopes: nil,
           integration_errors: nil,
           dpop_bound: false,
-          dpop_error_type: nil,
         )
       end
     end

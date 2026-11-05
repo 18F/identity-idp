@@ -125,9 +125,8 @@ class OpenidConnectTokenForm
 
     return if dpop_result.success?
 
-    errors.add(
-      :dpop_proof, dpop_result.first_error_message, type: dpop_result.extra[:dpop_error_type]
-    )
+    dpop_error = dpop_result.errors[:proof].first
+    errors.add(:dpop_proof, dpop_error, type: dpop_error.to_sym)
   end
 
   def dpop_result
@@ -285,7 +284,6 @@ class OpenidConnectTokenForm
       token_exchange_scopes: token_exchange_scope_values,
       integration_errors:,
       dpop_bound: dpop_binding_required?,
-      dpop_error_type: errors.details[:dpop_proof]&.first&.dig(:type),
     }
   end
 
