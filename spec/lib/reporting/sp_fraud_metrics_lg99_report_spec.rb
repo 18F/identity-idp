@@ -184,20 +184,21 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
 
   describe '#as_emailable_reports' do
     let(:expected_reports) do
+      date_range = "#{time_range.begin.to_date} to #{time_range.end.to_date}"
       [
         Reporting::EmailableReport.new(
           title: 'Definitions',
-          filename: 'definitions',
+          filename: "definitions_#{date_range}",
           table: expected_definitions_table,
         ),
         Reporting::EmailableReport.new(
           title: 'Overview',
-          filename: 'overview',
+          filename: "overview_#{date_range}",
           table: expected_overview_table,
         ),
         Reporting::EmailableReport.new(
           title: 'Monthly Fraud Metrics Jan-2022',
-          filename: 'lg99_metrics',
+          filename: "lg99_metrics_#{date_range}",
           table: expected_lg99_metrics_table,
         ),
       ]
