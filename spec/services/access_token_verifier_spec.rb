@@ -117,7 +117,6 @@ RSpec.describe AccessTokenVerifier do
           expect(result_identity).to eq(identity)
           expect(verifier.www_authenticate).to be_nil
           expect(response.extra[:dpop_bound]).to eq(true)
-          expect(response.extra[:dpop_error_type]).to be_nil
         end
       end
 
@@ -162,14 +161,12 @@ RSpec.describe AccessTokenVerifier do
           )
         end
 
-        it 'is refused as a key mismatch, named for analytics' do
+        it 'is refused as a key mismatch, with the check named in the error details' do
           response, = result
 
           expect(response.success?).to eq(false)
-          expect(response.errors[:dpop_proof]).to eq(
-            ['dpop_key_mismatch'],
-          )
-          expect(response.extra[:dpop_error_type]).to eq(:dpop_key_mismatch)
+          expect(response.errors[:dpop_proof]).to eq(['dpop_key_mismatch'])
+          expect(response.to_h[:error_details]).to eq(dpop_proof: { dpop_key_mismatch: true })
         end
       end
 
