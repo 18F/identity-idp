@@ -18,10 +18,11 @@ RSpec.describe Reports::SpFraudMetricsReport do
   end
 
   let(:expected_s3_paths) do
+    date_range = "#{time_range.begin.to_date} to #{time_range.end.to_date}"
     [
-      "#{report_folder}/definitions.csv",
-      "#{report_folder}/overview.csv",
-      "#{report_folder}/lg99_metrics.csv",
+      "#{report_folder}/definitions_#{date_range}.csv",
+      "#{report_folder}/overview_#{date_range}.csv",
+      "#{report_folder}/lg99_metrics_#{date_range}.csv",
     ]
   end
 

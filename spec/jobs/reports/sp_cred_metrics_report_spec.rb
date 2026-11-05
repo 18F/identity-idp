@@ -30,11 +30,12 @@ RSpec.describe Reports::SpCredMetricsReport do
   end
 
   let(:expected_s3_paths) do
+    date_range = "#{report_date.beginning_of_month.to_date} to #{report_date.end_of_month.to_date}"
     [
-      "#{report_folder}/multi_issuer_monthly_cred_metrics.csv",
-      "#{report_folder}/partner_monthly_cred_metrics.csv",
-      "#{report_folder}/partner_monthly_cred_overview.csv",
-      "#{report_folder}/partner_monthly_cred_definitions.csv",
+      "#{report_folder}/multi_issuer_monthly_cred_metrics_#{date_range}.csv",
+      "#{report_folder}/partner_monthly_cred_metrics_#{date_range}.csv",
+      "#{report_folder}/partner_monthly_cred_overview_#{date_range}.csv",
+      "#{report_folder}/partner_monthly_cred_definitions_#{date_range}.csv",
     ]
   end
   let(:s3_metadata) do

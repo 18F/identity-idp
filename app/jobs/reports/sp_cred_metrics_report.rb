@@ -135,16 +135,18 @@ module Reports
     end
 
     def as_emailable_partner_report(date:)
+      date_range = "#{date.beginning_of_month.to_date} to #{date.end_of_month.to_date}"
+
       emailable_report_array = [
         Reporting::EmailableReport.new(
           title: 'Definitions',
           table: definitions_table,
-          filename: 'partner_monthly_cred_definitions',
+          filename: "partner_monthly_cred_definitions_#{date_range}",
         ),
         Reporting::EmailableReport.new(
           title: 'Overview',
           table: overview_table,
-          filename: 'partner_monthly_cred_overview',
+          filename: "partner_monthly_cred_overview_#{date_range}",
         ),
       ]
 
@@ -154,7 +156,7 @@ module Reports
         emailable_report_array << Reporting::EmailableReport.new(
           title: "#{@agency_abbreviation} Monthly Credential Metrics #{date.strftime('%B %Y')}",
           table: issuer_data,
-          filename: 'multi_issuer_monthly_cred_metrics',
+          filename: "multi_issuer_monthly_cred_metrics_#{date_range}",
         )
       else
         return nil
@@ -166,7 +168,7 @@ module Reports
         emailable_report_array << Reporting::EmailableReport.new(
           title: "Partner Monthly Credential Metrics #{date.strftime('%B %Y')}",
           table: partner_data,
-          filename: 'partner_monthly_cred_metrics',
+          filename: "partner_monthly_cred_metrics_#{date_range}",
         )
       else
         return nil
