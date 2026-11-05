@@ -66,6 +66,7 @@ RSpec.describe OpenidConnect::TokenController do
             expires_in: 0,
             ial: 1,
             token_endpoint_operation: 'authorization_code',
+            dpop_bound: false,
           }
         )
 
@@ -159,6 +160,7 @@ RSpec.describe OpenidConnect::TokenController do
             error_details: hash_including(:grant_type),
             ial: 1,
             token_endpoint_operation: 'authorization_code',
+            dpop_bound: false,
           }
         )
 

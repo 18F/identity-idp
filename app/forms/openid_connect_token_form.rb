@@ -10,6 +10,7 @@ class OpenidConnectTokenForm
     client_assertion_type
     code
     code_verifier
+    dpop_proof
     grant_type
   ].freeze
 
@@ -28,6 +29,7 @@ class OpenidConnectTokenForm
   validate :validate_code_verifier, if: :pkce_verification_required?
   validate :validate_client_assertion, if: :client_assertion_required?
   validate :validate_consent, if: :token_exchange_authorization_code?
+  validate :validate_dpop_proof, if: :dpop_binding_required?
 
   def initialize(params)
     ATTRS.each do |key|
@@ -59,6 +61,8 @@ class OpenidConnectTokenForm
         expires_in: @ttl,
         id_token: id_token_builder.id_token,
       }
+    elsif errors.include?(:dpop_proof)
+      { error: 'invalid_dpop_proof', error_description: errors[:dpop_proof].join(' ') }
     elsif private_key_jwt_pkce? && errors.include?(:code_verifier)
       { error: 'invalid_grant',
         error_description: t('openid_connect.token.errors.invalid_code_verifier') }
@@ -82,14 +86,14 @@ class OpenidConnectTokenForm
   attr_reader :identity, :code_expiration
 
   def token_exchange_subject_token_response
-    actor_handoff = TokenExchange::ActorHandoff.load(code)
     issued_token = TokenExchange::SubjectTokenIssuer.issue(
       identity:,
       actor_return_log_id: actor_handoff&.actor_return_log_id,
+      dpop_jkt: bound_thumbprint,
     )
     {
       access_token: issued_token.token,
-      token_type: 'Bearer',
+      token_type: dpop_binding_required? ? 'DPoP' : 'Bearer',
       expires_in: issued_token.expires_in,
       scope: identity.scope,
     }
@@ -105,6 +109,43 @@ class OpenidConnectTokenForm
 
   def token_exchange_scope_requested?
     token_exchange_scope_values.present?
+  end
+
+  def dpop_binding_required?
+    identity.present? && !!service_provider&.dpop_required?
+  end
+
+  def validate_dpop_proof
+    return if errors.any?
+
+    if bound_thumbprint.blank?
+      errors.add(:dpop_proof, 'dpop_code_unbound', type: :dpop_code_unbound)
+      return
+    end
+
+    return if dpop_result.success?
+
+    dpop_error = dpop_result.errors[:proof].first
+    errors.add(:dpop_proof, dpop_error, type: dpop_error.to_sym)
+  end
+
+  def dpop_result
+    @dpop_result ||= DpopProofForm.new(
+      proof: dpop_proof,
+      http_method: 'POST',
+      http_url: api_openid_connect_token_url,
+      expected_thumbprint: bound_thumbprint,
+    ).submit
+  end
+
+  def bound_thumbprint
+    actor_handoff&.dpop_jkt if dpop_binding_required?
+  end
+
+  def actor_handoff
+    return @actor_handoff if defined?(@actor_handoff)
+
+    @actor_handoff = TokenExchange::ActorHandoff.load(code)
   end
 
   def find_identity_with_code
@@ -242,6 +283,7 @@ class OpenidConnectTokenForm
       token_endpoint_operation: token_endpoint_operation,
       token_exchange_scopes: token_exchange_scope_values,
       integration_errors:,
+      dpop_bound: dpop_binding_required?,
     }
   end
 

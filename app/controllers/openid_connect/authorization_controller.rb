@@ -103,9 +103,17 @@ module OpenidConnect
     end
 
     def identity_authorization_code
-      return unless IdentityConfig.store.token_exchange_enabled && token_exchange_scope_requested?
+      return unless delegation_requested? || @authorize_form.dpop_binding_required?
 
       @linked_identity&.session_uuid
+    end
+
+    def delegation_requested?
+      IdentityConfig.store.token_exchange_enabled && token_exchange_scope_requested?
+    end
+
+    def authorization_dpop_jkt
+      @authorize_form.dpop_jkt if @authorize_form.dpop_binding_required?
     end
 
     def needs_sts_consent?

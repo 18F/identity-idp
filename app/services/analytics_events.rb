@@ -7900,6 +7900,8 @@ module AnalyticsEvents
   #   (authorization_code or subject_token)
   # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
   # @param [String, nil] subject_token_fingerprint Fingerprint of the issued subject token
+  # @param [Boolean, nil] dpop_bound Whether the client's tokens are bound to a key it holds, so a
+  #   DPoP proof was required with this request
   def openid_connect_token(
     client_id:,
     success:,
@@ -7914,6 +7916,7 @@ module AnalyticsEvents
     token_endpoint_operation: nil,
     token_exchange_scopes: nil,
     subject_token_fingerprint: nil,
+    dpop_bound: nil,
     **extra
   )
     track_event(
@@ -7931,6 +7934,7 @@ module AnalyticsEvents
       token_endpoint_operation:,
       token_exchange_scopes:,
       subject_token_fingerprint:,
+      dpop_bound:,
       **extra,
     )
   end
