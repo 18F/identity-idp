@@ -40,6 +40,7 @@ class OpenidConnectTokenExchangeForm
   validate :validate_broker
   validate :validate_target
   validate :validate_resource
+  validate :validate_consent, unless: :client_rejected?
   validate :validate_subject_token, unless: :client_rejected?
   validate :validate_actor_return_log, unless: :client_rejected?
   validate :validate_scope, unless: :client_rejected?
@@ -148,6 +149,18 @@ class OpenidConnectTokenExchangeForm
     errors.add(:resource, :invalid)
   rescue URI::InvalidURIError
     errors.add(:resource, :invalid)
+  end
+
+  def validate_consent
+    return if user.blank?
+
+    return if UserConsentSts.consent_valid?(user: identity.user, target_app: audience)
+
+    errors.add(
+      :subject_token,
+      :invalid_audience,
+      message: 'invalid audience for this subject token',
+    )
   end
 
   def validate_scope

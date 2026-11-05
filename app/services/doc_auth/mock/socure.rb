@@ -94,8 +94,8 @@ module DocAuth
         Rails.application.routes.url_helpers.test_mock_socure_auth_score_url
       end
 
-      def images_endpoint
-        Rails.application.routes.url_helpers.test_mock_socure_images_request_url
+      def images_endpoint(reference_id:)
+        Rails.application.routes.url_helpers.test_mock_socure_images_request_url(reference_id:)
       end
 
       def document_request_endpoint
