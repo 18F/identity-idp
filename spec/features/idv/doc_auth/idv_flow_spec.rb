@@ -78,6 +78,17 @@ RSpec.describe 'Completing all IDV steps', :js, :allow_browser_log do
           state_id_jurisdiction: 'NY',
           issuing_country_code: nil,
         )
+        expect(profile.idv_level).to eq('legacy_unsupervised')
+        expect(profile.proofing_components).to eq(
+          'document_check' => 'lexis_nexis',
+          'document_type_received' => 'drivers_license',
+          'source_check' => 'UnsupportedJurisdiction',
+          'resolution_check' => 'ResolutionMock',
+          'residential_resolution_check' => 'ResidentialAddressNotRequired',
+          'address_check' => 'lexis_nexis_address',
+          'threatmetrix' => true,
+          'threatmetrix_review_status' => 'pass',
+        )
       end
     end
 
@@ -141,6 +152,17 @@ RSpec.describe 'Completing all IDV steps', :js, :allow_browser_log do
           identity_doc_address_state: nil,
           state_id_jurisdiction: nil,
           issuing_country_code: 'USA',
+        )
+        expect(profile.idv_level).to eq('legacy_unsupervised')
+        expect(profile.proofing_components).to eq(
+          'document_check' => 'lexis_nexis',
+          'document_type_received' => 'passport',
+          'source_check' => 'dos:passport',
+          'resolution_check' => 'ResolutionMock',
+          'residential_resolution_check' => 'ResidentialAddressNotRequired',
+          'address_check' => 'lexis_nexis_address',
+          'threatmetrix' => true,
+          'threatmetrix_review_status' => 'pass',
         )
       end
     end
@@ -253,6 +275,17 @@ RSpec.describe 'Completing all IDV steps', :js, :allow_browser_log do
           state_id_jurisdiction: 'MD',
           issuing_country_code: 'USA',
         )
+        expect(profile.idv_level).to eq('legacy_unsupervised')
+        expect(profile.proofing_components).to eq(
+          'document_check' => 'socure',
+          'document_type_received' => 'drivers_license',
+          'source_check' => 'StateIdMock',
+          'resolution_check' => 'ResolutionMock',
+          'residential_resolution_check' => 'ResidentialAddressNotRequired',
+          'address_check' => 'lexis_nexis_address',
+          'threatmetrix' => true,
+          'threatmetrix_review_status' => 'pass',
+        )
       end
     end
 
@@ -312,6 +345,17 @@ RSpec.describe 'Completing all IDV steps', :js, :allow_browser_log do
           identity_doc_address_state: nil,
           state_id_jurisdiction: nil,
           issuing_country_code: 'USA',
+        )
+        expect(profile.idv_level).to eq('legacy_unsupervised')
+        expect(profile.proofing_components).to eq(
+          'document_check' => 'socure',
+          'document_type_received' => 'passport',
+          'source_check' => 'dos:passport',
+          'resolution_check' => 'ResolutionMock',
+          'residential_resolution_check' => 'ResidentialAddressNotRequired',
+          'address_check' => 'lexis_nexis_address',
+          'threatmetrix' => true,
+          'threatmetrix_review_status' => 'pass',
         )
       end
     end
