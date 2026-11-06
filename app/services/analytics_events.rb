@@ -9001,6 +9001,18 @@ module AnalyticsEvents
     track_event(:sign_in_security_check_failed_visited)
   end
 
+  # A site key pair was created for the user
+  def site_key_created(**extra)
+    track_event(:site_key_created, **extra)
+  end
+
+  # @param [String] error
+  # @param [Boolean] replaced Whether the key that failed to open was replaced with a new one
+  # The user's site key could not be unwrapped with the password they entered
+  def site_key_unlock_failed(error:, replaced:, **extra)
+    track_event(:site_key_unlock_failed, error:, replaced:, **extra)
+  end
+
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission

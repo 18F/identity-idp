@@ -26,8 +26,22 @@ class UpdateUserPasswordForm
   attr_reader :user, :user_session, :required_password_change
 
   def process_valid_submission
-    user.update!(password: password)
+    vault = SiteKeys::Vault.new(user:, user_session: user_session || {})
+    expected_fingerprint = vault.stored_fingerprint
+    rewrapped_site_key = rewrap_site_key(vault)
+    ActiveRecord::Base.transaction do
+      user.update!(password: password)
+      vault.store_rewrapped!(rewrapped_site_key, expected_fingerprint:)
+    end
     encrypt_user_profiles
+  end
+
+  # A key whose session copy cannot be read right now keeps its old wrap; the next sign-in finds
+  # it stale and starts over.
+  def rewrap_site_key(vault)
+    vault.wrap_cached_key(password)
+  rescue Encryption::EncryptionError
+    nil
   end
 
   def encrypt_user_profiles
