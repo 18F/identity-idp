@@ -4,7 +4,7 @@ module Users
   class StsConsentController < ApplicationController
     include SecureHeadersConcern
 
-    before_action :ensure_sp_in_session_with_request_url, only: [:new, :create]
+    before_action :ensure_sp_in_session_with_request_url, only: [:new, :create, :cancel]
     before_action :confirm_two_factor_authenticated
     before_action :confirm_token_exchange_enabled
     before_action :apply_secure_headers_override, only: [:new]
@@ -28,6 +28,14 @@ module Users
       end
     end
 
+    def cancel
+      redirect_url = target_app_redirect_url
+
+      analytics.sts_consent_cancelled(target_app:, redirect_url:)
+
+      redirect_to redirect_url, allow_other_host: true
+    end
+
     private
 
     def build_form
@@ -36,6 +44,14 @@ module Users
 
     def target_app
       sp_session[:sts_target_app]
+    end
+
+    def target_app_redirect_url
+      target_app_service_provider&.redirect_uris&.first || account_url
+    end
+
+    def target_app_service_provider
+      ServiceProvider.find_by(issuer: target_app)
     end
 
     def permitted_params
