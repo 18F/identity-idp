@@ -4,20 +4,22 @@ module TokenExchange
   class AccessTokenIssuer
     IssuedToken = Struct.new(:token, :expires_in, :delegation_id, keyword_init: true)
 
-    def self.issue(subject_token:, target_issuer:, resource:, scope:)
+    def self.issue(subject_token:, target_issuer:, resource:, scope:, dpop_jkt: nil)
       new(
         subject_token:,
         target_issuer:,
         resource:,
         scope:,
+        dpop_jkt:,
       ).issue
     end
 
-    def initialize(subject_token:, target_issuer:, resource:, scope:)
+    def initialize(subject_token:, target_issuer:, resource:, scope:, dpop_jkt:)
       @subject_token = subject_token
       @target_issuer = target_issuer
       @resource = resource
       @scope = scope
+      @dpop_jkt = dpop_jkt
     end
 
     def issue
@@ -33,6 +35,7 @@ module TokenExchange
         target_issuer:,
         resource:,
         scope:,
+        dpop_jkt:,
         issued_at:,
         expires_at:,
       )
@@ -59,7 +62,7 @@ module TokenExchange
 
     private
 
-    attr_reader :subject_token, :target_issuer, :resource, :scope
+    attr_reader :subject_token, :target_issuer, :resource, :scope, :dpop_jkt
 
     def jwe(issued_at:, expires_at:)
       OpenidConnect::JweEncryptor.encrypt(jwt(issued_at:, expires_at:), service_provider: target)
@@ -85,6 +88,7 @@ module TokenExchange
         act: {
           sub: subject_token.broker_issuer,
         },
+        **confirmation_claim,
       }
     end
 
@@ -102,6 +106,15 @@ module TokenExchange
         profile_requested_issuer: profile&.initiating_service_provider_issuer,
         returned_at: Time.zone.now,
       )
+    end
+
+    # RFC 9449 §6.1 (and RFC 7800): a token bound to the actor's key carries the key's RFC 7638
+    # thumbprint as `cnf.jkt`, so the agency can require a proof signed by that key on every
+    # request and refuse the token presented as a bearer token. A bearer token carries no `cnf`.
+    def confirmation_claim
+      return {} if dpop_jkt.blank?
+
+      { cnf: { jkt: dpop_jkt } }
     end
 
     def target

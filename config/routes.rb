@@ -11,10 +11,10 @@ Rails.application.routes.draw do
   post '/api/openid_connect/token' => 'openid_connect/token#create'
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
-  get '/api/openid_connect/document_images/:image_type' =>
+  post '/api/openid_connect/document_images/:image_type' =>
     'openid_connect/document_images#show',
-      as: :api_openid_connect_document_image,
-      constraints: { image_type: /(?:front|back|passport|selfie)/ }
+       as: :api_openid_connect_document_image,
+       constraints: { image_type: /(?:front|back|passport|selfie)/ }
   post '/api/risc/security_events' => 'risc/security_events#create'
 
   post '/api/usps_locations' => 'idv/in_person/public/usps_locations#index'
@@ -144,13 +144,12 @@ Rails.application.routes.draw do
       get '/account_reset/pending' => 'destructive_account_reset/pending#show'
       post '/account_reset/pending/cancel' => 'destructive_account_reset/pending#cancel'
       # Account-preserving MFA recovery.
-      # `verify` and `new_mfa_setup` are committed but inert until later phases.
+      # `new_mfa_setup#create` is committed but inert until replacement MFA is added.
       scope 'account_recovery' do
         get '/start' => 'account_recovery/start#show', as: :account_recovery_start
         post '/start' => 'account_recovery/start#create'
-        get '/pending' => 'account_recovery/pending#show', as: :account_recovery_pending
-        post '/pending/resend' => 'account_recovery/pending#resend',
-             as: :account_recovery_resend
+        get '/confirm_request' => 'account_recovery/confirm_request#show',
+            as: :account_recovery_confirm_request
         get '/verify' => 'account_recovery/verify#show', as: :account_recovery_verify
         post '/verify' => 'account_recovery/verify#create'
         get '/new_mfa_setup' => 'account_recovery/new_mfa_setup#show',
@@ -222,6 +221,16 @@ Rails.application.routes.draw do
 
         get '/session_data' => 'session_data#index'
 
+        get '/account_recovery' => 'account_recovery#index', as: :account_recovery
+        post '/account_recovery/:id/grant' => 'account_recovery#grant',
+             as: :account_recovery_grant
+        post '/account_recovery/:id/cancel' => 'account_recovery#cancel',
+             as: :account_recovery_cancel
+        post '/account_recovery/:id/expire' => 'account_recovery#expire',
+             as: :account_recovery_expire
+        delete '/account_recovery/:id' => 'account_recovery#destroy',
+               as: :account_recovery_destroy
+
         get '/nds' => 'nds_pages#index', as: :nds
         post '/nds/seed_session' => 'nds_pages#seed_session', as: :nds_seed_session
         post '/nds/generate_mfa' => 'nds_pages#generate_mfa', as: :nds_generate_mfa
@@ -240,7 +249,7 @@ Rails.application.routes.draw do
 
         post '/mock_socure/api/document_request' => 'mock_socure#document_request'
         post '/mock_socure/api/3.0/EmailAuthScore' => 'mock_socure#docv_results', as: 'mock_socure_auth_score'
-        post '/mock_socure/api/5.0/documents/:referenceId' => 'mock_socure#images_request', as: 'mock_socure_images_request'
+        get '/mock_socure/api/5.0/documents/:reference_id' => 'mock_socure#images_request', as: 'mock_socure_images_request'
       end
     end
 

@@ -36,6 +36,16 @@ RSpec.describe TokenExchange::SubjectTokenIssuer do
       )
     end
 
+    context 'with a key thumbprint' do
+      subject(:issued_token) { described_class.issue(identity:, dpop_jkt:) }
+
+      let(:dpop_jkt) { SecureRandom.urlsafe_base64(32) }
+
+      it 'stores the thumbprint the subject token is bound to' do
+        expect(TokenExchange::SubjectToken.load(issued_token.token).dpop_jkt).to eq(dpop_jkt)
+      end
+    end
+
     it 'does not store the user database identifier' do
       loaded_subject_token = TokenExchange::SubjectToken.load(issued_token.token)
 

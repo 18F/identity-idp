@@ -66,6 +66,7 @@ RSpec.describe OpenidConnect::TokenController do
             expires_in: 0,
             ial: 1,
             token_endpoint_operation: 'authorization_code',
+            dpop_bound: false,
           }
         )
 
@@ -159,6 +160,7 @@ RSpec.describe OpenidConnect::TokenController do
             error_details: hash_including(:grant_type),
             ial: 1,
             token_endpoint_operation: 'authorization_code',
+            dpop_bound: false,
           }
         )
 
@@ -256,6 +258,7 @@ RSpec.describe OpenidConnect::TokenController do
         .and_return([broker_issuer])
       allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
         .and_return([{ issuer: target_issuer, scope: 'passport' }])
+      create(:user_consent_sts, user:, target_app: target_issuer)
     end
 
     context 'with valid params' do
@@ -278,6 +281,7 @@ RSpec.describe OpenidConnect::TokenController do
           resource: resource,
           expires_in: IdentityConfig.store.token_exchange_access_token_expires_in,
           ial: 2,
+          dpop_bound: false,
           token_exchange_stage: 'delegated_token',
           token_exchange_scopes: ['passport'],
           subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
@@ -324,6 +328,7 @@ RSpec.describe OpenidConnect::TokenController do
           hash_including(
             success: false,
             error_details: hash_including(:subject_token),
+            dpop_bound: false,
             token_exchange_stage: 'delegated_token',
             subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
             oauth_error_code: 'invalid_grant',
@@ -374,6 +379,7 @@ RSpec.describe OpenidConnect::TokenController do
           target_issuer: target_issuer,
           resource: resource,
           error_details: hash_including(:audience),
+          dpop_bound: false,
           token_exchange_stage: 'delegated_token',
           token_exchange_scopes: ['passport'],
           subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
@@ -399,6 +405,7 @@ RSpec.describe OpenidConnect::TokenController do
           target_issuer: target_issuer,
           resource: resource,
           error_details: hash_including(:grant_type),
+          dpop_bound: false,
           token_exchange_stage: 'delegated_token',
           token_exchange_scopes: ['passport'],
           subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),

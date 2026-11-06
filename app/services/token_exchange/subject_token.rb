@@ -8,6 +8,7 @@ module TokenExchange
     :scope,
     :ial,
     :actor_return_log_id,
+    :dpop_jkt,
     :issued_at,
     keyword_init: true,
   ) do

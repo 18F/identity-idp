@@ -140,6 +140,43 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content('MILWAUKEE')
     expect(page).to have_content('Sunday: Closed')
 
+    # The in-person profile is created pending USPS verification, with the state ID document data
+    ipp_profile = user.reload.pending_profile
+    expect(ipp_profile).to be_present
+    expect(ipp_profile.active).to be(false)
+    expect(ipp_profile.in_person_verification_pending_at).to be_present
+    expect(ipp_profile.idv_level).to eq('legacy_in_person')
+    expect(ipp_profile.proofing_components).to eq(
+      'document_check' => 'usps',
+      'source_check' => 'StateIdMock',
+      'resolution_check' => 'ResolutionMock',
+      'residential_resolution_check' => 'ResolutionMock',
+      'address_check' => 'lexis_nexis_address',
+      'threatmetrix' => true,
+      'threatmetrix_review_status' => 'pass',
+    )
+    expect(ipp_profile.decrypt_pii(user.password)).to have_attributes(
+      first_name: InPersonHelper::GOOD_FIRST_NAME,
+      last_name: InPersonHelper::GOOD_LAST_NAME,
+      dob: InPersonHelper::GOOD_DOB,
+      ssn: DocAuthHelper::GOOD_SSN,
+      state_id_jurisdiction: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
+      # residential address
+      address1: '123 Way St',
+      address2: '2nd Address Line',
+      city: 'Best City',
+      state: 'MT',
+      zipcode: '12345-4321',
+      # identity document address
+      ipp_current_address_matches_id: false,
+      identity_doc_address1: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
+      identity_doc_address2: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2,
+      identity_doc_city: InPersonHelper::GOOD_IDENTITY_DOC_CITY,
+      identity_doc_zipcode: InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
+      identity_doc_address_state: 'MT',
+      issuing_country_code: nil,
+    )
+
     # signing in again before completing in-person proofing at a post office
     Capybara.reset_session!
     sign_in_live_with_2fa(user)

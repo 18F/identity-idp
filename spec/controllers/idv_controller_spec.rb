@@ -176,6 +176,98 @@ RSpec.describe IdvController do
           end
         end
       end
+
+      context 'when unexpired documents are required' do
+        let(:service_provider) { create(:service_provider) }
+
+        before do
+          allow(IdentityConfig.store)
+            .to receive(:document_images_sharing_service_providers)
+            .and_return([service_provider.issuer])
+          stub_sign_in(user)
+          session[:sp] =
+            {
+              issuer: service_provider.issuer,
+              acr_values: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+            }
+        end
+
+        context 'when there are no document artifacts' do
+          it 'redirects to welcome for reproofing' do
+            get :index
+            expect(response).to redirect_to idv_welcome_url
+          end
+
+          it 'tracks idv_reproof_needed with unsupervised_with_selfie_required reason' do
+            stub_analytics
+            get :index
+            expect(@analytics).to have_logged_event(
+              :idv_reproof_needed,
+              reproof_reason: :unexpired_document_artifacts_required,
+              initiating_sp_issuer: user.active_profile.initiating_service_provider_issuer,
+              previous_idv_level: user.active_profile.idv_level,
+            )
+          end
+        end
+
+        context 'when the document artifacts have expired' do
+          let(:ttl) { 3.days.to_i }
+          let(:retention_cutoff) { ttl.seconds.ago }
+
+          before do
+            create(
+              :document_artifact,
+              created_at: retention_cutoff - 1.hour,
+              profile: user.active_profile,
+            )
+          end
+
+          it 'redirects to welcome for reproofing' do
+            get :index
+            expect(response).to redirect_to idv_welcome_url
+          end
+
+          it 'tracks idv_reproof_needed with unsupervised_with_selfie_required reason' do
+            stub_analytics
+            get :index
+            expect(@analytics).to have_logged_event(
+              :idv_reproof_needed,
+              reproof_reason: :unexpired_document_artifacts_required,
+              initiating_sp_issuer: user.active_profile.initiating_service_provider_issuer,
+              previous_idv_level: user.active_profile.idv_level,
+            )
+          end
+        end
+
+        context 'when the document artifacts have not expired' do
+          let(:ttl) { 3.days.to_i }
+          let(:retention_cutoff) { ttl.seconds.ago }
+
+          before do
+            create(
+              :document_artifact,
+              created_at: retention_cutoff + 1.hour,
+              profile: user.active_profile,
+            )
+          end
+
+          it 'redirects to activated' do
+            get :index
+            expect(response).to redirect_to idv_activated_url
+          end
+
+          it 'tracks idv_reproof_needed with unsupervised_with_selfie_required reason' do
+            stub_analytics
+            get :index
+            expect(@analytics).not_to have_logged_event(
+              :idv_reproof_needed,
+              reproof_reason: :unexpired_document_artifacts_required,
+              initiating_sp_issuer: user.active_profile.initiating_service_provider_issuer,
+              previous_idv_level: user.active_profile.idv_level,
+            )
+          end
+        end
+      end
     end
 
     context 'if number of verify_info attempts has been exceeded' do

@@ -208,6 +208,35 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
         acknowledge_and_confirm_personal_key
 
+        # Facial match / selfie proofing mints the profile at the selfie idv_level
+        profile = user.reload.active_profile
+        expect(profile.active).to be(true)
+        expect(profile.idv_level).to eq('unsupervised_with_selfie')
+        expect(profile.proofing_components).to eq(
+          'document_check' => 'mock',
+          'document_type_received' => 'drivers_license',
+          'source_check' => 'StateIdMock',
+          'resolution_check' => 'ResolutionMock',
+          'residential_resolution_check' => 'ResidentialAddressNotRequired',
+          'address_check' => 'lexis_nexis_address',
+          'threatmetrix' => true,
+          'threatmetrix_review_status' => 'pass',
+        )
+        expect(profile.decrypt_pii(Features::SessionHelper::VALID_PASSWORD)).to have_attributes(
+          first_name: 'FAKEY',
+          middle_name: nil,
+          last_name: 'MCFAKERSON',
+          dob: '1938-10-06',
+          ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
+          address1: '1 FAKE RD',
+          address2: '',
+          city: 'GREAT FALLS',
+          state: 'MT',
+          zipcode: '59010-1234',
+          state_id_jurisdiction: 'ND',
+          issuing_country_code: 'US',
+        )
+
         validate_idv_completed_page(user)
         click_agree_and_continue
 
