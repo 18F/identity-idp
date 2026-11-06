@@ -658,6 +658,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_190050) do
     t.index ["user_id", "service_provider"], name: "index_sign_in_restrictions_on_user_id_and_service_provider", unique: true
   end
 
+  create_table "site_keys", force: :cascade do |t|
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.text "encrypted_private_key", comment: "sensitive=true"
+    t.text "encrypted_private_key_recovery_code", comment: "sensitive=true"
+    t.text "public_key", null: false, comment: "sensitive=false"
+    t.datetime "recovery_code_acknowledged_at", comment: "sensitive=false"
+    t.datetime "recovery_code_generated_at", comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.bigint "user_id", null: false, comment: "sensitive=false"
+    t.index ["user_id"], name: "index_site_keys_on_user_id", unique: true
+  end
+
   create_table "socure_reason_codes", force: :cascade do |t|
     t.string "code", comment: "sensitive=false"
     t.string "group", comment: "sensitive=false"
@@ -826,5 +838,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_190050) do
   add_foreign_key "integrations", "service_providers"
   add_foreign_key "partner_accounts", "agencies"
   add_foreign_key "partner_accounts", "partner_account_statuses"
+  add_foreign_key "site_keys", "users", on_delete: :cascade
   add_foreign_key "user_consent_sts", "users"
 end

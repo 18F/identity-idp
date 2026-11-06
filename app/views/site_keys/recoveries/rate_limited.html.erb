@@ -1,0 +1,17 @@
+<% self.title = t('titles.site_key_recovery') %>
+
+<%= render PageHeadingComponent.new.with_content(t('forms.site_key_recovery.header')) %>
+
+<p>
+  <%= t(
+        'errors.site_key_recovery.rate_limited',
+        timeout: distance_of_time_in_words(
+          Time.zone.now,
+          [@expires_at, Time.zone.now].compact.max,
+          except: :seconds,
+        ),
+      ) %>
+  <%= link_to(t('links.go_back'), account_path) %>.
+</p>
+
+<%= link_to(t('forms.site_key_recovery.start_over'), start_over_site_key_recovery_path) %>

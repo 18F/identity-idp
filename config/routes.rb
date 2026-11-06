@@ -118,6 +118,19 @@ Rails.application.routes.draw do
           as: :sts_consent_revoke
       delete '/account/delegations/:id/revoke' => 'users/sts_consent_revoke#destroy'
 
+      get '/account/site_key/recovery_code' => 'site_keys/recovery_codes#show',
+          as: :site_key_recovery_code
+      put '/account/site_key/recovery_code' => 'site_keys/recovery_codes#update'
+      get '/account/site_key/recovery_code/new' => 'site_keys/recovery_codes#new',
+          as: :new_site_key_recovery_code
+      post '/account/site_key/recovery_code' => 'site_keys/recovery_codes#create',
+           as: :site_key_recovery_code_regenerate
+      get '/account/site_key/recover' => 'site_keys/recoveries#new', as: :site_key_recovery
+      post '/account/site_key/recover' => 'site_keys/recoveries#create'
+      get '/account/site_key/recover/start_over' => 'site_keys/recoveries#confirm_destroy',
+          as: :start_over_site_key_recovery
+      delete '/account/site_key/recover' => 'site_keys/recoveries#destroy'
+
       get '/' => 'users/sessions#new', as: :new_user_session
       get '/bounced' => 'users/sp_handoff_bounced#bounced'
       post '/' => 'users/sessions#create', as: :user_session

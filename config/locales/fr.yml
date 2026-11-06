@@ -893,6 +893,8 @@ errors.messages.phone_required: Le numéro de téléphone est obligatoire
 errors.messages.phone_unsupported_html: Nous ne pouvons pas vous envoyer de code à usage unique pour le moment. Veuillez réessayer en cliquant sur « Envoyer un autre code » ci-dessous ou %{link_html}.
 errors.messages.premium_rate_phone: Il semble s’agir d’un numéro de téléphone surtaxé. Veuillez sélectionner un autre numéro et réessayer.
 errors.messages.pwned_password: Le mot de passe que vous avez saisi n’est pas sécurisé. Il figure sur une liste de mots de passe connus exposés au cours de violations de données.
+errors.messages.site_key_recovery_code_incorrect: Code de récupération incorrect
+errors.messages.site_key_recovery_unavailable: Nous ne pouvons pas vérifier votre code de récupération pour le moment. Veuillez réessayer plus tard.
 errors.messages.stronger_password: Saisissez un mot de passe plus fort
 errors.messages.too_long.one: est trop long (1 caractère maximum)
 errors.messages.too_long.other: est trop long (%{count} caractères maximum)
@@ -910,6 +912,7 @@ errors.messages.wrong_length.other: n’est pas de la bonne longueur (devrait ê
 errors.piv_cac_setup.unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.
 errors.registration.terms: Avant de pouvoir continuer, vous devez nous donner la permission. Veuillez cocher la case ci-dessous, puis cliquez sur Suite.
 errors.sign_in.sign_in_failure_limit: Vous avez dépassé le nombre maximal de tentatives de connexion. Vous devez attendre %{time_left} avant de réessayer.
+errors.site_key_recovery.rate_limited: Vous avez essayé trop de fois. Veuillez réessayer dans %{timeout}. Vous pouvez aussi revenir en arrière et choisir de recommencer.
 errors.two_factor_auth_setup.must_select_additional_option: Sélectionnez une méthode d’authentification supplémentaire.
 errors.two_factor_auth_setup.must_select_option: Sélectionnez une méthode d’authentification.
 errors.verify_personal_key.rate_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}.
@@ -1026,6 +1029,19 @@ forms.piv_cac_setup.submit: Insérer la carte PIV/CAC
 forms.piv_cac_setup.try_again: Réessayer
 forms.registration.labels.email: Saisissez votre adresse e-mail
 forms.registration.labels.email_language: Sélectionnez votre langue de préférence pour les e-mails
+forms.site_key_recovery_code.acknowledgement.header: Ce code est le seul moyen de conserver les données chiffrées du site si vous réinitialisez votre mot de passe.
+forms.site_key_recovery_code.acknowledgement.text: Traitez-le comme un second mot de passe. Conservez-le en lieu sûr et ne le partagez avec personne.
+forms.site_key_recovery_code.get_new: Obtenir un nouveau code de récupération de clé de site
+forms.site_key_recovery_code.get_new_description: Votre ancien code de récupération cessera de fonctionner. Le nouveau code s’affichera sur la page suivante ; conservez-le en lieu sûr.
+forms.site_key_recovery_code.header: Enregistrez votre code de récupération de clé de site
+forms.site_key_recovery_code.required_checkbox: J’ai enregistré mon code de récupération de clé de site avec la date à laquelle il a été généré.
+forms.site_key_recovery.alternative: Vous n’avez pas votre code de récupération ?
+forms.site_key_recovery.code_label: Code de récupération
+forms.site_key_recovery.header: Saisissez votre code de récupération de clé de site
+forms.site_key_recovery.instructions: Vous avez réinitialisé votre mot de passe ; les données chiffrées de ce site sont donc verrouillées. Saisissez le code de récupération de clé de site que vous avez enregistré pour les conserver.
+forms.site_key_recovery.start_over: Recommencer sans mes anciennes données
+forms.site_key_recovery.start_over_description: Les données que ce site a chiffrées pour vous avant la réinitialisation de votre mot de passe deviendront définitivement illisibles. Cette action est irréversible.
+forms.site_key_recovery.start_over_title: Recommencer sans vos anciennes données ?
 forms.ssn.show: Afficher le numéro de sécurité sociale
 forms.totp_setup.totp_intro: Configurer une appli d’authentification pour vous connecter à l’aide de codes de sécurité temporaires.
 forms.totp_setup.totp_step_1: Donnez-lui un surnom
@@ -1997,6 +2013,8 @@ titles.sign_up.completion_new_attributes: '%{sp} demande de nouvelles informatio
 titles.sign_up.completion_new_sp: Vous vous connectez pour la première fois
 titles.sign_up.completion_reverified_consent: Partager vos informations mises à jour avec %{sp}
 titles.sign_up.confirmation: Continuer à vous connecter
+titles.site_key_recovery: Saisissez votre code de récupération
+titles.site_key_recovery_code: Enregistrez votre code de récupération
 titles.sts_consent: Let %{america_gov_name} work with agencies on your behalf
 titles.totp_setup.new: Ajouter une appli d’authentification
 titles.two_factor_setup: Configuration de l’authentification à deux facteurs
