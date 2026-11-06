@@ -85,25 +85,58 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         end
 
         context 'when the USPS enrollment creation fails' do
+          let!(:previous_unique_id) { user.establishing_in_person_enrollment.unique_id }
+
           context 'when the USPS API error is Bad Request' do
-            before do
-              allow(proofer).to receive(:request_enroll).and_raise(
-                Faraday::BadRequestError.new(
-                  {
-                    body: {
-                      responseMessage: 'Failure',
+            context 'when the error is a generic error' do
+              before do
+                allow(proofer).to receive(:request_enroll).and_raise(
+                  Faraday::BadRequestError.new(
+                    'Failure',
+                    {
+                      body: {
+                        'responseMessage' => 'Failure',
+                      },
                     },
-                  },
-                ),
-              )
+                  ),
+                )
+              end
+
+              it 'raises a Exception::RequestEnrollException error' do
+                expect do
+                  expect do
+                    subject.schedule_in_person_enrollment(
+                      user:, applicant_pii:, is_enhanced_ipp:, opt_in: opted_in,
+                    )
+                  end.to raise_error(UspsInPersonProofing::Exception::RequestEnrollException)
+                end.to_not change { user.establishing_in_person_enrollment.unique_id }
+              end
             end
 
-            it 'raises a Exception::RequestEnrollException error' do
-              expect do
-                subject.schedule_in_person_enrollment(
-                  user:, applicant_pii:, is_enhanced_ipp:, opt_in: opted_in,
+            context 'when the error is an "UniqueID has already been used" error' do
+              before do
+                allow(proofer).to receive(:request_enroll).and_raise(
+                  Faraday::BadRequestError.new(
+                    'Server responsed with a 400 bad request',
+                    {
+                      body: {
+                        'responseMessage' =>
+                        'uniqueID has already been used. Please use a different uniqueID',
+                      },
+                    },
+                  ),
                 )
-              end.to raise_error(UspsInPersonProofing::Exception::RequestEnrollException)
+              end
+
+              it 'regenerates the enrollment unique_id and raises a RequestEnrollException error' do
+                expect do
+                  expect do
+                    subject.schedule_in_person_enrollment(
+                      user:, applicant_pii:, is_enhanced_ipp:, opt_in: opted_in,
+                    )
+                  end.to raise_error(UspsInPersonProofing::Exception::RequestEnrollException)
+                end.to change { user.establishing_in_person_enrollment.unique_id }
+              end
             end
           end
 
