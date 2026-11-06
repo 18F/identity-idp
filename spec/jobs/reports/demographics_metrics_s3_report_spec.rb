@@ -196,6 +196,25 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
     end
 
     context 'with valid configurations' do
+      it 'includes each service provider friendly name and period in the email' do
+        sp_metadata.each_value do |metadata|
+          expect(ReportMailer).to receive(:tables_report) do |args|
+            expect(args[:subject]).to eq(
+              "#{metadata[:friendly_name]} (#{metadata[:agency_abbreviation]}) "\
+              "Verification Demographics Report Q2 CY 2026",
+            )
+            expect(args[:reports].map(&:filename)).to eq(
+              %w[definitions overview age_metrics state_metrics].map do |name|
+                "#{name}_2026-04-01_2026-06-30"
+              end,
+            )
+            double(deliver_now: true)
+          end
+        end
+
+        job.perform
+      end
+
       it 'processes all issuers successfully' do
         expect(Rails.logger).to receive(:info)
           .with('Processing demographics reports for 2 issuers')
@@ -546,52 +565,40 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
     end
 
     describe '#demographics_email_subject' do
-      let(:report_reader) { instance_double(Reporting::DemographicsMetricsS3Report) }
-
-      before do
-        allow(report_reader).to receive(:csv_file_names).and_return(['definitions'])
-        allow(report_reader).to receive(:get_file_last_modified)
-          .and_return(Time.zone.parse('2026-05-04'))
+      it 'formats subject with service provider friendly name and agency abbreviation' do
+        subject_line = job.send(
+          :demographics_email_subject, 'SSA', 'SSA Benefits Portal'
+        )
+        expect(subject_line).to eq(
+          'SSA Benefits Portal (SSA) Verification Demographics Report Q2 CY 2026',
+        )
       end
 
-      it 'formats subject with agency abbreviation' do
-        subject_line = job.send(:demographics_email_subject, 'SSA', report_reader)
+      it 'uses the agency abbreviation when the friendly name is blank' do
+        subject_line = job.send(:demographics_email_subject, 'SSA', '')
         expect(subject_line).to eq(
-          'SSA Verification Demographics Report Q2 CY 2026 - 2026-05-04',
+          'SSA Verification Demographics Report Q2 CY 2026',
+        )
+      end
+
+      it 'uses the friendly name when the agency abbreviation is missing' do
+        expect(Rails.logger).to receive(:warn).with('Missing agency abbreviation')
+
+        subject_line = job.send(
+          :demographics_email_subject, nil, 'SSA Benefits Portal'
+        )
+        expect(subject_line).to eq(
+          'SSA Benefits Portal Verification Demographics Report Q2 CY 2026',
         )
       end
 
       it 'handles missing agency abbreviation' do
         expect(Rails.logger).to receive(:warn).with('Missing agency abbreviation')
 
-        subject_line = job.send(:demographics_email_subject, nil, report_reader)
+        subject_line = job.send(:demographics_email_subject, nil)
         expect(subject_line).to eq(
-          'Verification Demographics Report Q2 CY 2026 - 2026-05-04',
+          'Verification Demographics Report Q2 CY 2026',
         )
-      end
-
-      it 'falls back to current date if S3 raises NoSuchKey' do
-        allow(report_reader).to receive(:get_file_last_modified)
-          .and_raise(Aws::S3::Errors::NoSuchKey.new('', ''))
-
-        expect(Rails.logger).to receive(:warn)
-          .with('Unexpected S3 file access issue when getting '\
-                'modified date, using today for email subject')
-
-        subject_line = job.send(:demographics_email_subject, 'IRS', report_reader)
-        expect(subject_line).to include(Date.current.strftime('%Y-%m-%d'))
-      end
-
-      it 'falls back to current date if S3 file access fails' do
-        allow(report_reader).to receive(:get_file_last_modified)
-          .and_raise(Aws::S3::Errors::NotFound.new('', ''))
-
-        expect(Rails.logger).to receive(:warn)
-          .with('Unexpected S3 file access issue when getting '\
-                'modified date, using today for email subject')
-
-        subject_line = job.send(:demographics_email_subject, 'VA', report_reader)
-        expect(subject_line).to include(Date.current.strftime('%Y-%m-%d'))
       end
     end
 
