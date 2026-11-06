@@ -1332,6 +1332,45 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
       end
 
+      context 'when the request names a delegation scope that cannot be issued' do
+        before do
+          allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(false)
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('server_side')
+        end
+
+        context 'because the value names no listed agency application' do
+          before { params[:scope] = 'openid token_exchange:unknown_records' }
+
+          it 'returns invalid_scope to the redirect address instead of asking for consent' do
+            action
+
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+            redirect_params = UriService.params(response.location)
+            expect(redirect_params[:error]).to eq('invalid_scope')
+            expect(redirect_params[:error_description]).to start_with('Scope Unauthorized scope')
+            expect(redirect_params[:state]).to eq(params[:state])
+            expect(controller.session[:sp]).to be_nil
+          end
+        end
+
+        context 'because the service provider is not approved for delegation' do
+          before do
+            allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+              .and_return([])
+          end
+
+          it 'returns invalid_scope to the redirect address instead of asking for consent' do
+            action
+
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+            redirect_params = UriService.params(response.location)
+            expect(redirect_params[:error]).to eq('invalid_scope')
+            expect(controller.session[:sp]).to be_nil
+          end
+        end
+      end
+
       context 'when token exchange is disabled' do
         before do
           allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(false)
@@ -1351,14 +1390,12 @@ RSpec.describe OpenidConnect::AuthorizationController do
           allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(false)
         end
 
-        it 'drops the scope and does not redirect to the STS consent page' do
+        it 'refuses the request and does not redirect to the STS consent page' do
           action
 
           expect(response).not_to redirect_to(sts_consent_url)
-          expect(controller.session[:sp][:sts_target_app]).to be_nil
+          expect(controller.session[:sp]).to be_nil
           expect(UserConsentSts.where(user:)).to be_empty
-          expect(user.identities.find_by(service_provider: client_id).scope)
-            .not_to include('token_exchange:passport')
         end
       end
     end
