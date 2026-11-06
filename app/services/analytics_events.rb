@@ -9169,6 +9169,17 @@ module AnalyticsEvents
     track_event(:sp_select_email_visited, needs_completion_screen_reason:, **extra)
   end
 
+  # Tracks when a user cancels the STS (token exchange) consent form and is redirected
+  # back to the service provider
+  # @param [String] redirect_url The url the user was redirected to
+  def sts_consent_cancelled(redirect_url:, **extra)
+    track_event(
+      :sts_consent_cancelled,
+      redirect_url:,
+      **extra,
+    )
+  end
+
   # Tracks when the STS (token exchange) consent form is submitted
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
