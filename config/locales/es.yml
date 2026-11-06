@@ -1935,7 +1935,7 @@ step_indicator.substep: Subpaso %{current} de %{total}
 sts_consent.about_description: Use MyTravelGov to apply for, renew, or track a U.S. passport online
 sts_consent.about_heading: About
 sts_consent.allow_and_continue: Allow and continue
-sts_consent.cancel_and_return: Cancel and return to America.gov
+sts_consent.cancel_and_return: Cancel and return to '%{america_gov_name}’
 sts_consent.content: '%{america_gov_name}’s Super Intelligence will do this task for you. It only uses the services you approve, and it doesn’t store your personal information.'
 sts_consent.heading: Let %{america_gov_name} act for you
 sts_consent.learn_more: Learn more about MyTravelGov
