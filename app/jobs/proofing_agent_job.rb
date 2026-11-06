@@ -275,6 +275,13 @@ class ProofingAgentJob < ApplicationJob
             [:proofing_results, :context, :stages, :resolution, :errors, :zipcode],
             [:proofing_results, :biographical_info, :ipp_current_address_matches_id],
             [:proofing_results, :biographical_info, :phone],
+            [:proofing_results, :context, :stages, :phone_precheck, :errors, :phone],
+            [:proofing_results, :context, :stages, :phone_precheck, :alternate_result, :errors,
+             :phone],
+            [:proofing_results, :context, :stages, :phone_precheck, :result, :phonerisk, :signals,
+             :phone],
+            [:proofing_results, :context, :stages, :phone_precheck, :alternate_result, :phonerisk,
+             :signals, :phone],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
             [:proofing_results, :context, :stages, :residential_address, :errors, :zipcode],
             [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
@@ -305,6 +312,10 @@ class ProofingAgentJob < ApplicationJob
           }.to_h.merge(
             pii_like_keypaths: [
               [:errors, :phone],
+              [:vendor, :errors, :phone],
+              [:vendor, :alternate_result, :errors, :phone],
+              [:vendor, :result, :phonerisk, :signals, :phone],
+              [:vendor, :alternate_result, :result, :phonerisk, :signals, :phone],
             ],
           ),
         )

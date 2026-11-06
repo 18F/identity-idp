@@ -72,6 +72,7 @@ module Proofing
           hmac_key_id: IdentityConfig.store.lexisnexis_hmac_key_id,
           hmac_secret_key: IdentityConfig.store.lexisnexis_hmac_secret_key,
           request_mode: IdentityConfig.store.lexisnexis_request_mode,
+          is_proofing_agent:,
         )
       when :lexis_nexis_ddp
         Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer.new(
@@ -79,6 +80,7 @@ module Proofing
           org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
           base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
           ddp_policy: IdentityConfig.store.lexisnexis_phone_finder_ddp_policy,
+          is_proofing_agent:,
         )
       when :socure
         Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer.new(
@@ -88,6 +90,7 @@ module Proofing
             api_key: IdentityConfig.store.socure_idplus_api_key,
             base_url: IdentityConfig.store.socure_idplus_base_url,
             timeout: IdentityConfig.store.socure_idplus_timeout_in_seconds,
+            is_proofing_agent:,
           ),
         )
       when :mock

@@ -38,8 +38,10 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
     ).and_return(name_verification_error_reason_codes)
   end
 
+  let(:is_proofing_agent) { false }
+
   subject do
-    described_class.new(http_response)
+    described_class.new(http_response, is_proofing_agent:)
   end
 
   describe '#successful?' do
@@ -58,6 +60,82 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
       let(:name_phone_high) { false }
       it 'is not successful' do
         expect(subject.successful?).to eq(false)
+      end
+    end
+
+    context 'when wrong phone type autofail reason codes (R613-R617) are present' do
+      let(:bypassed_codes) { %w[R613 R614 R615 R616 R617] }
+
+      before do
+        allow(IdentityConfig.store).to receive(
+          :idv_socure_phonerisk_auto_failure_reason_codes,
+        ).and_return(bypassed_codes + ['R601'])
+      end
+
+      context 'when is_proofing_agent is false' do
+        let(:is_proofing_agent) { false }
+
+        %w[R613 R614 R615 R616 R617].each do |code|
+          it "returns false when #{code} is present" do
+            response = described_class.new(
+              instance_double(
+                Faraday::Response,
+                body: response_body.merge(
+                  'phoneRisk' => response_body['phoneRisk'].merge('reasonCodes' => [code]),
+                ),
+              ),
+              is_proofing_agent: false,
+            )
+            expect(response.successful?).to eq(false)
+          end
+        end
+      end
+
+      context 'when is_proofing_agent is true' do
+        let(:is_proofing_agent) { true }
+
+        %w[R613 R614 R615 R616 R617].each do |code|
+          it "returns true when only #{code} is present" do
+            response = described_class.new(
+              instance_double(
+                Faraday::Response,
+                body: response_body.merge(
+                  'phoneRisk' => response_body['phoneRisk'].merge('reasonCodes' => [code]),
+                ),
+              ),
+              is_proofing_agent: true,
+            )
+            expect(response.successful?).to eq(true)
+            expect(response.to_h[:autofail_reason_codes]).to eq([])
+          end
+        end
+
+        context 'when a non-bypassed autofail reason code is also present' do
+          let(:phone_risk_reason_codes) { ['R613', 'R601'] }
+
+          it 'returns false' do
+            expect(subject.successful?).to eq(false)
+            expect(subject.to_h[:autofail_reason_codes]).to eq(['R601'])
+          end
+        end
+
+        context 'when name phone correlation is below threshold' do
+          let(:phone_risk_reason_codes) { ['R613'] }
+          let(:name_phone_high) { false }
+
+          it 'returns false' do
+            expect(subject.successful?).to eq(false)
+          end
+        end
+
+        context 'when phonerisk score is above threshold' do
+          let(:phone_risk_reason_codes) { ['R613'] }
+          let(:phonerisk_low) { false }
+
+          it 'returns false' do
+            expect(subject.successful?).to eq(false)
+          end
+        end
       end
     end
   end
@@ -205,6 +283,26 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
 
         it 'returns false' do
           expect(subject.dual_vendor_check_eligible?).to be(false)
+        end
+      end
+
+      context 'when additional error reason codes are only bypassed wrong phone type codes' do
+        let(:phone_risk_reason_codes) { ['I123', 'R666', 'R613'] }
+
+        context 'when is_proofing_agent is false' do
+          let(:is_proofing_agent) { false }
+
+          it 'returns false' do
+            expect(subject.dual_vendor_check_eligible?).to be(false)
+          end
+        end
+
+        context 'when is_proofing_agent is true' do
+          let(:is_proofing_agent) { true }
+
+          it 'returns true' do
+            expect(subject.dual_vendor_check_eligible?).to be(true)
+          end
         end
       end
     end

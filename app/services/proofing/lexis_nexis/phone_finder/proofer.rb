@@ -6,6 +6,9 @@ module Proofing
       class Proofer
         include AbTestingConcern
 
+        NOT_VERIFIED_TO_NAME = 'Input phone number could not be verified to name'
+        PROOFING_AGENT_BYPASSED_ITEMS = %w[VOIPPhone].freeze
+
         attr_reader :config
 
         def initialize(config)
@@ -50,7 +53,7 @@ module Proofing
 
         def build_result_from_response(verification_response)
           AddressResult.new(
-            success: verification_response.verification_status == 'passed',
+            success: successful?(verification_response),
             errors: parse_verification_errors(verification_response),
             exception: nil,
             vendor_name: 'lexisnexis:phone_finder',
@@ -58,6 +61,34 @@ module Proofing
             reference: verification_response.reference,
             vendor_workflow: config.phone_finder_workflow,
           )
+        end
+
+        def successful?(verification_response)
+          return true if verification_response.verification_status == 'passed'
+          return false unless config.is_proofing_agent
+
+          !has_name_verification_error?(verification_response) &&
+            only_bypassed_items_failed?(verification_response)
+        end
+
+        def has_name_verification_error?(response)
+          !!response
+            .verification_errors
+            .dig(:'PhoneFinder Checks', 'ProductReason', 'Description')
+            &.match?(NOT_VERIFIED_TO_NAME)
+        end
+
+        def only_bypassed_items_failed?(response)
+          return false unless response.verification_errors.dig(
+            :PhoneFinder, 'ProductStatus'
+          ) == 'fail'
+
+          items = Array(response.verification_errors.dig(:PhoneFinder, 'Items'))
+          failed_items = items.select { |item| item['ItemStatus'] == 'fail' }
+
+          failed_items.any? && failed_items.all? do |item|
+            PROOFING_AGENT_BYPASSED_ITEMS.include?(item['ItemName'])
+          end
         end
 
         def parse_verification_errors(verification_response)

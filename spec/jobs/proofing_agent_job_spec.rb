@@ -776,6 +776,50 @@ RSpec.describe ProofingAgentJob, type: :job do
       end
     end
 
+    context 'when Socure phone risk returns a bypassed wrong phone type code (R613-R617)' do
+      let(:socure_base_url) { 'https://socure.example.org/' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
+          .and_return(:socure)
+        allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
+          .and_return(socure_base_url)
+        allow(IdentityConfig.store).to receive(:socure_idplus_api_key).and_return('test-key')
+        allow(IdentityConfig.store).to receive(
+          :idv_socure_phonerisk_auto_failure_reason_codes,
+        ).and_return(%w[R613 R614 R615 R616 R617 R601])
+
+        stub_request(:post, URI.join(socure_base_url, '/api/3.0/EmailAuthScore').to_s)
+          .to_return(
+            status: 200,
+            headers: { 'Content-Type' => 'application/json' },
+            body: {
+              referenceId: 'socure-voip-ref-123',
+              namePhoneCorrelation: {
+                reasonCodes: ['I618'],
+                score: 0.99,
+              },
+              phoneRisk: {
+                reasonCodes: ['R613'],
+                score: 0.01,
+                signals: { phone: {} },
+              },
+              customerProfile: {
+                customerUserId: user.uuid,
+              },
+            }.to_json,
+          )
+      end
+
+      it 'bypasses the wrong phone type code and stores a successful result' do
+        perform
+
+        result = document_capture_session.reload.load_agent_proofed_user
+        expect(result[:success]).to be true
+        expect(result[:reason]).to be_nil
+      end
+    end
+
     context 'when the MRZ check passes' do
       let(:pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT.merge(phone: '12025551212').freeze }
 
