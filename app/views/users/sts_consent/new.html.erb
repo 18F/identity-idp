@@ -58,6 +58,6 @@
 <%= render PageFooterComponent.new do %>
   <%= link_to(
         t('sts_consent.cancel_and_return'),
-        sts_consent_cancel_path,
+        return_to_sp_cancel_path(step: :sts_consent),
       ) %>
 <% end %>

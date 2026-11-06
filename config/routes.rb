@@ -418,7 +418,6 @@ Rails.application.routes.draw do
           as: :reset_user_authorization, via: %i[put delete]
     get '/sts/consent' => 'users/sts_consent#new', as: :sts_consent
     post '/sts/consent' => 'users/sts_consent#create'
-    get '/sts/consent/cancel' => 'users/sts_consent#cancel', as: :sts_consent_cancel
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
     delete '/sign_up/cancel' => 'sign_up/cancellations#destroy', as: :sign_up_destroy
 
