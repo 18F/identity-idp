@@ -7786,6 +7786,8 @@ module AnalyticsEvents
   # @param [String, nil] delegation_id Internal delegated-token issuance identifier
   # @param [String, nil] oauth_error_code Protocol-level OAuth error code returned for
   #   unsuccessful requests
+  # @param [Boolean, nil] dpop_bound Whether the actor's tokens are bound to a key it holds
+  #   (RFC 9449), so a DPoP proof was required and the delegated token carries cnf.jkt
   def openid_connect_delegated_token_exchange(
     actor_issuer:,
     success:,
@@ -7800,6 +7802,7 @@ module AnalyticsEvents
     subject_token_fingerprint: nil,
     delegation_id: nil,
     oauth_error_code: nil,
+    dpop_bound: nil,
     **extra
   )
     track_event(
@@ -7817,6 +7820,7 @@ module AnalyticsEvents
       subject_token_fingerprint:,
       delegation_id:,
       oauth_error_code:,
+      dpop_bound:,
       **extra,
     )
   end
