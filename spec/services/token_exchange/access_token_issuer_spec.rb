@@ -143,6 +143,26 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
       expect(subject.delegation_id).to eq(user.delegated_issuance_logs.last.delegation_id)
     end
 
+    it 'leaves the agency identity untouched and opens no session with the agency' do
+      target_identity.update!(last_authenticated_at: 2.days.ago)
+      connection_columns = %w[deleted_at last_authenticated_at session_uuid rails_session_id]
+
+      expect { subject }
+        .not_to(change { target_identity.reload.attributes.slice(*connection_columns) })
+      expect(target_identity).to have_attributes(session_uuid: nil, rails_session_id: nil)
+    end
+
+    context 'when the person disconnected the agency application from their account' do
+      before { RevokeServiceProviderConsent.new(target_identity).call }
+
+      it 'issues nothing and writes no agency return log or issuance' do
+        expect { subject }
+          .to raise_error
+          .and change { SpReturnLog.where(issuer: target_issuer).count }.by(0)
+          .and change { DelegatedIssuanceLog.count }.by(0)
+      end
+    end
+
     it 'stores the token with the configured expiration' do
       expect(EncryptedRedisStructStorage).to receive(:store).with(
         instance_of(TokenExchange::AccessToken),
