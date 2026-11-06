@@ -225,7 +225,9 @@ RSpec.describe OpenidConnect::DocumentImagesController do
       end
 
       context 'when the client is listed for key binding and presents the token as Bearer' do
-        before { allow_any_instance_of(ServiceProvider).to receive(:dpop_required?).and_return(true) }
+        before do
+          allow_any_instance_of(ServiceProvider).to receive(:dpop_required?).and_return(true)
+        end
 
         it '401s with the dpop_bearer_presented error in the body' do
           action
