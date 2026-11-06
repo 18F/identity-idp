@@ -321,8 +321,8 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     end
 
     context 'when the actor asks for an identity-verified identity at the agency' do
-      let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
-      let(:params) { super().merge(acr_values:) }
+      let(:requested_acr) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
+      let(:params) { super().merge(requested_acr:) }
 
       it 'is valid when the identity at the agency is identity-verified' do
         expect(form.submit.success?).to eq(true)
@@ -333,7 +333,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
         it 'is refused with the level asked and no login-initiation address' do
           expect(form.submit.success?).to eq(false)
-          expect(form.response).to include(error: 'invalid_target', acr_values:)
+          expect(form.response).to include(error: 'invalid_target', requested_acr:)
           expect(form.response).not_to have_key(:initiate_login_uri)
         end
 
@@ -348,7 +348,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
           expect(form.response).to include(
             error: 'invalid_target',
-            acr_values:,
+            requested_acr:,
             initiate_login_uri: 'https://records.example.gov/initiate_login',
           )
         end
@@ -359,17 +359,17 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
 
       context 'with the legacy IAL2 value' do
-        let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+        let(:requested_acr) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
         before { target_identity.update!(ial: 1) }
 
         it 'is refused the same way' do
-          expect(form.response).to include(error: 'invalid_target', acr_values:)
+          expect(form.response).to include(error: 'invalid_target', requested_acr:)
         end
       end
     end
 
     context 'when the actor asks for no more than an identity at the agency' do
-      let(:params) { super().merge(acr_values: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR) }
+      let(:params) { super().merge(requested_acr: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR) }
       before { target_identity.update!(ial: 1) }
 
       it 'is valid' do
@@ -377,8 +377,8 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'with an acr_values Login.gov does not know' do
-      let(:params) { super().merge(acr_values: 'urn:example:gold') }
+    context 'with a requested_acr Login.gov does not know' do
+      let(:params) { super().merge(requested_acr: 'urn:example:gold') }
 
       it 'is an invalid request' do
         expect(form.submit.success?).to eq(false)
@@ -406,12 +406,12 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
 
       context 'and the actor asks for an identity-verified identity at the agency' do
-        let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
-        let(:params) { super().merge(acr_values:) }
+        let(:requested_acr) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
+        let(:params) { super().merge(requested_acr:) }
 
         it 'is refused like an assurance shortfall, so the person verifies again at the agency' do
           expect(form.submit.success?).to eq(false)
-          expect(form.response).to include(error: 'invalid_target', acr_values:)
+          expect(form.response).to include(error: 'invalid_target', requested_acr:)
           expect(form.response).not_to have_key(:initiate_login_uri)
         end
 

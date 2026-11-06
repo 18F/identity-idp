@@ -14,7 +14,7 @@ class OpenidConnectTokenExchangeForm
     scope
     dpop_proof
     token_url
-    acr_values
+    requested_acr
   ].freeze
 
   # The identity assurance levels an actor may ask for on the exchange, in the authorization
@@ -55,7 +55,7 @@ class OpenidConnectTokenExchangeForm
   validate :validate_broker
   validate :validate_target
   validate :validate_resource
-  validate :validate_acr_values
+  validate :validate_requested_acr
   validate :validate_consent, unless: :client_rejected?
   validate :validate_subject_token, unless: :client_rejected?
   validate :validate_actor_return_log, unless: :client_rejected?
@@ -241,13 +241,15 @@ class OpenidConnectTokenExchangeForm
     )
   end
 
-  def validate_acr_values
-    return if acr_values.blank?
-    return if (acr_values.split(' ') - VERIFIED_ACR_VALUES - UNVERIFIED_ACR_VALUES).empty?
+  # The level is optional; when given, every value must be one Login.gov issues at sign-in. An
+  # unknown value is a malformed request (RFC 6749 §5.2 `invalid_request`), not a shortfall.
+  def validate_requested_acr
+    return if requested_acr.blank?
+    return if (requested_acr.split(' ') - VERIFIED_ACR_VALUES - UNVERIFIED_ACR_VALUES).empty?
 
     errors.add(
-      :acr_values, :invalid,
-      message: 'acr_values_invalid'
+      :requested_acr, :invalid,
+      message: 'requested_acr_invalid'
     )
   end
 
@@ -271,7 +273,7 @@ class OpenidConnectTokenExchangeForm
   end
 
   def verified_identity_requested?
-    acr_values.to_s.split(' ').intersect?(VERIFIED_ACR_VALUES)
+    requested_acr.to_s.split(' ').intersect?(VERIFIED_ACR_VALUES)
   end
 
   def no_identity_at_target?
@@ -352,7 +354,7 @@ class OpenidConnectTokenExchangeForm
     response[:scope] = target.token_exchange_scope if no_delegation_consent?
     return response unless sign_in_at_agency_needed?
 
-    response[:acr_values] = acr_values if assurance_shortfall?
+    response[:requested_acr] = requested_acr if assurance_shortfall?
     initiate_login_uri = target&.token_exchange_initiate_login_uri
     response[:initiate_login_uri] = initiate_login_uri if initiate_login_uri.present?
     response
@@ -377,7 +379,7 @@ class OpenidConnectTokenExchangeForm
     return 'invalid_request' if missing_required_attrs?
     return 'unsupported_grant_type' if errors.include?(:grant_type)
     return 'invalid_client' if errors.include?(:client_id)
-    return 'invalid_request' if errors.include?(:acr_values)
+    return 'invalid_request' if errors.include?(:requested_acr)
     return 'invalid_target' if errors.include?(:audience) || errors.include?(:resource)
     return 'invalid_dpop_proof' if errors.include?(:dpop_proof)
     return 'invalid_scope' if errors.include?(:scope)
