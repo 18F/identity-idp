@@ -646,4 +646,12 @@ RSpec.describe InPersonEnrollment, type: :model do
       end
     end
   end
+
+  describe '#regenerate_unique_id!' do
+    let(:enrollment) { create(:in_person_enrollment) }
+
+    it 'updates with a new unique_id' do
+      expect { enrollment.regenerate_unique_id! }.to change { enrollment.unique_id }
+    end
+  end
 end
