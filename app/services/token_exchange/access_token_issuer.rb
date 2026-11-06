@@ -121,6 +121,10 @@ module TokenExchange
       @target ||= ServiceProvider.find_by!(issuer: target_issuer)
     end
 
+    # The person's standing identity at the agency application, whose uuid the delegated token
+    # names as `sub` (RFC 7519 section 4.1.2). A connection the person ended from their account is
+    # excluded, so a token is never issued for it; only the person's own sign-in at the agency
+    # restores the connection.
     def target_identity
       @target_identity ||= begin
         user = ServiceProviderIdentity.find_by(
@@ -128,7 +132,7 @@ module TokenExchange
           service_provider: subject_token.broker_issuer,
         ).user
 
-        ServiceProviderIdentity.find_by(user:, service_provider: target_issuer)
+        ServiceProviderIdentity.not_deleted.find_by(user:, service_provider: target_issuer)
       end
     end
   end
