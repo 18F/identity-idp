@@ -9186,6 +9186,17 @@ module AnalyticsEvents
     track_event(:sts_consent_visited)
   end
 
+  # Tracks when a user cancels the STS (token exchange) consent form and is redirected
+  # back to the service provider
+  # @param [String] redirect_url The url the user was redirected to
+  def sts_consent_cancelled(redirect_url:, **extra)
+    track_event(
+      :sts_consent_cancelled,
+      redirect_url:,
+      **extra,
+    )
+  end
+
   # Tracks when a user's STS (token exchange) consent is revoked
   # @param [String] target_app Issuer of the target app the consent was revoked for
   def sts_revoke_consent_revoked(target_app:, **extra)
