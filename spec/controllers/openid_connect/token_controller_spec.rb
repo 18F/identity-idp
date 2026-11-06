@@ -333,7 +333,7 @@ RSpec.describe OpenidConnect::TokenController do
       end
     end
 
-    context 'when acr_values asks for a level the identity at the agency lacks' do
+    context 'when requested_acr asks for a level the identity at the agency lacks' do
       subject(:action) do
         post :create,
              params: {
@@ -344,7 +344,7 @@ RSpec.describe OpenidConnect::TokenController do
                requested_token_type: TokenExchange::Constants::ACCESS_TOKEN_TYPE,
                audience: audience,
                resource: resource,
-               acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+               requested_acr: Saml::Idp::Constants::IAL_VERIFIED_ACR,
              }
       end
 
@@ -365,7 +365,7 @@ RSpec.describe OpenidConnect::TokenController do
         expect(response).to have_http_status(:bad_request)
         expect(JSON.parse(response.body, symbolize_names: true)).to include(
           error: 'invalid_target',
-          acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+          requested_acr: Saml::Idp::Constants::IAL_VERIFIED_ACR,
           initiate_login_uri: 'https://records.example.gov/initiate_login',
         )
       end
