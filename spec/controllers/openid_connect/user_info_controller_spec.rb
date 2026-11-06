@@ -327,5 +327,102 @@ RSpec.describe OpenidConnect::UserInfoController do
         end
       end
     end
+
+    context 'with the site_key scope on a key-bound token' do
+      let(:url) { 'http://www.example.com/api/openid_connect/userinfo' }
+      let(:authorization_header) { "DPoP #{access_token}" }
+      let(:access_token) { SecureRandom.hex }
+      let(:service_provider) do
+        create(:service_provider, :active, issuer: 'site-key-client', pkce: true)
+      end
+      let(:user) { create(:user) }
+      let(:site_key) { create_site_key(user) }
+      let(:identity) do
+        create(
+          :service_provider_identity,
+          service_provider: service_provider.issuer,
+          scope: 'openid site_key',
+          rails_session_id: SecureRandom.hex,
+          access_token:,
+          user:,
+        )
+      end
+
+      before do
+        allow_site_keys_for(service_provider)
+        accessor = OutOfBandSessionAccessor.new(identity.rails_session_id)
+        accessor.put_empty_user_session(50)
+        accessor.put_site_key(site_key.private_key, 50)
+        AccessTokenBinding.store(access_token:, dpop_jkt: dpop_thumbprint, expires_in: 50)
+        request.headers['DPoP'] =
+          build_dpop_proof(http_url: url, http_method: 'POST', access_token:)
+      end
+
+      it 'returns the private key sealed to the proof key, openable only by that key' do
+        action
+
+        expect(response).to be_ok
+        sealed = json_response[:site_key]
+        opened = JSON.parse(
+          open_site_key_jwe(
+            sealed, recipient_key: dpop_key,
+                    client_id: service_provider.issuer
+          ),
+        )
+        expect(opened).to eq(JSON.parse(SiteKeys::KeyPair.from_private_bytes(site_key.private_key).private_jwk.to_json))
+      end
+
+      it 'returns the public key beside it' do
+        action
+
+        expect(json_response[:site_key_public]).to eq(JSON.parse(user.reload.site_key.public_key))
+      end
+
+      it 'cannot be opened with another key' do
+        action
+
+        sealed = json_response[:site_key]
+        expect do
+          open_site_key_jwe(
+            sealed, recipient_key: OpenSSL::PKey::EC.generate('prime256v1'),
+                    client_id: service_provider.issuer
+          )
+        end.to raise_error(OpenSSL::Cipher::CipherError)
+      end
+
+      context 'when the private key is not in the session' do
+        before do
+          accessor = OutOfBandSessionAccessor.new(identity.rails_session_id)
+          accessor.destroy
+          accessor.put_empty_user_session(50)
+        end
+
+        it 'omits the site key claims but still answers' do
+          action
+
+          expect(response).to be_ok
+          expect(json_response).not_to have_key(:site_key)
+          expect(json_response).not_to have_key(:site_key_public)
+          expect(json_response[:sub]).to eq(identity.uuid)
+        end
+      end
+    end
+  end
+
+  # Opens the site_key claim JWE as a recipient page would, from the standards, to pin the format.
+  def open_site_key_jwe(sealed, recipient_key:, client_id:)
+    header_b64, _cek, iv_b64, ct_b64, tag_b64 = sealed.split('.')
+    header = JSON.parse(Base64.urlsafe_decode64(header_b64))
+    epk = JWT::JWK.import(header['epk'].transform_keys(&:to_sym)).verify_key
+    shared = recipient_key.dh_compute_key(epk.public_key)
+    other = [header['enc'].bytesize].pack('N') + header['enc'] + [0].pack('N') +
+            [client_id.bytesize].pack('N') + client_id + [256].pack('N')
+    cek = OpenSSL::Digest::SHA256.digest([1].pack('N') + shared + other)[0, 32]
+    cipher = OpenSSL::Cipher.new('aes-256-gcm').decrypt
+    cipher.key = cek
+    cipher.iv = Base64.urlsafe_decode64(iv_b64)
+    cipher.auth_tag = Base64.urlsafe_decode64(tag_b64)
+    cipher.auth_data = header_b64
+    cipher.update(Base64.urlsafe_decode64(ct_b64)) + cipher.final
   end
 end

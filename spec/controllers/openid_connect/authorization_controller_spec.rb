@@ -1572,6 +1572,90 @@ RSpec.describe OpenidConnect::AuthorizationController do
         expect(response).to redirect_to(manage_password_url)
       end
     end
+
+    describe '#index with the site_key scope' do
+      let(:user) { create(:user, :fully_registered) }
+      let(:params) do
+        {
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          client_id: client_id,
+          nonce: SecureRandom.hex,
+          prompt: 'select_account',
+          redirect_uri: 'gov.gsa.openidconnect.test://result',
+          response_type: 'code',
+          scope: 'openid site_key',
+          state: SecureRandom.hex,
+          code_challenge: Digest::SHA256.urlsafe_base64digest(SecureRandom.urlsafe_base64(32)),
+          code_challenge_method: 'S256',
+          # A site-key client is key-bound, so its page sends the DPoP key thumbprint; ignored
+          # until key binding is wired, required once it is.
+          dpop_jkt: Base64.urlsafe_encode64(SecureRandom.random_bytes(32), padding: false),
+        }
+      end
+      let(:redirect_target) do
+        response.headers['Location'] || controller.view_assigns['oidc_redirect_uri'].to_s
+      end
+      let(:vault) { SiteKeys::Vault.new(user:, user_session: controller.user_session) }
+
+      subject(:action) { get :index, params: params }
+
+      before do
+        ServiceProvider.find_by(issuer: client_id).update!(pkce: true)
+        allow_site_keys_for(ServiceProvider.find_by(issuer: client_id))
+        stub_sign_in user
+        session[:sign_in_flow] = :sign_in
+        session[:sign_in_page_visited_at] = Time.zone.now.to_s
+        IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+      end
+
+      context 'when the site key is unlocked in this session' do
+        before { vault.unlock(user.password, create: true) }
+
+        it 'does not prompt for the password' do
+          action
+
+          expect(response).not_to redirect_to(capture_password_url)
+          expect(redirect_target).not_to include('error=')
+        end
+      end
+
+      context 'when the site key is locked in this session' do
+        before { create_site_key(user) }
+
+        it 'asks for the password once' do
+          action
+
+          expect(response).to redirect_to(capture_password_url)
+        end
+
+        it 'answers the client with an error instead of asking again' do
+          action
+          get :index, params: params
+
+          expect(redirect_target).to include('error=temporarily_unavailable')
+        end
+
+        it 'asks again for a different authorization request' do
+          action
+          get :index, params: params.merge(state: SecureRandom.hex)
+
+          expect(response).to redirect_to(capture_password_url)
+        end
+      end
+
+      context 'when the client is not listed for site keys' do
+        before do
+          allow(IdentityConfig.store).to receive(:site_key_allowed_issuers).and_return([])
+        end
+
+        it 'refuses the scope and does not prompt for the password' do
+          action
+
+          expect(response).not_to redirect_to(capture_password_url)
+          expect(redirect_target).to include('error=invalid_request')
+        end
+      end
+    end
   end
 end
 # rubocop:enable Layout/LineLength
