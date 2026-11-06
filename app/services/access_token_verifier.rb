@@ -27,7 +27,7 @@ class AccessTokenVerifier
         client_id: @identity&.service_provider,
         ial: @identity&.ial,
         integration_errors:,
-        dpop_bound: @identity.present? && bound_client?,
+        dpop_bound: @identity.present? && dpop_required?,
       },
     )
 
@@ -57,29 +57,30 @@ class AccessTokenVerifier
   end
 
   def validate_binding(scheme, access_token)
-    unless bound_client?
-      return if scheme == 'Bearer'
+    return validate_bearer_scheme(scheme) unless dpop_required?
 
-      return errors.add(
-        :access_token, t('openid_connect.user_info.errors.malformed_authorization'),
-        type: :malformed_authorization
-      )
+    unless scheme == 'DPoP'
+      return refuse_binding('invalid_token', 'dpop_bearer_presented', :dpop_bearer_presented)
     end
 
     bound_thumbprint = AccessTokenBinding.load(access_token)&.dpop_jkt
     if bound_thumbprint.blank?
-      return refuse_binding(
-        'invalid_token', 'dpop_token_unbound',
-        :dpop_token_unbound
-      )
-    end
-    unless scheme == 'DPoP'
-      return refuse_binding(
-        'invalid_token', 'dpop_bearer_presented',
-        :dpop_bearer_presented
-      )
+      return refuse_binding('invalid_token', 'dpop_token_unbound', :dpop_token_unbound)
     end
 
+    validate_dpop_proof(access_token:, bound_thumbprint:)
+  end
+
+  def validate_bearer_scheme(scheme)
+    return if scheme == 'Bearer'
+
+    errors.add(
+      :access_token, t('openid_connect.user_info.errors.malformed_authorization'),
+      type: :malformed_authorization
+    )
+  end
+
+  def validate_dpop_proof(access_token:, bound_thumbprint:)
     result = DpopProofForm.new(
       proof: dpop_proof,
       http_method:,
@@ -98,7 +99,7 @@ class AccessTokenVerifier
     errors.add(:dpop_proof, message, type:)
   end
 
-  def bound_client?
+  def dpop_required?
     @identity.service_provider_record&.dpop_required? == true
   end
 

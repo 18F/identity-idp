@@ -82,10 +82,11 @@ RSpec.describe AccessTokenVerifier do
           access_token: SecureRandom.urlsafe_base64,
         )
       end
-      let(:bound_thumbprint) { dpop_thumbprint }
       let(:access_token) { identity.access_token }
       let(:url) { 'https://idp.example.gov/api/openid_connect/userinfo' }
-      let(:proof) { build_dpop_proof(http_url: url, http_method: 'GET', access_token:) }
+      let(:bound_thumbprint) { dpop_thumbprint }
+      let(:binding) { AccessTokenBinding.new(dpop_jkt: bound_thumbprint) }
+      let(:proof) { nil }
       subject(:verifier) do
         AccessTokenVerifier.new(
           http_authorization_header, dpop_proof: proof, http_method: 'GET', http_url: url
@@ -95,111 +96,99 @@ RSpec.describe AccessTokenVerifier do
       before do
         allow(IdentityConfig.store).to receive(:dpop_required_issuers)
           .and_return([service_provider.issuer])
+        allow(AccessTokenBinding).to receive(:load).with(access_token).and_return(binding)
         identity.save!
         OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii(
           profile_id: 123, pii: {}, expiration: 5,
         )
-        # What the token endpoint wrote when it issued the access token to a bound client.
-        if bound_thumbprint
-          AccessTokenBinding.store(
-            access_token:, dpop_jkt: bound_thumbprint, expires_in: 60,
-          )
-        end
-      end
-
-      context 'with the DPoP scheme and a proof from the bound key' do
-        let(:http_authorization_header) { "DPoP #{access_token}" }
-
-        it 'is successful and reports the binding for analytics' do
-          response, result_identity = result
-
-          expect(response.success?).to eq(true)
-          expect(result_identity).to eq(identity)
-          expect(verifier.www_authenticate).to be_nil
-          expect(response.extra[:dpop_bound]).to eq(true)
-        end
       end
 
       context 'presented as a Bearer token' do
-        it 'is refused with a DPoP challenge' do
+        it "is invalid with a 'dpop_bearer_presented' error and an invalid_token challenge" do
           response, result_identity = result
 
           expect(response.success?).to eq(false)
           expect(result_identity).to be_nil
-          expect(response.errors[:dpop_proof]).to eq(
-            ['dpop_bearer_presented'],
-          )
+          expect(response.errors[:dpop_proof]).to eq(['dpop_bearer_presented'])
+          expect(verifier.error_message).to eq('dpop_bearer_presented')
           expect(verifier.www_authenticate).to eq('DPoP algs="ES256 RS256", error="invalid_token"')
-          expect(verifier.error_message).to eq(
-            'dpop_bearer_presented',
-          )
+        end
+
+        it 'does not read the binding record' do
+          result
+          expect(AccessTokenBinding).not_to have_received(:load)
         end
       end
 
-      context 'with the DPoP scheme and no proof' do
+      context 'presented under the DPoP scheme' do
         let(:http_authorization_header) { "DPoP #{access_token}" }
-        let(:proof) { nil }
 
-        it 'is refused as a missing proof' do
-          response, = result
+        context 'when the token has no binding record' do
+          let(:binding) { nil }
 
-          expect(response.success?).to eq(false)
-          expect(response.errors[:dpop_proof]).to eq(
-            ['dpop_proof_missing'],
-          )
-          expect(verifier.www_authenticate).to eq(
-            'DPoP algs="ES256 RS256", error="invalid_dpop_proof"',
-          )
-        end
-      end
+          it "is invalid with a 'dpop_token_unbound' error and an invalid_token challenge" do
+            response, = result
 
-      context 'with a proof signed by another key' do
-        let(:http_authorization_header) { "DPoP #{access_token}" }
-        let(:proof) do
-          build_dpop_proof(
-            http_url: url, http_method: 'GET', access_token:, key: OpenSSL::PKey::EC.generate('prime256v1'),
-          )
+            expect(response.success?).to eq(false)
+            expect(response.errors[:dpop_proof]).to eq(['dpop_token_unbound'])
+            expect(verifier.www_authenticate).to eq(
+              'DPoP algs="ES256 RS256", error="invalid_token"',
+            )
+          end
         end
 
-        it 'is refused as a key mismatch, with the check named in the error details' do
-          response, = result
+        context 'without a proof' do
+          it "is invalid with a 'dpop_proof_missing' error and an invalid_dpop_proof challenge" do
+            response, = result
 
-          expect(response.success?).to eq(false)
-          expect(response.errors[:dpop_proof]).to eq(['dpop_key_mismatch'])
-          expect(response.to_h[:error_details]).to eq(dpop_proof: { dpop_key_mismatch: true })
-        end
-      end
-
-      context 'with a proof for another request' do
-        let(:http_authorization_header) { "DPoP #{access_token}" }
-        let(:proof) do
-          build_dpop_proof(
-            http_url: 'https://idp.example.gov/other', http_method: 'GET', access_token:,
-          )
+            expect(response.success?).to eq(false)
+            expect(response.errors[:dpop_proof]).to eq(['dpop_proof_missing'])
+            expect(verifier.www_authenticate).to eq(
+              'DPoP algs="ES256 RS256", error="invalid_dpop_proof"',
+            )
+          end
         end
 
-        it 'is refused' do
-          response, = result
+        context 'with a proof' do
+          let(:proof_key) { dpop_key }
+          let(:proof_url) { url }
+          let(:proof) do
+            build_dpop_proof(http_url: proof_url, http_method: 'GET', access_token:, key: proof_key)
+          end
 
-          expect(response.success?).to eq(false)
-          expect(response.errors[:dpop_proof]).to eq(
-            ['dpop_proof_uri'],
-          )
-        end
-      end
+          context 'from the bound key, for this request' do
+            it 'is valid, returns the identity and sets dpop_bound true in the extra attributes' do
+              response, result_identity = result
 
-      context 'when the token has no binding record, because none was written or it expired' do
-        let(:http_authorization_header) { "DPoP #{access_token}" }
-        let(:bound_thumbprint) { nil }
+              expect(response.success?).to eq(true)
+              expect(result_identity).to eq(identity)
+              expect(verifier.www_authenticate).to be_nil
+              expect(response.extra[:dpop_bound]).to eq(true)
+            end
+          end
 
-        it 'is refused until the person signs in again with a key' do
-          response, = result
+          context 'signed by another key' do
+            let(:proof_key) { OpenSSL::PKey::EC.generate('prime256v1') }
 
-          expect(response.success?).to eq(false)
-          expect(response.errors[:dpop_proof]).to eq(
-            ['dpop_token_unbound'],
-          )
-          expect(verifier.www_authenticate).to eq('DPoP algs="ES256 RS256", error="invalid_token"')
+            it "is invalid with a 'dpop_key_mismatch' error in the error details" do
+              response, = result
+
+              expect(response.success?).to eq(false)
+              expect(response.errors[:dpop_proof]).to eq(['dpop_key_mismatch'])
+              expect(response.to_h[:error_details]).to eq(dpop_proof: { dpop_key_mismatch: true })
+            end
+          end
+
+          context 'for another request' do
+            let(:proof_url) { 'https://idp.example.gov/other' }
+
+            it "is invalid with a 'dpop_proof_uri' error" do
+              response, = result
+
+              expect(response.success?).to eq(false)
+              expect(response.errors[:dpop_proof]).to eq(['dpop_proof_uri'])
+            end
+          end
         end
       end
     end
@@ -223,7 +212,7 @@ RSpec.describe AccessTokenVerifier do
         )
       end
 
-      it 'is malformed, as it always was, and carries no challenge' do
+      it 'is invalid with the malformed_authorization error and no DPoP challenge' do
         response, result_identity = result
 
         expect(response.success?).to eq(false)

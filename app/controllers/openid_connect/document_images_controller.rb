@@ -86,8 +86,7 @@ module OpenidConnect
         @current_identity = identity
       else
         analytics.sp_integration_errors_present(**attributes[:integration_errors])
-        render json: { error: verifier.errors[:access_token].join(' ') },
-               status: :unauthorized
+        render json: { error: verifier.error_message }, status: :unauthorized
       end
     end
   end

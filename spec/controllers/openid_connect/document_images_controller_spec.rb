@@ -224,6 +224,16 @@ RSpec.describe OpenidConnect::DocumentImagesController do
         end
       end
 
+      context 'when the client is listed for key binding and presents the token as Bearer' do
+        before { allow_any_instance_of(ServiceProvider).to receive(:dpop_required?).and_return(true) }
+
+        it '401s with the dpop_bearer_presented error in the body' do
+          action
+          expect(response).to be_unauthorized
+          expect(json_response[:error]).to eq('dpop_bearer_presented')
+        end
+      end
+
       context 'without a client assertion' do
         let(:client_assertion) { nil }
         let(:client_assertion_type) { nil }
