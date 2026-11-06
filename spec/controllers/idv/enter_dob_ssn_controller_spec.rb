@@ -262,11 +262,9 @@ RSpec.describe Idv::EnterDobSsnController do
     end
 
     context 'user typed dob and ssn matches idv_session.applicant dob and ssn' do
-      before do
-        post :create, params: params
-      end
-
       it 'sets the proofing components', :aggregate_failures do
+        post :create, params: params
+
         expect(subject.idv_session.agent_proofed).to eq(true)
         expect(subject.idv_session.source_check_vendor).to eq(source_check_vendor)
         expect(subject.idv_session.resolution_vendor).to eq(resolution_vendor)
@@ -278,6 +276,14 @@ RSpec.describe Idv::EnterDobSsnController do
       end
 
       it 'redirects to enter password step' do
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:idv_proofing_agent_confirmation_submitted).with(
+          success: true, failure_reason: [],
+        )
+
+        post :create, params: params
+
         expect(response).to redirect_to(idv_enter_password_url)
         expect(@analytics).to have_logged_event(
           :idv_proofing_agent_user_confirmation_submitted,
@@ -295,6 +301,13 @@ RSpec.describe Idv::EnterDobSsnController do
       let(:ssn) { '000000000' }
 
       it 'renders new' do
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:idv_proofing_agent_confirmation_submitted).with(
+          success: false,
+          failure_reason: ['ssn mismatch'],
+        )
+
         post :create, params: params
 
         expect(response).to render_template(:new)
@@ -315,6 +328,13 @@ RSpec.describe Idv::EnterDobSsnController do
       let(:year) { '2000' }
 
       it 'renders new' do
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:idv_proofing_agent_confirmation_submitted).with(
+          success: false,
+          failure_reason: ['date of birth mismatch'],
+        )
+
         post :create, params: params
 
         expect(response).to render_template(:new)
