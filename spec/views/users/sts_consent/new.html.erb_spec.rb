@@ -50,12 +50,12 @@ RSpec.describe 'users/sts_consent/new.html.erb' do
     expect(rendered).to have_button(t('sts_consent.allow_and_continue'))
   end
 
-  it 'links to America.gov to cancel' do
+  it 'links to the return-to-sp cancel flow' do
     render
 
     expect(rendered).to have_link(
-      t('sts_consent.cancel_and_return', america_gov_name: AMERICA_GOV_NAME),
-      href: 'https://www.america.gov',
+      t('sts_consent.cancel_and_return'),
+      href: return_to_sp_cancel_path(step: :sts_consent),
     )
   end
 end
