@@ -154,16 +154,17 @@ class OpenidConnectTokenExchangeForm
     errors.add(:resource, :invalid)
   end
 
+  # Delegation to an application needs the person's live consent for that application, given on a
+  # sign-in through the actor that requested the application's delegation scope. A person without
+  # one is refused with `invalid_target`, the code RFC 8693 §2.2.2 assigns to a target the server
+  # will not issue a token for, and the refusal names the scope value to request (see
+  # `error_response`), so the actor can start that sign-in and ask again.
   def validate_consent
     return if user.blank?
 
     return if UserConsentSts.consent_valid?(user: identity.user, target_app: audience)
 
-    errors.add(
-      :subject_token,
-      :invalid_audience,
-      message: 'invalid audience for this subject token',
-    )
+    errors.add(:audience, :no_delegation_consent, message: 'no_delegation_consent')
   end
 
   def validate_scope
@@ -282,6 +283,11 @@ class OpenidConnectTokenExchangeForm
   # application created. The refusal carries the application's login-initiation address
   # (`initiate_login_uri`, OpenID Connect Core 1.0 §4) when its configuration entry has one, so
   # the actor can send the person there to sign in and ask again.
+  #
+  # A person without delegation consent for the application is refused with `scope` naming the
+  # application's delegation scope value: the actor sends the person to sign in through Login.gov
+  # requesting it, the person consents there, and the actor asks for delegation again. That sign-in
+  # starts at the actor, not at the agency, so this refusal carries no `initiate_login_uri`.
   def error_response
     response = {
       error: oauth_error,
@@ -291,6 +297,7 @@ class OpenidConnectTokenExchangeForm
     if no_identity_at_target? && initiate_login_uri.present?
       response[:initiate_login_uri] = initiate_login_uri
     end
+    response[:scope] = target.token_exchange_scope if no_delegation_consent?
     response
   end
 
@@ -298,8 +305,15 @@ class OpenidConnectTokenExchangeForm
     errors.where(:audience, :no_identity_at_target).any?
   end
 
+  def no_delegation_consent?
+    errors.where(:audience, :no_delegation_consent).any?
+  end
+
+  # The description reaches the actor's developer, not a person (RFC 6749 §5.2 allows any ASCII
+  # text), so a proof failure and the missing consent are reported as their bare symbols.
   def error_description
     return errors[:dpop_proof].join(' ') if errors.include?(:dpop_proof)
+    return errors[:audience].join(' ') if no_delegation_consent?
 
     errors.full_messages.join(' ')
   end

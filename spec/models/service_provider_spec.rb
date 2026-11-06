@@ -411,4 +411,22 @@ RSpec.describe ServiceProvider do
       expect(service_provider.token_exchange_initiate_login_uri).to be_nil
     end
   end
+
+  describe '#token_exchange_scope' do
+    let(:service_provider) { create(:service_provider) }
+
+    it 'is the prefixed scope of the application entry in the allowed targets' do
+      allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets).and_return(
+        [{ issuer: service_provider.issuer, scope: 'records' }],
+      )
+
+      expect(service_provider.token_exchange_scope).to eq('token_exchange:records')
+    end
+
+    it 'is nil when the issuer is not listed' do
+      allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets).and_return([])
+
+      expect(service_provider.token_exchange_scope).to be_nil
+    end
+  end
 end

@@ -106,6 +106,15 @@ class ServiceProvider < ApplicationRecord
     token_exchange_target_entry&.dig(:initiate_login_uri)
   end
 
+  # The scope value an actor requests on a sign-in to be granted delegation to this application:
+  # the `token_exchange:` prefix and the configuration entry's scope.
+  def token_exchange_scope
+    scope = token_exchange_target_entry&.dig(:scope)
+    return if scope.blank?
+
+    "#{TokenExchange::Constants::SCOPE_PREFIX}#{scope}"
+  end
+
   def token_exchange_target_entry
     IdentityConfig.store.token_exchange_allowed_targets.find do |target|
       target.fetch(:issuer) == issuer

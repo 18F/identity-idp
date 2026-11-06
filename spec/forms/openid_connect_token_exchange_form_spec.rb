@@ -245,12 +245,24 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when the user has not consented to the target app' do
+    context 'when the person has no delegation consent for the target' do
       before { sts_consent.destroy! }
 
-      it 'is invalid' do
+      it 'is invalid on the audience' do
         expect(form.submit.success?).to eq(false)
-        expect(form.errors.details[:subject_token]).to include(error: :invalid_audience)
+        expect(form.errors.details[:audience]).to include(error: :no_delegation_consent)
+        expect(form.errors.details[:subject_token]).to be_empty
+      end
+    end
+
+    context 'when the delegation consent has expired' do
+      before do
+        sts_consent.update!(created_at: (UserConsentSts.consent_expiration + 1.day).ago)
+      end
+
+      it 'is invalid on the audience' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.errors.details[:audience]).to include(error: :no_delegation_consent)
       end
     end
 
@@ -593,6 +605,33 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
+    context 'when the person has no delegation consent for the target' do
+      before do
+        sts_consent.destroy!
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets).and_return(
+          [{
+            issuer: target_issuer,
+            scope: 'passport',
+            initiate_login_uri: 'https://records.example.gov/initiate_login',
+          }],
+        )
+      end
+
+      it 'refuses with invalid_target and names the scope to request on a sign-in' do
+        expect(response).to eq(
+          error: 'invalid_target',
+          error_description: 'no_delegation_consent',
+          scope: 'token_exchange:passport',
+        )
+      end
+
+      it 'writes no issuance or target return log' do
+        expect { response }
+          .to change { DelegatedIssuanceLog.count }.by(0)
+          .and change { SpReturnLog.where(issuer: target_issuer).count }.by(0)
+      end
+    end
+
     context 'when the refusal is not about a missing identity' do
       let(:subject_token) { 'unknown' }
 
@@ -687,6 +726,18 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
       it 'returns invalid_target' do
         expect(error).to eq('invalid_target')
+      end
+    end
+
+    context 'when the person has no delegation consent for the target' do
+      before { sts_consent.destroy! }
+
+      it 'returns invalid_target' do
+        expect(error).to eq('invalid_target')
+      end
+
+      it 'returns a 400' do
+        expect(form.http_status).to eq(:bad_request)
       end
     end
 
