@@ -263,8 +263,13 @@ class OpenidConnectTokenExchangeForm
     @target ||= ServiceProvider.active.find_by(issuer: audience)
   end
 
+  # The person's identity at the agency application, provided the connection still stands. A
+  # connection the person ended from their account is not one Login.gov may act on, so it is
+  # treated exactly like no connection: the actor is told there is no identity at the target and
+  # the remedy is the same either way, the person signing in at the agency, which is what
+  # restores the connection.
   def target_identity
-    @target_identity ||= user.identities.find_by(service_provider: audience)
+    @target_identity ||= user.identities.not_deleted.find_by(service_provider: audience)
   end
 
   def loaded_subject_token

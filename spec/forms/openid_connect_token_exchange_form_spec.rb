@@ -320,6 +320,23 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
+    context 'when the person disconnected the agency application from their account' do
+      before { RevokeServiceProviderConsent.new(target_identity).call }
+
+      it 'is refused exactly like having no identity at the target' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.errors[:audience]).to include('no identity')
+        expect(form.errors.details[:audience]).to include(error: :no_identity_at_target)
+      end
+
+      it 'does not issue a delegated access token' do
+        expect(TokenExchange::AccessTokenIssuer).to_not receive(:issue)
+
+        form.submit
+        form.response
+      end
+    end
+
     context 'when the user is no longer identity verified' do
       before do
         subject_token
@@ -553,6 +570,20 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
+    context 'when the person disconnected the agency application from their account' do
+      before { RevokeServiceProviderConsent.new(target_identity).call }
+
+      it 'refuses the exchange and writes no issuance or agency return log' do
+        expect { expect(response[:error]).to eq('invalid_target') }
+          .to change { DelegatedIssuanceLog.count }.by(0)
+          .and change { SpReturnLog.where(issuer: target_issuer).count }.by(0)
+      end
+
+      it 'leaves the disconnected identity as the person left it' do
+        expect { response }.not_to(change { target_identity.reload.deleted_at })
+      end
+    end
+
     context 'when invalid' do
       let(:subject_token) { 'unknown' }
 
@@ -637,6 +668,18 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
       it 'returns invalid_target' do
         expect(error).to eq('invalid_target')
+      end
+    end
+
+    context 'when the person disconnected the agency application from their account' do
+      before { RevokeServiceProviderConsent.new(target_identity).call }
+
+      it 'returns invalid_target' do
+        expect(error).to eq('invalid_target')
+      end
+
+      it 'returns a 400' do
+        expect(form.http_status).to eq(:bad_request)
       end
     end
 
