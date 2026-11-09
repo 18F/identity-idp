@@ -184,6 +184,18 @@ RSpec.describe OpenidConnectTokenForm do
           expect(valid?).to be true
         end
       end
+
+      context 'when the actor application is not authorized' do
+        before do
+          allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+            .and_return([])
+        end
+
+        it 'adds a missing delgator error' do
+          expect(valid?).to be false
+          expect(form.errors.details[:code]).to include(error: :unauthorized_client)
+        end
+      end
     end
 
     context 'private_key_jwt' do
