@@ -945,7 +945,7 @@ RSpec.describe OpenidConnectTokenForm do
 
         expect(subject_token).to have_attributes(
           identity_uuid: identity.uuid,
-          broker_issuer: identity.service_provider,
+          actor_issuer: identity.service_provider,
           scope:,
           ial: 2,
           actor_return_log_id: 123,
@@ -960,7 +960,7 @@ RSpec.describe OpenidConnectTokenForm do
         )
       end
 
-      context 'when the service provider is not an allowlisted broker' do
+      context 'when the service provider is not an allowlisted actor' do
         before do
           allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
             .and_return(['some-other-issuer'])

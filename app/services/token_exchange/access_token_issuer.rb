@@ -31,7 +31,7 @@ module TokenExchange
       access_token = AccessToken.new(
         id: AccessToken.digest(token),
         identity_uuid: target_identity.uuid,
-        broker_issuer: subject_token.broker_issuer,
+        actor_issuer: subject_token.actor_issuer,
         target_issuer:,
         resource:,
         scope:,
@@ -47,7 +47,7 @@ module TokenExchange
           user: target_identity.user,
           actor_return_log_id: subject_token.actor_return_log_id,
           target_return_log:,
-          actor_issuer: subject_token.broker_issuer,
+          actor_issuer: subject_token.actor_issuer,
           target_issuer:,
           resource:,
           scope:,
@@ -86,7 +86,7 @@ module TokenExchange
         iat: issued_at,
         scope:,
         act: {
-          sub: subject_token.broker_issuer,
+          sub: subject_token.actor_issuer,
         },
         **confirmation_claim,
       }
@@ -125,7 +125,7 @@ module TokenExchange
       @target_identity ||= begin
         user = ServiceProviderIdentity.find_by(
           uuid: subject_token.identity_uuid,
-          service_provider: subject_token.broker_issuer,
+          service_provider: subject_token.actor_issuer,
         ).user
 
         ServiceProviderIdentity.find_by(user:, service_provider: target_issuer)

@@ -5,9 +5,9 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
   subject(:form) { described_class.new(params) }
 
-  let(:broker) { create(:service_provider, :active, issuer: 'broker-issuer') }
-  let(:broker_issuer) { broker.issuer }
-  let(:client_id) { broker_issuer }
+  let(:actor) { create(:service_provider, :active, issuer: 'actor-issuer') }
+  let(:actor_issuer) { actor.issuer }
+  let(:client_id) { actor_issuer }
   let(:target) { create(:service_provider, :active, issuer: 'target-issuer') }
   let(:target_issuer) { target.issuer }
   let(:audience) { target_issuer }
@@ -20,7 +20,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     create(
       :service_provider_identity,
       user:,
-      service_provider: broker_issuer,
+      service_provider: actor_issuer,
       scope: scope,
       ial: 1,
     )
@@ -39,7 +39,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
   let(:actor_return_log) do
     create(
       :sp_return_log,
-      user:, issuer: broker_issuer, ial: 2, billable: true, returned_at: Time.zone.now,
+      user:, issuer: actor_issuer, ial: 2, billable: true, returned_at: Time.zone.now,
     )
   end
   let(:actor_return_log_id) { actor_return_log.id }
@@ -67,7 +67,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
   before do
     allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
-      .and_return([broker_issuer])
+      .and_return([actor_issuer])
     allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
       .and_return([{ issuer: target_issuer, scope: 'passport' }])
   end
@@ -194,7 +194,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when the broker is not allowlisted' do
+    context 'when the actor is not allowlisted' do
       before do
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
           .and_return([])
@@ -230,13 +230,13 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when the subject token belongs to another broker' do
-      let(:other_broker) { create(:service_provider, :active, issuer: 'other-broker-issuer') }
-      let(:client_id) { other_broker.issuer }
+    context 'when the subject token belongs to another actor' do
+      let(:other_actor) { create(:service_provider, :active, issuer: 'other-actor-issuer') }
+      let(:client_id) { other_actor.issuer }
 
       before do
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
-          .and_return([broker_issuer, other_broker.issuer])
+          .and_return([actor_issuer, other_actor.issuer])
       end
 
       it 'is invalid' do
@@ -269,7 +269,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         create(
           :sp_return_log,
           user: other_user,
-          issuer: broker_issuer,
+          issuer: actor_issuer,
           ial: 2,
           billable: true,
           returned_at: Time.zone.now,
@@ -287,7 +287,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         create(
           :sp_return_log,
           user:,
-          issuer: 'other-broker-issuer',
+          issuer: 'other-actor-issuer',
           ial: 2,
           billable: true,
           returned_at: Time.zone.now,
@@ -371,8 +371,8 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
 
       before do
-        broker.update!(pkce: true)
-        allow(IdentityConfig.store).to receive(:dpop_required_issuers).and_return([broker_issuer])
+        actor.update!(pkce: true)
+        allow(IdentityConfig.store).to receive(:dpop_required_issuers).and_return([actor_issuer])
       end
 
       context 'with a proof from the key the subject token is bound to' do
@@ -517,7 +517,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       issuance = user.delegated_issuance_logs.last
       expect(issuance).to have_attributes(
         actor_return_log_id: actor_return_log.id,
-        actor_issuer: broker_issuer,
+        actor_issuer: actor_issuer,
         target_issuer:,
         resource:,
         scope:,
@@ -602,7 +602,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when the broker is not allowlisted' do
+    context 'when the actor is not allowlisted' do
       before do
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
           .and_return([])
@@ -654,8 +654,8 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
     context 'when a key-bound actor sends no proof' do
       before do
-        broker.update!(pkce: true)
-        allow(IdentityConfig.store).to receive(:dpop_required_issuers).and_return([broker_issuer])
+        actor.update!(pkce: true)
+        allow(IdentityConfig.store).to receive(:dpop_required_issuers).and_return([actor_issuer])
       end
       let(:subject_token) do
         TokenExchange::SubjectTokenIssuer.issue(

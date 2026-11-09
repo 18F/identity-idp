@@ -91,7 +91,7 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
-  def token_exchange_broker?
+  def token_exchange_actor?
     IdentityConfig.store.token_exchange_allowed_broker_issuers.include?(issuer)
   end
 

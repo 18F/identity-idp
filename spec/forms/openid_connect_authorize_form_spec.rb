@@ -463,7 +463,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
         end
       end
 
-      context 'when the broker is not allowlisted' do
+      context 'when the actor is not allowlisted' do
         let(:token_exchange_enabled) { true }
         let(:token_exchange_allowed_targets) do
           [{ issuer: 'passport-issuer', scope: 'passport' }]
@@ -477,7 +477,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
         end
       end
 
-      context 'when token exchange is enabled and the broker is allowlisted' do
+      context 'when token exchange is enabled and the actor is allowlisted' do
         let(:token_exchange_enabled) { true }
         let(:token_exchange_allowed_targets) do
           [{ issuer: 'passport-issuer', scope: 'passport' }]
@@ -568,7 +568,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
           .and_return(token_exchange_allowed_broker_issuers)
       end
 
-      context 'when the service provider is not a broker' do
+      context 'when the service provider is not a actor' do
         let(:token_exchange_allowed_broker_issuers) { [] }
 
         it 'allows ordinary scopes' do
@@ -578,7 +578,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
         end
       end
 
-      context 'when the service provider is a broker' do
+      context 'when the service provider is a actor' do
         let(:token_exchange_allowed_broker_issuers) { [client_id] }
 
         it 'allows ordinary scopes' do

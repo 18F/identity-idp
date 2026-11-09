@@ -29,7 +29,7 @@ RSpec.describe TokenExchange::SubjectTokenIssuer do
 
       expect(loaded_subject_token).to have_attributes(
         identity_uuid: identity.uuid,
-        broker_issuer: identity.service_provider,
+        actor_issuer: identity.service_provider,
         scope: 'openid token_exchange:passport',
         ial: 2,
         actor_return_log_id: 123,

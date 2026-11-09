@@ -104,7 +104,7 @@ class OpenidConnectTokenForm
 
   def token_exchange_authorization_code?
     return false unless IdentityConfig.store.token_exchange_enabled &&
-                        service_provider&.token_exchange_broker?
+                        service_provider&.token_exchange_actor?
     return false if identity.blank?
 
     token_exchange_scope_requested?

@@ -39,7 +39,7 @@ class OpenidConnectTokenExchangeForm
 
   # Ordered cheapest first.
   validate :validate_enabled
-  validate :validate_broker
+  validate :validate_actor
   validate :validate_target
   validate :validate_resource
   validate :validate_consent, unless: :client_rejected?
@@ -105,7 +105,7 @@ class OpenidConnectTokenExchangeForm
     IdentityConfig.store.token_exchange_enabled
   end
 
-  # True once the feature flag, the broker allowlist, or the target allowlist
+  # True once the feature flag, the actor allowlist, or the target allowlist
   # has already rejected this request, so the remaining validations can skip
   # the Redis read and the identity lookup entirely.
   def client_rejected?
@@ -114,9 +114,9 @@ class OpenidConnectTokenExchangeForm
       errors.include?(:audience)
   end
 
-  def validate_broker
+  def validate_actor
     return if client_id.blank?
-    return if broker&.token_exchange_broker?
+    return if actor&.token_exchange_actor?
 
     errors.add(:client_id, :invalid)
   end
@@ -131,7 +131,7 @@ class OpenidConnectTokenExchangeForm
   def validate_subject_token
     return if subject_token.blank?
     return errors.add(:subject_token, :invalid) if loaded_subject_token.blank?
-    return if loaded_subject_token.broker_issuer == client_id
+    return if loaded_subject_token.actor_issuer == client_id
 
     errors.add(:subject_token, :invalid)
   end
@@ -192,7 +192,7 @@ class OpenidConnectTokenExchangeForm
   end
 
   def dpop_binding_required?
-    !!broker&.dpop_required?
+    !!actor&.dpop_required?
   end
 
   def dpop_result
@@ -240,7 +240,7 @@ class OpenidConnectTokenExchangeForm
 
     @identity = ServiceProviderIdentity.find_by(
       uuid: loaded_subject_token.identity_uuid,
-      service_provider: loaded_subject_token.broker_issuer,
+      service_provider: loaded_subject_token.actor_issuer,
     )
   end
 
@@ -251,12 +251,12 @@ class OpenidConnectTokenExchangeForm
     @actor_return_log = SpReturnLog.find_by(
       id: loaded_subject_token.actor_return_log_id,
       user_id: identity.user_id,
-      issuer: loaded_subject_token.broker_issuer,
+      issuer: loaded_subject_token.actor_issuer,
     )
   end
 
-  def broker
-    @broker ||= ServiceProvider.find_by(issuer: client_id)
+  def actor
+    @actor ||= ServiceProvider.find_by(issuer: client_id)
   end
 
   def target
@@ -363,7 +363,7 @@ class OpenidConnectTokenExchangeForm
       error_details: errors.full_messages,
       error_types: errors.attribute_names,
       event: :oidc_token_request,
-      integration_exists: broker.present?,
+      integration_exists: actor.present?,
       request_issuer: client_id,
     }
   end
