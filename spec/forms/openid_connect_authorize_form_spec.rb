@@ -568,7 +568,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
           .and_return(token_exchange_allowed_broker_issuers)
       end
 
-      context 'when the service provider is not a actor' do
+      context 'when the service provider is not an actor' do
         let(:token_exchange_allowed_broker_issuers) { [] }
 
         it 'allows ordinary scopes' do
@@ -578,7 +578,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
         end
       end
 
-      context 'when the service provider is a actor' do
+      context 'when the service provider is an actor' do
         let(:token_exchange_allowed_broker_issuers) { [client_id] }
 
         it 'allows ordinary scopes' do

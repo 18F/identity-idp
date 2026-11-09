@@ -184,6 +184,18 @@ RSpec.describe OpenidConnectTokenForm do
           expect(valid?).to be true
         end
       end
+
+      context 'when the actor application is not authorized' do
+        before do
+          allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+            .and_return([])
+        end
+
+        it 'adds a missing delegator error' do
+          expect(valid?).to be false
+          expect(form.errors.details[:code]).to include(error: :unauthorized_client)
+        end
+      end
     end
 
     context 'private_key_jwt' do
@@ -966,9 +978,9 @@ RSpec.describe OpenidConnectTokenForm do
             .and_return(['some-other-issuer'])
         end
 
-        it 'returns the normal access token response' do
-          expect(response).to_not have_key(:subject_token)
-          expect(response[:access_token]).to eq(identity.access_token)
+        it 'returns an error message' do
+          expect(response).to have_key(:error)
+          expect(response[:error]).to eq('Code Delegation actor not valid')
         end
 
         it 'does not issue a subject token' do

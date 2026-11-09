@@ -103,8 +103,12 @@ class OpenidConnectTokenForm
   end
 
   def token_exchange_authorization_code?
-    return false unless IdentityConfig.store.token_exchange_enabled &&
-                        service_provider&.token_exchange_actor?
+    return false unless IdentityConfig.store.token_exchange_enabled
+    unless service_provider&.token_exchange_actor?
+      errors.add(:code, :unauthorized_client, message: 'Delegation actor not valid')
+      return false
+    end
+
     return false if identity.blank?
 
     token_exchange_scope_requested?
