@@ -9262,6 +9262,13 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks the hourly deletion of token exchange refresh tokens whose family has passed its
+  # absolute lifetime
+  # @param [Integer] deleted_count Number of refresh token rows deleted
+  def token_exchange_refresh_tokens_expired(deleted_count:, **extra)
+    track_event(:token_exchange_refresh_tokens_expired, deleted_count:, **extra)
+  end
+
   # Tracks when a user visits TOTP device setup
   # @param [Boolean] user_signed_up
   # @param [Boolean] totp_secret_present
