@@ -96,4 +96,34 @@ RSpec.describe Users::StsConsentController do
       end
     end
   end
+
+  describe '#cancel' do
+    it 'redirects to the service provider and logs analytics' do
+      get :cancel
+
+      expect(response).to redirect_to(sp.return_to_sp_url)
+      expect(@analytics).to have_logged_event(
+        :sts_consent_cancelled,
+        redirect_url: sp.return_to_sp_url,
+      )
+    end
+
+    it 'redirects for a user without an SP request url' do
+      controller.session[:sp] = {}
+
+      get :cancel
+
+      expect(response).to redirect_to(account_url)
+    end
+
+    context 'when token exchange is disabled' do
+      let(:token_exchange_enabled) { false }
+
+      it 'redirects to the account page' do
+        get :cancel
+
+        expect(response).to redirect_to(account_url)
+      end
+    end
+  end
 end
