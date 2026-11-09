@@ -51,7 +51,7 @@ RSpec.describe SignUp::SelectEmailController do
 
       expect(assigns(:sp_name)).to be_kind_of(String)
       expect(assigns(:user_emails)).to all be_kind_of(EmailAddress)
-      expect(assigns(:last_sign_in_email_address)).to be_kind_of(String)
+      expect(assigns(:email_id)).to be_kind_of(Integer)
       expect(assigns(:select_email_form)).to be_kind_of(SelectEmailForm)
       expect(assigns(:can_add_email)).to eq(true)
     end
@@ -77,8 +77,40 @@ RSpec.describe SignUp::SelectEmailController do
       it 'falls back to the last sign in email and clears the stale session value' do
         response
 
-        expect(assigns(:last_sign_in_email_address)).to eq(user.last_sign_in_email_address.email)
+        expect(assigns(:email_id)).to eq(user.last_sign_in_email_address.id)
         expect(controller.user_session[:selected_email_id_for_linked_identity]).to be_nil
+      end
+    end
+
+    context 'when an existing identity already has a selected email (e.g. re-consent)' do
+      let(:previously_selected_email) do
+        create(:email_address, user: user, email: 'previously-selected@example.com')
+      end
+      let!(:identity) do
+        create(
+          :service_provider_identity,
+          user: user,
+          service_provider: sp.issuer,
+          email_address: previously_selected_email,
+          verified_attributes: ['email'],
+          last_consented_at: 2.years.ago,
+        )
+      end
+
+      before do
+        controller.session[:sp] = { issuer: sp.issuer }
+        # Ensure the "last sign in" email is a different address than the one
+        # previously selected for this SP.
+        user.email_addresses.where.not(id: previously_selected_email.id)
+          .order(:created_at).last
+          .update!(last_sign_in_at: Time.zone.now)
+      end
+
+      it 'defaults to the identity\'s previously selected email, not the last sign in email' do
+        response
+
+        expect(assigns(:email_id)).to eq(previously_selected_email.id)
+        expect(assigns(:email_id)).to_not eq(user.last_sign_in_email_address.id)
       end
     end
   end
