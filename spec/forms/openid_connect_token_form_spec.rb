@@ -191,7 +191,7 @@ RSpec.describe OpenidConnectTokenForm do
             .and_return([])
         end
 
-        it 'adds a missing delgator error' do
+        it 'adds a missing delegator error' do
           expect(valid?).to be false
           expect(form.errors.details[:code]).to include(error: :unauthorized_client)
         end
