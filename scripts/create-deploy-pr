@@ -77,11 +77,13 @@ function get_staging_sha {
 }
 
 check_gh_configuration
-git fetch $GIT_REMOTE
+git fetch --prune "$GIT_REMOTE"
 
 RC_BRANCH=stages/rc-$(date +'%Y-%m-%d')
-if git rev-parse "$GIT_REMOTE/$RC_BRANCH" > /dev/null 2>&1; then
-    echo "RC branch $RC_BRANCH already exists. Delete that branch and re-run this workflow to create a PR." >&2
+# Query the remote directly rather than checking refs/remotes/*, which can be
+# stale if a branch was deleted upstream without a local prune.
+if git ls-remote --exit-code --heads "$GIT_REMOTE" "refs/heads/$RC_BRANCH" > /dev/null 2>&1; then
+    echo "RC branch $RC_BRANCH already exists on $GIT_REMOTE. Delete that branch and re-run this workflow to create a PR." >&2
     exit 1
 fi
 
@@ -136,5 +138,3 @@ if [[ $DRY_RUN -eq 0 ]]; then
 else
     echo "Dry run. Not creating PR."
 fi
-
-
