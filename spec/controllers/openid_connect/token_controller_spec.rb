@@ -286,6 +286,7 @@ RSpec.describe OpenidConnect::TokenController do
           token_exchange_scopes: ['passport'],
           subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
           delegation_id: DelegatedIssuanceLog.last.delegation_id,
+          user_id: user.uuid,
         )
       end
 
@@ -384,6 +385,7 @@ RSpec.describe OpenidConnect::TokenController do
           token_exchange_scopes: ['passport'],
           subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
           oauth_error_code: 'invalid_target',
+          user_id: user.uuid,
         )
       end
     end
@@ -410,6 +412,7 @@ RSpec.describe OpenidConnect::TokenController do
           token_exchange_scopes: ['passport'],
           subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
           oauth_error_code: 'unsupported_grant_type',
+          user_id: user.uuid,
         )
       end
     end

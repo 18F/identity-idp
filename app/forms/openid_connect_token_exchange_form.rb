@@ -321,6 +321,7 @@ class OpenidConnectTokenExchangeForm
       oauth_error_code: (oauth_error unless valid?),
       integration_errors:,
       dpop_bound: dpop_binding_required?,
+      user_id: identity&.user&.uuid,
     }
   end
 
