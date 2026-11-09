@@ -52,7 +52,7 @@ module BillableEventTrackable
   end
 
   def token_exchange_actor?
-    IdentityConfig.store.token_exchange_enabled && current_sp.token_exchange_broker?
+    IdentityConfig.store.token_exchange_enabled && current_sp.token_exchange_actor?
   end
 
   # OIDC overrides this after linking the identity. SAML issues no authorization code.

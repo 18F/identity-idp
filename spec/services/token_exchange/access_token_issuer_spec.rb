@@ -14,8 +14,8 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
     let(:subject_token) do
       TokenExchange::SubjectToken.new(
         id: 'subject-token-digest',
-        identity_uuid: broker_identity.uuid,
-        broker_issuer:,
+        identity_uuid: actor_identity.uuid,
+        actor_issuer:,
         scope:,
         ial: 2,
         actor_return_log_id: actor_return_log.id,
@@ -24,17 +24,17 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
     end
     let(:user) { create(:user) }
     let!(:target) { create(:service_provider, :active, issuer: 'target-issuer') }
-    let!(:broker) { create(:service_provider, :active, issuer: 'broker-issuer') }
+    let!(:actor) { create(:service_provider, :active, issuer: 'actor-issuer') }
     let(:target_issuer) { target.issuer }
-    let(:broker_issuer) { broker.issuer }
+    let(:actor_issuer) { actor.issuer }
     let(:target_private_key) do
       OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read)
     end
-    let(:broker_identity) do
-      create(:service_provider_identity, service_provider: broker_issuer, user:)
+    let(:actor_identity) do
+      create(:service_provider_identity, service_provider: actor_issuer, user:)
     end
     let(:actor_return_log) do
-      create(:sp_return_log, user:, issuer: broker_issuer, ial: 2, billable: true)
+      create(:sp_return_log, user:, issuer: actor_issuer, ial: 2, billable: true)
     end
 
     let!(:target_identity) do
@@ -61,7 +61,7 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
         'sub' => target_identity.uuid,
         'aud' => target_issuer,
         'scope' => 'openid token_exchange:passport',
-        'act' => { 'sub' => broker_issuer },
+        'act' => { 'sub' => actor_issuer },
       )
     end
 
@@ -120,7 +120,7 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
 
       expect(loaded_access_token).to have_attributes(
         identity_uuid: target_identity.uuid,
-        broker_issuer:,
+        actor_issuer:,
         target_issuer:,
         resource:,
         scope:,

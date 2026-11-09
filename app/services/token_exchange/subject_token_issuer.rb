@@ -22,7 +22,7 @@ module TokenExchange
       subject_token = SubjectToken.new(
         id: SubjectToken.digest(token),
         identity_uuid: identity.uuid,
-        broker_issuer: identity.service_provider,
+        actor_issuer: identity.service_provider,
         scope: identity.scope,
         ial: identity.ial,
         actor_return_log_id:,

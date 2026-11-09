@@ -15,7 +15,7 @@ RSpec.describe 'OpenID Connect token endpoint' do
     end
 
     context 'with token exchange grant type' do
-      let(:client_id) { 'broker-issuer' }
+      let(:client_id) { 'actor-issuer' }
       let(:audience) { 'target-issuer' }
       let(:resource) { 'https://api.example.gov/passport' }
       let(:params) do

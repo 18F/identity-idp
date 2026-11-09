@@ -220,7 +220,7 @@ class OpenidConnectAuthorizeForm
     requested_token_exchange_scopes = requested_token_exchange_scopes(requested_scopes)
 
     if token_exchange_scope_available? && requested_token_exchange_scopes.present?
-      return true unless broker_request?
+      return true unless actor_request?
 
       # if there are any requested scopes that are not allowed
       return true if (requested_token_exchange_scopes - token_exchange_scopes).present?
@@ -405,8 +405,8 @@ class OpenidConnectAuthorizeForm
     IdentityConfig.store.token_exchange_enabled
   end
 
-  def broker_request?
-    service_provider&.token_exchange_broker?
+  def actor_request?
+    service_provider&.token_exchange_actor?
   end
 
   def token_exchange_scopes

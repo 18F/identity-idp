@@ -21,7 +21,7 @@ RSpec.describe TokenExchange::AccessToken do
       access_token = described_class.new(
         id: described_class.digest(token),
         identity_uuid: 'identity-uuid',
-        broker_issuer: 'broker-issuer',
+        actor_issuer: 'actor-issuer',
         target_issuer: 'target-issuer',
         resource: 'https://api.example.gov/passport',
         scope: 'openid token_exchange:passport',
@@ -33,7 +33,7 @@ RSpec.describe TokenExchange::AccessToken do
       expect(described_class.load(token)).to have_attributes(
         id: described_class.digest(token),
         identity_uuid: 'identity-uuid',
-        broker_issuer: 'broker-issuer',
+        actor_issuer: 'actor-issuer',
         target_issuer: 'target-issuer',
         resource: 'https://api.example.gov/passport',
         scope: 'openid token_exchange:passport',
