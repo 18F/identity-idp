@@ -269,6 +269,7 @@ class OpenidConnectTokenExchangeForm
 
   def loaded_subject_token
     return @loaded_subject_token if defined?(@loaded_subject_token)
+    return nil if client_rejected?
 
     @loaded_subject_token = TokenExchange::SubjectToken.load(subject_token)
   end
@@ -321,6 +322,7 @@ class OpenidConnectTokenExchangeForm
       oauth_error_code: (oauth_error unless valid?),
       integration_errors:,
       dpop_bound: dpop_binding_required?,
+      user_id: identity&.user&.uuid,
     }
   end
 

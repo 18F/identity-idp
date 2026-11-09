@@ -7807,6 +7807,7 @@ module AnalyticsEvents
     delegation_id: nil,
     oauth_error_code: nil,
     dpop_bound: nil,
+    user_id: nil,
     **extra
   )
     track_event(
@@ -7825,6 +7826,7 @@ module AnalyticsEvents
       delegation_id:,
       oauth_error_code:,
       dpop_bound:,
+      user_id:,
       **extra,
     )
   end
