@@ -20,6 +20,7 @@ module Users
       target_app = consent.target_app
 
       consent.destroy!
+      TokenExchange::RefreshTokenRevoker.revoke_for_target(user: current_user, target_app:)
       analytics.sts_revoke_consent_revoked(target_app:)
 
       redirect_to account_connected_services_path

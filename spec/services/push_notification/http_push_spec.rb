@@ -36,6 +36,17 @@ RSpec.describe PushNotification::HttpPush do
   describe '#deliver' do
     subject(:deliver) { http_push.deliver }
 
+    context 'when the person has token exchange refresh tokens' do
+      let!(:refresh_token) { create(:token_exchange_refresh_token, user:) }
+      let(:push_notifications_enabled) { false }
+
+      it 'revokes them for a revoking event, even with push notifications disabled' do
+        deliver
+
+        expect(refresh_token.reload.revocation_reason).to eq('security_event')
+      end
+    end
+
     it 'enqueues a background job to deliver a notification' do
       expect { deliver }.to have_enqueued_job(RiscDeliveryJob).once
     end

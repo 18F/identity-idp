@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   get '/api/openid_connect/certs' => 'openid_connect/certs#index'
   post '/api/openid_connect/token' => 'openid_connect/token#create'
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
+  post '/api/openid_connect/revoke' => 'openid_connect/token_revocation#create',
+       as: :api_openid_connect_revoke
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/openid_connect/document_images/:image_type' =>
     'openid_connect/document_images#show',

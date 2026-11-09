@@ -80,6 +80,20 @@ RSpec.describe Users::StsConsentRevokeController do
       expect(response).to redirect_to(account_connected_services_path)
     end
 
+    it 'revokes the refresh token families whose sign-in named a resource of the target' do
+      allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+        .and_return([{ issuer: consent.target_app, resource: 'https://records.example.gov' }])
+      refresh_token = create(
+        :token_exchange_refresh_token,
+        user:,
+        resource: 'https://records.example.gov',
+      )
+
+      subject
+
+      expect(refresh_token.reload.revocation_reason).to eq('consent_revoked')
+    end
+
     it 'logs an analytics event for revoking' do
       stub_analytics
 

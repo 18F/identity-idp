@@ -16,6 +16,18 @@ RSpec.describe RevokeServiceProviderConsent do
         .from(nil).to(now.to_i)
     end
 
+    it 'revokes the token exchange refresh tokens the service provider holds for the person' do
+      user = create(:user)
+      identity.update!(user:)
+      refresh_token = create(
+        :token_exchange_refresh_token, user:, actor_issuer: identity.service_provider
+      )
+
+      service.call
+
+      expect(refresh_token.reload.revocation_reason).to eq('service_provider_disconnected')
+    end
+
     it 'clears the verified attributes' do
       expect { service.call }
         .to change { identity.reload.verified_attributes }

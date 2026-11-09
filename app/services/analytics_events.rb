@@ -7999,6 +7999,35 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks an RFC 7009 token revocation request from a token exchange actor
+  # @param [Boolean] success Whether the request was well formed; the endpoint answers success
+  #   for tokens it doesn't recognize, as RFC 7009 requires
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [String, nil] client_id Issuer of the actor making the request
+  # @param [String, nil] token_type_hint The token_type_hint the actor sent
+  # @param [Boolean] revoked Whether a refresh token family was revoked
+  # @param [String, nil] refresh_token_family_id Identifier of the revoked family
+  def openid_connect_token_revocation(
+    success:,
+    revoked:,
+    client_id: nil,
+    token_type_hint: nil,
+    refresh_token_family_id: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :openid_connect_token_revocation,
+      success:,
+      error_details:,
+      client_id:,
+      token_type_hint:,
+      revoked:,
+      refresh_token_family_id:,
+      **extra,
+    )
+  end
+
   # Tracks a userinfo request from a service provider configured for encrypted responses but
   # with no usable key to encrypt to; the request was refused rather than answered in the clear
   # @param [String] client_id Service Provider issuer
