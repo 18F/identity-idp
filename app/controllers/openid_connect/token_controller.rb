@@ -35,6 +35,8 @@ module OpenidConnect
     def token_form
       if delegated_token_exchange?
         OpenidConnectTokenExchangeForm.new(form_params)
+      elsif refresh_token_grant?
+        OpenidConnectRefreshTokenForm.new(form_params)
       else
         OpenidConnectTokenForm.new(form_params)
       end
@@ -56,6 +58,7 @@ module OpenidConnect
         :code,
         :code_verifier,
         :grant_type,
+        :refresh_token,
         :requested_token_type,
         :resource,
         :scope,
@@ -67,6 +70,8 @@ module OpenidConnect
     def track_analytics(analytics_attributes)
       if delegated_token_exchange?
         analytics.openid_connect_delegated_token_exchange(**analytics_attributes)
+      elsif refresh_token_grant?
+        analytics.openid_connect_refresh_token(**analytics_attributes)
       else
         analytics.openid_connect_token(**analytics_attributes)
       end
@@ -74,7 +79,8 @@ module OpenidConnect
 
     def add_subject_token_fingerprint(analytics_attributes, response)
       return unless analytics_attributes[:token_endpoint_operation] ==
-                    TokenExchange::Constants::STAGE_SUBJECT_TOKEN
+                    TokenExchange::Constants::STAGE_SUBJECT_TOKEN ||
+                    refresh_token_grant?
       return if response[:access_token].blank?
 
       analytics_attributes[:subject_token_fingerprint] =
@@ -89,6 +95,10 @@ module OpenidConnect
 
     def delegated_token_exchange?
       params[:grant_type] == TokenExchange::Constants::GRANT_TYPE
+    end
+
+    def refresh_token_grant?
+      params[:grant_type] == OpenidConnectRefreshTokenForm::GRANT_TYPE
     end
   end
 end

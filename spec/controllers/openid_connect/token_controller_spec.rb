@@ -473,4 +473,124 @@ RSpec.describe OpenidConnect::TokenController do
       end
     end
   end
+
+  describe '#create with the refresh token grant type' do
+    let(:user) { create(:user, :proofed) }
+    let(:actor_issuer) { 'actor-issuer' }
+    let(:target_issuer) { 'target-issuer' }
+    let(:scope) { 'openid token_exchange' }
+    let(:resource) { 'https://api.example.gov/passport' }
+    let(:token_url) { api_openid_connect_token_url(host: request.host) }
+
+    let!(:actor) do
+      create(:service_provider, :active, issuer: actor_issuer, pkce: true, certs: [])
+    end
+    let!(:target) { create(:service_provider, :active, issuer: target_issuer) }
+    let(:identity) do
+      create(:service_provider_identity, user:, service_provider: actor_issuer, scope:, ial: 2)
+    end
+    let!(:target_identity) do
+      create(:service_provider_identity, user:, service_provider: target_issuer, scope:, ial: 2)
+    end
+    let(:actor_return_log) do
+      create(
+        :sp_return_log,
+        user:, issuer: actor_issuer, ial: 2, billable: true, returned_at: Time.zone.now,
+      )
+    end
+    let!(:issued) do
+      TokenExchange::RefreshTokenIssuer.issue(
+        identity:, actor_return_log_id: actor_return_log.id, resource:,
+        dpop_jkt: dpop_thumbprint, authenticated_at: 5.minutes.ago
+      )
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:token_exchange_refresh_token_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+        .and_return([actor_issuer])
+      allow(IdentityConfig.store).to receive(:dpop_required_issuers).and_return([actor_issuer])
+      allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+        .and_return([{ issuer: target_issuer, scope: 'passport', resource: }])
+      create(:user_consent_sts, user:, target_app: target_issuer)
+    end
+
+    def refresh(refresh_token)
+      request.headers['DPoP'] = build_dpop_proof(http_url: token_url)
+      post :create,
+           params: { grant_type: 'refresh_token', client_id: actor_issuer, refresh_token: }
+      JSON.parse(response.body, symbolize_names: true)
+    end
+
+    it 'returns a subject token that can be exchanged for a delegated token' do
+      refreshed = refresh(issued.token)
+      expect(response).to be_ok
+      expect(refreshed).to include(token_type: 'DPoP', refresh_token: be_present)
+
+      request.headers['DPoP'] = build_dpop_proof(
+        http_url: token_url, access_token: refreshed[:access_token],
+      )
+      post :create, params: {
+        grant_type: TokenExchange::Constants::GRANT_TYPE,
+        client_id: actor_issuer,
+        subject_token: refreshed[:access_token],
+        subject_token_type: TokenExchange::Constants::ACCESS_TOKEN_TYPE,
+        requested_token_type: TokenExchange::Constants::ACCESS_TOKEN_TYPE,
+        audience: target_issuer,
+        resource:,
+      }
+
+      expect(response).to be_ok
+      expect(JSON.parse(response.body)).to include('token_type' => 'DPoP')
+      expect(DelegatedIssuanceLog.last.actor_return_log_id).to eq(actor_return_log.id)
+    end
+
+    it 'tracks the refresh event with the new subject token fingerprint' do
+      stub_analytics
+
+      refreshed = refresh(issued.token)
+
+      expect(@analytics).to have_logged_event(
+        :openid_connect_refresh_token,
+        hash_including(
+          success: true,
+          client_id: actor_issuer,
+          user_id: user.uuid,
+          expires_in: IdentityConfig.store.token_exchange_subject_token_expires_in,
+          token_exchange_stage: 'subject_token_refresh',
+          refresh_token_family_id: issued.record.family_id,
+          reuse_detected: false,
+          subject_token_fingerprint: TokenExchange::SubjectToken.digest(refreshed[:access_token]),
+        ),
+      )
+      expect(@analytics).to_not have_logged_event('OpenID Connect: token')
+    end
+
+    it 'answers a reused refresh token with invalid_grant and logs the reuse' do
+      stub_analytics
+      refresh(issued.token)
+
+      body = refresh(issued.token)
+
+      expect(response).to have_http_status(:bad_request)
+      expect(body).to eq(error: 'invalid_grant', error_description: 'refresh_token_reused')
+      expect(@analytics).to have_logged_event(
+        :openid_connect_refresh_token,
+        hash_including(success: false, reuse_detected: true, oauth_error_code: 'invalid_grant'),
+      )
+    end
+
+    context 'when refresh tokens are disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_refresh_token_enabled)
+          .and_return(false)
+      end
+
+      it 'answers unsupported_grant_type' do
+        expect(refresh(issued.token)).to include(error: 'unsupported_grant_type')
+        expect(response).to have_http_status(:bad_request)
+      end
+    end
+  end
 end
