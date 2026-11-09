@@ -1969,6 +1969,12 @@ RSpec.describe User do
       expect(user.connected_delegations).to eq([newer, older])
     end
 
+    it 'excludes revoked consents' do
+      create(:user_consent_sts, user:, is_revoked: true)
+
+      expect(user.connected_delegations).to be_empty
+    end
+
     it 'is empty when the user has no consents' do
       expect(user.connected_delegations).to be_empty
     end

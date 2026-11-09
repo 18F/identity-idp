@@ -1279,17 +1279,20 @@ RSpec.describe OpenidConnect::AuthorizationController do
       end
 
       context 'when the user has not consented to STS for this target app' do
-        it 'redirects to the STS consent page and stores the target app' do
+        it 'redirects to the STS consent page and stores the target and actor apps' do
           action
 
           expect(response).to redirect_to(sts_consent_url)
           expect(controller.session[:sp][:sts_target_app]).to eq('passport-issuer')
+          expect(controller.session[:sp][:sts_actor_app]).to eq(broker_issuer)
         end
       end
 
       context 'when the user has already consented to STS for this target app' do
         before do
-          UserConsentSts.create!(user: user, target_app: 'passport-issuer')
+          UserConsentSts.create!(
+            user: user, target_app: 'passport-issuer', actor_app: broker_issuer,
+          )
         end
 
         it 'does not redirect to the STS consent page' do
@@ -1321,7 +1324,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
       context 'when the user previously consented but the consent has expired' do
         before do
-          consent = UserConsentSts.create!(user: user, target_app: 'passport-issuer')
+          consent = UserConsentSts.create!(
+            user: user, target_app: 'passport-issuer', actor_app: broker_issuer,
+          )
           consent.update!(created_at: 366.days.ago)
         end
 

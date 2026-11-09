@@ -177,7 +177,7 @@ RSpec.describe OpenidConnectTokenForm do
 
       context 'when the user has consented to the target app' do
         before do
-          create(:user_consent_sts, user:, target_app:)
+          create(:user_consent_sts, user:, target_app:, actor_app: client_id)
         end
 
         it 'is valid' do
@@ -770,7 +770,10 @@ RSpec.describe OpenidConnectTokenForm do
             .and_return([service_provider.issuer])
           allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
             .and_return([{ issuer: 'records-issuer', scope: 'records' }])
-          create(:user_consent_sts, user:, target_app: 'records-issuer')
+          create(
+            :user_consent_sts, user:, target_app: 'records-issuer',
+                               actor_app: service_provider.issuer
+          )
         end
 
         it 'issues a subject token bound to the key' do
@@ -1007,10 +1010,7 @@ RSpec.describe OpenidConnectTokenForm do
           actor_return_log_id: 123,
           expires_in: IdentityConfig.store.openid_connect_authorization_code_expiration_seconds,
         )
-        create(:user_consent_sts, user:, target_app:)
-      end
-
-      it 'returns a subject token response' do
+        create(:user_consent_sts, user:, target_app:, actor_app: client_id)
         expect(response).to include(
           access_token: be_present,
           token_type: 'Bearer',

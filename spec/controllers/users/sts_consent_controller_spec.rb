@@ -7,12 +7,14 @@ RSpec.describe Users::StsConsentController do
   let(:sp_request_url) { 'http://example.com/request/url' }
   let(:sp_request_id) { '123abc' }
   let(:target_app) { 'passport-issuer' }
+  let(:actor_app) { 'urn:gov:gsa:openidconnect:sp:broker' }
   let(:sp_session) do
     {
       issuer: issuer,
       request_url: sp_request_url,
       request_id: sp_request_id,
       sts_target_app: target_app,
+      sts_actor_app: actor_app,
     }
   end
   let(:token_exchange_enabled) { true }
@@ -62,6 +64,7 @@ RSpec.describe Users::StsConsentController do
         consent = UserConsentSts.last
         expect(consent.user).to eq(user)
         expect(consent.target_app).to eq(target_app)
+        expect(consent.actor_app).to eq(actor_app)
 
         expect(response).to redirect_to(sp_request_url)
         expect(@analytics).to have_logged_event(

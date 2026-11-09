@@ -73,10 +73,10 @@ RSpec.describe Users::StsConsentRevokeController do
   describe '#destroy' do
     subject { delete :destroy, params: { id: } }
 
-    it 'deletes the consent and redirects' do
-      expect { subject }.to change { UserConsentSts.count }.by(-1)
+    it 'revokes the consent and redirects' do
+      expect { subject }.to_not change { UserConsentSts.count }
 
-      expect(UserConsentSts.find_by(id: consent.id)).to be_nil
+      expect(consent.reload.is_revoked).to eq(true)
       expect(response).to redirect_to(account_connected_services_path)
     end
 
@@ -105,9 +105,10 @@ RSpec.describe Users::StsConsentRevokeController do
       let!(:other_consent) { create(:user_consent_sts) }
       let(:id) { other_consent.id }
 
-      it 'does not delete the other user’s consent' do
-        expect { subject }.to_not change { UserConsentSts.count }
+      it 'does not revoke the other user’s consent' do
+        subject
 
+        expect(other_consent.reload.is_revoked).to eq(false)
         expect(response).to redirect_to(account_connected_services_path)
       end
     end
