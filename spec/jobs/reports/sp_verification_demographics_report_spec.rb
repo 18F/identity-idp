@@ -16,7 +16,7 @@ RSpec.describe Reports::SpVerificationDemographicsReport do
   let(:agency_abbreviation) { 'Test_Agency' }
 
   let(:expected_s3_paths) do
-    date_range = "#{time_range.begin.to_date} to #{time_range.end.to_date}"
+    date_range = "#{time_range.begin.to_date}_#{time_range.end.to_date}"
     [
       "#{report_folder}/definitions_#{date_range}.csv",
       "#{report_folder}/overview_#{date_range}.csv",
@@ -68,7 +68,7 @@ RSpec.describe Reports::SpVerificationDemographicsReport do
 
   # Return "real-ish" emailable reports so ReportMailer doesn't explode on missing #title, etc
   let(:emailable_reports) do
-    date_range = "#{time_range.begin.to_date} to #{time_range.end.to_date}"
+    date_range = "#{time_range.begin.to_date}_#{time_range.end.to_date}"
     [
       Reporting::EmailableReport.new(
         title: 'Definitions',

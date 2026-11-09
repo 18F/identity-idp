@@ -15,7 +15,7 @@ RSpec.describe Reports::SpRegistrationFunnelReport do
 
   let(:expected_s3_paths) do
     range = report.previous_week_range
-    date_range = "#{range.first.to_date} to #{range.last.to_date}"
+    date_range = "#{range.first.to_date}_#{range.last.to_date}"
     [
       "#{report_folder}/definitions_#{date_range}.csv",
       "#{report_folder}/overview_#{date_range}.csv",

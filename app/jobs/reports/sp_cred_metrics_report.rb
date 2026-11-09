@@ -135,7 +135,7 @@ module Reports
     end
 
     def as_emailable_partner_report(date:)
-      date_range = "#{date.beginning_of_month.to_date} to #{date.end_of_month.to_date}"
+      date_range = "#{date.beginning_of_month.to_date}_#{date.end_of_month.to_date}"
 
       emailable_report_array = [
         Reporting::EmailableReport.new(

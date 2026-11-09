@@ -22,7 +22,7 @@ RSpec.describe Reports::SpVerificationReport do
   let(:emailable_reports) do
     start_date = expected_previous_week_range(report_date).begin.to_date
     end_date = expected_previous_week_range(report_date).end.to_date
-    date_range = "#{start_date} to #{end_date}"
+    date_range = "#{start_date}_#{end_date}"
     [
       Reporting::EmailableReport.new(
         title: 'Verification Funnel Metrics',
@@ -34,12 +34,12 @@ RSpec.describe Reports::SpVerificationReport do
           ['Verification Successes', 50, 0.5],
           ['Verification Failures', 50, 0.5]
         ],
-        filename: "Verification Funnel Metrics_#{date_range}",
+        filename: "verification_funnel_metrics_#{date_range}",
       ),
       Reporting::EmailableReport.new(
         title: 'Overview',
         table: [['Report Timeframe', 'Report Generated', 'Issuer']],
-        filename: "Overview Report_#{date_range}",
+        filename: "overview_#{date_range}",
       ),
     ]
   end

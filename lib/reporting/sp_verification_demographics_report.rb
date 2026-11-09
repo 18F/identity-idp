@@ -54,7 +54,7 @@ module Reporting
     end
 
     def as_emailable_reports
-      date_range = "#{time_range.begin.to_date} to #{time_range.end.to_date}"
+      date_range = "#{time_range.begin.to_date}_#{time_range.end.to_date}"
       [
         Reporting::EmailableReport.new(
           title: 'Definitions',
