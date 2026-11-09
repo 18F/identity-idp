@@ -217,6 +217,36 @@ RSpec.describe Reports::VerificationFunnelS3Report do
     end
 
     context 'with valid configurations' do
+      it 'prefers the configured agency abbreviation in each email subject' do
+        mock_configs.each_with_index do |config, index|
+          config['agency_abbreviation'] = "Configured Agency #{index + 1}"
+          expect(ReportMailer).to receive(:tables_report).with(
+            hash_including(
+              subject: "#{config['agency_abbreviation']} "\
+                       "Verification Funnel Report Mar 1 - Mar 7 2026",
+            ),
+          ).and_return(double(deliver_now: true))
+        end
+
+        job.perform
+      end
+
+      [nil, '', '   '].each do |blank_abbreviation|
+        it "falls back to service provider metadata for #{blank_abbreviation.inspect} config" do
+          mock_configs.each { |config| config['agency_abbreviation'] = blank_abbreviation }
+          sp_metadata.each_value do |metadata|
+            expect(ReportMailer).to receive(:tables_report).with(
+              hash_including(
+                subject: "#{metadata[:friendly_name]} (#{metadata[:agency_abbreviation]}) "\
+                         "Verification Funnel Report Mar 1 - Mar 7 2026",
+              ),
+            ).and_return(double(deliver_now: true))
+          end
+
+          job.perform
+        end
+      end
+
       it 'includes each service provider friendly name and period in the email' do
         sp_metadata.each_value do |metadata|
           expect(ReportMailer).to receive(:tables_report) do |args|
@@ -567,6 +597,17 @@ RSpec.describe Reports::VerificationFunnelS3Report do
     end
 
     describe '#verification_funnel_email_subject' do
+      it 'uses the configured agency abbreviation even when metadata names are missing' do
+        expect(Rails.logger).not_to receive(:warn)
+
+        subject_line = job.send(
+          :verification_funnel_email_subject, nil, nil, configured_agency_abbreviation: 'IRS'
+        )
+        expect(subject_line).to eq(
+          'IRS Verification Funnel Report Mar 1 - Mar 7 2026',
+        )
+      end
+
       it 'formats subject with service provider friendly name and agency abbreviation' do
         subject_line = job.send(
           :verification_funnel_email_subject, 'IRS', 'IRS Portal'

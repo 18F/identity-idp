@@ -129,6 +129,7 @@ module Reports
         report_reader: report_reader,
         agency_abbreviation: agency_abbreviation,
         friendly_name: sp_info[:friendly_name],
+        configured_agency_abbreviation: config['agency_abbreviation'],
       )
       Rails.logger.info "Successfully sent verification funnel report for issuer: #{issuer_string}"
     rescue StandardError => e
@@ -219,19 +220,26 @@ module Reports
     end
 
     def send_verification_funnel_email(email_addresses:, report_reader:, agency_abbreviation:,
-                                       friendly_name:)
+                                       friendly_name:, configured_agency_abbreviation:)
       ReportMailer.tables_report(
         to: email_addresses[:to],
         bcc: email_addresses[:bcc],
-        subject: verification_funnel_email_subject(agency_abbreviation, friendly_name),
+        subject: verification_funnel_email_subject(
+          agency_abbreviation,
+          friendly_name,
+          configured_agency_abbreviation: configured_agency_abbreviation,
+        ),
         reports: report_reader.as_emailable_reports,
         message: verification_funnel_email_preamble,
         attachment_format: :csv,
       ).deliver_now
     end
 
-    def verification_funnel_email_subject(agency_abbreviation, friendly_name = nil)
-      if agency_abbreviation.blank?
+    def verification_funnel_email_subject(agency_abbreviation, friendly_name = nil,
+                                          configured_agency_abbreviation: nil)
+      if configured_agency_abbreviation.present?
+        service_provider_name = configured_agency_abbreviation
+      elsif agency_abbreviation.blank?
         Rails.logger.warn 'Missing agency abbreviation'
         service_provider_name = friendly_name.to_s
       else
@@ -331,10 +339,13 @@ module Reports
     #   [
     #     {
     #       'issuer_string' => 'issuer_string_1',
+    #       'agency_abbreviation' => 'IRS',
     #       'internal_emails' => ['internal_email@login.gov'],
     #       'partner_emails' => ['external_email@login.gov'],
     #     },
     #   ]
+    # agency_abbreviation is optional and overrides the email subject's provider name.
+    # If blank or omitted, use the service provider's friendly name and agency abbreviation.
     def report_configs
       IdentityConfig.store.verification_funnel_s3_report_configs
     end

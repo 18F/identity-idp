@@ -119,6 +119,7 @@ module Reports
         report_reader: report_reader,
         agency_abbreviation: agency_abbreviation,
         friendly_name: sp_info[:friendly_name],
+        configured_agency_abbreviation: config['agency_abbreviation'],
       )
       Rails.logger.info "Successfully sent demographics report for issuer: #{issuer_string}"
     rescue StandardError => e
@@ -209,19 +210,26 @@ module Reports
     end
 
     def send_demographics_email(email_addresses:, report_reader:, agency_abbreviation:,
-                                friendly_name:)
+                                friendly_name:, configured_agency_abbreviation:)
       ReportMailer.tables_report(
         to: email_addresses[:to],
         bcc: email_addresses[:bcc],
-        subject: demographics_email_subject(agency_abbreviation, friendly_name),
+        subject: demographics_email_subject(
+          agency_abbreviation,
+          friendly_name,
+          configured_agency_abbreviation: configured_agency_abbreviation,
+        ),
         reports: report_reader.as_emailable_reports,
         message: demographics_email_preamble,
         attachment_format: :csv,
       ).deliver_now
     end
 
-    def demographics_email_subject(agency_abbreviation, friendly_name = nil)
-      if agency_abbreviation.blank?
+    def demographics_email_subject(agency_abbreviation, friendly_name = nil,
+                                   configured_agency_abbreviation: nil)
+      if configured_agency_abbreviation.present?
+        service_provider_name = configured_agency_abbreviation
+      elsif agency_abbreviation.blank?
         Rails.logger.warn 'Missing agency abbreviation'
         service_provider_name = friendly_name.to_s
       else
@@ -299,6 +307,17 @@ module Reports
       end
     end
 
+    # Example config structure (one entry per issuer):
+    #   [
+    #     {
+    #       'issuer_string' => 'issuer_string_1',
+    #       'agency_abbreviation' => 'SSA',
+    #       'internal_emails' => ['internal_email@login.gov'],
+    #       'partner_emails' => ['external_email@login.gov'],
+    #     },
+    #   ]
+    # agency_abbreviation is optional and overrides the email subject's provider name.
+    # If blank or omitted, use the service provider's friendly name and agency abbreviation.
     def report_configs
       IdentityConfig.store.demographics_metrics_s3_report_configs
     end
