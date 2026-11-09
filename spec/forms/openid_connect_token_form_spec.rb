@@ -1011,6 +1011,9 @@ RSpec.describe OpenidConnectTokenForm do
           expires_in: IdentityConfig.store.openid_connect_authorization_code_expiration_seconds,
         )
         create(:user_consent_sts, user:, target_app:, actor_app: client_id)
+      end
+
+      it 'returns a subject token response' do
         expect(response).to include(
           access_token: be_present,
           token_type: 'Bearer',
