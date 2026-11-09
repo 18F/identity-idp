@@ -269,7 +269,6 @@ class OpenidConnectTokenExchangeForm
 
   def loaded_subject_token
     return @loaded_subject_token if defined?(@loaded_subject_token)
-    return nil if client_rejected?
 
     @loaded_subject_token = TokenExchange::SubjectToken.load(subject_token)
   end

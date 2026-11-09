@@ -204,12 +204,6 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         expect(form.submit.success?).to eq(false)
         expect(form.errors[:client_id]).to include('is invalid')
       end
-
-      it 'does not read the subject token from Redis' do
-        expect(TokenExchange::SubjectToken).to_not receive(:load)
-
-        form.submit
-      end
     end
 
     context 'when the target is not allowlisted' do
@@ -221,12 +215,6 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       it 'is invalid' do
         expect(form.submit.success?).to eq(false)
         expect(form.errors[:audience]).to include('is invalid')
-      end
-
-      it 'does not read the subject token from Redis' do
-        expect(TokenExchange::SubjectToken).to_not receive(:load)
-
-        form.submit
       end
     end
 
