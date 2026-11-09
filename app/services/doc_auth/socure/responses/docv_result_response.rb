@@ -11,6 +11,7 @@ module DocAuth
           status: %w[status],
           msg: %w[msg],
           document_verification: %w[documentVerification],
+          digital_intelligence: %w[documentVerification digitalIntelligence],
           reason_codes: %w[documentVerification reasonCodes],
           document_metadata: %w[documentVerification documentType],
           id_type: %w[documentVerification documentType type],
@@ -107,6 +108,7 @@ module DocAuth
             customer_profile: get_data(DATA_PATHS[:customer_profile]),
             customer_user_id: get_data(DATA_PATHS[:socure_customer_user_id]),
             decision: get_data(DATA_PATHS[:decision]),
+            digital_intelligence: digital_intelligence,
             doc_auth_success: doc_auth_success?,
             document_metadata: get_data(DATA_PATHS[:document_metadata]),
             flow_path: nil,
@@ -125,6 +127,10 @@ module DocAuth
         end
 
         private
+
+        def digital_intelligence
+          get_data(DATA_PATHS[:digital_intelligence])&.except('entityProfiler')
+        end
 
         def successful_result?
           get_data(DATA_PATHS[:decision_value]) == 'accept'
