@@ -206,6 +206,53 @@ RSpec.describe OpenidConnectLogoutForm do
         end
       end
 
+      context 'validating client_id' do
+        let(:unknown_client_id) { 'urn:gov:gsa:openidconnect:unknown' }
+        let(:foreign_redirect_uri) { 'https://example.com/anywhere' }
+
+        context 'with an unknown client_id and an id_token_hint that is not a JWT' do
+          let(:client_id) { unknown_client_id }
+          let(:id_token_hint) { 'asdasd' }
+          let(:post_logout_redirect_uri) { foreign_redirect_uri }
+
+          it 'is not valid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_id])
+              .to include(t('openid_connect.logout.errors.client_id_invalid'))
+          end
+        end
+
+        context 'with an unknown client_id and no id_token_hint' do
+          let(:client_id) { unknown_client_id }
+          let(:id_token_hint) { nil }
+          let(:post_logout_redirect_uri) { foreign_redirect_uri }
+
+          it 'is not valid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_id])
+              .to include(t('openid_connect.logout.errors.client_id_invalid'))
+          end
+        end
+
+        context 'with an unknown client_id and a valid id_token_hint' do
+          let(:client_id) { unknown_client_id }
+          let(:id_token_hint) { valid_id_token_hint }
+
+          it 'is valid, the hint identifying the service provider' do
+            expect(valid?).to eq(true)
+          end
+        end
+
+        context 'with a known client_id and an id_token_hint that is not a JWT' do
+          let(:client_id) { service_provider }
+          let(:id_token_hint) { 'asdasd' }
+
+          it 'is valid, the client_id identifying the service provider' do
+            expect(valid?).to eq(true)
+          end
+        end
+      end
+
       context 'post_logout_redirect_uri' do
         context 'without a post_logout_redirect_uri' do
           let(:post_logout_redirect_uri) { nil }
@@ -321,6 +368,22 @@ RSpec.describe OpenidConnectLogoutForm do
 
           it 'is not valid' do
             expect(valid?).to eq(false)
+            expect(form.errors[:id_token_hint])
+              .to include(t('openid_connect.logout.errors.id_token_hint_present'))
+          end
+        end
+      end
+
+      context 'validating client_id' do
+        context 'with an unknown client_id and an id_token_hint' do
+          let(:client_id) { 'urn:gov:gsa:openidconnect:unknown' }
+          let(:id_token_hint) { 'asdasd' }
+          let(:post_logout_redirect_uri) { 'https://example.com/anywhere' }
+
+          it 'is not valid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_id])
+              .to include(t('openid_connect.logout.errors.client_id_invalid'))
             expect(form.errors[:id_token_hint])
               .to include(t('openid_connect.logout.errors.id_token_hint_present'))
           end

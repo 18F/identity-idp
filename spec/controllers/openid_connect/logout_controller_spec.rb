@@ -199,6 +199,45 @@ RSpec.describe OpenidConnect::LogoutController do
       end
     end
 
+    context 'when sending an unknown client_id with an unrecognized id_token_hint' do
+      let(:post_logout_redirect_uri) { 'https://example.com/anywhere' }
+      subject(:action) do
+        process req_action,
+                method: req_method,
+                params: {
+                  client_id: 'urn:gov:gsa:openidconnect:unknown',
+                  id_token_hint: 'abc123',
+                  post_logout_redirect_uri: post_logout_redirect_uri,
+                  state: state,
+                }
+      end
+
+      context 'user is not signed in' do
+        it 'renders an error page instead of redirecting' do
+          action
+
+          expect(response).to render_template(:error)
+          expect(response).not_to be_redirect
+        end
+      end
+
+      context 'user is signed in' do
+        before { stub_sign_in(user) }
+
+        it 'renders an error page' do
+          action
+
+          expect(response).to render_template(:error)
+        end
+
+        it 'does not destroy the session' do
+          expect(controller).to_not receive(:sign_out)
+
+          action
+        end
+      end
+    end
+
     context 'when sending client_id' do
       subject(:action) do
         process req_action,
@@ -331,6 +370,26 @@ RSpec.describe OpenidConnect::LogoutController do
                 post_logout_redirect_uri: post_logout_redirect_uri,
                 state: state,
               }
+    end
+
+    context 'when sending an unknown client_id with a foreign redirect URI' do
+      let(:post_logout_redirect_uri) { 'https://example.com/anywhere' }
+      subject(:action) do
+        process req_action,
+                method: req_method,
+                params: {
+                  client_id: 'urn:gov:gsa:openidconnect:unknown',
+                  post_logout_redirect_uri: post_logout_redirect_uri,
+                  state: state,
+                }
+      end
+
+      it 'renders an error page instead of redirecting' do
+        action
+
+        expect(response).to render_template(:error)
+        expect(response).not_to be_redirect
+      end
     end
 
     context 'user is signed in' do

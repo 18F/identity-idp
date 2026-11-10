@@ -130,8 +130,12 @@ class OpenidConnectLogoutForm
     }
   end
 
+  # A client_id must name a registered service provider, or be accompanied by an id_token_hint
+  # that resolves one (RP-Initiated Logout 1.0 section 2). When neither does, no service provider
+  # is known, so the post_logout_redirect_uri could not be checked against any registered URI and
+  # the request is refused here rather than redirected.
   def valid_client_id
-    return unless client_id.present? && id_token_hint.blank?
+    return if client_id.blank?
     return if service_provider.present?
 
     errors.add(
@@ -141,15 +145,17 @@ class OpenidConnectLogoutForm
     )
   end
 
+  # Without a client_id the id_token_hint is the only way to identify the service provider: it
+  # must verify against Login.gov's signing keys and name an identity whose service provider
+  # still exists.
   def validate_identity
-    return if client_id.present? # there won't alwasy be an identity found
+    return if client_id.present? # there won't always be an identity found
+    return if identity && service_provider.present?
 
-    unless identity
-      errors.add(
-        :id_token_hint, t('openid_connect.logout.errors.id_token_hint'),
-        type: :id_token_hint
-      )
-    end
+    errors.add(
+      :id_token_hint, t('openid_connect.logout.errors.id_token_hint'),
+      type: :id_token_hint
+    )
   end
 
   def extra_analytics_attributes
