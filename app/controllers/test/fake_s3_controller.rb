@@ -2,6 +2,8 @@
 
 module Test
   class FakeS3Controller < ApplicationController
+    include LocalEnvironmentOnlyConcern
+
     skip_before_action :verify_authenticity_token
 
     cattr_accessor :data
