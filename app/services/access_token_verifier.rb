@@ -14,6 +14,7 @@ class AccessTokenVerifier
     @http_method = http_method
     @http_url = http_url
     @identity = nil
+    @dpop_bound = false
   end
 
   # @return [Array(FormResponse, ServiceProviderIdentity), Array(FormResponse, nil)]
@@ -27,7 +28,7 @@ class AccessTokenVerifier
         client_id: @identity&.service_provider,
         ial: @identity&.ial,
         integration_errors:,
-        dpop_bound: @identity.present? && dpop_required?,
+        dpop_bound: @dpop_bound,
       },
     )
 
@@ -57,7 +58,8 @@ class AccessTokenVerifier
   end
 
   def validate_binding(scheme, access_token)
-    return validate_bearer_scheme(scheme) unless dpop_required?
+    @dpop_bound = dpop_required? || AccessTokenBinding.exists?(access_token)
+    return validate_bearer_scheme(scheme) unless @dpop_bound
 
     unless scheme == 'DPoP'
       return refuse_binding('invalid_token', 'dpop_bearer_presented', :dpop_bearer_presented)
@@ -99,6 +101,10 @@ class AccessTokenVerifier
     errors.add(:dpop_proof, message, type:)
   end
 
+  # A token is key-bound when its client is required to bind today, or when a binding was recorded
+  # for it when it was issued. Once bound, a token is never accepted under the Bearer scheme again
+  # (RFC 9449 §7.1), whatever the client's configuration says now, so a later change to the
+  # client's registration or to the binding list cannot turn a bound token into a bearer token.
   def dpop_required?
     @identity.service_provider_record&.dpop_required? == true
   end

@@ -32,6 +32,13 @@ module EncryptedRedisStructStorage
     end
   end
 
+  # Whether a record with this id is stored, without reading or decrypting it.
+  def exists?(id, type:)
+    check_for_id_property!(type)
+
+    REDIS_POOL.with { |client| client.exists?(key(id, type: type)) }
+  end
+
   def store(struct, expires_in: 60)
     check_for_id_property!(struct.class)
     check_for_empty_id!(struct.id)

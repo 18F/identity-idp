@@ -169,6 +169,43 @@ RSpec.describe DpopProofForm do
         end
       end
 
+      context 'when the jwk names an unknown curve' do
+        let(:proof) { build_dpop_proof(http_url:, header: { jwk: dpop_jwk.merge(crv: 'P-257') }) }
+        it 'rejects the key' do
+          expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_key: true)
+          expect(result.first_error_message).to eq('dpop_proof_key')
+        end
+      end
+
+      context 'when a jwk coordinate is not base64url' do
+        let(:proof) do
+          build_dpop_proof(http_url:, header: { jwk: dpop_jwk.merge(x: '!!not-base64url!!') })
+        end
+        it 'rejects the key' do
+          expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_key: true)
+          expect(result.first_error_message).to eq('dpop_proof_key')
+        end
+      end
+
+      context 'when a jwk coordinate is not a point on the curve' do
+        let(:proof) do
+          short = Base64.urlsafe_encode64('short', padding: false)
+          build_dpop_proof(http_url:, header: { jwk: dpop_jwk.merge(x: short) })
+        end
+        it 'rejects the key' do
+          expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_key: true)
+          expect(result.first_error_message).to eq('dpop_proof_key')
+        end
+      end
+
+      context 'when the jwk is an RSA key without a modulus' do
+        let(:proof) { build_dpop_proof(http_url:, header: { jwk: { kty: 'RSA', e: 'AQAB' } }) }
+        it 'rejects the key' do
+          expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_key: true)
+          expect(result.first_error_message).to eq('dpop_proof_key')
+        end
+      end
+
       context 'when the jwk carries the private key' do
         let(:jwk) { JWT::JWK.new(dpop_key).export(include_private: true) }
         let(:proof) { build_dpop_proof(http_url:, header: { jwk: }) }

@@ -44,7 +44,7 @@ module OpenidConnect
         request.env['HTTP_AUTHORIZATION'],
         dpop_proof: request.headers['DPoP'].presence,
         http_method: request.method,
-        http_url: request.original_url,
+        http_url: api_openid_connect_userinfo_url,
       )
       response, identity = verifier.submit
       attributes = response.to_h
