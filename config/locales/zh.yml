@@ -1843,8 +1843,12 @@ openid_connect.token.errors.invalid_aud: 受众声明有误，预期 %{url}。�
 openid_connect.token.errors.invalid_authentication: 客户必须通过 PKCE 或 private_key_jwt 来验证，缺失 code_challenge 或者 client_assertion。请参阅我们的文档：https://developers.login.gov/support/#pkce-or-private-key
 openid_connect.token.errors.invalid_code: 无效，因为与任何用户都匹配不上。请参阅我们的文档： https://developers.login.gov/support/#invalid-code
 openid_connect.token.errors.invalid_code_verifier: code_verifier 与 code_challenge 不匹配。请参阅我们的文档：https://developers.login.gov/support/#invalid-code-verifier
+openid_connect.token.errors.invalid_exp: exp 不得晚于 iat 之后 %{seconds} 秒；若没有 iat，则不得晚于请求时间之后 %{seconds} 秒。
 openid_connect.token.errors.invalid_iat: iat 必须是整数或者浮动点 Unix 时间印章来代表过去的一个时间。请参阅我们的文档：https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: 无法根据任何已注册的公钥验证这个说法。请参阅我们的文档：https://developers.login.gov/support/#invalid-token-signature
+openid_connect.token.errors.missing_exp: exp 为必填项，且必须是整数或浮点 Unix 时间戳。
+openid_connect.token.errors.missing_jti: jti 为必填项，且必须是此断言专用的唯一字符串。
+openid_connect.token.errors.replayed_jti: jti 已被使用。每个客户端断言都必须携带新的 jti。
 openid_connect.user_info.errors.encryption_unavailable: '此服务提供商已配置为接收加密的 userinfo 响应，但没有为其登记可用的加密密钥：响应未发送。'
 openid_connect.user_info.errors.malformed_authorization: 授权标头畸形。请参阅我们的文档：https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: 未提供授权标头。请参阅我们的文档：https://developers.login.gov/support/#no-auth-header

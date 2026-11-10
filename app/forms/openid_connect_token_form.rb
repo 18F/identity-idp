@@ -246,15 +246,20 @@ class OpenidConnectTokenForm
   def validate_client_assertion
     return if identity.blank?
 
-    validator = OpenidConnectClientAssertionValidator.new(
+    client_assertion_validator.errors.each do |error|
+      errors.add(error.attribute, error.message, type: error.type)
+    end
+  end
+
+  # Built once per request: the validator records the assertion's `jti` as used, and the form is
+  # asked whether it is valid more than once while the response is built.
+  def client_assertion_validator
+    @client_assertion_validator ||= OpenidConnectClientAssertionValidator.new(
       client_assertion:,
       client_id:,
       service_provider:,
       audience_url: api_openid_connect_token_url,
     )
-    validator.errors.each do |error|
-      errors.add(error.attribute, error.message, type: error.type)
-    end
   end
 
   def validate_consent
