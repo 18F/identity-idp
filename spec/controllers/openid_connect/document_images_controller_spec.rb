@@ -148,7 +148,6 @@ RSpec.describe OpenidConnect::DocumentImagesController do
             image_type: 'front',
             issuer: identity.service_provider,
             profile_id: profile.id,
-            encrypted: true,
           )
         end
 
@@ -222,6 +221,18 @@ RSpec.describe OpenidConnect::DocumentImagesController do
             action
             expect(response).to be_not_found
           end
+        end
+      end
+
+      context 'when the client is listed for key binding and presents the token as Bearer' do
+        before do
+          allow_any_instance_of(ServiceProvider).to receive(:dpop_required?).and_return(true)
+        end
+
+        it '401s with the dpop_bearer_presented error in the body' do
+          action
+          expect(response).to be_unauthorized
+          expect(json_response[:error]).to eq('dpop_bearer_presented')
         end
       end
 

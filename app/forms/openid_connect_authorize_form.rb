@@ -10,6 +10,7 @@ class OpenidConnectAuthorizeForm
     client_id
     code_challenge
     code_challenge_method
+    dpop_jkt
     nonce
     prompt
     redirect_uri
@@ -47,6 +48,8 @@ class OpenidConnectAuthorizeForm
   attr_reader(*ATTRS)
 
   RANDOM_VALUE_MINIMUM_LENGTH = 22
+  # A base64url-encoded SHA-256 key thumbprint: 43 characters, no padding.
+  DPOP_JKT_FORMAT = /\A[A-Za-z0-9_-]{43}\z/
   MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS = 30
 
   validates :acr_values, presence: true
@@ -68,6 +71,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_client_id
   validate :validate_scope
   validate :validate_unauthorized_scope
+  validate :validate_dpop_jkt, if: :dpop_binding_required?
   validate :validate_privileges
   validate :validate_document_images_scope
   validate :validate_prompt
@@ -132,6 +136,10 @@ class OpenidConnectAuthorizeForm
       private_key_jwt_pkce: private_key_jwt_pkce_requested?,
       email_address_id: email_address_id,
     )
+  end
+
+  def dpop_binding_required?
+    !!service_provider&.dpop_required?
   end
 
   def success_redirect_uri
@@ -212,7 +220,7 @@ class OpenidConnectAuthorizeForm
     requested_token_exchange_scopes = requested_token_exchange_scopes(requested_scopes)
 
     if token_exchange_scope_available? && requested_token_exchange_scopes.present?
-      return true unless broker_request?
+      return true unless actor_request?
 
       # if there are any requested scopes that are not allowed
       return true if (requested_token_exchange_scopes - token_exchange_scopes).present?
@@ -259,6 +267,14 @@ class OpenidConnectAuthorizeForm
       :scope, t('openid_connect.authorization.errors.no_valid_scope'),
       type: :no_valid_scope
     )
+  end
+
+  def validate_dpop_jkt
+    if dpop_jkt.blank?
+      errors.add(:dpop_jkt, 'dpop_jkt_required', type: :dpop_jkt_required)
+    elsif !dpop_jkt.match?(DPOP_JKT_FORMAT)
+      errors.add(:dpop_jkt, 'dpop_jkt_invalid', type: :dpop_jkt_invalid)
+    end
   end
 
   def validate_unauthorized_scope
@@ -389,8 +405,8 @@ class OpenidConnectAuthorizeForm
     IdentityConfig.store.token_exchange_enabled
   end
 
-  def broker_request?
-    service_provider&.token_exchange_broker?
+  def actor_request?
+    service_provider&.token_exchange_actor?
   end
 
   def token_exchange_scopes

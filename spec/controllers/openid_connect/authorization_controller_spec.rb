@@ -1255,8 +1255,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
     context 'STS token exchange consent' do
       let(:user) { create(:user, :fully_registered) }
-      let(:broker_issuer) { 'urn:gov:gsa:openidconnect:test' }
-      let(:client_id) { broker_issuer }
+      let(:actor_issuer) { 'urn:gov:gsa:openidconnect:test' }
+      let(:client_id) { actor_issuer }
       let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
 
       before do
@@ -1264,7 +1264,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         allow(controller).to receive(:auth_count).and_return(2)
         allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
-          .and_return([broker_issuer])
+          .and_return([actor_issuer])
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
           .and_return([{ issuer: 'passport-issuer', scope: 'passport' }])
         allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)
@@ -1301,7 +1301,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         it 'stores the actor handoff for the authorization code' do
           action
 
-          code = user.identities.find_by(service_provider: broker_issuer).session_uuid
+          code = user.identities.find_by(service_provider: actor_issuer).session_uuid
           handoff = TokenExchange::ActorHandoff.load(code)
           expect(handoff.actor_return_log_id).to eq(SpReturnLog.find_by(user:).id)
         end

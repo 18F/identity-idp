@@ -129,7 +129,10 @@ class PinpointSupportedCountries
 
   def country_code(phone_data)
     code = phone_data[:country_code]
-    code += phone_data[:leading_digits] if digits_only?(phone_data[:leading_digits])
+    # Kazakhstan shares +7 with Russia; its leading 7 is part of the national number.
+    if phone_data[:id] != 'KZ' && digits_only?(phone_data[:leading_digits])
+      code += phone_data[:leading_digits]
+    end
     code
   end
 

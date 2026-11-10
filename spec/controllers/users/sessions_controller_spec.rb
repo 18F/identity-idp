@@ -986,6 +986,74 @@ RSpec.describe Users::SessionsController, devise: true do
       post :create, params: { user: { email: user.email, password: user.password } }
       expect(response).to redirect_to account_reset_pending_url
     end
+
+    [
+      AccountRecoveryRequest::REQUESTED,
+      AccountRecoveryRequest::WAITING,
+      AccountRecoveryRequest::GRANTED,
+    ].each do |state|
+      it "routes a #{state} recovery request to the first MFA method without changing it" do
+        user = create(:user, :fully_registered)
+        recovery_request = create(:account_recovery_request, :granted, state: state, user: user)
+
+        expect do
+          post :create, params: { user: { email: user.email, password: user.password } }
+        end.not_to change { ActionMailer::Base.deliveries.size }
+
+        expect(response).to redirect_to user_two_factor_authentication_url
+        expect(recovery_request.reload.state).to eq(state)
+      end
+    end
+
+    it 'does not resume recovery without token evidence before password verification' do
+      user = create(:user, :fully_registered)
+      recovery_request = create(:account_recovery_request, :link_verified, user: user)
+
+      post :create, params: { user: { email: user.email, password: user.password } }
+
+      expect(response).to redirect_to user_two_factor_authentication_url
+      expect(recovery_request.reload).to be_token_valid
+      expect(recovery_request.password_verified_at).to be_nil
+    end
+
+    it 'redirects a temporary recovery session to replacement MFA setup' do
+      user = create(:user, :fully_registered)
+      create(:account_recovery_request, :password_verified, user: user)
+
+      post :create, params: { user: { email: user.email, password: user.password } }
+
+      expect(response).to redirect_to account_recovery_new_mfa_setup_url
+    end
+
+    it 'redirects to 2FA when the recovery request reached a terminal state' do
+      user = create(:user, :fully_registered)
+      create(:account_recovery_request, :cancelled, user: user)
+
+      post :create, params: { user: { email: user.email, password: user.password } }
+
+      expect(response).to redirect_to user_two_factor_authentication_url
+    end
+
+    # Expiring a lapsed, unredeemed link frees the user to request recovery again.
+    it 'expires a lapsed recovery link, logs the lapsed state, and routes to 2FA' do
+      stub_analytics
+      user = create(:user, :fully_registered)
+      recovery_request = create(
+        :account_recovery_request,
+        :granted,
+        user: user,
+        token_expires_at: Time.zone.now - 1.minute,
+      )
+
+      post :create, params: { user: { email: user.email, password: user.password } }
+
+      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::EXPIRED)
+      expect(response).to redirect_to user_two_factor_authentication_url
+      expect(@analytics).to have_logged_event(
+        :account_recovery_expired,
+        recovery_state: AccountRecoveryRequest::GRANTED,
+      )
+    end
   end
 
   describe '#new' do
@@ -998,6 +1066,16 @@ RSpec.describe Users::SessionsController, devise: true do
         expect(response).to redirect_to account_path
         expect(subject.session[:logged_in]).to be true
       end
+
+      it 'does not interrupt full authentication for a pending ARR' do
+        user = create(:user, :fully_registered)
+        create(:account_recovery_request, :waiting, user: user)
+        stub_sign_in(user)
+
+        get :new
+
+        expect(response).to redirect_to account_path
+      end
     end
 
     context 'with current user' do
@@ -1008,15 +1086,68 @@ RSpec.describe Users::SessionsController, devise: true do
         expect(response).to redirect_to user_two_factor_authentication_url
       end
 
-      it 'routes an active request to the normal first MFA method' do
-        user = create(:user, :fully_registered)
-        stub_sign_in_before_2fa(user)
-        allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
-        create(:account_recovery_request, :waiting, user: user)
+      [
+        AccountRecoveryRequest::REQUESTED,
+        AccountRecoveryRequest::WAITING,
+        AccountRecoveryRequest::GRANTED,
+      ].each do |state|
+        it "routes a #{state} request to the first MFA method without sending another email" do
+          user = create(:user, :fully_registered)
+          recovery_request = create(:account_recovery_request, :granted, user: user, state: state)
+          stub_sign_in_before_2fa(user)
+
+          expect { get :new }.not_to change { ActionMailer::Base.deliveries.size }
+
+          expect(response).to redirect_to user_two_factor_authentication_url
+          expect(recovery_request.reload.state).to eq(state)
+        end
+      end
+
+      it 'does not redirect for another user’s pending ARR' do
+        stub_sign_in_before_2fa
+        create(:account_recovery_request, :waiting)
 
         get :new
 
-        expect(response).to redirect_to(user_two_factor_authentication_url)
+        expect(response).to redirect_to user_two_factor_authentication_url
+      end
+
+      it 'resumes a password-verified recovery session at the same continuation as sign-in' do
+        user = create(:user, :fully_registered)
+        create(:account_recovery_request, :password_verified, user: user)
+        stub_sign_in_before_2fa(user)
+
+        get :new
+
+        expect(response).to redirect_to account_recovery_new_mfa_setup_url
+      end
+
+      %i[cancelled expired link_verified].each do |state|
+        it "routes a #{state} ARR to 2FA" do
+          user = create(:user, :fully_registered)
+          create(:account_recovery_request, state, user: user)
+          stub_sign_in_before_2fa(user)
+
+          get :new
+
+          expect(response).to redirect_to user_two_factor_authentication_url
+        end
+      end
+
+      it 'expires a lapsed grant and routes to 2FA' do
+        user = create(:user, :fully_registered)
+        recovery_request = create(
+          :account_recovery_request,
+          :granted,
+          user: user,
+          token_expires_at: 1.minute.ago,
+        )
+        stub_sign_in_before_2fa(user)
+
+        get :new
+
+        expect(response).to redirect_to user_two_factor_authentication_url
+        expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::EXPIRED)
       end
     end
 

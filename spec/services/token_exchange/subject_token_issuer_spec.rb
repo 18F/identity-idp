@@ -29,11 +29,21 @@ RSpec.describe TokenExchange::SubjectTokenIssuer do
 
       expect(loaded_subject_token).to have_attributes(
         identity_uuid: identity.uuid,
-        broker_issuer: identity.service_provider,
+        actor_issuer: identity.service_provider,
         scope: 'openid token_exchange:passport',
         ial: 2,
         actor_return_log_id: 123,
       )
+    end
+
+    context 'with a key thumbprint' do
+      subject(:issued_token) { described_class.issue(identity:, dpop_jkt:) }
+
+      let(:dpop_jkt) { SecureRandom.urlsafe_base64(32) }
+
+      it 'stores the thumbprint the subject token is bound to' do
+        expect(TokenExchange::SubjectToken.load(issued_token.token).dpop_jkt).to eq(dpop_jkt)
+      end
     end
 
     it 'does not store the user database identifier' do

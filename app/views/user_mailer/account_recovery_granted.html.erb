@@ -1,0 +1,50 @@
+<p class="lead">
+  <%= t('user_mailer.account_recovery_granted.intro', app_name: APP_NAME) %>
+</p>
+
+<table class="button expanded large">
+  <tbody>
+    <tr>
+      <td>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <%= link_to t('user_mailer.account_recovery_granted.button'),
+                            account_recovery_verify_url(token: @token),
+                            target: '_blank', rel: 'noopener' %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  <%= link_to account_recovery_verify_url(token: @token),
+              account_recovery_verify_url(token: @token), target: '_blank', rel: 'noopener' %>
+</p>
+
+<p><%= t('user_mailer.account_recovery_granted.expires', interval: @token_valid_period) %></p>
+
+<p><%= t('user_mailer.account_recovery_granted.password_reminder') %></p>
+
+<table class="hr">
+  <tr>
+    <th>
+      &nbsp;
+    </th>
+  </tr>
+</table>
+
+<p>
+  <%= t(
+        'user_mailer.account_recovery_granted.unrequested_html',
+        cancel_link_html: link_to(
+          t('user_mailer.account_recovery_granted.cancel_link_text', app_name: APP_NAME),
+          new_user_session_url,
+        ),
+      ) %>
+</p>

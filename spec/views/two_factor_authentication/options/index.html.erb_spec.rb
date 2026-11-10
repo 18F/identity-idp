@@ -194,11 +194,8 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
       context 'with an active recovery request' do
         before { create(:account_recovery_request, :waiting, user: user) }
 
-        it 'links to request confirmation without offering legacy deletion or a second recovery' do
-          expect(rendered).to have_link(
-            t('two_factor_authentication.account_recovery.pending_link'),
-            href: account_recovery_pending_path(locale: LinkLocaleResolver.locale),
-          )
+        it 'offers neither legacy deletion nor a second recovery request' do
+          expect(rendered).not_to have_link(href: account_recovery_start_path)
           expect(rendered).not_to have_link(t('two_factor_authentication.account_reset.link'))
           expect(rendered).not_to have_link(
             t('two_factor_authentication.account_recovery.recover_link'),
