@@ -286,6 +286,7 @@ class ProofingAgentJob < ApplicationJob
 
       if resolution_result&.dig(:context, :stages, :phone_precheck).present?
         phone_precheck_body = resolution_result&.dig(:context, :stages, :phone_precheck)
+        alternate_result = phone_precheck_body&.dig(:alternate_result)
         phone_info = resolution_result&.dig(:biographical_info, :phone)
 
         analytics.idv_phone_confirmation_vendor_submitted(
@@ -302,9 +303,15 @@ class ProofingAgentJob < ApplicationJob
             reason_codes: phone_precheck_body&.dig(:reason_codes),
             proofing_agent:,
             proofing_components: proofing_components.dup,
+            alternate_result: alternate_result&.to_h,
           }.to_h.merge(
             pii_like_keypaths: [
               [:errors, :phone],
+              [:vendor, :result, :phonerisk, :signals, :phone],
+              [:vendor, :alternate_result, :errors, :phone],
+              [:vendor, :alternate_result, :result, :phonerisk, :signals, :phone],
+              [:alternate_result, :errors, :phone],
+              [:alternate_result, :result, :phonerisk, :signals, :phone],
             ],
           ),
         )
