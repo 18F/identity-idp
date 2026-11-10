@@ -105,11 +105,45 @@ RSpec.describe OpenidConnectTokenForm do
       end
 
       context 'code has expired' do
-        before { identity.update(updated_at: 1.day.ago) }
+        before { identity.update(code_expires_at: 1.day.ago) }
 
         it 'is invalid' do
           expect(valid?).to eq(false)
           expect(form.errors[:code]).to eq([t('openid_connect.token.errors.expired_code')])
+        end
+      end
+
+      context 'code has expired and the row was written to again afterwards' do
+        before do
+          identity.update(code_expires_at: 1.day.ago)
+          identity.touch
+        end
+
+        it 'is still invalid' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).to eq([t('openid_connect.token.errors.expired_code')])
+        end
+      end
+
+      context 'code was issued without a recorded expiry' do
+        before { identity.update(code_expires_at: nil) }
+
+        it 'is invalid' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).to eq([t('openid_connect.token.errors.expired_code')])
+        end
+      end
+
+      context 'two requests redeem the same code at once' do
+        it 'issues tokens to exactly one of them' do
+          first = OpenidConnectTokenForm.new(params)
+          second = OpenidConnectTokenForm.new(params)
+
+          expect(first.submit.success?).to eq(true)
+          expect(second.submit.success?).to eq(false)
+          expect(second.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+          expect(second.response[:error]).to include(t('openid_connect.token.errors.invalid_code'))
+          expect(identity.reload.session_uuid).to be_nil
         end
       end
 
@@ -121,7 +155,7 @@ RSpec.describe OpenidConnectTokenForm do
           allow(IdentityConfig.store).to receive(
             :session_timeout_in_seconds,
           ).and_return(900)
-          identity.update(updated_at: 2.minutes.ago)
+          identity.update(code_expires_at: 1.minute.ago)
         end
 
         it 'expires based on code expiration, not session timeout' do
@@ -608,7 +642,7 @@ RSpec.describe OpenidConnectTokenForm do
       end
 
       context 'with an expired code' do
-        before { identity.update!(updated_at: 1.day.ago) }
+        before { identity.update!(code_expires_at: 1.day.ago) }
 
         it 'rejects valid proofs for an expired code' do
           expect(valid?).to eq(false)
