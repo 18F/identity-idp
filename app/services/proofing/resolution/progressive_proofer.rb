@@ -90,7 +90,9 @@ module Proofing
           timer:,
         )
 
-        state_id_address_resolution_result = state_id_address_plugin.call(
+        state_id_address_resolution_result = state_id_address_plugin(
+          applicant_pii[:document_type_received],
+        ).call(
           applicant_pii:,
           current_sp:,
           residential_address_resolution_result:,
@@ -130,17 +132,17 @@ module Proofing
         )
       end
 
-      def state_id_address_plugin
+      def state_id_address_plugin(document_type = nil)
         @state_id_address_plugin ||= Plugins::StateIdAddressPlugin.new(
-          proofer: create_proofer,
+          proofer: create_proofer(document_type),
           sp_cost_token:,
         )
       end
 
-      def create_proofer
+      def create_proofer(document_type = nil)
         case proofing_vendor
-        when :instant_verify then create_instant_verify_proofer
-        when :instant_verify_ddp then create_instant_verify_ddp_proofer
+        when :instant_verify then create_instant_verify_proofer(document_type)
+        when :instant_verify_ddp then create_instant_verify_ddp_proofer(document_type)
         when :mock then create_mock_proofer
         when :socure_kyc then create_socure_proofer
         else
@@ -148,8 +150,8 @@ module Proofing
         end
       end
 
-      def create_instant_verify_proofer
-        Proofing::LexisNexis::InstantVerify::Proofer.new(
+      def create_instant_verify_proofer(document_type)
+        proofer = Proofing::LexisNexis::InstantVerify::Proofer.new(
           LexisNexis::Config.new(
             instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
             account_id: IdentityConfig.store.lexisnexis_account_id,
@@ -162,15 +164,29 @@ module Proofing
           ),
           @analytics,
         )
+
+        # Wrap the proofer with override behavior if the document type is mDL
+        if document_type == Idp::Constants::DocumentTypes::MDL
+          proofer = LexisNexis::Decorators::InstantVerify::WithMdlOverrides.new(proofer)
+        end
+
+        proofer
       end
 
-      def create_instant_verify_ddp_proofer
-        Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer.new(
+      def create_instant_verify_ddp_proofer(document_type)
+        proofer = Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer.new(
           api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
           org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
           base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
           ddp_policy: IdentityConfig.store.lexisnexis_instant_verify_ddp_policy,
         )
+
+        # Wrap the proofer with override behavior if the document type is mDL
+        if document_type == Idp::Constants::DocumentTypes::MDL
+          proofer = LexisNexis::Decorators::InstantVerify::WithMdlOverrides.new(proofer)
+        end
+
+        proofer
       end
 
       def create_mock_proofer
