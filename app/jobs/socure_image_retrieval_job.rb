@@ -20,7 +20,7 @@ class SocureImageRetrievalJob < ApplicationJob
 
     return if document_capture_session.nil? || document_capture_session.mdl_requested?
 
-    result = fetch_images(reference_id, passport_book:)
+    result = fetch_images(reference_id, passport_book:, image_types: image_storage_data&.keys)
     if result.is_a?(Idv::IdvImages)
       result.write_with_data(image_storage_data:) if image_storage_data.present?
       persist_document_artifacts(result:) if persist_artifacts
@@ -99,9 +99,10 @@ class SocureImageRetrievalJob < ApplicationJob
     )
   end
 
-  def fetch_images(reference_id, passport_book:)
+  def fetch_images(reference_id, passport_book:, image_types:)
     DocAuth::Socure::Requests::ImagesRequest.new(
       reference_id:,
+      image_types:,
       passport_book:,
       user: document_capture_session.user,
     ).fetch

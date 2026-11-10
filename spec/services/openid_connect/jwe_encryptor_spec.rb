@@ -35,6 +35,19 @@ RSpec.describe OpenidConnect::JweEncryptor do
     expect { JWE.decrypt(jwe, other_private_key) }.to raise_error(OpenSSL::PKey::RSAError)
   end
 
+  context 'when the payload is not a JWT' do
+    subject(:jwe) do
+      described_class.encrypt(payload, service_provider:, typ: nil, cty: 'image/jpeg')
+    end
+
+    it 'names the payload media type as cty and carries no typ' do
+      header = JSON.parse(Base64.urlsafe_decode64(jwe.split('.').first))
+
+      expect(header).to include('cty' => 'image/jpeg', 'alg' => 'RSA-OAEP', 'enc' => 'A256GCM')
+      expect(header).not_to have_key('typ')
+    end
+  end
+
   context 'with no registered certificate' do
     let(:certs) { [] }
 

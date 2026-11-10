@@ -52,6 +52,8 @@ module AccountRecoveryConcern
     after_sign_in_path_for(current_user)
   end
 
+  private
+
   def reconcile_lapsed_request
     recovery_request = AccountRecoveryRequest.active_for_user(current_user)
     return if recovery_request.blank?

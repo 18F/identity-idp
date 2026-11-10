@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe StsConsentForm do
   let(:user) { create(:user) }
-  let(:target_app) { 'urn:gov:gsa:openidconnect:sp:broker' }
+  let(:target_app) { 'urn:gov:gsa:openidconnect:sp:target' }
 
   subject(:form) { described_class.new(user:, target_app:) }
 
@@ -11,7 +11,7 @@ RSpec.describe StsConsentForm do
   end
 
   describe '#submit' do
-    context 'when the consent box is checked' do
+    context 'when consent is given' do
       let(:params) { { consent_given: 'consented' } }
 
       it 'returns a successful response' do
@@ -43,7 +43,7 @@ RSpec.describe StsConsentForm do
       end
     end
 
-    context 'when the consent box is not checked' do
+    context 'when consent is not given' do
       let(:params) { { consent_given: '' } }
 
       it 'returns an unsuccessful response with a required_checkbox error' do

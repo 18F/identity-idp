@@ -371,6 +371,60 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
             end
 
+            context 'when unexpired documents are required' do
+              let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
+              let(:idv_level) { :unsupervised_with_selfie }
+              let(:user) { create(:user, :proofed_with_selfie) }
+              let(:ttl) { 3.days.to_i }
+              let(:retention_cutoff) { ttl.seconds.ago }
+
+              before do
+                allow(IdentityConfig.store)
+                  .to receive(:document_images_sharing_service_providers)
+                  .and_return([service_provider.issuer])
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('server_side')
+                IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+                user.identities.last.update!(
+                  verified_attributes: %w[given_name family_name birthdate verified_at],
+                )
+                allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+              end
+              context 'when there are no document artifacts' do
+                it 'redirects to IDV welcome page for reproofing' do
+                  action
+                  expect(controller).to redirect_to(idv_url)
+                end
+              end
+              context 'when the document artifacts have expired' do
+                before do
+                  create(
+                    :document_artifact,
+                    created_at: retention_cutoff - 1.hour,
+                    profile: user.active_profile,
+                  )
+                end
+                it 'redirects to IDV welcome page for reproofing' do
+                  action
+                  expect(controller).to redirect_to(idv_url)
+                end
+              end
+              context 'when the document artifacts have not expired' do
+                before do
+                  create(
+                    :document_artifact,
+                    created_at: retention_cutoff + 1.hour,
+                    profile: user.active_profile,
+                  )
+                end
+
+                it 'redirects to the service provider' do
+                  action
+                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                end
+              end
+            end
+
             context 'SP requests required facial match' do
               let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
 
@@ -1201,8 +1255,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
     context 'STS token exchange consent' do
       let(:user) { create(:user, :fully_registered) }
-      let(:broker_issuer) { 'urn:gov:gsa:openidconnect:test' }
-      let(:client_id) { broker_issuer }
+      let(:actor_issuer) { 'urn:gov:gsa:openidconnect:test' }
+      let(:client_id) { actor_issuer }
       let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
 
       before do
@@ -1210,7 +1264,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         allow(controller).to receive(:auth_count).and_return(2)
         allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
-          .and_return([broker_issuer])
+          .and_return([actor_issuer])
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
           .and_return([{ issuer: 'passport-issuer', scope: 'passport' }])
         allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)
@@ -1247,7 +1301,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         it 'stores the actor handoff for the authorization code' do
           action
 
-          code = user.identities.find_by(service_provider: broker_issuer).session_uuid
+          code = user.identities.find_by(service_provider: actor_issuer).session_uuid
           handoff = TokenExchange::ActorHandoff.load(code)
           expect(handoff.actor_return_log_id).to eq(SpReturnLog.find_by(user:).id)
         end

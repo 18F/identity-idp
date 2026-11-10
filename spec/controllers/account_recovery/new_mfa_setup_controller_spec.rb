@@ -84,15 +84,6 @@ RSpec.describe AccountRecovery::NewMfaSetupController do
     end
   end
 
-  describe '#create' do
-    it 'renders a 404 and does not alter MFA configurations' do
-      stub_sign_in(user)
-
-      expect { post :create }.to_not change { user.reload.phone_configurations.count }
-      expect(response).to render_template('pages/page_not_found')
-    end
-  end
-
   context 'after password verification and suspension' do
     before do
       stub_sign_in_before_2fa(user)

@@ -168,7 +168,6 @@ RSpec.describe 'Account recovery password verification', type: :request do
       expect(response).to redirect_to(root_url)
     end
   end
-
   it 'does not return the user to the single-use link after a session timeout' do
     post new_user_session_path, params: { user: { email: user.email, password: password } }
 

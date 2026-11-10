@@ -144,18 +144,8 @@ module SamlIdpAuthConcern
       .link_identity(
         ial: resolved_authn_context_int_ial,
         rails_session_id: session.id,
-        email_address_id: email_address_id,
+        email_address_id: sp_email_preference_id_for_auth,
       )
-  end
-
-  def email_address_id
-    identity = current_user.identities.find_by(service_provider: sp_session[:issuer])
-    return nil if !identity&.verified_single_email_attribute?
-    if selected_email_id_for_linked_identity.present?
-      return selected_email_id_for_linked_identity
-    end
-    email_id = identity&.email_address_id
-    return email_id if email_id.is_a? Integer
   end
 
   def identity_needs_verification?

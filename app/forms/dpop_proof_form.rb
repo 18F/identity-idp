@@ -1,14 +1,5 @@
 # frozen_string_literal: true
 
-# Verifies an RFC 9449 DPoP proof: the short-lived JWT a client signs with a key it holds, one per
-# HTTP request, so that a token Login.gov issues can be bound to that key. A token bound this way
-# is useless to anyone who copies it: every later use needs a fresh proof from the same key.
-#
-# The response carries the key thumbprint (`extra[:dpop_thumbprint]`), which is what Login.gov
-# stores with the artifact it binds and returns to resource servers as `cnf.jkt` (RFC 7800). Every
-# failure maps to the RFC 9449 §5 error `invalid_dpop_proof`; the first error message is the failed
-# check's symbol, which is also `extra[:dpop_error_type]`. It goes to the client's developer as the
-# `error_description`, never to a person, so it is a stable token to look up rather than a sentence.
 class DpopProofForm
   include ActiveModel::Model
 
@@ -51,8 +42,7 @@ class DpopProofForm
 
   # Memoized because the jti check consumes the jti: validating twice would reject the proof the
   # form just accepted.
-  # @return [FormResponse] success with `extra[:dpop_thumbprint]`, or failure whose first error
-  #   message and `extra[:dpop_error_type]` both name the failed check
+  # @return [FormResponse] success with `extra[:dpop_thumbprint]`
   def submit
     return @submit if defined?(@submit)
 
@@ -62,7 +52,6 @@ class DpopProofForm
       errors:,
       extra: {
         dpop_thumbprint: (thumbprint if success),
-        dpop_error_type: errors.first&.options&.dig(:type),
       },
     )
   end

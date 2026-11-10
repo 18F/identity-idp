@@ -23,6 +23,17 @@ RSpec.describe 'account_recovery/new_mfa_setup/show.html.erb' do
     )
   end
 
+  %i[en es fr zh].each do |locale|
+    it "explains the recovery session in #{locale}" do
+      I18n.with_locale(locale) do
+        render
+
+        expect(rendered).to have_content(t('account_recovery.new_mfa_setup.header'))
+        expect(rendered).to have_content(t('account_recovery.new_mfa_setup.intro'))
+      end
+    end
+  end
+
   it 'explains that new methods replace the old ones and finish recovery' do
     render
 
@@ -41,14 +52,10 @@ RSpec.describe 'account_recovery/new_mfa_setup/show.html.erb' do
     expect(rendered).not_to have_css('input[type="radio"]')
     expect(rendered).to have_field('recovery_mfa_auth_app', type: 'checkbox')
     expect(rendered).to have_button(t('forms.buttons.continue'))
-  end
-
-  it 'posts to the recovery setup endpoint and offers no skip link' do
-    render
-
     expect(rendered).to have_css(
       "form[action=\"#{account_recovery_new_mfa_setup_path}\"][method=\"post\"]",
     )
     expect(rendered).not_to have_link(href: /skip|cancel/)
+    expect(rendered).not_to have_link(href: %r{/authentication_methods_setup})
   end
 end

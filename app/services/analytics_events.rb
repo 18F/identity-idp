@@ -759,13 +759,13 @@ module AnalyticsEvents
   # @param [String] image_type which artifact was requested (front/back/passport/selfie)
   # @param [String, nil] issuer issuer of the requesting service provider
   # @param [Integer, nil] profile_id the verified profile whose artifact was requested
-  # @param [String, nil] denial_reason why the request was refused, if it was
+  # @param [Hash, nil] error_details why the request was refused, if it was
   def document_image_release(
     success:,
     image_type:,
     issuer: nil,
     profile_id: nil,
-    denial_reason: nil,
+    error_details: nil,
     **extra
   )
     track_event(
@@ -774,7 +774,7 @@ module AnalyticsEvents
       image_type:,
       issuer:,
       profile_id:,
-      denial_reason:,
+      error_details:,
       **extra,
     )
   end
@@ -7747,6 +7747,8 @@ module AnalyticsEvents
   # @param [Integer] ial
   # @param [String] client_id Service Provider issuer
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [Boolean, nil] dpop_bound Whether the token belongs to a client whose tokens are bound
+  #   to a key it holds (RFC 9449), so a DPoP proof was required with the request
   # @param [Boolean, nil] encrypted Whether the service provider receives its userinfo response
   #   as an encrypted JWT; nil when the token did not authenticate
   def openid_connect_bearer_token(
@@ -7755,6 +7757,7 @@ module AnalyticsEvents
     client_id:,
     error_details: nil,
     encrypted: nil,
+    dpop_bound: nil,
     **extra
   )
     track_event(
@@ -7764,6 +7767,7 @@ module AnalyticsEvents
       client_id:,
       error_details:,
       encrypted:,
+      dpop_bound:,
       **extra,
     )
   end
@@ -7786,6 +7790,9 @@ module AnalyticsEvents
   # @param [String, nil] delegation_id Internal delegated-token issuance identifier
   # @param [String, nil] oauth_error_code Protocol-level OAuth error code returned for
   #   unsuccessful requests
+  # @param [Boolean, nil] dpop_bound Whether the actor's tokens are bound to a key it holds
+  #   (RFC 9449), so a DPoP proof was required and the delegated token carries cnf.jkt
+  # @param [String, nil] user_id UUID of the user the actor wishes to act on behalf of
   def openid_connect_delegated_token_exchange(
     actor_issuer:,
     success:,
@@ -7800,6 +7807,8 @@ module AnalyticsEvents
     subject_token_fingerprint: nil,
     delegation_id: nil,
     oauth_error_code: nil,
+    dpop_bound: nil,
+    user_id: nil,
     **extra
   )
     track_event(
@@ -7817,6 +7826,8 @@ module AnalyticsEvents
       subject_token_fingerprint:,
       delegation_id:,
       oauth_error_code:,
+      dpop_bound:,
+      user_id:,
       **extra,
     )
   end
@@ -7900,6 +7911,8 @@ module AnalyticsEvents
   #   (authorization_code or subject_token)
   # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
   # @param [String, nil] subject_token_fingerprint Fingerprint of the issued subject token
+  # @param [Boolean, nil] dpop_bound Whether the client's tokens are bound to a key it holds, so a
+  #   DPoP proof was required with this request
   def openid_connect_token(
     client_id:,
     success:,
@@ -7914,6 +7927,7 @@ module AnalyticsEvents
     token_endpoint_operation: nil,
     token_exchange_scopes: nil,
     subject_token_fingerprint: nil,
+    dpop_bound: nil,
     **extra
   )
     track_event(
@@ -7931,6 +7945,7 @@ module AnalyticsEvents
       token_endpoint_operation:,
       token_exchange_scopes:,
       subject_token_fingerprint:,
+      dpop_bound:,
       **extra,
     )
   end
@@ -9159,6 +9174,17 @@ module AnalyticsEvents
   #   if user is changing email in consent flow
   def sp_select_email_visited(needs_completion_screen_reason: nil, **extra)
     track_event(:sp_select_email_visited, needs_completion_screen_reason:, **extra)
+  end
+
+  # Tracks when a user cancels the STS (token exchange) consent form and is redirected
+  # back to the service provider
+  # @param [String] redirect_url The url the user was redirected to
+  def sts_consent_cancelled(redirect_url:, **extra)
+    track_event(
+      :sts_consent_cancelled,
+      redirect_url:,
+      **extra,
+    )
   end
 
   # Tracks when the STS (token exchange) consent form is submitted

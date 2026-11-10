@@ -11,10 +11,10 @@ Rails.application.routes.draw do
   post '/api/openid_connect/token' => 'openid_connect/token#create'
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
-  get '/api/openid_connect/document_images/:image_type' =>
+  post '/api/openid_connect/document_images/:image_type' =>
     'openid_connect/document_images#show',
-      as: :api_openid_connect_document_image,
-      constraints: { image_type: /(?:front|back|passport|selfie)/ }
+       as: :api_openid_connect_document_image,
+       constraints: { image_type: /(?:front|back|passport|selfie)/ }
   post '/api/risc/security_events' => 'risc/security_events#create'
 
   post '/api/usps_locations' => 'idv/in_person/public/usps_locations#index'
@@ -248,7 +248,7 @@ Rails.application.routes.draw do
 
         post '/mock_socure/api/document_request' => 'mock_socure#document_request'
         post '/mock_socure/api/3.0/EmailAuthScore' => 'mock_socure#docv_results', as: 'mock_socure_auth_score'
-        post '/mock_socure/api/5.0/documents/:referenceId' => 'mock_socure#images_request', as: 'mock_socure_images_request'
+        get '/mock_socure/api/5.0/documents/:reference_id' => 'mock_socure#images_request', as: 'mock_socure_images_request'
       end
     end
 
@@ -417,6 +417,7 @@ Rails.application.routes.draw do
           as: :reset_user_authorization, via: %i[put delete]
     get '/sts/consent' => 'users/sts_consent#new', as: :sts_consent
     post '/sts/consent' => 'users/sts_consent#create'
+    get '/sts/consent/cancel' => 'users/sts_consent#cancel', as: :sts_consent_cancel
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
     delete '/sign_up/cancel' => 'sign_up/cancellations#destroy', as: :sign_up_destroy
 

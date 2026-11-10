@@ -12,6 +12,7 @@ RSpec.describe BillableEventTrackable do
       :resolved_authn_context_result,
       :session,
       :identity_authorization_code,
+      :authorization_dpop_jkt,
     ) do
       include BillableEventTrackable
     end
@@ -22,6 +23,7 @@ RSpec.describe BillableEventTrackable do
   let(:ial_context) { IalContext.new(ial: 1, service_provider: current_sp) }
   let(:request_id) { SecureRandom.hex }
   let(:identity_authorization_code) { nil }
+  let(:authorization_dpop_jkt) { nil }
   let(:session_started_at) { 5.minutes.ago }
   let(:profile_sp) { create(:service_provider) }
   let(:active_profile) do
@@ -52,6 +54,7 @@ RSpec.describe BillableEventTrackable do
         session_started_at:,
       },
       identity_authorization_code:,
+      authorization_dpop_jkt:,
     )
   end
 
@@ -137,6 +140,51 @@ RSpec.describe BillableEventTrackable do
         expect(SpReturnLog.last).to_not be_billable
         handoff = TokenExchange::ActorHandoff.load(second_code)
         expect(handoff.actor_return_log_id).to eq(SpReturnLog.last.id)
+      end
+    end
+
+    context 'for a key-bound client' do
+      let(:identity_authorization_code) { SecureRandom.uuid }
+      let(:authorization_dpop_jkt) { SecureRandom.urlsafe_base64(32) }
+
+      before do
+        allow(current_sp).to receive(:dpop_required?).and_return(true)
+      end
+
+      it 'stores the key thumbprint under the code with no return-log id' do
+        instance.track_billing_events
+
+        handoff = TokenExchange::ActorHandoff.load(identity_authorization_code)
+        expect(handoff.dpop_jkt).to eq(authorization_dpop_jkt)
+        expect(handoff.actor_return_log_id).to be_nil
+      end
+
+      context 'when the client is also a token-exchange actor' do
+        let(:current_sp) { create(:service_provider) }
+
+        before do
+          allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+            .and_return([current_sp.issuer])
+        end
+
+        it 'stores the return-log id and the key thumbprint together' do
+          instance.track_billing_events
+
+          handoff = TokenExchange::ActorHandoff.load(identity_authorization_code)
+          expect(handoff.actor_return_log_id).to eq(SpReturnLog.last.id)
+          expect(handoff.dpop_jkt).to eq(authorization_dpop_jkt)
+        end
+      end
+    end
+
+    context 'for a client that is neither a token-exchange actor nor key-bound' do
+      let(:identity_authorization_code) { SecureRandom.uuid }
+
+      it 'stores no hand-off record under the authorization code' do
+        instance.track_billing_events
+
+        expect(TokenExchange::ActorHandoff.load(identity_authorization_code)).to be_nil
       end
     end
   end
