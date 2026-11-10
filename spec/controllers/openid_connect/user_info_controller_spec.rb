@@ -152,7 +152,8 @@ RSpec.describe OpenidConnect::UserInfoController do
           user: create(:user),
         )
       end
-      let(:url) { 'http://www.example.com/api/openid_connect/userinfo' }
+      # The URL a proof must name is the configured one, not whatever the Host header says.
+      let(:url) { api_openid_connect_userinfo_url }
       let(:authorization_header) { "DPoP #{access_token}" }
 
       before do
@@ -172,6 +173,41 @@ RSpec.describe OpenidConnect::UserInfoController do
           action
           expect(response).to be_ok
           expect(json_response[:sub]).to eq(identity.uuid)
+        end
+      end
+
+      context 'when the Host header names another host' do
+        before { request.host = 'attacker.example.com' }
+
+        context 'with a proof for the configured userinfo URL' do
+          before do
+            request.headers['DPoP'] =
+              build_dpop_proof(http_url: url, http_method: 'POST', access_token:)
+          end
+
+          it 'renders user info' do
+            action
+            expect(response).to be_ok
+            expect(json_response[:sub]).to eq(identity.uuid)
+          end
+        end
+
+        context 'with a proof for the URL the Host header names' do
+          before do
+            request.headers['DPoP'] = build_dpop_proof(
+              http_url: 'http://attacker.example.com/api/openid_connect/userinfo',
+              http_method: 'POST', access_token:
+            )
+          end
+
+          it '401s as an invalid proof naming the URL' do
+            action
+            expect(response.status).to eq(401)
+            expect(response.headers['WWW-Authenticate']).to eq(
+              'DPoP algs="ES256 RS256", error="invalid_dpop_proof"',
+            )
+            expect(json_response[:error]).to eq('dpop_proof_uri')
+          end
         end
       end
 

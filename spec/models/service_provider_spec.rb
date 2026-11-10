@@ -206,9 +206,32 @@ RSpec.describe ServiceProvider do
       expect(build(:service_provider, pkce: true).dpop_required?).to eq(false)
     end
 
-    it 'is false for a listed confidential client, which keeps bearer tokens' do
-      expect(build(:service_provider, issuer:, pkce: false).dpop_required?).to eq(false)
-      expect(build(:service_provider, issuer:, pkce: nil).dpop_required?).to eq(false)
+    it 'stays true for a listed client whatever its registration says about pkce' do
+      expect(build(:service_provider, issuer:, pkce: false).dpop_required?).to eq(true)
+      expect(build(:service_provider, issuer:, pkce: nil).dpop_required?).to eq(true)
+    end
+
+    context 'for an approved actor that is not on the list' do
+      let(:actor_issuer) { 'urn:gov:gsa:openidconnect:sp:actor' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return([actor_issuer])
+      end
+
+      it 'is true while the token exchange is on' do
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+
+        expect(build(:service_provider, issuer: actor_issuer, pkce: true).dpop_required?)
+          .to eq(true)
+      end
+
+      it 'is false while the token exchange is off' do
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(false)
+
+        expect(build(:service_provider, issuer: actor_issuer, pkce: true).dpop_required?)
+          .to eq(false)
+      end
     end
   end
 

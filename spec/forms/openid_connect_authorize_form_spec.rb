@@ -195,12 +195,12 @@ RSpec.describe OpenidConnectAuthorizeForm do
         end
       end
 
-      context 'when the client is confidential' do
+      context 'when the registration no longer says the client is public' do
         let(:pkce) { false }
         let(:dpop_jkt) { thumbprint }
 
-        it 'does not require key binding' do
-          expect(form.dpop_binding_required?).to eq(false)
+        it 'still requires key binding, since the list alone decides' do
+          expect(form.dpop_binding_required?).to eq(true)
           expect(result.success?).to eq(true)
         end
       end
@@ -483,6 +483,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
           [{ issuer: 'passport-issuer', scope: 'passport' }]
         end
         let(:token_exchange_allowed_broker_issuers) { [client_id] }
+        # An approved actor is key-bound, so its request names the key.
+        let(:dpop_jkt) { SecureRandom.urlsafe_base64(32) }
 
         it 'allows the configured audience scope' do
           expect(valid?).to eq(true)
@@ -580,6 +582,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
       context 'when the service provider is an actor' do
         let(:token_exchange_allowed_broker_issuers) { [client_id] }
+        let(:dpop_jkt) { SecureRandom.urlsafe_base64(32) }
 
         it 'allows ordinary scopes' do
           expect(valid?).to eq(true)

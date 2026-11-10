@@ -149,6 +149,9 @@ RSpec.describe OpenidConnectTokenForm do
     context 'with a token exchange authorization code' do
       let(:target_app) { 'passport-issuer' }
       let(:scope) { 'token_exchange:passport' }
+      # An approved actor is key-bound: the code carries the thumbprint named at authorization and
+      # the redemption carries a proof from that key.
+      let(:dpop_proof) { build_dpop_proof(http_url: api_openid_connect_token_url) }
 
       before do
         allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
@@ -156,6 +159,11 @@ RSpec.describe OpenidConnectTokenForm do
           .and_return([client_id])
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
           .and_return([{ issuer: target_app, scope: 'passport' }])
+        if code
+          TokenExchange::ActorHandoff.store(
+            code:, actor_return_log_id: nil, dpop_jkt: dpop_thumbprint, expires_in: 300,
+          )
+        end
       end
 
       context 'when the user does not exist' do
@@ -925,6 +933,7 @@ RSpec.describe OpenidConnectTokenForm do
     context 'with a token exchange authorization code' do
       let(:target_app) { 'passport-issuer' }
       let(:scope) { 'openid token_exchange:passport' }
+      let(:dpop_proof) { build_dpop_proof(http_url: api_openid_connect_token_url) }
 
       before do
         identity.update!(ial: 2)
@@ -938,15 +947,16 @@ RSpec.describe OpenidConnectTokenForm do
         TokenExchange::ActorHandoff.store(
           code:,
           actor_return_log_id: 123,
+          dpop_jkt: dpop_thumbprint,
           expires_in: IdentityConfig.store.openid_connect_authorization_code_expiration_seconds,
         )
         create(:user_consent_sts, user:, target_app:)
       end
 
-      it 'returns a subject token response' do
+      it 'returns a subject token response bound to the key' do
         expect(response).to include(
           access_token: be_present,
-          token_type: 'Bearer',
+          token_type: 'DPoP',
           expires_in: 600,
           scope:,
         )
