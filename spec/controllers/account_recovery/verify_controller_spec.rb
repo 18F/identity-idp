@@ -56,6 +56,17 @@ RSpec.describe AccountRecovery::VerifyController do
       expect(response).to redirect_to(root_url)
     end
 
+    it 'leaves whoever is signed in alone when the token is invalid' do
+      other_user = create(:user, :fully_registered)
+      sign_in_as_user(other_user)
+
+      get :show, params: { token: SecureRandom.uuid }
+
+      expect(controller.current_user).to eq(other_user)
+      expect(flash[:error]).to eq(t('account_recovery.verify.token_invalid'))
+      expect(response).to redirect_to(root_url)
+    end
+
     it 'rejects an expired token' do
       recovery_request.update!(token_expires_at: Time.zone.now - 1.minute)
 

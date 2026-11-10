@@ -31,16 +31,9 @@ Devise.setup do |config|
   end
 end
 
+# Every password authentication starts a session that still owes its second factor whenever the
+# account has one; remembered devices are honored later, by the second-factor controllers.
 Warden::Manager.after_authentication do |user, auth, options|
-  if auth.env['action_dispatch.cookies']
-    expected_cookie_value = "#{user.class}-#{user.id}"
-    actual_cookie_value = auth.env['action_dispatch.cookies']
-      .signed[TwoFactorAuthenticatable::REMEMBER_2FA_COOKIE]
-    bypass_by_cookie = actual_cookie_value == expected_cookie_value
-  end
-
-  unless bypass_by_cookie
-    auth.session(options[:scope])[TwoFactorAuthenticatable::NEED_AUTHENTICATION] =
-      MfaPolicy.new(user).two_factor_enabled?
-  end
+  auth.session(options[:scope])[TwoFactorAuthenticatable::NEED_AUTHENTICATION] =
+    MfaPolicy.new(user).two_factor_enabled?
 end

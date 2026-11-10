@@ -48,6 +48,16 @@ Rails.application.config.content_security_policy do |policy|
 end
 # rubocop:enable Metrics/BlockLength
 Rails.application.configure do
-  config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
+  # The nonce has to stay the same for the life of a session: pages fetch fragments over XHR and
+  # apply inline styles and scripts carrying the nonce the page was first served with, so a value
+  # that changed on every request would be blocked by the policy. Scripts can read the nonce of any
+  # element on the page through `element.nonce`, so it must not be the session identifier itself.
+  # A keyed hash of the session identifier is stable for the session, differs between sessions and
+  # cannot be reversed to the cookie value.
+  config.content_security_policy_nonce_generator = lambda do |request|
+    OpenSSL::HMAC.base64digest(
+      'SHA256', Rails.application.secret_key_base, request.session.id.to_s
+    )
+  end
   config.content_security_policy_nonce_directives = ['script-src', 'style-src']
 end

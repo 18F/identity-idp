@@ -9,9 +9,11 @@ module RememberDeviceConcern
 
   def save_remember_device_preference(remember_device_preference)
     return if remember_device_preference != '1' && remember_device_preference != 'true'
+    # The cookie stands in for a second factor, so it is kept out of reach of page scripts.
     cookies.encrypted[:remember_device] = {
       value: RememberDeviceCookie.new(user_id: current_user.id, created_at: Time.zone.now).to_json,
       expires: IdentityConfig.store.remember_device_expiration_hours_aal_1.hours.from_now,
+      httponly: true,
     }
   end
 

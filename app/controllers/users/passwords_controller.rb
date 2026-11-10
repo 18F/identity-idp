@@ -55,6 +55,9 @@ module Users
     def handle_valid_password
       send_password_reset_risc_event
       create_event_and_notify_user_about_password_change
+      # A new password invalidates every remembered browser, so a device remembered under the old
+      # credential has to present a second factor again.
+      ForgetAllBrowsers.new(current_user).call
       # Changing the password hash terminates the warden session, and bypass_sign_in ensures
       # that the user remains authenticated.
       bypass_sign_in current_user
