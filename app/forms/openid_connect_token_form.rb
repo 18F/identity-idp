@@ -48,12 +48,12 @@ class OpenidConnectTokenForm
     if valid?
       return token_exchange_subject_token_response if token_exchange_authorization_code?
 
-      id_token_builder = IdTokenBuilder.new(identity: identity, code: code)
+      id_token_builder = IdTokenBuilder.new(identity:, code:, access_token:)
       @ttl = id_token_builder.ttl
       bind_access_token
 
       {
-        access_token: identity.access_token,
+        access_token:,
         # RFC 9449 §5: a listed client's access token is bound to its key and is presented with a
         # proof, never as a bearer token.
         token_type: dpop_binding_required? ? 'DPoP' : 'Bearer',
@@ -82,7 +82,7 @@ class OpenidConnectTokenForm
 
   private
 
-  attr_reader :identity
+  attr_reader :identity, :access_token
 
   def token_exchange_subject_token_response
     issued_token = TokenExchange::SubjectTokenIssuer.issue(
@@ -117,9 +117,7 @@ class OpenidConnectTokenForm
   def bind_access_token
     return unless dpop_binding_required?
 
-    AccessTokenBinding.store(
-      access_token: identity.access_token, dpop_jkt: bound_thumbprint, expires_in: @ttl,
-    )
+    AccessTokenBinding.store(access_token:, dpop_jkt: bound_thumbprint, expires_in: @ttl)
   end
 
   def dpop_binding_required?
@@ -336,8 +334,11 @@ class OpenidConnectTokenForm
   # An authorization code is single use (RFC 6749 section 4.1.2). The code is consumed with one
   # conditional UPDATE that succeeds only while the row still carries this code and the code is
   # still within its lifetime, so two requests redeeming the same code at once cannot both succeed:
-  # the database serializes the two updates and the second one matches no row. The outcome is
-  # memoized because the form's validations run more than once per request.
+  # the database serializes the two updates and the second one matches no row. The same UPDATE
+  # records the digest of the access token minted for this redemption; the raw token goes only to
+  # the client. A code that stands for a delegation hand-off yields a subject token instead, so no
+  # access token is minted for it. The outcome is memoized because the form's validations run more
+  # than once per request.
   def redeem_code
     return if errors.any?
 
@@ -348,11 +349,18 @@ class OpenidConnectTokenForm
   end
 
   def redeem_code!
+    @access_token = SecureRandom.urlsafe_base64(32) unless token_exchange_authorization_code?
+
     # rubocop:disable Rails/SkipsModelValidations
     ServiceProviderIdentity
       .where(id: identity.id, session_uuid: code)
       .where(code_expires_at: Time.zone.now..)
-      .update_all(session_uuid: nil, code_expires_at: nil, updated_at: Time.zone.now) == 1
+      .update_all(
+        session_uuid: nil,
+        code_expires_at: nil,
+        access_token: access_token && ServiceProviderIdentity.access_token_digest(access_token),
+        updated_at: Time.zone.now,
+      ) == 1
     # rubocop:enable Rails/SkipsModelValidations
   end
 end

@@ -10,7 +10,7 @@ RSpec.describe 'OpenID Connect userinfo encrypted responses' do
     create(
       :service_provider_identity,
       rails_session_id: SecureRandom.hex,
-      access_token:,
+      access_token: ServiceProviderIdentity.access_token_digest(access_token),
       user:,
       service_provider_record: service_provider,
       scope: 'openid email',

@@ -103,12 +103,14 @@ class IdentityLinker
 
     # The code's lifetime is fixed when it is issued (RFC 6749 section 4.1.2 recommends at most
     # ten minutes) and is read back at redemption, so no later write to the row can extend it.
+    # The access token is minted when the code is redeemed; a new authorization clears the one
+    # the client holds from the previous sign-in.
     {
       last_authenticated_at: Time.zone.now,
       session_uuid: authorization_code,
       code_expires_at: IdentityConfig.store.openid_connect_authorization_code_expiration_seconds
         .seconds.from_now,
-      access_token: SecureRandom.urlsafe_base64,
+      access_token: nil,
     }
   end
 
