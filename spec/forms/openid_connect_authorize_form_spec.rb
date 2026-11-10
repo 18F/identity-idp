@@ -475,6 +475,23 @@ RSpec.describe OpenidConnectAuthorizeForm do
           expect(form.errors[:scope])
             .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
         end
+
+        it 'does not offer the token exchange scope' do
+          expect(form.scope).to eq(%w[openid])
+          expect(form.unauthorized_scope).to eq(true)
+        end
+
+        context 'when unauthorized scopes are not blocked' do
+          before do
+            allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(false)
+          end
+
+          it 'drops the token exchange scope like any unknown scope' do
+            expect(valid?).to eq(true)
+            expect(form.scope).to eq(%w[openid])
+            expect(form.unauthorized_scope).to eq(true)
+          end
+        end
       end
 
       context 'when token exchange is enabled and the actor is allowlisted' do
