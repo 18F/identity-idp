@@ -478,14 +478,14 @@ RSpec.describe User do
     it 'uses TwoFactorAuthenticatable setting when set' do
       stub_const('TwoFactorAuthenticatable::DIRECT_OTP_LENGTH', 10)
       user = build(:user)
-      user.create_direct_otp
+      user.create_direct_otp('+1 (202) 555-1212')
 
       expect(user.direct_otp.length).to eq 10
     end
 
     it 'is set to 6' do
       user = build(:user)
-      user.create_direct_otp
+      user.create_direct_otp('+1 (202) 555-1212')
 
       expect(user.direct_otp.length).to eq 6
     end

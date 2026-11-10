@@ -82,7 +82,7 @@ module TwoFactorAuthentication
     end
 
     def otp_verification_form
-      OtpVerificationForm.new(current_user, sanitized_otp_code, phone_configuration)
+      OtpVerificationForm.new(current_user, sanitized_otp_code, phone_configuration, phone:)
     end
 
     def redirect_if_blank_phone

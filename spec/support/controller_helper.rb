@@ -10,7 +10,8 @@ module ControllerHelper
 
   def sign_in_before_2fa(user = create(:user, :fully_registered))
     sign_in_as_user(user)
-    controller.current_user.create_direct_otp
+    phone = controller.current_user.default_phone_configuration&.phone
+    controller.current_user.create_direct_otp(phone) if phone
   end
 
   def stub_sign_in(user = build(:user, password: VALID_PASSWORD))
