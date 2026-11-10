@@ -16,7 +16,7 @@ module Proofing
       :org_id,
       :api_key,
       :ddp_policy,
-      :is_proofing_agent,
+      :bypasses_enabled,
       keyword_init: true,
       allowed_members: [
         :instant_verify_workflow,
@@ -24,7 +24,7 @@ module Proofing
         :base_url,
         :request_mode,
         :request_timeout,
-        :is_proofing_agent,
+        :bypasses_enabled,
       ],
     ).freeze
   end

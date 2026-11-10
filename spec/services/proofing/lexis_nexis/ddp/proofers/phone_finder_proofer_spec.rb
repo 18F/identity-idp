@@ -59,11 +59,11 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
     end
   end
 
-  let(:is_proofing_agent) { false }
+  let(:bypasses_enabled) { false }
 
   subject(:proofer) do
     described_class.new(
-      LexisNexisFixtures.example_ddp_proofing_config.to_h.merge(is_proofing_agent:),
+      LexisNexisFixtures.example_ddp_proofing_config.to_h.merge(bypasses_enabled:),
     )
   end
 
@@ -275,17 +275,6 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
             expect(result.vendor_name).to eq('lexisnexis:phone_finder_ddp')
             expect(result.dual_vendor_check_eligible).to be(false)
           end
-
-          context 'when is_proofing_agent is true' do
-            let(:is_proofing_agent) { true }
-
-            it 'still fails because of name verification error but is dual vendor check eligible' do
-              result = proofer.proof(proofing_applicant)
-
-              expect(result.success?).to eq(false)
-              expect(result.dual_vendor_check_eligible).to be(true)
-            end
-          end
         end
 
         context 'when the response fails with "Risk Indicators match determined"' do
@@ -354,11 +343,11 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
             expect(result.dual_vendor_check_eligible).to be(false)
           end
 
-          context 'when is_proofing_agent is true' do
-            let(:is_proofing_agent) { true }
+          context 'when bypasses_enabled is true' do
+            let(:bypasses_enabled) { true }
 
-            context 'when only VOIPPhone failed' do
-              it 'bypasses VOIPPhone and returns a successful result' do
+            context 'when only VOIP phone failed' do
+              it 'bypasses the VOIP phone failures and returns a successful result' do
                 result = proofer.proof(proofing_applicant)
 
                 expect(result.success?).to eq(true)
@@ -367,7 +356,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
               end
             end
 
-            context 'when VOIPPhone and another item failed' do
+            context 'when VOIP phone fails with additional errors' do
               let(:items) do
                 [
                   {

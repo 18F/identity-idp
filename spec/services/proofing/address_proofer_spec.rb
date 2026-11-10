@@ -239,13 +239,38 @@ RSpec.describe Proofing::AddressProofer do
             )
           end
 
-          it 'uses idv_proofing_agent_phone_vendor and passes is_proofing_agent to the config' do
-            expect(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
-              .and_return(:socure)
-            expect(Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer).to receive(:new)
-              .with(have_attributes(is_proofing_agent: true))
-              .and_return(phone_risk_proofer)
-            subject.proof(applicant_pii:, current_sp: service_provider)
+          context 'when idv_proofing_agent_bypass_wrong_phone_type_enabled is false' do
+            before do
+              allow(IdentityConfig.store).to receive(
+                :idv_proofing_agent_bypass_wrong_phone_type_enabled,
+              ).and_return(false)
+            end
+
+            it 'uses idv_proofing_agent_phone_vendor and passes bypasses_enabled: false' do
+              expect(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
+                .and_return(:socure)
+              expect(Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer).to receive(:new)
+                .with(have_attributes(bypasses_enabled: false))
+                .and_return(phone_risk_proofer)
+              subject.proof(applicant_pii:, current_sp: service_provider)
+            end
+          end
+
+          context 'when idv_proofing_agent_bypass_wrong_phone_type_enabled is true' do
+            before do
+              allow(IdentityConfig.store).to receive(
+                :idv_proofing_agent_bypass_wrong_phone_type_enabled,
+              ).and_return(true)
+            end
+
+            it 'uses idv_proofing_agent_phone_vendor and passes bypasses_enabled: true' do
+              expect(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
+                .and_return(:socure)
+              expect(Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer).to receive(:new)
+                .with(have_attributes(bypasses_enabled: true))
+                .and_return(phone_risk_proofer)
+              subject.proof(applicant_pii:, current_sp: service_provider)
+            end
           end
         end
 
@@ -253,6 +278,9 @@ RSpec.describe Proofing::AddressProofer do
           before do
             allow(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
               .and_return(:lexis_nexis_ddp)
+            allow(IdentityConfig.store).to receive(
+              :idv_proofing_agent_bypass_wrong_phone_type_enabled,
+            ).and_return(true)
             expect(Db::SpCost::AddSpCost).to receive(:call).with(
               service_provider,
               :lexis_nexis_address,
@@ -260,9 +288,9 @@ RSpec.describe Proofing::AddressProofer do
             )
           end
 
-          it 'passes is_proofing_agent to PhoneFinderProofer' do
+          it 'passes bypasses_enabled: true to PhoneFinderProofer' do
             expect(Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer).to receive(:new)
-              .with(hash_including(is_proofing_agent: true))
+              .with(hash_including(bypasses_enabled: true))
               .and_return(ddp_phone_finder_proofer)
             subject.proof(applicant_pii:, current_sp: service_provider)
           end

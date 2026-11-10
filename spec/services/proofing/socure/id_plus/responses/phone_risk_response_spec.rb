@@ -38,10 +38,10 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
     ).and_return(name_verification_error_reason_codes)
   end
 
-  let(:is_proofing_agent) { false }
+  let(:bypasses_enabled) { false }
 
   subject do
-    described_class.new(http_response, is_proofing_agent:)
+    described_class.new(http_response, bypasses_enabled:)
   end
 
   describe '#successful?' do
@@ -70,10 +70,13 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
         allow(IdentityConfig.store).to receive(
           :idv_socure_phonerisk_auto_failure_reason_codes,
         ).and_return(bypassed_codes + ['R601'])
+        allow(IdentityConfig.store).to receive(
+          :idv_socure_phonerisk_bypassed_reason_codes,
+        ).and_return(bypassed_codes)
       end
 
-      context 'when is_proofing_agent is false' do
-        let(:is_proofing_agent) { false }
+      context 'when bypasses_enabled is false' do
+        let(:bypasses_enabled) { false }
 
         %w[R613 R614 R615 R616 R617].each do |code|
           it "returns false when #{code} is present" do
@@ -84,15 +87,15 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
                   'phoneRisk' => response_body['phoneRisk'].merge('reasonCodes' => [code]),
                 ),
               ),
-              is_proofing_agent: false,
+              bypasses_enabled: false,
             )
             expect(response.successful?).to eq(false)
           end
         end
       end
 
-      context 'when is_proofing_agent is true' do
-        let(:is_proofing_agent) { true }
+      context 'when bypasses_enabled is true' do
+        let(:bypasses_enabled) { true }
 
         %w[R613 R614 R615 R616 R617].each do |code|
           it "returns true when only #{code} is present" do
@@ -103,7 +106,7 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
                   'phoneRisk' => response_body['phoneRisk'].merge('reasonCodes' => [code]),
                 ),
               ),
-              is_proofing_agent: true,
+              bypasses_enabled: true,
             )
             expect(response.successful?).to eq(true)
             expect(response.to_h[:autofail_reason_codes]).to eq([])
@@ -283,26 +286,6 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
 
         it 'returns false' do
           expect(subject.dual_vendor_check_eligible?).to be(false)
-        end
-      end
-
-      context 'when additional error reason codes are only bypassed wrong phone type codes' do
-        let(:phone_risk_reason_codes) { ['I123', 'R666', 'R613'] }
-
-        context 'when is_proofing_agent is false' do
-          let(:is_proofing_agent) { false }
-
-          it 'returns false' do
-            expect(subject.dual_vendor_check_eligible?).to be(false)
-          end
-        end
-
-        context 'when is_proofing_agent is true' do
-          let(:is_proofing_agent) { true }
-
-          it 'returns true' do
-            expect(subject.dual_vendor_check_eligible?).to be(true)
-          end
         end
       end
     end

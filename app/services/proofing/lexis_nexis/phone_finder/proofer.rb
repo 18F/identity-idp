@@ -7,7 +7,7 @@ module Proofing
         include AbTestingConcern
 
         NOT_VERIFIED_TO_NAME = 'Input phone number could not be verified to name'
-        PROOFING_AGENT_BYPASSED_ITEMS = %w[VOIPPhone].freeze
+        BYPASSED_ITEMS = %w[VOIPPhone].freeze
 
         attr_reader :config
 
@@ -65,7 +65,7 @@ module Proofing
 
         def successful?(verification_response)
           return true if verification_response.verification_status == 'passed'
-          return false unless config.is_proofing_agent
+          return false unless config.bypasses_enabled
 
           !has_name_verification_error?(verification_response) &&
             only_bypassed_items_failed?(verification_response)
@@ -87,7 +87,7 @@ module Proofing
           failed_items = items.select { |item| item['ItemStatus'] == 'fail' }
 
           failed_items.any? && failed_items.all? do |item|
-            PROOFING_AGENT_BYPASSED_ITEMS.include?(item['ItemName'])
+            BYPASSED_ITEMS.include?(item['ItemName'])
           end
         end
 

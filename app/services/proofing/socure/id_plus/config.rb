@@ -9,12 +9,12 @@ module Proofing
         :timeout,
         :user_uuid,
         :user_email,
-        :is_proofing_agent,
+        :bypasses_enabled,
         keyword_init: true,
         allowed_members: [
           :base_url,
           :timeout,
-          :is_proofing_agent,
+          :bypasses_enabled,
         ],
       ).freeze
     end

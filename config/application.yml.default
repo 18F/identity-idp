@@ -254,6 +254,7 @@ idv_phone_verification_dual_vendor_check_ddp_lexis_nexis_percent: 0
 idv_phone_verification_dual_vendor_check_enabled: false
 idv_phone_verification_dual_vendor_check_socure_percent: 0
 idv_phone_verification_dual_vendor_check_socure_reason_codes: '[]'
+idv_proofing_agent_bypass_wrong_phone_type_enabled: false
 idv_proofing_agent_config: '[]'
 idv_proofing_agent_confirmation_url: ''
 idv_proofing_agent_enabled: false
@@ -281,6 +282,7 @@ idv_socure_docv_flow_id_w_selfie: ''
 idv_socure_docv_flow_id_w_selfie_image_sharing: ''
 idv_socure_kyc_auto_failure_reason_codes: '[]'
 idv_socure_phonerisk_auto_failure_reason_codes: '[]'
+idv_socure_phonerisk_bypassed_reason_codes: '[]'
 idv_socure_phonerisk_name_correlation_score_threshold: 1.0
 idv_socure_phonerisk_score_threshold: 0
 idv_socure_phonerisk_shadow_mode: false

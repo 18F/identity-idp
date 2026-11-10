@@ -20,12 +20,12 @@ RSpec.describe Proofing::LexisNexis::PhoneFinder::Proofer do
     )
   end
 
-  let(:is_proofing_agent) { false }
+  let(:bypasses_enabled) { false }
 
   it_behaves_like 'a lexisnexis rdp proofer'
 
   subject do
-    described_class.new(**LexisNexisFixtures.example_config.to_h, is_proofing_agent:)
+    described_class.new(**LexisNexisFixtures.example_config.to_h, bypasses_enabled:)
   end
 
   describe '#proof' do
@@ -98,7 +98,7 @@ RSpec.describe Proofing::LexisNexis::PhoneFinder::Proofer do
         expect(result_json_hash['ParameterDetails']).to eq(nil)
       end
 
-      context 'when only VOIPPhone fails' do
+      context 'when only VOIP phone failed' do
         let(:voip_only_fail_response_json) do
           {
             'Status' => {
@@ -145,8 +145,8 @@ RSpec.describe Proofing::LexisNexis::PhoneFinder::Proofer do
             .to_return(body: voip_only_fail_response_json, status: 200)
         end
 
-        context 'when is_proofing_agent is false' do
-          let(:is_proofing_agent) { false }
+        context 'when bypasses_enabled is false' do
+          let(:bypasses_enabled) { false }
 
           it 'returns a failure result' do
             result = subject.proof(applicant)
@@ -155,10 +155,10 @@ RSpec.describe Proofing::LexisNexis::PhoneFinder::Proofer do
           end
         end
 
-        context 'when is_proofing_agent is true' do
-          let(:is_proofing_agent) { true }
+        context 'when bypasses_enabled is true' do
+          let(:bypasses_enabled) { true }
 
-          it 'bypasses VOIPPhone and returns a successful result' do
+          it 'bypasses the VOIP phone failures and returns a successful result' do
             result = subject.proof(applicant)
 
             expect(result.success?).to eq(true)

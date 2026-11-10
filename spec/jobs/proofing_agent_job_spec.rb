@@ -782,12 +782,18 @@ RSpec.describe ProofingAgentJob, type: :job do
       before do
         allow(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
           .and_return(:socure)
+        allow(IdentityConfig.store).to receive(
+          :idv_proofing_agent_bypass_wrong_phone_type_enabled,
+        ).and_return(true)
         allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
           .and_return(socure_base_url)
         allow(IdentityConfig.store).to receive(:socure_idplus_api_key).and_return('test-key')
         allow(IdentityConfig.store).to receive(
           :idv_socure_phonerisk_auto_failure_reason_codes,
         ).and_return(%w[R613 R614 R615 R616 R617 R601])
+        allow(IdentityConfig.store).to receive(
+          :idv_socure_phonerisk_bypassed_reason_codes,
+        ).and_return(%w[R613 R614 R615 R616 R617])
 
         stub_request(:post, URI.join(socure_base_url, '/api/3.0/EmailAuthScore').to_s)
           .to_return(
@@ -811,7 +817,7 @@ RSpec.describe ProofingAgentJob, type: :job do
           )
       end
 
-      it 'bypasses the wrong phone type code and stores a successful result' do
+      it 'returns a successful result' do
         perform
 
         result = document_capture_session.reload.load_agent_proofed_user

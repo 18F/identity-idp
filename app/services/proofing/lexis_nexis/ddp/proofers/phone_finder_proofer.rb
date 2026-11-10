@@ -6,7 +6,7 @@ module Proofing
       module Proofers
         class PhoneFinderProofer < Proofing::LexisNexis::Ddp::Proofer
           NOT_VERIFIED_TO_NAME = 'Input phone number could not be verified to name'
-          PROOFING_AGENT_BYPASSED_ITEMS = %w[VOIPPhone].freeze
+          BYPASSED_ITEMS = %w[VOIPPhone].freeze
           VALID_REVIEW_STATUSES = %w[pass review reject].freeze
 
           private
@@ -101,7 +101,7 @@ module Proofing
 
           def successful?(review_status, response)
             return true if review_status == 'pass'
-            return false unless config.is_proofing_agent
+            return false unless config.bypasses_enabled
 
             !has_name_verification_error?(response) && only_bypassed_items_failed?(response)
           end
@@ -118,8 +118,6 @@ module Proofing
           end
 
           def has_additional_verification_errors?(response)
-            return false if config.is_proofing_agent && only_bypassed_items_failed?(response)
-
             response.verification_errors.dig(:PhoneFinder, 'ProductStatus') == 'fail'
           end
 
@@ -132,7 +130,7 @@ module Proofing
             failed_items = items.select { |item| item['ItemStatus'] == 'fail' }
 
             failed_items.any? && failed_items.all? do |item|
-              PROOFING_AGENT_BYPASSED_ITEMS.include?(item['ItemName'])
+              BYPASSED_ITEMS.include?(item['ItemName'])
             end
           end
         end
