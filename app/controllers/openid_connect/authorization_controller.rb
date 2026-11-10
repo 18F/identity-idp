@@ -119,6 +119,7 @@ module OpenidConnect
     def needs_sts_consent?
       return false unless IdentityConfig.store.token_exchange_enabled
       return false unless token_exchange_scope_requested?
+      return false if target_app.blank?
 
       !UserConsentSts.consent_valid?(user: current_user, target_app:)
     end
@@ -134,7 +135,7 @@ module OpenidConnect
 
     def target_app
       IdentityConfig.store.token_exchange_allowed_targets
-        .find { |target| token_exchange_scopes.include?(target[:scope]) }[:issuer]
+        .find { |target| token_exchange_scopes.include?(target[:scope]) }&.dig(:issuer)
     end
 
     def token_exchange_scopes

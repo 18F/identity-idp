@@ -275,6 +275,36 @@ RSpec.describe ServiceProvider do
     end
   end
 
+  describe '#encryption_certs' do
+    def self_signed_pem(bits:, not_before: 1.minute.ago, not_after: 1.hour.from_now)
+      key = OpenSSL::PKey::RSA.new(bits)
+      cert = OpenSSL::X509::Certificate.new
+      cert.version = 2
+      cert.serial = 1
+      cert.subject = cert.issuer = OpenSSL::X509::Name.parse('/CN=encryption-certs')
+      cert.public_key = key.public_key
+      cert.not_before = not_before
+      cert.not_after = not_after
+      cert.sign(key, OpenSSL::Digest.new('SHA256'))
+      cert.to_pem
+    end
+
+    let(:valid_pem) { self_signed_pem(bits: 2048) }
+    let(:short_key_pem) { self_signed_pem(bits: 1024) }
+    let(:expired_pem) { self_signed_pem(bits: 2048, not_before: 2.days.ago, not_after: 1.day.ago) }
+    let(:not_yet_valid_pem) do
+      self_signed_pem(bits: 2048, not_before: 1.day.from_now, not_after: 2.days.from_now)
+    end
+    let(:service_provider) do
+      build(:service_provider, certs: [expired_pem, short_key_pem, not_yet_valid_pem, valid_pem])
+    end
+
+    it 'keeps only certificates that are currently valid with an RSA key of at least 2048 bits' do
+      expect(service_provider.ssl_certs.length).to eq(4)
+      expect(service_provider.encryption_certs.map(&:to_pem)).to eq([valid_pem])
+    end
+  end
+
   describe '#ssl_certs' do
     context 'with an empty string plural cert' do
       let(:service_provider) { build(:service_provider, certs: ['']) }

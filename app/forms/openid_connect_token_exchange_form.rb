@@ -18,6 +18,8 @@ class OpenidConnectTokenExchangeForm
 
   # Parameters RFC 8693 section 2.1 requires on every token exchange request.
   # Omitting any of them is an `invalid_request`, not a grant or target failure.
+  TARGET_REFUSAL_DESCRIPTION = 'delegation is not available for this audience'
+
   REQUIRED_ATTRS = %i[
     client_id
     grant_type
@@ -209,25 +211,23 @@ class OpenidConnectTokenExchangeForm
     loaded_subject_token.dpop_jkt if dpop_binding_required?
   end
 
+  # The three refusals keep distinct error types for analytics but share one description: the
+  # actor is told only that delegation is unavailable, never whether the person has an identity,
+  # an active profile or a given assurance level at the agency (RFC 6749 section 5.2 asks that
+  # `error_description` help the developer, not describe the resource owner).
   def validate_target_identity_ial2
     return if subject_token.blank?
     return if loaded_subject_token.blank?
     return errors.add(:subject_token, :invalid) if user.blank?
     if target_identity.blank?
-      return errors.add(
-        :audience, :no_identity_at_target,
-        message: 'no identity'
-      )
+      return errors.add(:audience, :no_identity_at_target, message: TARGET_REFUSAL_DESCRIPTION)
     end
     if user.active_profile.blank?
-      return errors.add(
-        :audience, :no_active_profile,
-        message: 'no active profile'
-      )
+      return errors.add(:audience, :no_active_profile, message: TARGET_REFUSAL_DESCRIPTION)
     end
     return unless target_identity.ial.to_i < 2
 
-    errors.add(:audience, :invalid_target_identity_assurance, message: 'invalid identity assurance')
+    errors.add(:audience, :invalid_target_identity_assurance, message: TARGET_REFUSAL_DESCRIPTION)
   end
 
   def user
