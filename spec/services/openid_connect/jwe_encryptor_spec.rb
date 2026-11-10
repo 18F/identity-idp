@@ -15,6 +15,19 @@ RSpec.describe OpenidConnect::JweEncryptor do
     JSON.parse(Base64.urlsafe_decode64(compact_jwe.split('.').first))
   end
 
+  def self_signed_pem(bits:)
+    key = OpenSSL::PKey::RSA.new(bits)
+    cert = OpenSSL::X509::Certificate.new
+    cert.version = 2
+    cert.serial = 1
+    cert.subject = cert.issuer = OpenSSL::X509::Name.parse('/CN=short-key')
+    cert.public_key = key.public_key
+    cert.not_before = 1.minute.ago
+    cert.not_after = 1.hour.from_now
+    cert.sign(key, OpenSSL::Digest.new('SHA256'))
+    cert.to_pem
+  end
+
   it 'produces one compact JWE the first registered certificate decrypts to the payload' do
     expect(jwe.split('.').length).to eq(5)
     expect(jwe).not_to include('person@example.com')
@@ -45,6 +58,31 @@ RSpec.describe OpenidConnect::JweEncryptor do
 
       expect(header).to include('cty' => 'image/jpeg', 'alg' => 'RSA-OAEP', 'enc' => 'A256GCM')
       expect(header).not_to have_key('typ')
+    end
+  end
+
+  context 'when the first registered certificate has expired' do
+    let(:certs) { ['saml_test_sp2', 'saml_test_sp'] }
+
+    it 'skips it and encrypts to the next currently valid certificate' do
+      expect(header(jwe)['kid']).to eq(JWT::JWK.new(private_key.public_key).kid)
+      expect(JWE.decrypt(jwe, private_key)).to eq(payload)
+    end
+  end
+
+  context 'when the only registered certificate has expired' do
+    let(:certs) { ['saml_test_sp2'] }
+
+    it 'raises instead of sealing to a key that is no longer valid' do
+      expect { jwe }.to raise_error(described_class::NoUsableKeyError)
+    end
+  end
+
+  context 'when the only registered certificate carries a short RSA key' do
+    let(:certs) { [self_signed_pem(bits: 1024)] }
+
+    it 'raises instead of sealing to a weak key' do
+      expect { jwe }.to raise_error(described_class::NoUsableKeyError)
     end
   end
 

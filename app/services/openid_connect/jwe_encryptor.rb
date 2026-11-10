@@ -30,9 +30,12 @@ module OpenidConnect
 
     attr_reader :service_provider
 
+    # The first registered certificate that is currently valid and carries an RSA key of
+    # sufficient size (ServiceProvider#encryption_certs); an expired or short key never
+    # receives a payload, so a misconfigured record fails here rather than leaking.
     def public_key
       @public_key ||= begin
-        key = service_provider.ssl_certs.first&.public_key
+        key = service_provider.encryption_certs.first&.public_key
         unless key.is_a?(OpenSSL::PKey::RSA)
           raise NoUsableKeyError,
                 "no usable RSA public key registered for #{service_provider.issuer}"
