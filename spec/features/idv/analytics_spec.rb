@@ -78,7 +78,8 @@ RSpec.feature 'Analytics Regression', :js do
       vendor_id: nil,
       vendor_name: 'ResolutionMock',
       vendor_workflow: nil,
-      verified_attributes: nil }
+      verified_attributes: nil,
+      result_overrides: [] }
   end
 
   let(:base_proofing_results) do
@@ -126,7 +127,8 @@ RSpec.feature 'Analytics Regression', :js do
                                  vendor_id: nil,
                                  vendor_name: 'ResidentialAddressNotRequired',
                                  vendor_workflow: nil,
-                                 verified_attributes: nil },
+                                 verified_attributes: nil,
+                                 result_overrides: [] },
           threatmetrix: threatmetrix_response,
           hybrid_mobile_threatmetrix: {},
           phone_precheck: idv_phone_precheck_enabled ?
@@ -174,7 +176,8 @@ RSpec.feature 'Analytics Regression', :js do
                                  vendor_id: nil,
                                  vendor_name: 'ResolutionMock',
                                  vendor_workflow: nil,
-                                 verified_attributes: nil },
+                                 verified_attributes: nil,
+                                 result_overrides: [] },
           threatmetrix: threatmetrix_response,
           hybrid_mobile_threatmetrix: {},
           phone_precheck: {},

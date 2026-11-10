@@ -27,6 +27,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
       attributes_requiring_additional_verification: [],
       vendor_workflow: nil,
       verified_attributes: nil,
+      result_overrides: [],
     }
   end
 
