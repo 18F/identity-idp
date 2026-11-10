@@ -160,9 +160,9 @@ class DocumentImagesForm
     @active_profile ||= identity.user&.active_profile
   end
 
-  # Unwrapping the stored key (KMS/rotation) and fetching from Redis can each
-  # fail independently of the object simply being absent; all of these must
-  # surface as an audited 404, never a 500.
+  # Unwrapping the stored key with KMS and fetching from Redis can each fail
+  # independently of the object simply being absent; all of these must surface
+  # as an audited 404, never a 500.
   def read_image(artifact)
     doc_reader.read(name: artifact&.storage_name, encryption_key: artifact&.encryption_key)
   rescue Encryption::EncryptionError, Redis::BaseError

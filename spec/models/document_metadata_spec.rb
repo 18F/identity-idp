@@ -41,16 +41,23 @@ RSpec.describe DocumentMetadata do
       expect(record.reload.document_data.keys).to match_array(DocumentMetadata::FIELDS)
     end
 
-    it 'survives attribute_encryption_key rotation via the old-key queue' do
+    it 'wraps the fields with KMS under the context of the person the capture session belongs to' do
       record = create(:document_metadata, document_data: fields)
-      old_key = IdentityConfig.store.attribute_encryption_key
+      other_persons_row = DocumentMetadata.new(
+        document_capture_session: create(:document_capture_session),
+        encrypted_document_data: record.encrypted_document_data,
+      )
 
-      allow(IdentityConfig.store).to receive(:attribute_encryption_key)
-        .and_return('a-brand-new-32-byte-rotated-key!')
-      allow(IdentityConfig.store).to receive(:attribute_encryption_key_queue)
-        .and_return([{ 'key' => old_key }])
+      expect(record.encrypted_document_data).to start_with('LOCc').or start_with('KMSc')
+      expect { other_persons_row.document_data }.to raise_error(Encryption::EncryptionError)
+    end
 
-      expect(record.reload.document_data).to eq(fields)
+    it 'refuses fields that were wrapped by the static attribute key instead of KMS' do
+      legacy = Encryption::Encryptors::AttributeEncryptor.new.encrypt(fields.to_json)
+      record = create(:document_metadata, document_data: fields)
+      record.update_column(:encrypted_document_data, legacy)
+
+      expect { record.reload.document_data }.to raise_error(Encryption::EncryptionError)
     end
   end
 
