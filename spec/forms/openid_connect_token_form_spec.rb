@@ -195,6 +195,20 @@ RSpec.describe OpenidConnectTokenForm do
           expect(valid?).to be false
           expect(form.errors.details[:code]).to include(error: :unauthorized_client)
         end
+
+        context 'when the code was issued for an ordinary sign-in without a delegation scope' do
+          let(:scope) { 'openid email' }
+
+          it 'is valid and is not judged against the actor list' do
+            expect(valid?).to be true
+            expect(form.errors.details[:code]).to be_empty
+          end
+
+          it 'answers with an id_token, not a subject token' do
+            expect(form.response).to have_key(:id_token)
+            expect(form.response).not_to have_key(:issued_token_type)
+          end
+        end
       end
     end
 

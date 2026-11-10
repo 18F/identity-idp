@@ -102,16 +102,26 @@ class OpenidConnectTokenForm
     }
   end
 
+  # True when this code belongs to a delegation sign-in, one whose granted scopes carry a
+  # `token_exchange:` value, so the exchange answers with a subject token instead of an id_token.
+  # Only an approved actor may redeem such a code: a service provider that is not an actor and
+  # somehow holds one is refused as `unauthorized_client` (RFC 6749 section 5.2). A code without a
+  # delegation scope is an ordinary sign-in and is never judged against the actor list, whether or
+  # not the token exchange is switched on. Memoized because the form asks several times per request
+  # and the refusal must be recorded once.
   def token_exchange_authorization_code?
-    return false unless IdentityConfig.store.token_exchange_enabled
-    unless service_provider&.token_exchange_actor?
-      errors.add(:code, :unauthorized_client, message: 'Delegation actor not valid')
-      return false
-    end
+    return @token_exchange_authorization_code if defined?(@token_exchange_authorization_code)
 
-    return false if identity.blank?
-
-    token_exchange_scope_requested?
+    @token_exchange_authorization_code =
+      if !IdentityConfig.store.token_exchange_enabled || identity.blank? ||
+         !token_exchange_scope_requested?
+        false
+      elsif service_provider&.token_exchange_actor?
+        true
+      else
+        errors.add(:code, :unauthorized_client, message: 'Delegation actor not valid')
+        false
+      end
   end
 
   def token_exchange_scope_requested?
