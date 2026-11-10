@@ -40,6 +40,21 @@ RSpec.describe SocureDocvRepeatWebhookJob do
       perform
     end
 
+    context 'when the endpoint points at the link-local metadata address' do
+      let(:endpoint) { 'https://169.254.169.254/latest/meta-data' }
+
+      it 'sends nothing and reports the refusal to New Relic' do
+        expect(Faraday).not_to receive(:new)
+        expect(NewRelic::Agent).to receive(:notice_error) do |error, custom_params:|
+          expect(error).to be_a(OutboundUrlPolicy::RefusedError)
+          expect(error.message).to eq('endpoint refused: private_address')
+          expect(custom_params[:endpoint]).to eq(endpoint)
+        end
+
+        perform
+      end
+    end
+
     context 'failed endpoint repeat' do
       before do
         allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
