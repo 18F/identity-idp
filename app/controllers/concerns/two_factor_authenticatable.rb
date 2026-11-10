@@ -12,7 +12,6 @@ module TwoFactorAuthenticatable
   ALLOWED_OTP_DRIFT_SECONDS = 30
   DIRECT_OTP_VALID_FOR_MINUTES = IdentityConfig.store.otp_valid_for.freeze
   DIRECT_OTP_VALID_FOR_SECONDS = DIRECT_OTP_VALID_FOR_MINUTES * 60
-  REMEMBER_2FA_COOKIE = 'remember_tfa'
 
   class AuthMethod
     BACKUP_CODE = 'backup_code'

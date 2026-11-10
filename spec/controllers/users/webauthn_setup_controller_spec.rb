@@ -162,6 +162,12 @@ RSpec.describe Users::WebauthnSetupController do
         expect(flash[:success]).to eq(t('notices.webauthn_configured'))
       end
 
+      it 'removes the answered challenge from the session' do
+        response
+
+        expect(controller.user_session[:webauthn_challenge]).to be_nil
+      end
+
       it 'redirects to next setup path' do
         expect(response).to redirect_to(account_url)
       end

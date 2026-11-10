@@ -64,6 +64,23 @@ RSpec.describe Users::PasswordsController do
         expect(controller.user_session[:personal_key]).to be_nil
       end
 
+      it 'forgets every remembered browser' do
+        stub_sign_in
+        stub_analytics
+        stub_attempts_tracker
+
+        params = {
+          password: 'salty new password',
+          password_confirmation: 'salty new password',
+        }
+
+        freeze_time do
+          patch :update, params: { update_user_password_form: params }
+
+          expect(controller.current_user.reload.remember_device_revoked_at).to eq(Time.zone.now)
+        end
+      end
+
       it 'updates the user password and regenerates personal key' do
         user = create(:user, :proofed)
         stub_sign_in(user)

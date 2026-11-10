@@ -1,6 +1,27 @@
 require 'rails_helper'
 
 RSpec.describe 'content security policy' do
+  context 'nonce' do
+    it 'is stable within a session, differs between sessions, and is not the session id' do
+      get root_path
+      first_nonce = parse_content_security_policy['script-src'][/'nonce-([^']+)'/, 1]
+      session_id = request.session.id.to_s
+
+      get root_path
+      second_nonce = parse_content_security_policy['script-src'][/'nonce-([^']+)'/, 1]
+
+      reset!
+      get root_path
+      other_session_nonce = parse_content_security_policy['script-src'][/'nonce-([^']+)'/, 1]
+
+      expect(first_nonce).to be_present
+      expect(second_nonce).to eq(first_nonce)
+      expect(other_session_nonce).not_to eq(first_nonce)
+      expect(first_nonce).not_to eq(session_id)
+      expect(first_nonce).not_to include(session_id)
+    end
+  end
+
   context 'on endpoints that will redirect to an SP' do
     context 'when using server side OIDC redirect' do
       before do
