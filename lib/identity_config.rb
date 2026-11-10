@@ -277,6 +277,8 @@ module IdentityConfig
     config.add(:idv_proofing_agent_phone_vendor, type: :symbol, enum: [:mock, :lexis_nexis, :lexis_nexis_ddp, :socure])
     config.add(:idv_proofing_agent_proof_user_with_enhanced_profile, type: :boolean)
     config.add(:idv_proofing_agent_result_expiration_seconds, type: :integer)
+    config.add(:idv_proofing_agent_search_attempt_window_in_minutes, type: :integer)
+    config.add(:idv_proofing_agent_search_max_attempts, type: :integer)
     config.add(:idv_proofing_agent_send_failure_email_after_min, type: :integer)
     config.add(:idv_proofing_agent_send_failure_emails_cron, type: :string)
     config.add(:idv_proofing_agent_send_reminder_email_after_hours, type: :integer)

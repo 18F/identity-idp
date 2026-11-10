@@ -306,8 +306,8 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             end
           end
 
-          context 'when the ssn matches profiles' do
-            it 'returns email_account_found as false and ssn_profile_found as true' do
+          context 'when the ssn matches another account\'s profile' do
+            it 'does not disclose the other account\'s profile' do
               create(
                 :profile,
                 :active,
@@ -318,31 +318,18 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               action
               body = JSON.parse(response.body)
               expect(body['email_account_found']).to eq(false)
-              expect(body['ssn_profile_found']).to eq(true)
+              expect(body['ssn_profile_found']).to eq(false)
               expect(body['email_account_awaiting_binding']).to eq(false)
               expect(body['account_email_confirmed']).to eq(false)
-              expect(body['profiles'].length).to eq(1)
-              expect(body['profiles']).to include(
-                a_hash_including(
-                  'email_match' => false,
-                  'ssn_match' => true,
-                  'idv_level' => 'enhanced',
-                ),
-              )
+              expect(body['profiles']).to eq([])
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_account_check_requested,
                 response_body: a_hash_including(
                   email_account_found: false,
                   email_account_awaiting_binding: false,
                   account_email_confirmed: false,
-                  ssn_profile_found: true,
-                  profiles: include(
-                    a_hash_including(
-                      email_match: false,
-                      ssn_match: true,
-                      idv_level: 'enhanced',
-                    ),
-                  ),
+                  ssn_profile_found: false,
+                  profiles: [],
                 ),
                 proofing_agent: proofing_agent_analytics_hash,
                 issuer:,
@@ -459,23 +446,8 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(body['ssn_profile_found']).to eq(true)
             expect(body['email_account_awaiting_binding']).to eq(false)
             expect(body['account_email_confirmed']).to eq(true)
-            expect(body['profiles'].length).to eq(3)
-            expect(body['profiles']).to include(
-              a_hash_including(
-                'email_match' => true,
-                'ssn_match' => true,
-                'idv_level' => 'enhanced',
-              ),
-              a_hash_including(
-                'email_match' => false,
-                'ssn_match' => true,
-                'idv_level' => 'enhanced',
-              ),
-              a_hash_including(
-                'email_match' => false,
-                'ssn_match' => true,
-                'idv_level' => 'basic',
-              ),
+            expect(body['profiles']).to eq(
+              [{ 'email_match' => true, 'ssn_match' => true, 'idv_level' => 'enhanced' }],
             )
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_account_check_requested,
@@ -484,23 +456,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 email_account_awaiting_binding: false,
                 account_email_confirmed: true,
                 ssn_profile_found: true,
-                profiles: include(
-                  a_hash_including(
-                    email_match: true,
-                    ssn_match: true,
-                    idv_level: 'enhanced',
-                  ),
-                  a_hash_including(
-                    email_match: false,
-                    ssn_match: true,
-                    idv_level: 'enhanced',
-                  ),
-                  a_hash_including(
-                    email_match: false,
-                    ssn_match: true,
-                    idv_level: 'basic',
-                  ),
-                ),
+                profiles: [{ email_match: true, ssn_match: true, idv_level: 'enhanced' }],
               ),
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
@@ -548,45 +504,77 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             action
             body = JSON.parse(response.body)
             expect(body['email_account_found']).to eq(true)
-            expect(body['ssn_profile_found']).to eq(true)
+            expect(body['ssn_profile_found']).to eq(false)
             expect(body['email_account_awaiting_binding']).to eq(false)
             expect(body['account_email_confirmed']).to eq(true)
-            expect(body['profiles'].length).to eq(2)
-            expect(body['profiles']).to include(
-              a_hash_including(
-                'email_match' => true,
-                'ssn_match' => false,
-                'idv_level' => 'enhanced',
-              ),
-              a_hash_including(
-                'email_match' => false,
-                'ssn_match' => true,
-                'idv_level' => 'enhanced',
-              ),
+            expect(body['profiles']).to eq(
+              [{ 'email_match' => true, 'ssn_match' => false, 'idv_level' => 'enhanced' }],
             )
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_account_check_requested,
               response_body: a_hash_including(
                 email_account_found: true,
-                ssn_profile_found: true,
+                ssn_profile_found: false,
                 email_account_awaiting_binding: false,
                 account_email_confirmed: true,
-                profiles: include(
-                  a_hash_including(
-                    email_match: true,
-                    ssn_match: false,
-                    idv_level: 'enhanced',
-                  ),
-                  a_hash_including(
-                    email_match: false,
-                    ssn_match: true,
-                    idv_level: 'enhanced',
-                  ),
-                ),
+                profiles: [{ email_match: true, ssn_match: false, idv_level: 'enhanced' }],
               ),
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
             )
+          end
+        end
+
+        context 'when the partner has reached its search limit' do
+          before do
+            RateLimiter.new(target: issuer, rate_limit_type: :idv_proofing_agent_search)
+              .increment_to_limited!
+          end
+
+          it 'returns 429 without answering and logs the limit' do
+            create(
+              :profile,
+              :active,
+              user:,
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+            )
+            action
+            expect(response.status).to eq(429)
+            expect(JSON.parse(response.body)).to eq(
+              'status' => 'failed', 'reason' => 'maximum_attempts_reached',
+            )
+            expect(@analytics).to have_logged_event(
+              'Rate Limit Reached',
+              limiter_type: :idv_proofing_agent_search,
+              step_name: 'search_user',
+            )
+            expect(@analytics).not_to have_logged_event(
+              :idv_proofing_agent_account_check_requested,
+            )
+          end
+        end
+
+        context 'counting searches against the partner' do
+          # A new limiter each time, as the attempts count is read from Redis once per object.
+          let(:limiter) do
+            -> { RateLimiter.new(target: issuer, rate_limit_type: :idv_proofing_agent_search) }
+          end
+
+          before { limiter.call.reset! }
+
+          it 'counts a valid search' do
+            action
+            expect(limiter.call.attempts).to eq(1)
+          end
+
+          context 'with an invalid ssn' do
+            let(:ssn) { 'not-an-ssn' }
+
+            it 'does not count a request that fails validation' do
+              action
+              expect(response.status).to eq(400)
+              expect(limiter.call.attempts).to eq(0)
+            end
           end
         end
 
@@ -2390,6 +2378,48 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
         end
 
+        context 'when the transaction was opened through another partner' do
+          before do
+            session = DocumentCaptureSession.create!(
+              uuid: transaction_id,
+              user_id: user.id,
+              issuer: 'urn:gov:gsa:openidconnect:sp:another-partner',
+            )
+            allow(session).to receive(:load_agent_proofed_user)
+              .and_return(successful_proofing_result)
+          end
+
+          it 'returns 404 with not_found reason' do
+            expect(action.status).to eq(404)
+            expect(JSON.parse(response.body)['reason']).to eq('result_not_found')
+          end
+        end
+
+        context 'when the result arrives after a request found nothing' do
+          before do
+            session = DocumentCaptureSession.create!(
+              uuid: transaction_id,
+              user_id: user.id,
+              issuer:,
+            )
+            allow(session).to receive(:load_agent_proofed_user)
+              .and_return(nil, successful_proofing_result)
+            allow(DocumentCaptureSession).to receive(:find_by).with(uuid: transaction_id, issuer:)
+              .and_return(session)
+          end
+
+          it 'serves the result on the next request rather than a cached miss' do
+            action
+            expect(response.status).to eq(404)
+
+            post :result, params: { proofing_agent_id: agent_id,
+                                    proofing_location_id: location_id,
+                                    transaction_id: }
+            expect(response.status).to eq(200)
+            expect(JSON.parse(response.body)['success']).to eq(true)
+          end
+        end
+
         context 'when there is a successful proofing result' do
           let(:session) do
             create(
@@ -2404,7 +2434,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             allow(session)
               .to receive(:load_agent_proofed_user)
               .and_return(successful_proofing_result)
-            allow(DocumentCaptureSession).to receive(:find_by).with(uuid: transaction_id)
+            allow(DocumentCaptureSession).to receive(:find_by).with(uuid: transaction_id, issuer:)
               .and_return(session)
           end
 
@@ -2448,7 +2478,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               issuer:,
             )
             allow(session).to receive(:load_agent_proofed_user).and_return(failed_proofing_result)
-            allow(DocumentCaptureSession).to receive(:find_by).with(uuid: transaction_id)
+            allow(DocumentCaptureSession).to receive(:find_by).with(uuid: transaction_id, issuer:)
               .and_return(session)
           end
 
@@ -2490,16 +2520,16 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             allow(session)
               .to receive(:load_agent_proofed_user)
               .and_return(successful_proofing_result)
-            allow(DocumentCaptureSession).to receive(:find_by).with(uuid: transaction_id)
+            allow(DocumentCaptureSession).to receive(:find_by).with(uuid: transaction_id, issuer:)
               .and_return(session)
           end
 
           it 'only calls load_agent_proofed_user once across two requests' do
-            session = DocumentCaptureSession.find_by(uuid: transaction_id)
+            session = DocumentCaptureSession.find_by(uuid: transaction_id, issuer:)
             expect(session)
               .to receive(:load_agent_proofed_user)
               .once.and_return(successful_proofing_result)
-            allow(DocumentCaptureSession).to receive(:find_by).with(uuid: transaction_id)
+            allow(DocumentCaptureSession).to receive(:find_by).with(uuid: transaction_id, issuer:)
               .and_return(session)
 
             post :result, params: { proofing_agent_id: agent_id,
