@@ -35,6 +35,40 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
 
     context 'when the docv request is successful' do
       let(:response)  { docv_result_request.fetch }
+      let(:device_and_behavioral) do
+        {
+          'device' => {
+            'id' => 'device-id',
+            'computed' => {
+              'sessionAgeMinutes' => 1,
+            },
+          },
+          'behavioral' => {
+            'sessionId' => 'session-id',
+          },
+        }
+      end
+      let(:entity_profiler) do
+        [
+          {
+            'entity' => 'identity-value',
+            'entityType' => 'email',
+          },
+        ]
+      end
+      let(:digital_intelligence) do
+        device_and_behavioral.merge('entityProfiler' => entity_profiler)
+      end
+      let(:digital_intelligence_errors) do
+        [
+          {
+            'code' => 'DI_ERR_001',
+            'message' => 'Device session not found',
+          },
+        ]
+      end
+      let(:logged_digital_intelligence) { response.to_h[:digital_intelligence] }
+      let(:logged_digital_intelligence_errors) { response.to_h[:digital_intelligence_errors] }
 
       before do
         stub_request(:post, fake_socure_api_endpoint)
@@ -47,6 +81,7 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
           .to_return(
             status: 200,
             body: {
+              digitalIntelligenceErrors: digital_intelligence_errors,
               documentVerification: {
                 decision: {
                   value: decision_value,
@@ -54,13 +89,42 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
                 documentType: {
                   type: doc_type,
                 },
-              },
-            }.to_json,
+                digitalIntelligence: digital_intelligence,
+              }.compact,
+            }.compact.to_json,
           )
       end
 
       it 'returns a DocvResultResponse' do
         expect(response).to be_instance_of(DocAuth::Socure::Responses::DocvResultResponse)
+      end
+
+      it 'logs the digital intelligence payload' do
+        expect(logged_digital_intelligence).to eq(device_and_behavioral)
+      end
+
+      it 'excludes the entity profiler' do
+        expect(logged_digital_intelligence).not_to have_key('entityProfiler')
+      end
+
+      it 'logs the digital intelligence errors' do
+        expect(logged_digital_intelligence_errors).to eq(digital_intelligence_errors)
+      end
+
+      context 'when digital intelligence is not returned' do
+        let(:digital_intelligence) { nil }
+
+        it 'logs a nil digital intelligence value' do
+          expect(logged_digital_intelligence).to be_nil
+        end
+      end
+
+      context 'when digital intelligence errors are not returned' do
+        let(:digital_intelligence_errors) { nil }
+
+        it 'logs a nil digital intelligence errors value' do
+          expect(logged_digital_intelligence_errors).to be_nil
+        end
       end
 
       context 'passports enabled' do
