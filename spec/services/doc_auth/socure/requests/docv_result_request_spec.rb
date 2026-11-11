@@ -59,7 +59,16 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
       let(:digital_intelligence) do
         device_and_behavioral.merge('entityProfiler' => entity_profiler)
       end
+      let(:digital_intelligence_errors) do
+        [
+          {
+            'code' => 'DI_ERR_001',
+            'message' => 'Device session not found',
+          },
+        ]
+      end
       let(:logged_digital_intelligence) { response.to_h[:digital_intelligence] }
+      let(:logged_digital_intelligence_errors) { response.to_h[:digital_intelligence_errors] }
 
       before do
         stub_request(:post, fake_socure_api_endpoint)
@@ -72,6 +81,7 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
           .to_return(
             status: 200,
             body: {
+              digitalIntelligenceErrors: digital_intelligence_errors,
               documentVerification: {
                 decision: {
                   value: decision_value,
@@ -81,7 +91,7 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
                 },
                 digitalIntelligence: digital_intelligence,
               }.compact,
-            }.to_json,
+            }.compact.to_json,
           )
       end
 
@@ -97,11 +107,23 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
         expect(logged_digital_intelligence).not_to have_key('entityProfiler')
       end
 
+      it 'logs the digital intelligence errors' do
+        expect(logged_digital_intelligence_errors).to eq(digital_intelligence_errors)
+      end
+
       context 'when digital intelligence is not returned' do
         let(:digital_intelligence) { nil }
 
         it 'logs a nil digital intelligence value' do
           expect(logged_digital_intelligence).to be_nil
+        end
+      end
+
+      context 'when digital intelligence errors are not returned' do
+        let(:digital_intelligence_errors) { nil }
+
+        it 'logs a nil digital intelligence errors value' do
+          expect(logged_digital_intelligence_errors).to be_nil
         end
       end
 
