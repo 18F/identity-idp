@@ -915,6 +915,33 @@ module Test
       {}
     end
 
+    def setup_backup_code_verification
+      user = User.new
+      unless params[:sign_up].present?
+        user.auth_app_configurations.build(otp_secret_key: ROTP::Base32.random, name: 'Auth app')
+      end
+      @nds_current_user = user
+      @presenter = TwoFactorAuthCode::BackupCodePresenter.new(
+        view: view_context,
+        data: { current_user: user },
+        service_provider: nil,
+        remember_device_default: params[:remember].present?,
+      )
+      @backup_code_form = BackupCodeVerificationForm.new(user:, request:)
+      @backup_code_form.define_singleton_method(:backup_code) { '37ED-882S-8HAZ' } if
+        params[:code].present?
+      error = if params[:rate_limited].present?
+                t('errors.messages.phone_confirmation_limited', timeout: '10 minutes')
+              elsif params[:error].present?
+                t('two_factor_authentication.invalid_backup_code')
+              end
+      if error
+        @backup_code_form.errors.add(:backup_code, :invalid, message: error)
+        flash.now[:error] = error
+      end
+      {}
+    end
+
     def setup_totp_setup
       user = build_mfa_user(configured: params[:second].present?)
       @nds_current_user = user
