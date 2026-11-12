@@ -83,17 +83,9 @@ module Proofing
           )
         end
 
-        residential_address_resolution_result = residential_address_plugin.call(
+        resolution = proof_resolution_with_failover(
           applicant_pii:,
           current_sp:,
-          ipp_enrollment_in_progress:,
-          timer:,
-        )
-
-        state_id_address_resolution_result = state_id_address_plugin.call(
-          applicant_pii:,
-          current_sp:,
-          residential_address_resolution_result:,
           ipp_enrollment_in_progress:,
           timer:,
         )
@@ -101,8 +93,8 @@ module Proofing
         phone_result = phone_plugin.call(
           applicant_pii:,
           current_sp:,
-          residential_address_resolution_result:,
-          state_id_address_resolution_result:,
+          residential_address_resolution_result: resolution[:residential_resolution_result],
+          state_id_address_resolution_result: resolution[:resolution_result],
           best_effort_phone:,
           timer:,
           user_email:,
@@ -113,38 +105,109 @@ module Proofing
           device_profiling_result:,
           hybrid_mobile_device_profiling_result:,
           ipp_enrollment_in_progress:,
-          resolution_result: state_id_address_resolution_result,
-          residential_resolution_result: residential_address_resolution_result,
+          **resolution,
           phone_result:,
           ipp_current_address_matches_id: applicant_pii[:ipp_current_address_matches_id],
           applicant_pii:,
           precheck_phone_number: phone_plugin.phone_number,
-          proofing_vendor:,
         )
       end
 
-      def residential_address_plugin
-        @residential_address_plugin ||= Plugins::ResidentialAddressPlugin.new(
-          proofer: create_proofer,
-          sp_cost_token:,
+      # Only returned resolution failures trigger failover. Provider exceptions keep propagating.
+      def proof_resolution_with_failover(
+        applicant_pii:,
+        current_sp:,
+        ipp_enrollment_in_progress:,
+        timer:
+      )
+        vendors = failover_selected? ? resolution_vendors : [proofing_vendor]
+        failover_available = vendors.many?
+        attempts = {}
+        resolution = nil
+        arguments = { applicant_pii:, current_sp:, ipp_enrollment_in_progress: }
+        vendors.each do |vendor|
+          attempt_timer = failover_available ? JobHelpers::Timer.new : timer
+          begin
+            resolution = resolve_identity(vendor:, **arguments, timer: attempt_timer)
+          ensure
+            if failover_available
+              attempt_timer.results.each do |stage, duration|
+                timer.results["#{stage} #{vendor}"] = duration
+              end
+            end
+          end
+          attempts[vendor] = resolution.slice(:resolution_result, :residential_resolution_result)
+          break unless failover_available
+
+          adjudicator = ResultAdjudicator.new(
+            **resolution,
+            applicant_pii:,
+            ipp_enrollment_in_progress:,
+            ipp_current_address_matches_id: applicant_pii[:ipp_current_address_matches_id],
+            phone_result: {},
+            precheck_phone_number: nil,
+            device_profiling_result: nil,
+          )
+          break if adjudicator.resolution_success?
+        end
+        resolution.merge(resolution_attempts: attempts, failover_available:)
+      end
+
+      # Rolled once per submission. rand is in [0, 1), so 0 never selects and 100 always does.
+      def failover_selected?
+        (rand * 100) < IdentityConfig.store.idv_resolution_failover_enabled_percent
+      end
+
+      # The default bucket also receives any unallocated primary traffic. Bucket order breaks ties.
+      def resolution_vendors
+        test = is_proofing_agent ? AbTests::PROOFING_AGENT_PROOFING_VENDOR : AbTests::PROOFING_VENDOR
+        shares = test.buckets.dup
+        shares[test.default_bucket] = shares.fetch(test.default_bucket, 0) + 100 - shares.values.sum
+        fallbacks = shares.each_with_index
+          .select { |(vendor, share), _| share.positive? && vendor != :mock }
+          .sort_by { |(_, share), index| [-share, index] }
+          .map { |(vendor, _), _| vendor }
+        [proofing_vendor, *fallbacks].uniq
+      end
+
+      # Resolves the full identity (name, DOB, SSN, address) with one vendor. In-person enrollments
+      # resolve both the residential and the document address, so this is the unit failover retries.
+      def resolve_identity(vendor:, applicant_pii:, current_sp:, ipp_enrollment_in_progress:,
+                           timer:)
+        residential_resolution_result = residential_address_plugin(vendor).call(
+          applicant_pii:, current_sp:, ipp_enrollment_in_progress:, timer:,
+        )
+        resolution_result = state_id_address_plugin(vendor).call(
+          applicant_pii:, current_sp:, ipp_enrollment_in_progress:, timer:,
+          residential_address_resolution_result: residential_resolution_result
+        )
+        { residential_resolution_result:, resolution_result:, proofing_vendor: vendor }
+      end
+
+      def residential_address_plugin(vendor = proofing_vendor)
+        @residential_address_plugins ||= {}
+        @residential_address_plugins[vendor] ||= Plugins::ResidentialAddressPlugin.new(
+          proofer: create_proofer(vendor),
+          sp_cost_token: sp_cost_token(vendor),
         )
       end
 
-      def state_id_address_plugin
-        @state_id_address_plugin ||= Plugins::StateIdAddressPlugin.new(
-          proofer: create_proofer,
-          sp_cost_token:,
+      def state_id_address_plugin(vendor = proofing_vendor)
+        @state_id_address_plugins ||= {}
+        @state_id_address_plugins[vendor] ||= Plugins::StateIdAddressPlugin.new(
+          proofer: create_proofer(vendor),
+          sp_cost_token: sp_cost_token(vendor),
         )
       end
 
-      def create_proofer
-        case proofing_vendor
+      def create_proofer(vendor = proofing_vendor)
+        case vendor
         when :instant_verify then create_instant_verify_proofer
         when :instant_verify_ddp then create_instant_verify_ddp_proofer
         when :mock then create_mock_proofer
         when :socure_kyc then create_socure_proofer
         else
-          raise InvalidProofingVendorError, "#{proofing_vendor} is not a valid proofing vendor"
+          raise InvalidProofingVendorError, "#{vendor} is not a valid proofing vendor"
         end
       end
 
@@ -190,11 +253,11 @@ module Proofing
         )
       end
 
-      def sp_cost_token
-        PROOFING_VENDOR_SP_COST_TOKENS[proofing_vendor].tap do |token|
+      def sp_cost_token(vendor = proofing_vendor)
+        PROOFING_VENDOR_SP_COST_TOKENS[vendor].tap do |token|
           if !token.present?
             raise InvalidProofingVendorError,
-                  "No cost token present for proofing vendor #{proofing_vendor}"
+                  "No cost token present for proofing vendor #{vendor}"
           end
         end
       end
