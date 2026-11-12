@@ -1,5 +1,91 @@
 <% self.title = t('two_factor_authentication.backup_code_header_text') %>
 
+<% if nds_layout? %>
+  <% backup_code_error = flash[:error] if flash[:error].present? && @backup_code_form.errors[:backup_code].include?(flash[:error]) %>
+  <% flash.delete(:error) if backup_code_error %>
+  <% troubleshooting_options = @presenter.troubleshooting_options
+       .reject { |option| option.url == login_two_factor_options_path }
+       .map { |option| { text: option.content, url: option.url, new_tab: option.new_tab? } } %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('two_factor_authentication.backup_code_header_text'),
+        subtitle: t('two_factor_authentication.backup_code_prompt'),
+      ) do |page| %>
+    <% page.with_body do %>
+      <%= simple_form_for(
+            @backup_code_form,
+            url: login_two_factor_backup_code_path,
+            html: { data: { nds_submit_gate: true } },
+          ) do |f| %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <%= render NDS::InputComponent.new(
+                form: f,
+                attribute: :backup_code,
+                label: t('forms.two_factor.backup_code'),
+                error_message: backup_code_error,
+                error_messages: {
+                  valueMissing: t('simple_form.required.text'),
+                  patternMismatch: t('two_factor_authentication.invalid_backup_code'),
+                },
+                required: true,
+                autofocus: true,
+                autocapitalize: 'none',
+                autocomplete: 'off',
+                spellcheck: 'false',
+                pattern: '^[a-zA-Z0-9]{4}-?[a-zA-Z0-9]{4}-?[a-zA-Z0-9]{4}$',
+                class: 'text-uppercase backup-code',
+                maxlength: 14,
+              ) %>
+          <%= render NDS::CardComponent.new do %>
+            <div class="checkbox-group">
+              <div class="checkbox">
+                <%= f.check_box(
+                      :remember_device,
+                      { class: 'checkbox__input',
+                        checked: @presenter.remember_device_box_checked?,
+                        autocomplete: 'off',
+                        aria: { describedby: 'remember-browser-description' } },
+                      '1',
+                      '0',
+                    ) %>
+                <%= f.label :remember_device, class: 'checkbox__label' do %>
+                  <span class="checkbox__label-text"><%= t('forms.messages.remember_device') %></span>
+                  <span class="checkbox__label-description" id="remember-browser-description"><%= t('nds.mfa.remember_device_info') %></span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+          <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+            <%= render ButtonComponent.new(type: :submit, full_width: true)
+                  .with_content(t('forms.buttons.continue')) %>
+            <%= render ButtonComponent.new(
+                  url: login_two_factor_options_path,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('nds.mfa.choose_another_method')) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::TroubleshootingOptionsComponent.new(
+            heading: t('components.troubleshooting_options.default_heading'),
+            options: troubleshooting_options,
+          ) %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch, class: 'margin-top-4') do %>
+        <%= render ButtonComponent.new(
+              url: user_signing_up? ? sign_up_cancel_path : sign_out_path,
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('links.cancel')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% javascript_packs_tag_once('formatted-fields') %>
+  <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.backup_code_header_text')) %>
 
 <p>
@@ -44,3 +130,4 @@
 <%= render 'shared/cancel', link: sign_out_path %>
 
 <% javascript_packs_tag_once('formatted-fields') %>
+<% end %>
