@@ -1,5 +1,54 @@
 <% self.title = t('titles.registrations.new') %>
 
+<% if nds_layout? %>
+  <%= simple_form_for(@rules_of_use_form, url: rules_of_use_path, html: { class: nil }) do |f| %>
+    <%= render NDS::FormPageComponent.new(
+          title: t('titles.rules_of_use'),
+          subtitle: t(
+            'users.rules_of_use.overview_html',
+            link_html: new_tab_link_to(
+              t('titles.rules_of_use'),
+              MarketingSite.rules_of_use_url,
+            ),
+          ),
+        ) do |page| %>
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <hr class="divider" />
+          <div class="copy copy--muted">
+            <%= t('users.rules_of_use.details_html', app_name: APP_NAME) %>
+          </div>
+          <%= render NDS::CardComponent.new do %>
+            <%= render ValidatedFieldComponent.new(
+                  form: f,
+                  name: :terms_accepted,
+                  as: :boolean,
+                  label: capture do %>
+                    <%= t('users.rules_of_use.check_box_to_accept', app_name: APP_NAME) %>
+                    <%= new_tab_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
+                  <% end,
+                  label_html: { class: 'usa-checkbox__label--regular' },
+                  wrapper_html: { class: 'usa-checkbox' },
+                  required: true,
+                ) %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(type: :submit, full_width: true)
+                .with_content(t('forms.buttons.continue')) %>
+          <%= render ButtonComponent.new(
+                url: user_signing_up? ? sign_up_cancel_path : decorated_sp_session.cancel_link_url,
+                variant: :tertiary,
+                full_width: true,
+              ).with_content(cancel_link_text) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('titles.rules_of_use')) %>
 
 <p>
@@ -29,3 +78,4 @@
 <% end %>
 
 <%= render 'shared/cancel', link: decorated_sp_session.cancel_link_url %>
+<% end %>
