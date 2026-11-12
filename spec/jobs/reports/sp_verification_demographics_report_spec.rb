@@ -16,11 +16,12 @@ RSpec.describe Reports::SpVerificationDemographicsReport do
   let(:agency_abbreviation) { 'Test_Agency' }
 
   let(:expected_s3_paths) do
+    date_range = "#{time_range.begin.to_date}_#{time_range.end.to_date}"
     [
-      "#{report_folder}/definitions.csv",
-      "#{report_folder}/overview.csv",
-      "#{report_folder}/age_metrics.csv",
-      "#{report_folder}/state_metrics.csv",
+      "#{report_folder}/definitions_#{date_range}.csv",
+      "#{report_folder}/overview_#{date_range}.csv",
+      "#{report_folder}/age_metrics_#{date_range}.csv",
+      "#{report_folder}/state_metrics_#{date_range}.csv",
     ]
   end
 
@@ -67,26 +68,27 @@ RSpec.describe Reports::SpVerificationDemographicsReport do
 
   # Return "real-ish" emailable reports so ReportMailer doesn't explode on missing #title, etc
   let(:emailable_reports) do
+    date_range = "#{time_range.begin.to_date}_#{time_range.end.to_date}"
     [
       Reporting::EmailableReport.new(
         title: 'Definitions',
         table: [['Metric', 'Unit', 'Definition']],
-        filename: 'definitions',
+        filename: "definitions_#{date_range}",
       ),
       Reporting::EmailableReport.new(
         title: 'Overview',
         table: [['Report Timeframe', 'Report Generated', 'Issuer']],
-        filename: 'overview',
+        filename: "overview_#{date_range}",
       ),
       Reporting::EmailableReport.new(
         title: "#{agency_abbreviation} Age Metrics",
         table: mock_identity_verification_age_data,
-        filename: 'age_metrics',
+        filename: "age_metrics_#{date_range}",
       ),
       Reporting::EmailableReport.new(
         title: "#{agency_abbreviation} State Metrics",
         table: mock_identity_verification_state_data,
-        filename: 'state_metrics',
+        filename: "state_metrics_#{date_range}",
       ),
     ]
   end
