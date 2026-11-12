@@ -55,6 +55,33 @@ RSpec.describe 'Test::NdsPages', type: :request do
       end
     end
 
+    context 'with the PIV/CAC mismatch recovery-pending permutation' do
+      it 'renders the pending-recovery banner above the page' do
+        get test_nds_page_path(
+          page: 'piv-cac-mismatch',
+          no_other_method: '1',
+          recovery_pending: '1',
+        )
+
+        expect(response).to have_http_status(:ok)
+        page = Capybara.string(response.body)
+        expect(page).to have_css(
+          '.usa-alert--info',
+          text: t('account_recovery.pending.mfa_banner'),
+          count: 1,
+        )
+        expect(page).to have_css('.auth--form-page h1')
+        expect(response.body.index(t('account_recovery.pending.mfa_banner')))
+          .to be < response.body.index('auth--form-page')
+      end
+
+      it 'does not render the banner in the other permutations' do
+        get test_nds_page_path(page: 'piv-cac-mismatch', no_other_method: '1')
+
+        expect(response.body).not_to include(t('account_recovery.pending.mfa_banner'))
+      end
+    end
+
     context 'with an unknown page' do
       it 'renders 404' do
         get test_nds_page_path(page: 'does-not-exist')
