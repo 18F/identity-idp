@@ -45,6 +45,17 @@ module Test
         ],
       ),
       Page.new(
+        key: 'rules-of-use',
+        title: 'Rules of Use update',
+        flow: SIGN_IN,
+        template: 'users/rules_of_use/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Checkbox error', params: { error: '1' }),
+          Permutation.new(label: 'No MFA yet (cancel sign-up)', params: { signing_up: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'create-account',
         title: 'Create account (enter email)',
         flow: CREATE_ACCOUNT,
