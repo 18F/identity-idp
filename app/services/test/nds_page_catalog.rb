@@ -512,11 +512,34 @@ module Test
         ],
       ),
       Page.new(
+        key: 'socure-document-capture',
+        title: 'Verify your ID with Socure (document capture)',
+        flow: IDV,
+        template: 'idv/socure/document_capture/show',
+        permutations: [
+          Permutation.new(label: 'Driver’s license or state ID', params: {}),
+          Permutation.new(label: 'Passport', params: { passport: '1' }),
+          Permutation.new(label: 'Passport with selfie', params: { passport: '1', selfie: '1' }),
+          Permutation.new(label: 'Mobile driver’s license', params: { mdl: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'link-sent',
         title: 'Continue on your phone (link sent)',
         flow: IDV,
         template: 'idv/link_sent/show',
         permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'hybrid-socure-document-capture',
+        title: 'Verify your ID with Socure (hybrid mobile document capture)',
+        flow: IDV,
+        template: 'idv/hybrid_mobile/socure/document_capture/show',
+        permutations: [
+          Permutation.new(label: 'Driver’s license or state ID', params: {}),
+          Permutation.new(label: 'Passport', params: { passport: '1' }),
+          Permutation.new(label: 'Mobile driver’s license', params: { mdl: '1' }),
+        ],
       ),
       Page.new(
         key: 'capture-complete',

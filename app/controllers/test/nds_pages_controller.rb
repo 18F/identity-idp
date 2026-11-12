@@ -1213,8 +1213,29 @@ module Test
       { idv_phone_form: form }
     end
 
+    def setup_socure_document_capture(hybrid_flow: false)
+      @hybrid_flow = hybrid_flow
+      @selfie_check_required = params[:selfie].present?
+      @passport_requested = params[:passport].present?
+      @mdl_requested = params[:mdl].present?
+      @document_type_requested =
+        if @passport_requested
+          Idp::Constants::DocumentTypes::PASSPORT
+        elsif @mdl_requested
+          Idp::Constants::DocumentTypes::MDL
+        else
+          Idp::Constants::DocumentTypes::DRIVERS_LICENSE
+        end
+      @url = '#'
+      {}
+    end
+
     def setup_link_sent
       { phone: '(202) 555-1212' }
+    end
+
+    def setup_hybrid_socure_document_capture
+      setup_socure_document_capture(hybrid_flow: true)
     end
 
     def setup_capture_complete
