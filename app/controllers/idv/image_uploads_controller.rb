@@ -31,13 +31,6 @@ module Idv
       )
     end
 
-    # The capture session named in the request is accepted only when this caller is entitled to
-    # it. A signed-in person may upload to their own sessions. On the phone in the hybrid flow
-    # there is no signed-in person: the hand-off link placed the person's id and the session's
-    # identifier in the Rails session, so the upload must name that session, and the hand-off must
-    # still be open, neither expired nor cancelled from the desktop. Anything else, including an
-    # identifier the caller merely knows, resolves to no session, which the form reports exactly
-    # as it reports an unknown identifier.
     def authorized_document_capture_session
       uuid = params[:document_capture_session_uuid]
       return if uuid.blank?
