@@ -526,6 +526,13 @@ module Test
         permutations: [Permutation.new(label: 'Default', params: {})],
       ),
       Page.new(
+        key: 'socure-wait',
+        title: 'Processing your ID images (Socure wait)',
+        flow: IDV,
+        template: 'idv/socure/document_capture/wait',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
         key: 'idv-ssn',
         title: 'Enter your Social Security number',
         flow: IDV,

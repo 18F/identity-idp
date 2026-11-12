@@ -1221,6 +1221,11 @@ module Test
       {}
     end
 
+    def setup_socure_wait
+      @refresh_interval = IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
+      {}
+    end
+
     def setup_idv_ssn
       @ssn_presenter = Idv::SsnPresenter.new(
         sp_name: params[:sp].present? ? 'Example Service Provider' : nil,
