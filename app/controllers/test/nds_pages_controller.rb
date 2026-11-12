@@ -861,6 +861,14 @@ module Test
       ThreatMetrixHelper::NO_THREAT_METRIX_VARIABLES.dup
     end
 
+    def setup_piv_cac_recommended
+      @recommended_presenter = PivCacRecommendedPresenter.new(
+        build_mfa_user(configured: params[:second].present?),
+      )
+      # Same inert ThreatMetrix locals as setup_mfa_setup (dev enables profiling).
+      ThreatMetrixHelper::NO_THREAT_METRIX_VARIABLES.dup
+    end
+
     def setup_piv_cac_setup
       skip = params[:skip].present?
       user = build_mfa_user(configured: params[:second].present?)
