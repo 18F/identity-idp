@@ -41,7 +41,6 @@ module AccountRecovery
         user_agent: request.user_agent,
         phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
         piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
-        show_skip_additional_mfa_link: false,
       )
     end
 

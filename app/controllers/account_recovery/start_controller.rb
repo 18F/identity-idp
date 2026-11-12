@@ -3,7 +3,6 @@
 module AccountRecovery
   class StartController < ApplicationController
     include TwoFactorAuthenticatable
-    include AccountRecoveryConcern
 
     before_action :reconcile_lapsed_request
     before_action :redirect_pending_request
@@ -15,9 +14,9 @@ module AccountRecovery
     end
 
     def create
-      return handle_rate_limited if rate_limiter.limited?
+      return handle_rate_limited if account_recovery_rate_limiter.limited?
 
-      rate_limiter.increment!
+      account_recovery_rate_limiter.increment!
 
       result = AccountRecovery::CreateRequest.new(
         user: current_user,

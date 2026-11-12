@@ -290,7 +290,7 @@ module TwoFactorAuthenticatableMethods
       recovery_state: cancellation.recovery_state,
       mfa_method: auth_method,
     )
-    flash[:success] = t('account_recovery.pending.cancel_success')
+    flash[:success] = t('account_recovery.pending.cancel_success_html', app_name: APP_NAME)
   end
 
   def mark_user_session_authenticated_analytics(authentication_type)

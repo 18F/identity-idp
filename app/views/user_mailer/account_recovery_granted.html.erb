@@ -1,5 +1,9 @@
 <p class="lead">
-  <%= t('user_mailer.account_recovery_granted.intro', app_name: APP_NAME) %>
+  <%= t(
+        'user_mailer.account_recovery_granted.intro',
+        app_name: APP_NAME,
+        interval: @token_valid_period,
+      ) %>
 </p>
 
 <table class="button expanded large">
@@ -10,7 +14,7 @@
           <tbody>
             <tr>
               <td>
-                <%= link_to t('user_mailer.account_recovery_granted.button'),
+                <%= link_to t('user_mailer.account_recovery_granted.button', app_name: APP_NAME),
                             account_recovery_verify_url(token: @token),
                             target: '_blank', rel: 'noopener' %>
               </td>
@@ -26,10 +30,6 @@
   <%= link_to account_recovery_verify_url(token: @token),
               account_recovery_verify_url(token: @token), target: '_blank', rel: 'noopener' %>
 </p>
-
-<p><%= t('user_mailer.account_recovery_granted.expires', interval: @token_valid_period) %></p>
-
-<p><%= t('user_mailer.account_recovery_granted.password_reminder') %></p>
 
 <table class="hr">
   <tr>

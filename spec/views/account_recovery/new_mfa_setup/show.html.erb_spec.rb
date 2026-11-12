@@ -19,7 +19,6 @@ RSpec.describe 'account_recovery/new_mfa_setup/show.html.erb' do
       user_agent: nil,
       phishing_resistant_required: false,
       piv_cac_required: false,
-      show_skip_additional_mfa_link: false,
     )
   end
 
@@ -28,8 +27,8 @@ RSpec.describe 'account_recovery/new_mfa_setup/show.html.erb' do
       I18n.with_locale(locale) do
         render
 
-        expect(rendered).to have_content(t('account_recovery.new_mfa_setup.header'))
-        expect(rendered).to have_content(t('account_recovery.new_mfa_setup.intro'))
+        expect(rendered).to have_content(t('two_factor_authentication.two_factor_choice'))
+        expect(rendered).to have_content(t('account_recovery.new_mfa_setup.banner'))
       end
     end
   end
@@ -37,8 +36,8 @@ RSpec.describe 'account_recovery/new_mfa_setup/show.html.erb' do
   it 'explains that new methods replace the old ones and finish recovery' do
     render
 
-    expect(rendered).to have_content(t('account_recovery.new_mfa_setup.header'))
-    expect(rendered).to have_content(t('account_recovery.new_mfa_setup.intro'))
+    expect(rendered).to have_content(t('account_recovery.new_mfa_setup.banner'))
+    expect(rendered).to have_content(t('mfa.info', app_name: APP_NAME))
   end
 
   it 'offers every enrollment method as a checkbox' do

@@ -21,16 +21,17 @@ RSpec.feature 'Account recovery request cancelled by signing in with existing MF
 
     sign_in_user(user)
 
-    expect(page).to have_content(t('account_recovery.pending.mfa_banner'))
+    expect(page).to have_content(t('account_recovery.pending.mfa_banner', app_name: APP_NAME))
     expect(recovery_request.reload).to be_active
     fill_in_code_with_last_phone_otp
     click_submit_default
 
     expect(page).to have_current_path(account_path)
-    expect(page).to have_content(t('account_recovery.pending.cancel_success'))
+    t('account_recovery.pending.cancel_success_html', app_name: APP_NAME).split('<br>')
+      .each { |part| expect(page).to have_content(strip_tags(part)) }
     expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::CANCELLED)
     expect(recovery_request.cancel_reason).to eq(AccountRecoveryRequest::CANCEL_REASON_MFA_USED)
-    expect(page).not_to have_content(t('account_recovery.pending.mfa_banner'))
+    expect(page).not_to have_content(t('account_recovery.pending.mfa_banner', app_name: APP_NAME))
     expect_delivered_email(
       to: [user.last_sign_in_email_address.email],
       subject: t('user_mailer.account_recovery_cancelled.subject', app_name: APP_NAME),
@@ -43,10 +44,10 @@ RSpec.feature 'Account recovery request cancelled by signing in with existing MF
     recovery_request = create(:account_recovery_request, :waiting, user: user)
 
     sign_in_user(user)
-    expect(page).to have_content(t('account_recovery.pending.mfa_banner'))
+    expect(page).to have_content(t('account_recovery.pending.mfa_banner', app_name: APP_NAME))
 
     click_link t('two_factor_authentication.login_options_link_text')
-    expect(page).to have_content(t('account_recovery.pending.mfa_banner'))
+    expect(page).to have_content(t('account_recovery.pending.mfa_banner', app_name: APP_NAME))
     expect(page).not_to have_link(href: account_recovery_start_path)
     expect(page).not_to have_link(t('two_factor_authentication.account_reset.link'))
     expect(recovery_request.reload).to be_active
@@ -62,7 +63,7 @@ RSpec.feature 'Account recovery request cancelled by signing in with existing MF
     fill_in 'code', with: '000000'
     click_submit_default
 
-    expect(page).to have_content(t('account_recovery.pending.mfa_banner'))
+    expect(page).to have_content(t('account_recovery.pending.mfa_banner', app_name: APP_NAME))
     expect(recovery_request.reload).to be_active
     expect(ActionMailer::Base.deliveries.size).to eq(emails_sent)
   end
@@ -80,7 +81,7 @@ RSpec.feature 'Account recovery request cancelled by signing in with existing MF
       },
     )
     signin(user.email, user.password)
-    expect(page).to have_content(t('account_recovery.pending.mfa_banner'))
+    expect(page).to have_content(t('account_recovery.pending.mfa_banner', app_name: APP_NAME))
     fill_in_code_with_last_phone_otp
     click_submit_default
 

@@ -52,8 +52,6 @@ module AccountRecoveryConcern
     after_sign_in_path_for(current_user)
   end
 
-  private
-
   def reconcile_lapsed_request
     recovery_request = AccountRecoveryRequest.active_for_user(current_user)
     return if recovery_request.blank?
@@ -66,11 +64,10 @@ module AccountRecoveryConcern
     return unless expired
 
     analytics.account_recovery_expired(recovery_state:)
-    @account_recovery_request = nil
   end
 
-  def rate_limiter
-    @rate_limiter ||= RateLimiter.new(
+  def account_recovery_rate_limiter
+    @account_recovery_rate_limiter ||= RateLimiter.new(
       user: current_user,
       rate_limit_type: :account_recovery_request,
     )

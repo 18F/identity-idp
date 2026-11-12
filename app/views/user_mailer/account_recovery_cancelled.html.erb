@@ -1,8 +1,16 @@
 <p class="lead"><%= t('user_mailer.account_recovery_cancelled.intro', app_name: APP_NAME) %></p>
-<p><%= t('user_mailer.account_recovery_cancelled.details') %></p>
+<p><%= t('user_mailer.account_recovery_cancelled.no_action_needed') %></p>
 <p><%= t(
          'user_mailer.account_recovery_cancelled.unrequested_html',
-         contact_link_html: link_to(
-           t('user_mailer.contact_link_text'), MarketingSite.contact_url
-         ),
+         app_link_html: link_to(APP_NAME, @root_url, target: '_blank', rel: 'noopener'),
        ) %></p>
+
+<ul>
+  <li><%= t('user_mailer.account_recovery_request.change_password') %></li>
+  <li><%= t('user_mailer.account_recovery_request.review_methods') %></li>
+  <li><%= t('user_mailer.account_recovery_request.review_history') %></li>
+  <li><%= t(
+            'user_mailer.account_recovery_request.report_html',
+            contact_link_html: link_to(t('user_mailer.contact_link_text'), MarketingSite.contact_url),
+          ) %></li>
+</ul>

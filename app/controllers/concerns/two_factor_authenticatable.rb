@@ -49,8 +49,8 @@ module TwoFactorAuthenticatable
   def redirect_recovery_authentication_to_setup
     return unless replacement_mfa_pending?
     if UserSessionContext.confirmation_context?(context) &&
-       %w[users/two_factor_authentication two_factor_authentication/otp_verification
-          two_factor_authentication/sms_opt_in].include?(controller_path)
+       %w[users/two_factor_authentication
+          two_factor_authentication/otp_verification].include?(controller_path)
       return
     end
 

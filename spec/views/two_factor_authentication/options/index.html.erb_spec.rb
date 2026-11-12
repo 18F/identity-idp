@@ -194,7 +194,10 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
       context 'with an active recovery request' do
         before { create(:account_recovery_request, :waiting, user: user) }
 
-        it 'offers neither legacy deletion nor a second recovery request' do
+        it 'keeps the recovery guidance as plain text without a second request link' do
+          expect(rendered).to have_content(
+            t('two_factor_authentication.account_recovery.recover_text'),
+          )
           expect(rendered).not_to have_link(href: account_recovery_start_path)
           expect(rendered).not_to have_link(t('two_factor_authentication.account_reset.link'))
           expect(rendered).not_to have_link(

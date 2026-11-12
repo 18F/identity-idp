@@ -14,7 +14,7 @@ RSpec.describe 'account_recovery/verify/show.html.erb' do
 
         expect(rendered).to have_content(t('account_recovery.verify.header'))
         expect(rendered).to have_css('strong', text: 'signed-in@example.com', count: 1)
-        expect(rendered).to have_button(t('account_recovery.verify.continue'))
+        expect(rendered).to have_button(t('forms.buttons.submit.default'))
         expect(rendered).to have_css(
           "form[action=\"#{account_recovery_verify_path}\"][method=\"post\"]",
         )

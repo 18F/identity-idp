@@ -20,10 +20,10 @@ RSpec.describe 'Account Recovery: replace inaccessible MFA', email: true do
       open_last_email
       click_email_link_matching(%r{account_recovery/verify\?.*token})
       fill_in t('account.index.password'), with: user.password
-      click_button t('account_recovery.verify.continue')
+      click_button t('forms.buttons.submit.default')
 
       expect(page).to have_current_path(account_recovery_new_mfa_setup_path)
-      expect(page).to have_content(t('account_recovery.new_mfa_setup.header'))
+      expect(page).to have_content(t('two_factor_authentication.two_factor_choice'))
       expect(user.reload.phone_configurations.first).to be_suspended_for_account_recovery
       check 'recovery_mfa_auth_app'
       check 'recovery_mfa_backup_code'
@@ -63,6 +63,49 @@ RSpec.describe 'Account Recovery: replace inaccessible MFA', email: true do
       click_button t('forms.buttons.submit.default')
 
       expect(page).to have_current_path(account_path)
+    end
+  end
+
+  # The pending banner tells the user that authenticating cancels the request.
+  # That is false inside the recovery session, where verifying a replacement
+  # completes recovery instead.
+  it 'does not show the pending-recovery banner while enrolling a replacement phone' do
+    signin(user.email, user.password)
+    click_link t('two_factor_authentication.login_options_link_text')
+
+    expect(page).to have_content(t('account_recovery.pending.mfa_banner', app_name: APP_NAME))
+
+    click_link t('two_factor_authentication.account_recovery.recover_link')
+    click_button t('account_recovery.start.continue')
+
+    travel_to(Time.zone.now + 2.days) do
+      GrantAccountRecoveryRequestsAndSendEmailsJob.new.perform(Time.zone.now)
+      open_last_email
+      click_email_link_matching(%r{account_recovery/verify\?.*token})
+      fill_in t('account.index.password'), with: user.password
+      click_button t('forms.buttons.submit.default')
+
+      expect(page).to have_current_path(account_recovery_new_mfa_setup_path)
+      expect(page).not_to have_content(
+        t('account_recovery.pending.mfa_banner', app_name: APP_NAME),
+      )
+
+      check 'recovery_mfa_phone'
+      click_button t('forms.buttons.continue')
+
+      fill_in :new_phone_form_phone, with: '3015551212'
+      click_send_one_time_code
+
+      expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
+      expect(page).not_to have_content(
+        t('account_recovery.pending.mfa_banner', app_name: APP_NAME),
+      )
+      expect(page).not_to have_content(t('account_recovery.pending.link_verified_banner'))
+
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(user.account_recovery_requests.last.state).to eq(AccountRecoveryRequest::COMPLETED)
     end
   end
 end

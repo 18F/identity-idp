@@ -66,12 +66,14 @@ RSpec.describe AccountRecovery::VerifyLink do
     end
 
     it 'rejects a request whose password was already verified' do
+      # Only reachable if a fingerprint somehow outlived password verification,
+      # which clears it. The transition table still fails closed.
       recovery_request.update!(state: AccountRecoveryRequest::PASSWORD_VERIFIED)
 
       result = service.call
 
       expect(result).not_to be_success
-      expect(result.to_h[:failure_reason]).to eq('wrong_state')
+      expect(result.to_h[:failure_reason]).to eq('transition_failed')
     end
 
     it 'rejects a token belonging to a cancelled request' do

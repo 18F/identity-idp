@@ -117,6 +117,12 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     )
   end
 
+  # A pending request cannot be requested again, so the same guidance is shown
+  # without a link.
+  def account_recovery_pending_text
+    t('two_factor_authentication.account_recovery.recover_text')
+  end
+
   def cancel_link
     if reauthentication_context?
       account_path

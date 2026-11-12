@@ -1,6 +1,14 @@
-<% if current_user && !user_fully_authenticated? &&
-      AccountRecovery::EligibilityPolicy.new(user: current_user).recovery_pending? %>
-  <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
-    <%= t('account_recovery.pending.mfa_banner') %>
+<% if current_user && !user_fully_authenticated? %>
+  <% recovery_policy = AccountRecovery::EligibilityPolicy.new(user: current_user) %>
+  <%# No banner once replacement MFA is pending: the recovery continuation page
+      explains that session, and authenticating there cannot cancel the request. %>
+  <% if recovery_policy.cancellable_by_mfa? %>
+    <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
+      <%= t('account_recovery.pending.mfa_banner', app_name: APP_NAME) %>
+    <% end %>
+  <% elsif recovery_policy.awaiting_password_verification? %>
+    <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
+      <%= t('account_recovery.pending.link_verified_banner') %>
+    <% end %>
   <% end %>
 <% end %>
