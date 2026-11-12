@@ -1,5 +1,119 @@
 <% self.title = @presenter.title %>
 
+<% if nds_layout? %>
+  <% option_ranks = {
+       'webauthn_platform' => 0,
+       'sms' => 1,
+       'voice' => 1,
+       'phone' => 1,
+       'auth_app' => 2,
+       'webauthn' => 3,
+       'backup_code' => 4,
+       'piv_cac' => 5,
+       'personal_key' => 6,
+     } %>
+  <% option_icons = {
+       'webauthn_platform' => :fingerprint,
+       'sms' => :chat,
+       'voice' => :chat,
+       'phone' => :chat,
+       'auth_app' => :qr,
+       'webauthn' => :key,
+       'backup_code' => :download_backup,
+       'piv_cac' => :id,
+       'personal_key' => :qr,
+     } %>
+  <% option_kind = ->(option) { option.type.to_s.sub(/_\d+\z/, '') } %>
+  <% nds_options = @presenter.options.each_with_index
+       .sort_by { |option, index| [option_ranks.fetch(option_kind.call(option), option_ranks.length), index] }
+       .map(&:first) %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: @presenter.heading,
+        subtitle: @presenter.reauthentication_context? ? @presenter.info : nil,
+      ) do |page| %>
+    <% page.with_alert do %>
+      <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
+      <% if @presenter.add_piv_cac_after_2fa? %>
+        <%= render AlertComponent.new(
+              type: :info,
+              class: 'margin-bottom-4',
+            ).with_content(t('two_factor_authentication.piv_cac_mismatch.2fa_before_add')) %>
+      <% end %>
+      <% if @presenter.restricted_options_warning_text.present? %>
+        <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
+          <%= @presenter.restricted_options_warning_text %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% page.with_body do %>
+      <%= simple_form_for(@two_factor_options_form, url: login_two_factor_options_path) do %>
+        <div class="mfa-options" role="group" aria-label="<%= @presenter.heading %>">
+          <% nds_options.each do |option| %>
+            <% kind = option_kind.call(option) %>
+            <% option_title = case kind
+                              when 'webauthn_platform' then t('nds.mfa_setup.options.webauthn_platform')
+                              when 'personal_key' then t('forms.two_factor.personal_key')
+                              else option.label
+                              end %>
+            <% option_description = case kind
+                                    when 'webauthn_platform' then t('nds.mfa_options.webauthn_platform_info')
+                                    when 'piv_cac' then t('nds.mfa_setup.options.piv_cac_info')
+                                    else option.info
+                                    end %>
+            <div class="mfa-options__item">
+              <%= render(option) do %>
+                <%= render NDS::CardComponent.new(
+                      button: true,
+                      type: :submit,
+                      class: 'card--mfa',
+                      name: 'two_factor_options_form[selection]',
+                      value: option.type,
+                      id: "two_factor_options_form_selection_#{option.type}",
+                      disabled: option.disabled?,
+                      'aria-disabled': option.disabled?,
+                    ) do |card| %>
+                  <% unless option.disabled? %>
+                    <% card.with_trailing do %>
+                      <%= render NDS::IconComponent.new(icon: :chevron_right, size: 20) %>
+                    <% end %>
+                  <% end %>
+                  <div class="card__row">
+                    <%= render NDS::IconComponent.new(icon: option_icons.fetch(kind, :lock), size: 24) %>
+                    <p class="card__title"><%= option_title %></p>
+                  </div>
+                  <p class="card__description"><%= option_description %></p>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <% if @presenter.account_recovery_pending? %>
+        <%# The pending-recovery banner explains how to cancel the request. %>
+      <% elsif @presenter.account_recovery_eligible? %>
+        <div class="copy copy--centered copy--muted">
+          <p><%= @presenter.account_recovery_link %></p>
+        </div>
+      <% elsif @presenter.account_reset_or_cancel_link.present? %>
+        <div class="copy copy--centered copy--muted">
+          <p><%= @presenter.account_reset_or_cancel_link %></p>
+        </div>
+      <% end %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch, class: 'margin-top-4') do %>
+        <%= render ButtonComponent.new(
+              url: user_signing_up? ? sign_up_cancel_path : @presenter.cancel_link,
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(cancel_link_text) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
 
 <% if @presenter.add_piv_cac_after_2fa? %>
@@ -61,3 +175,4 @@
 <% end %>
 
 <%= render 'shared/cancel', link: @presenter.cancel_link %>
+<% end %>
