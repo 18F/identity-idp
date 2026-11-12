@@ -19,7 +19,7 @@ RSpec.describe Proofing::Resolution::AamvaCoveragePolicy do
         {
           aamva_verified_attributes: %i[address dob],
           address_edited: true,
-        }.with_indifferent_access
+        }
       end
 
       it 'uses the applicant values to determine usable attributes' do
