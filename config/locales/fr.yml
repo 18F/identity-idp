@@ -1761,6 +1761,7 @@ nds.totp_setup.new.setup_code_label: Code de configuration
 nds.totp_setup.new.step_1: Saisir un surnom
 nds.totp_setup.new.step_2: Ouvrir votre appli d’authentification préférée
 nds.totp_setup.new.step_3: Scanner le code QR ou saisir le code de configuration manuellement dans votre appli d’authentification
+nds.totp_verification.invalid_code_body: Ce code n’est pas valide. Veuillez saisir le code actuel de votre appli d’authentification.
 nds.verify_info.address: Adresse
 notices.account_reactivation: Parfait ! Vous avez votre clé personnelle.
 notices.authenticated_successfully: Authentifié avec succès.

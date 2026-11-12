@@ -1,5 +1,94 @@
 <% self.title = t('titles.enter_2fa_code.security_code') %>
 
+<% if nds_layout? %>
+  <% otp_invalid_error = flash[:error] == t('two_factor_authentication.invalid_otp') ? flash.delete(:error) : nil %>
+  <% troubleshooting_options = @presenter.troubleshooting_options
+       .reject { |option| option.url == login_two_factor_options_path }
+       .map { |option| { text: option.content, url: option.url, new_tab: option.new_tab? } } %>
+
+  <%= render NDS::FormPageComponent.new(title: @presenter.header) do |page| %>
+    <% if otp_invalid_error %>
+      <% page.with_alert do %>
+        <%= render AlertComponent.new(
+              type: :error,
+              title: t('nds.otp_verification.invalid_otp_heading'),
+              class: 'margin-bottom-4',
+            ).with_content(t('nds.totp_verification.invalid_code_body')) %>
+      <% end %>
+    <% end %>
+
+    <% page.with_body do %>
+      <%= simple_form_for('', html: { data: { nds_submit_gate: true } }) do |f| %>
+        <% if @presenter.reauthn %>
+          <%= render 'two_factor_authentication/totp_verification/reauthn' %>
+        <% end %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <%= render NDS::InputComponent.new(
+                form: f,
+                attribute: :code,
+                label: t('components.one_time_code_input.label'),
+                error_messages: {
+                  valueMissing: t('errors.messages.otp_format'),
+                  patternMismatch: t('errors.messages.otp_format'),
+                },
+                id: 'code',
+                value: @code,
+                required: true,
+                autofocus: true,
+                autocomplete: 'one-time-code',
+                inputmode: 'numeric',
+                pattern: "[0-9]{#{TwoFactorAuthenticatable::OTP_LENGTH}}",
+                maxlength: TwoFactorAuthenticatable::OTP_LENGTH,
+              ) %>
+          <%= render NDS::CardComponent.new do %>
+            <div class="checkbox-group">
+              <div class="checkbox">
+                <%= f.check_box(
+                      :remember_device,
+                      { class: 'checkbox__input',
+                        checked: @presenter.remember_device_box_checked?,
+                        autocomplete: 'off',
+                        aria: { describedby: 'remember-browser-description' } },
+                      '1',
+                      '0',
+                    ) %>
+                <%= f.label :remember_device, class: 'checkbox__label' do %>
+                  <span class="checkbox__label-text"><%= t('forms.messages.remember_device') %></span>
+                  <span class="checkbox__label-description" id="remember-browser-description"><%= t('nds.mfa.remember_device_info') %></span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+          <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+            <%= render ButtonComponent.new(type: :submit, full_width: true)
+                  .with_content(t('forms.buttons.continue')) %>
+            <%= render ButtonComponent.new(
+                  url: login_two_factor_options_path,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('nds.mfa.choose_another_method')) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::TroubleshootingOptionsComponent.new(
+            heading: t('components.troubleshooting_options.default_heading'),
+            options: troubleshooting_options,
+          ) %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch, class: 'margin-top-4') do %>
+        <%= render ButtonComponent.new(
+              url: user_signing_up? ? sign_up_cancel_path : @presenter.cancel_link,
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('links.cancel')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
 
 <%= simple_form_for('', html: { class: 'margin-bottom-5' }) do |f| %>
@@ -37,3 +126,4 @@
 
 <%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>
 <%= render 'shared/cancel', link: @presenter.cancel_link %>
+<% end %>
