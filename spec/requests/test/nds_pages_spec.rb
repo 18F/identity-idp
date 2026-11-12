@@ -46,6 +46,7 @@ RSpec.describe 'Test::NdsPages', type: :request do
         'enter-password' => { toast: '1', error: '1' },
         'mfa-setup' => { piv_cac: '1' },
         'otp-entry' => { delivery: 'voice', landline: '1', countdown: '1' },
+        'authorization-confirmation' => { logo: '1' },
       }.each do |page_key, params|
         it "renders 200 for #{page_key} with #{params}" do
           get test_nds_page_path(page: page_key, **params)
