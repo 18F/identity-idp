@@ -128,7 +128,7 @@ RSpec.describe DocumentImagesForm do
       it 'is invalid' do
         expect(response).to_not be_success
         expect(form.errors.details[:client_assertion]).to include(
-          error: I18n.t('openid_connect.token.errors.missing_exp'),
+          error: OpenidConnectClientAssertionValidator::MISSING_EXP_MESSAGE,
           type: :missing_exp,
         )
       end
@@ -143,7 +143,7 @@ RSpec.describe DocumentImagesForm do
         expect(response).to be_success
         expect(replay.submit).to_not be_success
         expect(replay.errors.details[:client_assertion]).to include(
-          error: I18n.t('openid_connect.token.errors.replayed_jti'),
+          error: OpenidConnectClientAssertionValidator::REPLAYED_JTI_MESSAGE,
           type: :replayed_jti,
         )
       end

@@ -340,7 +340,7 @@ RSpec.describe OpenidConnectTokenForm do
           it 'is invalid' do
             expect(valid?).to eq(false)
             expect(form.errors[:client_assertion]).to include(
-              t('openid_connect.token.errors.missing_exp'),
+              OpenidConnectClientAssertionValidator::MISSING_EXP_MESSAGE,
             )
           end
         end
@@ -351,9 +351,9 @@ RSpec.describe OpenidConnectTokenForm do
           it 'is invalid' do
             expect(valid?).to eq(false)
             expect(form.errors[:client_assertion]).to include(
-              t(
-                'openid_connect.token.errors.invalid_exp',
-                seconds: IdentityConfig.store.client_assertion_max_lifetime_seconds,
+              format(
+                OpenidConnectClientAssertionValidator::INVALID_EXP_MESSAGE,
+                IdentityConfig.store.client_assertion_max_lifetime_seconds,
               ),
             )
           end
@@ -365,7 +365,7 @@ RSpec.describe OpenidConnectTokenForm do
           it 'is invalid' do
             expect(valid?).to eq(false)
             expect(form.errors[:client_assertion]).to include(
-              t('openid_connect.token.errors.missing_jti'),
+              OpenidConnectClientAssertionValidator::MISSING_JTI_MESSAGE,
             )
           end
         end
@@ -381,7 +381,7 @@ RSpec.describe OpenidConnectTokenForm do
             replay = OpenidConnectTokenForm.new(params.merge(code: identity.session_uuid))
             expect(replay.submit.success?).to eq(false)
             expect(replay.errors[:client_assertion]).to include(
-              t('openid_connect.token.errors.replayed_jti'),
+              OpenidConnectClientAssertionValidator::REPLAYED_JTI_MESSAGE,
             )
           end
         end

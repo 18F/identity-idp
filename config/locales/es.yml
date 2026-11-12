@@ -1842,12 +1842,8 @@ openid_connect.token.errors.invalid_aud: Notificación de audiencia no válida, 
 openid_connect.token.errors.invalid_authentication: El cliente debe autenticarse a través de PKCE o private_key_jwt, omitiendo code_challenge o client_assertion. Consulte nuestra documentación en https://developers.login.gov/support/#pkce-or-private-key
 openid_connect.token.errors.invalid_code: no es válido porque no coincide con ningún usuario. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-code
 openid_connect.token.errors.invalid_code_verifier: code_verifier no coincide con code_challenge. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-code-verifier
-openid_connect.token.errors.invalid_exp: exp no puede ser más de %{seconds} segundos después de iat, o después del momento de la solicitud cuando no hay iat.
 openid_connect.token.errors.invalid_iat: iat debe ser una marca de tiempo Unix de punto flotante o un entero que represente un momento en el pasado. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: No se pudo validar la afirmación contra ninguna clave pública registrada. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-token-signature
-openid_connect.token.errors.missing_exp: exp es obligatorio y debe ser una marca de tiempo Unix de punto flotante o un entero.
-openid_connect.token.errors.missing_jti: jti es obligatorio y debe ser una cadena única para esta aserción.
-openid_connect.token.errors.replayed_jti: jti ya se ha utilizado. Cada aserción de cliente debe llevar un jti nuevo.
 openid_connect.user_info.errors.encryption_unavailable: 'Este proveedor de servicios está configurado para recibir respuestas userinfo cifradas, pero no tiene registrada ninguna clave de cifrado utilizable: la respuesta no se envió.'
 openid_connect.user_info.errors.malformed_authorization: Encabezado de autorización mal formado. Consulte nuestra documentación en https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No se proporcionó ningún encabezado de autorización. Consulte nuestra documentación en https://developers.login.gov/support/#no-auth-header

@@ -1830,12 +1830,8 @@ openid_connect.token.errors.invalid_aud: Invalid audience claim, expected %{url}
 openid_connect.token.errors.invalid_authentication: Client must authenticate via PKCE or private_key_jwt, missing either code_challenge or client_assertion. Please see our documentation at https://developers.login.gov/support/#pkce-or-private-key
 openid_connect.token.errors.invalid_code: is invalid because doesn’t match any user. Please see our documentation at https://developers.login.gov/support/#invalid-code
 openid_connect.token.errors.invalid_code_verifier: code_verifier did not match code_challenge. Please see our documentation at https://developers.login.gov/support/#invalid-code-verifier
-openid_connect.token.errors.invalid_exp: exp may be no more than %{seconds} seconds after iat, or after the time of the request when iat is absent.
 openid_connect.token.errors.invalid_iat: iat must be an integer or floating point Unix timestamp representing a time in the past. Please see our documentation at https://developers.login.gov/support/#invalid-iat
 openid_connect.token.errors.invalid_signature: Could not validate assertion against any registered public keys. Please see our documentation at https://developers.login.gov/support/#invalid-token-signature
-openid_connect.token.errors.missing_exp: exp is required and must be an integer or floating point Unix timestamp.
-openid_connect.token.errors.missing_jti: jti is required and must be a string that is unique to this assertion.
-openid_connect.token.errors.replayed_jti: jti has already been used. Each client assertion must carry a new jti.
 openid_connect.user_info.errors.encryption_unavailable: 'This service provider is configured to receive encrypted userinfo responses, but no usable encryption key is registered for it: the response was not sent.'
 openid_connect.user_info.errors.malformed_authorization: Malformed Authorization header. Please see our documentation at https://developers.login.gov/support/#malformed-auth-header
 openid_connect.user_info.errors.no_authorization: No Authorization header provided. Please see our documentation at https://developers.login.gov/support/#no-auth-header

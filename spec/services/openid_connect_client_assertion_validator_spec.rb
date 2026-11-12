@@ -164,7 +164,7 @@ RSpec.describe OpenidConnectClientAssertionValidator do
         expect(validator.valid?).to eq(false)
         expect(validator.errors.first).to have_attributes(
           attribute: :client_assertion,
-          message: t('openid_connect.token.errors.missing_exp'),
+          message: OpenidConnectClientAssertionValidator::MISSING_EXP_MESSAGE,
           type: :missing_exp,
         )
       end
@@ -177,9 +177,9 @@ RSpec.describe OpenidConnectClientAssertionValidator do
         expect(validator.valid?).to eq(false)
         expect(validator.errors.first).to have_attributes(
           attribute: :client_assertion,
-          message: t(
-            'openid_connect.token.errors.invalid_exp',
-            seconds: IdentityConfig.store.client_assertion_max_lifetime_seconds,
+          message: format(
+            OpenidConnectClientAssertionValidator::INVALID_EXP_MESSAGE,
+            IdentityConfig.store.client_assertion_max_lifetime_seconds,
           ),
           type: :invalid_exp,
         )
@@ -216,7 +216,7 @@ RSpec.describe OpenidConnectClientAssertionValidator do
         expect(validator.valid?).to eq(false)
         expect(validator.errors.first).to have_attributes(
           attribute: :client_assertion,
-          message: t('openid_connect.token.errors.missing_jti'),
+          message: OpenidConnectClientAssertionValidator::MISSING_JTI_MESSAGE,
           type: :missing_jti,
         )
       end
@@ -232,7 +232,7 @@ RSpec.describe OpenidConnectClientAssertionValidator do
         expect(second_validator.valid?).to eq(false)
         expect(second_validator.errors.first).to have_attributes(
           attribute: :client_assertion,
-          message: t('openid_connect.token.errors.replayed_jti'),
+          message: OpenidConnectClientAssertionValidator::REPLAYED_JTI_MESSAGE,
           type: :replayed_jti,
         )
       end
