@@ -1284,6 +1284,8 @@ RSpec.describe Idv::VerifyInfoController do
       let(:document_capture_session) { create(:document_capture_session, user:) }
       let(:resolution_vendor_name) { 'ResolutionVendor' }
       let(:residential_resolution_vendor_name) { 'ResidentialResolutionVendor' }
+      let(:resolution_attempts) { nil }
+      let(:failover_available) { false }
       let(:adjudicated_result) do
         Proofing::Resolution::ResultAdjudicator.new(
           phone_result: Proofing::AddressResult.new(
@@ -1306,6 +1308,8 @@ RSpec.describe Idv::VerifyInfoController do
           ipp_current_address_matches_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
           precheck_phone_number: subject.idv_session.precheck_phone[:phone],
+          resolution_attempts:,
+          failover_available:,
         ).adjudicated_result
       end
 
@@ -1327,6 +1331,59 @@ RSpec.describe Idv::VerifyInfoController do
         expect(controller.idv_session.residential_resolution_vendor).to(
           eql(residential_resolution_vendor_name),
         )
+      end
+
+      context 'after resolution failover' do
+        let(:resolution_vendor_name) { 'socure_kyc' }
+        let(:failover_available) { true }
+        let(:resolution_attempts) do
+          {
+            instant_verify_ddp: {
+              resolution_result: Proofing::Resolution::Result.new(
+                success: false, vendor_name: 'lexisnexis:instant_verify_ddp',
+                errors: { ssn: ['Unverified SSN.'] }
+              ),
+              residential_resolution_result: Proofing::Resolution::Result.new(
+                success: true, vendor_name: residential_resolution_vendor_name,
+              ),
+            },
+            socure_kyc: {
+              resolution_result: Proofing::Resolution::Result.new(
+                success: true, vendor_name: 'socure_kyc',
+              ),
+              residential_resolution_result: Proofing::Resolution::Result.new(
+                success: true, vendor_name: residential_resolution_vendor_name,
+              ),
+            },
+          }
+        end
+
+        it 'saves the selected vendor and logs every attempt from encrypted storage' do
+          get :show
+
+          expect(controller.idv_session.resolution_vendor).to eq('socure_kyc')
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_including(
+              proofing_results: hash_including(
+                context: hash_including(
+                  stages: hash_including(
+                    resolution: hash_including(
+                      vendor_name: 'socure_kyc',
+                      attempted_vendors: ['instant_verify_ddp', 'socure_kyc'],
+                      failover_available: true,
+                      failover_used: true,
+                      attempts: hash_including(
+                        instant_verify_ddp: hash_including(success: false),
+                        socure_kyc: hash_including(success: true),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
+        end
       end
     end
   end
