@@ -1673,6 +1673,10 @@ nds.choose_id_type.verify_in_person: Verificar en persona
 nds.completions.heading_idv: Identidad verificada
 nds.completions.intro_html: Al seleccionar Continuar, acepta compartir la siguiente información con %{sp_html} e ir a su sitio.
 nds.completions.nist_alt: 'Sello del NIST: Cifrado. Protegido. Comprobado. Instituto Nacional de Estándares y Tecnología'
+nds.document_capture.mdl_alert_body: Se añadirán otras billeteras digitales a finales de este año.
+nds.document_capture.mdl_alert_title: Actualmente disponible con Google Wallet y Samsung Wallet.
+nds.document_capture.mdl_heading: Añada la información de su licencia de conducir móvil
+nds.document_capture.mdl_subtitle: 'Verificaremos su licencia de conducir móvil mediante un proveedor de servicios de confianza: Socure.'
 nds.duplicate_profiles_detected.cant_access: No puedo acceder a una cuenta
 nds.duplicate_profiles_detected.connected_agencies: 'Agencias conectadas: %{count}'
 nds.duplicate_profiles_detected.created_at_html: 'Creado: %{timestamp_html}'
