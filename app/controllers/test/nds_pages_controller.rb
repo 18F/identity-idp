@@ -175,6 +175,7 @@ module Test
                   :resource, :resource_name, :session_path, :page_state_for,
                   :record_kind_for, :deletable_record_kind?,
                   :identity_levels, :current_identity_level
+    helper_method :mobile?
 
     def index
       @grouped_pages = NDSPageCatalog.grouped
@@ -929,6 +930,39 @@ module Test
         user_opted_remember_device_cookie: nil,
         remember_device_default: false,
       )
+      {}
+    end
+
+    def setup_webauthn_setup
+      user = build_mfa_user(configured: params[:second].present?)
+      @nds_current_user = user
+      email = EmailAddressStub.new(email: DEV_USER_EMAIL)
+      user.define_singleton_method(:last_sign_in_email_address) { email }
+      @in_account_creation_flow = params[:account_creation].present?
+      @in_multi_mfa_selection_flow = params[:additional].present?
+      @platform_authenticator = params[:key].blank?
+      @passkey_upsell = @platform_authenticator && params[:upsell].present?
+      @need_to_set_up_additional_mfa = @platform_authenticator && params[:additional].present?
+      @exclude_credentials = []
+      @account_creation_threatmetrix = ThreatMetrixHelper::NO_THREAT_METRIX_VARIABLES.dup
+      user_session[:webauthn_challenge] = SecureRandom.random_bytes(32).bytes
+      @presenter = WebauthnSetupPresenter.new(
+        current_user: user,
+        user_fully_authenticated: true,
+        user_opted_remember_device_cookie: nil,
+        remember_device_default: false,
+        platform_authenticator: @platform_authenticator,
+        passkey_upsell: @passkey_upsell,
+        url_options:,
+      )
+      if params[:error].present?
+        result = WebauthnVisitForm.new(
+          user:,
+          url_options:,
+          in_mfa_selection_flow: @in_multi_mfa_selection_flow,
+        ).submit(platform: @platform_authenticator, error: params[:error])
+        flash.now[:error] = result.errors.values.first.first
+      end
       {}
     end
 
