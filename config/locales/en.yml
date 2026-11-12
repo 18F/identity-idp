@@ -1709,6 +1709,7 @@ nds.link_sent.keep_open: Keep this window open.
 nds.mfa_setup.badge_passkey: Fast and secure
 nds.mfa_setup.heading: Secure your account
 nds.mfa_setup.heading_second: Choose a second authentication method
+nds.mfa_setup.heading_step_up: Additional authentication method required
 nds.mfa_setup.intro: Your account safeguards personal information. Add a layer of protection by choosing a multi-factor authentication method. Update your methods any time in your account settings.
 nds.mfa_setup.intro_second: Set up a second method so you can always access your account even if your primary method is unavailable.
 nds.mfa_setup.options.auth_app: Authentication app

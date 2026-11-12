@@ -1720,6 +1720,7 @@ nds.link_sent.keep_open: Mantenga esta ventana abierta.
 nds.mfa_setup.badge_passkey: Rápido y seguro
 nds.mfa_setup.heading: Proteja su cuenta
 nds.mfa_setup.heading_second: Elija un segundo método de autenticación
+nds.mfa_setup.heading_step_up: Se requiere un método de autenticación adicional
 nds.mfa_setup.intro: Su cuenta protege su información personal. Agregue una capa de protección eligiendo un método de autenticación de múltiples factores. Actualice sus métodos en cualquier momento en la configuración de su cuenta.
 nds.mfa_setup.intro_second: Configure un segundo método para que siempre pueda acceder a su cuenta, incluso si su método principal no está disponible.
 nds.mfa_setup.options.auth_app: Aplicación de autenticación
