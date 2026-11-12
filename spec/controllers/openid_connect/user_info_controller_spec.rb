@@ -152,7 +152,6 @@ RSpec.describe OpenidConnect::UserInfoController do
           user: create(:user),
         )
       end
-      # The URL a proof must name is the configured one, not whatever the Host header says.
       let(:url) { api_openid_connect_userinfo_url }
       let(:authorization_header) { "DPoP #{access_token}" }
 
@@ -177,6 +176,7 @@ RSpec.describe OpenidConnect::UserInfoController do
       end
 
       context 'when the Host header names another host' do
+        # The URL a proof must name is the configured one, not whatever the Host header says.
         before { request.host = 'attacker.example.com' }
 
         context 'with a proof for the configured userinfo URL' do

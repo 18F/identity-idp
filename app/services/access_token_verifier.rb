@@ -101,10 +101,6 @@ class AccessTokenVerifier
     errors.add(:dpop_proof, message, type:)
   end
 
-  # A token is key-bound when its client is required to bind today, or when a binding was recorded
-  # for it when it was issued. Once bound, a token is never accepted under the Bearer scheme again
-  # (RFC 9449 §7.1), whatever the client's configuration says now, so a later change to the
-  # client's registration or to the binding list cannot turn a bound token into a bearer token.
   def dpop_required?
     @identity.service_provider_record&.dpop_required? == true
   end
