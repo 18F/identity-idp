@@ -102,16 +102,20 @@ class OpenidConnectTokenForm
     }
   end
 
+  # Only a code issued from a sign-in that requested a delegation scope is subject to the actor
+  # check; a code with ordinary scopes is redeemed as before whatever the client's listing.
+  # The predicate runs again for the response and for analytics, so the error is recorded once.
   def token_exchange_authorization_code?
     return false unless IdentityConfig.store.token_exchange_enabled
-    unless service_provider&.token_exchange_actor?
-      errors.add(:code, :unauthorized_client, message: 'Delegation actor not valid')
-      return false
-    end
-
     return false if identity.blank?
+    return false unless token_exchange_scope_requested?
 
-    token_exchange_scope_requested?
+    return true if service_provider&.token_exchange_actor?
+
+    unless errors.added?(:code, :unauthorized_client)
+      errors.add(:code, :unauthorized_client, message: 'Delegation actor not valid')
+    end
+    false
   end
 
   def token_exchange_scope_requested?

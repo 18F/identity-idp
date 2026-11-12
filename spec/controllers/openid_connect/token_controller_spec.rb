@@ -81,6 +81,29 @@ RSpec.describe OpenidConnect::TokenController do
         expect(@analytics).to_not have_logged_event(:openid_connect_delegated_token_exchange)
       end
 
+      context 'when the token exchange is enabled and the client is not a delegation actor' do
+        before do
+          allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+            .and_return(['some-other-actor'])
+        end
+
+        it 'is successful and has a response with the id_token' do
+          stub_analytics
+
+          action
+          expect(response).to be_ok
+
+          json = JSON.parse(response.body).with_indifferent_access
+          expect(json[:id_token]).to be_present
+          expect(json).to_not have_key(:error)
+          expect(@analytics).to have_logged_event(
+            'OpenID Connect: token',
+            hash_including(success: true, token_endpoint_operation: 'authorization_code'),
+          )
+        end
+      end
+
       context 'with an authentication event' do
         let(:authentication_event_at) { Time.zone.parse('2026-07-01 12:00:00 UTC') }
         let(:remember_device_at) { Time.zone.parse('2026-07-01 12:30:00 UTC') }
