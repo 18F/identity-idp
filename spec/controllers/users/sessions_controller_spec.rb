@@ -366,6 +366,48 @@ RSpec.describe Users::SessionsController, devise: true do
       )
     end
 
+    context 'with a second-factor locked out user' do
+      let(:user) { create(:user, :fully_registered, second_factor_locked_at: Time.zone.now) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:ui_test_bucket_params_enabled).and_return(true)
+      end
+
+      it 'signs the user out and renders the lockout page in the legacy application layout' do
+        post :create, params: { user: { email: user.email, password: user.password } }
+
+        expect(controller.current_user).to be_nil
+        expect(response).to render_template('two_factor_authentication/_locked')
+        expect(response).to render_template(layout: 'application')
+        expect(response).to_not render_template(layout: 'nds/application')
+      end
+
+      context 'in the NDS bucket' do
+        it 'renders the lockout page in the NDS application layout' do
+          post :create, params: {
+            user: { email: user.email, password: user.password },
+            ui_test_bucket: 'nds',
+          }
+
+          expect(controller.current_user).to be_nil
+          expect(response).to render_template('two_factor_authentication/_locked')
+          expect(response).to render_template(layout: 'nds/application')
+        end
+
+        it 'keeps the NDS A/B assignment after signing the user out' do
+          allow(controller).to receive(:ab_test_bucket).and_call_original
+          allow(controller).to receive(:ab_test_bucket)
+            .with(:NDS_LOOK_AND_FEEL, any_args)
+            .and_return(:nds)
+
+          post :create, params: { user: { email: user.email, password: user.password } }
+
+          expect(response).to render_template('two_factor_authentication/_locked')
+          expect(response).to render_template(layout: 'nds/application')
+        end
+      end
+    end
+
     context 'with reCAPTCHA validation enabled' do
       before do
         allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)

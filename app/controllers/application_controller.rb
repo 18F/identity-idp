@@ -605,8 +605,11 @@ class ApplicationController < ActionController::Base
            layout: false, status: :service_unavailable, formats: :html
   end
 
+  # Pins the plain application layout, overriding any controller-level layout. NDS-bucket
+  # requests get the NDS application layout instead, so every template rendered through
+  # here must have an nds_layout? branch (today only two_factor_authentication/_locked).
   def render_full_width(template, **opts)
-    render template, **opts, layout: 'application'
+    render template, **opts, layout: resolve_layout
   end
 
   def analytics_exception_info(exception)
