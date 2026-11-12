@@ -54,7 +54,7 @@ RSpec.describe 'users/sts_consent/new.html.erb' do
     render
 
     expect(rendered).to have_link(
-      t('sts_consent.cancel_and_return'),
+      t('sts_consent.cancel_and_return', america_gov_name: AMERICA_GOV_NAME),
       href: sts_consent_cancel_path,
     )
   end
