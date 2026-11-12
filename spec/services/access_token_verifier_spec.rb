@@ -224,46 +224,49 @@ RSpec.describe AccessTokenVerifier do
       end
     end
 
-    context 'for a client no longer listed for key binding whose token was issued bound' do
-      let(:access_token) { identity.access_token }
-      let(:url) { 'https://idp.example.gov/api/openid_connect/userinfo' }
-      let(:proof) { nil }
-      subject(:verifier) do
-        AccessTokenVerifier.new(
-          http_authorization_header, dpop_proof: proof, http_method: 'GET', http_url: url
-        )
-      end
-
-      before do
-        identity.save!
-        OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii(
-          profile_id: 123, pii: {}, expiration: 5,
-        )
-        AccessTokenBinding.store(access_token:, dpop_jkt: dpop_thumbprint, expires_in: 5)
-      end
-
-      context 'presented as a Bearer token' do
-        it "is invalid with a 'dpop_bearer_presented' error and reports the token as bound" do
-          response, result_identity = result
-
-          expect(response.success?).to eq(false)
-          expect(result_identity).to be_nil
-          expect(response.errors[:dpop_proof]).to eq(['dpop_bearer_presented'])
-          expect(response.extra[:dpop_bound]).to eq(true)
-          expect(verifier.www_authenticate).to eq('DPoP algs="ES256 RS256", error="invalid_token"')
+    context 'for a service provider that is not required to use dpop' do
+      context 'when their token was issued bound' do
+        let(:access_token) { identity.access_token }
+        let(:url) { 'https://idp.example.gov/api/openid_connect/userinfo' }
+        let(:proof) { nil }
+        subject(:verifier) do
+          AccessTokenVerifier.new(
+            http_authorization_header, dpop_proof: proof, http_method: 'GET', http_url: url
+          )
         end
-      end
 
-      context 'presented under the DPoP scheme with a proof from the bound key' do
-        let(:http_authorization_header) { "DPoP #{access_token}" }
-        let(:proof) { build_dpop_proof(http_url: url, http_method: 'GET', access_token:) }
+        before do
+          identity.save!
+          OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii(
+            profile_id: 123, pii: {}, expiration: 5,
+          )
+          AccessTokenBinding.store(access_token:, dpop_jkt: dpop_thumbprint, expires_in: 5)
+        end
 
-        it 'is successful' do
-          response, result_identity = result
+        context 'presented as a Bearer token' do
+          it "is invalid with a 'dpop_bearer_presented' error and reports the token as bound" do
+            response, result_identity = result
 
-          expect(response.success?).to eq(true)
-          expect(result_identity).to eq(identity)
-          expect(response.extra[:dpop_bound]).to eq(true)
+            expect(response.success?).to eq(false)
+            expect(result_identity).to be_nil
+            expect(response.errors[:dpop_proof]).to eq(['dpop_bearer_presented'])
+            expect(response.extra[:dpop_bound]).to eq(true)
+            expect(verifier.www_authenticate)
+              .to eq('DPoP algs="ES256 RS256", error="invalid_token"')
+          end
+        end
+
+        context 'presented under the DPoP scheme with a proof from the bound key' do
+          let(:http_authorization_header) { "DPoP #{access_token}" }
+          let(:proof) { build_dpop_proof(http_url: url, http_method: 'GET', access_token:) }
+
+          it 'is successful' do
+            response, result_identity = result
+
+            expect(response.success?).to eq(true)
+            expect(result_identity).to eq(identity)
+            expect(response.extra[:dpop_bound]).to eq(true)
+          end
         end
       end
     end

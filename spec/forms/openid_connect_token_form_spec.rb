@@ -149,8 +149,6 @@ RSpec.describe OpenidConnectTokenForm do
     context 'with a token exchange authorization code' do
       let(:target_app) { 'passport-issuer' }
       let(:scope) { 'token_exchange:passport' }
-      # An approved actor is key-bound: the code carries the thumbprint named at authorization and
-      # the redemption carries a proof from that key.
       let(:dpop_proof) { build_dpop_proof(http_url: api_openid_connect_token_url) }
 
       before do

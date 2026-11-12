@@ -223,10 +223,8 @@ class DpopProofForm
     @jwk = import_public_key(header['jwk'])
   end
 
-  # The key is built here, not only parsed: the library reads the parameters lazily, so a `jwk`
-  # with an unknown curve, a malformed coordinate, a point off the curve or a missing modulus
-  # raises only when the key is first used. Building it now turns each of those into a refusal of
-  # the proof instead of an error later in the chain.
+  # JWT::JWK parses some params lazily, so malformed keys may not raise until `verify_key` is
+  # called.
   def import_public_key(jwk_params)
     return nil unless jwk_params.is_a?(Hash)
     jwk = JWT::JWK.new(jwk_params.deep_symbolize_keys.except(:kid))

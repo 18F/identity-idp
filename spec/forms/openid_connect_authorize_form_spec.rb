@@ -146,7 +146,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    context 'for a public client registered for key binding' do
+    context 'for a service provider required to use DPoP' do
       let(:client_id) { service_provider.issuer }
       let(:redirect_uri) { 'https://sp.example.gov/result' }
       let(:code_challenge) { Digest::SHA256.urlsafe_base64digest(SecureRandom.urlsafe_base64(32)) }
@@ -195,11 +195,11 @@ RSpec.describe OpenidConnectAuthorizeForm do
         end
       end
 
-      context 'when the registration no longer says the client is public' do
+      context "when the service provider's configuration indicates it is not PKCE" do
         let(:pkce) { false }
         let(:dpop_jkt) { thumbprint }
 
-        it 'still requires key binding, since the list alone decides' do
+        it 'still requires key binding' do
           expect(form.dpop_binding_required?).to eq(true)
           expect(result.success?).to eq(true)
         end

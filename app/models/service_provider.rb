@@ -101,14 +101,17 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
-  # Whether this client's tokens are bound to a key it proves possession of (RFC 9449). Every
-  # approved actor is bound while the token exchange is on: an actor is a public client, and its
-  # proof at the token endpoint is the only client authentication the exchange has, so approval
-  # and binding are one decision. Any other issuer is bound when it is on the configured list; the
-  # list alone decides, so a change to the client's registration cannot switch binding off.
+  # Whether this client's tokens are bound to a key it proves possession of (RFC 9449).
   def dpop_required?
-    (IdentityConfig.store.token_exchange_enabled && token_exchange_actor?) ||
-      IdentityConfig.store.dpop_required_issuers.include?(issuer)
+    required_for_token_exchange? || required_dpop_issuer?
+  end
+
+  def required_for_token_exchange?
+    IdentityConfig.store.token_exchange_enabled && token_exchange_actor?
+  end
+
+  def required_dpop_issuer?
+    IdentityConfig.store.dpop_required_issuers.include?(issuer)
   end
 
   def userinfo_encrypted_response?
