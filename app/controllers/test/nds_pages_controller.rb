@@ -962,6 +962,10 @@ module Test
       {}
     end
 
+    def setup_webauthn_platform_recommended
+      {}
+    end
+
     def setup_idv_welcome
       if params[:sp].present?
         @decorated_sp_session = SpSessionStub.new(

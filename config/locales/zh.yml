@@ -1775,6 +1775,11 @@ nds.totp_setup.new.step_1: 输入一个昵称
 nds.totp_setup.new.step_2: 打开您首选的身份验证应用程序
 nds.totp_setup.new.step_3: 扫描二维码或在身份验证应用程序中手动输入设置代码
 nds.verify_info.address: 地址
+nds.webauthn_platform_recommended.cta: 添加通行密钥
+nds.webauthn_platform_recommended.description: 以解锁设备的相同方式进行身份验证，无论是使用您的面容或指纹、密码还是其他方法。
+nds.webauthn_platform_recommended.heading: 设置通行密钥以更安全地登录
+nds.webauthn_platform_recommended.info_html: 通行密钥%{phishing_resistant_html}，而且我们不会存储任何面容或指纹记录，因此您的信息会保持私密。
+nds.webauthn_platform_recommended.phishing_resistant: 可防范网络钓鱼
 notices.account_reactivation: 好！你有个人密钥。
 notices.authenticated_successfully: 成功验证。
 notices.backup_codes_configured: 备用代码加到了你账户。

@@ -1762,6 +1762,11 @@ nds.totp_setup.new.step_1: Saisir un surnom
 nds.totp_setup.new.step_2: Ouvrir votre appli d’authentification préférée
 nds.totp_setup.new.step_3: Scanner le code QR ou saisir le code de configuration manuellement dans votre appli d’authentification
 nds.verify_info.address: Adresse
+nds.webauthn_platform_recommended.cta: Ajouter une clé d’accès
+nds.webauthn_platform_recommended.description: Authentifiez-vous de la même manière que vous déverrouillez votre appareil, que ce soit avec votre visage ou votre empreinte digitale, un mot de passe ou une autre méthode.
+nds.webauthn_platform_recommended.heading: Configurez une clé d’accès pour une connexion plus sécurisée
+nds.webauthn_platform_recommended.info_html: Les clés d’accès %{phishing_resistant_html} et nous ne conservons aucun enregistrement de votre visage ou de vos empreintes digitales, ce qui préserve la confidentialité de vos informations.
+nds.webauthn_platform_recommended.phishing_resistant: résistent à l’hameçonnage
 notices.account_reactivation: Parfait ! Vous avez votre clé personnelle.
 notices.authenticated_successfully: Authentifié avec succès.
 notices.backup_codes_configured: Les codes de sauvegarde ont été ajoutés à votre compte.

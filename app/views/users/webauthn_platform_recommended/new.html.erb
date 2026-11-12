@@ -1,3 +1,52 @@
+<% if nds_layout? %>
+  <% self.title = t('nds.webauthn_platform_recommended.heading') %>
+  <%= render NDS::FormPageComponent.new(title: t('nds.webauthn_platform_recommended.heading')) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon">
+        <%= render NDS::IconComponent.new(icon: :info, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <div class="copy copy--muted">
+        <p><%= t('nds.webauthn_platform_recommended.description') %></p>
+        <p>
+          <%= t(
+                'nds.webauthn_platform_recommended.info_html',
+                phishing_resistant_html: new_tab_link_to(
+                  t('nds.webauthn_platform_recommended.phishing_resistant'),
+                  help_center_redirect_path(
+                    category: 'get-started',
+                    article: 'authentication-methods',
+                    flow: :two_factor_authentication,
+                    step: :webauthn_platform_recommended,
+                  ),
+                ),
+              ) %>
+        </p>
+      </div>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render SubmitButtonComponent.new(
+              url: webauthn_platform_recommended_url,
+              method: :post,
+              params: { add_method: true },
+              full_width: true,
+            ).with_content(t('nds.webauthn_platform_recommended.cta')) %>
+        <%= render SubmitButtonComponent.new(
+              url: webauthn_platform_recommended_url,
+              method: :post,
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('webauthn_platform_recommended.skip')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <% self.title = t('webauthn_platform_recommended.heading') %>
 
 <%= render StatusPageComponent.new(status: :info, icon: :question) do |c| %>
@@ -24,4 +73,5 @@
           ).with_content(t('webauthn_platform_recommended.skip')) %>
     </div>
   </div>
+<% end %>
 <% end %>
