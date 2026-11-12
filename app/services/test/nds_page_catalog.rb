@@ -512,6 +512,13 @@ module Test
         ],
       ),
       Page.new(
+        key: 'idv-phone-required',
+        title: 'A U.S. phone number is required',
+        flow: IDV,
+        template: 'idv/phone_required/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
         key: 'link-sent',
         title: 'Continue on your phone (link sent)',
         flow: IDV,
@@ -656,6 +663,7 @@ module Test
     # branch in their template, so the template scan below cannot detect them.
     # Kept explicit and minimal; unioned into the discovered set.
     BRANCHLESS_NDS_TEMPLATES = [
+      'idv/phone_required/show',
       'sign_up/emails/show',
       'two_factor_authentication/otp_verification/show',
       'users/piv_cac_login/new',
