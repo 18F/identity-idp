@@ -3,8 +3,6 @@
 module Proofing
   module Resolution
     class AamvaCoveragePolicy
-      ADDRESS_ATTRIBUTE = :address
-
       attr_reader :aamva_verified_attributes, :address_edited
 
       def self.from_applicant_pii(applicant_pii)
@@ -28,18 +26,17 @@ module Proofing
       end
 
       def usable_verified_attributes
-        @usable_verified_attributes ||=
-          if address_edited?
-            normalized_verified_attributes - [ADDRESS_ATTRIBUTE]
-          else
-            normalized_verified_attributes
-          end
+        attributes = normalized_verified_attributes
+        attributes.delete(:address) if address_edited?
+        attributes
       end
 
       private
 
       def normalized_verified_attributes
-        @normalized_verified_attributes ||= Array(aamva_verified_attributes).map(&:to_sym)
+        return [] unless aamva_verified_attributes
+
+        aamva_verified_attributes.map(&:to_sym)
       end
 
       def enabled_for_vendor?(proofing_vendor)

@@ -22,22 +22,16 @@ RSpec.describe Proofing::Resolution::AamvaCoveragePolicy do
         }.with_indifferent_access
       end
 
-      it 'builds the policy from the applicant values' do
-        expect(policy).to have_attributes(
-          aamva_verified_attributes: %i[address dob],
-          address_edited: true,
-        )
+      it 'uses the applicant values to determine usable attributes' do
+        expect(policy.usable_verified_attributes).to eq([:dob])
       end
     end
 
     context 'when the applicant has no AAMVA results' do
       let(:applicant_pii) { {} }
 
-      it 'builds a policy with no verified attributes' do
-        expect(policy).to have_attributes(
-          aamva_verified_attributes: nil,
-          address_edited: nil,
-        )
+      it 'builds a policy with no usable attributes' do
+        expect(policy.usable_verified_attributes).to be_empty
       end
     end
   end
