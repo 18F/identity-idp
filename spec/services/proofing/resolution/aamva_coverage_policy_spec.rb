@@ -156,6 +156,14 @@ RSpec.describe Proofing::Resolution::AamvaCoveragePolicy do
       end
     end
 
+    context 'when AAMVA verified attributes are a Set' do
+      let(:aamva_verified_attributes) { Set[:address, :dob] }
+
+      it 'returns the attributes as an array' do
+        expect(usable_verified_attributes).to eq(%i[address dob])
+      end
+    end
+
     context 'when the address was edited after AAMVA verification' do
       let(:address_edited) { true }
 
@@ -175,6 +183,11 @@ RSpec.describe Proofing::Resolution::AamvaCoveragePolicy do
         let(:aamva_verified_attributes) { [:address] }
 
         it { is_expected.to be_empty }
+      end
+
+      it 'does not modify the source attributes' do
+        expect { usable_verified_attributes }
+          .not_to change { aamva_verified_attributes }
       end
     end
   end
