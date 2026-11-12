@@ -1733,6 +1733,9 @@ nds.otp_verification.sms.code_sent_html: 'Nous avons envoyé un code à usage un
 nds.otp_verification.voice.code_sent_html: 'Nous vous avons appelé avec un code à usage unique au %{number_html}.'
 nds.passwords.new.heading: Créez votre mot de passe
 nds.passwords.new.info: Créez un mot de passe fort pour sécuriser votre compte et protéger vos renseignements personnels.
+nds.personal_key_verification.invalid_body: Cette clé personnelle n’est pas valide. Vérifiez votre clé et réessayez.
+nds.personal_key_verification.invalid_heading: Clé personnelle non valide
+nds.personal_key_verification.prompt: Saisissez la clé personnelle de 16 caractères que vous avez enregistrée pour votre compte.
 nds.personal_key.acknowledgment: J’ai enregistré ma clé personnelle dans un endroit sûr
 nds.personal_key.generated_on: Générée le %{date}
 nds.personal_key.info: Votre clé personnelle est le seul moyen d’accéder à votre compte vérifié si vous réinitialisez votre mot de passe. Si vous perdez cette clé et oubliez votre mot de passe, vous devrez vérifier à nouveau votre identité.

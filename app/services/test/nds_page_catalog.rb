@@ -206,6 +206,18 @@ module Test
         ],
       ),
       Page.new(
+        key: 'personal-key-verification',
+        title: 'Personal key entry',
+        flow: OTP,
+        template: 'two_factor_authentication/personal_key_verification/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Deprecation warning', params: { deprecation: '1' }),
+          Permutation.new(label: 'Personal key only', params: { personal_key_only: '1' }),
+          Permutation.new(label: 'Incorrect personal key', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'idv-welcome',
         title: 'Verify your identity (welcome)',
         flow: IDV,

@@ -1744,6 +1744,9 @@ nds.otp_verification.sms.code_sent_html: 'Le enviamos un código de un solo uso 
 nds.otp_verification.voice.code_sent_html: 'Lo llamamos con un código de un solo uso al %{number_html}.'
 nds.passwords.new.heading: Cree su contraseña
 nds.passwords.new.info: Cree una contraseña segura para proteger su cuenta y mantener a salvo su información personal.
+nds.personal_key_verification.invalid_body: Esa clave personal no es válida. Revise su clave e inténtelo de nuevo.
+nds.personal_key_verification.invalid_heading: Clave personal no válida
+nds.personal_key_verification.prompt: Ingrese la clave personal de 16 caracteres que guardó para su cuenta.
 nds.personal_key.acknowledgment: Guardé mi clave personal en un lugar seguro
 nds.personal_key.generated_on: Generada el %{date}
 nds.personal_key.info: Su clave personal es la única forma de acceder a su cuenta verificada si restablece su contraseña. Si pierde esta clave y olvida su contraseña, tendrá que verificar su identidad de nuevo.

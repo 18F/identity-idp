@@ -1733,6 +1733,9 @@ nds.otp_verification.sms.code_sent_html: 'We sent a one-time code to %{number_ht
 nds.otp_verification.voice.code_sent_html: 'We called you with a one-time code at %{number_html}.'
 nds.passwords.new.heading: Create your password
 nds.passwords.new.info: Create a strong password to secure your account and keep personal information safe.
+nds.personal_key_verification.invalid_body: That personal key is invalid. Check your key and try again.
+nds.personal_key_verification.invalid_heading: Invalid personal key
+nds.personal_key_verification.prompt: Enter the 16-character personal key you saved for your account.
 nds.personal_key.acknowledgment: I’ve saved my personal key in a safe place
 nds.personal_key.generated_on: Generated on %{date}
 nds.personal_key.info: Your personal key is the only way to access your verified account if you reset your password. If you lose this key and forget your password, you’ll need to verify your identity again.
