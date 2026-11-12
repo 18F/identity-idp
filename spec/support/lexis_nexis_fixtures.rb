@@ -49,6 +49,11 @@ module LexisNexisFixtures
       JSON.parse(raw).to_json
     end
 
+    def ddp_instant_verify_occupancy_fail_response_json
+      raw = read_fixture_file_at_path('ddp/instant_verify/occupancy_failure_response.json')
+      JSON.parse(raw).to_json
+    end
+
     def ddp_instant_verify_error_response_json
       raw = read_fixture_file_at_path('ddp/instant_verify/error_response.json')
       JSON.parse(raw).to_json
