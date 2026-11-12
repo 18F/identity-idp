@@ -1,5 +1,33 @@
 <% self.title = @presenter.title %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(title: @presenter.heading) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--error">
+        <%= render NDS::IconComponent.new(icon: :error, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <% description = @presenter.description %>
+      <div class="copy copy--muted">
+        <%= description.include?('<p>') ? description : tag.p(description) %>
+      </div>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: new_user_session_url,
+              variant: :secondary,
+              full_width: true,
+            ).with_content(t('instructions.mfa.piv_cac.back_to_sign_in')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render StatusPageComponent.new(status: :error) do |c| %>
   <%= render PageHeadingComponent.new do %>
     <%= @presenter.heading %>
@@ -15,4 +43,5 @@
         class: 'margin-top-3',
         big: true,
       ).with_content(t('instructions.mfa.piv_cac.back_to_sign_in')) %>
+<% end %>
 <% end %>

@@ -325,6 +325,15 @@ module Test
       true
     end
 
+    # Fills the layout's :pre_flash_content slot from @nds_pre_flash_content (a view lambda).
+    def view_context
+      super.tap do |view|
+        if @nds_pre_flash_content
+          view.content_for(:pre_flash_content, @nds_pre_flash_content.call(view))
+        end
+      end
+    end
+
     def decorated_sp_session
       @decorated_sp_session ||= NullServiceProviderSession.new(view_context:)
     end
@@ -797,6 +806,31 @@ module Test
 
     def setup_piv_cac
       @presenter = PivCacAuthenticationLoginPresenter.new(nil, url_options)
+      {}
+    end
+
+    def setup_piv_cac_error
+      @presenter = PivCacErrorPresenter.new(
+        error: params[:error],
+        view: view_context,
+        try_again_url: login_piv_cac_url,
+      )
+      {}
+    end
+
+    def setup_piv_cac_mismatch
+      @piv_cac_required = params[:piv_cac_required].present?
+      @has_other_authentication_methods = params[:no_other_method].blank?
+      @account_recovery_pending = params[:recovery_pending].present?
+      @account_recovery_url = account_recovery_start_url if params[:recovery].present?
+      if @account_recovery_pending
+        @nds_pre_flash_content = ->(view) do
+          view.render(
+            AlertComponent.new(type: :info, class: 'margin-bottom-4')
+              .with_content(t('account_recovery.pending.mfa_banner')),
+          )
+        end
+      end
       {}
     end
 
