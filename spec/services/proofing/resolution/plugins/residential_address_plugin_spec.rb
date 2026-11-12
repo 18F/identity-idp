@@ -15,31 +15,34 @@ RSpec.describe Proofing::Resolution::Plugins::ResidentialAddressPlugin do
     )
   end
 
-  let(:proofer) do
+  let(:vendor_proofer) do
     instance_double(Proofing::LexisNexis::InstantVerify::Proofer, proof: proofer_result)
   end
 
   let(:sp_cost_token) { :lexis_nexis_resolution }
 
-  subject(:plugin) do
-    described_class.new(
-      proofer:,
+  let(:proofer) do
+    Proofing::Resolution::CostRecordingProofer.new(
+      proofer: vendor_proofer,
       sp_cost_token:,
+      current_sp:,
     )
   end
+
+  subject(:plugin) { described_class.new }
 
   describe '#call' do
     subject(:call) do
       plugin.call(
         applicant_pii:,
-        current_sp:,
         ipp_enrollment_in_progress:,
         timer: JobHelpers::Timer.new,
+        proofer:,
       )
     end
 
     before do
-      allow(plugin.proofer).to receive(:proof).and_return(proofer_result)
+      allow(vendor_proofer).to receive(:proof).and_return(proofer_result)
     end
 
     let(:sp_costs_for_transaction) do
@@ -93,7 +96,7 @@ RSpec.describe Proofing::Resolution::Plugins::ResidentialAddressPlugin do
       end
 
       it 'calls proofer with pii' do
-        expect(plugin.proofer).to receive(:proof).with(applicant_pii)
+        expect(vendor_proofer).to receive(:proof).with(applicant_pii)
         call
       end
 

@@ -28,27 +28,30 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
     )
   end
 
-  let(:proofer) do
+  let(:vendor_proofer) do
     instance_double(Proofing::LexisNexis::InstantVerify::Proofer, proof: proofer_result)
   end
 
   let(:sp_cost_token) { :lexis_nexis_resolution }
 
-  subject(:plugin) do
-    described_class.new(
-      proofer:,
+  let(:proofer) do
+    Proofing::Resolution::CostRecordingProofer.new(
+      proofer: vendor_proofer,
       sp_cost_token:,
+      current_sp:,
     )
   end
+
+  subject(:plugin) { described_class.new }
 
   describe '#call' do
     subject(:call) do
       plugin.call(
         applicant_pii:,
-        current_sp:,
         ipp_enrollment_in_progress:,
         residential_address_resolution_result:,
         timer: JobHelpers::Timer.new,
+        proofer:,
       )
     end
 
@@ -77,7 +80,7 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
       end
 
       it 'passes state id address to proofer' do
-        expect(plugin.proofer).to receive(:proof).with(applicant_pii)
+        expect(vendor_proofer).to receive(:proof).with(applicant_pii)
 
         call
       end
@@ -159,7 +162,7 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
       context 'residential address and id address are the same' do
         it 'reuses residential address result' do
           result = call
-          expect(plugin.proofer).not_to have_received(:proof)
+          expect(vendor_proofer).not_to have_received(:proof)
           expect(result).to eql(residential_address_resolution_result)
         end
 
@@ -189,7 +192,7 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
 
         context 'LexisNexis vendor passes for residential address' do
           it 'calls the vendor Proofer with state id address' do
-            expect(plugin.proofer).to receive(:proof).with(expected_applicant)
+            expect(vendor_proofer).to receive(:proof).with(expected_applicant)
 
             call
           end
@@ -267,7 +270,7 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
             end
 
             it 'does not make unnecessary calls' do
-              expect(plugin.proofer).not_to receive(:proof)
+              expect(vendor_proofer).not_to receive(:proof)
               call
             end
 

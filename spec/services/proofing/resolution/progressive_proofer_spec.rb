@@ -114,9 +114,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       it 'calls ResidentialAddressPlugin' do
         expect(progressive_proofer.residential_address_plugin).to receive(:call).with(
           applicant_pii:,
-          current_sp:,
           ipp_enrollment_in_progress: false,
           timer: an_instance_of(JobHelpers::Timer),
+          proofer: an_instance_of(Proofing::Resolution::CostRecordingProofer),
         ).and_call_original
         proof
       end
@@ -124,13 +124,13 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       it 'calls StateIdAddressPlugin' do
         expect(progressive_proofer.state_id_address_plugin).to receive(:call).with(
           applicant_pii:,
-          current_sp:,
           residential_address_resolution_result: satisfy do |result|
             expect(result.success?).to eql(true)
             expect(result.vendor_name).to eql('ResidentialAddressNotRequired')
           end,
           ipp_enrollment_in_progress: false,
           timer: an_instance_of(JobHelpers::Timer),
+          proofer: an_instance_of(Proofing::Resolution::CostRecordingProofer),
         ).and_call_original
         proof
       end
@@ -423,9 +423,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         it 'calls ResidentialAddressPlugin' do
           expect(progressive_proofer.residential_address_plugin).to receive(:call).with(
             applicant_pii:,
-            current_sp:,
             ipp_enrollment_in_progress: true,
             timer: an_instance_of(JobHelpers::Timer),
+            proofer: an_instance_of(Proofing::Resolution::CostRecordingProofer),
           ).and_call_original
           proof
         end
@@ -433,10 +433,10 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         it 'calls StateIdAddressPlugin' do
           expect(progressive_proofer.state_id_address_plugin).to receive(:call).with(
             applicant_pii:,
-            current_sp:,
             residential_address_resolution_result:,
             ipp_enrollment_in_progress: true,
             timer: an_instance_of(JobHelpers::Timer),
+            proofer: an_instance_of(Proofing::Resolution::CostRecordingProofer),
           ).and_call_original
           proof
         end
@@ -569,9 +569,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         it 'calls ResidentialAddressPlugin' do
           expect(progressive_proofer.residential_address_plugin).to receive(:call).with(
             applicant_pii:,
-            current_sp:,
             ipp_enrollment_in_progress: true,
             timer: an_instance_of(JobHelpers::Timer),
+            proofer: an_instance_of(Proofing::Resolution::CostRecordingProofer),
           ).and_call_original
           proof
         end
@@ -579,10 +579,10 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         it 'calls StateIdAddressPlugin' do
           expect(progressive_proofer.state_id_address_plugin).to receive(:call).with(
             applicant_pii:,
-            current_sp:,
             residential_address_resolution_result:,
             ipp_enrollment_in_progress: true,
             timer: an_instance_of(JobHelpers::Timer),
+            proofer: an_instance_of(Proofing::Resolution::CostRecordingProofer),
           ).and_call_original
           proof
         end
@@ -658,9 +658,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       it 'calls ResidentialAddressPlugin' do
         expect(progressive_proofer.residential_address_plugin).to receive(:call).with(
           applicant_pii:,
-          current_sp:,
           ipp_enrollment_in_progress:,
           timer: an_instance_of(JobHelpers::Timer),
+          proofer: an_instance_of(Proofing::Resolution::CostRecordingProofer),
         ).and_call_original
         proof
       end
@@ -668,13 +668,13 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       it 'calls StateIdAddressPlugin' do
         expect(progressive_proofer.state_id_address_plugin).to receive(:call).with(
           applicant_pii:,
-          current_sp:,
           residential_address_resolution_result: satisfy do |result|
             expect(result.success?).to eql(true)
             expect(result.vendor_name).to eql('ResidentialAddressNotRequired')
           end,
           ipp_enrollment_in_progress:,
           timer: an_instance_of(JobHelpers::Timer),
+          proofer: an_instance_of(Proofing::Resolution::CostRecordingProofer),
         ).and_call_original
         proof
       end
@@ -789,78 +789,27 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   end
 
   describe '#residential_address_plugin' do
-    let(:proofing_vendor) { nil }
-
-    before do
-      allow(progressive_proofer).to receive(:proofing_vendor).and_return(proofing_vendor)
-    end
-
-    context 'when proofing_vendor is :instant_verify' do
-      let(:proofing_vendor) { :instant_verify }
-
-      it 'returns ResidentialAddressPlugin with an InstantVerify proofer' do
-        expect(progressive_proofer.residential_address_plugin).to be_an_instance_of(
-          Proofing::Resolution::Plugins::ResidentialAddressPlugin,
-        )
-
-        expect(progressive_proofer.residential_address_plugin.proofer).to be_an_instance_of(
-          Proofing::LexisNexis::InstantVerify::Proofer,
-        )
-      end
-    end
-
-    context 'when proofing_vendor is :instant_verify_ddp' do
-      let(:proofing_vendor) { :instant_verify_ddp }
-
-      it 'returns ResidentialAddressPlugin with an InstantVerify proofer' do
-        expect(progressive_proofer.residential_address_plugin).to be_an_instance_of(
-          Proofing::Resolution::Plugins::ResidentialAddressPlugin,
-        )
-
-        expect(progressive_proofer.residential_address_plugin.proofer).to be_an_instance_of(
-          Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer,
-        )
-      end
-    end
-
-    context 'when proofing_vendor is :mock' do
-      let(:proofing_vendor) { :mock }
-
-      it 'returns ResidentialAddressPlugin with a mock proofer' do
-        expect(progressive_proofer.residential_address_plugin).to be_an_instance_of(
-          Proofing::Resolution::Plugins::ResidentialAddressPlugin,
-        )
-
-        expect(progressive_proofer.residential_address_plugin.proofer).to be_an_instance_of(
-          Proofing::Mock::ResolutionMockClient,
-        )
-      end
-    end
-
-    context 'when proofing_vendor is :socure_kyc' do
-      let(:proofing_vendor) { :socure_kyc }
-
-      it 'returns ResidentialAddressPlugin with a Socure proofer' do
-        expect(progressive_proofer.residential_address_plugin).to be_an_instance_of(
-          Proofing::Resolution::Plugins::ResidentialAddressPlugin,
-        )
-
-        expect(progressive_proofer.residential_address_plugin.proofer).to be_an_instance_of(
-          Proofing::Socure::IdPlus::Proofers::KycProofer,
-        )
-      end
-    end
-
-    context 'when proofing_vendor is another value' do
-      let(:proofing_vendor) { :a_dog }
-
-      it 'raises an error' do
-        expect { progressive_proofer.residential_address_plugin }.to raise_error
-      end
+    it 'returns a plugin without vendor-specific state' do
+      expect(progressive_proofer.residential_address_plugin).to be_an_instance_of(
+        Proofing::Resolution::Plugins::ResidentialAddressPlugin,
+      )
     end
   end
 
   describe '#state_id_address_plugin' do
+    it 'returns a plugin without vendor-specific state' do
+      expect(progressive_proofer.state_id_address_plugin).to be_an_instance_of(
+        Proofing::Resolution::Plugins::StateIdAddressPlugin,
+      )
+    end
+  end
+
+  describe '#cost_recording_proofer' do
+    subject(:cost_recording_proofer) do
+      progressive_proofer.cost_recording_proofer(current_sp:)
+    end
+
+    let(:current_sp) { build(:service_provider) }
     let(:proofing_vendor) { nil }
 
     before do
@@ -870,13 +819,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     context 'when proofing_vendor is :instant_verify' do
       let(:proofing_vendor) { :instant_verify }
 
-      it 'returns StateIdAddressPlugin with an InstantVerify proofer' do
-        expect(progressive_proofer.state_id_address_plugin).to be_an_instance_of(
-          Proofing::Resolution::Plugins::StateIdAddressPlugin,
-        )
-
-        expect(progressive_proofer.state_id_address_plugin.proofer).to be_an_instance_of(
-          Proofing::LexisNexis::InstantVerify::Proofer,
+      it 'wraps an InstantVerify proofer with the LexisNexis cost token' do
+        expect(cost_recording_proofer).to have_attributes(
+          proofer: an_instance_of(Proofing::LexisNexis::InstantVerify::Proofer),
+          sp_cost_token: :lexis_nexis_resolution,
+          current_sp:,
         )
       end
     end
@@ -884,27 +831,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     context 'when proofing_vendor is :instant_verify_ddp' do
       let(:proofing_vendor) { :instant_verify_ddp }
 
-      it 'returns StateIdAddressPlugin with an InstantVerify proofer' do
-        expect(progressive_proofer.state_id_address_plugin).to be_an_instance_of(
-          Proofing::Resolution::Plugins::StateIdAddressPlugin,
-        )
-
-        expect(progressive_proofer.state_id_address_plugin.proofer).to be_an_instance_of(
-          Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer,
-        )
-      end
-    end
-
-    context 'when proofing_vendor is :socure_kyc' do
-      let(:proofing_vendor) { :socure_kyc }
-
-      it 'returns StateIdAddressPlugin with a Socure proofer' do
-        expect(progressive_proofer.state_id_address_plugin).to be_an_instance_of(
-          Proofing::Resolution::Plugins::StateIdAddressPlugin,
-        )
-
-        expect(progressive_proofer.state_id_address_plugin.proofer).to be_an_instance_of(
-          Proofing::Socure::IdPlus::Proofers::KycProofer,
+      it 'wraps a DDP InstantVerify proofer with the LexisNexis cost token' do
+        expect(cost_recording_proofer).to have_attributes(
+          proofer: an_instance_of(Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer),
+          sp_cost_token: :lexis_nexis_resolution,
+          current_sp:,
         )
       end
     end
@@ -912,22 +843,35 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     context 'when proofing_vendor is :mock' do
       let(:proofing_vendor) { :mock }
 
-      it 'returns StateIdAddressPlugin with a mock proofer' do
-        expect(progressive_proofer.state_id_address_plugin).to be_an_instance_of(
-          Proofing::Resolution::Plugins::StateIdAddressPlugin,
-        )
-
-        expect(progressive_proofer.state_id_address_plugin.proofer).to be_an_instance_of(
-          Proofing::Mock::ResolutionMockClient,
+      it 'wraps a mock proofer with the mock cost token' do
+        expect(cost_recording_proofer).to have_attributes(
+          proofer: an_instance_of(Proofing::Mock::ResolutionMockClient),
+          sp_cost_token: :mock_resolution,
+          current_sp:,
         )
       end
     end
 
-    context 'when proofing_vendor is another value' do
-      let(:proofing_vendor) { :🦨 }
+    context 'when proofing_vendor is :socure_kyc' do
+      let(:proofing_vendor) { :socure_kyc }
 
-      it 'raises an error' do
-        expect { progressive_proofer.state_id_address_plugin }.to raise_error
+      it 'wraps a Socure proofer with the Socure cost token' do
+        expect(cost_recording_proofer).to have_attributes(
+          proofer: an_instance_of(Proofing::Socure::IdPlus::Proofers::KycProofer),
+          sp_cost_token: :socure_resolution,
+          current_sp:,
+        )
+      end
+    end
+
+    context 'when proofing_vendor is unsupported' do
+      let(:proofing_vendor) { :unsupported_vendor }
+
+      it 'raises an InvalidProofingVendorError' do
+        expect { cost_recording_proofer }.to raise_error(
+          described_class::InvalidProofingVendorError,
+          'unsupported_vendor is not a valid proofing vendor',
+        )
       end
     end
   end
