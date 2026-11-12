@@ -268,9 +268,15 @@ module Idv
       FormResponse.new(**form_response_params)
     end
 
+    # The legacy phone input submits a +-prefixed international number, so the
+    # country only matters for the NDS phone input, which submits national
+    # digits alongside the selected international_code.
     def formatted_destination_phone
-      raw_phone = params.require(:doc_auth).permit(:phone)
-      PhoneFormatter.format(raw_phone, country_code: 'US')
+      phone_params = params.require(:doc_auth).permit(:phone, :international_code)
+      PhoneFormatter.format(
+        phone_params[:phone],
+        country_code: phone_params[:international_code].presence || 'US',
+      )
     end
 
     def how_to_verify_form_params

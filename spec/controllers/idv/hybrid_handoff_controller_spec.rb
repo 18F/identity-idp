@@ -384,6 +384,40 @@ RSpec.describe Idv::HybridHandoffController do
 
         put :update, params: params
       end
+
+      context 'with national digits and a selected country from the NDS phone input' do
+        let(:params) do
+          {
+            type: 'mobile',
+            doc_auth: { phone: '07700 900123', international_code: 'GB' },
+          }
+        end
+
+        it 'sends the link to the number in the selected country' do
+          expect(Telephony).to receive(:send_doc_auth_link).with(
+            hash_including(to: '+44 7700 900123', country_code: 'GB'),
+          ).and_call_original
+
+          put :update, params: params
+
+          expect(subject.idv_session.phone_for_mobile_flow).to eq('+44 7700 900123')
+        end
+      end
+
+      context 'with an international number and a country from the legacy phone input' do
+        let(:params) do
+          {
+            type: 'mobile',
+            doc_auth: { phone: '+44 7700 900123', international_code: 'GB' },
+          }
+        end
+
+        it 'sends the link to the submitted international number' do
+          put :update, params: params
+
+          expect(subject.idv_session.phone_for_mobile_flow).to eq('+44 7700 900123')
+        end
+      end
     end
 
     context 'phone-first (NDS) flow' do
