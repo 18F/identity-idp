@@ -3,7 +3,7 @@
 module Proofing
   module Resolution
     class ProgressiveProofer
-      class InvalidProofingVendorError; end
+      class InvalidProofingVendorError < StandardError; end
 
       attr_reader :user_uuid,
                   :user_email,
@@ -83,19 +83,21 @@ module Proofing
           )
         end
 
+        resolution_proofer = cost_recording_proofer(current_sp:)
+
         residential_address_resolution_result = residential_address_plugin.call(
           applicant_pii:,
-          current_sp:,
           ipp_enrollment_in_progress:,
           timer:,
+          proofer: resolution_proofer,
         )
 
         state_id_address_resolution_result = state_id_address_plugin.call(
           applicant_pii:,
-          current_sp:,
           residential_address_resolution_result:,
           ipp_enrollment_in_progress:,
           timer:,
+          proofer: resolution_proofer,
         )
 
         phone_result = phone_plugin.call(
@@ -124,16 +126,18 @@ module Proofing
       end
 
       def residential_address_plugin
-        @residential_address_plugin ||= Plugins::ResidentialAddressPlugin.new(
-          proofer: create_proofer,
-          sp_cost_token:,
-        )
+        @residential_address_plugin ||= Plugins::ResidentialAddressPlugin.new
       end
 
       def state_id_address_plugin
-        @state_id_address_plugin ||= Plugins::StateIdAddressPlugin.new(
+        @state_id_address_plugin ||= Plugins::StateIdAddressPlugin.new
+      end
+
+      def cost_recording_proofer(current_sp:)
+        CostRecordingProofer.new(
           proofer: create_proofer,
           sp_cost_token:,
+          current_sp:,
         )
       end
 

@@ -4,8 +4,6 @@ module Proofing
   module Resolution
     module Plugins
       class StateIdAddressPlugin
-        attr_reader :proofer, :sp_cost_token
-
         SECONDARY_ID_ADDRESS_MAP = {
           identity_doc_address1: :address1,
           identity_doc_address2: :address2,
@@ -14,20 +12,12 @@ module Proofing
           identity_doc_zipcode: :zipcode,
         }.freeze
 
-        def initialize(
-          proofer:,
-          sp_cost_token:
-        )
-          @proofer = proofer
-          @sp_cost_token = sp_cost_token
-        end
-
         def call(
           applicant_pii:,
-          current_sp:,
           residential_address_resolution_result:,
           ipp_enrollment_in_progress:,
-          timer:
+          timer:,
+          proofer:
         )
           if ipp_current_address_matches_id?(applicant_pii) && ipp_enrollment_in_progress
             return residential_address_resolution_result
@@ -44,12 +34,6 @@ module Proofing
 
           timer.time('resolution') do
             proofer.proof(applicant_pii_with_state_id_address)
-          end.tap do |result|
-            Db::SpCost::AddSpCost.call(
-              current_sp,
-              sp_cost_token,
-              transaction_id: result.transaction_id,
-            )
           end
         end
 

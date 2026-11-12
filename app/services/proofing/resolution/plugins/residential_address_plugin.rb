@@ -4,27 +4,11 @@ module Proofing
   module Resolution
     module Plugins
       class ResidentialAddressPlugin
-        attr_reader :proofer, :sp_cost_token
-
-        def initialize(
-          proofer:,
-          sp_cost_token:
-        )
-          @proofer = proofer
-          @sp_cost_token = sp_cost_token
-        end
-
-        def call(applicant_pii:, current_sp:, ipp_enrollment_in_progress:, timer:)
+        def call(applicant_pii:, ipp_enrollment_in_progress:, timer:, proofer:)
           return residential_address_unnecessary_result unless ipp_enrollment_in_progress
 
           timer.time('residential address') do
             proofer.proof(applicant_pii)
-          end.tap do |result|
-            Db::SpCost::AddSpCost.call(
-              current_sp,
-              sp_cost_token,
-              transaction_id: result.transaction_id,
-            )
           end
         end
 
