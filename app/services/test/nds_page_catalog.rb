@@ -90,6 +90,16 @@ module Test
         ],
       ),
       Page.new(
+        key: 'piv-cac-recommended',
+        title: 'PIV/CAC recommended (government email)',
+        flow: MFA,
+        template: 'users/piv_cac_recommended/show',
+        permutations: [
+          Permutation.new(label: 'First MFA', params: {}),
+          Permutation.new(label: 'MFA configured (skip)', params: { second: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'piv-cac-setup',
         title: 'Add government employee ID (PIV/CAC)',
         flow: MFA,
