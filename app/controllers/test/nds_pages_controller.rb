@@ -841,6 +841,11 @@ module Test
     def setup_mfa_setup
       user = build_mfa_user(configured: params[:second].present?)
       @nds_current_user = user
+      @in_account_creation_flow = params[:account_creation].present?
+      if params[:mil_email].present?
+        emails = [EmailAddress.new(email: 'jane.doe@mail.mil', confirmed_at: Time.zone.now)]
+        user.define_singleton_method(:confirmed_email_addresses) { emails }
+      end
       phishing_resistant_required = params[:phishing].present?
       piv_cac_required = params[:piv_cac].present?
       @presenter = TwoFactorOptionsPresenter.new(

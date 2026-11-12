@@ -87,6 +87,22 @@ module Test
           Permutation.new(label: 'Skip link', params: { second: '1', skip: '1' }),
           Permutation.new(label: 'Phishing resistant required', params: { phishing: '1' }),
           Permutation.new(label: 'PIV/CAC required', params: { piv_cac: '1' }),
+          Permutation.new(
+            label: 'Phishing resistant required (sign in)',
+            params: { second: '1', phishing: '1' },
+          ),
+          Permutation.new(
+            label: 'Phishing resistant required (sign in, .mil email)',
+            params: { second: '1', phishing: '1', mil_email: '1' },
+          ),
+          Permutation.new(
+            label: 'Phishing resistant required (account creation)',
+            params: { phishing: '1', account_creation: '1' },
+          ),
+          Permutation.new(
+            label: 'PIV/CAC required (sign in)',
+            params: { second: '1', piv_cac: '1' },
+          ),
         ],
       ),
       Page.new(

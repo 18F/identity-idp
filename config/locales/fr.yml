@@ -1709,6 +1709,7 @@ nds.link_sent.keep_open: Gardez cette fenêtre ouverte.
 nds.mfa_setup.badge_passkey: Rapide et sécurisé
 nds.mfa_setup.heading: Sécurisez votre compte
 nds.mfa_setup.heading_second: Choisissez une deuxième méthode d’authentification
+nds.mfa_setup.heading_step_up: Méthode d’authentification supplémentaire requise
 nds.mfa_setup.intro: Votre compte protège vos renseignements personnels. Ajoutez une couche de protection en choisissant une méthode d’authentification à plusieurs facteurs. Modifiez vos méthodes à tout moment dans les paramètres de votre compte.
 nds.mfa_setup.intro_second: Configurez une deuxième méthode pour toujours pouvoir accéder à votre compte, même si votre méthode principale n’est pas disponible.
 nds.mfa_setup.options.auth_app: Application d’authentification
