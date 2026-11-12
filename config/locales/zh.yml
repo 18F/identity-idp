@@ -1762,6 +1762,7 @@ nds.piv_cac_setup.step_3: 添加 PIV 或 CAC
 nds.piv_cac_setup.step_3_info: 点击继续按钮后，系统会要求你选择一个证书并输入你的 PIN。
 nds.request_letter.heading: 改为通过邮寄验证
 nds.request_letter.info: 为验证您的身份，我们会向您的地址邮寄一封包含验证码和说明的信件，预计 5 到 10 天内送达。请按照信中的说明完成身份验证。
+nds.second_mfa_reminder.skip: 跳过
 nds.socure_errors.in_person_heading: 或者，尝试亲身去验证身份证件
 nds.socure_errors.rate_limit_html.one: 您可以再试<strong>1次。</strong>然后，您必须等6个小时才能再试。
 nds.socure_errors.rate_limit_html.other: 您可以再试<strong>%{count}次。</strong>然后，您必须等6个小时才能再试。

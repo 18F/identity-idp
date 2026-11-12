@@ -1749,6 +1749,7 @@ nds.piv_cac_setup.step_3: Add your PIV or CAC
 nds.piv_cac_setup.step_3_info: You’ll be asked to choose a certificate and enter your PIN after clicking the continue button.
 nds.request_letter.heading: Verify by mail instead
 nds.request_letter.info: To verify your identity, we’ll mail a letter with a verification code and instructions to your address. It should arrive in 5 to 10 days. Follow the instructions in the letter to finish verifying your identity.
+nds.second_mfa_reminder.skip: Skip
 nds.socure_errors.in_person_heading: Or, try verifying your ID in person
 nds.socure_errors.rate_limit_html.one: You can try <strong>1 more time.</strong> Then, you must wait 6 hours before trying again.
 nds.socure_errors.rate_limit_html.other: You can try <strong>%{count} more times.</strong> Then, you must wait 6 hours before trying again.

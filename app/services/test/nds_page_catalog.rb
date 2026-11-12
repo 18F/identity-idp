@@ -149,6 +149,15 @@ module Test
         ],
       ),
       Page.new(
+        key: 'second-mfa-reminder',
+        title: 'Second MFA reminder (add another method)',
+        flow: MFA,
+        template: 'users/second_mfa_reminder/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
         key: 'backup-code-regenerate',
         title: 'Regenerate backup codes',
         flow: MFA,
