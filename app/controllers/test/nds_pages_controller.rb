@@ -915,6 +915,43 @@ module Test
       {}
     end
 
+    def setup_webauthn_verification
+      platform = params[:platform].present?
+      user = User.new
+      configuration = user.webauthn_configurations.build(
+        name: platform ? 'Passkey' : 'Security key',
+        credential_id: 'dev-credential',
+        credential_public_key: 'dev-key',
+        platform_authenticator: platform,
+        transports: platform ? %w[internal hybrid] : %w[usb],
+      )
+      @nds_current_user = user
+      @presenter = TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(
+        data: {
+          credentials: [{ id: configuration.credential_id, transports: configuration.transports }],
+          reauthn: params[:reauthn].present?,
+          user_opted_remember_device_cookie: nil,
+        },
+        view: view_context,
+        service_provider: nil,
+        remember_device_default: false,
+        platform_authenticator: platform,
+      )
+      if params[:error].present?
+        link = view_context.link_to(
+          t('two_factor_authentication.webauthn_error.additional_methods_link'),
+          login_two_factor_options_path,
+        )
+        flash.now[:error] =
+          if platform
+            t('two_factor_authentication.webauthn_error.try_again', link:)
+          else
+            t('two_factor_authentication.webauthn_error.connect_html', link_html: link)
+          end
+      end
+      {}
+    end
+
     def setup_totp_setup
       user = build_mfa_user(configured: params[:second].present?)
       @nds_current_user = user
