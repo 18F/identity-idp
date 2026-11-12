@@ -1760,6 +1760,10 @@ nds.piv_cac_setup.step_1: 输入昵称
 nds.piv_cac_setup.step_2: 把 PIV 或 CAC 插入读卡器
 nds.piv_cac_setup.step_3: 添加 PIV 或 CAC
 nds.piv_cac_setup.step_3_info: 点击继续按钮后，系统会要求你选择一个证书并输入你的 PIN。
+nds.piv_cac_verification.error.bullet_2: 使用另一种身份验证方法。
+nds.piv_cac_verification.error.bullet_3: 联系为您签发 PIV/CAC 的机构管理员。
+nds.piv_cac_verification.error.contact_support_html: '%{link_html}以获得更多帮助。'
+nds.piv_cac_verification.error.contact_support_link: 联系 %{app_name} 支持
 nds.request_letter.heading: 改为通过邮寄验证
 nds.request_letter.info: 为验证您的身份，我们会向您的地址邮寄一封包含验证码和说明的信件，预计 5 到 10 天内送达。请按照信中的说明完成身份验证。
 nds.socure_errors.in_person_heading: 或者，尝试亲身去验证身份证件

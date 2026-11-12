@@ -915,6 +915,33 @@ module Test
       {}
     end
 
+    def setup_piv_cac_verification
+      user = User.new
+      user.piv_cac_configurations.build(name: 'PIV/CAC', x509_dn_uuid: SecureRandom.uuid)
+      @nds_current_user = user
+      @presenter = TwoFactorAuthCode::PivCacAuthenticationPresenter.new(
+        data: {
+          two_factor_authentication_method: 'piv_cac',
+          reauthn: params[:reauthn].present?,
+          user_opted_remember_device_cookie: nil,
+        },
+        view: view_context,
+        service_provider: nil,
+        remember_device_default: false,
+      )
+      {}
+    end
+
+    def setup_piv_cac_verification_error
+      @nds_current_user = User.new
+      @presenter = PivCacErrorPresenter.new(
+        error: params[:error],
+        view: view_context,
+        try_again_url: login_two_factor_piv_cac_url,
+      )
+      {}
+    end
+
     def setup_totp_setup
       user = build_mfa_user(configured: params[:second].present?)
       @nds_current_user = user

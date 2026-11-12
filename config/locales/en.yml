@@ -1747,6 +1747,10 @@ nds.piv_cac_setup.step_1: Enter a nickname
 nds.piv_cac_setup.step_2: Insert your PIV or CAC into your card reader
 nds.piv_cac_setup.step_3: Add your PIV or CAC
 nds.piv_cac_setup.step_3_info: You’ll be asked to choose a certificate and enter your PIN after clicking the continue button.
+nds.piv_cac_verification.error.bullet_2: Using another authentication method.
+nds.piv_cac_verification.error.bullet_3: Contacting the agency administrator that issued your PIV/CAC.
+nds.piv_cac_verification.error.contact_support_html: '%{link_html} for additional help.'
+nds.piv_cac_verification.error.contact_support_link: Contact %{app_name} support
 nds.request_letter.heading: Verify by mail instead
 nds.request_letter.info: To verify your identity, we’ll mail a letter with a verification code and instructions to your address. It should arrive in 5 to 10 days. Follow the instructions in the letter to finish verifying your identity.
 nds.socure_errors.in_person_heading: Or, try verifying your ID in person
