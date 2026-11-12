@@ -219,6 +219,7 @@ module Idv
              :signals, :phone],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
             [:proofing_results, :context, :stages, :resolution, :reason_codes],
+            *Proofing::Resolution::Attempt::PII_LIKE_KEYPATHS,
             [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
             [:proofing_results, :context, :stages, :threatmetrix, :response_body, :first_name],
             [:proofing_results, :context, :stages, :hybrid_mobile_threatmetrix, :response_body,
@@ -489,7 +490,9 @@ module Idv
     def build_proofing_exception_list(stages)
       return nil unless stages
 
-      stages.transform_values do |value|
+      proofing_stages = stages.except(:resolution_attempts)
+
+      proofing_stages.transform_values do |value|
         if value.dig(:exception).present?
           { **value.slice(:vendor_name, :exception, :jurisdiction_in_maintenance_window) }
         end
@@ -588,14 +591,33 @@ module Idv
       end
 
       def attributes_requiring_additional_verification
-        # grab all the attributes that require additional verification across stages
-        stages.map { |_k, v| v[:attributes_requiring_additional_verification] }.flatten.compact
+        attributes = []
+
+        proofing_stages.each_value do |stage|
+          stage_attributes = stage[:attributes_requiring_additional_verification]
+          next unless stage_attributes
+
+          attributes.concat(stage_attributes)
+        end
+
+        attributes
       end
 
       def failed_stages
-        stages.keys.select { |k| !stages[k][:success] }.map do |stage|
-          threatmetrix_stage?(stage) ? :device_risk_assesment : stage
+        failures = []
+
+        proofing_stages.each do |name, stage|
+          next if stage[:success]
+
+          failure = threatmetrix_stage?(name) ? :device_risk_assesment : name
+          failures << failure
         end
+
+        failures
+      end
+
+      def proofing_stages
+        stages.except(:resolution_attempts)
       end
 
       def resolution_adjudication_reason

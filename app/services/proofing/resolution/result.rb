@@ -17,6 +17,9 @@ module Proofing
                   :reason_codes,
                   :source_attribution,
                   :vendor_workflow
+
+      attr_accessor :resolution_attempts
+
       def initialize(
         success: nil,
         errors: {},
@@ -49,6 +52,7 @@ module Proofing
           attributes_requiring_additional_verification
         @vendor_workflow = vendor_workflow
         @verified_attributes = verified_attributes
+        @resolution_attempts = []
       end
 
       def success?

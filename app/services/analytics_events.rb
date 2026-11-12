@@ -2542,6 +2542,12 @@ module AnalyticsEvents
   # @option proofing_results [String] context.resolution_adjudication_reason Reason code describing how we arrived at the identity resolution result
   # @option proofing_results [Hash] context.stages Object holding details about each stage of the proofing process
   # @option proofing_results [Hash] context.stages.resolution Object holding details about the call made to the identity resolution vendor
+  # @option proofing_results [Array<Hash>,nil] context.stages.resolution_attempts Future ordered identity resolution vendor attempts, including the final attempt. This field is not emitted yet.
+  # @option proofing_results [Integer] context.stages.resolution_attempts[].attempt One-based position of this request in the vendor chain
+  # @option proofing_results [String] context.stages.resolution_attempts[].vendor Configured resolution vendor key used to make this request (e.g. instant_verify_ddp)
+  # @option proofing_results [Boolean] context.stages.resolution_attempts[].success Whether this individual vendor request passed identity resolution
+  # @option proofing_results [String] context.stages.resolution_attempts[].vendor_name Vendor result identifier for this request (e.g. lexisnexis:instant_verify_ddp)
+  # @option proofing_results [String] context.stages.resolution_attempts[].transaction_id Unique id for this underlying vendor request
   # @option proofing_results [Boolean] context.stages.resolution.success Whether identity resolution proofing was successful
   # @option proofing_results [Hash] context.stages.resolution.errors Object describing errors encountered during identity resolution
   # @option proofing_results [String,nil] context.stages.resolution.exception If an exception occured during identity resolution its message is provided here
