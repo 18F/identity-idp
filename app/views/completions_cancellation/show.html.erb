@@ -1,5 +1,47 @@
 <% self.title = t('titles.cancel_exit_login', app_name: APP_NAME) %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(
+        title: t('headings.cancellations.login_cancel_prompt', app_name: APP_NAME),
+      ) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--warning">
+        <%= render NDS::IconComponent.new(icon: :warning, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+      <div class="copy--muted text-left">
+        <p><%= t('login_cancel.header', app_name: APP_NAME) %></p>
+        <ul class="usa-list">
+          <li><%= t('login_cancel.bullet1_html', app_name: APP_NAME, sp_name: decorated_sp_session.sp_name) %></li>
+          <li>
+            <%= t(
+                  'login_cancel.bullet2_html',
+                  app_name: APP_NAME,
+                  link_html: link_to(t('login_cancel.account_page'), account_path),
+                ) %>
+          </li>
+        </ul>
+      </div>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: sign_up_completed_path,
+              full_width: true,
+            ).with_content(t('login_cancel.keep_going')) %>
+        <%= render ButtonComponent.new(
+              url: return_to_sp_cancel_path(step: :sign_up),
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('login_cancel.exit', app_name: APP_NAME)) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render StatusPageComponent.new(status: :warning) do |c| %>
   <% c.with_header { t('headings.cancellations.login_cancel_prompt', app_name: APP_NAME) } %>
 
@@ -39,4 +81,5 @@
     </div>
   </div>
  
+<% end %>
 <% end %>
