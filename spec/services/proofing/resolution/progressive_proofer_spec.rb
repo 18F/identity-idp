@@ -851,11 +851,14 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
     end
 
-    context 'when proofing_vendor is another value' do
-      let(:proofing_vendor) { :a_dog }
+    context 'when the proofing vendor is unsupported' do
+      let(:proofing_vendor) { :unsupported_vendor }
 
-      it 'raises an error' do
-        expect { progressive_proofer.residential_address_plugin }.to raise_error
+      it 'raises an InvalidProofingVendorError with the unsupported vendor' do
+        expect { progressive_proofer.residential_address_plugin }.to raise_error(
+          described_class::InvalidProofingVendorError,
+          'unsupported_vendor is not a valid proofing vendor',
+        )
       end
     end
   end
@@ -923,11 +926,14 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
     end
 
-    context 'when proofing_vendor is another value' do
-      let(:proofing_vendor) { :🦨 }
+    context 'when the proofing vendor is unsupported' do
+      let(:proofing_vendor) { :unsupported_vendor }
 
-      it 'raises an error' do
-        expect { progressive_proofer.state_id_address_plugin }.to raise_error
+      it 'raises an InvalidProofingVendorError with the unsupported vendor' do
+        expect { progressive_proofer.state_id_address_plugin }.to raise_error(
+          described_class::InvalidProofingVendorError,
+          'unsupported_vendor is not a valid proofing vendor',
+        )
       end
     end
   end
