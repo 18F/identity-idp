@@ -206,6 +206,19 @@ module Test
         ],
       ),
       Page.new(
+        key: 'webauthn-verification',
+        title: 'Passkey / security key sign-in',
+        flow: OTP,
+        template: 'two_factor_authentication/webauthn_verification/show',
+        permutations: [
+          Permutation.new(label: 'Passkey', params: { platform: '1' }),
+          Permutation.new(label: 'Security key', params: {}),
+          Permutation.new(label: 'Passkey error', params: { platform: '1', error: '1' }),
+          Permutation.new(label: 'Security key error', params: { error: '1' }),
+          Permutation.new(label: 'Reauthentication', params: { reauthn: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'idv-welcome',
         title: 'Verify your identity (welcome)',
         flow: IDV,
