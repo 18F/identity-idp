@@ -936,6 +936,15 @@ module Test
       {}
     end
 
+    def setup_mfa_confirmation
+      platform = params[:platform].present?
+      @content = MfaConfirmationPresenter.new(
+        show_skip_additional_mfa_link: !platform,
+        webauthn_platform_set_up_successful: platform,
+      )
+      {}
+    end
+
     def setup_backup_code_reminder
       flash.now[:success] = t('notices.authenticated_successfully')
       {}

@@ -1706,6 +1706,9 @@ nds.idv_welcome.what_youll_need: What you’ll need
 nds.link_sent.heading: Continue on your phone
 nds.link_sent.instructions: Follow the instructions to capture your ID photos and selfie, then return here to finish.
 nds.link_sent.keep_open: Keep this window open.
+nds.mfa_confirmation.add_method: Add authentication method
+nds.mfa_confirmation.heading: Add a backup authentication method
+nds.mfa_confirmation.skip: Skip
 nds.mfa_setup.badge_passkey: Fast and secure
 nds.mfa_setup.heading: Secure your account
 nds.mfa_setup.heading_second: Choose a second authentication method

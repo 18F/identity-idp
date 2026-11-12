@@ -30,8 +30,6 @@ class MfaConfirmationPresenter
     @show_skip_additional_mfa_link
   end
 
-  private
-
   def webauthn_platform_set_up_successful?
     @webauthn_platform_set_up_successful
   end
