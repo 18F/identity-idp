@@ -1,5 +1,82 @@
 <% self.title = @presenter.title %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(
+        title: @presenter.heading,
+        subtitle: @presenter.reauthentication_context? ? @presenter.info : nil,
+      ) do |page| %>
+    <% page.with_alert do %>
+      <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
+      <% if @presenter.add_piv_cac_after_2fa? %>
+        <%= render AlertComponent.new(
+              type: :info,
+              class: 'margin-bottom-4',
+            ).with_content(t('two_factor_authentication.piv_cac_mismatch.2fa_before_add')) %>
+      <% end %>
+      <% if @presenter.restricted_options_warning_text.present? %>
+        <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
+          <%= @presenter.restricted_options_warning_text %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% page.with_body do %>
+      <%= simple_form_for(@two_factor_options_form, url: login_two_factor_options_path) do %>
+        <div class="mfa-options" role="group" aria-label="<%= @presenter.heading %>">
+          <% @presenter.nds_options.each do |nds_option| %>
+            <% option = nds_option.option %>
+            <div class="mfa-options__item">
+              <%= render(option) do %>
+                <%= render NDS::CardComponent.new(
+                      button: true,
+                      type: :submit,
+                      class: 'card--mfa',
+                      name: 'two_factor_options_form[selection]',
+                      value: option.type,
+                      id: "two_factor_options_form_selection_#{option.type}",
+                      disabled: option.disabled?,
+                      'aria-disabled': option.disabled?,
+                    ) do |card| %>
+                  <% unless option.disabled? %>
+                    <% card.with_trailing do %>
+                      <%= render NDS::IconComponent.new(icon: :chevron_right, size: 20) %>
+                    <% end %>
+                  <% end %>
+                  <div class="card__row">
+                    <%= render NDS::IconComponent.new(icon: nds_option.icon, size: 24) %>
+                    <p class="card__title"><%= nds_option.title %></p>
+                  </div>
+                  <p class="card__description"><%= nds_option.description %></p>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <% unless @presenter.account_recovery_pending? %>
+        <% if @presenter.account_recovery_eligible? %>
+          <div class="copy copy--centered copy--muted">
+            <p><%= @presenter.account_recovery_link %></p>
+          </div>
+        <% elsif @presenter.account_reset_or_cancel_link.present? %>
+          <div class="copy copy--centered copy--muted">
+            <p><%= @presenter.account_reset_or_cancel_link %></p>
+          </div>
+        <% end %>
+      <% end %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch, class: 'margin-top-4') do %>
+        <%= render ButtonComponent.new(
+              url: user_signing_up? ? sign_up_cancel_path : @presenter.cancel_link,
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(cancel_link_text) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
 
 <% if @presenter.add_piv_cac_after_2fa? %>
@@ -61,3 +138,4 @@
 <% end %>
 
 <%= render 'shared/cancel', link: @presenter.cancel_link %>
+<% end %>
