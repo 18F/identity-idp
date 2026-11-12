@@ -915,6 +915,15 @@ module Test
       {}
     end
 
+    def setup_mfa_locked
+      type = params[:type].presence_in(
+        %w[otp_requests generic_login_attempts backup_code_login_attempts
+           personal_key_login_attempts piv_cac_login_attempts],
+      ) || 'otp_login_attempts'
+      user = User.new(second_factor_locked_at: Time.zone.now)
+      { presenter: TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(type, user) }
+    end
+
     def setup_totp_setup
       user = build_mfa_user(configured: params[:second].present?)
       @nds_current_user = user
