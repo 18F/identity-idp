@@ -151,8 +151,6 @@ module Test
     # i18n-tasks-use t('nds.personal_key.acknowledgment')
     # i18n-tasks-use t('nds.personal_key.generated_on')
     # i18n-tasks-use t('nds.personal_key.info')
-    # i18n-tasks-use t('nds.phone_required.heading')
-    # i18n-tasks-use t('nds.phone_required.info')
     # i18n-tasks-use t('nds.phone_setup.delivery.sms')
     # i18n-tasks-use t('nds.phone_setup.delivery.voice')
     # i18n-tasks-use t('nds.phone_setup.heading')
@@ -1211,6 +1209,10 @@ module Test
         previous_params: { phone: '2025551212' }, user: User.new, delivery_methods: [:sms],
       )
       { idv_phone_form: form }
+    end
+
+    def setup_idv_phone_required
+      {}
     end
 
     def setup_link_sent
