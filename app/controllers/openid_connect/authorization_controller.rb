@@ -291,7 +291,7 @@ module OpenidConnect
       )
 
       attempts_api_tracker.login_completed
-      track_billing_events
+      track_billing_events(resource: authorize_form.resource)
     end
 
     def redirect_user(redirect_uri)

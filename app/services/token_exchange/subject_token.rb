@@ -10,6 +10,7 @@ module TokenExchange
     :actor_return_log_id,
     :dpop_jkt,
     :issued_at,
+    :resource,
     keyword_init: true,
   ) do
     def self.redis_key_prefix

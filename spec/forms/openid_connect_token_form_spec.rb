@@ -148,14 +148,22 @@ RSpec.describe OpenidConnectTokenForm do
 
     context 'with a token exchange authorization code' do
       let(:target_app) { 'passport-issuer' }
-      let(:scope) { 'token_exchange:passport' }
+      let(:scope) { 'token_exchange' }
+      let(:resource) { 'https://passport.gov' }
+      let(:handoff_code) { identity&.session_uuid }
 
       before do
         allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
           .and_return([client_id])
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
-          .and_return([{ issuer: target_app, scope: 'passport', resource: 'https://passport.gov' }])
+          .and_return([{ issuer: target_app, scope: 'passport', resource: }])
+        TokenExchange::ActorHandoff.store(
+          code: handoff_code,
+          actor_return_log_id: nil,
+          expires_in: 300,
+          resource:,
+        )
       end
 
       context 'when the user does not exist' do
@@ -202,6 +210,14 @@ RSpec.describe OpenidConnectTokenForm do
           expect(form.errors.details[:code].count(error: :unauthorized_client)).to eq(1)
         end
       end
+
+      context 'when the actor_handoff does not exist' do
+        let(:handoff_code) { nil }
+        it 'adds a missing delegator error' do
+          expect(valid?).to be false
+          expect(form.errors.details[:code]).to include(error: :delegation_consent_required)
+        end
+      end
     end
 
     context 'with the token exchange enabled and a client that is not a delegation actor' do
@@ -238,7 +254,7 @@ RSpec.describe OpenidConnectTokenForm do
             success: true,
             token_exchange_stage: nil,
             token_endpoint_operation: 'authorization_code',
-            token_exchange_scopes: nil,
+            token_exchange_resource: nil,
           )
         end
       end
@@ -706,7 +722,7 @@ RSpec.describe OpenidConnectTokenForm do
       end
     end
 
-    context 'for a public client registered for key binding' do
+    context 'for a PKCE service provider that requires dpop' do
       let(:service_provider) { create(:service_provider, :active, pkce: true, certs: []) }
       let(:scope) { 'openid email' }
       let(:code_verifier) { SecureRandom.urlsafe_base64(32) }
@@ -729,6 +745,7 @@ RSpec.describe OpenidConnectTokenForm do
           code_verifier:,
           dpop_proof: }
       end
+      let(:resource) { 'https://passport.gov' }
 
       before do
         allow(IdentityConfig.store).to receive(:dpop_required_issuers)
@@ -738,12 +755,12 @@ RSpec.describe OpenidConnectTokenForm do
         if stored_thumbprint
           TokenExchange::ActorHandoff.store(
             code: identity.session_uuid, actor_return_log_id: nil, dpop_jkt: stored_thumbprint,
-            expires_in: 300
+            expires_in: 300, resource:
           )
         end
       end
 
-      it 'redeems the code with a proof from the bound key and returns a key-bound access token' do
+      it 'returns a key-bound access token' do
         expect(form.valid?).to eq(true)
         response = form.response
         expect(response[:access_token]).to eq(identity.access_token)
@@ -751,7 +768,7 @@ RSpec.describe OpenidConnectTokenForm do
         expect(response[:token_type]).to eq('DPoP')
       end
 
-      it 'records the key the access token is bound to, for as long as the token lives' do
+      it 'records the key the access token is bound to' do
         expect(AccessTokenBinding).to receive(:store).with(
           access_token: identity.access_token,
           dpop_jkt: stored_thumbprint,
@@ -764,7 +781,7 @@ RSpec.describe OpenidConnectTokenForm do
       end
 
       context 'when the sign-in requested delegation' do
-        let(:scope) { 'openid email token_exchange:records' }
+        let(:scope) { 'openid email token_exchange' }
 
         before do
           allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
@@ -773,7 +790,7 @@ RSpec.describe OpenidConnectTokenForm do
           allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
             .and_return([{ issuer: 'records-issuer',
                            scope: 'records',
-                           resource: 'https://records.gov' }])
+                           resource: }])
           create(:user_consent_sts, user:, target_app: 'records-issuer')
         end
 
@@ -888,6 +905,7 @@ RSpec.describe OpenidConnectTokenForm do
 
   describe '#submit' do
     context 'with valid params' do
+      let(:resource) { nil }
       it 'returns FormResponse with success: true' do
         submission = form.submit
 
@@ -901,7 +919,7 @@ RSpec.describe OpenidConnectTokenForm do
           ial: 1,
           token_exchange_stage: nil,
           token_endpoint_operation: 'authorization_code',
-          token_exchange_scopes: nil,
+          token_exchange_resource: nil,
           integration_errors: nil,
           dpop_bound: false,
         )
@@ -922,7 +940,7 @@ RSpec.describe OpenidConnectTokenForm do
           code_digest: nil,
           token_exchange_stage: nil,
           token_endpoint_operation: 'authorization_code',
-          token_exchange_scopes: nil,
+          token_exchange_resource: nil,
         )
       end
     end
@@ -944,7 +962,7 @@ RSpec.describe OpenidConnectTokenForm do
           ial: 1,
           token_exchange_stage: nil,
           token_endpoint_operation: 'authorization_code',
-          token_exchange_scopes: nil,
+          token_exchange_resource: nil,
           integration_errors: {
             error_details: ['Grant type is not included in the list'],
             error_types: [:grant_type],
@@ -995,7 +1013,8 @@ RSpec.describe OpenidConnectTokenForm do
 
     context 'with a token exchange authorization code' do
       let(:target_app) { 'passport-issuer' }
-      let(:scope) { 'openid token_exchange:passport' }
+      let(:resource) { 'https://passport.gov' }
+      let(:scope) { 'openid token_exchange' }
 
       before do
         identity.update!(ial: 2)
@@ -1009,6 +1028,7 @@ RSpec.describe OpenidConnectTokenForm do
         TokenExchange::ActorHandoff.store(
           code:,
           actor_return_log_id: 123,
+          resource:,
           expires_in: IdentityConfig.store.openid_connect_authorization_code_expiration_seconds,
         )
         create(:user_consent_sts, user:, target_app:)
@@ -1039,7 +1059,7 @@ RSpec.describe OpenidConnectTokenForm do
         expect(form.submit.to_h).to include(
           token_exchange_stage: 'subject_token',
           token_endpoint_operation: 'subject_token',
-          token_exchange_scopes: ['passport'],
+          token_exchange_resource: 'https://passport.gov',
         )
       end
 

@@ -3,9 +3,10 @@ require 'rails_helper'
 RSpec.describe TokenExchange::ActorHandoff do
   describe '.store and .load' do
     let(:code) { SecureRandom.uuid }
+    let(:resource) { 'https://passport.gov' }
 
     it 'round trips the actor return-log id without storing the raw code as the key' do
-      described_class.store(code:, actor_return_log_id: 123, expires_in: 60)
+      described_class.store(code:, actor_return_log_id: 123, expires_in: 60, resource:)
 
       expect(described_class.load(code).actor_return_log_id).to eq(123)
       expect(described_class.load(code).dpop_jkt).to be_nil
@@ -16,9 +17,17 @@ RSpec.describe TokenExchange::ActorHandoff do
       let(:dpop_jkt) { SecureRandom.urlsafe_base64(32) }
 
       it 'round trips the thumbprint' do
-        described_class.store(code:, actor_return_log_id: nil, dpop_jkt:, expires_in: 60)
+        described_class.store(code:, actor_return_log_id: nil, dpop_jkt:, expires_in: 60, resource:)
 
         expect(described_class.load(code).dpop_jkt).to eq(dpop_jkt)
+      end
+    end
+
+    context 'with the resource named at authorization' do
+      it 'round trips the resource' do
+        described_class.store(code:, actor_return_log_id: nil, resource:, expires_in: 60)
+
+        expect(described_class.load(code).resource).to eq(resource)
       end
     end
 
@@ -28,7 +37,7 @@ RSpec.describe TokenExchange::ActorHandoff do
         expires_in: 60,
       )
 
-      described_class.store(code:, actor_return_log_id: 123, expires_in: 60)
+      described_class.store(code:, actor_return_log_id: 123, expires_in: 60, resource:)
     end
   end
 end

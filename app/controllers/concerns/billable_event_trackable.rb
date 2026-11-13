@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module BillableEventTrackable
-  def track_billing_events
+  def track_billing_events(resource: nil)
     billable = !current_session_has_been_billed?
     return_log = create_sp_return_log(billable:)
 
@@ -9,7 +9,7 @@ module BillableEventTrackable
       mark_current_session_billed
     end
 
-    store_actor_handoff(return_log || SpReturnLog.find_by(request_id:))
+    store_actor_handoff(return_log || SpReturnLog.find_by(request_id:), resource)
   end
 
   private
@@ -32,7 +32,7 @@ module BillableEventTrackable
     nil
   end
 
-  def store_actor_handoff(return_log)
+  def store_actor_handoff(return_log, resource)
     return if identity_authorization_code.blank?
 
     actor_return_log_id = return_log&.id if token_exchange_actor?
@@ -46,6 +46,7 @@ module BillableEventTrackable
       actor_return_log_id:,
       dpop_jkt:,
       expires_in: IdentityConfig.store.openid_connect_authorization_code_expiration_seconds,
+      resource:,
     )
   rescue StandardError => error
     NewRelic::Agent.notice_error(error)

@@ -2,17 +2,18 @@ require 'rails_helper'
 
 RSpec.describe TokenExchange::SubjectTokenIssuer do
   describe '.issue' do
-    subject(:issued_token) { described_class.issue(identity:, actor_return_log_id: 123) }
+    subject(:issued_token) { described_class.issue(identity:, actor_return_log_id: 123, resource:) }
 
     let(:user) { create(:user) }
     let(:identity) do
       create(
         :service_provider_identity,
         user:,
-        scope: 'openid token_exchange:passport',
+        scope: 'openid token_exchange',
         ial: 2,
       )
     end
+    let(:resource) { 'https://passport.gov' }
 
     before do
       allow(IdentityConfig.store).to receive(:token_exchange_subject_token_expires_in)
@@ -30,14 +31,15 @@ RSpec.describe TokenExchange::SubjectTokenIssuer do
       expect(loaded_subject_token).to have_attributes(
         identity_uuid: identity.uuid,
         actor_issuer: identity.service_provider,
-        scope: 'openid token_exchange:passport',
+        scope: 'openid token_exchange',
         ial: 2,
         actor_return_log_id: 123,
+        resource:,
       )
     end
 
     context 'with a key thumbprint' do
-      subject(:issued_token) { described_class.issue(identity:, dpop_jkt:) }
+      subject(:issued_token) { described_class.issue(identity:, dpop_jkt:, resource:) }
 
       let(:dpop_jkt) { SecureRandom.urlsafe_base64(32) }
 
