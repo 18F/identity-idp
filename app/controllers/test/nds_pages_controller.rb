@@ -915,6 +915,17 @@ module Test
       {}
     end
 
+    def setup_personal_key_verification
+      user = build_mfa_user(configured: params[:personal_key_only].blank?)
+      @nds_current_user = user
+      @presenter = TwoFactorAuthCode::PersonalKeyPresenter.new
+      @personal_key_form = PersonalKeyForm.new(user)
+      @show_deprecation_warning = params[:deprecation].present?
+      flash.now[:error] = t('two_factor_authentication.invalid_personal_key') if
+        params[:error].present?
+      {}
+    end
+
     def setup_totp_setup
       user = build_mfa_user(configured: params[:second].present?)
       @nds_current_user = user

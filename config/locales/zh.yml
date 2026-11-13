@@ -1746,6 +1746,9 @@ nds.otp_verification.sms.code_sent_html: '我们已将一次性代码发送至%{
 nds.otp_verification.voice.code_sent_html: '我们已通过电话向%{number_html}提供一次性代码。'
 nds.passwords.new.heading: 创建您的密码
 nds.passwords.new.info: 创建一个强密码来保护您的账户并确保个人信息安全。
+nds.personal_key_verification.invalid_body: 该个人密钥无效。请检查您的密钥，然后重试。
+nds.personal_key_verification.invalid_heading: 个人密钥无效
+nds.personal_key_verification.prompt: 输入您为账户保存的 16 个字符的个人密钥。
 nds.personal_key.acknowledgment: 我已将个人密钥保存在安全的地方
 nds.personal_key.generated_on: 生成于 %{date}
 nds.personal_key.info: 如果您重置密码，个人密钥是访问已验证账户的唯一方式。如果您丢失此密钥并忘记密码，则需要重新验证身份。
