@@ -102,6 +102,7 @@ module Idv
     end
 
     def handle_phone_submission
+      return redirect_to idv_phone_required_url if non_us_phone_in_phone_first_flow?
       return rate_limited_failure if rate_limiter.limited?
       rate_limiter.increment!
       idv_session.phone_for_mobile_flow = formatted_destination_phone
@@ -271,6 +272,14 @@ module Idv
     def formatted_destination_phone
       raw_phone = params.require(:doc_auth).permit(:phone)
       PhoneFormatter.format(raw_phone, country_code: 'US')
+    end
+
+    def non_us_phone_in_phone_first_flow?
+      return false unless nds_layout? && idv_session.phone_first_flow?
+
+      country = Phonelib.parse(formatted_destination_phone).country
+      country.present? &&
+        !PhoneNumberCapabilities::ADDRESS_IDENTITY_PROOFING_SUPPORTED_COUNTRY_CODES.include?(country)
     end
 
     def how_to_verify_form_params
