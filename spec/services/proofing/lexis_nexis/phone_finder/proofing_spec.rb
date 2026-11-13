@@ -20,10 +20,12 @@ RSpec.describe Proofing::LexisNexis::PhoneFinder::Proofer do
     )
   end
 
+  let(:bypasses_enabled) { false }
+
   it_behaves_like 'a lexisnexis rdp proofer'
 
   subject do
-    described_class.new(**LexisNexisFixtures.example_config.to_h)
+    described_class.new(**LexisNexisFixtures.example_config.to_h, bypasses_enabled:)
   end
 
   describe '#proof' do
@@ -94,6 +96,74 @@ RSpec.describe Proofing::LexisNexis::PhoneFinder::Proofer do
         expect(result_json_hash['Items'].class).to eq(Array)
         # check that key contaning PII is removed and not logged
         expect(result_json_hash['ParameterDetails']).to eq(nil)
+      end
+
+      context 'when only VOIP phone failed' do
+        let(:voip_only_fail_response_json) do
+          {
+            'Status' => {
+              'ConversationId' => '3100000000000',
+              'RequestId' => '2xxxxxx',
+              'TransactionStatus' => 'failed',
+              'TransactionReasonCode' => {
+                'Code' => 'phone_finder_fail',
+                'Description' => 'Fail - Risk Indicators match determined',
+              },
+            },
+            'Products' => [
+              {
+                'ProductType' => 'PhoneFinder',
+                'ExecutedStepName' => 'PhoneFinder',
+                'ProductStatus' => 'fail',
+                'Items' => [
+                  { 'ItemName' => 'PrepaidPhoneNumber', 'ItemStatus' => 'pass' },
+                  {
+                    'ItemName' => 'VOIPPhone',
+                    'ItemStatus' => 'fail',
+                    'ItemReason' => {
+                      'Code' => 'VOIPPHONE.HIGH',
+                      'Description' => 'VOIP phone detected',
+                    },
+                  },
+                ],
+              },
+              {
+                'ProductType' => 'PhoneFinder_Decision',
+                'ExecutedStepName' => 'PhoneFinder Checks',
+                'ProductStatus' => 'fail',
+                'ProductReason' => {
+                  'Code' => 'phone_finder_fail',
+                  'Description' => 'Fail - Risk Indicators match determined',
+                },
+              },
+            ],
+          }.to_json
+        end
+
+        before do
+          stub_request(:post, verification_request.url)
+            .to_return(body: voip_only_fail_response_json, status: 200)
+        end
+
+        context 'when bypasses_enabled is false' do
+          let(:bypasses_enabled) { false }
+
+          it 'returns a failure result' do
+            result = subject.proof(applicant)
+
+            expect(result.success?).to eq(false)
+          end
+        end
+
+        context 'when bypasses_enabled is true' do
+          let(:bypasses_enabled) { true }
+
+          it 'returns a successful result' do
+            result = subject.proof(applicant)
+
+            expect(result.success?).to eq(true)
+          end
+        end
       end
     end
 

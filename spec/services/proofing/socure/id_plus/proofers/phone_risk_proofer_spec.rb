@@ -6,12 +6,14 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer do
   let(:api_key) { 'super-$ecret' }
   let(:base_url) { 'https://example.org/' }
   let(:user_uuid) { 'test-user-uuid' }
+  let(:bypasses_enabled) { false }
 
   let(:config) do
     Proofing::Socure::IdPlus::Config.new(
       api_key:,
       base_url:,
       user_uuid:,
+      bypasses_enabled:,
     )
   end
 
@@ -140,6 +142,45 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer do
 
           it 'is not successful' do
             expect(result.success).to eql(false)
+          end
+        end
+      end
+
+      context 'when wrong phone type autofail reason codes (R613-R617) are present' do
+        let(:phonerisk_reason_codes) { %w[R613 R614 R615 R616 R617] }
+        let(:name_phone_reason_codes) { ['I123'] }
+
+        before do
+          allow(IdentityConfig.store).to receive(
+            :idv_socure_phonerisk_auto_failure_reason_codes,
+          ).and_return(%w[R613 R614 R615 R616 R617 R987])
+          allow(IdentityConfig.store).to receive(
+            :idv_proofing_agent_socure_phonerisk_bypassed_reason_codes,
+          ).and_return(%w[R613 R614 R615 R616 R617])
+        end
+
+        context 'when bypasses_enabled is false' do
+          let(:bypasses_enabled) { false }
+
+          it 'is not successful' do
+            expect(result.success).to eql(false)
+          end
+        end
+
+        context 'when bypasses_enabled is true' do
+          let(:bypasses_enabled) { true }
+
+          it 'bypasses the wrong phone type reason codes and succeeds' do
+            expect(result.success).to eql(true)
+            expect(result.errors).to eql({})
+          end
+
+          context 'when a non-bypassed autofail reason code is also present' do
+            let(:phonerisk_reason_codes) { %w[R613 R987] }
+
+            it 'is not successful' do
+              expect(result.success).to eql(false)
+            end
           end
         end
       end

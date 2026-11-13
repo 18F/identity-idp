@@ -6,6 +6,7 @@ module Proofing
       module Proofers
         class PhoneFinderProofer < Proofing::LexisNexis::Ddp::Proofer
           NOT_VERIFIED_TO_NAME = 'Input phone number could not be verified to name'
+          BYPASSED_ITEMS = %w[VOIPPhone].freeze
           VALID_REVIEW_STATUSES = %w[pass review reject].freeze
 
           private
@@ -24,7 +25,7 @@ module Proofing
               )
 
             AddressResult.new(
-              success: review_status == 'pass',
+              success: successful?(review_status, parsed_response),
               errors: parse_verification_errors(parsed_response),
               exception: nil,
               vendor_name: 'lexisnexis:phone_finder_ddp',
@@ -98,6 +99,13 @@ module Proofing
             raise 'LexisNexis PhoneFinder DDP returned no tps_vendor_raw_response'
           end
 
+          def successful?(review_status, response)
+            return true if review_status == 'pass'
+            return false unless config.bypasses_enabled
+
+            !has_name_verification_error?(response) && only_bypassed_items_failed?(response)
+          end
+
           def dual_vendor_check_eligible?(response)
             has_name_verification_error?(response) && !has_additional_verification_errors?(response)
           end
@@ -111,6 +119,19 @@ module Proofing
 
           def has_additional_verification_errors?(response)
             response.verification_errors.dig(:PhoneFinder, 'ProductStatus') == 'fail'
+          end
+
+          def only_bypassed_items_failed?(response)
+            return false unless response.verification_errors.dig(
+              :PhoneFinder, 'ProductStatus'
+            ) == 'fail'
+
+            items = Array(response.verification_errors.dig(:PhoneFinder, 'Items'))
+            failed_items = items.select { |item| item['ItemStatus'] == 'fail' }
+
+            failed_items.any? && failed_items.all? do |item|
+              BYPASSED_ITEMS.include?(item['ItemName'])
+            end
           end
         end
       end

@@ -59,8 +59,12 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
     end
   end
 
+  let(:bypasses_enabled) { false }
+
   subject(:proofer) do
-    described_class.new(LexisNexisFixtures.example_ddp_proofing_config.to_h)
+    described_class.new(
+      LexisNexisFixtures.example_ddp_proofing_config.to_h.merge(bypasses_enabled:),
+    )
   end
 
   describe '#proof' do
@@ -274,6 +278,18 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
         end
 
         context 'when the response fails with "Risk Indicators match determined"' do
+          let(:items) do
+            [
+              {
+                'ItemName' => 'VOIPPhone',
+                'ItemReason' => {
+                  'Code' => 'VOIPPHONE.HIGH',
+                  'Description' => 'VOIP phone detected',
+                },
+                'ItemStatus' => 'fail',
+              },
+            ]
+          end
           let(:response_body) do
             {
               'review_status' => 'reject',
@@ -290,16 +306,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
                             'Code' => 'phone_finder_fail',
                             'Description' => 'Phone Finder Fail',
                           },
-                          'Items' => [
-                            {
-                              'ItemName' => 'VOIPPhone',
-                              'ItemReason' => {
-                                'Code' => 'VOIPPHONE.HIGH',
-                                'Description' => 'VOIP phone detected',
-                              },
-                              'ItemStatus' => 'fail',
-                            },
-                          ],
+                          'Items' => items,
                         }, {
                           'ExecutedStepName' => 'PhoneFinder Checks',
                           'ProductType' => 'PhoneFinder_Decision',
@@ -334,6 +341,49 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
             expect(result.transaction_id).to eq('super-cool-test-session-id')
             expect(result.vendor_name).to eq('lexisnexis:phone_finder_ddp')
             expect(result.dual_vendor_check_eligible).to be(false)
+          end
+
+          context 'when bypasses_enabled is true' do
+            let(:bypasses_enabled) { true }
+
+            context 'when only VOIP phone failed' do
+              it 'returns a successful result' do
+                result = proofer.proof(proofing_applicant)
+
+                expect(result.success?).to eq(true)
+                expect(result.transaction_id).to eq('super-cool-test-session-id')
+                expect(result.vendor_name).to eq('lexisnexis:phone_finder_ddp')
+              end
+            end
+
+            context 'when VOIP phone fails with additional errors' do
+              let(:items) do
+                [
+                  {
+                    'ItemName' => 'VOIPPhone',
+                    'ItemReason' => {
+                      'Code' => 'VOIPPHONE.HIGH',
+                      'Description' => 'VOIP phone detected',
+                    },
+                    'ItemStatus' => 'fail',
+                  },
+                  {
+                    'ItemName' => 'PrepaidPhoneNumber',
+                    'ItemReason' => {
+                      'Code' => 'PrepaidPhoneNumber.HIGH',
+                      'Description' => 'Prepaid phone detected',
+                    },
+                    'ItemStatus' => 'fail',
+                  },
+                ]
+              end
+
+              it 'returns a failure result' do
+                result = proofer.proof(proofing_applicant)
+
+                expect(result.success?).to eq(false)
+              end
+            end
           end
         end
 
