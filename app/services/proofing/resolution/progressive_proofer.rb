@@ -133,6 +133,7 @@ module Proofing
             if failover_available
               attempt_timer.results.each do |stage, duration|
                 timer.results["#{stage} #{vendor}"] = duration
+                timer.results[stage] = (timer.results.fetch(stage, 0) + duration).round(2)
               end
             end
           end

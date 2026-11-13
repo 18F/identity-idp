@@ -89,7 +89,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       fallback_vendor => fallback_result.to_h,
     )
     expect(timer.results.keys).to contain_exactly(
-      'resolution socure_kyc', 'resolution instant_verify_ddp'
+      'resolution', 'resolution socure_kyc', 'resolution instant_verify_ddp'
+    )
+    expect(timer.results['resolution']).to eq(
+      (timer.results['resolution socure_kyc'] +
+        timer.results['resolution instant_verify_ddp']).round(2),
     )
   end
 
@@ -169,6 +173,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       expect(resolution_stage).to include(
         attempted_vendors: [primary_vendor], failover_available: true, failover_used: false,
       )
+      expect(timer.results.keys).to contain_exactly('resolution', 'resolution socure_kyc')
+      expect(timer.results['resolution']).to eq(timer.results['resolution socure_kyc'])
     end
 
     context 'when device profiling has an exception' do
@@ -287,6 +293,10 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       summary_keys = %i[attempted_vendors failover_available failover_used]
       expect(stages[:residential_address].slice(*summary_keys))
         .to eq(stages[:resolution].slice(*summary_keys))
+      expect(timer.results.keys).to contain_exactly(
+        'residential address', 'residential address socure_kyc',
+        'residential address instant_verify_ddp', 'resolution', 'resolution instant_verify_ddp'
+      )
     end
 
     context 'when the primary residential address passed but the document address failed' do
