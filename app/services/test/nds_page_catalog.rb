@@ -206,6 +206,26 @@ module Test
         ],
       ),
       Page.new(
+        key: 'mfa-locked',
+        title: 'Account temporarily locked (MFA lockout)',
+        flow: OTP,
+        template: 'two_factor_authentication/_locked',
+        permutations: [
+          Permutation.new(label: 'Too many incorrect codes', params: {}),
+          Permutation.new(label: 'Too many code requests', params: { type: 'otp_requests' }),
+          Permutation.new(label: 'Sign-in lockout', params: { type: 'generic_login_attempts' }),
+          Permutation.new(
+            label: 'Backup code attempts',
+            params: { type: 'backup_code_login_attempts' },
+          ),
+          Permutation.new(
+            label: 'Personal key attempts',
+            params: { type: 'personal_key_login_attempts' },
+          ),
+          Permutation.new(label: 'PIV/CAC attempts', params: { type: 'piv_cac_login_attempts' }),
+        ],
+      ),
+      Page.new(
         key: 'idv-welcome',
         title: 'Verify your identity (welcome)',
         flow: IDV,
@@ -661,6 +681,10 @@ module Test
       'users/piv_cac_login/new',
     ].freeze
 
+    FULL_PAGE_PARTIALS = [
+      'two_factor_authentication/_locked',
+    ].freeze
+
     # Dynamic single source of truth for NDS-page completeness: the set of
     # view templates is scanned at runtime rather than hardcoded. A template is
     # an NDS page if it contains an `nds_layout?` conditional (its authoritative
@@ -673,7 +697,7 @@ module Test
       scanned = Rails.root.glob('app/views/**/*.html.erb').filter_map do |path|
         rel = path.relative_path_from(Rails.root.join('app/views')).to_s
         template = rel.delete_suffix('.html.erb')
-        next if File.basename(template).start_with?('_')
+        next if File.basename(template).start_with?('_') && !FULL_PAGE_PARTIALS.include?(template)
         next if template.start_with?('layouts/')
         next unless nds_branch_source?(path)
 

@@ -22,8 +22,14 @@ RSpec.describe Test::NDSPageCatalog do
     end
 
     it 'excludes partials and layouts' do
-      expect(discovered).to all(satisfy { |t| !File.basename(t).start_with?('_') })
+      expect(discovered - described_class::FULL_PAGE_PARTIALS).to all(
+        satisfy { |t| !File.basename(t).start_with?('_') },
+      )
       expect(discovered).to all(satisfy { |t| !t.start_with?('layouts/') })
+    end
+
+    it 'includes the partials rendered as whole pages' do
+      expect(discovered).to include(*described_class::FULL_PAGE_PARTIALS)
     end
   end
 
