@@ -1269,6 +1269,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           .and_return([{ issuer: 'passport-issuer', scope: 'passport' }])
         allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)
         params[:scope] = 'openid token_exchange:passport'
+        # An approved actor is key-bound, so its request names the key the code will carry.
+        params[:dpop_jkt] = SecureRandom.urlsafe_base64(32)
 
         # Link the identity ahead of time so the completions/consent screen is not
         # triggered, allowing the request to reach the STS consent check.
@@ -1309,11 +1311,11 @@ RSpec.describe OpenidConnect::AuthorizationController do
         context 'when the request does not ask for token exchange' do
           before { params[:scope] = 'openid' }
 
-          it 'does not store an actor handoff' do
-            expect(TokenExchange::ActorHandoff).to_not receive(:store)
-
+          it 'still stores the key thumbprint under the code, since the actor is key-bound' do
             action
 
+            code = user.identities.find_by(service_provider: actor_issuer).session_uuid
+            expect(TokenExchange::ActorHandoff.load(code).dpop_jkt).to eq(params[:dpop_jkt])
             expect(SpReturnLog.where(user:).count).to eq(1)
           end
         end

@@ -91,6 +91,28 @@ RSpec.describe EncryptedRedisStructStorage do
     end
   end
 
+  describe '.exists?' do
+    subject(:exists) { EncryptedRedisStructStorage.exists?(id, type: struct_class) }
+
+    context 'when nothing is stored under the id' do
+      it 'is false' do
+        expect(exists).to eq(false)
+      end
+    end
+
+    context 'when a struct is stored' do
+      before do
+        EncryptedRedisStructStorage.store(struct_class.new(id: id, a: 'a', b: 'b', c: 'c'))
+      end
+
+      it 'returns true without decrypting the struct' do
+        expect(Encryption::Encryptors::BackgroundProofingArgEncryptor).not_to receive(:new)
+
+        expect(exists).to eq(true)
+      end
+    end
+  end
+
   describe '.store' do
     context 'with a struct that does not have an id method' do
       let(:struct_class) do

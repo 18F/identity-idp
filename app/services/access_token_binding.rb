@@ -14,6 +14,11 @@ AccessTokenBinding = Struct.new(:id, :dpop_jkt, keyword_init: true) do
     EncryptedRedisStructStorage.load(digest(access_token), type: self)
   end
 
+  # Whether a binding was recorded for the token, answered without decrypting the record.
+  def self.exists?(access_token)
+    EncryptedRedisStructStorage.exists?(digest(access_token), type: self)
+  end
+
   def self.store(access_token:, dpop_jkt:, expires_in:)
     binding = new(id: digest(access_token), dpop_jkt:)
     EncryptedRedisStructStorage.store(binding, expires_in:)

@@ -122,6 +122,7 @@ RSpec.describe DpopProofForm do
 
       context 'when the proof is malformed' do
         let(:proof) { 'not a proof!' }
+
         it 'returns the invalid proof error' do
           expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_malformed: true)
           expect(result.first_error_message)
@@ -131,6 +132,7 @@ RSpec.describe DpopProofForm do
 
       context 'when typ is not dpop+jwt' do
         let(:proof) { build_dpop_proof(http_url:, header: { typ: 'JWT' }) }
+
         it 'rejects the proof type' do
           expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_type: true)
           expect(result.first_error_message)
@@ -142,6 +144,7 @@ RSpec.describe DpopProofForm do
         let(:proof) do
           JWT.encode(payload, 'secret', 'HS256', typ: 'dpop+jwt', jwk: dpop_jwk)
         end
+
         it 'rejects the algorithm' do
           expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_algorithm: true)
           expect(result.first_error_message)
@@ -153,6 +156,7 @@ RSpec.describe DpopProofForm do
         let(:proof) do
           JWT.encode(payload, nil, 'none', typ: 'dpop+jwt', jwk: dpop_jwk)
         end
+
         it 'rejects the algorithm' do
           expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_algorithm: true)
           expect(result.first_error_message)
@@ -162,6 +166,7 @@ RSpec.describe DpopProofForm do
 
       context 'when the jwk header is missing' do
         let(:proof) { build_dpop_proof(http_url:, header: { jwk: nil }) }
+
         it 'rejects the key' do
           expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_key: true)
           expect(result.first_error_message)
@@ -169,9 +174,51 @@ RSpec.describe DpopProofForm do
         end
       end
 
+      context 'when the jwk names an unknown curve' do
+        let(:proof) { build_dpop_proof(http_url:, header: { jwk: dpop_jwk.merge(crv: 'P-257') }) }
+
+        it 'rejects the key' do
+          expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_key: true)
+          expect(result.first_error_message).to eq('dpop_proof_key')
+        end
+      end
+
+      context 'when a jwk coordinate is not base64url' do
+        let(:proof) do
+          build_dpop_proof(http_url:, header: { jwk: dpop_jwk.merge(x: '!!not-base64url!!') })
+        end
+
+        it 'rejects the key' do
+          expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_key: true)
+          expect(result.first_error_message).to eq('dpop_proof_key')
+        end
+      end
+
+      context 'when a jwk coordinate is not a point on the curve' do
+        let(:proof) do
+          short = Base64.urlsafe_encode64('short', padding: false)
+          build_dpop_proof(http_url:, header: { jwk: dpop_jwk.merge(x: short) })
+        end
+
+        it 'rejects the key' do
+          expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_key: true)
+          expect(result.first_error_message).to eq('dpop_proof_key')
+        end
+      end
+
+      context 'when the jwk is an RSA key without a modulus' do
+        let(:proof) { build_dpop_proof(http_url:, header: { jwk: { kty: 'RSA', e: 'AQAB' } }) }
+
+        it 'rejects the key' do
+          expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_key: true)
+          expect(result.first_error_message).to eq('dpop_proof_key')
+        end
+      end
+
       context 'when the jwk carries the private key' do
         let(:jwk) { JWT::JWK.new(dpop_key).export(include_private: true) }
         let(:proof) { build_dpop_proof(http_url:, header: { jwk: }) }
+
         it 'rejects the key' do
           expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_private_key: true)
           expect(result.first_error_message)
@@ -182,6 +229,7 @@ RSpec.describe DpopProofForm do
       context 'when the signature uses a key other than the header jwk' do
         let(:key) { OpenSSL::PKey::EC.generate('prime256v1') }
         let(:proof) { build_dpop_proof(http_url:, key:, header: { jwk: dpop_jwk }) }
+
         it 'rejects the signature' do
           expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_signature: true)
           expect(result.first_error_message)
@@ -191,6 +239,7 @@ RSpec.describe DpopProofForm do
 
       context 'when the jti claim is missing' do
         let(:proof) { build_dpop_proof(http_url:, jti: nil) }
+
         it 'rejects the signature' do
           expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_signature: true)
           expect(result.first_error_message)
@@ -200,6 +249,7 @@ RSpec.describe DpopProofForm do
 
       context 'when htm does not match the request method' do
         let(:proof) { build_dpop_proof(http_url:, http_method: 'GET') }
+
         it 'rejects the method' do
           expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_method: true)
           expect(result.first_error_message)
@@ -211,6 +261,7 @@ RSpec.describe DpopProofForm do
         let(:proof) do
           build_dpop_proof(http_url: 'https://idp.example.gov/api/openid_connect/userinfo')
         end
+
         it 'rejects the URI' do
           expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_uri: true)
           expect(result.first_error_message)
@@ -222,6 +273,7 @@ RSpec.describe DpopProofForm do
         let(:proof) do
           build_dpop_proof(http_url: 'https://idp.example.gov:8443/api/openid_connect/token')
         end
+
         it 'rejects the URI' do
           expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_uri: true)
           expect(result.first_error_message)
@@ -231,6 +283,7 @@ RSpec.describe DpopProofForm do
 
       context 'when iat is older than the window' do
         let(:proof) { build_dpop_proof(http_url:, iat: 6.minutes.ago.to_i) }
+
         it 'rejects issued at' do
           expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_issued_at: true)
           expect(result.first_error_message)
@@ -240,6 +293,7 @@ RSpec.describe DpopProofForm do
 
       context 'when iat is further in the future than the window' do
         let(:proof) { build_dpop_proof(http_url:, iat: 6.minutes.from_now.to_i) }
+
         it 'rejects issued at' do
           expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_issued_at: true)
           expect(result.first_error_message)
@@ -249,6 +303,7 @@ RSpec.describe DpopProofForm do
 
       context 'when iat is not an integer' do
         let(:proof) { build_dpop_proof(http_url:, iat: Time.zone.now.to_f) }
+
         it 'rejects issued at' do
           expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_issued_at: true)
           expect(result.first_error_message)
@@ -261,6 +316,7 @@ RSpec.describe DpopProofForm do
 
         context 'and ath matches a different token' do
           let(:proof) { build_dpop_proof(http_url:, access_token: 'other-token') }
+
           it 'rejects the token hash' do
             expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_token_hash: true)
             expect(result.first_error_message)
@@ -270,6 +326,7 @@ RSpec.describe DpopProofForm do
 
         context 'and ath is missing' do
           let(:proof) { build_dpop_proof(http_url:) }
+
           it 'rejects the token hash' do
             expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_token_hash: true)
             expect(result.first_error_message)
@@ -281,6 +338,7 @@ RSpec.describe DpopProofForm do
       context 'when an access token does not accompany the proof' do
         context 'and ath is present' do
           let(:proof) { build_dpop_proof(http_url:, ath: 'abc') }
+
           it 'rejects the token hash' do
             expect(result.to_h.dig(:error_details, :proof)).to eq(dpop_proof_token_hash: true)
             expect(result.first_error_message)

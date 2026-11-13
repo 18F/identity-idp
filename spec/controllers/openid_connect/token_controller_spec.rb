@@ -220,6 +220,8 @@ RSpec.describe OpenidConnect::TokenController do
 
   describe '#create with the token exchange grant type' do
     subject(:action) do
+      request.headers['DPoP'] =
+        build_dpop_proof(http_url: api_openid_connect_token_url, access_token: subject_token)
       post :create,
            params: {
              grant_type: grant_type,
@@ -271,7 +273,7 @@ RSpec.describe OpenidConnect::TokenController do
     end
     let(:subject_token) do
       TokenExchange::SubjectTokenIssuer.issue(
-        identity:, actor_return_log_id: actor_return_log.id,
+        identity:, actor_return_log_id: actor_return_log.id, dpop_jkt: dpop_thumbprint,
       ).token
     end
 
@@ -304,7 +306,7 @@ RSpec.describe OpenidConnect::TokenController do
           resource: resource,
           expires_in: IdentityConfig.store.token_exchange_access_token_expires_in,
           ial: 2,
-          dpop_bound: false,
+          dpop_bound: true,
           token_exchange_stage: 'delegated_token',
           token_exchange_scopes: ['passport'],
           subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
@@ -352,7 +354,7 @@ RSpec.describe OpenidConnect::TokenController do
           hash_including(
             success: false,
             error_details: hash_including(:subject_token),
-            dpop_bound: false,
+            dpop_bound: true,
             token_exchange_stage: 'delegated_token',
             subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
             oauth_error_code: 'invalid_grant',
@@ -403,7 +405,7 @@ RSpec.describe OpenidConnect::TokenController do
           target_issuer: target_issuer,
           resource: resource,
           error_details: hash_including(:audience),
-          dpop_bound: false,
+          dpop_bound: true,
           token_exchange_stage: 'delegated_token',
           token_exchange_scopes: ['passport'],
           subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
