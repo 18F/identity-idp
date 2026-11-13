@@ -103,7 +103,16 @@ module UspsInPersonProofing
 
       def handle_bad_request_error(err, enrollment)
         message = err.response.dig(:body, 'responseMessage') || err.message
+
+        handle_duplicate_unique_id_error(message, enrollment)
+
         raise Exception::RequestEnrollException.new(message, err, enrollment.id)
+      end
+
+      def handle_duplicate_unique_id_error(message, enrollment)
+        return unless message.include?('uniqueID has already been used')
+
+        enrollment.regenerate_unique_id!
       end
 
       def handle_standard_error(err, enrollment)
