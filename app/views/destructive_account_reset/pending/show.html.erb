@@ -1,5 +1,25 @@
 <% self.title = t('destructive_account_reset.pending.header') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(
+        title: t('destructive_account_reset.pending.header'),
+        subtitle: t(
+          'destructive_account_reset.pending.wait_html',
+          waiting_period: @pending_presenter.account_reset_deletion_period,
+          interval: @pending_presenter.time_remaining_until_granted,
+        ),
+      ) do |page| %>
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: account_reset_pending_cancel_path,
+              method: :post,
+              full_width: true,
+            ).with_content(t('nds.destructive_account_reset.pending.cancel_request')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('destructive_account_reset.pending.header')) %>
 
 <p>
@@ -22,3 +42,4 @@
       wide: true,
       big: true,
     ).with_content(t('destructive_account_reset.pending.cancel_request')) %>
+<% end %>

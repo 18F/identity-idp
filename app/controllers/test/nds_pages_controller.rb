@@ -1331,6 +1331,18 @@ module Test
       }
     end
 
+    def setup_account_reset_pending
+      @pending_presenter = Struct.new(
+        :account_reset_deletion_period,
+        :time_remaining_until_granted,
+      ).new(account_reset_deletion_period, '23 hours and 42 minutes')
+      {}
+    end
+
+    def setup_account_reset_pending_cancel
+      {}
+    end
+
     def account_reset_deletion_period
       WaitPeriodFormatter.call(IdentityConfig.store.account_reset_wait_period_days.days)
     end

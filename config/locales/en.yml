@@ -1664,6 +1664,8 @@ nds.completions.intro_html: By selecting Continue, you agree to share the inform
 nds.completions.nist_alt: 'NIST seal: Encrypted. Protected. Proven. National Institute of Standards and Technology'
 nds.destructive_account_reset.confirm_request.heads_up: Heads up
 nds.destructive_account_reset.confirm_request.intro_html: We sent an email to <strong>%{email}</strong> to begin the account deletion process.
+nds.destructive_account_reset.pending.cancel_request: Cancel deletion request
+nds.destructive_account_reset.pending.canceled_heading: We canceled your request to delete your account
 nds.destructive_account_reset.request.continue: Continue account deletion
 nds.destructive_account_reset.request.email1_body: You will first receive an email confirmation. This does not mean your account has been deleted at this point.
 nds.destructive_account_reset.request.email1_heading: Email 1

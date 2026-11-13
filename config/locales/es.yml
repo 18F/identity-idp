@@ -1675,6 +1675,8 @@ nds.completions.intro_html: Al seleccionar Continuar, acepta compartir la siguie
 nds.completions.nist_alt: 'Sello del NIST: Cifrado. Protegido. Comprobado. Instituto Nacional de Estándares y Tecnología'
 nds.destructive_account_reset.confirm_request.heads_up: Importante
 nds.destructive_account_reset.confirm_request.intro_html: Enviamos un correo electrónico a <strong>%{email}</strong> para comenzar el proceso de eliminación de cuenta.
+nds.destructive_account_reset.pending.cancel_request: Cancelar la solicitud de eliminación
+nds.destructive_account_reset.pending.canceled_heading: Cancelamos su solicitud para eliminar su cuenta
 nds.destructive_account_reset.request.continue: Continuar con la eliminación de la cuenta
 nds.destructive_account_reset.request.email1_body: Recibirá primero una confirmación por correo electrónico. Esto no significa que su cuenta fue eliminada con esto.
 nds.destructive_account_reset.request.email1_heading: Correo electrónico 1
