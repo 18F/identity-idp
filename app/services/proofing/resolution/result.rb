@@ -16,7 +16,8 @@ module Proofing
                   :reference,
                   :reason_codes,
                   :source_attribution,
-                  :vendor_workflow
+                  :vendor_workflow,
+                  :result_overrides
       def initialize(
         success: nil,
         errors: {},
@@ -31,7 +32,8 @@ module Proofing
         failed_result_can_pass_with_additional_verification: false,
         attributes_requiring_additional_verification: [],
         vendor_workflow: nil,
-        verified_attributes: nil
+        verified_attributes: nil,
+        result_overrides: []
       )
         @success = success
         @errors = errors
@@ -49,6 +51,7 @@ module Proofing
           attributes_requiring_additional_verification
         @vendor_workflow = vendor_workflow
         @verified_attributes = verified_attributes
+        @result_overrides = result_overrides
       end
 
       def success?
@@ -79,6 +82,7 @@ module Proofing
           vendor_id:,
           vendor_workflow:,
           verified_attributes:,
+          result_overrides:,
         }.merge(customer_user_id_hash)
       end
 
