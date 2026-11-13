@@ -1,5 +1,59 @@
 <% self.title = t('titles.sign_up.confirmation') %>
 
+<% if nds_layout? %>
+  <% sp_name = decorated_sp_session.sp_name %>
+  <%= render NDS::FormPageComponent.new(
+        title: sp_name ? t('headings.sign_in_with_sp', sp: sp_name) : t('headings.sign_in_without_sp'),
+        subtitle: sp_name && safe_join(
+          [
+            content_tag(:strong, sp_name),
+            t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
+          ],
+          ' ',
+        ),
+      ) do |page| %>
+    <% if current_sp&.logo.present? %>
+      <% page.with_media do %>
+        <%= image_tag(current_sp.logo_url, alt: sp_name, class: 'auth__media', width: 96, height: 96) %>
+      <% end %>
+    <% end %>
+
+    <% page.with_body do %>
+      <%= render NDS::CardComponent.new(class: 'card--elevated text-left') do %>
+        <%= render NDS::StackComponent.new(align: :stretch, gap: 16) do %>
+          <div class="copy">
+            <p><%= t('user_authorization_confirmation.currently_logged_in') %></p>
+          </div>
+          <dl class="nds-summary">
+            <div class="nds-summary__row">
+              <div class="nds-summary__cell">
+                <dt class="nds-summary__label"><%= t('help_text.requested_attributes.email') %></dt>
+                <dd class="nds-summary__value"><%= @email %></dd>
+              </div>
+            </div>
+          </dl>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: user_authorization_confirmation_path,
+              method: :post,
+              full_width: true,
+            ).with_content(t('user_authorization_confirmation.continue')) %>
+        <div class="separator"><%= t('user_authorization_confirmation.or') %></div>
+        <%= render ButtonComponent.new(
+              url: reset_user_authorization_path,
+              method: :delete,
+              variant: :secondary,
+              full_width: true,
+            ).with_content(t('user_authorization_confirmation.sign_in')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <% if decorated_sp_session.sp_name %>
   <%= render 'sign_up/registrations/sp_registration_heading' %>
 <% else %>
@@ -36,3 +90,4 @@
         wide: true,
       ).with_content(t('user_authorization_confirmation.sign_in')) %>
 </div>
+<% end %>
