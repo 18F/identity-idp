@@ -187,6 +187,7 @@ module Proofing
             timeout: IdentityConfig.store.socure_idplus_timeout_in_seconds,
           ),
           @analytics,
+          is_proofing_agent:,
         )
       end
 
