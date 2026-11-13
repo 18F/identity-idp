@@ -29,6 +29,7 @@ RSpec.describe OpenidConnect::LogoutController do
     IdTokenBuilder.new(
       identity: identity,
       code: code,
+      access_token: SecureRandom.hex,
       custom_expiration: 1.day.from_now.to_i,
     ).id_token
   end

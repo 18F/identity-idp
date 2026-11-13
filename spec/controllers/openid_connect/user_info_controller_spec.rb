@@ -115,7 +115,13 @@ RSpec.describe OpenidConnect::UserInfoController do
     context 'with a bearer token for an expired session' do
       let(:access_token) { SecureRandom.urlsafe_base64 }
       let(:rails_session_id) { 'missing-session-id' } # Emulate expired by missing, which has no TTL
-      let!(:identity) { create(:service_provider_identity, access_token:, rails_session_id:) }
+      let!(:identity) do
+        create(
+          :service_provider_identity,
+          access_token: ServiceProviderIdentity.access_token_digest(access_token),
+          rails_session_id:,
+        )
+      end
       let(:authorization_header) { "Bearer #{access_token}" }
 
       it '401s' do
@@ -148,7 +154,7 @@ RSpec.describe OpenidConnect::UserInfoController do
           :service_provider_identity,
           service_provider: service_provider.issuer,
           rails_session_id: SecureRandom.hex,
-          access_token:,
+          access_token: ServiceProviderIdentity.access_token_digest(access_token),
           user: create(:user),
         )
       end
@@ -207,8 +213,10 @@ RSpec.describe OpenidConnect::UserInfoController do
       let(:access_token) { SecureRandom.hex }
       let(:identity) do
         create(
-          :service_provider_identity, rails_session_id: SecureRandom.hex,
-                                      access_token: access_token, user: create(:user)
+          :service_provider_identity,
+          rails_session_id: SecureRandom.hex,
+          access_token: ServiceProviderIdentity.access_token_digest(access_token),
+          user: create(:user),
         )
       end
       before do
@@ -255,7 +263,7 @@ RSpec.describe OpenidConnect::UserInfoController do
           create(
             :service_provider_identity,
             rails_session_id: SecureRandom.hex,
-            access_token:,
+            access_token: ServiceProviderIdentity.access_token_digest(access_token),
             user:,
             scope: 'openid document_images',
             acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,

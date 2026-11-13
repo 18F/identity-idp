@@ -15,7 +15,6 @@ RSpec.describe IdTokenBuilder do
       rails_session_id: '123',
       # this is a known value from an example developer guide
       # https://www.pingidentity.com/content/developer/en/resources/openid-connect-developers-guide.html
-      access_token: 'dNZX1hEZ9wBCzNL40Upu646bdzQA',
       user: user,
       last_authenticated_at: last_authenticated_at,
     )
@@ -27,6 +26,9 @@ RSpec.describe IdTokenBuilder do
     IdTokenBuilder.new(
       identity: identity,
       code: code,
+      # this is a known value from an example developer guide
+      # https://www.pingidentity.com/content/developer/en/resources/openid-connect-developers-guide.html
+      access_token: 'dNZX1hEZ9wBCzNL40Upu646bdzQA', # gitleaks:allow
       custom_expiration: custom_expiration,
       now: now,
     )

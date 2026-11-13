@@ -105,11 +105,45 @@ RSpec.describe OpenidConnectTokenForm do
       end
 
       context 'code has expired' do
-        before { identity.update(updated_at: 1.day.ago) }
+        before { identity.update(code_expires_at: 1.day.ago) }
 
         it 'is invalid' do
           expect(valid?).to eq(false)
           expect(form.errors[:code]).to eq([t('openid_connect.token.errors.expired_code')])
+        end
+      end
+
+      context 'code has expired and the row was written to again afterwards' do
+        before do
+          identity.update(code_expires_at: 1.day.ago)
+          identity.touch
+        end
+
+        it 'is still invalid' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).to eq([t('openid_connect.token.errors.expired_code')])
+        end
+      end
+
+      context 'code was issued without a recorded expiry' do
+        before { identity.update(code_expires_at: nil) }
+
+        it 'is invalid' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).to eq([t('openid_connect.token.errors.expired_code')])
+        end
+      end
+
+      context 'two requests redeem the same code at once' do
+        it 'issues tokens to exactly one of them' do
+          first = OpenidConnectTokenForm.new(params)
+          second = OpenidConnectTokenForm.new(params)
+
+          expect(first.submit.success?).to eq(true)
+          expect(second.submit.success?).to eq(false)
+          expect(second.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+          expect(second.response[:error]).to include(t('openid_connect.token.errors.invalid_code'))
+          expect(identity.reload.session_uuid).to be_nil
         end
       end
 
@@ -121,7 +155,7 @@ RSpec.describe OpenidConnectTokenForm do
           allow(IdentityConfig.store).to receive(
             :session_timeout_in_seconds,
           ).and_return(900)
-          identity.update(updated_at: 2.minutes.ago)
+          identity.update(code_expires_at: 1.minute.ago)
         end
 
         it 'expires based on code expiration, not session timeout' do
@@ -675,7 +709,7 @@ RSpec.describe OpenidConnectTokenForm do
       end
 
       context 'with an expired code' do
-        before { identity.update!(updated_at: 1.day.ago) }
+        before { identity.update!(code_expires_at: 1.day.ago) }
 
         it 'rejects valid proofs for an expired code' do
           expect(valid?).to eq(false)
@@ -744,21 +778,23 @@ RSpec.describe OpenidConnectTokenForm do
       it 'redeems the code with a proof from the bound key and returns a key-bound access token' do
         expect(form.valid?).to eq(true)
         response = form.response
-        expect(response[:access_token]).to eq(identity.access_token)
+        expect(response[:access_token]).to be_present
+        expect(identity.reload.access_token)
+          .to eq(ServiceProviderIdentity.access_token_digest(response[:access_token]))
         expect(response[:id_token]).to be_present
         expect(response[:token_type]).to eq('DPoP')
       end
 
       it 'records the key the access token is bound to, for as long as the token lives' do
         expect(AccessTokenBinding).to receive(:store).with(
-          access_token: identity.access_token,
+          access_token: kind_of(String),
           dpop_jkt: stored_thumbprint,
           expires_in: kind_of(Integer),
         ).and_call_original
 
-        form.response
+        access_token = form.response[:access_token]
 
-        expect(AccessTokenBinding.load(identity.access_token).dpop_jkt).to eq(stored_thumbprint)
+        expect(AccessTokenBinding.load(access_token).dpop_jkt).to eq(stored_thumbprint)
       end
 
       context 'when the sign-in requested delegation' do
@@ -980,8 +1016,22 @@ RSpec.describe OpenidConnectTokenForm do
         expect(response[:expires_in]).to be_within(1).of(payload[:exp] - Time.zone.now.to_i)
       end
 
-      it 'has an access_token' do
-        expect(response[:access_token]).to eq(user.identities.last.access_token)
+      it 'has an access_token, of which only the digest is stored' do
+        expect(response[:access_token]).to be_present
+        expect(user.identities.last.access_token)
+          .to eq(ServiceProviderIdentity.access_token_digest(response[:access_token]))
+        expect(ServiceProviderIdentity.from_access_token(response[:access_token]))
+          .to eq(user.identities.last)
+      end
+
+      it 'binds the id_token to the access token it was issued with' do
+        payload, _headers = JWT.decode(
+          response[:id_token], server_public_key, true, algorithm: 'RS256'
+        ).map(&:with_indifferent_access)
+        expected = Base64.urlsafe_encode64(
+          Digest::SHA256.digest(response[:access_token])[0, 16], padding: false
+        )
+        expect(payload[:at_hash]).to eq(expected)
       end
 
       it 'specifies its token type' do
@@ -1064,7 +1114,8 @@ RSpec.describe OpenidConnectTokenForm do
 
         it 'returns the normal access token response' do
           expect(response).to_not have_key(:subject_token)
-          expect(response[:access_token]).to eq(identity.access_token)
+          expect(identity.reload.access_token)
+            .to eq(ServiceProviderIdentity.access_token_digest(response[:access_token]))
         end
       end
     end

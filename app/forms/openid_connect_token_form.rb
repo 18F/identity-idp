@@ -30,34 +30,30 @@ class OpenidConnectTokenForm
   validate :validate_client_assertion, if: :client_assertion_required?
   validate :validate_consent, if: :token_exchange_authorization_code?
   validate :validate_dpop_proof, if: :dpop_binding_required?
+  # Last, so a request refused for any other reason leaves the code redeemable.
+  validate :redeem_code
 
   def initialize(params)
     ATTRS.each do |key|
       instance_variable_set(:"@#{key}", params[key])
     end
-    code_expiration_secs = IdentityConfig.store.openid_connect_authorization_code_expiration_seconds
-    @code_expiration = code_expiration_secs.seconds.ago
     @identity = find_identity_with_code
   end
 
   def submit
-    success = valid?
-
-    clear_authorization_code if success
-
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success: valid?, errors: errors, extra: extra_analytics_attributes)
   end
 
   def response
     if valid?
       return token_exchange_subject_token_response if token_exchange_authorization_code?
 
-      id_token_builder = IdTokenBuilder.new(identity: identity, code: code)
+      id_token_builder = IdTokenBuilder.new(identity:, code:, access_token:)
       @ttl = id_token_builder.ttl
       bind_access_token
 
       {
-        access_token: identity.access_token,
+        access_token:,
         # RFC 9449 §5: a listed client's access token is bound to its key and is presented with a
         # proof, never as a bearer token.
         token_type: dpop_binding_required? ? 'DPoP' : 'Bearer',
@@ -86,7 +82,7 @@ class OpenidConnectTokenForm
 
   private
 
-  attr_reader :identity, :code_expiration
+  attr_reader :identity, :access_token
 
   def token_exchange_subject_token_response
     issued_token = TokenExchange::SubjectTokenIssuer.issue(
@@ -125,9 +121,7 @@ class OpenidConnectTokenForm
   def bind_access_token
     return unless dpop_binding_required?
 
-    AccessTokenBinding.store(
-      access_token: identity.access_token, dpop_jkt: bound_thumbprint, expires_in: @ttl,
-    )
+    AccessTokenBinding.store(access_token:, dpop_jkt: bound_thumbprint, expires_in: @ttl)
   end
 
   def dpop_binding_required?
@@ -208,10 +202,12 @@ class OpenidConnectTokenForm
                type: :invalid_authentication
   end
 
+  # The code expires at the time recorded when it was issued. A code with no recorded expiry
+  # (issued before that column existed) has expired as well; the client starts over.
   def validate_expired
-    if identity&.updated_at && identity.updated_at < code_expiration
-      errors.add :code, t('openid_connect.token.errors.expired_code'), type: :expired_code
-    end
+    return if identity.blank? || identity.code_expires_at&.future?
+
+    errors.add :code, t('openid_connect.token.errors.expired_code'), type: :expired_code
   end
 
   def validate_code
@@ -339,7 +335,36 @@ class OpenidConnectTokenForm
     }
   end
 
-  def clear_authorization_code
-    identity.update(session_uuid: nil)
+  # An authorization code is single use (RFC 6749 section 4.1.2). The code is consumed with one
+  # conditional UPDATE that succeeds only while the row still carries this code and the code is
+  # still within its lifetime, so two requests redeeming the same code at once cannot both succeed:
+  # the database serializes the two updates and the second one matches no row. The same UPDATE
+  # records the digest of the access token minted for this redemption; the raw token goes only to
+  # the client. A code that stands for a delegation hand-off yields a subject token instead, so no
+  # access token is minted for it. The outcome is memoized because the form's validations run more
+  # than once per request.
+  def redeem_code
+    return if errors.any?
+
+    @redeemed = redeem_code! unless defined?(@redeemed)
+    return if @redeemed
+
+    errors.add :code, t('openid_connect.token.errors.invalid_code'), type: :invalid_code
+  end
+
+  def redeem_code!
+    @access_token = SecureRandom.urlsafe_base64(32) unless token_exchange_authorization_code?
+
+    # rubocop:disable Rails/SkipsModelValidations
+    ServiceProviderIdentity
+      .where(id: identity.id, session_uuid: code)
+      .where(code_expires_at: Time.zone.now..)
+      .update_all(
+        session_uuid: nil,
+        code_expires_at: nil,
+        access_token: access_token && ServiceProviderIdentity.access_token_digest(access_token),
+        updated_at: Time.zone.now,
+      ) == 1
+    # rubocop:enable Rails/SkipsModelValidations
   end
 end
