@@ -83,13 +83,11 @@ module Proofing
           )
         end
 
-        resolution_proofer = cost_recording_proofer(current_sp:)
-
         residential_address_resolution_result = residential_address_plugin.call(
           applicant_pii:,
           ipp_enrollment_in_progress:,
           timer:,
-          proofer: resolution_proofer,
+          proofer: cost_recording_proofer(current_sp:),
         )
 
         state_id_address_resolution_result = state_id_address_plugin.call(
@@ -97,7 +95,7 @@ module Proofing
           residential_address_resolution_result:,
           ipp_enrollment_in_progress:,
           timer:,
-          proofer: resolution_proofer,
+          proofer: cost_recording_proofer(current_sp:),
         )
 
         phone_result = phone_plugin.call(

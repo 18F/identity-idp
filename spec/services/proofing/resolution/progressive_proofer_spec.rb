@@ -54,6 +54,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         Proofing::LexisNexis::InstantVerify::Proofer,
       )
     end
+    let(:state_id_resolution_proofer) do
+      instance_double(
+        Proofing::LexisNexis::InstantVerify::Proofer,
+      )
+    end
 
     let(:threatmetrix_result) do
       Proofing::DdpResult.new(
@@ -95,9 +100,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     end
 
     before do
-      allow(resolution_proofer).to receive(:proof).and_return(*resolution_proofing_results)
+      allow(resolution_proofer).to receive(:proof)
+        .and_return(resolution_proofing_results.first)
+      allow(state_id_resolution_proofer).to receive(:proof)
+        .and_return(resolution_proofing_results.last)
       allow(progressive_proofer).to receive(:create_proofer)
-        .and_return(resolution_proofer)
+        .and_return(resolution_proofer, state_id_resolution_proofer)
 
       allow(progressive_proofer.threatmetrix_plugin).to receive(:proofer)
         .and_return(threatmetrix_proofer)
@@ -530,6 +538,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       context 'residential address is different than id' do
         let(:applicant_pii) do
           { uuid: user.uuid }.merge(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS)
+        end
+
+        it 'uses a separate vendor proofer for each address' do
+          proof
+
+          expect(progressive_proofer).to have_received(:create_proofer).twice
         end
 
         it 'calls ThreatMetrixPlugin' do
