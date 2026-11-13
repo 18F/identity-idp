@@ -13,6 +13,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
   let(:audience) { target_issuer }
   let(:user) { create(:user, :proofed) }
   let(:resource) { 'https://api.example.gov/passport' }
+  let(:subject_token_resource) { resource }
   let(:subject_token_type) { TokenExchange::Constants::ACCESS_TOKEN_TYPE }
   let(:grant_type) { TokenExchange::Constants::GRANT_TYPE }
   let(:requested_token_type) { TokenExchange::Constants::ACCESS_TOKEN_TYPE }
@@ -35,7 +36,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     )
   end
   let!(:sts_consent) { create(:user_consent_sts, user:, target_app: target_issuer) }
-  let(:scope) { 'openid token_exchange:passport' }
+  let(:scope) { 'openid token_exchange' }
   let(:actor_return_log) do
     create(
       :sp_return_log,
@@ -45,7 +46,9 @@ RSpec.describe OpenidConnectTokenExchangeForm do
   let(:actor_return_log_id) { actor_return_log.id }
   let(:subject_token) do
     TokenExchange::SubjectTokenIssuer.issue(
-      identity:, actor_return_log_id:,
+      identity:,
+      actor_return_log_id:,
+      resource: subject_token_resource,
     ).token
   end
   let(:params) do
@@ -69,7 +72,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
       .and_return([actor_issuer])
     allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
-      .and_return([{ issuer: target_issuer, scope: 'passport', resource: 'https://passport.gov' }])
+      .and_return([{ issuer: target_issuer, scope: 'passport', resource: }])
   end
 
   describe '#submit' do
@@ -80,7 +83,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     it 'surfaces delegated token exchange analytics fields' do
       expect(form.submit.to_h).to include(
         token_exchange_stage: 'delegated_token',
-        token_exchange_scopes: ['passport'],
+        token_exchange_scopes: ['token_exchange'],
         subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
         oauth_error_code: nil,
       )
@@ -160,8 +163,26 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
+    context 'when the requested resource does not match the subject token resource' do
+      let(:subject_token_resource) { 'https://api.example.gov/benefits' }
+
+      it 'is invalid' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.errors[:subject_token]).to include('is invalid')
+      end
+    end
+
+    context 'when the requested audience does not match the resource' do
+      let(:audience)  { 'different-issuer-string' }
+
+      it 'is invalid' do
+        expect(form.submit.success?).to eq(false)
+        expect(form.errors[:audience]).to include('is invalid')
+      end
+    end
+
     context 'with requested scope outside the subject token scope' do
-      let(:params) { super().merge(scope: 'openid token_exchange:benefits') }
+      let(:params) { super().merge(scope: 'openid token_exchange profile') }
 
       it 'is invalid' do
         expect(form.submit.success?).to eq(false)
@@ -345,6 +366,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       let(:subject_token) do
         TokenExchange::SubjectTokenIssuer.issue(
           identity:, actor_return_log_id: actor_return_log.id, dpop_jkt: dpop_thumbprint,
+          resource: subject_token_resource
         ).token
       end
       let(:dpop_proof) do
@@ -431,6 +453,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         let(:subject_token) do
           TokenExchange::SubjectTokenIssuer.issue(
             identity:, actor_return_log_id: actor_return_log.id,
+            resource: subject_token_resource
           ).token
         end
 
@@ -532,7 +555,9 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     end
 
     context 'when the subject token has no originating actor return log' do
-      let(:subject_token) { TokenExchange::SubjectTokenIssuer.issue(identity:).token }
+      let(:subject_token) do
+        TokenExchange::SubjectTokenIssuer.issue(identity:, resource: subject_token_resource).token
+      end
 
       it 'rejects the exchange and writes no issuance or target return log' do
         expect { expect(response[:error]).to eq('invalid_grant') }
@@ -546,6 +571,15 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
       it 'returns an OAuth error response' do
         expect(response).to include(error: 'invalid_grant')
+        expect(response[:error_description]).to be_present
+      end
+    end
+
+    context 'when there is no subject token' do
+      let(:subject_token) { nil }
+
+      it 'returns an OAuth error response' do
+        expect(response).to include(error: 'invalid_request')
         expect(response[:error_description]).to be_present
       end
     end
@@ -628,8 +662,24 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
+    context 'when the requested resource belongs to another audience' do
+      let(:audience) { 'other-issuer-string' }
+
+      it 'returns invalid_target' do
+        expect(error).to eq('invalid_target')
+      end
+    end
+
+    context 'when the requested resource does not match the subject token resource' do
+      let(:subject_token_resource) { 'https://api.example.gov/benefits' }
+
+      it 'returns invalid_target' do
+        expect(error).to eq('invalid_grant')
+      end
+    end
+
     context 'with requested scope outside the subject token scope' do
-      let(:params) { super().merge(scope: 'openid token_exchange:benefits') }
+      let(:params) { super().merge(scope: 'openid token_exchange profile') }
 
       it 'returns invalid_scope' do
         expect(error).to eq('invalid_scope')
@@ -640,7 +690,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when a key-bound actor sends no proof' do
+    context 'when a dpop-required service provider sends no proof' do
       before do
         actor.update!(pkce: true)
         allow(IdentityConfig.store).to receive(:dpop_required_issuers).and_return([actor_issuer])
@@ -648,6 +698,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       let(:subject_token) do
         TokenExchange::SubjectTokenIssuer.issue(
           identity:, actor_return_log_id: actor_return_log.id, dpop_jkt: dpop_thumbprint,
+          resource: subject_token_resource
         ).token
       end
 
