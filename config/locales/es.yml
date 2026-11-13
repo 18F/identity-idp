@@ -1673,8 +1673,11 @@ nds.choose_id_type.verify_in_person: Verificar en persona
 nds.completions.heading_idv: Identidad verificada
 nds.completions.intro_html: Al seleccionar Continuar, acepta compartir la siguiente información con %{sp_html} e ir a su sitio.
 nds.completions.nist_alt: 'Sello del NIST: Cifrado. Protegido. Comprobado. Instituto Nacional de Estándares y Tecnología'
+nds.destructive_account_reset.confirm_delete_account.create_account: Crear una cuenta nueva
+nds.destructive_account_reset.confirm_delete_account.heading: Cuenta eliminada
 nds.destructive_account_reset.confirm_request.heads_up: Importante
 nds.destructive_account_reset.confirm_request.intro_html: Enviamos un correo electrónico a <strong>%{email}</strong> para comenzar el proceso de eliminación de cuenta.
+nds.destructive_account_reset.delete_account.info: Si elimina su cuenta, no perderá la información que tenga almacenada en las agencias gubernamentales. Use esta opción solo como último recurso si el acceso a su cuenta está bloqueado. Después de eliminarla, puede crear una nueva cuenta usando la misma dirección de correo electrónico.
 nds.destructive_account_reset.pending.cancel_request: Cancelar la solicitud de eliminación
 nds.destructive_account_reset.pending.canceled_heading: Cancelamos su solicitud para eliminar su cuenta
 nds.destructive_account_reset.request.continue: Continuar con la eliminación de la cuenta

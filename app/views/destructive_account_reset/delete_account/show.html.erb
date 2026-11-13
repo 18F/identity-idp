@@ -1,5 +1,36 @@
 <% self.title = t('destructive_account_reset.delete_account.title') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(
+        title: t('destructive_account_reset.delete_account.title'),
+        subtitle: t('nds.destructive_account_reset.delete_account.info'),
+      ) do |page| %>
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: account_reset_delete_account_path,
+              method: :delete,
+              variant: :destructive,
+              full_width: true,
+            ).with_content(t('destructive_account_reset.recover_options.yes_delete')) %>
+        <% if IdentityConfig.store.update_cancel_account_reset_path %>
+          <%= render ButtonComponent.new(
+                url: account_reset_delete_account_cancel_path,
+                method: :post,
+                variant: :tertiary,
+                full_width: true,
+              ).with_content(t('nds.destructive_account_reset.pending.cancel_request')) %>
+        <% else %>
+          <%= render ButtonComponent.new(
+                url: root_url,
+                variant: :tertiary,
+                full_width: true,
+              ).with_content(t('nds.destructive_account_reset.pending.cancel_request')) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('destructive_account_reset.delete_account.title')) %>
 
 <p>
@@ -28,3 +59,4 @@
       method: :delete,
       class: 'usa-button usa-button--unstyled',
     ) { t('destructive_account_reset.request.yes_continue') } %>
+<% end %>
