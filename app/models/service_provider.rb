@@ -4,8 +4,6 @@ require 'fingerprinter'
 require 'identity_validations'
 
 class ServiceProvider < ApplicationRecord
-  ENCRYPTION_MINIMUM_RSA_BITS = 2048
-
   belongs_to :agency
 
   # rubocop:disable Rails/HasManyOrHasOneDependent
@@ -59,19 +57,6 @@ class ServiceProvider < ApplicationRecord
       cert_content = load_cert(cert)
       OpenSSL::X509::Certificate.new(cert_content) if cert_content
     end.compact
-  end
-
-  # Certificates fit to receive encrypted material: inside their validity period and carrying an
-  # RSA key of at least 2048 bits (NIST SP 800-57 Part 1 Rev. 5, section 5.6.1). Sealing a token
-  # or a response to an expired or short key is a confidentiality failure, unlike signature
-  # verification, where the registered certificate only says which key signed.
-  def encryption_certs
-    now = Time.zone.now
-    ssl_certs.select do |cert|
-      key = cert.public_key
-      cert.not_before <= now && cert.not_after > now &&
-        key.is_a?(OpenSSL::PKey::RSA) && key.n.num_bits >= ENCRYPTION_MINIMUM_RSA_BITS
-    end
   end
 
   def encrypt_responses?
