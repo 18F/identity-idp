@@ -5,11 +5,6 @@ module ProofingAgent
     # When LexisNexis Instant Verify fails only on checks we choose to bypass, treat the
     # resolution as successful. The original errors are left in place for analytics.
     class ResolutionFailureBypass
-      VENDOR_NAMES = [
-        'lexisnexis:instant_verify',
-        'lexisnexis:instant_verify_ddp',
-      ].freeze
-
       attr_reader :resolution_result
 
       def initialize(resolution_result:)
@@ -20,7 +15,6 @@ module ProofingAgent
         return @bypassable if defined?(@bypassable)
 
         @bypassable = !resolution_result.success? &&
-                      VENDOR_NAMES.include?(resolution_result.vendor_name) &&
                       resolution_result.exception.blank? &&
                       BypassErrorCodeChecker.new(errors: resolution_result.errors).call
       end

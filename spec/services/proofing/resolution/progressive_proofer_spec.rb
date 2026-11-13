@@ -406,6 +406,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       let(:is_proofing_agent) { true }
       let(:ipp_enrollment_in_progress) { true }
       let(:bypass_error_codes) { ['dob'] }
+      let(:ssa_proofing_agent_as_authoritative_source) { true }
+      let(:proofing_vendor) { :instant_verify }
       let(:failed_checks) { [{ 'ItemName' => 'DOBFullVerified', 'ItemStatus' => 'fail' }] }
       let(:instant_verify_errors) do
         {
@@ -437,8 +439,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       before do
-        allow(IdentityConfig.store).to receive(:ssa_instant_verify_bypass_error_codes)
-          .and_return(bypass_error_codes)
+        allow(IdentityConfig.store).to receive_messages(
+          ssa_instant_verify_bypass_error_codes: bypass_error_codes,
+          ssa_proofing_agent_as_authoritative_source:,
+        )
+        allow(Db::SpCost::AddSpCost).to receive(:call)
       end
 
       context 'when Instant Verify failed only on bypassable checks' do
@@ -478,6 +483,48 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(result.extra[:context][:stages][:resolution]).not_to have_key(:bypassed)
           expect(result.extra[:context][:stages][:phone_precheck][:vendor_name])
             .to eq('ResolutionCannotPass')
+        end
+      end
+
+      context 'when ssa_proofing_agent_as_authoritative_source is disabled' do
+        let(:ssa_proofing_agent_as_authoritative_source) { false }
+
+        it 'does not bypass the failure' do
+          result = proof.adjudicated_result
+
+          expect(result.success?).to eq(false)
+          expect(result.extra[:context][:resolution_adjudication_reason])
+            .to eq(:fail_resolution_without_state_id_coverage)
+          expect(result.extra[:context][:stages][:resolution]).not_to have_key(:bypassed)
+          expect(result.extra[:context][:stages][:phone_precheck][:vendor_name])
+            .to eq('ResolutionCannotPass')
+        end
+      end
+
+      %i[instant_verify instant_verify_ddp].each do |instant_verify_vendor|
+        context "when the proofing vendor is #{instant_verify_vendor}" do
+          let(:proofing_vendor) { instant_verify_vendor }
+
+          it 'bypasses the failure' do
+            result = proof.adjudicated_result
+
+            expect(result.success?).to eq(true)
+            expect(result.extra[:context][:resolution_adjudication_reason])
+              .to eq(:instant_verify_bypass)
+          end
+        end
+      end
+
+      %i[mock socure_kyc].each do |other_vendor|
+        context "when the proofing vendor is #{other_vendor}" do
+          let(:proofing_vendor) { other_vendor }
+
+          it 'does not bypass the failure' do
+            result = proof.adjudicated_result
+
+            expect(result.success?).to eq(false)
+            expect(result.extra[:context][:stages][:resolution]).not_to have_key(:bypassed)
+          end
         end
       end
 

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe ProofingAgent::InstantVerify::ResolutionFailureBypass do
-  let(:vendor_name) { 'lexisnexis:instant_verify' }
   let(:resolution_success) { false }
   let(:resolution_exception) { nil }
   let(:resolution_errors) do
@@ -18,7 +17,7 @@ RSpec.describe ProofingAgent::InstantVerify::ResolutionFailureBypass do
       success: resolution_success,
       errors: resolution_errors,
       exception: resolution_exception,
-      vendor_name: vendor_name,
+      vendor_name: 'lexisnexis:instant_verify',
       transaction_id: 'resolution-tx',
       vendor_workflow: 'workflow',
     )
@@ -68,16 +67,6 @@ RSpec.describe ProofingAgent::InstantVerify::ResolutionFailureBypass do
       end
     end
 
-    described_class::VENDOR_NAMES.each do |instant_verify_vendor_name|
-      context "when the vendor is #{instant_verify_vendor_name}" do
-        let(:vendor_name) { instant_verify_vendor_name }
-
-        it 'returns true' do
-          expect(bypass.bypassable?).to eq(true)
-        end
-      end
-    end
-
     context 'when the error code checker does not allow a bypass' do
       let(:checker_result) { false }
 
@@ -86,18 +75,6 @@ RSpec.describe ProofingAgent::InstantVerify::ResolutionFailureBypass do
 
     context 'when the resolution result already succeeded' do
       let(:resolution_success) { true }
-
-      it_behaves_like 'a result that is not bypassed without consulting the error code checker'
-    end
-
-    context 'when the vendor is not Instant Verify' do
-      let(:vendor_name) { 'ResolutionMock' }
-
-      it_behaves_like 'a result that is not bypassed without consulting the error code checker'
-    end
-
-    context 'when the resolution result is ResolutionCannotPass' do
-      let(:vendor_name) { 'ResolutionCannotPass' }
 
       it_behaves_like 'a result that is not bypassed without consulting the error code checker'
     end
