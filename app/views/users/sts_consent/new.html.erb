@@ -1,7 +1,9 @@
 <% self.title = t('titles.sts_consent', america_gov_name: AMERICA_GOV_NAME) %>
 
 <% if nds_layout? %>
-<%= render PageHeadingComponent.new.with_content(t('sts_consent.heading', america_gov_name: AMERICA_GOV_NAME)) %>
+
+  <%= render NDS::StackComponent.new(align: :stretch, gap: 24, class: 'text-center') do %>
+    <%= render PageHeadingComponent.new.with_content(t('sts_consent.heading', america_gov_name: AMERICA_GOV_NAME)) %>
 
 <p class="auth-entry__body margin-bottom-0"><%= t('sts_consent.content', america_gov_name: AMERICA_GOV_NAME) %></p>
 
@@ -46,7 +48,7 @@
       @sts_consent_form,
       url: sts_consent_path,
       method: :post,
-      html: { class: '' },
+      html: { class: 'usa-button usa-button--lg' },
     ) do |f| %>
   <%= f.hidden_field(
         :consent_given,
@@ -58,9 +60,11 @@
 
 <%= render PageFooterComponent.new do %>
   <%= link_to(
-        t('sts_consent.cancel_and_return'),
+        t('sts_consent.cancel_and_return', america_gov_name: AMERICA_GOV_NAME),
         sts_consent_cancel_path,
       ) %>
+  <% end %>
+
 <% end %>
 <% else %>
 <%= render PageHeadingComponent.new.with_content(t('sts_consent.heading', america_gov_name: AMERICA_GOV_NAME)) %>
@@ -79,7 +83,7 @@
             aria: { hidden: true },
           ) %>
       <span class="grid-col text-black">
-        <span class="grid-row"><strong>MyTravelGov</strong></span>
+        <span class="grid-row padding-left-0"><strong>MyTravelGov</strong></span>
         <span class="grid-row"><%= t('sts_consent.service_permission') %></span>
       </span>
     </span>
