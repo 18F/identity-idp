@@ -509,6 +509,12 @@ module Test
         permutations: [
           Permutation.new(label: 'Default', params: {}),
           Permutation.new(label: 'Desktop upload enabled', params: { upload: '1' }),
+          Permutation.new(label: 'In person available', params: { ipp: '1' }),
+          Permutation.new(label: 'CLEAR available', params: { clear1: '1' }),
+          Permutation.new(
+            label: 'All options',
+            params: { clear1: '1', ipp: '1', upload: '1' },
+          ),
         ],
       ),
       Page.new(
