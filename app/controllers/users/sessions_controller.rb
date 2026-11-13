@@ -295,8 +295,8 @@ module Users
     end
 
     # A recovery awaiting replacement MFA resumes at the recovery continuation.
-    # An unredeemed request takes the normal first-MFA route, where the
-    # pending-recovery banner is shown and successful MFA cancels the request.
+    # An unredeemed request takes the normal first-MFA route, where successful
+    # MFA cancels the request.
     def account_recovery_url
       return @account_recovery_url if defined?(@account_recovery_url)
 

@@ -66,14 +66,9 @@ RSpec.describe 'Account Recovery: replace inaccessible MFA', email: true do
     end
   end
 
-  # The pending banner tells the user that authenticating cancels the request.
-  # That is false inside the recovery session, where verifying a replacement
-  # completes recovery instead.
-  it 'does not show the pending-recovery banner while enrolling a replacement phone' do
+  it 'completes recovery after verifying a replacement phone' do
     signin(user.email, user.password)
     click_link t('two_factor_authentication.login_options_link_text')
-
-    expect(page).to have_content(t('account_recovery.pending.mfa_banner', app_name: APP_NAME))
 
     click_link t('two_factor_authentication.account_recovery.recover_link')
     click_button t('account_recovery.start.continue')
@@ -86,9 +81,6 @@ RSpec.describe 'Account Recovery: replace inaccessible MFA', email: true do
       click_button t('forms.buttons.submit.default')
 
       expect(page).to have_current_path(account_recovery_new_mfa_setup_path)
-      expect(page).not_to have_content(
-        t('account_recovery.pending.mfa_banner', app_name: APP_NAME),
-      )
 
       check 'recovery_mfa_phone'
       click_button t('forms.buttons.continue')
@@ -97,10 +89,6 @@ RSpec.describe 'Account Recovery: replace inaccessible MFA', email: true do
       click_send_one_time_code
 
       expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
-      expect(page).not_to have_content(
-        t('account_recovery.pending.mfa_banner', app_name: APP_NAME),
-      )
-      expect(page).not_to have_content(t('account_recovery.pending.link_verified_banner'))
 
       fill_in_code_with_last_phone_otp
       click_submit_default

@@ -4,8 +4,6 @@ account_recovery.confirm_request.notification_html: We sent an email to <strong>
 account_recovery.new_mfa_setup.banner: Add new authentication methods to replace your old ones and finish account recovery.
 account_recovery.new_mfa_setup.completed_html: '<strong>Your account is now recovered</strong><br>Review your authentication methods often to make sure they’re up to date.'
 account_recovery.pending.cancel_success_html: '<strong>Your account recovery request was canceled</strong><br>We canceled account recovery because there was a successful sign in and authentication to your %{app_name} account.'
-account_recovery.pending.link_verified_banner: You have a pending account recovery request. Sign in with an authentication method to cancel it.
-account_recovery.pending.mfa_banner: You’ve requested to recover your %{app_name} account. Authenticating now will cancel the request and restore your access.
 account_recovery.start.continue: Recover my account
 account_recovery.start.header: Are you sure you want to recover your account?
 account_recovery.start.intro: You must wait %{interval} to receive an account recovery link. After clicking the link, you will set up new authentication methods to replace your old ones.

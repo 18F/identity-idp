@@ -29,18 +29,6 @@ module AccountRecovery
         AccountRecoveryRequest.active.exists?(user: user)
     end
 
-    # True while authenticating with an existing method would still cancel the
-    # request. Past link redemption, CancelRequest leaves the request alone, so
-    # telling the user to sign in to cancel would be wrong.
-    def cancellable_by_mfa?
-      active_request&.awaiting_link_redemption? || false
-    end
-
-    # The link has been opened but the password has not been confirmed yet.
-    def awaiting_password_verification?
-      active_request&.state == AccountRecoveryRequest::LINK_VERIFIED
-    end
-
     def legacy_reset_allowed?
       !recovery_pending? && !eligible?
     end
@@ -48,13 +36,6 @@ module AccountRecovery
     private
 
     attr_reader :user, :ignore_pending_request
-
-    def active_request
-      return @active_request if defined?(@active_request)
-      return @active_request = nil if user.blank? || user.is_a?(AnonymousUser)
-
-      @active_request = AccountRecoveryRequest.active_for_user(user)
-    end
 
     # A user may not hold active requests in both workflows, so an in-flight
     # request in either one blocks a new account-preserving request.

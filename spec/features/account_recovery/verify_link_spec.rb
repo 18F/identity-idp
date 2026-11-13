@@ -101,7 +101,6 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
 
     signin(user_email, user.password)
 
-    expect(page).to have_content t('account_recovery.pending.mfa_banner', app_name: APP_NAME)
     expect(page).not_to have_link(href: account_recovery_start_path)
 
     visit account_recovery_start_path
