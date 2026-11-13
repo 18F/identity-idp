@@ -1662,8 +1662,11 @@ nds.choose_id_type.verify_in_person: Verify in person
 nds.completions.heading_idv: Identity verified
 nds.completions.intro_html: By selecting Continue, you agree to share the information below with %{sp_html} and go to their site.
 nds.completions.nist_alt: 'NIST seal: Encrypted. Protected. Proven. National Institute of Standards and Technology'
+nds.destructive_account_reset.confirm_delete_account.create_account: Create new account
+nds.destructive_account_reset.confirm_delete_account.heading: Account deleted
 nds.destructive_account_reset.confirm_request.heads_up: Heads up
 nds.destructive_account_reset.confirm_request.intro_html: We sent an email to <strong>%{email}</strong> to begin the account deletion process.
+nds.destructive_account_reset.delete_account.info: Deleting your account will not lose any information stored with government agencies. Only use this as a last resort if you are locked out. After deletion, you can create a new account using the same email address.
 nds.destructive_account_reset.pending.cancel_request: Cancel deletion request
 nds.destructive_account_reset.pending.canceled_heading: We canceled your request to delete your account
 nds.destructive_account_reset.request.continue: Continue account deletion

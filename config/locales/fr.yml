@@ -1662,8 +1662,11 @@ nds.choose_id_type.verify_in_person: Vérifier en personne
 nds.completions.heading_idv: Identité vérifiée
 nds.completions.intro_html: En sélectionnant Continuer, vous acceptez de partager les informations ci-dessous avec %{sp_html} et d’accéder à son site.
 nds.completions.nist_alt: 'Sceau du NIST : Chiffré. Protégé. Éprouvé. National Institute of Standards and Technology'
+nds.destructive_account_reset.confirm_delete_account.create_account: Créer un nouveau compte
+nds.destructive_account_reset.confirm_delete_account.heading: Compte supprimé
 nds.destructive_account_reset.confirm_request.heads_up: Important
 nds.destructive_account_reset.confirm_request.intro_html: Nous avons envoyé un e-mail à <strong>%{email}</strong> pour lancer le processus de suppression du compte.
+nds.destructive_account_reset.delete_account.info: Supprimer votre compte n’efface aucune des informations que vous avez stockées auprès d’organismes publics. N’utilisez cette option qu’en dernier recours si vous vous êtes fait bloquer de votre compte. Après la suppression, vous pouvez créer un nouveau compte en utilisant la même adresse e-mail.
 nds.destructive_account_reset.pending.cancel_request: Annuler la demande de suppression
 nds.destructive_account_reset.pending.canceled_heading: Nous avons annulé votre demande de suppression de votre compte
 nds.destructive_account_reset.request.continue: Continuer la suppression du compte

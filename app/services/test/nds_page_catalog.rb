@@ -676,6 +676,27 @@ module Test
         template: 'destructive_account_reset/pending/cancel',
         permutations: [Permutation.new(label: 'Default', params: {})],
       ),
+      Page.new(
+        key: 'account-reset-cancel',
+        title: 'Account deletion: cancel from email link (cancel)',
+        flow: SIGN_IN,
+        template: 'destructive_account_reset/cancel/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'account-reset-delete-account',
+        title: 'Account deletion: last resort (delete account)',
+        flow: SIGN_IN,
+        template: 'destructive_account_reset/delete_account/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'account-reset-confirm-delete-account',
+        title: 'Account deletion: account deleted (confirm delete account)',
+        flow: SIGN_IN,
+        template: 'destructive_account_reset/confirm_delete_account/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
     ].freeze
 
     def self.pages

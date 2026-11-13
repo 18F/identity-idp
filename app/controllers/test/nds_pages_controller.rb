@@ -1343,6 +1343,18 @@ module Test
       {}
     end
 
+    def setup_account_reset_cancel
+      {}
+    end
+
+    def setup_account_reset_delete_account
+      {}
+    end
+
+    def setup_account_reset_confirm_delete_account
+      { email: DEV_USER_EMAIL }
+    end
+
     def account_reset_deletion_period
       WaitPeriodFormatter.call(IdentityConfig.store.account_reset_wait_period_days.days)
     end

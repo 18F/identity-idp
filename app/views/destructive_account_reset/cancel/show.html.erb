@@ -1,5 +1,32 @@
 <% self.title = t('destructive_account_reset.cancel_request.title') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(
+        title: t('destructive_account_reset.cancel_request.title'),
+        subtitle: t('destructive_account_reset.cancel_request.are_you_sure'),
+      ) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--warning">
+        <%= render NDS::IconComponent.new(icon: :warning, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: account_reset_cancel_path,
+              method: :post,
+              full_width: true,
+            ).with_content(t('destructive_account_reset.cancel_request.cancel_button')) %>
+        <%= render ButtonComponent.new(
+              url: root_url,
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('destructive_account_reset.cancel_request.cancel')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('destructive_account_reset.cancel_request.title')) %>
 
 <h4 class='margin-y-2'>
@@ -17,3 +44,4 @@
 <hr/>
 
 <%= link_to t('destructive_account_reset.cancel_request.cancel'), root_url %>
+<% end %>

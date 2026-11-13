@@ -1,4 +1,31 @@
 <% self.title = t('destructive_account_reset.confirm_delete_account.title') %>
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(
+        title: t('nds.destructive_account_reset.confirm_delete_account.heading'),
+      ) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--error">
+        <%= render NDS::IconComponent.new(icon: :error, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+      <p class="copy--muted text-left">
+        <%= t('destructive_account_reset.confirm_delete_account.info_html', email: email) %>
+      </p>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: sign_up_email_path,
+              full_width: true,
+            ).with_content(t('nds.destructive_account_reset.confirm_delete_account.create_account')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render StatusPageComponent.new(status: :delete) do |c| %>
   <% c.with_header { t('destructive_account_reset.confirm_delete_account.title') } %>
   <p><%= t('destructive_account_reset.confirm_delete_account.info_html', email: email) %></p>
@@ -11,4 +38,5 @@
           ),
         ) %>
     </p>
+<% end %>
 <% end %>
