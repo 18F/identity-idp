@@ -3,14 +3,16 @@
 module SiteKeyConcern
   extend ActiveSupport::Concern
 
-  # Opens the person's site key with the password just entered, creating one for a listed
-  # client. Before the second factor (`repair: false`) a wrap that fails to open is only marked
-  # unavailable; once the person is fully authenticated it is replaced.
+  # Opens the person's site key with the password just entered, creating one for a listed client.
+  # Before the second factor (`repair: false`) a wrap that fails to open is only marked
+  # unavailable, and a freshly minted recovery code is not shown; once the person is fully
+  # authenticated a stale password wrap is dropped and, when nothing else can open the key, a new
+  # key is made.
   def unlock_site_key(password, create: site_key_wanted?, repair: true)
-    site_key_vault.unlock(password, create:)
+    site_key_vault.unlock(password, create:, show_recovery_code: repair)
     site_key_vault.clear_unavailable
   rescue SiteKeys::MismatchError => err
-    return replace_site_key(password, create:, error: err) if repair
+    return repair_site_key(password, create:, error: err) if repair
 
     analytics.site_key_unlock_failed(error: err.message, replaced: false)
     site_key_vault.mark_unavailable
@@ -29,14 +31,25 @@ module SiteKeyConcern
 
   private
 
-  # A wrap that fails under a password the person has just proven is stale: the password changed
-  # while the key was locked. Unless a concurrent password change explains it, start over.
-  def replace_site_key(password, create:, error:)
-    replace = User.find(current_user.id).valid_password?(password)
-    analytics.site_key_unlock_failed(error: error.message, replaced: replace)
-    return site_key_vault.mark_unavailable unless replace
+  # A password wrap that fails under a password the person has just proven is stale: the password
+  # changed while the key was locked. Unless a concurrent password change explains it, drop the
+  # dead password wrap when the recovery code can still open the key, or start a new key when
+  # nothing can.
+  def repair_site_key(password, create:, error:)
+    expected_fingerprint = site_key_vault.stored_fingerprint
+    password_current = User.find(current_user.id).valid_password?(password)
+    recoverable = current_user.site_key&.recoverable? == true
+    analytics.site_key_unlock_failed(
+      error: error.message,
+      replaced: password_current && !recoverable,
+    )
+    return site_key_vault.mark_unavailable unless password_current
 
-    site_key_vault.replace!(password, create:)
+    if recoverable
+      site_key_vault.forget_dead_password_wrap!(expected_fingerprint:)
+    else
+      site_key_vault.replace!(password, create:)
+    end
     site_key_vault.clear_unavailable
   rescue Encryption::EncryptionError, ActiveRecord::ActiveRecordError
     site_key_vault.mark_unavailable
