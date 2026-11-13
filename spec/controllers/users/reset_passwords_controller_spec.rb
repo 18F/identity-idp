@@ -527,6 +527,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           expect(response).to redirect_to new_user_session_path
           expect(flash[:info]).to eq t('devise.passwords.updated_not_active')
           expect(user.reload.confirmed_at).to eq old_confirmed_at
+          expect(user.remember_device_revoked_at).to eq Time.zone.now
         end
       end
     end

@@ -166,6 +166,8 @@ module Users
     end
 
     def process_valid_webauthn(form)
+      # The challenge was answered; drop it so the same attestation cannot be presented again.
+      user_session.delete(:webauthn_challenge)
       send_mfa_added_email(event_type: form.event_type)
       analytics.webauthn_setup_submitted(
         platform_authenticator: form.platform_authenticator?,

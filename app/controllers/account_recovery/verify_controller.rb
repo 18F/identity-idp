@@ -53,7 +53,6 @@ module AccountRecovery
 
     def verify_link
       token = token_param || session_token
-      sign_out if user_signed_in?
 
       return handle_rate_limited_token if token_rate_limiter.limited?
 
@@ -65,6 +64,10 @@ module AccountRecovery
       analytics.account_recovery_link_validation(**result.to_h)
 
       return handle_invalid_token unless result.success?
+
+      # Only a link that proved valid ends the current session, so a request carrying an invalid
+      # token cannot be used to sign out whoever happens to be signed in on this browser.
+      sign_out if user_signed_in?
 
       @account_recovery_request = verifier.account_recovery_request
       session[:account_recovery_granted_token] = token

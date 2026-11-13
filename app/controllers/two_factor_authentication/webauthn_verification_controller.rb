@@ -59,6 +59,8 @@ module TwoFactorAuthentication
     end
 
     def handle_valid_webauthn
+      # The challenge was answered; drop it so the same signed assertion cannot be presented again.
+      user_session.delete(:webauthn_challenge)
       handle_remember_device_preference(params[:remember_device])
       redirect_to after_sign_in_path_for(current_user)
     end

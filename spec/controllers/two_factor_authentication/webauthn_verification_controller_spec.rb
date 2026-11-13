@@ -210,6 +210,12 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
         end
 
+        it 'removes the answered challenge from the session' do
+          patch :confirm, params: params
+
+          expect(controller.user_session[:webauthn_challenge]).to be_nil
+        end
+
         it 'tracks a valid submission' do
           expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
             mfa_device_type: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
