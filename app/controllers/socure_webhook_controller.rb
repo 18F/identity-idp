@@ -138,6 +138,12 @@ class SocureWebhookController < ApplicationController
     @docv_transaction_token ||= event[:docvTransactionToken] || event[:docVTransactionToken]
   end
 
+  # Each repeat endpoint receives a copy of the webhook exactly as it arrived, including the
+  # Authorization header, which carries the shared webhook secret the receiving environment
+  # verifies with. The job runner persists job arguments in the database and keeps the rows of
+  # failed and retried runs, so the header and body travel to the job as one encrypted string
+  # (the same envelope the proofing jobs use for applicant data) and never sit in clear text in
+  # the queue.
   def repeat_webhook
     endpoints = IdentityConfig.store.socure_docv_webhook_repeat_endpoints
     return if endpoints.blank?
@@ -147,10 +153,12 @@ class SocureWebhookController < ApplicationController
       'Content-Type': request.headers['Content-Type'],
     }
 
-    body = socure_params.to_h
+    encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
+      { body: socure_params.to_h, headers: }.to_json,
+    )
 
     endpoints.each do |endpoint|
-      SocureDocvRepeatWebhookJob.perform_later(body:, headers:, endpoint:)
+      SocureDocvRepeatWebhookJob.perform_later(encrypted_arguments:, endpoint:)
     end
   end
 end

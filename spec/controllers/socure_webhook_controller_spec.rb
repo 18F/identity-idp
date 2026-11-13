@@ -104,9 +104,23 @@ RSpec.describe SocureWebhookController do
             it 'queues SocureDocvRepeatWebhook jobs' do
               endpoints.each do |endpoint|
                 expect(SocureDocvRepeatWebhookJob).to receive(:perform_later) do |*args|
-                  expect(args.first[:body]).to eq(JSON.parse(repeated_body.to_json))
+                  expect(args.first.keys).to match_array([:encrypted_arguments, :endpoint])
                   expect(args.first[:endpoint]).to eq(endpoint)
-                  expect(args.first[:headers]).to eq(headers)
+                  expect(args.first[:encrypted_arguments]).not_to include(headers[:Authorization])
+
+                  decrypted = JSON.parse(
+                    Encryption::Encryptors::BackgroundProofingArgEncryptor.new.decrypt(
+                      args.first[:encrypted_arguments],
+                    ),
+                    symbolize_names: true,
+                  )
+                  expect(decrypted[:body]).to eq(
+                    JSON.parse(
+                      repeated_body.to_json,
+                      symbolize_names: true,
+                    ),
+                  )
+                  expect(decrypted[:headers]).to eq(headers)
                 end
               end
 
