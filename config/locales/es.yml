@@ -1760,6 +1760,7 @@ nds.piv_cac_setup.step_3: Agregue su tarjeta PIV o CAC
 nds.piv_cac_setup.step_3_info: Se le pedirá que elija un certificado e ingrese su PIN después de hacer clic en el botón de continuar.
 nds.request_letter.heading: Verifique por correo postal
 nds.request_letter.info: Para verificar su identidad, le enviaremos por correo una carta con un código de verificación e instrucciones a su dirección. Debería llegar en 5 a 10 días. Siga las instrucciones de la carta para terminar de verificar su identidad.
+nds.second_mfa_reminder.skip: Omitir
 nds.socure_errors.in_person_heading: O, intente verificar su identidad en persona
 nds.socure_errors.rate_limit_html.one: Puede intentarlo <strong>una vez más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
 nds.socure_errors.rate_limit_html.other: Puede intentarlo <strong>%{count} veces más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
