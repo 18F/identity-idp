@@ -262,6 +262,7 @@ module IdentityConfig
     config.add(:idv_doc_auth_mdl_enabled_percent, type: :integer)
     config.add(:idv_failure_to_proof_oidc_state_enabled, type: :boolean)
     config.add(:idv_gpo_verification_enabled, type: :boolean)
+    config.add(:idv_itin_enabled_percentage, type: :integer)
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
     config.add(:idv_phone_confirmation_manual_review_validity_hours, type: :float)
