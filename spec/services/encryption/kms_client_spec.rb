@@ -120,6 +120,17 @@ RSpec.describe Encryption::KmsClient do
 
         expect(result).to eq(plaintext)
       end
+
+      context 'when KMS is enabled at decryption time' do
+        it 'refuses the local ciphertext without calling KMS' do
+          ciphertext = subject.encrypt(plaintext, encryption_context)
+          allow(FeatureManagement).to receive(:use_kms?).and_return(true)
+          expect(aws_kms_client).not_to receive(:decrypt)
+
+          expect { subject.decrypt(ciphertext, encryption_context) }
+            .to raise_error(Encryption::EncryptionError, /local ciphertext refused/)
+        end
+      end
     end
 
     context 'with a contextless ciphertext' do

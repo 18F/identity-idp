@@ -37,6 +37,12 @@ module Encryption
         log_context: log_context,
       )
       return decrypt_kms(ciphertext) if use_kms?(ciphertext)
+      # Without the KMS prefix the ciphertext is in the local format, which is only written while
+      # KMS is off. While KMS is on it is refused for the same reason as in KmsClient: a value that
+      # decrypts under the pepper alone needs neither the KMS key nor leaves an audit record.
+      if FeatureManagement.use_kms?
+        raise EncryptionError, 'local ciphertext refused while KMS is enabled'
+      end
       decrypt_local(ciphertext)
     end
 

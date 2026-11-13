@@ -66,10 +66,9 @@ RSpec.describe Encryption::ContextlessKmsClient do
           expect(result).to eq(kms_plaintext)
         end
 
-        it 'uses the password pepper to decrypt a legacy ciphertext encrypted without KMS' do
-          result = subject.decrypt(local_ciphertext)
-
-          expect(result).to eq(local_plaintext)
+        it 'refuses a ciphertext in the local format' do
+          expect { subject.decrypt(local_ciphertext) }
+            .to raise_error(Encryption::EncryptionError, /local ciphertext refused/)
         end
       end
 
@@ -172,10 +171,9 @@ RSpec.describe Encryption::ContextlessKmsClient do
           expect(result).to eq(long_kms_plaintext)
         end
 
-        it 'uses the password pepper to decrypt a legacy ciphertext encrypted without KMS' do
-          result = subject.decrypt(local_ciphertext)
-
-          expect(result).to eq(local_plaintext)
+        it 'refuses a ciphertext in the local format' do
+          expect { subject.decrypt(local_ciphertext) }
+            .to raise_error(Encryption::EncryptionError, /local ciphertext refused/)
         end
       end
 

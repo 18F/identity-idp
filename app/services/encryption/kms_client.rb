@@ -53,6 +53,14 @@ module Encryption
         key_id: kms_key_id,
       )
       return decrypt_kms(ciphertext, encryption_context) if use_kms?(ciphertext)
+      # A ciphertext in the local format is only ever written while KMS is off (development and
+      # test). While KMS is on, every stored value must round-trip through KMS, so that decrypting
+      # it requires the KMS key and leaves a CloudTrail record. Accepting the local format here
+      # would let anyone who can write to the database and knows the pepper substitute a value
+      # that decrypts without either, so it is refused rather than decrypted.
+      if FeatureManagement.use_kms?
+        raise EncryptionError, 'local ciphertext refused while KMS is enabled'
+      end
       decrypt_local(ciphertext, encryption_context)
     end
 
