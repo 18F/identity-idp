@@ -1,5 +1,6 @@
 <% self.title = t('titles.sts_consent', america_gov_name: AMERICA_GOV_NAME) %>
 
+<% if nds_layout? %>
 <%= render PageHeadingComponent.new.with_content(t('sts_consent.heading', america_gov_name: AMERICA_GOV_NAME)) %>
 
 <p><%= t('sts_consent.content', america_gov_name: AMERICA_GOV_NAME) %></p>
@@ -60,4 +61,67 @@
         t('sts_consent.cancel_and_return', america_gov_name: AMERICA_GOV_NAME),
         sts_consent_cancel_path,
       ) %>
+<% end %>
+<% else %>
+<%= render PageHeadingComponent.new.with_content(t('sts_consent.heading', america_gov_name: AMERICA_GOV_NAME)) %>
+
+<p><%= t('sts_consent.content', america_gov_name: AMERICA_GOV_NAME) %></p>
+
+<%= render AccordionComponent.new(class: 'text-black margin-top-4') do |c| %>
+  <% c.with_header do %>
+    <span class="grid-row grid-gap">
+      <%= image_tag(
+            asset_url('sp-logos/DOS.svg'),
+            width: 40,
+            height: 40,
+            class: 'flex-align-center align-self-start grid-col-auto',
+            alt: 'Logo for Department of State',
+            aria: { hidden: true },
+          ) %>
+      <span class="grid-col text-black">
+        <span class="grid-row"><strong>MyTravelGov</strong></span>
+        <span class="grid-row"><%= t('sts_consent.service_permission') %></span>
+      </span>
+    </span>
+  <% end %>
+  <h2 class="h5 margin-top-0 margin-bottom-05"><%= t('sts_consent.about_heading') %></h2>
+  <p class="margin-top-0 margin-bottom-2"><%= t('sts_consent.about_description') %></p>
+
+  <h2 class="h5 margin-top-0 margin-bottom-05">
+    <%= t('sts_consent.permissions_heading', america_gov_name: AMERICA_GOV_NAME) %>
+  </h2>
+  <p class="margin-top-0 margin-bottom-2"><%= t('sts_consent.permissions_description') %></p>
+
+  <h2 class="h5 margin-top-0 margin-bottom-05">
+    <%= t('sts_consent.shared_information_heading', america_gov_name: AMERICA_GOV_NAME) %>
+  </h2>
+  <p class="margin-top-0 margin-bottom-2">
+    <%= t('sts_consent.shared_information_description') %>
+  </p>
+
+  <p class="margin-y-0">
+    <%= new_tab_link_to(t('sts_consent.learn_more'), 'https://mytravel.state.gov/s/') %>
+  </p>
+<% end %>
+
+<%= simple_form_for(
+      @sts_consent_form,
+      url: sts_consent_path,
+      method: :post,
+      html: { class: 'margin-top-2' },
+    ) do |f| %>
+  <%= f.hidden_field(
+        :consent_given,
+        value: StsConsentForm::CONSENT_GIVEN_VALUE,
+      ) %>
+
+  <%= f.submit t('sts_consent.allow_and_continue'), class: 'margin-top-2' %>
+<% end %>
+
+<%= render PageFooterComponent.new do %>
+  <%= link_to(
+        t('sts_consent.cancel_and_return'),
+        sts_consent_cancel_path,
+      ) %>
+<% end %>
 <% end %>
