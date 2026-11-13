@@ -61,6 +61,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     allow(fallback_proofer).to receive(:proof).and_return(fallback_result)
   end
 
+  after do
+    RSpec::Mocks.space.proxy_for(IdentityConfig.store).reset
+    reload_ab_tests
+  end
+
   it 'fails over, attributes the selected result, and records both costs and timings' do
     expect(primary_proofer).to receive(:proof).with(applicant_pii)
       .ordered.and_return(primary_result)

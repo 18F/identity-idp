@@ -101,6 +101,11 @@ RSpec.describe ResolutionProofingJob, type: :job do
           .to_return(body: LexisNexisFixtures.ddp_instant_verify_success_response_json)
       end
 
+      after do
+        RSpec::Mocks.space.proxy_for(IdentityConfig.store).reset
+        reload_ab_tests
+      end
+
       it 'stores a successful fallback result and the primary timeout through encrypted storage' do
         perform
 

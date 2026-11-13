@@ -826,6 +826,11 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         socure_stub
       end
 
+      after do
+        RSpec::Mocks.space.proxy_for(IdentityConfig.store).reset
+        reload_ab_tests
+      end
+
       it 'continues after failover and logs the selected vendor and both attempts' do
         complete_verify_step
 
