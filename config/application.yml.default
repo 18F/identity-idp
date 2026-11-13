@@ -265,6 +265,8 @@ idv_proofing_agent_passport_enabled: false
 idv_proofing_agent_phone_vendor: mock
 idv_proofing_agent_proof_user_with_enhanced_profile: false
 idv_proofing_agent_result_expiration_seconds: 10
+idv_proofing_agent_search_attempt_window_in_minutes: 60
+idv_proofing_agent_search_max_attempts: 200
 idv_proofing_agent_send_failure_email_after_min: 30
 idv_proofing_agent_send_failure_emails_cron: '*/30 * * * *'
 idv_proofing_agent_send_reminder_email_after_hours: 48
