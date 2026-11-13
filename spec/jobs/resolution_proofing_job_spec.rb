@@ -80,6 +80,58 @@ RSpec.describe ResolutionProofingJob, type: :job do
       )
     end
 
+    context 'with resolution failover enabled' do
+      let(:proofing_device_profiling) { :disabled }
+
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          idv_resolution_failover_enabled_percent: 100,
+          idv_resolution_default_vendor: :socure_kyc,
+          idv_resolution_vendor_switching_enabled: true,
+          idv_resolution_vendor_socure_kyc_percent: 50,
+          idv_resolution_vendor_instant_verify_ddp_percent: 50,
+          idv_resolution_vendor_instant_verify_percent: 0,
+          lexisnexis_threatmetrix_org_id: 'test_org_id',
+          lexisnexis_instant_verify_ddp_policy: 'test-policy',
+          idv_phone_precheck_percent: 0,
+        )
+        reload_ab_tests
+        stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore').to_timeout
+        stub_request(:post, 'https://www.example.com/api/attribute-query')
+          .to_return(body: LexisNexisFixtures.ddp_instant_verify_success_response_json)
+      end
+
+      after do
+        RSpec::Mocks.space.proxy_for(IdentityConfig.store).reset
+        reload_ab_tests
+      end
+
+      it 'stores a successful fallback result and the primary timeout through encrypted storage' do
+        perform
+
+        result = document_capture_session.load_proofing_result.result
+        expect(result[:success]).to eq(true)
+        expect(result[:ssn_is_unique]).to eq(true)
+        resolution_stage = result.dig(:context, :stages, :resolution)
+        expect(resolution_stage[:vendor_name]).to eq('lexisnexis:instant_verify_ddp')
+        expect(resolution_stage).to include(
+          attempted_vendors: ['socure_kyc', 'instant_verify_ddp'],
+          failover_available: true,
+          failover_used: true,
+        )
+        expect(resolution_stage[:attempts]).to match(
+          socure_kyc: hash_including(vendor_name: 'socure_kyc', success: false, timed_out: true),
+          instant_verify_ddp: hash_including(
+            vendor_name: 'lexisnexis:instant_verify_ddp', success: true,
+          ),
+        )
+        expect(result.dig(:context, :stages, :residential_address, :attempted_vendors))
+          .to eq(['socure_kyc', 'instant_verify_ddp'])
+        expect(result[:exception]).to be_nil
+        expect(result[:timed_out]).to eq(false)
+      end
+    end
+
     context 'ssn_is_unique attribute' do
       context 'when the SSN is unique' do
         it 'sets ssn_is_unique: true on the result' do

@@ -193,7 +193,11 @@ RSpec.describe ProofingAgentJob, type: :job do
                     vendor_name: 'ResolutionMock',
                     vendor_id: nil,
                     vendor_workflow: nil,
-                    verified_attributes: nil },
+                    verified_attributes: nil,
+                    attempts: { mock: hash_including(vendor_name: 'ResolutionMock') },
+                    attempted_vendors: ['mock'],
+                    failover_available: false,
+                    failover_used: false },
                   residential_address:
                   { success: true,
                     errors: {},
@@ -208,7 +212,11 @@ RSpec.describe ProofingAgentJob, type: :job do
                     vendor_name: 'ResolutionMock',
                     vendor_id: nil,
                     vendor_workflow: nil,
-                    verified_attributes: nil },
+                    verified_attributes: nil,
+                    attempts: { mock: hash_including(vendor_name: 'ResolutionMock') },
+                    attempted_vendors: ['mock'],
+                    failover_available: false,
+                    failover_used: false },
                   threatmetrix:
                   { client: 'tmx_session_id_missing',
                     success: false,
@@ -399,6 +407,45 @@ RSpec.describe ProofingAgentJob, type: :job do
 
         expect(@analytics).not_to have_logged_event(
           :idv_proofing_agent_profile_confirmation_email_sent,
+        )
+      end
+    end
+
+    context 'when resolution fails over to another vendor' do
+      let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.merge(zipcode: '00000') }
+
+      before do
+        allow(IdentityConfig.store).to receive(:idv_resolution_failover_enabled_percent)
+          .and_return(100)
+        allow_any_instance_of(Proofing::Resolution::ProgressiveProofer)
+          .to receive(:resolution_vendors).and_return([:mock, :instant_verify])
+        allow_any_instance_of(Proofing::Resolution::ProgressiveProofer)
+          .to receive(:create_proofer).and_return(Proofing::Mock::ResolutionMockClient.new)
+      end
+
+      it 'logs every attempt, with PII-like attempt keypaths allowlisted' do
+        perform
+
+        expect(@analytics).to have_logged_event(
+          'IdV: doc auth verify proofing results',
+          hash_including(
+            success: false,
+            proofing_results: hash_including(
+              context: hash_including(
+                stages: hash_including(
+                  resolution: hash_including(
+                    attempted_vendors: ['mock', 'instant_verify'],
+                    failover_available: true,
+                    failover_used: true,
+                    attempts: hash_including(
+                      mock: hash_including(errors: hash_including(:zipcode)),
+                      instant_verify: hash_including(errors: hash_including(:zipcode)),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         )
       end
     end

@@ -280,7 +280,12 @@ class ProofingAgentJob < ApplicationJob
             [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
             [:errors, :zipcode],
             [:errors, :ssn],
-          ],
+          ] + Proofing::Resolution::ResultAdjudicator.attempt_pii_keypaths(
+            [:resolution, :errors, :zipcode],
+            [:resolution, :errors, :ssn],
+            [:residential_address, :errors, :zipcode],
+            [:residential_address, :errors, :ssn],
+          ),
         ),
       )
 

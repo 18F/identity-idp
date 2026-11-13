@@ -227,7 +227,11 @@ module Idv
             [:proofing_results, :biographical_info, :state_id_jurisdiction],
             [:proofing_results, :biographical_info, :phone],
             [:proofing_results, :biographical_info],
-          ],
+          ] + Proofing::Resolution::ResultAdjudicator.attempt_pii_keypaths(
+            [:resolution, :errors, :ssn],
+            [:resolution, :reason_codes],
+            [:residential_address, :errors, :ssn],
+          ),
         },
       )
 
