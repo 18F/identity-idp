@@ -17,10 +17,6 @@ RSpec.feature 'verify info with instant verify', :js, driver: :headless_chrome_m
   let(:idv_socure_reason_codes_docv_mdl) { ['mdl_code1', 'mdl_code2'] }
   let(:idv_doc_auth_mdl_enabled_percent) { 0 }
 
-  let(:resolution_response) do
-    JSON.parse(LexisNexisFixtures.ddp_instant_verify_occupancy_fail_response_json)
-  end
-
   before do
     allow(IdentityConfig.store).to receive_messages(
       doc_auth_max_attempts: max_attempts,
@@ -66,6 +62,10 @@ RSpec.feature 'verify info with instant verify', :js, driver: :headless_chrome_m
   end
 
   context 'when resolution fails due to occupancy_not_verified_fail only' do
+    let(:resolution_response) do
+      JSON.parse(LexisNexisFixtures.ddp_instant_verify_occupancy_fail_response_json)
+    end
+
     before do
       stub_request(
         :post,
@@ -150,7 +150,9 @@ RSpec.feature 'verify info with instant verify', :js, driver: :headless_chrome_m
 
   context 'when resolution fails due to occupancy_not_verified_fail with additional errors' do
     let(:resolution_response) do
-      super().dig(
+      response_data = JSON.parse(LexisNexisFixtures.ddp_instant_verify_occupancy_fail_response_json)
+
+      response_data.dig(
         'integration_hub_results', 'test_org_id:test-policy', 'Execute Instant Verify',
         'tps_vendor_raw_response', 'Products', 0, 'Items'
       ) << {
@@ -159,7 +161,7 @@ RSpec.feature 'verify info with instant verify', :js, driver: :headless_chrome_m
         'ItemReason' => { 'Code' => 'i_am_error' },
       }
 
-      super()
+      response_data
     end
 
     before do
