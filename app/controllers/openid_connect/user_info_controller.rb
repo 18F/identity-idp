@@ -10,7 +10,9 @@ module OpenidConnect
     attr_reader :current_identity
 
     def show
-      user_info = OpenidConnectUserInfoPresenter.new(current_identity).user_info
+      user_info = OpenidConnectUserInfoPresenter.new(
+        current_identity, site_key_recipient: @site_key_recipient
+      ).user_info
 
       if service_provider&.userinfo_encrypted_response?
         render_encrypted_user_info(user_info)
@@ -55,6 +57,9 @@ module OpenidConnect
 
       if response.success?
         @current_identity = identity
+        # The key the proof was signed with, verified against the token's binding, is the key a
+        # requested site key is sealed to.
+        @site_key_recipient = verifier.dpop_public_key
       else
         analytics.sp_integration_errors_present(**attributes[:integration_errors])
         headers['WWW-Authenticate'] = verifier.www_authenticate if verifier.www_authenticate

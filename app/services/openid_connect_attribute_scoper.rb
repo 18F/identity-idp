@@ -54,6 +54,8 @@ class OpenidConnectAttributeScoper
     x509_issuer: %w[x509 x509:issuer],
     document_images: %w[document_images],
     document_metadata: %w[document_images],
+    site_key: %w[site_key],
+    site_key_public: %w[site_key],
   }.with_indifferent_access.freeze
 
   SCOPE_ATTRIBUTE_MAP = {}.tap do |scope_attribute_map|
@@ -89,6 +91,10 @@ class OpenidConnectAttributeScoper
 
   def all_emails_requested?
     scopes.include?('all_emails')
+  end
+
+  def site_key_requested?
+    scopes.include?('site_key')
   end
 
   def document_images_requested?

@@ -16,6 +16,10 @@ class AccessTokenVerifier
     @identity = nil
   end
 
+  # The P-256 public key the verified proof was signed with, when the token is DPoP-bound; the
+  # key the user-information response seals a site key to (RFC 9449 §4.2, the proof's jwk header).
+  attr_reader :dpop_public_key
+
   # @return [Array(FormResponse, ServiceProviderIdentity), Array(FormResponse, nil)]
   def submit
     success = valid?
@@ -81,13 +85,15 @@ class AccessTokenVerifier
   end
 
   def validate_dpop_proof(access_token:, bound_thumbprint:)
-    result = DpopProofForm.new(
+    form = DpopProofForm.new(
       proof: dpop_proof,
       http_method:,
       http_url:,
       access_token:,
       expected_thumbprint: bound_thumbprint,
-    ).submit
+    )
+    result = form.submit
+    @dpop_public_key = form.public_key if result.success?
     return if result.success?
 
     dpop_error = result.errors[:proof].first
