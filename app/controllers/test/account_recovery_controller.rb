@@ -4,10 +4,13 @@ module Test
   # Development/test helper for the account-preserving MFA recovery flow.
   #
   # Routes are only constructed when IdentityConfig.store.enable_test_routes is
-  # true (production pins it to false). Lets a developer skip the waiting period
+  # true (production pins it to false), and the controller answers 404 outside the
+  # development and test environments. Lets a developer skip the waiting period
   # and get at the emailed recovery link directly, rather than
   # waiting on the scheduled job and digging the tokens out of a mail preview.
   class AccountRecoveryController < ApplicationController
+    include LocalEnvironmentOnlyConcern
+
     layout 'no_card'
 
     DEV_FORCED = 'dev_forced'

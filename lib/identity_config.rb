@@ -12,6 +12,57 @@ module IdentityConfig
     Identity::Hostdata.config
   end
 
+  class UnsafeProductionConfigurationError < StandardError; end
+
+  # Switches that stand in a fake vendor, skip a verification step or expose a page meant for
+  # developers. Each is useful on a workstation or in a lower environment and must never be on in
+  # the production datacenter, where a wrong value would otherwise take effect silently.
+  PRODUCTION_UNSAFE_SWITCHES = %i[
+    doc_auth_desktop_test_mode
+    doc_auth_mock_dos_api
+    document_images_sharing_skip_doc_auth_post_validations
+    enable_test_routes
+    lexisnexis_threatmetrix_mock_enabled
+    proofer_mock_fallback
+    recaptcha_mock_validator
+    usps_mock_fallback
+  ].freeze
+
+  # Vendor selections whose `mock` family of values substitutes a canned answer for the vendor.
+  PRODUCTION_VENDOR_SELECTIONS = %i[
+    doc_auth_passport_selfie_vendor_default
+    doc_auth_passport_vendor_default
+    doc_auth_selfie_vendor_default
+    doc_auth_vendor_default
+    idv_address_primary_vendor
+    idv_address_secondary_vendor
+    idv_proofing_agent_phone_vendor
+    idv_resolution_default_vendor
+  ].freeze
+
+  # @param config [Object] a loaded configuration store
+  # @return [Array<Symbol>] the keys whose current value may not be used in production
+  def self.unsafe_for_production(config = store)
+    switches = PRODUCTION_UNSAFE_SWITCHES.select { |key| config.public_send(key) }
+    vendors = PRODUCTION_VENDOR_SELECTIONS.select do |key|
+      config.public_send(key).to_s.start_with?('mock')
+    end
+    switches + vendors
+  end
+
+  # Run once at boot. In the production datacenter the application refuses to start while any
+  # unsafe setting is on, naming the keys, so a configuration mistake fails the deploy loudly
+  # instead of running without a verification step. Every other environment starts normally.
+  def self.assert_safe_for_production!(config = store, env: Identity::Hostdata.env)
+    return unless env == 'prod'
+
+    unsafe = unsafe_for_production(config)
+    return if unsafe.empty?
+
+    raise UnsafeProductionConfigurationError,
+          "configuration not allowed in production: #{unsafe.join(', ')}"
+  end
+
   # identity-hostdata transforms these configs to the described type
   # rubocop:disable Metrics/BlockLength
   # rubocop:disable Layout/LineLength

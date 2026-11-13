@@ -698,6 +698,7 @@ production:
   openid_connect_content_security_form_action_enabled: true
   openid_connect_redirect: server_side
   participate_in_dap: true
+  proofer_mock_fallback: false
   raise_on_component_validation_error: false
   recaptcha_mock_validator: false
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
@@ -713,6 +714,7 @@ production:
   ui_test_bucket_params_enabled: false
   use_kms: true
   usps_auth_token_refresh_job_enabled: true
+  usps_mock_fallback: false
 
 test:
   aamva_private_key: 123abc
