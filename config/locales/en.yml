@@ -1762,6 +1762,11 @@ nds.totp_setup.new.step_1: Enter a nickname
 nds.totp_setup.new.step_2: Open your preferred authentication app
 nds.totp_setup.new.step_3: Scan the QR code or enter the set up code manually in your authentication app
 nds.verify_info.address: Address
+nds.webauthn_platform_recommended.cta: Add passkey
+nds.webauthn_platform_recommended.description: Authenticate the same way you unlock your device, whether it’s with your face or fingerprint, a password, or another method.
+nds.webauthn_platform_recommended.heading: Set up a passkey for a more secure sign in
+nds.webauthn_platform_recommended.info_html: Passkeys are %{phishing_resistant_html} and we don’t store any recordings of your face or fingerprint, so your information stays private.
+nds.webauthn_platform_recommended.phishing_resistant: phishing-resistant
 notices.account_reactivation: Great! You have your personal key.
 notices.authenticated_successfully: Authenticated successfully.
 notices.backup_codes_configured: Backup codes were added to your account.

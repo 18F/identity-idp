@@ -191,6 +191,15 @@ module Test
         ],
       ),
       Page.new(
+        key: 'webauthn-platform-recommended',
+        title: 'Passkey recommended',
+        flow: MFA,
+        template: 'users/webauthn_platform_recommended/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
         key: 'otp-entry',
         title: 'One-time code entry',
         flow: OTP,

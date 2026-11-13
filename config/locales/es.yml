@@ -1773,6 +1773,11 @@ nds.totp_setup.new.step_1: Ingrese un sobrenombre
 nds.totp_setup.new.step_2: Abra su aplicación de autenticación preferida
 nds.totp_setup.new.step_3: Escanee el código QR o ingrese el código de configuración manualmente en su aplicación de autenticación
 nds.verify_info.address: Dirección
+nds.webauthn_platform_recommended.cta: Agregar clave de acceso
+nds.webauthn_platform_recommended.description: Autentíquese de la misma forma que desbloquea su dispositivo, sea con su rostro o huella dactilar, contraseña u otro método.
+nds.webauthn_platform_recommended.heading: Configure una clave de acceso para un inicio de sesión más seguro
+nds.webauthn_platform_recommended.info_html: Las claves de acceso están %{phishing_resistant_html} y no almacenamos ninguna grabación de su rostro ni de su huella dactilar, así que su información se mantiene privada.
+nds.webauthn_platform_recommended.phishing_resistant: protegidas contra el phishing
 notices.account_reactivation: Qué bien. Tiene su clave personal.
 notices.authenticated_successfully: Logró autenticarse.
 notices.backup_codes_configured: Los códigos de recuperación se agregaron a su cuenta.
