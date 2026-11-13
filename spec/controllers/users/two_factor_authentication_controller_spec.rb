@@ -352,6 +352,32 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         )
       end
 
+      context 'after a lockout for too many sends has run out' do
+        let(:phone) { MfaContext.new(@user).phone_configurations.first.phone }
+
+        def send_count
+          OtpRateLimiter.new(phone:, user: @user, phone_confirmed: true).rate_limiter.attempts
+        end
+
+        before do
+          controller.current_user.update!(
+            second_factor_locked_at:
+              (IdentityConfig.store.lockout_period_in_minutes + 1).minutes.ago,
+          )
+        end
+
+        it 'lifts the lockout once and then counts every send again' do
+          get :send_code, params: otp_delivery_form_sms
+
+          expect(@user.reload.second_factor_locked_at).to be_nil
+          expect(send_count).to eq(1)
+
+          get :send_code, params: otp_delivery_form_sms
+
+          expect(send_count).to eq(2)
+        end
+      end
+
       it 'allows country mismatch in authentication context' do
         @user.phone_configurations.first.update!(phone: '+44 7700 900123')
 
