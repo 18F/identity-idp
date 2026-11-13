@@ -70,6 +70,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_acr_values
   validate :validate_client_id
   validate :validate_scope
+  validate :validate_token_exchange_scope
   validate :validate_unauthorized_scope
   validate :validate_dpop_jkt, if: :dpop_binding_required?
   validate :validate_privileges
@@ -82,9 +83,9 @@ class OpenidConnectAuthorizeForm
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
     SIMPLE_ATTRS.each { |key| instance_variable_set(:"@#{key}", params[key]) }
     @prompt ||= 'select_account'
-    @analytics_token_exchange_scopes = requested_token_exchange_scopes(
-      params[:scope].to_s.split(' ').compact,
-    )
+    @requested_token_exchange_scopes = (params[:scope]&.split(' ') || []).select do |value|
+      TokenExchange::Constants.in_scope?(value)
+    end
     @scope = parse_to_values(params[:scope], scopes)
     @unauthorized_scope = check_for_unauthorized_scope(params)
 
@@ -168,7 +169,7 @@ class OpenidConnectAuthorizeForm
 
   private
 
-  attr_reader :identity, :success, :analytics_token_exchange_scopes
+  attr_reader :identity, :success, :requested_token_exchange_scopes
 
   def private_key_jwt_sp?
     # Missing service providers are rejected by validate_client_id.
@@ -217,14 +218,9 @@ class OpenidConnectAuthorizeForm
 
     requested_scopes = param_value.split(' ').compact
 
-    requested_token_exchange_scopes = requested_token_exchange_scopes(requested_scopes)
-
-    if IdentityConfig.store.token_exchange_enabled && requested_token_exchange_scopes.present?
-      return true unless actor_request?
-
-      # if there are any requested scopes that are not allowed
-      return true if (requested_token_exchange_scopes - token_exchange_scopes).present?
-    end
+    # A refused delegation request counts as an unauthorized scope for analytics whether or not
+    # the general unauthorized-scope setting is on.
+    return true if token_exchange_scope_refused?
 
     return false if identity_proofing_requested_or_default?
     return true if verified_at_requested? && !identity_proofing_service_provider?
@@ -277,7 +273,17 @@ class OpenidConnectAuthorizeForm
     end
   end
 
+  def validate_token_exchange_scope
+    return unless token_exchange_scope_refused?
+    errors.add(
+      :scope, t('openid_connect.authorization.errors.unauthorized_scope'),
+      type: :unauthorized_scope
+    )
+  end
+
   def validate_unauthorized_scope
+    # The delegation refusal above has already recorded this error.
+    return if token_exchange_scope_refused?
     return unless @unauthorized_scope && IdentityConfig.store.unauthorized_scope_enabled
     errors.add(
       :scope, t('openid_connect.authorization.errors.unauthorized_scope'),
@@ -357,7 +363,15 @@ class OpenidConnectAuthorizeForm
   end
 
   def token_exchange_requested?
-    analytics_token_exchange_scopes.present?
+    requested_token_exchange_scopes.present?
+  end
+
+  def token_exchange_scope_refused?
+    return false unless IdentityConfig.store.token_exchange_enabled && token_exchange_requested?
+    return true unless actor_request?
+
+    # Refused when any requested delegation value names no listed agency application.
+    (requested_token_exchange_scopes - token_exchange_scopes).present?
   end
 
   def token_exchange_stage
@@ -365,9 +379,9 @@ class OpenidConnectAuthorizeForm
   end
 
   def token_exchange_scope_values
-    return if analytics_token_exchange_scopes.blank?
+    return if requested_token_exchange_scopes.blank?
 
-    analytics_token_exchange_scopes.map do |scope|
+    requested_token_exchange_scopes.map do |scope|
       scope.delete_prefix(TokenExchange::Constants::SCOPE_PREFIX)
     end
   end
@@ -377,24 +391,26 @@ class OpenidConnectAuthorizeForm
 
     UriService.add_params(
       redirect_uri,
-      error: 'invalid_request',
+      error: oauth_error_code,
       error_description: errors.full_messages.join(' '),
       state: state,
     )
   end
 
+  # RFC 6749 §4.1.2.1: a refused delegation scope is reported as `invalid_scope`; every other
+  # failed check is reported as `invalid_request`.
+  def oauth_error_code
+    token_exchange_scope_refused? ? 'invalid_scope' : 'invalid_request'
+  end
+
   # The scope values this request may be granted. A `token_exchange:<value>` scope (RFC 8693
   # delegation) is offered only to a service provider approved to act for the person; from any
-  # other service provider it is an unknown scope and is dropped like one, so it can never reach
-  # the delegation consent page or the token exchange.
+  # other service provider the request is refused, so it can never reach the delegation consent
+  # page or the token exchange.
   def scopes
     return base_scopes unless token_exchange_scope_available?
 
     base_scopes + token_exchange_scopes
-  end
-
-  def requested_token_exchange_scopes(requested_scopes)
-    requested_scopes.select { |scope| TokenExchange::Constants.in_scope?(scope) }
   end
 
   def base_scopes
