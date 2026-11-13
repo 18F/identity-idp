@@ -1,5 +1,20 @@
 <% self.title = t('destructive_account_reset.pending.canceled') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(
+        title: t('nds.destructive_account_reset.pending.canceled_heading'),
+        subtitle: t('destructive_account_reset.pending.canceled_info', app_name: APP_NAME),
+      ) do |page| %>
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: user_two_factor_authentication_path,
+              full_width: true,
+            ).with_content(t('links.continue_sign_in')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('destructive_account_reset.pending.canceled')) %>
 
 <p>
@@ -11,3 +26,4 @@
       user_two_factor_authentication_path,
       class: 'usa-button usa-button--wide usa-button--big',
     ) %>
+<% end %>

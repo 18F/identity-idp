@@ -1677,6 +1677,8 @@ nds.completions.intro_html: 选择“继续”即表示您同意与 %{sp_html} �
 nds.completions.nist_alt: 'NIST 徽章：加密。受保护。经验证。美国国家标准与技术研究院'
 nds.destructive_account_reset.confirm_request.heads_up: 请注意
 nds.destructive_account_reset.confirm_request.intro_html: 我们向 <strong>%{email}</strong> 发送了电邮以开始帐户删除流程。
+nds.destructive_account_reset.pending.cancel_request: 取消删除请求
+nds.destructive_account_reset.pending.canceled_heading: 我们已取消了你删除帐户的请求
 nds.destructive_account_reset.request.continue: 继续删除帐户
 nds.destructive_account_reset.request.email1_body: 你首先会收到一封确认电邮。这并不意味着你的帐户此时已被删除。
 nds.destructive_account_reset.request.email1_heading: 电邮 1

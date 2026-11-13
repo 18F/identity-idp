@@ -1664,6 +1664,8 @@ nds.completions.intro_html: En sélectionnant Continuer, vous acceptez de partag
 nds.completions.nist_alt: 'Sceau du NIST : Chiffré. Protégé. Éprouvé. National Institute of Standards and Technology'
 nds.destructive_account_reset.confirm_request.heads_up: Important
 nds.destructive_account_reset.confirm_request.intro_html: Nous avons envoyé un e-mail à <strong>%{email}</strong> pour lancer le processus de suppression du compte.
+nds.destructive_account_reset.pending.cancel_request: Annuler la demande de suppression
+nds.destructive_account_reset.pending.canceled_heading: Nous avons annulé votre demande de suppression de votre compte
 nds.destructive_account_reset.request.continue: Continuer la suppression du compte
 nds.destructive_account_reset.request.email1_body: Vous recevrez tout d’abord un e-mail de confirmation. Cela ne signifie pas que votre compte a été supprimé à ce stade.
 nds.destructive_account_reset.request.email1_heading: E-mail 1

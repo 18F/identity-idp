@@ -662,6 +662,20 @@ module Test
           Permutation.new(label: 'Without phone', params: { no_phone: '1' }),
         ],
       ),
+      Page.new(
+        key: 'account-reset-pending',
+        title: 'Account deletion: you requested to delete your account (pending)',
+        flow: SIGN_IN,
+        template: 'destructive_account_reset/pending/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'account-reset-pending-cancel',
+        title: 'Account deletion: request canceled (pending cancel)',
+        flow: SIGN_IN,
+        template: 'destructive_account_reset/pending/cancel',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
     ].freeze
 
     def self.pages
