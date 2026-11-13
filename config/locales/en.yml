@@ -1762,6 +1762,12 @@ nds.totp_setup.new.step_1: Enter a nickname
 nds.totp_setup.new.step_2: Open your preferred authentication app
 nds.totp_setup.new.step_3: Scan the QR code or enter the set up code manually in your authentication app
 nds.verify_info.address: Address
+nds.webauthn_verification.platform_button: Use passkey
+nds.webauthn_verification.platform_error_heading: Passkey unsuccessful
+nds.webauthn_verification.platform_heading: Use your passkey
+nds.webauthn_verification.platform_intro: Authenticate the same way you unlock your device, whether it’s with your face or fingerprint, a password, or another method.
+nds.webauthn_verification.roaming_error_heading: Issues detecting security key
+nds.webauthn_verification.roaming_intro: Use the security key associated with your account.
 notices.account_reactivation: Great! You have your personal key.
 notices.authenticated_successfully: Authenticated successfully.
 notices.backup_codes_configured: Backup codes were added to your account.

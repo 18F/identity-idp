@@ -1762,6 +1762,12 @@ nds.totp_setup.new.step_1: Saisir un surnom
 nds.totp_setup.new.step_2: Ouvrir votre appli d’authentification préférée
 nds.totp_setup.new.step_3: Scanner le code QR ou saisir le code de configuration manuellement dans votre appli d’authentification
 nds.verify_info.address: Adresse
+nds.webauthn_verification.platform_button: Utiliser la clé d’accès
+nds.webauthn_verification.platform_error_heading: Échec de la clé d’accès
+nds.webauthn_verification.platform_heading: Utiliser votre clé d’accès
+nds.webauthn_verification.platform_intro: Authentifiez-vous de la même manière que vous déverrouillez votre appareil, que ce soit avec votre visage ou votre empreinte digitale, un mot de passe ou une autre méthode.
+nds.webauthn_verification.roaming_error_heading: Problème de détection de la clé de sécurité
+nds.webauthn_verification.roaming_intro: Utilisez la clé de sécurité associée à votre compte.
 notices.account_reactivation: Parfait ! Vous avez votre clé personnelle.
 notices.authenticated_successfully: Authentifié avec succès.
 notices.backup_codes_configured: Les codes de sauvegarde ont été ajoutés à votre compte.

@@ -35,4 +35,23 @@ RSpec.describe WebauthnVerifyButtonComponent, type: :component do
       expect(rendered).to have_css('lg-webauthn-verify-button[data-credentials][data-foo]')
     end
   end
+
+  context 'without button_class' do
+    it 'renders the submit button with the legacy spacing classes' do
+      expect(rendered).to have_css(
+        'button.webauthn-verify-button__button.display-block.margin-y-3',
+        text: content,
+      )
+    end
+  end
+
+  context 'with button_class: nil' do
+    let(:options) { super().merge(button_class: nil) }
+
+    it 'renders the submit button with only the JS hook class' do
+      button = rendered.css('button.webauthn-verify-button__button').first
+
+      expect(button.classes).to_not include('display-block', 'margin-y-3')
+    end
+  end
 end
