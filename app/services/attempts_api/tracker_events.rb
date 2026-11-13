@@ -173,9 +173,17 @@ module AttemptsApi
     end
 
     # @param [Boolean] success
+    # @param [String] ssn
+    # @param [String] date_of_birth
     # @param [Array<String>] failure_reason The reason for confirmation failure.
-    def idv_proofing_agent_confirmation_submitted(success:, failure_reason:)
-      track_event('idv-proofing-agent-confirmation-submitted', success:, failure_reason:)
+    def idv_proofing_agent_confirmation_submitted(success:, ssn:, date_of_birth:, failure_reason:)
+      track_event(
+        'idv-proofing-agent-confirmation-submitted',
+        success:,
+        ssn:,
+        date_of_birth:,
+        failure_reason:,
+      )
     end
 
     # @param [Boolean] success

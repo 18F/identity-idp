@@ -279,7 +279,10 @@ RSpec.describe Idv::EnterDobSsnController do
         stub_attempts_tracker
 
         expect(@attempts_api_tracker).to receive(:idv_proofing_agent_confirmation_submitted).with(
-          success: true, failure_reason: [],
+          success: true,
+          ssn:,
+          date_of_birth: MemorableDateComponent.extract_date_param(dob),
+          failure_reason: [],
         )
 
         post :create, params: params
@@ -305,6 +308,8 @@ RSpec.describe Idv::EnterDobSsnController do
 
         expect(@attempts_api_tracker).to receive(:idv_proofing_agent_confirmation_submitted).with(
           success: false,
+          ssn:,
+          date_of_birth: MemorableDateComponent.extract_date_param(dob),
           failure_reason: ['ssn mismatch'],
         )
 
@@ -332,6 +337,8 @@ RSpec.describe Idv::EnterDobSsnController do
 
         expect(@attempts_api_tracker).to receive(:idv_proofing_agent_confirmation_submitted).with(
           success: false,
+          ssn:,
+          date_of_birth: MemorableDateComponent.extract_date_param(dob),
           failure_reason: ['date of birth mismatch'],
         )
 

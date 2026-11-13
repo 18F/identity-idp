@@ -6,6 +6,10 @@ allOf:
       success:
         type: boolean
         description: Whether the confirmation successful
+      ssn:
+        type: string
+      date_of_birth:
+        type: string
       failure_reason:
         type: array
         description: Describes errors of the confirmation submission.

@@ -42,7 +42,10 @@ module Idv
       )
 
       attempts_api_tracker.idv_proofing_agent_confirmation_submitted(
-        success: form_response.success?, failure_reason: failure_reason_details,
+        success: form_response.success?,
+        ssn: dob_ssn_params[:ssn],
+        date_of_birth: MemorableDateComponent.extract_date_param(dob_ssn_params[:dob]),
+        failure_reason: failure_reason_details,
       )
 
       if form_response.success?
