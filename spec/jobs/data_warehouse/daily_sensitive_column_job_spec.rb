@@ -50,6 +50,12 @@ RSpec.describe DataWarehouse::DailySensitiveColumnJob do
             "table-name": 'auth_app_configurations',
           },
         },
+        {
+          "object-locator": {
+            "column-name": 'account_recovery_request_id',
+            "table-name": 'auth_app_configurations',
+          },
+        },
       ],
     }.to_json
   end
