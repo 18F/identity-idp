@@ -124,7 +124,11 @@ module Proofing
           end
 
           def bypassed_reason_codes
-            bypasses_enabled ? IdentityConfig.store.idv_socure_phonerisk_bypassed_reason_codes : []
+            if bypasses_enabled
+              IdentityConfig.store.idv_proofing_agent_socure_phonerisk_bypassed_reason_codes
+            else
+              []
+            end
           end
         end
       end

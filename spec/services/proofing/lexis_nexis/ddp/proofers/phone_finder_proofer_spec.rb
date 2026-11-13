@@ -347,7 +347,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
             let(:bypasses_enabled) { true }
 
             context 'when only VOIP phone failed' do
-              it 'bypasses the VOIP phone failures and returns a successful result' do
+              it 'returns a successful result' do
                 result = proofer.proof(proofing_applicant)
 
                 expect(result.success?).to eq(true)

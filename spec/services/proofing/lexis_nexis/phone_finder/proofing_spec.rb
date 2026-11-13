@@ -158,7 +158,7 @@ RSpec.describe Proofing::LexisNexis::PhoneFinder::Proofer do
         context 'when bypasses_enabled is true' do
           let(:bypasses_enabled) { true }
 
-          it 'bypasses the VOIP phone failures and returns a successful result' do
+          it 'returns a successful result' do
             result = subject.proof(applicant)
 
             expect(result.success?).to eq(true)

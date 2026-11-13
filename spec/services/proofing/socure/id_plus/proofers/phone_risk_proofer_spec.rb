@@ -155,7 +155,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer do
             :idv_socure_phonerisk_auto_failure_reason_codes,
           ).and_return(%w[R613 R614 R615 R616 R617 R987])
           allow(IdentityConfig.store).to receive(
-            :idv_socure_phonerisk_bypassed_reason_codes,
+            :idv_proofing_agent_socure_phonerisk_bypassed_reason_codes,
           ).and_return(%w[R613 R614 R615 R616 R617])
         end
 

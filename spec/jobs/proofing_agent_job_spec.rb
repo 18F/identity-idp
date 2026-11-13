@@ -792,7 +792,7 @@ RSpec.describe ProofingAgentJob, type: :job do
           :idv_socure_phonerisk_auto_failure_reason_codes,
         ).and_return(%w[R613 R614 R615 R616 R617 R601])
         allow(IdentityConfig.store).to receive(
-          :idv_socure_phonerisk_bypassed_reason_codes,
+          :idv_proofing_agent_socure_phonerisk_bypassed_reason_codes,
         ).and_return(%w[R613 R614 R615 R616 R617])
 
         stub_request(:post, URI.join(socure_base_url, '/api/3.0/EmailAuthScore').to_s)

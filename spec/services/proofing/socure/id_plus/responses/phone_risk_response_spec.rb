@@ -71,7 +71,7 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
           :idv_socure_phonerisk_auto_failure_reason_codes,
         ).and_return(bypassed_codes + ['R601'])
         allow(IdentityConfig.store).to receive(
-          :idv_socure_phonerisk_bypassed_reason_codes,
+          :idv_proofing_agent_socure_phonerisk_bypassed_reason_codes,
         ).and_return(bypassed_codes)
       end
 
