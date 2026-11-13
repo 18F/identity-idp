@@ -44,16 +44,24 @@ RSpec.describe DocumentArtifact do
       expect(artifact.encryption_key).to be_nil
     end
 
-    it 'survives attribute_encryption_key rotation via the old-key queue' do
+    it 'wraps the key with KMS under the context of the person the capture session belongs to' do
       artifact = create(:document_artifact, encryption_key: raw_key)
-      old_key = IdentityConfig.store.attribute_encryption_key
+      other_session = create(:document_capture_session)
+      other_persons_row = DocumentArtifact.new(
+        document_capture_session: other_session,
+        encrypted_encryption_key: artifact.encrypted_encryption_key,
+      )
 
-      allow(IdentityConfig.store).to receive(:attribute_encryption_key)
-        .and_return('a-brand-new-32-byte-rotated-key!')
-      allow(IdentityConfig.store).to receive(:attribute_encryption_key_queue)
-        .and_return([{ 'key' => old_key }])
+      expect(artifact.encrypted_encryption_key).to start_with('LOCc').or start_with('KMSc')
+      expect { other_persons_row.encryption_key }.to raise_error(Encryption::EncryptionError)
+    end
 
-      expect(artifact.reload.encryption_key).to eq(raw_key)
+    it 'refuses a key that was wrapped by the static attribute key instead of KMS' do
+      legacy = Encryption::Encryptors::AttributeEncryptor.new.encrypt(raw_key)
+      artifact = create(:document_artifact, encryption_key: raw_key)
+      artifact.update_column(:encrypted_encryption_key, legacy)
+
+      expect { artifact.reload.encryption_key }.to raise_error(Encryption::EncryptionError)
     end
   end
 
