@@ -1662,6 +1662,15 @@ nds.choose_id_type.verify_in_person: Vérifier en personne
 nds.completions.heading_idv: Identité vérifiée
 nds.completions.intro_html: En sélectionnant Continuer, vous acceptez de partager les informations ci-dessous avec %{sp_html} et d’accéder à son site.
 nds.completions.nist_alt: 'Sceau du NIST : Chiffré. Protégé. Éprouvé. National Institute of Standards and Technology'
+nds.destructive_account_reset.confirm_request.heads_up: Important
+nds.destructive_account_reset.confirm_request.intro_html: Nous avons envoyé un e-mail à <strong>%{email}</strong> pour lancer le processus de suppression du compte.
+nds.destructive_account_reset.request.continue: Continuer la suppression du compte
+nds.destructive_account_reset.request.email1_body: Vous recevrez tout d’abord un e-mail de confirmation. Cela ne signifie pas que votre compte a été supprimé à ce stade.
+nds.destructive_account_reset.request.email1_heading: E-mail 1
+nds.destructive_account_reset.request.email2_body: '%{interval} après le premier e-mail de confirmation, vous en recevrez un deuxième qui contiendra un lien vous permettant de poursuivre la suppression de votre compte. Pour cela, vous devez confirmer que vous voulez supprimer votre compte. Après cette étape, il n’est plus possible d’annuler la suppression d’un compte.'
+nds.destructive_account_reset.request.email2_heading: E-mail 2
+nds.destructive_account_reset.request.emails_heading: 'Si vous continuez, vous recevrez deux e-mails :'
+nds.destructive_account_reset.request.intro: Si vous ne parvenez pas à vous connecter à l’aide des méthodes d’authentification que vous aviez configurées, vous pouvez supprimer votre compte puis en créer un nouveau. Supprimer votre compte n’efface aucune des informations que vous avez stockées auprès d’organismes publics.
 nds.duplicate_profiles_detected.cant_access: Je ne peux pas accéder à un compte
 nds.duplicate_profiles_detected.connected_agencies: 'Agences connectées : %{count}'
 nds.duplicate_profiles_detected.created_at_html: 'Créé : %{timestamp_html}'

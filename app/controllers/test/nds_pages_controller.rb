@@ -1314,6 +1314,27 @@ module Test
       {}
     end
 
+    def setup_account_reset_recovery_options
+      {}
+    end
+
+    def setup_account_reset_request
+      @account_reset_deletion_period_interval = account_reset_deletion_period
+      {}
+    end
+
+    def setup_account_reset_confirm_request
+      {
+        email: DEV_USER_EMAIL,
+        sms_phone: params[:no_phone].blank?,
+        waiting_period: account_reset_deletion_period,
+      }
+    end
+
+    def account_reset_deletion_period
+      WaitPeriodFormatter.call(IdentityConfig.store.account_reset_wait_period_days.days)
+    end
+
     def setup_completions
       user = build_mfa_user(configured: true)
       email = EmailAddressStub.new(email: DEV_USER_EMAIL)

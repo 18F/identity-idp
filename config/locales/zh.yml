@@ -1675,6 +1675,15 @@ nds.choose_id_type.verify_in_person: 亲自验证
 nds.completions.heading_idv: 身份已验证
 nds.completions.intro_html: 选择“继续”即表示您同意与 %{sp_html} 共享以下信息并前往其网站。
 nds.completions.nist_alt: 'NIST 徽章：加密。受保护。经验证。美国国家标准与技术研究院'
+nds.destructive_account_reset.confirm_request.heads_up: 请注意
+nds.destructive_account_reset.confirm_request.intro_html: 我们向 <strong>%{email}</strong> 发送了电邮以开始帐户删除流程。
+nds.destructive_account_reset.request.continue: 继续删除帐户
+nds.destructive_account_reset.request.email1_body: 你首先会收到一封确认电邮。这并不意味着你的帐户此时已被删除。
+nds.destructive_account_reset.request.email1_heading: 电邮 1
+nds.destructive_account_reset.request.email2_body: 在收到第一封确认电邮 %{interval} 你将收到另一封电邮，其中包含继续删除帐户的链接。这需要你确认你要删除帐户。这个步骤后，我们就无法撤消帐户删除了。
+nds.destructive_account_reset.request.email2_heading: 电邮 2
+nds.destructive_account_reset.request.emails_heading: 如果你继续，你将收到两封电邮：
+nds.destructive_account_reset.request.intro: 如果你无法使用你设置的身份证实方法登录，可以通过删除你的帐户并创建一个新帐户来重新获得访问权限。删除你的帐户不会删除你在其他政府机构存储的任何信息。
 nds.duplicate_profiles_detected.cant_access: 我无法访问某个帐户
 nds.duplicate_profiles_detected.connected_agencies: '关联机构：%{count}'
 nds.duplicate_profiles_detected.created_at_html: '创建时间：%{timestamp_html}'

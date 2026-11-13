@@ -638,6 +638,30 @@ module Test
           Permutation.new(label: 'Incorrect password', params: { error: '1' }),
         ],
       ),
+      Page.new(
+        key: 'account-reset-recovery-options',
+        title: 'Account deletion: are you sure (recovery options)',
+        flow: SIGN_IN,
+        template: 'destructive_account_reset/recovery_options/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'account-reset-request',
+        title: 'Account deletion: delete your account (request)',
+        flow: SIGN_IN,
+        template: 'destructive_account_reset/request/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'account-reset-confirm-request',
+        title: 'Account deletion: check your email (confirm request)',
+        flow: SIGN_IN,
+        template: 'destructive_account_reset/confirm_request/show',
+        permutations: [
+          Permutation.new(label: 'With phone (SMS note)', params: {}),
+          Permutation.new(label: 'Without phone', params: { no_phone: '1' }),
+        ],
+      ),
     ].freeze
 
     def self.pages
