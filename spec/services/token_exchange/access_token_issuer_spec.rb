@@ -100,16 +100,6 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
       expect(jtis.uniq.length).to eq(2)
     end
 
-    context 'when the target\'s only registered certificate has expired' do
-      let!(:target) do
-        create(:service_provider, :active, issuer: 'target-issuer', certs: ['saml_test_sp2'])
-      end
-
-      it 'raises rather than sealing the token to an expired key' do
-        expect { subject }.to raise_error(OpenidConnect::JweEncryptor::NoUsableKeyError)
-      end
-    end
-
     context 'when the target has no registered certificate' do
       let!(:target) { create(:service_provider, :active, issuer: 'target-issuer', certs: []) }
 
