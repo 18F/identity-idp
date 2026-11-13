@@ -50,7 +50,7 @@ module Encryption
     def try_decipher(unpacked_payload)
       cipher.update(ciphertext(unpacked_payload)) << cipher.final
     rescue OpenSSL::Cipher::CipherError => err
-      raise EncryptionError, "failed to decipher payload: #{err}"
+      raise DecipherError, "failed to decipher payload: #{err}"
     end
 
     def unpack_payload(payload)

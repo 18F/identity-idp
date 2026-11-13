@@ -191,6 +191,27 @@ RSpec.describe ServiceProvider do
     end
   end
 
+  describe '#site_key_allowed?' do
+    let(:service_provider) { create(:service_provider, pkce: true) }
+
+    it 'is false when the issuer is not listed' do
+      expect(service_provider.site_key_allowed?).to eq(false)
+    end
+
+    it 'is true when the issuer is listed for site keys and for key binding' do
+      allow_site_keys_for(service_provider)
+
+      expect(service_provider.site_key_allowed?).to eq(true)
+    end
+
+    it 'is false for a client listed for site keys but not for key binding' do
+      allow(IdentityConfig.store).to receive(:site_key_allowed_issuers)
+        .and_return([service_provider.issuer])
+
+      expect(service_provider.site_key_allowed?).to eq(false)
+    end
+  end
+
   describe '#dpop_required?' do
     let(:issuer) { 'urn:gov:gsa:openidconnect:sp:bound_client' }
 
