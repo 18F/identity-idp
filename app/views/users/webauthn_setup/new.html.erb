@@ -1,5 +1,166 @@
 <% self.title = @presenter.page_title %>
 
+<% if nds_layout? %>
+  <% if in_account_creation_flow? %>
+    <% content_for(:nds_header_progress) do %>
+      <%= nds_account_creation_progress(
+            step: :security,
+            substep: enabled_mfa_methods_count >= 1 ? 2 : 1,
+          ) %>
+    <% end %>
+  <% end %>
+
+  <% nds_heading = if @platform_authenticator && !@presenter.passkey_upsell?
+                     t('nds.webauthn_setup.platform_heading')
+                   else
+                     @presenter.heading
+                   end %>
+  <% nds_intro = if @platform_authenticator
+                   tag.div(@presenter.intro_html, class: 'stack stack--gap-12')
+                 else
+                   safe_join([@presenter.intro_html, ' ', @presenter.learn_more_html])
+                 end %>
+
+  <%= simple_form_for(
+        '',
+        url: webauthn_setup_path(
+          platform: @platform_authenticator.presence,
+          auto_trigger: @auto_trigger.presence,
+          passkey_upsell: @passkey_upsell.presence,
+        ),
+        method: :patch,
+        html: {
+          id: 'webauthn-form',
+          data: { auto_trigger: @auto_trigger || nil, nds_submit_gate: true },
+        },
+      ) do |f| %>
+    <%= hidden_field_tag :user_id, current_user.id, id: 'user_id' %>
+    <%= hidden_field_tag :user_email, current_user.last_sign_in_email_address.email, id: 'user_email' %>
+    <%= hidden_field_tag :user_challenge, user_session[:webauthn_challenge].to_json, id: 'user_challenge' %>
+    <%= hidden_field_tag :exclude_credentials, @exclude_credentials&.join(','), id: 'exclude_credentials' %>
+    <%= hidden_field_tag :webauthn_id, '', id: 'webauthn_id' %>
+    <%= hidden_field_tag :attestation_object, '', id: 'attestation_object' %>
+    <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
+    <%= hidden_field_tag :authenticator_data_value, '', id: 'authenticator_data_value' %>
+    <%= hidden_field_tag :transports, '', id: 'transports' %>
+    <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
+
+    <%= render NDS::FormPageComponent.new(title: nds_heading, subtitle: nds_intro) do |page| %>
+      <% if @need_to_set_up_additional_mfa %>
+        <% page.with_alert do %>
+          <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
+            <%= t('forms.webauthn_platform_setup.info_text') %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(gap: 16, align: :stretch) do %>
+          <% if !@platform_authenticator %>
+            <%= render NDS::StackComponent.new(tag: :ol, gap: 16, class: 'usa-list--unstyled') do %>
+              <li>
+                <div class="card stack stack--gap-16">
+                  <ol class="usa-list margin-0" start="1">
+                    <li class="text-body-emphasis"><%= t('forms.webauthn_setup.step_1') %></li>
+                  </ol>
+                  <p class="card__description margin-0" id="webauthn-step-1-hint"><%= t('forms.webauthn_setup.step_1a') %></p>
+                  <%= render NDS::InputComponent.new(
+                        form: f,
+                        attribute: :name,
+                        label: t('forms.webauthn_setup.nickname'),
+                        error_messages: { valueMissing: t('simple_form.required.text') },
+                        id: 'nickname',
+                        required: true,
+                        maxlength: 20,
+                        aria: { describedby: 'webauthn-step-1-hint' },
+                      ) %>
+                </div>
+              </li>
+              <li>
+                <div class="card stack stack--gap-16">
+                  <ol class="usa-list margin-0" start="2">
+                    <li class="text-body-emphasis"><%= t('forms.webauthn_setup.step_2') %></li>
+                  </ol>
+                  <%= render SecurityKeyImageComponent.new(mobile: mobile?) %>
+                </div>
+              </li>
+              <li>
+                <div class="card stack stack--gap-12">
+                  <ol class="usa-list margin-0" start="3">
+                    <li class="text-body-emphasis"><%= t('forms.webauthn_setup.step_3') %></li>
+                  </ol>
+                  <p class="card__description margin-0"><%= t('forms.webauthn_setup.step_3a') %></p>
+                </div>
+              </li>
+            <% end %>
+          <% end %>
+
+          <div class="text-center" id="spinner" hidden>
+            <%= image_tag(
+                  asset_url('loading-badge.gif'),
+                  height: 144,
+                  width: 144,
+                  alt: '',
+                ) %>
+            <strong class="display-block margin-top-2">
+              <%= t('forms.webauthn_setup.saving') %>
+            </strong>
+          </div>
+
+          <%= render NDS::CardComponent.new do %>
+            <div class="checkbox-group">
+              <div class="checkbox">
+                <%= f.check_box(
+                      :remember_device,
+                      { class: 'checkbox__input',
+                        checked: @presenter.remember_device_box_checked?,
+                        autocomplete: 'off',
+                        aria: { describedby: 'remember-browser-description' } },
+                      '1',
+                      '0',
+                    ) %>
+                <%= f.label :remember_device, class: 'checkbox__label' do %>
+                  <span class="checkbox__label-text"><%= t('forms.messages.remember_device') %></span>
+                  <span class="checkbox__label-description" id="remember-browser-description"><%= t('nds.mfa.remember_device_info') %></span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(type: :submit, full_width: true)
+                .with_content(@presenter.button_text) %>
+          <% if MfaPolicy.new(current_user).two_factor_enabled? && !in_multi_mfa_selection_flow? %>
+            <%= render ButtonComponent.new(
+                  url: account_path,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('links.cancel')) %>
+          <% else %>
+            <%= render ButtonComponent.new(
+                  url: authentication_methods_setup_path,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('nds.mfa.choose_another_method')) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% if @account_creation_threatmetrix[:threatmetrix_session_id].present? %>
+    <%= render(
+          partial: 'shared/threat_metrix_profiling',
+          locals: @account_creation_threatmetrix,
+        ) %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
+  <%= javascript_packs_tag_once 'webauthn-setup' %>
+<% else %>
 <% if @platform_authenticator %>
   <%= image_tag asset_url('platform-authenticator.svg'), alt: '', width: 84, height: 95, class: 'margin-left-1 margin-bottom-2', aria: { hidden: true } %>
 <% end %>
@@ -110,3 +271,4 @@
 <% end %>
 
 <%= javascript_packs_tag_once 'webauthn-setup' %>
+<% end %>

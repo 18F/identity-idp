@@ -339,6 +339,47 @@ RSpec.describe Users::WebauthnSetupController do
         end
       end
 
+      context 'when rendering the page' do
+        render_views
+
+        before do
+          controller.user_session[:in_account_creation_flow] = true
+          controller.user_session[:mfa_selections] = ['webauthn_platform']
+          allow(controller).to receive(:nds_layout?).and_return(nds_layout)
+        end
+
+        context 'in the default layout' do
+          let(:nds_layout) { false }
+
+          it 'renders the legacy platform page' do
+            get :new, params: { platform: true }
+
+            expect(response.body).to include(t('headings.webauthn_platform_setup.new'))
+            expect(response.body).to_not include('auth--form-page')
+          end
+        end
+
+        context 'in the NDS layout' do
+          let(:nds_layout) { true }
+
+          it 'renders the platform page with the account-creation stepper' do
+            get :new, params: { platform: true }
+
+            expect(response.body).to include('auth--form-page')
+            expect(response.body).to include(t('nds.webauthn_setup.platform_heading'))
+            expect(response.body).to include('1 / 2')
+            expect(response.body).to include('id="webauthn-form"')
+          end
+
+          it 'renders the security key page with the nickname field' do
+            get :new
+
+            expect(response.body).to include(t('headings.webauthn_setup.new'))
+            expect(response.body).to include('id="nickname"')
+          end
+        end
+      end
+
       context 'when in account creation flow and selected multiple mfa' do
         let(:mfa_selections) { ['webauthn_platform', 'voice'] }
         before do

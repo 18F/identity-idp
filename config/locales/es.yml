@@ -1773,6 +1773,7 @@ nds.totp_setup.new.step_1: Ingrese un sobrenombre
 nds.totp_setup.new.step_2: Abra su aplicación de autenticación preferida
 nds.totp_setup.new.step_3: Escanee el código QR o ingrese el código de configuración manualmente en su aplicación de autenticación
 nds.verify_info.address: Dirección
+nds.webauthn_setup.platform_heading: Agregar clave de acceso
 notices.account_reactivation: Qué bien. Tiene su clave personal.
 notices.authenticated_successfully: Logró autenticarse.
 notices.backup_codes_configured: Los códigos de recuperación se agregaron a su cuenta.
