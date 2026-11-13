@@ -3,9 +3,9 @@
 <% if nds_layout? %>
 <%= render PageHeadingComponent.new.with_content(t('sts_consent.heading', america_gov_name: AMERICA_GOV_NAME)) %>
 
-<p><%= t('sts_consent.content', america_gov_name: AMERICA_GOV_NAME) %></p>
+<p class="auth-entry__body margin-bottom-0"><%= t('sts_consent.content', america_gov_name: AMERICA_GOV_NAME) %></p>
 
-<%= render AccordionComponent.new(class: 'text-black margin-top-4') do |c| %>
+<%= render AccordionComponent.new(class: '') do |c| %>
   <% c.with_header do %>
     <span class="grid-row grid-gap">
       <%= image_tag(
@@ -17,8 +17,8 @@
             aria: { hidden: true },
           ) %>
       <span class="grid-col text-black">
-        <span class="grid-row"><strong>MyTravelGov</strong></span>
-        <span class="grid-row"><%= t('sts_consent.service_permission') %></span>
+        <span class="grid-row">MyTravelGov</span>
+        <p class="auth-entry__body"><%= t('sts_consent.service_permission') %></p>
       </span>
     </span>
   <% end %>
@@ -46,14 +46,14 @@
       @sts_consent_form,
       url: sts_consent_path,
       method: :post,
-      html: { class: 'margin-top-2' },
+      html: { class: '' },
     ) do |f| %>
   <%= f.hidden_field(
         :consent_given,
         value: StsConsentForm::CONSENT_GIVEN_VALUE,
       ) %>
 
-  <%= f.submit t('sts_consent.allow_and_continue'), class: 'margin-top-2' %>
+  <%= f.submit t('sts_consent.allow_and_continue') %>
 <% end %>
 
 <%= render PageFooterComponent.new do %>
