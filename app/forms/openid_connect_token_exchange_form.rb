@@ -42,8 +42,9 @@ class OpenidConnectTokenExchangeForm
   validate :validate_actor
   validate :validate_target
   validate :validate_resource
-  validate :validate_consent, unless: :client_rejected?
   validate :validate_subject_token, unless: :client_rejected?
+  validate :audience_matches_resource_app, unless: :client_rejected?
+  validate :validate_consent, unless: :client_rejected?
   validate :validate_actor_return_log, unless: :client_rejected?
   validate :validate_scope, unless: :client_rejected?
   validate :validate_target_identity_ial2, unless: :client_rejected?
@@ -128,21 +129,6 @@ class OpenidConnectTokenExchangeForm
     errors.add(:audience, :invalid)
   end
 
-  def validate_subject_token
-    return if subject_token.blank?
-    return errors.add(:subject_token, :invalid) if loaded_subject_token.blank?
-    return if loaded_subject_token.actor_issuer == client_id
-
-    errors.add(:subject_token, :invalid)
-  end
-
-  def validate_actor_return_log
-    return if loaded_subject_token.blank?
-    return if actor_return_log.present?
-
-    errors.add(:actor_return_log, :blank)
-  end
-
   def validate_resource
     return if resource.blank?
 
@@ -152,6 +138,41 @@ class OpenidConnectTokenExchangeForm
     errors.add(:resource, :invalid)
   rescue URI::InvalidURIError
     errors.add(:resource, :invalid)
+  end
+
+  def validate_subject_token
+    return errors.add(:subject_token, :invalid) if loaded_subject_token.blank?
+    return if request_client_id_matches_actor_issuer? &&
+              request_resource_matches_auth_request_resource
+
+    errors.add(:subject_token, :invalid)
+  end
+
+  def request_client_id_matches_actor_issuer?
+    loaded_subject_token.actor_issuer == client_id
+  end
+
+  def request_resource_matches_auth_request_resource
+    loaded_subject_token&.resource == resource
+  end
+
+  def audience_matches_resource_app
+    return if target_config&.fetch(:issuer) == audience
+
+    errors.add(:audience, :invalid)
+  end
+
+  def target_config
+    IdentityConfig.store.token_exchange_allowed_targets.find do |target|
+      target.fetch(:resource) == resource
+    end
+  end
+
+  def validate_actor_return_log
+    return if loaded_subject_token.blank?
+    return if actor_return_log.present?
+
+    errors.add(:actor_return_log, :blank)
   end
 
   def validate_consent
