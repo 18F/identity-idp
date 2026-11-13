@@ -4,6 +4,9 @@ module TokenExchange
   class AccessTokenIssuer
     IssuedToken = Struct.new(:token, :expires_in, :delegation_id, keyword_init: true)
 
+    ACCESS_TOKEN_TYPE = 'at+jwt'
+    JWT_CONTENT_TYPE = 'JWT'
+
     def self.issue(subject_token:, target_issuer:, resource:, scope:, dpop_jkt: nil)
       new(
         subject_token:,
@@ -64,19 +67,31 @@ module TokenExchange
 
     attr_reader :subject_token, :target_issuer, :resource, :scope, :dpop_jkt
 
+    # A Nested JWT (RFC 7519 section 5.2): the JWE header says `cty: JWT` so the agency knows to
+    # verify a signed token inside, rather than read the plaintext as claims.
     def jwe(issued_at:, expires_at:)
-      OpenidConnect::JweEncryptor.encrypt(jwt(issued_at:, expires_at:), service_provider: target)
+      OpenidConnect::JweEncryptor.encrypt(
+        jwt(issued_at:, expires_at:),
+        service_provider: target,
+        cty: JWT_CONTENT_TYPE,
+      )
     end
 
+    # The inner token is typed `at+jwt` (RFC 9068 section 2.1) so a verifier can never mistake
+    # it for an ID token signed by the same key, and vice versa.
     def jwt(issued_at:, expires_at:)
       JWT.encode(
         payload(issued_at:, expires_at:),
         AppArtifacts.store.oidc_primary_private_key,
         IdTokenBuilder::JWT_SIGNING_ALGORITHM,
         kid: JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,
+        typ: ACCESS_TOKEN_TYPE,
       )
     end
 
+    # RFC 9068 section 2.2: `jti` identifies this one token (RFC 7519 section 4.1.7) so the agency
+    # can refuse a repeat, and `client_id` names the actor the token was issued to, which `act.sub`
+    # (RFC 8693 section 4.1) also records as the party acting for the person.
     def payload(issued_at:, expires_at:)
       {
         iss: IdentityConfig.store.domain_name,
@@ -84,6 +99,8 @@ module TokenExchange
         aud: target_issuer,
         exp: expires_at,
         iat: issued_at,
+        jti: SecureRandom.uuid,
+        client_id: subject_token.actor_issuer,
         scope:,
         act: {
           sub: subject_token.actor_issuer,

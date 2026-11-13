@@ -293,18 +293,24 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         target_identity.update!(ial: 1)
       end
 
-      it 'is invalid' do
+      it 'is invalid with a description that does not name the assurance level' do
         expect(form.submit.success?).to eq(false)
-        expect(form.errors[:audience]).to include('invalid identity assurance')
+        expect(form.errors[:audience]).to eq(['delegation is not available for this audience'])
+        expect(form.errors.details[:audience]).to include(
+          hash_including(error: :invalid_target_identity_assurance),
+        )
       end
     end
 
     context 'when the user does not have an identity on the target aud' do
       before { target_identity.destroy! }
 
-      it 'is invalid' do
+      it 'is invalid with a description that does not reveal the missing identity' do
         expect(form.submit.success?).to eq(false)
-        expect(form.errors[:audience]).to include('no identity')
+        expect(form.errors[:audience]).to eq(['delegation is not available for this audience'])
+        expect(form.errors.details[:audience]).to include(
+          hash_including(error: :no_identity_at_target),
+        )
       end
     end
 
@@ -314,9 +320,12 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         user.active_profile.deactivate(:password_reset)
       end
 
-      it 'is invalid' do
+      it 'is invalid with a description that does not reveal the missing profile' do
         expect(form.submit.success?).to eq(false)
-        expect(form.errors[:audience]).to include('no active profile')
+        expect(form.errors[:audience]).to eq(['delegation is not available for this audience'])
+        expect(form.errors.details[:audience]).to include(
+          hash_including(error: :no_active_profile),
+        )
       end
 
       it 'does not issue a delegated access token' do
