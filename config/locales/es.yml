@@ -1758,6 +1758,10 @@ nds.piv_cac_setup.step_1: Ingrese un alias
 nds.piv_cac_setup.step_2: Inserte su tarjeta PIV o CAC en su lector de tarjetas
 nds.piv_cac_setup.step_3: Agregue su tarjeta PIV o CAC
 nds.piv_cac_setup.step_3_info: Se le pedirá que elija un certificado e ingrese su PIN después de hacer clic en el botón de continuar.
+nds.piv_cac_verification.error.bullet_2: Use otro método de autenticación.
+nds.piv_cac_verification.error.bullet_3: Contacte con el administrador de la agencia que emitió su tarjeta PIV o CAC.
+nds.piv_cac_verification.error.contact_support_html: '%{link_html} para obtener más ayuda.'
+nds.piv_cac_verification.error.contact_support_link: Contacte con el servicio de asistencia de %{app_name}
 nds.request_letter.heading: Verifique por correo postal
 nds.request_letter.info: Para verificar su identidad, le enviaremos por correo una carta con un código de verificación e instrucciones a su dirección. Debería llegar en 5 a 10 días. Siga las instrucciones de la carta para terminar de verificar su identidad.
 nds.socure_errors.in_person_heading: O, intente verificar su identidad en persona
