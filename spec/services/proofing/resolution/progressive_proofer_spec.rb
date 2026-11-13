@@ -402,6 +402,187 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
     end
 
+    context 'Instant Verify failure bypass' do
+      let(:is_proofing_agent) { true }
+      let(:ipp_enrollment_in_progress) { true }
+      let(:bypass_error_codes) { ['dob'] }
+      let(:ssa_proofing_agent_as_authoritative_source) { true }
+      let(:proofing_vendor) { :instant_verify }
+      let(:failed_checks) { [{ 'ItemName' => 'DOBFullVerified', 'ItemStatus' => 'fail' }] }
+      let(:instant_verify_errors) do
+        {
+          InstantVerify: {
+            'ProductType' => 'InstantVerify',
+            'ProductStatus' => 'fail',
+            'Items' => failed_checks,
+          },
+        }
+      end
+      let(:applicant_pii) do
+        { uuid: user.uuid }.merge(Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE)
+      end
+      let(:residential_address_resolution_result) do
+        Proofing::Resolution::Result.new(
+          success: false,
+          errors: instant_verify_errors,
+          vendor_name: 'lexisnexis:instant_verify',
+          transaction_id: 'failed-instant-verify-tx',
+        )
+      end
+      let(:state_id_address_resolution_result) { residential_address_resolution_result }
+      let(:resolution_proofing_results) { [residential_address_resolution_result] }
+
+      subject(:progressive_proofer) do
+        described_class.new(
+          user_uuid:, proofing_vendor:, analytics:, user_email:, is_proofing_agent:,
+        )
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          ssa_instant_verify_bypass_error_codes: bypass_error_codes,
+          ssa_proofing_agent_as_authoritative_source:,
+        )
+        allow(Db::SpCost::AddSpCost).to receive(:call)
+      end
+
+      context 'when Instant Verify failed only on bypassable checks' do
+        it 'treats the resolution and residential address as passing and runs phone proofing' do
+          result = proof.adjudicated_result
+
+          expect(result.success?).to eq(true)
+          expect(result.extra[:context][:resolution_adjudication_reason])
+            .to eq(:instant_verify_bypass)
+          expect(result.extra[:context][:stages][:resolution])
+            .to include(success: true, bypassed: true, transaction_id: 'failed-instant-verify-tx')
+          expect(result.extra[:context][:stages][:residential_address])
+            .to include(success: true, transaction_id: 'failed-instant-verify-tx')
+          expect(result.extra[:context][:stages][:phone_precheck])
+            .to include(success: true, vendor_name: 'AddressMock')
+          expect(result.extra[:phone_precheck_passed]).to eq(true)
+        end
+
+        it 'keeps the original errors' do
+          result = proof.adjudicated_result
+
+          expect(result.errors).to eq(instant_verify_errors)
+        end
+      end
+
+      context 'when a failed check is not bypassable' do
+        let(:failed_checks) do
+          super() + [{ 'ItemName' => 'IdentityOccupancyVerified', 'ItemStatus' => 'fail' }]
+        end
+
+        it 'does not bypass the failure' do
+          result = proof.adjudicated_result
+
+          expect(result.success?).to eq(false)
+          expect(result.extra[:context][:resolution_adjudication_reason])
+            .to eq(:fail_resolution_without_state_id_coverage)
+          expect(result.extra[:context][:stages][:resolution]).not_to have_key(:bypassed)
+          expect(result.extra[:context][:stages][:phone_precheck][:vendor_name])
+            .to eq('ResolutionCannotPass')
+        end
+      end
+
+      context 'when ssa_proofing_agent_as_authoritative_source is disabled' do
+        let(:ssa_proofing_agent_as_authoritative_source) { false }
+
+        it 'does not bypass the failure' do
+          result = proof.adjudicated_result
+
+          expect(result.success?).to eq(false)
+          expect(result.extra[:context][:resolution_adjudication_reason])
+            .to eq(:fail_resolution_without_state_id_coverage)
+          expect(result.extra[:context][:stages][:resolution]).not_to have_key(:bypassed)
+          expect(result.extra[:context][:stages][:phone_precheck][:vendor_name])
+            .to eq('ResolutionCannotPass')
+        end
+      end
+
+      %i[instant_verify instant_verify_ddp].each do |instant_verify_vendor|
+        context "when the proofing vendor is #{instant_verify_vendor}" do
+          let(:proofing_vendor) { instant_verify_vendor }
+
+          it 'bypasses the failure' do
+            result = proof.adjudicated_result
+
+            expect(result.success?).to eq(true)
+            expect(result.extra[:context][:resolution_adjudication_reason])
+              .to eq(:instant_verify_bypass)
+          end
+        end
+      end
+
+      %i[mock socure_kyc].each do |other_vendor|
+        context "when the proofing vendor is #{other_vendor}" do
+          let(:proofing_vendor) { other_vendor }
+
+          it 'does not bypass the failure' do
+            result = proof.adjudicated_result
+
+            expect(result.success?).to eq(false)
+            expect(result.extra[:context][:stages][:resolution]).not_to have_key(:bypassed)
+          end
+        end
+      end
+
+      context 'when the proofer is not a proofing agent' do
+        let(:is_proofing_agent) { false }
+
+        it 'does not bypass the failure' do
+          result = proof.adjudicated_result
+
+          expect(result.success?).to eq(false)
+          expect(result.extra[:context][:stages][:resolution]).not_to have_key(:bypassed)
+        end
+      end
+
+      context 'when the residential address is different and passes' do
+        let(:applicant_pii) do
+          { uuid: user.uuid }.merge(Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE)
+        end
+        let(:residential_address_resolution_result) do
+          Proofing::Resolution::Result.new(success: true, transaction_id: 'residential-tx')
+        end
+        let(:state_id_address_resolution_result) do
+          Proofing::Resolution::Result.new(
+            success: false,
+            errors: instant_verify_errors,
+            vendor_name: 'lexisnexis:instant_verify',
+            transaction_id: 'failed-instant-verify-tx',
+          )
+        end
+        let(:resolution_proofing_results) do
+          [residential_address_resolution_result, state_id_address_resolution_result]
+        end
+
+        it 'bypasses the state ID address failure' do
+          result = proof.adjudicated_result
+
+          expect(result.success?).to eq(true)
+          expect(result.extra[:context][:resolution_adjudication_reason])
+            .to eq(:instant_verify_bypass)
+        end
+      end
+
+      context 'when the residential address is different and fails' do
+        let(:applicant_pii) do
+          { uuid: user.uuid }.merge(Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE)
+        end
+        let(:resolution_proofing_results) { [residential_address_resolution_result] }
+
+        it 'does not bypass the failure' do
+          result = proof.adjudicated_result
+
+          expect(result.success?).to eq(false)
+          expect(result.extra[:context][:resolution_adjudication_reason])
+            .to eq(:fail_resolution_without_state_id_coverage)
+        end
+      end
+    end
+
     context 'in-person proofing' do
       let(:ipp_enrollment_in_progress) { true }
 

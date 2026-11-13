@@ -12,6 +12,8 @@ module Proofing
                   :proofing_vendor,
                   :is_proofing_agent
 
+      INSTANT_VERIFY_PROOFING_VENDORS = %i[instant_verify instant_verify_ddp].freeze
+
       PROOFING_VENDOR_SP_COST_TOKENS = {
         mock: :mock_resolution,
         instant_verify: :lexis_nexis_resolution,
@@ -98,6 +100,18 @@ module Proofing
           timer:,
         )
 
+        instant_verify_bypass = instant_verify_bypass_for(state_id_address_resolution_result)
+        resolution_bypassed = instant_verify_bypass&.bypassable? || false
+        if resolution_bypassed
+          # Without a separate residential address both results are the same Instant Verify result
+          residential_is_state_id_result =
+            residential_address_resolution_result.equal?(state_id_address_resolution_result)
+          state_id_address_resolution_result = instant_verify_bypass.bypassed_resolution_result
+          if residential_is_state_id_result
+            residential_address_resolution_result = state_id_address_resolution_result
+          end
+        end
+
         phone_result = phone_plugin.call(
           applicant_pii:,
           current_sp:,
@@ -120,6 +134,17 @@ module Proofing
           applicant_pii:,
           precheck_phone_number: phone_plugin.phone_number,
           proofing_vendor:,
+          resolution_bypassed:,
+        )
+      end
+
+      def instant_verify_bypass_for(state_id_address_resolution_result)
+        return unless is_proofing_agent &&
+                      INSTANT_VERIFY_PROOFING_VENDORS.include?(proofing_vendor) &&
+                      IdentityConfig.store.ssa_proofing_agent_as_authoritative_source
+
+        ProofingAgent::InstantVerify::ResolutionFailureBypass.new(
+          resolution_result: state_id_address_resolution_result,
         )
       end
 
