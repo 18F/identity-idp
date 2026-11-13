@@ -800,6 +800,14 @@ module Test
       {}
     end
 
+    def setup_rules_of_use
+      user = User.new
+      @nds_current_user = user if params[:signing_up].present?
+      @rules_of_use_form = RulesOfUseForm.new(user)
+      @rules_of_use_form.submit(terms_accepted: '0') if params[:error].present?
+      {}
+    end
+
     def setup_create_account
       @register_user_email_form = RegisterUserEmailForm.new(analytics:, attempts_api_tracker:)
       if params[:error] == 'email'
