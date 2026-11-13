@@ -1673,6 +1673,15 @@ nds.choose_id_type.verify_in_person: Verificar en persona
 nds.completions.heading_idv: Identidad verificada
 nds.completions.intro_html: Al seleccionar Continuar, acepta compartir la siguiente información con %{sp_html} e ir a su sitio.
 nds.completions.nist_alt: 'Sello del NIST: Cifrado. Protegido. Comprobado. Instituto Nacional de Estándares y Tecnología'
+nds.destructive_account_reset.confirm_request.heads_up: Importante
+nds.destructive_account_reset.confirm_request.intro_html: Enviamos un correo electrónico a <strong>%{email}</strong> para comenzar el proceso de eliminación de cuenta.
+nds.destructive_account_reset.request.continue: Continuar con la eliminación de la cuenta
+nds.destructive_account_reset.request.email1_body: Recibirá primero una confirmación por correo electrónico. Esto no significa que su cuenta fue eliminada con esto.
+nds.destructive_account_reset.request.email1_heading: Correo electrónico 1
+nds.destructive_account_reset.request.email2_body: '%{interval} después del mensaje inicial de confirmación, recibirá otro correo electrónico con un vínculo para seguir eliminando su cuenta. Este mensaje le pide que confirme que desea eliminar su cuenta. Después de este paso, no podemos deshacer la eliminación de una cuenta.'
+nds.destructive_account_reset.request.email2_heading: Correo electrónico 2
+nds.destructive_account_reset.request.emails_heading: 'Si continúa, recibirá dos mensajes de correo electrónico:'
+nds.destructive_account_reset.request.intro: Si no puede iniciar sesión usando los métodos de autenticación que configuró, puede recuperar el acceso eliminando su cuenta y creando una nueva. Si elimina su cuenta, no perderá la información que tenga almacenada en otras agencias gubernamentales.
 nds.duplicate_profiles_detected.cant_access: No puedo acceder a una cuenta
 nds.duplicate_profiles_detected.connected_agencies: 'Agencias conectadas: %{count}'
 nds.duplicate_profiles_detected.created_at_html: 'Creado: %{timestamp_html}'

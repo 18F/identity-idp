@@ -1662,6 +1662,15 @@ nds.choose_id_type.verify_in_person: Verify in person
 nds.completions.heading_idv: Identity verified
 nds.completions.intro_html: By selecting Continue, you agree to share the information below with %{sp_html} and go to their site.
 nds.completions.nist_alt: 'NIST seal: Encrypted. Protected. Proven. National Institute of Standards and Technology'
+nds.destructive_account_reset.confirm_request.heads_up: Heads up
+nds.destructive_account_reset.confirm_request.intro_html: We sent an email to <strong>%{email}</strong> to begin the account deletion process.
+nds.destructive_account_reset.request.continue: Continue account deletion
+nds.destructive_account_reset.request.email1_body: You will first receive an email confirmation. This does not mean your account has been deleted at this point.
+nds.destructive_account_reset.request.email1_heading: Email 1
+nds.destructive_account_reset.request.email2_body: After %{interval} of the initial email confirmation, you will receive another email with a link to continue deleting your account. This requires you to confirm you want to delete your account. We cannot undo account deletion after this step.
+nds.destructive_account_reset.request.email2_heading: Email 2
+nds.destructive_account_reset.request.emails_heading: 'If you continue, you will receive two emails:'
+nds.destructive_account_reset.request.intro: If you can’t sign in with the authentication methods you set up, you can regain access by deleting your account and creating a new one. Deleting your account won’t delete any information stored with other government agencies.
 nds.duplicate_profiles_detected.cant_access: I can’t access an account
 nds.duplicate_profiles_detected.connected_agencies: 'Connected agencies: %{count}'
 nds.duplicate_profiles_detected.created_at_html: 'Created: %{timestamp_html}'
