@@ -138,6 +138,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:passport_card_type) { Idp::Constants::DocumentTypes::PASSPORT_CARD }
   let(:first_name) { 'FirstName' }
   let(:last_name) { 'LastName' }
+  let(:phone) { '555-555-5555' }
   let(:dob) do
     (Time.zone.today - (IdentityConfig.store.idv_min_age_years + 1).years).strftime('%Y-%m-%d')
   end
@@ -185,6 +186,48 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       mrz:,
     }
   end
+  let(:attempts_api_state_id_pii) do
+    {
+      first_name:,
+      last_name:,
+      date_of_birth: dob,
+      ssn: SsnFormatter.format(ssn:),
+      address1: valid_state_id[:address1],
+      address2: nil,
+      city: valid_state_id[:city],
+      state: valid_state_id[:state],
+      zip: valid_state_id[:zip_code],
+      phone:,
+      document_type: id_type,
+      document_state_jurisdiction: valid_state_id[:jurisdiction],
+      document_number: valid_state_id[:document_number],
+      document_expiration: valid_state_id[:expiration_date],
+      document_issued: valid_state_id[:issue_date],
+      document_address1: valid_state_id[:address1],
+      document_address2: nil,
+      document_state: valid_state_id[:state],
+      document_city: valid_state_id[:city],
+      document_zip: valid_state_id[:zip_code],
+    }
+  end
+  let(:attempts_api_passport_pii) do
+    {
+      first_name:,
+      last_name:,
+      date_of_birth: dob,
+      ssn: SsnFormatter.format(ssn:),
+      address1: valid_residential_address[:address1],
+      address2: valid_residential_address[:address2],
+      city: valid_residential_address[:city],
+      state: valid_residential_address[:state],
+      zip: valid_residential_address[:zip_code],
+      phone:,
+      document_type: id_type,
+      document_number: valid_passport[:document_number],
+      document_expiration: valid_passport[:expiration_date],
+      document_issued: valid_passport[:issue_date],
+    }
+  end
 
   let(:user) { create(:user) }
   let(:email) { user.email }
@@ -218,7 +261,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       first_name:,
       last_name:,
       dob:,
-      phone: '555-555-5555',
+      phone:,
       ssn:,
       id_type:,
       residential_address:,
@@ -227,9 +270,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       final_attempt:,
     )
   end
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
   before do
     stub_analytics(user:)
+    allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
+    allow(IdentityConfig.store).to receive(:attempts_api_enabled).and_return(true)
     request.headers['Authorization'] = auth_header
     allow(IdentityConfig.store).to receive(:idv_proofing_agent_config).and_return(
       [{
@@ -811,10 +857,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
         context 'when rate limit reached for the user' do
           before do
+            allow(attempts_api_tracker).to receive(:idv_rate_limited)
             RateLimiter.new(user:, rate_limit_type: :idv_resolution).increment_to_limited!
             RateLimiter.new(user:, rate_limit_type: :proof_ssn).increment_to_limited!
             ActionMailer::Base.deliveries.clear
           end
+
           it 'returns 429 and logs events' do
             expect(action.status).to eq(429)
             expect(@analytics).to have_logged_event(
@@ -826,6 +874,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               'Rate Limit Reached',
               limiter_type: :proof_ssn,
               step_name: 'proof_user',
+            )
+          end
+
+          it 'logs an idv_rate_limited event with the attempts API' do
+            action
+            expect(attempts_api_tracker).to have_received(:idv_rate_limited).with(
+              limiter_type: :idv_resolution,
             )
           end
 
@@ -847,6 +902,10 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         end
 
         context 'with a valid authorization header' do
+          before do
+            allow(attempts_api_tracker).to receive(:idv_proofing_agent_verification_requested)
+          end
+
           it 'returns 202 accepted' do
             expect(action.status).to eq(202)
             transaction_id = DocumentCaptureSession.last.uuid
@@ -859,6 +918,23 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               transaction_id:,
               remaining_attempts: a_kind_of(Integer),
               final_attempt: false,
+            )
+          end
+
+          it 'logs an idv_proofing_agent_verification_requested event with the attempts API' do
+            action
+            expect(attempts_api_tracker).to have_received(
+              :idv_proofing_agent_verification_requested,
+            ).with(
+              success: true,
+              transaction_id: DocumentCaptureSession.last.uuid,
+              agent_info: {
+                agent_id:,
+                location_id:,
+                correlation_id:,
+              },
+              pii: attempts_api_state_id_pii,
+              failure_reason: nil,
             )
           end
 
@@ -925,7 +1001,23 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             let(:ssn) { '123-45-6789' }
 
             it 'returns 400' do
-              expect(action.status).to eq(400)
+              action
+
+              expect(response.status).to eq(400)
+
+              expect(attempts_api_tracker).to have_received(
+                :idv_proofing_agent_verification_requested,
+              ).with(
+                success: false,
+                transaction_id: nil,
+                agent_info: {
+                  agent_id:,
+                  location_id:,
+                  correlation_id:,
+                },
+                pii: attempts_api_state_id_pii,
+                failure_reason: JSON.parse(response.body, symbolize_names: true),
+              )
             end
           end
 
@@ -948,6 +1040,20 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 **body_failure_event_attrs,
               )
               expect(JSON.parse(response.body, symbolize_names: true)).to eq(body_errors)
+
+              expect(attempts_api_tracker).to have_received(
+                :idv_proofing_agent_verification_requested,
+              ).with(
+                success: false,
+                transaction_id: nil,
+                agent_info: {
+                  agent_id:,
+                  location_id:,
+                  correlation_id:,
+                },
+                pii: attempts_api_state_id_pii,
+                failure_reason: JSON.parse(response.body, symbolize_names: true),
+              )
             end
           end
 
@@ -966,6 +1072,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             it 'returns 400 with every ssn error' do
               expect(action.status).to eq(400)
               expect(JSON.parse(response.body, symbolize_names: true)).to eq(body_errors)
+              expect(attempts_api_tracker).to have_received(
+                :idv_proofing_agent_verification_requested,
+              ).with(
+                hash_including(
+                  success: false, failure_reason: JSON.parse(response.body, symbolize_names: true),
+                ),
+              )
             end
           end
 
@@ -981,6 +1094,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 **body_failure_event_attrs,
               )
               expect(JSON.parse(response.body, symbolize_names: true)).to eq(body_errors)
+              expect(attempts_api_tracker).to have_received(
+                :idv_proofing_agent_verification_requested,
+              ).with(
+                hash_including(
+                  success: false, failure_reason: JSON.parse(response.body, symbolize_names: true),
+                ),
+              )
             end
           end
 
@@ -991,6 +1111,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             it 'returns 400 with a type error' do
               expect(action.status).to eq(400)
               expect(JSON.parse(response.body, symbolize_names: true)).to eq(body_errors)
+              expect(attempts_api_tracker).to have_received(
+                :idv_proofing_agent_verification_requested,
+              ).with(
+                hash_including(
+                  success: false, failure_reason: JSON.parse(response.body, symbolize_names: true),
+                ),
+              )
             end
           end
 
@@ -1009,6 +1136,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             it 'returns 400 with errors keyed by the nested path' do
               expect(action.status).to eq(400)
               expect(JSON.parse(response.body, symbolize_names: true)).to eq(body_errors)
+              expect(attempts_api_tracker).to have_received(
+                :idv_proofing_agent_verification_requested,
+              ).with(
+                hash_including(
+                  success: false, failure_reason: JSON.parse(response.body, symbolize_names: true),
+                ),
+              )
             end
           end
 
@@ -1025,6 +1159,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 **body_failure_event_attrs,
               )
               expect(JSON.parse(response.body, symbolize_names: true)).to eq(body_errors)
+              expect(attempts_api_tracker).to have_received(
+                :idv_proofing_agent_verification_requested,
+              ).with(
+                hash_including(
+                  success: false, failure_reason: JSON.parse(response.body, symbolize_names: true),
+                ),
+              )
             end
           end
 
@@ -1985,11 +2126,16 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         let(:residential_address) { valid_residential_address }
         let(:user) { create(:user, email: 'foo@bar.com') }
 
+        before do
+          allow(attempts_api_tracker).to receive(:idv_proofing_agent_verification_requested)
+        end
+
         context 'when rate limit reached for the user' do
           before do
             RateLimiter.new(user:, rate_limit_type: :idv_resolution).increment_to_limited!
             RateLimiter.new(user:, rate_limit_type: :proof_ssn).increment_to_limited!
           end
+
           it 'returns 429 and logs events' do
             expect(action.status).to eq(429)
             expect(@analytics).to have_logged_event(
@@ -2018,6 +2164,20 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               transaction_id:,
               remaining_attempts: a_kind_of(Integer),
               final_attempt: false,
+            )
+
+            expect(attempts_api_tracker).to have_received(
+              :idv_proofing_agent_verification_requested,
+            ).with(
+              success: true,
+              transaction_id: DocumentCaptureSession.last.uuid,
+              agent_info: {
+                agent_id:,
+                location_id:,
+                correlation_id:,
+              },
+              pii: attempts_api_passport_pii,
+              failure_reason: nil,
             )
           end
 
@@ -2055,6 +2215,20 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             )
             body = JSON.parse(response.body)
             expect(body['mrz'][0]).to eq(body_errors[:mrz][0])
+
+            expect(attempts_api_tracker).to have_received(
+              :idv_proofing_agent_verification_requested,
+            ).with(
+              success: false,
+              transaction_id: nil,
+              agent_info: {
+                agent_id:,
+                location_id:,
+                correlation_id:,
+              },
+              pii: attempts_api_passport_pii,
+              failure_reason: body_errors,
+            )
           end
         end
 
