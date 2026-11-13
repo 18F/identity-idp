@@ -74,6 +74,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_dpop_jkt, if: :dpop_binding_required?
   validate :validate_privileges
   validate :validate_document_images_scope
+  validate :validate_site_key_scope
   validate :validate_prompt
   validate :validate_verified_within_format, if: :verified_within_allowed?
   validate :validate_verified_within_duration, if: :verified_within_allowed?
@@ -147,6 +148,12 @@ class OpenidConnectAuthorizeForm
     code = identity&.session_uuid
 
     UriService.add_params(redirect_uri, code: code, state: state) if code
+  end
+
+  # Whether this authorization releases the person's site key: the scope was requested and the
+  # client is listed for it.
+  def site_key_requested?
+    scope.include?('site_key') && service_provider&.site_key_allowed? == true
   end
 
   def ial_values
@@ -288,6 +295,16 @@ class OpenidConnectAuthorizeForm
   def validate_document_images_scope
     return unless scope.include?('document_images')
     return if service_provider&.document_images_sharing_allowed?
+
+    errors.add(
+      :scope, t('openid_connect.authorization.errors.no_valid_scope'),
+      type: :no_valid_scope
+    )
+  end
+
+  def validate_site_key_scope
+    return unless scope.include?('site_key')
+    return if service_provider&.site_key_allowed?
 
     errors.add(
       :scope, t('openid_connect.authorization.errors.no_valid_scope'),
