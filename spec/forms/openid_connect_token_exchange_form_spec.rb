@@ -448,16 +448,18 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         allow(IdentityConfig.store).to receive(:dpop_required_issuers).and_return([])
       end
 
-      it 'still requires the proof, since approval alone binds the actor' do
-        expect(form.submit.success?).to eq(true)
-        expect(form.response[:token_type]).to eq('DPoP')
-        expect(form.submit.extra[:dpop_bound]).to eq(true)
+      context 'when the token is dpop bound' do
+        it 'is valid' do
+          expect(form.submit.success?).to eq(true)
+          expect(form.response[:token_type]).to eq('DPoP')
+          expect(form.submit.extra[:dpop_bound]).to eq(true)
+        end
       end
 
-      context 'without a proof' do
+      context 'when the token is not dpop bound' do
         let(:dpop_proof) { nil }
 
-        it 'responds with an invalid_dpop_proof error naming the missing proof' do
+        it 'is invalid' do
           expect(form.submit.success?).to eq(false)
           expect(form.response).to eq(
             error: 'invalid_dpop_proof',
