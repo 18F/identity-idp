@@ -12,9 +12,10 @@ class StsConsentForm
 
   attr_reader :consent_given
 
-  def initialize(user:, target_app:)
+  def initialize(user:, target_app:, actor_app:)
     @user = user
     @target_app = target_app
+    @actor_app = actor_app
   end
 
   def submit(params)
@@ -33,7 +34,7 @@ class StsConsentForm
   private
 
   attr_accessor :success
-  attr_reader :user, :target_app
+  attr_reader :user, :target_app, :actor_app
 
   def validate_consent_given
     return if @consent_given
@@ -46,9 +47,14 @@ class StsConsentForm
   end
 
   def process_successful_submission
-    consent = UserConsentSts.find_or_initialize_by(user: user, target_app: target_app)
-    # Refresh the consent timestamp so a previously expired consent becomes valid again.
-    consent.created_at = Time.zone.now if consent.persisted?
-    consent.save!
+    consent = UserConsentSts.active.find_by(
+      user: user, target_app: target_app, actor_app: actor_app,
+    )
+    if consent
+      # Refresh the consent timestamp so a previously expired consent becomes valid again.
+      consent.update!(created_at: Time.zone.now)
+    else
+      UserConsentSts.create!(user: user, target_app: target_app, actor_app: actor_app)
+    end
   end
 end

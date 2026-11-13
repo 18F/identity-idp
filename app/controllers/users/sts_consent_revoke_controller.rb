@@ -19,7 +19,7 @@ module Users
       consent = load_consent
       target_app = consent.target_app
 
-      consent.destroy!
+      consent.update!(is_revoked: true)
       analytics.sts_revoke_consent_revoked(target_app:)
 
       redirect_to account_connected_services_path

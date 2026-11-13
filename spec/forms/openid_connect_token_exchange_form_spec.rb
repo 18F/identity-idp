@@ -34,7 +34,9 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       ial: 2,
     )
   end
-  let!(:sts_consent) { create(:user_consent_sts, user:, target_app: target_issuer) }
+  let!(:sts_consent) do
+    create(:user_consent_sts, user:, target_app: target_issuer, actor_app: actor_issuer)
+  end
   let(:scope) { 'openid token_exchange:passport' }
   let(:actor_return_log) do
     create(
