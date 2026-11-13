@@ -206,6 +206,19 @@ module Test
         ],
       ),
       Page.new(
+        key: 'backup-code-verification',
+        title: 'Backup code entry',
+        flow: OTP,
+        template: 'two_factor_authentication/backup_code_verification/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Remember browser checked', params: { remember: '1' }),
+          Permutation.new(label: 'Incorrect code', params: { error: '1', code: '1' }),
+          Permutation.new(label: 'Rate limited', params: { rate_limited: '1', code: '1' }),
+          Permutation.new(label: 'Signing up', params: { sign_up: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'idv-welcome',
         title: 'Verify your identity (welcome)',
         flow: IDV,
