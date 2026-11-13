@@ -235,10 +235,6 @@ class ProofingAgentJob < ApplicationJob
         )
       end
 
-      resolution_result = ProofingAgent::InstantVerify::ResolutionFailureBypass.new(
-        resolution_result:,
-      ).call
-
       if resolution_result&.dig(:context, :stages, :resolution, :success) == true
         proofing_components[:residential_resolution_check] = resolution_result&.dig(
           :context, :stages, :residential_address, :vendor_name

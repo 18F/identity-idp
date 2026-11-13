@@ -10,8 +10,6 @@ module ProofingAgent
         'lexisnexis:instant_verify_ddp',
       ].freeze
 
-      ADJUDICATION_REASON = 'instant_verify_bypass'
-
       attr_reader :resolution_result
 
       def initialize(resolution_result:)
@@ -19,36 +17,41 @@ module ProofingAgent
       end
 
       def bypassable?
-        return false if resolution_stage.blank?
+        return @bypassable if defined?(@bypassable)
 
-        resolution_stage[:success] != true &&
-          VENDOR_NAMES.include?(resolution_stage[:vendor_name]) &&
-          resolution_stage[:exception].blank? &&
-          stages.dig(:residential_address, :success) != false &&
-          BypassErrorCodeChecker.new(errors: resolution_stage[:errors]).call
+        @bypassable = !resolution_result.success? &&
+                      VENDOR_NAMES.include?(resolution_result.vendor_name) &&
+                      resolution_result.exception.blank? &&
+                      BypassErrorCodeChecker.new(errors: resolution_result.errors).call
       end
 
-      # @return [Hash, nil] the original result unless the failure is bypassable
-      def call
+      def bypassed_resolution_result
         return resolution_result unless bypassable?
 
-        resolution_result.deep_merge(
-          success: true,
-          context: {
-            resolution_adjudication_reason: ADJUDICATION_REASON,
-            stages: { resolution: { success: true, bypassed: true } },
-          },
-        )
+        overriden_result(resolution_result)
       end
 
       private
 
-      def stages
-        resolution_result&.dig(:context, :stages)
-      end
-
-      def resolution_stage
-        stages&.dig(:resolution)
+      def overriden_result(result)
+        Proofing::Resolution::Result.new(
+          success: true,
+          errors: result.errors,
+          exception: result.exception,
+          vendor_name: result.vendor_name,
+          vendor_id: result.vendor_id,
+          transaction_id: result.transaction_id,
+          customer_user_id: result.customer_user_id,
+          reference: result.reference,
+          reason_codes: result.reason_codes,
+          source_attribution: result.source_attribution,
+          failed_result_can_pass_with_additional_verification:
+            result.failed_result_can_pass_with_additional_verification,
+          attributes_requiring_additional_verification:
+            result.attributes_requiring_additional_verification,
+          vendor_workflow: result.vendor_workflow,
+          verified_attributes: result.verified_attributes,
+        )
       end
     end
   end

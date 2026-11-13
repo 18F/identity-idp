@@ -12,7 +12,8 @@ module Proofing
                   :ipp_current_address_matches_id,
                   :applicant_pii,
                   :precheck_phone_number,
-                  :proofing_vendor
+                  :proofing_vendor,
+                  :resolution_bypassed
 
       def initialize(
         resolution_result:, # InstantVerify
@@ -24,7 +25,8 @@ module Proofing
         applicant_pii:,
         precheck_phone_number:,
         hybrid_mobile_device_profiling_result: nil, # ThreatMetrix (Hybrid Mobile)
-        proofing_vendor: nil # resolution vendor that produced resolution_result
+        proofing_vendor: nil, # resolution vendor that produced resolution_result
+        resolution_bypassed: false # a failed resolution_result was bypassed and treated as passing
       )
         @resolution_result = resolution_result
         @ipp_enrollment_in_progress = ipp_enrollment_in_progress
@@ -36,6 +38,7 @@ module Proofing
         @applicant_pii = applicant_pii
         @precheck_phone_number = precheck_phone_number
         @proofing_vendor = proofing_vendor
+        @resolution_bypassed = resolution_bypassed
       end
 
       def adjudicated_result
@@ -60,7 +63,7 @@ module Proofing
               hybrid_mobile_device_profiling_adjudication_reason: hybrid_mobile_profiling_reason,
               resolution_adjudication_reason: resolution_reason,
               stages: {
-                resolution: resolution_result.to_h,
+                resolution: resolution_stage,
                 residential_address: residential_resolution_result.to_h,
                 threatmetrix:,
                 hybrid_mobile_threatmetrix:,
@@ -73,6 +76,12 @@ module Proofing
       end
 
       private
+
+      def resolution_stage
+        return resolution_result.to_h unless resolution_bypassed
+
+        resolution_result.to_h.merge(bypassed: true)
+      end
 
       def errors
         resolution_result.errors
@@ -150,6 +159,8 @@ module Proofing
         if ipp_enrollment_in_progress && !residential_resolution_result.success? &&
            ipp_current_address_matches_id == false
           [false, :fail_resolution_skip_state_id]
+        elsif resolution_bypassed
+          [true, :instant_verify_bypass]
         elsif resolution_result.success?
           [true, :pass_resolution_and_state_id]
         elsif state_id_attributes_cover_resolution_failures?
