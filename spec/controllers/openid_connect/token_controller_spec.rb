@@ -280,7 +280,9 @@ RSpec.describe OpenidConnect::TokenController do
       allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
         .and_return([actor_issuer])
       allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
-        .and_return([{ issuer: target_issuer, scope: 'passport' }])
+        .and_return([{ issuer: target_issuer,
+                       scope: 'passport',
+                       resource: 'https://passport.gov' }])
       create(:user_consent_sts, user:, target_app: target_issuer)
     end
 

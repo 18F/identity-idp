@@ -155,7 +155,7 @@ RSpec.describe OpenidConnectTokenForm do
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
           .and_return([client_id])
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
-          .and_return([{ issuer: target_app, scope: 'passport' }])
+          .and_return([{ issuer: target_app, scope: 'passport', resource: 'https://passport.gov' }])
       end
 
       context 'when the user does not exist' do
@@ -210,7 +210,9 @@ RSpec.describe OpenidConnectTokenForm do
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
           .and_return(['some-other-actor'])
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
-          .and_return([{ issuer: 'passport-issuer', scope: 'passport' }])
+          .and_return([{ issuer: 'passport-issuer',
+                         scope: 'passport',
+                         resource: 'https://passport.gov' }])
       end
 
       shared_examples 'an ordinary code redemption' do
@@ -769,7 +771,9 @@ RSpec.describe OpenidConnectTokenForm do
           allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
             .and_return([service_provider.issuer])
           allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
-            .and_return([{ issuer: 'records-issuer', scope: 'records' }])
+            .and_return([{ issuer: 'records-issuer',
+                           scope: 'records',
+                           resource: 'https://records.gov' }])
           create(:user_consent_sts, user:, target_app: 'records-issuer')
         end
 
@@ -1001,7 +1005,7 @@ RSpec.describe OpenidConnectTokenForm do
         allow(IdentityConfig.store).to receive(:token_exchange_subject_token_expires_in)
           .and_return(600)
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
-          .and_return([{ issuer: target_app, scope: 'passport' }])
+          .and_return([{ issuer: target_app, scope: 'passport', resource: 'https://passport.gov' }])
         TokenExchange::ActorHandoff.store(
           code:,
           actor_return_log_id: 123,

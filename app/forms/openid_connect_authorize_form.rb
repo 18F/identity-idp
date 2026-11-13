@@ -16,6 +16,7 @@ class OpenidConnectAuthorizeForm
     redirect_uri
     response_type
     state
+    resource
   ].freeze
 
   ATTRS = [
