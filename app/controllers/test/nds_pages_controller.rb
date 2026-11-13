@@ -915,6 +915,26 @@ module Test
       {}
     end
 
+    def setup_totp_verification
+      user = User.new
+      user.auth_app_configurations.build(otp_secret_key: ROTP::Base32.random, name: 'Auth app')
+      @nds_current_user = user
+      @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
+        data: {
+          two_factor_authentication_method: 'authenticator',
+          reauthn: params[:reauthn].present?,
+          user_opted_remember_device_cookie: nil,
+        },
+        view: view_context,
+        service_provider: nil,
+        remember_device_default: false,
+      )
+      @code = '123456' if params[:code].present?
+      flash.now[:error] = t('two_factor_authentication.invalid_otp') if
+        params[:error].present?
+      {}
+    end
+
     def setup_totp_setup
       user = build_mfa_user(configured: params[:second].present?)
       @nds_current_user = user

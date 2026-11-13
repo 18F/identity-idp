@@ -1761,6 +1761,7 @@ nds.totp_setup.new.setup_code_label: Setup code
 nds.totp_setup.new.step_1: Enter a nickname
 nds.totp_setup.new.step_2: Open your preferred authentication app
 nds.totp_setup.new.step_3: Scan the QR code or enter the set up code manually in your authentication app
+nds.totp_verification.invalid_code_body: That code is invalid. Enter the current code from your authentication app.
 nds.verify_info.address: Address
 notices.account_reactivation: Great! You have your personal key.
 notices.authenticated_successfully: Authenticated successfully.

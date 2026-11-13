@@ -206,6 +206,18 @@ module Test
         ],
       ),
       Page.new(
+        key: 'totp-verification',
+        title: 'Authentication app code entry',
+        flow: OTP,
+        template: 'two_factor_authentication/totp_verification/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Reauthentication', params: { reauthn: '1' }),
+          Permutation.new(label: 'Prefilled code', params: { code: '1' }),
+          Permutation.new(label: 'Incorrect code', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'idv-welcome',
         title: 'Verify your identity (welcome)',
         flow: IDV,
