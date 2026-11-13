@@ -43,6 +43,7 @@ class OpenidConnectTokenExchangeForm
   validate :validate_target
   validate :validate_resource
   validate :validate_subject_token, unless: :client_rejected?
+  validate :validate_subject_token_resource, unless: :client_rejected?
   validate :audience_matches_resource_app, unless: :client_rejected?
   validate :validate_consent, unless: :client_rejected?
   validate :validate_actor_return_log, unless: :client_rejected?
@@ -142,18 +143,15 @@ class OpenidConnectTokenExchangeForm
 
   def validate_subject_token
     return errors.add(:subject_token, :invalid) if loaded_subject_token.blank?
-    return if request_client_id_matches_actor_issuer? &&
-              request_resource_matches_auth_request_resource
-
+    return if loaded_subject_token.actor_issuer == client_id
     errors.add(:subject_token, :invalid)
   end
 
-  def request_client_id_matches_actor_issuer?
-    loaded_subject_token.actor_issuer == client_id
-  end
+  def validate_subject_token_resource
+    return if loaded_subject_token.blank?
+    return if loaded_subject_token.resource == resource
 
-  def request_resource_matches_auth_request_resource
-    loaded_subject_token&.resource == resource
+    errors.add(:resource, :invalid)
   end
 
   def audience_matches_resource_app

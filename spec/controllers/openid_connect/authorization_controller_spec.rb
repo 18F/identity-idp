@@ -14,6 +14,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
   let(:service_provider) { build(:service_provider, issuer: client_id) }
   let(:prompt) { 'select_account' }
   let(:acr_values) { nil }
+  let(:resource) { nil }
   let(:params) do
     {
       acr_values: acr_values,
@@ -24,6 +25,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
       response_type: 'code',
       scope: 'openid profile',
       state: SecureRandom.hex,
+      resource:,
     }.compact
   end
 
@@ -133,6 +135,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
               code_challenge_present: false,
               scope: 'openid',
+              token_exchange_requested: false,
             )
             expect(@analytics).to have_logged_event(
               'OpenID Connect: authorization request handoff',
@@ -235,6 +238,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
                 code_challenge_present: false,
                 scope: 'openid profile',
+                token_exchange_requested: false,
               )
 
               expect(@analytics).to have_logged_event(
@@ -681,6 +685,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                   code_challenge_present: false,
                   scope: 'openid profile',
+                  token_exchange_requested: false,
                 )
 
                 expect(@analytics).to have_logged_event(
@@ -788,6 +793,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                   code_challenge_present: false,
                   scope: 'openid profile',
+                  token_exchange_requested: false,
                 )
 
                 expect(@analytics).to have_logged_event(
@@ -868,6 +874,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                   code_challenge_present: false,
                   scope: 'openid profile',
+                  token_exchange_requested: false,
                 )
 
                 expect(@analytics).to have_logged_event(
@@ -993,6 +1000,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             acr_values: acr_values,
             code_challenge_present: false,
             scope: 'openid',
+            token_exchange_requested: false,
           )
 
           expect(@analytics).to_not have_logged_event('SP redirect initiated')
@@ -1055,6 +1063,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               acr_values: '',
               code_challenge_present: false,
               scope: 'openid profile',
+              token_exchange_requested: false,
               unknown_authn_contexts: unknown_value,
             )
 
@@ -1095,6 +1104,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 acr_values: known_value,
                 code_challenge_present: false,
                 scope: 'openid profile',
+                token_exchange_requested: false,
                 unknown_authn_contexts: unknown_value,
               )
             end
@@ -1129,6 +1139,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
             code_challenge_present: false,
             scope: 'openid',
+            token_exchange_requested: false,
           )
 
           expect(@analytics).to_not have_logged_event('SP redirect initiated')
@@ -1258,6 +1269,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
       let(:actor_issuer) { 'urn:gov:gsa:openidconnect:test' }
       let(:client_id) { actor_issuer }
       let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
+      let(:resource) { 'https://passport.gov' }
 
       before do
         stub_sign_in user
@@ -1268,7 +1280,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
           .and_return([{ issuer: 'passport-issuer', scope: 'passport', resource: 'https://passport.gov' }])
         allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)
-        params[:scope] = 'openid token_exchange:passport'
+        params[:scope] = 'openid token_exchange'
 
         # Link the identity ahead of time so the completions/consent screen is not
         # triggered, allowing the request to reach the STS consent check.
@@ -1340,7 +1352,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         context 'because the value names no listed agency application' do
-          before { params[:scope] = 'openid token_exchange:unknown_records' }
+          before { params[:resource] = 'https://another-api' }
 
           it 'returns invalid_scope to the redirect address instead of asking for consent' do
             action
@@ -1489,6 +1501,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
             code_challenge_present: false,
             scope: 'openid',
+            token_exchange_requested: false,
           )
         end
 
@@ -1574,6 +1587,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
             code_challenge_present: false,
             scope: 'openid',
+            token_exchange_requested: false,
             error_details: { prompt: { prompt_invalid: true } },
           )
         end
@@ -1606,6 +1620,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
             code_challenge_present: false,
             scope: 'openid',
+            token_exchange_requested: false,
           )
         end
       end

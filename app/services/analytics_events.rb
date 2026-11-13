@@ -7851,7 +7851,7 @@ module AnalyticsEvents
   #   can produce a subject token
   # @param [Boolean, nil] token_exchange_requested Whether the authorize request included a
   #   token_exchange scope
-  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
+  # @param [Array<String>, nil] token_exchange_resource Requested token_exchange resource
   def openid_connect_request_authorization(
     success:,
     prompt:,
@@ -7869,7 +7869,7 @@ module AnalyticsEvents
     unknown_authn_contexts: nil,
     token_exchange_stage: nil,
     token_exchange_requested: nil,
-    token_exchange_scopes: nil,
+    token_exchange_resource: nil,
     **extra
   )
     track_event(
@@ -7890,7 +7890,7 @@ module AnalyticsEvents
       unknown_authn_contexts:,
       token_exchange_stage:,
       token_exchange_requested:,
-      token_exchange_scopes:,
+      token_exchange_resource:,
       **extra,
     )
   end
