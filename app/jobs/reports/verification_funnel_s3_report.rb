@@ -128,6 +128,8 @@ module Reports
         email_addresses: email_addresses,
         report_reader: report_reader,
         agency_abbreviation: agency_abbreviation,
+        friendly_name: sp_info[:friendly_name],
+        configured_agency_abbreviation: config['agency_abbreviation'],
       )
       Rails.logger.info "Successfully sent verification funnel report for issuer: #{issuer_string}"
     rescue StandardError => e
@@ -148,6 +150,7 @@ module Reports
         bucket_name: data_warehouse_bucket_name,
         custom_s3_path: s3_path,
         agency_abbreviation: agency_abbreviation,
+        time_range: report_time_range,
       )
     end
 
@@ -216,44 +219,40 @@ module Reports
       { to: to_emails, bcc: bcc_emails }
     end
 
-    def send_verification_funnel_email(email_addresses:, report_reader:, agency_abbreviation:)
+    def send_verification_funnel_email(email_addresses:, report_reader:, agency_abbreviation:,
+                                       friendly_name:, configured_agency_abbreviation:)
       ReportMailer.tables_report(
         to: email_addresses[:to],
         bcc: email_addresses[:bcc],
-        subject: verification_funnel_email_subject(agency_abbreviation, report_reader),
+        subject: verification_funnel_email_subject(
+          agency_abbreviation,
+          friendly_name,
+          configured_agency_abbreviation: configured_agency_abbreviation,
+        ),
         reports: report_reader.as_emailable_reports,
         message: verification_funnel_email_preamble,
         attachment_format: :csv,
       ).deliver_now
     end
 
-    def verification_funnel_email_subject(agency_abbreviation, report_reader)
-      if agency_abbreviation.blank?
+    def verification_funnel_email_subject(agency_abbreviation, friendly_name = nil,
+                                          configured_agency_abbreviation: nil)
+      if configured_agency_abbreviation.present?
+        service_provider_name = configured_agency_abbreviation
+      elsif agency_abbreviation.blank?
         Rails.logger.warn 'Missing agency abbreviation'
-        agency_abbreviation_formatted = ''
+        service_provider_name = friendly_name.to_s
       else
-        agency_abbreviation_formatted = "#{agency_abbreviation} "
+        service_provider_name = if friendly_name.present?
+                                  "#{friendly_name} (#{agency_abbreviation})"
+                                else
+                                  agency_abbreviation
+                                end
       end
 
-      # Get file date from S3, fallback to today
-      report_date = get_report_file_date(report_reader)
-
-      "#{agency_abbreviation_formatted}Verification Funnel Report "\
-      "#{report_time_range_label_email_subject} - #{report_date}"
-    end
-
-    def get_report_file_date(report_reader)
-      # We know files exist, so just get the first one
-      file_name = report_reader.csv_file_names.first
-      begin
-        last_modified = report_reader.get_file_last_modified(file_name)
-        last_modified.strftime('%Y-%m-%d')
-      rescue Aws::S3::Errors::NotFound, Aws::S3::Errors::NoSuchKey
-        # Shouldn't happen, but fallback gracefully
-        Rails.logger.warn 'Unexpected S3 file access issue when getting modified date'\
-                          ', using today for email subject'
-        Date.current.strftime('%Y-%m-%d')
-      end
+      "#{service_provider_name.present? ? "#{service_provider_name} " : ''}"\
+      "Verification Funnel Report "\
+      "#{report_time_range_label_email_subject}"
     end
 
     def verification_funnel_email_preamble
@@ -340,10 +339,13 @@ module Reports
     #   [
     #     {
     #       'issuer_string' => 'issuer_string_1',
+    #       'agency_abbreviation' => 'IRS',
     #       'internal_emails' => ['internal_email@login.gov'],
     #       'partner_emails' => ['external_email@login.gov'],
     #     },
     #   ]
+    # agency_abbreviation is optional and overrides the email subject's provider name.
+    # If blank or omitted, use the service provider's friendly name and agency abbreviation.
     def report_configs
       IdentityConfig.store.verification_funnel_s3_report_configs
     end

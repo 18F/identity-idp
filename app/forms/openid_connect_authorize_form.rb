@@ -219,7 +219,7 @@ class OpenidConnectAuthorizeForm
 
     requested_token_exchange_scopes = requested_token_exchange_scopes(requested_scopes)
 
-    if token_exchange_scope_available? && requested_token_exchange_scopes.present?
+    if IdentityConfig.store.token_exchange_enabled && requested_token_exchange_scopes.present?
       return true unless actor_request?
 
       # if there are any requested scopes that are not allowed
@@ -383,6 +383,10 @@ class OpenidConnectAuthorizeForm
     )
   end
 
+  # The scope values this request may be granted. A `token_exchange:<value>` scope (RFC 8693
+  # delegation) is offered only to a service provider approved to act for the person; from any
+  # other service provider it is an unknown scope and is dropped like one, so it can never reach
+  # the delegation consent page or the token exchange.
   def scopes
     return base_scopes unless token_exchange_scope_available?
 
@@ -402,7 +406,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def token_exchange_scope_available?
-    IdentityConfig.store.token_exchange_enabled
+    IdentityConfig.store.token_exchange_enabled && actor_request?
   end
 
   def actor_request?

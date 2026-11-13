@@ -215,7 +215,7 @@ else
       sp_weekly_verification_report: {
         class: 'Reports::SpVerificationReport',
         cron: cron_every_monday_5am,
-        args: -> { [Time.zone.yesterday.end_of_day, :internal] },
+        args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
       # Send Identity Verification report to S3
       identity_verification_report: {

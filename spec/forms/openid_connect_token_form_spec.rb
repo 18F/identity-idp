@@ -195,6 +195,73 @@ RSpec.describe OpenidConnectTokenForm do
           expect(valid?).to be false
           expect(form.errors.details[:code]).to include(error: :unauthorized_client)
         end
+
+        it 'records the error once across submit and response' do
+          form.submit
+          expect(form.response).to eq(error: 'Code Delegation actor not valid')
+          expect(form.errors.details[:code].count(error: :unauthorized_client)).to eq(1)
+        end
+      end
+    end
+
+    context 'with the token exchange enabled and a client that is not a delegation actor' do
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return(['some-other-actor'])
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+          .and_return([{ issuer: 'passport-issuer', scope: 'passport' }])
+      end
+
+      shared_examples 'an ordinary code redemption' do
+        it 'is valid without a code error' do
+          expect(valid?).to be true
+          expect(form.errors[:code]).to be_empty
+        end
+
+        it 'returns the ordinary token response' do
+          response = form.response
+
+          expect(response).to include(
+            access_token: identity.access_token,
+            token_type: 'Bearer',
+            id_token: be_present,
+          )
+          expect(response).to_not have_key(:subject_token)
+          expect(response).to_not have_key(:error)
+        end
+
+        it 'reports the ordinary operation to analytics' do
+          expect(form.submit.to_h).to include(
+            success: true,
+            token_exchange_stage: nil,
+            token_endpoint_operation: 'authorization_code',
+            token_exchange_scopes: nil,
+          )
+        end
+      end
+
+      context 'with a code from an identity-only sign-in' do
+        let(:scope) { 'openid email' }
+
+        include_examples 'an ordinary code redemption'
+      end
+
+      context 'with a code from a verified sign-in that requested profile attributes' do
+        let(:user) { create(:user, :proofed) }
+        let(:scope) { 'openid email profile' }
+        let!(:identity) do
+          IdentityLinker.new(user, service_provider)
+            .link_identity(
+              acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+              nonce: nonce,
+              rails_session_id: SecureRandom.hex,
+              ial: 2,
+              scope:,
+            )
+        end
+
+        include_examples 'an ordinary code redemption'
       end
     end
 
