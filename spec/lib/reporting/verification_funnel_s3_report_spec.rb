@@ -7,6 +7,7 @@ RSpec.describe Reporting::VerificationFunnelS3Report do
   let(:bucket_name) { 'test-bucket' }
   let(:custom_s3_path) { 'test/path/to/reports' }
   let(:agency_abbreviation) { 'IRS' }
+  let(:time_range) { Time.zone.parse('2026-03-04').all_week(:sunday) }
   let(:s3_client) { instance_double(Aws::S3::Client) }
   let(:s3_helper) { instance_double(JobHelpers::S3Helper) }
 
@@ -14,6 +15,7 @@ RSpec.describe Reporting::VerificationFunnelS3Report do
     Reporting::VerificationFunnelS3Report.new(
       bucket_name: bucket_name,
       custom_s3_path: custom_s3_path,
+      time_range: time_range,
       agency_abbreviation: agency_abbreviation,
     )
   end
@@ -28,12 +30,14 @@ RSpec.describe Reporting::VerificationFunnelS3Report do
       expect(report_reader.bucket_name).to eq(bucket_name)
       expect(report_reader.s3_path).to eq(custom_s3_path)
       expect(report_reader.agency_abbreviation).to eq(agency_abbreviation)
+      expect(report_reader.time_range).to eq(time_range)
     end
 
     it 'allows nil agency_abbreviation' do
       reader = Reporting::VerificationFunnelS3Report.new(
         bucket_name: bucket_name,
         custom_s3_path: custom_s3_path,
+        time_range: time_range,
         agency_abbreviation: nil,
       )
       expect(reader.agency_abbreviation).to be_nil
@@ -162,13 +166,13 @@ RSpec.describe Reporting::VerificationFunnelS3Report do
       reports = report_reader.as_emailable_reports
 
       expect(reports[0].title).to eq('Definitions')
-      expect(reports[0].filename).to eq('definitions')
+      expect(reports[0].filename).to eq('definitions_2026-03-01_2026-03-07')
 
       expect(reports[1].title).to eq('Overview')
-      expect(reports[1].filename).to eq('overview')
+      expect(reports[1].filename).to eq('overview_2026-03-01_2026-03-07')
 
       expect(reports[2].title).to eq("#{agency_abbreviation} Verification Funnel Metrics")
-      expect(reports[2].filename).to eq('verification_funnel_metrics')
+      expect(reports[2].filename).to eq('verification_funnel_metrics_2026-03-01_2026-03-07')
     end
 
     context 'when agency_abbreviation is nil' do

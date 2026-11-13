@@ -4,7 +4,7 @@ RSpec.describe AccountRecovery::RequestAnalyticsAttributes do
   subject(:attributes) { described_class.new(user: user, now: now).call }
 
   let(:now) { Time.zone.now }
-  let(:user) { create(:user, :fully_registered, confirmed_at: now - 400.days) }
+  let(:user) { create(:user, :fully_registered, confirmed_at: now - (400 * 24).hours) }
 
   around do |example|
     freeze_time { example.run }
@@ -29,30 +29,30 @@ RSpec.describe AccountRecovery::RequestAnalyticsAttributes do
   end
 
   it 'reports the age of the newest configuration of each method type' do
-    user.phone_configurations.first.update!(created_at: now - 300.days)
-    create(:phone_configuration, user: user, created_at: now - 3.days)
-    create(:auth_app_configuration, user: user, created_at: now - 45.days)
+    user.phone_configurations.first.update!(created_at: now - (300 * 24).hours)
+    create(:phone_configuration, user: user, created_at: now - (3 * 24).hours)
+    create(:auth_app_configuration, user: user, created_at: now - (45 * 24).hours)
 
     expect(attributes[:mfa_method_ages_in_days]).to eq(phone: 3, auth_app: 45)
   end
 
   it 'excludes methods that are not enabled for MFA' do
-    create(:phone_configuration, user: user, mfa_enabled: false, created_at: now - 1.day)
+    create(:phone_configuration, user: user, mfa_enabled: false, created_at: now - 24.hours)
 
     expect(attributes[:mfa_method_ages_in_days]).to eq(phone: 0)
     expect(attributes[:mfa_method_counts]).to eq(phone: 1)
   end
 
   it 'reports days since the most recent fully authenticated sign-in' do
-    create(:event, user: user, event_type: :sign_in_after_2fa, created_at: now - 90.days)
-    create(:event, user: user, event_type: :sign_in_after_2fa, created_at: now - 10.days)
-    create(:event, user: user, event_type: :sign_in_before_2fa, created_at: now - 1.day)
+    create(:event, user: user, event_type: :sign_in_after_2fa, created_at: now - (90 * 24).hours)
+    create(:event, user: user, event_type: :sign_in_after_2fa, created_at: now - (10 * 24).hours)
+    create(:event, user: user, event_type: :sign_in_before_2fa, created_at: now - 24.hours)
 
     expect(attributes[:days_since_last_full_sign_in]).to eq(10)
   end
 
   it 'does not use another user’s sign-ins' do
-    create(:event, event_type: :sign_in_after_2fa, created_at: now - 1.day)
+    create(:event, event_type: :sign_in_after_2fa, created_at: now - 24.hours)
 
     expect(attributes[:days_since_last_full_sign_in]).to be_nil
   end

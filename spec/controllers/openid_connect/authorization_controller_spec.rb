@@ -1343,6 +1343,24 @@ RSpec.describe OpenidConnect::AuthorizationController do
           expect(response).not_to redirect_to(sts_consent_url)
         end
       end
+
+      context 'when the service provider is not an approved actor' do
+        before do
+          allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+            .and_return([])
+          allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(false)
+        end
+
+        it 'drops the scope and does not redirect to the STS consent page' do
+          action
+
+          expect(response).not_to redirect_to(sts_consent_url)
+          expect(controller.session[:sp][:sts_target_app]).to be_nil
+          expect(UserConsentSts.where(user:)).to be_empty
+          expect(user.identities.find_by(service_provider: client_id).scope)
+            .not_to include('token_exchange:passport')
+        end
+      end
     end
 
     context 'user is not signed in' do
