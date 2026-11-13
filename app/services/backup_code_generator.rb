@@ -16,7 +16,7 @@ class BackupCodeGenerator
     codes = generate_new_codes
 
     BackupCodeConfiguration.transaction do
-      @user.backup_code_configurations.destroy_all
+      @user.backup_code_configurations.available_for_authentication.destroy_all
       codes.each { |code| save_code(code: code, salt: salt) }
     end
 
@@ -38,6 +38,7 @@ class BackupCodeGenerator
         SET
           used_at = NOW()
         WHERE user_id = ? AND salted_code_fingerprint IN (?) AND used_at IS NULL
+          AND account_recovery_request_id IS NULL
         RETURNING created_at;
       SQL
       query = BackupCodeConfiguration.sanitize_sql_array(

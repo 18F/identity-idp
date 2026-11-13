@@ -294,9 +294,9 @@ module Users
       ).get_account_reset_request
     end
 
-    # A password-verified recovery resumes at the recovery continuation. An
-    # unredeemed request takes the normal first-MFA route, where the
-    # pending-recovery banner is shown and successful MFA cancels the request.
+    # A recovery awaiting replacement MFA resumes at the recovery continuation.
+    # An unredeemed request takes the normal first-MFA route, where successful
+    # MFA cancels the request.
     def account_recovery_url
       return @account_recovery_url if defined?(@account_recovery_url)
 
@@ -309,7 +309,7 @@ module Users
       analytics.account_recovery_expired(recovery_state:) if expired
 
       @account_recovery_url =
-        if !expired && recovery_request&.state == AccountRecoveryRequest::PASSWORD_VERIFIED
+        if !expired && recovery_request&.replacement_mfa_pending?
           account_recovery_new_mfa_setup_url
         end
     end

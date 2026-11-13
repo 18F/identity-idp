@@ -144,7 +144,6 @@ Rails.application.routes.draw do
       get '/account_reset/pending' => 'destructive_account_reset/pending#show'
       post '/account_reset/pending/cancel' => 'destructive_account_reset/pending#cancel'
       # Account-preserving MFA recovery.
-      # `new_mfa_setup#create` is committed but inert until replacement MFA is added.
       scope 'account_recovery' do
         get '/start' => 'account_recovery/start#show', as: :account_recovery_start
         post '/start' => 'account_recovery/start#create'

@@ -26,7 +26,7 @@ module TwoFactorAuthentication
     end
 
     def mfa_configuration_count
-      user.backup_code_configurations.unused.count
+      MfaContext.new(user).backup_code_configurations.count
     end
   end
 end

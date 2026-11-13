@@ -50,17 +50,17 @@ RSpec.describe 'Account recovery password verification', type: :request do
          params: { request_id: request_id, user: { password: password } }
 
     expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
-    expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
+    expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
     expect(recovery_request.token_fingerprint).to be_nil
 
     follow_redirect!
 
     expect(response).to have_http_status(:ok)
-    expect(password_form).to have_content(t('account_recovery.new_mfa_setup.intro'))
+    expect(password_form).to have_content(t('two_factor_authentication.two_factor_choice'))
 
     get account_path
 
-    expect(response).to redirect_to(user_two_factor_authentication_url)
+    expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
   end
 
   it 'does not reach MFA setup from a verified link without the password' do
@@ -148,7 +148,7 @@ RSpec.describe 'Account recovery password verification', type: :request do
            headers: { 'Origin' => origin }
 
       expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
-      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
+      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
     end
 
     it 'rejects a cross-origin password submission even with the form CSRF token' do
@@ -166,6 +166,26 @@ RSpec.describe 'Account recovery password verification', type: :request do
 
       expect(recovery_request.reload.password_verified_at).to be_nil
       expect(response).to redirect_to(root_url)
+    end
+  end
+  it 'does not return the user to the single-use link after a session timeout' do
+    post new_user_session_path, params: { user: { email: user.email, password: password } }
+
+    travel_to(Time.zone.now + 2.days) do
+      recovery_request.update!(token_expires_at: Time.zone.now + 1.hour)
+
+      get account_recovery_verify_path, params: { token: token }
+      expect(session['user_return_to']).to include(token)
+
+      get account_recovery_verify_path, params: { token: token }
+      follow_redirect!
+      request_id = password_form.find('input[name="request_id"]', visible: false).value
+
+      post account_recovery_verify_path,
+           params: { request_id: request_id, user: { password: password } }
+
+      expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
+      expect(session['user_return_to']).to be_nil
     end
   end
 end

@@ -12,7 +12,7 @@ module Db
     end
 
     def self.authenticate(user, code)
-      user.auth_app_configurations.each do |cfg|
+      user.auth_app_configurations.available_for_authentication.each do |cfg|
         totp = ROTP::TOTP.new(
           cfg.otp_secret_key,
           digits: TwoFactorAuthenticatable::OTP_LENGTH,

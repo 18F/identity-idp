@@ -110,6 +110,9 @@ module AccountRecovery
     def sign_in_partially
       sign_in(:user, recovery_user)
 
+      # A timed-out session opening the emailed link makes Devise store that
+      # single-use URL as the return location; it must not be revisited.
+      session.delete(stored_location_key_for(:user))
       user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = true
     end
 
@@ -132,7 +135,10 @@ module AccountRecovery
       return @account_recovery_request if defined?(@account_recovery_request)
       return unless user_signed_in?
 
-      @account_recovery_request = AccountRecoveryRequest.password_verified_for_user(current_user)
+      @account_recovery_request = AccountRecoveryRequest.active.find_by(
+        user: current_user,
+        state: AccountRecoveryRequest::REPLACEMENT_MFA_PENDING,
+      )
     end
 
     def recovery_user

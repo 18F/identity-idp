@@ -133,6 +133,7 @@ class UserMailer < ActionMailer::Base
 
   def account_recovery_cancelled
     with_user_locale(user) do
+      @root_url = root_url(locale: locale_url_param)
       @header = t('user_mailer.account_recovery_cancelled.subject', app_name: APP_NAME)
       mail(to: email_address.email, subject: @header)
     end

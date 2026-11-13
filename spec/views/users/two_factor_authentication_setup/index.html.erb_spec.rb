@@ -46,7 +46,7 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
   end
 
   context 'with configured mfa methods' do
-    let(:user) { build(:user, :with_phone) }
+    let(:user) { create(:user, :with_phone) }
 
     it 'lists currently configured mfa methods' do
       expect(rendered).to have_content(t('headings.account.two_factor'))
@@ -224,7 +224,7 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
     end
 
     context 'when a method is already configured' do
-      let(:user) { build(:user, :with_phone) }
+      let(:user) { create(:user, :with_phone) }
 
       it 'renders the second-method heading and intro' do
         expect(rendered).to have_css(
