@@ -618,6 +618,13 @@ module Test
         ],
       ),
       Page.new(
+        key: 'completions-cancellation',
+        title: 'Cancel sharing and exit (completions cancel)',
+        flow: IDV,
+        template: 'completions_cancellation/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
         key: 'email-language',
         title: 'Email language preference',
         flow: ACCOUNT,

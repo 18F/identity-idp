@@ -1339,6 +1339,16 @@ module Test
       {}
     end
 
+    def setup_completions_cancellation
+      @nds_current_user = build_mfa_user(configured: true)
+      @decorated_sp_session = SpSessionStub.new(
+        sp_name: 'Veterans Affairs',
+        sp_alert_text: nil,
+        cancel_link_url: root_url,
+      )
+      {}
+    end
+
     def build_mfa_user(configured:)
       user = User.new
       if configured
