@@ -1,8 +1,14 @@
-import zxcvbn from 'zxcvbn';
 import { t } from '@18f/identity-i18n';
 import type { ZXCVBNResult, ZXCVBNScore } from 'zxcvbn';
 
 const MINIMUM_STRENGTH: ZXCVBNScore = 3;
+
+/**
+ * Loads zxcvbn on demand. Its frequency lists are ~800 KiB minified, which is far too large to
+ * ship in the entry bundle for a progressive enhancement. Webpack caches the module after the
+ * first call, so repeated calls resolve from memory.
+ */
+const loadZxcvbn = async () => (await import(/* webpackChunkName: "zxcvbn" */ 'zxcvbn')).default;
 
 type DisplayScore = 1 | 2 | 3;
 
@@ -21,12 +27,20 @@ const hasRevealTransition = (element: HTMLElement) => {
 class PasswordStrengthElement extends HTMLElement {
   #onTransitionEnd?: (event: TransitionEvent) => void;
 
+  /**
+   * Increments on each sync, so an in-flight async scoring pass can detect that it has been
+   * superseded and avoid rendering a stale result.
+   */
+  #changeToken = 0;
+
   connectedCallback() {
     this.input?.addEventListener('input', this.#onInput);
     this.#sync();
   }
 
   disconnectedCallback() {
+    // Invalidate any in-flight scoring pass so it does not write to a detached element.
+    this.#changeToken += 1;
     this.input?.removeEventListener('input', this.#onInput);
     this.#cancelClose();
   }
@@ -188,6 +202,7 @@ class PasswordStrengthElement extends HTMLElement {
   }
 
   #sync() {
+    const token = ++this.#changeToken;
     const { input } = this;
     if (!input) {
       return;
@@ -205,6 +220,21 @@ class PasswordStrengthElement extends HTMLElement {
 
     // Reveal immediately so layout shifts once as the user starts typing.
     this.#reveal();
+
+    this.#score(token, input, value);
+  }
+
+  /**
+   * Scores the value once zxcvbn has loaded, then renders strength and feedback.
+   */
+  async #score(token: number, input: HTMLInputElement, value: string) {
+    const zxcvbn = await loadZxcvbn();
+
+    // Another input event was handled while zxcvbn was loading, so this result is stale and the
+    // newer handler owns the rendered state.
+    if (token !== this.#changeToken) {
+      return;
+    }
 
     const result = zxcvbn(value, this.forbiddenPasswords);
     const score = this.#displayScore(result, value);
