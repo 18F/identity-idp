@@ -4,6 +4,32 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   include DestructiveAccountResetConcern
   include ActionView::Helpers::TranslationHelper
 
+  NDSOption = Data.define(:option, :icon, :title, :description)
+
+  NDS_OPTION_RANKS = {
+    'webauthn_platform' => 0,
+    'sms' => 1,
+    'voice' => 1,
+    'phone' => 1,
+    'auth_app' => 2,
+    'webauthn' => 3,
+    'backup_code' => 4,
+    'piv_cac' => 5,
+    'personal_key' => 6,
+  }.freeze
+
+  NDS_OPTION_ICONS = {
+    'webauthn_platform' => :fingerprint,
+    'sms' => :chat,
+    'voice' => :chat,
+    'phone' => :chat,
+    'auth_app' => :qr,
+    'webauthn' => :key,
+    'backup_code' => :download_backup,
+    'piv_cac' => :id,
+    'personal_key' => :qr,
+  }.freeze
+
   attr_reader :user,
               :reauthentication_context,
               :phishing_resistant_required,
@@ -129,7 +155,45 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     options.find_index { |option| !option.disabled? } || 0
   end
 
+  def nds_options
+    options.each_with_index
+      .sort_by { |option, index| [nds_rank(option), index] }
+      .map do |option, _index|
+        kind = nds_kind(option)
+        NDSOption.new(
+          option:,
+          icon: NDS_OPTION_ICONS.fetch(kind, :lock),
+          title: nds_title(option, kind),
+          description: nds_description(option, kind),
+        )
+      end
+  end
+
   private
+
+  def nds_rank(option)
+    NDS_OPTION_RANKS.fetch(nds_kind(option), NDS_OPTION_RANKS.length)
+  end
+
+  def nds_kind(option)
+    option.type.to_s.sub(/_\d+\z/, '')
+  end
+
+  def nds_title(option, kind)
+    case kind
+    when 'webauthn_platform' then t('nds.mfa_setup.options.webauthn_platform')
+    when 'personal_key' then t('forms.two_factor.personal_key')
+    else option.label
+    end
+  end
+
+  def nds_description(option, kind)
+    case kind
+    when 'webauthn_platform' then t('nds.mfa_options.webauthn_platform_info')
+    when 'piv_cac' then t('nds.mfa_setup.options.piv_cac_info')
+    else option.info
+    end
+  end
 
   def show_all_options?
     reauthentication_context? || add_piv_cac_after_2fa? || user_doesnt_have_required_mfa?

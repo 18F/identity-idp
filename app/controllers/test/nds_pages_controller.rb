@@ -915,6 +915,55 @@ module Test
       {}
     end
 
+    def setup_mfa_options
+      user = User.new
+      @nds_current_user = user
+      user.phone_configurations.build(
+        phone: '+12025558372',
+        confirmed_at: Time.zone.now,
+        delivery_preference: :sms,
+      )
+      phone_only = params[:phone_only].present?
+      unless phone_only
+        user.webauthn_configurations.build(
+          name: 'Passkey', platform_authenticator: true, credential_id: 'platform',
+          credential_public_key: 'platform'
+        )
+        user.webauthn_configurations.build(
+          name: 'Security key', platform_authenticator: false, credential_id: 'roaming',
+          credential_public_key: 'roaming'
+        )
+        user.auth_app_configurations.build(otp_secret_key: ROTP::Base32.random, name: 'Auth app')
+        user.piv_cac_configurations.build(name: 'PIV/CAC', x509_dn_uuid: 'dev-piv-cac')
+        user.encrypted_recovery_code_digest = 'dev-personal-key'
+      end
+      if params[:reset_pending].present?
+        user.build_account_reset_request(
+          requested_at: 1.day.ago, granted_at: Time.zone.now, granted_token: 'dev-token',
+        )
+      end
+      phishing_resistant_required = params[:phishing].present?
+      piv_cac_required = params[:piv_cac].present?
+      add_piv_cac_after_2fa = params[:add_piv_cac].present?
+      user_session[:add_piv_cac_after_2fa] = true if add_piv_cac_after_2fa
+      @presenter = TwoFactorLoginOptionsPresenter.new(
+        user:,
+        view: view_context,
+        reauthentication_context: params[:reauthn].present?,
+        service_provider: nil,
+        phishing_resistant_required:,
+        piv_cac_required:,
+        add_piv_cac_after_2fa:,
+      )
+      if !phone_only && @presenter.restricted_options_warning_text.blank?
+        @presenter.options << TwoFactorAuthentication::SignInBackupCodeSelectionPresenter.new(
+          user:, configuration: nil,
+        )
+      end
+      @two_factor_options_form = TwoFactorLoginOptionsForm.new(user)
+      {}
+    end
+
     def setup_totp_setup
       user = build_mfa_user(configured: params[:second].present?)
       @nds_current_user = user

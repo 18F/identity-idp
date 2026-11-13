@@ -510,4 +510,79 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       end
     end
   end
+
+  describe '#nds_options' do
+    subject(:nds_options) { presenter.nds_options }
+
+    context 'with a user who has no methods' do
+      it { is_expected.to eq([]) }
+    end
+
+    context 'with a user who has every method' do
+      let(:user) do
+        create(
+          :user,
+          :fully_registered,
+          :with_webauthn,
+          :with_phone,
+          :with_piv_or_cac,
+          :with_personal_key,
+          :with_backup_code,
+          :with_authentication_app,
+        ).tap do |user|
+          create(:webauthn_configuration, :platform_authenticator, user:)
+          user.webauthn_configurations.reset
+        end
+      end
+
+      it 'orders the options to match the design' do
+        expect(nds_options.map { |nds_option| nds_option.option.type }).to eq(
+          %i[webauthn_platform sms voice auth_app webauthn backup_code piv_cac personal_key],
+        )
+      end
+
+      it 'assigns an icon to each option' do
+        expect(nds_options.map(&:icon)).to eq(
+          %i[fingerprint chat chat qr key download_backup id qr],
+        )
+      end
+
+      it 'titles and describes each option with the NDS card copy' do
+        by_type = nds_options.index_by { |nds_option| nds_option.option.type }
+
+        expect(by_type[:webauthn_platform].title).to eq(
+          t('nds.mfa_setup.options.webauthn_platform'),
+        )
+        expect(by_type[:webauthn_platform].description).to eq(
+          t('nds.mfa_options.webauthn_platform_info'),
+        )
+        expect(by_type[:piv_cac].title).to eq(t('two_factor_authentication.login_options.piv_cac'))
+        expect(by_type[:piv_cac].description).to eq(t('nds.mfa_setup.options.piv_cac_info'))
+        expect(by_type[:personal_key].title).to eq(t('forms.two_factor.personal_key'))
+        expect(by_type[:personal_key].description).to eq(
+          t('two_factor_authentication.login_options.personal_key_info'),
+        )
+        expect(by_type[:auth_app].title).to eq(
+          t('two_factor_authentication.login_options.auth_app'),
+        )
+        expect(by_type[:auth_app].description).to eq(
+          t('two_factor_authentication.login_options.auth_app_info'),
+        )
+      end
+    end
+
+    context 'with more than one phone' do
+      let(:user) { create(:user, :fully_registered) }
+      let!(:second_phone) do
+        create(:phone_configuration, user:, phone: '+1 202-555-3434', made_default_at: nil)
+      end
+
+      it 'keeps each phone’s text and voice options together in their original order' do
+        expect(nds_options.map { |nds_option| nds_option.option.type }).to eq(
+          presenter.options.map(&:type),
+        )
+        expect(nds_options.map(&:icon).uniq).to eq([:chat])
+      end
+    end
+  end
 end

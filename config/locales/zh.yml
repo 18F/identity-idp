@@ -1719,6 +1719,7 @@ nds.idv_welcome.what_youll_need: 您需要准备的内容
 nds.link_sent.heading: 在您的手机上继续
 nds.link_sent.instructions: 按照说明拍摄您的身份证件照片和自拍照，然后返回此处完成。
 nds.link_sent.keep_open: 请保持此窗口打开。
+nds.mfa_options.webauthn_platform_info: 使用您的面容、指纹或 PIN 码登录。
 nds.mfa_setup.badge_passkey: 快速又安全
 nds.mfa_setup.heading: 保护您的账户
 nds.mfa_setup.heading_second: 选择第二种身份验证方法
