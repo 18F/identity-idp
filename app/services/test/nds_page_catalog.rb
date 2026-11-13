@@ -140,6 +140,16 @@ module Test
         ],
       ),
       Page.new(
+        key: 'mfa-confirmation',
+        title: 'Authentication method added (add a backup method)',
+        flow: MFA,
+        template: 'mfa_confirmation/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Face or touch unlock added (no skip)', params: { platform: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'backup-code-reminder',
         title: 'Backup codes reminder',
         flow: MFA,

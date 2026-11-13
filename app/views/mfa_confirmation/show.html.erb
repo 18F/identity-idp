@@ -1,5 +1,32 @@
 <% self.title = @content.heading %>
 
+<% if nds_layout? %>
+  <% nds_heading = @content.webauthn_platform_set_up_successful? ? @content.heading : t('nds.mfa_confirmation.heading') %>
+  <%= render NDS::FormPageComponent.new(title: nds_heading) do |page| %>
+    <% page.with_body do %>
+      <div class="copy copy--muted text-center">
+        <p><%= @content.info %></p>
+      </div>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: authentication_methods_setup_path,
+              full_width: true,
+            ).with_content(t('nds.mfa_confirmation.add_method')) %>
+        <% if @content.show_skip_additional_mfa_link? %>
+          <%= render ButtonComponent.new(
+                url: auth_method_confirmation_skip_path,
+                method: :post,
+                variant: :tertiary,
+                full_width: true,
+              ).with_content(t('nds.mfa_confirmation.skip')) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= image_tag asset_url('user-signup.svg'), width: 107, height: 119, alt: '', class: 'margin-bottom-4', aria: { hidden: true } %>
 
 <%= render PageHeadingComponent.new.with_content(@content.heading) %>
@@ -23,4 +50,5 @@
       ) do %>
     <%= t('mfa.skip') %>
   <% end %>
+<% end %>
 <% end %>
