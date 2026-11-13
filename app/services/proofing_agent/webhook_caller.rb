@@ -17,6 +17,12 @@ module ProofingAgent
     def call
       return if webhook_url.blank?
 
+      # The webhook URL comes from the agent's configuration; refuse one that points at a private,
+      # link-local or loopback address or is not https before any request leaves, and report the
+      # refusal through the same event a failed delivery produces.
+      decision = OutboundUrlPolicy.decide(webhook_url)
+      return report_refused_url(decision) unless decision.allowed?
+
       response = send_http_post_request
       analytics.idv_proofing_agent_webhook(
         success: response.success?,
@@ -46,6 +52,17 @@ module ProofingAgent
     end
 
     private
+
+    def report_refused_url(decision)
+      analytics.idv_proofing_agent_webhook(
+        success: false,
+        proofing_agent: analytics_attributes[:proofing_agent],
+        body_payload: payload,
+        issuer: service_provider_issuer,
+        response: "webhook url refused: #{decision.reason}",
+        proofing_components: analytics_attributes[:proofing_components],
+      )
+    end
 
     def send_http_post_request
       faraday_connection.post do |req|
