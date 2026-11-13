@@ -114,6 +114,41 @@ RSpec.describe DocumentImagesForm do
       end
     end
 
+    context 'with a client assertion that has no expiration' do
+      let(:assertion_payload) do
+        {
+          iss: identity.service_provider,
+          sub: identity.service_provider,
+          aud:,
+          jti: SecureRandom.hex,
+          iat: Time.zone.now.to_i,
+        }
+      end
+
+      it 'is invalid' do
+        expect(response).to_not be_success
+        expect(form.errors.details[:client_assertion]).to include(
+          error: OpenidConnectClientAssertionValidator::MISSING_EXP_MESSAGE,
+          type: :missing_exp,
+        )
+      end
+    end
+
+    context 'when the same client assertion is presented a second time' do
+      let(:replay) do
+        described_class.new(identity:, document_images_params:, audience_url: aud, doc_reader:)
+      end
+
+      it 'accepts the first request and refuses the replay' do
+        expect(response).to be_success
+        expect(replay.submit).to_not be_success
+        expect(replay.errors.details[:client_assertion]).to include(
+          error: OpenidConnectClientAssertionValidator::REPLAYED_JTI_MESSAGE,
+          type: :replayed_jti,
+        )
+      end
+    end
+
     context 'when the document_images scope was not granted' do
       let(:scope) { 'openid profile' }
 

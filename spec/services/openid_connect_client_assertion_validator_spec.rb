@@ -156,5 +156,153 @@ RSpec.describe OpenidConnectClientAssertionValidator do
         )
       end
     end
+
+    context 'with no expiration claim' do
+      before { jwt_payload.delete(:exp) }
+
+      it 'is invalid' do
+        expect(validator.valid?).to eq(false)
+        expect(validator.errors.first).to have_attributes(
+          attribute: :client_assertion,
+          message: OpenidConnectClientAssertionValidator::MISSING_EXP_MESSAGE,
+          type: :missing_exp,
+        )
+      end
+    end
+
+    context 'with an expiration further from the issued at claim than the maximum lifetime' do
+      before { jwt_payload[:exp] = 1.hour.from_now.to_i }
+
+      it 'is invalid' do
+        expect(validator.valid?).to eq(false)
+        expect(validator.errors.first).to have_attributes(
+          attribute: :client_assertion,
+          message: format(
+            OpenidConnectClientAssertionValidator::INVALID_EXP_MESSAGE,
+            IdentityConfig.store.client_assertion_max_lifetime_seconds,
+          ),
+          type: :invalid_exp,
+        )
+      end
+    end
+
+    context 'with no issued at claim and an expiration beyond the maximum lifetime from now' do
+      before do
+        jwt_payload.delete(:iat)
+        jwt_payload[:exp] = 1.hour.from_now.to_i
+      end
+
+      it 'is invalid' do
+        expect(validator.valid?).to eq(false)
+        expect(validator.errors.first).to have_attributes(type: :invalid_exp)
+      end
+    end
+
+    context 'with an expiration exactly at the maximum lifetime' do
+      before do
+        jwt_payload[:exp] = jwt_payload[:iat] +
+                            IdentityConfig.store.client_assertion_max_lifetime_seconds
+      end
+
+      it 'is valid' do
+        expect(validator.valid?).to eq(true)
+      end
+    end
+
+    context 'with no jti claim' do
+      before { jwt_payload.delete(:jti) }
+
+      it 'is invalid' do
+        expect(validator.valid?).to eq(false)
+        expect(validator.errors.first).to have_attributes(
+          attribute: :client_assertion,
+          message: OpenidConnectClientAssertionValidator::MISSING_JTI_MESSAGE,
+          type: :missing_jti,
+        )
+      end
+    end
+
+    context 'when the same assertion is presented a second time' do
+      let(:second_validator) do
+        described_class.new(client_assertion:, client_id:, service_provider:, audience_url:)
+      end
+
+      it 'accepts the first presentation and refuses the replay' do
+        expect(validator.valid?).to eq(true)
+        expect(second_validator.valid?).to eq(false)
+        expect(second_validator.errors.first).to have_attributes(
+          attribute: :client_assertion,
+          message: OpenidConnectClientAssertionValidator::REPLAYED_JTI_MESSAGE,
+          type: :replayed_jti,
+        )
+      end
+
+      it 'answers the same for the same instance asked twice' do
+        expect(validator.valid?).to eq(true)
+        expect(validator.valid?).to eq(true)
+        expect(validator.errors).to be_blank
+      end
+    end
+
+    context 'when a second assertion from the same client carries a different jti' do
+      let(:second_assertion) do
+        JWT.encode(jwt_payload.merge(jti: SecureRandom.hex), client_private_key, 'RS256')
+      end
+      let(:second_validator) do
+        described_class.new(
+          client_assertion: second_assertion, client_id:, service_provider:, audience_url:,
+        )
+      end
+
+      it 'accepts both' do
+        expect(validator.valid?).to eq(true)
+        expect(second_validator.valid?).to eq(true)
+      end
+    end
+
+    context 'when the same jti is presented by a different client' do
+      let(:other_client_id) { 'other-client-issuer' }
+      let(:other_service_provider) do
+        create(:service_provider, certs: ['saml_test_sp'], issuer: other_client_id)
+      end
+      let(:other_assertion) do
+        JWT.encode(
+          jwt_payload.merge(iss: other_client_id, sub: other_client_id),
+          client_private_key,
+          'RS256',
+        )
+      end
+      let(:other_validator) do
+        described_class.new(
+          client_assertion: other_assertion,
+          client_id: other_client_id,
+          service_provider: other_service_provider,
+          audience_url:,
+        )
+      end
+
+      it 'does not treat it as a replay' do
+        expect(validator.valid?).to eq(true)
+        expect(other_validator.valid?).to eq(true)
+      end
+    end
+
+    context 'when an assertion refused for another reason is corrected and presented again' do
+      let(:refused_validator) do
+        described_class.new(
+          client_assertion: JWT.encode(
+            jwt_payload.merge(aud: 'https://example.com/invalid'), client_private_key, 'RS256'
+          ),
+          client_id:,
+          service_provider:,
+          audience_url:,
+        )
+      end
+
+      it 'did not consume the jti' do
+        expect(refused_validator.valid?).to eq(false)
+        expect(validator.valid?).to eq(true)
+      end
+    end
   end
 end

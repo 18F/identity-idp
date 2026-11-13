@@ -849,19 +849,23 @@ RSpec.describe 'OpenID Connect' do
           ).and_return(token_enabled)
 
           private_key = OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read)
-          assertion = JWT.encode(
-            { iss: client_id,
-              sub: client_id,
-              aud: api_openid_connect_token_url,
-              exp: 5.minutes.from_now.to_i,
-              jti: SecureRandom.hex },
-            private_key,
-            'RS256',
-          )
+          # Each token request carries its own assertion: a `jti` is accepted once, so the retry
+          # below must not reuse the assertion of the refused first attempt.
+          build_assertion = lambda do
+            JWT.encode(
+              { iss: client_id,
+                sub: client_id,
+                aud: api_openid_connect_token_url,
+                exp: 5.minutes.from_now.to_i,
+                jti: SecureRandom.hex },
+              private_key,
+              'RS256',
+            )
+          end
           token_params = {
             grant_type: 'authorization_code',
             code: code,
-            client_assertion: assertion,
+            client_assertion: build_assertion.call,
             client_assertion_type: OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE,
           }
 
@@ -871,7 +875,10 @@ RSpec.describe 'OpenID Connect' do
             expect(JSON.parse(page.body)).to include('error' => 'invalid_grant')
 
             page.driver.post api_openid_connect_token_path,
-                             token_params.merge(code_verifier: code_verifier)
+                             token_params.merge(
+                               code_verifier: code_verifier,
+                               client_assertion: build_assertion.call,
+                             )
           end
 
           expect(page.status_code).to eq(200)

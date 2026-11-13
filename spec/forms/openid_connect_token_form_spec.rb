@@ -401,6 +401,58 @@ RSpec.describe OpenidConnectTokenForm do
           end
         end
 
+        context 'with no expiration' do
+          before { jwt_payload.except!(:exp) }
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).to include(
+              OpenidConnectClientAssertionValidator::MISSING_EXP_MESSAGE,
+            )
+          end
+        end
+
+        context 'with an expiration further out than the maximum lifetime' do
+          before { jwt_payload[:exp] = 1.hour.from_now.to_i }
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).to include(
+              format(
+                OpenidConnectClientAssertionValidator::INVALID_EXP_MESSAGE,
+                IdentityConfig.store.client_assertion_max_lifetime_seconds,
+              ),
+            )
+          end
+        end
+
+        context 'with no jti' do
+          before { jwt_payload.except!(:jti) }
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).to include(
+              OpenidConnectClientAssertionValidator::MISSING_JTI_MESSAGE,
+            )
+          end
+        end
+
+        context 'when the same client assertion is presented again' do
+          it 'accepts the first request and refuses the replay' do
+            expect(form.submit.success?).to eq(true)
+            expect(form.response).to include(:access_token)
+
+            # A fresh authorization code, so the only thing the second request repeats is the
+            # client assertion.
+            identity.update!(session_uuid: SecureRandom.uuid)
+            replay = OpenidConnectTokenForm.new(params.merge(code: identity.session_uuid))
+            expect(replay.submit.success?).to eq(false)
+            expect(replay.errors[:client_assertion]).to include(
+              OpenidConnectClientAssertionValidator::REPLAYED_JTI_MESSAGE,
+            )
+          end
+        end
+
         context 'signed by a second key' do
           let(:client_private_key) do
             OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp2.key').read)
