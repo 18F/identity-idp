@@ -24,7 +24,7 @@ RSpec.describe TokenExchange::AccessToken do
         actor_issuer: 'actor-issuer',
         target_issuer: 'target-issuer',
         resource: 'https://api.example.gov/passport',
-        scope: 'openid token_exchange:passport',
+        scope: 'openid token_exchange',
         issued_at: Time.zone.now.to_i,
       )
 
@@ -36,7 +36,7 @@ RSpec.describe TokenExchange::AccessToken do
         actor_issuer: 'actor-issuer',
         target_issuer: 'target-issuer',
         resource: 'https://api.example.gov/passport',
-        scope: 'openid token_exchange:passport',
+        scope: 'openid token_exchange',
       )
     end
 

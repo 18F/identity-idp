@@ -44,7 +44,7 @@ class OpenidConnectTokenExchangeForm
   validate :validate_resource
   validate :validate_subject_token, unless: :client_rejected?
   validate :validate_subject_token_resource, unless: :client_rejected?
-  validate :audience_matches_resource_app, unless: :client_rejected?
+  validate :validate_audience_matches_resource, unless: :client_rejected?
   validate :validate_consent, unless: :client_rejected?
   validate :validate_actor_return_log, unless: :client_rejected?
   validate :validate_scope, unless: :client_rejected?
@@ -154,15 +154,15 @@ class OpenidConnectTokenExchangeForm
     errors.add(:resource, :invalid)
   end
 
-  def audience_matches_resource_app
-    return if target_config&.fetch(:issuer) == audience
+  def validate_audience_matches_resource
+    return if target_config&.fetch(:issuer, nil) == audience
 
     errors.add(:audience, :invalid)
   end
 
   def target_config
     IdentityConfig.store.token_exchange_allowed_targets.find do |target|
-      target.fetch(:resource) == resource
+      target[:resource] == resource
     end
   end
 
@@ -335,7 +335,7 @@ class OpenidConnectTokenExchangeForm
       resource:,
       ial: subject_token_ial,
       token_exchange_stage: TokenExchange::Constants::STAGE_DELEGATED_TOKEN,
-      token_exchange_scopes: token_exchange_scope_values,
+      token_exchange_resource: loaded_subject_token&.resource,
       subject_token_fingerprint: subject_token_fingerprint,
       oauth_error_code: (oauth_error unless valid?),
       integration_errors:,
@@ -352,15 +352,6 @@ class OpenidConnectTokenExchangeForm
       scope: requested_scope,
       dpop_jkt: bound_thumbprint,
     )
-  end
-
-  def token_exchange_scope_values
-    scopes = requested_scope.to_s.split(' ').select do |scope|
-      TokenExchange::Constants.in_scope?(scope)
-    end
-    return if scopes.blank?
-
-    scopes.map { |scope| scope.delete_prefix(TokenExchange::Constants::SCOPE_PREFIX) }
   end
 
   def subject_token_fingerprint

@@ -7785,7 +7785,7 @@ module AnalyticsEvents
   # @param [Integer, nil] expires_in Time to expiration of the delegated access token
   # @param [Integer, nil] ial IAL level recorded on the subject token
   # @param [String, nil] token_exchange_stage Token exchange flow stage
-  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
+  # @param [Array<String>, nil] token_exchange_resource Requested token_exchange scope suffixes
   # @param [String, nil] subject_token_fingerprint Fingerprint of the submitted subject token
   # @param [String, nil] delegation_id Internal delegated-token issuance identifier
   # @param [String, nil] oauth_error_code Protocol-level OAuth error code returned for
@@ -7803,7 +7803,7 @@ module AnalyticsEvents
     errors: nil,
     error_details: nil,
     token_exchange_stage: nil,
-    token_exchange_scopes: nil,
+    token_exchange_resource: nil,
     subject_token_fingerprint: nil,
     delegation_id: nil,
     oauth_error_code: nil,
@@ -7822,7 +7822,7 @@ module AnalyticsEvents
       expires_in:,
       ial:,
       token_exchange_stage:,
-      token_exchange_scopes:,
+      token_exchange_resource:,
       subject_token_fingerprint:,
       delegation_id:,
       oauth_error_code:,
@@ -7851,7 +7851,7 @@ module AnalyticsEvents
   #   can produce a subject token
   # @param [Boolean, nil] token_exchange_requested Whether the authorize request included a
   #   token_exchange scope
-  # @param [Array<String>, nil] token_exchange_resource Requested token_exchange resource
+  # @param [String, nil] token_exchange_resource Requested token_exchange resource
   def openid_connect_request_authorization(
     success:,
     prompt:,
@@ -7909,7 +7909,7 @@ module AnalyticsEvents
   # @param [String, nil] token_exchange_stage Token exchange flow stage
   # @param [String, nil] token_endpoint_operation Token endpoint operation
   #   (authorization_code or subject_token)
-  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
+  # @param [String, nil] token_exchange_resource Requested token_exchange resource
   # @param [String, nil] subject_token_fingerprint Fingerprint of the issued subject token
   # @param [Boolean, nil] dpop_bound Whether the client's tokens are bound to a key it holds, so a
   #   DPoP proof was required with this request
@@ -7925,7 +7925,7 @@ module AnalyticsEvents
     error_details: nil,
     token_exchange_stage: nil,
     token_endpoint_operation: nil,
-    token_exchange_scopes: nil,
+    token_exchange_resource: nil,
     subject_token_fingerprint: nil,
     dpop_bound: nil,
     **extra
@@ -7943,7 +7943,7 @@ module AnalyticsEvents
       service_provider_pkce:,
       token_exchange_stage:,
       token_endpoint_operation:,
-      token_exchange_scopes:,
+      token_exchange_resource:,
       subject_token_fingerprint:,
       dpop_bound:,
       **extra,

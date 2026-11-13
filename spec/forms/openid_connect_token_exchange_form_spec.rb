@@ -83,7 +83,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     it 'surfaces delegated token exchange analytics fields' do
       expect(form.submit.to_h).to include(
         token_exchange_stage: 'delegated_token',
-        token_exchange_scopes: ['token_exchange'],
+        token_exchange_resource: resource,
         subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
         oauth_error_code: nil,
       )
@@ -168,7 +168,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
       it 'is invalid' do
         expect(form.submit.success?).to eq(false)
-        expect(form.errors[:subject_token]).to include('is invalid')
+        expect(form.errors[:resource]).to include('is invalid')
       end
     end
 
@@ -664,6 +664,20 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
     context 'when the requested resource belongs to another audience' do
       let(:audience) { 'other-issuer-string' }
+      let(:other_target) { create(:service_provider, :active, issuer: 'other-target-issuer') }
+      let(:other_resource) { 'https://api.example.gov/benefits' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+          .and_return([
+                        { issuer: target_issuer, scope: 'passport', resource: resource },
+                        { issuer: other_target.issuer,
+                          scope: 'benefits',
+                          resource: other_resource },
+                      ])
+      end
+
+      let(:resource) { other_resource }
 
       it 'returns invalid_target' do
         expect(error).to eq('invalid_target')
@@ -674,7 +688,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       let(:subject_token_resource) { 'https://api.example.gov/benefits' }
 
       it 'returns invalid_target' do
-        expect(error).to eq('invalid_grant')
+        expect(error).to eq('invalid_target')
       end
     end
 

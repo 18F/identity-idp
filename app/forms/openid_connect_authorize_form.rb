@@ -394,16 +394,10 @@ class OpenidConnectAuthorizeForm
     )
   end
 
-  # RFC 6749 §4.1.2.1: a refused delegation scope is reported as `invalid_scope`; every other
-  # failed check is reported as `invalid_request`.
   def oauth_error_code
     token_exchange_resource_invalid? ? 'invalid_scope' : 'invalid_request'
   end
 
-  # The scope values this request may be granted. A `token_exchange:<value>` scope (RFC 8693
-  # delegation) is offered only to a service provider approved to act for the person; from any
-  # other service provider the request is refused, so it can never reach the delegation consent
-  # page or the token exchange.
   def scopes
     return base_scopes unless token_exchange_scope_available?
 
