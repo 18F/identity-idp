@@ -1722,6 +1722,7 @@ nds.link_sent.keep_open: 请保持此窗口打开。
 nds.mfa_setup.badge_passkey: 快速又安全
 nds.mfa_setup.heading: 保护您的账户
 nds.mfa_setup.heading_second: 选择第二种身份验证方法
+nds.mfa_setup.heading_step_up: 需要另外一种身份验证方法
 nds.mfa_setup.intro: 您的账户保护着个人信息。通过选择一种多因素身份验证方法来增加一层保护。您可以随时在账户设置中更新您的方法。
 nds.mfa_setup.intro_second: 设置第二种方法，这样即使您的主要方法不可用，您也能始终访问自己的账户。
 nds.mfa_setup.options.auth_app: 身份验证应用程序
