@@ -36,6 +36,7 @@ RSpec.describe Users::StsConsentRevokeController do
       expect(@analytics).to have_logged_event(
         :sts_revoke_consent_visited,
         target_app: consent.target_app,
+        actor_app: consent.actor_app,
       )
     end
 
@@ -88,6 +89,7 @@ RSpec.describe Users::StsConsentRevokeController do
       expect(@analytics).to have_logged_event(
         :sts_revoke_consent_revoked,
         target_app: consent.target_app,
+        actor_app: consent.actor_app,
       )
     end
 

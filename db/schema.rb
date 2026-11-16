@@ -720,8 +720,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_150100) do
     t.string "target_app", null: false, comment: "Issuer of the target SP the user consented to sensitive=false"
     t.datetime "created_at", null: false, comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
-    t.string "actor_app", null: false, comment: "Actor the user consented to sensitive=false"
-    t.boolean "is_revoked", default: false, null: false, comment: "Whether the user revoked consent sensitive=false"
+    t.string "actor_app", null: false, comment: "Actor issuer the user consented to sensitive=false"
+    t.boolean "is_revoked", default: false, null: false, comment: "Whether the user revoked consent. False means consent has not been revoked and is currently active. sensitive=false"
     t.index ["user_id", "target_app", "actor_app"], name: "index_user_consent_sts_on_active_user_target_actor", unique: true, where: "(NOT is_revoked)"
     t.index ["user_id"], name: "index_user_consent_sts_on_user_id"
   end

@@ -12,15 +12,19 @@ module Users
 
     def show
       @consent = load_consent
-      analytics.sts_revoke_consent_visited(target_app: @consent.target_app)
+      analytics.sts_revoke_consent_visited(
+        target_app: @consent.target_app,
+        actor_app: @consent.actor_app,
+      )
     end
 
     def destroy
       consent = load_consent
       target_app = consent.target_app
+      actor_app = consent.actor_app
 
       consent.update!(is_revoked: true)
-      analytics.sts_revoke_consent_revoked(target_app:)
+      analytics.sts_revoke_consent_revoked(target_app:, actor_app:)
 
       redirect_to account_connected_services_path
     end
