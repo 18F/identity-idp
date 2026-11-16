@@ -129,18 +129,16 @@ module OpenidConnect
     end
 
     def token_exchange_scope_requested?
-      token_exchange_scopes.present?
+      @authorize_form.scope.include?('token_exchange')
     end
 
     def target_app
       IdentityConfig.store.token_exchange_allowed_targets
-        .find { |target| token_exchange_scopes.include?(target[:scope]) }[:issuer]
+        .find { |target| target[:resource] == token_exchange_resource }[:issuer]
     end
 
-    def token_exchange_scopes
-      @token_exchange_scopes ||= @authorize_form.scope
-        .select { |scope| TokenExchange::Constants.in_scope?(scope) }
-        .map { |scope| scope.delete_prefix(TokenExchange::Constants::SCOPE_PREFIX) }
+    def token_exchange_resource
+      @token_exchange_resource ||= @authorize_form.resource
     end
 
     def email_address_id
@@ -291,7 +289,7 @@ module OpenidConnect
       )
 
       attempts_api_tracker.login_completed
-      track_billing_events
+      track_billing_events(resource: @authorize_form.resource)
     end
 
     def redirect_user(redirect_uri)

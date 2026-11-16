@@ -93,6 +93,7 @@ class OpenidConnectTokenForm
       identity:,
       actor_return_log_id: actor_handoff&.actor_return_log_id,
       dpop_jkt: bound_thumbprint,
+      resource: token_exchange_resource,
     )
     {
       access_token: issued_token.token,
@@ -102,9 +103,6 @@ class OpenidConnectTokenForm
     }
   end
 
-  # Only a code issued from a sign-in that requested a delegation scope is subject to the actor
-  # check; a code with ordinary scopes is redeemed as before whatever the client's listing.
-  # The predicate runs again for the response and for analytics, so the error is recorded once.
   def token_exchange_authorization_code?
     return false unless IdentityConfig.store.token_exchange_enabled
     return false if identity.blank?
@@ -119,7 +117,7 @@ class OpenidConnectTokenForm
   end
 
   def token_exchange_scope_requested?
-    token_exchange_scope_values.present?
+    identity&.scope.to_s.split(' ').include?('token_exchange')
   end
 
   def bind_access_token
@@ -271,8 +269,12 @@ class OpenidConnectTokenForm
 
   def target_app
     IdentityConfig.store.token_exchange_allowed_targets
-      .find { |target| token_exchange_scope_values.include?(target.fetch(:scope)) }
+      .find { |target| target.fetch(:resource) == token_exchange_resource }
       &.fetch(:issuer)
+  end
+
+  def token_exchange_resource
+    actor_handoff&.resource if token_exchange_scope_requested?
   end
 
   def service_provider
@@ -300,7 +302,7 @@ class OpenidConnectTokenForm
       ial: identity&.ial,
       token_exchange_stage: token_exchange_stage,
       token_endpoint_operation: token_endpoint_operation,
-      token_exchange_scopes: token_exchange_scope_values,
+      token_exchange_resource: token_exchange_resource,
       integration_errors:,
       dpop_bound: dpop_binding_required?,
     }
@@ -316,15 +318,6 @@ class OpenidConnectTokenForm
 
   def token_exchange_stage
     TokenExchange::Constants::STAGE_SUBJECT_TOKEN if token_exchange_authorization_code?
-  end
-
-  def token_exchange_scope_values
-    scopes = identity&.scope.to_s.split(' ').select do |scope|
-      TokenExchange::Constants.in_scope?(scope)
-    end
-    return if scopes.blank?
-
-    scopes.map { |scope| scope.delete_prefix(TokenExchange::Constants::SCOPE_PREFIX) }
   end
 
   def integration_errors
