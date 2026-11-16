@@ -276,6 +276,20 @@ RSpec.describe Users::TwoFactorAuthenticationController do
       end
     end
 
+    context 'when the only credential beyond the password is a personal key' do
+      before do
+        allow(IdentityConfig.store).to receive(:personal_key_mfa_deprecation_phase_1_enabled)
+          .and_return(false)
+      end
+
+      it 'redirects to personal key verification rather than to setup' do
+        stub_sign_in_before_2fa(create(:user, :with_personal_key))
+        get :show
+
+        expect(response).to redirect_to login_two_factor_personal_key_url
+      end
+    end
+
     context 'when phone is sole configured mfa and full phone vendor outage' do
       before do
         allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?).and_return(true)

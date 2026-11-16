@@ -160,6 +160,32 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       end
     end
 
+    context 'when the only credential beyond the password is a personal key' do
+      let(:user) { create(:user, :with_personal_key) }
+
+      context 'when the personal key has not been verified in this session' do
+        it 'prompts for the personal key instead of allowing setup' do
+          get :index
+
+          expect(response).to redirect_to(login_two_factor_personal_key_url)
+        end
+      end
+
+      context 'when the personal key has been verified in this session' do
+        before do
+          controller.auth_methods_session.authenticate!(
+            TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY,
+          )
+        end
+
+        it 'allows setup' do
+          get :index
+
+          expect(response).to have_http_status(:ok)
+        end
+      end
+    end
+
     context 'when account creation passkey prompt is enabled' do
       let(:rollout_bucket) { :auto_passkey_prompt }
 

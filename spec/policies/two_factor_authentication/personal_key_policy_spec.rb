@@ -99,6 +99,41 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyPolicy do
     end
   end
 
+  describe '#only_credential?' do
+    context 'with a personal key and no other MFA method' do
+      let(:user) { create(:user, :with_personal_key) }
+
+      it 'is true whatever the deprecation flag says' do
+        allow(IdentityConfig.store).to receive(:personal_key_mfa_deprecation_phase_1_enabled)
+          .and_return(false)
+
+        expect(subject.only_credential?).to be_truthy
+      end
+    end
+
+    context 'with a personal key and another MFA method' do
+      let(:user) { create(:user, :with_phone, :with_personal_key) }
+
+      it { expect(subject.only_credential?).to be_falsey }
+    end
+
+    context 'without a personal key' do
+      let(:user) { build(:user) }
+
+      it { expect(subject.only_credential?).to be_falsey }
+    end
+
+    context 'with a personal key that belongs to an identity-verified profile' do
+      let(:user) do
+        profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
+        PersonalKeyGenerator.new(profile.user).generate!
+        profile.user
+      end
+
+      it { expect(subject.only_credential?).to be_falsey }
+    end
+  end
+
   describe '#mfa_required?' do
     context 'when personal key MFA deprecation phase 1 is disabled' do
       before do

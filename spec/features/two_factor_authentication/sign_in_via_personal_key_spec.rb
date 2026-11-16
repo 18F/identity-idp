@@ -210,6 +210,22 @@ RSpec.feature 'Signing in via one-time use personal key' do
 
       expect(page).to have_current_path account_path
     end
+
+    it 'requires a personal-key-only user to verify the key before adding a method' do
+      user = create(:user)
+      raw_key = PersonalKeyGenerator.new(user).generate!
+
+      sign_in_before_2fa(user)
+      expect(page).to have_current_path login_two_factor_personal_key_path
+
+      visit authentication_methods_setup_path
+      expect(page).to have_current_path login_two_factor_personal_key_path
+
+      enter_personal_key(personal_key: raw_key)
+      click_submit_default
+
+      expect(page).to have_current_path authentication_methods_setup_path
+    end
   end
 
   context 'user enters incorrect personal key' do
