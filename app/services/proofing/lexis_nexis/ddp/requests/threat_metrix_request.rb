@@ -8,6 +8,8 @@ module Proofing
           private
 
           def build_request_body
+            normalized_ssn = SsnFormatter.normalize(applicant[:ssn])
+
             {
               api_key: config.api_key,
               org_id: config.org_id,
@@ -31,8 +33,10 @@ module Proofing
               policy: config.ddp_policy,
               service_type: 'all',
               session_id: applicant[:threatmetrix_session_id],
-              national_id_number: applicant[:ssn]&.gsub(/\D/, '') || '',
-              national_id_type: applicant[:ssn] ? 'US_SSN' : '',
+              national_id_number: normalized_ssn,
+              national_id_type: normalized_ssn.present? ? 'US_SSN' : '',
+              ssn_hash: normalized_ssn.present? ?
+                OpenSSL::Digest::SHA256.hexdigest(normalized_ssn) : '',
               input_ip_address: applicant[:request_ip],
               local_attrib_1: applicant[:uuid_prefix] || '',
               local_attrib_3: applicant[:uuid],
