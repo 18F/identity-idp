@@ -96,6 +96,33 @@ RSpec.describe OpenidConnectAuthorizeForm do
           )
         end
       end
+
+      context 'with a delegation scope that names no listed agency application' do
+        let(:scope) { 'openid token_exchange:unknown_records' }
+
+        before do
+          allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(false)
+          allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+            .and_return([client_id])
+          allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+            .and_return([{ issuer: 'housing-assistance-records', scope: 'housing_records' }])
+        end
+
+        it 'sends the client invalid_scope at its redirect address' do
+          expect(result.success?).to eq(false)
+          expect(result.to_h).to include(
+            redirect_uri: start_with(
+              "#{redirect_uri}?error=invalid_scope&error_description=Scope+Unauthorized+scope",
+            ),
+            unauthorized_scope: true,
+            scope: 'openid',
+            token_exchange_stage: 'actor_authorization',
+            token_exchange_requested: true,
+            token_exchange_scopes: ['unknown_records'],
+          )
+        end
+      end
     end
 
     context 'with a bad redirect_uri' do
@@ -486,8 +513,10 @@ RSpec.describe OpenidConnectAuthorizeForm do
             allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(false)
           end
 
-          it 'drops the token exchange scope like any unknown scope' do
-            expect(valid?).to eq(true)
+          it 'still refuses the token exchange scope' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:scope])
+              .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
             expect(form.scope).to eq(%w[openid])
             expect(form.unauthorized_scope).to eq(true)
           end
@@ -569,6 +598,85 @@ RSpec.describe OpenidConnectAuthorizeForm do
           expect(valid?).to eq(false)
           expect(form.errors[:scope])
             .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+        end
+      end
+    end
+
+    context 'with token exchange scope while the general unauthorized-scope setting is off' do
+      let(:scope) { 'openid token_exchange:housing_records' }
+      let(:token_exchange_enabled) { true }
+      let(:token_exchange_allowed_broker_issuers) { [client_id] }
+      let(:token_exchange_allowed_targets) do
+        [{ issuer: 'housing-assistance-records', scope: 'housing_records' }]
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled)
+          .and_return(token_exchange_enabled)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+          .and_return(token_exchange_allowed_broker_issuers)
+        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+          .and_return(token_exchange_allowed_targets)
+      end
+
+      context 'when a listed actor requests a value that names no listed agency application' do
+        let(:scope) { 'openid token_exchange:housing_records token_exchange:retirement_benefits' }
+
+        it 'refuses the request' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:scope])
+            .to eq([t('openid_connect.authorization.errors.unauthorized_scope')])
+          expect(form.unauthorized_scope).to eq(true)
+        end
+      end
+
+      context 'when a service provider not approved for delegation requests a known value' do
+        let(:token_exchange_allowed_broker_issuers) { [] }
+
+        it 'refuses the request' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:scope])
+            .to eq([t('openid_connect.authorization.errors.unauthorized_scope')])
+          expect(form.unauthorized_scope).to eq(true)
+        end
+      end
+
+      context 'when a listed actor requests known values' do
+        let(:scope) { 'openid token_exchange:housing_records token_exchange:retirement_benefits' }
+        let(:token_exchange_allowed_targets) do
+          [
+            { issuer: 'housing-assistance-records', scope: 'housing_records' },
+            { issuer: 'retirement-benefits-portal', scope: 'retirement_benefits' },
+          ]
+        end
+
+        it 'accepts the request' do
+          expect(valid?).to eq(true)
+          expect(form.scope).to eq(
+            %w[openid token_exchange:housing_records token_exchange:retirement_benefits],
+          )
+          expect(form.unauthorized_scope).to eq(false)
+        end
+      end
+
+      context 'when a listed actor also sends an unknown value without the prefix' do
+        let(:scope) { 'openid token_exchange:housing_records not_a_scope' }
+
+        it 'drops the unknown value silently, as for any client' do
+          expect(valid?).to eq(true)
+          expect(form.scope).to eq(%w[openid token_exchange:housing_records])
+          expect(form.unauthorized_scope).to eq(true)
+        end
+      end
+
+      context 'when the master switch is off' do
+        let(:token_exchange_enabled) { false }
+
+        it 'drops the delegation value silently, as before' do
+          expect(valid?).to eq(true)
+          expect(form.scope).to eq(%w[openid])
+          expect(form.unauthorized_scope).to eq(true)
         end
       end
     end
