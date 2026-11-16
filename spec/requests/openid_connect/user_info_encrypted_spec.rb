@@ -104,7 +104,8 @@ RSpec.describe 'OpenID Connect userinfo encrypted responses' do
 
       expect(@analytics).to have_logged_event(
         'OpenID Connect: bearer token authentication',
-        success: true, ial: identity.ial, client_id: service_provider.issuer, encrypted: true,
+        dpop_bound: false,
+        success: true, ial: identity.ial, client_id: service_provider.issuer, encrypted: true
       )
     end
   end
@@ -123,7 +124,8 @@ RSpec.describe 'OpenID Connect userinfo encrypted responses' do
       expect(body['email']).to eq(user.email_addresses.first.email)
       expect(@analytics).to have_logged_event(
         'OpenID Connect: bearer token authentication',
-        success: true, ial: identity.ial, client_id: service_provider.issuer, encrypted: false,
+        dpop_bound: false,
+        success: true, ial: identity.ial, client_id: service_provider.issuer, encrypted: false
       )
     end
   end
@@ -173,7 +175,8 @@ RSpec.describe 'OpenID Connect userinfo encrypted responses' do
       expect(response.media_type).to eq('application/json')
       expect(@analytics).to have_logged_event(
         'OpenID Connect: bearer token authentication',
-        success: false, error_details: { access_token: { not_found: true } },
+        dpop_bound: false,
+        success: false, error_details: { access_token: { not_found: true } }
       )
     end
   end

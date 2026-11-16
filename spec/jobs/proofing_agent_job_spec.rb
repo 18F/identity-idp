@@ -619,6 +619,63 @@ RSpec.describe ProofingAgentJob, type: :job do
         )
       end
 
+      context 'when the phone precheck returns an alternate result' do
+        let(:address_proofer) { instance_double(Proofing::AddressProofer) }
+        let(:alternate_result) do
+          Proofing::AddressResult.new(
+            success: false,
+            errors: {},
+            exception: nil,
+            vendor_name: 'failed-phone-vendor',
+            transaction_id: 'alternate-transaction-id',
+          ).to_h
+        end
+        let(:phone_result) do
+          Proofing::AddressResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: 'successful-phone-vendor',
+            transaction_id: 'primary-transaction-id',
+          ).to_h.merge(alternate_result:)
+        end
+
+        before do
+          allow(Proofing::AddressProofer).to receive(:new).and_return(address_proofer)
+          allow(address_proofer).to receive(:proof).and_return(phone_result)
+        end
+
+        it 'logs phone confirmation vendor event with the alternate result' do
+          perform
+
+          expect(@analytics).to have_logged_event(
+            'IdV: phone confirmation vendor',
+            success: true,
+            errors: {},
+            vendor: phone_result,
+            alternate_result: alternate_result,
+            area_code: '202',
+            country_code: 'US',
+            phone_fingerprint: an_instance_of(String),
+            new_phone_added: true,
+            hybrid_handoff_phone_used: false,
+            manual_review: false,
+            proofing_agent: {
+              agent_id: proofing_agent_id,
+              location_id: proofing_location_id,
+              correlation_id: correlation_id,
+              transaction_id: transaction_id,
+            },
+            proofing_components: {
+              residential_resolution_check: 'ResolutionMock',
+              resolution_check: 'ResolutionMock',
+              address_check: 'successful-phone-vendor',
+              source_check: 'StateIdMock',
+            },
+          )
+        end
+      end
+
       it 'passes aamva_verified_attributes into resolution_result' do
         perform
 

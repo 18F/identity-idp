@@ -212,26 +212,26 @@ RSpec.describe ServiceProvider do
     end
   end
 
-  describe '#token_exchange_broker?' do
-    context 'when the sp is not on the token exchange broker allowlist' do
+  describe '#token_exchange_actor?' do
+    context 'when the sp is not on the token exchange actor allowlist' do
       before do
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
           .and_return(['an-issuer'])
       end
 
       it 'returns false' do
-        expect(service_provider.token_exchange_broker?).to be(false)
+        expect(service_provider.token_exchange_actor?).to be(false)
       end
     end
 
-    context 'when the sp is on the token exchange broker allowlist' do
+    context 'when the sp is on the token exchange actor allowlist' do
       before do
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
           .and_return(['an-issuer', service_provider.issuer])
       end
 
       it 'returns true' do
-        expect(service_provider.token_exchange_broker?).to be(true)
+        expect(service_provider.token_exchange_actor?).to be(true)
       end
     end
   end

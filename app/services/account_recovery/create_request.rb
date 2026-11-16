@@ -31,6 +31,7 @@ module AccountRecovery
         extra: {
           recovery_state: account_recovery_request.state,
           telephony_response: telephony_response&.to_h,
+          **RequestAnalyticsAttributes.new(user: user).call,
         },
       )
     end

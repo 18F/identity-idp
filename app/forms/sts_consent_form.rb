@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Captures a user's consent for an STS (token exchange) broker service provider
+# Captures a user's consent for an STS (token exchange) actor service provider
 # and persists it to the user_consent_sts table.
 class StsConsentForm
   include ActiveModel::Model

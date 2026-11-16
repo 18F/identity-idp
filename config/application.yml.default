@@ -30,6 +30,10 @@ account_recovery_request_attempt_window_in_minutes: 2
 account_recovery_request_max_attempts: 2
 account_recovery_token_valid_for_hours: 24
 account_recovery_v2_enabled: false
+account_recovery_verify_password_attempt_window_in_minutes: 10
+account_recovery_verify_password_max_attempts: 5
+account_recovery_verify_token_attempt_window_in_minutes: 10
+account_recovery_verify_token_max_attempts: 10
 account_recovery_wait_period_days: 1
 account_reset_attempt_window_in_minutes: 1_440
 account_reset_fraud_user_wait_period_days:
@@ -246,6 +250,7 @@ idv_contact_phone_number: (844) 555-5555
 idv_doc_auth_mdl_enabled_percent: 0
 idv_failure_to_proof_oidc_state_enabled: false
 idv_gpo_verification_enabled: true
+idv_itin_enabled_percentage: 0
 idv_max_attempts: 5
 idv_min_age_years: 18
 idv_phone_confirmation_manual_review_validity_hours: 0

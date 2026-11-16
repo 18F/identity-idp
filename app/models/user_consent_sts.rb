@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Records a user's consent for an STS (token exchange) broker service provider.
+# Records a user's consent for an STS (token exchange) actor service provider.
 # Separate from the general authorization consent captured on the identities table.
 class UserConsentSts < ApplicationRecord
   self.table_name = :user_consent_sts

@@ -49,9 +49,7 @@
 <% end %>
 
 <% if @presenter.account_recovery_pending? %>
-  <p>
-    <%= @presenter.account_recovery_pending_link %>
-  </p>
+  <%# The pending-recovery banner explains how to cancel the request. %>
 <% elsif @presenter.account_recovery_eligible? %>
   <p>
     <%= @presenter.account_recovery_link %>

@@ -177,6 +177,17 @@ RSpec.describe AccountRecovery::CreateRequest do
       )
     end
 
+    it 'includes the requesting user’s account and MFA profile' do
+      result = service.call
+
+      expect(result.to_h).to include(
+        account_age_in_days: 0,
+        days_since_last_full_sign_in: nil,
+        enabled_mfa_methods_count: 1,
+        mfa_method_ages_in_days: { phone: 0 },
+        mfa_method_counts: { phone: 1 },
+      )
+    end
     it 'does not issue a recovery token in phase 1' do
       service.call
 
@@ -203,6 +214,11 @@ RSpec.describe AccountRecovery::CreateRequest do
         expect(result.success?).to eq(false)
         expect(result.errors[:base]).to eq(['ineligible'])
         expect(AccountRecoveryRequest.where(user: user).count).to eq(0)
+      end
+      it 'does not compute account and MFA profile attributes' do
+        expect(AccountRecovery::RequestAnalyticsAttributes).not_to receive(:new)
+
+        expect(service.call.to_h).not_to include(:mfa_method_counts)
       end
     end
 

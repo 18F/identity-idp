@@ -34,10 +34,17 @@ module OpenidConnect
 
     def token_form
       if delegated_token_exchange?
-        OpenidConnectTokenExchangeForm.new(token_params)
+        OpenidConnectTokenExchangeForm.new(form_params)
       else
-        OpenidConnectTokenForm.new(token_params)
+        OpenidConnectTokenForm.new(form_params)
       end
+    end
+
+    def form_params
+      token_params.merge(
+        dpop_proof: request.headers['DPoP'].presence,
+        token_url: api_openid_connect_token_url,
+      )
     end
 
     def token_params

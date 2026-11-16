@@ -103,20 +103,21 @@ RSpec.describe Reporting::SpRegistrationFunnelReport do
 
   describe '#as_emailable_reports' do
     let(:expected_reports) do
+      date_range = "#{time_range.begin.to_date}_#{time_range.end.to_date}"
       [
         Reporting::EmailableReport.new(
           title: 'Definitions',
-          filename: 'definitions',
+          filename: "definitions_#{date_range}",
           table: expected_definitions_table,
         ),
         Reporting::EmailableReport.new(
           title: 'Overview',
-          filename: 'overview',
+          filename: "overview_#{date_range}",
           table: expected_overview_table,
         ),
         Reporting::EmailableReport.new(
           title: 'Registration Funnel Metrics',
-          filename: 'funnel_metrics',
+          filename: "funnel_metrics_#{date_range}",
           table: expected_funnel_metrics_table,
         ),
       ]

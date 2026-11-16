@@ -53,6 +53,7 @@ module Reporting
     end
 
     def as_emailable_reports
+      date_range = "#{time_range.begin.to_date}_#{time_range.end.to_date}"
       [
         Reporting::EmailableReport.new(
           title: 'Definitions',
@@ -60,7 +61,7 @@ module Reporting
           float_as_percent: true,
           precision: 2,
           table: data_definition_table,
-          filename: 'Definitions',
+          filename: "definitions_#{date_range}",
         ),
         Reporting::EmailableReport.new(
           title: 'Overview',
@@ -68,7 +69,7 @@ module Reporting
           float_as_percent: true,
           precision: 2,
           table: overview_table,
-          filename: 'Overview Report',
+          filename: "overview_report_#{date_range}",
         ),
         Reporting::EmailableReport.new(
           title: 'Verification Funnel Metrics',
@@ -76,7 +77,7 @@ module Reporting
           float_as_percent: true,
           precision: 2,
           table: funnel_table,
-          filename: 'Verification Funnel Metrics',
+          filename: "verification_funnel_metrics_#{date_range}",
         ),
       ]
     end

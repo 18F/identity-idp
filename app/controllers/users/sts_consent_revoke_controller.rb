@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  # Revokes a user's STS (token exchange) consent, which stops a broker from
+  # Revokes a user's STS (token exchange) consent, which stops an actor from
   # acting on the user's behalf for the consented target app.
   class StsConsentRevokeController < ApplicationController
     before_action :confirm_two_factor_authenticated

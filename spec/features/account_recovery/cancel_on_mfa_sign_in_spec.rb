@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.feature 'Pending account recovery request' do
-  it 'cancels recovery only after signing in with an existing MFA method' do
+RSpec.feature 'Account recovery request cancelled by signing in with existing MFA' do
+  it 'confirms the request, signs out, and cancels only after signing in with existing MFA' do
     allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
     user = create(:user, :fully_registered)
 
@@ -9,11 +9,14 @@ RSpec.feature 'Pending account recovery request' do
     visit account_recovery_start_path
     click_button t('account_recovery.start.continue')
 
-    expect(page).to have_current_path(account_recovery_pending_path)
-    expect(page).to have_content(t('account_recovery.pending.header'))
+    expect(page).to have_current_path(account_recovery_confirm_request_path)
+    expect(page).to have_content(t('account_recovery.confirm_request.header'))
+    expect(page).to have_content(user.last_sign_in_email_address.email)
     expect(page).not_to have_css('form[action*="cancel"], a[href*="cancel"]')
     recovery_request = AccountRecoveryRequest.active_for_user(user)
-    Capybara.reset_session!
+
+    visit account_path
+    expect(page).to have_current_path(root_path)
     allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(false)
 
     sign_in_user(user)
@@ -26,6 +29,7 @@ RSpec.feature 'Pending account recovery request' do
     expect(page).to have_current_path(account_path)
     expect(page).to have_content(t('account_recovery.pending.cancel_success'))
     expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::CANCELLED)
+    expect(recovery_request.cancel_reason).to eq(AccountRecoveryRequest::CANCEL_REASON_MFA_USED)
     expect(page).not_to have_content(t('account_recovery.pending.mfa_banner'))
     expect_delivered_email(
       to: [user.last_sign_in_email_address.email],
@@ -43,10 +47,8 @@ RSpec.feature 'Pending account recovery request' do
 
     click_link t('two_factor_authentication.login_options_link_text')
     expect(page).to have_content(t('account_recovery.pending.mfa_banner'))
-    expect(page).to have_link(
-      t('two_factor_authentication.account_recovery.pending_link'),
-      href: account_recovery_pending_path,
-    )
+    expect(page).not_to have_link(href: account_recovery_start_path)
+    expect(page).not_to have_link(t('two_factor_authentication.account_reset.link'))
     expect(recovery_request.reload).to be_active
   end
 

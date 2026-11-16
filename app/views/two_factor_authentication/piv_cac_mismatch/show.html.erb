@@ -24,6 +24,8 @@
           class: 'display-block margin-top-2',
         ).with_content(t('two_factor_authentication.piv_cac_mismatch.skip')) %>
   <% end %>
+<% elsif @account_recovery_pending %>
+  <%# The pending-recovery banner explains how to cancel the request. %>
 <% elsif @account_recovery_url %>
   <p><%= t('two_factor_authentication.piv_cac_mismatch.instructions_recovery') %></p>
 
@@ -33,13 +35,7 @@
         big: true,
         wide: true,
         class: 'display-inline-block margin-top-3',
-      ).with_content(
-        t(
-          @account_recovery_pending ?
-            'two_factor_authentication.account_recovery.pending_link' :
-            'two_factor_authentication.account_recovery.recover_link',
-        ),
-      ) %>
+      ).with_content(t('two_factor_authentication.account_recovery.recover_link')) %>
 <% else %>
   <p><%= t('two_factor_authentication.piv_cac_mismatch.instructions_no_other_method', app_name: APP_NAME) %></p>
 

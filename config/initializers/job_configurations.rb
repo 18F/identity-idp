@@ -35,6 +35,18 @@ else
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },
+      # Grant account-preserving MFA recovery requests past their waiting period
+      account_recovery_grant_requests_send_emails: {
+        class: 'GrantAccountRecoveryRequestsAndSendEmailsJob',
+        cron: cron_5m,
+        args: -> { [Time.zone.now] },
+      },
+      # Expire account-preserving MFA recovery links that were never redeemed
+      account_recovery_expire_requests: {
+        class: 'ExpireAccountRecoveryRequestsJob',
+        cron: cron_24h,
+        args: -> { [Time.zone.now] },
+      },
       # Send new device alert notifications
       create_new_device_alert_send_emails: {
         class: 'CreateNewDeviceAlertJob',
@@ -203,7 +215,7 @@ else
       sp_weekly_verification_report: {
         class: 'Reports::SpVerificationReport',
         cron: cron_every_monday_5am,
-        args: -> { [Time.zone.yesterday.end_of_day, :internal] },
+        args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
       # Send Identity Verification report to S3
       identity_verification_report: {

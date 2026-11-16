@@ -471,6 +471,85 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       end
     end
 
+    context 'when an mDL is submitted and the user completes all IDV steps' do
+      let(:idv_doc_auth_mdl_enabled_percent) { 100 }
+      let(:phone_number) { '2028675309' }
+
+      before do
+        DocAuth::Mock::DocAuthMockClient.reset!
+        @docv_stub = stub_docv_verification_data_pass(
+          docv_transaction_token: @docv_transaction_token,
+          reason_codes: idv_socure_reason_codes_docv_mdl,
+          user:,
+        )
+      end
+
+      it 'creates an active profile with the mDL document data' do
+        perform_in_browser(:mobile) do
+          visit_idp_from_oidc_sp_with_basic
+          sign_in_and_2fa_user(user)
+          complete_doc_auth_steps_before_hybrid_handoff_step
+
+          expect(page).to have_current_path(idv_choose_id_type_url)
+          choose(t('doc_auth.forms.id_type_preference.mdl'))
+          click_on t('forms.buttons.continue')
+
+          expect(page).to have_current_path(idv_socure_document_capture_url)
+          click_on t('idv.mdl.button')
+          socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
+          visit idv_socure_document_capture_update_path
+
+          expect(page).to have_current_path(idv_ssn_url)
+          fill_out_ssn_form_ok
+          click_idv_continue
+          complete_verify_step
+
+          expect(page).to have_current_path(idv_phone_url)
+          fill_out_phone_form_ok(phone_number)
+          verify_phone_otp
+          complete_enter_password_step(user)
+
+          expect(page).to have_current_path(idv_personal_key_path)
+
+          profile = user.profiles.last
+
+          expect(profile.active).to be(true)
+          # mDL is a digital ID / "superior evidence" document type
+          expect(profile.idv_level).to eq('unsupervised_with_digital_id')
+          expect(profile.proofing_components).to eq(
+            'document_check' => 'socure',
+            'document_type_received' => 'mobile_drivers_license',
+            'resolution_check' => 'ResolutionMock',
+            'residential_resolution_check' => 'ResidentialAddressNotRequired',
+            'address_check' => 'lexis_nexis_address',
+            'threatmetrix' => true,
+            'threatmetrix_review_status' => 'pass',
+          )
+          expect(profile.decrypt_pii(user.password)).to have_attributes(
+            first_name: 'Dwayne',
+            middle_name: nil,
+            last_name: 'Denver',
+            dob: '2002-01-01',
+            ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
+            phone: phone_number,
+            address1: '123 Example Street',
+            address2: 'Baltimore MD 21201',
+            city: 'Baltimore',
+            state: 'MD',
+            zipcode: '21201',
+            state_id_jurisdiction: 'MD',
+            issuing_country_code: 'USA',
+            ipp_current_address_matches_id: nil,
+            identity_doc_address1: nil,
+            identity_doc_address2: nil,
+            identity_doc_city: nil,
+            identity_doc_zipcode: nil,
+            identity_doc_address_state: nil,
+          )
+        end
+      end
+    end
+
     context 'webhook repeater repeats all webhooks' do
       let(:socure_docv_webhook_repeat_endpoints) do # repeat webhooks
         ['https://1.example.test/thepath', 'https://2.example.test/thepath']

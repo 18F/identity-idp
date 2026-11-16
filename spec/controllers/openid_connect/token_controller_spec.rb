@@ -40,6 +40,7 @@ RSpec.describe OpenidConnect::TokenController do
         rails_session_id: SecureRandom.hex,
       )
     end
+    let(:resource) { 'https://passport.gov' }
 
     context 'with valid params' do
       it 'is successful and has a response with the id_token' do
@@ -66,18 +67,42 @@ RSpec.describe OpenidConnect::TokenController do
             expires_in: 0,
             ial: 1,
             token_endpoint_operation: 'authorization_code',
+            dpop_bound: false,
           }
         )
 
         expect(@analytics).to_not have_logged_event(:sp_integration_errors_present)
       end
 
-      it 'does not track the brokered exchange token event' do
+      it 'does not track the delegated exchange token event' do
         stub_analytics
 
         action
 
         expect(@analytics).to_not have_logged_event(:openid_connect_delegated_token_exchange)
+      end
+
+      context 'when the token exchange is enabled and the client is not a delegation actor' do
+        before do
+          allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+            .and_return(['some-other-actor'])
+        end
+
+        it 'is successful and has a response with the id_token' do
+          stub_analytics
+
+          action
+          expect(response).to be_ok
+
+          json = JSON.parse(response.body).with_indifferent_access
+          expect(json[:id_token]).to be_present
+          expect(json).to_not have_key(:error)
+          expect(@analytics).to have_logged_event(
+            'OpenID Connect: token',
+            hash_including(success: true, token_endpoint_operation: 'authorization_code'),
+          )
+        end
       end
 
       context 'with an authentication event' do
@@ -159,6 +184,7 @@ RSpec.describe OpenidConnect::TokenController do
             error_details: hash_including(:grant_type),
             ial: 1,
             token_endpoint_operation: 'authorization_code',
+            dpop_bound: false,
           }
         )
 
@@ -198,7 +224,7 @@ RSpec.describe OpenidConnect::TokenController do
       post :create,
            params: {
              grant_type: grant_type,
-             client_id: broker_issuer,
+             client_id: actor_issuer,
              subject_token: subject_token,
              subject_token_type: TokenExchange::Constants::ACCESS_TOKEN_TYPE,
              requested_token_type: TokenExchange::Constants::ACCESS_TOKEN_TYPE,
@@ -209,20 +235,20 @@ RSpec.describe OpenidConnect::TokenController do
 
     let(:grant_type) { TokenExchange::Constants::GRANT_TYPE }
     let(:user) { create(:user, :proofed) }
-    let(:broker_issuer) { 'broker-issuer' }
+    let(:actor_issuer) { 'actor-issuer' }
     let(:target_issuer) { 'target-issuer' }
     let(:audience) { target_issuer }
     let(:resource) { 'https://api.example.gov/passport' }
-    let(:scope) { 'openid token_exchange:passport' }
+    let(:scope) { 'openid token_exchange' }
 
-    let!(:broker) { create(:service_provider, :active, issuer: broker_issuer) }
+    let!(:actor) { create(:service_provider, :active, issuer: actor_issuer) }
     let!(:target) { create(:service_provider, :active, issuer: target_issuer) }
 
     let(:identity) do
       create(
         :service_provider_identity,
         user:,
-        service_provider: broker_issuer,
+        service_provider: actor_issuer,
         scope:,
         ial: 2,
       )
@@ -241,21 +267,24 @@ RSpec.describe OpenidConnect::TokenController do
     let(:actor_return_log) do
       create(
         :sp_return_log,
-        user:, issuer: broker_issuer, ial: 2, billable: true, returned_at: Time.zone.now,
+        user:, issuer: actor_issuer, ial: 2, billable: true, returned_at: Time.zone.now,
       )
     end
     let(:subject_token) do
       TokenExchange::SubjectTokenIssuer.issue(
-        identity:, actor_return_log_id: actor_return_log.id,
+        identity:, actor_return_log_id: actor_return_log.id, resource:,
       ).token
     end
 
     before do
       allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
-        .and_return([broker_issuer])
+        .and_return([actor_issuer])
       allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
-        .and_return([{ issuer: target_issuer, scope: 'passport' }])
+        .and_return([{ issuer: target_issuer,
+                       scope: 'passport',
+                       resource: }])
+      create(:user_consent_sts, user:, target_app: target_issuer)
     end
 
     context 'with valid params' do
@@ -265,7 +294,7 @@ RSpec.describe OpenidConnect::TokenController do
         expect(response).to be_ok
       end
 
-      it 'tracks the brokered exchange token event' do
+      it 'tracks the delegated exchange token event' do
         stub_analytics
 
         action
@@ -273,15 +302,17 @@ RSpec.describe OpenidConnect::TokenController do
         expect(@analytics).to have_logged_event(
           :openid_connect_delegated_token_exchange,
           success: true,
-          actor_issuer: broker_issuer,
+          actor_issuer: actor_issuer,
           target_issuer: target_issuer,
           resource: resource,
           expires_in: IdentityConfig.store.token_exchange_access_token_expires_in,
           ial: 2,
+          dpop_bound: false,
           token_exchange_stage: 'delegated_token',
-          token_exchange_scopes: ['passport'],
+          token_exchange_resource: resource,
           subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
           delegation_id: DelegatedIssuanceLog.last.delegation_id,
+          user_id: user.uuid,
         )
       end
 
@@ -314,7 +345,7 @@ RSpec.describe OpenidConnect::TokenController do
         expect(json[:error]).to eq('invalid_grant')
       end
 
-      it 'tracks an unsuccessful brokered exchange token event' do
+      it 'tracks an unsuccessful delegated exchange token event' do
         stub_analytics
 
         action
@@ -324,6 +355,7 @@ RSpec.describe OpenidConnect::TokenController do
           hash_including(
             success: false,
             error_details: hash_including(:subject_token),
+            dpop_bound: false,
             token_exchange_stage: 'delegated_token',
             subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
             oauth_error_code: 'invalid_grant',
@@ -342,7 +374,7 @@ RSpec.describe OpenidConnect::TokenController do
           error_types: { subject_token: true },
           event: :oidc_token_request,
           integration_exists: true,
-          request_issuer: broker_issuer,
+          request_issuer: actor_issuer,
         )
       end
     end
@@ -362,7 +394,7 @@ RSpec.describe OpenidConnect::TokenController do
         expect(json[:error]).to eq('invalid_target')
       end
 
-      it 'tracks an unsuccessful brokered exchange token event with the requested audience' do
+      it 'tracks an unsuccessful delegated exchange token event with the requested audience' do
         stub_analytics
 
         action
@@ -370,14 +402,16 @@ RSpec.describe OpenidConnect::TokenController do
         expect(@analytics).to have_logged_event(
           :openid_connect_delegated_token_exchange,
           success: false,
-          actor_issuer: broker_issuer,
+          actor_issuer: actor_issuer,
           target_issuer: target_issuer,
           resource: resource,
           error_details: hash_including(:audience),
+          dpop_bound: false,
           token_exchange_stage: 'delegated_token',
-          token_exchange_scopes: ['passport'],
+          token_exchange_resource: resource,
           subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
           oauth_error_code: 'invalid_target',
+          user_id: user.uuid,
         )
       end
     end
@@ -387,7 +421,7 @@ RSpec.describe OpenidConnect::TokenController do
         allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(false)
       end
 
-      it 'tracks an unsuccessful brokered exchange token event' do
+      it 'tracks an unsuccessful delegated exchange token event' do
         stub_analytics
 
         action
@@ -395,19 +429,21 @@ RSpec.describe OpenidConnect::TokenController do
         expect(@analytics).to have_logged_event(
           :openid_connect_delegated_token_exchange,
           success: false,
-          actor_issuer: broker_issuer,
+          actor_issuer: actor_issuer,
           target_issuer: target_issuer,
           resource: resource,
           error_details: hash_including(:grant_type),
+          dpop_bound: false,
           token_exchange_stage: 'delegated_token',
-          token_exchange_scopes: ['passport'],
+          token_exchange_resource: resource,
           subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
           oauth_error_code: 'unsupported_grant_type',
+          user_id: user.uuid,
         )
       end
     end
 
-    context 'when the broker is not allowlisted' do
+    context 'when the actor is not allowlisted' do
       before do
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
           .and_return([])

@@ -55,21 +55,22 @@ module Reporting
     end
 
     def as_emailable_reports
+      date_range = "#{time_range.begin.to_date}_#{time_range.end.to_date}"
       [
         Reporting::EmailableReport.new(
           title: 'Definitions',
           table: definitions_table,
-          filename: 'definitions',
+          filename: "definitions_#{date_range}",
         ),
         Reporting::EmailableReport.new(
           title: 'Overview',
           table: overview_table,
-          filename: 'overview',
+          filename: "overview_#{date_range}",
         ),
         Reporting::EmailableReport.new(
           title: 'Registration Funnel Metrics',
           table: funnel_metrics_table,
-          filename: 'funnel_metrics',
+          filename: "funnel_metrics_#{date_range}",
         ),
       ]
     end

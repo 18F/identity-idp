@@ -114,7 +114,14 @@
     "sass-embedded-linux-x64": "^1.88.0"
   },
   "overrides": {
-    "glob": "^13.0.6",
+    "glob": "^14.0.3",
+    "eslint": {
+      "file-entry-cache": {
+        "flat-cache": {
+          "rimraf": "^6.1.4"
+        }
+      }
+    },
     "@babel/plugin-transform-modules-systemjs": "7.29.4",
     "fast-uri": "^3.1.6",
     "fast-xml-builder": "1.1.9",

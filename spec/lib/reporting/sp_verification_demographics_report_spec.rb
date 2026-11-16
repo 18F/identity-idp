@@ -147,25 +147,26 @@ RSpec.describe Reporting::SpVerificationDemographicsReport do
 
   describe '#as_emailable_reports' do
     let(:expected_reports) do
+      date_range = "#{time_range.begin.to_date}_#{time_range.end.to_date}"
       [
         Reporting::EmailableReport.new(
           title: 'Definitions',
-          filename: 'definitions',
+          filename: "definitions_#{date_range}",
           table: expected_definitions_table,
         ),
         Reporting::EmailableReport.new(
           title: 'Overview',
-          filename: 'overview',
+          filename: "overview_#{date_range}",
           table: expected_overview_table,
         ),
         Reporting::EmailableReport.new(
           title: "#{agency_abbreviation} Age Metrics",
-          filename: 'age_metrics',
+          filename: "age_metrics_#{date_range}",
           table: expected_age_metrics_table,
         ),
         Reporting::EmailableReport.new(
           title: "#{agency_abbreviation} State Metrics",
-          filename: 'state_metrics',
+          filename: "state_metrics_#{date_range}",
           table: expected_state_metrics_table,
         ),
       ]

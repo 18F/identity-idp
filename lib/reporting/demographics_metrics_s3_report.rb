@@ -5,7 +5,7 @@ require 'csv'
 module Reporting
   # Reads pre-generated demographics CSV reports from S3 and presents them as emailable reports.
   class DemographicsMetricsS3Report
-    attr_reader :bucket_name, :s3_path, :agency_abbreviation
+    attr_reader :bucket_name, :s3_path, :agency_abbreviation, :time_range
 
     CSV_FILE_NAMES = %w[
       definitions
@@ -17,10 +17,12 @@ module Reporting
     # @param [String] bucket_name the S3 bucket name
     # @param [String] custom_s3_path S3 key prefix for the reports
     # @param [String, nil] agency_abbreviation - agency abbreviation for table prefixes
-    def initialize(bucket_name:, custom_s3_path:, agency_abbreviation: nil)
+    # @param [Range<Time>] time_range the reporting period for attachment filenames
+    def initialize(bucket_name:, custom_s3_path:, time_range:, agency_abbreviation: nil)
       @bucket_name = bucket_name
       @s3_path = custom_s3_path
       @agency_abbreviation = agency_abbreviation
+      @time_range = time_range
     end
 
     def as_emailable_reports
@@ -28,22 +30,22 @@ module Reporting
         Reporting::EmailableReport.new(
           title: 'Definitions',
           table: definitions_table,
-          filename: 'definitions',
+          filename: attachment_filename('definitions'),
         ),
         Reporting::EmailableReport.new(
           title: 'Overview',
           table: overview_table,
-          filename: 'overview',
+          filename: attachment_filename('overview'),
         ),
         Reporting::EmailableReport.new(
           title: "#{agency_abbreviation_prefix}Age Metrics",
           table: age_metrics_table,
-          filename: 'age_metrics',
+          filename: attachment_filename('age_metrics'),
         ),
         Reporting::EmailableReport.new(
           title: "#{agency_abbreviation_prefix}State Metrics",
           table: state_metrics_table,
-          filename: 'state_metrics',
+          filename: attachment_filename('state_metrics'),
         ),
       ]
     end
@@ -91,6 +93,11 @@ module Reporting
     end
 
     private
+
+    def attachment_filename(report_name)
+      "#{report_name}_#{time_range.begin.strftime('%Y-%m-%d')}_"\
+      "#{time_range.end.strftime('%Y-%m-%d')}"
+    end
 
     def agency_abbreviation_prefix
       if agency_abbreviation.present?

@@ -102,6 +102,32 @@ RSpec.describe 'Proofing agent activation', :js do
     complete_enter_password_step(user)
     acknowledge_and_confirm_personal_key
     expect(page).to have_current_path(account_path)
+
+    profile = user.reload.active_profile
+    expect(profile).to be_present
+    expect(profile.active).to be(true)
+    expect(profile.idv_level).to eq('proofing_agent')
+    expect(profile.proofing_components).to eq(
+      'agent_proofed' => true,
+      'source_check' => 'TestVendor',
+      'address_check' => 'lexis_nexis_address',
+      'document_type_received' => 'drivers_license',
+    )
+    expect(profile.decrypt_pii(user.password)).to have_attributes(
+      first_name: 'FAKEY',
+      middle_name: nil,
+      last_name: 'MCFAKERSON',
+      dob: '1938-10-06',
+      ssn: pii[:ssn],
+      phone: pii[:phone],
+      address1: '1 FAKE RD',
+      address2: '',
+      city: 'GREAT FALLS',
+      state: 'MT',
+      zipcode: '59010-1234',
+      state_id_jurisdiction: 'ND',
+      issuing_country_code: 'US',
+    )
   end
 
   context 'user signs in through the service provider' do

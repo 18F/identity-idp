@@ -59,8 +59,9 @@ module I18n
       # rubocop:disable Layout/LineLength
       ALLOWED_UNTRANSLATED_KEYS = [
         { key: /^account_recovery\./, locales: %i[es fr zh] }, # Recovery translations pending
-        { key: /^user_mailer\.account_recovery_request\./, locales: %i[es fr zh] }, # Recovery translations pending
         { key: /^user_mailer\.account_recovery_cancelled\./, locales: %i[es fr zh] }, # Recovery translations pending
+        { key: /^user_mailer\.account_recovery_granted\./, locales: %i[es fr zh] }, # Recovery translations pending
+        { key: /^user_mailer\.account_recovery_request\./, locales: %i[es fr zh] }, # Recovery translations pending
         { key: /^two_factor_authentication\.account_recovery\./, locales: %i[es fr zh] }, # Recovery translations pending
         { key: 'telephony.account_recovery_notice.sms', locales: %i[es fr zh] }, # Recovery translations pending
         { key: 'two_factor_authentication.piv_cac_mismatch.instructions_recovery', locales: %i[es fr zh] }, # Recovery translations pending
@@ -134,9 +135,18 @@ module I18n
         { key: 'nds.footer.experience_notice_label', locales: %i[es fr zh] }, # Translations pending
         { key: 'nds.footer.experience_notice_link', locales: %i[es fr zh] }, # Translations pending
         { key: 'nds.footer.switch_to_legacy', locales: %i[es fr zh] }, # Translations pending
-        { key: 'sts_consent.check_box_to_consent', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.about_description', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.about_heading', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.allow_and_continue', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.cancel_and_return', locales: %i[es fr zh] }, # Translations pending
         { key: 'sts_consent.content', locales: %i[es fr zh] }, # Translations pending
         { key: 'sts_consent.heading', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.learn_more', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.permissions_description', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.permissions_heading', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.service_permission', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.shared_information_description', locales: %i[es fr zh] }, # Translations pending
+        { key: 'sts_consent.shared_information_heading', locales: %i[es fr zh] }, # Translations pending
         { key: 'titles.sts_consent', locales: %i[es fr zh] }, # Translations pending
       ].freeze
       # rubocop:enable Layout/LineLength
@@ -204,6 +214,22 @@ module I18n
 end
 
 RSpec.describe 'I18n' do
+  %w[es fr zh].each do |locale|
+    it "keeps pending account recovery translations identical to English in #{locale}" do
+      recovery_prefixes = [
+        'account_recovery.',
+        'user_mailer.account_recovery_',
+        'two_factor_authentication.account_recovery.',
+      ]
+      english = YAML.load_file(Rails.root.join('config', 'locales', 'en.yml'))
+        .select { |key, _| key.start_with?(*recovery_prefixes) }
+      localized = YAML.load_file(Rails.root.join('config', 'locales', "#{locale}.yml"))
+        .select { |key, _| key.start_with?(*recovery_prefixes) }
+
+      expect(localized).to eq(english)
+    end
+  end
+
   let(:i18n) { I18n::Tasks::BaseTask.new }
   let(:missing_keys) { i18n.missing_keys }
   let(:unused_keys) { i18n.unused_keys }

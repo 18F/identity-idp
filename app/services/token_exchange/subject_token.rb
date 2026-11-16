@@ -4,11 +4,13 @@ module TokenExchange
   SubjectToken = Struct.new(
     :id,
     :identity_uuid,
-    :broker_issuer,
+    :actor_issuer,
     :scope,
     :ial,
     :actor_return_log_id,
+    :dpop_jkt,
     :issued_at,
+    :resource,
     keyword_init: true,
   ) do
     def self.redis_key_prefix

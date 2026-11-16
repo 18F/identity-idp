@@ -4,20 +4,22 @@ module TokenExchange
   class AccessTokenIssuer
     IssuedToken = Struct.new(:token, :expires_in, :delegation_id, keyword_init: true)
 
-    def self.issue(subject_token:, target_issuer:, resource:, scope:)
+    def self.issue(subject_token:, target_issuer:, resource:, scope:, dpop_jkt: nil)
       new(
         subject_token:,
         target_issuer:,
         resource:,
         scope:,
+        dpop_jkt:,
       ).issue
     end
 
-    def initialize(subject_token:, target_issuer:, resource:, scope:)
+    def initialize(subject_token:, target_issuer:, resource:, scope:, dpop_jkt:)
       @subject_token = subject_token
       @target_issuer = target_issuer
       @resource = resource
       @scope = scope
+      @dpop_jkt = dpop_jkt
     end
 
     def issue
@@ -29,10 +31,11 @@ module TokenExchange
       access_token = AccessToken.new(
         id: AccessToken.digest(token),
         identity_uuid: target_identity.uuid,
-        broker_issuer: subject_token.broker_issuer,
+        actor_issuer: subject_token.actor_issuer,
         target_issuer:,
         resource:,
         scope:,
+        dpop_jkt:,
         issued_at:,
         expires_at:,
       )
@@ -44,7 +47,7 @@ module TokenExchange
           user: target_identity.user,
           actor_return_log_id: subject_token.actor_return_log_id,
           target_return_log:,
-          actor_issuer: subject_token.broker_issuer,
+          actor_issuer: subject_token.actor_issuer,
           target_issuer:,
           resource:,
           scope:,
@@ -59,7 +62,7 @@ module TokenExchange
 
     private
 
-    attr_reader :subject_token, :target_issuer, :resource, :scope
+    attr_reader :subject_token, :target_issuer, :resource, :scope, :dpop_jkt
 
     def jwe(issued_at:, expires_at:)
       OpenidConnect::JweEncryptor.encrypt(jwt(issued_at:, expires_at:), service_provider: target)
@@ -83,8 +86,9 @@ module TokenExchange
         iat: issued_at,
         scope:,
         act: {
-          sub: subject_token.broker_issuer,
+          sub: subject_token.actor_issuer,
         },
+        **confirmation_claim,
       }
     end
 
@@ -104,6 +108,15 @@ module TokenExchange
       )
     end
 
+    # RFC 9449 §6.1 (and RFC 7800): a token bound to the actor's key carries the key's RFC 7638
+    # thumbprint as `cnf.jkt`, so the agency can require a proof signed by that key on every
+    # request and refuse the token presented as a bearer token. A bearer token carries no `cnf`.
+    def confirmation_claim
+      return {} if dpop_jkt.blank?
+
+      { cnf: { jkt: dpop_jkt } }
+    end
+
     def target
       @target ||= ServiceProvider.find_by!(issuer: target_issuer)
     end
@@ -112,7 +125,7 @@ module TokenExchange
       @target_identity ||= begin
         user = ServiceProviderIdentity.find_by(
           uuid: subject_token.identity_uuid,
-          service_provider: subject_token.broker_issuer,
+          service_provider: subject_token.actor_issuer,
         ).user
 
         ServiceProviderIdentity.find_by(user:, service_provider: target_issuer)

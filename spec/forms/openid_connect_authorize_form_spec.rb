@@ -10,11 +10,13 @@ RSpec.describe OpenidConnectAuthorizeForm do
       prompt: prompt,
       redirect_uri: redirect_uri,
       response_type: response_type,
+      resource: resource,
       scope: scope,
       state: state,
       code_challenge: code_challenge,
       code_challenge_method: code_challenge_method,
       verified_within: verified_within,
+      dpop_jkt: dpop_jkt,
     )
   end
 
@@ -25,14 +27,33 @@ RSpec.describe OpenidConnectAuthorizeForm do
   let(:prompt) { 'select_account' }
   let(:redirect_uri) { 'gov.gsa.openidconnect.test://result' }
   let(:response_type) { 'code' }
+  let(:resource) { nil }
   let(:scope) { 'openid profile' }
   let(:state) { SecureRandom.hex }
   let(:code_challenge) { nil }
   let(:code_challenge_method) { nil }
   let(:verified_within) { nil }
+  let(:dpop_jkt) { nil }
+  let(:token_exchange_enabled) { false }
+  let(:token_exchange_allowed_broker_issuers) { [client_id] }
+  let(:token_exchange_allowed_targets) do
+    [
+      {
+        issuer: 'housing-assistance-records',
+        scope: 'housing_records',
+        resource: 'https://housing-records.gov',
+      },
+    ]
+  end
 
   before do
     allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
+    allow(IdentityConfig.store).to receive(:token_exchange_enabled)
+      .and_return(token_exchange_enabled)
+    allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+      .and_return(token_exchange_allowed_broker_issuers)
+    allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
+      .and_return(token_exchange_allowed_targets)
   end
 
   describe '#submit' do
@@ -54,10 +75,35 @@ RSpec.describe OpenidConnectAuthorizeForm do
           code_challenge_present: false,
           service_provider_pkce: nil,
           token_exchange_stage: nil,
-          token_exchange_requested: nil,
-          token_exchange_scopes: nil,
+          token_exchange_requested: false,
+          token_exchange_resource: nil,
           integration_errors: nil,
         )
+      end
+
+      context 'when token_exchange is enabled' do
+        let(:token_exchange_enabled) { true }
+        it 'is successful' do
+          expect(result.to_h).to include(
+            success: true,
+            token_exchange_stage: nil,
+            token_exchange_requested: false,
+            token_exchange_resource: nil,
+          )
+        end
+
+        context 'with a valid token exchange resource' do
+          let(:scope) { 'openid token_exchange' }
+          let(:resource) { 'https://housing-records.gov' }
+
+          it 'surfaces token exchange authorization analytics fields' do
+            expect(result.to_h).to include(
+              token_exchange_stage: 'actor_authorization',
+              token_exchange_requested: true,
+              token_exchange_resource: resource,
+            )
+          end
+        end
       end
     end
 
@@ -82,8 +128,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
             code_challenge_present: false,
             service_provider_pkce: nil,
             token_exchange_stage: nil,
-            token_exchange_requested: nil,
-            token_exchange_scopes: nil,
+            token_exchange_requested: false,
+            token_exchange_resource: nil,
             integration_errors: {
               error_details: ['Response type is not included in the list'],
               error_types: [:response_type],
@@ -92,6 +138,26 @@ RSpec.describe OpenidConnectAuthorizeForm do
               request_issuer: client_id,
             },
           )
+        end
+      end
+
+      context 'when token_exchange is enabled' do
+        let(:token_exchange_enabled) { true }
+        let(:scope) { 'openid token_exchange' }
+        context 'with secure token exchange listed target' do
+          context 'with an invalid resource' do
+            let(:resource) { 'https://unknown-records.gov' }
+
+            it 'sends the client invalid_scope at its redirect address' do
+              expect(result.success?).to eq(false)
+              expect(result.to_h).to include(
+                redirect_uri: start_with("#{redirect_uri}?error=invalid_scope"),
+                unauthorized_scope: true,
+                token_exchange_stage: 'actor_authorization',
+                token_exchange_requested: true,
+              )
+            end
+          end
         end
       end
     end
@@ -140,6 +206,86 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
         it 'uses the acr_values param' do
           expect(form.valid?).to eq(true)
+        end
+      end
+    end
+
+    context 'for a public client registered for key binding' do
+      let(:client_id) { service_provider.issuer }
+      let(:redirect_uri) { 'https://sp.example.gov/result' }
+      let(:code_challenge) { Digest::SHA256.urlsafe_base64digest(SecureRandom.urlsafe_base64(32)) }
+      let(:code_challenge_method) { 'S256' }
+      let(:scope) { 'openid email' }
+      let(:pkce) { true }
+      let(:service_provider) do
+        create(
+          :service_provider,
+          :active,
+          pkce: pkce,
+          redirect_uris: [redirect_uri],
+          issuer: 'urn:gov:gsa:openidconnect:sp:bound_client',
+        )
+      end
+      let(:thumbprint) { SecureRandom.urlsafe_base64(32) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:dpop_required_issuers).and_return([client_id])
+      end
+
+      context 'when no dpop_jkt is passed in' do
+        it 'fails with dpop_jkt_required' do
+          expect(form.dpop_binding_required?).to eq(true)
+          expect(result.success?).to eq(false)
+          expect(result.errors[:dpop_jkt]).to eq(['dpop_jkt_required'])
+        end
+      end
+
+      context 'with a well-formed thumbprint' do
+        let(:dpop_jkt) { thumbprint }
+
+        it 'succeeds and exposes the thumbprint for the authorization code to carry' do
+          expect(result.success?).to eq(true)
+          expect(form.dpop_binding_required?).to eq(true)
+          expect(form.dpop_jkt).to eq(thumbprint)
+        end
+      end
+
+      context 'with a malformed thumbprint' do
+        let(:dpop_jkt) { 'not-a-thumbprint' }
+
+        it 'fails with dpop_jkt_invalid' do
+          expect(result.success?).to eq(false)
+          expect(result.errors[:dpop_jkt]).to eq(['dpop_jkt_invalid'])
+        end
+      end
+
+      context 'when the client is confidential' do
+        let(:pkce) { false }
+        let(:dpop_jkt) { thumbprint }
+
+        it 'does not require key binding' do
+          expect(form.dpop_binding_required?).to eq(false)
+          expect(result.success?).to eq(true)
+        end
+      end
+
+      context 'when the client is not on the key-binding list' do
+        before do
+          allow(IdentityConfig.store).to receive(:dpop_required_issuers).and_return([])
+        end
+
+        it 'does not require key binding' do
+          expect(form.dpop_binding_required?).to eq(false)
+          expect(result.success?).to eq(true)
+        end
+
+        context 'with a malformed dpop_jkt sent anyway' do
+          let(:dpop_jkt) { 'x' }
+
+          it 'ignores it and issues a bearer token' do
+            expect(form.dpop_binding_required?).to eq(false)
+            expect(result.success?).to eq(true)
+          end
         end
       end
     end
@@ -355,116 +501,51 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
 
     context 'with token exchange scope' do
-      let(:scope) { 'openid token_exchange:passport' }
+      let(:scope) { 'openid token_exchange' }
+      let(:resource) { 'https://passport.gov' }
+      let(:token_exchange_enabled) { true }
+      let(:token_exchange_allowed_broker_issuers) { [client_id] }
+      let(:token_exchange_allowed_targets) do
+        [{ issuer: 'passport-issuer', scope: 'passport', resource: 'https://passport.gov' }]
+      end
 
-      before do
-        allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(true)
-        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
-          .and_return(token_exchange_allowed_targets)
-        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
-          .and_return(token_exchange_allowed_broker_issuers)
-        allow(IdentityConfig.store).to receive(:token_exchange_enabled)
-          .and_return(token_exchange_enabled)
+      context 'when the resource names an allowed target' do
+        it 'is valid' do
+          expect(valid?).to eq(true)
+          expect(form.errors[:resource]).to be_blank
+          expect(form.unauthorized_scope).to eq(false)
+        end
+      end
+
+      context 'when the resource is missing' do
+        let(:resource) { nil }
+
+        it 'rejects the request' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:scope]).to be_present
+        end
+      end
+
+      context 'when the resource does not name an allowed target' do
+        let(:resource) { 'https://not-allowed.gov' }
+
+        it 'rejects the request' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:scope]).to be_present
+        end
       end
 
       context 'when token exchange is disabled' do
         let(:token_exchange_enabled) { false }
-        let(:token_exchange_allowed_targets) do
-          [{ issuer: 'passport-issuer', scope: 'passport' }]
-        end
-        let(:token_exchange_allowed_broker_issuers) { [client_id] }
 
-        it 'rejects the scope' do
-          expect(valid?).to eq(false)
-          expect(form.errors[:scope])
-            .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
-        end
-      end
-
-      context 'when the broker is not allowlisted' do
-        let(:token_exchange_enabled) { true }
-        let(:token_exchange_allowed_targets) do
-          [{ issuer: 'passport-issuer', scope: 'passport' }]
-        end
-        let(:token_exchange_allowed_broker_issuers) { [] }
-
-        it 'rejects the scope' do
-          expect(valid?).to eq(false)
-          expect(form.errors[:scope])
-            .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
-        end
-      end
-
-      context 'when token exchange is enabled and the broker is allowlisted' do
-        let(:token_exchange_enabled) { true }
-        let(:token_exchange_allowed_targets) do
-          [{ issuer: 'passport-issuer', scope: 'passport' }]
-        end
-        let(:token_exchange_allowed_broker_issuers) { [client_id] }
-
-        it 'allows the configured audience scope' do
+        it 'drops the token exchange scope' do
           expect(valid?).to eq(true)
-          expect(form.errors[:scope]).to be_blank
-          expect(form.scope).to eq(%w[openid token_exchange:passport])
-        end
-
-        it 'reports the scope as authorized' do
-          expect(form.unauthorized_scope).to eq(false)
-        end
-
-        it 'surfaces token exchange authorization analytics fields' do
-          expect(form.submit.to_h).to include(
-            token_exchange_stage: 'actor_authorization',
-            token_exchange_requested: true,
-            token_exchange_scopes: ['passport'],
-          )
-        end
-
-        context 'when more than one configured audience is requested' do
-          let(:scope) { 'openid token_exchange:passport token_exchange:benefits' }
-          let(:token_exchange_allowed_targets) do
-            [
-              { issuer: 'passport-issuer', scope: 'passport' },
-              { issuer: 'benefits-issuer', scope: 'benefits' },
-            ]
-          end
-
-          it 'allows every configured audience scope' do
-            expect(valid?).to eq(true)
-            expect(form.errors[:scope]).to be_blank
-            expect(form.scope).to eq(
-              %w[openid token_exchange:passport token_exchange:benefits],
-            )
-          end
-        end
-
-        context 'when the base token exchange scope is requested' do
-          let(:scope) { 'openid token_exchange' }
-
-          it 'rejects the unqualified scope' do
-            expect(valid?).to eq(false)
-            expect(form.errors[:scope])
-              .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
-          end
-        end
-
-        context 'when a configured and an unconfigured audience are both requested' do
-          let(:scope) { 'openid token_exchange:passport token_exchange:benefits' }
-
-          it 'rejects the whole request' do
-            expect(valid?).to eq(false)
-            expect(form.errors[:scope])
-              .to include(t('openid_connect.authorization.errors.unauthorized_scope'))
-          end
+          expect(form.scope).to eq(%w[openid])
         end
       end
 
-      context 'when the audience is not configured' do
-        let(:token_exchange_enabled) { true }
-        let(:token_exchange_allowed_targets) do
-          [{ issuer: 'other-audience-issuer', scope: 'other_audience' }]
-        end
-        let(:token_exchange_allowed_broker_issuers) { [client_id] }
+      context 'when the actor is not allowlisted' do
+        let(:token_exchange_allowed_broker_issuers) { [] }
 
         it 'rejects the scope' do
           expect(valid?).to eq(false)
@@ -474,36 +555,16 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    context 'when token exchange is enabled but no token exchange scope is requested' do
+    context 'when resource is present without token exchange scope' do
+      let(:resource) { 'https://not-allowed.gov' }
       let(:scope) { 'email' }
+      let(:unauthorized_scope_enabled) { true }
+      let(:token_exchange_allowed_broker_issuers) { [] }
 
-      before do
-        allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(true)
-        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
-        allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
-          .and_return([{ issuer: 'passport-issuer', scope: 'passport' }])
-        allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
-          .and_return(token_exchange_allowed_broker_issuers)
-      end
-
-      context 'when the service provider is not a broker' do
-        let(:token_exchange_allowed_broker_issuers) { [] }
-
-        it 'allows ordinary scopes' do
-          expect(valid?).to eq(true)
-          expect(form.errors[:scope]).to be_blank
-          expect(form.scope).to eq(%w[email])
-        end
-      end
-
-      context 'when the service provider is a broker' do
-        let(:token_exchange_allowed_broker_issuers) { [client_id] }
-
-        it 'allows ordinary scopes' do
-          expect(valid?).to eq(true)
-          expect(form.errors[:scope]).to be_blank
-          expect(form.scope).to eq(%w[email])
-        end
+      it 'does not validate the resource' do
+        expect(valid?).to eq(true)
+        expect(form.errors[:resource]).to be_blank
+        expect(form.scope).to eq(%w[email])
       end
     end
 

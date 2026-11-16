@@ -1,0 +1,5 @@
+<% self.title = t('account_recovery.confirm_request.header') %>
+
+<%= render PageHeadingComponent.new.with_content(t('account_recovery.confirm_request.header')) %>
+
+<p><%= t('account_recovery.confirm_request.notification_html', email: email) %></p>

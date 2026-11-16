@@ -22,7 +22,7 @@
             [
               email.email,
               email.id,
-              checked: email.email == @last_sign_in_email_address,
+              checked: email.id == @email_id,
             ]
           end,
         ) %>

@@ -40,7 +40,12 @@ module OpenidConnect
     end
 
     def authenticate_identity_via_bearer_token
-      verifier = AccessTokenVerifier.new(request.env['HTTP_AUTHORIZATION'])
+      verifier = AccessTokenVerifier.new(
+        request.env['HTTP_AUTHORIZATION'],
+        dpop_proof: request.headers['DPoP'].presence,
+        http_method: request.method,
+        http_url: request.original_url,
+      )
       response, identity = verifier.submit
       attributes = response.to_h
       analytics.openid_connect_bearer_token(
@@ -52,8 +57,8 @@ module OpenidConnect
         @current_identity = identity
       else
         analytics.sp_integration_errors_present(**attributes[:integration_errors])
-        render json: { error: verifier.errors[:access_token].join(' ') },
-               status: :unauthorized
+        headers['WWW-Authenticate'] = verifier.www_authenticate if verifier.www_authenticate
+        render json: { error: verifier.error_message }, status: :unauthorized
       end
     end
   end

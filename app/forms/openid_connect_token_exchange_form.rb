@@ -12,6 +12,8 @@ class OpenidConnectTokenExchangeForm
     resource
     requested_token_type
     scope
+    dpop_proof
+    token_url
   ].freeze
 
   # Parameters RFC 8693 section 2.1 requires on every token exchange request.
@@ -37,13 +39,17 @@ class OpenidConnectTokenExchangeForm
 
   # Ordered cheapest first.
   validate :validate_enabled
-  validate :validate_broker
+  validate :validate_actor
   validate :validate_target
   validate :validate_resource
   validate :validate_subject_token, unless: :client_rejected?
+  validate :validate_subject_token_resource, unless: :client_rejected?
+  validate :validate_audience_matches_resource, unless: :client_rejected?
+  validate :validate_consent, unless: :client_rejected?
   validate :validate_actor_return_log, unless: :client_rejected?
   validate :validate_scope, unless: :client_rejected?
   validate :validate_target_identity_ial2, unless: :client_rejected?
+  validate :validate_dpop_proof, unless: :client_rejected?
 
   def initialize(params)
     ATTRS.each do |key|
@@ -71,7 +77,7 @@ class OpenidConnectTokenExchangeForm
     {
       access_token: issued_token.token,
       issued_token_type: TokenExchange::Constants::ACCESS_TOKEN_TYPE,
-      token_type: 'Bearer',
+      token_type: bound_thumbprint ? 'DPoP' : 'Bearer',
       expires_in: issued_token.expires_in,
       scope: requested_scope,
     }
@@ -101,7 +107,7 @@ class OpenidConnectTokenExchangeForm
     IdentityConfig.store.token_exchange_enabled
   end
 
-  # True once the feature flag, the broker allowlist, or the target allowlist
+  # True once the feature flag, the actor allowlist, or the target allowlist
   # has already rejected this request, so the remaining validations can skip
   # the Redis read and the identity lookup entirely.
   def client_rejected?
@@ -110,9 +116,9 @@ class OpenidConnectTokenExchangeForm
       errors.include?(:audience)
   end
 
-  def validate_broker
+  def validate_actor
     return if client_id.blank?
-    return if broker&.token_exchange_broker?
+    return if actor&.token_exchange_actor?
 
     errors.add(:client_id, :invalid)
   end
@@ -122,21 +128,6 @@ class OpenidConnectTokenExchangeForm
     return if target&.token_exchange_target?
 
     errors.add(:audience, :invalid)
-  end
-
-  def validate_subject_token
-    return if subject_token.blank?
-    return errors.add(:subject_token, :invalid) if loaded_subject_token.blank?
-    return if loaded_subject_token.broker_issuer == client_id
-
-    errors.add(:subject_token, :invalid)
-  end
-
-  def validate_actor_return_log
-    return if loaded_subject_token.blank?
-    return if actor_return_log.present?
-
-    errors.add(:actor_return_log, :blank)
   end
 
   def validate_resource
@@ -150,6 +141,50 @@ class OpenidConnectTokenExchangeForm
     errors.add(:resource, :invalid)
   end
 
+  def validate_subject_token
+    return errors.add(:subject_token, :invalid) if loaded_subject_token.blank?
+    return if loaded_subject_token.actor_issuer == client_id
+    errors.add(:subject_token, :invalid)
+  end
+
+  def validate_subject_token_resource
+    return if loaded_subject_token.blank?
+    return if loaded_subject_token.resource == resource
+
+    errors.add(:resource, :invalid)
+  end
+
+  def validate_audience_matches_resource
+    return if target_config&.fetch(:issuer, nil) == audience
+
+    errors.add(:audience, :invalid)
+  end
+
+  def target_config
+    IdentityConfig.store.token_exchange_allowed_targets.find do |target|
+      target[:resource] == resource
+    end
+  end
+
+  def validate_actor_return_log
+    return if loaded_subject_token.blank?
+    return if actor_return_log.present?
+
+    errors.add(:actor_return_log, :blank)
+  end
+
+  def validate_consent
+    return if user.blank?
+
+    return if UserConsentSts.consent_valid?(user: identity.user, target_app: audience)
+
+    errors.add(
+      :subject_token,
+      :invalid_audience,
+      message: 'invalid audience for this subject token',
+    )
+  end
+
   def validate_scope
     return if loaded_subject_token.blank? || requested_scope.blank?
 
@@ -158,6 +193,39 @@ class OpenidConnectTokenExchangeForm
     return if (requested_scopes - subject_scopes).blank?
 
     errors.add(:scope, :invalid)
+  end
+
+  def validate_dpop_proof
+    return unless dpop_binding_required?
+    return if errors.any?
+
+    if loaded_subject_token.dpop_jkt.blank?
+      errors.add(:dpop_proof, 'dpop_subject_token_unbound', type: :dpop_subject_token_unbound)
+      return
+    end
+
+    return if dpop_result.success?
+
+    dpop_error = dpop_result.errors[:proof].first
+    errors.add(:dpop_proof, dpop_error, type: dpop_error.to_sym)
+  end
+
+  def dpop_binding_required?
+    !!actor&.dpop_required?
+  end
+
+  def dpop_result
+    @dpop_result ||= DpopProofForm.new(
+      proof: dpop_proof,
+      http_method: 'POST',
+      http_url: token_url,
+      access_token: subject_token,
+      expected_thumbprint: loaded_subject_token.dpop_jkt,
+    ).submit
+  end
+
+  def bound_thumbprint
+    loaded_subject_token.dpop_jkt if dpop_binding_required?
   end
 
   def validate_target_identity_ial2
@@ -191,7 +259,7 @@ class OpenidConnectTokenExchangeForm
 
     @identity = ServiceProviderIdentity.find_by(
       uuid: loaded_subject_token.identity_uuid,
-      service_provider: loaded_subject_token.broker_issuer,
+      service_provider: loaded_subject_token.actor_issuer,
     )
   end
 
@@ -202,12 +270,12 @@ class OpenidConnectTokenExchangeForm
     @actor_return_log = SpReturnLog.find_by(
       id: loaded_subject_token.actor_return_log_id,
       user_id: identity.user_id,
-      issuer: loaded_subject_token.broker_issuer,
+      issuer: loaded_subject_token.actor_issuer,
     )
   end
 
-  def broker
-    @broker ||= ServiceProvider.find_by(issuer: client_id)
+  def actor
+    @actor ||= ServiceProvider.find_by(issuer: client_id)
   end
 
   def target
@@ -231,8 +299,14 @@ class OpenidConnectTokenExchangeForm
   def error_response
     {
       error: oauth_error,
-      error_description: errors.full_messages.join(' '),
+      error_description:,
     }
+  end
+
+  def error_description
+    return errors[:dpop_proof].join(' ') if errors.include?(:dpop_proof)
+
+    errors.full_messages.join(' ')
   end
 
   # Maps validation failures onto the OAuth error codes defined by RFC 6749
@@ -242,6 +316,7 @@ class OpenidConnectTokenExchangeForm
     return 'unsupported_grant_type' if errors.include?(:grant_type)
     return 'invalid_client' if errors.include?(:client_id)
     return 'invalid_target' if errors.include?(:audience) || errors.include?(:resource)
+    return 'invalid_dpop_proof' if errors.include?(:dpop_proof)
     return 'invalid_scope' if errors.include?(:scope)
 
     'invalid_grant'
@@ -260,10 +335,12 @@ class OpenidConnectTokenExchangeForm
       resource:,
       ial: subject_token_ial,
       token_exchange_stage: TokenExchange::Constants::STAGE_DELEGATED_TOKEN,
-      token_exchange_scopes: token_exchange_scope_values,
+      token_exchange_resource: loaded_subject_token&.resource,
       subject_token_fingerprint: subject_token_fingerprint,
       oauth_error_code: (oauth_error unless valid?),
       integration_errors:,
+      dpop_bound: dpop_binding_required?,
+      user_id: identity&.user&.uuid,
     }
   end
 
@@ -273,16 +350,8 @@ class OpenidConnectTokenExchangeForm
       target_issuer: audience,
       resource:,
       scope: requested_scope,
+      dpop_jkt: bound_thumbprint,
     )
-  end
-
-  def token_exchange_scope_values
-    scopes = requested_scope.to_s.split(' ').select do |scope|
-      TokenExchange::Constants.in_scope?(scope)
-    end
-    return if scopes.blank?
-
-    scopes.map { |scope| scope.delete_prefix(TokenExchange::Constants::SCOPE_PREFIX) }
   end
 
   def subject_token_fingerprint
@@ -305,7 +374,7 @@ class OpenidConnectTokenExchangeForm
       error_details: errors.full_messages,
       error_types: errors.attribute_names,
       event: :oidc_token_request,
-      integration_exists: broker.present?,
+      integration_exists: actor.present?,
       request_issuer: client_id,
     }
   end
