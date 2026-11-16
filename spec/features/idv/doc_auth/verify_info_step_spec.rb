@@ -525,8 +525,10 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         end
 
         context 'when precheck fail' do
-          context 'with hybrid handoff number' do
-            it 'it redirects to phone page' do
+          context 'with a hybrid handoff number that would fail the pre-check' do
+            # The hand-off number was never proven to be the person's, so it is not a pre-check
+            # candidate; the pre-check runs on the account's MFA phone, which passes here.
+            it 'ignores the hand-off number and redirects to the enter password page' do
               perform_in_browser(:desktop) do
                 sign_in_and_2fa_user(user)
                 complete_doc_auth_steps_before_hybrid_handoff_step
@@ -558,15 +560,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
                 expect(page).to have_content(t('headings.verify'))
                 complete_verify_step
 
-                expect(page).to have_current_path(idv_phone_path)
-                prefilled_phone = page.find(id: 'idv_phone_form_phone').value
-
-                # prefills with mfa phone
-                expect(
-                  PhoneFormatter.format(prefilled_phone),
-                ).to eq(
-                  PhoneFormatter.format(user.default_phone_configuration.phone),
-                )
+                expect(page).to have_current_path(idv_enter_password_path)
               end
             end
           end
