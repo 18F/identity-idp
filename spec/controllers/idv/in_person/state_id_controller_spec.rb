@@ -688,6 +688,37 @@ RSpec.describe Idv::InPerson::StateIdController do
           expect(subject.idv_session.source_check_vendor).to be_present
         end
 
+        context 'when identity verification already ran on the previous identity data' do
+          before do
+            subject.idv_session.ipp_aamva_pending_state_id_pii = {
+              first_name: 'Charity',
+              last_name: 'Johnson',
+              ipp_current_address_matches_id: true,
+            }
+            subject.idv_session.ssn = '900661234'
+            subject.idv_session.verify_info_step_document_capture_session_uuid = 'abcd-1234'
+            subject.idv_session.verify_info_applicant_fingerprint = 'fingerprint'
+            subject.idv_session.resolution_successful = true
+            subject.idv_session.applicant = { first_name: 'Previous' }
+            subject.idv_session.mark_phone_step_complete!
+          end
+
+          it 'discards that verification and everything after it when the new data commits' do
+            get :show
+
+            aggregate_failures do
+              expect(subject.user_session['idv/in_person'][:pii_from_user][:first_name])
+                .to eq('Charity')
+              expect(subject.idv_session.verify_info_step_document_capture_session_uuid).to be_nil
+              expect(subject.idv_session.verify_info_applicant_fingerprint).to be_nil
+              expect(subject.idv_session.resolution_successful).to be_nil
+              expect(subject.idv_session.applicant).to be_nil
+              expect(subject.idv_session.vendor_phone_confirmation).to be_nil
+              expect(subject.idv_session.ssn).to be_present
+            end
+          end
+        end
+
         it 'commits pending PII to pii_from_user on success' do
           # Set up pending PII as if form was just submitted
           subject.idv_session.ipp_aamva_pending_state_id_pii = {

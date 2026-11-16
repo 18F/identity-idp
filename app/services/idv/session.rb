@@ -55,6 +55,7 @@ module Idv
   # @attr threatmetrix_session_id [String, nil]
   # @attr user_phone_confirmation [Boolean, nil]
   # @attr vendor_phone_confirmation [Boolean, nil]
+  # @attr verify_info_applicant_fingerprint [String, nil]
   # @attr verify_info_step_document_capture_session_uuid [String, nil]
   # @attr welcome_visited [Boolean, nil]
   # @attr_reader current_user [User]
@@ -125,6 +126,7 @@ module Idv
       threatmetrix_session_id
       user_phone_confirmation
       vendor_phone_confirmation
+      verify_info_applicant_fingerprint
       verify_info_step_document_capture_session_uuid
       welcome_visited
     ].freeze

@@ -6913,6 +6913,32 @@ module AnalyticsEvents
     )
   end
 
+  # The identity data on file changed between submitting the resolution proofing job and reading
+  # its result, so the result was discarded and the "Verify info" step must be submitted again.
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  def idv_verify_info_applicant_changed(
+    step:,
+    analytics_id:,
+    flow_path:,
+    skip_hybrid_handoff: nil,
+    opted_in_to_in_person_proofing: nil,
+    **extra
+  )
+    track_event(
+      :idv_verify_info_applicant_changed,
+      step:,
+      analytics_id:,
+      flow_path:,
+      skip_hybrid_handoff:,
+      opted_in_to_in_person_proofing:,
+      **extra,
+    )
+  end
+
   # The user ended up at the "Verify info" screen without a Threatmetrix session id.
   def idv_verify_info_missing_threatmetrix_session_id(**extra)
     track_event(:idv_verify_info_missing_threatmetrix_session_id, **extra)
