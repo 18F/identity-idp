@@ -54,12 +54,14 @@ module Idv
       analytics.idv_verify_info_missing_threatmetrix_session_id if idv_session.ssn_step_complete?
     end
 
+    # The phone the precheck may vouch for is one the person has already proved they hold: the
+    # account's default MFA phone, confirmed with a one-time code when it was added. The number
+    # typed at the hybrid hand-off only had a link texted to it and was never confirmed, so a
+    # precheck on it would complete the phone step with no possession proof at all.
     def best_effort_phone
-      if idv_session.phone_for_mobile_flow
-        { source: :hybrid_handoff, phone: idv_session.phone_for_mobile_flow }
-      elsif current_user.default_phone_configuration
-        { source: :mfa, phone: current_user.default_phone_configuration.formatted_phone }
-      end
+      return unless current_user.default_phone_configuration
+
+      { source: :mfa, phone: current_user.default_phone_configuration.formatted_phone }
     end
 
     def proofing_vendor

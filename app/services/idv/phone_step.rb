@@ -21,6 +21,7 @@ module Idv
         :phone, :international_code,
         :otp_delivery_preference
       )
+      discard_proofing_of_another_number
       proof_address
     end
 
@@ -85,6 +86,9 @@ module Idv
     attr_accessor :idv_session, :step_params, :idv_result
     attr_reader :trace_id
 
+    # One proofing is in flight per number. A pending proofing is kept across a resubmission of
+    # the same number (the result is still being awaited), and the number it is about is recorded
+    # with it so that the result, and the one-time code that follows it, are tied to that number.
     def proof_address
       return if idv_session.idv_phone_step_document_capture_session_uuid
       document_capture_session = DocumentCaptureSession.create(
@@ -93,8 +97,19 @@ module Idv
       )
 
       idv_session.idv_phone_step_document_capture_session_uuid = document_capture_session.uuid
+      idv_session.idv_phone_step_phone = normalized_phone
 
       run_job(document_capture_session)
+    end
+
+    # The address vendor verified one number; a different number submitted afterwards must not
+    # inherit that result. The pending proofing is dropped and a new one starts for the number
+    # just submitted, so the one-time code can only ever go to the number the vendor proofed.
+    def discard_proofing_of_another_number
+      return if idv_session.idv_phone_step_document_capture_session_uuid.nil?
+      return if idv_session.idv_phone_step_phone == normalized_phone
+
+      delete_async
     end
 
     def handle_successful_proofing_attempt(vendor:)
@@ -120,7 +135,12 @@ module Idv
       end
     end
 
+    # While a submission is being handled the number comes from it; when a stored result is being
+    # consumed, from the number that proofing was started for.
     def phone_param
+      return idv_session.idv_phone_step_phone if step_params.nil? &&
+                                                 idv_session.idv_phone_step_phone.present?
+
       params = step_params || idv_session.previous_phone_step_params
       step_phone = params[:phone]
       if step_phone == 'other'
@@ -196,6 +216,7 @@ module Idv
 
     def delete_async
       idv_session.idv_phone_step_document_capture_session_uuid = nil
+      idv_session.idv_phone_step_phone = nil
     end
 
     def handle_failed_proofing_attempt

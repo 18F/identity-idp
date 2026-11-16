@@ -23,6 +23,7 @@ module Idv
   # @attr idv_consent_given [Boolean, nil]
   # @attr idv_consent_given_at [String, nil]
   # @attr idv_phone_step_document_capture_session_uuid [String, nil]
+  # @attr idv_phone_step_phone [String, nil] the number the pending address proofing is about
   # @attr ipp_aamva_document_capture_session_uuid [String, nil]
   # @attr ipp_aamva_pending_state_id_pii [Hash, nil]
   # @attr ipp_aamva_redirect_url [String, nil]
@@ -89,6 +90,7 @@ module Idv
       idv_consent_given
       idv_consent_given_at
       idv_phone_step_document_capture_session_uuid
+      idv_phone_step_phone
       ipp_aamva_document_capture_session_uuid
       ipp_aamva_pending_state_id_pii
       ipp_aamva_redirect_url

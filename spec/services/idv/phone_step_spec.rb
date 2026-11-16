@@ -97,6 +97,57 @@ RSpec.describe Idv::PhoneStep do
       )
     end
 
+    context 'when a different number is submitted while a proofing is pending' do
+      let(:other_step) do
+        described_class.new(
+          idv_session:, trace_id:, analytics:, attempts_api_tracker:,
+          fraud_ops_tracker:
+        )
+      end
+
+      it 'proofs the number just submitted instead of reusing the first result' do
+        proofed = []
+        allow_any_instance_of(Proofing::AddressProofer).to receive(:proof)
+          .and_wrap_original do |m, **kwargs|
+            proofed << kwargs[:applicant_pii][:phone]
+            m.call(**kwargs)
+          end
+
+        subject.submit(phone: good_phone)
+        first_handle = idv_session.idv_phone_step_document_capture_session_uuid
+
+        other_step.submit(phone: bad_phone)
+
+        expect(idv_session.idv_phone_step_document_capture_session_uuid).not_to eq(first_handle)
+        expect(proofed).to eq([good_phone, bad_phone])
+
+        result = other_step.async_state_done(other_step.async_state)[:final_result]
+        expect(result.success?).to eq(false)
+        expect(idv_session.user_phone_confirmation_session).to be_nil
+      end
+
+      it 'keeps the pending proofing when the same number is submitted again' do
+        subject.submit(phone: good_phone)
+        first_handle = idv_session.idv_phone_step_document_capture_session_uuid
+
+        expect { other_step.submit(phone: good_phone) }
+          .not_to change { DocumentCaptureSession.count }
+        expect(idv_session.idv_phone_step_document_capture_session_uuid).to eq(first_handle)
+      end
+
+      it 'sends the one-time code to the number the vendor proofed' do
+        subject.submit(phone: good_phone)
+        other_step.submit(phone: good_phone)
+
+        result = other_step.async_state_done(other_step.async_state)[:final_result]
+
+        expect(result.success?).to eq(true)
+        expect(idv_session.applicant[:phone]).to eq(good_phone)
+        expect(idv_session.user_phone_confirmation_session.phone)
+          .to eq(PhoneFormatter.format(good_phone))
+      end
+    end
+
     context 'when vendor is socure_phonerisk' do
       let(:vendor_name) { 'socure_phonerisk' }
       let(:vendor_transaction_id) { 'socure-transaction-id-456' }
