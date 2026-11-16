@@ -57,14 +57,14 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
         expect(response_json).to eq(expected_json)
       end
 
-      it 'hashes the normalized SSN with salted HMAC-SHA-256' do
+      it 'hashes the normalized SSN with salted HMAC-SHA-512' do
         expect(ssn_hash).to eq(
-          OpenSSL::HMAC.hexdigest('SHA256', ssn_hash_salt, '123456789'),
+          OpenSSL::HMAC.hexdigest('SHA512', ssn_hash_salt, '123456789'),
         )
       end
 
-      it 'does not send the unsalted SSN hash' do
-        expect(ssn_hash).not_to eq(OpenSSL::Digest::SHA256.hexdigest('123456789'))
+      it 'sends a 64-byte hash as 128 lowercase hexadecimal digits' do
+        expect(ssn_hash).to match(/\A[0-9a-f]{128}\z/)
       end
 
       context 'with an unformatted SSN' do
@@ -72,7 +72,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
 
         it 'generates the same hash as the formatted SSN' do
           expect(ssn_hash).to eq(
-            OpenSSL::HMAC.hexdigest('SHA256', ssn_hash_salt, '123456789'),
+            OpenSSL::HMAC.hexdigest('SHA512', ssn_hash_salt, '123456789'),
           )
         end
       end

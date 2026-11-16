@@ -48,7 +48,7 @@ module Proofing
             salt = IdentityConfig.store.lexisnexis_threatmetrix_ssn_hash_salt
             raise 'ThreatMetrix SSN hash salt is not configured' if salt.blank?
 
-            OpenSSL::HMAC.hexdigest('SHA256', salt, normalized_ssn)
+            OpenSSL::HMAC.hexdigest('SHA512', salt, normalized_ssn)
           end
 
           def metric_name
