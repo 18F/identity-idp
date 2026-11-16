@@ -2,11 +2,12 @@ require 'rails_helper'
 
 RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
   let(:dob) { '1980-01-01' }
+  let(:ssn) { '123-45-6789' }
   let(:applicant) do
     {
       first_name: 'Testy',
       last_name: 'McTesterson',
-      ssn: '123-45-6789',
+      ssn: ssn,
       dob: dob,
       address1: '123 Main St',
       address2: 'Ste 3',
@@ -42,10 +43,44 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
 
   describe '#body' do
     context 'Idv verification request' do
+      let(:parsed_body) do
+        JSON.parse(subject.body, symbolize_names: true)
+      end
+
       it 'returns a properly formed request body' do
         response_json = JSON.parse(subject.body)
         expected_json = JSON.parse(LexisNexisFixtures.threatmetrix_request_json)
         expect(response_json).to eq(expected_json)
+      end
+
+      it 'hashes the normalized SSN with SHA-256' do
+        expect(parsed_body[:ssn_hash]).to eq(
+          OpenSSL::Digest::SHA256.hexdigest('123456789'),
+        )
+      end
+
+      context 'without an SSN' do
+        let(:ssn) { nil }
+
+        it 'sets the SSN fields to empty strings' do
+          expect(parsed_body).to include(
+            national_id_number: '',
+            national_id_type: '',
+            ssn_hash: '',
+          )
+        end
+      end
+
+      context 'with an SSN containing no digits' do
+        let(:ssn) { '---' }
+
+        it 'sets the SSN fields to empty strings' do
+          expect(parsed_body).to include(
+            national_id_number: '',
+            national_id_type: '',
+            ssn_hash: '',
+          )
+        end
       end
 
       context 'without an address line 2' do
@@ -56,7 +91,6 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
         end
 
         it 'sets StreetAddress2 to and empty string' do
-          parsed_body = JSON.parse(subject.body, symbolize_names: true)
           expect(parsed_body[:account_address_street2]).to eq('')
         end
       end
