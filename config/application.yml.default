@@ -746,6 +746,7 @@ test:
   key_metrics_internal_emails: '["mock_key_metrics_int@example.com"]'
   key_metrics_original_external_emails: '["mock_key_metrics_org_ext@example.com"]'
   key_metrics_original_internal_emails: '["mock_key_metrics_org_int@example.com"]'
+  lexisnexis_threatmetrix_ssn_hash_salt: test-threatmetrix-ssn-hash-salt
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2
