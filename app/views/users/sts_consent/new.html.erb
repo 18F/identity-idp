@@ -57,7 +57,7 @@
 
 <%= render PageFooterComponent.new do %>
   <%= link_to(
-        t('sts_consent.cancel_and_return'),
+        t('sts_consent.cancel_and_return', america_gov_name: AMERICA_GOV_NAME),
         sts_consent_cancel_path,
       ) %>
 <% end %>
