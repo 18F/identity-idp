@@ -36,6 +36,7 @@ module Proofing
               transaction_id: response.reference_id,
               vendor_id: response.vendor_id,
               source_attribution: response.source_attribution,
+              ssa_bypassed_attributes: bypassed_reason_codes(response),
               customer_user_id: response.customer_user_id,
               reason_codes: SocureReasonCode.with_definitions(response.reason_codes),
             )
@@ -49,12 +50,18 @@ module Proofing
 
             return true if response.successful?
 
-            bypass_reason_codes = IdentityConfig.store.ssa_socure_bypass_reason_codes
+            return false unless response.all_required_attributes_verified?
+
+            bypass_reason_codes = IdentityConfig.store.ssa_proofing_agent_socure_kyc_bypass_reason_codes
             # remove any reason codes that are in the bypass list from the response reason codes
-            response_reason_codes_after_bypass = response.reason_codes - bypass_reason_codes
+            response_reason_codes_after_bypass = (response.reason_codes & response.auto_failure_reason_codes) - bypass_reason_codes
             return true if response_reason_codes_after_bypass.empty?
 
             false
+          end
+
+          def bypassed_reason_codes(response)
+            response.reason_codes & bypass_reason_codes
           end
 
           def request(input)

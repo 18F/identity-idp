@@ -21,7 +21,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
   let(:idv_socure_kyc_auto_failure_reason_codes) { ['R995'] }
   let(:get_to_yes_blocking_reason_codes) { [] }
   let(:ssa_proofing_agent_as_authoritative_source) { false }
-  let(:ssa_socure_bypass_reason_codes) { [] }
+  let(:ssa_proofing_agent_socure_kyc_bypass_reason_codes) { [] }
 
   let(:field_validation_overrides) { {} }
   let(:reason_codes) { %w[I919 I914 I905] }
@@ -63,8 +63,8 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
       .and_return(get_to_yes_blocking_reason_codes)
     allow(IdentityConfig.store).to receive(:ssa_proofing_agent_as_authoritative_source)
       .and_return(ssa_proofing_agent_as_authoritative_source)
-    allow(IdentityConfig.store).to receive(:ssa_socure_bypass_reason_codes)
-      .and_return(ssa_socure_bypass_reason_codes)
+    allow(IdentityConfig.store).to receive(:ssa_proofing_agent_socure_kyc_bypass_reason_codes)
+      .and_return(ssa_proofing_agent_socure_kyc_bypass_reason_codes)
 
     using_json = !response_body.is_a?(String)
 
@@ -211,7 +211,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
 
   describe 'bypassing reason codes for proofing agents' do
     let(:idv_socure_kyc_auto_failure_reason_codes) { %w[R901 R907 R995] }
-    let(:ssa_socure_bypass_reason_codes) { %w[R901 R907] }
+    let(:ssa_proofing_agent_socure_kyc_bypass_reason_codes) { %w[R901 R907] }
     let(:reason_codes) { %w[R901 R907] }
 
     context 'when the user is not a proofing agent' do
@@ -272,7 +272,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
         end
 
         context 'when the bypass list is empty' do
-          let(:ssa_socure_bypass_reason_codes) { [] }
+          let(:ssa_proofing_agent_socure_kyc_bypass_reason_codes) { [] }
 
           it 'is not successful' do
             expect(result.success).to eql(false)

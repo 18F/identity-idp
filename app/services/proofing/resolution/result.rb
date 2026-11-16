@@ -16,6 +16,7 @@ module Proofing
                   :reference,
                   :reason_codes,
                   :source_attribution,
+                  :ssa_bypassed_attributes,
                   :vendor_workflow
       def initialize(
         success: nil,
@@ -28,6 +29,7 @@ module Proofing
         reference: '',
         reason_codes: {},
         source_attribution: [],
+        ssa_bypassed_attributes: [],
         failed_result_can_pass_with_additional_verification: false,
         attributes_requiring_additional_verification: [],
         vendor_workflow: nil,
@@ -43,6 +45,7 @@ module Proofing
         @reference = reference
         @reason_codes = reason_codes
         @source_attribution = source_attribution
+        @ssa_bypassed_attributes = ssa_bypassed_attributes
         @failed_result_can_pass_with_additional_verification =
           failed_result_can_pass_with_additional_verification
         @attributes_requiring_additional_verification =
@@ -75,6 +78,7 @@ module Proofing
           attributes_requiring_additional_verification:
             attributes_requiring_additional_verification,
           source_attribution:,
+          ssa_bypassed_attributes:,
           vendor_name:,
           vendor_id:,
           vendor_workflow:,
