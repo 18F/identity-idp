@@ -7,7 +7,7 @@ class OpenidConnectConfigurationPresenter
     {
       acr_values_supported: Saml::Idp::Constants::VALID_AUTHN_CONTEXTS,
       claims_supported: claims_supported,
-      grant_types_supported: %w[authorization_code],
+      grant_types_supported:,
       response_types_supported: %w[code],
       scopes_supported: OpenidConnectAttributeScoper::VALID_SCOPES,
       subject_types_supported: %w[pairwise],
@@ -29,7 +29,19 @@ class OpenidConnectConfigurationPresenter
       token_endpoint: api_openid_connect_token_url,
       userinfo_endpoint: api_openid_connect_userinfo_url,
       end_session_endpoint: openid_connect_logout_url,
-    }
+      revocation_endpoint: (api_openid_connect_revoke_url if refresh_tokens_enabled?),
+    }.compact
+  end
+
+  def grant_types_supported
+    return %w[authorization_code] unless refresh_tokens_enabled?
+
+    %w[authorization_code refresh_token]
+  end
+
+  def refresh_tokens_enabled?
+    IdentityConfig.store.token_exchange_enabled &&
+      IdentityConfig.store.token_exchange_refresh_token_enabled
   end
 
   def crypto_configuration

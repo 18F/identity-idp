@@ -10,5 +10,6 @@ module TokenExchange
     STAGE_ACTOR_AUTHORIZATION = 'actor_authorization'
     STAGE_SUBJECT_TOKEN = 'subject_token'
     STAGE_DELEGATED_TOKEN = 'delegated_token'
+    STAGE_SUBJECT_TOKEN_REFRESH = 'subject_token_refresh'
   end
 end

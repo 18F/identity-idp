@@ -7832,6 +7832,55 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks a refresh token grant at the token endpoint, which trades a token exchange actor's
+  # refresh token for a new subject token and the next refresh token
+  # @param [Boolean] success Whether the refresh passed validation and returned a subject token
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [Hash] errors Any additional error information we have
+  # @param [String, nil] client_id Issuer of the actor making the request
+  # @param [String, nil] user_id UUID of the user the refresh token belongs to
+  # @param [Integer, nil] expires_in Time to expiration of the new subject token
+  # @param [String, nil] token_exchange_stage Token exchange flow stage
+  # @param [String, nil] token_exchange_resource Resource the family's subject tokens are for
+  # @param [String, nil] refresh_token_family_id Identifier of the sign-in's refresh token family
+  # @param [Boolean] reuse_detected Whether a used refresh token was presented, which revokes its
+  #   family
+  # @param [String, nil] subject_token_fingerprint Fingerprint of the new subject token
+  # @param [String, nil] oauth_error_code Protocol-level OAuth error code returned for
+  #   unsuccessful requests
+  def openid_connect_refresh_token(
+    success:,
+    client_id: nil,
+    user_id: nil,
+    expires_in: nil,
+    errors: nil,
+    error_details: nil,
+    token_exchange_stage: nil,
+    token_exchange_resource: nil,
+    refresh_token_family_id: nil,
+    reuse_detected: false,
+    subject_token_fingerprint: nil,
+    oauth_error_code: nil,
+    **extra
+  )
+    track_event(
+      :openid_connect_refresh_token,
+      success:,
+      errors:,
+      error_details:,
+      client_id:,
+      user_id:,
+      expires_in:,
+      token_exchange_stage:,
+      token_exchange_resource:,
+      refresh_token_family_id:,
+      reuse_detected:,
+      subject_token_fingerprint:,
+      oauth_error_code:,
+      **extra,
+    )
+  end
+
   # Tracks when openid authorization request is made
   # @param [Boolean] success Whether form validations were succcessful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
@@ -7946,6 +7995,35 @@ module AnalyticsEvents
       token_exchange_resource:,
       subject_token_fingerprint:,
       dpop_bound:,
+      **extra,
+    )
+  end
+
+  # Tracks an RFC 7009 token revocation request from a token exchange actor
+  # @param [Boolean] success Whether the request was well formed; the endpoint answers success
+  #   for tokens it doesn't recognize, as RFC 7009 requires
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [String, nil] client_id Issuer of the actor making the request
+  # @param [String, nil] token_type_hint The token_type_hint the actor sent
+  # @param [Boolean] revoked Whether a refresh token family was revoked
+  # @param [String, nil] refresh_token_family_id Identifier of the revoked family
+  def openid_connect_token_revocation(
+    success:,
+    revoked:,
+    client_id: nil,
+    token_type_hint: nil,
+    refresh_token_family_id: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :openid_connect_token_revocation,
+      success:,
+      error_details:,
+      client_id:,
+      token_type_hint:,
+      revoked:,
+      refresh_token_family_id:,
       **extra,
     )
   end
@@ -9260,6 +9338,13 @@ module AnalyticsEvents
         **extra,
       },
     )
+  end
+
+  # Tracks the hourly deletion of token exchange refresh tokens whose family has passed its
+  # absolute lifetime
+  # @param [Integer] deleted_count Number of refresh token rows deleted
+  def token_exchange_refresh_tokens_expired(deleted_count:, **extra)
+    track_event(:token_exchange_refresh_tokens_expired, deleted_count:, **extra)
   end
 
   # Tracks when a user visits TOTP device setup

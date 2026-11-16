@@ -99,8 +99,27 @@ class OpenidConnectTokenForm
       access_token: issued_token.token,
       token_type: dpop_binding_required? ? 'DPoP' : 'Bearer',
       expires_in: issued_token.expires_in,
+      refresh_token: issue_refresh_token&.token,
       scope: identity.scope,
-    }
+    }.compact
+  end
+
+  # Only a key-bound subject token gets a refresh token, bound to the same key (RFC 9449 §5).
+  # The family's lifetime counts from the person's last authentication, not from now, so a
+  # refresh can never keep an actor acting longer than a sign-in could.
+  def issue_refresh_token
+    return unless IdentityConfig.store.token_exchange_refresh_token_enabled
+    return if bound_thumbprint.blank?
+
+    session_accessor = OutOfBandSessionAccessor.new(identity.rails_session_id)
+    TokenExchange::RefreshTokenIssuer.issue(
+      identity:,
+      actor_return_log_id: actor_handoff&.actor_return_log_id,
+      resource: token_exchange_resource,
+      dpop_jkt: bound_thumbprint,
+      authenticated_at: session_accessor.authentication_event_at ||
+                        identity.last_authenticated_at || Time.zone.now,
+    )
   end
 
   def token_exchange_authorization_code?

@@ -801,6 +801,39 @@ RSpec.describe OpenidConnectTokenForm do
           subject_token = TokenExchange::SubjectToken.load(response[:access_token])
           expect(subject_token.dpop_jkt).to eq(stored_thumbprint)
         end
+
+        it 'issues no refresh token while refresh tokens are disabled' do
+          expect(form.response).not_to have_key(:refresh_token)
+          expect(TokenExchangeRefreshToken.count).to eq(0)
+        end
+
+        context 'when refresh tokens are enabled' do
+          let(:authentication_event_at) { 20.minutes.ago.change(usec: 0) }
+
+          before do
+            allow(IdentityConfig.store).to receive(:token_exchange_refresh_token_enabled)
+              .and_return(true)
+            allow_any_instance_of(OutOfBandSessionAccessor)
+              .to receive(:authentication_event_at).and_return(authentication_event_at)
+          end
+
+          it 'issues a refresh token bound to the same key, capped from the authentication' do
+            response = form.response
+            record = TokenExchangeRefreshToken.for_token(response[:refresh_token])
+
+            expect(record).to have_attributes(
+              user_id: user.id,
+              actor_issuer: service_provider.issuer,
+              identity_uuid: identity.uuid,
+              scope:,
+              resource:,
+              dpop_jkt: stored_thumbprint,
+              authenticated_at: authentication_event_at,
+              family_expires_at: authentication_event_at +
+                IdentityConfig.store.token_exchange_refresh_token_max_lifetime_in_minutes.minutes,
+            )
+          end
+        end
       end
 
       context 'without a proof' do
@@ -1041,6 +1074,14 @@ RSpec.describe OpenidConnectTokenForm do
           expires_in: 600,
           scope:,
         )
+      end
+
+      it 'issues no refresh token for a bearer subject token, even with refresh tokens enabled' do
+        allow(IdentityConfig.store).to receive(:token_exchange_refresh_token_enabled)
+          .and_return(true)
+
+        expect(response).not_to have_key(:refresh_token)
+        expect(TokenExchangeRefreshToken.count).to eq(0)
       end
 
       it 'stores the subject token metadata in Redis' do

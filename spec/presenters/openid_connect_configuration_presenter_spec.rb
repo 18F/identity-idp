@@ -38,5 +38,23 @@ RSpec.describe OpenidConnectConfigurationPresenter do
         expect(configuration[:claims_supported]).to match_array(claims)
       end
     end
+
+    it 'advertises neither refresh tokens nor revocation while refresh tokens are disabled' do
+      expect(configuration).not_to have_key(:revocation_endpoint)
+      expect(configuration[:grant_types_supported]).to eq(%w[authorization_code])
+    end
+
+    context 'when token exchange refresh tokens are enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:token_exchange_refresh_token_enabled)
+          .and_return(true)
+      end
+
+      it 'advertises the refresh token grant and the revocation endpoint' do
+        expect(configuration[:grant_types_supported]).to eq(%w[authorization_code refresh_token])
+        expect(configuration[:revocation_endpoint]).to eq(api_openid_connect_revoke_url)
+      end
+    end
   end
 end

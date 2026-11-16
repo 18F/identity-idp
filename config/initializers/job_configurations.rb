@@ -59,6 +59,12 @@ else
         cron: cron_1h,
         args: -> { [Time.zone.now] },
       },
+      # Delete token exchange refresh tokens whose family has passed its absolute lifetime
+      expire_token_exchange_refresh_tokens: {
+        class: 'ExpireTokenExchangeRefreshTokensJob',
+        cron: cron_1h,
+        args: -> { [Time.zone.now] },
+      },
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
         class: 'Reports::TotalMonthlyAuthsReport',

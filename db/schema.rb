@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_20_190050) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_09_190000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -713,6 +713,31 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_190050) do
     t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.index ["digested_base_email"], name: "index_suspended_emails_on_digested_base_email"
     t.index ["email_address_id"], name: "index_suspended_emails_on_email_address_id"
+  end
+
+  create_table "token_exchange_refresh_tokens", force: :cascade do |t|
+    t.string "token_digest", null: false, comment: "sensitive=true"
+    t.string "family_id", null: false, comment: "sensitive=false"
+    t.bigint "user_id", null: false, comment: "sensitive=false"
+    t.string "actor_issuer", null: false, comment: "sensitive=false"
+    t.string "identity_uuid", null: false, comment: "sensitive=false"
+    t.string "scope", comment: "sensitive=false"
+    t.integer "ial", comment: "sensitive=false"
+    t.bigint "actor_return_log_id", comment: "sensitive=false"
+    t.string "resource", comment: "sensitive=false"
+    t.string "dpop_jkt", null: false, comment: "sensitive=false"
+    t.datetime "authenticated_at", null: false, comment: "sensitive=false"
+    t.datetime "family_expires_at", null: false, comment: "sensitive=false"
+    t.datetime "expires_at", null: false, comment: "sensitive=false"
+    t.datetime "used_at", comment: "sensitive=false"
+    t.datetime "revoked_at", comment: "sensitive=false"
+    t.string "revocation_reason", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.index ["family_expires_at"], name: "index_token_exchange_refresh_tokens_on_family_expires_at"
+    t.index ["family_id"], name: "index_token_exchange_refresh_tokens_on_family_id"
+    t.index ["token_digest"], name: "index_token_exchange_refresh_tokens_on_token_digest", unique: true
+    t.index ["user_id", "actor_issuer"], name: "idx_te_refresh_tokens_user_actor"
   end
 
   create_table "user_consent_sts", comment: "Records of user consent for STS token exchange flows", force: :cascade do |t|

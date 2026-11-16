@@ -60,6 +60,7 @@ class User < ApplicationRecord
            class_name: 'UserConsentSts',
            inverse_of: :user,
            dependent: :destroy
+  has_many :token_exchange_refresh_tokens, dependent: :delete_all
 
   has_one :pending_in_person_enrollment,
           -> { where(status: :pending).order(created_at: :desc) },

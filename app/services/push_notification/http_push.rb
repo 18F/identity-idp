@@ -19,6 +19,9 @@ module PushNotification
     end
 
     def deliver
+      # Before the push check: revocation doesn't depend on delivering the event to anyone.
+      TokenExchange::RefreshTokenRevoker.revoke_for_security_event(event)
+
       return unless IdentityConfig.store.push_notifications_enabled
 
       event.user

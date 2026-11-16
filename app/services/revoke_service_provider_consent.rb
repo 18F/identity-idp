@@ -10,5 +10,9 @@ class RevokeServiceProviderConsent
 
   def call
     identity.update!(deleted_at: now, verified_attributes: nil)
+    TokenExchange::RefreshTokenRevoker.revoke_for_actor(
+      user_id: identity.user_id,
+      actor_issuer: identity.service_provider,
+    )
   end
 end
