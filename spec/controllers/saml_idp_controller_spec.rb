@@ -1021,6 +1021,54 @@ RSpec.describe SamlIdpController do
       end
     end
 
+    context 'when a class ref hides a verified-identity value behind whitespace' do
+      let(:user) { create(:profile, :active, :verified).user }
+      let(:hidden_value) do
+        "#{Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF} " \
+        "#{Saml::Idp::Constants::IAL_VERIFIED_ACR}"
+      end
+      let(:injected_settings) do
+        saml_settings(
+          overrides: {
+            authn_context: [
+              hidden_value,
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}email,first_name,ssn,dob",
+            ],
+            security: { authn_requests_signed: false, embed_sign: false },
+          },
+        )
+      end
+
+      before do
+        stub_sign_in(user)
+        stub_analytics
+      end
+
+      it 'refuses the request as an unauthorized authentication context' do
+        saml_get_auth(injected_settings)
+
+        expect(controller).to render_template('saml_idp/auth/error')
+        expect(response.status).to eq(400)
+        expect(response.body).to include(t('errors.messages.unauthorized_authn_context'))
+        expect(response.body).not_to include('ssn')
+        expect(@analytics).to have_logged_event(
+          'SAML Auth',
+          hash_including(
+            success: false,
+            error_details: { authn_context: { unauthorized_authn_context: true } },
+          ),
+        )
+      end
+
+      it 'does not link the identity at the verified level' do
+        saml_get_auth(injected_settings)
+
+        identity = user.identities.find_by(service_provider: saml_settings.issuer)
+        expect(identity&.ial).not_to eq(2)
+      end
+    end
+
     context 'authn_context is invalid' do
       let(:unknown_value) do
         'http://idmanagement.gov/ns/assurance/loa/5'
