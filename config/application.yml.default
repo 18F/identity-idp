@@ -258,6 +258,7 @@ idv_proofing_agent_bypass_wrong_phone_type_enabled: false
 idv_proofing_agent_config: '[]'
 idv_proofing_agent_confirmation_url: ''
 idv_proofing_agent_enabled: false
+idv_proofing_agent_lexisnexis_phone_finder_bypassed_items: '[]'
 idv_proofing_agent_passport_enabled: false
 idv_proofing_agent_phone_vendor: mock
 idv_proofing_agent_proof_user_with_enhanced_profile: false

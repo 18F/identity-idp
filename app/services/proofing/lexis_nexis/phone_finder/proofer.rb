@@ -7,7 +7,6 @@ module Proofing
         include AbTestingConcern
 
         NOT_VERIFIED_TO_NAME = 'Input phone number could not be verified to name'
-        BYPASSED_ITEMS = %w[VOIPPhone].freeze
 
         attr_reader :config
 
@@ -87,8 +86,12 @@ module Proofing
           failed_items = items.select { |item| item['ItemStatus'] == 'fail' }
 
           failed_items.any? && failed_items.all? do |item|
-            BYPASSED_ITEMS.include?(item['ItemName'])
+            bypassed_items.include?(item['ItemName'])
           end
+        end
+
+        def bypassed_items
+          IdentityConfig.store.idv_proofing_agent_lexisnexis_phone_finder_bypassed_items
         end
 
         def parse_verification_errors(verification_response)

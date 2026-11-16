@@ -270,6 +270,7 @@ module IdentityConfig
     config.add(:idv_proofing_agent_config, type: :json)
     config.add(:idv_proofing_agent_confirmation_url, type: :string)
     config.add(:idv_proofing_agent_enabled, type: :boolean)
+    config.add(:idv_proofing_agent_lexisnexis_phone_finder_bypassed_items, type: :json)
     config.add(:idv_proofing_agent_passport_enabled, type: :boolean)
     config.add(:idv_proofing_agent_phone_vendor, type: :symbol, enum: [:mock, :lexis_nexis, :lexis_nexis_ddp, :socure])
     config.add(:idv_proofing_agent_proof_user_with_enhanced_profile, type: :boolean)

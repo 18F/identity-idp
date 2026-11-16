@@ -346,6 +346,12 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
           context 'when bypasses_enabled is true' do
             let(:bypasses_enabled) { true }
 
+            before do
+              allow(IdentityConfig.store).to receive(
+                :idv_proofing_agent_lexisnexis_phone_finder_bypassed_items,
+              ).and_return(['VOIPPhone'])
+            end
+
             context 'when only VOIP phone failed' do
               it 'returns a successful result' do
                 result = proofer.proof(proofing_applicant)

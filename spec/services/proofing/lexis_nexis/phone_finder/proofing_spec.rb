@@ -141,6 +141,9 @@ RSpec.describe Proofing::LexisNexis::PhoneFinder::Proofer do
         end
 
         before do
+          allow(IdentityConfig.store).to receive(
+            :idv_proofing_agent_lexisnexis_phone_finder_bypassed_items,
+          ).and_return(['VOIPPhone'])
           stub_request(:post, verification_request.url)
             .to_return(body: voip_only_fail_response_json, status: 200)
         end
