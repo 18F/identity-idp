@@ -706,6 +706,36 @@ RSpec.describe Idv::Session do
     end
   end
 
+  describe '#identity_evidence_present?' do
+    let(:in_person_pii) { { pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup } }
+
+    it 'is true when the remote flow captured a document' do
+      subject.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
+
+      expect(subject.identity_evidence_present?).to eq(true)
+    end
+
+    context 'with in-person data in the session' do
+      let(:user_session) { { 'idv/in_person' => in_person_pii } }
+
+      it 'is true while the enrollment that will carry the data is still being established' do
+        create(:in_person_enrollment, :establishing, user: user)
+
+        expect(subject.identity_evidence_present?).to eq(true)
+      end
+
+      it 'is false once that enrollment has been cancelled' do
+        create(:in_person_enrollment, :establishing, user: user).cancel
+
+        expect(subject.identity_evidence_present?).to eq(false)
+      end
+    end
+
+    it 'is false with neither a document nor in-person data' do
+      expect(subject.identity_evidence_present?).to eq(false)
+    end
+  end
+
   describe '#inherited_proofed?' do
     context 'when clear1 is not allowed and not verified' do
       it 'returns false' do

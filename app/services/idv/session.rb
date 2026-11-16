@@ -399,6 +399,16 @@ module Idv
       verify_by_mail? || phone_confirmed?
     end
 
+    # The evidence the profile will be built from, still in hand at the password step: a document
+    # the remote flow captured, or in-person data together with the enrollment that will carry it
+    # to the Post Office, which must still be open. The steps after document capture are reached
+    # through flags on this session; this is the check that the flags still rest on something, so
+    # a session whose enrollment was cancelled along the way cannot mint a profile from typed data.
+    def identity_evidence_present?
+      remote_document_capture_complete? ||
+        (ipp_document_capture_complete? && current_user.has_establishing_in_person_enrollment?)
+    end
+
     def inherited_proofed?
       !!clear1_allowed && !!clear1_verified
     end

@@ -101,6 +101,40 @@ RSpec.describe Idv::HybridHandoffController do
       )
     end
 
+    context 'with an in-person enrollment being established' do
+      let(:in_person_proofing) { true }
+      let(:ipp_opt_in_enabled) { true }
+      let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user) }
+
+      before do
+        subject.idv_session.skip_doc_auth_from_how_to_verify = false
+        subject.user_session['idv/in_person'] = {
+          pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup,
+        }
+        subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+        subject.idv_session.mark_verify_info_step_complete!
+      end
+
+      it 'cancels the enrollment and clears the steps that rested on it' do
+        get :show
+
+        expect(enrollment.reload.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
+        expect(subject.idv_session.has_pii_from_user_in_session?).to eq(false)
+        expect(subject.idv_session.ssn).to be_nil
+        expect(subject.idv_session.verify_info_step_complete?).to be_falsey
+      end
+    end
+
+    context 'with no in-person enrollment' do
+      it 'leaves the steps in the session as they are' do
+        subject.idv_session.mark_verify_info_step_complete!
+
+        get :show
+
+        expect(subject.idv_session.verify_info_step_complete?).to eq(true)
+      end
+    end
+
     context 'agreement step is not complete' do
       before do
         subject.idv_session.idv_consent_given_at = nil

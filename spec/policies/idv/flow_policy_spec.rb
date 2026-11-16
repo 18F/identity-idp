@@ -338,6 +338,28 @@ RSpec.describe 'Idv::FlowPolicy' do
           expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).not_to be
         end
       end
+
+      context 'in-person applicant who passed the phone step' do
+        before do
+          idv_session.opted_in_to_in_person_proofing = true
+          stub_up_to(:ipp_verify_info, idv_session: idv_session)
+          idv_session.mark_phone_step_started!
+          idv_session.mark_phone_step_complete!
+        end
+
+        it 'returns enter_password while the enrollment is still being established' do
+          allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
+
+          expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).to be
+        end
+
+        it 'refuses enter_password once the enrollment has been cancelled' do
+          allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(false)
+
+          expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).not_to be
+          expect(subject.info_for_latest_step.key).not_to eq(:enter_password)
+        end
+      end
     end
 
     context 'preconditions for personal_key are present' do

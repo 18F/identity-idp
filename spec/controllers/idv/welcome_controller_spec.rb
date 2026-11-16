@@ -62,6 +62,35 @@ RSpec.describe Idv::WelcomeController do
         expect(user.establishing_in_person_enrollment).to be_blank
         expect(user.pending_in_person_enrollment).to be_blank
       end
+
+      it 'clears the verification steps that rested on the cancelled enrollment' do
+        subject.user_session['idv/in_person'] = {
+          pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup,
+        }
+        subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+        subject.idv_session.mark_verify_info_step_complete!
+        subject.idv_session.mark_phone_step_started!
+        subject.idv_session.mark_phone_step_complete!
+
+        get :show
+
+        expect(subject.idv_session.has_pii_from_user_in_session?).to eq(false)
+        expect(subject.idv_session.ssn).to be_nil
+        expect(subject.idv_session.verify_info_step_complete?).to be_falsey
+        expect(subject.idv_session.phone_confirmed?).to eq(false)
+      end
+    end
+
+    context 'with no in-person enrollment to cancel' do
+      it 'leaves the verification steps in the session as they are' do
+        subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
+        subject.idv_session.mark_verify_info_step_complete!
+
+        get :show
+
+        expect(subject.idv_session.remote_document_capture_complete?).to eq(true)
+        expect(subject.idv_session.verify_info_step_complete?).to eq(true)
+      end
     end
   end
 

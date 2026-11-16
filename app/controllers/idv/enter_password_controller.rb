@@ -101,7 +101,7 @@ module Idv
           elsif idv_session.inherited_proofed?
             IdentityConfig.store.idv_clear1_enabled
           else
-            idv_session.phone_or_address_step_complete?
+            idv_session.phone_or_address_step_complete? && idv_session.identity_evidence_present?
           end
         end,
         undo_step: ->(idv_session:, user:) {},
