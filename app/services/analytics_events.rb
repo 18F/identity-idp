@@ -6447,7 +6447,8 @@ module AnalyticsEvents
   # be verified by another vendor
   # @param [Array<String>, nil] source_attribution List of sources that contributed to the
   # resolution proofing result
-  # @param [Array<String>, nil] ssa_bypassed_attributes List of error reason codes that were bypassed due to ssa
+  # @param [Array<String>, nil] ssa_bypassed_attributes List of error reason codes that were
+  # bypassed due to ssa
   # @param [String, nil] vendor_name Vendor used
   # @param [String] vendor_id ID of vendor
   # @param [String] vendor_workflow ID of workflow or configuration the vendor used for this
