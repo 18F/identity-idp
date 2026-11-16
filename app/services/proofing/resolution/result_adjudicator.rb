@@ -15,16 +15,16 @@ module Proofing
                   :proofing_vendor
 
       def initialize(
-        resolution_result:, # InstantVerify
-        residential_resolution_result:, # InstantVerify Residential
-        phone_result:, # PhoneFinder PhoneRisk
+        resolution_result:,
+        residential_resolution_result:,
+        phone_result:,
         ipp_enrollment_in_progress:,
-        device_profiling_result:, # ThreatMetrix
+        device_profiling_result:,
         ipp_current_address_matches_id:,
         applicant_pii:,
         precheck_phone_number:,
-        hybrid_mobile_device_profiling_result: nil, # ThreatMetrix (Hybrid Mobile)
-        proofing_vendor: nil # resolution vendor that produced resolution_result
+        hybrid_mobile_device_profiling_result: nil,
+        proofing_vendor: nil
       )
         @resolution_result = resolution_result
         @ipp_enrollment_in_progress = ipp_enrollment_in_progress
@@ -32,7 +32,7 @@ module Proofing
         @hybrid_mobile_device_profiling_result = hybrid_mobile_device_profiling_result
         @residential_resolution_result = residential_resolution_result
         @phone_result = phone_result
-        @ipp_current_address_matches_id = ipp_current_address_matches_id # boolean(nil outside IPP)
+        @ipp_current_address_matches_id = ipp_current_address_matches_id
         @applicant_pii = applicant_pii
         @precheck_phone_number = precheck_phone_number
         @proofing_vendor = proofing_vendor
@@ -115,19 +115,18 @@ module Proofing
         elsif device_profiling_result.success?
           [true, :device_profiling_result_pass]
         else
-          # a non-passing review status is handled downstream, so is considered a succcess
+          # A non-passing review status is handled downstream, so it passes this stage.
           [true, :device_profiling_result_review_required]
         end
       end
 
       def hybrid_mobile_device_profiling_result_and_reason
-        unless hybrid_mobile_device_profiling_result
+        if hybrid_mobile_device_profiling_result.nil?
           if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
             return [true, :hybrid_mobile_device_check_skipped]
-          else
-            return [true,
-                    :hybrid_mobile_device_profiling_not_enabled]
           end
+
+          return [true, :hybrid_mobile_device_profiling_not_enabled]
         end
 
         if hybrid_mobile_device_profiling_result.exception?
@@ -135,7 +134,7 @@ module Proofing
         elsif hybrid_mobile_device_profiling_result.success?
           [true, :hybrid_mobile_device_profiling_result_pass]
         else
-          # a non-passing review status is handled downstream, so is considered a success
+          # A non-passing review status is handled downstream, so it passes this stage.
           [true, :hybrid_mobile_device_profiling_result_review_required]
         end
       end
@@ -152,37 +151,19 @@ module Proofing
           [false, :fail_resolution_skip_state_id]
         elsif resolution_result.success?
           [true, :pass_resolution_and_state_id]
-        elsif state_id_attributes_cover_resolution_failures?
+        elsif aamva_covers_resolution_failures?
           [true, :state_id_covers_failed_resolution]
         else
           [false, :fail_resolution_without_state_id_coverage]
         end
       end
 
-      def state_id_attributes_cover_resolution_failures?
-        return false unless get_to_yes_enabled_for_vendor?
-        return false unless resolution_result.failed_result_can_pass_with_additional_verification?
-
-        failed_resolution_attributes =
-          resolution_result.attributes_requiring_additional_verification
-        (failed_resolution_attributes.to_a - passed_state_id_attributes.map(&:to_sym)).empty?
+      def aamva_covers_resolution_failures?
+        aamva_coverage_policy.covers?(resolution_result:, proofing_vendor:)
       end
 
-      # The "get to yes" feature is enabled per resolution vendor, since each vendor reports failed
-      # attributes differently. A nil vendor won't match the allowlist, so it stays disabled.
-      def get_to_yes_enabled_for_vendor?
-        IdentityConfig.store.idv_aamva_get_to_yes_enabled_vendors
-          .include?(proofing_vendor.to_s)
-      end
-
-      # AAMVA verifies the address printed on the identity document. If the user edited their
-      # address afterwards, resolution proofed a different address than the one AAMVA verified,
-      # so the AAMVA response can no longer cover an address failure.
-      def passed_state_id_attributes
-        attributes = applicant_pii[:aamva_verified_attributes].to_a
-        return attributes unless applicant_pii[:address_edited] == true
-
-        attributes.reject { |attribute| attribute.to_sym == :address }
+      def aamva_coverage_policy
+        @aamva_coverage_policy ||= AamvaCoveragePolicy.from_applicant_pii(applicant_pii)
       end
 
       def biographical_info
@@ -219,7 +200,7 @@ module Proofing
       def state_id_verified_attributes
         return {} if applicant_pii[:aamva_verified_attributes].blank?
 
-        { state_id_verified_attributes: passed_state_id_attributes }
+        { state_id_verified_attributes: aamva_coverage_policy.usable_verified_attributes }
       end
     end
   end
