@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
   let(:dob) { '1980-01-01' }
   let(:ssn) { '123-45-6789' }
+  let(:ssn_hash_salt) { 'test-threatmetrix-ssn-hash-salt' }
   let(:applicant) do
     {
       first_name: 'Testy',
@@ -39,6 +40,8 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
       .and_return('test-policy')
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_authentication_policy)
       .and_return('test-authentication-policy')
+    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_ssn_hash_salt)
+      .and_return(ssn_hash_salt)
   end
 
   describe '#body' do
@@ -46,6 +49,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
       let(:parsed_body) do
         JSON.parse(subject.body, symbolize_names: true)
       end
+      let(:ssn_hash) { parsed_body[:ssn_hash] }
 
       it 'returns a properly formed request body' do
         response_json = JSON.parse(subject.body)
@@ -53,14 +57,29 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
         expect(response_json).to eq(expected_json)
       end
 
-      it 'hashes the normalized SSN with SHA-256' do
-        expect(parsed_body[:ssn_hash]).to eq(
-          OpenSSL::Digest::SHA256.hexdigest('123456789'),
+      it 'hashes the normalized SSN with salted HMAC-SHA-256' do
+        expect(ssn_hash).to eq(
+          OpenSSL::HMAC.hexdigest('SHA256', ssn_hash_salt, '123456789'),
         )
+      end
+
+      it 'does not send the unsalted SSN hash' do
+        expect(ssn_hash).not_to eq(OpenSSL::Digest::SHA256.hexdigest('123456789'))
+      end
+
+      context 'with an unformatted SSN' do
+        let(:ssn) { '123456789' }
+
+        it 'generates the same hash as the formatted SSN' do
+          expect(ssn_hash).to eq(
+            OpenSSL::HMAC.hexdigest('SHA256', ssn_hash_salt, '123456789'),
+          )
+        end
       end
 
       context 'without an SSN' do
         let(:ssn) { nil }
+        let(:ssn_hash_salt) { nil }
 
         it 'sets the SSN fields to empty strings' do
           expect(parsed_body).to include(
@@ -79,6 +98,28 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
             national_id_number: '',
             national_id_type: '',
             ssn_hash: '',
+          )
+        end
+      end
+
+      context 'without an SSN hash salt' do
+        let(:ssn_hash_salt) { nil }
+
+        it 'raises a configuration error' do
+          expect { subject.body }.to raise_error(
+            RuntimeError,
+            'ThreatMetrix SSN hash salt is not configured',
+          )
+        end
+      end
+
+      context 'with a blank SSN hash salt' do
+        let(:ssn_hash_salt) { '' }
+
+        it 'raises a configuration error' do
+          expect { subject.body }.to raise_error(
+            RuntimeError,
+            'ThreatMetrix SSN hash salt is not configured',
           )
         end
       end

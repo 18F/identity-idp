@@ -35,12 +35,20 @@ module Proofing
               session_id: applicant[:threatmetrix_session_id],
               national_id_number: normalized_ssn,
               national_id_type: normalized_ssn.present? ? 'US_SSN' : '',
-              ssn_hash: normalized_ssn.present? ?
-                OpenSSL::Digest::SHA256.hexdigest(normalized_ssn) : '',
+              ssn_hash: ssn_hash(normalized_ssn),
               input_ip_address: applicant[:request_ip],
               local_attrib_1: applicant[:uuid_prefix] || '',
               local_attrib_3: applicant[:uuid],
             }.to_json
+          end
+
+          def ssn_hash(normalized_ssn)
+            return '' if normalized_ssn.blank?
+
+            salt = IdentityConfig.store.lexisnexis_threatmetrix_ssn_hash_salt
+            raise 'ThreatMetrix SSN hash salt is not configured' if salt.blank?
+
+            OpenSSL::HMAC.hexdigest('SHA256', salt, normalized_ssn)
           end
 
           def metric_name
