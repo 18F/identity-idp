@@ -55,6 +55,8 @@ module Users
     def handle_valid_password
       send_password_reset_risc_event
       create_event_and_notify_user_about_password_change
+      # Every other session of this person ends now; this one continues under the new password.
+      TerminateUserSessions.new(user: current_user, except_session_id: session.id.to_s).call
       # Changing the password hash terminates the warden session, and bypass_sign_in ensures
       # that the user remains authenticated.
       bypass_sign_in current_user

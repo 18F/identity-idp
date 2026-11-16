@@ -63,6 +63,15 @@ RSpec.describe ResetPasswordForm, type: :model do
         allow(user).to receive(:reset_password_period_valid?).and_return(true)
       end
 
+      it 'ends every session recorded on the user\'s identity rows' do
+        terminate = instance_double(TerminateUserSessions, call: nil)
+        allow(TerminateUserSessions).to receive(:new).with(user:).and_return(terminate)
+
+        result
+
+        expect(terminate).to have_received(:call)
+      end
+
       it 'sets the user password to the submitted password' do
         expect { result }.to change { user.reload.encrypted_password_digest_multi_region }
 

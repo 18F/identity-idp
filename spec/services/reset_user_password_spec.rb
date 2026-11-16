@@ -14,6 +14,15 @@ RSpec.describe ResetUserPassword do
       expect { call }.to(change { user.reload.encrypted_password_digest })
     end
 
+    it 'ends every session recorded on the user\'s identity rows' do
+      terminate = instance_double(TerminateUserSessions, call: nil)
+      allow(TerminateUserSessions).to receive(:new).with(user:).and_return(terminate)
+
+      call
+
+      expect(terminate).to have_received(:call)
+    end
+
     it 'creates a password_invalidated user event' do
       expect { call }
         .to(change { user.events.password_invalidated.size }.from(0).to(1))

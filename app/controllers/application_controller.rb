@@ -417,6 +417,11 @@ class ApplicationController < ActionController::Base
   def confirm_two_factor_authenticated
     authenticate_user!(force: true)
 
+    # A suspended person is sent to the please-call page whatever they ask for, including the
+    # second-factor verification and setup pages that this check would otherwise route them to.
+    handle_suspended_user
+    return if performed?
+
     if personal_key_mfa_verification_required?
       return redirect_to login_two_factor_personal_key_url
     elsif !two_factor_enabled?

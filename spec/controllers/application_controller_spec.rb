@@ -324,6 +324,17 @@ RSpec.describe ApplicationController do
         expect(response).to redirect_to user_two_factor_authentication_url
       end
     end
+
+    context 'the account is suspended' do
+      it 'sends a password-authenticated user to the please-call page instead of MFA' do
+        user = create(:user, :fully_registered, :suspended)
+        sign_in_before_2fa(user)
+
+        get :index
+
+        expect(response).to redirect_to user_please_call_url
+      end
+    end
   end
 
   describe '#after_sign_in_path_for' do
