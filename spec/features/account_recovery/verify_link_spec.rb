@@ -39,17 +39,17 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
       expect(page).not_to have_css('input[name="token"]', visible: false)
 
       fill_in t('account.index.password'), with: user.password
-      click_button t('account_recovery.verify.continue')
+      click_button t('forms.buttons.submit.default')
 
       # Password confirmation gives the user a temporary pre-2FA session that
       # continues to replacement MFA setup.
       expect(page).to have_current_path(account_recovery_new_mfa_setup_path)
-      expect(page).to have_content t('account_recovery.new_mfa_setup.header')
-      expect(page).to have_content t('account_recovery.new_mfa_setup.intro')
+      expect(page).to have_content t('two_factor_authentication.two_factor_choice')
+      expect(page).to have_content t('account_recovery.new_mfa_setup.banner')
     end
 
     recovery_request = AccountRecoveryRequest.active_for_user(user)
-    expect(recovery_request.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
+    expect(recovery_request.state).to eq(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
     expect(recovery_request.password_verified_at).to be_present
   end
 
@@ -64,7 +64,7 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
       click_email_link_matching(%r{account_recovery/verify\?.*token})
 
       fill_in t('account.index.password'), with: user.password
-      click_button t('account_recovery.verify.continue')
+      click_button t('forms.buttons.submit.default')
 
       visit account_path
 
@@ -83,7 +83,7 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
       click_email_link_matching(%r{account_recovery/verify\?.*token})
 
       fill_in t('account.index.password'), with: 'not the right password'
-      click_button t('account_recovery.verify.continue')
+      click_button t('forms.buttons.submit.default')
 
       expect(page).to have_content t('errors.confirm_password_incorrect')
       expect(page).to have_content t('account_recovery.verify.header')
@@ -101,7 +101,6 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
 
     signin(user_email, user.password)
 
-    expect(page).to have_content t('account_recovery.pending.mfa_banner')
     expect(page).not_to have_link(href: account_recovery_start_path)
 
     visit account_recovery_start_path
@@ -122,7 +121,7 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
       click_email_link_matching(%r{account_recovery/verify\?.*token})
 
       fill_in t('account.index.password'), with: user.password
-      click_button t('account_recovery.verify.continue')
+      click_button t('forms.buttons.submit.default')
 
       visit root_path
 
@@ -176,16 +175,16 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
       expect(page).not_to have_css('input[name="token"]', visible: false)
 
       fill_in t('account.index.password'), with: 'wrong password'
-      click_button t('account_recovery.verify.continue')
+      click_button t('forms.buttons.submit.default')
 
       expect(page).to have_content(t('errors.confirm_password_incorrect'))
       expect(page).to have_current_path(account_recovery_verify_path)
 
       fill_in t('account.index.password'), with: user.password
-      click_button t('account_recovery.verify.continue')
+      click_button t('forms.buttons.submit.default')
 
-      expect(page).to have_content(t('account_recovery.new_mfa_setup.header'))
-      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
+      expect(page).to have_content(t('two_factor_authentication.two_factor_choice'))
+      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
 
       visit account_path
 

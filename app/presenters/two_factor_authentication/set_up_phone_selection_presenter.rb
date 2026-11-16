@@ -24,7 +24,7 @@ module TwoFactorAuthentication
     end
 
     def mfa_configuration_count
-      user.phone_configurations.count
+      MfaContext.new(user).phone_configurations.count
     end
 
     def disabled?

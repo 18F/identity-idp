@@ -10,24 +10,35 @@ RSpec.describe AccountRecovery::VerifyPassword do
   let!(:recovery_request) { create(:account_recovery_request, :link_verified, user: user) }
 
   describe '#call' do
-    it 'consumes the token once the password is correct' do
+    it 'consumes the token and suspends existing MFA once the password is correct' do
       result = service.call
 
       expect(result).to be_success
       expect(result.to_h).to eq(
         success: true,
-        recovery_state: AccountRecoveryRequest::PASSWORD_VERIFIED,
+        recovery_state: AccountRecoveryRequest::REPLACEMENT_MFA_PENDING,
       )
 
       recovery_request.reload
-      expect(recovery_request.state).to eq(AccountRecoveryRequest::PASSWORD_VERIFIED)
+      expect(recovery_request.state).to eq(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
       expect(recovery_request.password_verified_at).to be_present
       expect(recovery_request.token_fingerprint).to be_nil
       expect(recovery_request.token_expires_at).to be_nil
     end
 
-    it 'does not change existing MFA methods' do
+    it 'retains existing MFA methods but makes them unusable for sign in' do
       expect { service.call }.not_to change { user.reload.phone_configurations.count }
+      expect(user.phone_configurations.first.account_recovery_request_id).to eq(recovery_request.id)
+      expect(MfaContext.new(user).two_factor_enabled?).to eq(false)
+    end
+
+    it 'rolls the state change back if suspension fails' do
+      allow_any_instance_of(AccountRecovery::SuspendExistingMfa).to receive(:call)
+        .and_raise(ActiveRecord::RecordInvalid)
+
+      expect { service.call }.to raise_error(ActiveRecord::RecordInvalid)
+      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::LINK_VERIFIED)
+      expect(recovery_request).to be_token_valid
     end
 
     context 'with an incorrect password' do
