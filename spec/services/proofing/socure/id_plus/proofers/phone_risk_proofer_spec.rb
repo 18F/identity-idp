@@ -182,6 +182,15 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer do
               expect(result.success).to eql(false)
             end
           end
+
+          context 'when the risk and correlation scores are failing' do
+            let(:phonerisk_low) { false }
+            let(:name_phone_correlation_high) { false }
+
+            it 'is not successful' do
+              expect(result.success).to eql(false)
+            end
+          end
         end
       end
     end

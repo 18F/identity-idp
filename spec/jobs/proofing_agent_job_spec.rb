@@ -835,6 +835,8 @@ RSpec.describe ProofingAgentJob, type: :job do
 
     context 'when Socure phone risk returns a bypassed wrong phone type code (R613-R617)' do
       let(:socure_base_url) { 'https://socure.example.org/' }
+      let(:name_phone_correlation_score) { 0.99 }
+      let(:phone_risk_score) { 0.01 }
 
       before do
         allow(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
@@ -860,11 +862,11 @@ RSpec.describe ProofingAgentJob, type: :job do
               referenceId: 'socure-voip-ref-123',
               namePhoneCorrelation: {
                 reasonCodes: ['I618'],
-                score: 0.99,
+                score: name_phone_correlation_score,
               },
               phoneRisk: {
                 reasonCodes: ['R613'],
-                score: 0.01,
+                score: phone_risk_score,
                 signals: { phone: {} },
               },
               customerProfile: {
@@ -880,6 +882,19 @@ RSpec.describe ProofingAgentJob, type: :job do
         result = document_capture_session.reload.load_agent_proofed_user
         expect(result[:success]).to be true
         expect(result[:reason]).to be_nil
+      end
+
+      context 'when the risk and correlation scores are failing' do
+        let(:name_phone_correlation_score) { 0.01 }
+        let(:phone_risk_score) { 0.99 }
+
+        it 'stores a failed result' do
+          perform
+
+          result = document_capture_session.reload.load_agent_proofed_user
+          expect(result[:success]).to be false
+          expect(result[:reason]).to eq('phone_check_fail')
+        end
       end
     end
 
