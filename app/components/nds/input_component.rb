@@ -239,7 +239,7 @@ module NDS
     def input_aria
       aria = @input_options.fetch(:aria, {}).to_h.transform_keys(&:to_sym)
       describedby = [aria[:describedby], error_id].compact.join(' ')
-      invalid = aria.fetch(:invalid, error_message.present? || nil)
+      invalid = aria.fetch(:invalid, error_message.present?)
       aria.merge(describedby: describedby.presence, invalid: invalid).compact
     end
 
