@@ -2,7 +2,7 @@
   <% self.title = t('nds.webauthn_platform_recommended.heading') %>
   <%= render NDS::FormPageComponent.new(title: t('nds.webauthn_platform_recommended.heading')) do |page| %>
     <% page.with_media do %>
-      <span class="nds-status-icon">
+      <span class="nds-status-icon nds-status-icon--info">
         <%= render NDS::IconComponent.new(icon: :info, size: 24) %>
       </span>
     <% end %>

@@ -37,7 +37,9 @@ RSpec.describe 'users/webauthn_platform_recommended/new.html.erb' do
 
     it 'renders the form-page card with the info icon, heading and body' do
       expect(rendered).to have_selector('section.auth.auth--form-page')
-      expect(rendered).to have_css('.auth__header--with-media .nds-status-icon svg.usa-icon')
+      expect(rendered).to have_css(
+        '.auth__header--with-media .nds-status-icon.nds-status-icon--info svg.usa-icon',
+      )
       expect(rendered).to have_selector('h1', count: 1)
       expect(rendered).to have_selector(
         '.auth--form-page h1',
