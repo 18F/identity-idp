@@ -3,7 +3,7 @@
 <% if nds_layout? %>
   <%= render NDS::FormPageComponent.new(title: t('titles.piv_cac_setup.upsell')) do |page| %>
     <% page.with_media do %>
-      <span class="nds-status-icon">
+      <span class="nds-status-icon nds-status-icon--info">
         <%= render NDS::IconComponent.new(icon: :info, size: 24) %>
       </span>
     <% end %>
