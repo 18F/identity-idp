@@ -578,6 +578,16 @@ module Test
         ],
       ),
       Page.new(
+        key: 'idv-enter-dob-ssn',
+        title: 'Enter your SSN and date of birth (proofing agent)',
+        flow: IDV,
+        template: 'idv/enter_dob_ssn/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Information does not match', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'idv-enter-password',
         title: 'Re-enter your password',
         flow: IDV,

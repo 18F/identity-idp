@@ -1261,6 +1261,12 @@ module Test
       {}
     end
 
+    def setup_idv_enter_dob_ssn
+      @dob_ssn_form = Idv::DobSsnForm.new(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN)
+      flash.now[:error] = t('idv.failure.dob_ssn.warning') if params[:error].present?
+      ThreatMetrixHelper::NO_THREAT_METRIX_VARIABLES.dup
+    end
+
     def setup_idv_enter_password
       @nds_current_user = User.new
       @title = t('titles.idv.enter_password')
