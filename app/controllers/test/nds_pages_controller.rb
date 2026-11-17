@@ -834,6 +834,11 @@ module Test
       {}
     end
 
+    def setup_sign_up_cancel
+      @presenter = CancellationPresenter.new(referer: nil, url_options:)
+      {}
+    end
+
     def setup_mfa_setup
       user = build_mfa_user(configured: params[:second].present?)
       @nds_current_user = user
@@ -1345,6 +1350,20 @@ module Test
         completion_context: :new_sp,
         selected_email_id: nil,
       )
+      {}
+    end
+
+    def setup_select_email
+      @nds_current_user = User.new
+      @sp_name = 'Veterans Affairs'
+      @user_emails = [
+        EmailAddress.new(id: 1, email: DEV_USER_EMAIL),
+        EmailAddress.new(id: 2, email: 'nds-explorer-work@example.com'),
+      ]
+      @email_id = 1
+      @select_email_form = SelectEmailForm.new(user: @nds_current_user)
+      @can_add_email = params[:max].blank?
+      flash.now[:error] = t('email_address.not_found') if params[:error].present?
       {}
     end
 

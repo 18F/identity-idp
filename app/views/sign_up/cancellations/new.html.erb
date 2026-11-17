@@ -1,5 +1,42 @@
 <% self.title = t('headings.cancellations.prompt') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(title: t('headings.cancellations.prompt')) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--warning">
+        <%= render NDS::IconComponent.new(icon: :warning, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+      <div class="copy--muted text-left">
+        <p><strong><%= t('sign_up.cancel.warning_header') %></strong></p>
+        <ul class="usa-list">
+          <li><%= t('users.delete.bullet_1', app_name: APP_NAME) %></li>
+          <li><%= t('users.delete.bullet_2_basic') %></li>
+          <li><%= t('users.delete.bullet_3', app_name: APP_NAME) %></li>
+          <li><%= t('users.delete.bullet_4', app_name: APP_NAME) %></li>
+        </ul>
+      </div>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: sign_up_destroy_path,
+              method: :delete,
+              full_width: true,
+            ).with_content(t('forms.buttons.cancel')) %>
+        <%= render ButtonComponent.new(
+              url: @presenter.go_back_path,
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('links.go_back')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render StatusPageComponent.new(status: :warning) do |c| %>
   <% c.with_header { t('headings.cancellations.prompt') } %>
 
@@ -23,4 +60,5 @@
        url: @presenter.go_back_path,
        outline: true,
      ) { t('links.go_back') } %>
+<% end %>
 <% end %>
