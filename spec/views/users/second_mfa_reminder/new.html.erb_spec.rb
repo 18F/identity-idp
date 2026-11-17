@@ -43,7 +43,9 @@ RSpec.describe 'users/second_mfa_reminder/new.html.erb' do
 
     it 'renders the form-page card with the info status icon, heading and description' do
       expect(rendered).to have_selector('section.auth.auth--form-page')
-      expect(rendered).to have_css('.auth__header--with-media .nds-status-icon svg.usa-icon')
+      expect(rendered).to have_css(
+        '.auth__header--with-media .nds-status-icon.nds-status-icon--info svg.usa-icon',
+      )
       expect(rendered).to have_selector(
         '.auth--form-page h1',
         text: t('users.second_mfa_reminder.heading'),
