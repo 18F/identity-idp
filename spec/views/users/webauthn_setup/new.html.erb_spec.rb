@@ -35,7 +35,7 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
     assign(:presenter, presenter)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(presenter.page_title)
 
     render
@@ -300,6 +300,12 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
     context 'webauthn platform' do
       let(:platform_authenticator) { true }
 
+      it 'has a title matching the Add passkey heading' do
+        expect(view).to receive(:title=).with(t('nds.webauthn_setup.platform_heading'))
+
+        render
+      end
+
       it 'renders the Add passkey heading and the platform intro' do
         render
 
@@ -367,6 +373,12 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
           assign(:auto_trigger, true)
         end
 
+        it 'has a title matching the upsell heading' do
+          expect(view).to receive(:title=).with(t('webauthn_platform_setup.upsell'))
+
+          render
+        end
+
         it 'keeps the upsell heading, intro and button' do
           render
 
@@ -390,6 +402,12 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
 
     context 'non-platform webauthn' do
       let(:platform_authenticator) { false }
+
+      it 'has a title matching the security key heading' do
+        expect(view).to receive(:title=).with(t('headings.webauthn_setup.new'))
+
+        render
+      end
 
       it 'renders the security key heading and learn-more link' do
         render

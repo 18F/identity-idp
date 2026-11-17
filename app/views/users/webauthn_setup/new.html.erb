@@ -1,5 +1,3 @@
-<% self.title = @presenter.page_title %>
-
 <% if nds_layout? %>
   <% if in_account_creation_flow? %>
     <% content_for(:nds_header_progress) do %>
@@ -15,6 +13,7 @@
                    else
                      @presenter.heading
                    end %>
+  <% self.title = nds_heading %>
   <% nds_intro = if @platform_authenticator
                    tag.div(@presenter.intro_html, class: 'stack stack--gap-12')
                  else
@@ -161,6 +160,8 @@
   <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
   <%= javascript_packs_tag_once 'webauthn-setup' %>
 <% else %>
+<% self.title = @presenter.page_title %>
+
 <% if @platform_authenticator %>
   <%= image_tag asset_url('platform-authenticator.svg'), alt: '', width: 84, height: 95, class: 'margin-left-1 margin-bottom-2', aria: { hidden: true } %>
 <% end %>
