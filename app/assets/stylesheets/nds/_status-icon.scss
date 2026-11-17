@@ -1,0 +1,5 @@
+@use 'tokens/nds' as nds;
+
+.nds-status-icon--info {
+  background: nds.$primary-lightest;
+}
