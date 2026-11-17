@@ -8,7 +8,7 @@ RSpec.describe 'users/verify_password/new.html.erb' do
     allow(view).to receive(:current_user).and_return(user)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('idv.titles.enter_password'))
 
     render
@@ -35,6 +35,12 @@ RSpec.describe 'users/verify_password/new.html.erb' do
   context 'in the NDS layout' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
+    end
+
+    it 'has a title matching the password heading' do
+      expect(view).to receive(:title=).with(t('nds.verify_password.heading'))
+
+      render
     end
 
     it 'renders the form-page card with the heading and message' do

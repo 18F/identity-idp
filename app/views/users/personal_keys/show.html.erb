@@ -1,6 +1,5 @@
-<% self.title = t('titles.personal_key') %>
-
 <% if nds_layout? %>
+  <% self.title = t('forms.personal_key_partial.header') %>
   <%= simple_form_for('', url: manage_personal_key_path, html: { data: { nds_submit_gate: true } }) do |f| %>
     <%= render NDS::FormPageComponent.new(
           title: t('forms.personal_key_partial.header'),
@@ -78,6 +77,8 @@
 
   <%= javascript_packs_tag_once('clipboard_button_component', 'print_button_component', 'nds-auth-submit-gate', preload_links_header: false) %>
 <% else %>
+<% self.title = t('titles.personal_key') %>
+
 <%= render(
       'shared/personal_key',
       code: @code,

@@ -12,7 +12,7 @@ RSpec.describe 'reactivate_account/index.html.erb' do
     assign(:personal_key_generated_at, personal_key_generated_at)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.reactivate_account'))
 
     render
@@ -35,6 +35,12 @@ RSpec.describe 'reactivate_account/index.html.erb' do
   context 'in the NDS layout' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
+    end
+
+    it 'has a title matching the personal key question heading' do
+      expect(view).to receive(:title=).with(t('instructions.account.reactivate.with_key'))
+
+      render
     end
 
     it 'renders the form-page card with the personal key question and intro' do

@@ -10,7 +10,7 @@ RSpec.describe 'users/personal_keys/show.html.erb' do
     assign(:personal_key_generated_at, personal_key_generated_at)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.personal_key'))
 
     render
@@ -36,6 +36,12 @@ RSpec.describe 'users/personal_keys/show.html.erb' do
   context 'in the NDS layout' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
+    end
+
+    it 'has a title matching the personal key heading' do
+      expect(view).to receive(:title=).with(t('forms.personal_key_partial.header'))
+
+      render
     end
 
     it 'renders the form-page card with the heading and info' do
