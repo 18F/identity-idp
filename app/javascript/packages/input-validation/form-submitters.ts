@@ -68,15 +68,25 @@ export const bindFormSubmitters = (form: HTMLFormElement) => {
 
   form.dataset[FORM_SUBMITTERS_READY] = 'true';
   const sync = () => syncFormSubmitters(form);
+  const editedMemorableDates = new WeakSet<Element>();
+  const markMemorableDateEdited = ({ target }: Event) => {
+    const memorableDate = target instanceof Element && target.closest(MEMORABLE_DATE_SELECTOR);
+    if (memorableDate) {
+      editedMemorableDates.add(memorableDate);
+    }
+  };
   form.addEventListener('input', sync);
   form.addEventListener('change', sync);
+  form.addEventListener('input', markMemorableDateEdited);
+  form.addEventListener('change', markMemorableDateEdited);
+  // Untouched dates stay quiet on focusout so a layout shift can't make a click below miss.
   form.addEventListener('focusout', (event) => {
     const { target, relatedTarget } = event;
     const memorableDate = target instanceof Element && target.closest(MEMORABLE_DATE_SELECTOR);
     if (
       !memorableDate ||
-      (relatedTarget instanceof Node && memorableDate.contains(relatedTarget)) ||
-      consumeIgnoreBlurValidation(form)
+      !editedMemorableDates.has(memorableDate) ||
+      (relatedTarget instanceof Node && memorableDate.contains(relatedTarget))
     ) {
       return;
     }

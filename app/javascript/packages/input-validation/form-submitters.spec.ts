@@ -8,6 +8,7 @@ describe('bindFormSubmitters', () => {
     const errorMappings = {
       error_messages: {
         missing_month_day_year: 'Enter a date of birth',
+        missing_day_year: 'Enter a day and year',
         invalid_month: 'Enter a month between 1 and 12',
         invalid_day: 'Enter a day between 1 and 31',
         invalid_year: 'Enter a year with 4 numbers',
@@ -119,7 +120,39 @@ describe('bindFormSubmitters', () => {
       expect(month.getAttribute('aria-invalid')).to.equal('false');
     });
 
-    it('does not show an error when focus leaves for a disabled submit button', async () => {
+    it('does not show an error when focus leaves an untouched date', async () => {
+      const { month, after, error } = renderForm();
+
+      await userEvent.click(month);
+      await userEvent.click(after);
+
+      expect(document.activeElement).to.equal(after);
+      expect(error.classList.contains('display-none')).to.equal(true);
+      expect(month.getAttribute('aria-invalid')).to.equal('false');
+    });
+
+    it('shows a missing part error once focus leaves an edited date', async () => {
+      const { month, day, after, error } = renderForm();
+
+      await userEvent.type(month, '1');
+      await userEvent.click(after);
+
+      expect(error.textContent).to.equal('Enter a day and year');
+      expect(error.classList.contains('display-none')).to.equal(false);
+      expect(day.getAttribute('aria-invalid')).to.equal('true');
+    });
+
+    it('shows a missing date error on submit for an untouched date', () => {
+      const { month, error } = renderForm();
+
+      month.form!.checkValidity();
+
+      expect(error.textContent).to.equal('Enter a date of birth');
+      expect(error.classList.contains('display-none')).to.equal(false);
+      expect(month.getAttribute('aria-invalid')).to.equal('true');
+    });
+
+    it('shows the error when focus leaves for a disabled submit button', async () => {
       const fields = renderForm();
       const { month, year, error, button } = fields;
 
@@ -127,8 +160,9 @@ describe('bindFormSubmitters', () => {
       button.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
       year.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
 
-      expect(error.classList.contains('display-none')).to.equal(true);
-      expect(month.getAttribute('aria-invalid')).to.equal('false');
+      expect(error.textContent).to.equal('Enter a month between 1 and 12');
+      expect(error.classList.contains('display-none')).to.equal(false);
+      expect(month.getAttribute('aria-invalid')).to.equal('true');
     });
 
     it('clears the error when the date is edited', async () => {
@@ -137,6 +171,7 @@ describe('bindFormSubmitters', () => {
 
       await enterDate(fields, ['13', '40', '2030']);
       await userEvent.tab();
+      expect(error.classList.contains('display-none')).to.equal(false);
       await userEvent.type(month, '{Backspace}');
 
       expect(error.classList.contains('display-none')).to.equal(true);
