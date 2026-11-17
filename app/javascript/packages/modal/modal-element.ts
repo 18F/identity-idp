@@ -1,6 +1,8 @@
 class ModalElement extends HTMLElement {
   connectedCallback() {
     this.addEventListener('click', this.#handleDismiss);
+    // `cancel` doesn't bubble, so listen in the capture phase.
+    this.addEventListener('cancel', this.#handleCancel, true);
   }
 
   /**
@@ -79,6 +81,15 @@ class ModalElement extends HTMLElement {
     ) {
       this.hide();
     }
+  };
+
+  /**
+   * Escape fires `cancel` and closes the dialog natively, which skips `hide()` and leaves the
+   * body scroll lock in place. Route it through `hide()` instead.
+   */
+  #handleCancel = (event: Event) => {
+    event.preventDefault();
+    this.hide();
   };
 }
 
