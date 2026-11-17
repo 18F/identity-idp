@@ -1815,6 +1815,7 @@ openid_connect.authorization.errors.pkce_parameter_pair: code_challenge and code
 openid_connect.authorization.errors.prompt_invalid: No valid prompt values found. Please see our documentation at https://developers.login.gov/support/#oidc-no-prompt
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri is invalid. Please see our documentation at https://developers.login.gov/support/#oidc-invalid-redirect
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri does not match registered redirect_uri. Please see our documentation at https://developers.login.gov/support/#oidc-redirect-match
+openid_connect.authorization.errors.site_key_unavailable: Site keys are temporarily unavailable for this account. Please try again later.
 openid_connect.authorization.errors.unauthorized_scope: Unauthorized scope. Please see our documentation at https://developers.login.gov/support/#oidc-unauthotized-scope
 openid_connect.logout.confirm: Yes, sign out of %{app_name}
 openid_connect.logout.deny: No, go to my account page

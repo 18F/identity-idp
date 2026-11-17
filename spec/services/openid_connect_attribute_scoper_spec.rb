@@ -212,3 +212,14 @@ RSpec.describe OpenidConnectAttributeScoper do
     end
   end
 end
+
+RSpec.describe OpenidConnectAttributeScoper, 'the site_key scope' do
+  it 'is a valid scope at IAL1 and IAL2' do
+    expect(OpenidConnectAttributeScoper::VALID_SCOPES).to include('site_key')
+    expect(OpenidConnectAttributeScoper::VALID_IAL1_SCOPES).to include('site_key')
+  end
+
+  it 'is kept when requested' do
+    expect(OpenidConnectAttributeScoper.new('openid site_key').scopes).to include('site_key')
+  end
+end

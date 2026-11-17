@@ -24,6 +24,7 @@ class OpenidConnectAttributeScoper
     locale
     openid
     profile:verified_at
+    site_key
   ] + X509_SCOPES + IAL2_SCOPES).freeze
 
   VALID_IAL1_SCOPES = (%w[
@@ -32,6 +33,7 @@ class OpenidConnectAttributeScoper
     locale
     openid
     profile:verified_at
+    site_key
   ] + X509_SCOPES).freeze
 
   ATTRIBUTE_SCOPES_MAP = {

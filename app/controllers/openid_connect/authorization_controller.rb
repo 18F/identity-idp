@@ -11,6 +11,7 @@ module OpenidConnect
     include ForcedReauthenticationConcern
     include OpenidConnectRedirectConcern
     include SignInDurationConcern
+    include SiteKeyConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :set_devise_failure_redirect_for_concurrent_session_logout
@@ -28,6 +29,7 @@ module OpenidConnect
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
     before_action :confirm_user_is_not_suspended, only: :index
     before_action :confirm_password_change_not_required, only: :index
+    before_action :confirm_site_key_available, only: :index
 
     def index
       if resolved_authn_context_result.identity_proofing?
@@ -270,6 +272,40 @@ module OpenidConnect
     def prompt_for_password_if_ial2_request_and_pii_locked
       return unless pii_requested_but_locked?
       redirect_to capture_password_url
+    end
+
+    # The site key is released at the user-information endpoint, but the private key can only be
+    # opened while the person has entered their password. When a site key is requested and the
+    # key is not already unlocked in this session, the person is sent to the password page once;
+    # a second arrival of the same request with it still locked is answered with an error, so a
+    # sign-in path that never enters a password (PIV/CAC, a remembered device) cannot loop.
+    def confirm_site_key_available
+      return unless @authorize_form.site_key_requested?
+
+      if site_key_vault.status == :ready
+        user_session.delete(:site_key_password_prompt)
+      elsif user_session.delete(:site_key_password_prompt) == site_key_request_digest
+        redirect_user(site_key_error_redirect_uri)
+      else
+        user_session[:site_key_password_prompt] = site_key_request_digest
+        redirect_to capture_password_url
+      end
+    end
+
+    def site_key_request_digest
+      Digest::SHA256.hexdigest(
+        [@authorize_form.client_id, @authorize_form.state,
+         @authorize_form.scope.join(' ')].join("\n"),
+      )
+    end
+
+    def site_key_error_redirect_uri
+      UriService.add_params(
+        @authorize_form.redirect_uri,
+        error: 'temporarily_unavailable',
+        error_description: t('openid_connect.authorization.errors.site_key_unavailable'),
+        state: @authorize_form.state,
+      )
     end
 
     def store_request
