@@ -10,7 +10,7 @@ RSpec.describe 'mfa_confirmation/show.html.erb' do
     @content = MfaConfirmationPresenter.new
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.mfa_setup.suggest_second_mfa'))
 
     render
@@ -88,6 +88,12 @@ RSpec.describe 'mfa_confirmation/show.html.erb' do
       allow(view).to receive(:nds_layout?).and_return(true)
     end
 
+    it 'has a title matching the backup method heading' do
+      expect(view).to receive(:title=).with(t('nds.mfa_confirmation.heading'))
+
+      render
+    end
+
     it 'renders the form-page card with the backup method heading and copy' do
       render
 
@@ -136,6 +142,14 @@ RSpec.describe 'mfa_confirmation/show.html.erb' do
           show_skip_additional_mfa_link: false,
           webauthn_platform_set_up_successful: true,
         )
+      end
+
+      it 'has a title matching the face or touch unlock heading' do
+        expect(view).to receive(:title=).with(
+          t('titles.mfa_setup.face_touch_unlock_confirmation'),
+        )
+
+        render
       end
 
       it 'keeps the face or touch unlock heading and copy' do

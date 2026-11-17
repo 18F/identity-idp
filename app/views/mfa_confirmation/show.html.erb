@@ -1,7 +1,6 @@
-<% self.title = @content.heading %>
-
 <% if nds_layout? %>
   <% nds_heading = @content.webauthn_platform_set_up_successful? ? @content.heading : t('nds.mfa_confirmation.heading') %>
+  <% self.title = nds_heading %>
   <%= render NDS::FormPageComponent.new(title: nds_heading) do |page| %>
     <% page.with_body do %>
       <div class="copy copy--muted text-center">
@@ -27,6 +26,8 @@
     <% end %>
   <% end %>
 <% else %>
+<% self.title = @content.heading %>
+
 <%= image_tag asset_url('user-signup.svg'), width: 107, height: 119, alt: '', class: 'margin-bottom-4', aria: { hidden: true } %>
 
 <%= render PageHeadingComponent.new.with_content(@content.heading) %>
