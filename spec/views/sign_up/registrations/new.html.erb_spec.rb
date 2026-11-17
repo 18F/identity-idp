@@ -159,6 +159,16 @@ RSpec.describe 'sign_up/registrations/new.html.erb' do
       expect(rendered).to have_selector('.usa-input-group--floating input[type="email"]')
     end
 
+    it 'leads the email error with an aria-hidden error icon' do
+      @register_user_email_form.errors.add(:email, 'Email address is not valid')
+      render
+
+      error = Nokogiri::HTML(rendered).at_css('.usa-error-message')
+      expect(error.element_children.first&.matches?('svg.usa-icon[aria-hidden="true"]')).to eq(true)
+      expect(error[:class].split).to include('text-left')
+      expect(error.text.strip).to eq('Email address is not valid')
+    end
+
     it 'submits terms_accepted and email_language as hidden fields' do
       render
 

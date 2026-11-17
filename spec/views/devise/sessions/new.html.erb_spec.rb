@@ -317,5 +317,18 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       expect(field).to_not be_nil
       expect(field['value'].to_s).to eq('')
     end
+
+    it 'leads server-rendered field errors with an aria-hidden error icon' do
+      user = build_stubbed(:user)
+      user.errors.add(:email, 'Email address is not valid')
+      allow(view).to receive(:resource).and_return(user)
+      allow(view).to receive(:params).and_return(ActionController::Parameters.new({}))
+      render
+
+      error = Nokogiri::HTML(rendered).at_css('.usa-error-message')
+      expect(error.element_children.first&.matches?('svg.usa-icon[aria-hidden="true"]')).to eq(true)
+      expect(error[:class].split).to include('text-left')
+      expect(error.text.strip).to eq('Email address is not valid')
+    end
   end
 end
