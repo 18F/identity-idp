@@ -41,5 +41,7 @@ inputs and controls by data attribute hooks:
   their constraints and the messages in `data-nds-validation-messages`, rendering
   errors into the `data-nds-error` region without the native validation UI.
 - **Submit gating:** submit buttons in the form are disabled until the form's
-  constraints are satisfied.
+  constraints are satisfied. Since a disabled button can't trigger the
+  submit-time errors of an `lg-memorable-date`, its errors are shown once focus
+  leaves the date instead.
 - **Overflow fade:** long input values fade at the scrollable edges.
