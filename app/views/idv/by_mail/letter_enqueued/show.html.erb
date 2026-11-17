@@ -9,7 +9,7 @@
         subtitle: t('idv.gpo.will_send_to', app_name: APP_NAME),
       ) do |page| %>
     <% page.with_media do %>
-      <span class="nds-status-icon">
+      <span class="nds-status-icon nds-status-icon--info">
         <%= render NDS::IconComponent.new(icon: :checkmark, size: 16) %>
       </span>
     <% end %>

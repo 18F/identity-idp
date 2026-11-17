@@ -132,7 +132,7 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
         '.auth__intro-description',
         text: t('idv.gpo.will_send_to', app_name: APP_NAME),
       )
-      expect(rendered).to have_css('.auth__header .nds-status-icon svg')
+      expect(rendered).to have_css('.auth__header .nds-status-icon.nds-status-icon--info svg')
     end
 
     it 'pins the verification progress step and drops the legacy step indicator' do
