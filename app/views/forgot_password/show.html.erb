@@ -1,5 +1,37 @@
 <% self.title = t('titles.verify_email') %>
 
+<% if nds_layout? %>
+  <%# The intro already says the link was sent, so the Devise "sent" notice would repeat it. %>
+  <% if [t('devise.passwords.send_instructions'), t('devise.passwords.send_paranoid_instructions')].include?(flash[:notice]) %>
+    <% flash.delete(:notice) %>
+  <% end %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('headings.verify_email'),
+        subtitle: t('nds.forgot_password.body_html', email: @email),
+      ) do |page| %>
+    <% if @resend.present? %>
+      <% page.with_alert do %>
+        <%= render 'forgot_password/resend_alert' %>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= simple_form_for(@password_reset_email_form, url: user_password_path) do |f| %>
+        <%= f.input :email, as: :hidden %>
+        <%= f.input :resend, as: :hidden %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+                variant: :secondary,
+                full_width: true,
+              ).with_content(t('nds.forgot_password.resend')) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
+
 <% if @resend.present? %>
   <%= render 'forgot_password/resend_alert' %>
 <% end %>
@@ -25,4 +57,5 @@
   <p><%= t('notices.forgot_password.no_email_sent_explanation_start') %>
   <%= f.button :button, t('links.resend'), class: 'usa-button--unstyled margin-left-05' %></p>
   <p><%= t('instructions.forgot_password.close_window') %></p>
+<% end %>
 <% end %>
