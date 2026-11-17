@@ -102,6 +102,11 @@ module Idv
     end
 
     def handle_phone_submission
+      # The link goes out by text message, so the number must pass the same checks as the
+      # identity-verification phone: a valid number for a country whose carriers accept our
+      # messages. A number that fails is refused before it counts against the send limit.
+      phone_form_response = build_form.submit(phone: raw_destination_phone)
+      return invalid_phone_failure(phone_form_response) unless phone_form_response.success?
       return rate_limited_failure if rate_limiter.limited?
       rate_limiter.increment!
       idv_session.phone_for_mobile_flow = formatted_destination_phone
@@ -268,9 +273,27 @@ module Idv
       FormResponse.new(**form_response_params)
     end
 
+    def invalid_phone_failure(phone_form_response)
+      failure(phone_form_response.first_error_message)
+      redirect_to idv_hybrid_handoff_url
+
+      analytics.idv_doc_auth_hybrid_handoff_submitted(
+        **analytics_arguments.merge(
+          success: false,
+          errors: phone_form_response.errors,
+          pii_like_keypaths: [[:errors, :phone]],
+          destination: :hybrid_handoff,
+          flow_path: idv_session.flow_path,
+        ),
+      )
+    end
+
+    def raw_destination_phone
+      params.require(:doc_auth).permit(:phone)[:phone]
+    end
+
     def formatted_destination_phone
-      raw_phone = params.require(:doc_auth).permit(:phone)
-      PhoneFormatter.format(raw_phone, country_code: 'US')
+      PhoneFormatter.format(raw_destination_phone, country_code: 'US')
     end
 
     def how_to_verify_form_params

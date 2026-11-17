@@ -386,6 +386,42 @@ RSpec.describe Idv::HybridHandoffController do
       end
     end
 
+    context 'hybrid flow with a number the link cannot be texted to' do
+      let(:unsupported_country_params) do
+        { type: 'mobile', doc_auth: { phone: '+971 50 123 4567' } }
+      end
+      let(:invalid_params) { { type: 'mobile', doc_auth: { phone: '202-555-55' } } }
+
+      it 'refuses a number in a country whose carriers do not accept our messages' do
+        expect(Telephony).not_to receive(:send_doc_auth_link)
+
+        put :update, params: unsupported_country_params
+
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
+        expect(flash[:error]).to eq(
+          t(
+            'two_factor_authentication.otp_delivery_preference.sms_unsupported',
+            location: 'United Arab Emirates (UAE)',
+          ),
+        )
+        expect(subject.idv_session.phone_for_mobile_flow).to be_nil
+        expect(@analytics).to have_logged_event(
+          analytics_name,
+          hash_including(success: false, destination: :hybrid_handoff),
+        )
+      end
+
+      it 'refuses an invalid number before it counts against the send limit' do
+        expect(Telephony).not_to receive(:send_doc_auth_link)
+
+        put :update, params: invalid_params
+
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
+        expect(flash[:error]).to eq(t('errors.messages.improbable_phone'))
+        expect(RateLimiter.new(user: user, rate_limit_type: :idv_send_link).attempts).to eq(0)
+      end
+    end
+
     context 'phone-first (NDS) flow' do
       before do
         subject.idv_session.phone_first_flow = true

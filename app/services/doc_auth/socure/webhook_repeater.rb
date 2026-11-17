@@ -12,6 +12,14 @@ module DocAuth
       end
 
       def repeat
+        # The endpoints are operator configuration; one that points at a private, link-local or
+        # loopback address or is not https is refused before any request leaves, and the refusal
+        # is reported the way a failed repeat is.
+        decision = OutboundUrlPolicy.decide(endpoint)
+        unless decision.allowed?
+          raise OutboundUrlPolicy::RefusedError, "endpoint refused: #{decision.reason}"
+        end
+
         send_http_post_request(endpoint)
       rescue => exception
         NewRelic::Agent.notice_error(

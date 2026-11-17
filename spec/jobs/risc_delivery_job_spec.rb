@@ -40,6 +40,20 @@ RSpec.describe RiscDeliveryJob do
       ActiveJob::Base.queue_adapter = :test
     end
 
+    context 'when the push URL points at a private address' do
+      let(:push_notification_url) { 'https://10.0.0.5/push' }
+
+      it 'sends nothing and records the refusal' do
+        perform
+
+        expect(a_request(:post, push_notification_url)).not_to have_been_made
+        expect(job_analytics).to have_logged_event(
+          :risc_security_event_pushed,
+          risc_event_payload.merge(error: 'push_notification_url_refused_private_address'),
+        )
+      end
+    end
+
     it 'POSTs the jwt to the given URL' do
       req = stub_request(:post, push_notification_url)
         .with(

@@ -52,6 +52,19 @@ class RiscDeliveryJob < ApplicationJob
     now: Time.zone.now,
     user: nil
   )
+    # The push URL is the partner's own configuration; refuse it before any request leaves when it
+    # points at a private, link-local or loopback address or is not https, and record why.
+    decision = OutboundUrlPolicy.decide(push_notification_url)
+    unless decision.allowed?
+      return track_event(
+        error: "push_notification_url_refused_#{decision.reason}",
+        event_type:,
+        issuer:,
+        success: false,
+        user:,
+      )
+    end
+
     response = rate_limiter(push_notification_url).attempt!(now) do
       faraday.post(
         push_notification_url,
