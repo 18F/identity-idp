@@ -13,7 +13,7 @@ RSpec.describe 'event_disavowal/new.html.erb' do
     assign(:forbidden_passwords, [])
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.passwords.change'))
 
     render
@@ -41,6 +41,12 @@ RSpec.describe 'event_disavowal/new.html.erb' do
   context 'in the NDS layout' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
+    end
+
+    it 'has a title matching the change password heading' do
+      expect(view).to receive(:title=).with(t('headings.passwords.change'))
+
+      render
     end
 
     it 'renders the form-page card with the heading and intro' do

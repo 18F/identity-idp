@@ -1,6 +1,5 @@
-<% self.title = t('titles.visitors.index') %>
-
 <% if nds_layout? %>
+  <% self.title = password_header %>
   <%= simple_form_for(
         current_user,
         as: :user,
@@ -39,6 +38,8 @@
 
   <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
 <% else %>
+<% self.title = t('titles.visitors.index') %>
+
 <%= render PageHeadingComponent.new.with_content(password_header) %>
 
 <%= simple_form_for(

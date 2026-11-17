@@ -1,6 +1,5 @@
-<% self.title = t('titles.passwords.change') %>
-
 <% if nds_layout? %>
+  <% self.title = t('headings.passwords.change') %>
   <%= render NDS::FormPageComponent.new(
         title: t('headings.passwords.change'),
         subtitle: t('nds.passwords.new.info'),
@@ -41,6 +40,8 @@
 
   <%= javascript_packs_tag_once('nds_password_strength_component', 'nds-auth-submit-gate', preload_links_header: false) %>
 <% else %>
+<% self.title = t('titles.passwords.change') %>
+
 <%= render PageHeadingComponent.new.with_content(t('headings.passwords.change')) %>
 
 <%= simple_form_for(@password_reset_from_disavowal_form, url: events_disavowal_url) do |f| %>

@@ -10,7 +10,7 @@ RSpec.describe 'password_capture/new.html.erb' do
     allow(view).to receive(:password_header).and_return(password_header)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.visitors.index'))
 
     render
@@ -35,6 +35,12 @@ RSpec.describe 'password_capture/new.html.erb' do
   context 'in the NDS layout' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
+    end
+
+    it 'has a title matching the password heading' do
+      expect(view).to receive(:title=).with(t('headings.passwords.confirm'))
+
+      render
     end
 
     it 'renders the form-page card with the heading and intro' do
@@ -77,6 +83,12 @@ RSpec.describe 'password_capture/new.html.erb' do
 
     context 'when the user needs a new personal key' do
       let(:password_header) { t('headings.passwords.confirm_for_personal_key') }
+
+      it 'has a title matching the personal key heading' do
+        expect(view).to receive(:title=).with(t('headings.passwords.confirm_for_personal_key'))
+
+        render
+      end
 
       it 'renders the personal key heading' do
         render
