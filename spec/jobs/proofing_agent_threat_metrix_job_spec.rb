@@ -7,11 +7,13 @@ RSpec.describe ProofingAgentThreatMetrixJob, type: :job do
   let(:request_ip) { Faker::Internet.ip_v4_address }
   let(:current_sp) { create(:service_provider) }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
+  let(:device_fingerprint) { SecureRandom.hex(32) }
   let(:proofing_device_profiling) { :enabled }
   let(:proofing_agent_device_profiling) { :collect_only }
   let(:lexisnexis_threatmetrix_mock_enabled) { false }
   let(:threatmetrix_response) { LexisNexisFixtures.threatmetrix_success_response_json }
   let(:threatmetrix_stub) { stub_threatmetrix_request(threatmetrix_response) }
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:job_analytics) { FakeAnalytics.new }
   let(:applicant_pii) do
     {
@@ -21,8 +23,11 @@ RSpec.describe ProofingAgentThreatMetrixJob, type: :job do
   end
 
   before do
+    allow(attempts_api_tracker).to receive(:idv_device_risk_assessment)
+    allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
     allow(IdentityConfig.store).to receive_messages(
       {
+        attempts_api_enabled: true,
         lexisnexis_threatmetrix_mock_enabled:,
         proofing_device_profiling:,
         proofing_agent_device_profiling:,
@@ -48,7 +53,11 @@ RSpec.describe ProofingAgentThreatMetrixJob, type: :job do
     end
 
     context 'Threat Metrix Proofing Agent analysis passes' do
-      let(:threatmetrix_response) { LexisNexisFixtures.threatmetrix_success_response_json }
+      let(:threatmetrix_response) do
+        JSON.parse(LexisNexisFixtures.threatmetrix_success_response_json).merge!(
+          'fuzzy_device_id' => device_fingerprint,
+        ).to_json
+      end
       let(:proofing_agent_device_profiling) { :enabled }
 
       it 'logs a successful result' do
@@ -62,6 +71,12 @@ RSpec.describe ProofingAgentThreatMetrixJob, type: :job do
             success: true,
             review_status: 'pass',
           ),
+        )
+
+        expect(attempts_api_tracker).to have_received(:idv_device_risk_assessment).with(
+          success: true,
+          device_fingerprint:,
+          failure_reason: nil,
         )
       end
 
@@ -79,7 +94,13 @@ RSpec.describe ProofingAgentThreatMetrixJob, type: :job do
     end
 
     context 'with an error response result' do
-      let(:threatmetrix_response) { LexisNexisFixtures.threatmetrix_failure_response_json }
+      let(:reason_codes) { ['Fraud risk assessment has failed'] }
+      let(:threatmetrix_response) do
+        JSON.parse(LexisNexisFixtures.threatmetrix_failure_response_json).merge!(
+          'fuzzy_device_id' => device_fingerprint,
+          'tmx_summary_reason_code' => reason_codes,
+        ).to_json
+      end
 
       it 'stores an unsuccessful result' do
         threatmetrix_stub
@@ -92,6 +113,12 @@ RSpec.describe ProofingAgentThreatMetrixJob, type: :job do
             success: false,
             review_status: 'reject',
           ),
+        )
+
+        expect(attempts_api_tracker).to have_received(:idv_device_risk_assessment).with(
+          success: false,
+          device_fingerprint:,
+          failure_reason: { fraud_risk_summary_reason_code: reason_codes },
         )
       end
     end
@@ -113,6 +140,8 @@ RSpec.describe ProofingAgentThreatMetrixJob, type: :job do
             review_status: 'pass',
           ),
         )
+
+        expect(attempts_api_tracker).to_not have_received(:idv_device_risk_assessment)
       end
     end
 
