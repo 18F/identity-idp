@@ -31,7 +31,7 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
     allow(view).to receive(:in_account_creation_flow?).and_return(in_account_creation_flow)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.two_factor_setup'))
 
     render
@@ -183,6 +183,12 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
   context 'in the NDS layout' do
     before { allow(view).to receive(:nds_layout?).and_return(true) }
 
+    it 'has a title matching the setup heading' do
+      expect(view).to receive(:title=).with(t('nds.mfa_setup.heading'))
+
+      render
+    end
+
     it 'renders the FormPageComponent card with the NDS heading' do
       expect(rendered).to have_css('.auth--form-page')
       expect(rendered).to have_css('.auth--form-page h1', text: t('nds.mfa_setup.heading'))
@@ -273,6 +279,12 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
     context 'when a method is already configured' do
       let(:user) { build(:user, :with_phone) }
 
+      it 'has a title matching the second-method heading' do
+        expect(view).to receive(:title=).with(t('nds.mfa_setup.heading_second'))
+
+        render
+      end
+
       it 'renders the second-method heading and intro' do
         expect(rendered).to have_css(
           '.auth--form-page h1',
@@ -303,6 +315,12 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
       let(:user) { create(:user, :fully_registered, :with_phone) }
       let(:phishing_resistant_required) { true }
       let(:enabled_mfa_methods_count) { 1 }
+
+      it 'has a title matching the step-up heading' do
+        expect(view).to receive(:title=).with(t('nds.mfa_setup.heading_step_up'))
+
+        render
+      end
 
       it 'renders the step-up heading with the status icon' do
         expect(rendered).to have_css(
@@ -362,6 +380,12 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
       let(:phishing_resistant_required) { true }
       let(:in_account_creation_flow) { true }
 
+      it 'has a title matching the setup heading' do
+        expect(view).to receive(:title=).with(t('nds.mfa_setup.heading'))
+
+        render
+      end
+
       it 'keeps the setup heading without the status icon' do
         expect(rendered).to have_css('.auth--form-page h1', text: t('nds.mfa_setup.heading'))
         expect(rendered).not_to have_css('.nds-status-icon')
@@ -395,6 +419,12 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
     context 'when PIV/CAC is required' do
       let(:user) { create(:user, :fully_registered, :with_phone) }
       let(:piv_cac_required) { true }
+
+      it 'has a title matching the step-up heading' do
+        expect(view).to receive(:title=).with(t('nds.mfa_setup.heading_step_up'))
+
+        render
+      end
 
       it 'renders the step-up heading with the status icon' do
         expect(rendered).to have_css(
