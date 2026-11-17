@@ -42,12 +42,12 @@ RSpec.describe Idv::PhoneRequiredController do
     context 'after opting out of the NDS layout mid phone-first flow' do
       let(:nds_layout) { false }
 
-      it 'redirects to the current IdV step without logging the visit' do
+      it 'redirects back to hybrid handoff to collect a phone without logging the visit' do
         expect(subject.idv_session.phone_first_flow?).to eq(true)
 
         get :show
 
-        expect(response).to redirect_to(idv_document_capture_url)
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
         expect(@analytics).not_to have_logged_event(:idv_phone_required_visited)
       end
     end

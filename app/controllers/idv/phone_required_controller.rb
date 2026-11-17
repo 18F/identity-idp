@@ -14,11 +14,11 @@ module Idv
     private
 
     def confirm_nds_phone_first_handoff
-      return if nds_layout? &&
-                idv_session.phone_first_flow? &&
-                flow_policy.controller_allowed?(controller: Idv::HybridHandoffController)
+      handoff_allowed = idv_session.phone_first_flow? &&
+                        flow_policy.controller_allowed?(controller: Idv::HybridHandoffController)
+      return if handoff_allowed && nds_layout?
 
-      redirect_to url_for_latest_step
+      redirect_to handoff_allowed ? idv_hybrid_handoff_url : url_for_latest_step
     end
   end
 end
