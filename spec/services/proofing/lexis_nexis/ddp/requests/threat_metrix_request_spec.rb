@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
   let(:dob) { '1980-01-01' }
   let(:ssn) { '123-45-6789' }
-  let(:ssn_hash_salt) { 'test-threatmetrix-ssn-hash-salt1' }
+  let(:ssn_hash_hmac_secret_key) { 'test-threatmetrix-ssn-hmac-secret-key' }
   let(:applicant) do
     {
       first_name: 'Testy',
@@ -40,8 +40,8 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
       .and_return('test-policy')
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_authentication_policy)
       .and_return('test-authentication-policy')
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_ssn_hash_salt)
-      .and_return(ssn_hash_salt)
+    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_ssn_hash_hmac_secret_key)
+      .and_return(ssn_hash_hmac_secret_key)
   end
 
   describe '#body' do
@@ -59,7 +59,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
 
       it 'hashes the normalized SSN with salted HMAC-SHA-512' do
         expect(ssn_hash).to eq(
-          OpenSSL::HMAC.hexdigest('SHA512', ssn_hash_salt, '123456789'),
+          OpenSSL::HMAC.hexdigest('SHA512', ssn_hash_hmac_secret_key, '123456789'),
         )
       end
 
@@ -72,14 +72,14 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
 
         it 'generates the same hash as the formatted SSN' do
           expect(ssn_hash).to eq(
-            OpenSSL::HMAC.hexdigest('SHA512', ssn_hash_salt, '123456789'),
+            OpenSSL::HMAC.hexdigest('SHA512', ssn_hash_hmac_secret_key, '123456789'),
           )
         end
       end
 
       context 'without an SSN' do
         let(:ssn) { nil }
-        let(:ssn_hash_salt) { nil }
+        let(:ssn_hash_hmac_secret_key) { nil }
 
         it 'sets the national ID fields to empty strings and omits the SSN hash' do
           expect(parsed_body).to include(
@@ -102,24 +102,24 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
         end
       end
 
-      context 'without an SSN hash salt' do
-        let(:ssn_hash_salt) { nil }
+      context 'without an SSN hash HMAC secret key' do
+        let(:ssn_hash_hmac_secret_key) { nil }
 
         it 'omits the SSN hash' do
           expect(parsed_body).not_to have_key(:ssn_hash)
         end
       end
 
-      context 'with a blank SSN hash salt' do
-        let(:ssn_hash_salt) { '' }
+      context 'with a blank SSN hash HMAC secret key' do
+        let(:ssn_hash_hmac_secret_key) { '' }
 
         it 'omits the SSN hash' do
           expect(parsed_body).not_to have_key(:ssn_hash)
         end
       end
 
-      context 'with an SSN hash salt shorter than 32 bytes' do
-        let(:ssn_hash_salt) { 'a' * 31 }
+      context 'with an SSN hash HMAC secret key shorter than 32 bytes' do
+        let(:ssn_hash_hmac_secret_key) { 'a' * 31 }
 
         it 'raises a configuration error' do
           expect { subject.body }.to raise_error(
@@ -129,12 +129,12 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
         end
       end
 
-      context 'with a 32-byte SSN hash salt' do
-        let(:ssn_hash_salt) { 'a' * 32 }
+      context 'with a 32-byte SSN hash HMAC secret key' do
+        let(:ssn_hash_hmac_secret_key) { 'a' * 32 }
 
         it 'includes the SSN hash' do
           expect(ssn_hash).to eq(
-            OpenSSL::HMAC.hexdigest('SHA512', ssn_hash_salt, '123456789'),
+            OpenSSL::HMAC.hexdigest('SHA512', ssn_hash_hmac_secret_key, '123456789'),
           )
         end
       end

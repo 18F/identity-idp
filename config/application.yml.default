@@ -356,7 +356,7 @@ lexisnexis_threatmetrix_js_public_cert: ''
 lexisnexis_threatmetrix_mock_enabled: true
 lexisnexis_threatmetrix_org_id:
 lexisnexis_threatmetrix_policy:
-lexisnexis_threatmetrix_ssn_hash_salt:
+lexisnexis_threatmetrix_ssn_hash_hmac_secret_key:
 lexisnexis_threatmetrix_support_code: ABCD
 lexisnexis_threatmetrix_timeout: 1.0
 # TrueID DocAuth Integration
@@ -746,7 +746,7 @@ test:
   key_metrics_internal_emails: '["mock_key_metrics_int@example.com"]'
   key_metrics_original_external_emails: '["mock_key_metrics_org_ext@example.com"]'
   key_metrics_original_internal_emails: '["mock_key_metrics_org_int@example.com"]'
-  lexisnexis_threatmetrix_ssn_hash_salt: test-threatmetrix-ssn-hash-salt1
+  lexisnexis_threatmetrix_ssn_hash_hmac_secret_key: test-threatmetrix-ssn-hmac-secret-key
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2

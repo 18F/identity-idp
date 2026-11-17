@@ -51,14 +51,15 @@ module Proofing
           def ssn_hash(normalized_ssn)
             return if normalized_ssn.blank?
 
-            salt = IdentityConfig.store.lexisnexis_threatmetrix_ssn_hash_salt
-            return if salt.blank?
+            hmac_secret_key =
+              IdentityConfig.store.lexisnexis_threatmetrix_ssn_hash_hmac_secret_key
+            return if hmac_secret_key.blank?
 
-            if salt.bytesize < MINIMUM_SSN_HASH_KEY_BYTES
+            if hmac_secret_key.bytesize < MINIMUM_SSN_HASH_KEY_BYTES
               raise 'ThreatMetrix SSN hash key must be at least 32 bytes'
             end
 
-            OpenSSL::HMAC.hexdigest('SHA512', salt, normalized_ssn)
+            OpenSSL::HMAC.hexdigest('SHA512', hmac_secret_key, normalized_ssn)
           end
 
           def metric_name

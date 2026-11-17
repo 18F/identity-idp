@@ -369,7 +369,7 @@ module IdentityConfig
     config.add(:lexisnexis_threatmetrix_mock_enabled, type: :boolean)
     config.add(:lexisnexis_threatmetrix_org_id, type: :string, allow_nil: true)
     config.add(:lexisnexis_threatmetrix_policy, type: :string, allow_nil: true)
-    config.add(:lexisnexis_threatmetrix_ssn_hash_salt, type: :string, allow_nil: true)
+    config.add(:lexisnexis_threatmetrix_ssn_hash_hmac_secret_key, type: :string, allow_nil: true)
     config.add(:lexisnexis_threatmetrix_support_code, type: :string)
     config.add(:lexisnexis_threatmetrix_timeout, type: :float)
     config.add(:lexisnexis_trueid_account_id, type: :string)
