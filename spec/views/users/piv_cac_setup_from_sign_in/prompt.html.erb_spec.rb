@@ -89,13 +89,15 @@ RSpec.describe 'users/piv_cac_setup_from_sign_in/prompt.html.erb' do
     context 'when the user is signing up' do
       before { allow(view).to receive(:user_signing_up?).and_return(true) }
 
-      it 'cancels account creation' do
+      it 'cancels account creation without the legacy glyph' do
         render
 
+        label = t('links.cancel_account_creation').delete_prefix('‹').strip
         expect(rendered).to have_css(
           ".auth__actions a.usa-button--tertiary[href='#{sign_up_cancel_path}']",
-          text: t('links.cancel_account_creation'),
+          exact_text: label,
         )
+        expect(rendered).not_to have_css('.auth__actions a', text: '‹')
       end
     end
   end

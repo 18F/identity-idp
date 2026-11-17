@@ -133,13 +133,15 @@ RSpec.describe 'two_factor_authentication/sms_opt_in/new.html.erb' do
     context 'when the user is signing up' do
       before { allow(view).to receive(:user_signing_up?).and_return(true) }
 
-      it 'labels the cancel link for account creation' do
+      it 'labels the cancel link for account creation without the legacy glyph' do
         render
 
+        label = t('links.cancel_account_creation').delete_prefix('‹').strip
         expect(rendered).to have_css(
           ".auth__actions a.usa-button--tertiary[href='#{cancel_url}']",
-          text: t('links.cancel_account_creation'),
+          exact_text: label,
         )
+        expect(rendered).not_to have_css('.auth__actions a', text: '‹')
       end
     end
   end

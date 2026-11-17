@@ -76,7 +76,7 @@
               url: user_signing_up? ? sign_up_cancel_path : new_user_session_url,
               variant: :tertiary,
               full_width: true,
-            ).with_content(cancel_link_text) %>
+            ).with_content(cancel_link_text.delete_prefix('‹').strip) %>
       <% end %>
     <% end %>
   <% end %>
