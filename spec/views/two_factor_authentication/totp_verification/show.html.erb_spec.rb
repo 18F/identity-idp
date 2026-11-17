@@ -17,7 +17,7 @@ RSpec.describe 'two_factor_authentication/totp_verification/show.html.erb' do
     allow(@presenter).to receive(:reauthn).and_return(false)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.enter_2fa_code.security_code'))
 
     render
@@ -88,6 +88,12 @@ RSpec.describe 'two_factor_authentication/totp_verification/show.html.erb' do
   context 'in the NDS layout' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
+    end
+
+    it 'has a title matching the authentication app heading' do
+      expect(view).to receive(:title=).with(t('two_factor_authentication.totp_header_text'))
+
+      render
     end
 
     it 'renders the form-page card with the authentication app heading' do

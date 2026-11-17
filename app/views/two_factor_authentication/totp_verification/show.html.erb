@@ -1,6 +1,5 @@
-<% self.title = t('titles.enter_2fa_code.security_code') %>
-
 <% if nds_layout? %>
+  <% self.title = t('two_factor_authentication.totp_header_text') %>
   <% otp_invalid_error = flash[:error] == t('two_factor_authentication.invalid_otp') ? flash.delete(:error) : nil %>
   <% troubleshooting_options = @presenter.troubleshooting_options
        .reject { |option| option.url == login_two_factor_options_path }
@@ -89,6 +88,8 @@
 
   <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
 <% else %>
+<% self.title = t('titles.enter_2fa_code.security_code') %>
+
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
 
 <%= simple_form_for('', html: { class: 'margin-bottom-5' }) do |f| %>
