@@ -6,12 +6,17 @@ RSpec.describe OtpVerificationForm do
   let(:phone_configuration) { user.phone_configurations.first }
   let(:user_otp) { nil }
   let(:user_otp_sent_at) { nil }
+  let(:phone) { phone_configuration.phone }
+  let(:user_otp_sent_to) { phone }
 
-  subject(:form) { described_class.new(user, code, phone_configuration) }
+  subject(:form) { described_class.new(user, code, phone_configuration, phone:) }
 
   before do
     allow(user).to receive(:direct_otp).and_return(user_otp)
     allow(user).to receive(:direct_otp_sent_at).and_return(user_otp_sent_at)
+    allow(user).to receive(:direct_otp_phone_fingerprint).and_return(
+      user_otp_sent_to && User.direct_otp_phone_fingerprint(user_otp_sent_to),
+    )
     allow(user).to receive(:clear_direct_otp)
   end
 
@@ -108,6 +113,28 @@ RSpec.describe OtpVerificationForm do
           success: false,
           error_details: {
             code: { pattern_mismatch: true },
+          },
+          multi_factor_auth_method_created_at: phone_configuration.created_at.strftime('%s%L'),
+        )
+      end
+
+      it 'does not clear user pending OTP' do
+        expect(user).not_to receive(:clear_direct_otp)
+
+        result
+      end
+    end
+
+    context 'when the code was sent to a different phone than the one being verified' do
+      let(:code) { '123456' }
+      let(:user_otp) { '123456' }
+      let(:user_otp_sent_to) { '+1 (202) 555-1213' }
+
+      it 'returns an unsuccessful response' do
+        expect(result.to_h).to eq(
+          success: false,
+          error_details: {
+            code: { user_otp_phone_mismatch: true },
           },
           multi_factor_auth_method_created_at: phone_configuration.created_at.strftime('%s%L'),
         )

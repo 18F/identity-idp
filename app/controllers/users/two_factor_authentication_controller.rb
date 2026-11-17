@@ -189,7 +189,12 @@ module Users
     end
 
     def handle_valid_otp_params(otp_delivery_selection_result, method, default = nil)
-      otp_rate_limiter.reset_count_and_otp_last_sent_at if current_user.no_longer_locked_out?
+      # A lockout that has run out lifts once: the send counter starts over and the lockout is
+      # cleared, so the next send is counted again rather than resetting the counter every time.
+      if current_user.no_longer_locked_out?
+        otp_rate_limiter.reset_count_and_otp_last_sent_at
+        reset_attempt_count_if_user_no_longer_locked_out
+      end
 
       if exceeded_otp_send_limit?
         return handle_too_many_otp_sends(
@@ -323,7 +328,7 @@ module Users
         )
       end
 
-      current_user.create_direct_otp
+      current_user.create_direct_otp(phone_to_deliver_to)
       otp_params = {
         to: phone_to_deliver_to,
         otp: current_user.direct_otp,

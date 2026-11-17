@@ -675,7 +675,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         @previous_phone_confirmed_at =
           MfaContext.new(controller.current_user).phone_configurations.first&.confirmed_at
 
-        controller.current_user.create_direct_otp
+        controller.current_user.create_direct_otp(phone_being_confirmed)
 
         stub_analytics
         stub_attempts_tracker
@@ -868,12 +868,39 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
           end
         end
+
+        context 'the code was sent to a different phone than the one being confirmed' do
+          before do
+            controller.current_user.create_direct_otp('+1 (703) 555-0199')
+            controller.user_session[:unconfirmed_phone] = phone_being_confirmed
+          end
+
+          it 'refuses the code and does not confirm the phone' do
+            expect(controller).not_to receive(:create_user_event).with(:phone_confirmed)
+
+            post(
+              :create,
+              params: {
+                code: subject.current_user.direct_otp,
+                otp_delivery_preference: 'sms',
+              },
+            )
+
+            expect(response).to render_template(:show)
+            expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
+            expect(subject.current_user.direct_otp).to be_present
+            expect(subject.user_session[:unconfirmed_phone]).to eq(phone_being_confirmed)
+            expect(
+              MfaContext.new(subject.current_user).phone_configurations.map(&:phone),
+            ).not_to include(phone_being_confirmed)
+          end
+        end
       end
 
       context 'when user does not have an existing phone number' do
         before do
           MfaContext.new(controller.current_user).phone_configurations.clear
-          controller.current_user.create_direct_otp
+          controller.current_user.create_direct_otp(phone_being_confirmed)
         end
 
         context 'when given valid code' do
