@@ -64,7 +64,7 @@
                 <div class="checkbox">
                   <%= f.check_box(
                         :acknowledgment,
-                        { class: 'checkbox__input', required: true, autocomplete: 'off' },
+                        { class: 'checkbox__input', required: true, autocomplete: 'off', aria: { invalid: false } },
                         '1',
                         '0',
                       ) %>

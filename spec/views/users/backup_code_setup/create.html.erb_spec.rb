@@ -158,6 +158,15 @@ RSpec.describe 'users/backup_code_setup/create.html.erb' do
       )
     end
 
+    it 'marks the required acknowledgment checkbox valid until it is validated' do
+      render
+
+      expect(rendered).to have_css(
+        'input.checkbox__input[type=checkbox][required][aria-invalid="false"]',
+        visible: :all,
+      )
+    end
+
     it 'submits the acknowledgment form to the continue path with a gated primary button' do
       render
 
