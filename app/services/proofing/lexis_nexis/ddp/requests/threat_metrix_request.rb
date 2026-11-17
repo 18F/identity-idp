@@ -5,12 +5,14 @@ module Proofing
     module Ddp
       module Requests
         class ThreatMetrixRequest < Request
+          MINIMUM_SSN_HASH_KEY_BYTES = 32
+
           private
 
           def build_request_body
             normalized_ssn = SsnFormatter.normalize(applicant[:ssn])
 
-            {
+            request_body = {
               api_key: config.api_key,
               org_id: config.org_id,
               account_address_street1: applicant[:address1] || '',
@@ -35,18 +37,26 @@ module Proofing
               session_id: applicant[:threatmetrix_session_id],
               national_id_number: normalized_ssn,
               national_id_type: normalized_ssn.present? ? 'US_SSN' : '',
-              ssn_hash: ssn_hash(normalized_ssn),
               input_ip_address: applicant[:request_ip],
               local_attrib_1: applicant[:uuid_prefix] || '',
               local_attrib_3: applicant[:uuid],
-            }.to_json
+            }
+
+            hashed_ssn = ssn_hash(normalized_ssn)
+            request_body[:ssn_hash] = hashed_ssn if hashed_ssn
+
+            request_body.to_json
           end
 
           def ssn_hash(normalized_ssn)
-            return '' if normalized_ssn.blank?
+            return if normalized_ssn.blank?
 
             salt = IdentityConfig.store.lexisnexis_threatmetrix_ssn_hash_salt
-            raise 'ThreatMetrix SSN hash salt is not configured' if salt.blank?
+            return if salt.blank?
+
+            if salt.bytesize < MINIMUM_SSN_HASH_KEY_BYTES
+              raise 'ThreatMetrix SSN hash key must be at least 32 bytes'
+            end
 
             OpenSSL::HMAC.hexdigest('SHA512', salt, normalized_ssn)
           end

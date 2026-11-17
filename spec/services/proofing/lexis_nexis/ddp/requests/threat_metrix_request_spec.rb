@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
   let(:dob) { '1980-01-01' }
   let(:ssn) { '123-45-6789' }
-  let(:ssn_hash_salt) { 'test-threatmetrix-ssn-hash-salt' }
+  let(:ssn_hash_salt) { 'test-threatmetrix-ssn-hash-salt1' }
   let(:applicant) do
     {
       first_name: 'Testy',
@@ -81,45 +81,60 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
         let(:ssn) { nil }
         let(:ssn_hash_salt) { nil }
 
-        it 'sets the SSN fields to empty strings' do
+        it 'sets the national ID fields to empty strings and omits the SSN hash' do
           expect(parsed_body).to include(
             national_id_number: '',
             national_id_type: '',
-            ssn_hash: '',
           )
+          expect(parsed_body).not_to have_key(:ssn_hash)
         end
       end
 
       context 'with an SSN containing no digits' do
         let(:ssn) { '---' }
 
-        it 'sets the SSN fields to empty strings' do
+        it 'sets the national ID fields to empty strings and omits the SSN hash' do
           expect(parsed_body).to include(
             national_id_number: '',
             national_id_type: '',
-            ssn_hash: '',
           )
+          expect(parsed_body).not_to have_key(:ssn_hash)
         end
       end
 
       context 'without an SSN hash salt' do
         let(:ssn_hash_salt) { nil }
 
-        it 'raises a configuration error' do
-          expect { subject.body }.to raise_error(
-            RuntimeError,
-            'ThreatMetrix SSN hash salt is not configured',
-          )
+        it 'omits the SSN hash' do
+          expect(parsed_body).not_to have_key(:ssn_hash)
         end
       end
 
       context 'with a blank SSN hash salt' do
         let(:ssn_hash_salt) { '' }
 
+        it 'omits the SSN hash' do
+          expect(parsed_body).not_to have_key(:ssn_hash)
+        end
+      end
+
+      context 'with an SSN hash salt shorter than 32 bytes' do
+        let(:ssn_hash_salt) { 'a' * 31 }
+
         it 'raises a configuration error' do
           expect { subject.body }.to raise_error(
             RuntimeError,
-            'ThreatMetrix SSN hash salt is not configured',
+            'ThreatMetrix SSN hash key must be at least 32 bytes',
+          )
+        end
+      end
+
+      context 'with a 32-byte SSN hash salt' do
+        let(:ssn_hash_salt) { 'a' * 32 }
+
+        it 'includes the SSN hash' do
+          expect(ssn_hash).to eq(
+            OpenSSL::HMAC.hexdigest('SHA512', ssn_hash_salt, '123456789'),
           )
         end
       end
