@@ -1747,6 +1747,7 @@ nds.piv_cac_setup.step_1: Enter a nickname
 nds.piv_cac_setup.step_2: Insert your PIV or CAC into your card reader
 nds.piv_cac_setup.step_3: Add your PIV or CAC
 nds.piv_cac_setup.step_3_info: You’ll be asked to choose a certificate and enter your PIN after clicking the continue button.
+nds.reactivate_account.info: When you created your account and verified your identity, you received a unique 16-character code.
 nds.request_letter.heading: Verify by mail instead
 nds.request_letter.info: To verify your identity, we’ll mail a letter with a verification code and instructions to your address. It should arrive in 5 to 10 days. Follow the instructions in the letter to finish verifying your identity.
 nds.socure_errors.in_person_heading: Or, try verifying your ID in person
@@ -1762,6 +1763,8 @@ nds.totp_setup.new.step_1: Enter a nickname
 nds.totp_setup.new.step_2: Open your preferred authentication app
 nds.totp_setup.new.step_3: Scan the QR code or enter the set up code manually in your authentication app
 nds.verify_info.address: Address
+nds.verify_password.heading: Enter your password
+nds.verify_personal_key.info: After you enter it, you’ll be provided a new key.
 notices.account_reactivation: Great! You have your personal key.
 notices.authenticated_successfully: Authenticated successfully.
 notices.backup_codes_configured: Backup codes were added to your account.

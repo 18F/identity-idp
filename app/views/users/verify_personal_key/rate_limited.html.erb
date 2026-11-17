@@ -1,5 +1,36 @@
 <% self.title = t('headings.verify_personal_key') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(title: t('headings.verify_personal_key')) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--error">
+        <%= render NDS::IconComponent.new(icon: :lock, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <p>
+        <%= t(
+              'errors.verify_personal_key.rate_limited',
+              timeout: distance_of_time_in_words(
+                Time.zone.now,
+                [@expires_at, Time.zone.now].compact.max,
+                except: :seconds,
+              ),
+            ) %>
+      </p>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(url: account_path, variant: :secondary, full_width: true)
+              .with_content(t('links.go_back')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('headings.verify_personal_key')) %>
 
 <p>
@@ -13,3 +44,4 @@
       ) %>
   <%= link_to(t('links.go_back'), account_path) %>.
 </p>
+<% end %>
