@@ -15,7 +15,7 @@ RSpec.describe 'users/authorization_confirmation/new.html.erb' do
     allow(view).to receive(:nds_layout?).and_return(false)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.sign_up.confirmation'))
 
     render
@@ -69,6 +69,12 @@ RSpec.describe 'users/authorization_confirmation/new.html.erb' do
   context 'in the NDS layout' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
+    end
+
+    it 'has a title matching the SP sign-in heading' do
+      expect(view).to receive(:title=).with(t('headings.sign_in_with_sp', sp: sp_name))
+
+      render
     end
 
     it 'renders the form-page card with the SP heading and subtitle' do
@@ -149,6 +155,12 @@ RSpec.describe 'users/authorization_confirmation/new.html.erb' do
 
     context 'without a service provider name' do
       let(:sp_name) { nil }
+
+      it 'has a title matching the generic sign-in heading' do
+        expect(view).to receive(:title=).with(t('headings.sign_in_without_sp'))
+
+        render
+      end
 
       it 'renders the generic sign-in heading without a subtitle' do
         render
