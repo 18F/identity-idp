@@ -284,7 +284,7 @@ RSpec.describe OpenidConnect::TokenController do
         .and_return([{ issuer: target_issuer,
                        scope: 'passport',
                        resource: }])
-      create(:user_consent_sts, user:, target_app: target_issuer)
+      create(:user_consent_sts, user:, target_app: target_issuer, actor_app: actor_issuer)
     end
 
     context 'with valid params' do
