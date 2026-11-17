@@ -1,6 +1,5 @@
-<% self.title = t('titles.passwords.change') %>
-
 <% if nds_layout? %>
+  <% self.title = t('nds.reset_password.heading') %>
   <%= render NDS::FormPageComponent.new(
         title: t('nds.reset_password.heading'),
         subtitle: safe_join(
@@ -69,6 +68,7 @@
 
   <%= javascript_packs_tag_once('nds_password_strength_component', 'nds-auth-submit-gate', preload_links_header: false) %>
 <% else %>
+<% self.title = t('titles.passwords.change') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.passwords.change')) %>
 

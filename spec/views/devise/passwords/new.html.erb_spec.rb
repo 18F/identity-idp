@@ -28,7 +28,7 @@ RSpec.describe 'devise/passwords/new.html.erb' do
     allow(view).to receive(:decorated_sp_session).and_return(@decorated_sp_session)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.passwords.forgot'))
 
     render
@@ -143,6 +143,12 @@ RSpec.describe 'devise/passwords/new.html.erb' do
   context 'in the NDS layout' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
+    end
+
+    it 'has a title matching the enter-email heading' do
+      expect(view).to receive(:title=).with(t('nds.reset_password.email_heading'))
+
+      render
     end
 
     it 'renders the form-page card with the enter-email heading and intro' do

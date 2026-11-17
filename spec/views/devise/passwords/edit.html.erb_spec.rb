@@ -7,7 +7,7 @@ RSpec.describe 'devise/passwords/edit.html.erb' do
     @reset_password_form = ResetPasswordForm.new(user: user)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.passwords.change'))
 
     render
@@ -49,6 +49,12 @@ RSpec.describe 'devise/passwords/edit.html.erb' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
       @forbidden_passwords = ['forbidden']
+    end
+
+    it 'has a title matching the new password heading' do
+      expect(view).to receive(:title=).with(t('nds.reset_password.heading'))
+
+      render
     end
 
     it 'renders the form-page card with the new password heading' do

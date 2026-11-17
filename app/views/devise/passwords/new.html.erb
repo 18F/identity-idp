@@ -1,6 +1,5 @@
-<% self.title = t('titles.passwords.forgot') %>
-
 <% if nds_layout? %>
+  <% self.title = t('nds.reset_password.email_heading') %>
   <% token_error_heading = {
        t('devise.passwords.invalid_token') => t('nds.reset_password.invalid_token_heading'),
        t('devise.passwords.token_expired') => t('nds.reset_password.token_expired_heading'),
@@ -86,6 +85,7 @@
 
   <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
 <% else %>
+<% self.title = t('titles.passwords.forgot') %>
 
 <%= render 'shared/sp_alert', section: 'forgot_password' %>
 
