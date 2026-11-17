@@ -1,6 +1,5 @@
-<% self.title = t('titles.idv.get_letter') %>
-
 <% if nds_layout? %>
+  <% self.title = t('idv.gpo.request_another_letter.title') %>
   <% content_for(:nds_header_progress) do %>
     <%= nds_account_creation_progress(step: :verification, substep: 8) %>
   <% end %>
@@ -39,6 +38,7 @@
     <% end %>
   <% end %>
 <% else %>
+<% self.title = t('titles.idv.get_letter') %>
 
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(

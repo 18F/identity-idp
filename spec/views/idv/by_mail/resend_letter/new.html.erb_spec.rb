@@ -21,7 +21,7 @@ RSpec.describe 'idv/by_mail/resend_letter/new.html.erb' do
     render
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view.content_for(:title)).to eq(t('titles.idv.get_letter'))
   end
 
@@ -49,6 +49,10 @@ RSpec.describe 'idv/by_mail/resend_letter/new.html.erb' do
 
   context 'in the NDS layout' do
     let(:nds_layout) { true }
+
+    it 'has a title matching the request another letter heading' do
+      expect(view.content_for(:title)).to eq(t('idv.gpo.request_another_letter.title'))
+    end
 
     it 'renders the form-page card with the heading and instructions' do
       expect(rendered).to have_selector('section.auth.auth--form-page')

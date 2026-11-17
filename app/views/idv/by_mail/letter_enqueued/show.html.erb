@@ -1,5 +1,5 @@
 <% if nds_layout? %>
-  <% self.title = t('titles.idv.come_back_soon') %>
+  <% self.title = t('idv.titles.come_back_later') %>
   <% content_for(:nds_header_progress) do %>
     <%= nds_account_creation_progress(step: :verification, substep: 10) %>
   <% end %>

@@ -35,7 +35,7 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
     render
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view.content_for(:title)).to eq(t('titles.idv.come_back_soon'))
   end
 
@@ -120,6 +120,10 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
 
   context 'in the NDS layout' do
     let(:nds_layout) { true }
+
+    it 'has a title matching the letter on the way heading' do
+      expect(view.content_for(:title)).to eq(t('idv.titles.come_back_later'))
+    end
 
     it 'renders the form-page card with the heading and intro' do
       expect(rendered).to have_selector('section.auth.auth--form-page')
