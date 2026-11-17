@@ -88,7 +88,9 @@ RSpec.describe 'Account Recovery: replace inaccessible MFA', email: true do
       fill_in :new_phone_form_phone, with: '3015551212'
       click_send_one_time_code
 
-      expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
+      expect(page).to have_current_path(
+        login_two_factor_path(otp_delivery_preference: 'sms', otp_make_default_number: false),
+      )
 
       fill_in_code_with_last_phone_otp
       click_submit_default
