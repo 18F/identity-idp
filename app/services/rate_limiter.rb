@@ -257,6 +257,11 @@ class RateLimiter
         max_attempts: IdentityConfig.store.idv_max_attempts,
         attempt_window: IdentityConfig.store.idv_attempt_window_in_hours * 60,
       },
+      idv_proofing_agent_search: {
+        max_attempts: IdentityConfig.store.idv_proofing_agent_search_max_attempts,
+        attempt_window:
+          IdentityConfig.store.idv_proofing_agent_search_attempt_window_in_minutes,
+      },
       idv_send_link: {
         max_attempts: IdentityConfig.store.idv_send_link_max_attempts,
         attempt_window: IdentityConfig.store.idv_send_link_attempt_window_in_minutes,

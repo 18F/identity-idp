@@ -18,12 +18,25 @@ module Api
       after_action :add_custom_headers_to_response
 
       def search_user
+        # Each partner gets a ceiling on account checks. Every check answers a question about
+        # a person's records, so an unlimited caller holding a partner's token could enumerate
+        # them; the limit is per issuer because the agent and location identifiers in the
+        # request are supplied by the caller and cannot be trusted to key a limit.
+        return render_search_rate_limited if search_rate_limiter.limited?
+
         pii_validation = Idv::ProofingAgent::SearchUserForm.new(email:, ssn:).submit
         render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
 
+        search_rate_limiter.increment!
+
+        # The SSN is reported only as it relates to the account the email names: whether that
+        # account has an active profile under this SSN, and which of that account's active
+        # profiles match. Profiles of other accounts that share the SSN are not disclosed, so
+        # the endpoint cannot be used to learn whether an arbitrary SSN is verified with
+        # Login.gov.
         response_body = {
           email_account_found: user.present?,
-          ssn_profile_found: ssn_active_profiles.any?,
+          ssn_profile_found: user_ssn_active_profiles.any?,
           profiles: active_profiles_info,
           email_account_awaiting_binding: !!user&.proofing_agent_user_awaiting_binding?,
           account_email_confirmed: email_confirmed?,
@@ -106,11 +119,15 @@ module Api
       end
 
       def result
+        # A transaction belongs to the partner whose token opened it, so the lookup is scoped
+        # to the calling issuer; a transaction identifier from another partner is not found. A
+        # miss is not cached: the result may be written moments later and must then be served.
         proofing_result = Rails.cache.fetch(
           "proofing_agent_result_#{transaction_id}",
           expires_in: IdentityConfig.store.idv_proofing_agent_result_expiration_seconds,
+          skip_nil: true,
         ) do
-          document_capture_session = DocumentCaptureSession.find_by(uuid: transaction_id)
+          document_capture_session = DocumentCaptureSession.find_by(uuid: transaction_id, issuer:)
           document_capture_session&.load_agent_proofed_user
         end
 
@@ -182,6 +199,16 @@ module Api
         )
 
         render json: response_body, status: :ok
+      end
+
+      def render_search_rate_limited
+        analytics.rate_limit_reached(
+          limiter_type: :idv_proofing_agent_search,
+          step_name: 'search_user',
+        )
+
+        render json: { status: 'failed', reason: 'maximum_attempts_reached' },
+               status: :too_many_requests
       end
 
       def render_proofing_result_not_found
@@ -270,6 +297,15 @@ module Api
           .ssn_profiles.select(&:active?)
       end
 
+      # The active profiles under this SSN that belong to the account the email names.
+      def user_ssn_active_profiles
+        return [] if user.blank?
+
+        @user_ssn_active_profiles ||= ssn_active_profiles.select do |profile|
+          profile.user_id == user.id
+        end
+      end
+
       def user_active_profile
         @user_active_profile ||= user&.active_profile
       end
@@ -278,11 +314,12 @@ module Api
         @active_profiles ||= ssn_active_profiles | [user_active_profile].compact
       end
 
+      # Only the named account's profiles are described in the search answer.
       def active_profiles_info
-        active_profiles.map do |profile|
+        (user_ssn_active_profiles | [user_active_profile].compact).map do |profile|
           {
-            email_match: profile.user_id == user&.id,
-            ssn_match: ssn_active_profiles.any? { |ssn_profile| ssn_profile.id == profile.id },
+            email_match: true,
+            ssn_match: user_ssn_active_profiles.any? { |ssn_profile| ssn_profile.id == profile.id },
             idv_level: Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level],
           }
         end
@@ -421,6 +458,13 @@ module Api
 
       def ssn_rate_limiter
         @ssn_rate_limiter ||= RateLimiter.new(user: user, rate_limit_type: :proof_ssn)
+      end
+
+      def search_rate_limiter
+        @search_rate_limiter ||= RateLimiter.new(
+          target: issuer,
+          rate_limit_type: :idv_proofing_agent_search,
+        )
       end
     end
   end
