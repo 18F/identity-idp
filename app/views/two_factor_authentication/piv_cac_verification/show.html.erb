@@ -1,6 +1,5 @@
-<% self.title = t('titles.present_piv_cac') %>
-
 <% if nds_layout? %>
+  <% self.title = @presenter.header %>
   <% troubleshooting_options = @presenter.troubleshooting_options
        .reject { |option| option.url == login_two_factor_options_path }
        .map { |option| { text: option.content, url: option.url, new_tab: option.new_tab? } } %>
@@ -38,6 +37,8 @@
     <% end %>
   <% end %>
 <% else %>
+<% self.title = t('titles.present_piv_cac') %>
+
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
 
 <p>

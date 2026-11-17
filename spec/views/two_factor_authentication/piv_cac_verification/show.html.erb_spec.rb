@@ -15,7 +15,7 @@ RSpec.describe 'two_factor_authentication/piv_cac_verification/show.html.erb' do
     )
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.present_piv_cac'))
 
     render
@@ -68,6 +68,22 @@ RSpec.describe 'two_factor_authentication/piv_cac_verification/show.html.erb' do
   context 'in the NDS layout' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
+    end
+
+    it 'has a title matching the PIV/CAC heading' do
+      expect(view).to receive(:title=).with(t('two_factor_authentication.piv_cac_header_text'))
+
+      render
+    end
+
+    it 'has a title matching the PIV/CAC heading in Spanish' do
+      I18n.with_locale(:es) do
+        expect(view).to receive(:title=).with(
+          t('two_factor_authentication.piv_cac_header_text'),
+        )
+
+        render
+      end
     end
 
     it 'renders the form-page card with the PIV/CAC heading' do
