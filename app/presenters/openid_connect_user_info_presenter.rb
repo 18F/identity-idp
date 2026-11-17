@@ -5,9 +5,10 @@ class OpenidConnectUserInfoPresenter
 
   attr_reader :identity
 
-  def initialize(identity, session_accessor: nil)
+  def initialize(identity, session_accessor: nil, site_key_recipient: nil)
     @identity = identity
     @out_of_band_session_accessor = session_accessor
+    @site_key_recipient = site_key_recipient
   end
 
   def user_info
@@ -27,6 +28,7 @@ class OpenidConnectUserInfoPresenter
       info[:document_images] = document_images
       info[:document_metadata] = document_metadata
     end
+    info.merge!(site_key_attributes) if scoper.site_key_requested? && site_key_releasable?
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
     info[:ial] = authn_context_resolver.asserted_ial_acr
@@ -226,5 +228,36 @@ class OpenidConnectUserInfoPresenter
 
   def out_of_band_session_accessor
     @out_of_band_session_accessor ||= OutOfBandSessionAccessor.new(identity.rails_session_id)
+  end
+
+  # The site key is released only when the request proved possession of the key it is sealed to
+  # (the DPoP key, passed in by the controller) and the private key is still open in the person's
+  # session. A request that granted the scope but cannot meet both leaves the claims out, so the
+  # service provider re-authorizes rather than receiving a key it cannot use.
+  def site_key_releasable?
+    @site_key_recipient.present? && site_key_record.present? && site_key_private_key.present?
+  end
+
+  def site_key_attributes
+    {
+      site_key: SiteKeys::Sealer.seal(
+        SiteKeys::KeyPair.from_private_bytes(site_key_private_key).private_jwk.to_json,
+        recipient: @site_key_recipient,
+        client_id: identity.service_provider,
+        cty: 'jwk+json',
+      ),
+      site_key_public: JSON.parse(site_key_record.public_key),
+    }
+  end
+
+  def site_key_record
+    @site_key_record = identity.user.site_key unless defined?(@site_key_record)
+    @site_key_record
+  end
+
+  def site_key_private_key
+    return @site_key_private_key if defined?(@site_key_private_key)
+
+    @site_key_private_key = out_of_band_session_accessor.load_site_key
   end
 end

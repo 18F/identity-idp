@@ -11,6 +11,15 @@ module SiteKeys
 
     attr_reader :user, :user_session
 
+    # Reads the private scalar out of a session hash, for the user-information endpoint, which has
+    # the session but not a live `Vault`. The value is the one this session cached at sign-in.
+    def self.cached_private_key(session)
+      encrypted = session[SESSION_KEY]
+      return if encrypted.blank?
+
+      Base64.strict_decode64(SessionEncryptor.new.kms_decrypt(encrypted))
+    end
+
     def initialize(user:, user_session:, analytics: nil)
       @user = user
       @user_session = user_session
