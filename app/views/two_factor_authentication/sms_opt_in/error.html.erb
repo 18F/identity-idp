@@ -1,5 +1,33 @@
 <% self.title = t('two_factor_authentication.opt_in.title') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(title: t('two_factor_authentication.opt_in.title')) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--error">
+        <%= render NDS::IconComponent.new(icon: :error, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <p>
+        <%= t(
+              'two_factor_authentication.opt_in.opted_out_last_30d_html',
+              phone_number_html: content_tag(:strong, @phone_configuration.masked_phone),
+            ) %>
+      </p>
+
+      <p><%= t('two_factor_authentication.opt_in.wait_30d_opt_in') %></p>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render 'two_factor_authentication/sms_opt_in/nds_troubleshooting_options',
+                 presenter: @presenter,
+                 cancel_url: @cancel_url %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render AlertIconComponent.new(icon_name: :error, class: 'margin-bottom-2') %>
 
 <%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.opt_in.title')) %>
@@ -17,4 +45,5 @@
 
 <%= render PageFooterComponent.new do %>
   <%= link_to cancel_link_text, @cancel_url %>
+<% end %>
 <% end %>
