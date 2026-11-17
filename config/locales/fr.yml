@@ -1595,7 +1595,7 @@ instructions.password.strength.4: Excellente
 instructions.password.strength.intro: 'Force du mot de passe :'
 instructions.password.strength.strong: Forte
 instructions.password.strength.too_common: Trop courant
-instructions.sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à %{app_name}. Veuillez contacter %{sp_link} pour obtenir de l’aide.
+instructions.sp_handoff_bounced_html: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à %{app_name}. Veuillez contacter %{sp_link_html} pour obtenir de l’aide.
 instructions.sp_handoff_bounced_with_no_sp: votre fournisseur de service
 links.accessibility_and_languages: Accessibilité et langues
 links.account.reactivate.with_key: J’ai ma clé
