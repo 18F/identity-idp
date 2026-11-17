@@ -18,7 +18,7 @@ describe('bindFormSubmitters', () => {
       range_errors: [{ max: '2008-01-01', message: 'You must be at least 18 years old' }],
     };
 
-    const dateInput = (part: string, pattern: string) => `
+    const dateInput = (part: string, pattern: string, value = '') => `
       <lg-validated-field error-id="dob-error">
         <input
           type="text"
@@ -28,20 +28,21 @@ describe('bindFormSubmitters', () => {
           aria-invalid="false"
           aria-describedby="dob-error"
           pattern="${pattern}"
+          value="${value}"
         >
       </lg-validated-field>
     `;
 
-    const renderForm = () => {
+    const renderForm = ({ month = '', day = '', year = '' } = {}) => {
       document.body.innerHTML = `
         <form>
           <lg-memorable-date max="2026-01-01">
             <script type="application/json" class="memorable-date__error-strings">
               ${JSON.stringify(errorMappings)}
             </script>
-            ${dateInput('month', '(1[0-2])|(0?[1-9])')}
-            ${dateInput('day', '(3[01])|([12][0-9])|(0?[1-9])')}
-            ${dateInput('year', '\\d{4}')}
+            ${dateInput('month', '(1[0-2])|(0?[1-9])', month)}
+            ${dateInput('day', '(3[01])|([12][0-9])|(0?[1-9])', day)}
+            ${dateInput('year', '\\d{4}', year)}
           </lg-memorable-date>
           <div id="dob-error" class="usa-error-message display-none"></div>
           <input id="after" type="text">
@@ -120,7 +121,7 @@ describe('bindFormSubmitters', () => {
       expect(month.getAttribute('aria-invalid')).to.equal('false');
     });
 
-    it('does not show an error when focus leaves an untouched date', async () => {
+    it('does not show an error when focus leaves an untouched empty date', async () => {
       const { month, after, error } = renderForm();
 
       await userEvent.click(month);
@@ -129,6 +130,18 @@ describe('bindFormSubmitters', () => {
       expect(document.activeElement).to.equal(after);
       expect(error.classList.contains('display-none')).to.equal(true);
       expect(month.getAttribute('aria-invalid')).to.equal('false');
+    });
+
+    it('shows an error when focus leaves an untouched pre-filled invalid date', async () => {
+      const { month, after, error, button } = renderForm({ month: '1', day: '15', year: '2015' });
+
+      await userEvent.click(month);
+      await userEvent.click(after);
+
+      expect(button.disabled).to.equal(true);
+      expect(error.textContent).to.equal('You must be at least 18 years old');
+      expect(error.classList.contains('display-none')).to.equal(false);
+      expect(month.getAttribute('aria-invalid')).to.equal('true');
     });
 
     it('shows a missing part error once focus leaves an edited date', async () => {

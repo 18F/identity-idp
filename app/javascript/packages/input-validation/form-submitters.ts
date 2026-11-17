@@ -79,15 +79,21 @@ export const bindFormSubmitters = (form: HTMLFormElement) => {
   form.addEventListener('change', sync);
   form.addEventListener('input', markMemorableDateEdited);
   form.addEventListener('change', markMemorableDateEdited);
-  // Untouched dates stay quiet on focusout so a layout shift can't make a click below miss.
+  // Untouched empty dates stay quiet on focusout so a layout shift can't make a click below miss.
   form.addEventListener('focusout', (event) => {
     const { target, relatedTarget } = event;
     const memorableDate = target instanceof Element && target.closest(MEMORABLE_DATE_SELECTOR);
     if (
       !memorableDate ||
-      !editedMemorableDates.has(memorableDate) ||
       (relatedTarget instanceof Node && memorableDate.contains(relatedTarget))
     ) {
+      return;
+    }
+
+    const isEmpty = Array.from(
+      memorableDate.querySelectorAll<HTMLInputElement>('.validated-field__input'),
+    ).every((input) => !input.value);
+    if (isEmpty && !editedMemorableDates.has(memorableDate)) {
       return;
     }
 

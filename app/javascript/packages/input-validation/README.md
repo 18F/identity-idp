@@ -43,5 +43,5 @@ inputs and controls by data attribute hooks:
 - **Submit gating:** submit buttons in the form are disabled until the form's
   constraints are satisfied. Since a disabled button can't trigger the
   submit-time errors of an `lg-memorable-date`, its errors are shown once focus
-  leaves a date the user has edited instead.
+  leaves the date instead, unless the date is still empty and untouched.
 - **Overflow fade:** long input values fade at the scrollable edges.
