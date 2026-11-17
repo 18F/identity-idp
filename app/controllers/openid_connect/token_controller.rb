@@ -56,6 +56,7 @@ module OpenidConnect
         :code,
         :code_verifier,
         :grant_type,
+        :requested_acr,
         :requested_token_type,
         :resource,
         :scope,
