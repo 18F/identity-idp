@@ -1,5 +1,91 @@
 <% self.title = t('titles.idv.cancellation_prompt') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(
+        title: @hybrid_session ? t('idv.cancel.headings.prompt.hybrid') : t('idv.cancel.headings.prompt.standard'),
+      ) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--warning">
+        <%= render NDS::IconComponent.new(icon: :warning, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <% if @hybrid_session %>
+        <div class="copy copy--muted">
+          <p><%= t('idv.cancel.description.hybrid') %></p>
+        </div>
+      <% else %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <%= render NDS::StackComponent.new(align: :stretch) do %>
+            <h2 class="heading-s"><%= t('idv.cancel.headings.start_over') %></h2>
+            <div class="copy copy--muted">
+              <p><%= t('idv.cancel.description.start_over') %></p>
+            </div>
+          <% end %>
+          <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+            <%= render ButtonComponent.new(
+                  url: idv_session_path(step: params[:step]),
+                  method: :delete,
+                  variant: :destructive,
+                  full_width: true,
+                  form: { 'aria-label': t('idv.cancel.actions.start_over') },
+                ).with_content(t('idv.cancel.actions.start_over')) %>
+            <%= render ButtonComponent.new(
+                  url: idv_cancel_path(step: params[:step]),
+                  method: :put,
+                  variant: :secondary,
+                  full_width: true,
+                  form: { 'aria-label': t('idv.cancel.actions.keep_going') },
+                ).with_content(t('idv.cancel.actions.keep_going')) %>
+          <% end %>
+
+          <hr class="divider" />
+
+          <%= render NDS::StackComponent.new(align: :stretch) do %>
+            <h2 class="heading-s"><%= @presenter.exit_heading %></h2>
+            <div class="copy copy--muted">
+              <% @presenter.exit_description.each do |p_content| %>
+                <p><%= p_content %></p>
+              <% end %>
+            </div>
+          <% end %>
+          <%= render SpinnerButtonComponent.new(
+                url: idv_cancel_path(step: params[:step], location: 'cancel'),
+                method: :delete,
+                variant: :secondary,
+                outline: true,
+                full_width: true,
+                form: {
+                  'aria-label': @presenter.exit_action_text,
+                  data: { form_steps_wait: '' },
+                },
+              ).with_content(@presenter.exit_action_text) %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% if @hybrid_session %>
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                url: idv_cancel_path(step: params[:step], location: 'cancel'),
+                method: :delete,
+                full_width: true,
+              ).with_content(t('forms.buttons.cancel')) %>
+          <%= render ButtonComponent.new(
+                url: idv_cancel_path(step: params[:step]),
+                method: :put,
+                variant: :tertiary,
+                full_width: true,
+              ).with_content(t('links.go_back')) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render StatusPageComponent.new(status: :warning) do |c| %>
   <% if @hybrid_session %>
     <% c.with_header { t('idv.cancel.headings.prompt.hybrid') } %>
@@ -67,6 +153,7 @@
           ).with_content(@presenter.exit_action_text) %>
     </div>
   <% end %>
+<% end %>
 <% end %>
 
 <% javascript_packs_tag_once 'form-steps-wait' %>

@@ -1,5 +1,39 @@
 <% self.title = t('titles.idv.reset_password') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(title: t('idv.forgot_password.modal_header')) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon">
+        <%= render NDS::IconComponent.new(icon: :info, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <ul class="list copy--muted">
+        <% t('idv.forgot_password.warnings').each do |warning| %>
+          <li><%= warning %></li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: idv_enter_password_path,
+              full_width: true,
+            ).with_content(t('idv.forgot_password.try_again')) %>
+        <%= render ButtonComponent.new(
+              url: idv_forgot_password_path,
+              method: :post,
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('idv.forgot_password.reset_password')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render StatusPageComponent.new(status: :info, icon: :question) do |c| %>
   <% c.with_header { t('idv.forgot_password.modal_header') } %>
 
@@ -18,4 +52,5 @@
        method: :post,
        outline: true,
      ) { t('idv.forgot_password.reset_password') } %>
+<% end %>
 <% end %>

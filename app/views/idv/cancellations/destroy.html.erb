@@ -1,5 +1,11 @@
 <% self.title = t('titles.idv.canceled') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(
+        title: t('idv.cancel.headings.confirmation.hybrid'),
+        subtitle: t('doc_auth.instructions.switch_back'),
+      ) %>
+<% else %>
 <%= render StatusPageComponent.new(status: :error, icon: :none) do |c| %>
   <center>
     <%= image_tag(asset_url('idv/switch.svg'), width: 193, height: 109, alt: t('doc_auth.instructions.switch_back_image')) %>
@@ -10,4 +16,5 @@
   <p>
     <%= t('doc_auth.instructions.switch_back') %>
   </p>
+<% end %>
 <% end %>

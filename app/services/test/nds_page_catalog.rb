@@ -589,6 +589,13 @@ module Test
         ],
       ),
       Page.new(
+        key: 'idv-forgot-password',
+        title: 'Forgot password? (re-enter password)',
+        flow: IDV,
+        template: 'idv/forgot_password/new',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
         key: 'idv-phone',
         title: 'Verify your phone number',
         flow: IDV,
@@ -636,6 +643,31 @@ module Test
           Permutation.new(label: 'Auth only (new SP)', params: { auth: '1' }),
           Permutation.new(label: 'Single MFA warning', params: { single: '1' }),
         ],
+      ),
+      Page.new(
+        key: 'idv-activated',
+        title: 'Identity already verified',
+        flow: IDV,
+        template: 'idv/activated',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'idv-cancel',
+        title: 'Cancel verifying your identity?',
+        flow: IDV,
+        template: 'idv/cancellations/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'With service provider', params: { sp: '1' }),
+          Permutation.new(label: 'Hybrid (phone)', params: { hybrid: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'idv-cancel-confirmation',
+        title: 'Photo upload canceled (hybrid phone)',
+        flow: IDV,
+        template: 'idv/cancellations/destroy',
+        permutations: [Permutation.new(label: 'Default', params: {})],
       ),
       Page.new(
         key: 'email-language',
