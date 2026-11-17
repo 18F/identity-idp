@@ -1,6 +1,5 @@
-<% self.title = t('titles.registrations.new') %>
-
 <% if nds_layout? %>
+  <% self.title = t('titles.rules_of_use') %>
   <%= simple_form_for(@rules_of_use_form, url: rules_of_use_path, html: { class: nil }) do |f| %>
     <%= render NDS::FormPageComponent.new(
           title: t('titles.rules_of_use'),
@@ -49,6 +48,8 @@
     <% end %>
   <% end %>
 <% else %>
+<% self.title = t('titles.registrations.new') %>
+
 <%= render PageHeadingComponent.new.with_content(t('titles.rules_of_use')) %>
 
 <p>

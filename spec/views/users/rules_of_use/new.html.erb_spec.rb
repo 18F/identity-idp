@@ -14,7 +14,7 @@ RSpec.describe 'users/rules_of_use/new.html.erb' do
     @rules_of_use_form = RulesOfUseForm.new(user)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.registrations.new'))
 
     render
@@ -63,6 +63,12 @@ RSpec.describe 'users/rules_of_use/new.html.erb' do
   context 'in the NDS layout' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
+    end
+
+    it 'has a title matching the rules of use heading' do
+      expect(view).to receive(:title=).with(t('titles.rules_of_use'))
+
+      render
     end
 
     it 'renders the form-page card with the rules of use heading' do
