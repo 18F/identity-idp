@@ -269,8 +269,11 @@ module Idv
     end
 
     def formatted_destination_phone
-      raw_phone = params.require(:doc_auth).permit(:phone)
-      PhoneFormatter.format(raw_phone, country_code: 'US')
+      phone_params = params.require(:doc_auth).permit(:phone, :international_code)
+      PhoneFormatter.format(
+        phone_params[:phone],
+        country_code: phone_params[:international_code].presence || 'US',
+      )
     end
 
     def how_to_verify_form_params

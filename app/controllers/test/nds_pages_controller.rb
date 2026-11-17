@@ -135,8 +135,6 @@ module Test
     # i18n-tasks-use t('nds.errors.cancel_verification')
     # i18n-tasks-use t('nds.errors.return_home')
     # i18n-tasks-use t('nds.errors.start_over_warning')
-    # i18n-tasks-use t('nds.hybrid_handoff.heading')
-    # i18n-tasks-use t('nds.hybrid_handoff.subtitle')
     # i18n-tasks-use t('nds.idv_phone.info')
     # i18n-tasks-use t('nds.link_sent.heading')
     # i18n-tasks-use t('nds.link_sent.instructions')
@@ -1204,8 +1202,12 @@ module Test
 
     def setup_hybrid_handoff
       @upload_enabled = params[:upload].present?
+      @post_office_enabled = params[:ipp].present?
+      @idv_how_to_verify_form = Idv::HowToVerifyForm.new
       @presenter = Idv::HowToVerifyPresenter.new(
-        selfie_check_required: false, mdl_enabled: false, clear1_allowed: false,
+        selfie_check_required: false,
+        mdl_enabled: false,
+        clear1_allowed: params[:clear1].present?,
       )
       form = Idv::PhoneForm.new(
         previous_params: { phone: '2025551212' }, user: User.new, delivery_methods: [:sms],
