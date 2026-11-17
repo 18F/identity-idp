@@ -540,7 +540,6 @@ devise.passwords.send_paranoid_instructions: You will receive an email with inst
 devise.passwords.token_expired: You took too long to reset your password. Try again.
 devise.passwords.updated: Your password has been changed. You are now signed in.
 devise.passwords.updated_not_active: Your password has been changed. Please sign in with your new password.
-devise.registrations.close_window: You can close this window if you’re done.
 devise.registrations.destroyed: Your account has been successfully deleted.
 devise.sessions.signed_in: ''
 devise.sessions.signed_out: You are now signed out.

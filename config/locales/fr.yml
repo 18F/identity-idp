@@ -540,7 +540,6 @@ devise.passwords.send_paranoid_instructions: Vous recevrez dans quelques minutes
 devise.passwords.token_expired: Vous avez mis trop de temps à réinitialiser votre mot de passe. Veuillez réessayer.
 devise.passwords.updated: Votre mot de passe a été modifié. Vous êtes maintenant connecté.
 devise.passwords.updated_not_active: Votre mot de passe a été modifié. Veuillez vous connecter avec votre nouveau mot de passe.
-devise.registrations.close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
 devise.registrations.destroyed: Votre compte a bien été supprimé.
 devise.sessions.signed_in: ''
 devise.sessions.signed_out: Vous êtes maintenant déconnecté.
