@@ -49,7 +49,9 @@ RSpec.describe 'idv/forgot_password/new.html.erb' do
 
     it 'renders the form-page card with the info badge and heading' do
       expect(rendered).to have_selector('section.auth.auth--form-page')
-      expect(rendered).to have_selector('.auth__header .nds-status-icon svg[aria-hidden="true"]')
+      expect(rendered).to have_selector(
+        '.auth__header .nds-status-icon.nds-status-icon--info svg[aria-hidden="true"]',
+      )
       expect(rendered).to include(NDS::IconComponent.markup_for('nds/icons/info/24.svg'))
       expect(rendered).to have_selector('h1', count: 1)
       expect(rendered).to have_selector('h1', text: t('idv.forgot_password.modal_header'))

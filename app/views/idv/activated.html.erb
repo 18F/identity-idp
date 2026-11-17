@@ -3,7 +3,7 @@
 <% if nds_layout? %>
   <%= render NDS::FormPageComponent.new(title: t('idv.titles.activated')) do |page| %>
     <% page.with_media do %>
-      <span class="nds-status-icon">
+      <span class="nds-status-icon nds-status-icon--info">
         <%= render NDS::IconComponent.new(icon: :check_circle, size: 24) %>
       </span>
     <% end %>
