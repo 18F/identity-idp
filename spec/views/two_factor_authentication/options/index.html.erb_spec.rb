@@ -26,7 +26,7 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
     @two_factor_options_form = TwoFactorLoginOptionsForm.new(user)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(
       t('two_factor_authentication.login_options_title'),
     )
@@ -241,6 +241,12 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
       user
     end
 
+    it 'has a title matching the select-method heading' do
+      expect(view).to receive(:title=).with(t('two_factor_authentication.login_options_title'))
+
+      rendered
+    end
+
     it 'renders the form-page card with the select-method heading' do
       expect(rendered).to have_selector('section.auth.auth--form-page')
       expect(rendered).to have_css(
@@ -445,6 +451,14 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
     context 'with context reauthentication' do
       let(:user) { create(:user, :fully_registered) }
       let(:reauthentication_context) { true }
+
+      it 'has a title matching the reauthentication heading' do
+        expect(view).to receive(:title=).with(
+          t('two_factor_authentication.login_options_reauthentication_title'),
+        )
+
+        rendered
+      end
 
       it 'renders the reauthentication heading and intro and cancels back to the account' do
         expect(rendered).to have_css(
