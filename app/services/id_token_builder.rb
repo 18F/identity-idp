@@ -6,9 +6,13 @@ class IdTokenBuilder
 
   attr_reader :identity, :now
 
-  def initialize(identity:, code:, custom_expiration: nil, now: Time.zone.now)
+  # @param access_token [String] the raw access token issued with this ID token; only its digest
+  #   is on the identity row, so the token for at_hash (OpenID Connect Core 1.0 section 3.1.3.6)
+  #   must be handed in
+  def initialize(identity:, code:, access_token:, custom_expiration: nil, now: Time.zone.now)
     @identity = identity
     @code = code
+    @access_token = access_token
     @custom_expiration = custom_expiration
     @now = now
   end
@@ -28,7 +32,7 @@ class IdTokenBuilder
 
   private
 
-  attr_reader :code
+  attr_reader :code, :access_token
 
   def jwt_payload
     OpenidConnectUserInfoPresenter.new(identity, session_accessor: session_accessor)
@@ -43,7 +47,7 @@ class IdTokenBuilder
       nonce: identity.nonce,
       aud: identity.service_provider,
       jti: SecureRandom.urlsafe_base64,
-      at_hash: hash_token(identity.access_token),
+      at_hash: hash_token(access_token),
       c_hash: hash_token(code),
     }
   end

@@ -7,11 +7,13 @@ RSpec.describe AccessTokenVerifier do
   subject(:verifier) { AccessTokenVerifier.new(http_authorization_header) }
   let(:http_authorization_header) { "Bearer #{access_token}" }
 
+  let(:raw_access_token) { SecureRandom.urlsafe_base64 }
+  # Only the digest of a token is on the identity row; the raw token is what the client presents.
   let(:identity) do
     build(
       :service_provider_identity,
       rails_session_id: '123',
-      access_token: SecureRandom.urlsafe_base64,
+      access_token: ServiceProviderIdentity.access_token_digest(raw_access_token),
     )
   end
 
@@ -59,7 +61,7 @@ RSpec.describe AccessTokenVerifier do
     context 'with a bearer token for an expired session' do
       before { OutOfBandSessionAccessor.new(identity.rails_session_id).destroy }
 
-      let(:access_token) { identity.access_token }
+      let(:access_token) { raw_access_token }
 
       it 'is not successful' do
         response, result_identity = result
@@ -79,10 +81,10 @@ RSpec.describe AccessTokenVerifier do
           :service_provider_identity,
           service_provider: service_provider.issuer,
           rails_session_id: '123',
-          access_token: SecureRandom.urlsafe_base64,
+          access_token: ServiceProviderIdentity.access_token_digest(raw_access_token),
         )
       end
-      let(:access_token) { identity.access_token }
+      let(:access_token) { raw_access_token }
       let(:url) { 'https://idp.example.gov/api/openid_connect/userinfo' }
       let(:bound_thumbprint) { dpop_thumbprint }
       let(:binding) { AccessTokenBinding.new(dpop_jkt: bound_thumbprint) }
@@ -194,7 +196,7 @@ RSpec.describe AccessTokenVerifier do
     end
 
     context 'for a client not listed for key binding, presenting the DPoP scheme' do
-      let(:access_token) { identity.access_token }
+      let(:access_token) { raw_access_token }
       let(:http_authorization_header) { "DPoP #{access_token}" }
       let(:url) { 'https://idp.example.gov/api/openid_connect/userinfo' }
       subject(:verifier) do
@@ -225,7 +227,7 @@ RSpec.describe AccessTokenVerifier do
     end
 
     context 'with a valid bearer token' do
-      let(:access_token) { identity.access_token }
+      let(:access_token) { raw_access_token }
       before do
         identity.save!
         OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii(

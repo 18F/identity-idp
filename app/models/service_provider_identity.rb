@@ -26,6 +26,16 @@ class ServiceProviderIdentity < ApplicationRecord
 
   CONSENT_EXPIRATION = 1.year.freeze
 
+  # The access token is stored only as its SHA-256 digest, so a copy of the table does not hold
+  # usable bearer credentials; the raw token exists in the token response and with the client.
+  def self.access_token_digest(access_token)
+    Digest::SHA256.hexdigest(access_token.to_s)
+  end
+
+  def self.from_access_token(access_token)
+    find_by(access_token: access_token_digest(access_token))
+  end
+
   def deactivate
     update!(session_uuid: nil)
   end

@@ -45,7 +45,7 @@ RSpec.describe OpenidConnect::DocumentImagesController do
         create(
           :service_provider_identity,
           rails_session_id: SecureRandom.hex,
-          access_token:,
+          access_token: ServiceProviderIdentity.access_token_digest(access_token),
           scope:,
           acr_values:,
           user:,
