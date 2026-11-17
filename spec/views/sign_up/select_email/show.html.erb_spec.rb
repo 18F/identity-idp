@@ -94,6 +94,14 @@ RSpec.describe 'sign_up/select_email/show.html.erb' do
       expect(rendered).to have_field(email2, type: 'radio', checked: true)
     end
 
+    it 'marks every email radio required and valid until validated' do
+      expect(rendered).to have_css(
+        ".radio input.radio__input[name='select_email_form[selected_email_id]']" \
+          "[required][aria-invalid='false']",
+        count: @user_emails.size,
+      )
+    end
+
     it 'renders the select, add email and back actions' do
       expect(rendered).to have_css(
         '.auth__actions button[type=submit]',

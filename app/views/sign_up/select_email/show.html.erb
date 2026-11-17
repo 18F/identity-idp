@@ -17,6 +17,8 @@
                       email.id,
                       class: 'radio__input usa-sr-only',
                       checked: email.id == @email_id,
+                      required: true,
+                      aria: { invalid: false },
                     ) %>
                 <%= f.label(
                       :selected_email_id,
