@@ -27,7 +27,8 @@ module Proofing
         precheck_phone_number:,
         hybrid_mobile_device_profiling_result: nil, # ThreatMetrix (Hybrid Mobile)
         proofing_vendor: nil, # resolution vendor that produced resolution_result
-        # Ordered by attempt: { vendor => { resolution_result:, residential_resolution_result: } }
+        # Ordered by attempt: { vendor => { resolution_result:, residential_resolution_result: } },
+        # holding only the results that came from a vendor call
         resolution_attempts: nil,
         failover_available: false
       )
@@ -98,16 +99,19 @@ module Proofing
       private
 
       # The deciding attempt stays at the top level of the stage, unchanged. Failover details are
-      # added alongside it. Without attempt data (e.g. specs building results directly), the stage
-      # is the single deciding attempt.
+      # added alongside it, listing only the vendors called for this stage. Without attempt data
+      # (e.g. specs building results directly), the stage is the single deciding attempt.
       def resolution_stage(result, attempt_key)
         attempts = resolution_attempts.presence ||
                    (proofing_vendor ? { proofing_vendor => { attempt_key => result } } : {})
+        stage_attempts = attempts.filter_map do |vendor, attempt|
+          [vendor, attempt[attempt_key].to_h] if attempt.key?(attempt_key)
+        end.to_h
         result.to_h.merge(
-          attempts: attempts.to_h { |vendor, attempt| [vendor, attempt[attempt_key].to_h] },
-          attempted_vendors: attempts.keys,
+          attempts: stage_attempts,
+          attempted_vendors: stage_attempts.keys,
           failover_available: !!failover_available,
-          failover_used: attempts.many?,
+          failover_used: stage_attempts.many?,
         )
       end
 

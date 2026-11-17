@@ -194,8 +194,8 @@ RSpec.describe ProofingAgentJob, type: :job do
                     vendor_id: nil,
                     vendor_workflow: nil,
                     verified_attributes: nil,
-                    attempts: { mock: hash_including(vendor_name: 'ResolutionMock') },
-                    attempted_vendors: ['mock'],
+                    attempts: {},
+                    attempted_vendors: [],
                     failover_available: false,
                     failover_used: false },
                   residential_address:
@@ -423,7 +423,7 @@ RSpec.describe ProofingAgentJob, type: :job do
           .to receive(:create_proofer).and_return(Proofing::Mock::ResolutionMockClient.new)
       end
 
-      it 'logs every attempt, with PII-like attempt keypaths allowlisted' do
+      it 'logs every residential address call, with PII-like attempt keypaths allowlisted' do
         perform
 
         expect(@analytics).to have_logged_event(
@@ -434,6 +434,12 @@ RSpec.describe ProofingAgentJob, type: :job do
               context: hash_including(
                 stages: hash_including(
                   resolution: hash_including(
+                    attempts: {},
+                    attempted_vendors: [],
+                    failover_available: true,
+                    failover_used: false,
+                  ),
+                  residential_address: hash_including(
                     attempted_vendors: ['mock', 'instant_verify'],
                     failover_available: true,
                     failover_used: true,
