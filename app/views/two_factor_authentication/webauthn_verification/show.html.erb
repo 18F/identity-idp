@@ -1,7 +1,7 @@
-<% self.title = @presenter.webauthn_title %>
-
 <% if nds_layout? %>
   <% platform = @presenter.platform_authenticator? %>
+  <% nds_heading = platform ? t('nds.webauthn_verification.platform_heading') : t('headings.webauthn_setup.new') %>
+  <% self.title = nds_heading %>
   <% webauthn_error = flash[:error].presence %>
   <% flash.delete(:error) if webauthn_error %>
   <% troubleshooting_options = @presenter.troubleshooting_options
@@ -9,7 +9,7 @@
        .map { |option| { text: option.content, url: option.url, new_tab: option.new_tab? } } %>
 
   <%= render NDS::FormPageComponent.new(
-        title: platform ? t('nds.webauthn_verification.platform_heading') : t('headings.webauthn_setup.new'),
+        title: nds_heading,
         subtitle: platform ? t('nds.webauthn_verification.platform_intro') : t('nds.webauthn_verification.roaming_intro'),
       ) do |page| %>
     <% if webauthn_error %>
@@ -84,6 +84,8 @@
     <% end %>
   <% end %>
 <% else %>
+<% self.title = @presenter.webauthn_title %>
+
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
 
 <p>

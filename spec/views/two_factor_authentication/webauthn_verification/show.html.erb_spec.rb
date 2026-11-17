@@ -24,7 +24,7 @@ RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' d
     )
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.present_webauthn'))
 
     render
@@ -101,6 +101,12 @@ RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' d
   context 'in the NDS layout' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
+    end
+
+    it 'has a title matching the security key heading' do
+      expect(view).to receive(:title=).with(t('headings.webauthn_setup.new'))
+
+      render
     end
 
     it 'renders the form-page card with the security key heading and intro' do
@@ -265,10 +271,8 @@ RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' d
       let(:platform_authenticator) { true }
       let(:credentials) { [{ id: 'credential-id', transports: ['internal', 'hybrid'] }] }
 
-      it 'keeps the legacy platform page title' do
-        expect(view).to receive(:title=).with(
-          t('two_factor_authentication.webauthn_platform_header_text'),
-        )
+      it 'has a title matching the passkey heading' do
+        expect(view).to receive(:title=).with(t('nds.webauthn_verification.platform_heading'))
 
         render
       end
