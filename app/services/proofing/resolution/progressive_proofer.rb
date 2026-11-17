@@ -100,13 +100,15 @@ module Proofing
           timer:,
         )
 
+        resolution_bypassed = false
         instant_verify_bypass = instant_verify_bypass_for(state_id_address_resolution_result)
-        resolution_bypassed = !!instant_verify_bypass&.bypassable?
-        if resolution_bypassed
+        resolution_bypassable = !!instant_verify_bypass&.bypassable?
+        if resolution_bypassable
           # Without a separate residential address both results are the same Instant Verify result
           residential_is_state_id_result =
             residential_address_resolution_result.equal?(state_id_address_resolution_result)
           state_id_address_resolution_result = instant_verify_bypass.bypassed_resolution_result
+          resolution_bypassed = true
           if residential_is_state_id_result
             residential_address_resolution_result = state_id_address_resolution_result
           end
