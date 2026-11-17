@@ -13,7 +13,6 @@ module Api
       respond_to :json
 
       def show
-        skip_session_commit
         render json: status_response
       end
 
