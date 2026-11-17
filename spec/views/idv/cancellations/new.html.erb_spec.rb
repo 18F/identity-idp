@@ -13,7 +13,7 @@ RSpec.describe 'idv/cancellations/new.html.erb' do
     allow(view).to receive(:params).and_return(params)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.idv.cancellation_prompt'))
 
     render
@@ -104,6 +104,10 @@ RSpec.describe 'idv/cancellations/new.html.erb' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
       render
+    end
+
+    it 'has a title matching the cancel prompt heading' do
+      expect(view.content_for(:title)).to eq(t('idv.cancel.headings.prompt.standard'))
     end
 
     it 'renders the form-page card with the warning badge and heading' do
@@ -199,6 +203,10 @@ RSpec.describe 'idv/cancellations/new.html.erb' do
 
     context 'with hybrid flow' do
       let(:hybrid_session) { true }
+
+      it 'has a title matching the hybrid cancel prompt heading' do
+        expect(view.content_for(:title)).to eq(t('idv.cancel.headings.prompt.hybrid'))
+      end
 
       it 'renders the hybrid heading and description' do
         expect(rendered).to have_selector('h1', text: t('idv.cancel.headings.prompt.hybrid'))

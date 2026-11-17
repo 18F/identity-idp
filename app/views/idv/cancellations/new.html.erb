@@ -1,8 +1,8 @@
-<% self.title = t('titles.idv.cancellation_prompt') %>
-
 <% if nds_layout? %>
+  <% nds_heading = @hybrid_session ? t('idv.cancel.headings.prompt.hybrid') : t('idv.cancel.headings.prompt.standard') %>
+  <% self.title = nds_heading %>
   <%= render NDS::FormPageComponent.new(
-        title: @hybrid_session ? t('idv.cancel.headings.prompt.hybrid') : t('idv.cancel.headings.prompt.standard'),
+        title: nds_heading,
       ) do |page| %>
     <% page.with_media do %>
       <span class="nds-status-icon nds-status-icon--warning">
@@ -86,6 +86,8 @@
     <% end %>
   <% end %>
 <% else %>
+<% self.title = t('titles.idv.cancellation_prompt') %>
+
 <%= render StatusPageComponent.new(status: :warning) do |c| %>
   <% if @hybrid_session %>
     <% c.with_header { t('idv.cancel.headings.prompt.hybrid') } %>

@@ -5,7 +5,7 @@ RSpec.describe 'idv/forgot_password/new.html.erb' do
     allow(view).to receive(:nds_layout?).and_return(false)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.idv.reset_password'))
 
     render
@@ -41,6 +41,10 @@ RSpec.describe 'idv/forgot_password/new.html.erb' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
       render
+    end
+
+    it 'has a title matching the forgot password heading' do
+      expect(view.content_for(:title)).to eq(t('idv.forgot_password.modal_header'))
     end
 
     it 'renders the form-page card with the info badge and heading' do

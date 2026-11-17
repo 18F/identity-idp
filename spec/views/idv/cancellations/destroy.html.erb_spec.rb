@@ -5,7 +5,7 @@ RSpec.describe 'idv/cancellations/destroy.html.erb' do
     allow(view).to receive(:nds_layout?).and_return(false)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.idv.canceled'))
 
     render
@@ -31,6 +31,10 @@ RSpec.describe 'idv/cancellations/destroy.html.erb' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
       render
+    end
+
+    it 'has a title matching the canceled heading' do
+      expect(view.content_for(:title)).to eq(t('idv.cancel.headings.confirmation.hybrid'))
     end
 
     it 'renders the form-page card with the heading and switch back instructions' do
