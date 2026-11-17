@@ -1765,6 +1765,7 @@ nds.request_letter.info: 为验证您的身份，我们会向您的地址邮寄�
 nds.socure_errors.in_person_heading: 或者，尝试亲身去验证身份证件
 nds.socure_errors.rate_limit_html.one: 您可以再试<strong>1次。</strong>然后，您必须等6个小时才能再试。
 nds.socure_errors.rate_limit_html.other: 您可以再试<strong>%{count}次。</strong>然后，您必须等6个小时才能再试。
+nds.sp_handoff_bounced.instructions_html: 你登录成功了，但 %{sp_name} 将你送回到 %{app_name}。请联系 %{sp_link_html} 寻求帮助。
 nds.ssn.info: 您的社会安全号码用于在 %{app_name} 各项服务中验证您的身份，始终加密保存，未经您同意绝不共享。
 nds.totp_setup.new.code_label: 代码
 nds.totp_setup.new.heading: 设置一个身份验证应用程序

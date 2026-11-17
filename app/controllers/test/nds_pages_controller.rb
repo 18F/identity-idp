@@ -1061,6 +1061,23 @@ module Test
       {}
     end
 
+    def setup_sp_handoff_bounced
+      if params[:sp].present?
+        @sp_name = 'Veterans Affairs'
+        @sp_link = 'https://www.va.gov'
+      else
+        @sp_name = t('instructions.sp_handoff_bounced_with_no_sp')
+      end
+      {}
+    end
+
+    def setup_oidc_authorization_error
+      @authorize_form = OpenidConnectAuthorizeForm.new({})
+      @authorize_form.errors.add(:client_id, t('openid_connect.authorization.errors.bad_client_id'))
+      @authorize_form.errors.add(:scope, t('openid_connect.authorization.errors.no_valid_scope'))
+      {}
+    end
+
     def setup_proofing_agent_expired
       {}
     end

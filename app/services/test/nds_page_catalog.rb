@@ -289,6 +289,25 @@ module Test
         ],
       ),
       Page.new(
+        key: 'sp-handoff-bounced',
+        title: 'Service provider sent the user back (bounced)',
+        flow: ERRORS,
+        template: 'devise/sessions/bounced',
+        permutations: [
+          Permutation.new(label: 'No service provider', params: {}),
+          Permutation.new(label: 'Named service provider', params: { sp: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'oidc-authorization-error',
+        title: 'OpenID Connect authorization error',
+        flow: ERRORS,
+        template: 'openid_connect/authorization/error',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
         key: 'proofing-agent-expired',
         title: 'Proofing agent session expired',
         flow: ERRORS,

@@ -1763,6 +1763,7 @@ nds.request_letter.info: Para verificar su identidad, le enviaremos por correo u
 nds.socure_errors.in_person_heading: O, intente verificar su identidad en persona
 nds.socure_errors.rate_limit_html.one: Puede intentarlo <strong>una vez más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
 nds.socure_errors.rate_limit_html.other: Puede intentarlo <strong>%{count} veces más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
+nds.sp_handoff_bounced.instructions_html: Logró iniciar sesión, pero %{sp_name} lo envió de nuevo a %{app_name}. Contacte con %{sp_link_html} para obtener ayuda.
 nds.ssn.info: Su número de Seguro Social verifica su identidad en los servicios de %{app_name} y permanece cifrado; nunca se comparte sin su consentimiento.
 nds.totp_setup.new.code_label: Código
 nds.totp_setup.new.heading: Configure una aplicación de autenticación
