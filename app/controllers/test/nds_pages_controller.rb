@@ -1348,6 +1348,116 @@ module Test
       {}
     end
 
+    def setup_idv_in_person_state_id
+      @presenter = Idv::InPerson::UspsFormPresenter.new
+      military = params[:military].present?
+      saved = params[:update].present? || military
+      pii = saved ? Idp::Constants::MOCK_IPP_APPLICANT.dup : {}
+      if saved
+        pii[:state_id_jurisdiction] = 'VA'
+        pii[:asserted_id_type] = Idp::Constants::DocumentTypes::DRIVERS_LICENSE
+      end
+      flash.now[:error] = t('idv.failure.verify.heading') if params[:error].present?
+      {
+        form: Idv::StateIdForm.new(pii),
+        pii:,
+        parsed_dob: pii[:dob]&.to_date,
+        parsed_expiration: military ? nil : pii[:state_id_expiration]&.to_date,
+        expiration_option: if military
+                             Idv::StateIdForm::EXPIRATION_MILITARY
+                           else
+                             Idv::StateIdForm::EXPIRATION_OPTION_DATE
+                           end,
+        expiration_edge_cases_enabled: params[:expiration].present? || military,
+        updating_state_id: saved,
+      }
+    end
+
+    def setup_idv_in_person_passport
+      pii = if params[:prefilled].present?
+              {
+                passport_surname: 'MCFAKERSON',
+                passport_first_name: 'FAKEY',
+                passport_dob: '1938-10-06',
+                passport_number: '123456789',
+                passport_expiration: (Time.zone.today + 1.year).to_s,
+              }
+            else
+              {}
+            end
+      {
+        form: Idv::InPerson::PassportForm.new,
+        pii:,
+        parsed_dob: pii[:passport_dob]&.to_date,
+        parsed_expiration: pii[:passport_expiration]&.to_date,
+      }
+    end
+
+    def setup_idv_in_person_address
+      @presenter = Idv::InPerson::UspsFormPresenter.new
+      pii = if params[:update].present?
+              Idp::Constants::MOCK_IDV_APPLICANT.slice(:address1, :city, :state, :zipcode)
+            else
+              {}
+            end
+      {
+        form: Idv::InPerson::AddressForm.new,
+        pii:,
+        updating_address: params[:update].present?,
+      }
+    end
+
+    def setup_idv_in_person_verify_info
+      passport = params[:passport].present?
+      @pii = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.merge(
+        state_id_jurisdiction: 'VA',
+        state_id_number: '1111111111111',
+        state_id_expiration: '2099-12-31',
+        passport_surname: 'MCFAKERSON',
+        passport_first_name: 'FAKEY',
+        passport_dob: '1938-10-06',
+      )
+      @ssn = @pii[:ssn]
+      @presenter = Idv::InPerson::VerifyInfoPresenter.new(
+        enrollment: InPersonEnrollment.new(document_type: passport ? :passport_book : :state_id),
+      )
+      {}
+    end
+
+    def setup_idv_in_person_ready_to_verify
+      location = unless params[:skipped].present?
+                   JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
+                 end
+      service_provider = if params[:sp].present?
+                           ServiceProvider.new(
+                             issuer: DEV_SP_ISSUER,
+                             friendly_name: 'Veterans Affairs',
+                             return_to_sp_url: 'https://www.va.gov',
+                           )
+                         end
+      enrollment = InPersonEnrollment.new(
+        enrollment_code: '2048702198804358',
+        enrollment_established_at: Time.zone.now,
+        selected_location_details: location,
+        document_type: params[:passport].present? ? :passport_book : :state_id,
+        sponsor_id: IdentityConfig.store.public_send(
+          params[:eipp].present? ? :usps_eipp_sponsor_id : :usps_ipp_sponsor_id,
+        ),
+        service_provider:,
+      )
+      @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(enrollment:)
+      if params[:outage].present?
+        @presenter.define_singleton_method(:outage_message_enabled?) { true }
+        @presenter.define_singleton_method(:formatted_outage_expected_update_date) do
+          I18n.l(Time.zone.today + 3.days, format: :short)
+        end
+        @presenter.define_singleton_method(:formatted_outage_emailed_by_date) do
+          I18n.l(Time.zone.today + 5.days, format: :short)
+        end
+      end
+      {}
+    end
+
     def build_mfa_user(configured:)
       user = User.new
       if configured

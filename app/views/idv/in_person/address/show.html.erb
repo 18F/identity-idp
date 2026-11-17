@@ -1,3 +1,119 @@
+<% if nds_layout? %>
+  <% heading = updating_address ? t('in_person_proofing.headings.update_address') : t('in_person_proofing.headings.address') %>
+  <% self.title = heading %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 5) %>
+  <% end %>
+
+  <%= simple_form_for(
+        form,
+        url: url_for,
+        method: 'PUT',
+        html: { data: { nds_submit_gate: true } },
+      ) do |f| %>
+    <%= render NDS::FormPageComponent.new(title: heading) do |page| %>
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(align: :stretch, class: 'text-left') do %>
+          <%= render NDS::InputComponent.new(
+                form: f,
+                attribute: :address1,
+                label: t('idv.form.address1'),
+                value: pii[:address1],
+                autocomplete: 'address-line1',
+                maxlength: 255,
+                required: true,
+                aria: { describedby: 'in_person_address_address1_hint' },
+                error_message: form.errors[:address1].first,
+              ) do %>
+            <p id="in_person_address_address1_hint" class="usa-hint display-none puerto-rico-extras">
+              <%= t('in_person_proofing.form.state_id.address1_hint') %>
+            </p>
+          <% end %>
+          <%= render NDS::InputComponent.new(
+                form: f,
+                attribute: :address2,
+                label: t('idv.form.address2'),
+                value: pii[:address2],
+                autocomplete: 'address-line2',
+                maxlength: 255,
+                aria: { describedby: 'in_person_address_address2_hint' },
+                error_message: form.errors[:address2].first,
+              ) do %>
+            <p id="in_person_address_address2_hint" class="usa-hint display-none puerto-rico-extras">
+              <%= t('in_person_proofing.form.state_id.address2_hint') %>
+            </p>
+          <% end %>
+          <%= render NDS::InputComponent.new(
+                form: f,
+                attribute: :city,
+                label: t('idv.form.city'),
+                value: pii[:city],
+                autocomplete: 'address-level2',
+                maxlength: 255,
+                required: true,
+                error_message: form.errors[:city].first,
+              ) %>
+          <% state_error = form.errors[:state].first %>
+          <div class="usa-form-group margin-0">
+            <%= f.label :state, t('idv.form.state'), class: 'usa-label' %>
+            <%= f.select(
+                  :state,
+                  @presenter.usps_states_territories,
+                  { include_blank: t('in_person_proofing.form.address.state_prompt'), selected: pii[:state] },
+                  class: 'usa-select address-state-selector',
+                  required: true,
+                  autocomplete: 'address-level1',
+                  aria: {
+                    describedby: ('in_person_address_state_error' if state_error),
+                    invalid: (true if state_error),
+                  },
+                ) %>
+            <% if state_error %>
+              <p id="in_person_address_state_error" class="usa-error-message"><%= state_error %></p>
+            <% end %>
+          </div>
+          <%# numeric inputmode for the mobile numeric keypad %>
+          <%= render NDS::InputComponent.new(
+                form: f,
+                attribute: :zipcode,
+                label: t('idv.form.zipcode'),
+                value: pii[:zipcode],
+                autocomplete: 'postal-code',
+                required: true,
+                pattern: '\d{5}([\-]\d{4})?',
+                class: 'zipcode',
+                inputmode: 'numeric',
+                error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
+                error_message: form.errors[:zipcode].first,
+              ) %>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(type: :submit, full_width: true) do %>
+            <%= updating_address ? t('forms.buttons.submit.update') : t('forms.buttons.continue') %>
+          <% end %>
+          <% if updating_address %>
+            <%= render ButtonComponent.new(
+                  url: go_back_path || idv_in_person_verify_info_path,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('forms.buttons.back')) %>
+          <% else %>
+            <%= render ButtonComponent.new(
+                  url: idv_cancel_path(step: 'address'),
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(cancel_link_text) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('formatted-fields', 'state-guidance', 'nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP,
@@ -90,3 +206,4 @@
 <% end %>
 
 <%= javascript_packs_tag_once('formatted-fields', 'state-guidance') %>
+<% end %>

@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { bindFormSubmitters } from '@18f/identity-input-validation/form-submitters';
 import {
   showOrHideJurisdictionExtras,
   showOrHidePuertoRicoExtras,
@@ -160,6 +161,29 @@ describe('state-guidance', () => {
       document.body.innerHTML = '<div></div>';
 
       expect(() => onExpirationOptionSelection()).not.to.throw();
+    });
+
+    it('re-syncs a bound submit gate when a saved non-date option disables the inputs', () => {
+      document.body.innerHTML = `
+        <form>
+          <input type="radio" class="expiration-option-input" name="opt" value="date" />
+          <input type="radio" class="expiration-option-input" name="opt" value="military" checked />
+          <div class="expiration-date-inputs">
+            <input name="id_expiration[month]" required />
+            <input name="id_expiration[day]" required />
+            <input name="id_expiration[year]" required />
+          </div>
+          <button type="submit">Update</button>
+        </form>
+      `;
+      const form = document.querySelector('form');
+      const button = form.querySelector('button');
+      bindFormSubmitters(form);
+      expect(button.disabled).to.eq(true);
+
+      onExpirationOptionSelection();
+
+      expect(button.disabled).to.eq(false);
     });
   });
 });
