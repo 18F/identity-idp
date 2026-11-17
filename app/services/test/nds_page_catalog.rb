@@ -617,6 +617,47 @@ module Test
         permutations: [Permutation.new(label: 'Default', params: {})],
       ),
       Page.new(
+        key: 'idv-letter-enqueued',
+        title: 'Your letter is on the way (verify by mail)',
+        flow: IDV,
+        template: 'idv/by_mail/letter_enqueued/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'With service provider', params: { sp: '1' }),
+          Permutation.new(label: 'Another letter requested', params: { resent: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'idv-enter-code',
+        title: 'Enter your verification code (verify by mail)',
+        flow: IDV,
+        template: 'idv/by_mail/enter_code/index',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Incorrect code', params: { error: '1' }),
+          Permutation.new(label: 'Letter limit reached', params: { no_resend: '1' }),
+          Permutation.new(label: 'Did not receive letter', params: { did_not_receive: '1' }),
+          Permutation.new(
+            label: 'Did not receive letter, letter limit reached',
+            params: { did_not_receive: '1', no_resend: '1' },
+          ),
+        ],
+      ),
+      Page.new(
+        key: 'idv-resend-letter',
+        title: 'Request another letter (verify by mail)',
+        flow: IDV,
+        template: 'idv/by_mail/resend_letter/new',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'idv-sp-follow-up',
+        title: 'Connect to service provider (after verify by mail)',
+        flow: IDV,
+        template: 'idv/by_mail/sp_follow_up/new',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
         key: 'idv-personal-key',
         title: 'Save your personal key',
         flow: IDV,

@@ -1300,6 +1300,57 @@ module Test
       {}
     end
 
+    def setup_idv_letter_enqueued
+      service_provider = if params[:sp].present?
+                           ServiceProvider.new(
+                             issuer: DEV_SP_ISSUER, friendly_name: 'Example Service Provider',
+                           )
+                         end
+      idv_session = Idv::Session.new(user_session: {}, current_user: nil, service_provider:)
+      idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT.dup
+      @presenter = Idv::ByMail::LetterEnqueuedPresenter.new(
+        idv_session:,
+        user_session: {},
+        current_user: nil,
+        url_options:,
+      )
+      if params[:resent].present?
+        flash.now[:success] = t('idv.messages.gpo.another_letter_on_the_way')
+      end
+      {}
+    end
+
+    def setup_idv_enter_code
+      @gpo_verify_form = GpoVerifyForm.new(
+        attempts_api_tracker: nil,
+        fraud_ops_tracker: nil,
+        user: User.new,
+        pii: Idp::Constants::MOCK_IDV_APPLICANT.dup,
+        resolved_authn_context_result: nil,
+      )
+      @gpo_verify_form.errors.add(:otp, :confirmation_code_incorrect) if params[:error].present?
+      @can_request_another_letter = params[:no_resend].blank?
+      @user_did_not_receive_letter = params[:did_not_receive].present?
+      @last_date_letter_was_sent = 3.days.ago
+      {}
+    end
+
+    def setup_idv_resend_letter
+      {}
+    end
+
+    def setup_idv_sp_follow_up
+      user = User.new
+      profile = Profile.new(
+        initiating_service_provider: ServiceProvider.new(
+          issuer: DEV_SP_ISSUER, friendly_name: 'Example Service Provider',
+        ),
+      )
+      user.define_singleton_method(:active_profile) { profile }
+      @presenter = Idv::ByMail::SpFollowUpPresenter.new(current_user: user)
+      {}
+    end
+
     def setup_idv_personal_key
       @code = '0193-0039-4739-9920'
       @personal_key_generated_at = Time.zone.today
