@@ -126,7 +126,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           ),
         )
         expect(result.dig(:context, :stages, :residential_address, :attempted_vendors))
-          .to eq(['socure_kyc', 'instant_verify_ddp'])
+          .to eq([])
         expect(result[:exception]).to be_nil
         expect(result[:timed_out]).to eq(false)
       end

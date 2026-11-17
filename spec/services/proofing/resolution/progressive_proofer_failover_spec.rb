@@ -93,6 +93,13 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       primary_vendor => primary_result.to_h,
       fallback_vendor => fallback_result.to_h,
     )
+    expect(stages[:residential_address]).to include(
+      vendor_name: 'ResidentialAddressNotRequired',
+      attempts: {},
+      attempted_vendors: [],
+      failover_available: true,
+      failover_used: false,
+    )
     expect(timer.results.keys).to contain_exactly(
       'resolution', 'resolution socure_kyc', 'resolution instant_verify_ddp'
     )
@@ -289,15 +296,17 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         primary_vendor => primary_result.to_h,
         fallback_vendor => fallback_result.to_h,
       )
-      expect(stages[:resolution][:attempts]).to eq(
-        primary_vendor => Proofing::Resolution::Plugins::StateIdAddressPlugin.new(
-          proofer: nil, sp_cost_token: nil,
-        ).resolution_cannot_pass.to_h,
-        fallback_vendor => fallback_result.to_h,
+      expect(stages[:resolution][:attempts]).to eq(fallback_vendor => fallback_result.to_h)
+      expect(stages[:residential_address]).to include(
+        attempted_vendors: [primary_vendor, fallback_vendor],
+        failover_available: true,
+        failover_used: true,
       )
-      summary_keys = %i[attempted_vendors failover_available failover_used]
-      expect(stages[:residential_address].slice(*summary_keys))
-        .to eq(stages[:resolution].slice(*summary_keys))
+      expect(stages[:resolution]).to include(
+        attempted_vendors: [fallback_vendor],
+        failover_available: true,
+        failover_used: false,
+      )
       expect(timer.results.keys).to contain_exactly(
         'residential address', 'residential address socure_kyc',
         'residential address instant_verify_ddp', 'resolution', 'resolution instant_verify_ddp'
@@ -323,6 +332,17 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         expect(fallback_proofer).to receive(:proof).once.and_return(fallback_result)
         expect(proof.resolution_result).to equal(proof.residential_resolution_result)
         expect(proof.resolution_success?).to eq(true)
+        expect(stages[:residential_address]).to include(
+          attempts: {
+            primary_vendor => primary_result.to_h,
+            fallback_vendor => fallback_result.to_h,
+          },
+          attempted_vendors: [primary_vendor, fallback_vendor],
+          failover_used: true,
+        )
+        expect(stages[:resolution]).to include(
+          attempts: {}, attempted_vendors: [], failover_available: true, failover_used: false,
+        )
       end
     end
   end

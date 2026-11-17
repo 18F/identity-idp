@@ -122,12 +122,6 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
 
     context 'with failover attempts' do
       let(:failed_result) { Proofing::Resolution::Result.new(success: false, vendor_name: 'socure_kyc') }
-      let(:failed_residential_result) do
-        Proofing::Resolution::Result.new(
-          success: true,
-          vendor_name: 'ResidentialAddressNotRequired',
-        )
-      end
 
       subject do
         described_class.new(
@@ -142,10 +136,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
           proofing_vendor:,
           failover_available: true,
           resolution_attempts: {
-            socure_kyc: {
-              resolution_result: failed_result,
-              residential_resolution_result: failed_residential_result,
-            },
+            socure_kyc: { resolution_result: failed_result },
             instant_verify_ddp: {
               resolution_result:,
               residential_resolution_result:,
@@ -154,7 +145,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
         )
       end
 
-      it 'logs every attempt in order, with identical summary fields in both stages' do
+      it 'logs only the vendor calls made for each stage, in order' do
         stages = subject.adjudicated_result.extra[:context][:stages]
 
         expect(stages[:resolution]).to include(
@@ -166,12 +157,12 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
           failover_available: true,
           failover_used: true,
         )
-        expect(stages[:residential_address][:attempts]).to eq(
-          socure_kyc: failed_residential_result.to_h,
-          instant_verify_ddp: residential_resolution_result.to_h,
+        expect(stages[:residential_address]).to include(
+          attempts: { instant_verify_ddp: residential_resolution_result.to_h },
+          attempted_vendors: [:instant_verify_ddp],
+          failover_available: true,
+          failover_used: false,
         )
-        expect(stages[:residential_address].slice(*summary_keys.drop(1)))
-          .to eq(stages[:resolution].slice(*summary_keys.drop(1)))
       end
     end
   end

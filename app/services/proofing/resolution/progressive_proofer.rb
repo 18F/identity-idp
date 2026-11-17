@@ -140,7 +140,9 @@ module Proofing
               end
             end
           end
-          attempts[vendor] = resolution.slice(:resolution_result, :residential_resolution_result)
+          attempts[vendor] = vendor_call_results(
+            resolution, applicant_pii:, ipp_enrollment_in_progress:
+          )
           break unless failover_available
 
           adjudicator = ResultAdjudicator.new(
@@ -183,6 +185,21 @@ module Proofing
           resolution_result: state_id_address_resolution_result,
           bypass_error_codes: IdentityConfig.store.ssa_instant_verify_bypass_error_codes,
         )
+      end
+
+      # Keeps only the results that came from a vendor call. Outside in-person proofing the
+      # residential address plugin returns a placeholder. The state ID address plugin returns a
+      # placeholder when the residential address failed, and reuses the residential result when
+      # addresses match.
+      def vendor_call_results(resolution, applicant_pii:, ipp_enrollment_in_progress:)
+        state_id_result_reused = ipp_enrollment_in_progress &&
+                                 applicant_pii[:ipp_current_address_matches_id] == true
+        {
+          residential_resolution_result: resolution[:residential_resolution_result],
+          resolution_result: (resolution[:resolution_result] unless state_id_result_reused),
+        }.compact.reject do |_, result|
+          %w[ResidentialAddressNotRequired ResolutionCannotPass].include?(result.vendor_name)
+        end
       end
 
       # Rolled once per submission. rand is in [0, 1), so 0 never selects and 100 always does.
