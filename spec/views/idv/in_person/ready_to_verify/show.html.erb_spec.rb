@@ -47,7 +47,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('in_person_proofing.headings.barcode'))
 
     render
@@ -460,6 +460,12 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       allow(view).to receive(:nds_layout?).and_return(true)
     end
 
+    it 'has a title matching the barcode heading' do
+      expect(view).to receive(:title=).with(t('in_person_proofing.headings.barcode'))
+
+      render
+    end
+
     it 'renders the form-page card with the barcode heading, success alert and stepper' do
       render
 
@@ -551,6 +557,12 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     context 'when the enrollment is enhanced IPP' do
       let(:enrollment) { enhanced_ipp_enrollment }
 
+      it 'has a title matching the enhanced IPP barcode heading' do
+        expect(view).to receive(:title=).with(t('in_person_proofing.headings.barcode_eipp'))
+
+        render
+      end
+
       it 'renders the pilot badge and what to bring section' do
         render
 
@@ -567,6 +579,25 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
         expect(rendered).not_to have_content(
           t('in_person_proofing.body.location.change_location_heading'),
         )
+      end
+    end
+
+    context 'when the enrollment is with a passport book' do
+      let(:enrollment) do
+        build(
+          :in_person_enrollment, :pending, :passport_book,
+          current_address_matches_id: current_address_matches_id,
+          profile: profile,
+          selected_location_details: selected_location_details,
+          service_provider: service_provider,
+          user: user
+        )
+      end
+
+      it 'has a title matching the passport barcode heading' do
+        expect(view).to receive(:title=).with(t('in_person_proofing.headings.barcode_passport'))
+
+        render
       end
     end
 

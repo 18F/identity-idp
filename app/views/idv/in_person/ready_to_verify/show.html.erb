@@ -1,6 +1,5 @@
-<% self.title = t('in_person_proofing.headings.barcode') %>
-
 <% if nds_layout? %>
+  <% self.title = @presenter.barcode_heading_text %>
   <% content_for(:nds_header_progress) do %>
     <%= nds_account_creation_progress(step: :verification, substep: 12) %>
   <% end %>
@@ -275,6 +274,8 @@
     <% end %>
   <% end %>
 <% else %>
+<% self.title = t('in_person_proofing.headings.barcode') %>
+
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: step_indicator_steps,
