@@ -1,6 +1,5 @@
-<% self.title = t('titles.enter_2fa_code.security_code') %>
-
 <% if nds_layout? %>
+  <% self.title = t('two_factor_authentication.personal_key_header_text') %>
   <% personal_key_invalid_error = flash[:error] == t('two_factor_authentication.invalid_personal_key') ? flash.delete(:error) : nil %>
   <% personal_key_word_count = IdentityConfig.store.recovery_code_length %>
   <% troubleshooting_options = @presenter.troubleshooting_options
@@ -80,6 +79,8 @@
 
   <%= javascript_packs_tag_once('formatted-fields', 'nds-auth-submit-gate', preload_links_header: false) %>
 <% else %>
+<% self.title = t('titles.enter_2fa_code.security_code') %>
+
 <% if @show_deprecation_warning %>
   <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
     <%= t('two_factor_authentication.personal_key_deprecation_warning') %>

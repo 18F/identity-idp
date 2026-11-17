@@ -10,7 +10,7 @@ RSpec.describe 'two_factor_authentication/personal_key_verification/show.html.er
     allow(view).to receive(:current_user).and_return(user)
   end
 
-  it 'has a localized title' do
+  it 'has the legacy localized title in the default layout' do
     expect(view).to receive(:title=).with(t('titles.enter_2fa_code.security_code'))
 
     render
@@ -75,6 +75,12 @@ RSpec.describe 'two_factor_authentication/personal_key_verification/show.html.er
   context 'in the NDS layout' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
+    end
+
+    it 'has a title matching the personal key heading' do
+      expect(view).to receive(:title=).with(t('two_factor_authentication.personal_key_header_text'))
+
+      render
     end
 
     it 'renders the form-page card with the personal key heading and prompt' do
