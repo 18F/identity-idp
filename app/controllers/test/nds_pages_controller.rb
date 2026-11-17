@@ -135,8 +135,6 @@ module Test
     # i18n-tasks-use t('nds.errors.cancel_verification')
     # i18n-tasks-use t('nds.errors.return_home')
     # i18n-tasks-use t('nds.errors.start_over_warning')
-    # i18n-tasks-use t('nds.hybrid_handoff.heading')
-    # i18n-tasks-use t('nds.hybrid_handoff.subtitle')
     # i18n-tasks-use t('nds.idv_phone.info')
     # i18n-tasks-use t('nds.link_sent.heading')
     # i18n-tasks-use t('nds.link_sent.instructions')
@@ -151,8 +149,6 @@ module Test
     # i18n-tasks-use t('nds.personal_key.acknowledgment')
     # i18n-tasks-use t('nds.personal_key.generated_on')
     # i18n-tasks-use t('nds.personal_key.info')
-    # i18n-tasks-use t('nds.phone_required.heading')
-    # i18n-tasks-use t('nds.phone_required.info')
     # i18n-tasks-use t('nds.phone_setup.delivery.sms')
     # i18n-tasks-use t('nds.phone_setup.delivery.voice')
     # i18n-tasks-use t('nds.phone_setup.heading')
@@ -1204,8 +1200,12 @@ module Test
 
     def setup_hybrid_handoff
       @upload_enabled = params[:upload].present?
+      @post_office_enabled = params[:ipp].present?
+      @idv_how_to_verify_form = Idv::HowToVerifyForm.new
       @presenter = Idv::HowToVerifyPresenter.new(
-        selfie_check_required: false, mdl_enabled: false, clear1_allowed: false,
+        selfie_check_required: false,
+        mdl_enabled: false,
+        clear1_allowed: params[:clear1].present?,
       )
       form = Idv::PhoneForm.new(
         previous_params: { phone: '2025551212' }, user: User.new, delivery_methods: [:sms],
@@ -1213,11 +1213,20 @@ module Test
       { idv_phone_form: form }
     end
 
+    def setup_idv_phone_required
+      {}
+    end
+
     def setup_link_sent
       { phone: '(202) 555-1212' }
     end
 
     def setup_capture_complete
+      {}
+    end
+
+    def setup_socure_wait
+      @refresh_interval = IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
       {}
     end
 

@@ -1,5 +1,18 @@
-<% component = PhoneInputComponent.new(form: form, confirmed_phone: false, required: true)
-   countries = component.international_phone_codes.map do |_label, code_key, opts|
+<% delivery_methods = local_assigns[:delivery_methods]
+   # Optional locals mirror PhoneInputComponent: pass delivery_methods to list only
+   # countries that support at least one of them (omitted: every country).
+   component = PhoneInputComponent.new(
+     form: form,
+     confirmed_phone: local_assigns.fetch(:confirmed_phone, false),
+     required: true,
+   )
+   phone_codes = component.international_phone_codes
+   if delivery_methods
+     phone_codes = phone_codes.select do |_label, _code_key, opts|
+       delivery_methods.any? { |method| opts.dig(:data, :"supports_#{method}") }
+     end
+   end
+   countries = phone_codes.map do |_label, code_key, opts|
      {
        iso: code_key,
        name: opts.dig(:data, :country_name),

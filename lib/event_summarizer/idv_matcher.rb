@@ -29,6 +29,7 @@ module EventSummarizer
     IDV_IN_PERSON_DIRECT_START_EVENT = 'idv_in_person_direct_start'
     IPP_ENROLLMENT_STATUS_UPDATED_EVENT = 'GetUspsProofingResultsJob: Enrollment status updated'
     PROFILE_ENCRYPTION_INVALID_EVENT = 'Profile Encryption: Invalid'
+    PASSWORD_RESET_PASSWORD_SUBMITTED_EVENT = 'Password Reset: Password Submitted'
     RATE_LIMIT_REACHED_EVENT = 'Rate Limit Reached'
 
     EVENT_PROPERTIES = ['@message', 'properties', 'event_properties'].freeze
@@ -166,6 +167,7 @@ module EventSummarizer
     def initialize
       @idv_attempts = []
       @current_idv_attempt = nil
+      @profile_deactivations = []
       @submission_awaiting_outcome = false
     end
 
@@ -241,6 +243,9 @@ module EventSummarizer
             handle_profile_encryption_error(event:)
           end
 
+        when PASSWORD_RESET_PASSWORD_SUBMITTED_EVENT
+          handle_password_reset(event:)
+
         when RATE_LIMIT_REACHED_EVENT
           handle_rate_limit_reached(event:)
 
@@ -256,9 +261,13 @@ module EventSummarizer
     def finish
       finish_current_idv_attempt
 
-      self.idv_attempts.map { |a| summarize_idv_attempt(a) }.tap do
-        idv_attempts.clear
-      end
+      attempt_summaries = idv_attempts.map { |attempt| summarize_idv_attempt(attempt) }
+      deactivation_summaries = @profile_deactivations
+
+      @idv_attempts = []
+      @profile_deactivations = []
+
+      attempt_summaries + deactivation_summaries
     end
 
     private
@@ -465,6 +474,24 @@ module EventSummarizer
             nil,
         ].compact.join(' '),
       )
+    end
+
+    def handle_password_reset(event:)
+      properties = event.dig(*EVENT_PROPERTIES) || {}
+      return unless properties['success'] && properties['profile_deactivated']
+
+      timestamp = event['@timestamp']
+      description = 'User reset their password, which deactivated their identity ' \
+                    'verification profile'
+
+      @profile_deactivations << {
+        timestamp:,
+        title: 'Identity verification profile deactivated',
+        type: :password_reset,
+        attributes: [
+          { type: :password_reset, timestamp:, description: },
+        ],
+      }
     end
 
     def handle_rate_limit_reached(event:)

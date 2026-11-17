@@ -1,5 +1,21 @@
 <%= content_for(:meta_refresh) { @refresh_interval&.to_s || '15' } %>
 <% self.title = t('titles.doc_auth.verify') %>
+<% if nds_layout? %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 4) %>
+  <% end %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('doc_auth.headings.interstitial'),
+        subtitle: t('doc_auth.info.interstitial_eta'),
+      ) do |page| %>
+    <% page.with_body do %>
+      <div class="copy copy--muted text-center">
+        <p class="margin-0"><%= t('doc_auth.info.interstitial_thanks') %></p>
+      </div>
+    <% end %>
+  <% end %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
@@ -28,3 +44,4 @@
 <p>
   <%= t('doc_auth.info.interstitial_thanks') %>
 </p>
+<% end %>

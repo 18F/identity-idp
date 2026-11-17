@@ -509,7 +509,20 @@ module Test
         permutations: [
           Permutation.new(label: 'Default', params: {}),
           Permutation.new(label: 'Desktop upload enabled', params: { upload: '1' }),
+          Permutation.new(label: 'In person available', params: { ipp: '1' }),
+          Permutation.new(label: 'CLEAR available', params: { clear1: '1' }),
+          Permutation.new(
+            label: 'All options',
+            params: { clear1: '1', ipp: '1', upload: '1' },
+          ),
         ],
+      ),
+      Page.new(
+        key: 'idv-phone-required',
+        title: 'A U.S. phone number is required',
+        flow: IDV,
+        template: 'idv/phone_required/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
       ),
       Page.new(
         key: 'link-sent',
@@ -523,6 +536,13 @@ module Test
         title: 'Switch back to your computer (mobile)',
         flow: IDV,
         template: 'idv/hybrid_mobile/capture_complete/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'socure-wait',
+        title: 'Processing your ID images (Socure wait)',
+        flow: IDV,
+        template: 'idv/socure/document_capture/wait',
         permutations: [Permutation.new(label: 'Default', params: {})],
       ),
       Page.new(
@@ -656,6 +676,7 @@ module Test
     # branch in their template, so the template scan below cannot detect them.
     # Kept explicit and minimal; unioned into the discovered set.
     BRANCHLESS_NDS_TEMPLATES = [
+      'idv/phone_required/show',
       'sign_up/emails/show',
       'two_factor_authentication/otp_verification/show',
       'users/piv_cac_login/new',

@@ -6,7 +6,7 @@ module TokenExchange
   # client whose tokens are key-bound (RFC 9449), the RFC 7638 thumbprint of the key the
   # authorization request named, so the code can be redeemed only with a proof from that key.
   # The raw authorization code is never stored, and nothing here outlives the code.
-  ActorHandoff = Struct.new(:id, :actor_return_log_id, :dpop_jkt, keyword_init: true) do
+  ActorHandoff = Struct.new(:id, :actor_return_log_id, :dpop_jkt, :resource, keyword_init: true) do
     def self.redis_key_prefix
       'token-exchange-actor-handoff'
     end
@@ -15,8 +15,8 @@ module TokenExchange
       EncryptedRedisStructStorage.load(digest(code), type: self)
     end
 
-    def self.store(code:, actor_return_log_id:, expires_in:, dpop_jkt: nil)
-      handoff = new(id: digest(code), actor_return_log_id:, dpop_jkt:)
+    def self.store(code:, actor_return_log_id:, expires_in:, resource:, dpop_jkt: nil)
+      handoff = new(id: digest(code), actor_return_log_id:, resource:, dpop_jkt:)
       EncryptedRedisStructStorage.store(handoff, expires_in:)
     end
 

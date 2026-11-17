@@ -720,4 +720,26 @@ RSpec.describe AbTests do
 
     it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
   end
+
+  describe 'ITIN_ENABLED' do
+    let(:ab_test) { :ITIN_ENABLED }
+
+    let(:disable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(
+          :idv_itin_enabled_percentage,
+        ).and_return(0)
+      }
+    end
+
+    let(:enable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(
+          :idv_itin_enabled_percentage,
+        ).and_return(100)
+      }
+    end
+
+    it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
+  end
 end
