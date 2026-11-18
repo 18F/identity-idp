@@ -2622,8 +2622,7 @@ module AnalyticsEvents
     proofing_components: nil,
     **extra
   )
-    track_event(
-      'IdV: doc auth verify proofing results',
+    attributes = {
       ab_tests:,
       acuant_sdk_upgrade_ab_test_bucket:,
       address_edited:,
@@ -2645,7 +2644,23 @@ module AnalyticsEvents
       exceptions:,
       proofing_components:,
       **extra,
-    )
+    }
+
+    if Identity::Hostdata.env == 'staging' &&
+       proofing_results&.dig(:context, :stages, :resolution, :failover_used)
+      path = Rails.root.join('tmp', 'dual_vendor_proofing_results.txt')
+      staging_log = {
+        event_name: 'IdV: doc auth verify proofing results',
+        recorded_at: Time.zone.now.iso8601,
+        event_properties: attributes,
+      }
+      File.open(path, File::WRONLY | File::APPEND | File::CREAT, 0o600) do |file|
+        file.flock(File::LOCK_EX)
+        file.puts(JSON.generate(staging_log))
+      end
+    end
+
+    track_event('IdV: doc auth verify proofing results', **attributes)
   end
   # rubocop:enable Layout/LineLength
 
