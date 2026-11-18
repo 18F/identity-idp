@@ -328,7 +328,7 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
           text: t('nds.mfa_setup.heading_step_up'),
         )
         expect(rendered).to have_css(
-          ".auth__header--with-media .nds-status-icon " \
+          ".auth__header--with-media .nds-status-icon.nds-status-icon--info " \
           "svg[aria-label='#{t('two_factor_authentication.important_alert_icon')}']",
         )
       end
@@ -431,7 +431,9 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
           '.auth--form-page h1',
           text: t('nds.mfa_setup.heading_step_up'),
         )
-        expect(rendered).to have_css('.auth__header--with-media .nds-status-icon svg')
+        expect(rendered).to have_css(
+          '.auth__header--with-media .nds-status-icon.nds-status-icon--info svg',
+        )
       end
 
       it 'renders the PIV/CAC intro and recommendation below a divider' do

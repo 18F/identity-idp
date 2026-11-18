@@ -38,7 +38,7 @@
 
       <% if @presenter.icon %>
         <% c.with_media do %>
-          <span class="nds-status-icon">
+          <span class="nds-status-icon nds-status-icon--info">
             <%= render NDS::IconComponent.new(icon: :info, size: 24, label: @presenter.icon_alt_text) %>
           </span>
         <% end %>
