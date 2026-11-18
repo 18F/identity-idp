@@ -103,6 +103,7 @@ module IdentityConfig
     config.add(:broken_personal_key_window_finish, type: :timestamp)
     config.add(:broken_personal_key_window_start, type: :timestamp)
     config.add(:check_user_password_compromised_enabled, type: :boolean)
+    config.add(:client_assertion_max_lifetime_seconds, type: :integer)
     config.add(:component_previews_embed_frame_ancestors, type: :json)
     config.add(:component_previews_enabled, type: :boolean)
     config.add(:country_phone_number_overrides, type: :json)

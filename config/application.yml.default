@@ -86,6 +86,7 @@ backup_code_user_id_per_ip_max_attempts: 50
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 check_user_password_compromised_enabled: false
+client_assertion_max_lifetime_seconds: 300
 component_previews_embed_frame_ancestors: '[]'
 component_previews_enabled: false
 country_phone_number_overrides: '{}'

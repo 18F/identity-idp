@@ -2,6 +2,12 @@
 
 class OpenidConnectClientAssertionValidator
   ISSUED_AT_LEEWAY_SECONDS = 10
+  JTI_NAMESPACE = 'client-assertion:jti'
+  MISSING_EXP_MESSAGE = 'exp is required and must be an integer or floating point Unix timestamp'
+  INVALID_EXP_MESSAGE = 'exp may be no more than %d seconds after iat, ' \
+                        'or after the time of the request when iat is absent'
+  MISSING_JTI_MESSAGE = 'jti is required and must be a string that is unique to this assertion'
+  REPLAYED_JTI_MESSAGE = 'jti has already been used; each client assertion must carry a new jti'
 
   ValidationError = Struct.new(:attribute, :message, :type, keyword_init: true)
 
@@ -20,6 +26,8 @@ class OpenidConnectClientAssertionValidator
     @errors
   end
 
+  # Memoized: the replay check records the assertion's `jti`, so validating twice would refuse the
+  # assertion that was just accepted.
   def valid?
     return @valid if defined?(@valid)
 
@@ -48,6 +56,8 @@ class OpenidConnectClientAssertionValidator
     if matching_cert && payload
       validate_aud_claim(payload)
       validate_iat(payload)
+      validate_exp(payload)
+      validate_jti_unused(payload) if @errors.blank?
     else
       add_error(
         err&.message || I18n.t('openid_connect.token.errors.invalid_signature'),
@@ -73,6 +83,39 @@ class OpenidConnectClientAssertionValidator
     return if iat.is_a?(Numeric) && (iat.to_i - ISSUED_AT_LEEWAY_SECONDS) < Time.zone.now.to_i
 
     add_error(I18n.t('openid_connect.token.errors.invalid_iat'), :invalid_iat)
+  end
+
+  def validate_exp(payload)
+    exp = payload['exp']
+    unless exp.is_a?(Numeric)
+      add_error(MISSING_EXP_MESSAGE, :missing_exp)
+      return
+    end
+
+    issued_at = payload['iat'].is_a?(Numeric) ? payload['iat'].to_i : Time.zone.now.to_i
+    max_lifetime = IdentityConfig.store.client_assertion_max_lifetime_seconds
+    return if exp.to_i - issued_at <= max_lifetime
+
+    add_error(format(INVALID_EXP_MESSAGE, max_lifetime), :invalid_exp)
+  end
+
+  # `jti`s can only be used once, to prevent replays
+  def validate_jti_unused(payload)
+    jti = payload['jti']
+    unless jti.is_a?(String) && jti.present?
+      add_error(MISSING_JTI_MESSAGE, :missing_jti)
+      return
+    end
+
+    first_use = ReplayGuard.first_use?(
+      namespace: JTI_NAMESPACE,
+      scope: client_id,
+      value: jti,
+      ttl: [payload['exp'].to_i - Time.zone.now.to_i, 1].max,
+    )
+    return if first_use
+
+    add_error(REPLAYED_JTI_MESSAGE, :replayed_jti)
   end
 
   def add_error(message, type)
