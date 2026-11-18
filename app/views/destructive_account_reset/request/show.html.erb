@@ -1,6 +1,66 @@
 
 <% self.title = t('destructive_account_reset.request.delete_account') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(
+        title: t('destructive_account_reset.request.delete_account'),
+        subtitle: t('nds.destructive_account_reset.request.intro'),
+      ) do |page| %>
+    <% page.with_body do %>
+      <%= render NDS::StackComponent.new(gap: 24, align: :stretch) do %>
+        <p class="text-center margin-0">
+          <%= new_tab_link_to(
+                t('destructive_account_reset.request.account_delete_link'),
+                MarketingSite.help_center_article_url(
+                  category: 'manage-your-account',
+                  article: 'delete-your-account',
+                ),
+              ) %>
+        </p>
+
+        <hr class="divider" />
+
+        <h2 class="text-body-emphasis text-center margin-0">
+          <%= t('nds.destructive_account_reset.request.emails_heading') %>
+        </h2>
+
+        <%= render NDS::CardComponent.new(class: 'card--elevated text-left') do %>
+          <%= render NDS::StackComponent.new(gap: 24, align: :stretch) do %>
+            <div>
+              <h3 class="text-body-emphasis margin-0"><%= t('nds.destructive_account_reset.request.email1_heading') %></h3>
+              <p class="copy--muted margin-0"><%= t('nds.destructive_account_reset.request.email1_body') %></p>
+            </div>
+            <hr class="divider" />
+            <div>
+              <h3 class="text-body-emphasis margin-0"><%= t('nds.destructive_account_reset.request.email2_heading') %></h3>
+              <p class="copy--muted margin-0">
+                <%= t(
+                      'nds.destructive_account_reset.request.email2_body',
+                      interval: @account_reset_deletion_period_interval,
+                    ) %>
+              </p>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: account_reset_request_path,
+              method: :post,
+              full_width: true,
+            ).with_content(t('nds.destructive_account_reset.request.continue')) %>
+        <%= render ButtonComponent.new(
+              url: root_url,
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('destructive_account_reset.request.no_cancel')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('destructive_account_reset.request.delete_account')) %>
 <p><%= t(
          'destructive_account_reset.request.delete_request_details_html',
@@ -33,3 +93,4 @@
       method: :get,
       class: 'usa-button usa-button--unstyled',
     ) { t('destructive_account_reset.request.no_cancel2') } %>
+<% end %>
