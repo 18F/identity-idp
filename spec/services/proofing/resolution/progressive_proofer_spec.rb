@@ -405,9 +405,17 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     context 'Instant Verify failure bypass' do
       let(:is_proofing_agent) { true }
       let(:ipp_enrollment_in_progress) { true }
-      let(:bypass_error_codes) { ['dob'] }
+      let(:bypass_error_codes) { { 'SsnFullNameMatch' => ['ssn_fullname_not_match_fail'] } }
       let(:proofing_vendor) { :instant_verify }
-      let(:failed_checks) { [{ 'ItemName' => 'DOBFullVerified', 'ItemStatus' => 'fail' }] }
+      let(:failed_checks) do
+        [
+          {
+            'ItemName' => 'SsnFullNameMatch',
+            'ItemReason' => { 'Code' => 'ssn_fullname_not_match_fail' },
+            'ItemStatus' => 'fail',
+          },
+        ]
+      end
       let(:instant_verify_errors) do
         {
           InstantVerify: {
@@ -468,7 +476,13 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
       context 'when a failed check is not bypassable' do
         let(:failed_checks) do
-          super() + [{ 'ItemName' => 'IdentityOccupancyVerified', 'ItemStatus' => 'fail' }]
+          super() + [
+            {
+              'ItemName' => 'SSNExists',
+              'ItemReason' => { 'Code' => 'ssn_not_verified_fail' },
+              'ItemStatus' => 'fail',
+            },
+          ]
         end
 
         it 'does not bypass the failure' do
@@ -484,7 +498,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'when ssa_instant_verify_bypass_error_codes is empty' do
-        let(:bypass_error_codes) { [] }
+        let(:bypass_error_codes) { {} }
 
         it 'does not bypass the failure' do
           result = proof.adjudicated_result

@@ -5,10 +5,11 @@ module ProofingAgent
     # When LexisNexis Instant Verify fails only on checks we choose to bypass, treat the
     # resolution as successful. The original errors are left in place for analytics.
     class ResolutionFailureBypass
-      attr_reader :resolution_result
+      attr_reader :resolution_result, :bypass_error_codes
 
-      def initialize(resolution_result:)
+      def initialize(resolution_result:, bypass_error_codes:)
         @resolution_result = resolution_result
+        @bypass_error_codes = bypass_error_codes
       end
 
       def bypassable?
@@ -32,11 +33,6 @@ module ProofingAgent
           errors: resolution_result.errors,
           bypass_error_codes:,
         )
-      end
-
-      def bypass_error_codes
-        # reference CheckToAttributeMapper for mapping of failed checks to attributes
-        IdentityConfig.store.ssa_instant_verify_bypass_error_codes.map(&:to_sym)
       end
 
       def overridden_result(result)

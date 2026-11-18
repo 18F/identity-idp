@@ -147,6 +147,7 @@ module Proofing
 
         ProofingAgent::InstantVerify::ResolutionFailureBypass.new(
           resolution_result: state_id_address_resolution_result,
+          bypass_error_codes: IdentityConfig.store.ssa_instant_verify_bypass_error_codes,
         )
       end
 

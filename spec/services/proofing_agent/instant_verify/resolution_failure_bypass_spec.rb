@@ -8,7 +8,13 @@ RSpec.describe ProofingAgent::InstantVerify::ResolutionFailureBypass do
       InstantVerify: {
         'ProductType' => 'InstantVerify',
         'ProductStatus' => 'fail',
-        'Items' => [{ 'ItemName' => 'DOBFullVerified', 'ItemStatus' => 'fail' }],
+        'Items' => [
+          {
+            'ItemName' => 'SsnFullNameMatch',
+            'ItemReason' => { 'Code' => 'ssn_fullname_not_match_fail' },
+            'ItemStatus' => 'fail',
+          },
+        ],
       },
     }
   end
@@ -30,14 +36,16 @@ RSpec.describe ProofingAgent::InstantVerify::ResolutionFailureBypass do
     )
   end
 
-  subject(:bypass) { described_class.new(resolution_result:) }
+  let(:bypass_error_codes) do
+    {
+      'SsnFullNameMatch' => ['ssn_fullname_not_match_fail'],
+      'SsnDeathMatchVerification' => ['ssn_not_supplied_fail'],
+    }
+  end
 
-  let(:bypass_error_codes) { ['dob', 'ssn'] }
+  subject(:bypass) { described_class.new(resolution_result:, bypass_error_codes:) }
 
   before do
-    allow(IdentityConfig.store)
-      .to receive(:ssa_instant_verify_bypass_error_codes)
-      .and_return(bypass_error_codes)
     allow(Proofing::LexisNexis::InstantVerify::BypassErrorCodeChecker)
       .to receive(:new).and_return(checker)
   end
@@ -68,14 +76,11 @@ RSpec.describe ProofingAgent::InstantVerify::ResolutionFailureBypass do
         expect(bypass.bypassable?).to eq(true)
       end
 
-      it 'checks the error codes of the resolution result against the configured bypass codes' do
+      it 'checks the error codes of the resolution result against the given bypass codes' do
         bypass.bypassable?
 
         expect(Proofing::LexisNexis::InstantVerify::BypassErrorCodeChecker)
-          .to have_received(:new).with(
-            errors: resolution_errors,
-            bypass_error_codes: [:dob, :ssn],
-          )
+          .to have_received(:new).with(errors: resolution_errors, bypass_error_codes:)
       end
     end
 
