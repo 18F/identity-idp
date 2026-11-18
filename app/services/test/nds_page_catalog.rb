@@ -206,6 +206,21 @@ module Test
         ],
       ),
       Page.new(
+        key: 'mfa-options',
+        title: 'Choose another authentication method',
+        flow: OTP,
+        template: 'two_factor_authentication/options/index',
+        permutations: [
+          Permutation.new(label: 'Many methods', params: {}),
+          Permutation.new(label: 'Phone only (text and voice)', params: { phone_only: '1' }),
+          Permutation.new(label: 'Reauthentication', params: { reauthn: '1' }),
+          Permutation.new(label: 'Phishing resistant required', params: { phishing: '1' }),
+          Permutation.new(label: 'PIV/CAC required', params: { piv_cac: '1' }),
+          Permutation.new(label: 'Add PIV/CAC after 2FA', params: { add_piv_cac: '1' }),
+          Permutation.new(label: 'Pending account deletion', params: { reset_pending: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'idv-welcome',
         title: 'Verify your identity (welcome)',
         flow: IDV,
