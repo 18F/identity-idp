@@ -3,7 +3,7 @@
 module Proofing
   module Resolution
     class ProgressiveProofer
-      class InvalidProofingVendorError; end
+      class InvalidProofingVendorError < StandardError; end
 
       attr_reader :user_uuid,
                   :user_email,
