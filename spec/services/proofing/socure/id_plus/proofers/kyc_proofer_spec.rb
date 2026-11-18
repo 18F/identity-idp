@@ -241,7 +241,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
           end
 
           it 'reports the bypassed reason codes' do
-            expect(result.bypasses_reason_codes).to match_array(%w[R901 R907])
+            expect(result.bypassed_reason_codes).to match_array(%w[R901 R907])
           end
         end
 
@@ -253,7 +253,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
           end
 
           it 'only reports the bypassed reason codes' do
-            expect(result.bypasses_reason_codes).to match_array(%w[R901])
+            expect(result.bypassed_reason_codes).to match_array(%w[R901])
           end
         end
 

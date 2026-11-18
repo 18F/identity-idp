@@ -36,16 +36,14 @@ module Proofing
               transaction_id: response.reference_id,
               vendor_id: response.vendor_id,
               source_attribution: response.source_attribution,
-              bypasses_reason_codes: bypassed_reason_codes(response),
+              bypassed_reason_codes: bypassed_reason_codes(response),
               customer_user_id: response.customer_user_id,
               reason_codes: SocureReasonCode.with_definitions(response.reason_codes),
             )
           end
 
           def check_successful_response(response)
-            return true if response.successful?
-
-            if is_proofing_agent
+            if !response.successful? && is_proofing_agent
               return false unless response.all_required_attributes_verified?
 
               return (response.reason_codes &
@@ -54,7 +52,7 @@ module Proofing
                      ).empty?
             end
 
-            false
+            response.successful?
           end
 
           def bypassed_reason_codes(response)
