@@ -65,6 +65,8 @@ module Proofing
       def to_h
         customer_user_id_hash = customer_user_id.present? ?
                                   { customer_user_id: customer_user_id } : {}
+        socure_hash = vendor_name == 'socure_kyc' ?
+                        { ssa_bypassed_attributes: ssa_bypassed_attributes } : {}
         {
           success: success?,
           errors: errors,
@@ -78,12 +80,11 @@ module Proofing
           attributes_requiring_additional_verification:
             attributes_requiring_additional_verification,
           source_attribution:,
-          ssa_bypassed_attributes:,
           vendor_name:,
           vendor_id:,
           vendor_workflow:,
           verified_attributes:,
-        }.merge(customer_user_id_hash)
+        }.merge(customer_user_id_hash).merge(socure_hash)
       end
 
       def failed_result_can_pass_with_additional_verification?
