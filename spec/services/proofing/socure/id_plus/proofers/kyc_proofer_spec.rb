@@ -20,7 +20,6 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
   let(:response_status) { 200 }
   let(:idv_socure_kyc_auto_failure_reason_codes) { ['R995'] }
   let(:get_to_yes_blocking_reason_codes) { [] }
-  let(:ssa_proofing_agent_as_authoritative_source) { false }
   let(:ssa_proofing_agent_socure_kyc_bypass_reason_codes) { [] }
 
   let(:field_validation_overrides) { {} }
@@ -61,8 +60,6 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
     allow(IdentityConfig.store)
       .to receive(:idv_aamva_get_to_yes_socure_kyc_blocking_reason_codes)
       .and_return(get_to_yes_blocking_reason_codes)
-    allow(IdentityConfig.store).to receive(:ssa_proofing_agent_as_authoritative_source)
-      .and_return(ssa_proofing_agent_as_authoritative_source)
     allow(IdentityConfig.store).to receive(:ssa_proofing_agent_socure_kyc_bypass_reason_codes)
       .and_return(ssa_proofing_agent_socure_kyc_bypass_reason_codes)
 
@@ -216,7 +213,6 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
 
     context 'when the user is not a proofing agent' do
       let(:is_proofing_agent) { false }
-      let(:ssa_proofing_agent_as_authoritative_source) { true }
 
       it 'does not bypass reason codes' do
         expect(result.success).to eql(false)
@@ -226,17 +222,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
     context 'when the user is a proofing agent' do
       let(:is_proofing_agent) { true }
 
-      context 'when ssa_proofing_agent_as_authoritative_source is disabled' do
-        let(:ssa_proofing_agent_as_authoritative_source) { false }
-
-        it 'does not bypass reason codes' do
-          expect(result.success).to eql(false)
-        end
-      end
-
       context 'when ssa_proofing_agent_as_authoritative_source is enabled' do
-        let(:ssa_proofing_agent_as_authoritative_source) { true }
-
         context 'when the response is successful' do
           let(:reason_codes) { %w[I919 I914 I905] }
 

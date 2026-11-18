@@ -45,7 +45,7 @@ module Proofing
           def check_successful_response(response)
             return true if response.successful?
 
-            if is_proofing_agent && IdentityConfig.store.ssa_proofing_agent_as_authoritative_source
+            if is_proofing_agent
               return false unless response.all_required_attributes_verified?
 
               return (response.reason_codes &
