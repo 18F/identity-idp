@@ -6447,7 +6447,7 @@ module AnalyticsEvents
   # be verified by another vendor
   # @param [Array<String>, nil] source_attribution List of sources that contributed to the
   # resolution proofing result
-  # @param [Array<String>, nil] ssa_bypassed_attributes List of error reason codes that were
+  # @param [Array<String>, nil] bypasses_reason_codes List of error reason codes that were
   # bypassed due to ssa
   # @param [String, nil] vendor_name Vendor used
   # @param [String] vendor_id ID of vendor
@@ -6465,7 +6465,7 @@ module AnalyticsEvents
     can_pass_with_additional_verification:,
     attributes_requiring_additional_verification:,
     source_attribution:,
-    ssa_bypassed_attributes:,
+    bypasses_reason_codes:,
     vendor_name:,
     vendor_id:,
     vendor_workflow:,
@@ -6484,7 +6484,7 @@ module AnalyticsEvents
       can_pass_with_additional_verification:,
       attributes_requiring_additional_verification:,
       source_attribution:,
-      ssa_bypassed_attributes:,
+      bypasses_reason_codes:,
       vendor_name:,
       vendor_id:,
       vendor_workflow:,

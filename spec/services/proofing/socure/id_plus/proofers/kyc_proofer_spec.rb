@@ -253,6 +253,30 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
           it 'still reports the reason codes' do
             expect(result.reason_codes.keys).to match_array(%w[R901 R907])
           end
+
+          it 'reports the bypassed reason codes' do
+            expect(result.bypasses_reason_codes).to match_array(%w[R901 R907])
+          end
+        end
+
+        context 'when bypassed reason codes are alongside non-autofail reason codes' do
+          let(:reason_codes) { %w[I919 I914 R901] }
+
+          it 'is successful' do
+            expect(result.success).to eql(true)
+          end
+
+          it 'only reports the bypassed reason codes' do
+            expect(result.bypasses_reason_codes).to match_array(%w[R901])
+          end
+        end
+
+        context 'when a required attribute is not verified' do
+          let(:field_validation_overrides) { { 'ssn' => 0.01 } }
+
+          it 'is not successful' do
+            expect(result.success).to eql(false)
+          end
         end
 
         context 'when the response reason codes are a subset of the bypass list' do
