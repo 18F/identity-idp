@@ -16,7 +16,7 @@ module AccountRecoveryConcern
   end
 
   def account_recovery_wait_period
-    IdentityConfig.store.account_recovery_wait_period_days.days
+    IdentityConfig.store.account_recovery_wait_period_hours.hours
   end
 
   def account_recovery_wait_period_interval

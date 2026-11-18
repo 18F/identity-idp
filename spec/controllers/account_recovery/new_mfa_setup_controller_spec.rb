@@ -141,4 +141,41 @@ RSpec.describe AccountRecovery::NewMfaSetupController do
       expect(response).to render_template(:show)
     end
   end
+
+  # An SP requirement must not narrow the options on a page the user cannot
+  # leave. The SP is satisfied after recovery, as a normally authenticated user.
+  context 'with a service provider that requires PIV/CAC' do
+    before do
+      stub_sign_in_before_2fa(user)
+      create(:account_recovery_request, :replacement_mfa_pending, user: user)
+      allow(controller).to receive(:service_provider_mfa_policy).and_return(
+        instance_double(
+          ServiceProviderMfaPolicy,
+          piv_cac_required?: true,
+          phishing_resistant_required?: true,
+        ),
+      )
+    end
+
+    it 'offers the full set of enrollment options' do
+      get :show
+
+      expect(response).to render_template(:show)
+      expect(controller.view_assigns['two_factor_options_form'].piv_cac_required).to eq(false)
+      expect(
+        controller.view_assigns['two_factor_options_form'].phishing_resistant_required,
+      ).to eq(false)
+
+      presenter = controller.view_assigns['presenter']
+      expect(presenter.send(:piv_cac_required?)).to eq(false)
+      expect(presenter.send(:phishing_resistant_only?)).to eq(false)
+      expect(presenter.options.map(&:type)).to include(:phone, :auth_app, :backup_code)
+    end
+
+    it 'accepts a replacement the service provider would not satisfy' do
+      post :create, params: { two_factor_options_form: { selection: ['auth_app'] } }
+
+      expect(response).to redirect_to(authenticator_setup_url)
+    end
+  end
 end

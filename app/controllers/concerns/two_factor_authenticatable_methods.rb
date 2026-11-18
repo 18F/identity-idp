@@ -242,22 +242,54 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_valid_verification_for_confirmation_context(auth_method:)
-    complete_account_recovery_after_enrollment
+    complete_account_recovery_after_enrollment(auth_method:)
     send_recovery_information_risc_event
     mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa_confirmation)
     reset_second_factor_attempts_count
   end
 
-  def complete_account_recovery_after_enrollment
+  def complete_account_recovery_after_enrollment(auth_method:)
     return unless replacement_mfa_pending?
 
     recovery_request = AccountRecoveryRequest.active_for_user(current_user)
-    completed = AccountRecovery::CompleteReplacementMfa.new(
+    service = AccountRecovery::CompleteReplacementMfa.new(
       account_recovery_request: recovery_request,
-    ).call
+    )
+    completed = service.call
     raise ActiveRecord::RecordInvalid.new(recovery_request) unless completed
 
+    removed_mfa_method_counts = service.removed_mfa_method_counts
+    notify_account_recovery_completed(removed_mfa_method_counts:)
+
+    analytics.account_recovery_completed(
+      auth_method:,
+      removed_mfa_method_counts:,
+      enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+      mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,
+      pii_like_keypaths: [
+        [:mfa_method_counts, :phone],
+        [:removed_mfa_method_counts, :phone],
+      ],
+    )
+
     user_session[:account_recovery_completed] = true
+  end
+
+  # One consolidated notification for the whole recovery, rather than the
+  # per-credential mfa_deleted emails, so replacing several suspended methods
+  # does not fan out into an email per method per address.
+  #
+  # Only the method names are passed, never counts: a hash keyed by `phone`
+  # would trip MailerSensitiveInformationChecker when delivery is asynchronous.
+  def notify_account_recovery_completed(removed_mfa_method_counts:)
+    removed_mfa_methods = removed_mfa_method_counts.keys.map(&:to_s).sort
+
+    current_user.confirmed_email_addresses.each do |email_address|
+      UserMailer.with(user: current_user, email_address: email_address)
+        .account_recovery_completed(
+          removed_mfa_methods: removed_mfa_methods,
+        ).deliver_now_or_later
+    end
   end
 
   def reset_second_factor_attempts_count

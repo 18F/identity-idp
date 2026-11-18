@@ -417,6 +417,45 @@ RSpec.describe WebauthnSetupForm do
         )
         expect(result.to_h[:success]).to eq(false)
       end
+
+      context 'when the name is held by a configuration suspended for account recovery' do
+        let(:user) do
+          user = create(:user, :fully_registered)
+          user.webauthn_configurations << create(:webauthn_configuration, name: params[:name])
+          user
+        end
+
+        it 'releases the suspended configuration and reuses the name' do
+          suspended = user.webauthn_configurations.first
+          recovery_request = create(
+            :account_recovery_request,
+            :replacement_mfa_pending,
+            user: user,
+          )
+          suspended.update!(account_recovery_request_id: recovery_request.id)
+
+          result = form.submit(params)
+
+          expect(result.to_h[:success]).to eq(true)
+          expect(WebauthnConfiguration.exists?(suspended.id)).to eq(false)
+          expect(user.webauthn_configurations.reload.map(&:name)).to eq([params[:name]])
+        end
+
+        it 'keeps the suspended configuration when the submission fails' do
+          suspended = user.webauthn_configurations.first
+          recovery_request = create(
+            :account_recovery_request,
+            :replacement_mfa_pending,
+            user: user,
+          )
+          suspended.update!(account_recovery_request_id: recovery_request.id)
+
+          result = form.submit(params.merge(attestation_object: 'invalid'))
+
+          expect(result.to_h[:success]).to eq(false)
+          expect(WebauthnConfiguration.exists?(suspended.id)).to eq(true)
+        end
+      end
     end
     context 'webauthn_platform' do
       let(:params) do

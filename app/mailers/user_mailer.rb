@@ -23,6 +23,13 @@ class UserMailer < ActionMailer::Base
 
   class UserEmailAddressMismatchError < StandardError; end
 
+  # Authentication method names the account recovery completion email can list,
+  # matching the friendly_name of each suspendable MFA configuration. Bounds the
+  # i18n lookup to known keys.
+  RECOVERY_MFA_METHOD_NAMES = %w[
+    auth_app backup_codes phone piv_cac webauthn webauthn_platform
+  ].freeze
+
   before_action :validate_user_and_email_address
   before_action :attach_images
   after_action :add_metadata
@@ -136,6 +143,25 @@ class UserMailer < ActionMailer::Base
       @root_url = root_url(locale: locale_url_param)
       @header = t('user_mailer.account_recovery_cancelled.subject', app_name: APP_NAME)
       mail(to: email_address.email, subject: @header)
+    end
+  end
+
+  # One consolidated notice that recovery finished and which suspended methods
+  # were removed, instead of a separate mfa_deleted email per method.
+  #
+  # @param removed_mfa_methods [Array<String>] friendly names of the removed
+  #   authentication methods, e.g. ['auth_app', 'phone']
+  def account_recovery_completed(removed_mfa_methods:)
+    with_user_locale(user) do
+      @removed_mfa_method_names = Array(removed_mfa_methods)
+        .map(&:to_s)
+        .select { |method| RECOVERY_MFA_METHOD_NAMES.include?(method) }
+        .map { |method| t("account_recovery.mfa_methods.#{method}") }
+      @header = t('user_mailer.account_recovery_completed.header', app_name: APP_NAME)
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.account_recovery_completed.subject', app_name: APP_NAME),
+      )
     end
   end
 

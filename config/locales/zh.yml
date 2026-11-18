@@ -1,6 +1,12 @@
 ---
 account_recovery.confirm_request.header: We received your account recovery request
 account_recovery.confirm_request.notification_html: We sent an email to <strong>%{email}</strong> with instructions to recover your account.
+account_recovery.mfa_methods.auth_app: Authentication application
+account_recovery.mfa_methods.backup_codes: Backup codes
+account_recovery.mfa_methods.phone: Phone number
+account_recovery.mfa_methods.piv_cac: Government employee ID
+account_recovery.mfa_methods.webauthn: Security key
+account_recovery.mfa_methods.webauthn_platform: Face or touch unlock
 account_recovery.new_mfa_setup.banner: Add new authentication methods to replace your old ones and finish account recovery.
 account_recovery.new_mfa_setup.completed_html: '<strong>Your account is now recovered</strong><br>Review your authentication methods often to make sure they’re up to date.'
 account_recovery.pending.cancel_success_html: '<strong>Your account recovery request was canceled</strong><br>We canceled account recovery because there was a successful sign in and authentication to your %{app_name} account.'
@@ -2201,6 +2207,12 @@ user_mailer.account_recovery_cancelled.intro: We canceled account recovery becau
 user_mailer.account_recovery_cancelled.no_action_needed: If you recognize this activity, you don’t need to do anything.
 user_mailer.account_recovery_cancelled.subject: Your account recovery request was canceled
 user_mailer.account_recovery_cancelled.unrequested_html: '<strong>If this wasn’t you:</strong> go to %{app_link_html} and sign in to your account, then:'
+user_mailer.account_recovery_completed.header: Your %{app_name} account is recovered
+user_mailer.account_recovery_completed.intro: You finished recovering your %{app_name} account. You can now sign in with the authentication methods you just added.
+user_mailer.account_recovery_completed.removed: 'Because you replaced them, we removed these authentication methods from your account:'
+user_mailer.account_recovery_completed.review_methods: Review your authentication methods often to make sure they are up to date and secure.
+user_mailer.account_recovery_completed.subject: Your %{app_name} account is recovered
+user_mailer.account_recovery_completed.unrequested_html: '<strong>If this wasn’t you:</strong> someone else may have access to your account. Sign in to your %{app_name} account, then:'
 user_mailer.account_recovery_granted.button: Recover my %{app_name} account
 user_mailer.account_recovery_granted.cancel_link_text: Sign in and authenticate with your %{app_name} to cancel your account recovery request
 user_mailer.account_recovery_granted.header: Recover your %{app_name} account

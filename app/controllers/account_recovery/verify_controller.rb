@@ -51,20 +51,48 @@ module AccountRecovery
       session[:account_recovery_granted_token]
     end
 
+    # A recovery that reached replacement MFA setup has already consumed its
+    # token, so a re-opened emailed link cannot be validated again. Resume the
+    # in-progress session instead of signing the owner out and telling them the
+    # link is dead. Checked only after a token fails, so a different owner's
+    # valid link is never swallowed by an in-progress recovery on this browser.
+    def resumable_recovery?
+      user_signed_in? && replacement_mfa_pending?
+    end
+
+    def resume_in_progress_recovery
+      redirect_to account_recovery_new_mfa_setup_url
+    end
+
     def verify_link
       token = token_param || session_token
-      sign_out if user_signed_in?
 
-      return handle_rate_limited_token if token_rate_limiter.limited?
+      if token_rate_limiter.limited?
+        return resume_in_progress_recovery if resumable_recovery?
 
-      token_rate_limiter.increment!
+        sign_out if user_signed_in?
+        return handle_rate_limited_token
+      end
+
+      # Only an emailed link counts against the limit. The session token was
+      # already validated to get there, so refreshing the password form or
+      # retrying a password must not consume token attempts. Every token lookup
+      # below is still metered, so the limit cannot be probed for free.
+      token_rate_limiter.increment! if token_param.present?
 
       verifier = AccountRecovery::VerifyLink.new(token: token)
       result = verifier.call
 
       analytics.account_recovery_link_validation(**result.to_h)
 
-      return handle_invalid_token unless result.success?
+      if !result.success?
+        return resume_in_progress_recovery if resumable_recovery?
+
+        sign_out if user_signed_in?
+        return handle_invalid_token
+      end
+
+      sign_out if user_signed_in?
 
       @account_recovery_request = verifier.account_recovery_request
       session[:account_recovery_granted_token] = token

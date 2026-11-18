@@ -23,12 +23,52 @@ RSpec.describe AccountRecovery::CompleteReplacementMfa do
     expect(replacement.reload).to be_mfa_enabled
   end
 
+  it 'reports the removed method types for notification and analytics' do
+    create(:auth_app_configuration, user: user)
+
+    expect(service.removed_mfa_method_counts).to eq({})
+
+    service.call
+
+    expect(service.removed_mfa_method_counts).to eq({ phone: 1 })
+  end
+
+  it 'counts each removed configuration of the same type' do
+    suspended_auth_apps = Array.new(2) do |index|
+      create(:auth_app_configuration, user: user, name: "suspended #{index}")
+    end
+    suspended_auth_apps.each do |configuration|
+      configuration.update!(account_recovery_request_id: recovery_request.id)
+    end
+    create(:auth_app_configuration, user: user, name: 'replacement')
+
+    service.call
+
+    expect(service.removed_mfa_method_counts).to eq({ phone: 1, auth_app: 2 })
+  end
+
+  it 'reports no removed methods when nothing was suspended' do
+    user.phone_configurations.update_all(account_recovery_request_id: nil)
+    create(:auth_app_configuration, user: user)
+
+    expect(service.call).to eq(true)
+    expect(service.removed_mfa_method_counts).to eq({})
+  end
+
   it 'is a no-op once the request is no longer awaiting replacement MFA' do
     replacement = create(:auth_app_configuration, user: user)
     service.call
 
     expect(service.call).to eq(false)
     expect(replacement.class.exists?(replacement.id)).to eq(true)
+  end
+
+  it 'keeps the removed counts from the successful call after a no-op' do
+    create(:auth_app_configuration, user: user)
+    service.call
+
+    expect(service.call).to eq(false)
+    expect(service.removed_mfa_method_counts).to eq({ phone: 1 })
   end
 
   it 'rolls deletion back if completion fails' do

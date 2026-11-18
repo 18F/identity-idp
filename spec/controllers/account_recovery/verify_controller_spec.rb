@@ -109,6 +109,16 @@ RSpec.describe AccountRecovery::VerifyController do
       expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::GRANTED)
       expect(flash[:error]).to eq(t('account_recovery.verify.token_rate_limited'))
     end
+
+    it 'counts an emailed link once against the token rate limit' do
+      limiter = RateLimiter.new(
+        target: '0.0.0.0',
+        rate_limit_type: :account_recovery_verify_token,
+      )
+
+      expect { get :show, params: { token: raw_token } }
+        .to change { limiter.attempts }.by(1)
+    end
   end
 
   describe '#show without a token' do
@@ -178,6 +188,16 @@ RSpec.describe AccountRecovery::VerifyController do
       get :show
 
       expect(response).to render_template('pages/page_not_found')
+    end
+
+    it 'does not consume token attempts when rendering the password form' do
+      get :show, params: { token: raw_token }
+      limiter = RateLimiter.new(
+        target: '0.0.0.0',
+        rate_limit_type: :account_recovery_verify_token,
+      )
+
+      expect { get :show }.to_not change { limiter.attempts }
     end
   end
 
@@ -435,6 +455,80 @@ RSpec.describe AccountRecovery::VerifyController do
       expect(controller.current_user).to be_nil
       expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::LINK_VERIFIED)
       expect(flash[:error]).to eq(t('account_recovery.verify.token_rate_limited'))
+    end
+
+    it 'does not consume token attempts for password retries' do
+      limiter = RateLimiter.new(
+        target: '0.0.0.0',
+        rate_limit_type: :account_recovery_verify_token,
+      )
+
+      expect do
+        post :create, params: password_params.merge(user: { password: 'wrong password' })
+        post :create, params: password_params.merge(user: { password: 'wrong password' })
+      end.to_not change { limiter.attempts }
+
+      expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::LINK_VERIFIED)
+    end
+
+    it 'resumes replacement MFA setup when the owner reopens the emailed link' do
+      post :create, params: password_params
+      stub_analytics
+
+      get :show, params: { token: raw_token }
+
+      expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
+      expect(controller.current_user).to eq(user)
+      expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq(true)
+      expect(flash[:error]).to be_nil
+      expect(@analytics).to have_logged_event(
+        :account_recovery_link_validation,
+        success: false,
+        errors: { base: ['token_invalid'] },
+        failure_reason: 'token_invalid',
+        rate_limited: false,
+      )
+    end
+
+    it 'resumes replacement MFA setup even when token attempts are exhausted' do
+      post :create, params: password_params
+      RateLimiter.new(
+        target: '0.0.0.0',
+        rate_limit_type: :account_recovery_verify_token,
+      ).increment_to_limited!
+
+      get :show, params: { token: raw_token }
+
+      expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
+      expect(controller.current_user).to eq(user)
+      expect(flash[:error]).to be_nil
+    end
+
+    it 'meters a reopened emailed link against the token limit' do
+      post :create, params: password_params
+      limiter = RateLimiter.new(
+        target: '0.0.0.0',
+        rate_limit_type: :account_recovery_verify_token,
+      )
+
+      expect { get :show, params: { token: raw_token } }.to change { limiter.attempts }.by(1)
+    end
+
+    it 'still honors a different valid link while replacement MFA is pending' do
+      post :create, params: password_params
+      other_user = create(:user, :fully_registered, password: password)
+      other_request = create(
+        :account_recovery_request,
+        :granted,
+        user: other_user,
+        token_fingerprint: AccountRecovery::TokenCreator.fingerprint('another-token'),
+      )
+
+      get :show, params: { token: 'another-token' }
+
+      expect(response).to redirect_to(account_recovery_verify_url)
+      expect(controller.current_user).to be_nil
+      expect(other_request.reload.state).to eq(AccountRecoveryRequest::LINK_VERIFIED)
     end
 
     it 'continues to replacement MFA setup only after password verification' do

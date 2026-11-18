@@ -6,7 +6,7 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
 
   before do
     allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:account_recovery_wait_period_days).and_return(1)
+    allow(IdentityConfig.store).to receive(:account_recovery_wait_period_hours).and_return(24)
   end
 
   def request_account_recovery
@@ -131,6 +131,34 @@ RSpec.describe 'Account Recovery: redeem the recovery link', email: true do
       signin(user_email, user.password)
 
       expect(page).to have_current_path(account_recovery_new_mfa_setup_path)
+    end
+  end
+
+  it 'resumes setup when the emailed link is reopened mid-recovery' do
+    request_account_recovery
+    reset_email
+
+    travel_to(Time.zone.now + 2.days) do
+      GrantAccountRecoveryRequestsAndSendEmailsJob.new.perform(Time.zone.now)
+
+      open_last_email
+      click_email_link_matching(%r{account_recovery/verify\?.*token})
+
+      fill_in t('account.index.password'), with: user.password
+      click_button t('forms.buttons.submit.default')
+
+      expect(page).to have_current_path(account_recovery_new_mfa_setup_path)
+
+      # Re-opening the consumed link must not sign the user out or claim the
+      # link is dead; the in-progress recovery simply resumes.
+      open_last_email
+      click_email_link_matching(%r{account_recovery/verify\?.*token})
+
+      expect(page).to have_current_path(account_recovery_new_mfa_setup_path)
+      expect(page).to have_content t('two_factor_authentication.two_factor_choice')
+      expect(page).to_not have_content t('account_recovery.verify.token_invalid')
+      expect(AccountRecoveryRequest.active_for_user(user).state)
+        .to eq(AccountRecoveryRequest::REPLACEMENT_MFA_PENDING)
     end
   end
 

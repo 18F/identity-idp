@@ -290,8 +290,10 @@ module Users
       user_session[:webauthn_challenge] = credential_creation_options.challenge.bytes.to_a
     end
 
+    # Suspended credentials are excluded so the browser does not block
+    # re-registering the same authenticator during account recovery.
     def exclude_credentials
-      current_user.webauthn_configurations.map(&:credential_id)
+      current_user.webauthn_configurations.available_for_authentication.map(&:credential_id)
     end
 
     def build_webauthn_setup_presenter(platform_authenticator:, passkey_upsell: false)

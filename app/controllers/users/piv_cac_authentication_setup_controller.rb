@@ -138,9 +138,12 @@ module Users
       params[:skip] == 'true'
     end
 
+    # Suspended configurations are excluded so a name held only by a credential
+    # the user is replacing during account recovery does not block the nickname
+    # step. The form releases that row before enrolling.
     def good_nickname?
       name = params[:name]
-      name.present? && !PivCacConfiguration.exists?(user_id: current_user.id, name: name)
+      name.present? && !mfa_context.piv_cac_configurations.exists?(name: name)
     end
 
     def analytics_properties
