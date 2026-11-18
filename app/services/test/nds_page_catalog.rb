@@ -206,6 +206,29 @@ module Test
         ],
       ),
       Page.new(
+        key: 'piv-cac-verification',
+        title: 'PIV/CAC sign-in (two-factor)',
+        flow: OTP,
+        template: 'two_factor_authentication/piv_cac_verification/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Reauthentication', params: { reauthn: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'piv-cac-verification-error',
+        title: 'PIV/CAC sign-in error (two-factor)',
+        flow: OTP,
+        template: 'two_factor_authentication/piv_cac_verification/error',
+        permutations: [
+          Permutation.new(label: 'Did not work (default)', params: {}),
+          Permutation.new(label: 'Not connected', params: { error: 'user.not_found' }),
+          Permutation.new(label: 'Certificate expired', params: { error: 'certificate.expired' }),
+          Permutation.new(label: 'No certificate', params: { error: 'certificate.none' }),
+          Permutation.new(label: 'Internal error', params: { error: 'token.missing' }),
+        ],
+      ),
+      Page.new(
         key: 'idv-welcome',
         title: 'Verify your identity (welcome)',
         flow: IDV,
