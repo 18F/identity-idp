@@ -406,7 +406,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       let(:is_proofing_agent) { true }
       let(:ipp_enrollment_in_progress) { true }
       let(:bypass_error_codes) { ['dob'] }
-      let(:ssa_proofing_agent_as_authoritative_source) { true }
       let(:proofing_vendor) { :instant_verify }
       let(:failed_checks) { [{ 'ItemName' => 'DOBFullVerified', 'ItemStatus' => 'fail' }] }
       let(:instant_verify_errors) do
@@ -439,10 +438,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       before do
-        allow(IdentityConfig.store).to receive_messages(
-          ssa_instant_verify_bypass_error_codes: bypass_error_codes,
-          ssa_proofing_agent_as_authoritative_source:,
-        )
+        allow(IdentityConfig.store).to receive(:ssa_instant_verify_bypass_error_codes)
+          .and_return(bypass_error_codes)
         allow(Db::SpCost::AddSpCost).to receive(:call)
       end
 
@@ -486,8 +483,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
       end
 
-      context 'when ssa_proofing_agent_as_authoritative_source is disabled' do
-        let(:ssa_proofing_agent_as_authoritative_source) { false }
+      context 'when ssa_instant_verify_bypass_error_codes is empty' do
+        let(:bypass_error_codes) { [] }
 
         it 'does not bypass the failure' do
           result = proof.adjudicated_result

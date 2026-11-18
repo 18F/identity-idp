@@ -143,7 +143,7 @@ module Proofing
       def instant_verify_bypass_for(state_id_address_resolution_result)
         return unless is_proofing_agent &&
                       INSTANT_VERIFY_PROOFING_VENDORS.include?(proofing_vendor) &&
-                      IdentityConfig.store.ssa_proofing_agent_as_authoritative_source
+                      IdentityConfig.store.ssa_instant_verify_bypass_error_codes.present?
 
         ProofingAgent::InstantVerify::ResolutionFailureBypass.new(
           resolution_result: state_id_address_resolution_result,
