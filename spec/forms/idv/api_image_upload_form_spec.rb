@@ -19,6 +19,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           document_capture_session_uuid: document_capture_session_uuid,
         }.compact,
       ),
+      document_capture_session: authorized_document_capture_session,
       service_provider:,
       analytics: fake_analytics,
       attempts_api_tracker:,
@@ -73,6 +74,7 @@ RSpec.describe Idv::ApiImageUploadForm do
   let(:selfie_image_metadata) { nil }
   let!(:document_capture_session) { create(:document_capture_session, doc_auth_vendor: 'mock') }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
+  let(:authorized_document_capture_session) { document_capture_session }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:acuant_sdk_upgrade_ab_test_bucket) {}
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
@@ -113,6 +115,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
     context 'when document_capture_session_uuid param is missing' do
       let(:document_capture_session_uuid) { nil }
+      let(:authorized_document_capture_session) { nil }
 
       it 'is not valid' do
         expect(form.valid?).to eq(false)
@@ -120,8 +123,9 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
-    context 'when document_capture_session_uuid does not correspond to a record' do
+    context 'when the caller is not entitled to the named document capture session' do
       let(:document_capture_session_uuid) { 'unassociated-test-uuid' }
+      let(:authorized_document_capture_session) { nil }
 
       it 'is not valid' do
         expect(form.valid?).to eq(false)
@@ -263,6 +267,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               document_capture_session_uuid: document_capture_session_uuid,
             }.compact,
           ),
+          document_capture_session: authorized_document_capture_session,
           service_provider:,
           analytics: fake_analytics,
           attempts_api_tracker:,
@@ -360,6 +365,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               document_capture_session_uuid: document_capture_session_uuid,
             }.compact,
           ),
+          document_capture_session: authorized_document_capture_session,
           service_provider:,
           analytics: fake_analytics,
           attempts_api_tracker:,
@@ -1240,6 +1246,8 @@ RSpec.describe Idv::ApiImageUploadForm do
             form.submit
           end
 
+          # The enclosing example group has already submitted once, so this submission is the
+          # second attempt against the same session.
           it 'does not add or remove failed images in the document_capture_session' do
             expect(document_capture_session.reload.load_result).to have_attributes(
               success: false,
@@ -1249,7 +1257,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               failed_selfie_image_fingerprints: [selfie_image_fingerprint],
               doc_auth_success: false,
               selfie_status: :fail,
-              attempt: 1,
+              attempt: 2,
             )
           end
         end
