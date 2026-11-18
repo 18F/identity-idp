@@ -297,8 +297,13 @@ RSpec.describe Idv::InPerson::StateIdController do
           .to receive(:in_person_proofing_expiration_edge_cases_enabled).and_return(true)
       end
 
-      context 'when a non-date option is selected' do
-        let(:params) { super().deep_merge(identity_doc: { id_expiration_option: 'none' }) }
+      context 'when a non-date option is selected and no date is entered' do
+        let(:params) do
+          super().tap do |p|
+            p[:identity_doc] = p[:identity_doc].except(:id_expiration)
+              .merge(id_expiration_option: 'none')
+          end
+        end
 
         it 'stores the sentinel and no date' do
           put :update, params: params
@@ -310,19 +315,18 @@ RSpec.describe Idv::InPerson::StateIdController do
         end
       end
 
-      context 'when a non-date option supersedes an entered date' do
+      context 'when a date is entered alongside a non-date option' do
         let(:params) { super().deep_merge(identity_doc: { id_expiration_option: 'military' }) }
 
-        it 'stores the sentinel instead of the entered date' do
+        it 'stores the entered date and ignores the option' do
           put :update, params: params
 
-          expect(pii_from_user[:state_id_expiration]).to eq('military')
+          expect(pii_from_user[:state_id_expiration]).to eq(formatted_expiration)
         end
       end
 
       context 'when a literal placeholder date is entered' do
         let(:id_expiration) { { month: '99', day: '99', year: '9999' } }
-        let(:params) { super().deep_merge(identity_doc: { id_expiration_option: 'date' }) }
 
         it 'stores the placeholder verbatim' do
           put :update, params: params
@@ -538,9 +542,12 @@ RSpec.describe Idv::InPerson::StateIdController do
         )[:applicant_pii]
       end
 
-      context 'when a non-date sentinel is selected' do
+      context 'when a non-date sentinel is selected and no date is entered' do
         let(:params) do
-          valid_state_id_params.deep_merge(identity_doc: { id_expiration_option: 'none' })
+          valid_state_id_params.tap do |p|
+            p[:identity_doc] = p[:identity_doc].except(:id_expiration)
+              .merge(id_expiration_option: 'none')
+          end
         end
 
         it 'omits state_id_expiration from the AAMVA job PII' do
@@ -561,7 +568,6 @@ RSpec.describe Idv::InPerson::StateIdController do
         let(:params) do
           valid_state_id_params.deep_merge(
             identity_doc: {
-              id_expiration_option: 'date',
               id_expiration: { month: '99', day: '99', year: '9999' },
             },
           )
@@ -582,9 +588,7 @@ RSpec.describe Idv::InPerson::StateIdController do
       end
 
       context 'when a real expiration date is entered' do
-        let(:params) do
-          valid_state_id_params.deep_merge(identity_doc: { id_expiration_option: 'date' })
-        end
+        let(:params) { valid_state_id_params }
 
         it 'sends state_id_expiration to AAMVA' do
           expect(aamva_job_applicant_pii[:state_id_expiration]).to eq('2030-12-31')

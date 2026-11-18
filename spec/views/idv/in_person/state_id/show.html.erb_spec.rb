@@ -50,16 +50,23 @@ RSpec.describe 'idv/in_person/state_id/show.html.erb' do
 
   context 'when the expiration edge cases feature is enabled (LG-17733)' do
     let(:expiration_edge_cases_enabled) { true }
-    let(:expiration_option) { Idv::StateIdForm::EXPIRATION_OPTION_DATE }
+    let(:expiration_option) { nil }
 
-    it 'renders the expiration date radio options' do
+    it 'renders the always-visible date inputs and the non-date radio options' do
       render_template
 
+      doc = Nokogiri::HTML(rendered)
+
+      expect(doc.at_css('.expiration-date-inputs input[name="identity_doc[id_expiration][month]"]'))
+        .to be_present
       expect(rendered).to include(
         I18n.t('in_person_proofing.form.state_id.expiration_date_options.military'),
       )
       expect(rendered).to include(
-        I18n.t('in_person_proofing.form.state_id.expiration_date_options.enter_date'),
+        I18n.t('in_person_proofing.form.state_id.expiration_date_options.indefinite'),
+      )
+      expect(rendered).to include(
+        I18n.t('in_person_proofing.form.state_id.expiration_date_options.other'),
       )
     end
   end

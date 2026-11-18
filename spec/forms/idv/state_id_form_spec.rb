@@ -229,9 +229,18 @@ RSpec.describe Idv::StateIdForm do
           end
         end
 
-        context 'when option is date with a literal placeholder value' do
+        context 'when no option is selected and the date is left blank' do
+          let(:params) { super().except(:id_expiration) }
+
+          it 'is valid because the expiration date is optional' do
+            expect(result.success?).to eq(true)
+            expect(subject.errors[:id_expiration]).to be_empty
+          end
+        end
+
+        context 'when a date is entered with a literal placeholder value' do
           let(:params) do
-            super().merge(id_expiration_option: 'date', id_expiration:)
+            super().merge(id_expiration:)
           end
 
           context '99/99/9999' do
@@ -251,16 +260,16 @@ RSpec.describe Idv::StateIdForm do
           end
         end
 
-        context 'when option is date with a real future date' do
-          let(:params) { super().merge(id_expiration_option: 'date', id_expiration: valid_exp) }
+        context 'when a real future date is entered' do
+          let(:params) { super().merge(id_expiration: valid_exp) }
 
           it 'is valid' do
             expect(result.success?).to eq(true)
           end
         end
 
-        context 'when option is date with an expired date' do
-          let(:params) { super().merge(id_expiration_option: 'date', id_expiration: expired_exp) }
+        context 'when an expired date is entered' do
+          let(:params) { super().merge(id_expiration: expired_exp) }
 
           it 'returns the expired error' do
             expect(result.success?).to eq(false)

@@ -164,6 +164,15 @@ class MemorableDateElement extends HTMLElement {
       return;
     }
 
+    // An optional date (no field marked required) left entirely empty is valid —
+    // clear any prior validity so it neither blocks submission nor validates.
+    const allEmpty = !month.value && !day.value && !year.value;
+    const anyRequired = month.required || day.required || year.required;
+    if (allEmpty && !anyRequired) {
+      this.setValidity('', month, day, year);
+      return;
+    }
+
     const { errorMessages, rangeErrors } = this.getErrorMessageMappings();
 
     const hasMissingValues = (

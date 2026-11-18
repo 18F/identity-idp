@@ -25,6 +25,7 @@ module Idv
 
       validates :id_expiration_option,
                 inclusion: { in: Idv::StateIdForm::EXPIRATION_OPTIONS },
+                allow_blank: true,
                 if: :expiration_edge_cases_enabled?
 
       validates_with Idv::TransliterableValidator,
@@ -87,16 +88,24 @@ module Idv
       IdentityConfig.store.in_person_proofing_expiration_edge_cases_enabled
     end
 
-    # Skip presence/date validation of id_expiration when the user selected a
-    # non-date option (MIL/INDEF/No date) or entered a literal placeholder date.
+    # Skip presence/date validation of id_expiration when the edge-case feature is
+    # enabled and the user left the (now optional) date blank or entered a literal
+    # placeholder date. An entered real date is always validated, even when a
+    # non-date option (MIL/INDEF/No date) is also selected — the date wins.
     def skip_expiration_date_validation?
       return false unless expiration_edge_cases_enabled?
 
-      expiration_option_sentinel? || placeholder_expiration?
+      id_expiration_blank? || placeholder_expiration?
     end
 
-    def expiration_option_sentinel?
-      Idv::StateIdForm::EXPIRATION_SENTINELS.include?(id_expiration_option)
+    # True when no expiration date was entered. The memorable-date field submits
+    # an all-empty { month:, day:, year: } hash (not nil) when left blank, so an
+    # empty hash counts as blank in addition to nil/empty values.
+    def id_expiration_blank?
+      return true if id_expiration.blank?
+      return id_expiration.values.all?(&:blank?) if id_expiration.respond_to?(:values)
+
+      false
     end
 
     def placeholder_expiration?

@@ -174,7 +174,7 @@
           day: parsed_expiration&.day,
           month: parsed_expiration&.month,
           year: parsed_expiration&.year,
-          required: true,
+          required: !expiration_edge_cases_enabled,
           min: Time.zone.today + 1.day,
           allow_placeholder_values: expiration_edge_cases_enabled,
           hint: t('in_person_proofing.form.state_id.expiration_date_hint'),
@@ -190,21 +190,10 @@
 
   <% if expiration_edge_cases_enabled %>
     <fieldset class="usa-fieldset margin-bottom-4">
-      <legend class="usa-legend h4"><%= t('in_person_proofing.form.state_id.expiration_date') %></legend>
-      <div class="usa-radio">
-        <%= f.radio_button(
-              :id_expiration_option,
-              Idv::StateIdForm::EXPIRATION_OPTION_DATE,
-              class: 'usa-radio__input expiration-option-input',
-              checked: expiration_option == Idv::StateIdForm::EXPIRATION_OPTION_DATE,
-            ) %>
-        <%= f.label(
-              :id_expiration_option_date,
-              t('in_person_proofing.form.state_id.expiration_date_options.enter_date'),
-              class: 'usa-radio__label',
-            ) %>
-      </div>
-      <div class="expiration-date-inputs margin-left-4 margin-bottom-2 <%= 'display-none' unless expiration_option == Idv::StateIdForm::EXPIRATION_OPTION_DATE %>">
+      <legend class="usa-sr-only"><%= t('in_person_proofing.form.state_id.expiration_date') %></legend>
+      <%# The date is optional. The options below mark IDs with no normal date; %>
+      <%# an entered date always takes precedence over a selected option. %>
+      <div class="expiration-date-inputs margin-bottom-2">
         <%= expiration_date_field %>
       </div>
       <% [

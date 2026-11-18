@@ -349,6 +349,28 @@ describe('MemorableDateElement', () => {
     itAcceptsAValidDate();
     itHidesValidationErrorsOnTyping();
     itIsUnaffectedByNewRelicEventBug();
+
+    describe('when the fields are optional (not required)', () => {
+      beforeEach(() => {
+        [monthInput, dayInput, yearInput].forEach((input) => input.removeAttribute('required'));
+        // Re-run validation now that the fields are no longer required.
+        monthInput.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+
+      it('accepts an empty date', async () => {
+        await userEvent.click(submitButton);
+        expectErrorToEqual('');
+        expect(formElement.reportValidity()).to.be.true();
+      });
+
+      it('still validates a partially entered date', async () => {
+        await userEvent.type(monthInput, '12');
+        await userEvent.click(submitButton);
+        expectErrorToEqual('Enter a day and year');
+        expect(formElement.reportValidity()).to.be.false();
+      });
+    });
+
     it('uses customized messages for required validation', async () => {
       expectErrorToEqual('');
       submitButton.click();

@@ -196,13 +196,10 @@ RSpec.describe 'state id controller enabled', :js do
         .to receive(:in_person_proofing_expiration_edge_cases_enabled).and_return(true)
     end
 
-    it 'renders the expiration options with a date entry as the default',
+    it 'renders the always-visible date inputs alongside the non-date options',
        allow_browser_log: true do
       complete_steps_before_state_id_controller
 
-      expect(page).to have_content(
-        t('in_person_proofing.form.state_id.expiration_date_options.enter_date'),
-      )
       expect(page).to have_content(
         t('in_person_proofing.form.state_id.expiration_date_options.military'),
       )
@@ -213,23 +210,27 @@ RSpec.describe 'state id controller enabled', :js do
         t('in_person_proofing.form.state_id.expiration_date_options.other'),
       )
 
-      # The date inputs are visible because "Enter a date" is selected by default.
-      expect(page).to have_field('identity_doc[id_expiration][month]', visible: :visible)
+      # The date inputs are always visible and enabled with no option selected.
+      expect(page).to have_field(
+        'identity_doc[id_expiration][month]', visible: :visible, disabled: false
+      )
     end
 
-    it 'hides the date inputs when a non-date option is selected',
+    it 'keeps the date inputs editable after a non-date option is selected',
        allow_browser_log: true do
       complete_steps_before_state_id_controller
 
       choose t('in_person_proofing.form.state_id.expiration_date_options.military')
-      # The inputs are hidden *and* disabled so they are neither submitted nor
-      # client-side validated, so match on disabled fields too.
+      # The date stays optional and editable; selecting an option never disables it.
       expect(page).to have_field(
-        'identity_doc[id_expiration][month]', visible: :hidden, disabled: true
+        'identity_doc[id_expiration][month]', visible: :visible, disabled: false
       )
 
-      choose t('in_person_proofing.form.state_id.expiration_date_options.enter_date')
-      expect(page).to have_field('identity_doc[id_expiration][month]', visible: :visible)
+      fill_in_memorable_date('identity_doc[id_expiration]', InPersonHelper::GOOD_STATE_ID_EXPIRATION)
+      expect(page).to have_field(
+        'identity_doc[id_expiration][month]',
+        with: Date.parse(InPersonHelper::GOOD_STATE_ID_EXPIRATION).month.to_s,
+      )
     end
 
     # The client-side memorable-date validation would otherwise reject these as
@@ -243,7 +244,6 @@ RSpec.describe 'state id controller enabled', :js do
         complete_steps_before_state_id_controller
         fill_out_state_id_form_ok(current_address_matches_id: true)
 
-        choose t('in_person_proofing.form.state_id.expiration_date_options.enter_date')
         fill_in_memorable_date('identity_doc[id_expiration]', entered_date)
         click_idv_continue
 
@@ -260,10 +260,10 @@ RSpec.describe 'state id controller enabled', :js do
       'indefinite' => 'expiration_date_options.indefinite',
       'none' => 'expiration_date_options.other',
     }.each do |option, i18n_key|
-      it "allows submitting the '#{option}' expiration option",
+      it "allows submitting the '#{option}' expiration option without a date",
          allow_browser_log: true do
         complete_steps_before_state_id_controller
-        fill_out_state_id_form_ok(current_address_matches_id: true)
+        fill_out_state_id_form_ok(current_address_matches_id: true, expiration: nil)
 
         choose t("in_person_proofing.form.state_id.#{i18n_key}")
         click_idv_continue
@@ -274,6 +274,21 @@ RSpec.describe 'state id controller enabled', :js do
         expect(page).to have_current_path(idv_in_person_verify_info_url)
         expect(page).to have_text(t("in_person_proofing.form.state_id.#{i18n_key}"))
       end
+    end
+
+    it 'accepts an entered date even when a non-date option is also selected',
+       allow_browser_log: true do
+      complete_steps_before_state_id_controller
+      fill_out_state_id_form_ok(current_address_matches_id: true)
+
+      choose t('in_person_proofing.form.state_id.expiration_date_options.military')
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
+      complete_ssn_step
+
+      expect(page).to have_current_path(idv_in_person_verify_info_url)
+      expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_EXPIRATION_FORMATTED_EVENT)
     end
   end
 
