@@ -20,7 +20,6 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
       reference: expected_reference,
       reason_codes: {},
       source_attribution: [],
-      ssa_bypassed_attributes: [],
       transaction_id: expected_transaction_id,
       vendor_id: nil,
       vendor_name: 'ResolutionMock',
