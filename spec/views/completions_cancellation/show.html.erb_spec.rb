@@ -65,7 +65,8 @@ RSpec.describe 'completions_cancellation/show.html.erb' do
         '.auth__form-page-body p',
         text: t('login_cancel.header', app_name: APP_NAME),
       )
-      expect(rendered).to have_css('.auth__form-page-body ul.usa-list li', count: 2)
+      expect(rendered).to have_css('.auth__form-page-body ul.list.copy--muted li', count: 2)
+      expect(rendered).to_not have_css('.auth__form-page-body ul.usa-list')
       expect(rendered).to have_css('.auth__form-page-body li strong', text: sp_name)
       expect(rendered).to have_css(
         ".auth__form-page-body li a[href='#{account_path}']",
