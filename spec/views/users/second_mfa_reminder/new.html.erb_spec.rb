@@ -41,7 +41,7 @@ RSpec.describe 'users/second_mfa_reminder/new.html.erb' do
       allow(view).to receive(:nds_layout?).and_return(true)
     end
 
-    it 'renders the form-page card with the info status icon, heading and description' do
+    it 'renders the form-page card with the info status icon, heading, divider and description' do
       expect(rendered).to have_selector('section.auth.auth--form-page')
       expect(rendered).to have_css(
         '.auth__header--with-media .nds-status-icon.nds-status-icon--info svg.usa-icon',
@@ -50,6 +50,7 @@ RSpec.describe 'users/second_mfa_reminder/new.html.erb' do
         '.auth--form-page h1',
         text: t('users.second_mfa_reminder.heading'),
       )
+      expect(rendered).to have_css('.auth__form-page-body hr.divider')
       expect(rendered).to have_selector(
         '.auth__form-page-body .copy p',
         text: t('users.second_mfa_reminder.description'),
