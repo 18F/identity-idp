@@ -605,8 +605,9 @@ class ApplicationController < ActionController::Base
            layout: false, status: :service_unavailable, formats: :html
   end
 
+  # Templates rendered here must handle nds_layout?.
   def render_full_width(template, **opts)
-    render template, **opts, layout: 'application'
+    render template, **opts, layout: resolve_layout
   end
 
   def analytics_exception_info(exception)

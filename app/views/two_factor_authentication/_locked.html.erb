@@ -1,5 +1,50 @@
 <% self.title = t('titles.account_locked') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(title: t('titles.account_locked')) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--error">
+        <%= render NDS::IconComponent.new(icon: :lock, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <p><%= presenter.locked_reason %></p>
+
+      <p role="timer" aria-live="polite" aria-atomic="true">
+        <%= t(
+              'two_factor_authentication.please_try_again_html',
+              countdown: render(
+                CountdownComponent.new(
+                  expiration: presenter.user.lockout_time_expiration,
+                  update_interval: 30.seconds,
+                ),
+              ),
+            ) %>
+      </p>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::TroubleshootingOptionsComponent.new(
+            heading: t('components.troubleshooting_options.default_heading'),
+            options: [
+              {
+                text: t('two_factor_authentication.read_about_two_factor_authentication'),
+                url: help_center_redirect_url,
+                new_tab: true,
+              },
+              {
+                text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
+                url: contact_redirect_url,
+                new_tab: true,
+              },
+            ],
+          ) %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render StatusPageComponent.new(status: :error, icon: :lock) do |c| %>
   <% c.with_header { t('titles.account_locked') } %>
 
@@ -28,4 +73,5 @@
          new_tab: true,
        ).with_content(t('idv.troubleshooting.options.contact_support', app_name: APP_NAME)) %>
   <% end %>
+<% end %>
 <% end %>

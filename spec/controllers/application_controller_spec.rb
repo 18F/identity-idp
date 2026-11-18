@@ -1089,6 +1089,48 @@ RSpec.describe ApplicationController do
     end
   end
 
+  describe '#render_full_width' do
+    before { routes.draw { get 'index' => 'anonymous#index' } }
+    after { Rails.application.reload_routes! }
+
+    controller do
+      layout 'no_card'
+
+      def index
+        render_full_width('two_factor_authentication/_locked', locals: { presenter: nil })
+      end
+    end
+
+    before do
+      allow(controller).to receive(:nds_layout?).and_return(nds_layout)
+    end
+
+    context 'in the legacy bucket' do
+      let(:nds_layout) { false }
+
+      it 'renders the template in the application layout, overriding the controller layout' do
+        get :index
+
+        expect(response).to render_template('two_factor_authentication/_locked')
+        expect(response).to render_template(layout: 'application')
+        expect(response).to_not render_template(layout: 'nds/application')
+        expect(response).to_not render_template(layout: 'no_card')
+      end
+    end
+
+    context 'in the NDS bucket' do
+      let(:nds_layout) { true }
+
+      it 'renders the template in the NDS application layout, overriding the controller layout' do
+        get :index
+
+        expect(response).to render_template('two_factor_authentication/_locked')
+        expect(response).to render_template(layout: 'nds/application')
+        expect(response).to_not render_template(layout: 'no_card')
+      end
+    end
+  end
+
   def expect_user_event_to_have_been_created(user, event_type)
     device = Device.first
     expect(device.user_id).to eq(user.id)
