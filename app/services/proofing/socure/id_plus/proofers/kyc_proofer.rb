@@ -63,7 +63,8 @@ module Proofing
           end
 
           def bypassed_reason_codes(response)
-            response.reason_codes & bypass_reason_codes
+            response.reason_codes &
+              IdentityConfig.store.ssa_proofing_agent_socure_kyc_bypass_reason_codes
           end
 
           def request(input)
