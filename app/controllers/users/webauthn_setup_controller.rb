@@ -19,7 +19,8 @@ module Users
     before_action :confirm_recently_authenticated_2fa
     before_action :validate_existing_platform_authenticator
 
-    helper_method :in_multi_mfa_selection_flow?
+    helper_method :in_multi_mfa_selection_flow?, :in_account_creation_flow?,
+                  :enabled_mfa_methods_count
     helper_method :mobile?
     helper_method :auto_trigger_request?
 
@@ -120,6 +121,10 @@ module Users
     end
 
     private
+
+    def enabled_mfa_methods_count
+      MfaContext.new(current_user).enabled_mfa_methods_count
+    end
 
     def record_auto_passkey_prompt
       user_session[:auto_passkey_prompted] = true

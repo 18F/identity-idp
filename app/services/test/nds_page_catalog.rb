@@ -118,6 +118,37 @@ module Test
         ],
       ),
       Page.new(
+        key: 'webauthn-setup',
+        title: 'Passkey / security key setup',
+        flow: MFA,
+        template: 'users/webauthn_setup/new',
+        permutations: [
+          Permutation.new(label: 'Passkey (account creation)', params: { account_creation: '1' }),
+          Permutation.new(
+            label: 'Passkey (additional method required)',
+            params: { account_creation: '1', additional: '1' },
+          ),
+          Permutation.new(
+            label: 'Passkey upsell (auto prompt)',
+            params: { account_creation: '1', upsell: '1' },
+          ),
+          Permutation.new(label: 'Passkey (from account page)', params: { second: '1' }),
+          Permutation.new(label: 'Passkey error', params: { error: 'NotAllowedError' }),
+          Permutation.new(
+            label: 'Security key (account creation)',
+            params: { key: '1', account_creation: '1' },
+          ),
+          Permutation.new(
+            label: 'Security key (from account page)',
+            params: { key: '1', second: '1' },
+          ),
+          Permutation.new(
+            label: 'Security key error',
+            params: { key: '1', error: 'NotAllowedError' },
+          ),
+        ],
+      ),
+      Page.new(
         key: 'phone-setup',
         title: 'Add a phone number',
         flow: MFA,
