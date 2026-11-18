@@ -5,6 +5,11 @@ module Proofing
     module IdPlus
       module Responses
         class PhoneRiskResponse < Proofing::Socure::IdPlus::Response
+          def initialize(http_response, bypasses_enabled: false)
+            super(http_response)
+            @bypasses_enabled = bypasses_enabled
+          end
+
           def to_h
             {
               phonerisk: {
@@ -35,7 +40,7 @@ module Proofing
 
           private
 
-          attr_reader :http_response
+          attr_reader :http_response, :bypasses_enabled
 
           def phonerisk
             phonerisk_object = http_response.body['phoneRisk']
@@ -114,7 +119,16 @@ module Proofing
           end
 
           def auto_failure_reason_codes
-            IdentityConfig.store.idv_socure_phonerisk_auto_failure_reason_codes
+            IdentityConfig.store.idv_socure_phonerisk_auto_failure_reason_codes -
+              bypassed_reason_codes
+          end
+
+          def bypassed_reason_codes
+            if bypasses_enabled
+              IdentityConfig.store.idv_proofing_agent_socure_phonerisk_bypassed_reason_codes
+            else
+              []
+            end
           end
         end
       end

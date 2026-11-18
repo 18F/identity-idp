@@ -32,6 +32,7 @@ module Proofing
               conn.post(url, body, headers) do |req|
                 req.options.context = { service_name: SERVICE_NAME }
               end,
+              bypasses_enabled: !!config.bypasses_enabled,
             )
           end
         end
