@@ -597,7 +597,6 @@ module IdentityConfig
     config.add(:sp_registration_funnel_report_configs, type: :json)
     config.add(:sp_cred_metric_report_configs, type: :json)
     config.add(:ssa_instant_verify_bypass_error_codes, type: :json)
-    config.add(:ssa_proofing_agent_as_authoritative_source, type: :boolean)
     config.add(:ssa_proofing_agent_socure_kyc_bypass_reason_codes, type: :json)
     config.add(:state_tracking_enabled, type: :boolean)
     config.add(:sts_consent_expiration_in_days, type: :integer)
