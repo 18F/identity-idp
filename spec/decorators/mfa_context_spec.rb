@@ -89,7 +89,7 @@ RSpec.describe MfaContext do
     end
 
     context 'with phone configuration' do
-      let(:user) { build(:user, :with_phone) }
+      let(:user) { create(:user, :with_phone) }
 
       it 'returns 1 for phone' do
         hash = { phone: 1 }

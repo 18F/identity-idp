@@ -87,6 +87,52 @@ RSpec.describe TotpSetupForm do
         )
       end
     end
+
+    context 'when the name is held by a configuration suspended for account recovery' do
+      let(:user) { create(:user, :fully_registered) }
+
+      it 'releases the suspended configuration and reuses the name' do
+        suspended = create(:auth_app_configuration, user: user, name: name)
+        recovery_request = create(
+          :account_recovery_request,
+          :replacement_mfa_pending,
+          user: user,
+        )
+        suspended.update!(account_recovery_request_id: recovery_request.id)
+
+        form = TotpSetupForm.new(user, secret, code, name)
+
+        expect(form.submit).to be_success
+        expect(AuthAppConfiguration.exists?(suspended.id)).to eq(false)
+        expect(user.auth_app_configurations.reload.map(&:name)).to eq([name])
+      end
+
+      it 'still rejects the name when the configuration is not suspended' do
+        create(:auth_app_configuration, user: user, name: name)
+
+        form = TotpSetupForm.new(user, secret, code, name)
+
+        expect(form.submit.to_h).to include(
+          success: false,
+          error_details: { name: { unique_name: true } },
+        )
+      end
+
+      it 'keeps the suspended configuration when the code is invalid' do
+        suspended = create(:auth_app_configuration, user: user, name: name)
+        recovery_request = create(
+          :account_recovery_request,
+          :replacement_mfa_pending,
+          user: user,
+        )
+        suspended.update!(account_recovery_request_id: recovery_request.id)
+
+        form = TotpSetupForm.new(user, secret, 'invalid', name)
+
+        expect(form.submit).to_not be_success
+        expect(AuthAppConfiguration.exists?(suspended.id)).to eq(true)
+      end
+    end
   end
 
   def next_auth_app_id

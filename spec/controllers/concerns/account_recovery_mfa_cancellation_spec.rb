@@ -31,7 +31,9 @@ RSpec.describe TwoFactorAuthenticatableMethods do
       recovery_request.reload
       expect(recovery_request.state).to eq(AccountRecoveryRequest::CANCELLED)
       expect(recovery_request.cancel_reason).to eq(AccountRecoveryRequest::CANCEL_REASON_MFA_USED)
-      expect(controller.flash[:success]).to eq(t('account_recovery.pending.cancel_success'))
+      expect(controller.flash[:success]).to eq(
+        t('account_recovery.pending.cancel_success_html', app_name: APP_NAME),
+      )
     end
 
     it 'cancels a granted request and clears its tokens' do

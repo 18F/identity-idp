@@ -32,6 +32,19 @@ RSpec.describe UserPivCacLoginForm do
           key_id: 'foo',
         )
       end
+
+      context 'when the card is suspended for account recovery' do
+        before do
+          recovery_request = create(:account_recovery_request, :replacement_mfa_pending, user:)
+          piv_cac_configuration.update!(account_recovery_request_id: recovery_request.id)
+        end
+
+        it 'treats the card as unknown' do
+          expect(form.submit.success?).to eq(false)
+          expect(form.error_type).to eq('user.not_found')
+          expect(form.user).to be_nil
+        end
+      end
     end
 
     context 'when token is invalid' do

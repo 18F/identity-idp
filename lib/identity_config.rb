@@ -52,7 +52,7 @@ module IdentityConfig
     config.add(:account_recovery_verify_password_max_attempts, type: :integer)
     config.add(:account_recovery_verify_token_attempt_window_in_minutes, type: :integer)
     config.add(:account_recovery_verify_token_max_attempts, type: :integer)
-    config.add(:account_recovery_wait_period_days, type: :integer)
+    config.add(:account_recovery_wait_period_hours, type: :integer)
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
     config.add(:account_reset_fraud_user_wait_period_days, type: :integer, allow_nil: true)

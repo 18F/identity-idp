@@ -98,7 +98,11 @@ class WebauthnSetupForm
   end
 
   def name_is_unique
+    # A name held only by this user's own suspended configuration is not a
+    # conflict: it is released when the replacement is actually enrolled.
+    return if suspended_name_holder.releasable?
     return unless WebauthnConfiguration.exists?(user_id: @user.id, name: @name)
+
     if @platform_authenticator
       num_existing_devices = WebauthnConfiguration
         .where(user_id: @user.id)
@@ -113,6 +117,13 @@ class WebauthnSetupForm
                    end
       errors.add :name, name_error, type: :unique_name
     end
+  end
+
+  def suspended_name_holder
+    @suspended_name_holder ||= AccountRecovery::ReleaseSuspendedCredential.new(
+      user: @user,
+      configuration: WebauthnConfiguration.find_by(user_id: @user&.id, name: @name),
+    )
   end
 
   def validate_attestation_response
@@ -149,6 +160,10 @@ class WebauthnSetupForm
   end
 
   def create_webauthn_configuration
+    # Release the suspended row only now that enrollment is certain, so a
+    # failed attempt never destroys the credential being replaced.
+    suspended_name_holder.call
+
     credential = attestation_response.credential
     public_key = Base64.strict_encode64(credential.public_key)
     id = Base64.strict_encode64(credential.id)

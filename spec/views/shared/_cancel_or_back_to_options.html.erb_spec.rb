@@ -19,7 +19,7 @@ RSpec.describe 'shared/_cancel_or_back_to_options.html.erb' do
   end
 
   context 'with mfa configured' do
-    let(:user) { build(:user, :with_phone) }
+    let(:user) { create(:user, :with_phone) }
 
     it 'renders link to cancel and return to account' do
       expect(rendered).to have_link(t('links.cancel'), href: account_path)

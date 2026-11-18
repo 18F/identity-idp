@@ -101,6 +101,9 @@ ignore_missing:
 ## not, and if we didn't ignore them, the spec that makes sure that we don't have
 ## any unused translations would fail erroneously.
 ignore_unused:
+  # Resolved dynamically from an MFA configuration's friendly_name when the
+  # account recovery completion email lists the methods it removed.
+  - 'account_recovery.mfa_methods.*'
   - 'date.formats.short'
   - 'devise.failure.*'
   - 'devise.sessions.signed_in'

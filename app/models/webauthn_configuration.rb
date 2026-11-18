@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class WebauthnConfiguration < ApplicationRecord
+  include AccountRecoverySuspendable
   include UserSuppliedNameAttributes
 
   belongs_to :user
@@ -37,10 +38,12 @@ class WebauthnConfiguration < ApplicationRecord
   end
 
   def mfa_enabled?
-    true
+    !suspended_for_account_recovery?
   end
 
   def selection_presenters
+    return [] unless mfa_enabled?
+
     if platform_authenticator?
       [TwoFactorAuthentication::SignInWebauthnPlatformSelectionPresenter
         .new(user:, configuration: self)]

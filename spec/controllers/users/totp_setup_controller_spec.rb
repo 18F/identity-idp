@@ -155,6 +155,54 @@ RSpec.describe Users::TotpSetupController, devise: true do
         end
       end
 
+      context 'when completing account recovery with the replacement' do
+        let(:success) { true }
+        let(:user) { create(:user, :fully_registered) }
+        let(:secret) { ROTP::Base32.random_base32 }
+        let!(:recovery_request) do
+          create(:account_recovery_request, :password_verified, user: user).tap do |request|
+            AccountRecovery::SuspendExistingMfa.new(account_recovery_request: request).call
+          end
+        end
+
+        before do
+          stub_sign_in_before_2fa(user)
+          subject.user_session[:new_totp_secret] = secret
+        end
+
+        it 'logs the completion with the removed methods' do
+          patch :confirm, params: { name: name, code: generate_totp_code(secret) }
+
+          expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::COMPLETED)
+          expect(@analytics).to have_logged_event(
+            :account_recovery_completed,
+            auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP,
+            removed_mfa_method_counts: { phone: 1 },
+            enabled_mfa_methods_count: 1,
+            mfa_method_counts: { auth_app: 1 },
+          )
+        end
+
+        it 'emails every confirmed address once about the removed methods' do
+          second_email = create(:email_address, user: user)
+
+          patch :confirm, params: { name: name, code: generate_totp_code(secret) }
+
+          completion_subject = t(
+            'user_mailer.account_recovery_completed.subject',
+            app_name: APP_NAME,
+          )
+          completion_emails = ActionMailer::Base.deliveries.select do |mail|
+            mail.subject == completion_subject
+          end
+
+          expect(completion_emails.flat_map(&:to))
+            .to match_array([user.email_addresses.first.email, second_email.email])
+          expect(completion_emails.first.html_part.body)
+            .to have_content(t('account_recovery.mfa_methods.phone'))
+        end
+      end
+
       context 'when user presents correct code after submitting an incorrect code' do
         let(:success) { false }
         before do

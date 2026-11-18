@@ -31,7 +31,8 @@ class UserPivCacLoginForm
   end
 
   def user_found
-    maybe_user = PivCacConfiguration.find_by(x509_dn_uuid: x509_dn_uuid)&.user
+    maybe_user = PivCacConfiguration.available_for_authentication
+      .find_by(x509_dn_uuid: x509_dn_uuid)&.user
     if maybe_user.present?
       self.user = maybe_user
       true
