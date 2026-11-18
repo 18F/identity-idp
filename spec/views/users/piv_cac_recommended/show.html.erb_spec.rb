@@ -78,7 +78,7 @@ RSpec.describe 'users/piv_cac_recommended/show.html.erb' do
       )
     end
 
-    it 'renders a primary add submit above a tertiary skip submit' do
+    it 'renders a primary add submit above a tertiary Skip submit for a user with no MFA' do
       expect(rendered).to have_css('.auth__actions .actions form[method=post]', count: 2)
       add_form = ".actions form:nth-of-type(1)[action='#{login_piv_cac_recommended_add_path}']"
       skip_form = ".actions form:nth-of-type(2)[action='#{login_piv_cac_recommended_skip_path}']"
@@ -88,7 +88,10 @@ RSpec.describe 'users/piv_cac_recommended/show.html.erb' do
       )
       expect(rendered).to have_css(
         "#{skip_form} button.usa-button--tertiary",
-        text: t('two_factor_authentication.piv_cac_upsell.choose_other_method'),
+        text: t('two_factor_authentication.piv_cac_upsell.skip'),
+      )
+      expect(rendered).to_not have_button(
+        t('two_factor_authentication.piv_cac_upsell.choose_other_method'),
       )
     end
 
