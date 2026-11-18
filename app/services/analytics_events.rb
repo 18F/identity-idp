@@ -2646,8 +2646,7 @@ module AnalyticsEvents
       **extra,
     }
 
-    if Identity::Hostdata.env == 'staging' &&
-       proofing_results&.dig(:context, :stages, :resolution, :failover_used)
+    if proofing_results&.dig(:context, :stages, :resolution, :failover_used)
       path = Rails.root.join('tmp', 'dual_vendor_proofing_results.txt')
       staging_log = {
         event_name: 'IdV: doc auth verify proofing results',
