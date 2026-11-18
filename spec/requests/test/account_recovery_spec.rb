@@ -87,6 +87,16 @@ RSpec.describe 'Test::AccountRecovery', type: :request do
 
       expect(AccountRecoveryRequest.find_by(id: recovery_request.id)).to be_nil
     end
+
+    it 'releases suspended MFA before deleting a request awaiting replacement MFA' do
+      recovery_request = create(:account_recovery_request, :password_verified, user: user)
+      AccountRecovery::SuspendExistingMfa.new(account_recovery_request: recovery_request).call
+
+      delete test_account_recovery_destroy_path(id: recovery_request.id)
+
+      expect(AccountRecoveryRequest.find_by(id: recovery_request.id)).to be_nil
+      expect(user.phone_configurations.first).not_to be_suspended_for_account_recovery
+    end
   end
 
   context 'when test routes are disabled' do

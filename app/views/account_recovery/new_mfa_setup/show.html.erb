@@ -20,21 +20,8 @@
       </legend>
       <% @presenter.options.each do |option| %>
         <%= render(option) do %>
-          <%= check_box_tag(
-                'two_factor_options_form[selection][]',
-                option.type,
-                false,
-                disabled: option.disabled?,
-                class: 'usa-checkbox__input usa-checkbox__input--tile',
-                id: "recovery_mfa_#{option.type}",
-                aria: { describedby: "recovery_mfa_info_#{option.type}" },
-              ) %>
-          <%= label_tag "recovery_mfa_#{option.type}", class: 'usa-checkbox__label' do %>
-            <%= option.label %>
-            <span id="recovery_mfa_info_<%= option.type %>" class="usa-checkbox__label-description">
-              <%= option.info %>
-            </span>
-          <% end %>
+          <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
+                     locals: { option: option } %>
         <% end %>
       <% end %>
     </fieldset>

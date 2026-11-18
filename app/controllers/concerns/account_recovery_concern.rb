@@ -30,7 +30,17 @@ module AccountRecoveryConcern
   def replacement_mfa_pending?
     return false if current_user.blank? || current_user.is_a?(AnonymousUser)
 
-    AccountRecoveryRequest.active_for_user(current_user)&.replacement_mfa_pending? || false
+    # Cached per user: nearly every request asks this more than once, and
+    # sign-in changes current_user partway through a request.
+    @replacement_mfa_pending ||= {}
+    @replacement_mfa_pending.fetch(current_user.id) do |user_id|
+      @replacement_mfa_pending[user_id] =
+        AccountRecoveryRequest.active_for_user(current_user)&.replacement_mfa_pending? || false
+    end
+  end
+
+  def reset_replacement_mfa_pending!
+    @replacement_mfa_pending = nil
   end
 
   def recovery_enrollment_action?

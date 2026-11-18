@@ -23,6 +23,15 @@ RSpec.describe AccountRecoveryRequest do
         expect(request.active?).to eq(false), "expected #{state} not to be active"
       end
     end
+
+    it 'reports only the replacement_mfa_pending state as awaiting replacement MFA' do
+      AccountRecoveryRequest::STATES.each do |state|
+        request = build(:account_recovery_request, state: state)
+
+        expect(request.replacement_mfa_pending?)
+          .to eq(state == AccountRecoveryRequest::REPLACEMENT_MFA_PENDING), state
+      end
+    end
   end
 
   describe '.active_for_user' do

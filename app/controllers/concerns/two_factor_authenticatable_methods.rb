@@ -258,6 +258,10 @@ module TwoFactorAuthenticatableMethods
     completed = service.call
     raise ActiveRecord::RecordInvalid.new(recovery_request) unless completed
 
+    # The session is marked authenticated next, and that check must see the
+    # completed recovery rather than the answer cached earlier in this request.
+    reset_replacement_mfa_pending!
+
     removed_mfa_method_counts = service.removed_mfa_method_counts
     notify_account_recovery_completed(removed_mfa_method_counts:)
 

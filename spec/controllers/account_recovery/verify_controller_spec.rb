@@ -21,6 +21,11 @@ RSpec.describe AccountRecovery::VerifyController do
     @request.env['devise.mapping'] = Devise.mappings[:user]
   end
 
+  # RateLimiter caches its count once read, so read through a new one each time.
+  def token_attempts
+    RateLimiter.new(target: '0.0.0.0', rate_limit_type: :account_recovery_verify_token).attempts
+  end
+
   describe '#show with a token' do
     it 'verifies the link without consuming the token or creating a user session' do
       get :show, params: { token: raw_token }
@@ -111,13 +116,7 @@ RSpec.describe AccountRecovery::VerifyController do
     end
 
     it 'counts an emailed link once against the token rate limit' do
-      limiter = RateLimiter.new(
-        target: '0.0.0.0',
-        rate_limit_type: :account_recovery_verify_token,
-      )
-
-      expect { get :show, params: { token: raw_token } }
-        .to change { limiter.attempts }.by(1)
+      expect { get :show, params: { token: raw_token } }.to change { token_attempts }.by(1)
     end
   end
 
@@ -506,12 +505,8 @@ RSpec.describe AccountRecovery::VerifyController do
 
     it 'meters a reopened emailed link against the token limit' do
       post :create, params: password_params
-      limiter = RateLimiter.new(
-        target: '0.0.0.0',
-        rate_limit_type: :account_recovery_verify_token,
-      )
 
-      expect { get :show, params: { token: raw_token } }.to change { limiter.attempts }.by(1)
+      expect { get :show, params: { token: raw_token } }.to change { token_attempts }.by(1)
     end
 
     it 'still honors a different valid link while replacement MFA is pending' do

@@ -31,6 +31,19 @@ RSpec.describe TwoFactorAuthenticatableMethods do
     expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq(false)
   end
 
+  it 'looks up the pending recovery once per user' do
+    expect(AccountRecoveryRequest).to receive(:active_for_user).with(user).once.and_call_original
+
+    2.times { expect(controller.send(:replacement_mfa_pending?)).to eq(true) }
+
+    other_user = create(:user, :fully_registered)
+    allow(controller).to receive(:current_user).and_return(other_user)
+    expect(AccountRecoveryRequest).to receive(:active_for_user).with(other_user).once
+      .and_call_original
+
+    expect(controller.send(:replacement_mfa_pending?)).to eq(false)
+  end
+
   it 'keeps the remaining selections so enrollment continues after completion' do
     create(:auth_app_configuration, user: user)
     controller.user_session[:mfa_selections] = %w[auth_app backup_code]

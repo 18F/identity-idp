@@ -49,7 +49,12 @@ RSpec.describe 'account_recovery/new_mfa_setup/show.html.erb' do
       visible: :all,
     )
     expect(rendered).not_to have_css('input[type="radio"]')
-    expect(rendered).to have_field('recovery_mfa_auth_app', type: 'checkbox')
+    expect(rendered).to have_field('two_factor_options_form_selection_auth_app', type: 'checkbox')
+    expect(rendered).to have_css(
+      'img.usa-checkbox__image',
+      count: @presenter.options.count,
+      visible: :all,
+    )
     expect(rendered).to have_button(t('forms.buttons.continue'))
     expect(rendered).to have_css(
       "form[action=\"#{account_recovery_new_mfa_setup_path}\"][method=\"post\"]",

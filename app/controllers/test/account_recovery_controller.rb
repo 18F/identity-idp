@@ -60,6 +60,16 @@ module Test
       recovery_request = find_request
       return render_not_found if recovery_request.blank?
 
+      # Suspended MFA configurations reference the request, so release them
+      # before deleting it.
+      AccountRecovery::SuspendExistingMfa::CONFIGURATION_ASSOCIATIONS.each do |association|
+        # rubocop:disable Rails/SkipsModelValidations
+        recovery_request.user.public_send(association)
+          .where(account_recovery_request_id: recovery_request.id)
+          .update_all(account_recovery_request_id: nil)
+        # rubocop:enable Rails/SkipsModelValidations
+      end
+
       recovery_request.destroy!
 
       redirect_to test_account_recovery_url

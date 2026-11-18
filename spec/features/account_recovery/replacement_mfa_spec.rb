@@ -25,8 +25,8 @@ RSpec.describe 'Account Recovery: replace inaccessible MFA', email: true do
       expect(page).to have_current_path(account_recovery_new_mfa_setup_path)
       expect(page).to have_content(t('two_factor_authentication.two_factor_choice'))
       expect(user.reload.phone_configurations.first).to be_suspended_for_account_recovery
-      check 'recovery_mfa_auth_app'
-      check 'recovery_mfa_backup_code'
+      check 'two_factor_options_form_selection_auth_app'
+      check 'two_factor_options_form_selection_backup_code'
       click_button t('forms.buttons.continue')
 
       secret = find('#qr-code').text.strip
@@ -82,7 +82,7 @@ RSpec.describe 'Account Recovery: replace inaccessible MFA', email: true do
 
       expect(page).to have_current_path(account_recovery_new_mfa_setup_path)
 
-      check 'recovery_mfa_phone'
+      check 'two_factor_options_form_selection_phone'
       click_button t('forms.buttons.continue')
 
       fill_in :new_phone_form_phone, with: '3015551212'
@@ -114,7 +114,7 @@ RSpec.describe 'Account Recovery: replace inaccessible MFA', email: true do
       fill_in t('account.index.password'), with: user.password
       click_button t('forms.buttons.submit.default')
 
-      check 'recovery_mfa_phone'
+      check 'two_factor_options_form_selection_phone'
       click_button t('forms.buttons.continue')
 
       fill_in :new_phone_form_phone, with: original_phone
@@ -151,7 +151,7 @@ RSpec.describe 'Account Recovery: replace inaccessible MFA', email: true do
       fill_in t('account.index.password'), with: user.password
       click_button t('forms.buttons.submit.default')
 
-      check 'recovery_mfa_auth_app'
+      check 'two_factor_options_form_selection_auth_app'
       click_button t('forms.buttons.continue')
 
       secret = find('#qr-code').text.strip
