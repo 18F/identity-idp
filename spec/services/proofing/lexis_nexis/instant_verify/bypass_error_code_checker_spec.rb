@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe ProofingAgent::InstantVerify::BypassErrorCodeChecker do
-  let(:bypass_codes) { ['dob', 'ssn'] }
+RSpec.describe Proofing::LexisNexis::InstantVerify::BypassErrorCodeChecker do
+  let(:bypass_codes) { [:dob, :ssn] }
   let(:product_type) { 'InstantVerify' }
   let(:items) do
     [
@@ -21,15 +21,9 @@ RSpec.describe ProofingAgent::InstantVerify::BypassErrorCodeChecker do
     }
   end
 
-  subject(:checker) { described_class.new(errors:) }
+  subject(:checker) { described_class.new(errors:, bypass_error_codes: bypass_codes) }
 
   describe '#call' do
-    before do
-      allow(IdentityConfig.store)
-        .to receive(:ssa_instant_verify_bypass_error_codes)
-        .and_return(bypass_codes)
-    end
-
     context 'when the correct bypass codes are presented' do
       it 'returns true' do
         expect(checker.call).to eq(true)
@@ -153,7 +147,7 @@ RSpec.describe ProofingAgent::InstantVerify::BypassErrorCodeChecker do
       end
 
       context 'and one product fails on a non-bypass attribute' do
-        let(:bypass_codes) { ['dob'] }
+        let(:bypass_codes) { [:dob] }
 
         it 'returns false' do
           expect(checker.call).to eq(false)

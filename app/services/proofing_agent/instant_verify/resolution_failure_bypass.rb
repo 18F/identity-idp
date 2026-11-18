@@ -16,18 +16,30 @@ module ProofingAgent
 
         @bypassable = !resolution_result.success? &&
                       resolution_result.exception.blank? &&
-                      BypassErrorCodeChecker.new(errors: resolution_result.errors).call
+                      bypass_error_code_checker.call
       end
 
       def bypassed_resolution_result
         return resolution_result unless bypassable?
 
-        overriden_result(resolution_result)
+        overridden_result(resolution_result)
       end
 
       private
 
-      def overriden_result(result)
+      def bypass_error_code_checker
+        Proofing::LexisNexis::InstantVerify::BypassErrorCodeChecker.new(
+          errors: resolution_result.errors,
+          bypass_error_codes:,
+        )
+      end
+
+      def bypass_error_codes
+        # reference CheckToAttributeMapper for mapping of failed checks to attributes
+        IdentityConfig.store.ssa_instant_verify_bypass_error_codes.map(&:to_sym)
+      end
+
+      def overridden_result(result)
         Proofing::Resolution::Result.new(
           success: true,
           errors: result.errors,

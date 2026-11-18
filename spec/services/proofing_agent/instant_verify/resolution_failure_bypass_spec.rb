@@ -24,13 +24,22 @@ RSpec.describe ProofingAgent::InstantVerify::ResolutionFailureBypass do
   end
   let(:checker_result) { true }
   let(:checker) do
-    instance_double(ProofingAgent::InstantVerify::BypassErrorCodeChecker, call: checker_result)
+    instance_double(
+      Proofing::LexisNexis::InstantVerify::BypassErrorCodeChecker,
+      call: checker_result,
+    )
   end
 
   subject(:bypass) { described_class.new(resolution_result:) }
 
+  let(:bypass_error_codes) { ['dob', 'ssn'] }
+
   before do
-    allow(ProofingAgent::InstantVerify::BypassErrorCodeChecker).to receive(:new).and_return(checker)
+    allow(IdentityConfig.store)
+      .to receive(:ssa_instant_verify_bypass_error_codes)
+      .and_return(bypass_error_codes)
+    allow(Proofing::LexisNexis::InstantVerify::BypassErrorCodeChecker)
+      .to receive(:new).and_return(checker)
   end
 
   shared_examples 'a result that is not bypassed' do
@@ -49,7 +58,7 @@ RSpec.describe ProofingAgent::InstantVerify::ResolutionFailureBypass do
     it 'does not check the error codes' do
       bypass.bypassable?
 
-      expect(ProofingAgent::InstantVerify::BypassErrorCodeChecker).not_to have_received(:new)
+      expect(Proofing::LexisNexis::InstantVerify::BypassErrorCodeChecker).not_to have_received(:new)
     end
   end
 
@@ -59,11 +68,14 @@ RSpec.describe ProofingAgent::InstantVerify::ResolutionFailureBypass do
         expect(bypass.bypassable?).to eq(true)
       end
 
-      it 'checks the error codes of the resolution result' do
+      it 'checks the error codes of the resolution result against the configured bypass codes' do
         bypass.bypassable?
 
-        expect(ProofingAgent::InstantVerify::BypassErrorCodeChecker)
-          .to have_received(:new).with(errors: resolution_errors)
+        expect(Proofing::LexisNexis::InstantVerify::BypassErrorCodeChecker)
+          .to have_received(:new).with(
+            errors: resolution_errors,
+            bypass_error_codes: [:dob, :ssn],
+          )
       end
     end
 
