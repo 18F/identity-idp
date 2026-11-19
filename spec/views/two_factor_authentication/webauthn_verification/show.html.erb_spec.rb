@@ -147,6 +147,12 @@ RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' d
       )
     end
 
+    it 'loads the existing webauthn verify button custom element pack' do
+      render
+
+      expect(view.instance_variable_get(:@scripts)).to include('webauthn_verify_button_component')
+    end
+
     context 'with a security key' do
       it 'submits with a Continue primary button' do
         expect(rendered).to have_css(

@@ -51,10 +51,9 @@
             </div>
           <% end %>
           <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
-            <%= render WebauthnVerifyButtonComponent.new(
+            <%= render NDS::WebauthnVerifyButtonComponent.new(
                   credentials: @presenter.credentials,
                   user_challenge: user_session[:webauthn_challenge],
-                  button_class: nil,
                   data: {
                     auto_prompt: @presenter.auto_prompt? || nil,
                   },

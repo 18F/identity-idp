@@ -19,7 +19,7 @@
     </p>
   </div>
   <%= render SubmitButtonComponent.new(
-        class: submit_button_class,
+        class: 'webauthn-verify-button__button display-block margin-y-3',
       ).with_content(content) %>
   <%= hidden_field_tag :credential_id, '' %>
   <%= hidden_field_tag :authenticator_data, '' %>
