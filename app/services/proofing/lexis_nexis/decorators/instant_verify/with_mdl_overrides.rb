@@ -51,10 +51,10 @@ class Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides
     return false unless errors.present?
 
     failures = errors.filter { |item| item.dig('ItemStatus') == 'fail' }
-    failures.any? && failures.all? { |item| overridden?(item) }
+    failures.any? && failures.all? { |item| bypassable?(item) }
   end
 
-  def overridden?(item)
+  def bypassable?(item)
     overridden = bypassable_item?(item)
     track_bypass(item) if overridden
     overridden
