@@ -566,6 +566,7 @@ sp_registration_funnel_report_configs: '[]'
 sp_verification_demographics_report_configs: '[]'
 sp_verification_report_configs: '[]'
 ssa_instant_verify_bypass_error_codes: '{}'
+ssa_proofing_agent_socure_kyc_bypass_reason_codes: '[]'
 state_tracking_enabled: true
 sts_consent_expiration_in_days: 365
 team_ada_email: ''
