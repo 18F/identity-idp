@@ -14,6 +14,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
   let(:service_provider) { build(:service_provider, issuer: client_id) }
   let(:prompt) { 'select_account' }
   let(:acr_values) { nil }
+  let(:resource) { nil }
   let(:params) do
     {
       acr_values: acr_values,
@@ -24,6 +25,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
       response_type: 'code',
       scope: 'openid profile',
       state: SecureRandom.hex,
+      resource:,
     }.compact
   end
 
@@ -133,6 +135,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
               code_challenge_present: false,
               scope: 'openid',
+              token_exchange_requested: false,
             )
             expect(@analytics).to have_logged_event(
               'OpenID Connect: authorization request handoff',
@@ -235,6 +238,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
                 code_challenge_present: false,
                 scope: 'openid profile',
+                token_exchange_requested: false,
               )
 
               expect(@analytics).to have_logged_event(
@@ -681,6 +685,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                   code_challenge_present: false,
                   scope: 'openid profile',
+                  token_exchange_requested: false,
                 )
 
                 expect(@analytics).to have_logged_event(
@@ -788,6 +793,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                   code_challenge_present: false,
                   scope: 'openid profile',
+                  token_exchange_requested: false,
                 )
 
                 expect(@analytics).to have_logged_event(
@@ -868,6 +874,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                   code_challenge_present: false,
                   scope: 'openid profile',
+                  token_exchange_requested: false,
                 )
 
                 expect(@analytics).to have_logged_event(
@@ -993,6 +1000,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             acr_values: acr_values,
             code_challenge_present: false,
             scope: 'openid',
+            token_exchange_requested: false,
           )
 
           expect(@analytics).to_not have_logged_event('SP redirect initiated')
@@ -1055,6 +1063,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               acr_values: '',
               code_challenge_present: false,
               scope: 'openid profile',
+              token_exchange_requested: false,
               unknown_authn_contexts: unknown_value,
             )
 
@@ -1095,6 +1104,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 acr_values: known_value,
                 code_challenge_present: false,
                 scope: 'openid profile',
+                token_exchange_requested: false,
                 unknown_authn_contexts: unknown_value,
               )
             end
@@ -1129,6 +1139,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
             code_challenge_present: false,
             scope: 'openid',
+            token_exchange_requested: false,
           )
 
           expect(@analytics).to_not have_logged_event('SP redirect initiated')
@@ -1258,6 +1269,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
       let(:actor_issuer) { 'urn:gov:gsa:openidconnect:test' }
       let(:client_id) { actor_issuer }
       let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
+      let(:resource) { 'https://passport.gov' }
 
       before do
         stub_sign_in user
@@ -1266,9 +1278,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
           .and_return([actor_issuer])
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
-          .and_return([{ issuer: 'passport-issuer', scope: 'passport' }])
+          .and_return([{ issuer: 'passport-issuer', scope: 'passport', resource: 'https://passport.gov' }])
         allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)
-        params[:scope] = 'openid token_exchange:passport'
+        params[:scope] = 'openid token_exchange'
 
         # Link the identity ahead of time so the completions/consent screen is not
         # triggered, allowing the request to reach the STS consent check.
@@ -1279,17 +1291,20 @@ RSpec.describe OpenidConnect::AuthorizationController do
       end
 
       context 'when the user has not consented to STS for this target app' do
-        it 'redirects to the STS consent page and stores the target app' do
+        it 'redirects to the STS consent page and stores the target and actor apps' do
           action
 
           expect(response).to redirect_to(sts_consent_url)
           expect(controller.session[:sp][:sts_target_app]).to eq('passport-issuer')
+          expect(controller.session[:sp][:sts_actor_app]).to eq(actor_issuer)
         end
       end
 
       context 'when the user has already consented to STS for this target app' do
         before do
-          UserConsentSts.create!(user: user, target_app: 'passport-issuer')
+          UserConsentSts.create!(
+            user: user, target_app: 'passport-issuer', actor_app: actor_issuer,
+          )
         end
 
         it 'does not redirect to the STS consent page' do
@@ -1321,7 +1336,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
       context 'when the user previously consented but the consent has expired' do
         before do
-          consent = UserConsentSts.create!(user: user, target_app: 'passport-issuer')
+          consent = UserConsentSts.create!(
+            user: user, target_app: 'passport-issuer', actor_app: actor_issuer,
+          )
           consent.update!(created_at: 366.days.ago)
         end
 
@@ -1329,6 +1346,45 @@ RSpec.describe OpenidConnect::AuthorizationController do
           action
 
           expect(response).to redirect_to(sts_consent_url)
+        end
+      end
+
+      context 'when the request names a delegation scope that cannot be issued' do
+        before do
+          allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(false)
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('server_side')
+        end
+
+        context 'because the value names no listed agency application' do
+          before { params[:resource] = 'https://another-api' }
+
+          it 'returns invalid_scope to the redirect address instead of asking for consent' do
+            action
+
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+            redirect_params = UriService.params(response.location)
+            expect(redirect_params[:error]).to eq('invalid_scope')
+            expect(redirect_params[:error_description]).to start_with('Scope Unauthorized scope')
+            expect(redirect_params[:state]).to eq(params[:state])
+            expect(controller.session[:sp]).to be_nil
+          end
+        end
+
+        context 'because the service provider is not approved for delegation' do
+          before do
+            allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+              .and_return([])
+          end
+
+          it 'returns invalid_scope to the redirect address instead of asking for consent' do
+            action
+
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+            redirect_params = UriService.params(response.location)
+            expect(redirect_params[:error]).to eq('invalid_scope')
+            expect(controller.session[:sp]).to be_nil
+          end
         end
       end
 
@@ -1341,6 +1397,22 @@ RSpec.describe OpenidConnect::AuthorizationController do
           action
 
           expect(response).not_to redirect_to(sts_consent_url)
+        end
+      end
+
+      context 'when the service provider is not an approved actor' do
+        before do
+          allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
+            .and_return([])
+          allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(false)
+        end
+
+        it 'refuses the request and does not redirect to the STS consent page' do
+          action
+
+          expect(response).not_to redirect_to(sts_consent_url)
+          expect(controller.session[:sp]).to be_nil
+          expect(UserConsentSts.where(user:)).to be_empty
         end
       end
     end
@@ -1434,6 +1506,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
             code_challenge_present: false,
             scope: 'openid',
+            token_exchange_requested: false,
           )
         end
 
@@ -1519,6 +1592,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
             code_challenge_present: false,
             scope: 'openid',
+            token_exchange_requested: false,
             error_details: { prompt: { prompt_invalid: true } },
           )
         end
@@ -1551,6 +1625,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
             code_challenge_present: false,
             scope: 'openid',
+            token_exchange_requested: false,
           )
         end
       end

@@ -708,6 +708,65 @@ RSpec.describe EventSummarizer::IdvMatcher do
       end
     end
 
+    context "On 'Password Reset: Password Submitted' event" do
+      let(:success) { true }
+      let(:profile_deactivated) { true }
+      let(:timestamp) { Time.zone.parse('2026-11-07T02:28:49.792Z') }
+      let(:event) do
+        {
+          '@timestamp' => timestamp,
+          'name' => 'Password Reset: Password Submitted',
+          '@message' => {
+            'properties' => {
+              'event_properties' => {
+                'success' => success,
+                'profile_deactivated' => profile_deactivated,
+              },
+            },
+          },
+        }
+      end
+
+      subject(:results) do
+        matcher.handle_cloudwatch_event(event)
+        matcher.finish
+      end
+
+      it 'reports that the identity verification profile was deactivated' do
+        expect(results).to include(
+          hash_including(
+            timestamp:,
+            title: 'Identity verification profile deactivated',
+            type: :password_reset,
+            attributes: [
+              hash_including(
+                type: :password_reset,
+                timestamp:,
+                description: 'User reset their password, which deactivated their identity ' \
+                             'verification profile',
+              ),
+            ],
+          ),
+        )
+      end
+
+      context 'when the password submission failed' do
+        let(:success) { false }
+
+        it 'does not report a profile deactivation' do
+          expect(results).to be_empty
+        end
+      end
+
+      context 'when no profile was deactivated' do
+        let(:profile_deactivated) { false }
+
+        it 'does not report a profile deactivation' do
+          expect(results).to be_empty
+        end
+      end
+    end
+
     describe 'an attempt that entered IPP and did not finish' do
       let(:welcome_event) do
         {

@@ -5585,6 +5585,11 @@ module AnalyticsEvents
     )
   end
 
+  # The user reached the NDS dead end because identity verification requires a U.S. phone number
+  def idv_phone_required_visited(**extra)
+    track_event(:idv_phone_required_visited, **extra)
+  end
+
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
@@ -6442,6 +6447,8 @@ module AnalyticsEvents
   # be verified by another vendor
   # @param [Array<String>, nil] source_attribution List of sources that contributed to the
   # resolution proofing result
+  # @param [Array<String>, nil] bypassed_reason_codes List of error reason codes that were
+  # bypassed due to ssa
   # @param [String, nil] vendor_name Vendor used
   # @param [String] vendor_id ID of vendor
   # @param [String] vendor_workflow ID of workflow or configuration the vendor used for this
@@ -6458,6 +6465,7 @@ module AnalyticsEvents
     can_pass_with_additional_verification:,
     attributes_requiring_additional_verification:,
     source_attribution:,
+    bypassed_reason_codes:,
     vendor_name:,
     vendor_id:,
     vendor_workflow:,
@@ -6476,6 +6484,7 @@ module AnalyticsEvents
       can_pass_with_additional_verification:,
       attributes_requiring_additional_verification:,
       source_attribution:,
+      bypassed_reason_codes:,
       vendor_name:,
       vendor_id:,
       vendor_workflow:,
@@ -7785,7 +7794,7 @@ module AnalyticsEvents
   # @param [Integer, nil] expires_in Time to expiration of the delegated access token
   # @param [Integer, nil] ial IAL level recorded on the subject token
   # @param [String, nil] token_exchange_stage Token exchange flow stage
-  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
+  # @param [Array<String>, nil] token_exchange_resource Requested token_exchange scope suffixes
   # @param [String, nil] subject_token_fingerprint Fingerprint of the submitted subject token
   # @param [String, nil] delegation_id Internal delegated-token issuance identifier
   # @param [String, nil] oauth_error_code Protocol-level OAuth error code returned for
@@ -7803,7 +7812,7 @@ module AnalyticsEvents
     errors: nil,
     error_details: nil,
     token_exchange_stage: nil,
-    token_exchange_scopes: nil,
+    token_exchange_resource: nil,
     subject_token_fingerprint: nil,
     delegation_id: nil,
     oauth_error_code: nil,
@@ -7822,7 +7831,7 @@ module AnalyticsEvents
       expires_in:,
       ial:,
       token_exchange_stage:,
-      token_exchange_scopes:,
+      token_exchange_resource:,
       subject_token_fingerprint:,
       delegation_id:,
       oauth_error_code:,
@@ -7851,7 +7860,7 @@ module AnalyticsEvents
   #   can produce a subject token
   # @param [Boolean, nil] token_exchange_requested Whether the authorize request included a
   #   token_exchange scope
-  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
+  # @param [String, nil] token_exchange_resource Requested token_exchange resource
   def openid_connect_request_authorization(
     success:,
     prompt:,
@@ -7869,7 +7878,7 @@ module AnalyticsEvents
     unknown_authn_contexts: nil,
     token_exchange_stage: nil,
     token_exchange_requested: nil,
-    token_exchange_scopes: nil,
+    token_exchange_resource: nil,
     **extra
   )
     track_event(
@@ -7890,7 +7899,7 @@ module AnalyticsEvents
       unknown_authn_contexts:,
       token_exchange_stage:,
       token_exchange_requested:,
-      token_exchange_scopes:,
+      token_exchange_resource:,
       **extra,
     )
   end
@@ -7909,7 +7918,7 @@ module AnalyticsEvents
   # @param [String, nil] token_exchange_stage Token exchange flow stage
   # @param [String, nil] token_endpoint_operation Token endpoint operation
   #   (authorization_code or subject_token)
-  # @param [Array<String>, nil] token_exchange_scopes Requested token_exchange scope suffixes
+  # @param [String, nil] token_exchange_resource Requested token_exchange resource
   # @param [String, nil] subject_token_fingerprint Fingerprint of the issued subject token
   # @param [Boolean, nil] dpop_bound Whether the client's tokens are bound to a key it holds, so a
   #   DPoP proof was required with this request
@@ -7925,7 +7934,7 @@ module AnalyticsEvents
     error_details: nil,
     token_exchange_stage: nil,
     token_endpoint_operation: nil,
-    token_exchange_scopes: nil,
+    token_exchange_resource: nil,
     subject_token_fingerprint: nil,
     dpop_bound: nil,
     **extra
@@ -7943,7 +7952,7 @@ module AnalyticsEvents
       service_provider_pkce:,
       token_exchange_stage:,
       token_endpoint_operation:,
-      token_exchange_scopes:,
+      token_exchange_resource:,
       subject_token_fingerprint:,
       dpop_bound:,
       **extra,
@@ -9205,15 +9214,17 @@ module AnalyticsEvents
   end
 
   # Tracks when a user's STS (token exchange) consent is revoked
-  # @param [String] target_app Issuer of the target app the consent was revoked for
-  def sts_revoke_consent_revoked(target_app:, **extra)
-    track_event(:sts_revoke_consent_revoked, target_app:, **extra)
+  # @param [String] target_issuer Issuer of the target app the consent was revoked for
+  # @param [String] actor_issuer Issuer of the actor app the consent was revoked for
+  def sts_revoke_consent_revoked(target_issuer:, actor_issuer:, **extra)
+    track_event(:sts_revoke_consent_revoked, target_issuer:, actor_issuer:, **extra)
   end
 
   # Tracks when the page to revoke an STS (token exchange) consent is visited
-  # @param [String] target_app Issuer of the target app the consent would be revoked for
-  def sts_revoke_consent_visited(target_app:, **extra)
-    track_event(:sts_revoke_consent_visited, target_app:, **extra)
+  # @param [String] target_issuer Issuer of the target app the consent would be revoked for
+  # @param [String] actor_issuer Issuer of the actor app the consent would be revoked for
+  def sts_revoke_consent_visited(target_issuer:, actor_issuer:, **extra)
+    track_event(:sts_revoke_consent_visited, target_issuer:, actor_issuer:, **extra)
   end
 
   # Tracks when user clicks on same tab that user landed on.

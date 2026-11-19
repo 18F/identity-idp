@@ -16,6 +16,7 @@ class OpenidConnectAuthorizeForm
     redirect_uri
     response_type
     state
+    resource
   ].freeze
 
   ATTRS = [
@@ -70,6 +71,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_acr_values
   validate :validate_client_id
   validate :validate_scope
+  validate :validate_token_exchange_resource, if: :token_exchange_requested?
   validate :validate_unauthorized_scope
   validate :validate_dpop_jkt, if: :dpop_binding_required?
   validate :validate_privileges
@@ -82,9 +84,8 @@ class OpenidConnectAuthorizeForm
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
     SIMPLE_ATTRS.each { |key| instance_variable_set(:"@#{key}", params[key]) }
     @prompt ||= 'select_account'
-    @analytics_token_exchange_scopes = requested_token_exchange_scopes(
-      params[:scope].to_s.split(' ').compact,
-    )
+    @token_exchange_requested = params[:scope].to_s.split(' ').include?('token_exchange')
+    @requested_token_exchange_resource = params[:resource]
     @scope = parse_to_values(params[:scope], scopes)
     @unauthorized_scope = check_for_unauthorized_scope(params)
 
@@ -168,7 +169,7 @@ class OpenidConnectAuthorizeForm
 
   private
 
-  attr_reader :identity, :success, :analytics_token_exchange_scopes
+  attr_reader :identity, :success, :requested_token_exchange_resource
 
   def private_key_jwt_sp?
     # Missing service providers are rejected by validate_client_id.
@@ -217,14 +218,7 @@ class OpenidConnectAuthorizeForm
 
     requested_scopes = param_value.split(' ').compact
 
-    requested_token_exchange_scopes = requested_token_exchange_scopes(requested_scopes)
-
-    if token_exchange_scope_available? && requested_token_exchange_scopes.present?
-      return true unless actor_request?
-
-      # if there are any requested scopes that are not allowed
-      return true if (requested_token_exchange_scopes - token_exchange_scopes).present?
-    end
+    return true if token_exchange_resource_invalid?
 
     return false if identity_proofing_requested_or_default?
     return true if verified_at_requested? && !identity_proofing_service_provider?
@@ -277,7 +271,18 @@ class OpenidConnectAuthorizeForm
     end
   end
 
+  def validate_token_exchange_resource
+    return unless token_exchange_resource_invalid?
+    errors.add(
+      :scope, t('openid_connect.authorization.errors.unauthorized_scope'),
+      type: :unauthorized_scope
+    )
+  end
+
   def validate_unauthorized_scope
+    # The delegation refusal above has already recorded this error.
+    return if token_exchange_resource_invalid?
+
     return unless @unauthorized_scope && IdentityConfig.store.unauthorized_scope_enabled
     errors.add(
       :scope, t('openid_connect.authorization.errors.unauthorized_scope'),
@@ -346,8 +351,8 @@ class OpenidConnectAuthorizeForm
       code_challenge_present: code_challenge.present?,
       service_provider_pkce: service_provider&.pkce,
       token_exchange_stage: token_exchange_stage,
-      token_exchange_requested: token_exchange_requested?.presence,
-      token_exchange_scopes: token_exchange_scope_values,
+      token_exchange_requested: token_exchange_requested?,
+      token_exchange_resource: requested_token_exchange_resource,
       integration_errors:,
     }
   end
@@ -357,19 +362,25 @@ class OpenidConnectAuthorizeForm
   end
 
   def token_exchange_requested?
-    analytics_token_exchange_scopes.present?
+    @token_exchange_requested
+  end
+
+  def token_exchange_resource_invalid?
+    return false unless IdentityConfig.store.token_exchange_enabled && token_exchange_requested?
+    return true unless actor_request?
+
+    # Refused when any requested delegation value names no listed agency application.
+    valid_token_exchange_resource.blank?
+  end
+
+  def valid_token_exchange_resource
+    IdentityConfig.store.token_exchange_allowed_targets.find do |target|
+      target[:resource] == requested_token_exchange_resource
+    end
   end
 
   def token_exchange_stage
     TokenExchange::Constants::STAGE_ACTOR_AUTHORIZATION if token_exchange_requested?
-  end
-
-  def token_exchange_scope_values
-    return if analytics_token_exchange_scopes.blank?
-
-    analytics_token_exchange_scopes.map do |scope|
-      scope.delete_prefix(TokenExchange::Constants::SCOPE_PREFIX)
-    end
   end
 
   def error_redirect_uri
@@ -377,20 +388,20 @@ class OpenidConnectAuthorizeForm
 
     UriService.add_params(
       redirect_uri,
-      error: 'invalid_request',
+      error: oauth_error_code,
       error_description: errors.full_messages.join(' '),
       state: state,
     )
   end
 
+  def oauth_error_code
+    token_exchange_resource_invalid? ? 'invalid_scope' : 'invalid_request'
+  end
+
   def scopes
     return base_scopes unless token_exchange_scope_available?
 
-    base_scopes + token_exchange_scopes
-  end
-
-  def requested_token_exchange_scopes(requested_scopes)
-    requested_scopes.select { |scope| TokenExchange::Constants.in_scope?(scope) }
+    base_scopes + ['token_exchange']
   end
 
   def base_scopes
@@ -402,17 +413,11 @@ class OpenidConnectAuthorizeForm
   end
 
   def token_exchange_scope_available?
-    IdentityConfig.store.token_exchange_enabled
+    IdentityConfig.store.token_exchange_enabled && actor_request?
   end
 
   def actor_request?
     service_provider&.token_exchange_actor?
-  end
-
-  def token_exchange_scopes
-    IdentityConfig.store.token_exchange_allowed_targets.map do |target|
-      "#{TokenExchange::Constants::SCOPE_PREFIX}#{target.fetch(:scope)}"
-    end
   end
 
   def validate_privileges

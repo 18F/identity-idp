@@ -523,10 +523,10 @@ class User < ApplicationRecord
     identities.not_deleted.joins(:service_provider_record).order(created_at: :desc)
   end
 
-  # Unexpired STS (token exchange) consents, which represent the services a
+  # Unexpired STS (token exchange) consents, which represent the services an
   # actor is allowed to act on the user's behalf for.
   def connected_delegations
-    sts_consents.unexpired.order(created_at: :desc)
+    sts_consents.active.unexpired.order(created_at: :desc)
   end
 
   def delete_account_bullet_key

@@ -173,6 +173,12 @@ class InPersonEnrollment < ApplicationRecord
     document_type == DOCUMENT_TYPE_PASSPORT_BOOK
   end
 
+  # Updates the in-person enrollment with a newly generated unique ID.
+  def regenerate_unique_id!
+    set_unique_id
+    save!
+  end
+
   private
 
   def days_to_expire

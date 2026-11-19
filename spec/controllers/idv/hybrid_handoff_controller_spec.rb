@@ -229,6 +229,42 @@ RSpec.describe Idv::HybridHandoffController do
           subject.idv_session.skip_hybrid_handoff?
         }.from(false)
       end
+
+      context 'in the phone-first (NDS) flow' do
+        before do
+          subject.idv_session.phone_first_flow = true
+          stub_up_to(:choose_id_type, idv_session: subject.idv_session)
+        end
+
+        context 'when desktop document capture is available' do
+          let(:desktop_test_mode_enabled) { true }
+
+          it 'redirects to document capture since the ID type is already chosen' do
+            get :show
+
+            expect(response).to redirect_to(idv_document_capture_url)
+            expect(subject.idv_session.flow_path).to eq('standard')
+          end
+        end
+
+        context 'when desktop document capture is not available' do
+          it 'redirects to choose id type instead of a document capture step it cannot enter' do
+            get :show
+
+            expect(response).to redirect_to(idv_choose_id_type_url)
+          end
+        end
+
+        context 'when clear1 is allowed' do
+          before { subject.idv_session.clear1_allowed = true }
+
+          it 'redirects to how to verify' do
+            get :show
+
+            expect(response).to redirect_to(idv_how_to_verify_url)
+          end
+        end
+      end
     end
 
     context 'opt in ipp is enabled' do
@@ -375,6 +411,21 @@ RSpec.describe Idv::HybridHandoffController do
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
 
+      context 'when an NDS user outside the phone-first flow enters a non-U.S. number' do
+        before { allow(controller).to receive(:nds_layout?).and_return(true) }
+
+        it 'sends the link' do
+          expect(Telephony).to receive(:send_doc_auth_link).and_call_original
+
+          put :update,
+              params: { type: 'mobile',
+                        doc_auth: { phone: '+44 20 7946 0958', international_code: 'GB' } }
+
+          expect(response).to redirect_to(idv_link_sent_url)
+          expect(subject.idv_session.phone_for_mobile_flow).to eq('+44 20 7946 0958')
+        end
+      end
+
       it 'sends a doc auth link' do
         expect(Telephony).to receive(:send_doc_auth_link).with(
           hash_including(
@@ -383,6 +434,55 @@ RSpec.describe Idv::HybridHandoffController do
         ).and_call_original
 
         put :update, params: params
+      end
+
+      context 'with national digits and a selected country from the NDS phone input' do
+        let(:params) do
+          {
+            type: 'mobile',
+            doc_auth: { phone: '07700 900123', international_code: 'GB' },
+          }
+        end
+
+        it 'sends the link to the number in the selected country' do
+          expect(Telephony).to receive(:send_doc_auth_link).with(
+            hash_including(to: '+44 7700 900123', country_code: 'GB'),
+          ).and_call_original
+
+          put :update, params: params
+
+          expect(subject.idv_session.phone_for_mobile_flow).to eq('+44 7700 900123')
+        end
+      end
+
+      context 'with an international number and a country from the legacy phone input' do
+        let(:params) do
+          {
+            type: 'mobile',
+            doc_auth: { phone: '+44 7700 900123', international_code: 'GB' },
+          }
+        end
+
+        it 'sends the link to the submitted international number' do
+          put :update, params: params
+
+          expect(subject.idv_session.phone_for_mobile_flow).to eq('+44 7700 900123')
+        end
+      end
+
+      context 'with a U.S. international number and no country' do
+        let(:params) do
+          {
+            type: 'mobile',
+            doc_auth: { phone: '+1 202-555-5555' },
+          }
+        end
+
+        it 'sends the link to the submitted number' do
+          put :update, params: params
+
+          expect(subject.idv_session.phone_for_mobile_flow).to eq('+1 202-555-5555')
+        end
       end
     end
 
@@ -396,6 +496,100 @@ RSpec.describe Idv::HybridHandoffController do
         put :update, params: { type: 'desktop' }
 
         expect(response).to redirect_to(idv_document_capture_url)
+      end
+
+      context 'in the NDS layout' do
+        before { allow(controller).to receive(:nds_layout?).and_return(true) }
+
+        context 'when the number is international' do
+          it 'redirects to the phone required page without sending a link' do
+            expect(Telephony).not_to receive(:send_doc_auth_link)
+
+            put :update,
+                params: { type: 'mobile',
+                          doc_auth: { phone: '+44 20 7946 0958', international_code: 'GB' } }
+
+            expect(response).to redirect_to(idv_phone_required_url)
+            expect(subject.idv_session.phone_for_mobile_flow).to be_nil
+          end
+        end
+
+        context 'when an international number has no country code' do
+          it 'redirects to the phone required page without sending a link' do
+            expect(Telephony).not_to receive(:send_doc_auth_link)
+
+            put :update, params: { type: 'mobile', doc_auth: { phone: '+44 20 7946 0958' } }
+
+            expect(response).to redirect_to(idv_phone_required_url)
+          end
+        end
+
+        context 'when U.S. is selected for an international number' do
+          it 'redirects to the phone required page without sending a link' do
+            expect(Telephony).not_to receive(:send_doc_auth_link)
+
+            put :update,
+                params: { type: 'mobile',
+                          doc_auth: { phone: '+44 20 7946 0958', international_code: 'US' } }
+
+            expect(response).to redirect_to(idv_phone_required_url)
+            expect(subject.idv_session.phone_for_mobile_flow).to be_nil
+          end
+        end
+
+        context 'when another country is selected for a U.S. number' do
+          it 'sends the link' do
+            expect(Telephony).to receive(:send_doc_auth_link).and_call_original
+
+            put :update,
+                params: { type: 'mobile',
+                          doc_auth: { phone: '+1 202-555-5555', international_code: 'GB' } }
+
+            expect(response).to redirect_to(idv_link_sent_url)
+            expect(subject.idv_session.phone_for_mobile_flow).to eq('+1 202-555-5555')
+          end
+        end
+
+        context 'when the number is in the U.S.' do
+          it 'sends the link' do
+            expect(Telephony).to receive(:send_doc_auth_link).and_call_original
+
+            put :update,
+                params: { type: 'mobile',
+                          doc_auth: { phone: '202-555-5555', international_code: 'US' } }
+
+            expect(response).to redirect_to(idv_link_sent_url)
+            expect(subject.idv_session.phone_for_mobile_flow).to eq('+1 202-555-5555')
+          end
+        end
+
+        context 'when the number is in a U.S. territory the IdV phone step accepts' do
+          it 'sends the link' do
+            expect(Telephony).to receive(:send_doc_auth_link).and_call_original
+
+            put :update,
+                params: { type: 'mobile',
+                          doc_auth: { phone: '+1 787-555-1212', international_code: 'PR' } }
+
+            expect(response).to redirect_to(idv_link_sent_url)
+            expect(subject.idv_session.phone_for_mobile_flow).to eq('+1 787-555-1212')
+          end
+        end
+      end
+
+      context 'when the user has opted out of the NDS layout' do
+        before { allow(controller).to receive(:nds_layout?).and_return(false) }
+
+        it 'sends the link to an international number' do
+          expect(Telephony).to receive(:send_doc_auth_link).and_call_original
+
+          put :update,
+              params: { type: 'mobile',
+                        doc_auth: { phone: '+44 20 7946 0958', international_code: 'GB' } }
+
+          expect(response).to redirect_to(idv_link_sent_url)
+          expect(subject.idv_session.phone_for_mobile_flow).to eq('+44 20 7946 0958')
+        end
       end
     end
 
