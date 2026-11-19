@@ -4637,7 +4637,8 @@ module AnalyticsEvents
   # @param [String] vendor_workflow ID of workflow or configuration the vendor used for this
   # transaction
   # @param [Array[String], nil] verified_attributes The attributes verified during proofing
-  # @param [Array<Hash>] bypassed_reason_codes List of bypasses that were performed during proofing
+  # @param [Array<Hash>, nil] bypassed_reason_codes List of bypasses that were performed during
+  # proofing
   def idv_instant_verify_results(
     success:,
     errors:,
@@ -4653,7 +4654,7 @@ module AnalyticsEvents
     vendor_id:,
     vendor_workflow:,
     verified_attributes:,
-    bypassed_reason_codes:,
+    bypassed_reason_codes: nil,
     **extra
   )
     track_event(
@@ -6469,11 +6470,11 @@ module AnalyticsEvents
     can_pass_with_additional_verification:,
     attributes_requiring_additional_verification:,
     source_attribution:,
-    bypassed_reason_codes:,
     vendor_name:,
     vendor_id:,
     vendor_workflow:,
     verified_attributes:,
+    bypassed_reason_codes: nil,
     **extra
   )
     track_event(
