@@ -5,7 +5,7 @@ RSpec.describe Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides
   subject { described_class.new(proofer) }
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_lexis_nexis_instant_verify_mdl_overrides)
+    allow(IdentityConfig.store).to receive(:idv_lexis_nexis_instant_verify_mdl_bypass_error_codes)
       .and_return({
         'IdentityOccupancyVerified' => ['occupancy_not_verified_fail'],
         'DriversLicense' => ['unable_to_find_dl_fail'],
@@ -32,7 +32,7 @@ RSpec.describe Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides
         transaction_id: 'abc123',
         failed_result_can_pass_with_additional_verification: true,
         attributes_requiring_additional_verification: [:address],
-        result_overrides: [{ name: 'PreviousOverrides', reason: 'Testing' }],
+        bypassed_reason_codes: [{ name: 'PreviousBypasses', reason: 'Testing' }],
       )
     end
 
@@ -49,7 +49,7 @@ RSpec.describe Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides
     end
 
     context 'when the original result is unsuccessful' do
-      context 'when the result contains only overridden failures' do
+      context 'when the result contains only bypassable failures' do
         context 'when the failure is an "occupancy_not_verified_fail" code' do
           let(:error_code_items) do
             [
@@ -78,12 +78,12 @@ RSpec.describe Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides
                 original_result.failed_result_can_pass_with_additional_verification,
               attributes_requiring_additional_verification:
                 original_result.attributes_requiring_additional_verification,
-              result_overrides: contain_exactly(
-                *original_result.result_overrides,
+              bypassed_reason_codes: contain_exactly(
+                *original_result.bypassed_reason_codes,
                 {
-                  name: 'id_resolution_check_override',
+                  name: 'id_resolution_check_bypassed',
                   reason: 'mdl',
-                  overrides: [{ IdentityOccupancyVerified: 'occupancy_not_verified_fail' }],
+                  bypassed_checks: [{ IdentityOccupancyVerified: 'occupancy_not_verified_fail' }],
                 },
               ),
             )
@@ -118,19 +118,19 @@ RSpec.describe Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides
                 original_result.failed_result_can_pass_with_additional_verification,
               attributes_requiring_additional_verification:
                 original_result.attributes_requiring_additional_verification,
-              result_overrides: contain_exactly(
-                *original_result.result_overrides,
+              bypassed_reason_codes: contain_exactly(
+                *original_result.bypassed_reason_codes,
                 {
-                  name: 'id_resolution_check_override',
+                  name: 'id_resolution_check_bypassed',
                   reason: 'mdl',
-                  overrides: [{ DriversLicense: 'unable_to_find_dl_fail' }],
+                  bypassed_checks: [{ DriversLicense: 'unable_to_find_dl_fail' }],
                 },
               ),
             )
           end
         end
 
-        context 'when multiple override failures exist' do
+        context 'when multiple bypassable failures exist' do
           let(:error_code_items) do
             [
               {
@@ -165,12 +165,12 @@ RSpec.describe Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides
                 original_result.failed_result_can_pass_with_additional_verification,
               attributes_requiring_additional_verification:
                 original_result.attributes_requiring_additional_verification,
-              result_overrides: contain_exactly(
-                *original_result.result_overrides,
+              bypassed_reason_codes: contain_exactly(
+                *original_result.bypassed_reason_codes,
                 {
-                  name: 'id_resolution_check_override',
+                  name: 'id_resolution_check_bypassed',
                   reason: 'mdl',
-                  overrides: contain_exactly(
+                  bypassed_checks: contain_exactly(
                     { IdentityOccupancyVerified: 'occupancy_not_verified_fail' },
                     { DriversLicense: 'unable_to_find_dl_fail' },
                   ),
@@ -206,7 +206,7 @@ RSpec.describe Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides
         end
       end
 
-      context 'when no overriden errors are present' do
+      context 'when no bypassed errors are present' do
         let(:error_code_items) do
           [
             {
@@ -250,7 +250,7 @@ RSpec.describe Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides
         end
       end
 
-      context 'when mdl overrides config is empty' do
+      context 'when mdl bypass config is empty' do
         let(:error_codes_items) do
           [
             {
@@ -261,8 +261,8 @@ RSpec.describe Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides
         end
 
         before do
-          allow(IdentityConfig.store).to receive(:idv_lexis_nexis_instant_verify_mdl_overrides)
-            .and_return({})
+          allow(IdentityConfig.store)
+            .to receive(:idv_lexis_nexis_instant_verify_mdl_bypass_error_codes).and_return({})
         end
 
         it 'returns the original result object' do

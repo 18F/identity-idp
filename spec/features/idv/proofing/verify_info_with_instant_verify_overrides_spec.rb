@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'verify info with instant verify overrides', :js, driver: :headless_chrome_mobile do
+RSpec.feature 'verify info with instant verify bypasses', :js, driver: :headless_chrome_mobile do
   include IdvStepHelper
   include DocAuthHelper
   include DocCaptureHelper
@@ -16,7 +16,7 @@ RSpec.feature 'verify info with instant verify overrides', :js, driver: :headles
   let(:socure_docv_webhook_repeat_endpoints) { [] }
   let(:idv_socure_reason_codes_docv_mdl) { ['mdl_code1', 'mdl_code2'] }
   let(:idv_doc_auth_mdl_enabled_percent) { 0 }
-  let(:idv_lexis_nexis_instant_verify_mdl_overrides) do
+  let(:idv_lexis_nexis_instant_verify_mdl_bypass_error_codes) do
     {
       'IdentityOccupancyVerified' => ['occupancy_not_verified_fail'],
     }
@@ -53,7 +53,7 @@ RSpec.feature 'verify info with instant verify overrides', :js, driver: :headles
       lexisnexis_threatmetrix_org_id: 'test_org_id',
       lexisnexis_instant_verify_ddp_policy: 'test-policy',
       idv_resolution_vendor_switching_enabled: true,
-      idv_lexis_nexis_instant_verify_mdl_overrides:,
+      idv_lexis_nexis_instant_verify_mdl_bypass_error_codes:,
     )
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return('Test SP')
     socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
@@ -104,10 +104,12 @@ RSpec.feature 'verify info with instant verify overrides', :js, driver: :headles
                   stages: hash_including(
                     resolution: hash_including(
                       success: true,
-                      result_overrides: [{
-                        name: 'id_resolution_check_override',
-                        overrides: [{ IdentityOccupancyVerified: 'occupancy_not_verified_fail' }],
+                      bypassed_reason_codes: [{
+                        name: 'id_resolution_check_bypassed',
                         reason: 'mdl',
+                        bypassed_checks: [
+                          { IdentityOccupancyVerified: 'occupancy_not_verified_fail' },
+                        ],
                       }],
                     ),
                   ),
@@ -140,10 +142,7 @@ RSpec.feature 'verify info with instant verify overrides', :js, driver: :headles
               proofing_results: hash_including(
                 context: hash_including(
                   stages: hash_including(
-                    resolution: hash_including(
-                      success: false,
-                      result_overrides: [],
-                    ),
+                    resolution: hash_including(success: false),
                   ),
                 ),
               ),
@@ -202,10 +201,7 @@ RSpec.feature 'verify info with instant verify overrides', :js, driver: :headles
               proofing_results: hash_including(
                 context: hash_including(
                   stages: hash_including(
-                    resolution: hash_including(
-                      success: false,
-                      result_overrides: [],
-                    ),
+                    resolution: hash_including(success: false),
                   ),
                 ),
               ),
@@ -236,10 +232,7 @@ RSpec.feature 'verify info with instant verify overrides', :js, driver: :headles
               proofing_results: hash_including(
                 context: hash_including(
                   stages: hash_including(
-                    resolution: hash_including(
-                      success: false,
-                      result_overrides: [],
-                    ),
+                    resolution: hash_including(success: false),
                   ),
                 ),
               ),
@@ -252,10 +245,10 @@ RSpec.feature 'verify info with instant verify overrides', :js, driver: :headles
     end
   end
 
-  context 'when no mdl overrides are configured' do
+  context 'when mdl bypasses are not configured' do
     before do
       allow(IdentityConfig.store)
-        .to receive(:idv_lexis_nexis_instant_verify_mdl_overrides).and_return({})
+        .to receive(:idv_lexis_nexis_instant_verify_mdl_bypass_error_codes).and_return({})
     end
 
     context 'when resolution fails due to occupancy_not_verified_fail only' do
@@ -293,10 +286,7 @@ RSpec.feature 'verify info with instant verify overrides', :js, driver: :headles
                 proofing_results: hash_including(
                   context: hash_including(
                     stages: hash_including(
-                      resolution: hash_including(
-                        success: false,
-                        result_overrides: [],
-                      ),
+                      resolution: hash_including(success: false),
                     ),
                   ),
                 ),
@@ -327,10 +317,7 @@ RSpec.feature 'verify info with instant verify overrides', :js, driver: :headles
                 proofing_results: hash_including(
                   context: hash_including(
                     stages: hash_including(
-                      resolution: hash_including(
-                        success: false,
-                        result_overrides: [],
-                      ),
+                      resolution: hash_including(success: false),
                     ),
                   ),
                 ),

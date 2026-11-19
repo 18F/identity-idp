@@ -193,8 +193,8 @@ module Proofing
           @analytics,
         )
 
-        # Wrap the proofer with override behavior if the document type is mDL
-        if mdl_overrides_enabled? && document_type == Idp::Constants::DocumentTypes::MDL
+        # Wrap the proofer with bypass behavior if the document type is mDL
+        if mdl_bypasses_enabled? && document_type == Idp::Constants::DocumentTypes::MDL
           proofer = LexisNexis::Decorators::InstantVerify::WithMdlOverrides.new(proofer)
         end
 
@@ -209,16 +209,16 @@ module Proofing
           ddp_policy: IdentityConfig.store.lexisnexis_instant_verify_ddp_policy,
         )
 
-        # Wrap the proofer with override behavior if the document type is mDL
-        if mdl_overrides_enabled? && document_type == Idp::Constants::DocumentTypes::MDL
+        # Wrap the proofer with bypass behavior if the document type is mDL
+        if mdl_bypasses_enabled? && document_type == Idp::Constants::DocumentTypes::MDL
           proofer = LexisNexis::Decorators::InstantVerify::WithMdlOverrides.new(proofer)
         end
 
         proofer
       end
 
-      def mdl_overrides_enabled?
-        IdentityConfig.store.idv_lexis_nexis_instant_verify_mdl_overrides.present?
+      def mdl_bypasses_enabled?
+        IdentityConfig.store.idv_lexis_nexis_instant_verify_mdl_bypass_error_codes.present?
       end
 
       def create_mock_proofer

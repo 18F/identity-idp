@@ -17,8 +17,7 @@ module Proofing
                   :reason_codes,
                   :source_attribution,
                   :bypassed_reason_codes,
-                  :vendor_workflow,
-                  :result_overrides
+                  :vendor_workflow
       def initialize(
         success: nil,
         errors: {},
@@ -34,8 +33,7 @@ module Proofing
         failed_result_can_pass_with_additional_verification: false,
         attributes_requiring_additional_verification: [],
         vendor_workflow: nil,
-        verified_attributes: nil,
-        result_overrides: []
+        verified_attributes: nil
       )
         @success = success
         @errors = errors
@@ -54,7 +52,6 @@ module Proofing
           attributes_requiring_additional_verification
         @vendor_workflow = vendor_workflow
         @verified_attributes = verified_attributes
-        @result_overrides = result_overrides
       end
 
       def success?
@@ -68,7 +65,7 @@ module Proofing
       def to_h
         customer_user_id_hash = customer_user_id.present? ?
                                   { customer_user_id: customer_user_id } : {}
-        socure_hash = vendor_name == Proofing::Socure::IdPlus::Proofers::KycProofer::VENDOR_NAME ?
+        bypassed_checks = bypassed_reason_codes.present? ?
                         { bypassed_reason_codes: bypassed_reason_codes } : {}
         {
           success: success?,
@@ -87,8 +84,7 @@ module Proofing
           vendor_id:,
           vendor_workflow:,
           verified_attributes:,
-          result_overrides:,
-        }.merge(customer_user_id_hash).merge(socure_hash)
+        }.merge(customer_user_id_hash).merge(bypassed_checks)
       end
 
       def failed_result_can_pass_with_additional_verification?

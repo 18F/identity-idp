@@ -3,34 +3,34 @@
 class Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides
   def initialize(proofer)
     @proofer = proofer
-    @overrides = []
+    @bypasses = []
   end
 
-  # Calls orginal proofer proof method then attempts to apply overrides to the results.
+  # Calls orginal proofer proof method then attempts to apply bypasses to the results.
   #
   # @param [Hash] applicant
   #
-  # @return [Proofing::Resolution::Result] The overridden result if original result has failures
-  # that could be overridden otherwise the original result it returned.
+  # @return [Proofing::Resolution::Result] The bypassed result if original result has failures
+  # that could be bypassed otherwise the original result it returned.
   def proof(applicant)
     result = @proofer.proof(applicant)
 
     return result if result.success?
 
-    apply_result_overrides(result)
+    apply_result_bypasses(result)
   end
 
   private
 
-  def apply_result_overrides(result)
-    successful_with_overrides = successful_with_overrides?(
+  def apply_result_bypasses(result)
+    successful_with_bypasses = successful_with_bypasses?(
       result.errors.dig(:InstantVerify, 0, 'Items'),
     )
 
-    return result unless successful_with_overrides
+    return result unless successful_with_bypasses
 
     Proofing::Resolution::Result.new(
-      success: successful_with_overrides,
+      success: successful_with_bypasses,
       errors: result.errors,
       exception: result.exception,
       vendor_name: result.vendor_name,
@@ -39,15 +39,15 @@ class Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides
         result.failed_result_can_pass_with_additional_verification,
       attributes_requiring_additional_verification:
         result.attributes_requiring_additional_verification,
-      result_overrides: result.result_overrides + [{
-        name: 'id_resolution_check_override',
+      bypassed_reason_codes: result.bypassed_reason_codes + [{
+        name: 'id_resolution_check_bypassed',
         reason: 'mdl',
-        overrides: @overrides,
+        bypassed_checks: @bypasses,
       }],
     )
   end
 
-  def successful_with_overrides?(errors)
+  def successful_with_bypasses?(errors)
     return false unless errors.present?
 
     failures = errors.filter { |item| item.dig('ItemStatus') == 'fail' }
@@ -55,20 +55,21 @@ class Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides
   end
 
   def overridden?(item)
-    overridden = overriden_item?(item)
-    track_override(item) if overridden
+    overridden = bypassable_item?(item)
+    track_bypass(item) if overridden
     overridden
   end
 
-  def overriden_item?(item)
-    !!override_codes[item.dig('ItemName')]&.include?(item.dig('ItemReason', 'Code'))
+  def bypassable_item?(item)
+    !!bypass_codes[item.dig('ItemName')]&.include?(item.dig('ItemReason', 'Code'))
   end
 
-  def override_codes
-    IdentityConfig.store.idv_lexis_nexis_instant_verify_mdl_overrides.with_indifferent_access
+  def bypass_codes
+    IdentityConfig.store.idv_lexis_nexis_instant_verify_mdl_bypass_error_codes
+      .with_indifferent_access
   end
 
-  def track_override(item)
-    @overrides << { item.dig('ItemName').to_sym => item.dig('ItemReason', 'Code') }
+  def track_bypass(item)
+    @bypasses << { item.dig('ItemName').to_sym => item.dig('ItemReason', 'Code') }
   end
 end
