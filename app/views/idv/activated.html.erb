@@ -1,5 +1,27 @@
 <% self.title = t('idv.titles.activated') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(title: t('idv.titles.activated')) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--info">
+        <%= render NDS::IconComponent.new(icon: :check_circle, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <div class="copy copy--muted">
+        <p>
+          <%= t(
+                'idv.messages.activated_html',
+                link_html: link_to(t('idv.messages.activated_link'), contact_redirect_url),
+              ) %>
+        </p>
+      </div>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('idv.titles.activated')) %>
 
 <p class="margin-bottom-0">
@@ -8,3 +30,4 @@
         link_html: link_to(t('idv.messages.activated_link'), contact_redirect_url),
       ) %>
 </p>
+<% end %>

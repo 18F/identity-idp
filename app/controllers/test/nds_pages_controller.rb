@@ -1344,6 +1344,10 @@ module Test
       {}
     end
 
+    def setup_idv_forgot_password
+      {}
+    end
+
     def setup_idv_phone
       @idv_form = Idv::PhoneForm.new(previous_params: {}, user: User.new)
       {
@@ -1416,6 +1420,23 @@ module Test
         completion_context: :new_sp,
         selected_email_id: nil,
       )
+      {}
+    end
+
+    def setup_idv_activated
+      {}
+    end
+
+    def setup_idv_cancel
+      @hybrid_session = params[:hybrid].present?
+      @presenter = Idv::CancellationsPresenter.new(
+        sp_name: params[:sp].present? ? 'Example Service Provider' : nil,
+        url_options:,
+      )
+      {}
+    end
+
+    def setup_idv_cancel_confirmation
       {}
     end
 

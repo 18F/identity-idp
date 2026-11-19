@@ -1,3 +1,10 @@
+<% if nds_layout? %>
+  <% self.title = t('idv.cancel.headings.confirmation.hybrid') %>
+  <%= render NDS::FormPageComponent.new(
+        title: t('idv.cancel.headings.confirmation.hybrid'),
+        subtitle: t('doc_auth.instructions.switch_back'),
+      ) %>
+<% else %>
 <% self.title = t('titles.idv.canceled') %>
 
 <%= render StatusPageComponent.new(status: :error, icon: :none) do |c| %>
@@ -10,4 +17,5 @@
   <p>
     <%= t('doc_auth.instructions.switch_back') %>
   </p>
+<% end %>
 <% end %>
