@@ -25,12 +25,8 @@
             <p><%= t('user_authorization_confirmation.currently_logged_in') %></p>
           </div>
           <dl class="nds-summary">
-            <div class="nds-summary__row">
-              <div class="nds-summary__cell">
-                <dt class="nds-summary__label"><%= t('help_text.requested_attributes.email') %></dt>
-                <dd class="nds-summary__value"><%= @email %></dd>
-              </div>
-            </div>
+            <dt class="nds-summary__label"><%= t('help_text.requested_attributes.email') %></dt>
+            <dd class="nds-summary__value"><%= @email %></dd>
           </dl>
         <% end %>
       <% end %>

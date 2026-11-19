@@ -104,6 +104,18 @@ RSpec.describe 'users/authorization_confirmation/new.html.erb' do
       expect(rendered).to have_selector('.nds-summary dd.nds-summary__value', text: email)
     end
 
+    it 'pairs the email label and value as direct children of the description list' do
+      render
+
+      summary = Nokogiri::HTML(rendered).at_css('dl.nds-summary')
+      expect(summary.element_children.map { |child| [child.name, child.text.strip] }).to eq(
+        [
+          ['dt', t('help_text.requested_attributes.email')],
+          ['dd', email],
+        ],
+      )
+    end
+
     it 'renders continue and switch-email actions on the same paths and methods' do
       render
 
