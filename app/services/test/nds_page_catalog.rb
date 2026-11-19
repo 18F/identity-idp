@@ -45,6 +45,42 @@ module Test
         ],
       ),
       Page.new(
+        key: 'piv-cac-error',
+        title: 'PIV/CAC sign in error',
+        flow: SIGN_IN,
+        template: 'users/piv_cac_login/error',
+        permutations: [
+          Permutation.new(label: 'Did not work (default)', params: {}),
+          Permutation.new(label: 'Not connected', params: { error: 'user.not_found' }),
+          Permutation.new(label: 'Certificate expired', params: { error: 'certificate.expired' }),
+          Permutation.new(label: 'No certificate', params: { error: 'certificate.none' }),
+          Permutation.new(
+            label: 'Not an authentication certificate',
+            params: { error: 'certificate.not_auth_cert' },
+          ),
+          Permutation.new(label: 'Server timeout', params: { error: 'token.http_failure' }),
+        ],
+      ),
+      Page.new(
+        key: 'piv-cac-mismatch',
+        title: 'PIV/CAC not connected to this account',
+        flow: SIGN_IN,
+        template: 'two_factor_authentication/piv_cac_mismatch/show',
+        permutations: [
+          Permutation.new(label: 'Other methods (default)', params: {}),
+          Permutation.new(label: 'PIV/CAC required (no skip)', params: { piv_cac_required: '1' }),
+          Permutation.new(label: 'No other method', params: { no_other_method: '1' }),
+          Permutation.new(
+            label: 'No other method, recovery available',
+            params: { no_other_method: '1', recovery: '1' },
+          ),
+          Permutation.new(
+            label: 'No other method, recovery pending',
+            params: { no_other_method: '1', recovery_pending: '1' },
+          ),
+        ],
+      ),
+      Page.new(
         key: 'create-account',
         title: 'Create account (enter email)',
         flow: CREATE_ACCOUNT,
