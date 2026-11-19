@@ -16,10 +16,7 @@ RSpec.describe PushNotification::HttpPush do
   end
 
   let(:event) do
-    PushNotification::IdentifierRecycledEvent.new(
-      user: user,
-      email: Faker::Internet.email,
-    )
+    PushNotification::PasswordResetEvent.new(user: user)
   end
   let(:now) { Time.zone.now }
   let(:push_notifications_enabled) { true }
@@ -41,6 +38,8 @@ RSpec.describe PushNotification::HttpPush do
     end
 
     it 'enqueues a background job with the correct arguments' do
+      agency_uuid = AgencyIdentity.find_by(user_id: user.id).uuid
+
       expect { deliver }.to have_enqueued_job(RiscDeliveryJob).with { |args|
         expect(args[:push_notification_url]).to eq sp_with_push_url.push_notification_url
         expect(args[:event_type]).to eq event.event_type
@@ -61,7 +60,8 @@ RSpec.describe PushNotification::HttpPush do
         expect(jwt_payload['iat']).to eq(now.to_i)
         expect(jwt_payload['exp']).to eq((now + 12.hours).to_i)
         expect(jwt_payload['aud']).to eq(sp_with_push_url.push_notification_url)
-        expect(jwt_payload['events']).to eq(event.event_type => event.payload.as_json)
+        expect(jwt_payload['events'])
+          .to eq(event.event_type => event.payload(iss_sub: agency_uuid).as_json)
       }
     end
 

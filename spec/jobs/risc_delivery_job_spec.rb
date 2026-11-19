@@ -9,7 +9,7 @@ RSpec.describe RiscDeliveryJob do
   end
 
   describe '#perform' do
-    let(:event_type) { PushNotification::IdentifierRecycledEvent::EVENT_TYPE }
+    let(:event_type) { PushNotification::PasswordResetEvent::EVENT_TYPE }
     let(:issuer) { 'issuer1' }
     let(:job) { RiscDeliveryJob.new }
     let(:job_analytics) { FakeAnalytics.new }
