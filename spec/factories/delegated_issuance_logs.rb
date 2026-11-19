@@ -11,7 +11,7 @@ FactoryBot.define do
     actor_issuer { 'actor-issuer' }
     target_issuer { 'target-issuer' }
     resource { 'https://api.example.gov/resource' }
-    scope { 'openid token_exchange:resource' }
+    scope { 'openid token_exchange' }
     issued_at { Time.zone.now }
     expires_at { 10.minutes.from_now }
   end

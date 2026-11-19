@@ -40,6 +40,7 @@ RSpec.describe OpenidConnect::TokenController do
         rails_session_id: SecureRandom.hex,
       )
     end
+    let(:resource) { 'https://passport.gov' }
 
     context 'with valid params' do
       it 'is successful and has a response with the id_token' do
@@ -238,7 +239,7 @@ RSpec.describe OpenidConnect::TokenController do
     let(:target_issuer) { 'target-issuer' }
     let(:audience) { target_issuer }
     let(:resource) { 'https://api.example.gov/passport' }
-    let(:scope) { 'openid token_exchange:passport' }
+    let(:scope) { 'openid token_exchange' }
 
     let!(:actor) { create(:service_provider, :active, issuer: actor_issuer) }
     let!(:target) { create(:service_provider, :active, issuer: target_issuer) }
@@ -271,7 +272,7 @@ RSpec.describe OpenidConnect::TokenController do
     end
     let(:subject_token) do
       TokenExchange::SubjectTokenIssuer.issue(
-        identity:, actor_return_log_id: actor_return_log.id,
+        identity:, actor_return_log_id: actor_return_log.id, resource:,
       ).token
     end
 
@@ -280,8 +281,10 @@ RSpec.describe OpenidConnect::TokenController do
       allow(IdentityConfig.store).to receive(:token_exchange_allowed_broker_issuers)
         .and_return([actor_issuer])
       allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
-        .and_return([{ issuer: target_issuer, scope: 'passport' }])
-      create(:user_consent_sts, user:, target_app: target_issuer)
+        .and_return([{ issuer: target_issuer,
+                       scope: 'passport',
+                       resource: }])
+      create(:user_consent_sts, user:, target_app: target_issuer, actor_app: actor_issuer)
     end
 
     context 'with valid params' do
@@ -306,7 +309,7 @@ RSpec.describe OpenidConnect::TokenController do
           ial: 2,
           dpop_bound: false,
           token_exchange_stage: 'delegated_token',
-          token_exchange_scopes: ['passport'],
+          token_exchange_resource: resource,
           subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
           delegation_id: DelegatedIssuanceLog.last.delegation_id,
           user_id: user.uuid,
@@ -405,7 +408,7 @@ RSpec.describe OpenidConnect::TokenController do
           error_details: hash_including(:audience),
           dpop_bound: false,
           token_exchange_stage: 'delegated_token',
-          token_exchange_scopes: ['passport'],
+          token_exchange_resource: resource,
           subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
           oauth_error_code: 'invalid_target',
           user_id: user.uuid,
@@ -432,7 +435,7 @@ RSpec.describe OpenidConnect::TokenController do
           error_details: hash_including(:grant_type),
           dpop_bound: false,
           token_exchange_stage: 'delegated_token',
-          token_exchange_scopes: ['passport'],
+          token_exchange_resource: resource,
           subject_token_fingerprint: TokenExchange::SubjectToken.digest(subject_token),
           oauth_error_code: 'unsupported_grant_type',
           user_id: user.uuid,
