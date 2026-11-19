@@ -77,6 +77,15 @@ module Test
         ],
       ),
       Page.new(
+        key: 'sign-up-cancel',
+        title: 'Cancel account creation',
+        flow: CREATE_ACCOUNT,
+        template: 'sign_up/cancellations/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
         key: 'mfa-setup',
         title: 'Authentication methods setup',
         flow: MFA,
@@ -718,6 +727,17 @@ module Test
           Permutation.new(label: 'Verified identity', params: {}),
           Permutation.new(label: 'Auth only (new SP)', params: { auth: '1' }),
           Permutation.new(label: 'Single MFA warning', params: { single: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'select-email',
+        title: 'Select email to share',
+        flow: IDV,
+        template: 'sign_up/select_email/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Email limit reached', params: { max: '1' }),
+          Permutation.new(label: 'No email selected', params: { error: '1' }),
         ],
       ),
       Page.new(
