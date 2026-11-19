@@ -195,7 +195,7 @@ module Proofing
 
         # Wrap the proofer with bypass behavior if the document type is mDL
         if mdl_bypasses_enabled? && document_type == Idp::Constants::DocumentTypes::MDL
-          proofer = LexisNexis::Decorators::InstantVerify::WithMdlOverrides.new(proofer)
+          proofer = LexisNexis::Decorators::InstantVerify::WithMdlBypasses.new(proofer)
         end
 
         proofer
@@ -211,7 +211,7 @@ module Proofing
 
         # Wrap the proofer with bypass behavior if the document type is mDL
         if mdl_bypasses_enabled? && document_type == Idp::Constants::DocumentTypes::MDL
-          proofer = LexisNexis::Decorators::InstantVerify::WithMdlOverrides.new(proofer)
+          proofer = LexisNexis::Decorators::InstantVerify::WithMdlBypasses.new(proofer)
         end
 
         proofer

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides
+class Proofing::LexisNexis::Decorators::InstantVerify::WithMdlBypasses
   def initialize(proofer)
     @proofer = proofer
     @bypasses = []

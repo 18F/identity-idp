@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides do
+RSpec.describe Proofing::LexisNexis::Decorators::InstantVerify::WithMdlBypasses do
   let(:proofer) { instance_double(Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer) }
   subject { described_class.new(proofer) }
 

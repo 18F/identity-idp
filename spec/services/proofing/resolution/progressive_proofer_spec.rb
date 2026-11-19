@@ -1093,7 +1093,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
             expect(progressive_proofer.state_id_address_plugin(document_type:).proofer)
               .to be_an_instance_of(
-                Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides,
+                Proofing::LexisNexis::Decorators::InstantVerify::WithMdlBypasses,
               )
           end
         end
@@ -1150,7 +1150,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
             expect(progressive_proofer.state_id_address_plugin(document_type:).proofer)
               .to be_an_instance_of(
-                Proofing::LexisNexis::Decorators::InstantVerify::WithMdlOverrides,
+                Proofing::LexisNexis::Decorators::InstantVerify::WithMdlBypasses,
               )
           end
         end
