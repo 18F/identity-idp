@@ -891,6 +891,13 @@ module Test
       ThreatMetrixHelper::NO_THREAT_METRIX_VARIABLES.dup
     end
 
+    def setup_piv_cac_recommended
+      @recommended_presenter = PivCacRecommendedPresenter.new(
+        build_mfa_user(configured: params[:second].present?),
+      )
+      ThreatMetrixHelper::NO_THREAT_METRIX_VARIABLES.dup
+    end
+
     def setup_piv_cac_setup
       skip = params[:skip].present?
       user = build_mfa_user(configured: params[:second].present?)
@@ -945,6 +952,26 @@ module Test
       {}
     end
 
+    def setup_totp_verification
+      user = User.new
+      user.auth_app_configurations.build(otp_secret_key: ROTP::Base32.random, name: 'Auth app')
+      @nds_current_user = user
+      @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
+        data: {
+          two_factor_authentication_method: 'authenticator',
+          reauthn: params[:reauthn].present?,
+          user_opted_remember_device_cookie: nil,
+        },
+        view: view_context,
+        service_provider: nil,
+        remember_device_default: false,
+      )
+      @code = '123456' if params[:code].present?
+      flash.now[:error] = t('two_factor_authentication.invalid_otp') if
+        params[:error].present?
+      {}
+    end
+
     def setup_sms_opt_in
       setup_sms_opt_in_page
       if params[:error].present?
@@ -986,8 +1013,21 @@ module Test
       {}
     end
 
+    def setup_mfa_confirmation
+      platform = params[:platform].present?
+      @content = MfaConfirmationPresenter.new(
+        show_skip_additional_mfa_link: !platform,
+        webauthn_platform_set_up_successful: platform,
+      )
+      {}
+    end
+
     def setup_backup_code_reminder
       flash.now[:success] = t('notices.authenticated_successfully')
+      {}
+    end
+
+    def setup_second_mfa_reminder
       {}
     end
 
@@ -1009,6 +1049,10 @@ module Test
     end
 
     def setup_backup_code_delete
+      {}
+    end
+
+    def setup_webauthn_platform_recommended
       {}
     end
 
@@ -1271,8 +1315,29 @@ module Test
       {}
     end
 
+    def setup_socure_document_capture(hybrid_flow: false)
+      @hybrid_flow = hybrid_flow
+      @selfie_check_required = params[:selfie].present?
+      @passport_requested = params[:passport].present?
+      @mdl_requested = params[:mdl].present?
+      @document_type_requested =
+        if @passport_requested
+          Idp::Constants::DocumentTypes::PASSPORT
+        elsif @mdl_requested
+          Idp::Constants::DocumentTypes::MDL
+        else
+          Idp::Constants::DocumentTypes::DRIVERS_LICENSE
+        end
+      @url = '#'
+      {}
+    end
+
     def setup_link_sent
       { phone: '(202) 555-1212' }
+    end
+
+    def setup_hybrid_socure_document_capture
+      setup_socure_document_capture(hybrid_flow: true)
     end
 
     def setup_capture_complete
@@ -1313,6 +1378,12 @@ module Test
       @had_barcode_read_failure = params[:barcode].present?
       @step_indicator_steps = Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS
       {}
+    end
+
+    def setup_idv_enter_dob_ssn
+      @dob_ssn_form = Idv::DobSsnForm.new(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN)
+      flash.now[:error] = t('idv.failure.dob_ssn.warning') if params[:error].present?
+      ThreatMetrixHelper::NO_THREAT_METRIX_VARIABLES.dup
     end
 
     def setup_idv_enter_password
