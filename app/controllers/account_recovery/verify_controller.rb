@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module AccountRecovery
-  # The session token keeps the password URL clean; it does not authenticate
-  # the user. Only a correct password consumes it and creates a pre-2FA session.
   class VerifyController < ApplicationController
     before_action :verify_link, if: :link_evidence_present?
     before_action :confirm_recovery_request
@@ -51,11 +49,6 @@ module AccountRecovery
       session[:account_recovery_granted_token]
     end
 
-    # A recovery that reached replacement MFA setup has already consumed its
-    # token, so a re-opened emailed link cannot be validated again. Resume the
-    # in-progress session instead of signing the owner out and telling them the
-    # link is dead. Checked only after a token fails, so a different owner's
-    # valid link is never swallowed by an in-progress recovery on this browser.
     def resumable_recovery?
       user_signed_in? && replacement_mfa_pending?
     end
@@ -74,10 +67,6 @@ module AccountRecovery
         return handle_rate_limited_token
       end
 
-      # Only an emailed link counts against the limit. The session token was
-      # already validated to get there, so refreshing the password form or
-      # retrying a password must not consume token attempts. Every token lookup
-      # below is still metered, so the limit cannot be probed for free.
       token_rate_limiter.increment! if token_param.present?
 
       verifier = AccountRecovery::VerifyLink.new(token: token)
@@ -134,12 +123,8 @@ module AccountRecovery
       redirect_to root_url
     end
 
-    # Establishes a partial session only.
     def sign_in_partially
       sign_in(:user, recovery_user)
-
-      # A timed-out session opening the emailed link makes Devise store that
-      # single-use URL as the return location; it must not be revisited.
       session.delete(stored_location_key_for(:user))
       user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = true
     end

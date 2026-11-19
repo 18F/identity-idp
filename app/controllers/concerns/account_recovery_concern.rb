@@ -3,18 +3,6 @@
 module AccountRecoveryConcern
   extend ActiveSupport::Concern
 
-  class_methods do
-    # Setup pages are blocked during a password-only recovery session unless
-    # the controller allows the action for replacement MFA enrollment.
-    def allow_account_recovery_enrollment(only:)
-      @account_recovery_enrollment_actions = Array(only).map(&:to_s)
-    end
-
-    def account_recovery_enrollment_actions
-      @account_recovery_enrollment_actions || []
-    end
-  end
-
   def account_recovery_wait_period
     IdentityConfig.store.account_recovery_wait_period_hours.hours
   end
@@ -30,8 +18,6 @@ module AccountRecoveryConcern
   def replacement_mfa_pending?
     return false if current_user.blank? || current_user.is_a?(AnonymousUser)
 
-    # Cached per user: nearly every request asks this more than once, and
-    # sign-in changes current_user partway through a request.
     @replacement_mfa_pending ||= {}
     @replacement_mfa_pending.fetch(current_user.id) do |user_id|
       @replacement_mfa_pending[user_id] =
@@ -43,15 +29,8 @@ module AccountRecoveryConcern
     @replacement_mfa_pending = nil
   end
 
-  def recovery_enrollment_action?
-    self.class.account_recovery_enrollment_actions.include?(action_name)
-  end
-
   private
 
-  # Recovery completes on the first verified replacement; any remaining
-  # selections enroll as a normally authenticated user. Account creation
-  # prompts (second MFA, passkey recommendation) do not apply here.
   def next_account_recovery_setup_path
     return confirmation_path if next_setup_choice
 

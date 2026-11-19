@@ -109,7 +109,7 @@ RSpec.describe UserMailer, type: :mailer do
       context "with #{locale} as the preferred language" do
         before { user.update!(email_language: locale.to_s) }
 
-        it 'confirms the cancellation and lists what to do if it was not them' do
+        it 'confirms the cancellation and that methods are unchanged' do
           I18n.with_locale(locale) do
             expect(mail.subject).to eq(
               I18n.t('user_mailer.account_recovery_cancelled.subject', app_name: APP_NAME),
@@ -118,16 +118,7 @@ RSpec.describe UserMailer, type: :mailer do
               I18n.t('user_mailer.account_recovery_cancelled.intro', app_name: APP_NAME),
             )
             expect(mail.html_part.body).to have_content(
-              I18n.t('user_mailer.account_recovery_cancelled.no_action_needed'),
-            )
-            expect(mail.html_part.body).to have_content(
-              I18n.t('user_mailer.account_recovery_request.change_password'),
-            )
-            expect(mail.html_part.body).to have_content(
-              I18n.t('user_mailer.account_recovery_request.review_methods'),
-            )
-            expect(mail.html_part.body).to have_content(
-              I18n.t('user_mailer.account_recovery_request.review_history'),
+              I18n.t('user_mailer.account_recovery_cancelled.details'),
             )
             expect(mail.html_part.body).to have_link(
               I18n.t('user_mailer.contact_link_text'), href: MarketingSite.contact_url

@@ -1,3 +1,74 @@
+<% if nds_layout? %>
+  <% self.title = t('doc_auth.headings.dob_ssn') %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 7) %>
+  <% end %>
+
+  <% if FeatureManagement.proofing_agent_device_profiling_collecting_enabled? %>
+    <%= render partial: 'shared/threat_metrix_profiling',
+               locals: {
+                 threatmetrix_session_id:,
+                 threatmetrix_javascript_urls:,
+                 threatmetrix_iframe_url:,
+               } %>
+  <% end %>
+
+  <%= simple_form_for(
+        @dob_ssn_form,
+        url: url_for,
+        method: :post,
+        html: { data: { nds_submit_gate: true } },
+      ) do |f| %>
+    <%= render NDS::FormPageComponent.new(
+          title: t('doc_auth.headings.dob_ssn'),
+          subtitle: safe_join(
+            [
+              t('doc_auth.info.dob_ssn'),
+              new_tab_link_to(t('doc_auth.info.learn_more'), MarketingSite.security_and_privacy_practices_url),
+            ],
+            ' ',
+          ),
+        ) do |page| %>
+      <% if IdentityConfig.store.proofer_mock_fallback %>
+        <% page.with_alert do %>
+          <%= render AlertComponent.new(type: :info) do %>
+            <%= t('doc_auth.instructions.test_ssn') %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <%= render NDS::InputComponent.new(
+                form: f,
+                attribute: :ssn,
+                type: :ssn,
+                label: t('idv.form.ssn_label'),
+                required: true,
+                password_toggle_label: t('forms.ssn.show'),
+                error_messages: { customError: t('idv.errors.pattern_mismatch.ssn') },
+              ) %>
+          <div class="text-left">
+            <%= render 'shared/dob_field', f: f %>
+          </div>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(type: :submit, full_width: true).with_content(t('forms.buttons.continue')) %>
+          <%= render ButtonComponent.new(
+                url: idv_cancel_path(step: 'ssn'),
+                variant: :tertiary,
+                full_width: true,
+              ).with_content(cancel_link_text) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('nds-input-ssn', 'nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: step_indicator_steps,
@@ -52,3 +123,4 @@
 <% end %>
 
 <%= render 'idv/doc_auth/cancel', step: 'ssn' %>
+<% end %>

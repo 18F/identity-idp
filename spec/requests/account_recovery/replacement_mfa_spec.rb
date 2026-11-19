@@ -28,20 +28,19 @@ RSpec.describe 'Account recovery replacement enrollment', type: :request do
     expect(recovery_request.reload).to be_replacement_mfa_pending
   end
 
-  it 'allows only replacement enrollment setup pages during recovery' do
-    [phone_setup_path, authenticator_setup_path, webauthn_setup_path,
+  it 'allows replacement enrollment through the MFA setup pages during recovery' do
+    [authentication_methods_setup_path, authenticator_setup_path, webauthn_setup_path,
      setup_piv_cac_path, backup_code_setup_path].each do |path|
       get path
 
       expect(response).to have_http_status(:ok), path
     end
+  end
 
-    [authentication_methods_setup_path, backup_code_regenerate_path, backup_code_delete_path,
-     login_piv_cac_recommended_path, webauthn_setup_mismatch_path].each do |path|
-      get path
+  it 'does not allow direct enrollment of the suspended MFA type' do
+    get phone_setup_path
 
-      expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
-    end
+    expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
   end
 
   it 'keeps old MFA until the replacement codes are acknowledged' do

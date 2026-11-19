@@ -31,6 +31,14 @@ RSpec.describe TwoFactorAuthenticatableMethods do
     expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq(false)
   end
 
+  it 'rotates the session after completing recovery' do
+    create(:auth_app_configuration, user: user)
+
+    expect(controller).to receive(:sign_in).with(:user, user, force: true).and_call_original
+
+    controller.send(:handle_valid_verification_for_confirmation_context, auth_method: 'totp')
+  end
+
   it 'looks up the pending recovery once per user' do
     expect(AccountRecoveryRequest).to receive(:active_for_user).with(user).once.and_call_original
 

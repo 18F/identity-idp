@@ -90,6 +90,16 @@ module Test
         ],
       ),
       Page.new(
+        key: 'piv-cac-recommended',
+        title: 'PIV/CAC recommended (government email)',
+        flow: MFA,
+        template: 'users/piv_cac_recommended/show',
+        permutations: [
+          Permutation.new(label: 'First MFA', params: {}),
+          Permutation.new(label: 'MFA configured (skip)', params: { second: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'piv-cac-setup',
         title: 'Add government employee ID (PIV/CAC)',
         flow: MFA,
@@ -140,10 +150,29 @@ module Test
         ],
       ),
       Page.new(
+        key: 'mfa-confirmation',
+        title: 'Authentication method added (add a backup method)',
+        flow: MFA,
+        template: 'mfa_confirmation/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Face or touch unlock added (no skip)', params: { platform: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'backup-code-reminder',
         title: 'Backup codes reminder',
         flow: MFA,
         template: 'users/backup_code_reminder/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'second-mfa-reminder',
+        title: 'Second MFA reminder (add another method)',
+        flow: MFA,
+        template: 'users/second_mfa_reminder/new',
         permutations: [
           Permutation.new(label: 'Default', params: {}),
         ],
@@ -191,6 +220,15 @@ module Test
         ],
       ),
       Page.new(
+        key: 'webauthn-platform-recommended',
+        title: 'Passkey recommended',
+        flow: MFA,
+        template: 'users/webauthn_platform_recommended/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
         key: 'otp-entry',
         title: 'One-time code entry',
         flow: OTP,
@@ -203,6 +241,18 @@ module Test
           Permutation.new(label: 'Reauthentication', params: { reauthn: '1' }),
           Permutation.new(label: 'Prefilled code', params: { code: '1' }),
           Permutation.new(label: 'Incorrect code', params: { error: '1', code: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'totp-verification',
+        title: 'Authentication app code entry',
+        flow: OTP,
+        template: 'two_factor_authentication/totp_verification/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Reauthentication', params: { reauthn: '1' }),
+          Permutation.new(label: 'Prefilled code', params: { code: '1' }),
+          Permutation.new(label: 'Incorrect code', params: { error: '1' }),
         ],
       ),
       Page.new(
@@ -525,11 +575,34 @@ module Test
         permutations: [Permutation.new(label: 'Default', params: {})],
       ),
       Page.new(
+        key: 'socure-document-capture',
+        title: 'Verify your ID with Socure (document capture)',
+        flow: IDV,
+        template: 'idv/socure/document_capture/show',
+        permutations: [
+          Permutation.new(label: 'Driver’s license or state ID', params: {}),
+          Permutation.new(label: 'Passport', params: { passport: '1' }),
+          Permutation.new(label: 'Passport with selfie', params: { passport: '1', selfie: '1' }),
+          Permutation.new(label: 'Mobile driver’s license', params: { mdl: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'link-sent',
         title: 'Continue on your phone (link sent)',
         flow: IDV,
         template: 'idv/link_sent/show',
         permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'hybrid-socure-document-capture',
+        title: 'Verify your ID with Socure (hybrid mobile document capture)',
+        flow: IDV,
+        template: 'idv/hybrid_mobile/socure/document_capture/show',
+        permutations: [
+          Permutation.new(label: 'Driver’s license or state ID', params: {}),
+          Permutation.new(label: 'Passport', params: { passport: '1' }),
+          Permutation.new(label: 'Mobile driver’s license', params: { mdl: '1' }),
+        ],
       ),
       Page.new(
         key: 'capture-complete',
@@ -575,6 +648,16 @@ module Test
         permutations: [
           Permutation.new(label: 'Default', params: {}),
           Permutation.new(label: 'Barcode read failure', params: { barcode: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'idv-enter-dob-ssn',
+        title: 'Enter your SSN and date of birth (proofing agent)',
+        flow: IDV,
+        template: 'idv/enter_dob_ssn/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Information does not match', params: { error: '1' }),
         ],
       ),
       Page.new(

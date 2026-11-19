@@ -9,8 +9,6 @@ module Users
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
-    allow_account_recovery_enrollment only: %i[new error submit_new_piv_cac]
-
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :set_piv_cac_setup_csp_form_action_uris, only: :new
@@ -99,7 +97,6 @@ module Users
         token: params[:token],
         nonce: piv_cac_nonce,
         name: user_session[:piv_cac_nickname],
-        piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
       )
     end
 
@@ -138,12 +135,9 @@ module Users
       params[:skip] == 'true'
     end
 
-    # Suspended configurations are excluded so a name held only by a credential
-    # the user is replacing during account recovery does not block the nickname
-    # step. The form releases that row before enrolling.
     def good_nickname?
       name = params[:name]
-      name.present? && !mfa_context.piv_cac_configurations.exists?(name: name)
+      name.present? && !PivCacConfiguration.exists?(user_id: current_user.id, name: name)
     end
 
     def analytics_properties
@@ -160,7 +154,7 @@ module Users
     end
 
     def current_cac_count
-      mfa_context.piv_cac_configurations.count
+      current_user.piv_cac_configurations.count
     end
 
     def enabled_mfa_methods_count

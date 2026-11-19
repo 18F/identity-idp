@@ -86,7 +86,6 @@ backup_code_user_id_per_ip_max_attempts: 50
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 check_user_password_compromised_enabled: false
-client_assertion_max_lifetime_seconds: 300
 component_previews_embed_frame_ancestors: '[]'
 component_previews_enabled: false
 country_phone_number_overrides: '{}'
@@ -360,6 +359,7 @@ lexisnexis_threatmetrix_js_public_cert: ''
 lexisnexis_threatmetrix_mock_enabled: true
 lexisnexis_threatmetrix_org_id:
 lexisnexis_threatmetrix_policy:
+lexisnexis_threatmetrix_ssn_hash_hmac_secret_key:
 lexisnexis_threatmetrix_support_code: ABCD
 lexisnexis_threatmetrix_timeout: 1.0
 # TrueID DocAuth Integration
@@ -565,6 +565,8 @@ sp_proofing_events_by_uuid_report_configs: '[]'
 sp_registration_funnel_report_configs: '[]'
 sp_verification_demographics_report_configs: '[]'
 sp_verification_report_configs: '[]'
+ssa_instant_verify_bypass_error_codes: '{}'
+ssa_proofing_agent_socure_kyc_bypass_reason_codes: '[]'
 state_tracking_enabled: true
 sts_consent_expiration_in_days: 365
 team_ada_email: ''
@@ -749,6 +751,7 @@ test:
   key_metrics_internal_emails: '["mock_key_metrics_int@example.com"]'
   key_metrics_original_external_emails: '["mock_key_metrics_org_ext@example.com"]'
   key_metrics_original_internal_emails: '["mock_key_metrics_org_int@example.com"]'
+  lexisnexis_threatmetrix_ssn_hash_hmac_secret_key: test-threatmetrix-ssn-hmac-secret-key
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2

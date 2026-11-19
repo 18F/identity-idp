@@ -258,8 +258,6 @@ module TwoFactorAuthenticatableMethods
     completed = service.call
     raise ActiveRecord::RecordInvalid.new(recovery_request) unless completed
 
-    # The session is marked authenticated next, and that check must see the
-    # completed recovery rather than the answer cached earlier in this request.
     reset_replacement_mfa_pending!
 
     removed_mfa_method_counts = service.removed_mfa_method_counts
@@ -276,22 +274,17 @@ module TwoFactorAuthenticatableMethods
       ],
     )
 
+    sign_in(:user, current_user, force: true)
     user_session[:account_recovery_completed] = true
   end
 
-  # One consolidated notification for the whole recovery, rather than the
-  # per-credential mfa_deleted emails, so replacing several suspended methods
-  # does not fan out into an email per method per address.
-  #
-  # Only the method names are passed, never counts: a hash keyed by `phone`
-  # would trip MailerSensitiveInformationChecker when delivery is asynchronous.
   def notify_account_recovery_completed(removed_mfa_method_counts:)
     removed_mfa_methods = removed_mfa_method_counts.keys.map(&:to_s).sort
 
     current_user.confirmed_email_addresses.each do |email_address|
       UserMailer.with(user: current_user, email_address: email_address)
         .account_recovery_completed(
-          removed_mfa_methods: removed_mfa_methods,
+          removed_mfa_methods:,
         ).deliver_now_or_later
     end
   end
@@ -301,7 +294,6 @@ module TwoFactorAuthenticatableMethods
   end
 
   def mark_user_session_authenticated(auth_method:, authentication_type:)
-    # A normal verification endpoint must never finish a recovery session.
     return if replacement_mfa_pending?
 
     auth_methods_session.authenticate!(auth_method)
@@ -309,9 +301,7 @@ module TwoFactorAuthenticatableMethods
   end
 
   # A user who authenticates with an existing method has regained access, so an
-  # unredeemed recovery request is cancelled. Deliberately not gated on the
-  # recovery feature flag: turning the flag off must not strand a request that
-  # this would otherwise cancel.
+  # unredeemed recovery request is cancelled.
   def cancel_account_recovery_request_for_mfa_use(auth_method:)
     return unless UserSessionContext.authentication_context?(context)
 

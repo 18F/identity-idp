@@ -12,6 +12,8 @@ module Proofing
                   :proofing_vendor,
                   :is_proofing_agent
 
+      INSTANT_VERIFY_PROOFING_VENDORS = %i[instant_verify instant_verify_ddp].freeze
+
       PROOFING_VENDOR_SP_COST_TOKENS = {
         mock: :mock_resolution,
         instant_verify: :lexis_nexis_resolution,
@@ -98,6 +100,20 @@ module Proofing
           timer:,
         )
 
+        resolution_bypassed = false
+        instant_verify_bypass = instant_verify_bypass_for(state_id_address_resolution_result)
+        resolution_bypassable = !!instant_verify_bypass&.bypassable?
+        if resolution_bypassable
+          # Without a separate residential address both results are the same Instant Verify result
+          residential_is_state_id_result =
+            residential_address_resolution_result.equal?(state_id_address_resolution_result)
+          state_id_address_resolution_result = instant_verify_bypass.bypassed_resolution_result
+          resolution_bypassed = true
+          if residential_is_state_id_result
+            residential_address_resolution_result = state_id_address_resolution_result
+          end
+        end
+
         phone_result = phone_plugin.call(
           applicant_pii:,
           current_sp:,
@@ -120,6 +136,18 @@ module Proofing
           applicant_pii:,
           precheck_phone_number: phone_plugin.phone_number,
           proofing_vendor:,
+          resolution_bypassed:,
+        )
+      end
+
+      def instant_verify_bypass_for(state_id_address_resolution_result)
+        return unless is_proofing_agent &&
+                      INSTANT_VERIFY_PROOFING_VENDORS.include?(proofing_vendor) &&
+                      IdentityConfig.store.ssa_instant_verify_bypass_error_codes.present?
+
+        ProofingAgent::InstantVerify::ResolutionFailureBypass.new(
+          resolution_result: state_id_address_resolution_result,
+          bypass_error_codes: IdentityConfig.store.ssa_instant_verify_bypass_error_codes,
         )
       end
 
@@ -187,6 +215,7 @@ module Proofing
             timeout: IdentityConfig.store.socure_idplus_timeout_in_seconds,
           ),
           @analytics,
+          is_proofing_agent:,
         )
       end
 

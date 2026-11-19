@@ -9,8 +9,6 @@ module Users
     include ThreatMetrixHelper
     include ThreatMetrixConcern
 
-    allow_account_recovery_enrollment only: %i[new confirm]
-
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :apply_secure_headers_override
@@ -290,10 +288,8 @@ module Users
       user_session[:webauthn_challenge] = credential_creation_options.challenge.bytes.to_a
     end
 
-    # Suspended credentials are excluded so the browser does not block
-    # re-registering the same authenticator during account recovery.
     def exclude_credentials
-      current_user.webauthn_configurations.available_for_authentication.map(&:credential_id)
+      current_user.webauthn_configurations.map(&:credential_id)
     end
 
     def build_webauthn_setup_presenter(platform_authenticator:, passkey_upsell: false)

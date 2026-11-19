@@ -1664,6 +1664,10 @@ nds.choose_id_type.verify_in_person: Vérifier en personne
 nds.completions.heading_idv: Identité vérifiée
 nds.completions.intro_html: En sélectionnant Continuer, vous acceptez de partager les informations ci-dessous avec %{sp_html} et d’accéder à son site.
 nds.completions.nist_alt: 'Sceau du NIST : Chiffré. Protégé. Éprouvé. National Institute of Standards and Technology'
+nds.document_capture.mdl_alert_body: D’autres portefeuilles numériques seront pris en charge plus tard cette année.
+nds.document_capture.mdl_alert_title: Actuellement compatible avec Google Wallet et Samsung Wallet.
+nds.document_capture.mdl_heading: Renseignez les informations de votre permis de conduire mobile
+nds.document_capture.mdl_subtitle: Nous vérifierons votre permis de conduire mobile par l’intermédiaire d’un prestataire de services de confiance (Socure).
 nds.duplicate_profiles_detected.cant_access: Je ne peux pas accéder à un compte
 nds.duplicate_profiles_detected.connected_agencies: 'Agences connectées : %{count}'
 nds.duplicate_profiles_detected.created_at_html: 'Créé : %{timestamp_html}'
@@ -1708,6 +1712,9 @@ nds.idv_welcome.what_youll_need: Ce dont vous aurez besoin
 nds.link_sent.heading: Continuez sur votre téléphone
 nds.link_sent.instructions: Suivez les instructions pour photographier votre pièce d’identité et prendre un selfie, puis revenez ici pour terminer.
 nds.link_sent.keep_open: Gardez cette fenêtre ouverte.
+nds.mfa_confirmation.add_method: Ajouter une méthode d’authentification
+nds.mfa_confirmation.heading: Ajoutez une méthode d’authentification de secours
+nds.mfa_confirmation.skip: Ignorer
 nds.mfa_setup.badge_passkey: Rapide et sécurisé
 nds.mfa_setup.heading: Sécurisez votre compte
 nds.mfa_setup.heading_second: Choisissez une deuxième méthode d’authentification
@@ -1751,6 +1758,7 @@ nds.piv_cac_setup.step_3: Ajoutez votre PIV ou CAC
 nds.piv_cac_setup.step_3_info: On vous demandera de choisir un certificat et de saisir votre PIN après avoir cliqué sur le bouton continuer.
 nds.request_letter.heading: Vérifiez plutôt par courrier
 nds.request_letter.info: Pour vérifier votre identité, nous enverrons à votre adresse une lettre contenant un code de vérification et des instructions. Elle devrait arriver sous 5 à 10 jours. Suivez les instructions de la lettre pour terminer la vérification de votre identité.
+nds.second_mfa_reminder.skip: Ignorer
 nds.socure_errors.in_person_heading: Ou, essayez de confirmer votre identité en personne
 nds.socure_errors.rate_limit_html.one: Vous avez encore <strong>un essai.</strong> Ensuite, vous devrez attendre 6 heures avant de réessayer.
 nds.socure_errors.rate_limit_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite, vous devrez attendre 6 heures avant de réessayer.
@@ -1763,7 +1771,13 @@ nds.totp_setup.new.setup_code_label: Code de configuration
 nds.totp_setup.new.step_1: Saisir un surnom
 nds.totp_setup.new.step_2: Ouvrir votre appli d’authentification préférée
 nds.totp_setup.new.step_3: Scanner le code QR ou saisir le code de configuration manuellement dans votre appli d’authentification
+nds.totp_verification.invalid_code_body: Ce code n’est pas valide. Veuillez saisir le code actuel de votre appli d’authentification.
 nds.verify_info.address: Adresse
+nds.webauthn_platform_recommended.cta: Ajouter une clé d’accès
+nds.webauthn_platform_recommended.description: Authentifiez-vous de la même manière que vous déverrouillez votre appareil, que ce soit avec votre visage ou votre empreinte digitale, un mot de passe ou une autre méthode.
+nds.webauthn_platform_recommended.heading: Configurez une clé d’accès pour une connexion plus sécurisée
+nds.webauthn_platform_recommended.info_html: Les clés d’accès %{phishing_resistant_html} et nous ne conservons aucun enregistrement de votre visage ou de vos empreintes digitales, ce qui préserve la confidentialité de vos informations.
+nds.webauthn_platform_recommended.phishing_resistant: résistent à l’hameçonnage
 notices.account_reactivation: Parfait ! Vous avez votre clé personnelle.
 notices.authenticated_successfully: Authentifié avec succès.
 notices.backup_codes_configured: Les codes de sauvegarde ont été ajoutés à votre compte.
@@ -2190,10 +2204,10 @@ user_mailer.account_connected_to_sp.sign_in_link: connectez-vous à votre compte
 user_mailer.account_connected_to_sp.subject: Vous avez connecté votre compte à %{sp_name}
 user_mailer.account_disconnected_from_sp.intro: Rendez-vous sur %{sp_name} si vous souhaitez réactiver votre compte.
 user_mailer.account_disconnected_from_sp.subject: Vous avez déconnecté %{sp_name} de votre compte.
-user_mailer.account_recovery_cancelled.intro: We canceled account recovery because there was a successful sign in and authentication to your %{app_name} account.
-user_mailer.account_recovery_cancelled.no_action_needed: If you recognize this activity, you don’t need to do anything.
+user_mailer.account_recovery_cancelled.details: Your account and authentication methods have not been changed.
+user_mailer.account_recovery_cancelled.intro: You signed in to your %{app_name} account and your account recovery request was canceled.
 user_mailer.account_recovery_cancelled.subject: Your account recovery request was canceled
-user_mailer.account_recovery_cancelled.unrequested_html: '<strong>If this wasn’t you:</strong> go to %{app_link_html} and sign in to your account, then:'
+user_mailer.account_recovery_cancelled.unrequested_html: If you did not sign in, %{contact_link_html} immediately and secure your account.
 user_mailer.account_recovery_completed.header: Your %{app_name} account is recovered
 user_mailer.account_recovery_completed.intro: You finished recovering your %{app_name} account. You can now sign in with the authentication methods you just added.
 user_mailer.account_recovery_completed.removed: 'Because you replaced them, we removed these authentication methods from your account:'

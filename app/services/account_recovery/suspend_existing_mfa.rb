@@ -9,6 +9,17 @@ module AccountRecovery
       piv_cac_configurations backup_code_configurations
     ].freeze
 
+    def self.suspended_mfa_methods(account_recovery_request:)
+      return [] if account_recovery_request.blank?
+
+      CONFIGURATION_ASSOCIATIONS.filter_map do |association|
+        configuration = account_recovery_request.user.public_send(association)
+          .find_by(account_recovery_request_id: account_recovery_request.id)
+        method = configuration&.friendly_name
+        method == :backup_codes ? :backup_code : method
+      end.uniq
+    end
+
     def initialize(account_recovery_request:)
       @account_recovery_request = account_recovery_request
     end

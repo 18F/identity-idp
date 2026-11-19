@@ -1,4 +1,65 @@
 <% self.title = t('titles.doc_auth.verify') %>
+<% if nds_layout? %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 4) %>
+  <% end %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: if @passport_requested
+                 t('doc_auth.headings.passport_capture')
+               elsif @mdl_requested
+                 t('nds.document_capture.mdl_heading')
+               else
+                 t('doc_auth.headings.document_capture')
+               end,
+        subtitle: if @passport_requested && @selfie_check_required
+                    t('doc_auth.info.socure_passport_ial2', app_name: APP_NAME)
+                  elsif @passport_requested
+                    t('doc_auth.info.socure_passport', app_name: APP_NAME)
+                  elsif @mdl_requested
+                    t('nds.document_capture.mdl_subtitle')
+                  else
+                    t('doc_auth.info.socure_basic_idv', app_name: APP_NAME)
+                  end,
+      ) do |page| %>
+    <% page.with_body do %>
+      <% if @mdl_requested %>
+        <%= render AlertComponent.new(
+              type: :info,
+              title: t('nds.document_capture.mdl_alert_title'),
+            ).with_content(t('nds.document_capture.mdl_alert_body')) %>
+      <% else %>
+        <p class="text-center margin-0">
+          <% if @passport_requested %>
+            <%= t('doc_auth.info.socure_ial2_idv_finish_passport', app_name: APP_NAME) %>
+          <% else %>
+            <%= t('doc_auth.info.socure_ial2_idv_finish', app_name: APP_NAME) %>
+          <% end %>
+        </p>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ClickObserverComponent.new(
+              event_name: 'idv_socure_docv_redirect_requested',
+              payload: { document_type_requested: @document_type_requested },
+              class: 'display-block',
+            ) do %>
+          <%= render ButtonComponent.new(
+                url: @url,
+                full_width: true,
+              ).with_content(@mdl_requested ? t('idv.mdl.button') : t('forms.buttons.continue')) %>
+        <% end %>
+        <%= render ButtonComponent.new(
+              url: idv_cancel_path(step: 'verify_id'),
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(cancel_link_text) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
@@ -69,3 +130,4 @@
   <%= link_to (@mdl_requested ? t('idv.mdl.button') : t('forms.buttons.continue')), @url, class: 'usa-button usa-button--big usa-button--wide margin-top-4 margin-bottom-4' %>
 <% end %>
 <%= render 'idv/doc_auth/cancel', step: 'verify_id' %>
+<% end %>

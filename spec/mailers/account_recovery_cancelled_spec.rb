@@ -20,11 +20,11 @@ RSpec.describe UserMailer, type: :mailer do
         t('user_mailer.account_recovery_cancelled.intro', app_name: APP_NAME),
       )
       expect(mail.html_part.body).to have_content(
-        strip_tags(
-          t('user_mailer.account_recovery_cancelled.unrequested_html', app_link_html: APP_NAME),
+        t(
+          'user_mailer.account_recovery_cancelled.unrequested_html',
+          contact_link_html: t('user_mailer.contact_link_text'),
         ),
       )
-      expect(mail.html_part.body).to have_link(APP_NAME, href: root_url)
       expect(mail.html_part.body).to have_link(
         t('user_mailer.contact_link_text'), href: MarketingSite.contact_url
       )
