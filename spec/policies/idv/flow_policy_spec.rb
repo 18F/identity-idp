@@ -449,6 +449,13 @@ RSpec.describe 'Idv::FlowPolicy' do
         expect(subject.controller_allowed?(controller: Idv::ChooseIdTypeController)).to be true
       end
 
+      it 'keeps the chosen ID type when undoing steps after how to verify' do
+        subject.undo_future_steps_from_controller!(controller: Idv::HowToVerifyController)
+        expect(
+          Idv::DocumentCaptureController.ensure_choose_id_type_completed(idv_session:, user:),
+        ).to be true
+      end
+
       context 'on mobile (handoff skipped)' do
         before { idv_session.skip_hybrid_handoff = true }
 
@@ -460,7 +467,7 @@ RSpec.describe 'Idv::FlowPolicy' do
     end
 
     it 'leaves the rest of the graph identical to legacy' do
-      (Idv::FlowPolicy::STEPS.keys - %i[choose_id_type hybrid_handoff]).each do |key|
+      (Idv::FlowPolicy::STEPS.keys - %i[choose_id_type hybrid_handoff how_to_verify]).each do |key|
         expect(Idv::FlowPolicy::PHONE_FIRST_STEPS[key]).to equal(Idv::FlowPolicy::STEPS[key])
       end
     end

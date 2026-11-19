@@ -359,7 +359,7 @@ describe('InputComponent validation', () => {
     typeMismatch: 'Enter a valid email',
   };
 
-  const renderRequiredInput = ({ withHint = false } = {}) => {
+  const renderRequiredInput = ({ withHint = false, after = '' } = {}) => {
     document.body.innerHTML = `
       <form>
         <div
@@ -378,6 +378,7 @@ describe('InputComponent validation', () => {
           </div>
           ${withHint ? '<p class="usa-input__hint" id="user_email_hint">Use your email.</p>' : ''}
         </div>
+        ${after}
       </form>
     `;
 
@@ -387,9 +388,15 @@ describe('InputComponent validation', () => {
     return { input, form: document.querySelector('form')! };
   };
 
+  const clearInput = (input: HTMLInputElement) => {
+    input.value = '';
+    input.dispatchEvent(new InputEvent('input', { bubbles: true }));
+  };
+
   it('shows the NDS error message on blur', () => {
     const { input } = renderRequiredInput();
 
+    clearInput(input);
     input.dispatchEvent(new FocusEvent('blur'));
 
     const errorMessage = document.querySelector<HTMLElement>('.usa-input__error')!;
@@ -404,6 +411,7 @@ describe('InputComponent validation', () => {
   it('leads the client-side NDS error message with an aria-hidden error icon', () => {
     const { input } = renderRequiredInput();
 
+    clearInput(input);
     input.dispatchEvent(new FocusEvent('blur'));
 
     const errorMessage = document.querySelector<HTMLElement>('.usa-input__error')!;
@@ -501,6 +509,7 @@ describe('InputComponent validation', () => {
 
     const input = document.querySelector<HTMLInputElement>('.usa-input__control')!;
     enhanceInputValidation();
+    clearInput(input);
     input.dispatchEvent(new FocusEvent('blur'));
 
     expect(document.querySelector('.usa-input__error-inner')?.textContent).to.equal(
@@ -511,6 +520,7 @@ describe('InputComponent validation', () => {
   it('inserts the NDS error message below the input shell', () => {
     const { input } = renderRequiredInput({ withHint: true });
 
+    clearInput(input);
     input.dispatchEvent(new FocusEvent('blur'));
 
     const inputShell = document.querySelector('.usa-input__shell')!;
@@ -531,6 +541,7 @@ describe('InputComponent validation', () => {
   it('clears the NDS error message while editing', () => {
     const { input } = renderRequiredInput();
 
+    clearInput(input);
     input.dispatchEvent(new FocusEvent('blur'));
     input.value = 'person@example.com';
     input.dispatchEvent(new InputEvent('input', { bubbles: true }));
@@ -588,6 +599,7 @@ describe('InputComponent validation', () => {
 
     const select = document.querySelector<HTMLSelectElement>('.usa-input__control')!;
     enhanceInputValidation();
+    select.dispatchEvent(new Event('change', { bubbles: true }));
     select.dispatchEvent(new FocusEvent('blur'));
 
     expect(select.getAttribute('aria-invalid')).to.equal('true');
@@ -667,6 +679,56 @@ describe('InputComponent validation', () => {
 
     expect(input.getAttribute('aria-invalid')).to.not.equal('true');
     expect(document.querySelector('.usa-input__error.usa-input__error--visible')).not.to.exist();
+  });
+
+  context('with an untouched required field', () => {
+    const renderAutofocusedInput = () => {
+      const { input, form } = renderRequiredInput({
+        after: '<button type="submit">Continue</button><a href="#other">Do something else</a>',
+      });
+      input.focus();
+
+      return {
+        input,
+        button: form.querySelector<HTMLButtonElement>('button[type="submit"]')!,
+        link: form.querySelector<HTMLAnchorElement>('a')!,
+      };
+    };
+
+    it('does not show the required error when a click elsewhere moves focus away', () => {
+      const { input, button, link } = renderAutofocusedInput();
+
+      link.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+      input.blur();
+
+      expect(input.getAttribute('aria-invalid')).to.not.equal('true');
+      expect(document.querySelector('.usa-input__error.usa-input__error--visible')).not.to.exist();
+      expect(button.disabled).to.equal(true);
+    });
+
+    it('shows the required error on blur after the field is edited and cleared', () => {
+      const { input, link } = renderAutofocusedInput();
+
+      input.value = 'p';
+      input.dispatchEvent(new InputEvent('input', { bubbles: true }));
+      clearInput(input);
+      link.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+      input.blur();
+
+      expect(input.getAttribute('aria-invalid')).to.equal('true');
+      expect(document.querySelector('.usa-input__error-inner')?.textContent).to.equal(
+        'Enter a valid email',
+      );
+    });
+
+    it('shows the required error when the form is submitted', () => {
+      const { input } = renderAutofocusedInput();
+
+      input.form!.dispatchEvent(new SubmitEvent('submit', { cancelable: true }));
+
+      expect(input.getAttribute('aria-invalid')).to.equal('true');
+      expect(document.querySelector('.usa-input__error.usa-input__error--visible')).to.exist();
+    });
   });
 
   it('leaves formNoValidate submitters enabled', () => {
@@ -889,8 +951,11 @@ describe('NDS phone group', () => {
     expect(details.open).to.equal(false);
   });
 
-  it('shows the required message on blur when empty', () => {
+  it('shows the required message on blur when cleared', () => {
     const { input, errorRegion } = renderPhoneGroup();
+    type(input, '2');
+    input.value = '';
+    input.dispatchEvent(new InputEvent('input', { bubbles: true }));
     input.dispatchEvent(new FocusEvent('blur'));
 
     expect(input.getAttribute('aria-invalid')).to.equal('true');
@@ -900,7 +965,9 @@ describe('NDS phone group', () => {
 
   it('leads the phone error message with an aria-hidden error icon', () => {
     const { input, errorRegion } = renderPhoneGroup();
-
+    type(input, '2');
+    input.value = '';
+    input.dispatchEvent(new InputEvent('input', { bubbles: true }));
     input.dispatchEvent(new FocusEvent('blur'));
 
     const icon = errorRegion.firstElementChild!;
@@ -924,6 +991,15 @@ describe('NDS phone group', () => {
 
     expect(errorRegion.hidden).to.equal(true);
     expect(errorRegion.querySelector('.usa-icon')).to.not.exist();
+  });
+
+  it('does not show the required message when an untouched field loses focus', () => {
+    const { input, errorRegion } = renderPhoneGroup();
+    input.focus();
+    input.blur();
+
+    expect(input.getAttribute('aria-invalid')).to.not.equal('true');
+    expect(errorRegion.hidden).to.equal(true);
   });
 
   it('shows the invalid-format message for an incomplete number on blur', () => {
