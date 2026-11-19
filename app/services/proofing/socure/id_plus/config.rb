@@ -9,10 +9,12 @@ module Proofing
         :timeout,
         :user_uuid,
         :user_email,
+        :bypasses_enabled,
         keyword_init: true,
         allowed_members: [
           :base_url,
           :timeout,
+          :bypasses_enabled,
         ],
       ).freeze
     end
