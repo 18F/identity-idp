@@ -1787,6 +1787,12 @@ nds.webauthn_platform_recommended.description: Autentíquese de la misma forma q
 nds.webauthn_platform_recommended.heading: Configure una clave de acceso para un inicio de sesión más seguro
 nds.webauthn_platform_recommended.info_html: Las claves de acceso están %{phishing_resistant_html} y no almacenamos ninguna grabación de su rostro ni de su huella dactilar, así que su información se mantiene privada.
 nds.webauthn_platform_recommended.phishing_resistant: protegidas contra el phishing
+nds.webauthn_verification.platform_button: Usar clave de acceso
+nds.webauthn_verification.platform_error_heading: No se pudo usar la clave de acceso
+nds.webauthn_verification.platform_heading: Use su clave de acceso
+nds.webauthn_verification.platform_intro: Autentíquese de la misma forma que desbloquea su dispositivo, sea con su rostro o huella dactilar, contraseña u otro método.
+nds.webauthn_verification.roaming_error_heading: Problemas para detectar la clave de seguridad
+nds.webauthn_verification.roaming_intro: Use la clave de seguridad asociada con su cuenta.
 notices.account_reactivation: Qué bien. Tiene su clave personal.
 notices.authenticated_successfully: Logró autenticarse.
 notices.backup_codes_configured: Los códigos de recuperación se agregaron a su cuenta.
