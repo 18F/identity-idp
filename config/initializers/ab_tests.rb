@@ -277,4 +277,14 @@ module AbTests
   ) do |user:, user_session:, **|
     user&.uuid
   end.freeze
+
+  ITIN_ENABLED = AbTest.new(
+    experiment_name: 'ITIN enabled',
+    should_log: /^idv/i,
+    buckets: {
+      idv_itin_enabled: IdentityConfig.store.idv_itin_enabled_percentage,
+    },
+  ) do |user:, user_session:, **|
+    user&.uuid
+  end.freeze
 end

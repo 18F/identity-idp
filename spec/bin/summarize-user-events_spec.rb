@@ -184,6 +184,30 @@ RSpec.describe SummarizeUserEvents do
       END
     end
 
+    context 'with a password reset that deactivated the profile' do
+      let(:cloudwatch_events) do
+        [
+          {
+            '@timestamp' => '2026-11-07 02:28:49.792',
+            '@message' => JSON.generate(
+              name: 'Password Reset: Password Submitted',
+              properties: {
+                event_properties: { success: true, profile_deactivated: true },
+              },
+            ),
+          },
+        ]
+      end
+
+      it 'reports the profile deactivation' do
+        expect(command_output).to include(
+          '## Identity verification profile deactivated ' \
+          '(November 06, 2026 at 09:28 PM EST)',
+          'User reset their password, which deactivated their identity verification profile',
+        )
+      end
+    end
+
     context 'when the source yields events out of chronological order' do
       let(:cloudwatch_events) do
         [

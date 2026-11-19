@@ -12,8 +12,12 @@ module Idv
     validate :validate_duplicate_images, if: :image_resubmission_check?
     validate :limit_if_rate_limited
 
+    # @param document_capture_session [DocumentCaptureSession, nil] the session the caller is
+    #   entitled to upload to, resolved by the controller; nil when the request names none or one
+    #   the caller may not use, which fails the presence validation
     def initialize(
       params,
+      document_capture_session:,
       acuant_sdk_upgrade_ab_test_bucket:,
       attempts_api_tracker:,
       fraud_ops_tracker:,
@@ -23,6 +27,7 @@ module Idv
       uuid_prefix: nil
     )
       @params = params
+      @document_capture_session = document_capture_session
       @acuant_sdk_upgrade_ab_test_bucket = acuant_sdk_upgrade_ab_test_bucket
       @analytics = analytics
       @attempts_api_tracker = attempts_api_tracker
@@ -135,6 +140,7 @@ module Idv
     attr_reader :acuant_sdk_upgrade_ab_test_bucket,
                 :analytics,
                 :attempts_api_tracker,
+                :document_capture_session,
                 :fraud_ops_tracker,
                 :form_response,
                 :liveness_checking_required,
@@ -403,12 +409,6 @@ module Idv
 
     def passport_submittal
       images_metadata.passport_submittal
-    end
-
-    def document_capture_session
-      @document_capture_session ||= DocumentCaptureSession.find_by(
-        uuid: document_capture_session_uuid,
-      )
     end
 
     def validate_images

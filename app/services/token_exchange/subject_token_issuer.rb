@@ -6,14 +6,15 @@ module TokenExchange
 
     # @param dpop_jkt [String, nil] RFC 7638 thumbprint of the key the subject token is bound to
     #   (RFC 9449), carried from the authorization code it is issued for; nil for a bearer token
-    def self.issue(identity:, actor_return_log_id: nil, dpop_jkt: nil)
-      new(identity:, actor_return_log_id:, dpop_jkt:).issue
+    def self.issue(identity:, resource:, actor_return_log_id: nil, dpop_jkt: nil)
+      new(identity:, resource:, actor_return_log_id:, dpop_jkt:).issue
     end
 
-    def initialize(identity:, actor_return_log_id:, dpop_jkt:)
+    def initialize(identity:, resource:, actor_return_log_id:, dpop_jkt:)
       @identity = identity
       @actor_return_log_id = actor_return_log_id
       @dpop_jkt = dpop_jkt
+      @resource = resource
     end
 
     def issue
@@ -28,6 +29,7 @@ module TokenExchange
         actor_return_log_id:,
         dpop_jkt:,
         issued_at: Time.zone.now.to_i,
+        resource:,
       )
 
       EncryptedRedisStructStorage.store(subject_token, expires_in:)
@@ -37,6 +39,6 @@ module TokenExchange
 
     private
 
-    attr_reader :identity, :actor_return_log_id, :dpop_jkt
+    attr_reader :identity, :actor_return_log_id, :dpop_jkt, :resource
   end
 end

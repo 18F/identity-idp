@@ -13,6 +13,7 @@ RSpec.describe BillableEventTrackable do
       :session,
       :identity_authorization_code,
       :authorization_dpop_jkt,
+      :resource,
     ) do
       include BillableEventTrackable
     end
@@ -24,6 +25,7 @@ RSpec.describe BillableEventTrackable do
   let(:request_id) { SecureRandom.hex }
   let(:identity_authorization_code) { nil }
   let(:authorization_dpop_jkt) { nil }
+  let(:resource) { nil }
   let(:session_started_at) { 5.minutes.ago }
   let(:profile_sp) { create(:service_provider) }
   let(:active_profile) do
@@ -55,6 +57,7 @@ RSpec.describe BillableEventTrackable do
       },
       identity_authorization_code:,
       authorization_dpop_jkt:,
+      resource:,
     )
   end
 
@@ -123,6 +126,17 @@ RSpec.describe BillableEventTrackable do
         handoff = TokenExchange::ActorHandoff.load(identity_authorization_code)
         expect(handoff.actor_return_log_id).to eq(SpReturnLog.last.id)
         expect(SpReturnLog.last).to be_billable
+      end
+
+      context 'when the authorization named a resource' do
+        let(:resource) { 'https://passport.gov' }
+
+        it 'stores the resource under the authorization code' do
+          instance.track_billing_events(resource:)
+
+          handoff = TokenExchange::ActorHandoff.load(identity_authorization_code)
+          expect(handoff.resource).to eq(resource)
+        end
       end
 
       it 'links each authorization code to its own handoff row' do
