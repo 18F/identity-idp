@@ -134,4 +134,25 @@ describe('PasswordStrengthElement', () => {
     ).to.be.empty();
     expect(input.validity.valid).to.be.true();
   });
+
+  it('does not restore stale strength after the value is cleared', async () => {
+    const element = createElement();
+
+    const input: HTMLInputElement = screen.getByRole('textbox');
+
+    // Dispatch synchronously so the clear is handled while scoring of the previous value is
+    // still in flight, which is what the deferred zxcvbn load makes possible.
+    input.value = 'p';
+    input.dispatchEvent(new Event('input'));
+    input.value = '';
+    input.dispatchEvent(new Event('input'));
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 0);
+    });
+
+    expect(element.classList.contains('display-none')).to.be.true();
+    expect(element.hasAttribute('score')).to.be.false();
+    expect(input.getAttribute('aria-describedby') ?? '').to.not.contain('password-strength');
+  });
 });

@@ -106,4 +106,24 @@ describe('NDS PasswordStrengthElement', () => {
     expect(screen.getByText('instructions.password.strength.strong')).to.exist();
     expect(input.validity.valid).to.be.true();
   });
+
+  it('does not restore stale strength after the value is cleared', async () => {
+    const element = createElement();
+
+    const input: HTMLInputElement = screen.getByRole('textbox');
+
+    // Dispatch synchronously so the clear is handled while scoring of the previous value is
+    // still in flight, which is what the deferred zxcvbn load makes possible.
+    input.value = 'p';
+    input.dispatchEvent(new Event('input'));
+    input.value = '';
+    input.dispatchEvent(new Event('input'));
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 0);
+    });
+
+    expect(element.hidden).to.be.true();
+    expect(input.hasAttribute('aria-describedby')).to.be.false();
+  });
 });
