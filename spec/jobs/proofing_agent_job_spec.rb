@@ -235,8 +235,7 @@ RSpec.describe ProofingAgentJob, type: :job do
                     vendor_name: 'ResolutionMock',
                     vendor_id: nil,
                     vendor_workflow: nil,
-                    verified_attributes: nil,
-                    result_overrides: [] },
+                    verified_attributes: nil },
                   residential_address:
                   { success: true,
                     errors: {},
@@ -251,8 +250,7 @@ RSpec.describe ProofingAgentJob, type: :job do
                     vendor_name: 'ResolutionMock',
                     vendor_id: nil,
                     vendor_workflow: nil,
-                    verified_attributes: nil,
-                    result_overrides: [] },
+                    verified_attributes: nil },
                   threatmetrix:
                   { client: 'tmx_session_id_missing',
                     success: false,
