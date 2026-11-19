@@ -104,6 +104,12 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).account_recovery_cancelled
   end
 
+  def account_recovery_completed
+    UserMailer.with(user: user, email_address: email_address_record).account_recovery_completed(
+      removed_mfa_methods: %w[auth_app phone],
+    )
+  end
+
   def account_reset_request
     UserMailer.with(user: user, email_address: email_address_record).account_reset_request(
       user.build_account_reset_request,

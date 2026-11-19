@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_09_150100) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_09_154606) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -84,6 +84,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_150100) do
     t.integer "totp_timestamp", comment: "sensitive=false"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
+    t.bigint "account_recovery_request_id", comment: "sensitive=false"
     t.index ["user_id", "created_at"], name: "index_auth_app_configurations_on_user_id_and_created_at", unique: true
     t.index ["user_id", "name"], name: "index_auth_app_configurations_on_user_id_and_name", unique: true
   end
@@ -96,6 +97,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_150100) do
     t.string "salted_code_fingerprint", comment: "sensitive=false"
     t.string "code_salt", comment: "sensitive=true"
     t.string "code_cost", comment: "sensitive=false"
+    t.bigint "account_recovery_request_id", comment: "sensitive=false"
     t.index ["user_id", "created_at"], name: "index_backup_code_configurations_on_user_id_and_created_at"
     t.index ["user_id", "salted_code_fingerprint"], name: "index_backup_codes_on_user_id_and_salted_code_fingerprint"
   end
@@ -520,6 +522,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_150100) do
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "made_default_at", precision: nil, comment: "sensitive=false"
+    t.bigint "account_recovery_request_id", comment: "sensitive=false"
     t.index ["user_id", "made_default_at", "created_at"], name: "index_phone_configurations_on_made_default_at"
   end
 
@@ -540,6 +543,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_150100) do
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
     t.string "x509_issuer", comment: "sensitive=false"
+    t.bigint "account_recovery_request_id", comment: "sensitive=false"
     t.index ["user_id", "created_at"], name: "index_piv_cac_configurations_on_user_id_and_created_at", unique: true
     t.index ["user_id", "name"], name: "index_piv_cac_configurations_on_user_id_and_name", unique: true
     t.index ["x509_dn_uuid"], name: "index_piv_cac_configurations_on_x509_dn_uuid", unique: true
@@ -804,6 +808,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_150100) do
     t.string "transports", comment: "sensitive=false", array: true
     t.jsonb "authenticator_data_flags", comment: "sensitive=false"
     t.string "aaguid", comment: "sensitive=false"
+    t.bigint "account_recovery_request_id", comment: "sensitive=false"
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 

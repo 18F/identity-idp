@@ -8,13 +8,7 @@ module AccountRecovery
     TOKEN_MISSING = :token_missing
     TOKEN_INVALID = :token_invalid
     TOKEN_EXPIRED = :token_expired
-    WRONG_STATE = :wrong_state
     TRANSITION_FAILED = :transition_failed
-
-    REDEEMABLE_STATES = [
-      AccountRecoveryRequest::GRANTED,
-      AccountRecoveryRequest::LINK_VERIFIED,
-    ].freeze
 
     # The matched request, available to callers after a successful #call.
     # @return [AccountRecoveryRequest, nil]
@@ -35,7 +29,9 @@ module AccountRecovery
       )
 
       return failure(TOKEN_INVALID) if request.blank?
-      return failure(WRONG_STATE) unless REDEEMABLE_STATES.include?(request.state)
+      # A token fingerprint is only persisted on a granted request and is
+      # cleared on password verification, cancellation, and expiration, so a
+      # fingerprint match can only be granted or link_verified here.
       return failure(TOKEN_EXPIRED) if request.token_expired?
 
       recovery_state = request.state

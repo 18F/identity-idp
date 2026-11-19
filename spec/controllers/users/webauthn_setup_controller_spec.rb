@@ -124,6 +124,22 @@ RSpec.describe Users::WebauthnSetupController do
           expect(additional_mfa_check).to be_falsey
         end
       end
+
+      context 'with a credential suspended for account recovery' do
+        it 'does not allow re-registering the same MFA method' do
+          suspended = create(:webauthn_configuration, user: user)
+          recovery_request = create(
+            :account_recovery_request,
+            :replacement_mfa_pending,
+            user: user,
+          )
+          suspended.update!(account_recovery_request_id: recovery_request.id)
+
+          get :new
+
+          expect(response).to redirect_to(account_recovery_new_mfa_setup_url)
+        end
+      end
     end
 
     describe '#confirm' do

@@ -80,7 +80,7 @@ RSpec.describe AccountRecovery::CreateRequest do
           to: user.phone_configurations.first.phone,
           country_code: 'US',
           interval: WaitPeriodFormatter.call(
-            IdentityConfig.store.account_recovery_wait_period_days.days,
+            IdentityConfig.store.account_recovery_wait_period_hours.hours,
           ),
         ).and_call_original
 

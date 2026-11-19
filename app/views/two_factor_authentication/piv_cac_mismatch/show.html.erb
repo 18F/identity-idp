@@ -25,7 +25,7 @@
         ).with_content(t('two_factor_authentication.piv_cac_mismatch.skip')) %>
   <% end %>
 <% elsif @account_recovery_pending %>
-  <%# The pending-recovery banner explains how to cancel the request. %>
+  <p><%= t('two_factor_authentication.account_recovery.recover_text') %></p>
 <% elsif @account_recovery_url %>
   <p><%= t('two_factor_authentication.piv_cac_mismatch.instructions_recovery') %></p>
 

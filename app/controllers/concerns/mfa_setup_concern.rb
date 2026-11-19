@@ -2,8 +2,11 @@
 
 module MfaSetupConcern
   extend ActiveSupport::Concern
+  include AccountRecoveryConcern
 
   def next_setup_path
+    return next_account_recovery_setup_path if user_session[:account_recovery_completed]
+
     if next_setup_choice
       confirmation_path
     elsif recommend_webauthn_platform_for_sms_user?
@@ -39,6 +42,12 @@ module MfaSetupConcern
 
   def confirm_user_authenticated_for_2fa_setup
     authenticate_user!(force: true)
+    # Prevents if method has already been called
+    return if performed?
+    if replacement_mfa_pending? && suspended_mfa_method_for_recovery?
+      return redirect_to account_recovery_new_mfa_setup_url
+    end
+    return if replacement_mfa_pending?
     return if user_fully_authenticated?
     return unless MfaPolicy.new(current_user).two_factor_enabled?
     redirect_to user_two_factor_authentication_url
@@ -152,6 +161,25 @@ module MfaSetupConcern
   end
 
   private
+
+  def suspended_mfa_method_for_recovery?
+    AccountRecovery::SuspendExistingMfa.suspended_mfa_methods(
+      account_recovery_request: AccountRecoveryRequest.active_for_user(current_user),
+    ).include?(recovery_mfa_setup_method)
+  end
+
+  def recovery_mfa_setup_method
+    case controller_path
+    when 'users/phone_setup' then :phone
+    when 'users/totp_setup' then :auth_app
+    when 'users/piv_cac_authentication_setup' then :piv_cac
+    when 'users/backup_code_setup' then :backup_code
+    when 'users/webauthn_setup'
+      params[:platform] == 'true' || params[:platform_authenticator] == 'true' ?
+        :webauthn_platform :
+        :webauthn
+    end
+  end
 
   def track_user_registration_mfa_setup_complete_event
     analytics.user_registration_mfa_setup_complete(

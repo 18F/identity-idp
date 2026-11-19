@@ -23,9 +23,11 @@ class GrantAccountRecoveryRequestsAndSendEmailsJob < ApplicationJob
   private
 
   def requests_past_waiting_period(now)
+    waiting_period_elapsed_at = now - IdentityConfig.store.account_recovery_wait_period_hours.hours
+
     AccountRecoveryRequest
       .where(state: AccountRecoveryRequest::WAITING)
-      .where(requested_at: ...(now - IdentityConfig.store.account_recovery_wait_period_days.days))
+      .where(requested_at: ...waiting_period_elapsed_at)
       .order(requested_at: :asc)
   end
 

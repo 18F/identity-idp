@@ -72,14 +72,12 @@ class AccountRecoveryRequest < ApplicationRecord
     active.find_by(token_fingerprint: fingerprint)
   end
 
-  # The request a user may continue after redeeming their recovery link and
-  # confirming their password.
-  def self.password_verified_for_user(user)
-    active.find_by(user: user, state: PASSWORD_VERIFIED)
-  end
-
   def active?
     ACTIVE_STATES.include?(state)
+  end
+
+  def replacement_mfa_pending?
+    active? && state == REPLACEMENT_MFA_PENDING
   end
 
   def terminal?

@@ -7,7 +7,7 @@ module TwoFactorAuthentication
     end
 
     def configured?
-      user&.auth_app_configurations&.any?
+      user&.auth_app_configurations&.available_for_authentication&.any?
     end
 
     def enabled?

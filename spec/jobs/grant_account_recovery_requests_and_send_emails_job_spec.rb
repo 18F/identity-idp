@@ -4,12 +4,12 @@ RSpec.describe GrantAccountRecoveryRequestsAndSendEmailsJob do
   let(:user) { create(:user, :fully_registered) }
   let(:user2) { create(:user, :fully_registered) }
   let(:now) { Time.zone.now }
-  let(:wait_period_days) { 1 }
+  let(:wait_period_hours) { 24 }
 
   before do
     allow(IdentityConfig.store).to receive(:account_recovery_v2_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:account_recovery_wait_period_days)
-      .and_return(wait_period_days)
+    allow(IdentityConfig.store).to receive(:account_recovery_wait_period_hours)
+      .and_return(wait_period_hours)
     allow(IdentityConfig.store).to receive(:deliver_mail_async).and_return(false)
   end
 
@@ -158,12 +158,41 @@ RSpec.describe GrantAccountRecoveryRequestsAndSendEmailsJob do
     end
 
     context 'with a longer configured waiting period' do
-      let(:wait_period_days) { 7 }
+      let(:wait_period_hours) { 7 * 24 }
 
       it 'respects the configured period' do
         create_waiting_request_for(user, requested_at: now - 2.days)
 
         expect(described_class.new.perform(now)).to eq(0)
+      end
+    end
+
+    context 'with a sub-day configured waiting period' do
+      let(:wait_period_hours) { 2 }
+
+      it 'grants a request once the hours have elapsed' do
+        recovery_request = create_waiting_request_for(user, requested_at: now - 3.hours)
+
+        expect(described_class.new.perform(now)).to eq(1)
+        expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::GRANTED)
+      end
+
+      it 'does not grant a request still inside the hours' do
+        recovery_request = create_waiting_request_for(user, requested_at: now - 1.hour)
+
+        expect(described_class.new.perform(now)).to eq(0)
+        expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::WAITING)
+      end
+    end
+
+    context 'with a zero configured waiting period' do
+      let(:wait_period_hours) { 0 }
+
+      it 'grants a request as soon as the job runs' do
+        recovery_request = create_waiting_request_for(user, requested_at: now - 1.second)
+
+        expect(described_class.new.perform(now)).to eq(1)
+        expect(recovery_request.reload.state).to eq(AccountRecoveryRequest::GRANTED)
       end
     end
   end

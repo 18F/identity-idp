@@ -1,0 +1,35 @@
+<p class="lead">
+  <%= t('user_mailer.account_recovery_completed.intro', app_name: APP_NAME) %>
+</p>
+
+<% if @removed_mfa_method_names.present? %>
+  <p><%= t('user_mailer.account_recovery_completed.removed') %></p>
+
+  <ul>
+    <% @removed_mfa_method_names.each do |method_name| %>
+      <li><%= method_name %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<p><%= t('user_mailer.account_recovery_completed.review_methods') %></p>
+
+<table class="hr">
+  <tr>
+    <th>
+      &nbsp;
+    </th>
+  </tr>
+</table>
+
+<p><%= t('user_mailer.account_recovery_completed.unrequested_html', app_name: APP_NAME) %></p>
+
+<ul>
+  <li><%= t('user_mailer.account_recovery_request.change_password') %></li>
+  <li><%= t('user_mailer.account_recovery_request.review_methods') %></li>
+  <li><%= t('user_mailer.account_recovery_request.review_history') %></li>
+  <li><%= t(
+            'user_mailer.account_recovery_request.report_html',
+            contact_link_html: link_to(t('user_mailer.contact_link_text'), MarketingSite.contact_url),
+          ) %></li>
+</ul>

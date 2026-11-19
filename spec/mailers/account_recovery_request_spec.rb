@@ -9,7 +9,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     before do
-      allow(IdentityConfig.store).to receive(:account_recovery_wait_period_days).and_return(1)
+      allow(IdentityConfig.store).to receive(:account_recovery_wait_period_hours).and_return(24)
     end
 
     it_behaves_like 'a system email'
@@ -38,7 +38,7 @@ RSpec.describe UserMailer, type: :mailer do
             expect(mail.html_part.body).to have_content(
               I18n.t(
                 'user_mailer.account_recovery_request.step_one.title',
-                interval: WaitPeriodFormatter.call(1.day),
+                interval: WaitPeriodFormatter.call(24.hours),
               ),
             )
             expect(mail.html_part.body).to have_link(

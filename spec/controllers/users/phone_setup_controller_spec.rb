@@ -44,7 +44,7 @@ RSpec.describe Users::PhoneSetupController do
     context 'when fully registered and partially signed in' do
       it 'redirects to 2FA page' do
         stub_analytics
-        user = build(:user, :with_phone)
+        user = create(:user, :with_phone)
         stub_sign_in_before_2fa(user)
 
         get :index
