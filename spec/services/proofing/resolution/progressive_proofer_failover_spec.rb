@@ -425,6 +425,50 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         expect(proof.proofing_vendor).to eq(fallback_vendor)
         expect(proof.resolution_success?).to eq(true)
       end
+
+      context 'when an Instant Verify result is bypassable' do
+        let(:primary_vendor) { :instant_verify_ddp }
+        let(:fallback_vendor) { :socure_kyc }
+        let(:primary_result) do
+          Proofing::Resolution::Result.new(
+            success: false,
+            errors: {
+              InstantVerify: {
+                'ProductType' => 'InstantVerify',
+                'ProductStatus' => 'fail',
+                'Items' => [
+                  {
+                    'ItemName' => 'SsnFullNameMatch',
+                    'ItemReason' => { 'Code' => 'ssn_fullname_not_match_fail' },
+                    'ItemStatus' => 'fail',
+                  },
+                ],
+              },
+            },
+            vendor_name: 'lexisnexis:instant_verify',
+          )
+        end
+
+        before do
+          allow(IdentityConfig.store).to receive(:ssa_instant_verify_bypass_error_codes)
+            .and_return('SsnFullNameMatch' => ['ssn_fullname_not_match_fail'])
+        end
+
+        it 'stops failover and records the bypassed primary attempt' do
+          expect(fallback_proofer).not_to receive(:proof)
+
+          expect(proof.resolution_success?).to eq(true)
+          expect(proof.resolution_bypassed).to eq(true)
+          expect(resolution_stage).to include(
+            attempted_vendors: [primary_vendor],
+            failover_available: true,
+            failover_used: false,
+            bypassed: true,
+          )
+          expect(proof.adjudicated_result.extra[:context][:resolution_adjudication_reason])
+            .to eq(:instant_verify_bypass)
+        end
+      end
     end
   end
 end
