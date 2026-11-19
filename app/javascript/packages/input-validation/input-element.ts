@@ -19,6 +19,17 @@ const VALIDATION_CONTROL_SELECTOR = '.usa-input__control, .validated-field__inpu
 
 type ValidationControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
+const editedControls = new WeakSet<ValidationControl>();
+
+/**
+ * Leaving an empty required field the user hasn't edited yet (e.g. one that was autofocused) is not
+ * a mistake to flag. Showing the error on that blur would also shift the page during the mousedown
+ * of a click elsewhere, so the click would miss its target.
+ */
+const skipsBlurValidation = (control: ValidationControl) =>
+  consumeIgnoreBlurValidation(control.form) ||
+  (control.validity.valueMissing && !editedControls.has(control));
+
 const digitCount = (value: string) => value.replace(/\D/g, '').length;
 
 const caretPositionAfterDigits = (value: string, count: number) => {
@@ -199,6 +210,7 @@ const bindNdsPhoneGroup = (group: HTMLElement) => {
   };
 
   field.addEventListener('input', () => {
+    editedControls.add(field);
     formatPhoneInput(field, country());
     syncCustomValidity();
     if (field.validity.valid) {
@@ -207,7 +219,7 @@ const bindNdsPhoneGroup = (group: HTMLElement) => {
   });
 
   field.addEventListener('blur', () => {
-    if (consumeIgnoreBlurValidation(field.form)) {
+    if (skipsBlurValidation(field)) {
       return;
     }
     validate();
@@ -579,14 +591,18 @@ const bindInputValidation = (input: ValidationControl) => {
 
   input.dataset[NDS_VALIDATION_READY] = 'true';
   input.addEventListener('blur', () => {
-    if (consumeIgnoreBlurValidation(input.form)) {
+    if (skipsBlurValidation(input)) {
       return;
     }
     validateNdsInput(input);
   });
   // Clear stale errors while typing; full messages surface on blur / invalid.
-  input.addEventListener('input', () => setNdsInputValidationMessage(input, ''));
-  input.addEventListener('change', () => setNdsInputValidationMessage(input, ''));
+  const clearValidationMessage = () => {
+    editedControls.add(input);
+    setNdsInputValidationMessage(input, '');
+  };
+  input.addEventListener('input', clearValidationMessage);
+  input.addEventListener('change', clearValidationMessage);
   input.addEventListener('invalid', (event) => {
     event.preventDefault();
     validateNdsInput(input, { focus: true });

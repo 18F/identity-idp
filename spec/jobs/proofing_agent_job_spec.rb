@@ -12,6 +12,31 @@ RSpec.describe ProofingAgentJob, type: :job do
     )
   end
   let(:result_id) { SecureRandom.uuid }
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:attempts_api_pii) do
+    {
+      first_name: pii[:first_name],
+      last_name: pii[:last_name],
+      date_of_birth: pii[:dob],
+      ssn: SsnFormatter.format(pii[:ssn]),
+      address1: pii[:address1],
+      address2: pii[:address2],
+      city: pii[:city],
+      state: pii[:state],
+      zip: pii[:zipcode],
+      phone: pii[:phone],
+      document_type: pii[:document_type_received],
+      document_state_jurisdiction: pii[:state_id_jurisdiction],
+      document_number: pii[:state_id_number],
+      document_issued: pii[:state_id_issued],
+      document_expiration: pii[:state_id_expiration],
+      document_address1: pii[:identity_doc_address1],
+      document_address2: pii[:identity_doc_address2],
+      document_city: pii[:identity_doc_city],
+      document_state: pii[:identity_doc_address_state],
+      document_zip: pii[:identity_doc_zipcode],
+    }
+  end
   let(:issuer) { 'favorite-sp-issuer' }
   let(:document_capture_session) do
     create(:document_capture_session, result_id:, issuer:, requested_at: Time.zone.now)
@@ -40,7 +65,7 @@ RSpec.describe ProofingAgentJob, type: :job do
       }.with_indifferent_access,
     ]
   end
-  let(:service_provider) { create(:service_provider, app_id: 'fake-app-id') }
+  let!(:service_provider) { create(:service_provider, app_id: 'fake-app-id', issuer:) }
   let(:submit_attempts) { 1 }
   let(:remaining_attempts) { 2 }
 
@@ -52,6 +77,8 @@ RSpec.describe ProofingAgentJob, type: :job do
       ActiveJob::Base.queue_adapter = :test
       ActiveJob::Base.queue_adapter.enqueued_jobs.clear
       ActiveJob::Base.queue_adapter.performed_jobs.clear
+      allow(attempts_api_tracker).to receive(:idv_proofing_agent_verification_submitted)
+      allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
       allow(Idv::ProofingAgent::FailureEmailUserSet).to receive(:new).and_return(
         failure_email_users,
       )
@@ -62,6 +89,8 @@ RSpec.describe ProofingAgentJob, type: :job do
       )
       allow(reminder_email_users).to receive(:add)
       allow(reminder_email_users).to receive(:remove)
+      allow(IdentityConfig.store).to receive(:attempts_api_enabled)
+        .and_return(true)
       allow(IdentityConfig.store).to receive(:idv_proofing_agent_config)
         .and_return(idv_proofing_agent_config)
       allow(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor).and_return(:mock)
@@ -135,6 +164,19 @@ RSpec.describe ProofingAgentJob, type: :job do
         expect { perform }.to change { ActionMailer::Base.deliveries.count }.by(1)
         expect(ActionMailer::Base.deliveries.last.to)
           .to eq([user.confirmed_email_addresses.first.email])
+      end
+
+      it 'tracks the proofing attempt' do
+        perform
+
+        expect(attempts_api_tracker).to have_received(:idv_proofing_agent_verification_submitted)
+          .with(
+            user_id: user.id,
+            success: true,
+            transaction_id:,
+            pii: { **attempts_api_pii },
+            failure_reason: nil,
+          )
       end
 
       it 'logs the profile confirmation email analytics event' do
@@ -266,6 +308,7 @@ RSpec.describe ProofingAgentJob, type: :job do
       context 'when document capture session is not found' do
         let(:transaction_id) { 'not-found' }
         let!(:webhook_stub) { stub_webhook_request }
+        let(:failure_reason) { 'system_error' }
 
         before do
           allow(NewRelic::Agent).to receive(:notice_error)
@@ -282,6 +325,12 @@ RSpec.describe ProofingAgentJob, type: :job do
               source: 'unexpected',
               transaction_id:,
             },
+          )
+        end
+
+        it 'does not track the proofing attempt' do
+          expect(attempts_api_tracker).not_to have_received(
+            :idv_proofing_agent_verification_submitted,
           )
         end
       end
@@ -364,6 +413,7 @@ RSpec.describe ProofingAgentJob, type: :job do
 
     context 'when resolution proofing fails' do
       let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.merge(zipcode: '00000') }
+      let(:failure_reason) { 'profile_resolution_fail' }
 
       let(:webhook_status) { 500 }
       it 'stores a failed result' do
@@ -378,11 +428,24 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'enqueues a ProofingAgentWebhookJob with success: false' do
         expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
           success: false,
-          reason: 'profile_resolution_fail',
+          reason: failure_reason,
           transaction_id: transaction_id,
           correlation_id: correlation_id,
           analytics_attributes: an_instance_of(Hash),
         )
+      end
+
+      it 'tracks the proofing attempt' do
+        perform
+
+        expect(attempts_api_tracker).to have_received(:idv_proofing_agent_verification_submitted)
+          .with(
+            user_id: user.id,
+            success: false,
+            transaction_id:,
+            pii: { **attempts_api_pii },
+            failure_reason:,
+          )
       end
 
       it 'does not send a profile confirmation email' do
@@ -405,6 +468,7 @@ RSpec.describe ProofingAgentJob, type: :job do
 
     context 'when the resolution proofing throw an exception' do
       let(:result) { document_capture_session.reload.load_agent_proofed_user }
+      let(:failure_reason) { 'system_error' }
 
       before do
         allow(NewRelic::Agent).to receive(:notice_error)
@@ -415,7 +479,7 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'returns a system error in the document capture session' do
         result = document_capture_session.reload.load_agent_proofed_user
         expect(result[:success]).to be false
-        expect(result[:reason]).to eq('system_error')
+        expect(result[:reason]).to eq(failure_reason)
       end
 
       it 'logs unsuccessful idv_doc_auth_verify_proofing_results event' do
@@ -426,6 +490,19 @@ RSpec.describe ProofingAgentJob, type: :job do
             success: false,
           ),
         )
+      end
+
+      it 'tracks the proofing attempt' do
+        perform
+
+        expect(attempts_api_tracker).to have_received(:idv_proofing_agent_verification_submitted)
+          .with(
+            user_id: user.id,
+            success: false,
+            transaction_id:,
+            pii: { **attempts_api_pii },
+            failure_reason:,
+          )
       end
 
       it 'notifies NewRelic of the caught exception' do
@@ -447,6 +524,8 @@ RSpec.describe ProofingAgentJob, type: :job do
     end
 
     context 'when AAMVA verification throws an unexpected exception' do
+      let(:failure_reason) { 'system_error' }
+
       before do
         allow(NewRelic::Agent).to receive(:notice_error)
         allow_any_instance_of(DocAuth::Aamva::Verifier)
@@ -464,11 +543,24 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'enqueues a ProofingAgentWebhookJob with success: false and system_error reason' do
         expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
           success: false,
-          reason: 'system_error',
+          reason: failure_reason,
           transaction_id: transaction_id,
           correlation_id: correlation_id,
           analytics_attributes: an_instance_of(Hash),
         )
+      end
+
+      it 'tracks the proofing attempt' do
+        perform
+
+        expect(attempts_api_tracker).to have_received(:idv_proofing_agent_verification_submitted)
+          .with(
+            user_id: user.id,
+            success: false,
+            transaction_id:,
+            pii: { **attempts_api_pii },
+            failure_reason:,
+          )
       end
 
       it 'notifies NewRelic of the caught exception' do
@@ -487,6 +579,25 @@ RSpec.describe ProofingAgentJob, type: :job do
 
     context 'when MRZ verification throws an unexpected exception' do
       let(:pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT.merge(phone: '12025551212').freeze }
+      let(:failure_reason) { 'system_error' }
+      let(:attempts_api_pii) do
+        {
+          first_name: pii[:first_name],
+          last_name: pii[:last_name],
+          date_of_birth: pii[:dob],
+          ssn: SsnFormatter.format(pii[:ssn]),
+          address1: pii[:address1],
+          address2: pii[:address2],
+          city: pii[:city],
+          state: pii[:state],
+          zip: pii[:zipcode],
+          phone: pii[:phone],
+          document_type: pii[:document_type_received],
+          document_number: pii[:document_number],
+          document_expiration: pii[:passport_expiration],
+          document_issued: pii[:passport_issued],
+        }
+      end
 
       before do
         allow(NewRelic::Agent).to receive(:notice_error)
@@ -506,11 +617,24 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'enqueues a ProofingAgentWebhookJob with success: false and system_error reason' do
         expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
           success: false,
-          reason: 'system_error',
+          reason: failure_reason,
           transaction_id: transaction_id,
           correlation_id: correlation_id,
           analytics_attributes: an_instance_of(Hash),
         )
+      end
+
+      it 'tracks the proofing attempt' do
+        perform
+
+        expect(attempts_api_tracker).to have_received(:idv_proofing_agent_verification_submitted)
+          .with(
+            user_id: user.id,
+            success: false,
+            transaction_id:,
+            pii: { **attempts_api_pii },
+            failure_reason:,
+          )
       end
 
       it 'notifies NewRelic of the caught exception' do
@@ -582,6 +706,19 @@ RSpec.describe ProofingAgentJob, type: :job do
         expect(result[:source_check_vendor]).to eq('StateIdMock')
       end
 
+      it 'tracks the proofing attempt' do
+        perform
+
+        expect(attempts_api_tracker).to have_received(:idv_proofing_agent_verification_submitted)
+          .with(
+            user_id: user.id,
+            success: true,
+            transaction_id:,
+            pii: { **attempts_api_pii },
+            failure_reason: nil,
+          )
+      end
+
       it 'logs phone confirmation vendor event with proofing agent' do
         perform
         expect(@analytics).to have_logged_event(
@@ -617,6 +754,63 @@ RSpec.describe ProofingAgentJob, type: :job do
             source_check: 'StateIdMock',
           },
         )
+      end
+
+      context 'when the phone precheck returns an alternate result' do
+        let(:address_proofer) { instance_double(Proofing::AddressProofer) }
+        let(:alternate_result) do
+          Proofing::AddressResult.new(
+            success: false,
+            errors: {},
+            exception: nil,
+            vendor_name: 'failed-phone-vendor',
+            transaction_id: 'alternate-transaction-id',
+          ).to_h
+        end
+        let(:phone_result) do
+          Proofing::AddressResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: 'successful-phone-vendor',
+            transaction_id: 'primary-transaction-id',
+          ).to_h.merge(alternate_result:)
+        end
+
+        before do
+          allow(Proofing::AddressProofer).to receive(:new).and_return(address_proofer)
+          allow(address_proofer).to receive(:proof).and_return(phone_result)
+        end
+
+        it 'logs phone confirmation vendor event with the alternate result' do
+          perform
+
+          expect(@analytics).to have_logged_event(
+            'IdV: phone confirmation vendor',
+            success: true,
+            errors: {},
+            vendor: phone_result,
+            alternate_result: alternate_result,
+            area_code: '202',
+            country_code: 'US',
+            phone_fingerprint: an_instance_of(String),
+            new_phone_added: true,
+            hybrid_handoff_phone_used: false,
+            manual_review: false,
+            proofing_agent: {
+              agent_id: proofing_agent_id,
+              location_id: proofing_location_id,
+              correlation_id: correlation_id,
+              transaction_id: transaction_id,
+            },
+            proofing_components: {
+              residential_resolution_check: 'ResolutionMock',
+              resolution_check: 'ResolutionMock',
+              address_check: 'successful-phone-vendor',
+              source_check: 'StateIdMock',
+            },
+          )
+        end
       end
 
       it 'passes aamva_verified_attributes into resolution_result' do
@@ -752,6 +946,7 @@ RSpec.describe ProofingAgentJob, type: :job do
 
     context 'when phone check fails' do
       let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(phone: nil).freeze }
+      let(:failure_reason) { 'phone_check_fail' }
 
       before do
         allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
@@ -762,7 +957,21 @@ RSpec.describe ProofingAgentJob, type: :job do
 
         result = document_capture_session.reload.load_agent_proofed_user
         expect(result[:success]).to be false
-        expect(result[:reason]).to eq('phone_check_fail')
+        expect(result[:reason]).to eq(failure_reason)
+      end
+
+      it 'tracks the proofing attempt' do
+        perform
+
+        expect(attempts_api_tracker).to have_received(
+          :idv_proofing_agent_verification_submitted,
+        ).with(
+          user_id: user.id,
+          success: false,
+          transaction_id:,
+          pii: { **attempts_api_pii },
+          failure_reason:,
+        )
       end
 
       it 'enqueues a ProofingAgentWebhookJob with success: false' do
@@ -773,6 +982,71 @@ RSpec.describe ProofingAgentJob, type: :job do
           correlation_id: correlation_id,
           analytics_attributes: an_instance_of(Hash),
         )
+      end
+    end
+
+    context 'when Socure phone risk returns a bypassed wrong phone type code (R613-R617)' do
+      let(:socure_base_url) { 'https://socure.example.org/' }
+      let(:name_phone_correlation_score) { 0.99 }
+      let(:phone_risk_score) { 0.01 }
+
+      before do
+        allow(IdentityConfig.store).to receive(:idv_proofing_agent_phone_vendor)
+          .and_return(:socure)
+        allow(IdentityConfig.store).to receive(
+          :idv_proofing_agent_bypass_wrong_phone_type_enabled,
+        ).and_return(true)
+        allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
+          .and_return(socure_base_url)
+        allow(IdentityConfig.store).to receive(:socure_idplus_api_key).and_return('test-key')
+        allow(IdentityConfig.store).to receive(
+          :idv_socure_phonerisk_auto_failure_reason_codes,
+        ).and_return(%w[R613 R614 R615 R616 R617 R601])
+        allow(IdentityConfig.store).to receive(
+          :idv_proofing_agent_socure_phonerisk_bypassed_reason_codes,
+        ).and_return(%w[R613 R614 R615 R616 R617])
+
+        stub_request(:post, URI.join(socure_base_url, '/api/3.0/EmailAuthScore').to_s)
+          .to_return(
+            status: 200,
+            headers: { 'Content-Type' => 'application/json' },
+            body: {
+              referenceId: 'socure-voip-ref-123',
+              namePhoneCorrelation: {
+                reasonCodes: ['I618'],
+                score: name_phone_correlation_score,
+              },
+              phoneRisk: {
+                reasonCodes: ['R613'],
+                score: phone_risk_score,
+                signals: { phone: {} },
+              },
+              customerProfile: {
+                customerUserId: user.uuid,
+              },
+            }.to_json,
+          )
+      end
+
+      it 'returns a successful result' do
+        perform
+
+        result = document_capture_session.reload.load_agent_proofed_user
+        expect(result[:success]).to be true
+        expect(result[:reason]).to be_nil
+      end
+
+      context 'when the risk and correlation scores are failing' do
+        let(:name_phone_correlation_score) { 0.01 }
+        let(:phone_risk_score) { 0.99 }
+
+        it 'stores a failed result' do
+          perform
+
+          result = document_capture_session.reload.load_agent_proofed_user
+          expect(result[:success]).to be false
+          expect(result[:reason]).to eq('phone_check_fail')
+        end
       end
     end
 
@@ -811,6 +1085,25 @@ RSpec.describe ProofingAgentJob, type: :job do
 
     context 'when the MRZ check fails' do
       let(:pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT.merge(phone: '12025551212').freeze }
+      let(:failure_reason) { 'passport_fail' }
+      let(:attempts_api_pii) do
+        {
+          first_name: pii[:first_name],
+          last_name: pii[:last_name],
+          date_of_birth: pii[:dob],
+          ssn: SsnFormatter.format(pii[:ssn]),
+          address1: pii[:address1],
+          address2: pii[:address2],
+          city: pii[:city],
+          state: pii[:state],
+          zip: pii[:zipcode],
+          phone: pii[:phone],
+          document_type: pii[:document_type_received],
+          document_number: pii[:document_number],
+          document_expiration: pii[:passport_expiration],
+          document_issued: pii[:passport_issued],
+        }
+      end
 
       before do
         failing_response = DocAuth::Response.new(
@@ -826,17 +1119,31 @@ RSpec.describe ProofingAgentJob, type: :job do
 
         result = document_capture_session.reload.load_agent_proofed_user
         expect(result[:success]).to be false
-        expect(result[:reason]).to eq('passport_fail')
+        expect(result[:reason]).to eq(failure_reason)
         expect(result[:mrz_status]).to eq 'failed'
       end
 
       it 'enqueues a ProofingAgentWebhookJob with success: false' do
         expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
           success: false,
-          reason: 'passport_fail',
+          reason: failure_reason,
           transaction_id: transaction_id,
           correlation_id: correlation_id,
           analytics_attributes: an_instance_of(Hash),
+        )
+      end
+
+      it 'tracks the proofing attempt' do
+        perform
+
+        expect(attempts_api_tracker).to have_received(
+          :idv_proofing_agent_verification_submitted,
+        ).with(
+          user_id: user.id,
+          success: false,
+          transaction_id:,
+          pii: { **attempts_api_pii },
+          failure_reason:,
         )
       end
 
@@ -857,6 +1164,8 @@ RSpec.describe ProofingAgentJob, type: :job do
     end
 
     context 'when Redis raises during the resolution proofing job' do
+      let(:failure_reason) { 'system_error' }
+
       before do
         allow(ResolutionProofingJob).to receive(:perform_now)
           .and_raise(Redis::BaseConnectionError)
@@ -867,21 +1176,37 @@ RSpec.describe ProofingAgentJob, type: :job do
 
         result = document_capture_session.reload.load_agent_proofed_user
         expect(result[:success]).to be false
-        expect(result[:reason]).to eq('system_error')
+        expect(result[:reason]).to eq(failure_reason)
       end
 
       it 'enqueues a ProofingAgentWebhookJob with success: false and system_error reason' do
         expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
           success: false,
-          reason: 'system_error',
+          reason: failure_reason,
           transaction_id: transaction_id,
           correlation_id: correlation_id,
           analytics_attributes: an_instance_of(Hash),
         )
       end
+
+      it 'tracks the proofing attempt' do
+        perform
+
+        expect(attempts_api_tracker).to have_received(
+          :idv_proofing_agent_verification_submitted,
+        ).with(
+          user_id: user.id,
+          success: false,
+          transaction_id:,
+          pii: { **attempts_api_pii },
+          failure_reason:,
+        )
+      end
     end
 
     context 'when the resolution proofing result is nil' do
+      let(:failure_reason) { 'system_error' }
+
       before do
         allow_any_instance_of(DocumentCaptureSession).to receive(:load_proofing_result)
           .and_return(nil)
@@ -892,11 +1217,27 @@ RSpec.describe ProofingAgentJob, type: :job do
 
         result = document_capture_session.reload.load_agent_proofed_user
         expect(result[:success]).to be false
-        expect(result[:reason]).to eq('system_error')
+        expect(result[:reason]).to eq(failure_reason)
+      end
+
+      it 'tracks the proofing attempt' do
+        perform
+
+        expect(attempts_api_tracker).to have_received(
+          :idv_proofing_agent_verification_submitted,
+        ).with(
+          user_id: user.id,
+          success: false,
+          transaction_id:,
+          pii: { **attempts_api_pii },
+          failure_reason:,
+        )
       end
     end
 
     context 'when storing the proofing result raises a Redis error' do
+      let(:failure_reason) { 'system_error' }
+
       before do
         allow(NewRelic::Agent).to receive(:notice_error)
         allow_any_instance_of(DocumentCaptureSession).to receive(:store_agent_proofed_user)
@@ -912,7 +1253,7 @@ RSpec.describe ProofingAgentJob, type: :job do
           expect { perform }.to raise_error(Redis::BaseConnectionError)
         end.to have_enqueued_job(ProofingAgentWebhookJob).with(
           success: false,
-          reason: 'system_error',
+          reason: failure_reason,
           transaction_id: transaction_id,
           correlation_id: correlation_id,
           analytics_attributes: an_instance_of(Hash),
@@ -930,6 +1271,19 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'does not store an agent proofed user with a system_error' do
         expect { perform }.to raise_error(Redis::BaseConnectionError)
         expect(document_capture_session.reload.load_agent_proofed_user).to be_nil
+      end
+
+      it 'logs the proofing attempt' do
+        expect { perform }.to raise_error(Redis::BaseConnectionError)
+        expect(attempts_api_tracker).to have_received(
+          :idv_proofing_agent_verification_submitted,
+        ).with(
+          user_id: user.id,
+          success: false,
+          transaction_id:,
+          pii: { **attempts_api_pii },
+          failure_reason:,
+        )
       end
     end
 

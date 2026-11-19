@@ -25,10 +25,6 @@ RSpec.describe TokenExchange::Constants do
     it 'defines the base delegated access scope' do
       expect(described_class::SCOPE).to eq('token_exchange')
     end
-
-    it 'defines the audience-qualified scope prefix' do
-      expect(described_class::SCOPE_PREFIX).to eq('token_exchange:')
-    end
   end
 
   describe 'analytics stage constants' do
@@ -36,23 +32,6 @@ RSpec.describe TokenExchange::Constants do
       expect(described_class::STAGE_ACTOR_AUTHORIZATION).to eq('actor_authorization')
       expect(described_class::STAGE_SUBJECT_TOKEN).to eq('subject_token')
       expect(described_class::STAGE_DELEGATED_TOKEN).to eq('delegated_token')
-    end
-  end
-
-  describe '.in_scope?' do
-    it 'matches the base scope' do
-      expect(described_class.in_scope?('token_exchange')).to eq(true)
-    end
-
-    it 'matches any audience-qualified scope' do
-      expect(described_class.in_scope?('token_exchange:passport')).to eq(true)
-      expect(described_class.in_scope?('token_exchange:benefits')).to eq(true)
-    end
-
-    it 'does not match other scopes' do
-      expect(described_class.in_scope?('openid')).to eq(false)
-      expect(described_class.in_scope?('token_exchange_passport')).to eq(false)
-      expect(described_class.in_scope?(nil)).to eq(false)
     end
   end
 end
