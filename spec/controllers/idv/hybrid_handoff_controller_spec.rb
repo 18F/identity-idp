@@ -229,6 +229,42 @@ RSpec.describe Idv::HybridHandoffController do
           subject.idv_session.skip_hybrid_handoff?
         }.from(false)
       end
+
+      context 'in the phone-first (NDS) flow' do
+        before do
+          subject.idv_session.phone_first_flow = true
+          stub_up_to(:choose_id_type, idv_session: subject.idv_session)
+        end
+
+        context 'when desktop document capture is available' do
+          let(:desktop_test_mode_enabled) { true }
+
+          it 'redirects to document capture since the ID type is already chosen' do
+            get :show
+
+            expect(response).to redirect_to(idv_document_capture_url)
+            expect(subject.idv_session.flow_path).to eq('standard')
+          end
+        end
+
+        context 'when desktop document capture is not available' do
+          it 'redirects to choose id type instead of a document capture step it cannot enter' do
+            get :show
+
+            expect(response).to redirect_to(idv_choose_id_type_url)
+          end
+        end
+
+        context 'when clear1 is allowed' do
+          before { subject.idv_session.clear1_allowed = true }
+
+          it 'redirects to how to verify' do
+            get :show
+
+            expect(response).to redirect_to(idv_how_to_verify_url)
+          end
+        end
+      end
     end
 
     context 'opt in ipp is enabled' do
