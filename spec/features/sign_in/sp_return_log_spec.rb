@@ -133,4 +133,72 @@ RSpec.feature 'SP return logs' do
       expect(SpReturnLog.last.issuer).to eq 'http://localhost:3000'
     end
   end
+
+  context 'when user goes back and forth between IALMAX OIDC SP and LOA1 OIDC SP in the same session' do
+    it 'always logs the correct SP in SP Return logs' do
+      allow(IdentityConfig.store).to receive(:allowed_ialmax_providers).
+        and_return(['urn:gov:gsa:openidconnect:sp:server'])
+      user = create(:user, :with_phone)
+
+      visit_idp_from_oidc_sp_with_ialmax
+      fill_in_credentials_and_submit(user.email, user.password)
+      click_button t('forms.buttons.submit.default')
+      fill_in 'code', with: user.reload.direct_otp
+      click_button t('forms.buttons.submit.default')
+      click_agree_and_continue
+
+      expect(SpReturnLog.count).to eq(1)
+      expect(SpReturnLog.last.issuer).to eq 'urn:gov:gsa:openidconnect:sp:server'
+
+      visit_idp_from_oidc_sp_with_loa1
+      click_agree_and_continue
+
+      expect(SpReturnLog.count).to eq(2)
+      expect(SpReturnLog.last.issuer).to eq 'urn:gov:gsa:openidconnect:sp:server_ial1'
+
+      visit_idp_from_oidc_sp_with_ialmax(prompt: 'select_account')
+
+      expect(SpReturnLog.count).to eq(3)
+      expect(SpReturnLog.last.issuer).to eq 'urn:gov:gsa:openidconnect:sp:server'
+
+      visit_idp_from_oidc_sp_with_loa1
+
+      expect(SpReturnLog.count).to eq(4)
+      expect(SpReturnLog.last.issuer).to eq 'urn:gov:gsa:openidconnect:sp:server_ial1'
+    end
+  end
+
+  context 'when user goes back and forth between IALMAX OIDC SP and IAL1 OIDC SP in the same session' do
+    it 'always logs the correct SP in SP Return logs' do
+      allow(IdentityConfig.store).to receive(:allowed_ialmax_providers).
+        and_return(['urn:gov:gsa:openidconnect:sp:server'])
+      user = create(:user, :with_phone)
+
+      visit_idp_from_oidc_sp_with_ialmax
+      fill_in_credentials_and_submit(user.email, user.password)
+      click_button t('forms.buttons.submit.default')
+      fill_in 'code', with: user.reload.direct_otp
+      click_button t('forms.buttons.submit.default')
+      click_agree_and_continue
+
+      expect(SpReturnLog.count).to eq(1)
+      expect(SpReturnLog.last.issuer).to eq 'urn:gov:gsa:openidconnect:sp:server'
+
+      visit_idp_from_sp_with_ial1(:oidc)
+      click_agree_and_continue
+
+      expect(SpReturnLog.count).to eq(2)
+      expect(SpReturnLog.last.issuer).to eq 'urn:gov:gsa:openidconnect:sp:server_ial1'
+
+      visit_idp_from_oidc_sp_with_ialmax(prompt: 'select_account')
+
+      expect(SpReturnLog.count).to eq(3)
+      expect(SpReturnLog.last.issuer).to eq 'urn:gov:gsa:openidconnect:sp:server'
+
+      visit_idp_from_sp_with_ial1(:oidc)
+
+      expect(SpReturnLog.count).to eq(4)
+      expect(SpReturnLog.last.issuer).to eq 'urn:gov:gsa:openidconnect:sp:server_ial1'
+    end
+  end
 end
