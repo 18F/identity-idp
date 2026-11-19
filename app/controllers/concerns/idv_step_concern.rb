@@ -74,6 +74,8 @@ module IdvStepConcern
 
       if in_person_proofing_route_enabled? || idv_session.clear1_allowed
         redirect_to idv_how_to_verify_url
+      elsif idv_session.phone_first_flow? && idv_session.standard_flow_document_capture_eligible?
+        redirect_to idv_document_capture_url
       else
         redirect_to idv_choose_id_type_url
       end

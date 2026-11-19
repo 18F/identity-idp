@@ -22,6 +22,7 @@
   "session_id": "UNIQUE_SESSION_ID",
   "national_id_number": "123456789",
   "national_id_type": "US_SSN",
+  "ssn_hash": "dffb9f158224bb8c30ac863130651d80c87aa33b34a6121be83a00662bb034bf628cf96370928ff5f380d4828e455cc4cbc178471fecef9af664c317c47261e9",
   "input_ip_address": "127.0.0.1",
   "local_attrib_1": "ABCD",
   "local_attrib_3": "00000000-0000-0000-0000-000000000000"
