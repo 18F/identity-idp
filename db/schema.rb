@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema[8.1].define(version: 2026_11_09_150100) do
-=======
 ActiveRecord::Schema[8.1].define(version: 2026_11_09_154606) do
->>>>>>> origin/LG-17854-acc-recovery-pt3
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
