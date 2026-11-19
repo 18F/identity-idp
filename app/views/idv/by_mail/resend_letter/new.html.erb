@@ -1,7 +1,7 @@
 <% if nds_layout? %>
   <% self.title = t('idv.gpo.request_another_letter.title') %>
   <% content_for(:nds_header_progress) do %>
-    <%= nds_account_creation_progress(step: :verification, substep: 8) %>
+    <%= nds_account_creation_progress(step: :verification, substep: 10) %>
   <% end %>
 
   <%= render NDS::FormPageComponent.new(

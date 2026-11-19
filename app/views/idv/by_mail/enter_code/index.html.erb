@@ -1,6 +1,6 @@
 <% if nds_layout? %>
   <% content_for(:nds_header_progress) do %>
-    <%= nds_account_creation_progress(step: :verification, substep: 9) %>
+    <%= nds_account_creation_progress(step: :verification, substep: 10) %>
   <% end %>
 
   <% letter_date = I18n.l(@last_date_letter_was_sent, format: :event_date) %>

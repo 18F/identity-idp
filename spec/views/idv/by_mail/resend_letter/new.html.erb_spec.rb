@@ -66,8 +66,11 @@ RSpec.describe 'idv/by_mail/resend_letter/new.html.erb' do
       )
     end
 
-    it 'pins the verification progress step' do
-      expect(view.content_for(:nds_header_progress)).to have_text('8 / 12')
+    it 'pins the progress to the enter password substep, matching the letter enqueued page' do
+      expect(view.content_for(:nds_header_progress)).to have_css(
+        'nds-progress .progress__step[aria-current="step"] .progress__step-counter',
+        text: '10 / 12',
+      )
       expect(view.content_for(:pre_flash_content)).to be_nil
     end
 

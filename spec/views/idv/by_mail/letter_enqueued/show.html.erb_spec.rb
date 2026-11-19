@@ -135,8 +135,11 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
       expect(rendered).to have_css('.auth__header .nds-status-icon.nds-status-icon--info svg')
     end
 
-    it 'pins the verification progress step and drops the legacy step indicator' do
-      expect(view.content_for(:nds_header_progress)).to have_text('10 / 12')
+    it 'pins the progress to the enter password substep and drops the legacy step indicator' do
+      expect(view.content_for(:nds_header_progress)).to have_css(
+        'nds-progress .progress__step[aria-current="step"] .progress__step-counter',
+        text: '10 / 12',
+      )
       expect(view.content_for(:pre_flash_content)).to be_nil
     end
 

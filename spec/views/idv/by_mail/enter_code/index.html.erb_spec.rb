@@ -144,8 +144,11 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
       expect(rendered).to have_css('.auth__intro-description', text: t('idv.gpo.intro'))
     end
 
-    it 'pins the verification progress step' do
-      expect(view.content_for(:nds_header_progress)).to have_text('9 / 12')
+    it 'pins the progress to the enter password substep, after the letter was enqueued' do
+      expect(view.content_for(:nds_header_progress)).to have_css(
+        'nds-progress .progress__step[aria-current="step"] .progress__step-counter',
+        text: '10 / 12',
+      )
     end
 
     it 'posts the code to the enter code path behind the submit gate' do
