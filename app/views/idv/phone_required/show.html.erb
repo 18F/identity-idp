@@ -1,0 +1,18 @@
+<% self.title = t('nds.phone_required.heading') %>
+
+<% content_for(:nds_header_progress) do %>
+  <%= nds_account_creation_progress(step: :verification, substep: 3) %>
+<% end %>
+
+<%= render NDS::FormPageComponent.new(title: t('nds.phone_required.heading')) do |page| %>
+  <% page.with_media do %>
+    <span class="nds-status-icon nds-status-icon--error">
+      <%= render NDS::IconComponent.new(icon: :error, size: 24) %>
+    </span>
+  <% end %>
+
+  <% page.with_body do %>
+    <hr class="divider" />
+    <p><%= t('nds.phone_required.info') %></p>
+  <% end %>
+<% end %>

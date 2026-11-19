@@ -54,6 +54,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
   let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
 
   let(:proofing_vendor) { :instant_verify_ddp }
+  let(:resolution_bypassed) { false }
   let(:get_to_yes_enabled_vendors) { ['instant_verify', 'instant_verify_ddp'] }
 
   before do
@@ -73,10 +74,32 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       applicant_pii: applicant_pii,
       precheck_phone_number: phone_result.empty? ? nil : '202-555-5555',
       proofing_vendor: proofing_vendor,
+      resolution_bypassed: resolution_bypassed,
     )
   end
 
   describe '#adjudicated_result' do
+    context 'the resolution failure was bypassed' do
+      let(:resolution_bypassed) { true }
+
+      it 'passes with the bypass reason and marks the resolution stage as bypassed' do
+        result = subject.adjudicated_result
+
+        expect(result.success?).to eq(true)
+        expect(result.extra[:context][:resolution_adjudication_reason])
+          .to eq(:instant_verify_bypass)
+        expect(result.extra[:context][:stages][:resolution]).to include(bypassed: true)
+      end
+    end
+
+    context 'the resolution failure was not bypassed' do
+      it 'does not mark the resolution stage as bypassed' do
+        result = subject.adjudicated_result
+
+        expect(result.extra[:context][:stages][:resolution]).not_to have_key(:bypassed)
+      end
+    end
+
     context 'IPP enrollment is in progress' do
       let(:ipp_enrollment_in_progress) { true }
       context 'residential address and id address are different' do

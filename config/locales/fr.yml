@@ -540,7 +540,6 @@ devise.passwords.send_paranoid_instructions: Vous recevrez dans quelques minutes
 devise.passwords.token_expired: Vous avez mis trop de temps à réinitialiser votre mot de passe. Veuillez réessayer.
 devise.passwords.updated: Votre mot de passe a été modifié. Vous êtes maintenant connecté.
 devise.passwords.updated_not_active: Votre mot de passe a été modifié. Veuillez vous connecter avec votre nouveau mot de passe.
-devise.registrations.close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
 devise.registrations.destroyed: Votre compte a bien été supprimé.
 devise.sessions.signed_in: ''
 devise.sessions.signed_out: Vous êtes maintenant déconnecté.
@@ -1662,6 +1661,10 @@ nds.choose_id_type.verify_in_person: Vérifier en personne
 nds.completions.heading_idv: Identité vérifiée
 nds.completions.intro_html: En sélectionnant Continuer, vous acceptez de partager les informations ci-dessous avec %{sp_html} et d’accéder à son site.
 nds.completions.nist_alt: 'Sceau du NIST : Chiffré. Protégé. Éprouvé. National Institute of Standards and Technology'
+nds.document_capture.mdl_alert_body: D’autres portefeuilles numériques seront pris en charge plus tard cette année.
+nds.document_capture.mdl_alert_title: Actuellement compatible avec Google Wallet et Samsung Wallet.
+nds.document_capture.mdl_heading: Renseignez les informations de votre permis de conduire mobile
+nds.document_capture.mdl_subtitle: Nous vérifierons votre permis de conduire mobile par l’intermédiaire d’un prestataire de services de confiance (Socure).
 nds.duplicate_profiles_detected.cant_access: Je ne peux pas accéder à un compte
 nds.duplicate_profiles_detected.connected_agencies: 'Agences connectées : %{count}'
 nds.duplicate_profiles_detected.created_at_html: 'Créé : %{timestamp_html}'
@@ -1708,6 +1711,9 @@ nds.idv_welcome.what_youll_need: Ce dont vous aurez besoin
 nds.link_sent.heading: Continuez sur votre téléphone
 nds.link_sent.instructions: Suivez les instructions pour photographier votre pièce d’identité et prendre un selfie, puis revenez ici pour terminer.
 nds.link_sent.keep_open: Gardez cette fenêtre ouverte.
+nds.mfa_confirmation.add_method: Ajouter une méthode d’authentification
+nds.mfa_confirmation.heading: Ajoutez une méthode d’authentification de secours
+nds.mfa_confirmation.skip: Ignorer
 nds.mfa_setup.badge_passkey: Rapide et sécurisé
 nds.mfa_setup.heading: Sécurisez votre compte
 nds.mfa_setup.heading_second: Choisissez une deuxième méthode d’authentification
@@ -1757,6 +1763,7 @@ nds.reset_password.invalid_token_heading: Le jeton de réinitialisation de mot d
 nds.reset_password.personal_key_info: Si vous avez vérifié votre identité, vous aurez besoin de votre clé personnelle de 16 caractères pour réinitialiser votre mot de passe. Sans elle, vous pouvez quand même réinitialiser votre mot de passe, mais vous devrez ensuite vérifier à nouveau votre identité.
 nds.reset_password.request_new_link: Saisissez votre adresse e-mail pour recevoir un nouveau lien.
 nds.reset_password.token_expired_heading: Votre lien de réinitialisation de mot de passe a expiré.
+nds.second_mfa_reminder.skip: Ignorer
 nds.socure_errors.in_person_heading: Ou, essayez de confirmer votre identité en personne
 nds.socure_errors.rate_limit_html.one: Vous avez encore <strong>un essai.</strong> Ensuite, vous devrez attendre 6 heures avant de réessayer.
 nds.socure_errors.rate_limit_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite, vous devrez attendre 6 heures avant de réessayer.
@@ -1769,7 +1776,13 @@ nds.totp_setup.new.setup_code_label: Code de configuration
 nds.totp_setup.new.step_1: Saisir un surnom
 nds.totp_setup.new.step_2: Ouvrir votre appli d’authentification préférée
 nds.totp_setup.new.step_3: Scanner le code QR ou saisir le code de configuration manuellement dans votre appli d’authentification
+nds.totp_verification.invalid_code_body: Ce code n’est pas valide. Veuillez saisir le code actuel de votre appli d’authentification.
 nds.verify_info.address: Adresse
+nds.webauthn_platform_recommended.cta: Ajouter une clé d’accès
+nds.webauthn_platform_recommended.description: Authentifiez-vous de la même manière que vous déverrouillez votre appareil, que ce soit avec votre visage ou votre empreinte digitale, un mot de passe ou une autre méthode.
+nds.webauthn_platform_recommended.heading: Configurez une clé d’accès pour une connexion plus sécurisée
+nds.webauthn_platform_recommended.info_html: Les clés d’accès %{phishing_resistant_html} et nous ne conservons aucun enregistrement de votre visage ou de vos empreintes digitales, ce qui préserve la confidentialité de vos informations.
+nds.webauthn_platform_recommended.phishing_resistant: résistent à l’hameçonnage
 notices.account_reactivation: Parfait ! Vous avez votre clé personnelle.
 notices.authenticated_successfully: Authentifié avec succès.
 notices.backup_codes_configured: Les codes de sauvegarde ont été ajoutés à votre compte.

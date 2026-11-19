@@ -540,7 +540,6 @@ devise.passwords.send_paranoid_instructions: You will receive an email with inst
 devise.passwords.token_expired: You took too long to reset your password. Try again.
 devise.passwords.updated: Your password has been changed. You are now signed in.
 devise.passwords.updated_not_active: Your password has been changed. Please sign in with your new password.
-devise.registrations.close_window: You can close this window if you’re done.
 devise.registrations.destroyed: Your account has been successfully deleted.
 devise.sessions.signed_in: ''
 devise.sessions.signed_out: You are now signed out.
@@ -1662,6 +1661,10 @@ nds.choose_id_type.verify_in_person: Verify in person
 nds.completions.heading_idv: Identity verified
 nds.completions.intro_html: By selecting Continue, you agree to share the information below with %{sp_html} and go to their site.
 nds.completions.nist_alt: 'NIST seal: Encrypted. Protected. Proven. National Institute of Standards and Technology'
+nds.document_capture.mdl_alert_body: Other digital wallets will be supported later this year.
+nds.document_capture.mdl_alert_title: Currently supported with Google Wallet and Samsung Wallet.
+nds.document_capture.mdl_heading: Add your mobile driver’s license information
+nds.document_capture.mdl_subtitle: We’ll verify your mobile driver’s license using a trusted service provider, Socure.
 nds.duplicate_profiles_detected.cant_access: I can’t access an account
 nds.duplicate_profiles_detected.connected_agencies: 'Connected agencies: %{count}'
 nds.duplicate_profiles_detected.created_at_html: 'Created: %{timestamp_html}'
@@ -1708,6 +1711,9 @@ nds.idv_welcome.what_youll_need: What you’ll need
 nds.link_sent.heading: Continue on your phone
 nds.link_sent.instructions: Follow the instructions to capture your ID photos and selfie, then return here to finish.
 nds.link_sent.keep_open: Keep this window open.
+nds.mfa_confirmation.add_method: Add authentication method
+nds.mfa_confirmation.heading: Add a backup authentication method
+nds.mfa_confirmation.skip: Skip
 nds.mfa_setup.badge_passkey: Fast and secure
 nds.mfa_setup.heading: Secure your account
 nds.mfa_setup.heading_second: Choose a second authentication method
@@ -1757,6 +1763,7 @@ nds.reset_password.invalid_token_heading: The reset password token is invalid.
 nds.reset_password.personal_key_info: If you verified your identity, you’ll need your 16-character personal key to reset your password. Without it, you can still reset your password, but you’ll need to reverify afterward.
 nds.reset_password.request_new_link: Enter your email to get a new link.
 nds.reset_password.token_expired_heading: Your reset password link has expired.
+nds.second_mfa_reminder.skip: Skip
 nds.socure_errors.in_person_heading: Or, try verifying your ID in person
 nds.socure_errors.rate_limit_html.one: You can try <strong>1 more time.</strong> Then, you must wait 6 hours before trying again.
 nds.socure_errors.rate_limit_html.other: You can try <strong>%{count} more times.</strong> Then, you must wait 6 hours before trying again.
@@ -1769,7 +1776,13 @@ nds.totp_setup.new.setup_code_label: Setup code
 nds.totp_setup.new.step_1: Enter a nickname
 nds.totp_setup.new.step_2: Open your preferred authentication app
 nds.totp_setup.new.step_3: Scan the QR code or enter the set up code manually in your authentication app
+nds.totp_verification.invalid_code_body: That code is invalid. Enter the current code from your authentication app.
 nds.verify_info.address: Address
+nds.webauthn_platform_recommended.cta: Add passkey
+nds.webauthn_platform_recommended.description: Authenticate the same way you unlock your device, whether it’s with your face or fingerprint, a password, or another method.
+nds.webauthn_platform_recommended.heading: Set up a passkey for a more secure sign in
+nds.webauthn_platform_recommended.info_html: Passkeys are %{phishing_resistant_html} and we don’t store any recordings of your face or fingerprint, so your information stays private.
+nds.webauthn_platform_recommended.phishing_resistant: phishing-resistant
 notices.account_reactivation: Great! You have your personal key.
 notices.authenticated_successfully: Authenticated successfully.
 notices.backup_codes_configured: Backup codes were added to your account.

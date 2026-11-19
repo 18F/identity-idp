@@ -13,6 +13,8 @@ module Proofing
           'SsnFullNameMatch' => :ssn,
           'SsnDeathMatchVerification' => :dead,
           'SSNSSAValid' => :ssn,
+          'SSNExists' => :ssn,
+          'SsnLastNameMatch' => :ssn,
           'IdentityOccupancyVerified' => :address,
           'AddrDeliverable' => :address,
           'AddrNotHighRisk' => :address,
