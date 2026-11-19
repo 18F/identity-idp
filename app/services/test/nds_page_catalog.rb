@@ -45,6 +45,42 @@ module Test
         ],
       ),
       Page.new(
+        key: 'piv-cac-error',
+        title: 'PIV/CAC sign in error',
+        flow: SIGN_IN,
+        template: 'users/piv_cac_login/error',
+        permutations: [
+          Permutation.new(label: 'Did not work (default)', params: {}),
+          Permutation.new(label: 'Not connected', params: { error: 'user.not_found' }),
+          Permutation.new(label: 'Certificate expired', params: { error: 'certificate.expired' }),
+          Permutation.new(label: 'No certificate', params: { error: 'certificate.none' }),
+          Permutation.new(
+            label: 'Not an authentication certificate',
+            params: { error: 'certificate.not_auth_cert' },
+          ),
+          Permutation.new(label: 'Server timeout', params: { error: 'token.http_failure' }),
+        ],
+      ),
+      Page.new(
+        key: 'piv-cac-mismatch',
+        title: 'PIV/CAC not connected to this account',
+        flow: SIGN_IN,
+        template: 'two_factor_authentication/piv_cac_mismatch/show',
+        permutations: [
+          Permutation.new(label: 'Other methods (default)', params: {}),
+          Permutation.new(label: 'PIV/CAC required (no skip)', params: { piv_cac_required: '1' }),
+          Permutation.new(label: 'No other method', params: { no_other_method: '1' }),
+          Permutation.new(
+            label: 'No other method, recovery available',
+            params: { no_other_method: '1', recovery: '1' },
+          ),
+          Permutation.new(
+            label: 'No other method, recovery pending',
+            params: { no_other_method: '1', recovery_pending: '1' },
+          ),
+        ],
+      ),
+      Page.new(
         key: 'password-reset-email',
         title: 'Reset password (enter email)',
         flow: SIGN_IN,
@@ -110,6 +146,15 @@ module Test
           Permutation.new(label: 'Default', params: {}),
           Permutation.new(label: 'Confirmation toast', params: { toast: '1' }),
           Permutation.new(label: 'Password error', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'sign-up-cancel',
+        title: 'Cancel account creation',
+        flow: CREATE_ACCOUNT,
+        template: 'sign_up/cancellations/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
         ],
       ),
       Page.new(
@@ -370,6 +415,25 @@ module Test
         title: 'Sign-in security check failed',
         flow: ERRORS,
         template: 'sign_in_security_check_failed/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'sp-handoff-bounced',
+        title: 'Service provider sent the user back (bounced)',
+        flow: ERRORS,
+        template: 'devise/sessions/bounced',
+        permutations: [
+          Permutation.new(label: 'No service provider', params: {}),
+          Permutation.new(label: 'Named service provider', params: { sp: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'oidc-authorization-error',
+        title: 'OpenID Connect authorization error',
+        flow: ERRORS,
+        template: 'openid_connect/authorization/error',
         permutations: [
           Permutation.new(label: 'Default', params: {}),
         ],
@@ -754,6 +818,17 @@ module Test
           Permutation.new(label: 'Verified identity', params: {}),
           Permutation.new(label: 'Auth only (new SP)', params: { auth: '1' }),
           Permutation.new(label: 'Single MFA warning', params: { single: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'select-email',
+        title: 'Select email to share',
+        flow: IDV,
+        template: 'sign_up/select_email/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Email limit reached', params: { max: '1' }),
+          Permutation.new(label: 'No email selected', params: { error: '1' }),
         ],
       ),
       Page.new(

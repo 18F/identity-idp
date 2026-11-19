@@ -321,6 +321,15 @@ module Test
       true
     end
 
+    # Fills the layout's :pre_flash_content slot from @nds_pre_flash_content (a view lambda).
+    def view_context
+      super.tap do |view|
+        if @nds_pre_flash_content
+          view.content_for(:pre_flash_content, @nds_pre_flash_content.call(view))
+        end
+      end
+    end
+
     def decorated_sp_session
       @decorated_sp_session ||= NullServiceProviderSession.new(view_context:)
     end
@@ -796,6 +805,31 @@ module Test
       {}
     end
 
+    def setup_piv_cac_error
+      @presenter = PivCacErrorPresenter.new(
+        error: params[:error],
+        view: view_context,
+        try_again_url: login_piv_cac_url,
+      )
+      {}
+    end
+
+    def setup_piv_cac_mismatch
+      @piv_cac_required = params[:piv_cac_required].present?
+      @has_other_authentication_methods = params[:no_other_method].blank?
+      @account_recovery_pending = params[:recovery_pending].present?
+      @account_recovery_url = account_recovery_start_url if params[:recovery].present?
+      if @account_recovery_pending
+        @nds_pre_flash_content = ->(view) do
+          view.render(
+            AlertComponent.new(type: :info, class: 'margin-bottom-4')
+              .with_content(t('account_recovery.pending.mfa_banner')),
+          )
+        end
+      end
+      {}
+    end
+
     def setup_password_reset_email
       @password_reset_email_form = PasswordResetEmailForm.new('')
       if params[:error] == 'email'
@@ -878,6 +912,11 @@ module Test
       @forbidden_passwords = []
       flash.now[:success] = t('devise.confirmations.confirmed_but_must_set_password') if
         params[:toast].present?
+      {}
+    end
+
+    def setup_sign_up_cancel
+      @presenter = CancellationPresenter.new(referer: nil, url_options:)
       {}
     end
 
@@ -1149,6 +1188,23 @@ module Test
     end
 
     def setup_security_check_failed
+      {}
+    end
+
+    def setup_sp_handoff_bounced
+      if params[:sp].present?
+        @sp_name = 'Veterans Affairs'
+        @sp_link = 'https://www.va.gov'
+      else
+        @sp_name = t('instructions.sp_handoff_bounced_with_no_sp')
+      end
+      {}
+    end
+
+    def setup_oidc_authorization_error
+      @authorize_form = OpenidConnectAuthorizeForm.new({})
+      @authorize_form.errors.add(:client_id, t('openid_connect.authorization.errors.bad_client_id'))
+      @authorize_form.errors.add(:scope, t('openid_connect.authorization.errors.no_valid_scope'))
       {}
     end
 
@@ -1463,6 +1519,20 @@ module Test
         completion_context: :new_sp,
         selected_email_id: nil,
       )
+      {}
+    end
+
+    def setup_select_email
+      @nds_current_user = User.new
+      @sp_name = 'Veterans Affairs'
+      @user_emails = [
+        EmailAddress.new(id: 1, email: DEV_USER_EMAIL),
+        EmailAddress.new(id: 2, email: 'nds-explorer-work@example.com'),
+      ]
+      @email_id = 1
+      @select_email_form = SelectEmailForm.new(user: @nds_current_user)
+      @can_add_email = params[:max].blank?
+      flash.now[:error] = t('email_address.not_found') if params[:error].present?
       {}
     end
 
