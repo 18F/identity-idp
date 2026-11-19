@@ -1759,6 +1759,7 @@ nds.second_mfa_reminder.skip: Ignorer
 nds.socure_errors.in_person_heading: Ou, essayez de confirmer votre identité en personne
 nds.socure_errors.rate_limit_html.one: Vous avez encore <strong>un essai.</strong> Ensuite, vous devrez attendre 6 heures avant de réessayer.
 nds.socure_errors.rate_limit_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite, vous devrez attendre 6 heures avant de réessayer.
+nds.sp_handoff_bounced.instructions_html: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à %{app_name}. Veuillez contacter %{sp_link_html} pour obtenir de l’aide.
 nds.ssn.info: Votre numéro de sécurité sociale permet de vérifier votre identité dans les services %{app_name} ; il reste chiffré et n’est jamais partagé sans votre consentement.
 nds.totp_setup.new.code_label: Code
 nds.totp_setup.new.heading: Configurer une appli d’authentification
