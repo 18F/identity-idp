@@ -45,7 +45,6 @@ class User < ApplicationRecord
   has_many :piv_cac_configurations, dependent: :destroy, inverse_of: :user
   has_many :auth_app_configurations, dependent: :destroy, inverse_of: :user
   has_many :backup_code_configurations, dependent: :destroy
-  # Credentials reference recovery requests while suspended; destroy them first.
   has_many :account_recovery_requests, dependent: :destroy, inverse_of: :user
   has_many :document_capture_sessions, dependent: :destroy
   has_one :registration_log, dependent: :destroy

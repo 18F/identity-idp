@@ -30,10 +30,6 @@ module AccountRecovery
       render_not_found unless replacement_mfa_pending?
     end
 
-    # Replacement enrollment ignores SP authentication requirements. An SP that
-    # demands PIV/CAC or phishing-resistant MFA must not narrow the options on a
-    # page the user cannot leave; once recovery completes they are routed to
-    # satisfy the SP as a normally authenticated user.
     def prepare_selection
       @two_factor_options_form = TwoFactorOptionsForm.new(
         user: current_user,

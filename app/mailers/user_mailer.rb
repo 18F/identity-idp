@@ -22,10 +22,6 @@ class UserMailer < ActionMailer::Base
   include ActionView::Helpers::DateHelper
 
   class UserEmailAddressMismatchError < StandardError; end
-
-  # Authentication method names the account recovery completion email can list,
-  # matching the friendly_name of each suspendable MFA configuration. Bounds the
-  # i18n lookup to known keys.
   RECOVERY_MFA_METHOD_NAMES = %w[
     auth_app backup_codes phone piv_cac webauthn webauthn_platform
   ].freeze
@@ -145,11 +141,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  # One consolidated notice that recovery finished and which suspended methods
-  # were removed, instead of a separate mfa_deleted email per method.
-  #
-  # @param removed_mfa_methods [Array<String>] friendly names of the removed
-  #   authentication methods, e.g. ['auth_app', 'phone']
   def account_recovery_completed(removed_mfa_methods:)
     with_user_locale(user) do
       @removed_mfa_method_names = Array(removed_mfa_methods)

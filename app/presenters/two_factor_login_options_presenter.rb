@@ -79,10 +79,6 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
         configurations << mfa.personal_key_configuration
       end
     end
-    # A user can have multiples of certain types of MFA methods, such as
-    # webauthn keys and phones. However, we only want to show one of each option
-    # during login, except for phones, where we want to allow the user to choose
-    # which MFA-enabled phone they want to use.
     @options = configurations.group_by(&:class).flat_map do |klass, set|
       klass.selection_presenters(set)
     end
@@ -117,8 +113,6 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     )
   end
 
-  # A pending request cannot be requested again, so the same guidance is shown
-  # without a link.
   def account_recovery_pending_text
     t('two_factor_authentication.account_recovery.recover_text')
   end

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module AccountRecovery
-  # Runs inside the password-verification lock. Credentials are retained, not
-  # deleted: the user has not yet verified a replacement.
   class SuspendExistingMfa
     CONFIGURATION_ASSOCIATIONS = %i[
       phone_configurations auth_app_configurations webauthn_configurations

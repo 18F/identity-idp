@@ -294,9 +294,6 @@ module Users
       ).get_account_reset_request
     end
 
-    # A recovery awaiting replacement MFA resumes at the recovery continuation.
-    # An unredeemed request takes the normal first-MFA route, where successful
-    # MFA cancels the request.
     def account_recovery_url
       return @account_recovery_url if defined?(@account_recovery_url)
 

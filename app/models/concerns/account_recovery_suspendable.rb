@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# A credential remains stored during recovery, but cannot be used to sign in.
-# The request ID is also the deletion ledger: replacements have no request ID.
 module AccountRecoverySuspendable
   extend ActiveSupport::Concern
 
