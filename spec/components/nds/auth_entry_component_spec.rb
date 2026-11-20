@@ -22,6 +22,12 @@ RSpec.describe NDS::AuthEntryComponent, type: :component do
     expect(rendered).to have_css('.auth-entry__card', text: 'CARD BODY')
   end
 
+  it 'flags the page as auth entry so the layout leaves the agency out of the header' do
+    view_context = vc_test_controller.view_context
+    view_context.render(NDS::AuthEntryComponent.new.with_content('x'))
+    expect(view_context.content_for?(:nds_auth_entry)).to eq(true)
+  end
+
   it 'emits no prefixed ads- classes' do
     rendered = render_inline(NDS::AuthEntryComponent.new) { 'x' }
     expect(rendered.to_html).not_to include('ads-')

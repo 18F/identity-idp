@@ -17,9 +17,13 @@
         hide_footer: local_assigns.fetch(:hide_page_footer, false) ||
           content_for?(:hide_page_footer),
       ) do |shell| %>
-    <% if content_for?(:nds_header_progress) %>
-      <% shell.with_chrome do %>
-        <%= render NDS::PageChromeComponent.new do |chrome| %>
+    <% agency_sp = current_sp if !content_for?(:nds_auth_entry) && current_sp&.logo.present? %>
+    <% shell.with_chrome do %>
+      <%= render NDS::PageChromeComponent.new(
+            agency_name: agency_sp && decorated_sp_session.sp_name,
+            agency_logo_url: agency_sp&.logo_url,
+          ) do |chrome| %>
+        <% if content_for?(:nds_header_progress) %>
           <% chrome.with_progress do %>
             <%= yield(:nds_header_progress) %>
           <% end %>
