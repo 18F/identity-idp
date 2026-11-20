@@ -1665,6 +1665,14 @@ nds.choose_id_type.verify_in_person: Verify in person
 nds.completions.heading_idv: Identity verified
 nds.completions.intro_html: By selecting Continue, you agree to share the information below with %{sp_html} and go to their site.
 nds.completions.nist_alt: 'NIST seal: Encrypted. Protected. Proven. National Institute of Standards and Technology'
+nds.dashboard_home.connected_services_description: These agencies and services use your %{app_name} account to log you in.
+nds.dashboard_home.delegation_expires: Expiring %{date}
+nds.dashboard_home.delegations_description: '%{america_gov_name} doesn’t store your personal information. Your approvals last one year.'
+nds.dashboard_home.manage_preferences: Manage preferences
+nds.dashboard_home.preferred_email: Preferred email address
+nds.dashboard_home.revoke_description: You’ll no longer be able to sign in to %{sp_name} with your %{app_name} account. Any information you’ve shared stays with the agency, and you can reconnect by signing in with %{app_name} again.
+nds.dashboard_home.revoke_heading: Disconnect from %{sp_name}?
+nds.dashboard_home.service_options: Options for %{sp_name}
 nds.document_capture.mdl_alert_body: Other digital wallets will be supported later this year.
 nds.document_capture.mdl_alert_title: Currently supported with Google Wallet and Samsung Wallet.
 nds.document_capture.mdl_heading: Add your mobile driver’s license information

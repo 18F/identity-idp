@@ -46,6 +46,10 @@ module Test
         '(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
     ].freeze
 
+    # Logos for the dashboard user's connected agencies (CONNECTED_SP_ISSUERS order), so
+    # the Home tab rows show agency seals.
+    DASHBOARD_SP_LOGOS = %w[square-gsa.svg DOS.svg].freeze
+
     # Registry of legacy pages whose before_actions need seeded DB/session state
     # (beyond a signed-in dev session) before they render. Maps the live route
     # path to a { label:, seeder:, resetter: } — the seeder is a private method
@@ -128,6 +132,14 @@ module Test
     # i18n-tasks-use t('nds.completions.heading_idv')
     # i18n-tasks-use t('nds.completions.intro_html')
     # i18n-tasks-use t('nds.completions.nist_alt')
+    # i18n-tasks-use t('nds.dashboard_home.connected_services_description')
+    # i18n-tasks-use t('nds.dashboard_home.delegation_expires')
+    # i18n-tasks-use t('nds.dashboard_home.delegations_description')
+    # i18n-tasks-use t('nds.dashboard_home.manage_preferences')
+    # i18n-tasks-use t('nds.dashboard_home.preferred_email')
+    # i18n-tasks-use t('nds.dashboard_home.revoke_description')
+    # i18n-tasks-use t('nds.dashboard_home.revoke_heading')
+    # i18n-tasks-use t('nds.dashboard_home.service_options')
     # i18n-tasks-use t('nds.duplicate_profiles_detected.cant_access')
     # i18n-tasks-use t('nds.duplicate_profiles_detected.connected_agencies')
     # i18n-tasks-use t('nds.duplicate_profiles_detected.created_at_html')
@@ -1569,9 +1581,11 @@ module Test
 
     def seed_dashboard_connected_agencies(user)
       email = user.email_addresses.first
-      CONNECTED_SP_ISSUERS.each do |sp|
+      CONNECTED_SP_ISSUERS.zip(DASHBOARD_SP_LOGOS).each do |sp, logo|
+        service_provider = connected_service_provider(sp)
+        service_provider.update!(logo:)
         user.identities.create!(
-          service_provider: connected_service_provider(sp).issuer, uuid: SecureRandom.uuid,
+          service_provider: service_provider.issuer, uuid: SecureRandom.uuid,
           last_authenticated_at: Time.zone.now, last_consented_at: Time.zone.now,
           email_address: email, verified_attributes: %w[email]
         )

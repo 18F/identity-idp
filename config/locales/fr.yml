@@ -1665,6 +1665,14 @@ nds.choose_id_type.verify_in_person: Vérifier en personne
 nds.completions.heading_idv: Identité vérifiée
 nds.completions.intro_html: En sélectionnant Continuer, vous acceptez de partager les informations ci-dessous avec %{sp_html} et d’accéder à son site.
 nds.completions.nist_alt: 'Sceau du NIST : Chiffré. Protégé. Éprouvé. National Institute of Standards and Technology'
+nds.dashboard_home.connected_services_description: Ces agences et services utilisent votre compte %{app_name} pour vous connecter.
+nds.dashboard_home.delegation_expires: Expire le %{date}
+nds.dashboard_home.delegations_description: '%{america_gov_name} ne conserve pas vos informations personnelles. Vos autorisations sont valables un an.'
+nds.dashboard_home.manage_preferences: Gérer les préférences
+nds.dashboard_home.preferred_email: Adresse e-mail préférée
+nds.dashboard_home.revoke_description: Vous ne pourrez plus vous connecter à %{sp_name} avec votre compte %{app_name}. Les informations que vous avez partagées restent auprès de l’agence, et vous pouvez vous reconnecter en vous connectant de nouveau avec %{app_name}.
+nds.dashboard_home.revoke_heading: Se déconnecter de %{sp_name} ?
+nds.dashboard_home.service_options: Options pour %{sp_name}
 nds.document_capture.mdl_alert_body: D’autres portefeuilles numériques seront pris en charge plus tard cette année.
 nds.document_capture.mdl_alert_title: Actuellement compatible avec Google Wallet et Samsung Wallet.
 nds.document_capture.mdl_heading: Renseignez les informations de votre permis de conduire mobile

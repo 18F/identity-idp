@@ -1676,6 +1676,14 @@ nds.choose_id_type.verify_in_person: Verificar en persona
 nds.completions.heading_idv: Identidad verificada
 nds.completions.intro_html: Al seleccionar Continuar, acepta compartir la siguiente información con %{sp_html} e ir a su sitio.
 nds.completions.nist_alt: 'Sello del NIST: Cifrado. Protegido. Comprobado. Instituto Nacional de Estándares y Tecnología'
+nds.dashboard_home.connected_services_description: Estas agencias y servicios usan su cuenta de %{app_name} para iniciar su sesión.
+nds.dashboard_home.delegation_expires: Vence el %{date}
+nds.dashboard_home.delegations_description: '%{america_gov_name} no guarda su información personal. Sus aprobaciones duran un año.'
+nds.dashboard_home.manage_preferences: Administrar preferencias
+nds.dashboard_home.preferred_email: Correo electrónico preferido
+nds.dashboard_home.revoke_description: Ya no podrá iniciar sesión en %{sp_name} con su cuenta de %{app_name}. La información que haya compartido se queda con la agencia, y puede volver a conectarse si inicia sesión con %{app_name} otra vez.
+nds.dashboard_home.revoke_heading: '¿Desconectarse de %{sp_name}?'
+nds.dashboard_home.service_options: Opciones para %{sp_name}
 nds.document_capture.mdl_alert_body: Se añadirán otras billeteras digitales a finales de este año.
 nds.document_capture.mdl_alert_title: Actualmente disponible con Google Wallet y Samsung Wallet.
 nds.document_capture.mdl_heading: Añada la información de su licencia de conducir móvil
