@@ -36,6 +36,52 @@ module FederatedProtocols
           expect(subject.aal).to eq(aal)
         end
       end
+
+      context 'when the requested aal is the legacy default class ref' do
+        let(:aal) { ::Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF }
+        let(:authn_contexts) { [aal] }
+
+        it 'returns it' do
+          expect(subject.aal).to eq(aal)
+        end
+      end
+
+      context 'when an aal class ref carries a second value after whitespace' do
+        let(:authn_contexts) do
+          [
+            "#{::Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF} " \
+            "#{::Saml::Idp::Constants::IAL_VERIFIED_ACR}",
+            "#{::Saml::Idp::Constants::IAL_VERIFIED_ACR}\t" \
+            "#{::Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF}",
+            ::Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          ]
+        end
+
+        it 'does not treat it as an aal' do
+          expect(subject.aal).to be_nil
+        end
+      end
+    end
+
+    describe '#acr_values' do
+      before do
+        allow(saml_request).to receive(:service_provider).and_return(nil)
+        allow(saml_request).to receive(:requested_authn_context_comparison).and_return('exact')
+      end
+
+      context 'when an aal class ref carries a second value after whitespace' do
+        let(:authn_contexts) do
+          [
+            "#{::Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF} " \
+            "#{::Saml::Idp::Constants::IAL_VERIFIED_ACR}",
+            ::Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          ]
+        end
+
+        it 'carries only the exactly requested values' do
+          expect(subject.acr_values).to eq(::Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
+        end
+      end
     end
 
     describe '#requested_ial_authn_context' do

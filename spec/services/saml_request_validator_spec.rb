@@ -233,6 +233,28 @@ RSpec.describe SamlRequestValidator do
         end
       end
 
+      context 'a class ref hides a second value behind whitespace' do
+        [' ', "\t", "\n"].each do |delimiter|
+          context "joined with #{delimiter.inspect}" do
+            let(:authn_context) do
+              [
+                "#{Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF}#{delimiter}" \
+                "#{Saml::Idp::Constants::IAL_VERIFIED_ACR}",
+                Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+              ]
+            end
+
+            it 'returns FormResponse with success: false' do
+              expect(response.to_h).to eq(
+                success: false,
+                error_details: { authn_context: { unauthorized_authn_context: true } },
+                **extra,
+              )
+            end
+          end
+        end
+      end
+
       context 'authn context is ial2 when sp is ial 1' do
         [
           Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,

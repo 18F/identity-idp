@@ -89,6 +89,10 @@ class SamlRequestValidator
     authn_contexts = authn_context.reject do |classref|
       next true if classref.include?(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)
     end
+    # A class ref is a URI and never contains whitespace. One that does carries several values run
+    # together in one element; the checks below look at each element whole, while the component
+    # parser downstream splits on whitespace, so such a request is refused rather than half-read.
+    return false if authn_contexts.any? { |classref| classref.match?(/\s/) }
     # SAML requests are allowed to "default" to the integration's IAL default.
     return true if authn_contexts.empty?
 

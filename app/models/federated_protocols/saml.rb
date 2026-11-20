@@ -2,7 +2,13 @@
 
 module FederatedProtocols
   class Saml
-    AAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/aal|urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo}
+    # The AAL class refs Login.gov answers, including the legacy default. A requested value is an
+    # AAL only when it is exactly one of these. A class ref is a URI and never contains whitespace,
+    # so a value that merely contains one of them, such as two class refs run together inside one
+    # element, names nothing here; the request's ACR string is built only from exact matches, so
+    # nothing can be smuggled past the authorization checks into the space-separated string the
+    # component parser later splits.
+    AAL_AUTHN_CONTEXT_CLASSREFS = ::Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL.keys.freeze
 
     def initialize(request)
       @request = request
@@ -26,7 +32,7 @@ module FederatedProtocols
 
     def aal
       request.requested_authn_contexts.find do |classref|
-        AAL_PREFIX.match?(classref)
+        AAL_AUTHN_CONTEXT_CLASSREFS.include?(classref)
       end
     end
 
