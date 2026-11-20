@@ -1,3 +1,73 @@
+<% if nds_layout? %>
+  <% self.title = t('nds.reset_password.heading') %>
+  <%= render NDS::FormPageComponent.new(
+        title: t('nds.reset_password.heading'),
+        subtitle: safe_join(
+          [
+            t('nds.passwords.new.info'),
+            t('users.edit_info.warning'),
+            new_tab_link_to(
+              t('users.edit_info.link'),
+              help_center_redirect_path(category: 'fraud-concerns', article: 'overview'),
+            ),
+          ],
+          ' ',
+        ),
+      ) do |page| %>
+    <% page.with_body do %>
+      <%= simple_form_for(
+            @reset_password_form,
+            url: user_password_path,
+            method: :put,
+            html: { data: { nds_submit_gate: true } },
+          ) do |f| %>
+        <%= f.input :reset_password_token, as: :hidden %>
+        <%= f.full_error :reset_password_token %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <%= render NDS::StackComponent.new(align: :stretch) do %>
+            <%= render NDS::InputComponent.new(
+                  form: f,
+                  attribute: :password,
+                  type: :password,
+                  label: t('forms.password'),
+                  error_message: @reset_password_form.errors[:password].first,
+                  required: true,
+                  autocomplete: 'new-password',
+                  aria: { describedby: 'password-description' },
+                ) %>
+            <%= render NDS::InputComponent.new(
+                  form: f,
+                  attribute: :password_confirmation,
+                  type: :password,
+                  label: t('components.password_confirmation.confirm_label'),
+                  error_message: @reset_password_form.errors[:password_confirmation].first,
+                  required: true,
+                  autocomplete: 'new-password',
+                  error_messages: {
+                    valueMissing: t('components.password_confirmation.errors.empty'),
+                    customError: t('components.password_confirmation.errors.mismatch'),
+                  },
+                ) %>
+            <%= render NDS::PasswordStrengthComponent.new(
+                  input_id: f.field_id(:password),
+                  minimum_length: Devise.password_length.first,
+                  forbidden_passwords: @forbidden_passwords,
+                ) %>
+          <% end %>
+          <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+            <%= render ButtonComponent.new(type: :submit, full_width: true)
+                  .with_content(t('forms.buttons.continue')) %>
+          <% end %>
+          <%= render AlertComponent.new(type: :info, id: 'password-description') do %>
+            <%= t('nds.reset_password.personal_key_info') %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('nds_password_strength_component', 'nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <% self.title = t('titles.passwords.change') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.passwords.change')) %>
@@ -27,3 +97,4 @@
 <% end %>
 
 <%= render 'shared/password_accordion' %>
+<% end %>

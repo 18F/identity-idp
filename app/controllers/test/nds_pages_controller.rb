@@ -830,6 +830,53 @@ module Test
       {}
     end
 
+    def setup_password_reset_email
+      @password_reset_email_form = PasswordResetEmailForm.new('')
+      if params[:error] == 'email'
+        @password_reset_email_form.errors.add(:email, t('valid_email.validations.email.invalid'))
+      end
+      if %w[invalid_token token_expired].include?(params[:error])
+        flash.now[:error] = t("devise.passwords.#{params[:error]}")
+      end
+      if params[:sp_alert].present?
+        @decorated_sp_session = SpSessionStub.new(
+          sp_name: 'Example Service Provider',
+          sp_alert_text: 'Example service provider alert.',
+          cancel_link_url: root_url,
+        )
+      end
+      {}
+    end
+
+    def setup_password_reset_sent
+      @email = 'user@example.com'
+      @password_reset_email_form = PasswordResetEmailForm.new(@email)
+      @resend = params[:resend].presence
+      {}
+    end
+
+    def setup_password_reset_new_password
+      @reset_password_form = ResetPasswordForm.new(user: User.new)
+      case params[:error]
+      when 'too_short'
+        @reset_password_form.errors.add(:password, :too_short, count: Devise.password_length.min)
+      when 'weak'
+        @reset_password_form.errors.add(
+          :password, :weak_password,
+          feedback: t('zxcvbn.feedback.this_is_a_top_10_common_password')
+        )
+      when 'pwned'
+        @reset_password_form.errors.add(:password, :pwned_password)
+      when 'mismatch'
+        @reset_password_form.errors.add(
+          :password_confirmation,
+          t('errors.messages.password_mismatch'),
+        )
+      end
+      @forbidden_passwords = []
+      {}
+    end
+
     def setup_create_account
       @register_user_email_form = RegisterUserEmailForm.new(analytics:, attempts_api_tracker:)
       if params[:error] == 'email'

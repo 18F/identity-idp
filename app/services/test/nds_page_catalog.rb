@@ -81,6 +81,42 @@ module Test
         ],
       ),
       Page.new(
+        key: 'password-reset-email',
+        title: 'Reset password (enter email)',
+        flow: SIGN_IN,
+        template: 'devise/passwords/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'SP alert', params: { sp_alert: '1' }),
+          Permutation.new(label: 'Email error', params: { error: 'email' }),
+          Permutation.new(label: 'Invalid reset link', params: { error: 'invalid_token' }),
+          Permutation.new(label: 'Expired reset link', params: { error: 'token_expired' }),
+        ],
+      ),
+      Page.new(
+        key: 'password-reset-sent',
+        title: 'Reset password (check your email)',
+        flow: SIGN_IN,
+        template: 'forgot_password/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Email resent', params: { resend: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'password-reset-new-password',
+        title: 'Reset password (enter a new password)',
+        flow: SIGN_IN,
+        template: 'devise/passwords/edit',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Password too short', params: { error: 'too_short' }),
+          Permutation.new(label: 'Weak password', params: { error: 'weak' }),
+          Permutation.new(label: 'Breached password', params: { error: 'pwned' }),
+          Permutation.new(label: 'Passwords do not match', params: { error: 'mismatch' }),
+        ],
+      ),
+      Page.new(
         key: 'create-account',
         title: 'Create account (enter email)',
         flow: CREATE_ACCOUNT,
