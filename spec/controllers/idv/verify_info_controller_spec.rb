@@ -44,6 +44,7 @@ RSpec.describe Idv::VerifyInfoController do
           idv_session.source_check_vendor = 'aamva'
           idv_session.threatmetrix_review_status = 'pass'
           idv_session.verify_info_step_document_capture_session_uuid = 'abcd-1234'
+          idv_session.verify_info_applicant_fingerprint = 'fingerprint'
         end
       end
 
@@ -57,6 +58,7 @@ RSpec.describe Idv::VerifyInfoController do
           expect(idv_session.resolution_vendor).to be(nil)
           expect(idv_session.threatmetrix_review_status).to be(nil)
           expect(idv_session.verify_info_step_document_capture_session_uuid).to be(nil)
+          expect(idv_session.verify_info_applicant_fingerprint).to be(nil)
         end
       end
     end

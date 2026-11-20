@@ -131,7 +131,13 @@ module Idv
         pending_pii = idv_session.ipp_aamva_pending_state_id_pii
         clear_aamva_async_session
         clear_aamva_pending_pii
-        commit_state_id_data(pending_pii) if pending_pii
+        if pending_pii
+          # The committed identity data is about to change, so a resolution result, applicant or
+          # phone outcome computed on the previous data no longer describes the person on file:
+          # undo everything after the SSN step and commit, so verification runs again on this data.
+          clear_future_steps_from!(controller: Idv::InPerson::SsnController)
+          commit_state_id_data(pending_pii)
+        end
         idv_session.ipp_aamva_result = result
         idv_session.source_check_vendor = result[:vendor_name]
         redirect_to redirect_url

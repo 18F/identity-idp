@@ -7,6 +7,20 @@ module Idv
 
     STEP_NAME = 'verify_info'
 
+    # The identity attributes the resolution vendors verify. The applicant handed to the proofing
+    # job is fingerprinted over these before it is sent, and the fingerprint is compared with the
+    # applicant as it stands when the result comes back, so a result only ever vouches for the
+    # data it was computed on. Volatile fields (consent time, the precheck phone, the AAMVA verified
+    # attribute list) are left out because they can change without the identity changing.
+    APPLICANT_FINGERPRINT_ATTRIBUTES = %w[
+      first_name middle_name last_name name_suffix dob ssn
+      address1 address2 city state zipcode
+      identity_doc_address1 identity_doc_address2 identity_doc_city identity_doc_address_state
+      identity_doc_zipcode
+      state_id_number state_id_jurisdiction state_id_type state_id_expiration
+      passport_number issuing_country_code
+    ].freeze
+
     class_methods do
       def threatmetrix_session_id_present_or_not_required?(idv_session:)
         return true unless FeatureManagement.proofing_device_profiling_decisioning_enabled?
@@ -34,6 +48,7 @@ module Idv
       user_pii = pii
       user_pii[:best_effort_phone_number_for_socure] = best_effort_phone
       idv_session.precheck_phone = user_pii[:best_effort_phone_number_for_socure]
+      idv_session.verify_info_applicant_fingerprint = applicant_fingerprint(user_pii)
 
       Idv::Agent.new(user_pii).proof_resolution(
         document_capture_session,
@@ -197,6 +212,8 @@ module Idv
     end
 
     def async_state_done(current_async_state)
+      return discard_result_for_changed_applicant unless proofed_applicant_unchanged?
+
       create_fraud_review_request_if_needed(current_async_state.result)
 
       form_response = idv_result_to_form_response(
@@ -357,6 +374,32 @@ module Idv
 
     def delete_async
       idv_session.verify_info_step_document_capture_session_uuid = nil
+      idv_session.verify_info_applicant_fingerprint = nil
+    end
+
+    def applicant_fingerprint(applicant)
+      attributes = applicant.to_h.with_indifferent_access.slice(*APPLICANT_FINGERPRINT_ATTRIBUTES)
+      canonical = attributes.compact.transform_values(&:to_s).sort.to_h
+      Pii::Fingerprinter.fingerprint(canonical.to_json)
+    end
+
+    # True when the applicant the result was computed on is the applicant as it stands now. A
+    # session that submitted before fingerprints were recorded has none and is taken as unchanged.
+    def proofed_applicant_unchanged?
+      stored = idv_session.verify_info_applicant_fingerprint
+      return true if stored.blank?
+
+      ActiveSupport::SecurityUtils.secure_compare(applicant_fingerprint(pii), stored)
+    end
+
+    # The identity data changed between submitting the proofing job and reading its result, so the
+    # result says nothing about the data now on file: drop it and ask for the step again on the
+    # current data.
+    def discard_result_for_changed_applicant
+      delete_async
+      idv_session.invalidate_verify_info_step!
+      analytics.idv_verify_info_applicant_changed(**analytics_arguments)
+      render :show
     end
 
     def idv_result_to_form_response(

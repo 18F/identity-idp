@@ -89,6 +89,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           idv_session.resolution_successful = true
           idv_session.resolution_vendor = 'ResolutionVendor'
           idv_session.verify_info_step_document_capture_session_uuid = 'abcd-1234'
+          idv_session.verify_info_applicant_fingerprint = 'fingerprint'
           idv_session.threatmetrix_review_status = 'pass'
           idv_session.hybrid_mobile_threatmetrix_review_status = 'pass'
           idv_session.source_check_vendor = 'aamva'
@@ -107,6 +108,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           expect(idv_session.threatmetrix_review_status).to be(nil)
           expect(idv_session.hybrid_mobile_threatmetrix_review_status).to be(nil)
           expect(idv_session.verify_info_step_document_capture_session_uuid).to be(nil)
+          expect(idv_session.verify_info_applicant_fingerprint).to be(nil)
         end
       end
     end
@@ -240,6 +242,45 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             previous_ssn_edit_distance: 2,
           ),
         )
+      end
+
+      context 'when the identity data changed after the proofing job was submitted' do
+        before do
+          subject.idv_session.verify_info_step_document_capture_session_uuid = 'abcd-1234'
+          subject.idv_session.verify_info_applicant_fingerprint =
+            Pii::Fingerprinter.fingerprint('{"first_name":"Someone","last_name":"Else"}')
+        end
+
+        it 'discards the result and renders the step again' do
+          get :show
+
+          expect(response).to render_template(:show)
+          expect(subject.idv_session.verify_info_step_document_capture_session_uuid).to be_nil
+          expect(subject.idv_session.verify_info_applicant_fingerprint).to be_nil
+          expect(subject.idv_session.applicant).to be_nil
+          expect(subject.idv_session.resolution_successful).to be_nil
+          expect(@analytics).to have_logged_event(
+            :idv_verify_info_applicant_changed,
+            hash_including(analytics_id: 'In Person Proofing', step: 'verify'),
+          )
+          expect(@analytics).not_to have_logged_event('IdV: doc auth verify proofing results')
+        end
+      end
+
+      context 'when the identity data is the data the proofing job was submitted with' do
+        before do
+          put :update
+          allow(controller).to receive(:load_async_state).and_return(async_state)
+        end
+
+        it 'accepts the result' do
+          expect(subject.idv_session.verify_info_applicant_fingerprint).to be_present
+
+          get :show
+
+          expect(subject.idv_session.applicant).to be_present
+          expect(@analytics).not_to have_logged_event(:idv_verify_info_applicant_changed)
+        end
       end
     end
 
@@ -442,6 +483,12 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.dup }
     before do
       allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
+    end
+
+    it 'records a fingerprint of the applicant handed to the proofer' do
+      put :update
+
+      expect(subject.idv_session.verify_info_applicant_fingerprint).to be_present
     end
 
     it 'sets ssn on pii_from_user' do
