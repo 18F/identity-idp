@@ -13,7 +13,7 @@ module Idv
     before_action :allow_clear1_form_action, only: :show
 
     def show
-      abandon_any_ipp_progress
+      clear_future_steps! if abandon_any_ipp_progress
       @upload_enabled = idv_session.desktop_test_mode_enabled?
       @post_office_enabled = IdentityConfig.store.in_person_proofing_opt_in_enabled &&
                              Idv::InPersonConfig.enabled_for_issuer?(
@@ -97,8 +97,14 @@ module Idv
       )
     end
 
+    # Returning to the hand-off page abandons an in-person enrollment that was being set up; the
+    # steps completed on that path rested on it, so the caller clears them when this returns true.
     def abandon_any_ipp_progress
-      current_user&.establishing_in_person_enrollment&.cancel
+      enrollment = current_user&.establishing_in_person_enrollment
+      return false if enrollment.nil?
+
+      enrollment.cancel
+      true
     end
 
     def handle_phone_submission

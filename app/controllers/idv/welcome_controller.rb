@@ -127,10 +127,20 @@ module Idv
       idv_session.document_capture_session_uuid = document_capture_session.uuid
     end
 
+    # Coming back to the welcome page abandons an in-person enrollment that was under way. The
+    # steps completed on that path (typed identity data, resolution, phone confirmation) rested on
+    # the enrollment, so they are cleared with it and the flow starts over from here. A visit with
+    # nothing to cancel leaves the session as it is.
     def cancel_previous_in_person_enrollments
+      return unless current_user.in_person_enrollments.exists?(
+        status: [InPersonEnrollment::STATUS_ESTABLISHING] +
+                InPersonEnrollment::IN_PROGRESS_ENROLLMENT_STATUSES.to_a,
+      )
+
       UspsInPersonProofing::EnrollmentHelper.cancel_establishing_and_in_progress_enrollments(
         current_user,
       )
+      clear_future_steps!
     end
 
     def check_for_pending_agent_proofed_user

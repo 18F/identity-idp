@@ -395,6 +395,26 @@ RSpec.describe Idv::EnterPasswordController do
   end
 
   describe '#create' do
+    context 'when the in-person enrollment behind the typed data was cancelled' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        subject.idv_session.pii_from_doc = nil
+        subject.user_session['idv/in_person'] = {
+          pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup,
+        }
+        create(:in_person_enrollment, :establishing, user: user).cancel
+      end
+
+      it 'refuses to mint a profile and sends the person back into the flow' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(response).to be_redirect
+        expect(response).not_to redirect_to(idv_personal_key_url)
+        expect(user.reload.profiles).to be_empty
+        expect(idv_session.profile).to be_nil
+      end
+    end
+
     context 'user fails to supply correct password' do
       it 'redirects to original path' do
         put :create, params: { user: { password: 'wrong' } }

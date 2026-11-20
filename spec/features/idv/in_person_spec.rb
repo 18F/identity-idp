@@ -339,6 +339,25 @@ RSpec.describe 'In Person Proofing', js: true do
     complete_all_in_person_proofing_steps
   end
 
+  it 'starts over when the user returns to the welcome page after confirming a phone',
+     allow_browser_log: true do
+    user = sign_in_and_2fa_user
+    begin_in_person_proofing
+    complete_all_in_person_proofing_steps
+    complete_phone_step(user)
+    expect(page).to have_current_path(idv_enter_password_path)
+
+    # Going back to the welcome page cancels the enrollment, and with it every step that rested
+    # on the typed identity data, so the password step is no longer reachable and no profile can
+    # be created from that data.
+    visit idv_welcome_path
+    expect(user.reload.establishing_in_person_enrollment).to be_nil
+
+    visit idv_enter_password_path
+    expect(page).not_to have_current_path(idv_enter_password_path)
+    expect(user.reload.profiles).to be_empty
+  end
+
   it 'allows the user to go back to document capture from location step', allow_browser_log: true do
     sign_in_and_2fa_user
     begin_in_person_proofing
