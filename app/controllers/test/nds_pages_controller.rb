@@ -158,6 +158,16 @@ module Test
     # i18n-tasks-use t('nds.socure_errors.in_person_heading')
     # i18n-tasks-use t('nds.socure_errors.rate_limit_html')
     # i18n-tasks-use t('nds.ssn.info')
+    # i18n-tasks-use t('nds.sts_consent.about_description')
+    # i18n-tasks-use t('nds.sts_consent.agency_description')
+    # i18n-tasks-use t('nds.sts_consent.agency_name')
+    # i18n-tasks-use t('nds.sts_consent.allow')
+    # i18n-tasks-use t('nds.sts_consent.description')
+    # i18n-tasks-use t('nds.sts_consent.heading')
+    # i18n-tasks-use t('nds.sts_consent.permissions_description')
+    # i18n-tasks-use t('nds.sts_consent.permissions_heading')
+    # i18n-tasks-use t('nds.sts_consent.shared_information_description')
+    # i18n-tasks-use t('nds.sts_consent.shared_information_heading')
     # i18n-tasks-use t('nds.verify_info.address')
 
     before_action :require_test_routes_enabled
@@ -827,6 +837,16 @@ module Test
           )
         end
       end
+      {}
+    end
+
+    def setup_sts_consent
+      @nds_current_user = User.new
+      @sts_consent_form = StsConsentForm.new(
+        user: @nds_current_user,
+        target_app: 'urn:gov:gsa:openidconnect:sp:nds-explorer-sts-target',
+        actor_app: 'urn:gov:gsa:openidconnect:sp:nds-explorer-sts-actor',
+      )
       {}
     end
 

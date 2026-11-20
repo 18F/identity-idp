@@ -1774,6 +1774,16 @@ nds.socure_errors.rate_limit_html.one: 您可以再试<strong>1次。</strong>�
 nds.socure_errors.rate_limit_html.other: 您可以再试<strong>%{count}次。</strong>然后，您必须等6个小时才能再试。
 nds.sp_handoff_bounced.instructions_html: 你登录成功了，但 %{sp_name} 将你送回到 %{app_name}。请联系 %{sp_link_html} 寻求帮助。
 nds.ssn.info: 您的社会安全号码用于在 %{app_name} 各项服务中验证您的身份，始终加密保存，未经您同意绝不共享。
+nds.sts_consent.about_description: 使用 Travel.State.Gov 在线申请、更新或跟踪美国护照。
+nds.sts_consent.agency_description: 申请你的护照
+nds.sts_consent.agency_name: 美国国务院
+nds.sts_consent.allow: 允许
+nds.sts_consent.description: '%{america_gov_name} 只使用你批准的机构服务，而且不存储你的个人信息。你的选择有效期为一年，可以随时在你的 %{app_name} 账户中更改。'
+nds.sts_consent.heading: 连接 %{america_gov_name}
+nds.sts_consent.permissions_description: 申请、更新和跟踪你的护照。查看你上传的文件，但不能更改。
+nds.sts_consent.permissions_heading: '%{america_gov_name} 可以为你做什么'
+nds.sts_consent.shared_information_description: 全名、出生日期、社会保障号码和邮寄地址。
+nds.sts_consent.shared_information_heading: MyTravelGov 与 %{america_gov_name} 分享的信息
 nds.totp_setup.new.code_label: 代码
 nds.totp_setup.new.heading: 设置一个身份验证应用程序
 nds.totp_setup.new.nickname_label: 应用程序昵称

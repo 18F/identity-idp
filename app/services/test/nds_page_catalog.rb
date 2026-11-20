@@ -81,6 +81,15 @@ module Test
         ],
       ),
       Page.new(
+        key: 'sts-consent',
+        title: 'America.gov consent (delegation)',
+        flow: SIGN_IN,
+        template: 'users/sts_consent/new',
+        permutations: [
+          Permutation.new(label: 'Default (one agency service)', params: {}),
+        ],
+      ),
+      Page.new(
         key: 'create-account',
         title: 'Create account (enter email)',
         flow: CREATE_ACCOUNT,

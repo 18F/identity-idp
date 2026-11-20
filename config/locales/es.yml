@@ -1772,6 +1772,16 @@ nds.socure_errors.rate_limit_html.one: Puede intentarlo <strong>una vez más.</s
 nds.socure_errors.rate_limit_html.other: Puede intentarlo <strong>%{count} veces más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
 nds.sp_handoff_bounced.instructions_html: Logró iniciar sesión, pero %{sp_name} lo envió de nuevo a %{app_name}. Contacte con %{sp_link_html} para obtener ayuda.
 nds.ssn.info: Su número de Seguro Social verifica su identidad en los servicios de %{app_name} y permanece cifrado; nunca se comparte sin su consentimiento.
+nds.sts_consent.about_description: Use Travel.State.Gov para solicitar, renovar o hacer seguimiento de un pasaporte estadounidense en línea.
+nds.sts_consent.agency_description: Solicitud de su pasaporte
+nds.sts_consent.agency_name: Departamento de Estado
+nds.sts_consent.allow: Permitir
+nds.sts_consent.description: '%{america_gov_name} solo usa los servicios de agencias que usted aprueba y no guarda su información personal. Su selección dura un año y puede cambiarla en cualquier momento en su cuenta de %{app_name}.'
+nds.sts_consent.heading: Conéctese a %{america_gov_name}
+nds.sts_consent.permissions_description: Solicitar, renovar y hacer seguimiento de su pasaporte. Ver los documentos que cargó, pero no cambiarlos.
+nds.sts_consent.permissions_heading: Lo que %{america_gov_name} puede hacer por usted
+nds.sts_consent.shared_information_description: Nombre completo, fecha de nacimiento, número de Seguro Social y dirección postal.
+nds.sts_consent.shared_information_heading: Información que MyTravelGov comparte con %{america_gov_name}
 nds.totp_setup.new.code_label: Código
 nds.totp_setup.new.heading: Configure una aplicación de autenticación
 nds.totp_setup.new.nickname_label: Sobrenombre de la aplicación
