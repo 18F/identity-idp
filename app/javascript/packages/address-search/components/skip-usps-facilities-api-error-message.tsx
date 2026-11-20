@@ -6,7 +6,16 @@ import { t } from '@18f/identity-i18n';
 const helpCenterUrl =
   'https://login.gov/help/verify-your-identity/verify-your-identity-in-person/find-a-participating-post-office';
 
-export default function SkipUspsFacilitiesApiErrorMessage() {
+interface SkipUspsFacilitiesApiErrorMessageProps {
+  /**
+   * Render the NDS alert markup instead of the default markup.
+   */
+  nds?: boolean;
+}
+
+export default function SkipUspsFacilitiesApiErrorMessage({
+  nds = false,
+}: SkipUspsFacilitiesApiErrorMessageProps) {
   const { formatHTML } = useI18n();
 
   const translatedErrorBody = t(
@@ -24,6 +33,19 @@ export default function SkipUspsFacilitiesApiErrorMessage() {
         </Link>
       ),
     });
+  }
+
+  if (nds) {
+    return (
+      <div className="usa-alert usa-alert--error text-left" role="alert">
+        <div className="usa-alert__body">
+          <h2 className="usa-alert__heading">
+            {t('in_person_proofing.body.location.po_search.usps_facilities_api_error_header')}
+          </h2>
+          <p className="usa-alert__text">{formatErrorBody()}</p>
+        </div>
+      </div>
+    );
   }
 
   return (

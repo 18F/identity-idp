@@ -156,4 +156,46 @@ describe('InPersonLocations', () => {
       expect(queryByText('No PO found')).to.be.null;
     });
   });
+
+  context('in the NDS layout', () => {
+    it('renders a real results heading inside a status region and the locations in a card', () => {
+      const { getByRole, container, queryByText } = render(
+        <InPersonLocations
+          locations={locations}
+          onSelect={sinon.stub()}
+          address="123 Fake St, Faketown, MD 12345"
+          noInPersonLocationsDisplay={NoLocationsViewMock}
+          nds
+        />,
+      );
+
+      const heading = getByRole('heading', {
+        level: 2,
+        name: 'in_person_proofing.body.location.po_search.results_description',
+      });
+      expect(heading.classList.contains('card__title')).to.be.true();
+      expect(heading.parentElement!.getAttribute('role')).to.equal('status');
+      expect(
+        container.querySelectorAll('.card.card--elevated li.location-collection__item'),
+      ).to.have.lengthOf(2);
+      expect(
+        queryByText('in_person_proofing.body.location.po_search.results_instructions'),
+      ).not.to.exist();
+    });
+
+    it('passes nds to the no results display', () => {
+      const display = sinon.stub().returns(null);
+      render(
+        <InPersonLocations
+          locations={[]}
+          onSelect={sinon.stub()}
+          address="123 Fake St"
+          noInPersonLocationsDisplay={display}
+          nds
+        />,
+      );
+
+      expect(display).to.have.been.calledWithMatch({ address: '123 Fake St', nds: true });
+    });
+  });
 });

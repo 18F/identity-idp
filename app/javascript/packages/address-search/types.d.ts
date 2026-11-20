@@ -44,10 +44,11 @@ interface Location {
 interface InPersonLocationsProps {
   address: string;
   locations: FormattedLocation[] | null | undefined;
-  noInPersonLocationsDisplay: ComponentType<{ address: string }>;
+  noInPersonLocationsDisplay: ComponentType<{ address: string; nds?: boolean }>;
   onSelect;
   resultsHeaderComponent?: ComponentType;
   resultsSectionHeading?: ComponentType;
+  nds?: boolean;
 }
 
 interface LocationCollectionItemProps {
@@ -60,6 +61,7 @@ interface LocationCollectionItemProps {
   streetAddress: string;
   sundayHours: string;
   weekdayHours: string;
+  nds?: boolean;
 }
 
 interface LocationCollectionProps {
@@ -72,13 +74,17 @@ interface FullAddressSearchProps {
   disabled: boolean;
   handleLocationSelect: ((e: any, id: number | null) => Promise<void>) | null | undefined;
   locationsURL: string;
-  noInPersonLocationsDisplay?: ComponentType<{ address: string }>;
+  noInPersonLocationsDisplay?: ComponentType<{ address: string; nds?: boolean }>;
   onFoundLocations: Dispatch<SetStateAction<FormattedLocation[] | null | undefined>>;
   registerField: RegisterFieldCallback;
   resultsHeaderComponent?: ComponentType;
   usStatesTerritories: string[][];
   resultsSectionHeading?: ComponentType;
   usesErrorComponent?: boolean;
+  /**
+   * Render the NDS (UI refresh) markup instead of the default markup.
+   */
+  nds?: boolean;
 }
 
 interface FullAddressSearchInputProps {
@@ -95,4 +101,5 @@ interface FullAddressSearchInputProps {
   usStatesTerritories: string[][];
   uspsApiError: Error | null;
   usesErrorComponent?: boolean;
+  nds?: boolean;
 }

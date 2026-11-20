@@ -309,6 +309,35 @@ describe('document-capture/components/document-capture', () => {
       expect(step.closest('.step-indicator__step--current')).to.exist();
     });
 
+    context('in person steps in the NDS layout', () => {
+      it('does not render the step indicator', () => {
+        const { queryByText, getByRole } = render(
+          <InPersonContext.Provider
+            value={{ inPersonURL: '/in_person', skipDocAuthFromHandoff: true, ndsLayout: true }}
+          >
+            <DocumentCapture />
+          </InPersonContext.Provider>,
+        );
+
+        expect(
+          getByRole('heading', { level: 1, name: 'in_person_proofing.headings.prepare' }),
+        ).to.exist();
+        expect(queryByText('step_indicator.flows.idv.find_a_post_office')).not.to.exist();
+      });
+
+      it('renders the step indicator in the default layout', () => {
+        const { getByText } = render(
+          <InPersonContext.Provider
+            value={{ inPersonURL: '/in_person', skipDocAuthFromHandoff: true }}
+          >
+            <DocumentCapture />
+          </InPersonContext.Provider>,
+        );
+
+        expect(getByText('step_indicator.flows.idv.find_a_post_office')).to.exist();
+      });
+    });
+
     context('in person steps', () => {
       it('renders the step indicator', async () => {
         const callback = sandbox.spy();

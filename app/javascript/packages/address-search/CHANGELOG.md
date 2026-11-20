@@ -1,6 +1,7 @@
 # `Unreleased`
 
 - Removed unsupported single input address search
+- Added optional `nds` prop to FullAddressSearch, which renders the NDS (UI refresh) markup for the search form, results, and error states
 
 # `Change Log`
 

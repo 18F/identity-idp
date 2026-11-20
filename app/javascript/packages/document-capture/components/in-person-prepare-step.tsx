@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Link, PageHeading, ProcessList, ProcessListItem } from '@18f/identity-components';
+import { Button, Link, PageHeading, ProcessList, ProcessListItem } from '@18f/identity-components';
 import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
@@ -25,6 +25,7 @@ function InPersonPrepareStep({ toPreviousStep }) {
     howToVerifyURL,
     socureErrorsTimeoutURL,
     previousStepURL,
+    ndsLayout,
   } = useContext(InPersonContext);
 
   function goBack() {
@@ -39,6 +40,38 @@ function InPersonPrepareStep({ toPreviousStep }) {
     } else {
       toPreviousStep();
     }
+  }
+
+  if (ndsLayout) {
+    return (
+      <section className="auth auth--form-page">
+        {inPersonOutageMessageEnabled && inPersonOutageExpectedUpdateDate && (
+          <InPersonOutageAlert />
+        )}
+        <div className="auth__header">
+          <div className="stack stack--align-center auth__intro">
+            <h1>{t('in_person_proofing.headings.prepare')}</h1>
+            <div className="auth__intro-description">{t('nds.post_office.prepare.intro')}</div>
+          </div>
+        </div>
+        <hr className="divider" />
+        <ol className="list stack stack--gap-16 copy--muted">
+          <li>{t('in_person_proofing.body.prepare.verify_step_post_office')}</li>
+          <li>{t('nds.post_office.prepare.step_details')}</li>
+          <li>{t('nds.post_office.prepare.step_phone')}</li>
+        </ol>
+        <div className="auth__actions">
+          <div className="actions actions--align-stretch">
+            <Button type="submit" className="usa-button--lg">
+              {t('forms.buttons.continue')}
+            </Button>
+            <Button role="link" className="usa-button--tertiary usa-button--lg" onClick={goBack}>
+              {t('forms.buttons.back')}
+            </Button>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (

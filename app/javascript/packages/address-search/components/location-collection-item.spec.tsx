@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import sinon from 'sinon';
+import userEvent from '@testing-library/user-event';
 import LocationCollectionItem from './location-collection-item';
 
 describe('LocationCollectionItem', () => {
@@ -185,6 +186,74 @@ describe('LocationCollectionItem', () => {
       expect(container.textContent).to.not.contain(
         'in_person_proofing.body.location.location_button',
       );
+    });
+  });
+
+  context('in the NDS layout', () => {
+    function renderNDS(props = {}) {
+      return render(
+        <LocationCollectionItem
+          name="test name"
+          distance="2.4 miles"
+          streetAddress="4163 E Camelback Road"
+          formattedCityStateZip="Phoenix, AZ, 85017-8993"
+          handleSelect={sinon.stub()}
+          weekdayHours="9:00 AM - 12:00 PM"
+          saturdayHours="8:30 AM - 5:00 PM"
+          selectId={3}
+          sundayHours="Closed"
+          nds
+          {...props}
+        />,
+      );
+    }
+
+    it('renders the DS location item with the distance, address and NDS hours copy', () => {
+      const { container, getByRole, getByText } = renderNDS();
+
+      const item = container.querySelector('li.location-collection__item')!;
+      expect(item).to.exist();
+      expect(
+        getByRole('heading', {
+          level: 3,
+          name: 'in_person_proofing.body.location.distance',
+        }).classList.contains('location-collection__distance'),
+      ).to.be.true();
+      expect(item.querySelector('.location-collection__address')!.textContent).to.equal(
+        '4163 E Camelback RoadPhoenix, AZ, 85017-8993',
+      );
+      expect(getByRole('heading', { level: 4, name: 'nds.post_office.search.hours' })).to.exist();
+      expect(
+        getByText('in_person_proofing.body.location.retail_hours_weekday 9:00 AM - 12:00 PM'),
+      ).to.exist();
+      expect(getByText('nds.post_office.search.saturday 8:30 AM - 5:00 PM')).to.exist();
+      expect(getByText('nds.post_office.search.sunday Closed')).to.exist();
+      expect(item.querySelector('.usa-collection__body')).not.to.exist();
+    });
+
+    it('renders the inline Select from tablet up and the full-width Select on mobile', async () => {
+      const handleSelect = sinon.stub();
+      const { container } = renderNDS({ handleSelect });
+
+      const desktop = container.querySelector(
+        '.location-collection__top > .display-none.tablet\\:display-block button',
+      )!;
+      const mobile = container.querySelector('li > .tablet\\:display-none button')!;
+      expect(desktop.classList.contains('usa-button--md')).to.be.true();
+      expect(mobile.classList.contains('width-full')).to.be.true();
+
+      await userEvent.click(mobile);
+      expect(handleSelect).to.have.been.calledWith(sinon.match.any, 3);
+    });
+
+    it('shows the name when there is no distance and omits Select without a handler', () => {
+      const { getByRole, queryByRole } = renderNDS({
+        distance: undefined,
+        handleSelect: undefined,
+      });
+
+      expect(getByRole('heading', { level: 3, name: 'test name' })).to.exist();
+      expect(queryByRole('button')).not.to.exist();
     });
   });
 });
