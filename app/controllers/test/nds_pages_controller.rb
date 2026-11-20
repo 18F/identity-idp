@@ -1497,6 +1497,41 @@ module Test
       {}
     end
 
+    def setup_reactivate_account
+      {}
+    end
+
+    def setup_verify_personal_key
+      @nds_current_user = build_mfa_user(configured: true)
+      flash.now[:info] = t('notices.account_reactivation') if params[:notice].present?
+      if params[:error].present?
+        flash.now[:error] = t('errors.messages.personal_key_incorrect')
+      end
+      {}
+    end
+
+    def setup_verify_personal_key_rate_limited
+      @expires_at = 10.minutes.from_now
+      {}
+    end
+
+    def setup_verify_password
+      @nds_current_user = User.new
+      flash.now[:error] = t('errors.messages.password_incorrect') if params[:error].present?
+      {}
+    end
+
+    def setup_manage_personal_key
+      @code = '0193-0039-4739-9920'
+      @personal_key_generated_at = Time.zone.today
+      if params[:regenerated].present?
+        flash.now[:info] = t('account.personal_key.old_key_will_not_work')
+      elsif params[:needs_new].present?
+        flash.now[:info] = t('account.personal_key.needs_new')
+      end
+      {}
+    end
+
     def setup_completions
       user = build_mfa_user(configured: true)
       email = EmailAddressStub.new(email: DEV_USER_EMAIL)

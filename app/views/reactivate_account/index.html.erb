@@ -1,3 +1,50 @@
+<% if nds_layout? %>
+  <% self.title = t('instructions.account.reactivate.with_key') %>
+  <%= render NDS::FormPageComponent.new(
+        title: t('instructions.account.reactivate.with_key'),
+        subtitle: t('nds.reactivate_account.info'),
+      ) do |page| %>
+    <% page.with_alert do %>
+      <div class="no-js">
+        <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
+          <%= t('instructions.account.reactivate.modal.copy') %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(url: verify_personal_key_path, full_width: true)
+              .with_content(t('links.account.reactivate.with_key')) %>
+        <%= render ButtonComponent.new(
+              url: reactivate_account_path,
+              method: :put,
+              variant: :secondary,
+              full_width: true,
+              id: 'no-key-reactivate',
+              data: { nds_modal_open: true },
+              aria: { controls: 'reactivate-account-modal', haspopup: 'dialog' },
+            ).with_content(t('links.account.reactivate.without_key')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= render ModalComponent.new(class: 'reactivate-account-modal', id: 'reactivate-account-modal') do |c| %>
+    <% c.with_title { t('instructions.account.reactivate.modal.heading') } %>
+    <% c.with_description { t('instructions.account.reactivate.modal.copy') } %>
+    <% c.with_footer do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: reactivate_account_path,
+              method: :put,
+              full_width: true,
+              name: :personal_key,
+            ).with_content(t('forms.buttons.continue')) %>
+        <%= c.dismiss_button(variant: :secondary, full_width: true) { t('links.cancel') } %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <% self.title = t('titles.reactivate_account') %>
 
 <div class="no-js">
@@ -53,3 +100,4 @@
 </div>
 
 <%= render 'reactivate_account/modal' %>
+<% end %>

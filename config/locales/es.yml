@@ -1766,6 +1766,7 @@ nds.piv_cac_setup.step_1: Ingrese un alias
 nds.piv_cac_setup.step_2: Inserte su tarjeta PIV o CAC en su lector de tarjetas
 nds.piv_cac_setup.step_3: Agregue su tarjeta PIV o CAC
 nds.piv_cac_setup.step_3_info: Se le pedirá que elija un certificado e ingrese su PIN después de hacer clic en el botón de continuar.
+nds.reactivate_account.info: Cuando creó su cuenta y verificó su identidad, recibió un código único de 16 caracteres.
 nds.request_letter.heading: Verifique por correo postal
 nds.request_letter.info: Para verificar su identidad, le enviaremos por correo una carta con un código de verificación e instrucciones a su dirección. Debería llegar en 5 a 10 días. Siga las instrucciones de la carta para terminar de verificar su identidad.
 nds.reset_password.email_heading: Ingrese su correo electrónico
@@ -1790,6 +1791,8 @@ nds.totp_setup.new.step_2: Abra su aplicación de autenticación preferida
 nds.totp_setup.new.step_3: Escanee el código QR o ingrese el código de configuración manualmente en su aplicación de autenticación
 nds.totp_verification.invalid_code_body: Ese código no es válido. Ingrese el código actual de su aplicación de autenticación.
 nds.verify_info.address: Dirección
+nds.verify_password.heading: Ingrese su contraseña
+nds.verify_personal_key.info: Después de ingresarla, recibirá una nueva clave.
 nds.webauthn_platform_recommended.cta: Agregar clave de acceso
 nds.webauthn_platform_recommended.description: Autentíquese de la misma forma que desbloquea su dispositivo, sea con su rostro o huella dactilar, contraseña u otro método.
 nds.webauthn_platform_recommended.heading: Configure una clave de acceso para un inicio de sesión más seguro

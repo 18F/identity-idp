@@ -1,3 +1,35 @@
+<% if nds_layout? %>
+  <% self.title = t('nds.verify_password.heading') %>
+  <%= simple_form_for(
+        current_user,
+        url: update_verify_password_path,
+        method: :put,
+        html: { data: { nds_submit_gate: true } },
+      ) do |f| %>
+    <%= render NDS::FormPageComponent.new(
+          title: t('nds.verify_password.heading'),
+          subtitle: t('idv.messages.sessions.enter_password_message', app_name: APP_NAME),
+        ) do |page| %>
+      <% page.with_body do %>
+        <%= render NDS::InputComponent.new(
+              form: f,
+              attribute: :password,
+              type: :password,
+              label: t('idv.form.password'),
+              required: true,
+              autocomplete: 'current-password',
+            ) %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render ButtonComponent.new(type: :submit, full_width: true)
+              .with_content(t('forms.buttons.continue')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <% self.title = t('idv.titles.enter_password') %>
 
 <%= render PageHeadingComponent.new.with_content(t('idv.titles.session.enter_password', app_name: APP_NAME)) %>
@@ -19,4 +51,5 @@
         },
       ) %>
   <%= f.submit t('forms.buttons.continue'), class: 'margin-top-5' %>
+<% end %>
 <% end %>

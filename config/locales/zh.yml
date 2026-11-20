@@ -1768,6 +1768,7 @@ nds.piv_cac_setup.step_1: 输入昵称
 nds.piv_cac_setup.step_2: 把 PIV 或 CAC 插入读卡器
 nds.piv_cac_setup.step_3: 添加 PIV 或 CAC
 nds.piv_cac_setup.step_3_info: 点击继续按钮后，系统会要求你选择一个证书并输入你的 PIN。
+nds.reactivate_account.info: 您在创建账户并验证身份时，收到了一个由 16 个字符组成的唯一代码。
 nds.request_letter.heading: 改为通过邮寄验证
 nds.request_letter.info: 为验证您的身份，我们会向您的地址邮寄一封包含验证码和说明的信件，预计 5 到 10 天内送达。请按照信中的说明完成身份验证。
 nds.reset_password.email_heading: 输入您的电子邮件
@@ -1792,6 +1793,8 @@ nds.totp_setup.new.step_2: 打开您首选的身份验证应用程序
 nds.totp_setup.new.step_3: 扫描二维码或在身份验证应用程序中手动输入设置代码
 nds.totp_verification.invalid_code_body: 该代码无效。请输入身份验证应用程序中的当前代码。
 nds.verify_info.address: 地址
+nds.verify_password.heading: 输入您的密码
+nds.verify_personal_key.info: 输入后，您将获得一个新的密钥。
 nds.webauthn_platform_recommended.cta: 添加通行密钥
 nds.webauthn_platform_recommended.description: 以解锁设备的相同方式进行身份验证，无论是使用您的面容或指纹、密码还是其他方法。
 nds.webauthn_platform_recommended.heading: 设置通行密钥以更安全地登录

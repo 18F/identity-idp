@@ -852,6 +852,52 @@ module Test
           Permutation.new(label: 'Incorrect password', params: { error: '1' }),
         ],
       ),
+      Page.new(
+        key: 'reactivate-account',
+        title: 'Do you have your personal key? (reactivate account)',
+        flow: ACCOUNT,
+        template: 'reactivate_account/index',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'verify-personal-key',
+        title: 'Enter your personal key (reactivate account)',
+        flow: ACCOUNT,
+        template: 'users/verify_personal_key/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Arriving from the start page', params: { notice: '1' }),
+          Permutation.new(label: 'Incorrect personal key', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'verify-personal-key-rate-limited',
+        title: 'Too many personal key attempts (reactivate account)',
+        flow: ACCOUNT,
+        template: 'users/verify_personal_key/rate_limited',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'verify-password',
+        title: 'Enter your password (reactivate account)',
+        flow: ACCOUNT,
+        template: 'users/verify_password/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Incorrect password', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'manage-personal-key',
+        title: 'Save your personal key (reactivation and account)',
+        flow: ACCOUNT,
+        template: 'users/personal_keys/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Regenerated from the account page', params: { regenerated: '1' }),
+          Permutation.new(label: 'Account needs a new key', params: { needs_new: '1' }),
+        ],
+      ),
     ].freeze
 
     def self.pages
