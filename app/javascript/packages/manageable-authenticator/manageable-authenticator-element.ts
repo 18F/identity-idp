@@ -17,10 +17,10 @@ interface Strings {
 class ManageableAuthenticatorElement extends HTMLElement {
   connectedCallback() {
     this.manageButton.addEventListener('click', () => this.#handleManageClick());
-    this.doneButton.addEventListener('click', () => this.toggleEditing(false));
-    this.renameButton.addEventListener('click', () => this.toggleRenaming(true));
+    this.doneButton?.addEventListener('click', () => this.toggleEditing(false));
+    this.renameButton?.addEventListener('click', () => this.toggleRenaming(true));
     this.deleteButton.addEventListener('click', () => this.delete());
-    this.cancelRenameButton.addEventListener('click', () => this.toggleRenaming(false));
+    this.cancelRenameButton?.addEventListener('click', () => this.toggleRenaming(false));
     this.renameForm.addEventListener('submit', (event) => this.#handleRenameSubmit(event));
     this.addEventListener('keydown', (event) => this.#handleKeyDown(event));
 
@@ -35,16 +35,16 @@ class ManageableAuthenticatorElement extends HTMLElement {
     return this.querySelector<HTMLButtonElement>('.manageable-authenticator__manage-button')!;
   }
 
-  get doneButton(): HTMLButtonElement {
-    return this.querySelector<HTMLButtonElement>('.manageable-authenticator__done-button')!;
+  get doneButton(): HTMLButtonElement | null {
+    return this.querySelector<HTMLButtonElement>('.manageable-authenticator__done-button');
   }
 
   get editContainer(): HTMLElement {
     return this.querySelector<HTMLElement>('.manageable-authenticator__edit')!;
   }
 
-  get renameButton(): HTMLButtonElement {
-    return this.querySelector<HTMLButtonElement>('.manageable-authenticator__rename-button')!;
+  get renameButton(): HTMLButtonElement | null {
+    return this.querySelector<HTMLButtonElement>('.manageable-authenticator__rename-button');
   }
 
   get deleteButton(): SpinnerButtonElement {
@@ -65,14 +65,22 @@ class ManageableAuthenticatorElement extends HTMLElement {
     )!;
   }
 
-  get cancelRenameButton(): HTMLButtonElement {
-    return this.querySelector<HTMLButtonElement>(
-      '.manageable-authenticator__cancel-rename-button',
-    )!;
+  get cancelRenameButton(): HTMLButtonElement | null {
+    return this.querySelector<HTMLButtonElement>('.manageable-authenticator__cancel-rename-button');
+  }
+
+  get summary(): HTMLElement | null {
+    return this.querySelector<HTMLElement>('.manageable-authenticator__summary');
   }
 
   get alert(): HTMLElement {
     return this.querySelector<HTMLElement>('.manageable-authenticator__alert')!;
+  }
+
+  get alertContainer(): HTMLElement {
+    return (
+      this.querySelector<HTMLElement>('.manageable-authenticator__alert-container') ?? this.alert
+    );
   }
 
   get uniqueId(): string {
@@ -85,6 +93,15 @@ class ManageableAuthenticatorElement extends HTMLElement {
 
   get reauthenticationURL(): string {
     return this.getAttribute('reauthentication-url')!;
+  }
+
+  /**
+   * Whether the markup edits the nickname in place of the summary: Manage opens the rename
+   * form directly, a saved rename returns to the summary, and the element shows and hides
+   * its parts with their `hidden` attributes rather than relying on stylesheet rules.
+   */
+  get isInlineRename(): boolean {
+    return this.hasAttribute('inline-rename');
   }
 
   get reauthenticateAt(): Date {
@@ -107,11 +124,16 @@ class ManageableAuthenticatorElement extends HTMLElement {
     this.toggleRenaming(false);
 
     this.classList.toggle('manageable-authenticator--editing', isEditing);
+    this.#syncHiddenParts();
 
     const focusTarget = isEditing ? this.editContainer : this.manageButton;
     focusTarget.focus();
 
     this.#setAlertMessage(null);
+
+    if (isEditing && this.isInlineRename) {
+      this.toggleRenaming(true);
+    }
   }
 
   toggleRenaming(isRenaming: boolean) {
@@ -177,6 +199,28 @@ class ManageableAuthenticatorElement extends HTMLElement {
       this.alert.classList.toggle('usa-alert--success', type === 'success');
       this.alert.querySelector('.usa-alert__text')!.textContent = message;
     }
+    this.#syncHiddenParts();
+  }
+
+  /**
+   * For inline rename markup, mirrors the state classes onto the parts' `hidden` attributes.
+   * The summary, edit and alert containers are plain wrappers, so that `hidden` applies over
+   * the display rules of the styled elements inside them.
+   */
+  #syncHiddenParts() {
+    if (!this.isInlineRename) {
+      return;
+    }
+
+    const isEditing = this.classList.contains('manageable-authenticator--editing');
+    const isDeleted = this.classList.contains('manageable-authenticator--deleted');
+    if (this.summary) {
+      this.summary.hidden = isEditing || isDeleted;
+    }
+    this.editContainer.hidden = !isEditing || isDeleted;
+    this.alertContainer.hidden = !this.classList.contains(
+      'manageable-authenticator--alert-visible',
+    );
   }
 
   #handleKeyDown(event: KeyboardEvent) {
@@ -209,8 +253,12 @@ class ManageableAuthenticatorElement extends HTMLElement {
 
     if (response.ok) {
       this.name = name;
-      this.toggleRenaming(false);
-      this.editContainer.focus();
+      if (this.isInlineRename) {
+        this.toggleEditing(false);
+      } else {
+        this.toggleRenaming(false);
+        this.editContainer.focus();
+      }
       this.#setAlertMessage(this.strings.renamed, { type: 'success' });
     } else {
       const { error } = (await response.json()) as ErrorResponse;
