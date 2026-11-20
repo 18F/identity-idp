@@ -25,6 +25,14 @@ RSpec.describe DocAuthRouter do
 
     subject { described_class.doc_auth_vendor_for_bucket(bucket, **options) }
 
+    context 'when the bucket is :incode' do
+      let(:bucket) { :incode }
+
+      it 'returns the Idp::Constants::Vendors::INCODE' do
+        is_expected.to eq(Idp::Constants::Vendors::INCODE)
+      end
+    end
+
     context 'when the bucket is :socure' do
       let(:bucket) { :socure }
 

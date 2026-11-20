@@ -1,0 +1,20 @@
+<% self.title = t('titles.doc_auth.doc_capture') %>
+<% if incode_sdk_url.present? %>
+  <% content_for :head do %>
+    <%= javascript_include_tag incode_sdk_url, nonce: true %>
+  <% end %>
+<% end %>
+<%= tag.div(
+      id: 'incode-document-capture',
+      data: {
+        api_key: incode_api_key,
+        api_url: incode_api_url,
+        flow_id: incode_flow_id,
+        external_id: document_capture_session_uuid,
+        external_customer_id: user_uuid,
+        update_url: update_url,
+      },
+    ) do %>
+  <div id="incode-camera-container"></div>
+<% end %>
+<%= javascript_packs_tag_once 'incode-document-capture' %>

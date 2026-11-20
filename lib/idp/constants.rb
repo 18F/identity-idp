@@ -11,6 +11,7 @@ module Idp
 
     module Vendors
       ACUANT = 'acuant'
+      INCODE = 'incode'
       LEXIS_NEXIS = 'lexis_nexis'
       LEXIS_NEXIS_DDP = 'lexis_nexis_ddp'
       SOCURE = 'socure'

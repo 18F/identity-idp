@@ -73,6 +73,17 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
               .to eq(Idp::Constants::Vendors::SOCURE)
           end
         end
+
+        context 'bucket is Incode' do
+          let(:bucket) { :incode }
+
+          it 'returns incode as the vendor' do
+            controller.update_doc_auth_vendor
+
+            expect(document_capture_session.doc_auth_vendor)
+              .to eq(Idp::Constants::Vendors::INCODE)
+          end
+        end
       end
 
       context 'passport requested' do

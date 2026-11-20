@@ -382,12 +382,13 @@ RSpec.describe 'Idv::FlowPolicy' do
         welcome: %i[agreement hybrid_handoff choose_id_type document_capture how_to_verify],
         agreement: %i[hybrid_handoff choose_id_type document_capture how_to_verify],
         how_to_verify: %i[choose_id_type document_capture clear1_session],
-        hybrid_handoff: %i[choose_id_type link_sent document_capture socure_document_capture
-                           clear1_session],
+        hybrid_handoff: %i[choose_id_type link_sent document_capture incode_document_capture
+                           socure_document_capture clear1_session],
         choose_id_type: %i[document_capture],
         link_sent: %i[ssn],
         document_capture: %i[ssn ipp_state_id ipp_choose_id_type],
         clear1_session: %i[enter_password],
+        incode_document_capture: %i[ssn ipp_state_id ipp_choose_id_type],
         socure_document_capture: %i[ssn ipp_ssn],
         socure_errors: %i[final],
         ipp_choose_id_type: %i[ipp_state_id ipp_passport],

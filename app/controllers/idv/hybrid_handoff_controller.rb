@@ -71,7 +71,12 @@ module Idv
         key: :hybrid_handoff,
         controller: self,
         next_steps: [
-          :choose_id_type, :link_sent, :document_capture, :socure_document_capture, :clear1_session
+          :choose_id_type,
+          :link_sent,
+          :document_capture,
+          :incode_document_capture,
+          :socure_document_capture,
+          :clear1_session,
         ],
         preconditions: ->(idv_session:, user:) do
           idv_session.idv_consent_given? &&

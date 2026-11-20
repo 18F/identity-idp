@@ -218,6 +218,8 @@ module DocAuthRouter
 
   def self.doc_auth_vendor_for_bucket(bucket, selfie: false, passport_requested: false)
     case bucket
+    when :incode
+      Idp::Constants::Vendors::INCODE
     when :socure
       Idp::Constants::Vendors::SOCURE
     when :lexis_nexis

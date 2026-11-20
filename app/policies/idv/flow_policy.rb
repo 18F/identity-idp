@@ -22,6 +22,7 @@ module Idv
         link_sent: Idv::LinkSentController.step_info,
         document_capture: Idv::DocumentCaptureController.step_info,
         clear1_session: Idv::Clear1::SessionController.step_info,
+        incode_document_capture: Idv::Incode::DocumentCaptureController.step_info,
         socure_document_capture: Idv::Socure::DocumentCaptureController.step_info,
         socure_errors: Idv::Socure::ErrorsController.step_info,
         ipp_choose_id_type: Idv::InPerson::ChooseIdTypeController.step_info,

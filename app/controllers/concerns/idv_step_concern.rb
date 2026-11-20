@@ -95,6 +95,8 @@ module IdvStepConcern
 
   def vendor_document_capture_url
     case document_capture_session.doc_auth_vendor
+    when Idp::Constants::Vendors::INCODE
+      idv_incode_document_capture_url
     when Idp::Constants::Vendors::SOCURE,
          Idp::Constants::Vendors::SOCURE_MOCK
       idv_socure_document_capture_url

@@ -54,6 +54,8 @@ module AbTests
     should_log: /^idv/i,
     default_bucket: IdentityConfig.store.doc_auth_vendor_default.to_sym,
     buckets: {
+      incode: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_vendor_incode_percent : 0,
       socure: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
         IdentityConfig.store.doc_auth_vendor_socure_percent : 0,
       lexis_nexis: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
@@ -72,6 +74,8 @@ module AbTests
     should_log: /^idv/i,
     default_bucket: IdentityConfig.store.doc_auth_selfie_vendor_default.to_sym,
     buckets: {
+      incode: IdentityConfig.store.doc_auth_selfie_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_selfie_vendor_incode_percent : 0,
       socure: IdentityConfig.store.doc_auth_selfie_vendor_switching_enabled ?
         IdentityConfig.store.doc_auth_selfie_vendor_socure_percent : 0,
       lexis_nexis: IdentityConfig.store.doc_auth_selfie_vendor_switching_enabled ?

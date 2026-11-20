@@ -342,6 +342,17 @@ RSpec.describe Idv::DocumentCaptureController do
       end
     end
 
+    context 'when we try to use this controller but we should be using the Incode version' do
+      let(:idv_vendor) { Idp::Constants::Vendors::INCODE }
+
+      it 'redirects to the Incode controller' do
+        subject.idv_session.skip_hybrid_handoff = true
+        get :show
+
+        expect(response).to redirect_to idv_incode_document_capture_url
+      end
+    end
+
     context 'socure is the default vendor' do
       let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
 
