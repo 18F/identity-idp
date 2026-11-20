@@ -44,6 +44,6 @@ RSpec.describe 'idv/incode/document_capture/show.html.erb' do
     expect(rendered).to have_css(
       "#incode-document-capture[data-update-url='#{update_url}']",
     )
-    expect(rendered).to have_css('#incode-camera-container')
+    expect(rendered).to have_css('#incode-camera-container.full-screen.bg-white')
   end
 end
