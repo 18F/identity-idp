@@ -1,5 +1,28 @@
 <% self.title = t('titles.forget_all_browsers') %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_account_header, 'true') %>
+  <%= render NDS::FormPageComponent.new(
+        title: t('nds.dashboard_history.log_out_all_devices_heading'),
+        subtitle: t('nds.dashboard_history.log_out_all_devices_description'),
+      ) do |page| %>
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: forget_all_browsers_path,
+              method: :delete,
+              variant: :destructive,
+              full_width: true,
+            ).with_content(t('forms.buttons.continue')) %>
+        <%= render ButtonComponent.new(
+              url: account_history_path,
+              variant: :secondary,
+              full_width: true,
+            ).with_content(t('links.cancel')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('titles.forget_all_browsers')) %>
 
 <p>
@@ -13,3 +36,4 @@
     <%= link_to(t('links.cancel'), account_path) %>
   </div>
 </div>
+<% end %>

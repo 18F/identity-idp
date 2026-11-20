@@ -1,3 +1,25 @@
+<% if nds_layout? %>
+  <li class="history-row">
+    <div class="history-row__content">
+      <p class="history-row__title"><%= device.nice_name %></p>
+      <p class="history-row__meta"><%= render TimeComponent.new(time: device.happened_at) %></p>
+      <p class="history-row__meta"><%= device.last_sign_in_location_and_ip %></p>
+    </div>
+    <%= render ButtonComponent.new(
+          url: account_events_path(id: device.id),
+          variant: :tertiary,
+          size: :md,
+          class: 'history-row__action',
+        ) do %>
+      <span class="history-row__action-label">
+        <%= t('nds.dashboard_history.details') %><span class="usa-sr-only">, <%= device.nice_name %></span>
+      </span>
+      <span class="history-row__action-icon">
+        <%= render NDS::IconComponent.new(icon: :chevron_right, size: 20) %>
+      </span>
+    <% end %>
+  </li>
+<% else %>
 <div class="padding-1 border-top border-left border-right border-primary-light">
   <div class="grid-row grid-gap-2">
     <div class="grid-col-fill">
@@ -10,3 +32,4 @@
   <%= render TimeComponent.new(time: device.happened_at) %><br>
   <%= device.last_sign_in_location_and_ip %>
 </div>
+<% end %>

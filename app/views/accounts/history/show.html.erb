@@ -1,5 +1,55 @@
 <% self.title = t('account.navigation.history') %>
 
+<% if nds_layout? %>
+  <div class="history">
+    <h1 class="usa-sr-only"><%= t('account.navigation.history') %></h1>
+
+    <section class="history__section" aria-labelledby="history-devices-heading">
+      <div class="history__header">
+        <h2 id="history-devices-heading" class="history__heading">
+          <%= t('headings.account.devices') %>
+        </h2>
+        <%= render ButtonComponent.new(
+              url: forget_all_browsers_path,
+              variant: :secondary,
+              size: :md,
+              class: 'history__header-action',
+            ).with_content(t('nds.dashboard_history.log_out_all_devices')) %>
+      </div>
+      <% if @presenter.recent_devices.any? %>
+        <div class="history__panel">
+          <ul class="history__rows">
+            <% @presenter.recent_devices.each do |device| %>
+              <%= render 'accounts/device_item', device: device %>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </section>
+
+    <section class="history__section" aria-labelledby="history-activity-heading">
+      <div class="history__header">
+        <h2 id="history-activity-heading" class="history__heading">
+          <%= t('headings.account.activity') %>
+        </h2>
+      </div>
+      <% recent_events = @presenter.recent_events %>
+      <% if recent_events.any? %>
+        <div class="history__panel">
+          <ul class="history__rows">
+            <% recent_events.each do |event| %>
+              <% if event.is_a?(ServiceProviderIdentity) %>
+                <%= render 'accounts/identity_item', event: event %>
+              <% else %>
+                <%= render 'accounts/event_item', event: event %>
+              <% end %>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </section>
+  </div>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('account.navigation.history')) %>
 
 <div class="card">
@@ -27,3 +77,4 @@
     <% end %>
   </div>
 </div>
+<% end %>
