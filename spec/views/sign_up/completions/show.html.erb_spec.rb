@@ -211,5 +211,31 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
       expect(rendered).to have_link(t('links.cancel'), href: sign_up_completed_cancel_path)
       expect(rendered).to have_css("img[src*='nist'][alt='#{t('nds.completions.nist_alt')}']")
     end
+
+    it 'renders no agency seal when the SP has no logo' do
+      expect(rendered).not_to have_css('.agency-seal')
+    end
+
+    context 'when the SP has a logo' do
+      let(:service_provider) { create(:service_provider, logo: 'DOS.svg') }
+
+      it 'renders the 100px agency seal above the heading' do
+        seal_selector = '.auth__header--with-media img.agency-seal.agency-seal--100'
+        expect(rendered).to have_css(
+          "#{seal_selector}[alt=''][src='#{service_provider.logo_url}']",
+        )
+        expect(rendered).not_to have_css('.auth__media')
+      end
+    end
+  end
+
+  context 'with an SP logo in the default layout' do
+    let(:service_provider) { create(:service_provider, logo: 'DOS.svg') }
+
+    it 'does not render the NDS agency seal' do
+      render
+
+      expect(rendered).not_to have_css('.agency-seal')
+    end
   end
 end

@@ -8,10 +8,11 @@ RSpec.describe 'idv/welcome/show.html.erb' do
   let(:view_context) { ActionController::Base.new.view_context }
   let(:sp) { build(:service_provider) }
   let(:nds_layout) { false }
+  let(:current_sp) { nil }
 
   before do
     allow(view).to receive(:nds_layout?).and_return(nds_layout)
-    allow(view).to receive(:current_sp).and_return(nil)
+    allow(view).to receive(:current_sp).and_return(current_sp)
     allow(view_context).to receive(:current_user).and_return(user)
     assign(:consent_form, Idv::ConsentForm.new(idv_consent_given: false))
 
@@ -82,8 +83,30 @@ RSpec.describe 'idv/welcome/show.html.erb' do
     end
   end
 
+  context 'with an SP logo in the default layout' do
+    let(:current_sp) { build(:service_provider, logo: 'DOS.svg') }
+
+    it 'does not render the NDS agency seal' do
+      expect(rendered).not_to have_css('.agency-seal')
+    end
+  end
+
   context 'in the NDS layout' do
     let(:nds_layout) { true }
+
+    it 'renders no agency seal without an SP logo' do
+      expect(rendered).not_to have_css('.agency-seal')
+    end
+
+    context 'when the SP has a logo' do
+      let(:current_sp) { build(:service_provider, logo: 'DOS.svg') }
+
+      it 'renders the 100px agency seal above the heading' do
+        seal_selector = '.auth__header--with-media img.agency-seal.agency-seal--100'
+        expect(rendered).to have_css("#{seal_selector}[alt=''][src='#{current_sp.logo_url}']")
+        expect(rendered).not_to have_css('.auth__media')
+      end
+    end
 
     it 'renders a tertiary cancel action instead of the no-phone help link' do
       expect(rendered).to have_css(
