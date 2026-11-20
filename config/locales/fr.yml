@@ -1665,6 +1665,10 @@ nds.choose_id_type.verify_in_person: Vérifier en personne
 nds.completions.heading_idv: Identité vérifiée
 nds.completions.intro_html: En sélectionnant Continuer, vous acceptez de partager les informations ci-dessous avec %{sp_html} et d’accéder à son site.
 nds.completions.nist_alt: 'Sceau du NIST : Chiffré. Protégé. Éprouvé. National Institute of Standards and Technology'
+nds.dashboard_security.piv_cac_added_on: Ajouté le %{date}
+nds.dashboard_security.webauthn_add: Ajouter une clé
+nds.dashboard_security.webauthn_nickname: Surnom de la clé
+nds.dashboard_security.webauthn_platform_nickname: Surnom de la clé d’accès
 nds.document_capture.mdl_alert_body: D’autres portefeuilles numériques seront pris en charge plus tard cette année.
 nds.document_capture.mdl_alert_title: Actuellement compatible avec Google Wallet et Samsung Wallet.
 nds.document_capture.mdl_heading: Renseignez les informations de votre permis de conduire mobile

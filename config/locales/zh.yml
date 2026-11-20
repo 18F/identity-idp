@@ -1678,6 +1678,10 @@ nds.choose_id_type.verify_in_person: 亲自验证
 nds.completions.heading_idv: 身份已验证
 nds.completions.intro_html: 选择“继续”即表示您同意与 %{sp_html} 共享以下信息并前往其网站。
 nds.completions.nist_alt: 'NIST 徽章：加密。受保护。经验证。美国国家标准与技术研究院'
+nds.dashboard_security.piv_cac_added_on: 在 %{date}添加
+nds.dashboard_security.webauthn_add: 添加密钥
+nds.dashboard_security.webauthn_nickname: 密钥昵称
+nds.dashboard_security.webauthn_platform_nickname: 通行密钥昵称
 nds.document_capture.mdl_alert_body: 其他数字钱包将在今年晚些时候获得支持。
 nds.document_capture.mdl_alert_title: 目前支持 Google Wallet 和 Samsung Wallet。
 nds.document_capture.mdl_heading: 添加您的移动驾驶证信息
