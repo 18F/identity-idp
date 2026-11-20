@@ -8,8 +8,7 @@ class TwoFactorOptionsPresenter
               :return_to_sp_cancel_path,
               :phishing_resistant_required,
               :piv_cac_required,
-              :user_agent,
-              :excluded_mfa_methods
+              :user_agent
 
   delegate :two_factor_enabled?, to: :mfa_policy
   def initialize(
@@ -20,8 +19,7 @@ class TwoFactorOptionsPresenter
     show_skip_additional_mfa_link: true,
     after_mfa_setup_path: nil,
     return_to_sp_cancel_path: nil,
-    personal_key_mfa_deprecated: false,
-    excluded_mfa_methods: []
+    personal_key_mfa_deprecated: false
   )
     @user_agent = user_agent
     @user = user
@@ -31,13 +29,10 @@ class TwoFactorOptionsPresenter
     @after_mfa_setup_path = after_mfa_setup_path
     @return_to_sp_cancel_path = return_to_sp_cancel_path
     @personal_key_mfa_deprecated = personal_key_mfa_deprecated
-    @excluded_mfa_methods = excluded_mfa_methods.map(&:to_sym)
   end
 
   def options
-    all_options_sorted.select do |option|
-      option.visible? && !excluded_mfa_methods.include?(option.type)
-    end
+    all_options_sorted.select(&:visible?)
   end
 
   def all_options_sorted

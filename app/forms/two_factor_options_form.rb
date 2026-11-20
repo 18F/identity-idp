@@ -5,25 +5,17 @@ class TwoFactorOptionsForm
   include ActionView::Helpers::TranslationHelper
 
   attr_accessor :selection, :user, :phishing_resistant_required, :piv_cac_required
-  attr_reader :excluded_mfa_methods
 
   validates :selection, inclusion: { in: %w[phone sms voice auth_app piv_cac
                                             webauthn webauthn_platform
                                             backup_code] }
 
   validate :validate_selection_present
-  validate :validate_selection_allowed
 
-  def initialize(
-    user:,
-    phishing_resistant_required:,
-    piv_cac_required:,
-    excluded_mfa_methods: []
-  )
+  def initialize(user:, phishing_resistant_required:, piv_cac_required:)
     self.user = user
     self.phishing_resistant_required = phishing_resistant_required
     self.piv_cac_required = piv_cac_required
-    @excluded_mfa_methods = excluded_mfa_methods.map(&:to_s)
   end
 
   def submit(params)
@@ -39,17 +31,6 @@ class TwoFactorOptionsForm
   def validate_selection_present
     return if selection.present? || has_minimum_required_mfa_methods?
     errors.add(:selection, missing_selection_error_message, type: :missing_selection)
-  end
-
-  def validate_selection_allowed
-    return if (normalized_selection & excluded_mfa_methods).empty?
-    errors.add(:selection, missing_selection_error_message, type: :missing_selection)
-  end
-
-  def normalized_selection
-    Array(selection).map do |method|
-      %w[sms voice].include?(method) ? 'phone' : method
-    end
   end
 
   def mfa_user

@@ -860,19 +860,16 @@ module Test
     def setup_account_recovery_mfa_setup
       user = build_mfa_user(configured: true)
       @nds_current_user = user
-      excluded_mfa_methods = [:phone]
       @presenter = TwoFactorOptionsPresenter.new(
         user_agent: request.user_agent,
         user:,
         phishing_resistant_required: false,
         piv_cac_required: false,
-        excluded_mfa_methods:,
       )
       @two_factor_options_form = TwoFactorOptionsForm.new(
         user:,
         phishing_resistant_required: false,
         piv_cac_required: false,
-        excluded_mfa_methods:,
       )
       {}
     end
