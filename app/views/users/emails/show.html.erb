@@ -1,5 +1,52 @@
 <% self.title = t('titles.add_email') %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_account_header, 'true') %>
+
+  <%= simple_form_for(
+        @add_user_email_form,
+        url: add_email_path,
+        html: { data: { nds_submit_gate: true } },
+      ) do |f| %>
+    <%= render NDS::FormPageComponent.new(title: t('headings.add_email')) do |page| %>
+      <% page.with_body do %>
+        <%= render NDS::InputComponent.new(
+              form: f,
+              attribute: :email,
+              type: :email,
+              label: t('account.index.email_short'),
+              required: true,
+              autocomplete: 'email',
+              error_message: @add_user_email_form.errors[:email].first,
+            ) %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+                full_width: true,
+              ).with_content(t('forms.buttons.continue')) %>
+          <% if @pending_completions_consent %>
+            <%= render ButtonComponent.new(
+                  url: sign_up_completed_url,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('forms.buttons.back')) %>
+          <% else %>
+            <%= render ButtonComponent.new(
+                  url: decorated_sp_session.cancel_link_url,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('links.cancel')) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('headings.add_email')) %>
 
 <div class="margin-bottom-6">
@@ -35,3 +82,4 @@
         MarketingSite.privacy_act_statement_url,
       ) %>
 </p>
+<% end %>

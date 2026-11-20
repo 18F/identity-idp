@@ -1,5 +1,29 @@
 <% self.title = t('titles.confirmations.delete') %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_account_header, 'true') %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('nds.dashboard_account.delete_email_heading', email: @presenter.email_address.email),
+        subtitle: t('nds.dashboard_account.delete_email_info', app_name: APP_NAME),
+      ) do |page| %>
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: delete_email_url(id: params[:id]),
+              method: :delete,
+              variant: :destructive,
+              full_width: true,
+            ).with_content(t('forms.email.buttons.delete')) %>
+        <%= render ButtonComponent.new(
+              url: account_path,
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('links.cancel')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(@presenter.confirm_delete_message) %>
 
 <br/>
@@ -19,3 +43,4 @@
               method: :delete %>
 
 <%= render 'shared/cancel', link: account_path %>
+<% end %>
