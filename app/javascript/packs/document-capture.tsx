@@ -47,6 +47,7 @@ interface AppRootData {
   accountUrl: string;
   locationsUrl: string;
   sessionsUrl: string;
+  ndsLayout?: string;
   maxAttemptsBeforeManualCapture?: string;
   manualCaptureAfterFailuresEnabled?: string;
 }
@@ -131,6 +132,7 @@ const {
   docAuthDesktopTestMode,
   locationsUrl: locationsURL,
   sessionsUrl: sessionsURL,
+  ndsLayout,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -159,6 +161,7 @@ render(
           chooseIdTypePath,
           socureErrorsTimeoutURL: socureErrorsTimeoutUrl,
           previousStepURL: previousStepUrl,
+          ndsLayout: ndsLayout === 'true',
         }}
       >
         <AnalyticsContextProvider trackEvent={trackEvent}>

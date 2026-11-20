@@ -475,4 +475,207 @@ describe('FullAddressSearch', () => {
       expect(await findByText(resultsSectionHeadingText)).to.exist();
     });
   });
+
+  context('in the NDS layout', () => {
+    const POST_OFFICE = {
+      address: '4163 E Camelback Road',
+      city: 'Phoenix',
+      distance: '2.4 mi',
+      name: 'Camelback',
+      saturday_hours: '8:30 AM - 5:00 PM',
+      state: 'AZ',
+      sunday_hours: 'Closed',
+      weekday_hours: '9:00 AM - 12:00 PM',
+      zip_code_4: '8993',
+      zip_code_5: '85017',
+    };
+
+    let server: SetupServer;
+    before(() => {
+      server = setupServer();
+      server.listen();
+    });
+
+    afterEach(() => {
+      server.resetHandlers();
+    });
+
+    after(() => {
+      server.close();
+    });
+
+    function renderNDS(props = {}) {
+      return render(
+        <SWRConfig value={{ provider: () => new Map() }}>
+          <FullAddressSearch
+            usStatesTerritories={usStatesTerritories}
+            onFoundLocations={sandbox.stub()}
+            locationsURL={locationsURL}
+            registerField={() => undefined}
+            handleLocationSelect={sinon.stub()}
+            disabled={false}
+            usesErrorComponent
+            nds
+            {...props}
+          />
+        </SWRConfig>,
+      );
+    }
+
+    async function fillAddress({ getByLabelText }, zipCode = '85284') {
+      await userEvent.type(
+        getByLabelText('in_person_proofing.body.location.po_search.address_label'),
+        '4729 North Wellington Drive',
+      );
+      await userEvent.type(
+        getByLabelText('in_person_proofing.body.location.po_search.city_label'),
+        'Phoenix',
+      );
+      await userEvent.selectOptions(
+        getByLabelText('in_person_proofing.body.location.po_search.state_label'),
+        'DE',
+      );
+      await userEvent.type(getByLabelText('nds.post_office.search.zipcode_label'), zipCode);
+    }
+
+    it('renders the NDS heading and subtitle instead of the default copy', () => {
+      const { getByRole, getByText, queryByText, container } = renderNDS();
+
+      expect(container.querySelector('section.auth.auth--form-page')).to.exist();
+      expect(getByRole('heading', { level: 1, name: 'nds.post_office.search.heading' })).to.exist();
+      expect(
+        getByText('nds.post_office.search.subtitle').classList.contains('auth__intro-description'),
+      ).to.be.true();
+      expect(queryByText('in_person_proofing.headings.po_search.location')).not.to.exist();
+      expect(
+        queryByText('in_person_proofing.body.location.po_search.po_search_about'),
+      ).not.to.exist();
+    });
+
+    it('renders floating-label inputs and the visible state select', () => {
+      const { getByLabelText } = renderNDS();
+
+      ['address_label', 'city_label'].forEach((key) => {
+        const input = getByLabelText(`in_person_proofing.body.location.po_search.${key}`);
+        expect(input.classList.contains('usa-input__control--floating')).to.be.true();
+      });
+      expect(
+        getByLabelText('nds.post_office.search.zipcode_label').classList.contains(
+          'usa-input__control--floating',
+        ),
+      ).to.be.true();
+      expect(
+        getByLabelText('in_person_proofing.body.location.po_search.state_label').classList.contains(
+          'usa-select',
+        ),
+      ).to.be.true();
+    });
+
+    it('keeps Search disabled until every field is valid', async () => {
+      const utils = renderNDS();
+      const search = utils.getByRole('button', {
+        name: 'in_person_proofing.body.location.po_search.search_button',
+      }) as HTMLButtonElement;
+
+      expect(search.disabled).to.be.true();
+      expect(search.classList.contains('usa-button--lg')).to.be.true();
+
+      await fillAddress(utils, '852');
+      expect(search.disabled).to.be.true();
+
+      await userEvent.type(utils.getByLabelText('nds.post_office.search.zipcode_label'), '84');
+      expect(search.disabled).to.be.false();
+    });
+
+    it('shows a field error when leaving a field with an invalid value', async () => {
+      const { getByLabelText, findByText } = renderNDS();
+
+      await userEvent.type(getByLabelText('nds.post_office.search.zipcode_label'), '852');
+      await userEvent.tab();
+
+      expect(await findByText('idv.errors.pattern_mismatch.zipcode_five')).to.exist();
+      expect(
+        getByLabelText('nds.post_office.search.zipcode_label').getAttribute('aria-invalid'),
+      ).to.equal('true');
+    });
+
+    it('shows the spinner in place of the label while searching', async () => {
+      let respond: () => void = () => {};
+      server.use(
+        http.post(
+          locationsURL,
+          () =>
+            new Promise((resolve) => {
+              respond = () => resolve(HttpResponse.json([POST_OFFICE]));
+            }),
+        ),
+      );
+      const utils = renderNDS();
+      await fillAddress(utils);
+      const search = utils.getByRole('button', {
+        name: 'in_person_proofing.body.location.po_search.search_button',
+      });
+
+      await userEvent.click(search);
+
+      expect(
+        await utils.findByText('in_person_proofing.body.location.po_search.is_searching_message'),
+      ).to.exist();
+      expect(search.querySelector('.nds-spinner[aria-hidden="true"]')).to.exist();
+      expect(search.classList.contains('usa-button--active')).to.be.true();
+      expect(search.querySelector('.usa-sr-only')!.textContent).to.equal(
+        'in_person_proofing.body.location.po_search.search_button',
+      );
+
+      respond();
+      await utils.findByRole('heading', { level: 2 });
+      expect(search.querySelector('.nds-spinner')).not.to.exist();
+    });
+
+    it('renders the results below a divider in an elevated card', async () => {
+      server.use(http.post(locationsURL, () => HttpResponse.json([POST_OFFICE, POST_OFFICE])));
+      const utils = renderNDS();
+      await fillAddress(utils);
+      await userEvent.click(
+        utils.getByRole('button', {
+          name: 'in_person_proofing.body.location.po_search.search_button',
+        }),
+      );
+
+      const heading = await utils.findByRole('heading', {
+        level: 2,
+        name: 'in_person_proofing.body.location.po_search.results_description',
+      });
+      expect(heading.classList.contains('card__title')).to.be.true();
+      expect(heading.parentElement!.getAttribute('role')).to.equal('status');
+      expect(heading.parentElement!.previousElementSibling!.matches('hr.divider')).to.be.true();
+      expect(
+        utils.container.querySelectorAll('.card.card--elevated li.location-collection__item'),
+      ).to.have.lengthOf(2);
+      expect(
+        utils.queryByText('in_person_proofing.body.location.po_search.results_instructions'),
+      ).not.to.exist();
+    });
+
+    it('renders the NDS error alert and a Continue button when the search fails', async () => {
+      server.use(http.post(locationsURL, () => HttpResponse.error()));
+      const utils = renderNDS();
+      await fillAddress(utils);
+      await userEvent.click(
+        utils.getByRole('button', {
+          name: 'in_person_proofing.body.location.po_search.search_button',
+        }),
+      );
+
+      const alert = await utils.findByRole('alert');
+      expect(alert.classList.contains('usa-alert--error')).to.be.true();
+      expect(alert.textContent).to.contain(
+        'in_person_proofing.body.location.po_search.usps_facilities_api_error_header',
+      );
+      const continueButton = utils.getByRole('button', {
+        name: 'in_person_proofing.body.location.po_search.continue_button',
+      }) as HTMLButtonElement;
+      expect(continueButton.disabled).to.be.false();
+    });
+  });
 });

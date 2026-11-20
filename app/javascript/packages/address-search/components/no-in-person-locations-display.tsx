@@ -3,9 +3,25 @@ import { t } from '@18f/identity-i18n';
 
 interface NoInPersonLocationsDisplayProps {
   address: string;
+  nds?: boolean;
 }
 
-function NoInPersonLocationsDisplay({ address }: NoInPersonLocationsDisplayProps) {
+function NoInPersonLocationsDisplay({ address, nds = false }: NoInPersonLocationsDisplayProps) {
+  if (nds) {
+    return (
+      <div className="usa-alert usa-alert--warning text-left" role="status">
+        <div className="usa-alert__body">
+          <h2 className="usa-alert__heading">
+            {t('in_person_proofing.body.location.po_search.none_found', { address })}
+          </h2>
+          <p className="usa-alert__text">
+            {t('in_person_proofing.body.location.po_search.none_found_tip')}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="grid-row grid-gap grid-gap-1">
       <img

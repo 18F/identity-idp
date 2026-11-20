@@ -13,7 +13,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
   toPreviousStep,
   registerField,
 }) {
-  const { inPersonURL, locationsURL, usStatesTerritories } = useContext(InPersonContext);
+  const { inPersonURL, locationsURL, usStatesTerritories, ndsLayout } = useContext(InPersonContext);
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
   const { trackEvent, setSubmitEventMetadata } = useContext(AnalyticsContext);
@@ -104,6 +104,22 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
     },
     [locationResults, inProgress],
   );
+
+  if (ndsLayout) {
+    // The NDS frames have no Back control on this step; browser back returns to the prepare step.
+    return (
+      <FullAddressSearch
+        registerField={registerField}
+        onFoundLocations={setLocationResults}
+        disabled={disabledAddressSearch}
+        locationsURL={locationsURL}
+        handleLocationSelect={handleLocationSelect}
+        usStatesTerritories={usStatesTerritories}
+        usesErrorComponent
+        nds
+      />
+    );
+  }
 
   return (
     <>

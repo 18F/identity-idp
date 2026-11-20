@@ -39,8 +39,13 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { flowPath, idType } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
-  const { inPersonURL, skipDocAuthFromHandoff, skipDocAuthFromHowToVerify, skipDocAuthFromSocure } =
-    useContext(InPersonContext);
+  const {
+    inPersonURL,
+    skipDocAuthFromHandoff,
+    skipDocAuthFromHowToVerify,
+    skipDocAuthFromSocure,
+    ndsLayout,
+  } = useContext(InPersonContext);
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
     if (stepName) {
@@ -167,7 +172,10 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
       : VerifyFlowPath.DEFAULT;
   return (
     <>
-      <VerifyFlowStepIndicator currentStep="document_capture" path={stepIndicatorPath} />
+      {/* The NDS in-person frames show no step indicator. */}
+      {!(ndsLayout && stepIndicatorPath === VerifyFlowPath.IN_PERSON) && (
+        <VerifyFlowStepIndicator currentStep="document_capture" path={stepIndicatorPath} />
+      )}
       {submissionFormValues &&
       (!submissionError || submissionError instanceof RetrySubmissionError) ? (
         <>

@@ -70,6 +70,12 @@ export interface InPersonContextProps {
    * URL for going back to previous steps in Doc Auth, like handoff and howToVerify
    */
   previousStepURL?: string;
+
+  /**
+   * Whether the page renders in the NDS (UI refresh) layout, so the in-person steps render their
+   * NDS markup instead of the default markup.
+   */
+  ndsLayout?: boolean;
 }
 
 const InPersonContext = createContext<InPersonContextProps>({

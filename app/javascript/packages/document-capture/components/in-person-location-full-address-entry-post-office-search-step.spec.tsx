@@ -339,4 +339,31 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
     expect(queryByText('simple_form.required.text')).to.be.null();
     await waitFor(() => expect(window.location.hash).to.equal(inPersonURL));
   });
+
+  context('in the NDS layout', () => {
+    const ndsWrapper: ComponentType = ({ children }) => (
+      <InPersonContext.Provider
+        value={{
+          inPersonURL,
+          locationsURL,
+          inPersonOutageMessageEnabled: false,
+          optedInToInPersonProofing: false,
+          usStatesTerritories,
+          ndsLayout: true,
+        }}
+      >
+        <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
+      </InPersonContext.Provider>
+    );
+
+    it('renders the NDS address search without a Back button', () => {
+      const { getByRole, queryByText } = render(
+        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+        { wrapper: ndsWrapper },
+      );
+
+      expect(getByRole('heading', { level: 1, name: 'nds.post_office.search.heading' })).to.exist();
+      expect(queryByText('forms.buttons.back')).not.to.exist();
+    });
+  });
 });

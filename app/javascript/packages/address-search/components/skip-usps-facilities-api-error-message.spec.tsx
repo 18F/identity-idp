@@ -21,4 +21,21 @@ describe('SkipUspsFacilitiesApiErrorMessage', () => {
     expect(errorHeader).to.exist();
     expect(errorBody).to.exist();
   });
+
+  it('renders an NDS error alert in the NDS layout', () => {
+    const { getByRole, queryByRole } = render(<SkipUspsFacilitiesApiErrorMessage nds />);
+
+    const alert = getByRole('alert');
+    expect(alert.classList.contains('usa-alert--error')).to.be.true();
+    expect(
+      getByRole('heading', {
+        level: 2,
+        name: 'in_person_proofing.body.location.po_search.usps_facilities_api_error_header',
+      }),
+    ).to.exist();
+    expect(alert.querySelector('.usa-alert__text')!.textContent).to.equal(
+      'in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html',
+    );
+    expect(queryByRole('img')).not.to.exist();
+  });
 });

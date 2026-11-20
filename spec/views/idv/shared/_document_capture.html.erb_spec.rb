@@ -26,6 +26,8 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:presenter) { Idv::InPerson::UspsFormPresenter.new }
   let(:mock_client) { false }
 
+  before { allow(view).to receive(:nds_layout?).and_return(false) }
+
   before do
     decorated_sp_session = instance_double(
       ServiceProviderSession,
@@ -179,6 +181,23 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
           '#document-capture-form[data-mock-client]',
         )
       end
+    end
+  end
+
+  it 'does not tell the app to render the NDS in-person steps in the default layout' do
+    render_partial
+
+    expect(rendered).to have_css('#document-capture-form')
+    expect(rendered).not_to have_css('#document-capture-form[data-nds-layout]')
+  end
+
+  context 'in the NDS layout' do
+    before { allow(view).to receive(:nds_layout?).and_return(true) }
+
+    it 'tells the app to render the NDS in-person steps' do
+      render_partial
+
+      expect(rendered).to have_css("#document-capture-form[data-nds-layout='true']")
     end
   end
 end

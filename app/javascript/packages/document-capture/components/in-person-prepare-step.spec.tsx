@@ -1,4 +1,6 @@
 import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import sinon from 'sinon';
 import type { ComponentType } from 'react';
 import { Provider as MarketingSiteContextProvider } from '../context/marketing-site';
 import InPersonPrepareStep from './in-person-prepare-step';
@@ -89,6 +91,78 @@ describe('InPersonPrepareStep', () => {
       }) as HTMLAnchorElement;
 
       expect(link.href).to.equal(securityAndPrivacyHowItWorksURL);
+    });
+  });
+
+  context('in the NDS layout', () => {
+    const ndsWrapper: ComponentType = ({ children }) => (
+      <MarketingSiteContextProvider
+        helpCenterRedirectURL="http://example.com/redirect/"
+        securityAndPrivacyHowItWorksURL="http://example.com/security-and-privacy-how-it-works"
+      >
+        <InPersonContext.Provider
+          value={{
+            locationsURL: 'https://localhost:3000/unused',
+            inPersonOutageMessageEnabled: false,
+            optedInToInPersonProofing: false,
+            usStatesTerritories: [],
+            ndsLayout: true,
+          }}
+        >
+          {children}
+        </InPersonContext.Provider>
+      </MarketingSiteContextProvider>
+    );
+
+    it('renders the NDS heading, intro and steps', () => {
+      const { getByRole, getByText, container } = render(
+        <InPersonPrepareStep {...DEFAULT_PROPS} />,
+        { wrapper: ndsWrapper },
+      );
+
+      expect(container.querySelector('section.auth.auth--form-page')).to.exist();
+      expect(
+        getByRole('heading', { level: 1, name: 'in_person_proofing.headings.prepare' }),
+      ).to.exist();
+      expect(
+        getByText('nds.post_office.prepare.intro').classList.contains('auth__intro-description'),
+      ).to.be.true();
+      expect(container.querySelector('hr.divider')).to.exist();
+      const steps = Array.from(container.querySelectorAll('ol.list > li')).map(
+        (li) => li.textContent,
+      );
+      expect(steps).to.deep.equal([
+        'in_person_proofing.body.prepare.verify_step_post_office',
+        'nds.post_office.prepare.step_details',
+        'nds.post_office.prepare.step_phone',
+      ]);
+    });
+
+    it('omits the legacy extras the NDS frame lacks', () => {
+      const { queryByText } = render(<InPersonPrepareStep {...DEFAULT_PROPS} />, {
+        wrapper: ndsWrapper,
+      });
+
+      expect(queryByText('in_person_proofing.body.prepare.verify_step_about')).not.to.exist();
+      expect(queryByText('in_person_proofing.body.prepare.privacy_disclaimer')).not.to.exist();
+      expect(queryByText('idv.troubleshooting.options.learn_more_verify_in_person')).not.to.exist();
+    });
+
+    it('renders a primary Continue submit button and a tertiary Back link-button', async () => {
+      const toPreviousStep = sinon.stub();
+      const { getByRole } = render(
+        <InPersonPrepareStep {...DEFAULT_PROPS} toPreviousStep={toPreviousStep} />,
+        { wrapper: ndsWrapper },
+      );
+
+      const continueButton = getByRole('button', { name: 'forms.buttons.continue' });
+      expect(continueButton.getAttribute('type')).to.equal('submit');
+      expect(continueButton.classList.contains('usa-button--lg')).to.be.true();
+
+      const back = getByRole('link', { name: 'forms.buttons.back' });
+      expect(back.classList.contains('usa-button--tertiary')).to.be.true();
+      await userEvent.click(back);
+      expect(toPreviousStep).to.have.been.calledOnce();
     });
   });
 });

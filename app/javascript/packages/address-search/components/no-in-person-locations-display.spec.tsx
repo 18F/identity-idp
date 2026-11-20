@@ -20,4 +20,23 @@ describe('NoInPersonLocationsDisplay', () => {
     expect(noneFoundMessage).to.exist();
     expect(noneFoundTipMessage).to.exist();
   });
+
+  it('renders an NDS warning alert in the NDS layout', () => {
+    const { getByRole, queryByRole } = render(
+      <NoInPersonLocationsDisplay address="Somewhere over the rainbow" nds />,
+    );
+
+    const status = getByRole('status');
+    expect(status.classList.contains('usa-alert--warning')).to.be.true();
+    expect(
+      getByRole('heading', {
+        level: 2,
+        name: 'in_person_proofing.body.location.po_search.none_found',
+      }),
+    ).to.exist();
+    expect(status.textContent).to.contain(
+      'in_person_proofing.body.location.po_search.none_found_tip',
+    );
+    expect(queryByRole('img')).not.to.exist();
+  });
 });
