@@ -285,6 +285,16 @@ RSpec.describe 'devise/sessions/new.html.erb' do
     expect(field['value'].to_s).to eq('')
   end
 
+  it 'does not render the NDS agency seal in the default layout' do
+    allow(view).to receive(:current_sp).and_return(
+      build_stubbed(:service_provider, logo: 'DOS.svg'),
+    )
+    render
+
+    expect(rendered).not_to have_css('.agency-seal')
+    expect(rendered).not_to have_content(t('nds.sign_in.piv_cac'))
+  end
+
   context 'nds bucket' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
@@ -303,10 +313,118 @@ RSpec.describe 'devise/sessions/new.html.erb' do
         text: t('account.index.email_short'),
       )
       expect(rendered).to have_css('.auth__inline-link a', text: t('account.login.forgot_password'))
-      expect(rendered).to have_button(t('titles.sign_in'))
+      expect(rendered).to have_button(t('forms.buttons.continue'))
       expect(rendered).to have_link(t('links.create_account'), href: sign_up_email_path)
-      expect(rendered).not_to have_css('.auth__media')
+      expect(rendered).not_to have_css('.agency-seal')
       expect(rendered).not_to include('ads-')
+    end
+
+    it 'links to PIV/CAC sign-in below the divider on desktop' do
+      render
+
+      expect(rendered).to have_css('.auth__actions a', text: t('nds.sign_in.piv_cac'))
+      expect(rendered).to have_link(t('nds.sign_in.piv_cac'), href: login_piv_cac_url)
+    end
+
+    context 'on a mobile device' do
+      before { allow(view).to receive(:desktop_device?).and_return(false) }
+
+      it 'renders no PIV/CAC link or actions divider' do
+        render
+
+        expect(rendered).not_to have_link(t('nds.sign_in.piv_cac'))
+        expect(rendered).not_to have_css('.auth__actions')
+        expect(rendered).not_to have_css('hr.divider')
+      end
+    end
+
+    context 'when recaptcha at sign in is enabled' do
+      before do
+        allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
+      end
+
+      it 'renders the recaptcha disclosure' do
+        render
+
+        disclosure = Capybara.string(rendered).find('p.copy--muted')
+        expect(disclosure).to have_link(
+          t('two_factor_authentication.recaptcha.google_policy_link'),
+          href: GooglePolicySite.privacy_url,
+        )
+        expect(disclosure).to have_link(
+          t('two_factor_authentication.recaptcha.google_tos_link'),
+          href: GooglePolicySite.terms_url,
+        )
+      end
+    end
+
+    it 'does not render the recaptcha disclosure when recaptcha is disabled' do
+      render
+
+      expect(rendered).not_to have_content(
+        t('two_factor_authentication.recaptcha.google_policy_link'),
+      )
+    end
+
+    context 'with a service provider' do
+      let(:agency) { build(:agency, name: 'Department of State') }
+      let(:sp) do
+        build_stubbed(
+          :service_provider,
+          friendly_name: 'Passport Online',
+          logo: 'DOS.svg',
+          agency:,
+        )
+      end
+
+      before do
+        view_context = ActionController::Base.new.view_context
+        allow(view).to receive(:decorated_sp_session).and_return(
+          ServiceProviderSessionCreator.new(
+            sp:,
+            view_context:,
+            sp_session: {},
+            service_provider_request: ServiceProviderRequest.new,
+          ).create_session,
+        )
+        allow(view_context).to receive(:sign_up_email_path).and_return('/sign_up/enter_email')
+        allow(view).to receive(:current_sp).and_return(sp)
+      end
+
+      it 'renders the agency seal and agency name above the SP heading' do
+        render
+
+        seal_selector = '.auth__header--with-media img.agency-seal.agency-seal--100'
+        expect(rendered).to have_css("#{seal_selector}[alt=''][src='#{sp.logo_url}']")
+        expect(rendered).to have_css(
+          '.auth__header--with-media p.text-body-emphasis',
+          text: 'Department of State',
+        )
+        expect(rendered).to have_css(
+          'h1',
+          text: t('headings.sign_in_to_sp', sp: 'Passport Online'),
+        )
+      end
+
+      it 'does not render a link back to the service provider' do
+        render
+
+        expect(rendered).not_to have_link(t('links.back_to_sp', sp: 'Passport Online'))
+      end
+
+      context 'without a logo' do
+        let(:sp) { build_stubbed(:service_provider, friendly_name: 'Passport Online', logo: nil) }
+
+        it 'renders the SP heading without a seal' do
+          render
+
+          expect(rendered).not_to have_css('.agency-seal')
+          expect(rendered).to have_css(
+            'h1',
+            text: t('headings.sign_in_to_sp', sp: 'Passport Online'),
+          )
+        end
+      end
     end
 
     it 'renders the platform authenticator hidden input with no preset value' do
