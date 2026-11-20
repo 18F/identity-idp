@@ -71,4 +71,57 @@ RSpec.feature 'NDS connected services' do
     expect(page).to have_current_path(account_connected_services_path)
     expect(identity.reload.email_address_id).to be_nil
   end
+
+  scenario 'disconnecting an agency from the row menu' do
+    open_agency_menu
+    within(agency_row) { click_link t('account.revoke_consent.link_title') }
+
+    expect(page).to have_css(
+      'h1',
+      text: t('nds.dashboard_home.revoke_heading', sp_name: identity.display_name),
+    )
+    click_link t('links.cancel')
+    expect(page).to have_current_path(account_connected_services_path)
+    expect(page).to have_css('li.discovery-service', text: identity.display_name)
+
+    open_agency_menu
+    within(agency_row) { click_link t('account.revoke_consent.link_title') }
+    click_button t('account.revoke_consent.link_title')
+
+    expect(page).to have_current_path(account_connected_services_path)
+    expect(page).not_to have_css('li.discovery-service', text: identity.display_name)
+  end
+
+  context 'with an America.gov consent' do
+    let!(:consent) { create(:user_consent_sts, user:, created_at: 10.days.ago) }
+    let(:delegation_section) do
+      find(
+        'section',
+        text: t('account.navigation.america_gov_services', america_gov_name: AMERICA_GOV_NAME),
+      )
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:sts_consent_expiration_in_days).and_return(365)
+      visit account_connected_services_path
+    end
+
+    scenario 'disconnecting the America.gov consent' do
+      within(delegation_section) { click_link t('forms.buttons.edit') }
+
+      expect(page).to have_css('h1', text: 'MyTravelGov')
+      click_link t('links.cancel')
+      expect(page).to have_current_path(account_connected_services_path)
+      expect(user.reload.connected_delegations.count).to eq(1)
+
+      within(delegation_section) { click_link t('forms.buttons.edit') }
+      click_button t('account.revoke_consent.link_title')
+
+      expect(page).to have_current_path(account_connected_services_path)
+      expect(page).not_to have_content(
+        t('account.navigation.america_gov_services', america_gov_name: AMERICA_GOV_NAME),
+      )
+      expect(user.reload.connected_delegations.count).to eq(0)
+    end
+  end
 end
