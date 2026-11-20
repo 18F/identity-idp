@@ -805,6 +805,24 @@ module Test
       {}
     end
 
+    def setup_authorization_confirmation
+      @email = DEV_USER_EMAIL
+      if params[:no_sp].blank?
+        @decorated_sp_session = SpSessionStub.new(
+          sp_name: 'Example Service Provider',
+          cancel_link_url: root_url,
+        )
+      end
+      if params[:logo].present?
+        @current_sp = ServiceProviderStub.new(
+          logo: 'logo.svg',
+          logo_url: helpers.image_path('logo.svg'),
+          issuer: 'urn:gov:gsa:test',
+        )
+      end
+      {}
+    end
+
     def setup_piv_cac_error
       @presenter = PivCacErrorPresenter.new(
         error: params[:error],

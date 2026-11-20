@@ -45,6 +45,17 @@ module Test
         ],
       ),
       Page.new(
+        key: 'authorization-confirmation',
+        title: 'Continue as (already signed in)',
+        flow: SIGN_IN,
+        template: 'users/authorization_confirmation/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'SP + logo', params: { logo: '1' }),
+          Permutation.new(label: 'Without service provider', params: { no_sp: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'piv-cac-error',
         title: 'PIV/CAC sign in error',
         flow: SIGN_IN,
