@@ -1,5 +1,44 @@
 <% self.title = t('two_factor_authentication.auth_app.edit_heading') %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_account_header, 'true') %>
+  <%= render NDS::FormPageComponent.new(title: t('nds.mfa_setup.options.auth_app')) do |page| %>
+    <% page.with_body do %>
+      <%= simple_form_for(
+            @form,
+            as: :form,
+            method: :put,
+            url: auth_app_path(id: @form.configuration.id),
+            html: { id: 'manage-authenticator-form' },
+          ) do |f| %>
+        <%= render NDS::InputComponent.new(
+              form: f,
+              attribute: :name,
+              label: t('nds.totp_setup.new.nickname_label'),
+              error_message: @form.errors[:name].first,
+            ) %>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              type: :submit,
+              form: 'manage-authenticator-form',
+              full_width: true,
+            ).with_content(t('components.manageable_authenticator.save')) %>
+        <%= render ButtonComponent.new(
+              url: auth_app_path(id: @form.configuration.id),
+              method: :delete,
+              form: { aria: { label: t('two_factor_authentication.auth_app.delete') } },
+              variant: :tertiary,
+              full_width: true,
+              class: 'account__danger-action',
+            ).with_content(t('components.manageable_authenticator.delete')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.auth_app.edit_heading')) %>
 
 <%= simple_form_for(
@@ -32,3 +71,4 @@
     ).with_content(t('two_factor_authentication.auth_app.delete')) %>
 
 <%= render 'shared/cancel', link: account_path %>
+<% end %>
