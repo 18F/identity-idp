@@ -31,10 +31,10 @@
 <%= render PageHeadingComponent.new.with_content(t('headings.sp_handoff_bounced', sp_name: @sp_name)) %>
 <p class='margin-top-2 margin-bottom-2'>
   <%= t(
-        'instructions.sp_handoff_bounced',
+        'instructions.sp_handoff_bounced_html',
         app_name: APP_NAME,
         sp_name: @sp_name,
-        sp_link: @sp_link.blank? ? @sp_name : link_to(@sp_name, @sp_link),
+        sp_link_html: @sp_link.blank? ? @sp_name : link_to(@sp_name, @sp_link),
       ) %>
 </p>
 <div class='margin-top-4'>

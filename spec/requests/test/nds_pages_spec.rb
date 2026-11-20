@@ -53,6 +53,12 @@ RSpec.describe 'Test::NdsPages', type: :request do
           expect(response).to have_http_status(:ok)
         end
       end
+
+      it 'renders 200 for sign-in with a service provider logo' do
+        get test_nds_page_path(page: 'sign-in', sp: '1', logo: '1')
+
+        expect(response).to have_http_status(:ok)
+      end
     end
 
     context 'with the PIV/CAC mismatch page' do

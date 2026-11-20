@@ -185,6 +185,11 @@ RSpec.describe 'users/totp_setup/new.html.erb' do
       expect(rendered).to have_selector('input#name[aria-labelledby="totp-step-1-label"]')
     end
 
+    it 'marks the required nickname and code valid until they are validated' do
+      expect(rendered).to have_css('input#name[required][aria-invalid="false"]')
+      expect(rendered).to have_css('input#code[required][aria-invalid="false"]')
+    end
+
     it 'submits with a continue button' do
       expect(rendered).to have_button(t('forms.buttons.continue'))
     end

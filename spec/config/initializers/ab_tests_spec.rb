@@ -324,6 +324,7 @@ RSpec.describe AbTests do
 
     before do
       allow(IdentityConfig.store).to receive(:"#{namespace}_socure_percent").and_return(0)
+      allow(IdentityConfig.store).to receive(:"#{namespace}_incode_percent").and_return(0)
       allow(IdentityConfig.store).to receive(:"#{namespace}_lexis_nexis_percent").and_return(0)
       allow(IdentityConfig.store).to receive(:"#{namespace}_lexis_nexis_ddp_percent").and_return(0)
     end
@@ -354,6 +355,8 @@ RSpec.describe AbTests do
           .and_return(true)
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_socure_percent)
           .and_return(25)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_incode_percent)
+          .and_return(25)
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_lexis_nexis_percent)
           .and_return(25)
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_lexis_nexis_ddp_percent)
@@ -371,6 +374,8 @@ RSpec.describe AbTests do
     it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
     it_behaves_like 'an A/B test with specific bucket configured',
                     :DOC_AUTH_VENDOR, 'socure'
+    it_behaves_like 'an A/B test with specific bucket configured',
+                    :DOC_AUTH_VENDOR, 'incode'
     it_behaves_like 'an A/B test with specific bucket configured',
                     :DOC_AUTH_VENDOR, 'lexis_nexis'
     it_behaves_like 'an A/B test with specific bucket configured',
@@ -448,6 +453,8 @@ RSpec.describe AbTests do
           .and_return(true)
         allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_socure_percent)
           .and_return(25)
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_incode_percent)
+          .and_return(25)
         allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_lexis_nexis_percent)
           .and_return(25)
         allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_lexis_nexis_ddp_percent)
@@ -465,6 +472,8 @@ RSpec.describe AbTests do
     it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
     it_behaves_like 'an A/B test with specific bucket configured',
                     :DOC_AUTH_PASSPORT_VENDOR, 'socure'
+    it_behaves_like 'an A/B test with specific bucket configured',
+                    :DOC_AUTH_PASSPORT_VENDOR, 'incode'
     it_behaves_like 'an A/B test with specific bucket configured',
                     :DOC_AUTH_PASSPORT_VENDOR, 'lexis_nexis'
     it_behaves_like 'an A/B test with specific bucket configured',

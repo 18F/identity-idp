@@ -96,6 +96,10 @@ RSpec.describe 'users/piv_cac_authentication_setup/new.html.erb' do
       expect(rendered).to have_css('input.usa-input#name[name="name"][maxlength="20"]')
     end
 
+    it 'marks the required nickname valid until it is validated' do
+      expect(rendered).to have_css('input#name[required][aria-invalid="false"]')
+    end
+
     it 'renders the nickname as an NDS floating-label input group' do
       expect(rendered).to have_css('.usa-form-group.usa-input-group--floating')
       expect(rendered).to have_css(

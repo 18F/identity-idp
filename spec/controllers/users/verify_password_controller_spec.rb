@@ -141,6 +141,14 @@ RSpec.describe Users::VerifyPasswordController do
           it 'renders the new template' do
             expect(response).to render_template(:new)
           end
+
+          it 'shows the error on this page only' do
+            expect(flash[:error]).to eq(t('errors.messages.password_incorrect'))
+
+            flash.sweep
+
+            expect(flash[:error]).to be_nil
+          end
         end
       end
     end

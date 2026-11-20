@@ -1,0 +1,7 @@
+// The design system's NDS primary-lightest token. The published
+// @18f/identity-design-system release ships empty NDS color tokens, so
+// `nds.$primary-lightest` is undefined there; use the value directly until a
+// release includes the tokens.
+.nds-status-icon--info {
+  background: #f5f9fc;
+}
