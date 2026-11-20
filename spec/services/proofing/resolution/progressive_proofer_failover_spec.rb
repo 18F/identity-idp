@@ -11,6 +11,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:timer) { JobHelpers::Timer.new }
   let(:current_sp) { build(:service_provider) }
   let(:device_result) { Proofing::DdpResult.new(success: true, review_status: 'pass') }
+  # By default the primary vendor's attempt fails and the fallback vendor's attempt passes.
   let(:primary_result) do
     Proofing::Resolution::Result.new(
       success: false, vendor_name: primary_vendor.to_s, transaction_id: 'primary-tx',
@@ -21,10 +22,15 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       success: true, vendor_name: fallback_vendor.to_s, transaction_id: 'fallback-tx',
     )
   end
-  let(:primary_proofer) { instance_double(Proofing::Socure::IdPlus::Proofers::KycProofer) }
-  let(:fallback_proofer) do
+  let(:socure_kyc_proofer) { instance_double(Proofing::Socure::IdPlus::Proofers::KycProofer) }
+  let(:instant_verify_ddp_proofer) do
     instance_double(Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer)
   end
+  let(:proofers) do
+    { socure_kyc: socure_kyc_proofer, instant_verify_ddp: instant_verify_ddp_proofer }
+  end
+  let(:primary_proofer) { proofers[primary_vendor] }
+  let(:fallback_proofer) { proofers[fallback_vendor] }
   let(:proofer) do
     described_class.new(
       user_uuid: user.uuid, user_email: user.email, analytics: FakeAnalytics.new,
@@ -55,8 +61,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     reload_ab_tests
     allow(proofer.threatmetrix_plugin).to receive(:call).and_return(device_result)
     allow(proofer.phone_plugin).to receive(:call).and_return({})
-    allow(proofer).to receive(:create_proofer).with(primary_vendor).and_return(primary_proofer)
-    allow(proofer).to receive(:create_proofer).with(fallback_vendor).and_return(fallback_proofer)
+    proofers.each do |vendor, vendor_proofer|
+      allow(proofer).to receive(:create_proofer).with(vendor).and_return(vendor_proofer)
+    end
     allow(primary_proofer).to receive(:proof).and_return(primary_result)
     allow(fallback_proofer).to receive(:proof).and_return(fallback_result)
   end
@@ -279,14 +286,16 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.merge(uuid: user.uuid) }
 
     it 'restarts both addresses using separate fallback clients' do
-      residential_proofer = instance_double(Proofing::Socure::IdPlus::Proofers::KycProofer)
-      state_id_proofer = instance_double(Proofing::Socure::IdPlus::Proofers::KycProofer)
+      instant_verify_ddp_residential_proofer =
+        instance_double(Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer)
+      instant_verify_ddp_state_id_proofer =
+        instance_double(Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer)
       allow(proofer).to receive(:create_proofer).with(fallback_vendor)
-        .and_return(residential_proofer, state_id_proofer)
+        .and_return(instant_verify_ddp_residential_proofer, instant_verify_ddp_state_id_proofer)
       expect(primary_proofer).to receive(:proof).once.with(applicant_pii).and_return(primary_result)
-      expect(residential_proofer).to receive(:proof).with(applicant_pii)
+      expect(instant_verify_ddp_residential_proofer).to receive(:proof).with(applicant_pii)
         .ordered.and_return(fallback_result)
-      expect(state_id_proofer).to receive(:proof).with(
+      expect(instant_verify_ddp_state_id_proofer).to receive(:proof).with(
         hash_including(address1: applicant_pii[:identity_doc_address1]),
       ).ordered.and_return(fallback_result)
       expect(proof.resolution_success?).to eq(true)
@@ -407,10 +416,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         idv_resolution_vendor_instant_verify_percent: 50,
       )
       reload_ab_tests
-      third_proofer = instance_double(Proofing::LexisNexis::InstantVerify::Proofer)
-      allow(proofer).to receive(:create_proofer).with(:instant_verify).and_return(third_proofer)
+      instant_verify_proofer = instance_double(Proofing::LexisNexis::InstantVerify::Proofer)
+      allow(proofer).to receive(:create_proofer).with(:instant_verify)
+        .and_return(instant_verify_proofer)
       expect(primary_proofer).to receive(:proof).ordered.and_return(primary_result)
-      expect(third_proofer).to receive(:proof).ordered.and_return(primary_result)
+      expect(instant_verify_proofer).to receive(:proof).ordered.and_return(primary_result)
       expect(fallback_proofer).to receive(:proof).ordered.and_return(fallback_result)
       expect(resolution_stage[:attempted_vendors])
         .to eq([:socure_kyc, :instant_verify, :instant_verify_ddp])
