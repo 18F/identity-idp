@@ -1,3 +1,58 @@
+<% if nds_layout? %>
+  <% self.title = t('idv.titles.come_back_later') %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 10) %>
+  <% end %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('idv.titles.come_back_later'),
+        subtitle: t('idv.gpo.will_send_to', app_name: APP_NAME),
+      ) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--info">
+        <%= render NDS::IconComponent.new(icon: :checkmark, size: 16) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <%= render NDS::StackComponent.new(align: :stretch, gap: 16) do %>
+        <%= render NDS::CardComponent.new(class: 'card--elevated card--spacious text-left') do %>
+          <dl class="nds-summary">
+            <div class="nds-summary__row">
+              <div class="nds-summary__cell">
+                <dt class="nds-summary__label"><%= t('nds.verify_info.address') %></dt>
+                <dd class="nds-summary__value">
+                  <%= safe_join(@presenter.address_lines, tag.br) %>
+                </dd>
+              </div>
+            </div>
+          </dl>
+        <% end %>
+
+        <div class="copy copy--muted text-center">
+          <p><%= t('idv.messages.come_back_later') %></p>
+          <% if @presenter.show_sp_contact_instructions? %>
+            <p>
+              <%= t(
+                    'idv.messages.contact_sp_html',
+                    sp_link_html: link_to(@presenter.sp_name, @presenter.button_destination),
+                  ) %>
+            </p>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: @presenter.button_destination,
+              full_width: true,
+            ).with_content(t('idv.cancel.actions.exit', app_name: APP_NAME)) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: step_indicator_steps,
@@ -51,3 +106,4 @@
       class: 'usa-button usa-button--big usa-button--wide margin-top-2',
     )
 %>
+<% end %>

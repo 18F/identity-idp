@@ -1,5 +1,23 @@
 <% self.title = @presenter.heading %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(title: @presenter.heading, subtitle: @presenter.body) do |page| %>
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: idv_sp_follow_up_connect_path,
+              full_width: true,
+            ).with_content(t('idv.by_mail.sp_follow_up.connect_account')) %>
+        <%= render ButtonComponent.new(
+              url: idv_sp_follow_up_cancel_path,
+              variant: :secondary,
+              full_width: true,
+            ).with_content(t('idv.by_mail.sp_follow_up.go_to_account')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
+
 <div class="text-center">
   <%= image_tag(asset_url('user-access.svg'), width: '280', height: '91', alt: '', aria: { hidden: true }) %>
   <h1 class="margin-bottom-4"><%= @presenter.heading %></h1>
@@ -23,3 +41,4 @@
         outline: true,
       ).with_content(t('idv.by_mail.sp_follow_up.go_to_account')) %>
 </div>
+<% end %>

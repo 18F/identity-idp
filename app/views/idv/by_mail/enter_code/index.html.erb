@@ -1,3 +1,112 @@
+<% if nds_layout? %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 10) %>
+  <% end %>
+
+  <% letter_date = I18n.l(@last_date_letter_was_sent, format: :event_date) %>
+  <% if @user_did_not_receive_letter %>
+    <% nds_title = t('idv.gpo.did_not_receive_letter.title') %>
+    <% nds_subtitle = safe_join(
+         [
+           t('idv.gpo.did_not_receive_letter.intro_html', date_letter_was_sent: letter_date),
+           t('idv.gpo.did_not_receive_letter.request_a_new_letter_html'),
+         ],
+         ' ',
+       ) %>
+  <% else %>
+    <% nds_title = t('idv.gpo.title') %>
+    <% nds_subtitle = t('idv.gpo.intro') %>
+  <% end %>
+  <% self.title = nds_title %>
+
+  <%= simple_form_for(
+        @gpo_verify_form,
+        url: idv_verify_by_mail_enter_code_path,
+        html: { data: { nds_submit_gate: true } },
+      ) do |f| %>
+    <%= render NDS::FormPageComponent.new(title: nds_title, subtitle: nds_subtitle) do |page| %>
+      <% unless @can_request_another_letter %>
+        <% page.with_alert do %>
+          <%= render AlertComponent.new(type: :warning) do %>
+            <%= t('idv.gpo.alert_rate_limit_warning_html', date_letter_was_sent: letter_date) %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <% if @user_did_not_receive_letter %>
+            <% if @can_request_another_letter %>
+              <%= render ButtonComponent.new(
+                    url: idv_resend_letter_path,
+                    variant: :secondary,
+                    full_width: true,
+                  ).with_content(t('idv.messages.gpo.resend')) %>
+            <% end %>
+            <div class="copy copy--muted">
+              <p><%= t('idv.gpo.did_not_receive_letter.form.instructions') %></p>
+            </div>
+          <% end %>
+
+          <%= render NDS::InputComponent.new(
+                form: f,
+                attribute: :otp,
+                label: t('idv.gpo.form.otp_label'),
+                error_message: @gpo_verify_form.errors[:otp].first,
+                maxlength: 10,
+                required: true,
+                autofocus: true,
+              ) %>
+          <%= hidden_field_tag :did_not_receive_letter, @user_did_not_receive_letter ? '1' : nil %>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+            <%= render ButtonComponent.new(type: :submit, full_width: true)
+                  .with_content(t('forms.buttons.continue')) %>
+            <% if @can_request_another_letter && !@user_did_not_receive_letter %>
+              <%= render ButtonComponent.new(
+                    url: idv_resend_letter_path,
+                    variant: :secondary,
+                    full_width: true,
+                  ).with_content(t('idv.messages.gpo.resend')) %>
+            <% end %>
+            <%= render ButtonComponent.new(
+                  url: account_path,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('idv.gpo.return_to_profile')) %>
+          <% end %>
+
+          <%= render AccordionComponent.new do |c| %>
+            <% c.with_header { t('idv.gpo.address_accordion.title') } %>
+            <p><%= t('idv.gpo.address_accordion.body') %></p>
+            <p><%= render 'shared/address', address: @gpo_verify_form.pii %></p>
+            <p>
+              <%= t(
+                    'idv.gpo.address_accordion.cta_html',
+                    cta_link_html: link_to(
+                      t('idv.gpo.address_accordion.cta_link'),
+                      idv_confirm_start_over_path,
+                    ),
+                  ) %>
+            </p>
+          <% end %>
+
+          <% unless @user_did_not_receive_letter %>
+            <div class="copy copy--muted">
+              <p><%= t('idv.gpo.last_letter_request_message_html', date_letter_was_sent: letter_date) %></p>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: step_indicator_steps,
@@ -13,4 +122,5 @@
 <% else %>
   <% self.title = t('idv.gpo.title') %>
   <%= render 'enter_code' %>
+<% end %>
 <% end %>

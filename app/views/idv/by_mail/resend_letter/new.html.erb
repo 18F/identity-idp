@@ -1,3 +1,43 @@
+<% if nds_layout? %>
+  <% self.title = t('idv.gpo.request_another_letter.title') %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 10) %>
+  <% end %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('idv.gpo.request_another_letter.title'),
+        subtitle: safe_join(
+          [
+            t('idv.gpo.request_another_letter.instructions_html'),
+            new_tab_link_to(
+              t('idv.gpo.request_another_letter.learn_more_link'),
+              help_center_redirect_url(
+                category: 'verify-your-identity',
+                article: 'verify-your-address-by-mail',
+                flow: :idv,
+                step: :gpo_send_letter,
+              ),
+            ),
+          ],
+          ' ',
+        ),
+      ) do |page| %>
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: idv_resend_letter_path,
+              method: :put,
+              full_width: true,
+            ).with_content(t('idv.gpo.request_another_letter.button')) %>
+        <%= render ButtonComponent.new(
+              url: go_back_path || idv_verify_by_mail_enter_code_url,
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('forms.buttons.back')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <% self.title = t('titles.idv.get_letter') %>
 
 <% content_for(:pre_flash_content) do %>
@@ -33,3 +73,4 @@
 </div>
 
 <%= render 'idv/shared/back', fallback_path: idv_verify_by_mail_enter_code_url %>
+<% end %>
