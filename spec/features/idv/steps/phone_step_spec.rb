@@ -331,8 +331,7 @@ RSpec.feature 'idv phone step', :js do
     end
 
     after do
-      RSpec::Mocks.space.proxy_for(IdentityConfig.store).reset
-      reload_ab_tests
+      reload_ab_tests_with_real_config
       remove_request_stub(@docv_stub)
     end
 

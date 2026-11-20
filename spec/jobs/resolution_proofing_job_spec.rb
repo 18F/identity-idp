@@ -102,8 +102,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
       end
 
       after do
-        RSpec::Mocks.space.proxy_for(IdentityConfig.store).reset
-        reload_ab_tests
+        reload_ab_tests_with_real_config
       end
 
       it 'stores a successful fallback result and the primary timeout through encrypted storage' do

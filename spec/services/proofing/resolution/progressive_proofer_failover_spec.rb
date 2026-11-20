@@ -62,8 +62,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   end
 
   after do
-    RSpec::Mocks.space.proxy_for(IdentityConfig.store).reset
-    reload_ab_tests
+    reload_ab_tests_with_real_config
   end
 
   it 'fails over, attributes the selected result, and records both costs and timings' do
