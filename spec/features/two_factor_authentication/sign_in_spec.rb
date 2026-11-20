@@ -320,7 +320,7 @@ RSpec.feature 'Two Factor Authentication' do
       sign_in_before_2fa(user)
 
       input = page.find_field(t('components.one_time_code_input.label'))
-      expect(page.evaluate_script('document.activeElement.id')).to eq(input[:id])
+      expect(page.find(':focus')).to eq(input)
     end
 
     it 'validates OTP format', js: true do
