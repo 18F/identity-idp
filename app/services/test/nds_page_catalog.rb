@@ -632,6 +632,20 @@ module Test
         ],
       ),
       Page.new(
+        key: 'idv-in-person-post-office-search',
+        title: 'In-person proofing: prepare and Post Office search (React)',
+        flow: IDV,
+        template: 'idv/document_capture/show',
+        permutations: [Permutation.new(label: 'From hybrid handoff', params: {})],
+      ),
+      Page.new(
+        key: 'hybrid-in-person-post-office-search',
+        title: 'In-person proofing: prepare and Post Office search (React, hybrid mobile)',
+        flow: IDV,
+        template: 'idv/hybrid_mobile/document_capture/show',
+        permutations: [Permutation.new(label: 'From Socure hybrid', params: {})],
+      ),
+      Page.new(
         key: 'idv-phone-required',
         title: 'A U.S. phone number is required',
         flow: IDV,

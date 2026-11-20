@@ -1753,6 +1753,15 @@ nds.piv_cac_setup.step_1: Saisissez un surnom
 nds.piv_cac_setup.step_2: Insérez votre PIV ou CAC dans votre lecteur de carte
 nds.piv_cac_setup.step_3: Ajoutez votre PIV ou CAC
 nds.piv_cac_setup.step_3_info: On vous demandera de choisir un certificat et de saisir votre PIN après avoir cliqué sur le bouton continuer.
+nds.post_office.prepare.intro: Suivez les étapes ci-dessous pour générer le code-barres que vous emporterez avec vous au bureau de poste.
+nds.post_office.prepare.step_details: 'Communiquez quelques informations : votre nom, votre date de naissance, le numéro de votre pièce d’identité délivrée par l’État, votre adresse et votre numéro de sécurité sociale.'
+nds.post_office.prepare.step_phone: Ajoutez votre numéro de téléphone américain.
+nds.post_office.search.heading: Saisissez votre adresse actuelle
+nds.post_office.search.hours: Heures d’ouverture
+nds.post_office.search.saturday: 'Samedi :'
+nds.post_office.search.subtitle: Nous trouverons des bureaux de poste américains participants à proximité où vous pourrez confirmer votre identité en personne.
+nds.post_office.search.sunday: 'Dimanche :'
+nds.post_office.search.zipcode_label: Code postal
 nds.request_letter.heading: Vérifiez plutôt par courrier
 nds.request_letter.info: Pour vérifier votre identité, nous enverrons à votre adresse une lettre contenant un code de vérification et des instructions. Elle devrait arriver sous 5 à 10 jours. Suivez les instructions de la lettre pour terminer la vérification de votre identité.
 nds.second_mfa_reminder.skip: Ignorer
