@@ -42,7 +42,11 @@ module InPersonHelper
   GOOD_PASSPORT_EXPIRATION_DATE =
     Idp::Constants::MOCK_IPP_PASSPORT_APPLICANT[:passport_expiration_date].freeze
 
-  def fill_out_state_id_form_ok(current_address_matches_id: false, first_name: GOOD_FIRST_NAME)
+  def fill_out_state_id_form_ok(
+    current_address_matches_id: false,
+    first_name: GOOD_FIRST_NAME,
+    expiration: GOOD_STATE_ID_EXPIRATION
+  )
     fill_in t('in_person_proofing.form.state_id.first_name'), with: first_name
     fill_in t('in_person_proofing.form.state_id.last_name'), with: GOOD_LAST_NAME
     fill_in_memorable_date('identity_doc[dob]', GOOD_DOB)
@@ -50,7 +54,7 @@ module InPersonHelper
            from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
     fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
     choose t('in_person_proofing.form.state_id.id_type_drivers_license')
-    fill_in_memorable_date('identity_doc[id_expiration]', GOOD_STATE_ID_EXPIRATION)
+    fill_in_memorable_date('identity_doc[id_expiration]', expiration) if expiration
     fill_in t('in_person_proofing.form.state_id.address1'), with: GOOD_IDENTITY_DOC_ADDRESS1
     fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_IDENTITY_DOC_ADDRESS2
     fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_IDENTITY_DOC_CITY

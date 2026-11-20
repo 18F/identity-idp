@@ -12,7 +12,9 @@ module Idv
       if date.instance_of?(String)
         Date.parse(date)
       elsif date.instance_of?(Hash)
-        Date.parse(MemorableDateComponent.extract_date_param(date))
+        # extract_date_param returns nil for an empty/incomplete date hash.
+        formatted = MemorableDateComponent.extract_date_param(date)
+        Date.parse(formatted) if formatted
       end
     rescue Date::Error
       # Catch date parsing errors

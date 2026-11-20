@@ -118,34 +118,31 @@ module Idv
         pending
       end
 
-      # Stores the state_id_expiration on the pending PII based on the selected
-      # expiration option. A non-date option (MIL/INDEF/No date) is stored as a
-      # sentinel string; otherwise the entered date (including literal
-      # placeholders like 9999-99-99) is stored.
+      # Stores the state_id_expiration on the pending PII. An entered date always
+      # wins and is stored (including literal placeholders like 9999-99-99). Only
+      # when no date is entered does a selected non-date option (MIL/INDEF/No date)
+      # get stored as a sentinel string. With neither, nothing is stored.
       def assign_state_id_expiration(pending)
         pending.delete(:id_expiration_option)
 
-        option = flow_params[:id_expiration_option]
-        return assign_expiration_sentinel(pending, option) if expiration_option_allowed?(option)
+        entered_date = flow_params&.[](:id_expiration)
+        formatted_exp = entered_date.present? &&
+                        MemorableDateComponent.extract_date_param(entered_date)
+        if formatted_exp
+          pending[:state_id_expiration] = formatted_exp
+          pending.delete(:id_expiration)
+          return
+        end
 
-        assign_expiration_date(pending)
+        option = flow_params[:id_expiration_option]
+        assign_expiration_sentinel(pending, option) if expiration_option_allowed?(option)
+        pending.delete(:id_expiration)
       end
 
       # Store a non-date sentinel (Military / Indefinite / No date) as the
-      # expiration and drop any entered date.
+      # expiration when no date was entered.
       def assign_expiration_sentinel(pending, option)
         pending[:state_id_expiration] = option
-        pending.delete(:id_expiration)
-      end
-
-      # Store the entered expiration date (including literal placeholders like
-      # 9999-99-99), when one is present.
-      def assign_expiration_date(pending)
-        formatted_exp = MemorableDateComponent.extract_date_param(flow_params&.[](:id_expiration))
-        return unless formatted_exp
-
-        pending[:state_id_expiration] = formatted_exp
-        pending.delete(:id_expiration)
       end
 
       # Whether the submitted expiration option is a recognized non-date sentinel
@@ -211,16 +208,13 @@ module Idv
         end
       end
 
-      # The expiration radio option to preselect when (re)rendering the form.
+      # The expiration radio option to preselect when (re)rendering the form, or
+      # nil when the user is entering a date (no radio selected).
       def expiration_option
         return pii[:id_expiration_option] if pii[:id_expiration_option].present?
 
         raw = pii[:id_expiration]
-        if raw.is_a?(String) && Idv::StateIdForm::EXPIRATION_SENTINELS.include?(raw)
-          raw
-        else
-          Idv::StateIdForm::EXPIRATION_OPTION_DATE
-        end
+        raw if raw.is_a?(String) && Idv::StateIdForm::EXPIRATION_SENTINELS.include?(raw)
       end
 
       def expiration_edge_cases_enabled?
