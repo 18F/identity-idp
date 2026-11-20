@@ -1,32 +1,51 @@
 <% if nds_layout? %>
-  <%= render(
-        'idv/shared/error',
-        title: t('titles.failure.information_not_verified'),
-        heading: t('idv.failure.sessions.heading'),
-        action: {
-          text: @sp_name ?
-            t('idv.failure.exit.with_sp', app_name: APP_NAME, sp_name: @sp_name) :
-            t('nds.errors.return_home'),
-          url: return_to_sp_failure_to_proof_path(step: 'verify_id', location: 'failure'),
-        },
-        options: [
-          {
-            url: contact_redirect_url,
-            text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
-            new_tab: true,
+  <%# The in-person passport flow records the ID type on the establishing enrollment. The
+      SSN rate limit (ssn_failure) also renders this page, and keeps the generic copy. %>
+  <% passport = action_name != 'ssn_failure' &&
+                current_user&.establishing_in_person_enrollment&.passport_book? %>
+  <% timeout = distance_of_time_in_words(
+       Time.zone.now,
+       [@expires_at, Time.zone.now].compact.max,
+       except: :seconds,
+     ) %>
+  <% exit_url = return_to_sp_failure_to_proof_path(step: 'verify_id', location: 'failure') %>
+
+  <% if passport %>
+    <%= render(
+          'idv/shared/error',
+          title: t('titles.failure.information_not_verified'),
+          heading: t('nds.idv_errors.passport_heading'),
+          action: {
+            text: @sp_name ?
+              t('in_person_proofing.body.barcode.return_to_partner_link', sp_name: @sp_name) :
+              t('nds.errors.return_home'),
+            url: exit_url,
           },
-        ],
-      ) do %>
-    <p>
-      <%= t(
-            'idv.failure.sessions.fail_html',
-            timeout: distance_of_time_in_words(
-              Time.zone.now,
-              [@expires_at, Time.zone.now].compact.max,
-              except: :seconds,
-            ),
-          ) %>
-    </p>
+        ) do %>
+      <p><%= t('nds.idv_errors.passport_fail') %></p>
+      <p><%= t('nds.idv_errors.try_again_in_html', timeout:) %></p>
+    <% end %>
+  <% else %>
+    <%= render(
+          'idv/shared/error',
+          title: t('titles.failure.information_not_verified'),
+          heading: t('idv.failure.sessions.heading'),
+          action: {
+            text: @sp_name ?
+              t('idv.failure.exit.with_sp', app_name: APP_NAME, sp_name: @sp_name) :
+              t('nds.errors.return_home'),
+            url: exit_url,
+          },
+          options: [
+            {
+              url: contact_redirect_url,
+              text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
+              new_tab: true,
+            },
+          ],
+        ) do %>
+      <p><%= t('idv.failure.sessions.fail_html', timeout:) %></p>
+    <% end %>
   <% end %>
 <% else %>
 <%= render(

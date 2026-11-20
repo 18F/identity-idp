@@ -6,8 +6,12 @@ RSpec.describe 'idv/session_errors/warning.html.erb' do
   let(:remaining_submit_attempts) { 5 }
   let(:user_session) { {} }
   let(:nds_layout) { false }
+  let(:enrollment) { nil }
+  let(:user) { build(:user) }
 
   before do
+    allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
+    allow(view).to receive(:current_user).and_return(user)
     decorated_sp_session = instance_double(ServiceProviderSession, sp_name: sp_name)
     allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
     allow(view).to receive(:user_session).and_return(user_session)
@@ -102,6 +106,70 @@ RSpec.describe 'idv/session_errors/warning.html.erb' do
 
     it 'does not render any l13n markers' do
       expect(rendered).not_to include('%{')
+    end
+
+    context 'with an in-person state ID enrollment' do
+      let(:enrollment) { build(:in_person_enrollment, document_type: :state_id) }
+
+      it 'keeps the personal information copy' do
+        expect(rendered).to have_css('h1', text: t('idv.warning.sessions.heading'))
+        expect(rendered).not_to have_content(t('nds.idv_errors.passport_warning'))
+      end
+    end
+
+    context 'when the in-person enrollment is for a passport' do
+      let(:enrollment) { build(:in_person_enrollment, document_type: :passport_book) }
+
+      it 'renders the passport heading and copy' do
+        expect(rendered).to have_css('h1', text: t('nds.idv_errors.passport_heading'))
+        expect(rendered).to have_css(
+          '.auth__form-page-body p',
+          text: t('nds.idv_errors.passport_warning'),
+        )
+        expect(rendered).not_to have_content(t('idv.failure.sessions.warning'))
+      end
+
+      it 'shows the remaining attempts in bold' do
+        expect(rendered).to have_css(
+          '.auth__form-page-body p',
+          text: strip_tags(
+            t('nds.idv_errors.passport_attempts_html', count: remaining_submit_attempts),
+          ),
+        )
+        expect(rendered).to have_css(
+          '.auth__form-page-body strong',
+          text: "#{remaining_submit_attempts} attempts remaining",
+        )
+      end
+
+      context 'with one attempt left' do
+        let(:remaining_submit_attempts) { 1 }
+
+        it 'uses the singular attempts copy' do
+          expect(rendered).to have_css('.auth__form-page-body strong', text: '1 attempt remaining')
+        end
+      end
+
+      it 'renders only the try-again action' do
+        expect(rendered).to have_css(
+          ".auth__actions a.usa-button[href='#{try_again_path}']",
+          text: t('idv.failure.button.warning'),
+        )
+        expect(rendered).not_to have_link(t('links.cancel'))
+      end
+
+      it 'does not set the header progress stepper' do
+        expect(view.content_for?(:nds_header_progress)).to eq(false)
+      end
+    end
+  end
+
+  context 'with a passport enrollment in the default layout' do
+    let(:enrollment) { build(:in_person_enrollment, document_type: :passport_book) }
+
+    it 'keeps the legacy copy' do
+      expect(rendered).to have_content(t('idv.warning.sessions.heading'))
+      expect(rendered).not_to have_content(t('nds.idv_errors.passport_heading'))
     end
   end
 end

@@ -1,11 +1,18 @@
 <% self.title = t('titles.failure.information_not_verified') %>
 
 <% if nds_layout? %>
-  <% content_for(:nds_header_progress) do %>
-    <%= nds_account_creation_progress(step: :verification, substep: 7) %>
+  <%# The in-person passport flow records the ID type on the establishing enrollment. %>
+  <% passport = current_user&.establishing_in_person_enrollment&.passport_book? %>
+
+  <% unless passport %>
+    <% content_for(:nds_header_progress) do %>
+      <%= nds_account_creation_progress(step: :verification, substep: 7) %>
+    <% end %>
   <% end %>
 
-  <%= render NDS::FormPageComponent.new(title: t('idv.warning.sessions.heading')) do |page| %>
+  <%= render NDS::FormPageComponent.new(
+        title: passport ? t('nds.idv_errors.passport_heading') : t('idv.warning.sessions.heading'),
+      ) do |page| %>
     <% page.with_media do %>
       <span class="nds-status-icon nds-status-icon--warning">
         <%= render NDS::IconComponent.new(icon: :warning, size: 24) %>
@@ -15,8 +22,13 @@
     <% page.with_body do %>
       <hr class="divider" />
 
-      <p><%= t('idv.failure.sessions.warning') %></p>
-      <p><%= t('idv.failure.attempts_html', count: @remaining_submit_attempts) %></p>
+      <% if passport %>
+        <p><%= t('nds.idv_errors.passport_warning') %></p>
+        <p><%= t('nds.idv_errors.passport_attempts_html', count: @remaining_submit_attempts) %></p>
+      <% else %>
+        <p><%= t('idv.failure.sessions.warning') %></p>
+        <p><%= t('idv.failure.attempts_html', count: @remaining_submit_attempts) %></p>
+      <% end %>
     <% end %>
 
     <% page.with_actions do %>
@@ -24,11 +36,13 @@
             url: @try_again_path,
             full_width: true,
           ).with_content(t('idv.forgot_password.try_again')) %>
-      <%= render ButtonComponent.new(
-            url: idv_cancel_path(step: :invalid_session),
-            variant: :tertiary,
-            full_width: true,
-          ).with_content(t('links.cancel')) %>
+      <% unless passport %>
+        <%= render ButtonComponent.new(
+              url: idv_cancel_path(step: :invalid_session),
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('links.cancel')) %>
+      <% end %>
     <% end %>
   <% end %>
 <% else %>
