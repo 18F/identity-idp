@@ -98,6 +98,7 @@ RSpec.describe 'sign_up/registrations/new.html.erb' do
     render
 
     expect(rendered).to_not have_selector('.auth-entry')
+    expect(rendered).to_not have_css('.agency-seal')
   end
 
   describe 'reCAPTCHA submit button' do
@@ -144,13 +145,58 @@ RSpec.describe 'sign_up/registrations/new.html.erb' do
   context 'in the NDS layout' do
     before do
       allow(view).to receive(:nds_layout?).and_return(true)
+      allow(view).to receive(:current_sp).and_return(nil)
     end
 
-    it 'renders the auth-entry card with the create-account heading' do
+    it 'renders the auth-entry card with the create-account heading for the SP' do
       render
 
       expect(rendered).to have_selector('.auth-entry')
-      expect(rendered).to have_selector('h1', text: t('titles.create_account'))
+      expect(rendered).to have_selector(
+        'h1',
+        text: t(
+          'nds.sign_up.create_account_with_sp',
+          app_name: APP_NAME,
+          sp: 'Awesome Application!',
+        ),
+      )
+    end
+
+    it 'renders no agency seal when the SP has no logo' do
+      allow(view).to receive(:current_sp).and_return(sp)
+      render
+
+      expect(rendered).not_to have_css('.agency-seal')
+    end
+
+    context 'when the SP has a logo' do
+      let(:sp) do
+        build_stubbed(:service_provider, friendly_name: 'Awesome Application!', logo: 'DOS.svg')
+      end
+
+      before { allow(view).to receive(:current_sp).and_return(sp) }
+
+      it 'renders the 100px agency seal above the heading' do
+        render
+
+        seal_selector = '.auth__header--with-media img.agency-seal.agency-seal--100'
+        expect(rendered).to have_css("#{seal_selector}[alt=''][src='#{sp.logo_url}']")
+      end
+    end
+
+    context 'without a service provider' do
+      before do
+        allow(view).to receive(:decorated_sp_session)
+          .and_return(NullServiceProviderSession.new)
+        allow(view).to receive(:current_sp).and_return(nil)
+      end
+
+      it 'renders the generic create-account heading without a seal' do
+        render
+
+        expect(rendered).to have_selector('h1', text: t('titles.create_account'))
+        expect(rendered).not_to have_css('.agency-seal')
+      end
     end
 
     it 'renders a floating-label email input' do

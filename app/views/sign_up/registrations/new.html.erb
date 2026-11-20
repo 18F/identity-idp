@@ -3,9 +3,23 @@
 <% if nds_layout? %>
   <%= render NDS::AuthEntryComponent.new do %>
     <%= render NDS::FormPageComponent.new(
-          title: t('titles.create_account'),
+          title: decorated_sp_session.sp_name ?
+            t('nds.sign_up.create_account_with_sp', app_name: APP_NAME, sp: decorated_sp_session.sp_name) :
+            t('titles.create_account'),
           divider: true,
         ) do |page| %>
+      <% if current_sp&.logo.present? %>
+        <% page.with_media do %>
+          <%= image_tag(
+                current_sp.logo_url,
+                alt: '',
+                class: 'agency-seal agency-seal--100',
+                width: 100,
+                height: 100,
+              ) %>
+        <% end %>
+      <% end %>
+
       <% page.with_body do %>
         <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
           <%= render 'shared/sp_alert', section: 'sign_up' %>
