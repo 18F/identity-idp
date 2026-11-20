@@ -42,6 +42,11 @@ RSpec.describe 'Test::NdsPages', type: :request do
       {
         'sign-in' => { sp: '1', error: 'email' },
         'create-account' => { sp_alert: '1', error: 'email' },
+        'piv-cac' => { sp: '1', logo: '1' },
+        'idv-welcome' => { sp: '1', logo: '1' },
+        'completions' => { auth: '1', logo: '1' },
+        'session-error-warning' => { passport: '1', sp: '1', logo: '1' },
+        'session-error-failure' => { passport: '1', sp: '1', logo: '1' },
         'verify-email' => { resend: '1' },
         'enter-password' => { toast: '1', error: '1' },
         'mfa-setup' => { piv_cac: '1' },
@@ -52,6 +57,14 @@ RSpec.describe 'Test::NdsPages', type: :request do
 
           expect(response).to have_http_status(:ok)
         end
+      end
+
+      # Folds in #13914 (Dexin Huang): the SP + logo stub used a controller-side
+      # image_path, which 500'd before the representative list covered it.
+      it 'renders 200 for sign-in with a service provider logo' do
+        get test_nds_page_path(page: 'sign-in', sp: '1', logo: '1')
+
+        expect(response).to have_http_status(:ok)
       end
     end
 

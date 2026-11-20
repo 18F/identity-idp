@@ -1711,6 +1711,12 @@ nds.footer.experience_notice_link: our refreshed interface
 nds.footer.switch_to_legacy: Switch to legacy
 nds.hybrid_handoff.heading: 输入您的电话号码
 nds.hybrid_handoff.subtitle: 我们将向您发送一个链接，以便通过可信的服务提供商验证您的身份证件。
+nds.idv_errors.passport_attempts_html.one: 出于安全考虑，你还可以尝试<strong>1次</strong>。
+nds.idv_errors.passport_attempts_html.other: 出于安全考虑，你还可以尝试<strong>%{count}次</strong>。
+nds.idv_errors.passport_fail: 出于安全考虑，我们限制你在网上尝试验证护照信息的次数。
+nds.idv_errors.passport_heading: 我们找不到与你护照信息匹配的记录
+nds.idv_errors.passport_warning: 请检查一下你输入的信息，然后再试一下。常见错误包括护照号码或过期日期不对。
+nds.idv_errors.try_again_in_html: <strong>%{timeout}后再试。</strong>
 nds.idv_phone.info: 请输入美国电话号码。我们将通过短信或电话向您发送 6 位数验证码。仅支持标准电话线路，不支持 VoIP 或增值号码。可能产生短信和数据费用。
 nds.idv_welcome.consent_html: 勾选此框即表示您允许%{app_name}索取、使用、保存和共享您的个人信息。我们将用它来验证您的身份。请阅读我们的%{link_html}措施。
 nds.idv_welcome.consent_link: 隐私和安全
@@ -1769,6 +1775,8 @@ nds.piv_cac_setup.step_3_info: 点击继续按钮后，系统会要求你选择�
 nds.request_letter.heading: 改为通过邮寄验证
 nds.request_letter.info: 为验证您的身份，我们会向您的地址邮寄一封包含验证码和说明的信件，预计 5 到 10 天内送达。请按照信中的说明完成身份验证。
 nds.second_mfa_reminder.skip: 跳过
+nds.sign_in.piv_cac: 使用政府雇员身份证件登录
+nds.sign_up.create_account_with_sp: 为 %{sp} 设立你的 %{app_name} 账户
 nds.socure_errors.in_person_heading: 或者，尝试亲身去验证身份证件
 nds.socure_errors.rate_limit_html.one: 您可以再试<strong>1次。</strong>然后，您必须等6个小时才能再试。
 nds.socure_errors.rate_limit_html.other: 您可以再试<strong>%{count}次。</strong>然后，您必须等6个小时才能再试。
