@@ -890,6 +890,22 @@ module Test
             label: 'Password reset (reactivate profile)',
             params: { identity: 'password_reset' },
           ),
+          Permutation.new(
+            label: 'Not verified (agency requires identity verification)',
+            params: { idv_required: '1' },
+          ),
+          Permutation.new(
+            label: 'Verified, agency requires facial match',
+            params: { identity: 'verified', facial_match_required: '1' },
+          ),
+          Permutation.new(
+            label: 'Verified, information hidden until reauthentication',
+            params: { identity: 'verified', locked: '1' },
+          ),
+          Permutation.new(
+            label: 'Verified, not yet connected to the verifying agency',
+            params: { identity: 'verified', connect: '1' },
+          ),
           Permutation.new(label: 'Continue to service provider', params: { sp: '1' }),
           Permutation.new(label: 'Email confirmed (flash)', params: { flash: 'email_confirmed' }),
           Permutation.new(label: 'One email and phone', params: { minimal: '1' }),

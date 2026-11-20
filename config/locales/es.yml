@@ -1676,6 +1676,21 @@ nds.choose_id_type.verify_in_person: Verificar en persona
 nds.completions.heading_idv: Identidad verificada
 nds.completions.intro_html: Al seleccionar Continuar, acepta compartir la siguiente información con %{sp_html} e ir a su sitio.
 nds.completions.nist_alt: 'Sello del NIST: Cifrado. Protegido. Comprobado. Instituto Nacional de Estándares y Tecnología'
+nds.dashboard_account.change: Cambiar
+nds.dashboard_account.delete_account_info: Se borrarán todos los datos, la configuración y la actividad asociados.
+nds.dashboard_account.delete_email_heading: ¿Eliminar %{email}?
+nds.dashboard_account.delete_email_info: Una vez que elimine esta dirección de correo electrónico, no podrá usarla para iniciar sesión en %{app_name} ni en ninguna de las aplicaciones gubernamentales vinculadas a su cuenta, y dejará de recibir notificaciones de la cuenta en esta dirección.
+nds.dashboard_account.edit_password_heading: Introduzca una nueva contraseña
+nds.dashboard_account.identity_not_verified: Cuenta no verificada
+nds.dashboard_account.identity_verified: Cuenta verificada
+nds.dashboard_account.learn_more: Más información
+nds.dashboard_account.manage_phone_heading: Administrar la configuración del teléfono
+nds.dashboard_account.manage_phone_info_html: Elija cómo recibir su código para <strong>%{phone}</strong>. Si usa un teléfono fijo, seleccione “Llamada telefónica”.
+nds.dashboard_account.one_phone_default_info: Debe tener más de un número de teléfono para seleccionar otro número predeterminado.
+nds.dashboard_account.primary: Principal
+nds.dashboard_account.remove_phone: Eliminar número de teléfono
+nds.dashboard_account.unconfirmed: Sin confirmar
+nds.dashboard_account.verify: Verificar
 nds.document_capture.mdl_alert_body: Se añadirán otras billeteras digitales a finales de este año.
 nds.document_capture.mdl_alert_title: Actualmente disponible con Google Wallet y Samsung Wallet.
 nds.document_capture.mdl_heading: Añada la información de su licencia de conducir móvil
