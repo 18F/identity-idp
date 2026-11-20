@@ -1,0 +1,12 @@
+<%= tag.nav(class: nav_class, aria: { label: t('account.navigation.landmark_label') }) do %>
+  <ul class="account-nav__list">
+    <% items.each do |item| %>
+      <li class="account-nav__item">
+        <%= link_to item.href, class: link_class(item), aria: { current: ('page' if current?(item)) } do %>
+          <%= render NDS::IconComponent.new(icon: current?(item) ? item.current_icon : item.icon, size: 20) %>
+          <%= item.label %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

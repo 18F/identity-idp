@@ -6,7 +6,7 @@ class AccountsController < ApplicationController
   before_action :confirm_user_is_not_suspended
   before_action :confirm_password_change_not_required
 
-  layout 'account_side_nav'
+  account_shell_layout 'account_side_nav'
 
   def show
     analytics.account_visit

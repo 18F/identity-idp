@@ -1,0 +1,56 @@
+<%= render NDS::OfficialBannerComponent.new %>
+
+<header class="account-header">
+  <%= link_to root_path, class: 'account-header__logo-link', aria: { label: APP_NAME } do %>
+    <%= image_tag(
+          asset_url('logo.svg'),
+          alt: '',
+          class: 'account-header__logo',
+          aria: { hidden: true },
+          width: 155,
+          height: 21,
+        ) %>
+  <% end %>
+
+  <div class="account-header__actions">
+    <details class="account-header__menu">
+      <summary class="account-header__menu-button">
+        <span class="usa-sr-only"><%= t('nds.account_nav.account_menu') %></span>
+        <span class="account-header__menu-email"><%= email %></span>
+        <%= render NDS::IconComponent.new(
+              icon: :chevron_down,
+              size: 20,
+              class: 'account-header__menu-chevron',
+            ) %>
+      </summary>
+      <div class="account-mobile-menu__panel">
+        <%= button_to(
+              t('links.sign_out'),
+              logout_path,
+              method: :delete,
+              form_class: 'account-mobile-menu__logout-form',
+              class: 'account-nav__link account-mobile-menu__logout-button',
+            ) %>
+      </div>
+    </details>
+
+    <details class="account-mobile-menu">
+      <summary class="account-mobile-menu__summary">
+        <%= render NDS::IconComponent.new(icon: :menu, size: 20) %>
+        <span class="usa-sr-only"><%= t('account.navigation.menu') %></span>
+      </summary>
+      <div class="account-mobile-menu__panel">
+        <%= render NDS::AccountNavigationComponent.new(current:, mobile: true) %>
+        <div class="account-mobile-menu__logout">
+          <%= button_to(
+                t('links.sign_out'),
+                logout_path,
+                method: :delete,
+                form_class: 'account-mobile-menu__logout-form',
+                class: 'account-nav__link account-mobile-menu__logout-button',
+              ) %>
+        </div>
+      </div>
+    </details>
+  </div>
+</header>
