@@ -1698,6 +1698,12 @@ nds.footer.experience_notice_link: our refreshed interface
 nds.footer.switch_to_legacy: Switch to legacy
 nds.hybrid_handoff.heading: Enter your phone number
 nds.hybrid_handoff.subtitle: We’ll send you a link to verify your ID using a trusted service provider.
+nds.idv_errors.passport_attempts_html.one: For security reasons, you have <strong>1 attempt remaining</strong>.
+nds.idv_errors.passport_attempts_html.other: For security reasons, you have <strong>%{count} attempts remaining</strong>.
+nds.idv_errors.passport_fail: For your security, we limit the number of times you can attempt to verify passport information online.
+nds.idv_errors.passport_heading: We couldn’t find records matching your passport information
+nds.idv_errors.passport_warning: Please check the information you entered and try again. Common mistakes are an incorrect passport number or expiration date.
+nds.idv_errors.try_again_in_html: <strong>Try again in %{timeout}.</strong>
 nds.idv_phone.info: Enter a U.S. phone number. We’ll text or call you with a 6-digit code. Standard phone lines only. No VoIP or premium numbers. Message and data rates may apply.
 nds.idv_welcome.consent_html: By checking this box, you are letting %{app_name} ask for, use, keep and share your personal information. We will use it to verify your identity. Read about our %{link_html} measures.
 nds.idv_welcome.consent_link: privacy and security
@@ -1756,6 +1762,8 @@ nds.piv_cac_setup.step_3_info: You’ll be asked to choose a certificate and ent
 nds.request_letter.heading: Verify by mail instead
 nds.request_letter.info: To verify your identity, we’ll mail a letter with a verification code and instructions to your address. It should arrive in 5 to 10 days. Follow the instructions in the letter to finish verifying your identity.
 nds.second_mfa_reminder.skip: Skip
+nds.sign_in.piv_cac: Log in with government employee ID
+nds.sign_up.create_account_with_sp: Create your %{app_name} account for %{sp}
 nds.socure_errors.in_person_heading: Or, try verifying your ID in person
 nds.socure_errors.rate_limit_html.one: You can try <strong>1 more time.</strong> Then, you must wait 6 hours before trying again.
 nds.socure_errors.rate_limit_html.other: You can try <strong>%{count} more times.</strong> Then, you must wait 6 hours before trying again.

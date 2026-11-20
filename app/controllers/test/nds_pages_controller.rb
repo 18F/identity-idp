@@ -17,7 +17,7 @@ module Test
       end
     end
 
-    ServiceProviderStub = Struct.new(:logo, :logo_url, :issuer, keyword_init: true)
+    ServiceProviderStub = Struct.new(:logo, :logo_url, :issuer, :agency, keyword_init: true)
 
     EmailAddressStub = Struct.new(:email, keyword_init: true)
 
@@ -29,6 +29,8 @@ module Test
     DEV_PHONE = '+12025551212'
     DEV_OPT_OUT_PHONE = '+12025559999'
     DEV_SP_ISSUER = 'urn:gov:gsa:openidconnect:test:nds-explorer'
+    DEV_SP_LOGO = 'DOS.svg'
+    DEV_SP_AGENCY = 'Department of State'
 
     # Registry of legacy pages whose before_actions need seeded DB/session state
     # (beyond a signed-in dev session) before they render. Maps the live route
@@ -135,6 +137,11 @@ module Test
     # i18n-tasks-use t('nds.errors.cancel_verification')
     # i18n-tasks-use t('nds.errors.return_home')
     # i18n-tasks-use t('nds.errors.start_over_warning')
+    # i18n-tasks-use t('nds.idv_errors.passport_attempts_html')
+    # i18n-tasks-use t('nds.idv_errors.passport_fail')
+    # i18n-tasks-use t('nds.idv_errors.passport_heading')
+    # i18n-tasks-use t('nds.idv_errors.passport_warning')
+    # i18n-tasks-use t('nds.idv_errors.try_again_in_html')
     # i18n-tasks-use t('nds.idv_phone.info')
     # i18n-tasks-use t('nds.link_sent.heading')
     # i18n-tasks-use t('nds.link_sent.instructions')
@@ -155,6 +162,8 @@ module Test
     # i18n-tasks-use t('nds.phone_setup.info')
     # i18n-tasks-use t('nds.request_letter.heading')
     # i18n-tasks-use t('nds.request_letter.info')
+    # i18n-tasks-use t('nds.sign_in.piv_cac')
+    # i18n-tasks-use t('nds.sign_up.create_account_with_sp')
     # i18n-tasks-use t('nds.socure_errors.in_person_heading')
     # i18n-tasks-use t('nds.socure_errors.rate_limit_html')
     # i18n-tasks-use t('nds.ssn.info')
@@ -790,18 +799,27 @@ module Test
           cancel_link_url: root_url,
         )
       end
-      if params[:logo].present?
-        @current_sp = ServiceProviderStub.new(
-          logo: 'logo.svg',
-          logo_url: image_path('logo.svg'),
-          issuer: 'urn:gov:gsa:test',
-        )
-      end
+      stub_sp_logo_if_requested
       {}
+    end
+
+    # ?logo=1 puts a service provider with a logo and an agency in session: the
+    # data the NDS agency seal and header co-branding read. Uses a real seal
+    # from sp-logos so the circular crop renders as it will for partners.
+    def stub_sp_logo_if_requested
+      return if params[:logo].blank?
+
+      @current_sp = ServiceProviderStub.new(
+        logo: DEV_SP_LOGO,
+        logo_url: helpers.image_path("sp-logos/#{DEV_SP_LOGO}"),
+        issuer: DEV_SP_ISSUER,
+        agency: Agency.new(name: DEV_SP_AGENCY),
+      )
     end
 
     def setup_piv_cac
       @presenter = PivCacAuthenticationLoginPresenter.new(nil, url_options)
+      stub_sp_session_if_requested
       {}
     end
 
@@ -835,13 +853,14 @@ module Test
       if params[:error] == 'email'
         @register_user_email_form.errors.add(:email, t('valid_email.validations.email.invalid'))
       end
-      if params[:sp_alert].present?
+      if params[:sp].present? || params[:sp_alert].present?
         @decorated_sp_session = SpSessionStub.new(
           sp_name: 'Example Service Provider',
-          sp_alert_text: 'Example service provider alert.',
+          sp_alert_text: params[:sp_alert].present? ? 'Example service provider alert.' : nil,
           cancel_link_url: root_url,
         )
       end
+      stub_sp_logo_if_requested
       {}
     end
 
@@ -1042,20 +1061,7 @@ module Test
     end
 
     def setup_idv_welcome
-      if params[:sp].present?
-        @decorated_sp_session = SpSessionStub.new(
-          sp_name: 'Example Service Provider',
-          sp_alert_text: nil,
-          cancel_link_url: root_url,
-        )
-      end
-      if params[:logo].present?
-        @current_sp = ServiceProviderStub.new(
-          logo: 'logo.svg',
-          logo_url: helpers.image_path('logo.svg'),
-          issuer: DEV_SP_ISSUER,
-        )
-      end
+      stub_sp_session_if_requested
       @presenter = Idv::WelcomePresenter.new(
         decorated_sp_session:,
         show_sp_reproof_banner: params[:reproof].present?,
@@ -1175,8 +1181,14 @@ module Test
     end
 
     def setup_session_error_warning
+      stub_sp_session_if_requested
+      stub_passport_enrollment_if_requested
       @remaining_submit_attempts = params[:attempts].present? ? params[:attempts].to_i : 3
-      @try_again_path = idv_verify_info_path
+      @try_again_path = if params[:passport].present?
+                          idv_in_person_verify_info_path
+                        else
+                          idv_verify_info_path
+                        end
       {}
     end
 
@@ -1187,6 +1199,7 @@ module Test
     end
 
     def stub_sp_session_if_requested
+      stub_sp_logo_if_requested
       return if params[:sp].blank?
 
       @decorated_sp_session = SpSessionStub.new(
@@ -1194,6 +1207,18 @@ module Test
         sp_alert_text: nil,
         cancel_link_url: root_url,
       )
+    end
+
+    # ?passport=1: the user's establishing in-person enrollment is for a
+    # passport book, the existing state the IdV session error pages read to show
+    # their passport copy.
+    def stub_passport_enrollment_if_requested
+      return if params[:passport].blank?
+
+      enrollment = InPersonEnrollment.new(document_type: :passport_book)
+      user = User.new
+      user.define_singleton_method(:establishing_in_person_enrollment) { enrollment }
+      @nds_current_user = user
     end
 
     def setup_vendor_outage
@@ -1219,6 +1244,7 @@ module Test
 
     def setup_session_error_failure
       stub_sp_session_if_requested
+      stub_passport_enrollment_if_requested
       @expires_at = 6.hours.from_now
       @sp_name = decorated_sp_session.sp_name
       {}
@@ -1458,7 +1484,18 @@ module Test
       user.define_singleton_method(:active_profile) { profile }
       @nds_current_user = user
       @multiple_factors_enabled = params[:single].blank?
-      @current_sp = ServiceProvider.new(issuer: DEV_SP_ISSUER, friendly_name: 'Veterans Affairs')
+      @current_sp = ServiceProvider.new(
+        issuer: DEV_SP_ISSUER,
+        friendly_name: 'Veterans Affairs',
+        logo: params[:logo].present? ? DEV_SP_LOGO : nil,
+      )
+      if params[:logo].present?
+        @decorated_sp_session = SpSessionStub.new(
+          sp_name: 'Veterans Affairs',
+          sp_alert_text: nil,
+          cancel_link_url: root_url,
+        )
+      end
       idv = params[:auth].blank?
       pii = idv ? Pii::Attributes.new_from_hash(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN) : {}
       requested = idv ? %i[email full_name address birthdate social_security_number

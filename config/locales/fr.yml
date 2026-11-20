@@ -1698,6 +1698,12 @@ nds.footer.experience_notice_link: our refreshed interface
 nds.footer.switch_to_legacy: Switch to legacy
 nds.hybrid_handoff.heading: Saisissez votre numéro de téléphone
 nds.hybrid_handoff.subtitle: Nous vous enverrons un lien pour vérifier votre pièce d’identité auprès d’un prestataire de confiance.
+nds.idv_errors.passport_attempts_html.one: Pour des raisons de sécurité, il vous reste <strong>1 essai</strong>.
+nds.idv_errors.passport_attempts_html.other: Pour des raisons de sécurité, il vous reste <strong>%{count} essais</strong>.
+nds.idv_errors.passport_fail: Pour votre sécurité, nous limitons le nombre de fois où vous pouvez tenter de vérifier les informations de votre passeport en ligne.
+nds.idv_errors.passport_heading: Nous n’avons pas trouvé de dossiers correspondant aux informations de votre passeport
+nds.idv_errors.passport_warning: Veuillez vérifier les informations que vous avez saisies et réessayer. Les erreurs les plus courantes sont un numéro de passeport ou une date d’expiration incorrects.
+nds.idv_errors.try_again_in_html: <strong>Réessayez dans %{timeout}.</strong>
 nds.idv_phone.info: Saisissez un numéro de téléphone américain. Nous vous enverrons un SMS ou vous appellerons avec un code à 6 chiffres. Lignes téléphoniques standard uniquement ; pas de numéros VoIP ni surtaxés. Des frais de messagerie et de données peuvent s’appliquer.
 nds.idv_welcome.consent_html: En cochant cette case, vous autorisez %{app_name} à demander, utiliser, conserver et partager vos renseignements personnels. Nous les utiliserons pour vérifier votre identité. Consultez nos mesures de %{link_html}.
 nds.idv_welcome.consent_link: confidentialité et de sécurité
@@ -1756,6 +1762,8 @@ nds.piv_cac_setup.step_3_info: On vous demandera de choisir un certificat et de 
 nds.request_letter.heading: Vérifiez plutôt par courrier
 nds.request_letter.info: Pour vérifier votre identité, nous enverrons à votre adresse une lettre contenant un code de vérification et des instructions. Elle devrait arriver sous 5 à 10 jours. Suivez les instructions de la lettre pour terminer la vérification de votre identité.
 nds.second_mfa_reminder.skip: Ignorer
+nds.sign_in.piv_cac: Connectez-vous avec votre identifiant d’employé
+nds.sign_up.create_account_with_sp: Créer votre compte %{app_name} pour %{sp}
 nds.socure_errors.in_person_heading: Ou, essayez de confirmer votre identité en personne
 nds.socure_errors.rate_limit_html.one: Vous avez encore <strong>un essai.</strong> Ensuite, vous devrez attendre 6 heures avant de réessayer.
 nds.socure_errors.rate_limit_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite, vous devrez attendre 6 heures avant de réessayer.

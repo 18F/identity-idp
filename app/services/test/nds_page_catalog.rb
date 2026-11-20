@@ -27,6 +27,10 @@ module Test
           Permutation.new(label: 'Default', params: {}),
           Permutation.new(label: 'With service provider', params: { sp: '1' }),
           Permutation.new(label: 'SP + logo', params: { sp: '1', logo: '1' }),
+          Permutation.new(
+            label: 'SP + logo, mobile device',
+            params: { sp: '1', logo: '1', device: 'mobile' },
+          ),
           Permutation.new(label: 'SP alert', params: { sp: '1', sp_alert: '1' }),
           Permutation.new(label: 'Forced reauthentication', params: { sp: '1', reauth: '1' }),
           Permutation.new(label: 'Email error', params: { error: 'email' }),
@@ -42,6 +46,7 @@ module Test
         template: 'users/piv_cac_login/new',
         permutations: [
           Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'SP + logo', params: { sp: '1', logo: '1' }),
         ],
       ),
       Page.new(
@@ -87,6 +92,12 @@ module Test
         template: 'sign_up/registrations/new',
         permutations: [
           Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'With service provider', params: { sp: '1' }),
+          Permutation.new(label: 'SP + logo', params: { sp: '1', logo: '1' }),
+          Permutation.new(
+            label: 'SP + logo, email error',
+            params: { sp: '1', logo: '1', error: 'email' },
+          ),
           Permutation.new(label: 'SP alert', params: { sp_alert: '1' }),
           Permutation.new(label: 'Email error', params: { error: 'email' }),
         ],
@@ -429,6 +440,15 @@ module Test
         permutations: [
           Permutation.new(label: 'Default', params: {}),
           Permutation.new(label: 'Last attempt', params: { attempts: '1' }),
+          Permutation.new(label: 'Passport (in person)', params: { passport: '1' }),
+          Permutation.new(
+            label: 'Passport, last attempt',
+            params: { passport: '1', attempts: '1' },
+          ),
+          Permutation.new(
+            label: 'Passport + SP logo',
+            params: { passport: '1', sp: '1', logo: '1' },
+          ),
         ],
       ),
       Page.new(
@@ -488,6 +508,11 @@ module Test
         permutations: [
           Permutation.new(label: 'Default', params: {}),
           Permutation.new(label: 'With service provider', params: { sp: '1' }),
+          Permutation.new(label: 'Passport (in person)', params: { passport: '1' }),
+          Permutation.new(
+            label: 'Passport + SP logo',
+            params: { passport: '1', sp: '1', logo: '1' },
+          ),
         ],
       ),
       Page.new(
@@ -780,7 +805,9 @@ module Test
         template: 'sign_up/completions/show',
         permutations: [
           Permutation.new(label: 'Verified identity', params: {}),
+          Permutation.new(label: 'Verified identity + SP logo', params: { logo: '1' }),
           Permutation.new(label: 'Auth only (new SP)', params: { auth: '1' }),
+          Permutation.new(label: 'Auth only + SP logo', params: { auth: '1', logo: '1' }),
           Permutation.new(label: 'Single MFA warning', params: { single: '1' }),
         ],
       ),
