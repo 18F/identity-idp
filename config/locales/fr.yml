@@ -1665,6 +1665,21 @@ nds.choose_id_type.verify_in_person: Vérifier en personne
 nds.completions.heading_idv: Identité vérifiée
 nds.completions.intro_html: En sélectionnant Continuer, vous acceptez de partager les informations ci-dessous avec %{sp_html} et d’accéder à son site.
 nds.completions.nist_alt: 'Sceau du NIST : Chiffré. Protégé. Éprouvé. National Institute of Standards and Technology'
+nds.dashboard_account.change: Modifier
+nds.dashboard_account.delete_account_info: Toutes les données, tous les paramètres et toute l’activité associés seront effacés.
+nds.dashboard_account.delete_email_heading: Supprimer %{email} ?
+nds.dashboard_account.delete_email_info: Une fois cette adresse e-mail supprimée, vous ne pourrez plus l’utiliser pour vous connecter à %{app_name} ni à aucune des applications de l’administration associées à votre compte, et vous ne recevrez plus de notifications concernant votre compte à cette adresse.
+nds.dashboard_account.edit_password_heading: Saisissez un nouveau mot de passe
+nds.dashboard_account.identity_not_verified: Compte non vérifié
+nds.dashboard_account.identity_verified: Compte vérifié
+nds.dashboard_account.learn_more: En savoir plus
+nds.dashboard_account.manage_phone_heading: Gérer les paramètres du téléphone
+nds.dashboard_account.manage_phone_info_html: Choisissez comment recevoir votre code pour le <strong>%{phone}</strong>. Si vous utilisez une ligne fixe, sélectionnez « Appel téléphonique ».
+nds.dashboard_account.one_phone_default_info: Vous devez avoir plus d’un numéro de téléphone pour choisir un autre numéro par défaut.
+nds.dashboard_account.primary: Principal
+nds.dashboard_account.remove_phone: Supprimer le numéro de téléphone
+nds.dashboard_account.unconfirmed: Non confirmée
+nds.dashboard_account.verify: Vérifier
 nds.document_capture.mdl_alert_body: D’autres portefeuilles numériques seront pris en charge plus tard cette année.
 nds.document_capture.mdl_alert_title: Actuellement compatible avec Google Wallet et Samsung Wallet.
 nds.document_capture.mdl_heading: Renseignez les informations de votre permis de conduire mobile

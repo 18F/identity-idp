@@ -1665,6 +1665,21 @@ nds.choose_id_type.verify_in_person: Verify in person
 nds.completions.heading_idv: Identity verified
 nds.completions.intro_html: By selecting Continue, you agree to share the information below with %{sp_html} and go to their site.
 nds.completions.nist_alt: 'NIST seal: Encrypted. Protected. Proven. National Institute of Standards and Technology'
+nds.dashboard_account.change: Change
+nds.dashboard_account.delete_account_info: All associated data, settings, and activity will be erased.
+nds.dashboard_account.delete_email_heading: Delete %{email}?
+nds.dashboard_account.delete_email_info: Once you delete this email address, you won’t be able to use it to sign in to %{app_name} or any government applications linked to your account, and you’ll stop receiving account notifications at this address.
+nds.dashboard_account.edit_password_heading: Enter a new password
+nds.dashboard_account.identity_not_verified: Account not verified
+nds.dashboard_account.identity_verified: Account verified
+nds.dashboard_account.learn_more: Learn more
+nds.dashboard_account.manage_phone_heading: Manage phone settings
+nds.dashboard_account.manage_phone_info_html: Choose how to receive your code for <strong>%{phone}</strong>. If you’re using a landline, please select “phone call.”
+nds.dashboard_account.one_phone_default_info: You must have more than one phone number to select a different default.
+nds.dashboard_account.primary: Primary
+nds.dashboard_account.remove_phone: Remove phone number
+nds.dashboard_account.unconfirmed: Unconfirmed
+nds.dashboard_account.verify: Verify
 nds.document_capture.mdl_alert_body: Other digital wallets will be supported later this year.
 nds.document_capture.mdl_alert_title: Currently supported with Google Wallet and Samsung Wallet.
 nds.document_capture.mdl_heading: Add your mobile driver’s license information

@@ -1678,6 +1678,21 @@ nds.choose_id_type.verify_in_person: 亲自验证
 nds.completions.heading_idv: 身份已验证
 nds.completions.intro_html: 选择“继续”即表示您同意与 %{sp_html} 共享以下信息并前往其网站。
 nds.completions.nist_alt: 'NIST 徽章：加密。受保护。经验证。美国国家标准与技术研究院'
+nds.dashboard_account.change: 更改
+nds.dashboard_account.delete_account_info: 所有相关数据、设置和活动都将被清除。
+nds.dashboard_account.delete_email_heading: 删除 %{email}？
+nds.dashboard_account.delete_email_info: 删除这一电邮地址后，你将无法使用它登录 %{app_name} 或任何与你账户关联的政府应用程序，也不会再在这一地址收到账户通知。
+nds.dashboard_account.edit_password_heading: 输入新密码
+nds.dashboard_account.identity_not_verified: 账户未验证
+nds.dashboard_account.identity_verified: 账户已验证
+nds.dashboard_account.learn_more: 了解更多
+nds.dashboard_account.manage_phone_heading: 管理电话设置
+nds.dashboard_account.manage_phone_info_html: 选择如何为 <strong>%{phone}</strong> 接收代码。如果你使用座机，请选择“电话”。
+nds.dashboard_account.one_phone_default_info: 你必须有不止一个电话号码才能选择另一个默认号码。
+nds.dashboard_account.primary: 主要
+nds.dashboard_account.remove_phone: 去掉电话号码
+nds.dashboard_account.unconfirmed: 未确认
+nds.dashboard_account.verify: 验证
 nds.document_capture.mdl_alert_body: 其他数字钱包将在今年晚些时候获得支持。
 nds.document_capture.mdl_alert_title: 目前支持 Google Wallet 和 Samsung Wallet。
 nds.document_capture.mdl_heading: 添加您的移动驾驶证信息
