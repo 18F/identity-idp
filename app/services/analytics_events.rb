@@ -2550,6 +2550,7 @@ module AnalyticsEvents
   # @option proofing_results [Boolean] context.stages.resolution.can_pass_with_additional_verification Whether the PII could be verified if another vendor verified certain attributes
   # @option proofing_results [Array<String>] context.stages.resolution.attributes_requiring_additional_verification Attributes that need to be verified by another vendor
   # @option proofing_results [Array<String>,nil] context.stages.resolution.source_attribution List of sources that contributed to the resolution proofing result
+  # @option proofing_results [Array<Hash>] context.stages.resolution.bypassed_reason_codes List of bypasses that were performed during proofing
   # @option proofing_results [String,nil] context.stages.resolution.vendor_id Vendor's internal ID for resolution proofing requests, e.g. socureId
   # @option proofing_results [String] context.stages.resolution.vendor_name Vendor used (e.g. lexisnexis:instant_verify)
   # @option proofing_results [String] context.stages.resolution.vendor_workflow ID of workflow or configuration the vendor used for this transaction
@@ -4636,6 +4637,8 @@ module AnalyticsEvents
   # @param [String] vendor_workflow ID of workflow or configuration the vendor used for this
   # transaction
   # @param [Array[String], nil] verified_attributes The attributes verified during proofing
+  # @param [Array<Hash>, nil] bypassed_reason_codes List of bypasses that were performed during
+  # proofing
   def idv_instant_verify_results(
     success:,
     errors:,
@@ -4651,6 +4654,7 @@ module AnalyticsEvents
     vendor_id:,
     vendor_workflow:,
     verified_attributes:,
+    bypassed_reason_codes: nil,
     **extra
   )
     track_event(
@@ -4669,6 +4673,7 @@ module AnalyticsEvents
       vendor_id:,
       vendor_workflow:,
       verified_attributes:,
+      bypassed_reason_codes:,
       **extra,
     )
   end
@@ -6465,11 +6470,11 @@ module AnalyticsEvents
     can_pass_with_additional_verification:,
     attributes_requiring_additional_verification:,
     source_attribution:,
-    bypassed_reason_codes:,
     vendor_name:,
     vendor_id:,
     vendor_workflow:,
     verified_attributes:,
+    bypassed_reason_codes: nil,
     **extra
   )
     track_event(

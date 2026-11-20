@@ -1065,28 +1065,114 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     context 'when proofing_vendor is :instant_verify' do
       let(:proofing_vendor) { :instant_verify }
 
-      it 'returns StateIdAddressPlugin with an InstantVerify proofer' do
-        expect(progressive_proofer.state_id_address_plugin).to be_an_instance_of(
-          Proofing::Resolution::Plugins::StateIdAddressPlugin,
-        )
+      context 'when mdl bypasses are enabled' do
+        before do
+          allow(IdentityConfig.store)
+            .to receive(:idv_lexis_nexis_instant_verify_mdl_bypass_error_codes)
+            .and_return({ 'InstantVerifyCheck' => ['Unverified'] })
+        end
 
-        expect(progressive_proofer.state_id_address_plugin.proofer).to be_an_instance_of(
-          Proofing::LexisNexis::InstantVerify::Proofer,
-        )
+        context 'when the document type received is not mDL' do
+          let(:document_type) { Idp::Constants::DocumentTypes::DRIVERS_LICENSE }
+
+          it 'returns StateIdAddressPlugin with an InstantVerify proofer' do
+            expect(progressive_proofer.state_id_address_plugin(document_type:))
+              .to be_an_instance_of(Proofing::Resolution::Plugins::StateIdAddressPlugin)
+
+            expect(progressive_proofer.state_id_address_plugin(document_type:).proofer)
+              .to be_an_instance_of(Proofing::LexisNexis::InstantVerify::Proofer)
+          end
+        end
+
+        context 'when the document type received is mDL' do
+          let(:document_type) { Idp::Constants::DocumentTypes::MDL }
+
+          it 'returns StateIdAddressPlugin with a mdl overridden InstantVerify proofer' do
+            expect(progressive_proofer.state_id_address_plugin(document_type:))
+              .to be_an_instance_of(Proofing::Resolution::Plugins::StateIdAddressPlugin)
+
+            expect(progressive_proofer.state_id_address_plugin(document_type:).proofer)
+              .to be_an_instance_of(
+                Proofing::LexisNexis::Decorators::InstantVerify::WithMdlBypasses,
+              )
+          end
+        end
+      end
+
+      context 'when mdl bypasses are disabled' do
+        before do
+          allow(IdentityConfig.store)
+            .to receive(:idv_lexis_nexis_instant_verify_mdl_bypass_error_codes).and_return({})
+        end
+
+        context 'when the document type received is mDL' do
+          let(:document_type) { Idp::Constants::DocumentTypes::MDL }
+
+          it 'returns StateIdAddressPlugin with an InstantVerify proofer' do
+            expect(progressive_proofer.state_id_address_plugin(document_type:))
+              .to be_an_instance_of(Proofing::Resolution::Plugins::StateIdAddressPlugin)
+
+            expect(progressive_proofer.state_id_address_plugin(document_type:).proofer)
+              .to be_an_instance_of(Proofing::LexisNexis::InstantVerify::Proofer)
+          end
+        end
       end
     end
 
     context 'when proofing_vendor is :instant_verify_ddp' do
       let(:proofing_vendor) { :instant_verify_ddp }
 
-      it 'returns StateIdAddressPlugin with an InstantVerify proofer' do
-        expect(progressive_proofer.state_id_address_plugin).to be_an_instance_of(
-          Proofing::Resolution::Plugins::StateIdAddressPlugin,
-        )
+      context 'when mdl bypasses are enabled' do
+        before do
+          allow(IdentityConfig.store)
+            .to receive(:idv_lexis_nexis_instant_verify_mdl_bypass_error_codes)
+            .and_return({ 'InstantVerifyCheck' => ['Unverified'] })
+        end
 
-        expect(progressive_proofer.state_id_address_plugin.proofer).to be_an_instance_of(
-          Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer,
-        )
+        context 'when the document type received is not mDL' do
+          let(:document_type) { Idp::Constants::DocumentTypes::DRIVERS_LICENSE }
+
+          it 'returns StateIdAddressPlugin with an InstantVerify proofer' do
+            expect(progressive_proofer.state_id_address_plugin(document_type:))
+              .to be_an_instance_of(Proofing::Resolution::Plugins::StateIdAddressPlugin)
+
+            expect(progressive_proofer.state_id_address_plugin(document_type:).proofer)
+              .to be_an_instance_of(Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer)
+          end
+        end
+
+        context 'when the document type received is mDL' do
+          let(:document_type) { Idp::Constants::DocumentTypes::MDL }
+
+          it 'returns StateIdAddressPlugin with a mdl overridden InstantVerify proofer' do
+            expect(progressive_proofer.state_id_address_plugin(document_type:))
+              .to be_an_instance_of(Proofing::Resolution::Plugins::StateIdAddressPlugin)
+
+            expect(progressive_proofer.state_id_address_plugin(document_type:).proofer)
+              .to be_an_instance_of(
+                Proofing::LexisNexis::Decorators::InstantVerify::WithMdlBypasses,
+              )
+          end
+        end
+      end
+
+      context 'when mdl bypasses are disabled' do
+        before do
+          allow(IdentityConfig.store)
+            .to receive(:idv_lexis_nexis_instant_verify_mdl_bypass_error_codes).and_return({})
+        end
+
+        context 'when the document type received is mDL' do
+          let(:document_type) { Idp::Constants::DocumentTypes::MDL }
+
+          it 'returns StateIdAddressPlugin with a mdl overriden InstantVerify proofer' do
+            expect(progressive_proofer.state_id_address_plugin(document_type:))
+              .to be_an_instance_of(Proofing::Resolution::Plugins::StateIdAddressPlugin)
+
+            expect(progressive_proofer.state_id_address_plugin(document_type:).proofer)
+              .to be_an_instance_of(Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer)
+          end
+        end
       end
     end
 

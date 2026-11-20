@@ -65,7 +65,7 @@ module Proofing
       def to_h
         customer_user_id_hash = customer_user_id.present? ?
                                   { customer_user_id: customer_user_id } : {}
-        socure_hash = vendor_name == Proofing::Socure::IdPlus::Proofers::KycProofer::VENDOR_NAME ?
+        bypassed_checks = bypassed_reason_codes.present? ?
                         { bypassed_reason_codes: bypassed_reason_codes } : {}
         {
           success: success?,
@@ -84,7 +84,7 @@ module Proofing
           vendor_id:,
           vendor_workflow:,
           verified_attributes:,
-        }.merge(customer_user_id_hash).merge(socure_hash)
+        }.merge(customer_user_id_hash).merge(bypassed_checks)
       end
 
       def failed_result_can_pass_with_additional_verification?
