@@ -39,20 +39,12 @@ module AccountRecovery
         user: current_user,
         phishing_resistant_required: false,
         piv_cac_required: false,
-        excluded_mfa_methods: suspended_mfa_methods,
       )
       @presenter = TwoFactorOptionsPresenter.new(
         user: current_user,
         user_agent: request.user_agent,
         phishing_resistant_required: false,
         piv_cac_required: false,
-        excluded_mfa_methods: suspended_mfa_methods,
-      )
-    end
-
-    def suspended_mfa_methods
-      @suspended_mfa_methods ||= AccountRecovery::SuspendExistingMfa.suspended_mfa_methods(
-        account_recovery_request: AccountRecoveryRequest.active_for_user(current_user),
       )
     end
 

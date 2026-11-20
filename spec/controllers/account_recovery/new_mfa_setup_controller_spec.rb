@@ -96,10 +96,11 @@ RSpec.describe AccountRecovery::NewMfaSetupController do
 
       expect(response).to render_template(:show)
       expect(controller.send(:user_fully_authenticated?)).to eq(false)
-      expect(controller.view_assigns['presenter'].options.map(&:type)).to_not include(:phone)
+      expect(controller.view_assigns['presenter'].options.map(&:type)).to include(:phone)
     end
 
     {
+      'phone' => :phone_setup_url,
       'auth_app' => :authenticator_setup_url,
       'webauthn' => :webauthn_setup_url,
       'piv_cac' => :setup_piv_cac_url,
@@ -110,15 +111,6 @@ RSpec.describe AccountRecovery::NewMfaSetupController do
 
         expect(response).to redirect_to(public_send(route))
         expect(controller.send(:user_fully_authenticated?)).to eq(false)
-      end
-    end
-
-    %w[phone sms voice].each do |selection|
-      it "rejects replacement with the suspended #{selection} method" do
-        post :create, params: { two_factor_options_form: { selection: [selection] } }
-
-        expect(response).to render_template(:show)
-        expect(controller.user_session[:mfa_selections]).to be_nil
       end
     end
 
