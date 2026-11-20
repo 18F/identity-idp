@@ -146,7 +146,7 @@ class User < ApplicationRecord
       analytics.user_suspended(success: false, error_message: :user_already_suspended)
       raise 'user_already_suspended'
     end
-    OutOfBandSessionAccessor.new(unique_session_id).destroy if unique_session_id
+    TerminateUserSessions.new(user: self).call
     update!(suspended_at: Time.zone.now, unique_session_id: nil)
     analytics.user_suspended(success: true)
 

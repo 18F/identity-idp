@@ -53,6 +53,7 @@ class ResetPasswordForm
   def handle_valid_password
     update_user
     mark_profile_as_password_reset
+    TerminateUserSessions.new(user:).call
   end
 
   def update_user

@@ -64,6 +64,34 @@ RSpec.describe Users::PasswordsController do
         expect(controller.user_session[:personal_key]).to be_nil
       end
 
+      it 'ends the user\'s other sessions and keeps the current one' do
+        user = create(:user, :fully_registered)
+        stub_sign_in(user)
+        stub_analytics
+        stub_attempts_tracker
+        other_session_id = SecureRandom.hex
+        other_identity = create(
+          :service_provider_identity, user:, rails_session_id: other_session_id,
+                                      access_token: 'other-token'
+        )
+        current_identity = create(
+          :service_provider_identity, user:, rails_session_id: session.id.to_s,
+                                      access_token: 'current-token'
+        )
+        OutOfBandSessionAccessor.new(other_session_id).put_empty_user_session(5.minutes)
+
+        patch :update, params: {
+          update_user_password_form: {
+            password: 'salty new password', password_confirmation: 'salty new password'
+          },
+        }
+
+        expect(response).to redirect_to account_url
+        expect(OutOfBandSessionAccessor.new(other_session_id).exists?).to eq(false)
+        expect(other_identity.reload).to have_attributes(access_token: nil, rails_session_id: nil)
+        expect(current_identity.reload.access_token).to eq('current-token')
+      end
+
       it 'updates the user password and regenerates personal key' do
         user = create(:user, :proofed)
         stub_sign_in(user)

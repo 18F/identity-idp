@@ -132,6 +132,36 @@ RSpec.describe Api::Internal::SessionsController do
           end
         end
       end
+
+      context 'when the session has reached its total duration' do
+        before do
+          total = IdentityConfig.store.session_total_duration_timeout_in_minutes.minutes
+          session['warden.user.user.session']['created_at'] = (total + 1.second).ago
+        end
+
+        it 'reports the session as not live and does not extend it' do
+          expect(response_body).to eq(live: false, timeout: nil)
+          expect(session['warden.user.user.session']['last_request_at']).to eq(Time.zone.now.to_i)
+          expect(request.session_options[:skip]).to eq(true)
+        end
+      end
+
+      context 'when the session no longer carries a signed-in user' do
+        before { session.delete('warden.user.user.key') }
+
+        it 'reports the session as not live and does not extend it' do
+          expect(response_body).to eq(live: false, timeout: nil)
+          expect(request.session_options[:skip]).to eq(true)
+        end
+      end
+    end
+
+    context 'with no session at all' do
+      it 'does not write a session record' do
+        response
+
+        expect(request.session_options[:skip]).to eq(true)
+      end
     end
   end
 

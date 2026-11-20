@@ -20,6 +20,8 @@ module Api
         if live?
           analytics.session_kept_alive
           update_last_request_at
+        else
+          skip_session_commit
         end
 
         render json: status_response
@@ -36,8 +38,25 @@ module Api
         request.env['devise.skip_trackable'] = true
       end
 
+      # A session is kept alive only while it still belongs to a signed-in person and is inside its
+      # total duration. One whose person has signed out or been signed out, or whose total duration
+      # (session_total_duration_timeout_in_minutes) has run out, is reported as not live and is not
+      # written back, so its record in the session store keeps the expiry it already has instead of
+      # being renewed by the request.
       def live?
-        timeout.present? && timeout.future?
+        timeout.present? && timeout.future? && signed_in? && within_total_duration?
+      end
+
+      def signed_in?
+        session['warden.user.user.key'].present?
+      end
+
+      def within_total_duration?
+        created_at = warden_session['created_at']
+        return true if created_at.blank?
+
+        total = IdentityConfig.store.session_total_duration_timeout_in_minutes.minutes
+        Time.zone.parse(created_at.to_s) + total > Time.zone.now
       end
 
       def timeout

@@ -1182,19 +1182,23 @@ RSpec.describe User do
           user.suspend!
         end
 
-        it 'logs out the suspended user from the active session' do
-          # Add information to session store to allow `exists?` check to work as desired
-          OutOfBandSessionAccessor.new(mock_session_id).put_pii(
+        it 'ends the sessions recorded on the suspended user\'s identity rows' do
+          rails_session_id = SecureRandom.hex
+          identity = create(
+            :service_provider_identity, user:, rails_session_id:, access_token: 'token'
+          )
+          OutOfBandSessionAccessor.new(rails_session_id).put_pii(
             profile_id: 123,
             pii: { first_name: 'Mario' },
             expiration: 5.minutes.in_seconds,
           )
 
-          expect(OutOfBandSessionAccessor.new(mock_session_id).exists?).to eq true
+          expect(OutOfBandSessionAccessor.new(rails_session_id).exists?).to eq true
 
           user.suspend!
 
-          expect(OutOfBandSessionAccessor.new(mock_session_id).exists?).to eq false
+          expect(OutOfBandSessionAccessor.new(rails_session_id).exists?).to eq false
+          expect(identity.reload).to have_attributes(access_token: nil, rails_session_id: nil)
         end
 
         context 'user has a nil current session id' do

@@ -8,6 +8,7 @@ class ResetUserPassword
 
   def call
     reset_user_password
+    terminate_sessions
     forget_all_browsers
     log_event
     notify_user
@@ -19,6 +20,10 @@ class ResetUserPassword
 
   def reset_user_password
     user.update!(password: SecureRandom.hex(8))
+  end
+
+  def terminate_sessions
+    TerminateUserSessions.new(user:).call
   end
 
   def forget_all_browsers

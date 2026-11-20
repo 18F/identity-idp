@@ -15,6 +15,15 @@ RSpec.describe EventDisavowal::PasswordResetFromDisavowalForm, type: :model do
 
       expect(user.reload.valid_password?(new_password)).to eq(true)
     end
+
+    it 'ends every session recorded on the user\'s identity rows' do
+      terminate = instance_double(TerminateUserSessions, call: nil)
+      allow(TerminateUserSessions).to receive(:new).with(user:).and_return(terminate)
+
+      subject.submit(password: new_password)
+
+      expect(terminate).to have_received(:call)
+    end
   end
 
   context 'with an invalid password' do

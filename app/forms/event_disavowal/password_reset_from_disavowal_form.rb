@@ -25,6 +25,7 @@ module EventDisavowal
     def handle_valid_password
       update_user
       mark_profile_inactive
+      TerminateUserSessions.new(user:).call
     end
 
     def update_user
