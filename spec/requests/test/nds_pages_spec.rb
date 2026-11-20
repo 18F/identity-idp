@@ -55,6 +55,37 @@ RSpec.describe 'Test::NdsPages', type: :request do
       end
     end
 
+    context 'with the signed-in dashboard pages' do
+      let(:dashboard_pages) do
+        Test::NDSPageCatalog.pages.select do |page|
+          Test::NDSPageCatalog::DASHBOARD_FLOWS.key?(page.flow)
+        end
+      end
+
+      it 'renders every permutation, including pages whose NDS branch is pending' do
+        dashboard_pages.each do |page|
+          page.permutations.each do |permutation|
+            get test_nds_page_path(page: page.key, **permutation.params)
+
+            expect(response).to have_http_status(:ok),
+                                "expected 200 for #{page.key} with #{permutation.params}"
+          end
+        end
+      end
+
+      it 'rolls back the throwaway dashboard user' do
+        expect do
+          get test_nds_page_path(page: 'dashboard-account', identity: 'verified')
+        end.not_to change { [User.count, Profile.count, Device.count, Event.count] }
+      end
+
+      it 'renders the signed-in user email' do
+        get test_nds_page_path(page: 'dashboard-account')
+
+        expect(response.body).to include('john@example.com')
+      end
+    end
+
     context 'with the PIV/CAC mismatch page' do
       context 'with a pending recovery request' do
         it 'renders the pending-recovery banner above the page' do
