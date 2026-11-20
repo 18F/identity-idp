@@ -1,5 +1,40 @@
 <% self.title = t('openid_connect.logout.heading', app_name: APP_NAME) %>
 
+<% if nds_layout? %>
+  <% heading =
+       if @service_provider_name.present?
+         t(
+           'openid_connect.logout.heading_with_sp',
+           app_name: APP_NAME,
+           service_provider_name: @service_provider_name,
+         )
+       else
+         t('openid_connect.logout.heading', app_name: APP_NAME)
+       end %>
+  <%= render NDS::FormPageComponent.new(title: heading, divider: true) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--info">
+        <%= render NDS::IconComponent.new(icon: :info, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: openid_connect_logout_path,
+              method: :delete,
+              params: @params,
+              full_width: true,
+            ).with_content(t('openid_connect.logout.confirm', app_name: APP_NAME)) %>
+        <%= render ButtonComponent.new(
+              url: account_path,
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('openid_connect.logout.deny')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <div class='text-center'>
   <%= image_tag(asset_url('user-access.svg'), width: '280', height: '91', alt: '', aria: { hidden: true }) %>
   <% if @service_provider_name.present? %>
@@ -17,3 +52,4 @@
       class: 'usa-button usa-button--big usa-button usa-button--full-width',
     ) { t('openid_connect.logout.confirm', app_name: APP_NAME) } %>
 <%= link_to(account_path, class: 'usa-button usa-button--big usa-button--outline usa-button--full-width') { t('openid_connect.logout.deny') } %>
+<% end %>

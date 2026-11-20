@@ -1,7 +1,27 @@
 <% self.title = t('saml_idp.auth.error.title') %>
 
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(title: t('saml_idp.auth.error.title')) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--error">
+        <%= render NDS::IconComponent.new(icon: :error, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <ul class="usa-list text-left">
+        <% @saml_request_validator.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    <% end %>
+  <% end %>
+<% else %>
 <ul>
   <% @saml_request_validator.errors.full_messages.each do |message| %>
     <li><%= message %></li>
   <% end %>
 </ul>
+<% end %>
