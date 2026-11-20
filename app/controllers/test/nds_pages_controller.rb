@@ -793,7 +793,7 @@ module Test
       if params[:logo].present?
         @current_sp = ServiceProviderStub.new(
           logo: 'logo.svg',
-          logo_url: image_path('logo.svg'),
+          logo_url: helpers.image_path('logo.svg'),
           issuer: 'urn:gov:gsa:test',
         )
       end
