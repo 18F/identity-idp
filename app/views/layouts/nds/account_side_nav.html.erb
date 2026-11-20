@@ -1,0 +1,54 @@
+<%# NDS account shell layout: the signed-in header, side navigation and mobile menu around the account dashboard pages. Sibling of layouts/account_side_nav (the legacy A/B control stays byte-identical), selected by ApplicationController.account_shell_layout for the NDS bucket. Mirrors nds/application, except that the shell replaces NDS::PageShellComponent's centered main column. Pages may set content_for(:nds_account_nav_current) to override the navigation item the shell marks as current. %>
+<%= content_for(:head) do %>
+  <%= javascript_include_tag('init.js', nopush: false, integrity: 'sha256-eMXV2njRJxgQrFbuljRT/UTWePGrhl83bHHDDd+jFPw=') %>
+<% end %>
+
+<% nav_current = content_for(:nds_account_nav_current).presence %>
+<% flash_component = FlashComponent.new(flash: flash) %>
+
+<%= extends_layout 'nds/base', body_class: 'site' do %>
+  <%= link_to t('shared.skip_link'), '#main-content', class: 'skip-link' %>
+
+  <div class="site auth-page" data-nds-page-transition>
+    <%= render NDS::AccountHeaderComponent.new(user: current_user, current: nav_current) %>
+
+    <div class="account-shell flex-1">
+      <div class="account-shell__nav">
+        <%= render NDS::AccountNavigationComponent.new(current: nav_current) %>
+      </div>
+
+      <main class="account-shell__main" id="main-content">
+        <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
+        <% if !content_for?(:skip_layout_flash) && flash_component.alerts.any? %>
+          <div class="account-shell__flash">
+            <%= render flash_component %>
+          </div>
+        <% end %>
+        <%= yield %>
+      </main>
+    </div>
+
+    <div class="auth-page__footer-wrapper">
+      <%= render NDS::PageFooterChromeComponent.new %>
+    </div>
+  </div>
+
+  <% if current_user %>
+    <%= render partial: 'session_timeout/ping',
+               locals: {
+                 warning: session_timeout_warning,
+                 start: session_timeout_start,
+                 frequency: session_timeout_frequency,
+                 modal: session_modal,
+               } %>
+  <% elsif !@skip_session_expiration %>
+    <%= render partial: 'session_timeout/expire_session',
+               locals: {
+                 session_timeout_in: Devise.timeout_in,
+                 warning: session_timeout_warning,
+                 modal: session_modal,
+               } %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('application') %>
+<% end %>

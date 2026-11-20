@@ -5,7 +5,7 @@ module Accounts
     include RememberDeviceConcern
     before_action :confirm_two_factor_authenticated
 
-    layout 'account_side_nav'
+    account_shell_layout 'account_side_nav'
 
     def show
       @presenter = AccountShowPresenter.new(

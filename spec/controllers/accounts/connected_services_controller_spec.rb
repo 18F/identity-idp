@@ -17,5 +17,19 @@ RSpec.describe Accounts::ConnectedServicesController do
 
       expect(@analytics).to have_logged_event(:connected_services_page_visited)
     end
+
+    it 'renders the legacy account side nav layout by default' do
+      get :show
+
+      expect(response).to render_template(layout: 'layouts/account_side_nav')
+    end
+
+    it 'renders the NDS account shell in the NDS layout' do
+      allow(controller).to receive(:nds_layout?).and_return(true)
+
+      get :show
+
+      expect(response).to render_template(layout: 'layouts/nds/account_side_nav')
+    end
   end
 end

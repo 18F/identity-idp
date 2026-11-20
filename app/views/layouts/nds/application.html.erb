@@ -17,7 +17,14 @@
         hide_footer: local_assigns.fetch(:hide_page_footer, false) ||
           content_for?(:hide_page_footer),
       ) do |shell| %>
-    <% if content_for?(:nds_header_progress) %>
+    <% if content_for?(:nds_account_header) %>
+      <% shell.with_chrome do %>
+        <%= render NDS::AccountHeaderComponent.new(
+              user: current_user,
+              current: content_for(:nds_account_nav_current).presence,
+            ) %>
+      <% end %>
+    <% elsif content_for?(:nds_header_progress) %>
       <% shell.with_chrome do %>
         <%= render NDS::PageChromeComponent.new do |chrome| %>
           <% chrome.with_progress do %>

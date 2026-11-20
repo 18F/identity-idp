@@ -41,6 +41,12 @@ class ApplicationController < ActionController::Base
 
   layout :resolve_layout
 
+  # Signed-in account dashboard pages render in the NDS account shell for the NDS bucket,
+  # and in their legacy layout otherwise.
+  def self.account_shell_layout(legacy_layout)
+    layout -> { nds_layout? ? 'nds/account_side_nav' : legacy_layout }
+  end
+
   def set_session_start_value_if_nil
     return if @skip_session_expiration || @skip_session_load
     session[:session_started_at] = Time.zone.now if session[:session_started_at].nil?
