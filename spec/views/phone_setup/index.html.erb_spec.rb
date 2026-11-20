@@ -120,6 +120,10 @@ RSpec.describe 'users/phone_setup/index.html.erb' do
       )
     end
 
+    it 'marks the required phone number valid until it is validated' do
+      expect(rendered).to have_css('input.usa-phone-input__input[required][aria-invalid="false"]')
+    end
+
     it 'visually hides the delivery preference legend for screen readers' do
       expect(rendered).to have_css(
         'legend.usa-sr-only',
