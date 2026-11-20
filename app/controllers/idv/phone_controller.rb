@@ -86,6 +86,7 @@ module Idv
           idv_session.vendor_phone_confirmation = nil
           idv_session.address_verification_mechanism = nil
           idv_session.idv_phone_step_document_capture_session_uuid = nil
+          idv_session.idv_phone_step_phone = nil
           idv_session.user_phone_confirmation_session = nil
           idv_session.previous_phone_step_params = nil
         end,

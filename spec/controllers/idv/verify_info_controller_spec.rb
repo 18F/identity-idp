@@ -1354,14 +1354,28 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'has best effort phone' do
+      let(:user) { create(:user, :with_phone) }
+
       before do
         subject.idv_session.phone_for_mobile_flow = '+1 703-555-5555'
       end
 
-      it 'stores the precheck phone number in the idv session' do
+      it 'stores the confirmed MFA phone, not the hybrid hand-off number, as the precheck phone' do
         put :update
 
-        expect(subject.idv_session.precheck_phone[:phone]).to eq('+1 703-555-5555')
+        expect(subject.idv_session.precheck_phone[:phone]).to eq('+1 202-555-1212')
+      end
+    end
+
+    context 'when only a hybrid hand-off number is known' do
+      before do
+        subject.idv_session.phone_for_mobile_flow = '+1 703-555-5555'
+      end
+
+      it 'stores no precheck phone, since the hand-off number was never confirmed' do
+        put :update
+
+        expect(subject.idv_session.precheck_phone).to be_nil
       end
     end
     context 'with an sp' do
@@ -1478,17 +1492,14 @@ RSpec.describe Idv::VerifyInfoController do
         expect(subject.best_effort_phone[:source]).to eq(:mfa)
       end
 
-      context 'when there is a hybrid handoff number' do
+      context 'when there is also a hybrid handoff number' do
         before(:each) do
           subject.idv_session.phone_for_mobile_flow = '202-555-1234'
         end
 
-        it 'returns the phone number from hybrid handoff' do
-          expect(subject.best_effort_phone[:phone]).to eq('202-555-1234')
-        end
-
-        it 'sets type to :hybrid_handoff' do
-          expect(subject.best_effort_phone[:source]).to eq(:hybrid_handoff)
+        it 'still returns the confirmed MFA phone, never the unconfirmed hand-off number' do
+          expect(subject.best_effort_phone[:phone]).to eq('+1 202-555-1212')
+          expect(subject.best_effort_phone[:source]).to eq(:mfa)
         end
       end
     end
