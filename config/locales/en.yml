@@ -1761,6 +1761,16 @@ nds.socure_errors.rate_limit_html.one: You can try <strong>1 more time.</strong>
 nds.socure_errors.rate_limit_html.other: You can try <strong>%{count} more times.</strong> Then, you must wait 6 hours before trying again.
 nds.sp_handoff_bounced.instructions_html: Your sign in was successful, but %{sp_name} sent you back to %{app_name}. Please contact %{sp_link_html} for help.
 nds.ssn.info: Your Social Security number verifies your identity across %{app_name} services and stays encrypted, never shared without your consent.
+nds.sts_consent.about_description: Use Travel.State.Gov to apply for, renew, or track a U.S. passport online.
+nds.sts_consent.agency_description: Applying for your passport
+nds.sts_consent.agency_name: Department of State
+nds.sts_consent.allow: Allow
+nds.sts_consent.description: '%{america_gov_name} only uses agency services you approve and doesn’t store your personal information. Your selection lasts one year and can be changed anytime in your %{app_name} account.'
+nds.sts_consent.heading: Connect to %{america_gov_name}
+nds.sts_consent.permissions_description: Apply for, renew, and track your passport. View your uploaded documents, but not change them.
+nds.sts_consent.permissions_heading: What %{america_gov_name} can do for you
+nds.sts_consent.shared_information_description: Full name, date of birth, Social Security number, and mailing address.
+nds.sts_consent.shared_information_heading: Information MyTravelGov shares with %{america_gov_name}
 nds.totp_setup.new.code_label: Code
 nds.totp_setup.new.heading: Set up an authentication app
 nds.totp_setup.new.nickname_label: App nickname
