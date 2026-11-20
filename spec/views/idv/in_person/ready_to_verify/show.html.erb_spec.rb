@@ -42,399 +42,581 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
   let(:help_event_name) { 'IdV: user clicked what to bring link on ready to verify page' }
 
   before do
+    allow(view).to receive(:nds_layout?).and_return(false)
     assign(:presenter, presenter)
     allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
   end
 
-  it 'displays a link back to the help center' do
+  it 'has the legacy localized title in the default layout' do
+    expect(view).to receive(:title=).with(t('in_person_proofing.headings.barcode'))
+
     render
-
-    expect(rendered).to have_link(t('in_person_proofing.body.barcode.learn_more'))
-    expect(rendered).to have_css("lg-click-observer[event-name='#{help_event_name}']")
-    expect(rendered).to have_link(
-      t('in_person_proofing.body.barcode.learn_more'),
-      href: help_center_redirect_url(
-        category: 'verify-your-identity',
-        article: 'verify-your-identity-in-person',
-      ),
-    )
   end
 
-  it 'renders the barcode deadline banner' do
-    render
-
-    expect(rendered).to have_content(
-      t(
-        'in_person_proofing.body.barcode.deadline',
-        deadline: presenter.formatted_due_date,
-        sp_name: presenter.sp_name,
-      ),
-    )
-    expect(rendered).to have_content(t('in_person_proofing.body.barcode.deadline_restart'))
-  end
-
-  it 'renders a cancel link' do
-    render
-
-    expect(rendered).to have_link(
-      t('in_person_proofing.body.barcode.cancel_link_text'),
-      href: idv_cancel_path(step: 'barcode'),
-    )
-  end
-
-  it 'displays a barcode label' do
-    render
-
-    expect(rendered).to have_content(t('in_person_proofing.process.barcode.caption_label'))
-  end
-
-  context 'link back to the service provider' do
-    context 'when the user is coming from a service provider' do
-      it 'displays a link back to the service provider' do
-        render
-
-        expect(rendered).to have_content(service_provider.friendly_name)
-        expect(rendered).to have_css("lg-click-observer[event-name='#{sp_event_name}']")
-      end
-    end
-
-    context 'when the user is not coming from a service provider' do
-      let(:service_provider) { nil }
-
-      it 'does not display a link back to the service provider' do
-        render
-
-        expect(rendered).not_to have_css("lg-click-observer[event-name='#{sp_event_name}']")
-        expect(rendered).to have_content('You may now close this window')
-      end
-    end
-  end
-
-  context 'location section' do
-    context 'when selected_location_details is present' do
-      it 'renders a location' do
-        render
-
-        expect(rendered).to have_content(t('in_person_proofing.body.barcode.retail_hours'))
-      end
-    end
-
-    context 'when selected_location_details is not present' do
-      let(:selected_location_details) { nil }
-
-      it 'renders skipped location notice' do
-        render
-
-        expect(rendered).to have_content(
-          t('in_person_proofing.headings.po_search.location'),
-        )
-        expect(rendered).to have_content(
-          t('in_person_proofing.body.location.location_skipped_notice'),
-        )
-        expect(rendered).to have_content(
-          t('in_person_proofing.body.location.location_skipped_notice_button_text'),
-        )
-
-        expect(rendered).not_to have_content(
-          t('in_person_proofing.body.location.change_location_heading'),
-        )
-      end
-
-      it 'does not render a location' do
-        render
-
-        expect(rendered).not_to have_content(
-          t('in_person_proofing.body.barcode.retail_hours'),
-        )
-      end
-    end
-  end
-
-  context 'outage alert' do
-    context 'when the outage message flag is enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
-          .and_return(true)
-      end
-
-      context 'when the outage dates are included' do
-        let(:formatted_date) { 'Tuesday, October 31' }
-        let(:in_person_outage_emailed_by_date) { 'November 1, 2023' }
-        let(:in_person_outage_expected_update_date) { 'October 31, 2023' }
-
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date)
-            .and_return(in_person_outage_emailed_by_date)
-          allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date)
-            .and_return(in_person_outage_expected_update_date)
-        end
-
-        it 'renders the outage alert' do
-          render
-
-          expect(rendered).to have_content(
-            t(
-              'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',
-              date: formatted_date,
-            ),
-          )
-        end
-      end
-
-      context 'when the outage dates are not included' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
-            .and_return(true)
-          allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date)
-            .and_return('')
-          allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date)
-            .and_return('')
-        end
-
-        it 'does not render a warning' do
-          render
-
-          expect(rendered).to_not have_content(
-            t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
-          )
-        end
-      end
-    end
-
-    context 'when the outage message flag is disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
-          .and_return(false)
-      end
-
-      it 'does not render the outage alert' do
-        render
-
-        expect(rendered).not_to have_content(
-          t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
-        )
-      end
-    end
-  end
-
-  context 'what to expect section' do
-    context 'when the enrollment is ID-IPP' do
-      it 'conditionally renders content applicable to ID-IPP' do
-        render
-
-        aggregate_failures do
-          [
-            t('in_person_proofing.headings.barcode'),
-            t('in_person_proofing.process.state_id.heading'),
-            t('in_person_proofing.process.state_id.info'),
-          ].each do |copy|
-            Array(copy).each do |part|
-              expect(rendered).to have_content(part)
-            end
-          end
-        end
-      end
-    end
-
-    context 'when the enrollment is enhanced IPP' do
-      let(:enrollment) { enhanced_ipp_enrollment }
-
-      it 'conditionally renders content applicable to EIPP' do
-        render
-
-        aggregate_failures do
-          [
-            t('in_person_proofing.headings.barcode_eipp'),
-            t('in_person_proofing.process.state_id.heading_eipp'),
-            t('in_person_proofing.process.state_id.info_eipp'),
-          ].each do |copy|
-            Array(copy).each do |part|
-              expect(rendered).to have_content(part)
-            end
-          end
-        end
-      end
-    end
-  end
-
-  context 'Questions? and Learn more link' do
-    it 'renders Questions? and Learn more link only once' do
+  context 'in the default layout' do
+    it 'does not render the NDS form-page card' do
       render
 
-      expect(rendered).to have_content(t('in_person_proofing.body.barcode.questions')).once
+      expect(rendered).to_not have_selector('.auth--form-page')
+    end
+
+    it 'displays a link back to the help center' do
+      render
+
+      expect(rendered).to have_link(t('in_person_proofing.body.barcode.learn_more'))
+      expect(rendered).to have_css("lg-click-observer[event-name='#{help_event_name}']")
       expect(rendered).to have_link(
         t('in_person_proofing.body.barcode.learn_more'),
         href: help_center_redirect_url(
           category: 'verify-your-identity',
           article: 'verify-your-identity-in-person',
         ),
-      ).once
+      )
     end
-  end
 
-  context 'email sent success alert' do
-    it 'renders the email sent success alert' do
+    it 'renders the barcode deadline banner' do
       render
 
-      expect(rendered).to have_content(t('in_person_proofing.body.barcode.email_sent'))
+      expect(rendered).to have_content(
+        t(
+          'in_person_proofing.body.barcode.deadline',
+          deadline: presenter.formatted_due_date,
+          sp_name: presenter.sp_name,
+        ),
+      )
+      expect(rendered).to have_content(t('in_person_proofing.body.barcode.deadline_restart'))
     end
-  end
 
-  context 'GSA Enhanced Pilot Barcode tag' do
-    context 'when the enrollment is enhanced IPP' do
-      let(:enrollment) { enhanced_ipp_enrollment }
+    it 'renders a cancel link' do
+      render
 
-      it 'renders GSA Enhanced Pilot Barcode tag' do
-        render
+      expect(rendered).to have_link(
+        t('in_person_proofing.body.barcode.cancel_link_text'),
+        href: idv_cancel_path(step: 'barcode'),
+      )
+    end
 
-        expect(rendered).to have_content(t('in_person_proofing.body.barcode.eipp_tag'))
+    it 'displays a barcode label' do
+      render
+
+      expect(rendered).to have_content(t('in_person_proofing.process.barcode.caption_label'))
+    end
+
+    context 'link back to the service provider' do
+      context 'when the user is coming from a service provider' do
+        it 'displays a link back to the service provider' do
+          render
+
+          expect(rendered).to have_content(service_provider.friendly_name)
+          expect(rendered).to have_css("lg-click-observer[event-name='#{sp_event_name}']")
+        end
+      end
+
+      context 'when the user is not coming from a service provider' do
+        let(:service_provider) { nil }
+
+        it 'does not display a link back to the service provider' do
+          render
+
+          expect(rendered).not_to have_css("lg-click-observer[event-name='#{sp_event_name}']")
+          expect(rendered).to have_content('You may now close this window')
+        end
       end
     end
-    context 'when the enrollment is ID-IPP' do
-      it 'does not render GSA Enhanced Pilot Barcode tag' do
-        render
 
-        expect(rendered).not_to have_content(t('in_person_proofing.body.barcode.eipp_tag'))
+    context 'location section' do
+      context 'when selected_location_details is present' do
+        it 'renders a location' do
+          render
+
+          expect(rendered).to have_content(t('in_person_proofing.body.barcode.retail_hours'))
+        end
+      end
+
+      context 'when selected_location_details is not present' do
+        let(:selected_location_details) { nil }
+
+        it 'renders skipped location notice' do
+          render
+
+          expect(rendered).to have_content(
+            t('in_person_proofing.headings.po_search.location'),
+          )
+          expect(rendered).to have_content(
+            t('in_person_proofing.body.location.location_skipped_notice'),
+          )
+          expect(rendered).to have_content(
+            t('in_person_proofing.body.location.location_skipped_notice_button_text'),
+          )
+
+          expect(rendered).not_to have_content(
+            t('in_person_proofing.body.location.change_location_heading'),
+          )
+        end
+
+        it 'does not render a location' do
+          render
+
+          expect(rendered).not_to have_content(
+            t('in_person_proofing.body.barcode.retail_hours'),
+          )
+        end
       end
     end
-  end
 
-  context 'What to bring to the Post Office section' do
-    context 'when the enrollment is enhanced IPP' do
-      let(:enrollment) { enhanced_ipp_enrollment }
+    context 'outage alert' do
+      context 'when the outage message flag is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
+            .and_return(true)
+        end
 
-      it 'displays heading and body' do
-        render
+        context 'when the outage dates are included' do
+          let(:formatted_date) { 'Tuesday, October 31' }
+          let(:in_person_outage_emailed_by_date) { 'November 1, 2023' }
+          let(:in_person_outage_expected_update_date) { 'October 31, 2023' }
 
-        expect(rendered).to have_content(t('in_person_proofing.headings.barcode_what_to_bring'))
-        expect(rendered).to have_content(t('in_person_proofing.body.barcode.eipp_what_to_bring'))
-      end
+          before do
+            allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date)
+              .and_return(in_person_outage_emailed_by_date)
+            allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date)
+              .and_return(in_person_outage_expected_update_date)
+          end
 
-      it 'renders Option 1 content' do
-        render
+          it 'renders the outage alert' do
+            render
 
-        aggregate_failures do
-          [
-            t('in_person_proofing.process.eipp_bring_id.heading'),
-            t('in_person_proofing.process.eipp_bring_id_with_current_address.heading'),
-            t('in_person_proofing.process.eipp_bring_id.info'),
-            t('in_person_proofing.process.real_id_and_supporting_docs.heading'),
-            t('in_person_proofing.process.real_id_and_supporting_docs.info'),
-          ].each do |copy|
-            Array(copy).each do |part|
-              expect(rendered).to have_content(part)
-            end
+            expect(rendered).to have_content(
+              t(
+                'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',
+                date: formatted_date,
+              ),
+            )
           end
         end
 
-        t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
-          expect(rendered).to have_content(strip_tags(item))
+        context 'when the outage dates are not included' do
+          before do
+            allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
+              .and_return(true)
+            allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date)
+              .and_return('')
+            allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date)
+              .and_return('')
+          end
+
+          it 'does not render a warning' do
+            render
+
+            expect(rendered).to_not have_content(
+              t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
+            )
+          end
         end
       end
 
-      it 'renders Option 2 content' do
-        render
-
-        aggregate_failures do
-          [
-            t('in_person_proofing.process.eipp_bring_id_plus_documents.heading'),
-            t('in_person_proofing.process.eipp_bring_id_plus_documents.info'),
-            t('in_person_proofing.process.eipp_state_id_passport.heading'),
-            t('in_person_proofing.process.eipp_state_id_passport.info'),
-            t('in_person_proofing.process.eipp_state_id_military_id.heading'),
-            t('in_person_proofing.process.eipp_state_id_military_id.info'),
-            t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
-            t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
-          ].each do |copy|
-            Array(copy).each do |part|
-              expect(rendered).to have_content(part)
-            end
-          end
+      context 'when the outage message flag is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
+            .and_return(false)
         end
 
-        t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
-          expect(rendered).to have_content(strip_tags(item))
+        it 'does not render the outage alert' do
+          render
+
+          expect(rendered).not_to have_content(
+            t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
+          )
         end
       end
     end
 
-    context 'when the enrollment is ID-IPP' do
-      it 'template does not display Enhanced In-Person Proofing what to bring content' do
-        render
+    context 'what to expect section' do
+      context 'when the enrollment is ID-IPP' do
+        it 'conditionally renders content applicable to ID-IPP' do
+          render
 
-        aggregate_failures do
-          [
-            t('in_person_proofing.headings.barcode_eipp'),
-            t('in_person_proofing.headings.barcode_what_to_bring'),
-            t('in_person_proofing.body.barcode.eipp_what_to_bring'),
-            t('in_person_proofing.process.eipp_bring_id.heading'),
-            t('in_person_proofing.process.eipp_bring_id_with_current_address.heading'),
-            t('in_person_proofing.process.eipp_bring_id.info'),
-            t('in_person_proofing.process.real_id_and_supporting_docs.heading'),
-            t('in_person_proofing.process.real_id_and_supporting_docs.info'),
-            t('in_person_proofing.process.eipp_bring_id_plus_documents.heading'),
-            t('in_person_proofing.process.eipp_bring_id_plus_documents.info'),
-            t('in_person_proofing.process.eipp_state_id_passport.heading'),
-            t('in_person_proofing.process.eipp_state_id_passport.info'),
-            t('in_person_proofing.process.eipp_state_id_military_id.heading'),
-            t('in_person_proofing.process.eipp_state_id_military_id.info'),
-            t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
-            t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
-            t('in_person_proofing.process.state_id.heading_eipp'),
-            t('in_person_proofing.process.state_id.info_eipp'),
-          ].each do |copy|
-            Array(copy).each do |part|
-              expect(rendered).to_not have_content(part)
+          aggregate_failures do
+            [
+              t('in_person_proofing.headings.barcode'),
+              t('in_person_proofing.process.state_id.heading'),
+              t('in_person_proofing.process.state_id.info'),
+            ].each do |copy|
+              Array(copy).each do |part|
+                expect(rendered).to have_content(part)
+              end
             end
           end
         end
+      end
 
-        t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
-          expect(rendered).to_not have_content(strip_tags(item))
+      context 'when the enrollment is enhanced IPP' do
+        let(:enrollment) { enhanced_ipp_enrollment }
+
+        it 'conditionally renders content applicable to EIPP' do
+          render
+
+          aggregate_failures do
+            [
+              t('in_person_proofing.headings.barcode_eipp'),
+              t('in_person_proofing.process.state_id.heading_eipp'),
+              t('in_person_proofing.process.state_id.info_eipp'),
+            ].each do |copy|
+              Array(copy).each do |part|
+                expect(rendered).to have_content(part)
+              end
+            end
+          end
+        end
+      end
+    end
+
+    context 'Questions? and Learn more link' do
+      it 'renders Questions? and Learn more link only once' do
+        render
+
+        expect(rendered).to have_content(t('in_person_proofing.body.barcode.questions')).once
+        expect(rendered).to have_link(
+          t('in_person_proofing.body.barcode.learn_more'),
+          href: help_center_redirect_url(
+            category: 'verify-your-identity',
+            article: 'verify-your-identity-in-person',
+          ),
+        ).once
+      end
+    end
+
+    context 'email sent success alert' do
+      it 'renders the email sent success alert' do
+        render
+
+        expect(rendered).to have_content(t('in_person_proofing.body.barcode.email_sent'))
+      end
+    end
+
+    context 'GSA Enhanced Pilot Barcode tag' do
+      context 'when the enrollment is enhanced IPP' do
+        let(:enrollment) { enhanced_ipp_enrollment }
+
+        it 'renders GSA Enhanced Pilot Barcode tag' do
+          render
+
+          expect(rendered).to have_content(t('in_person_proofing.body.barcode.eipp_tag'))
+        end
+      end
+      context 'when the enrollment is ID-IPP' do
+        it 'does not render GSA Enhanced Pilot Barcode tag' do
+          render
+
+          expect(rendered).not_to have_content(t('in_person_proofing.body.barcode.eipp_tag'))
+        end
+      end
+    end
+
+    context 'What to bring to the Post Office section' do
+      context 'when the enrollment is enhanced IPP' do
+        let(:enrollment) { enhanced_ipp_enrollment }
+
+        it 'displays heading and body' do
+          render
+
+          expect(rendered).to have_content(t('in_person_proofing.headings.barcode_what_to_bring'))
+          expect(rendered).to have_content(t('in_person_proofing.body.barcode.eipp_what_to_bring'))
+        end
+
+        it 'renders Option 1 content' do
+          render
+
+          aggregate_failures do
+            [
+              t('in_person_proofing.process.eipp_bring_id.heading'),
+              t('in_person_proofing.process.eipp_bring_id_with_current_address.heading'),
+              t('in_person_proofing.process.eipp_bring_id.info'),
+              t('in_person_proofing.process.real_id_and_supporting_docs.heading'),
+              t('in_person_proofing.process.real_id_and_supporting_docs.info'),
+            ].each do |copy|
+              Array(copy).each do |part|
+                expect(rendered).to have_content(part)
+              end
+            end
+          end
+
+          t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
+            expect(rendered).to have_content(strip_tags(item))
+          end
+        end
+
+        it 'renders Option 2 content' do
+          render
+
+          aggregate_failures do
+            [
+              t('in_person_proofing.process.eipp_bring_id_plus_documents.heading'),
+              t('in_person_proofing.process.eipp_bring_id_plus_documents.info'),
+              t('in_person_proofing.process.eipp_state_id_passport.heading'),
+              t('in_person_proofing.process.eipp_state_id_passport.info'),
+              t('in_person_proofing.process.eipp_state_id_military_id.heading'),
+              t('in_person_proofing.process.eipp_state_id_military_id.info'),
+              t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
+              t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
+            ].each do |copy|
+              Array(copy).each do |part|
+                expect(rendered).to have_content(part)
+              end
+            end
+          end
+
+          t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
+            expect(rendered).to have_content(strip_tags(item))
+          end
+        end
+      end
+
+      context 'when the enrollment is ID-IPP' do
+        it 'template does not display Enhanced In-Person Proofing what to bring content' do
+          render
+
+          aggregate_failures do
+            [
+              t('in_person_proofing.headings.barcode_eipp'),
+              t('in_person_proofing.headings.barcode_what_to_bring'),
+              t('in_person_proofing.body.barcode.eipp_what_to_bring'),
+              t('in_person_proofing.process.eipp_bring_id.heading'),
+              t('in_person_proofing.process.eipp_bring_id_with_current_address.heading'),
+              t('in_person_proofing.process.eipp_bring_id.info'),
+              t('in_person_proofing.process.real_id_and_supporting_docs.heading'),
+              t('in_person_proofing.process.real_id_and_supporting_docs.info'),
+              t('in_person_proofing.process.eipp_bring_id_plus_documents.heading'),
+              t('in_person_proofing.process.eipp_bring_id_plus_documents.info'),
+              t('in_person_proofing.process.eipp_state_id_passport.heading'),
+              t('in_person_proofing.process.eipp_state_id_passport.info'),
+              t('in_person_proofing.process.eipp_state_id_military_id.heading'),
+              t('in_person_proofing.process.eipp_state_id_military_id.info'),
+              t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
+              t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
+              t('in_person_proofing.process.state_id.heading_eipp'),
+              t('in_person_proofing.process.state_id.info_eipp'),
+            ].each do |copy|
+              Array(copy).each do |part|
+                expect(rendered).to_not have_content(part)
+              end
+            end
+          end
+
+          t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
+            expect(rendered).to_not have_content(strip_tags(item))
+          end
+        end
+      end
+    end
+
+    context 'Need to Change Location section' do
+      context 'when the enrollment is ID-IPP' do
+        it 'renders the change location heading' do
+          render
+
+          expect(rendered).to have_content(
+            t('in_person_proofing.body.location.change_location_heading'),
+          )
+        end
+
+        it 'renders the change location info' do
+          render
+
+          expect(rendered).to have_content(
+            t(
+              'in_person_proofing.body.location.change_location_info_html',
+              find_other_locations_link_html:
+                t('in_person_proofing.body.location.change_location_find_other_locations'),
+            ),
+          )
+        end
+      end
+
+      context 'when Enhanced IPP is enabled' do
+        let(:enrollment) { enhanced_ipp_enrollment }
+
+        it 'does not render the change location heading' do
+          render
+
+          expect(rendered).not_to have_content(
+            t('in_person_proofing.body.location.change_location_heading'),
+          )
+        end
+
+        it 'does not render the change location info' do
+          render
+
+          expect(rendered).not_to have_content(
+            t('in_person_proofing.body.location.change_location_info_html'),
+          )
         end
       end
     end
   end
 
-  context 'Need to Change Location section' do
-    context 'when the enrollment is ID-IPP' do
-      it 'renders the change location heading' do
+  context 'in the NDS layout' do
+    before do
+      allow(view).to receive(:nds_layout?).and_return(true)
+    end
+
+    it 'has a title matching the barcode heading' do
+      expect(view).to receive(:title=).with(t('in_person_proofing.headings.barcode'))
+
+      render
+    end
+
+    it 'renders the form-page card with the barcode heading, success alert and stepper' do
+      render
+
+      expect(rendered).to have_selector('section.auth.auth--form-page')
+      expect(rendered).to have_css('h1', text: t('in_person_proofing.headings.barcode'))
+      expect(rendered).to have_css(
+        '.usa-alert--success',
+        text: t('in_person_proofing.body.barcode.email_sent'),
+      )
+
+      progress = Capybara.string(view.content_for(:nds_header_progress))
+      expect(progress).to have_css('.progress__step-counter', text: '12 / 12')
+    end
+
+    it 'renders the barcode, deadline and what to do at the Post Office' do
+      render
+
+      expect(rendered).to have_css('.card [role=figure]')
+      expect(rendered).to have_content(t('in_person_proofing.process.barcode.caption_label'))
+      expect(rendered).to have_content(
+        t(
+          'in_person_proofing.body.barcode.deadline',
+          deadline: presenter.formatted_due_date,
+          sp_name: presenter.sp_name,
+        ),
+      )
+      expect(rendered).to have_css('h2', text: t('in_person_proofing.body.barcode.what_to_expect'))
+      expect(rendered).to have_content(t('in_person_proofing.process.state_id.heading'))
+      expect(rendered).to have_css("lg-click-observer[event-name='#{help_event_name}']", count: 1)
+      expect(rendered).to have_content(t('in_person_proofing.body.expect.heading'))
+    end
+
+    it 'renders the selected location and change location help' do
+      render
+
+      expect(rendered).to have_content(selected_location_details['name'])
+      expect(rendered).to have_content(t('in_person_proofing.body.barcode.retail_hours'))
+      expect(rendered).to have_link(
+        t('in_person_proofing.body.location.change_location_find_other_locations'),
+      )
+    end
+
+    it 'renders the return to partner button and the cancel link' do
+      render
+
+      expect(rendered).to have_css(
+        "lg-click-observer[event-name='#{sp_event_name}'] a.usa-button[href='#{sp_url}']",
+        text: t(
+          'in_person_proofing.body.barcode.return_to_partner_link',
+          sp_name: presenter.sp_name,
+        ),
+      )
+      expect(rendered).to have_link(
+        t('in_person_proofing.body.barcode.cancel_link_text'),
+        href: idv_cancel_path(step: 'barcode'),
+      )
+      expect(rendered).not_to have_content(t('in_person_proofing.body.barcode.close_window'))
+    end
+
+    context 'without a service provider' do
+      let(:service_provider) { nil }
+
+      it 'tells the user they can close the window' do
         render
 
-        expect(rendered).to have_content(
-          t('in_person_proofing.body.location.change_location_heading'),
-        )
+        expect(rendered).not_to have_css("lg-click-observer[event-name='#{sp_event_name}']")
+        expect(rendered).to have_content(t('in_person_proofing.body.barcode.close_window'))
       end
+    end
 
-      it 'renders the change location info' do
+    context 'when the location search was skipped' do
+      let(:selected_location_details) { nil }
+
+      it 'renders the find a Post Office notice in place of the location' do
         render
 
-        expect(rendered).to have_content(
-          t(
-            'in_person_proofing.body.location.change_location_info_html',
-            find_other_locations_link_html:
-              t('in_person_proofing.body.location.change_location_find_other_locations'),
+        expect(rendered).to have_content(t('in_person_proofing.headings.po_search.location'))
+        expect(rendered).to have_link(
+          t('in_person_proofing.body.location.location_skipped_notice_button_text'),
+          href: help_center_redirect_url(
+            category: 'verify-your-identity',
+            article: 'verify-your-identity-in-person/find-a-participating-post-office',
           ),
         )
+        expect(rendered).not_to have_content(t('in_person_proofing.body.location.heading'))
       end
     end
 
-    context 'when Enhanced IPP is enabled' do
+    context 'when the enrollment is enhanced IPP' do
       let(:enrollment) { enhanced_ipp_enrollment }
 
-      it 'does not render the change location heading' do
+      it 'has a title matching the enhanced IPP barcode heading' do
+        expect(view).to receive(:title=).with(t('in_person_proofing.headings.barcode_eipp'))
+
+        render
+      end
+
+      it 'renders the pilot badge and what to bring section' do
         render
 
+        expect(rendered).to have_css('h1', text: t('in_person_proofing.headings.barcode_eipp'))
+        expect(rendered).to have_content(t('in_person_proofing.body.barcode.eipp_tag'))
+        expect(rendered).to have_css(
+          'h2',
+          text: t('in_person_proofing.headings.barcode_what_to_bring'),
+        )
+        expect(rendered).to have_content(
+          t('in_person_proofing.process.eipp_state_id_passport.heading'),
+        )
+        expect(rendered).to have_css("lg-click-observer[event-name='#{help_event_name}']", count: 1)
         expect(rendered).not_to have_content(
           t('in_person_proofing.body.location.change_location_heading'),
         )
       end
+    end
 
-      it 'does not render the change location info' do
+    context 'when the enrollment is with a passport book' do
+      let(:enrollment) do
+        build(
+          :in_person_enrollment, :pending, :passport_book,
+          current_address_matches_id: current_address_matches_id,
+          profile: profile,
+          selected_location_details: selected_location_details,
+          service_provider: service_provider,
+          user: user
+        )
+      end
+
+      it 'has a title matching the passport barcode heading' do
+        expect(view).to receive(:title=).with(t('in_person_proofing.headings.barcode_passport'))
+
+        render
+      end
+    end
+
+    context 'when the outage message is enabled' do
+      before do
+        allow(presenter).to receive(:outage_message_enabled?).and_return(true)
+        allow(presenter).to receive(:formatted_outage_expected_update_date).and_return('May 1')
+        allow(presenter).to receive(:formatted_outage_emailed_by_date).and_return('May 2')
+      end
+
+      it 'renders the outage warning' do
         render
 
-        expect(rendered).not_to have_content(
-          t('in_person_proofing.body.location.change_location_info_html'),
+        expect(rendered).to have_css(
+          '.usa-alert--warning',
+          text: t(
+            'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',
+            date: 'May 1',
+          ),
         )
       end
     end

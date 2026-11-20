@@ -821,6 +821,66 @@ module Test
         ],
       ),
       Page.new(
+        key: 'idv-in-person-state-id',
+        title: 'In-person proofing: enter your state ID',
+        flow: IDV,
+        template: 'idv/in_person/state_id/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Updating state ID', params: { update: '1' }),
+          Permutation.new(label: 'Expiration date options', params: { expiration: '1' }),
+          Permutation.new(label: 'Verification failed', params: { error: '1' }),
+          Permutation.new(
+            label: 'Saved Military expiration, verification failed',
+            params: { military: '1', error: '1' },
+          ),
+        ],
+      ),
+      Page.new(
+        key: 'idv-in-person-passport',
+        title: 'In-person proofing: enter your passport',
+        flow: IDV,
+        template: 'idv/in_person/passport/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Prefilled', params: { prefilled: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'idv-in-person-address',
+        title: 'In-person proofing: enter your residential address',
+        flow: IDV,
+        template: 'idv/in_person/address/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Updating address', params: { update: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'idv-in-person-verify-info',
+        title: 'In-person proofing: verify your information',
+        flow: IDV,
+        template: 'idv/in_person/verify_info/show',
+        permutations: [
+          Permutation.new(label: 'State ID', params: {}),
+          Permutation.new(label: 'Passport', params: { passport: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'idv-in-person-ready-to-verify',
+        title: 'In-person proofing: ready to verify (barcode)',
+        flow: IDV,
+        template: 'idv/in_person/ready_to_verify/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'With service provider', params: { sp: '1' }),
+          Permutation.new(label: 'Passport', params: { passport: '1' }),
+          Permutation.new(label: 'Enhanced IPP', params: { eipp: '1' }),
+          Permutation.new(label: 'Location search skipped', params: { skipped: '1' }),
+          Permutation.new(label: 'USPS outage', params: { outage: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'select-email',
         title: 'Select email to share',
         flow: IDV,

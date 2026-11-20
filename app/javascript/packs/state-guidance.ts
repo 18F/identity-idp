@@ -73,6 +73,10 @@ export function onExpirationOptionChange() {
   wrapper.querySelectorAll<HTMLInputElement>('input').forEach((input) => {
     input.disabled = !showDate;
   });
+
+  // Disabling inputs fires no input/change event, so form-level listeners such as
+  // the NDS submit gate would keep the validity they computed before the toggle.
+  wrapper.closest('form')?.dispatchEvent(new Event('change', { bubbles: true }));
 }
 
 export function onExpirationOptionSelection() {

@@ -1,3 +1,373 @@
+<% if nds_layout? %>
+  <% heading = updating_state_id ? t('in_person_proofing.headings.update_state_id') : t('in_person_proofing.headings.state_id_milestone_2') %>
+  <% self.title = heading %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 4) %>
+  <% end %>
+
+  <%= simple_form_for form,
+                      as: 'identity_doc', # Renaming form as a workaround for aggressive browser autofill assumptions
+                      url: url_for,
+                      method: 'put' do |f| %>
+    <%= render NDS::FormPageComponent.new(
+          title: heading,
+          subtitle: t('in_person_proofing.body.state_id.info_html'),
+          alert_position: :below,
+        ) do |page| %>
+      <% page.with_alert do %>
+        <%= render AlertComponent.new(type: :info, text_tag: 'div') do %>
+          <strong><%= t('in_person_proofing.body.state_id.alert_message') %></strong>
+          <%= simple_format(t('in_person_proofing.body.state_id.alert_text'), {}, sanitize: true) %>
+        <% end %>
+      <% end %>
+
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch, class: 'text-left') do %>
+          <%= render NDS::StackComponent.new(align: :stretch) do %>
+            <%= render NDS::InputComponent.new(
+                  form: f,
+                  attribute: :first_name,
+                  label: t('in_person_proofing.form.state_id.first_name'),
+                  value: pii[:first_name],
+                  maxlength: 255,
+                  required: true,
+                  error_message: form.errors[:first_name].first,
+                ) %>
+            <%= render NDS::InputComponent.new(
+                  form: f,
+                  attribute: :last_name,
+                  label: t('in_person_proofing.form.state_id.last_name'),
+                  value: pii[:last_name],
+                  maxlength: 255,
+                  required: true,
+                  error_message: form.errors[:last_name].first,
+                ) %>
+            <div>
+              <%= render MemorableDateComponent.new(
+                    content_tag: 'memorable-date',
+                    name: :dob,
+                    day: parsed_dob&.day,
+                    month: parsed_dob&.month,
+                    year: parsed_dob&.year,
+                    required: true,
+                    min: '1900-01-01',
+                    max: Time.zone.today,
+                    hint: t('in_person_proofing.form.state_id.dob_hint'),
+                    label: t('in_person_proofing.form.state_id.dob'),
+                    form: f,
+                    error_messages: {
+                      missing_month_day_year: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year'),
+                      range_overflow: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow'),
+                    },
+                    range_errors: [
+                      {
+                        max: Time.zone.today - IdentityConfig.store.idv_min_age_years.years,
+                        message: t(
+                          'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
+                          app_name: APP_NAME,
+                          min_age: IdentityConfig.store.idv_min_age_years,
+                        ),
+                      },
+                    ],
+                  ) %>
+            </div>
+            <% jurisdiction_error = form.errors[:state_id_jurisdiction].first %>
+            <div class="usa-form-group margin-0">
+              <%= f.label :state_id_jurisdiction, t('in_person_proofing.form.state_id.state_id_jurisdiction'), class: 'usa-label' %>
+              <%= f.select(
+                    :state_id_jurisdiction,
+                    @presenter.usps_states_territories,
+                    {
+                      include_blank: t('in_person_proofing.form.state_id.state_id_jurisdiction_prompt'),
+                      selected: pii[:state_id_jurisdiction],
+                    },
+                    class: 'usa-select jurisdiction-state-selector',
+                    required: true,
+                    aria: {
+                      describedby: [
+                        'identity_doc_state_id_jurisdiction_hint',
+                        ('identity_doc_state_id_jurisdiction_error' if jurisdiction_error),
+                      ].compact.join(' '),
+                      invalid: (true if jurisdiction_error),
+                    },
+                  ) %>
+              <p id="identity_doc_state_id_jurisdiction_hint" class="usa-hint">
+                <%= t('in_person_proofing.form.state_id.state_id_jurisdiction_hint') %>
+              </p>
+              <% if jurisdiction_error %>
+                <p id="identity_doc_state_id_jurisdiction_error" class="usa-error-message"><%= jurisdiction_error %></p>
+              <% end %>
+            </div>
+            <% id_number_default_hint = capture do %>
+              <%= t('in_person_proofing.form.state_id.state_id_number_hint') %>
+              <% [
+                   [t('in_person_proofing.form.state_id.state_id_number_hint_spaces'), ' '],
+                   [t('in_person_proofing.form.state_id.state_id_number_hint_forward_slashes'), '/'],
+                   [t('in_person_proofing.form.state_id.state_id_number_hint_asterisks'), '*'],
+                   [t('in_person_proofing.form.state_id.state_id_number_hint_dashes'), '-', true],
+                 ].each do |text, symbol, last| %>
+                <span class="usa-sr-only"><%= text %><%= ',' if !last %></span>
+                <span aria-hidden="true"><%= symbol %></span>
+              <% end %>
+            <% end %>
+            <%= render NDS::InputComponent.new(
+                  form: f,
+                  attribute: :id_number, # Renaming field as a workaround for aggressive browser autofill assumptions
+                  label: t('in_person_proofing.form.state_id.state_id_number'),
+                  value: pii[:state_id_number],
+                  maxlength: 255,
+                  required: true,
+                  aria: { describedby: 'identity_doc_id_number_hint' },
+                  error_message: form.errors[:state_id_number].first,
+                ) do %>
+              <div id="identity_doc_id_number_hint" class="usa-hint jurisdiction-extras">
+                <% [
+                     [:default, id_number_default_hint],
+                     ['FL', t('in_person_proofing.form.state_id.state_id_number_florida_hint_html')],
+                     ['TX', t('in_person_proofing.form.state_id.state_id_number_texas_hint')],
+                   ].each do |state, hint| %>
+                  <%= content_tag(
+                        :span,
+                        hint,
+                        class: state == :default ? nil : 'display-none',
+                        data: { state: },
+                      ) %>
+                <% end %>
+              </div>
+            <% end %>
+          <% end %>
+
+          <% id_type_error = form.errors[:asserted_id_type].first %>
+          <fieldset class="usa-fieldset">
+            <legend class="usa-legend usa-legend--label"><%= t('in_person_proofing.form.state_id.id_type') %></legend>
+            <ul class="usa-input-list">
+              <% [
+                   [
+                     t('in_person_proofing.form.state_id.id_type_drivers_license'),
+                     Idp::Constants::DocumentTypes::DRIVERS_LICENSE,
+                   ],
+                   [
+                     t('in_person_proofing.form.state_id.id_type_state_id'),
+                     Idp::Constants::DocumentTypes::STATE_ID_CARD,
+                   ],
+                 ].each do |label, value| %>
+                <li>
+                  <%= f.radio_button(
+                        :asserted_id_type,
+                        value,
+                        class: 'usa-radio__input usa-radio__input--bordered',
+                        checked: pii[:asserted_id_type].to_s == value.to_s,
+                        required: true,
+                        aria: {
+                          describedby: ('identity_doc_asserted_id_type_error' if id_type_error),
+                          invalid: (true if id_type_error),
+                        },
+                      ) %>
+                  <%= f.label :asserted_id_type, label, value:, class: 'usa-radio__label' %>
+                </li>
+              <% end %>
+            </ul>
+            <% if id_type_error %>
+              <p id="identity_doc_asserted_id_type_error" class="usa-error-message"><%= id_type_error %></p>
+            <% end %>
+          </fieldset>
+
+          <% expiration_date_field = capture do %>
+            <%= render MemorableDateComponent.new(
+                  content_tag: 'memorable-date',
+                  name: :id_expiration,
+                  day: parsed_expiration&.day,
+                  month: parsed_expiration&.month,
+                  year: parsed_expiration&.year,
+                  required: true,
+                  min: Time.zone.today + 1.day,
+                  allow_placeholder_values: expiration_edge_cases_enabled,
+                  hint: t('in_person_proofing.form.state_id.expiration_date_hint'),
+                  label: t('in_person_proofing.form.state_id.expiration_date'),
+                  form: f,
+                  error_messages: {
+                    missing_month_day_year: t('simple_form.required.text'),
+                    range_underflow: t('in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired'),
+                  },
+                ) %>
+          <% end %>
+
+          <% if expiration_edge_cases_enabled %>
+            <fieldset class="usa-fieldset">
+              <legend class="usa-legend usa-legend--label"><%= t('in_person_proofing.form.state_id.expiration_date') %></legend>
+              <ul class="usa-input-list">
+                <li>
+                  <%= f.radio_button(
+                        :id_expiration_option,
+                        Idv::StateIdForm::EXPIRATION_OPTION_DATE,
+                        class: 'usa-radio__input usa-radio__input--bordered expiration-option-input',
+                        checked: expiration_option == Idv::StateIdForm::EXPIRATION_OPTION_DATE,
+                      ) %>
+                  <%= f.label(
+                        :id_expiration_option_date,
+                        t('in_person_proofing.form.state_id.expiration_date_options.enter_date'),
+                        class: 'usa-radio__label',
+                      ) %>
+                  <div class="expiration-date-inputs margin-top-2 <%= 'display-none' unless expiration_option == Idv::StateIdForm::EXPIRATION_OPTION_DATE %>">
+                    <%= expiration_date_field %>
+                  </div>
+                </li>
+                <% [
+                     [Idv::StateIdForm::EXPIRATION_MILITARY, 'military'],
+                     [Idv::StateIdForm::EXPIRATION_INDEFINITE, 'indefinite'],
+                     [Idv::StateIdForm::EXPIRATION_NONE, 'other'],
+                   ].each do |value, i18n_key| %>
+                  <li>
+                    <%= f.radio_button(
+                          :id_expiration_option,
+                          value,
+                          class: 'usa-radio__input usa-radio__input--bordered expiration-option-input',
+                          checked: expiration_option == value,
+                        ) %>
+                    <%= f.label(
+                          :"id_expiration_option_#{value}",
+                          t("in_person_proofing.form.state_id.expiration_date_options.#{i18n_key}"),
+                          class: 'usa-radio__label',
+                        ) %>
+                  </li>
+                <% end %>
+              </ul>
+            </fieldset>
+          <% else %>
+            <div><%= expiration_date_field %></div>
+          <% end %>
+
+          <%= render NDS::StackComponent.new(align: :stretch) do %>
+            <h2 class="heading-s"><%= t('in_person_proofing.headings.id_address') %></h2>
+            <% address_state_error = form.errors[:identity_doc_address_state].first %>
+            <div class="usa-form-group margin-0">
+              <%= f.label :identity_doc_address_state, t('in_person_proofing.form.state_id.identity_doc_address_state'), class: 'usa-label' %>
+              <%= f.select(
+                    :identity_doc_address_state,
+                    @presenter.usps_states_territories,
+                    {
+                      include_blank: t('in_person_proofing.form.state_id.identity_doc_address_state_prompt'),
+                      selected: pii[:identity_doc_address_state],
+                    },
+                    class: 'usa-select address-state-selector',
+                    required: true,
+                    aria: {
+                      describedby: ('identity_doc_identity_doc_address_state_error' if address_state_error),
+                      invalid: (true if address_state_error),
+                    },
+                  ) %>
+              <% if address_state_error %>
+                <p id="identity_doc_identity_doc_address_state_error" class="usa-error-message"><%= address_state_error %></p>
+              <% end %>
+            </div>
+            <%= render NDS::InputComponent.new(
+                  form: f,
+                  attribute: :identity_doc_address1,
+                  label: t('in_person_proofing.form.state_id.address1'),
+                  value: pii[:identity_doc_address1],
+                  maxlength: 255,
+                  required: true,
+                  aria: { describedby: 'identity_doc_address1_hint' },
+                  error_message: form.errors[:identity_doc_address1].first,
+                ) do %>
+              <p id="identity_doc_address1_hint" class="usa-hint display-none puerto-rico-extras">
+                <%= t('in_person_proofing.form.state_id.address1_hint') %>
+              </p>
+            <% end %>
+            <%= render NDS::InputComponent.new(
+                  form: f,
+                  attribute: :identity_doc_address2,
+                  label: t('in_person_proofing.form.state_id.address2'),
+                  value: pii[:identity_doc_address2],
+                  maxlength: 255,
+                  aria: { describedby: 'identity_doc_address2_hint' },
+                  error_message: form.errors[:identity_doc_address2].first,
+                ) do %>
+              <p id="identity_doc_address2_hint" class="usa-hint display-none puerto-rico-extras">
+                <%= t('in_person_proofing.form.state_id.address2_hint') %>
+              </p>
+            <% end %>
+            <%= render NDS::InputComponent.new(
+                  form: f,
+                  attribute: :identity_doc_city,
+                  label: t('in_person_proofing.form.state_id.city'),
+                  value: pii[:identity_doc_city],
+                  maxlength: 255,
+                  required: true,
+                  error_message: form.errors[:identity_doc_city].first,
+                ) %>
+            <%# numeric inputmode for the mobile numeric keypad %>
+            <%= render NDS::InputComponent.new(
+                  form: f,
+                  attribute: :identity_doc_zipcode,
+                  label: t('in_person_proofing.form.state_id.zipcode'),
+                  value: pii[:identity_doc_zipcode],
+                  required: true,
+                  pattern: '\d{5}([\-]\d{4})?',
+                  class: 'zipcode',
+                  inputmode: 'numeric',
+                  error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
+                  error_message: form.errors[:identity_doc_zipcode].first,
+                ) %>
+          <% end %>
+
+          <% address_matches_error = form.errors[:ipp_current_address_matches_id].first %>
+          <fieldset class="usa-fieldset">
+            <legend class="usa-legend usa-legend--label"><%= t('in_person_proofing.form.state_id.current_address_matches_id') %></legend>
+            <ul class="usa-input-list">
+              <% [
+                   [t('in_person_proofing.form.state_id.current_address_matches_id_yes'), true],
+                   [t('in_person_proofing.form.state_id.current_address_matches_id_no'), false],
+                 ].each do |label, value| %>
+                <li>
+                  <%= f.radio_button(
+                        :ipp_current_address_matches_id,
+                        value,
+                        class: 'usa-radio__input usa-radio__input--bordered',
+                        checked: !pii[:ipp_current_address_matches_id].nil? &&
+                          pii[:ipp_current_address_matches_id].to_s == value.to_s,
+                        required: true,
+                        aria: {
+                          describedby: ('identity_doc_ipp_current_address_matches_id_error' if address_matches_error),
+                          invalid: (true if address_matches_error),
+                        },
+                      ) %>
+                  <%= f.label :ipp_current_address_matches_id, label, value:, class: 'usa-radio__label' %>
+                </li>
+              <% end %>
+            </ul>
+            <% if address_matches_error %>
+              <p id="identity_doc_ipp_current_address_matches_id_error" class="usa-error-message"><%= address_matches_error %></p>
+            <% end %>
+          </fieldset>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(type: :submit, full_width: true) do %>
+            <%= updating_state_id ? t('forms.buttons.submit.update') : t('forms.buttons.continue') %>
+          <% end %>
+          <% if updating_state_id %>
+            <%= render ButtonComponent.new(
+                  url: go_back_path || idv_in_person_verify_info_path,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('forms.buttons.back')) %>
+          <% else %>
+            <%= render ButtonComponent.new(
+                  url: idv_cancel_path(step: 'state_id'),
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(cancel_link_text) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('formatted-fields', 'state-guidance', preload_links_header: false) %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP,
@@ -318,3 +688,4 @@
   <%= render 'idv/doc_auth/cancel', step: 'state_id' %>
 <% end %>
 <%= javascript_packs_tag_once('formatted-fields', 'state-guidance') %>
+<% end %>

@@ -1,3 +1,143 @@
+<% if nds_layout? %>
+  <% self.title = t('in_person_proofing.headings.passport') %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 4) %>
+  <% end %>
+
+  <%= simple_form_for(
+        form,
+        method: 'put',
+        url: idv_in_person_passport_url,
+      ) do |f| %>
+    <%= render NDS::FormPageComponent.new(
+          title: t('in_person_proofing.headings.passport'),
+          subtitle: t('in_person_proofing.body.passport.info'),
+        ) do |page| %>
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(align: :stretch, class: 'text-left') do %>
+          <%= render NDS::InputComponent.new(
+                form: f,
+                attribute: :passport_surname,
+                label: t('in_person_proofing.form.passport.surname'),
+                value: pii[:passport_surname],
+                maxlength: 255,
+                required: true,
+                error_message: form.errors[:passport_surname].first,
+              ) %>
+          <%= render NDS::InputComponent.new(
+                form: f,
+                attribute: :passport_first_name,
+                label: t('in_person_proofing.form.passport.first_name'),
+                value: pii[:passport_first_name],
+                maxlength: 255,
+                required: true,
+                aria: { describedby: 'in_person_passport_passport_first_name_hint' },
+                error_message: form.errors[:passport_first_name].first,
+              ) do %>
+            <p id="in_person_passport_passport_first_name_hint" class="usa-hint">
+              <%= t('in_person_proofing.form.passport.first_name_hint') %>
+            </p>
+          <% end %>
+          <div>
+            <%= render MemorableDateComponent.new(
+                  content_tag: 'memorable-date',
+                  form: f,
+                  hint: t('in_person_proofing.form.passport.dob_hint'),
+                  label: t('in_person_proofing.form.passport.dob'),
+                  name: :passport_dob,
+                  day: parsed_dob&.day,
+                  month: parsed_dob&.month,
+                  year: parsed_dob&.year,
+                  required: true,
+                  min: '1900-01-01',
+                  max: Time.zone.today,
+                  error_messages: {
+                    missing_month_day_year: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year'),
+                    range_overflow: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow'),
+                  },
+                  range_errors: [
+                    {
+                      max: Time.zone.today - IdentityConfig.store.idv_min_age_years.years,
+                      message: t(
+                        'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
+                        app_name: APP_NAME,
+                        min_age: IdentityConfig.store.idv_min_age_years,
+                      ),
+                    },
+                  ],
+                ) %>
+          </div>
+          <%= render NDS::InputComponent.new(
+                form: f,
+                attribute: :passport_number,
+                label: t('in_person_proofing.form.passport.passport_number'),
+                value: pii[:passport_number],
+                maxlength: 9,
+                required: true,
+                pattern: '[0-9A-Za-z]{9}',
+                aria: { describedby: 'in_person_passport_passport_number_hint' },
+                error_messages: {
+                  patternMismatch: t('in_person_proofing.form.passport.errors.passport_number.pattern_mismatch'),
+                },
+                error_message: form.errors[:passport_number].first,
+              ) do %>
+            <p id="in_person_passport_passport_number_hint" class="usa-hint">
+              <%= t('in_person_proofing.form.passport.passport_number_hint') %>
+            </p>
+          <% end %>
+          <div>
+            <%= render MemorableDateComponent.new(
+                  content_tag: 'memorable-date',
+                  form: f,
+                  hint: t('in_person_proofing.form.passport.expiration_date_hint'),
+                  label: t('in_person_proofing.form.passport.expiration_date'),
+                  name: :passport_expiration,
+                  day: parsed_expiration&.day,
+                  month: parsed_expiration&.month,
+                  year: parsed_expiration&.year,
+                  required: true,
+                  error_messages: {
+                    missing_month_day_year: t('simple_form.required.text'),
+                  },
+                  range_errors: [
+                    {
+                      min: Time.zone.today,
+                      message: t('in_person_proofing.form.passport.memorable_date.errors.expiration_date.expired'),
+                    },
+                  ],
+                ) %>
+          </div>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+                full_width: true,
+              ).with_content(t('forms.buttons.submit.default')) %>
+          <%= render ButtonComponent.new(
+                url: idv_cancel_path(step: 'passport'),
+                variant: :tertiary,
+                full_width: true,
+              ).with_content(cancel_link_text) %>
+        <% end %>
+
+        <%= render NDS::TroubleshootingOptionsComponent.new(
+              heading: t('components.troubleshooting_options.default_heading'),
+              options: [
+                {
+                  text: t('idv.troubleshooting.options.use_another_id_type'),
+                  url: idv_in_person_choose_id_type_url,
+                },
+              ],
+            ) %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('formatted-fields', 'state-guidance', preload_links_header: false) %>
+<% else %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP,
@@ -128,3 +268,4 @@
 
 <%= render 'idv/doc_auth/cancel', step: 'passport' %>
 <%= javascript_packs_tag_once('formatted-fields', 'state-guidance') %>
+<% end %>

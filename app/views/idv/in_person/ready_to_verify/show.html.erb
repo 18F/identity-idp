@@ -1,3 +1,279 @@
+<% if nds_layout? %>
+  <% self.title = @presenter.barcode_heading_text %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 12) %>
+  <% end %>
+
+  <% help_center_link = capture do %>
+    <%= render ClickObserverComponent.new(event_name: 'IdV: user clicked what to bring link on ready to verify page') do %>
+      <%= new_tab_link_to(
+            t('in_person_proofing.body.barcode.learn_more'),
+            help_center_redirect_url(
+              category: 'verify-your-identity',
+              article: 'verify-your-identity-in-person',
+            ),
+          ) %>
+    <% end %>
+  <% end %>
+
+  <%= render NDS::FormPageComponent.new(title: @presenter.barcode_heading_text) do |page| %>
+    <% page.with_alert do %>
+      <% if @presenter.outage_message_enabled? %>
+        <%= render AlertComponent.new(type: :warning, text_tag: 'div') do %>
+          <%= render 'shared/outage_alert', date: @presenter.formatted_outage_expected_update_date, email_date: @presenter.formatted_outage_emailed_by_date %>
+        <% end %>
+      <% end %>
+      <%= render AlertComponent.new(type: :success) do %>
+        <%= t('in_person_proofing.body.barcode.email_sent') %>
+      <% end %>
+    <% end %>
+
+    <% page.with_body do %>
+      <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+        <% if @presenter.location_search_skipped? %>
+          <%= render NDS::StackComponent.new(align: :stretch, class: 'location_search_skipped_notice') do %>
+            <div class="copy text-center">
+              <h2 class="heading-s"><%= t('in_person_proofing.headings.po_search.location') %></h2>
+              <p class="copy--muted"><%= t('in_person_proofing.body.location.location_skipped_notice') %></p>
+            </div>
+            <%= render ButtonComponent.new(
+                  url: help_center_redirect_url(
+                    category: 'verify-your-identity',
+                    article: 'verify-your-identity-in-person/find-a-participating-post-office',
+                  ),
+                  variant: :secondary,
+                  full_width: true,
+                  target: '_blank',
+                  rel: 'noopener',
+                ) do %>
+              <%= t('in_person_proofing.body.location.location_skipped_notice_button_text') %>
+              <span class="usa-sr-only"><%= t('links.new_tab') %></span>
+            <% end %>
+          <% end %>
+        <% end %>
+
+        <%= render NDS::CardComponent.new(class: 'card--elevated card--spacious') do %>
+          <div class="text-center">
+            <%# Tag for GSA Enhanced Pilot Barcode %>
+            <% if @presenter.enhanced_ipp? %>
+              <p class="margin-top-0">
+                <%= render BadgeComponent.new(variant: :info).with_content(t('in_person_proofing.body.barcode.eipp_tag')) %>
+              </p>
+            <% end %>
+            <%= render 'idv/shared/mini_logo' %>
+            <%= render BarcodeComponent.new(
+                  barcode_data: @presenter.enrollment_code,
+                  label: t('in_person_proofing.process.barcode.caption_label'),
+                  label_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
+                ) %>
+          </div>
+        <% end %>
+
+        <%= render AlertComponent.new(type: :info, text_tag: :div) do %>
+          <p class="text-bold margin-top-0"><%= t('in_person_proofing.body.barcode.deadline', deadline: @presenter.formatted_due_date, sp_name: @presenter.sp_name) %></p>
+          <p class="margin-bottom-0"><%= t('in_person_proofing.body.barcode.deadline_restart') %></p>
+        <% end %>
+
+        <%# Enhanced IPP Only - What to bring section %>
+        <% if @presenter.enhanced_ipp? %>
+          <%= render NDS::CardComponent.new(class: 'card--spacious text-left') do %>
+            <div class="copy">
+              <h2 class="heading-s"><%= t('in_person_proofing.headings.barcode_what_to_bring') %></h2>
+              <p><%= t('in_person_proofing.body.barcode.eipp_what_to_bring') %></p>
+            </div>
+
+            <% [
+                 {
+                   heading: t('in_person_proofing.process.eipp_bring_id.heading'),
+                   options: [
+                     {
+                       image: 'idv/real-id.svg',
+                       height: 80,
+                       alt: t('in_person_proofing.process.eipp_bring_id.image_alt_text'),
+                       heading: t('in_person_proofing.process.eipp_bring_id_with_current_address.heading'),
+                       info: t('in_person_proofing.process.eipp_bring_id.info'),
+                     },
+                     {
+                       image: 'idv/real-id-and-fair-evidence-documents.svg',
+                       height: 107,
+                       alt: t('in_person_proofing.process.real_id_and_supporting_docs.image_alt_text'),
+                       heading: t('in_person_proofing.process.real_id_and_supporting_docs.heading'),
+                       info: t('in_person_proofing.process.real_id_and_supporting_docs.info'),
+                       list: t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list'),
+                     },
+                   ],
+                 },
+                 {
+                   heading: t('in_person_proofing.process.eipp_bring_id_plus_documents.heading'),
+                   info: t('in_person_proofing.process.eipp_bring_id_plus_documents.info'),
+                   options: [
+                     {
+                       image: 'idv/state-id-and-passport.svg',
+                       height: 129,
+                       alt: t('in_person_proofing.process.eipp_state_id_passport.image_alt_text'),
+                       heading: t('in_person_proofing.process.eipp_state_id_passport.heading'),
+                       info: t('in_person_proofing.process.eipp_state_id_passport.info'),
+                     },
+                     {
+                       image: 'idv/state-id-and-military-id.svg',
+                       height: 93,
+                       alt: t('in_person_proofing.process.eipp_state_id_military_id.image_alt_text'),
+                       heading: t('in_person_proofing.process.eipp_state_id_military_id.heading'),
+                       info: t('in_person_proofing.process.eipp_state_id_military_id.info'),
+                     },
+                     {
+                       image: 'idv/state-id-and-fair-evidence-documents.svg',
+                       height: 107,
+                       alt: t('in_person_proofing.process.eipp_state_id_supporting_docs.image_alt_text'),
+                       heading: t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
+                       info: t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
+                       list: t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list'),
+                     },
+                   ],
+                 },
+               ].each do |group| %>
+              <div class="copy margin-top-3">
+                <h3><%= group[:heading] %></h3>
+                <% if group[:info] %>
+                  <p><%= group[:info] %></p>
+                <% end %>
+              </div>
+              <% group[:options].each do |option| %>
+                <div class="grid-row margin-top-3">
+                  <%= image_tag(
+                        asset_url(option[:image]),
+                        width: 110,
+                        height: option[:height],
+                        alt: option[:alt],
+                        class: 'grid-col-auto margin-bottom-2',
+                        role: 'img',
+                      ) %>
+                  <div class="grid-col-auto tablet:grid-col-fill tablet:margin-left-3">
+                    <p class="text-bold margin-y-0"><%= option[:heading] %></p>
+                    <p class="margin-y-0"><%= option[:info] %></p>
+                    <% if option[:list] %>
+                      <ul class="usa-list margin-top-0">
+                        <% option[:list].each do |doc| %>
+                          <li><%= doc %></li>
+                        <% end %>
+                      </ul>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+
+            <p class="margin-top-3 margin-bottom-0">
+              <%= t('in_person_proofing.body.barcode.questions') %>
+              <%= help_center_link %>
+            </p>
+          <% end %>
+        <% end %>
+
+        <%# What to do at the Post Office %>
+        <%= render NDS::CardComponent.new(class: 'card--spacious text-left') do %>
+          <h2 class="heading-s"><%= t('in_person_proofing.body.barcode.what_to_expect') %></h2>
+          <%= render ProcessListComponent.new(heading_level: :h3) do |c| %>
+            <% c.with_item(heading: t('in_person_proofing.process.what_to_do.heading')) do %>
+              <p><%= t('in_person_proofing.process.what_to_do.info', app_name: APP_NAME) %></p>
+            <% end %>
+            <% c.with_item(heading: t('in_person_proofing.process.barcode.heading', app_name: APP_NAME)) do %>
+              <p><%= t('in_person_proofing.process.barcode.info') %></p>
+            <% end %>
+            <% c.with_item(heading: @presenter.state_id_heading_text) do %>
+              <p><%= @presenter.state_id_info %></p>
+            <% end %>
+          <% end %>
+
+          <% if !@presenter.enhanced_ipp? %>
+            <p class="margin-top-3 margin-bottom-0">
+              <%= t('in_person_proofing.body.barcode.questions') %>
+              <%= help_center_link %>
+            </p>
+          <% end %>
+        <% end %>
+
+        <% unless @presenter.location_search_skipped? %>
+          <div class="copy text-left">
+            <h2 class="heading-s"><%= t('in_person_proofing.body.location.heading') %></h2>
+            <p>
+              <%= t('in_person_proofing.body.location.info') %>
+              <% if @presenter.selected_location_details.present? %>
+                <%= t('in_person_proofing.body.location.selection') %>
+              <% end %>
+            </p>
+          </div>
+        <% end %>
+
+        <% if @presenter.selected_location_details.present? %>
+          <%= render NDS::CardComponent.new(class: 'card--spacious text-left') do %>
+            <section aria-label="<%= t('in_person_proofing.body.barcode.location_details') %>">
+              <address class="copy">
+                <h2 class="heading-s"><%= @presenter.selected_location_details['name'] %></h2>
+                <p>
+                  <%= @presenter.selected_location_details['street_address'] %><br>
+                  <%= @presenter.selected_location_details['formatted_city_state_zip'] %>
+                </p>
+                <h3 class="text-body-emphasis"><%= t('in_person_proofing.body.barcode.retail_hours') %></h3>
+                <p class="margin-bottom-0">
+                  <%= t('date.range', from: t('date.day_names')[1], to: t('date.day_names')[5]) %>: <%= @presenter.selected_location_hours(:weekday) %><br>
+                  <%= t('date.day_names')[6] %>: <%= @presenter.selected_location_hours(:saturday) %><br>
+                  <%= t('date.day_names')[7] %>: <%= @presenter.selected_location_hours(:sunday) %>
+                </p>
+              </address>
+            </section>
+          <% end %>
+        <% end %>
+
+        <% unless @presenter.location_search_skipped? || @presenter.enhanced_ipp? %>
+          <div class="copy text-left">
+            <h3 class="text-body-emphasis"><%= t('in_person_proofing.body.location.change_location_heading') %></h3>
+            <p>
+              <%= t(
+                    'in_person_proofing.body.location.change_location_info_html',
+                    find_other_locations_link_html: link_to(
+                      t('in_person_proofing.body.location.change_location_find_other_locations'),
+                      help_center_redirect_url(
+                        category: 'verify-your-identity',
+                        article: 'verify-your-identity-in-person/find-a-participating-post-office',
+                      ),
+                    ),
+                  ) %>
+            </p>
+          </div>
+        <% end %>
+
+        <div class="copy text-left">
+          <h2 class="heading-s"><%= t('in_person_proofing.body.expect.heading') %></h2>
+          <p><%= t('in_person_proofing.body.expect.info') %></p>
+          <% if @presenter.service_provider_homepage_url.blank? %>
+            <p><%= t('in_person_proofing.body.barcode.close_window') %></p>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <% if @presenter.service_provider_homepage_url.present? %>
+          <%= render ClickObserverComponent.new(event_name: 'IdV: user clicked sp link on ready to verify page') do %>
+            <%= render ButtonComponent.new(
+                  url: @presenter.service_provider_homepage_url,
+                  full_width: true,
+                ).with_content(
+                  t('in_person_proofing.body.barcode.return_to_partner_link', sp_name: @presenter.sp_name),
+                ) %>
+          <% end %>
+        <% end %>
+        <%= render ButtonComponent.new(
+              url: idv_cancel_path(step: 'barcode'),
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('in_person_proofing.body.barcode.cancel_link_text')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <% self.title = t('in_person_proofing.headings.barcode') %>
 
 <% content_for(:pre_flash_content) do %>
@@ -274,4 +550,5 @@
     <br />
   <% end %>
   <%= link_to t('in_person_proofing.body.barcode.cancel_link_text'), idv_cancel_path(step: 'barcode'), class: 'display-inline-block padding-top-1' %>
+<% end %>
 <% end %>
