@@ -34,8 +34,10 @@ RSpec.describe Idv::ImageUploadsController do
     allow(FeatureManagement).to receive(:doc_escrow_enabled?).and_return(
       doc_escrow_enabled && attempts_api_enabled_for_sp,
     )
-    stub_sign_in(user) if user
+    stub_sign_in(signed_in_user) if signed_in_user
   end
+
+  let(:signed_in_user) { user }
 
   describe '#create' do
     subject(:action) do
@@ -312,6 +314,106 @@ RSpec.describe Idv::ImageUploadsController do
 
               action
             end
+          end
+        end
+      end
+    end
+
+    context 'when the caller is not entitled to the document capture session' do
+      let(:refusal) do
+        [{ field: 'document_capture_session', message: 'Please fill in this field.' }]
+      end
+
+      context 'when the session belongs to another user' do
+        let!(:document_capture_session) do
+          create(:document_capture_session, user: create(:user), doc_auth_vendor: 'mock')
+        end
+
+        it 'refuses the upload as it refuses an unknown session' do
+          expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).not_to receive(:post_images)
+
+          action
+
+          expect(response.status).to eq(400)
+          expect(json[:success]).to eq(false)
+          expect(json[:errors]).to eq(refusal)
+        end
+      end
+
+      context 'when no one is signed in and there is no hybrid session' do
+        let(:signed_in_user) { nil }
+
+        it 'refuses the upload' do
+          action
+
+          expect(response.status).to eq(400)
+          expect(json[:errors]).to eq(refusal)
+        end
+      end
+
+      context 'in the hybrid flow on the phone' do
+        let(:signed_in_user) { nil }
+        let(:flow_path) { 'hybrid' }
+        let(:requested_at) { Time.zone.now }
+        let(:cancelled_at) { nil }
+        let!(:document_capture_session) do
+          create(
+            :document_capture_session,
+            user:,
+            doc_auth_vendor: 'mock',
+            requested_at:,
+            cancelled_at:,
+          )
+        end
+
+        before do
+          session[:doc_capture_user_id] = user.id
+          session[:document_capture_session_uuid] = document_capture_session.uuid
+        end
+
+        it 'accepts an upload to the session the hand-off link opened' do
+          action
+
+          expect(response.status).to eq(200)
+          expect(json[:success]).to eq(true)
+          expect(document_capture_session.reload.load_result.success?).to eq(true)
+        end
+
+        context 'when the request names a different session of the same user' do
+          before do
+            params[:document_capture_session_uuid] =
+              create(:document_capture_session, user:, doc_auth_vendor: 'mock').uuid
+          end
+
+          it 'refuses the upload' do
+            action
+
+            expect(response.status).to eq(400)
+            expect(json[:errors]).to eq(refusal)
+          end
+        end
+
+        context 'when the hand-off link has expired' do
+          let(:requested_at) do
+            (IdentityConfig.store.doc_capture_request_valid_for_minutes + 1).minutes.ago
+          end
+
+          it 'refuses the upload' do
+            action
+
+            expect(response.status).to eq(400)
+            expect(json[:errors]).to eq(refusal)
+          end
+        end
+
+        context 'when the hand-off was cancelled from the desktop' do
+          let(:cancelled_at) { Time.zone.now }
+
+          it 'refuses the upload' do
+            action
+
+            expect(response.status).to eq(400)
+            expect(json[:errors]).to eq(refusal)
           end
         end
       end

@@ -41,7 +41,7 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
       create(:service_provider_identity, service_provider: target_issuer, user:)
     end
     let(:resource) { 'https://api.example.gov/passport' }
-    let(:scope) { 'openid token_exchange:passport' }
+    let(:scope) { 'openid token_exchange' }
 
     before do
       allow(IdentityConfig.store).to receive(:token_exchange_access_token_expires_in)
@@ -60,7 +60,7 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
       expect(payload).to include(
         'sub' => target_identity.uuid,
         'aud' => target_issuer,
-        'scope' => 'openid token_exchange:passport',
+        'scope' => 'openid token_exchange',
         'act' => { 'sub' => actor_issuer },
       )
     end

@@ -45,6 +45,42 @@ module Test
         ],
       ),
       Page.new(
+        key: 'piv-cac-error',
+        title: 'PIV/CAC sign in error',
+        flow: SIGN_IN,
+        template: 'users/piv_cac_login/error',
+        permutations: [
+          Permutation.new(label: 'Did not work (default)', params: {}),
+          Permutation.new(label: 'Not connected', params: { error: 'user.not_found' }),
+          Permutation.new(label: 'Certificate expired', params: { error: 'certificate.expired' }),
+          Permutation.new(label: 'No certificate', params: { error: 'certificate.none' }),
+          Permutation.new(
+            label: 'Not an authentication certificate',
+            params: { error: 'certificate.not_auth_cert' },
+          ),
+          Permutation.new(label: 'Server timeout', params: { error: 'token.http_failure' }),
+        ],
+      ),
+      Page.new(
+        key: 'piv-cac-mismatch',
+        title: 'PIV/CAC not connected to this account',
+        flow: SIGN_IN,
+        template: 'two_factor_authentication/piv_cac_mismatch/show',
+        permutations: [
+          Permutation.new(label: 'Other methods (default)', params: {}),
+          Permutation.new(label: 'PIV/CAC required (no skip)', params: { piv_cac_required: '1' }),
+          Permutation.new(label: 'No other method', params: { no_other_method: '1' }),
+          Permutation.new(
+            label: 'No other method, recovery available',
+            params: { no_other_method: '1', recovery: '1' },
+          ),
+          Permutation.new(
+            label: 'No other method, recovery pending',
+            params: { no_other_method: '1', recovery_pending: '1' },
+          ),
+        ],
+      ),
+      Page.new(
         key: 'create-account',
         title: 'Create account (enter email)',
         flow: CREATE_ACCOUNT,
@@ -77,6 +113,15 @@ module Test
         ],
       ),
       Page.new(
+        key: 'sign-up-cancel',
+        title: 'Cancel account creation',
+        flow: CREATE_ACCOUNT,
+        template: 'sign_up/cancellations/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
         key: 'mfa-setup',
         title: 'Authentication methods setup',
         flow: MFA,
@@ -87,6 +132,16 @@ module Test
           Permutation.new(label: 'Skip link', params: { second: '1', skip: '1' }),
           Permutation.new(label: 'Phishing resistant required', params: { phishing: '1' }),
           Permutation.new(label: 'PIV/CAC required', params: { piv_cac: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'piv-cac-recommended',
+        title: 'PIV/CAC recommended (government email)',
+        flow: MFA,
+        template: 'users/piv_cac_recommended/show',
+        permutations: [
+          Permutation.new(label: 'First MFA', params: {}),
+          Permutation.new(label: 'MFA configured (skip)', params: { second: '1' }),
         ],
       ),
       Page.new(
@@ -140,10 +195,29 @@ module Test
         ],
       ),
       Page.new(
+        key: 'mfa-confirmation',
+        title: 'Authentication method added (add a backup method)',
+        flow: MFA,
+        template: 'mfa_confirmation/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Face or touch unlock added (no skip)', params: { platform: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'backup-code-reminder',
         title: 'Backup codes reminder',
         flow: MFA,
         template: 'users/backup_code_reminder/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'second-mfa-reminder',
+        title: 'Second MFA reminder (add another method)',
+        flow: MFA,
+        template: 'users/second_mfa_reminder/new',
         permutations: [
           Permutation.new(label: 'Default', params: {}),
         ],
@@ -191,6 +265,15 @@ module Test
         ],
       ),
       Page.new(
+        key: 'webauthn-platform-recommended',
+        title: 'Passkey recommended',
+        flow: MFA,
+        template: 'users/webauthn_platform_recommended/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
         key: 'otp-entry',
         title: 'One-time code entry',
         flow: OTP,
@@ -203,6 +286,18 @@ module Test
           Permutation.new(label: 'Reauthentication', params: { reauthn: '1' }),
           Permutation.new(label: 'Prefilled code', params: { code: '1' }),
           Permutation.new(label: 'Incorrect code', params: { error: '1', code: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'totp-verification',
+        title: 'Authentication app code entry',
+        flow: OTP,
+        template: 'two_factor_authentication/totp_verification/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Reauthentication', params: { reauthn: '1' }),
+          Permutation.new(label: 'Prefilled code', params: { code: '1' }),
+          Permutation.new(label: 'Incorrect code', params: { error: '1' }),
         ],
       ),
       Page.new(
@@ -284,6 +379,25 @@ module Test
         title: 'Sign-in security check failed',
         flow: ERRORS,
         template: 'sign_in_security_check_failed/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'sp-handoff-bounced',
+        title: 'Service provider sent the user back (bounced)',
+        flow: ERRORS,
+        template: 'devise/sessions/bounced',
+        permutations: [
+          Permutation.new(label: 'No service provider', params: {}),
+          Permutation.new(label: 'Named service provider', params: { sp: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'oidc-authorization-error',
+        title: 'OpenID Connect authorization error',
+        flow: ERRORS,
+        template: 'openid_connect/authorization/error',
         permutations: [
           Permutation.new(label: 'Default', params: {}),
         ],
@@ -509,6 +623,31 @@ module Test
         permutations: [
           Permutation.new(label: 'Default', params: {}),
           Permutation.new(label: 'Desktop upload enabled', params: { upload: '1' }),
+          Permutation.new(label: 'In person available', params: { ipp: '1' }),
+          Permutation.new(label: 'CLEAR available', params: { clear1: '1' }),
+          Permutation.new(
+            label: 'All options',
+            params: { clear1: '1', ipp: '1', upload: '1' },
+          ),
+        ],
+      ),
+      Page.new(
+        key: 'idv-phone-required',
+        title: 'A U.S. phone number is required',
+        flow: IDV,
+        template: 'idv/phone_required/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'socure-document-capture',
+        title: 'Verify your ID with Socure (document capture)',
+        flow: IDV,
+        template: 'idv/socure/document_capture/show',
+        permutations: [
+          Permutation.new(label: 'Driver’s license or state ID', params: {}),
+          Permutation.new(label: 'Passport', params: { passport: '1' }),
+          Permutation.new(label: 'Passport with selfie', params: { passport: '1', selfie: '1' }),
+          Permutation.new(label: 'Mobile driver’s license', params: { mdl: '1' }),
         ],
       ),
       Page.new(
@@ -519,10 +658,28 @@ module Test
         permutations: [Permutation.new(label: 'Default', params: {})],
       ),
       Page.new(
+        key: 'hybrid-socure-document-capture',
+        title: 'Verify your ID with Socure (hybrid mobile document capture)',
+        flow: IDV,
+        template: 'idv/hybrid_mobile/socure/document_capture/show',
+        permutations: [
+          Permutation.new(label: 'Driver’s license or state ID', params: {}),
+          Permutation.new(label: 'Passport', params: { passport: '1' }),
+          Permutation.new(label: 'Mobile driver’s license', params: { mdl: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'capture-complete',
         title: 'Switch back to your computer (mobile)',
         flow: IDV,
         template: 'idv/hybrid_mobile/capture_complete/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'socure-wait',
+        title: 'Processing your ID images (Socure wait)',
+        flow: IDV,
+        template: 'idv/socure/document_capture/wait',
         permutations: [Permutation.new(label: 'Default', params: {})],
       ),
       Page.new(
@@ -555,6 +712,16 @@ module Test
         permutations: [
           Permutation.new(label: 'Default', params: {}),
           Permutation.new(label: 'Barcode read failure', params: { barcode: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'idv-enter-dob-ssn',
+        title: 'Enter your SSN and date of birth (proofing agent)',
+        flow: IDV,
+        template: 'idv/enter_dob_ssn/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Information does not match', params: { error: '1' }),
         ],
       ),
       Page.new(
@@ -618,6 +785,17 @@ module Test
         ],
       ),
       Page.new(
+        key: 'select-email',
+        title: 'Select email to share',
+        flow: IDV,
+        template: 'sign_up/select_email/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Email limit reached', params: { max: '1' }),
+          Permutation.new(label: 'No email selected', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'email-language',
         title: 'Email language preference',
         flow: ACCOUNT,
@@ -669,6 +847,7 @@ module Test
     # branch in their template, so the template scan below cannot detect them.
     # Kept explicit and minimal; unioned into the discovered set.
     BRANCHLESS_NDS_TEMPLATES = [
+      'idv/phone_required/show',
       'sign_up/emails/show',
       'two_factor_authentication/otp_verification/show',
       'users/piv_cac_login/new',

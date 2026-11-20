@@ -30,8 +30,6 @@
       ) %>
 </p>
 
-<p><%= t('devise.registrations.close_window') %></p>
-
 <% if FeatureManagement.enable_load_testing_mode? %>
   <% email_address = EmailAddress.where(user_id: current_user.id).find_with_email(@email) %>
   <% if email_address %>

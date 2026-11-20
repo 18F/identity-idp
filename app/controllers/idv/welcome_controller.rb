@@ -80,6 +80,7 @@ module Idv
       create_document_capture_session
       idv_session.welcome_visited = true
       idv_session.idv_consent_given_at = Time.zone.now
+      idv_session.clear1_allowed = clear1_allowed?
       idv_session.opted_in_to_in_person_proofing = false
       idv_session.skip_doc_auth_from_how_to_verify = false
       idv_session.flow_path = 'standard'

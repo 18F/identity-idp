@@ -60,6 +60,8 @@ module AbTests
         IdentityConfig.store.doc_auth_vendor_lexis_nexis_percent : 0,
       lexis_nexis_ddp: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
         IdentityConfig.store.doc_auth_vendor_lexis_nexis_ddp_percent : 0,
+      incode: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_vendor_incode_percent : 0,
     }.compact,
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
@@ -196,6 +198,8 @@ module AbTests
         IdentityConfig.store.doc_auth_passport_vendor_lexis_nexis_percent : 0,
       lexis_nexis_ddp: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
         IdentityConfig.store.doc_auth_passport_vendor_lexis_nexis_ddp_percent : 0,
+      incode: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_passport_vendor_incode_percent : 0,
     }.compact,
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
@@ -273,6 +277,16 @@ module AbTests
     should_log: /^idv/i,
     buckets: {
       allowed: IdentityConfig.store.idv_superior_evidence_skip_phone_verification_enabled_percent,
+    },
+  ) do |user:, user_session:, **|
+    user&.uuid
+  end.freeze
+
+  ITIN_ENABLED = AbTest.new(
+    experiment_name: 'ITIN enabled',
+    should_log: /^idv/i,
+    buckets: {
+      idv_itin_enabled: IdentityConfig.store.idv_itin_enabled_percentage,
     },
   ) do |user:, user_session:, **|
     user&.uuid

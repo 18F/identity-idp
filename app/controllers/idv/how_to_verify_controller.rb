@@ -41,7 +41,7 @@ module Idv
           redirect_to idv_clear1_session_url
         elsif how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
           opt_out_of_in_person_proofing
-          redirect_to idv_choose_id_type_url
+          redirect_to remote_destination_url
         else
           return render_not_found unless in_person_proofing_route_enabled?
 
@@ -94,6 +94,13 @@ module Idv
       idv_session.skip_doc_auth_from_how_to_verify = false
       idv_session.flow_path = 'standard'
       abandon_any_ipp_progress
+    end
+
+    def remote_destination_url
+      return idv_choose_id_type_url unless idv_session.phone_first_flow?
+      return idv_document_capture_url if idv_session.standard_flow_document_capture_eligible?
+
+      idv_how_to_verify_url
     end
 
     def analytics_arguments
