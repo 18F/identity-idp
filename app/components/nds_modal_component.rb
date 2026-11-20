@@ -20,7 +20,7 @@ class NDSModalComponent < ModalComponent
   end
 
   def nds_css_class
-    ['modal', ('modal--wide' if wide), *tag_options[:class]].compact
+    ['modal', ('modal--wide' if wide)].compact
   end
 
   def body_css_class
