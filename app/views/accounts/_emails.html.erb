@@ -1,3 +1,45 @@
+<% if nds_layout? %>
+  <% if flash[:email_error] %>
+    <%= render AlertComponent.new(type: :error, id: 'emails', message: flash[:email_error]) %>
+  <% end %>
+  <div class="account__panel">
+    <ul class="account__rows">
+      <% @presenter.user.visible_email_addresses.each do |email| %>
+        <li class="account__row">
+          <div class="account__row-main">
+            <p class="account__row-text">
+              <%= email.email %>
+              <% unless email.confirmed_at %>
+                <%= render BadgeComponent.new(variant: :warning, class: 'account__badge')
+                      .with_content(t('nds.dashboard_account.unconfirmed')) %>
+              <% end %>
+            </p>
+          </div>
+          <% if EmailPolicy.new(current_user).can_delete_email?(email) %>
+            <div class="account__row-actions">
+              <%= render ButtonComponent.new(
+                    url: manage_email_confirm_delete_url(id: email.id),
+                    variant: :tertiary,
+                    size: :md,
+                  ).with_content(
+                    safe_join([t('forms.buttons.delete'), tag.span(" #{email.email}", class: 'usa-sr-only')]),
+                  ) %>
+            </div>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+    <% if EmailPolicy.new(current_user).can_add_email? %>
+      <div class="account__panel-action">
+        <%= render ButtonComponent.new(
+              url: add_email_path,
+              variant: :secondary,
+              size: :md,
+            ).with_content(t('account.navigation.add_email')) %>
+      </div>
+    <% end %>
+  </div>
+<% else %>
 <div class="border-bottom border-primary-light">
   <div class="margin-bottom-1 margin-top-0">
     <h3 class="margin-0">
@@ -37,4 +79,5 @@
         icon: :add,
         class: 'margin-top-2',
       ).with_content(t('account.index.email_add')) %>
+<% end %>
 <% end %>
