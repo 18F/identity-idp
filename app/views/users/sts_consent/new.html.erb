@@ -1,5 +1,94 @@
 <% self.title = t('titles.sts_consent', america_gov_name: AMERICA_GOV_NAME) %>
 
+<% if nds_layout? %>
+  <%= simple_form_for(@sts_consent_form, url: sts_consent_path, method: :post) do |f| %>
+    <%= f.hidden_field(:consent_given, value: StsConsentForm::CONSENT_GIVEN_VALUE) %>
+
+    <%= render NDS::FormPageComponent.new(
+          title: t('nds.sts_consent.heading', america_gov_name: AMERICA_GOV_NAME),
+          subtitle: t(
+            'nds.sts_consent.description',
+            america_gov_name: AMERICA_GOV_NAME,
+            app_name: APP_NAME,
+          ),
+        ) do |page| %>
+      <% page.with_body do %>
+        <div class="consent">
+          <ul class="consent__services">
+            <li>
+              <details class="consent-service">
+                <summary class="consent-service__summary">
+                  <%= image_tag(
+                        asset_url('sp-logos/DOS.svg'),
+                        width: 48,
+                        height: 48,
+                        alt: '',
+                        class: 'agency-seal',
+                      ) %>
+                  <span class="consent-service__content">
+                    <span class="consent-service__title"><%= t('nds.sts_consent.agency_name') %></span>
+                    <span class="consent-service__description">
+                      <%= t('nds.sts_consent.agency_description') %>
+                    </span>
+                  </span>
+                  <%= render NDS::IconComponent.new(
+                        icon: :chevron_down,
+                        size: 20,
+                        class: 'consent-service__chevron',
+                      ) %>
+                </summary>
+                <div class="consent-service__details">
+                  <div class="consent-service__section">
+                    <h2 class="consent-service__label"><%= t('sts_consent.about_heading') %></h2>
+                    <p class="consent-service__text"><%= t('nds.sts_consent.about_description') %></p>
+                  </div>
+                  <div class="consent-service__section">
+                    <h2 class="consent-service__label">
+                      <%= t('nds.sts_consent.permissions_heading', america_gov_name: AMERICA_GOV_NAME) %>
+                    </h2>
+                    <p class="consent-service__text">
+                      <%= t('nds.sts_consent.permissions_description') %>
+                    </p>
+                  </div>
+                  <div class="consent-service__section">
+                    <h2 class="consent-service__label">
+                      <%= t(
+                            'nds.sts_consent.shared_information_heading',
+                            america_gov_name: AMERICA_GOV_NAME,
+                          ) %>
+                    </h2>
+                    <p class="consent-service__text">
+                      <%= t('nds.sts_consent.shared_information_description') %>
+                    </p>
+                  </div>
+                  <%= new_tab_link_to(
+                        t('nds.otp_verification.learn_more'),
+                        'https://mytravel.state.gov/s/',
+                        class: 'usa-link consent-service__link',
+                      ) %>
+                </div>
+              </details>
+            </li>
+          </ul>
+        </div>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+                full_width: true,
+              ).with_content(t('nds.sts_consent.allow')) %>
+          <%= render ButtonComponent.new(
+                url: sts_consent_cancel_path,
+                variant: :tertiary,
+                full_width: true,
+              ).with_content(t('sts_consent.cancel_and_return', america_gov_name: AMERICA_GOV_NAME)) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('sts_consent.heading', america_gov_name: AMERICA_GOV_NAME)) %>
 
 <p><%= t('sts_consent.content', america_gov_name: AMERICA_GOV_NAME) %></p>
@@ -60,4 +149,5 @@
         t('sts_consent.cancel_and_return', america_gov_name: AMERICA_GOV_NAME),
         sts_consent_cancel_path,
       ) %>
+<% end %>
 <% end %>
