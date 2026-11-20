@@ -1665,6 +1665,12 @@ nds.choose_id_type.verify_in_person: Verify in person
 nds.completions.heading_idv: Identity verified
 nds.completions.intro_html: By selecting Continue, you agree to share the information below with %{sp_html} and go to their site.
 nds.completions.nist_alt: 'NIST seal: Encrypted. Protected. Proven. National Institute of Standards and Technology'
+nds.dashboard_history.details: Details
+nds.dashboard_history.log_out_all_devices: Log out of all devices
+nds.dashboard_history.log_out_all_devices_description: We’ll need additional information to know that it’s actually you signing in to your account. We’ll ask for a multi-factor authentication method each time you want to access your account.
+nds.dashboard_history.log_out_all_devices_heading: Log out of all devices?
+nds.dashboard_history.signed_in_with: Signed in with %{service_provider}
+nds.dashboard_history.signed_in_with_html: Signed in with %{service_provider_link_html}
 nds.document_capture.mdl_alert_body: Other digital wallets will be supported later this year.
 nds.document_capture.mdl_alert_title: Currently supported with Google Wallet and Samsung Wallet.
 nds.document_capture.mdl_heading: Add your mobile driver’s license information
