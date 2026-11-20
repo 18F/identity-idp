@@ -5,6 +5,36 @@ locals:
 * name: Slug describing warning screen, for use in analytics.
 * heading: Heading text, defaults to idv.failure.phone.heading
 %>
+<% if nds_layout? %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(step: :verification, substep: 8) %>
+  <% end %>
+
+  <%= render(
+        'idv/shared/error',
+        type: :warning,
+        title: t('titles.failure.phone_verification'),
+        heading: local_assigns.fetch(:heading, t('idv.failure.phone.heading')),
+        action: {
+          text: t('idv.failure.button.warning'),
+          url: idv_phone_path,
+        },
+        options: [
+          @gpo_letter_available && {
+            text: t('idv.troubleshooting.options.verify_by_mail'),
+            url: idv_request_letter_path,
+          },
+          local_assigns[:contact_support_option] && {
+            url: contact_redirect_url,
+            text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
+            new_tab: true,
+          },
+        ].select(&:present?),
+        troubleshooting_heading: '',
+      ) do %>
+    <div class="copy copy--muted"><%= yield %></div>
+  <% end %>
+<% else %>
 <%= render(
       'idv/shared/error',
       type: :warning,
@@ -38,3 +68,4 @@ locals:
         },
       ].select(&:present?),
     ) { yield } %>
+<% end %>

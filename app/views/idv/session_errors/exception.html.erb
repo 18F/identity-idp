@@ -1,3 +1,31 @@
+<% if nds_layout? %>
+  <%= render(
+        'idv/shared/error',
+        type: :warning,
+        heading: t('idv.failure.sessions.exception'),
+        action: {
+          text: t('idv.failure.button.warning'),
+          url: @try_again_path,
+        },
+        options: [
+          {
+            url: contact_redirect_url,
+            text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
+            new_tab: true,
+          },
+        ],
+        troubleshooting_heading: '',
+      ) do %>
+    <div class="copy copy--muted">
+      <p>
+        <%= t(
+              'idv.failure.exceptions.text_html',
+              link_html: link_to(t('idv.failure.exceptions.link'), contact_redirect_url),
+            ) %>
+      </p>
+    </div>
+  <% end %>
+<% else %>
 <%= render(
       'idv/shared/error',
       type: :warning,
@@ -21,3 +49,4 @@
             ) %>
       </p>
     <% end %>
+<% end %>
