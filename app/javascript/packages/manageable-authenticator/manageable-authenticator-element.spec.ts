@@ -432,4 +432,189 @@ describe('ManageableAuthenticatorElement', () => {
       });
     });
   });
+
+  context('with inline rename markup', () => {
+    function createInlineElement() {
+      document.body.innerHTML = `
+        <lg-manageable-authenticator
+          api-url="${window.location.origin}/api/manage"
+          configuration-name="configuration-name"
+          unique-id="configuration-123"
+          reauthenticate-at="2023-12-07T00:10:00.000Z"
+          reauthentication-url="#reauthenticate"
+          inline-rename
+        >
+          <script type="application/json" class="manageable-authenticator__strings">
+            {"renamed":"Renamed","delete_confirm":"Are you sure?","deleted":"Deleted"}
+          </script>
+          <div class="manageable-authenticator__alert-container" hidden>
+            <div class="usa-alert manageable-authenticator__alert" tabindex="-1" role="status">
+              <div class="usa-alert__body">
+                <p class="usa-alert__text"></p>
+              </div>
+            </div>
+          </div>
+          <div class="manageable-authenticator__summary">
+            <p><span class="manageable-authenticator__name">configuration-name</span></p>
+            <button name="button" type="button" class="manageable-authenticator__manage-button">
+              <span aria-hidden="true">Manage</span>
+              <span class="usa-sr-only" id="manageable-authenticator-manage-accessible-label-configuration-123">
+                Manage <span class="manageable-authenticator__name">configuration-name</span>
+              </span>
+            </button>
+          </div>
+          <div class="manageable-authenticator__edit" tabindex="-1" role="group" aria-labelledby="manageable-authenticator-manage-accessible-label-configuration-123" hidden>
+            <form class="manageable-authenticator__rename">
+              <label for="nickname">Nickname</label>
+              <input id="nickname" class="manageable-authenticator__rename-input" value="configuration-name">
+              <lg-spinner-button class="manageable-authenticator__delete-button" long-wait-duration-ms="Infinity">
+                <button name="button" type="button" class="usa-button">
+                  <span class="spinner-button__content">Delete</span>
+                </button>
+                <div role="status" data-message="Deleting…" class="spinner-button__action-message"></div>
+              </lg-spinner-button>
+              <lg-spinner-button class="manageable-authenticator__save-rename-button" long-wait-duration-ms="Infinity">
+                <button name="button" type="submit" class="usa-button">
+                  <span class="spinner-button__content">Save</span>
+                </button>
+                <div role="status" data-message="Saving…" class="spinner-button__action-message"></div>
+              </lg-spinner-button>
+            </form>
+          </div>
+        </lg-manageable-authenticator>
+      `;
+
+      return document.body.querySelector('lg-manageable-authenticator')!;
+    }
+
+    const getSummary = (element: HTMLElement) =>
+      element.querySelector<HTMLElement>('.manageable-authenticator__summary')!;
+    const getEdit = (element: HTMLElement) =>
+      element.querySelector<HTMLElement>('.manageable-authenticator__edit')!;
+    const getAlert = (element: HTMLElement) =>
+      element.querySelector<HTMLElement>('.manageable-authenticator__alert')!;
+    const getAlertContainer = (element: HTMLElement) =>
+      element.querySelector<HTMLElement>('.manageable-authenticator__alert-container')!;
+
+    async function openInlineEditor(element: HTMLElement) {
+      await userEvent.click(screen.getByRole('button', { name: 'Manage configuration-name' }));
+      await waitFor(() =>
+        expect(element.classList.contains('manageable-authenticator--editing')).to.be.true(),
+      );
+    }
+
+    it('shows the summary and hides the editor initially', () => {
+      const element = createInlineElement();
+
+      expect(getSummary(element).hidden).to.be.false();
+      expect(getEdit(element).hidden).to.be.true();
+      expect(getAlertContainer(element).hidden).to.be.true();
+    });
+
+    it('opens the rename form in place of the summary when clicking manage', async () => {
+      const element = createInlineElement();
+
+      await openInlineEditor(element);
+
+      expect(element.classList.contains('manageable-authenticator--renaming')).to.be.true();
+      expect(getSummary(element).hidden).to.be.true();
+      expect(getEdit(element).hidden).to.be.false();
+      const renameInput = screen.getByRole<HTMLInputElement>('textbox', { name: 'Nickname' });
+      expect(document.activeElement).to.equal(renameInput);
+      expect(renameInput.value).to.equal('configuration-name');
+    });
+
+    it('returns to the summary and focuses manage when pressing escape', async () => {
+      const element = createInlineElement();
+
+      await openInlineEditor(element);
+      await userEvent.keyboard('{Escape}');
+
+      expect(element.classList.contains('manageable-authenticator--editing')).to.be.false();
+      expect(getSummary(element).hidden).to.be.false();
+      expect(getEdit(element).hidden).to.be.true();
+      expect(document.activeElement).to.equal(
+        screen.getByRole('button', { name: 'Manage configuration-name' }),
+      );
+    });
+
+    context('successful response from server when submitting rename', () => {
+      beforeEach(() => {
+        server.use(
+          http.put('/api/manage', async ({ request }) => {
+            const { name } = (await request.json()) as { name: string };
+            return name === 'configuration-name-new'
+              ? HttpResponse.json({ success: true })
+              : HttpResponse.json({ error: 'Unexpected name' }, { status: 400 });
+          }),
+        );
+      });
+
+      it('saves the name and returns to the summary with a confirmation', async () => {
+        const element = createInlineElement();
+
+        await openInlineEditor(element);
+        await userEvent.keyboard('-new');
+        await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+        const alert = getAlert(element);
+        await waitFor(() => expect(alert.textContent!.trim()).to.equal('Renamed'));
+        expect(getAlertContainer(element).hidden).to.be.false();
+        expect(alert.classList.contains('usa-alert--success')).to.be.true();
+        expect(element.classList.contains('manageable-authenticator--editing')).to.be.false();
+        expect(getSummary(element).hidden).to.be.false();
+        expect(getEdit(element).hidden).to.be.true();
+        expect(document.activeElement).to.equal(
+          screen.getByRole('button', { name: 'Manage configuration-name-new' }),
+        );
+        expect(element.getAttribute('configuration-name')).to.equal('configuration-name-new');
+      });
+    });
+
+    context('failed response from server when submitting rename', () => {
+      beforeEach(() => {
+        server.use(
+          http.put('/api/manage', () => HttpResponse.json({ error: 'Uh oh!' }, { status: 400 })),
+        );
+      });
+
+      it('keeps the rename form open and shows the error', async () => {
+        const element = createInlineElement();
+
+        await openInlineEditor(element);
+        await userEvent.keyboard('-new');
+        await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+        const alert = getAlert(element);
+        await waitFor(() => expect(alert.textContent!.trim()).to.equal('Uh oh!'));
+        expect(getAlertContainer(element).hidden).to.be.false();
+        expect(alert.classList.contains('usa-alert--error')).to.be.true();
+        expect(element.classList.contains('manageable-authenticator--editing')).to.be.true();
+        expect(getEdit(element).hidden).to.be.false();
+        expect(getSummary(element).hidden).to.be.true();
+      });
+    });
+
+    context('successful response from server when deleting', () => {
+      beforeEach(() => {
+        server.use(http.delete('/api/manage', () => HttpResponse.json({ success: true })));
+      });
+
+      it('hides the summary and editor and focuses the confirmation', async () => {
+        const element = createInlineElement();
+
+        await openInlineEditor(element);
+        sandbox.stub(window, 'confirm').returns(true);
+        await userEvent.click(screen.getByRole('button', { name: 'Delete' }));
+
+        const alert = getAlert(element);
+        await waitFor(() => expect(alert.textContent!.trim()).to.equal('Deleted'));
+        expect(element.classList.contains('manageable-authenticator--deleted')).to.be.true();
+        expect(getAlertContainer(element).hidden).to.be.false();
+        expect(getSummary(element).hidden).to.be.true();
+        expect(getEdit(element).hidden).to.be.true();
+        expect(document.activeElement).to.equal(alert);
+      });
+    });
+  });
 });

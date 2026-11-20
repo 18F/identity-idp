@@ -1,0 +1,42 @@
+<%#
+  NDS Security tab section for one kind of manageable authenticator.
+
+  locals:
+  * heading: Section heading.
+  * configurations: The user's configurations of this kind.
+  * nickname_label: Label for the inline nickname field.
+  * manage_url: Lambda returning the manage page path for a configuration.
+  * manage_api_url: Lambda returning the manage API path for a configuration.
+  * custom_strings: Strings for ManageableAuthenticatorComponent.
+  * details: Optional lambda returning the text after a configuration's nickname.
+  * add_label: Label for the add button.
+  * add_url: URL for the add button, or nil to hide it.
+%>
+<section class="auth-methods__section">
+  <h2 class="auth-methods__heading"><%= heading %></h2>
+  <div class="auth-methods__panel">
+    <% if configurations.any? %>
+      <div class="auth-methods__rows" role="list">
+        <% configurations.each do |configuration| %>
+          <%= render NDS::ManageableAuthenticatorComponent.new(
+                configuration:,
+                user_session:,
+                manage_url: manage_url.call(configuration),
+                manage_api_url: manage_api_url.call(configuration),
+                custom_strings:,
+                nickname_label:,
+                details: local_assigns[:details]&.call(configuration),
+                role: 'listitem',
+              ) %>
+        <% end %>
+      </div>
+    <% end %>
+    <% if add_url %>
+      <%= render ButtonComponent.new(
+            url: add_url,
+            variant: :secondary,
+            size: :md,
+          ).with_content(add_label) %>
+    <% end %>
+  </div>
+</section>

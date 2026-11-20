@@ -1,5 +1,111 @@
 <% self.title = t('account.navigation.two_factor_authentication') %>
 
+<% if nds_layout? %>
+  <% mfa = MfaContext.new(current_user) %>
+  <div class="auth-methods">
+    <h1 class="usa-sr-only"><%= t('headings.account.two_factor') %></h1>
+
+    <%= render 'accounts/two_factor_authentication/nds_authenticators',
+               heading: t('nds.mfa_setup.options.webauthn_platform'),
+               configurations: mfa.webauthn_platform_configurations,
+               nickname_label: t('nds.dashboard_security.webauthn_platform_nickname'),
+               manage_url: ->(configuration) { edit_webauthn_path(id: configuration.id) },
+               manage_api_url: ->(configuration) { api_internal_two_factor_authentication_webauthn_path(id: configuration.id) },
+               custom_strings: {
+                 deleted: t('two_factor_authentication.webauthn_platform.deleted'),
+                 renamed: t('two_factor_authentication.webauthn_platform.renamed'),
+                 manage_accessible_label: t('two_factor_authentication.webauthn_platform.manage_accessible_label'),
+               },
+               add_label: t('nds.webauthn_platform_recommended.cta'),
+               add_url: webauthn_setup_path(platform: true) %>
+
+    <%= render 'accounts/two_factor_authentication/nds_authenticators',
+               heading: t('nds.mfa_setup.options.auth_app'),
+               configurations: mfa.auth_app_configurations,
+               nickname_label: t('nds.totp_setup.new.nickname_label'),
+               manage_url: ->(configuration) { edit_auth_app_path(id: configuration.id) },
+               manage_api_url: ->(configuration) { api_internal_two_factor_authentication_auth_app_path(id: configuration.id) },
+               custom_strings: {
+                 deleted: t('two_factor_authentication.auth_app.deleted'),
+                 renamed: t('two_factor_authentication.auth_app.renamed'),
+                 manage_accessible_label: t('two_factor_authentication.auth_app.manage_accessible_label'),
+               },
+               add_label: t('account.index.auth_app_add'),
+               add_url: (authenticator_setup_url if current_user.auth_app_configurations.count < IdentityConfig.store.max_auth_apps_per_account) %>
+
+    <section class="auth-methods__section">
+      <h2 class="auth-methods__heading"><%= t('account.index.backup_codes') %></h2>
+      <div class="auth-methods__panel">
+        <div class="auth-methods__row">
+          <% if TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured? %>
+            <p class="auth-methods__row-text">
+              <%= t('account.index.backup_codes_exist') %>
+              <%= render TimeComponent.new(time: @presenter.backup_codes_generated_at) %>
+            </p>
+            <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
+              <div class="auth-methods__row-actions">
+                <%= render ButtonComponent.new(
+                      url: backup_code_delete_path,
+                      variant: :tertiary,
+                      size: :md,
+                    ).with_content(t('forms.buttons.delete')) %>
+              </div>
+            <% end %>
+          <% else %>
+            <p class="auth-methods__row-text"><%= t('account.index.backup_codes_no_exist') %></p>
+          <% end %>
+        </div>
+        <% if TwoFactorAuthentication::BackupCodePolicy.new(@presenter.user).configured? %>
+          <%= render ButtonComponent.new(
+                url: backup_code_regenerate_path,
+                variant: :secondary,
+                size: :md,
+              ).with_content(t('forms.backup_code.regenerate')) %>
+        <% else %>
+          <%= render ButtonComponent.new(
+                url: backup_code_setup_path,
+                variant: :secondary,
+                size: :md,
+              ).with_content(t('forms.backup_code.generate')) %>
+        <% end %>
+      </div>
+    </section>
+
+    <%= render 'accounts/two_factor_authentication/nds_authenticators',
+               heading: t('account.index.webauthn'),
+               configurations: mfa.webauthn_roaming_configurations,
+               nickname_label: t('nds.dashboard_security.webauthn_nickname'),
+               manage_url: ->(configuration) { edit_webauthn_path(id: configuration.id) },
+               manage_api_url: ->(configuration) { api_internal_two_factor_authentication_webauthn_path(id: configuration.id) },
+               custom_strings: {
+                 deleted: t('two_factor_authentication.webauthn_roaming.deleted'),
+                 renamed: t('two_factor_authentication.webauthn_roaming.renamed'),
+                 manage_accessible_label: t('two_factor_authentication.webauthn_roaming.manage_accessible_label'),
+               },
+               add_label: t('nds.dashboard_security.webauthn_add'),
+               add_url: webauthn_setup_path %>
+
+    <%= render 'accounts/two_factor_authentication/nds_authenticators',
+               heading: t('headings.account.government_employee_id'),
+               configurations: mfa.piv_cac_configurations,
+               nickname_label: t('nds.piv_cac_setup.nickname'),
+               manage_url: ->(configuration) { edit_piv_cac_path(id: configuration.id) },
+               manage_api_url: ->(configuration) { api_internal_two_factor_authentication_piv_cac_path(id: configuration.id) },
+               custom_strings: {
+                 deleted: t('two_factor_authentication.piv_cac.deleted'),
+                 renamed: t('two_factor_authentication.piv_cac.renamed'),
+                 manage_accessible_label: t('two_factor_authentication.piv_cac.manage_accessible_label'),
+               },
+               details: ->(configuration) do
+                 t(
+                   'nds.dashboard_security.piv_cac_added_on',
+                   date: l(configuration.created_at, format: :event_date),
+                 )
+               end,
+               add_label: t('account.index.piv_cac_add'),
+               add_url: (setup_piv_cac_url if current_user.piv_cac_configurations.count < IdentityConfig.store.max_piv_cac_per_account) %>
+  </div>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('headings.account.two_factor')) %>
 
 <div class="card">
@@ -32,4 +138,5 @@
   <div class="card">
     <%= render 'accounts/manage_personal_key' %>
   </div>
+<% end %>
 <% end %>
