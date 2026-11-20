@@ -5,7 +5,7 @@ module Idv
     include ActiveModel::Model
     include FormSsnFormatValidator
 
-    attr_accessor :ssn
+    attr_accessor :ssn, :itin
 
     def self.model_name
       ActiveModel::Name.new(self, nil, 'doc_auth')

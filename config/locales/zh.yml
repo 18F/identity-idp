@@ -681,10 +681,12 @@ doc_auth.headings.document_capture_subheader_selfie_review: 自拍照
 doc_auth.headings.front: 驾照或州政府颁发身份证件的正面
 doc_auth.headings.how_to_verify: 选择如何验证你的身份证件
 doc_auth.headings.interstitial: 我们正在处理您的信息。
+doc_auth.headings.itin: 请输入您的个人纳税识别号
 doc_auth.headings.lets_go: 你的身份是如何验证的
 doc_auth.headings.mailing_address: 输入你的邮寄地址
 doc_auth.headings.mdl_capture: 添加您的移动驾驶证 （mDL） 信息
 doc_auth.headings.no_ssn: 没有社会保障号码？
+doc_auth.headings.no_ssn_or_itin: 没有社会安全号码或个人纳税识别号码？
 doc_auth.headings.passport: 你的护照
 doc_auth.headings.passport_capture: 添加一张你护照的照片
 doc_auth.headings.passport_card: 你的护照卡
@@ -732,6 +734,7 @@ doc_auth.info.image_loading: 图像加载中
 doc_auth.info.image_updated: 图像已上传
 doc_auth.info.interstitial_eta: 可能需要一分钟时间这一步完成后，我们会自动加载下一步。
 doc_auth.info.interstitial_thanks: 感谢你的耐心！
+doc_auth.info.itin: 我们需要您的个人纳税识别号来核实您的姓名、出生日期和地址。
 doc_auth.info.keep_window_open: 请勿关闭此窗口。
 doc_auth.info.learn_more: 对于我们如何保护你的敏感信息获得更多了解
 doc_auth.info.lets_go: 身份验证包括两部分：
@@ -741,6 +744,7 @@ doc_auth.info.link_sent_complete_polling: 你在手机上验证身份后，下�
 doc_auth.info.mailing_address: 我们会将包含验证码的信件邮寄到这个地址。
 doc_auth.info.manual_capture_mode: 请自己拍照。
 doc_auth.info.no_ssn: 你必须有社会保障号码才能完成身份验证。
+doc_auth.info.no_ssn_or_itin: 您必须拥有社会安全号码 (SSN) 或个人纳税识别号码 (ITIN) 才能完成身份验证。
 doc_auth.info.passport_capture: 拍摄一张你护照本的数据页的照片。数据页上有你的护照照片和个人信息。
 doc_auth.info.passport_capture_help_1: 将护照本的数据页与各个引导线对齐。
 doc_auth.info.passport_capture_help_2: 拿稳相机，等待工具拍照。
@@ -1009,6 +1013,7 @@ forms.buttons.verify_with_clear1: Verify with CLEAR
 forms.confirmation.show_hdr: 设一个强密码
 forms.email.buttons.delete: 删除电邮地址
 forms.example: 举例：
+forms.itin.show: 显示个人纳税人识别号
 forms.messages.public_shared_device_html: 选择这个可在得到支持的网站上跳过身份证实。如果你使用的是公共或共享设备，<strong>请勿</strong>选择“记住此浏览器”。
 forms.messages.remember_device: 记住这个浏览器
 forms.password: 密码
@@ -1253,6 +1258,7 @@ idv.form.dob: 生日
 idv.form.first_name: 名
 idv.form.id_number: 身份证件号
 idv.form.issuing_state: 颁发州
+idv.form.itin_label: 個人納稅識別號碼 (ITIN)
 idv.form.last_name: 姓
 idv.form.password: 密码
 idv.form.ssn: 社会保障号码

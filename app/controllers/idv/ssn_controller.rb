@@ -22,6 +22,7 @@ module Idv
         sp_name: decorated_sp_session.sp_name,
         ssn_form: Idv::SsnFormatForm.new(idv_session.ssn),
         step_indicator_steps: step_indicator_steps,
+        itin_enabled: itin_enabled?,
       )
 
       if ssn_presenter.updating_ssn?
@@ -105,6 +106,10 @@ module Idv
 
     def ssn_params
       params.require(:doc_auth).permit(:ssn)
+    end
+
+    def itin_enabled?
+      ab_test_bucket(:ITIN_ENABLED) == :idv_itin_enabled
     end
   end
 end

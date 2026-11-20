@@ -681,10 +681,12 @@ doc_auth.headings.document_capture_subheader_selfie_review: Selfi
 doc_auth.headings.front: Frente de su licencia de conducir o identificación estatal
 doc_auth.headings.how_to_verify: Elija cómo desea verificar su identidad
 doc_auth.headings.interstitial: Estamos procesando su información.
+doc_auth.headings.itin: Ingrese su número de identificación personal del contribuyente del IRS (ITIN)
 doc_auth.headings.lets_go: Cómo funciona la verificación de su identidad
 doc_auth.headings.mailing_address: Ingrese su dirección postal
 doc_auth.headings.mdl_capture: Añada la información de su licencia de conducir móvil (mDL)
 doc_auth.headings.no_ssn: '¿No tiene un número de Seguro Social?'
+doc_auth.headings.no_ssn_or_itin: '¿No tienes número de seguro social (SSN) ni número de identificación fiscal (ITIN)?'
 doc_auth.headings.passport: Su pasaporte
 doc_auth.headings.passport_capture: Agregue una foto de su pasaporte
 doc_auth.headings.passport_card: Su tarjeta de pasaporte
@@ -732,6 +734,7 @@ doc_auth.info.image_loading: Cargando la imagen
 doc_auth.info.image_updated: Imagen actualizada
 doc_auth.info.interstitial_eta: Esto podría tardar hasta un minuto. Cargaremos el siguiente paso automáticamente cuando esté terminado.
 doc_auth.info.interstitial_thanks: Gracias por su paciencia
+doc_auth.info.itin: Necesitamos su número de identificación fiscal individual para verificar su nombre, fecha de nacimiento y dirección.
 doc_auth.info.keep_window_open: No cierre esta ventana.
 doc_auth.info.learn_more: Obtenga más información sobre cómo protegemos su información confidencial
 doc_auth.info.lets_go: 'La verificación de la identidad se efectúa en dos partes:'
@@ -741,6 +744,7 @@ doc_auth.info.link_sent_complete_polling: El siguiente paso se cargará automát
 doc_auth.info.mailing_address: Enviaremos la carta con un código de verificación a esta dirección.
 doc_auth.info.manual_capture_mode: Tome la foto usted mismo.
 doc_auth.info.no_ssn: Debe tener un número de Seguro Social para finalizar la verificación de su identidad.
+doc_auth.info.no_ssn_or_itin: Debe tener un SSN o ITIN para finalizar la verificación de su identidad.
 doc_auth.info.passport_capture: Tome una fotografía de la página de datos de su pasaporte, es decir, de la página que muestra su foto y su información personal.
 doc_auth.info.passport_capture_help_1: Alinee la página de datos de su pasaporte con las líneas de guía.
 doc_auth.info.passport_capture_help_2: Manténgalo fijo y espere a que la cámara tome la foto.
@@ -1009,6 +1013,7 @@ forms.buttons.verify_with_clear1: Verify with CLEAR
 forms.confirmation.show_hdr: Crear una contraseña segura
 forms.email.buttons.delete: Eliminar dirección de correo electrónico
 forms.example: 'Ejemplo:'
+forms.itin.show: Mostrar número de identificación personal del contribuyente (ITIN)
 forms.messages.public_shared_device_html: Marque esta casilla para omitir la autenticación en los sitios compatibles. Si está usando un dispositivo público o compartido, <strong>NO</strong> seleccione “Recordar este navegador”.
 forms.messages.remember_device: Recuerde este navegador
 forms.password: Contraseña
@@ -1251,6 +1256,7 @@ idv.form.dob: Fecha de nacimiento
 idv.form.first_name: Nombre
 idv.form.id_number: Número de identificación
 idv.form.issuing_state: Estado emisor
+idv.form.itin_label: Número de identificación personal del contribuyente (ITIN)
 idv.form.last_name: Apellido
 idv.form.password: Contraseña
 idv.form.ssn: Número de Seguro Social

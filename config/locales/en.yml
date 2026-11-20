@@ -670,10 +670,12 @@ doc_auth.headings.document_capture_subheader_selfie_review: Selfie
 doc_auth.headings.front: Front of your driver’s license or state ID
 doc_auth.headings.how_to_verify: Choose how to verify your ID
 doc_auth.headings.interstitial: We are processing your information
+doc_auth.headings.itin: Enter your Individual Taxpayer Identification Number
 doc_auth.headings.lets_go: How verifying your identity works
 doc_auth.headings.mailing_address: Enter your mailing address
 doc_auth.headings.mdl_capture: Add your mobile driver’s license (mDL) information
 doc_auth.headings.no_ssn: Don’t have a Social Security number?
+doc_auth.headings.no_ssn_or_itin: Don’t have a SSN or ITIN?
 doc_auth.headings.passport: Your passport
 doc_auth.headings.passport_capture: Add a photo of your passport
 doc_auth.headings.passport_card: Your passport card
@@ -721,6 +723,7 @@ doc_auth.info.image_loading: Image loading
 doc_auth.info.image_updated: Image updated
 doc_auth.info.interstitial_eta: This might take up to a minute. We’ll load the next step automatically when it’s done.
 doc_auth.info.interstitial_thanks: Thanks for your patience!
+doc_auth.info.itin: We need your Individual Taxpayer Identification Number to verify your name, date of birth and address.
 doc_auth.info.keep_window_open: Do not close this window.
 doc_auth.info.learn_more: Learn more about how we protect your sensitive information
 doc_auth.info.lets_go: 'Identity verification happens in two parts:'
@@ -730,6 +733,7 @@ doc_auth.info.link_sent_complete_polling: The next step will load automatically 
 doc_auth.info.mailing_address: We’ll mail the letter with a verification code to this address.
 doc_auth.info.manual_capture_mode: Take the photo yourself.
 doc_auth.info.no_ssn: You must have a Social Security number to finish verifying your identity.
+doc_auth.info.no_ssn_or_itin: You must have a SSN or ITIN to finish verifying your identity.
 doc_auth.info.passport_capture: Take a photo of the data page of your passport book. This page has your passport photo and personal information.
 doc_auth.info.passport_capture_help_1: Line up the data page of your passport book with the guide lines.
 doc_auth.info.passport_capture_help_2: Hold still and wait for the tool to capture a photo.
@@ -998,6 +1002,7 @@ forms.buttons.verify_with_clear1: Verify with CLEAR
 forms.confirmation.show_hdr: Create a strong password
 forms.email.buttons.delete: Delete email address
 forms.example: 'Example:'
+forms.itin.show: Show Individual Taxpayer Identification Number
 forms.messages.public_shared_device_html: Select this to skip authentication on supported sites. <strong>DO NOT</strong> select “Remember this browser” if you are on a public or shared device.
 forms.messages.remember_device: Remember this browser
 forms.password: Password
@@ -1240,6 +1245,7 @@ idv.form.dob: Date of birth
 idv.form.first_name: First name
 idv.form.id_number: ID number
 idv.form.issuing_state: Issuing state
+idv.form.itin_label: Individual Taxpayer Identification Number
 idv.form.last_name: Last name
 idv.form.password: Password
 idv.form.ssn: Social Security number

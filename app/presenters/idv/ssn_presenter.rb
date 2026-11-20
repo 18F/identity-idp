@@ -6,10 +6,11 @@ module Idv
 
     attr_reader :sp_name, :ssn_form, :step_indicator_steps
 
-    def initialize(sp_name:, ssn_form:, step_indicator_steps:)
+    def initialize(sp_name:, ssn_form:, step_indicator_steps:, itin_enabled: false)
       @sp_name = sp_name
       @ssn_form = ssn_form
       @step_indicator_steps = step_indicator_steps
+      @itin_enabled = itin_enabled
     end
 
     def exit_text
@@ -22,6 +23,10 @@ module Idv
 
     def updating_ssn?
       ssn_form.updating_ssn?
+    end
+
+    def itin_enabled?
+      @itin_enabled
     end
   end
 end
