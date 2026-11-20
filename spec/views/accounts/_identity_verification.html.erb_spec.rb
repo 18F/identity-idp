@@ -14,6 +14,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
   subject(:rendered) { render partial: 'accounts/identity_verification' }
 
   before do
+    allow(view).to receive(:nds_layout?).and_return(false)
     @presenter = AccountShowPresenter.new(
       decrypted_pii: nil,
       sp_session_request_url: nil,
@@ -413,6 +414,231 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
             t('account.index.verification.connect_idv_account.intro'),
           ),
         )
+      end
+    end
+  end
+
+  it 'does not render the NDS identity verification section in the default layout' do
+    expect(rendered).to_not have_css('.account__section')
+  end
+
+  context 'in the NDS layout' do
+    let(:decrypted_pii) { nil }
+    let(:locked_for_session) { false }
+
+    before do
+      allow(view).to receive(:nds_layout?).and_return(true)
+      @presenter = AccountShowPresenter.new(
+        decrypted_pii:,
+        sp_session_request_url: nil,
+        authn_context:,
+        sp_name:,
+        user:,
+        locked_for_session:,
+      )
+    end
+
+    def expect_row(text, link_text:, href:)
+      expect(rendered).to have_css('.account__panel .account__row-text', text:)
+      expect(rendered).to have_link(
+        link_text,
+        href:,
+        class: %w[usa-button--tertiary usa-button--md],
+      )
+      expect(rendered).to_not have_css('.usa-accordion')
+    end
+
+    context 'with an unproofed user and a partner requesting identity verification' do
+      let(:sp_name) { 'Example SP' }
+      let(:acr_values) do
+        [
+          Saml::Idp::Constants::IAL_VERIFIED_ACR,
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+        ].join(' ')
+      end
+
+      it 'renders the section heading and the not verified row with a Verify link' do
+        expect(rendered).to have_css(
+          'section.account__section h2.account__heading',
+          text: t('account.index.verification.identity_verification'),
+        )
+        expect_row(
+          t('nds.dashboard_account.identity_not_verified'),
+          link_text: t('nds.dashboard_account.verify'),
+          href: idv_path,
+        )
+      end
+    end
+
+    context 'with user pending gpo verification' do
+      let(:user) { create(:user, :with_pending_gpo_profile) }
+
+      it 'links to enter the code from the letter' do
+        expect_row(
+          t('account.index.verification.instructions'),
+          link_text: t('nds.dashboard_account.verify'),
+          href: idv_verify_by_mail_enter_code_path,
+        )
+      end
+    end
+
+    context 'with user pending ipp verification' do
+      let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
+      it 'shows the Post Office deadline and links to the barcode' do
+        expect_row(
+          strip_tags(
+            t(
+              'account.index.verification.in_person_instructions_html',
+              deadline: @presenter.formatted_ipp_due_date,
+            ),
+          ),
+          link_text: t('account.index.verification.show_bar_code', app_name: APP_NAME),
+          href: idv_in_person_ready_to_verify_url,
+        )
+      end
+    end
+
+    context 'with a profile deactivated for a password reset' do
+      before { allow(user).to receive(:password_reset_profile).and_return(true) }
+
+      it 'links to reactivate the profile' do
+        expect_row(
+          t('account.index.reactivation.instructions'),
+          link_text: t('account.index.reactivation.link'),
+          href: reactivate_account_path,
+        )
+      end
+    end
+
+    context 'with a non-facial match proofed user and a partner requesting facial match' do
+      let(:user) { build(:user, :proofed) }
+      let(:sp_name) { 'Example SP' }
+      let(:acr_values) do
+        [
+          Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+        ].join(' ')
+      end
+
+      it 'asks the user to verify again with a photo' do
+        expect_row(
+          strip_tags(t('account.index.verification.verify_with_facial_match_html', sp_name:)),
+          link_text: t('nds.dashboard_account.verify'),
+          href: idv_path,
+        )
+      end
+    end
+
+    context 'with a proofed user' do
+      let(:user) { build(:user, :proofed) }
+      let(:decrypted_pii) do
+        Pii::Attributes.new_from_hash(Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE)
+      end
+
+      it 'renders the account verified accordion with the verified information' do
+        expect(rendered).to have_css(
+          '.usa-accordion--bordered button.usa-accordion__button[aria-expanded=false]',
+          text: t('nds.dashboard_account.identity_verified'),
+        )
+        expect(rendered).to have_content(
+          strip_tags(
+            t(
+              'account.index.verification.you_verified_your_identity_html',
+              sp_name: APP_NAME,
+            ),
+          ),
+        )
+        expect(rendered).to have_css(
+          '.usa-accordion__content .card dl.nds-summary .nds-summary__label',
+          count: 5,
+        )
+        expect(rendered).to have_css('.nds-summary__value', text: decrypted_pii.first_name)
+        expect(rendered).to have_css('.nds-summary__value', text: '***-**-****')
+        expect(rendered).to_not have_content(decrypted_pii.ssn)
+        expect(rendered).to have_content(t('account.security.text'))
+        expect(rendered).to have_link(
+          t('nds.dashboard_account.learn_more'),
+          href: help_center_redirect_url,
+        )
+        expect(rendered).to_not have_css('.usa-tooltip')
+      end
+
+      context 'when the information is locked for the session' do
+        let(:locked_for_session) { true }
+
+        it 'hides the information and offers to authenticate again' do
+          expect(rendered).to_not have_content(decrypted_pii.first_name)
+          expect(rendered).to have_content(t('account.re_verify.banner'))
+          expect(rendered).to have_css(
+            "form[action='#{account_reauthentication_path}'][method=post] " \
+              "button.usa-button--tertiary",
+            text: t('account.re_verify.footer'),
+          )
+          expect(rendered).to_not have_link(t('nds.dashboard_account.learn_more'))
+        end
+      end
+    end
+
+    context 'with a facial match proofed user' do
+      let(:user) { build(:user, :proofed_with_selfie) }
+
+      it 'confirms the facial match verification' do
+        expect(rendered).to have_content(
+          t(
+            'account.index.verification.you_verified_your_facial_match_identity',
+            app_name: APP_NAME,
+          ),
+        )
+      end
+    end
+    context 'with a verified user who has not connected to their initiating service provider' do
+      let(:initiating_sp_name) { 'Test SP' }
+      let(:post_idv_follow_up_url) { 'https://example.com/followup' }
+      let(:initiating_service_provider) do
+        build(
+          :service_provider,
+          friendly_name: initiating_sp_name,
+          post_idv_follow_up_url:,
+          return_to_sp_url: nil,
+        )
+      end
+      let(:user) do
+        create(:user, profiles: [build(:profile, :active, initiating_service_provider:)])
+      end
+
+      it 'renders the warning alert to connect, linking to the follow-up url' do
+        expect(rendered).to have_css(
+          '.account__section .usa-alert--warning',
+          text: t(
+            'account.index.verification.connect_idv_account.intro',
+            sp_name: initiating_sp_name,
+          ),
+        )
+        expect(rendered).to have_link(
+          t('account.index.verification.connect_idv_account.cta', sp_name: initiating_sp_name),
+          href: post_idv_follow_up_url,
+        )
+      end
+
+      context 'when the user has connected to the initiating service provider' do
+        let(:user) do
+          create(
+            :user,
+            profiles: [build(:profile, :active, initiating_service_provider:)],
+            identities: [
+              build(
+                :service_provider_identity,
+                service_provider: initiating_service_provider.issuer,
+                last_ial2_authenticated_at: 2.days.ago,
+              ),
+            ],
+          )
+        end
+
+        it 'does not render the connect alert' do
+          expect(rendered).to_not have_css('.usa-alert--warning')
+        end
       end
     end
   end
