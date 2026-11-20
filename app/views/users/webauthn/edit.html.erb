@@ -1,5 +1,51 @@
 <% self.title = @presenter.heading %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_account_header, 'true') %>
+  <% if @presenter.platform_authenticator? %>
+    <% nds_heading = t('nds.mfa_setup.options.webauthn_platform') %>
+    <% nds_nickname_label = t('nds.dashboard_security.webauthn_platform_nickname') %>
+  <% else %>
+    <% nds_heading = t('account.index.webauthn') %>
+    <% nds_nickname_label = t('nds.dashboard_security.webauthn_nickname') %>
+  <% end %>
+  <%= render NDS::FormPageComponent.new(title: nds_heading) do |page| %>
+    <% page.with_body do %>
+      <%= simple_form_for(
+            @form,
+            as: :form,
+            method: :put,
+            url: webauthn_path(id: @form.configuration.id),
+            html: { id: 'manage-authenticator-form' },
+          ) do |f| %>
+        <%= render NDS::InputComponent.new(
+              form: f,
+              attribute: :name,
+              label: nds_nickname_label,
+              error_message: @form.errors[:name].first,
+            ) %>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              type: :submit,
+              form: 'manage-authenticator-form',
+              full_width: true,
+            ).with_content(t('components.manageable_authenticator.save')) %>
+        <%= render ButtonComponent.new(
+              url: webauthn_path(id: @form.configuration.id),
+              method: :delete,
+              form: { aria: { label: @presenter.delete_button_label } },
+              variant: :tertiary,
+              full_width: true,
+              class: 'account__danger-action',
+            ).with_content(t('components.manageable_authenticator.delete')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
 <%= simple_form_for(
@@ -29,3 +75,4 @@
     ).with_content(@presenter.delete_button_label) %>
 
 <%= render 'shared/cancel', link: account_path %>
+<% end %>

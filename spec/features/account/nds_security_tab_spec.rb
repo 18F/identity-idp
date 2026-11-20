@@ -38,6 +38,48 @@ RSpec.feature 'NDS account Security tab' do
     expect(user.reload.backup_code_configurations).to be_empty
   end
 
+  scenario 'renaming on the manage page' do
+    configuration = create(:auth_app_configuration, user:)
+
+    visit_security_tab
+    visit edit_auth_app_path(id: configuration.id)
+    expect(page).to have_css('header.account-header')
+    fill_in t('nds.totp_setup.new.nickname_label'), with: 'new name'
+    click_button t('components.manageable_authenticator.save')
+
+    expect(page).to have_current_path(account_path)
+    expect(page).to have_content(t('two_factor_authentication.auth_app.renamed'))
+    expect(configuration.reload.name).to eq('new name')
+  end
+
+  scenario 'a duplicate nickname on the manage page shows the error on the field' do
+    configuration = create(:auth_app_configuration, user:)
+    create(:auth_app_configuration, user:, name: 'existing')
+
+    visit_security_tab
+    visit edit_auth_app_path(id: configuration.id)
+    fill_in t('nds.totp_setup.new.nickname_label'), with: 'existing'
+    click_button t('components.manageable_authenticator.save')
+
+    expect(page).to have_css(
+      '.usa-input__error',
+      text: t('errors.manage_authenticator.unique_name_error'),
+    )
+    expect(page).to have_field(t('nds.totp_setup.new.nickname_label'), with: 'existing')
+  end
+
+  scenario 'deleting on the manage page' do
+    configuration = create(:piv_cac_configuration, user:)
+
+    visit_security_tab
+    visit edit_piv_cac_path(id: configuration.id)
+    click_button t('components.manageable_authenticator.delete')
+
+    expect(page).to have_current_path(account_path)
+    expect(page).to have_content(t('two_factor_authentication.piv_cac.deleted'))
+    expect(user.reload.piv_cac_configurations).to be_empty
+  end
+
   # The NDS layout's session timeout ping logs a querySelectorAll TypeError on main.
   context 'with javascript enabled', :js, allow_browser_log: true do
     scenario 'renaming a security key in place' do
