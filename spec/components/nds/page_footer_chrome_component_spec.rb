@@ -69,6 +69,11 @@ RSpec.describe NDS::PageFooterChromeComponent, type: :component do
     )
   end
 
+  it 'renders every footer action at the small button size so the row fits a 320px viewport' do
+    expect(rendered).to have_css('.page-footer__actions .usa-button.usa-button--sm', count: 4)
+    expect(rendered).not_to have_css('.page-footer__actions .usa-button:not(.usa-button--sm)')
+  end
+
   it 'does not render legacy native select controls' do
     expect(rendered).not_to have_css('select.page-footer__select')
   end
