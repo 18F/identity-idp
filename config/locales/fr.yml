@@ -1595,7 +1595,7 @@ instructions.password.strength.4: Excellente
 instructions.password.strength.intro: 'Force du mot de passe :'
 instructions.password.strength.strong: Forte
 instructions.password.strength.too_common: Trop courant
-instructions.sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à %{app_name}. Veuillez contacter %{sp_link} pour obtenir de l’aide.
+instructions.sp_handoff_bounced_html: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à %{app_name}. Veuillez contacter %{sp_link_html} pour obtenir de l’aide.
 instructions.sp_handoff_bounced_with_no_sp: votre fournisseur de service
 links.accessibility_and_languages: Accessibilité et langues
 links.account.reactivate.with_key: J’ai ma clé
@@ -1696,6 +1696,8 @@ nds.footer.experience_notice_html: You’re part of a group experiencing %{link_
 nds.footer.experience_notice_label: Interface preference
 nds.footer.experience_notice_link: our refreshed interface
 nds.footer.switch_to_legacy: Switch to legacy
+nds.forgot_password.body_html: Nous avons envoyé un lien à <strong>%{email}</strong> avec les instructions pour réinitialiser votre mot de passe. Si vous ne recevez pas d’e-mail rapidement, vérifiez votre dossier de courrier indésirable.
+nds.forgot_password.resend: Renvoyer le lien
 nds.hybrid_handoff.heading: Saisissez votre numéro de téléphone
 nds.hybrid_handoff.subtitle: Nous vous enverrons un lien pour vérifier votre pièce d’identité auprès d’un prestataire de confiance.
 nds.idv_phone.info: Saisissez un numéro de téléphone américain. Nous vous enverrons un SMS ou vous appellerons avec un code à 6 chiffres. Lignes téléphoniques standard uniquement ; pas de numéros VoIP ni surtaxés. Des frais de messagerie et de données peuvent s’appliquer.
@@ -1755,6 +1757,12 @@ nds.piv_cac_setup.step_3: Ajoutez votre PIV ou CAC
 nds.piv_cac_setup.step_3_info: On vous demandera de choisir un certificat et de saisir votre PIN après avoir cliqué sur le bouton continuer.
 nds.request_letter.heading: Vérifiez plutôt par courrier
 nds.request_letter.info: Pour vérifier votre identité, nous enverrons à votre adresse une lettre contenant un code de vérification et des instructions. Elle devrait arriver sous 5 à 10 jours. Suivez les instructions de la lettre pour terminer la vérification de votre identité.
+nds.reset_password.email_heading: Saisissez votre adresse e-mail
+nds.reset_password.heading: Saisissez un nouveau mot de passe
+nds.reset_password.invalid_token_heading: Le jeton de réinitialisation de mot de passe n’est pas valide.
+nds.reset_password.personal_key_info: Si vous avez vérifié votre identité, vous aurez besoin de votre clé personnelle de 16 caractères pour réinitialiser votre mot de passe. Sans elle, vous pouvez quand même réinitialiser votre mot de passe, mais vous devrez ensuite vérifier à nouveau votre identité.
+nds.reset_password.request_new_link: Saisissez votre adresse e-mail pour recevoir un nouveau lien.
+nds.reset_password.token_expired_heading: Votre lien de réinitialisation de mot de passe a expiré.
 nds.second_mfa_reminder.skip: Ignorer
 nds.socure_errors.in_person_heading: Ou, essayez de confirmer votre identité en personne
 nds.socure_errors.rate_limit_html.one: Vous avez encore <strong>un essai.</strong> Ensuite, vous devrez attendre 6 heures avant de réessayer.

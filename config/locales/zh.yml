@@ -1608,7 +1608,7 @@ instructions.password.strength.4: 棒！
 instructions.password.strength.intro: '密码强度：'
 instructions.password.strength.strong: 强
 instructions.password.strength.too_common: 太常见
-instructions.sp_handoff_bounced: 你登录成功了，但 %{sp_name} 将你送回到 %{app_name}。请联系 %{sp_link} 寻求帮助。
+instructions.sp_handoff_bounced_html: 你登录成功了，但 %{sp_name} 将你送回到 %{app_name}。请联系 %{sp_link_html} 寻求帮助。
 instructions.sp_handoff_bounced_with_no_sp: 你的服务提供商
 links.accessibility_and_languages: 可访问性说明和语言
 links.account.reactivate.with_key: 我有密钥
@@ -1709,6 +1709,8 @@ nds.footer.experience_notice_html: You’re part of a group experiencing %{link_
 nds.footer.experience_notice_label: Interface preference
 nds.footer.experience_notice_link: our refreshed interface
 nds.footer.switch_to_legacy: Switch to legacy
+nds.forgot_password.body_html: 我们向 <strong>%{email}</strong> 发送了一个链接，其中包含重置密码的说明。如果您没有很快收到电子邮件，请检查您的垃圾邮件文件夹。
+nds.forgot_password.resend: 重新发送链接
 nds.hybrid_handoff.heading: 输入您的电话号码
 nds.hybrid_handoff.subtitle: 我们将向您发送一个链接，以便通过可信的服务提供商验证您的身份证件。
 nds.idv_phone.info: 请输入美国电话号码。我们将通过短信或电话向您发送 6 位数验证码。仅支持标准电话线路，不支持 VoIP 或增值号码。可能产生短信和数据费用。
@@ -1768,6 +1770,12 @@ nds.piv_cac_setup.step_3: 添加 PIV 或 CAC
 nds.piv_cac_setup.step_3_info: 点击继续按钮后，系统会要求你选择一个证书并输入你的 PIN。
 nds.request_letter.heading: 改为通过邮寄验证
 nds.request_letter.info: 为验证您的身份，我们会向您的地址邮寄一封包含验证码和说明的信件，预计 5 到 10 天内送达。请按照信中的说明完成身份验证。
+nds.reset_password.email_heading: 输入您的电子邮件
+nds.reset_password.heading: 输入新密码
+nds.reset_password.invalid_token_heading: 重置密码的令牌无效。
+nds.reset_password.personal_key_info: 如果您验证过身份，则需要使用 16 个字符的个人密钥来重置密码。没有个人密钥，您仍然可以重置密码，但之后需要重新验证身份。
+nds.reset_password.request_new_link: 输入您的电子邮件以获取新链接。
+nds.reset_password.token_expired_heading: 您的重置密码链接已过期。
 nds.second_mfa_reminder.skip: 跳过
 nds.socure_errors.in_person_heading: 或者，尝试亲身去验证身份证件
 nds.socure_errors.rate_limit_html.one: 您可以再试<strong>1次。</strong>然后，您必须等6个小时才能再试。

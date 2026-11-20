@@ -97,4 +97,47 @@ describe('ModalElement', () => {
       expect(document.body.classList.contains('usa-js-modal--active')).to.be.false();
     });
   });
+
+  describe('pressing Escape', () => {
+    it('closes through hide and releases the scroll lock', () => {
+      modal.show();
+      sinon.spy(modal, 'hide');
+
+      const dialog = screen.getByRole('dialog');
+      const cancel = new Event('cancel', { cancelable: true });
+      dialog.dispatchEvent(cancel);
+
+      expect(cancel.defaultPrevented).to.be.true();
+      expect(modal.hide).to.have.been.called();
+      expect(dialog.hasAttribute('open')).to.be.false();
+      expect(document.body.classList.contains('usa-js-modal--active')).to.be.false();
+    });
+
+    context('with an NDS modal', () => {
+      let clock: sinon.SinonFakeTimers;
+
+      beforeEach(() => {
+        clock = sinon.useFakeTimers();
+        modal.querySelector('dialog')!.className = 'modal';
+      });
+
+      afterEach(() => {
+        clock.restore();
+      });
+
+      it('releases the NDS scroll lock and finishes closing', () => {
+        modal.show();
+        expect(document.body.classList.contains('modal--active')).to.be.true();
+
+        const dialog = screen.getByRole('dialog');
+        dialog.dispatchEvent(new Event('cancel', { cancelable: true }));
+
+        expect(document.body.classList.contains('modal--active')).to.be.false();
+        expect(document.body.classList.contains('usa-js-modal--active')).to.be.false();
+
+        clock.tick(400);
+        expect(dialog.hasAttribute('open')).to.be.false();
+      });
+    });
+  });
 });

@@ -64,6 +64,13 @@ RSpec.describe 'idv/personal_key/show.html.erb' do
       )
     end
 
+    it 'marks the required acknowledgment checkbox valid until it is validated' do
+      expect(rendered).to have_css(
+        'input.checkbox__input[name="acknowledgment"][required][aria-invalid="false"]',
+        visible: :all,
+      )
+    end
+
     it 'sets the verification header progress' do
       expect(view.content_for(:nds_header_progress)).to have_css(
         'nds-progress .progress__step[aria-current="step"]',

@@ -74,6 +74,17 @@ RSpec.describe 'idv/shared/choose_id_type.html.erb' do
       )
     end
 
+    it 'marks the required id type radios valid until they are validated' do
+      expect(rendered).to have_css(
+        'input[type=radio][required][aria-invalid="false"]',
+        visible: :all,
+      )
+      expect(rendered).not_to have_css(
+        'input[type=radio][required]:not([aria-invalid="false"])',
+        visible: :all,
+      )
+    end
+
     context 'when mdl is disabled (e.g. after undetected mDL redirect)' do
       let(:mdl_enabled) { false }
       let(:disable_mdl) { true }

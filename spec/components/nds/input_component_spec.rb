@@ -58,6 +58,14 @@ RSpec.describe NDS::InputComponent, type: :component do
     expect(rendered).to have_css('input#custom-email')
   end
 
+  context 'when required without an error' do
+    let(:options) { { required: true } }
+
+    it 'marks the input valid so it satisfies the required-field accessibility check' do
+      expect(rendered).to have_css('input[required][aria-invalid="false"]')
+    end
+  end
+
   context 'with custom validation error messages' do
     let(:options) do
       {
