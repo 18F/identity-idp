@@ -94,109 +94,88 @@
   <% if @ssn_presenter.itin_enabled? %>
     <% self.title = t('titles.doc_auth.ssn') %>
 
-    <ul class="usa-button-group usa-button-group--segmented flex-row margin-bottom-4">
-      <li class="usa-button-group__item display-flex flex-fill">
-        <button type="button" class="usa-button usa-button--big flex-fill" role="tab">
-          SSN
-        </button>
-      </li>
-      <li class="usa-button-group__item display-flex flex-fill">
-        <button type="button" class="usa-button usa-button--big usa-button--outline flex-fill" role="tab">
-          ITIN
-        </button>
-      </li>
-    </ul>
+    <%= simple_form_for(@ssn_presenter.ssn_form, url: url_for, method: :put) do |f| %>
+      <%= render FormTabComponent.new(form: f) do |component| %>
+        <% component.with_tab(label: 'SSN') do %>
+          <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn')) %>
 
-    <section>
-      <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn')) %>
+          <p>
+            <%= t('doc_auth.info.ssn') %>
+            <%= new_tab_link_to(MarketingSite.security_and_privacy_practices_url, class: 'display-inline') do %>
+              <%= t('doc_auth.info.learn_more') %>
+            <% end %>
+          </p>
 
-      <p>
-        <%= t('doc_auth.info.ssn') %>
-        <%= new_tab_link_to(MarketingSite.security_and_privacy_practices_url, class: 'display-inline') do %>
-          <%= t('doc_auth.info.learn_more') %>
-        <% end %>
-      </p>
+          <h2 class="h3"><%= t('doc_auth.headings.no_ssn_or_itin') %></h2>
 
-      <h2 class="h3"><%= t('doc_auth.headings.no_ssn_or_itin') %></h2>
+          <p>
+            <%= t('doc_auth.info.no_ssn_or_itin') %>
+            <%= link_to(
+                  @ssn_presenter.exit_text,
+                  idv_cancel_url(step: 'ssn_offramp'),
+                ) %>
+          </p>
 
-      <p>
-        <%= t('doc_auth.info.no_ssn_or_itin') %>
-        <%= link_to(
-              @ssn_presenter.exit_text,
-              idv_cancel_url(step: 'ssn_offramp'),
-            ) %>
-      </p>
-
-      <% if IdentityConfig.store.proofer_mock_fallback %>
-        <div class="usa-alert usa-alert--info margin-bottom-4" role="status">
-          <div class="usa-alert__body">
-            <p class="usa-alert__text">
-              <%= t('doc_auth.instructions.test_ssn') %>
-            </p>
-          </div>
-        </div>
-      <% end %>
-
-      <%= simple_form_for(@ssn_presenter.ssn_form, url: url_for, method: :put) do |f| %>
-        <div class="tablet:grid-col">
-          <%= render 'shared/ssn_field', f: f %>
-        </div>
-
-        <%= f.submit class: 'display-block margin-y-5' do %>
-          <% if @ssn_presenter.updating_ssn? %>
-            <%= t('forms.buttons.submit.update') %>
-          <% else %>
-            <%= t('forms.buttons.continue') %>
+          <% if IdentityConfig.store.proofer_mock_fallback %>
+            <div class="usa-alert usa-alert--info margin-bottom-4" role="status">
+              <div class="usa-alert__body">
+                <p class="usa-alert__text">
+                  <%= t('doc_auth.instructions.test_ssn') %>
+                </p>
+              </div>
+            </div>
           <% end %>
-        <% end %>
-      <% end %>
-    </section>
 
-    <section hidden>
-      <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.itin')) %>
-
-      <p>
-        <%= t('doc_auth.info.itin') %>
-        <%= new_tab_link_to(MarketingSite.security_and_privacy_practices_url, class: 'display-inline') do %>
-          <%= t('doc_auth.info.learn_more') %>
-        <% end %>
-      </p>
-
-      <h2 class="h3"><%= t('doc_auth.headings.no_ssn_or_itin') %></h2>
-
-      <p>
-        <%= t('doc_auth.info.no_ssn_or_itin') %>
-        <%= link_to(
-              @ssn_presenter.exit_text,
-              idv_cancel_url(step: 'ssn_offramp'),
-            ) %>
-      </p>
-
-      <% if IdentityConfig.store.proofer_mock_fallback %>
-        <div class="usa-alert usa-alert--info margin-bottom-4" role="status">
-          <div class="usa-alert__body">
-            <p class="usa-alert__text">
-              <%= t('doc_auth.instructions.test_ssn') %>
-            </p>
+          <div class="tablet:grid-col">
+            <%= render 'shared/ssn_field', f: f %>
           </div>
-        </div>
-      <% end %>
+        <% end %>
 
-      <%= simple_form_for(@ssn_presenter.ssn_form, url: url_for, method: :put) do |f| %>
-        <div class="tablet:grid-col">
-          <%= render 'shared/itin_field', f: f %>
-        </div>
+        <% component.with_tab(label: 'ITIN') do %>
+          <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.itin')) %>
 
-        <%= f.submit class: 'display-block margin-y-5' do %>
-          <% if @ssn_presenter.updating_ssn? %>
-            <%= t('forms.buttons.submit.update') %>
-          <% else %>
-            <%= t('forms.buttons.continue') %>
+          <p>
+            <%= t('doc_auth.info.itin') %>
+            <%= new_tab_link_to(MarketingSite.security_and_privacy_practices_url, class: 'display-inline') do %>
+              <%= t('doc_auth.info.learn_more') %>
+            <% end %>
+          </p>
+
+          <h2 class="h3"><%= t('doc_auth.headings.no_ssn_or_itin') %></h2>
+
+          <p>
+            <%= t('doc_auth.info.no_ssn_or_itin') %>
+            <%= link_to(
+                  @ssn_presenter.exit_text,
+                  idv_cancel_url(step: 'ssn_offramp'),
+                ) %>
+          </p>
+
+          <% if IdentityConfig.store.proofer_mock_fallback %>
+            <div class="usa-alert usa-alert--info margin-bottom-4" role="status">
+              <div class="usa-alert__body">
+                <p class="usa-alert__text">
+                  <%= t('doc_auth.instructions.test_ssn') %>
+                </p>
+              </div>
+            </div>
           <% end %>
+
+          <div class="tablet:grid-col">
+            <%= render 'shared/itin_field', f: f %>
+          </div>
+
         <% end %>
       <% end %>
-    </section>
 
+      <%= f.submit class: 'display-block margin-y-5' do %>
+        <% if @ssn_presenter.updating_ssn? %>
+          <%= t('forms.buttons.submit.update') %>
+        <% else %>
+          <%= t('forms.buttons.continue') %>
+        <% end %>
+      <% end %>
+    <% end %>
   <% else %>
     <% self.title = t('titles.doc_auth.ssn') %>
 

@@ -1,0 +1,19 @@
+<div id="form-tab-component" data-form-tabs>
+  <ul class="usa-button-group usa-button-group--segmented flex-row margin-bottom-4">
+    <% tabs.each do |tab| %>
+    <li class="usa-button-group__item display-flex flex-fill">
+      <button type="button" class="usa-button usa-button--big flex-fill" role="tab">
+        <%= tab.label %>
+      </button>
+    </li>
+    <% end %>
+  </ul>
+
+  <% tabs.each do |tab| %>
+    <section>
+      <fieldset>
+        <%= tab %>
+      </fieldset>
+    </section>
+  <% end %>
+</div>
