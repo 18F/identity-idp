@@ -1,5 +1,33 @@
 <% self.title = t('titles.revoke_consent') %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_account_header, 'true') %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('nds.dashboard_home.revoke_heading', sp_name: @service_provider.display_name),
+        subtitle: t(
+          'nds.dashboard_home.revoke_description',
+          sp_name: @service_provider.display_name,
+          app_name: APP_NAME,
+        ),
+      ) do |page| %>
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: service_provider_revoke_url(sp_id: @service_provider.id),
+              method: :delete,
+              variant: :destructive,
+              full_width: true,
+            ).with_content(t('account.revoke_consent.link_title')) %>
+        <%= render ButtonComponent.new(
+              url: account_connected_services_path,
+              variant: :secondary,
+              full_width: true,
+            ).with_content(t('links.cancel')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('titles.revoke_consent')) %>
 
 <p>
@@ -13,4 +41,5 @@
 
 <%= render PageFooterComponent.new do %>
   <%= link_to(t('links.cancel'), account_connected_services_path) %>
+<% end %>
 <% end %>

@@ -1,5 +1,49 @@
 <% self.title = t('titles.revoke_consent') %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_account_header, 'true') %>
+  <% expires_on = (@consent.created_at + UserConsentSts.consent_expiration).in_time_zone.utc.to_date %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: 'MyTravelGov',
+        subtitle: t(
+          'nds.dashboard_home.delegation_expires',
+          date: I18n.l(expires_on, format: I18n.t('time.formats.event_date')),
+        ),
+      ) do |page| %>
+    <% page.with_media do %>
+      <%= image_tag(
+            'sp-logos/DOS.svg',
+            alt: '',
+            class: 'agency-seal agency-seal--100 agency-seal--bordered',
+            width: 100,
+            height: 100,
+          ) %>
+    <% end %>
+
+    <% page.with_body do %>
+      <p class="text-center margin-0">
+        <%= new_tab_link_to(t('nds.otp_verification.learn_more'), 'https://mytravel.state.gov/') %>
+      </p>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: sts_consent_revoke_url(id: @consent.id),
+              method: :delete,
+              variant: :destructive,
+              full_width: true,
+            ).with_content(t('account.revoke_consent.link_title')) %>
+        <%= render ButtonComponent.new(
+              url: account_connected_services_path,
+              variant: :secondary,
+              full_width: true,
+            ).with_content(t('links.cancel')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('titles.revoke_consent')) %>
 
 <p>
@@ -14,4 +58,5 @@
 
 <%= render PageFooterComponent.new do %>
   <%= link_to(t('links.cancel'), account_connected_services_path) %>
+<% end %>
 <% end %>
