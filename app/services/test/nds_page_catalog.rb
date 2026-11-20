@@ -962,6 +962,10 @@ module Test
           Permutation.new(label: 'Every method type', params: {}),
           Permutation.new(label: 'Phone only', params: { minimal: '1' }),
           Permutation.new(label: 'With personal key', params: { identity: 'verified' }),
+          Permutation.new(
+            label: 'Backup codes deleted (flash)',
+            params: { flash: 'backup_codes_deleted' },
+          ),
         ],
       ),
       Page.new(

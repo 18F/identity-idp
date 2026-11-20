@@ -1665,6 +1665,10 @@ nds.choose_id_type.verify_in_person: Verify in person
 nds.completions.heading_idv: Identity verified
 nds.completions.intro_html: By selecting Continue, you agree to share the information below with %{sp_html} and go to their site.
 nds.completions.nist_alt: 'NIST seal: Encrypted. Protected. Proven. National Institute of Standards and Technology'
+nds.dashboard_security.piv_cac_added_on: Added on %{date}
+nds.dashboard_security.webauthn_add: Add key
+nds.dashboard_security.webauthn_nickname: Key nickname
+nds.dashboard_security.webauthn_platform_nickname: Passkey nickname
 nds.document_capture.mdl_alert_body: Other digital wallets will be supported later this year.
 nds.document_capture.mdl_alert_title: Currently supported with Google Wallet and Samsung Wallet.
 nds.document_capture.mdl_heading: Add your mobile driver’s license information

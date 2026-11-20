@@ -128,6 +128,10 @@ module Test
     # i18n-tasks-use t('nds.completions.heading_idv')
     # i18n-tasks-use t('nds.completions.intro_html')
     # i18n-tasks-use t('nds.completions.nist_alt')
+    # i18n-tasks-use t('nds.dashboard_security.piv_cac_added_on')
+    # i18n-tasks-use t('nds.dashboard_security.webauthn_add')
+    # i18n-tasks-use t('nds.dashboard_security.webauthn_nickname')
+    # i18n-tasks-use t('nds.dashboard_security.webauthn_platform_nickname')
     # i18n-tasks-use t('nds.duplicate_profiles_detected.cant_access')
     # i18n-tasks-use t('nds.duplicate_profiles_detected.connected_agencies')
     # i18n-tasks-use t('nds.duplicate_profiles_detected.created_at_html')
@@ -1729,6 +1733,9 @@ module Test
       user = apply_dashboard_identity(build_dashboard_user)
       @nds_current_user = user
       @presenter = dashboard_presenter(user)
+      if params[:flash] == 'backup_codes_deleted'
+        flash.now[:success] = t('notices.backup_codes_deleted')
+      end
       {}
     end
 
@@ -1768,11 +1775,14 @@ module Test
       {}
     end
 
-    # The manage-authenticator update actions redirect back with a flash error.
+    # A failed rename renders the edit page again with a flash error and the name error on
+    # the form.
     def flash_manage_authenticator_error
       return if params[:error].blank?
 
-      flash.now[:error] = t('errors.manage_authenticator.unique_name_error')
+      message = t('errors.manage_authenticator.unique_name_error')
+      @form.errors.add(:name, :duplicate, message:)
+      flash.now[:error] = message
     end
 
     def setup_dashboard_history

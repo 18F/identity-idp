@@ -1676,6 +1676,10 @@ nds.choose_id_type.verify_in_person: Verificar en persona
 nds.completions.heading_idv: Identidad verificada
 nds.completions.intro_html: Al seleccionar Continuar, acepta compartir la siguiente información con %{sp_html} e ir a su sitio.
 nds.completions.nist_alt: 'Sello del NIST: Cifrado. Protegido. Comprobado. Instituto Nacional de Estándares y Tecnología'
+nds.dashboard_security.piv_cac_added_on: Agregada el %{date}
+nds.dashboard_security.webauthn_add: Agregar clave
+nds.dashboard_security.webauthn_nickname: Alias de la clave
+nds.dashboard_security.webauthn_platform_nickname: Alias de la clave de acceso
 nds.document_capture.mdl_alert_body: Se añadirán otras billeteras digitales a finales de este año.
 nds.document_capture.mdl_alert_title: Actualmente disponible con Google Wallet y Samsung Wallet.
 nds.document_capture.mdl_heading: Añada la información de su licencia de conducir móvil
