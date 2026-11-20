@@ -65,7 +65,11 @@ module TokenExchange
     attr_reader :subject_token, :target_issuer, :resource, :scope, :dpop_jkt
 
     def jwe(issued_at:, expires_at:)
-      OpenidConnect::JweEncryptor.encrypt(jwt(issued_at:, expires_at:), service_provider: target)
+      JweEncryptor.encrypt(
+        jwt(issued_at:, expires_at:),
+        public_key: target.encryption_public_key,
+        typ: 'JWT',
+      )
     end
 
     def jwt(issued_at:, expires_at:)

@@ -21,17 +21,7 @@ module AttemptsApi
     end
 
     def to_jwe(public_key:, issuer:)
-      jwk = JWT::JWK.new(public_key)
-
-      JWE.encrypt(
-        signed_payload(issuer:),
-        public_key,
-        typ: 'secevent+jwe',
-        zip: 'DEF',
-        alg: 'RSA-OAEP',
-        enc: 'A256GCM',
-        kid: jwk.kid,
-      )
+      JweEncryptor.encrypt(signed_payload(issuer:), public_key:, typ: 'secevent+jwe')
     end
 
     def self.from_jwe(jwe, private_key)

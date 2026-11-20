@@ -69,8 +69,8 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
       header = JSON.parse(Base64.urlsafe_decode64(subject.token.split('.').first))
 
       expect(header).to include(
-        'alg' => OpenidConnect::JweEncryptor::ALG,
-        'enc' => OpenidConnect::JweEncryptor::ENC,
+        'alg' => JweEncryptor::ALG,
+        'enc' => JweEncryptor::ENC,
         'kid' => JWT::JWK.new(target_private_key.public_key).kid,
       )
     end
@@ -79,7 +79,7 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
       let!(:target) { create(:service_provider, :active, issuer: 'target-issuer', certs: []) }
 
       it 'raises rather than issuing a token nobody can read' do
-        expect { subject }.to raise_error(OpenidConnect::JweEncryptor::NoUsableKeyError)
+        expect { subject }.to raise_error(JweEncryptor::NoUsableKeyError)
       end
     end
 
