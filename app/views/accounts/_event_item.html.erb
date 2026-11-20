@@ -1,5 +1,17 @@
+<% if nds_layout? %>
+  <li class="history-row">
+    <div class="history-row__content">
+      <p class="history-row__title"><%= event.event_type %></p>
+      <p class="history-row__meta"><%= render TimeComponent.new(time: event.happened_at) %></p>
+      <% if event.last_sign_in_location_and_ip.present? %>
+        <p class="history-row__meta"><%= event.last_sign_in_location_and_ip %></p>
+      <% end %>
+    </div>
+  </li>
+<% else %>
 <div class="padding-1 border-top border-left border-right border-primary-light">
   <strong><%= event.event_type %></strong><br>
   <%= render TimeComponent.new(time: event.happened_at) %><br>
   <%= event.last_sign_in_location_and_ip %>
 </div>
+<% end %>

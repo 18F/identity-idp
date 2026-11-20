@@ -4,6 +4,33 @@
 
 <% self.title = t('titles.account') %>
 
+<% if nds_layout? %>
+  <div class="history">
+    <section class="history__section" aria-labelledby="history-device-heading">
+      <div class="history__header">
+        <%= render ButtonComponent.new(
+              url: account_history_path,
+              variant: :secondary,
+              size: :md,
+              class: 'history__back usa-button--icon-only',
+              aria: { label: t('forms.buttons.back') },
+            ) do %>
+          <%= render NDS::IconComponent.new(icon: :chevron_left, size: 20) %>
+        <% end %>
+        <h1 id="history-device-heading" class="history__heading"><%= @device.nice_name %></h1>
+      </div>
+      <% if @events.any? %>
+        <div class="history__panel">
+          <ul class="history__rows">
+            <% @events.each do |event| %>
+              <%= render 'accounts/event_item', event: event %>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </section>
+  </div>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('headings.account.activity')) %>
 
 <div class="card">
@@ -22,3 +49,4 @@
   </div>
 </div>
 
+<% end %>
