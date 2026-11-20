@@ -29,17 +29,21 @@ module TwoFactorAuthentication
         MfaPolicy.new(user).two_factor_enabled?
     end
 
-    # Phase 1 of personal key MFA deprecation: a user whose ONLY credential is a
-    # personal key must still prove possession of that key at sign-in before being
-    # routed to add a replacement MFA method. Without this they would be sent
-    # straight to MFA setup without authenticating. Identity-verified users are
-    # excluded because enabled? is false for them (they have profiles), and users
-    # with another MFA method are excluded because that method is used to
-    # authenticate instead (MfaPolicy#two_factor_enabled?).
+    # A legacy account whose ONLY credential beyond the password is a personal key:
+    # the key is its second factor, so the password alone must not authenticate it,
+    # and the key must be verified before any other method may be added. Identity-
+    # verified users are excluded because enabled? is false for them (they have
+    # profiles), and users with another MFA method are excluded because that method
+    # is used to authenticate instead (MfaPolicy#two_factor_enabled?).
+    def only_credential?
+      enabled? && !MfaPolicy.new(user).two_factor_enabled?
+    end
+
+    # Phase 1 of personal key MFA deprecation: a user whose only credential is a
+    # personal key is told to add a replacement method right after verifying the
+    # key, and the key is retired once the replacement is confirmed.
     def mfa_required?
-      FeatureManagement.personal_key_mfa_deprecation_phase_1_enabled? &&
-        enabled? &&
-        !MfaPolicy.new(user).two_factor_enabled?
+      FeatureManagement.personal_key_mfa_deprecation_phase_1_enabled? && only_credential?
     end
 
     private

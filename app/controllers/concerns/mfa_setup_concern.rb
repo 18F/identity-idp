@@ -37,11 +37,32 @@ module MfaSetupConcern
     end
   end
 
+  # A session may add an authentication method only once it has proved everything the account
+  # can prove. A user with a working second factor must have verified it. A legacy user whose only
+  # credential beyond the password is a personal key must have verified that key in this session;
+  # the key never makes `user_fully_authenticated?` true, so the proof is read from the session's
+  # authentication events. Only an account with no credential beyond the password, a new account
+  # still enrolling, gets in on the password alone.
   def confirm_user_authenticated_for_2fa_setup
     authenticate_user!(force: true)
     return if user_fully_authenticated?
-    return unless MfaPolicy.new(current_user).two_factor_enabled?
-    redirect_to user_two_factor_authentication_url
+
+    if MfaPolicy.new(current_user).two_factor_enabled?
+      redirect_to user_two_factor_authentication_url
+    elsif personal_key_verification_pending?
+      redirect_to login_two_factor_personal_key_url
+    end
+  end
+
+  def personal_key_verification_pending?
+    TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).only_credential? &&
+      !personal_key_verified_in_session?
+  end
+
+  def personal_key_verified_in_session?
+    AuthMethodsSession.new(user_session:).auth_events.any? do |event|
+      event.with_indifferent_access[:auth_method] == TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY
+    end
   end
 
   def in_multi_mfa_selection_flow?
