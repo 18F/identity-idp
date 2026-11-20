@@ -66,6 +66,28 @@ RSpec.describe UserPivCacSetupForm do
       end
     end
 
+    context 'when the token identifies the user’s suspended card' do
+      let(:token) { 'good-token' }
+      let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
+      let(:x509_dn_uuid) { user.piv_cac_configurations.first.x509_dn_uuid }
+      let(:token_response) do
+        { 'uuid' => x509_dn_uuid, 'subject' => 'x509-subject', 'nonce' => nonce }
+      end
+
+      before do
+        recovery_request = create(:account_recovery_request, :replacement_mfa_pending, user:)
+        user.piv_cac_configurations.update_all(
+          account_recovery_request_id: recovery_request.id,
+        )
+      end
+
+      it 'rejects re-enrollment of the same card' do
+        expect(form.submit).to_not be_success
+        expect(form.error_type).to eq('piv_cac.already_associated')
+        expect(user.piv_cac_configurations.reload.first).to be_suspended_for_account_recovery
+      end
+    end
+
     context 'when token is invalid' do
       let(:token) { 'bad-token' }
       let(:token_response) do

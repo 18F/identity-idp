@@ -154,7 +154,7 @@ RSpec.describe TwoFactorOptionsPresenter do
     it { expect(skip_path).to be_nil }
 
     context 'with mfa configured' do
-      let(:user) { build(:user, :with_phone) }
+      let(:user) { create(:user, :with_phone) }
 
       it { expect(skip_path).to eq(after_mfa_setup_path) }
 

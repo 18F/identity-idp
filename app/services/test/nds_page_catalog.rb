@@ -171,6 +171,15 @@ module Test
         ],
       ),
       Page.new(
+        key: 'account-recovery-mfa-setup',
+        title: 'Choose a replacement authentication method',
+        flow: MFA,
+        template: 'account_recovery/new_mfa_setup/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
         key: 'piv-cac-recommended',
         title: 'PIV/CAC recommended (government email)',
         flow: MFA,

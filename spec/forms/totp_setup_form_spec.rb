@@ -79,12 +79,31 @@ RSpec.describe TotpSetupForm do
       it 'returns an unsuccessful form response' do
         form1 = TotpSetupForm.new(user, secret, code, name)
         form1.submit
-        form2 = TotpSetupForm.new(user, secret, code, name)
+        second_secret = user.generate_totp_secret
+        form2 = TotpSetupForm.new(user, second_secret, generate_totp_code(second_secret), name)
 
         expect(form2.submit.to_h).to include(
           success: false,
           error_details: { name: { unique_name: true } },
         )
+      end
+    end
+
+    context 'when the secret is already configured for the user' do
+      before do
+        create(
+          :auth_app_configuration,
+          user:,
+          otp_secret_key: secret,
+          name: 'Existing authenticator',
+        )
+      end
+
+      it 'rejects the exact same authenticator' do
+        form = TotpSetupForm.new(user, secret, code, name)
+
+        expect(form.submit).to_not be_success
+        expect(user.reload.auth_app_configurations.count).to eq(1)
       end
     end
   end

@@ -121,7 +121,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
     end
 
     context 'when fully authenticated and MFA enabled' do
-      let(:user) { build(:user, :with_phone) }
+      let(:user) { create(:user, :with_phone) }
 
       before do
         stub_sign_in(user)
@@ -151,7 +151,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
     end
 
     context 'already two factor enabled but not fully authenticated' do
-      let(:user) { build(:user, :fully_registered) }
+      let(:user) { create(:user, :fully_registered) }
 
       it 'prompts for 2FA' do
         get :index

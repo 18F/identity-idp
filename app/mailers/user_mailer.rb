@@ -22,6 +22,9 @@ class UserMailer < ActionMailer::Base
   include ActionView::Helpers::DateHelper
 
   class UserEmailAddressMismatchError < StandardError; end
+  RECOVERY_MFA_METHOD_NAMES = %w[
+    auth_app backup_codes phone piv_cac webauthn webauthn_platform
+  ].freeze
 
   before_action :validate_user_and_email_address
   before_action :attach_images
@@ -135,6 +138,20 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @header = t('user_mailer.account_recovery_cancelled.subject', app_name: APP_NAME)
       mail(to: email_address.email, subject: @header)
+    end
+  end
+
+  def account_recovery_completed(removed_mfa_methods:)
+    with_user_locale(user) do
+      @removed_mfa_method_names = Array(removed_mfa_methods)
+        .map(&:to_s)
+        .select { |method| RECOVERY_MFA_METHOD_NAMES.include?(method) }
+        .map { |method| t("account_recovery.mfa_methods.#{method}") }
+      @header = t('user_mailer.account_recovery_completed.header', app_name: APP_NAME)
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.account_recovery_completed.subject', app_name: APP_NAME),
+      )
     end
   end
 

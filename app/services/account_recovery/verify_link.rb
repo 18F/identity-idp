@@ -8,16 +8,8 @@ module AccountRecovery
     TOKEN_MISSING = :token_missing
     TOKEN_INVALID = :token_invalid
     TOKEN_EXPIRED = :token_expired
-    WRONG_STATE = :wrong_state
     TRANSITION_FAILED = :transition_failed
 
-    REDEEMABLE_STATES = [
-      AccountRecoveryRequest::GRANTED,
-      AccountRecoveryRequest::LINK_VERIFIED,
-    ].freeze
-
-    # The matched request, available to callers after a successful #call.
-    # @return [AccountRecoveryRequest, nil]
     attr_reader :account_recovery_request
 
     # @param token [String, nil] raw token from the emailed link or the session
@@ -26,7 +18,6 @@ module AccountRecovery
     end
 
     # @return [FormResponse] on success, +recovery_state+ is the state before
-    #   this call so a first open can be told apart from a reopen
     def call
       return failure(TOKEN_MISSING) if token.blank?
 
@@ -35,7 +26,6 @@ module AccountRecovery
       )
 
       return failure(TOKEN_INVALID) if request.blank?
-      return failure(WRONG_STATE) unless REDEEMABLE_STATES.include?(request.state)
       return failure(TOKEN_EXPIRED) if request.token_expired?
 
       recovery_state = request.state

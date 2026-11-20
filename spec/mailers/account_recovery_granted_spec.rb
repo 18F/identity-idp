@@ -48,20 +48,18 @@ RSpec.describe UserMailer, type: :mailer do
               I18n.t('user_mailer.account_recovery_granted.subject', app_name: APP_NAME),
             )
             expect(mail.html_part.body).to have_content(
-              I18n.t('user_mailer.account_recovery_granted.intro', app_name: APP_NAME),
+              I18n.t(
+                'user_mailer.account_recovery_granted.intro',
+                app_name: APP_NAME,
+                interval: WaitPeriodFormatter.call(24.hours),
+              ),
             )
             expect(mail.html_part.body).to have_css(
               'h1',
               text: I18n.t('user_mailer.account_recovery_granted.header', app_name: APP_NAME),
             )
-            expect(mail.html_part.body).to have_content(
-              I18n.t(
-                'user_mailer.account_recovery_granted.expires',
-                interval: WaitPeriodFormatter.call(24.hours),
-              ),
-            )
-            expect(mail.html_part.body).to have_content(
-              I18n.t('user_mailer.account_recovery_granted.password_reminder'),
+            expect(mail.html_part.body).to have_link(
+              I18n.t('user_mailer.account_recovery_granted.button', app_name: APP_NAME),
             )
             expect(mail.html_part.body).to have_content(
               I18n.t(

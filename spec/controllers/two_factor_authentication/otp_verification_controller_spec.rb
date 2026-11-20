@@ -872,7 +872,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
       context 'when user does not have an existing phone number' do
         before do
-          MfaContext.new(controller.current_user).phone_configurations.clear
+          controller.current_user.phone_configurations.clear
           controller.current_user.create_direct_otp
         end
 

@@ -11,6 +11,7 @@ class WebauthnSetupForm
             presence: { message: proc { |object| object.send(:generic_error_message) } }
   validate :name_is_unique
   validate :validate_attestation_response
+  validate :credential_is_unique
 
   attr_reader :attestation_response, :webauthn_configuration
 
@@ -118,6 +119,14 @@ class WebauthnSetupForm
   def validate_attestation_response
     return if valid_attestation_response?(protocol)
     errors.add(:attestation_object, :invalid, message: general_error_message)
+  end
+
+  def credential_is_unique
+    return unless errors[:attestation_object].empty?
+    credential_id = Base64.strict_encode64(attestation_response.credential.id)
+    return unless user.webauthn_configurations.exists?(credential_id:)
+
+    errors.add(:attestation_object, :invalid, message: generic_error_message)
   end
 
   def valid_attestation_response?(protocol)

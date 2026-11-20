@@ -46,7 +46,7 @@ RSpec.describe DestructiveAccountReset::Cancel do
     context 'when the user does not have a phone enabled for SMS' do
       it 'does not notify the user via SMS' do
         token = create_account_reset_request_for(user)
-        MfaContext.new(user).phone_configurations.clear
+        user.phone_configurations.clear
 
         DestructiveAccountReset::Cancel.new(token).call
 

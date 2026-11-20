@@ -99,6 +99,31 @@ module AnalyticsEvents
     track_event(:account_recovery_cancelled, reason:, recovery_state:, mfa_method:, **extra)
   end
 
+  # @param [String] auth_method Replacement authentication method that completed the recovery
+  # @param [Hash, nil] removed_mfa_method_counts Number of suspended configurations of each
+  #   method type that were removed, e.g. { phone: 1, auth_app: 2 }
+  # @param [Integer, nil] enabled_mfa_methods_count Number of enabled MFA methods after recovery
+  # @param [Hash, nil] mfa_method_counts Number of enabled configurations of each MFA method type
+  #   after recovery
+  # An account-preserving MFA recovery finished: a replacement authentication
+  # method was verified and the suspended methods were removed
+  def account_recovery_completed(
+    auth_method:,
+    removed_mfa_method_counts: nil,
+    enabled_mfa_methods_count: nil,
+    mfa_method_counts: nil,
+    **extra
+  )
+    track_event(
+      :account_recovery_completed,
+      auth_method:,
+      removed_mfa_method_counts:,
+      enabled_mfa_methods_count:,
+      mfa_method_counts:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] eligible Whether the user may use account-preserving MFA recovery
   # Account-preserving MFA recovery eligibility was evaluated for a user
   def account_recovery_eligibility_evaluated(eligible:, **extra)

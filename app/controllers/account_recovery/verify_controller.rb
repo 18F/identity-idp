@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module AccountRecovery
-  # The session token keeps the password URL clean; it does not authenticate
-  # the user. Only a correct password consumes it and creates a pre-2FA session.
   class VerifyController < ApplicationController
     before_action :verify_link, if: :link_evidence_present?
     before_action :confirm_recovery_request
@@ -51,20 +49,39 @@ module AccountRecovery
       session[:account_recovery_granted_token]
     end
 
+    def resumable_recovery?
+      user_signed_in? && replacement_mfa_pending?
+    end
+
+    def resume_in_progress_recovery
+      redirect_to account_recovery_new_mfa_setup_url
+    end
+
     def verify_link
       token = token_param || session_token
-      sign_out if user_signed_in?
 
-      return handle_rate_limited_token if token_rate_limiter.limited?
+      if token_rate_limiter.limited?
+        return resume_in_progress_recovery if resumable_recovery?
 
-      token_rate_limiter.increment!
+        sign_out if user_signed_in?
+        return handle_rate_limited_token
+      end
+
+      token_rate_limiter.increment! if token_param.present?
 
       verifier = AccountRecovery::VerifyLink.new(token: token)
       result = verifier.call
 
       analytics.account_recovery_link_validation(**result.to_h)
 
-      return handle_invalid_token unless result.success?
+      if !result.success?
+        return resume_in_progress_recovery if resumable_recovery?
+
+        sign_out if user_signed_in?
+        return handle_invalid_token
+      end
+
+      sign_out if user_signed_in?
 
       @account_recovery_request = verifier.account_recovery_request
       session[:account_recovery_granted_token] = token
@@ -106,10 +123,9 @@ module AccountRecovery
       redirect_to root_url
     end
 
-    # Establishes a partial session only.
     def sign_in_partially
       sign_in(:user, recovery_user)
-
+      session.delete(stored_location_key_for(:user))
       user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = true
     end
 
@@ -132,7 +148,10 @@ module AccountRecovery
       return @account_recovery_request if defined?(@account_recovery_request)
       return unless user_signed_in?
 
-      @account_recovery_request = AccountRecoveryRequest.password_verified_for_user(current_user)
+      @account_recovery_request = AccountRecoveryRequest.active.find_by(
+        user: current_user,
+        state: AccountRecoveryRequest::REPLACEMENT_MFA_PENDING,
+      )
     end
 
     def recovery_user

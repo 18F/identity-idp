@@ -16,6 +16,8 @@ module AccountRecovery
     end
 
     # @return [FormResponse] an incorrect password is reported under the
+    #   password attribute; token and transition failures carry no attribute.
+    #   On success the old MFA set is suspended in the same lock.
     def call
       return failure(INCORRECT_PASSWORD, attribute: :password) unless password_valid?
 
@@ -28,7 +30,7 @@ module AccountRecovery
           AccountRecoveryRequest::PASSWORD_VERIFIED,
           token_fingerprint: nil,
           token_expires_at: nil,
-        )
+        ) && SuspendExistingMfa.new(account_recovery_request:).call
         next failure(TRANSITION_FAILED) unless transitioned
 
         FormResponse.new(

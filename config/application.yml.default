@@ -34,7 +34,7 @@ account_recovery_verify_password_attempt_window_in_minutes: 10
 account_recovery_verify_password_max_attempts: 5
 account_recovery_verify_token_attempt_window_in_minutes: 10
 account_recovery_verify_token_max_attempts: 10
-account_recovery_wait_period_days: 1
+account_recovery_wait_period_hours: 24
 account_reset_attempt_window_in_minutes: 1_440
 account_reset_fraud_user_wait_period_days:
 account_reset_max_attempts: 10

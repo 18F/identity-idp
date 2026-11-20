@@ -124,6 +124,23 @@ RSpec.describe Users::WebauthnSetupController do
           expect(additional_mfa_check).to be_falsey
         end
       end
+
+      context 'with a credential suspended for account recovery' do
+        it 'allows the method while preventing reuse of the same credential' do
+          suspended = create(:webauthn_configuration, user: user)
+          recovery_request = create(
+            :account_recovery_request,
+            :replacement_mfa_pending,
+            user: user,
+          )
+          suspended.update!(account_recovery_request_id: recovery_request.id)
+
+          get :new
+
+          expect(response).to have_http_status(:ok)
+          expect(assigns(:exclude_credentials)).to include(suspended.credential_id)
+        end
+      end
     end
 
     describe '#confirm' do

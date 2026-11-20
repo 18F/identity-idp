@@ -44,6 +44,19 @@ RSpec.describe WebauthnSetupForm do
   describe '#submit' do
     subject(:result) { form.submit(params) }
 
+    context 'when the credential is already configured for the user' do
+      before do
+        form.submit(params)
+      end
+
+      it 'rejects the exact same credential' do
+        duplicate_form = described_class.new(user:, user_session:, device_name:)
+
+        expect(duplicate_form.submit(params.merge(name: 'different name'))).to_not be_success
+        expect(user.reload.webauthn_configurations.count).to eq(1)
+      end
+    end
+
     context 'when the input is valid' do
       context 'security key' do
         it 'returns FormResponse with success: true and creates a webauthn configuration' do

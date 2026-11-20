@@ -4,6 +4,7 @@ class TotpSetupForm
   include ActiveModel::Model
 
   validate :name_is_unique
+  validate :secret_is_unique
   validates :name, presence: true
 
   attr_reader :name_taken
@@ -67,5 +68,15 @@ class TotpSetupForm
     return unless AuthAppConfiguration.exists?(user_id: @user.id, name: @name)
     errors.add :name, I18n.t('errors.piv_cac_setup.unique_name'), type: :unique_name
     @name_taken = true
+  end
+
+  def secret_is_unique
+    return if secret.blank?
+    normalized_secret = secret.downcase.strip
+    return unless user.auth_app_configurations.any? do |configuration|
+      configuration.otp_secret_key == normalized_secret
+    end
+
+    errors.add(:code, :invalid)
   end
 end
