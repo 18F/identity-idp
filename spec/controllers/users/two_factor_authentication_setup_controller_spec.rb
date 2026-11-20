@@ -150,6 +150,14 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       end
     end
 
+    it 'exposes in_account_creation_flow? to the view' do
+      controller.user_session[:in_account_creation_flow] = true
+
+      get :index
+
+      expect(controller.view_context.in_account_creation_flow?).to eq(true)
+    end
+
     context 'already two factor enabled but not fully authenticated' do
       let(:user) { build(:user, :fully_registered) }
 

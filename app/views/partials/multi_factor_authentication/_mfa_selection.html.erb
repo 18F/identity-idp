@@ -9,6 +9,7 @@
      } %>
   <% description = option.mfa_configuration_description %>
   <% show_recommended = option.type == :webauthn_platform && !option.disabled? %>
+  <% show_option_recommended = local_assigns.fetch(:show_recommended_tag, false) && option.recommended? %>
 
   <%= render NDS::CardComponent.new(
         button: true,
@@ -27,6 +28,9 @@
     <% end %>
     <% if show_recommended %>
       <span class="card__badge"><%= t('nds.mfa_setup.badge_passkey') %></span>
+    <% end %>
+    <% if show_option_recommended %>
+      <span class="card__badge"><%= t('two_factor_authentication.recommended') %></span>
     <% end %>
     <% if description.present? %>
       <span class="card__badge card__badge--success"><%= description %></span>
