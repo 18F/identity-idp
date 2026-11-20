@@ -1,5 +1,28 @@
 <% self.title = t('account.personal_key.get_new') %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_account_header, 'true') %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('account.personal_key.get_new'),
+        subtitle: t('account.personal_key.get_new_description'),
+      ) do |page| %>
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: create_new_personal_key_path,
+              method: :post,
+              full_width: true,
+            ).with_content(t('forms.buttons.continue')) %>
+        <%= render ButtonComponent.new(
+              url: account_path,
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('links.cancel')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('account.personal_key.get_new')) %>
 
 <p>
@@ -16,3 +39,4 @@
 <% end %>
 
 <%= render 'shared/cancel', link: account_path %>
+<% end %>

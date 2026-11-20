@@ -1,5 +1,82 @@
 <% self.title = t('titles.edit_info.password') %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_account_header, 'true') %>
+
+  <%= simple_form_for(
+        @update_user_password_form,
+        url: manage_password_path,
+        method: :patch,
+        html: { data: { nds_submit_gate: true } },
+      ) do |f| %>
+    <%= render NDS::FormPageComponent.new(
+          title: t('nds.dashboard_account.edit_password_heading'),
+          subtitle: safe_join([t('nds.passwords.new.info'), t('users.edit_info.warning')], ' '),
+        ) do |page| %>
+      <% if @update_password_presenter.required_password_change? %>
+        <% page.with_alert do %>
+          <%= render AlertComponent.new(type: :warning) do
+                t('users.password_compromised.warning', app_name: APP_NAME)
+              end %>
+        <% end %>
+      <% end %>
+
+      <% page.with_body do %>
+        <%= render NDS::StackComponent.new(align: :stretch) do %>
+          <%= render NDS::InputComponent.new(
+                form: f,
+                attribute: :password,
+                type: :password,
+                label: t('forms.password'),
+                required: true,
+                autocomplete: 'new-password',
+                error_message: @update_user_password_form.errors[:password].first,
+              ) %>
+          <%= render NDS::InputComponent.new(
+                form: f,
+                attribute: :password_confirmation,
+                type: :password,
+                label: t('components.password_confirmation.confirm_label'),
+                required: true,
+                autocomplete: 'new-password',
+                error_message: @update_user_password_form.errors[:password_confirmation].first,
+                error_messages: {
+                  valueMissing: t('components.password_confirmation.errors.empty'),
+                  customError: t('components.password_confirmation.errors.mismatch'),
+                },
+              ) %>
+          <%= render NDS::PasswordStrengthComponent.new(
+                input_id: f.field_id(:password),
+                minimum_length: Devise.password_length.first,
+                forbidden_passwords: @update_password_presenter.forbidden_passwords,
+              ) %>
+        <% end %>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+                full_width: true,
+              ).with_content(t('forms.buttons.continue')) %>
+          <% unless @update_password_presenter.required_password_change? %>
+            <%= render ButtonComponent.new(
+                  url: account_path,
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('links.cancel')) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once(
+        'nds_password_strength_component',
+        'nds-auth-submit-gate',
+        preload_links_header: false,
+      ) %>
+<% else %>
 <% if @update_password_presenter.required_password_change? %>
   <%= render AlertComponent.new(
         type: :warning,
@@ -37,4 +114,5 @@
 
 <% unless @update_password_presenter.required_password_change? %>
   <%= render 'shared/cancel', link: account_path %>
+<% end %>
 <% end %>
