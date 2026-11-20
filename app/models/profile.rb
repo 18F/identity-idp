@@ -101,6 +101,10 @@ class Profile < ApplicationRecord
     PROOFING_AGENT_IDV_LEVELS[idv_level] == 'enhanced'
   end
 
+  def basic_w_no_gpo?
+    PROOFING_AGENT_IDV_LEVELS[idv_level] == 'basic' && !gpo_verification_pending?
+  end
+
   def fraud_review_pending?
     fraud_review_pending_at.present?
   end

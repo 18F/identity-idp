@@ -12,7 +12,7 @@ module UserAlerts
         ).deliver_now_or_later
       end
 
-      if profile.enhanced? && phone.present?
+      if (profile.enhanced? || profile.basic_w_no_gpo?) && phone.present?
         with_user_locale(user) do
           Telephony.send_proofing_completion_confirmation(
             to: phone,
