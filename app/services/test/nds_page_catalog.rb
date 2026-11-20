@@ -7,7 +7,9 @@ module Test
   # plus the visually-distinct permutations a developer may want to inspect.
   module NDSPageCatalog
     Permutation = Struct.new(:label, :params, keyword_init: true)
-    Page = Struct.new(:key, :title, :flow, :template, :permutations, keyword_init: true)
+    # layout: the NDS layout the page's real controller renders it in, when that is not the
+    # default nds/application (e.g. the signed-in account shell).
+    Page = Struct.new(:key, :title, :flow, :template, :permutations, :layout, keyword_init: true)
 
     SIGN_IN = 'Sign in'
     CREATE_ACCOUNT = 'Create account'
@@ -16,6 +18,22 @@ module Test
     IDV = 'Identity verification'
     ERRORS = 'Errors'
     ACCOUNT = 'Account'
+    DASHBOARD_HOME = 'Dashboard: Home'
+    DASHBOARD_ACCOUNT = 'Dashboard: Account'
+    DASHBOARD_SECURITY = 'Dashboard: Security'
+    DASHBOARD_HISTORY = 'Dashboard: History'
+
+    # Signed-in dashboard flows, mapped to the account navigation item their pages belong
+    # to. Their explorer setups persist a throwaway user, so the explorer renders them
+    # inside a rolled-back transaction.
+    DASHBOARD_FLOWS = {
+      DASHBOARD_HOME => 'home',
+      DASHBOARD_ACCOUNT => 'account',
+      DASHBOARD_SECURITY => 'security',
+      DASHBOARD_HISTORY => 'history',
+    }.freeze
+
+    ACCOUNT_SHELL_LAYOUT = 'nds/account_side_nav'
 
     PAGES = [
       Page.new(
@@ -815,6 +833,193 @@ module Test
           Permutation.new(label: 'Verified identity', params: { verified: '1' }),
           Permutation.new(label: 'Incorrect password', params: { error: '1' }),
         ],
+      ),
+      Page.new(
+        key: 'dashboard-connected-services',
+        title: 'Connected agencies (dashboard Home tab)',
+        flow: DASHBOARD_HOME,
+        template: 'accounts/connected_services/show',
+        layout: ACCOUNT_SHELL_LAYOUT,
+        permutations: [
+          Permutation.new(label: 'Connected agencies', params: {}),
+          Permutation.new(label: 'With America.gov services', params: { delegation: '1' }),
+          Permutation.new(label: 'Email updated (flash)', params: { flash: 'email_updated' }),
+          Permutation.new(label: 'No connected agencies', params: { minimal: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'dashboard-select-email',
+        title: 'Change the email shared with an agency',
+        flow: DASHBOARD_HOME,
+        template: 'accounts/connected_services/selected_email/edit',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Email limit reached', params: { max: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'dashboard-revoke-service-provider',
+        title: 'Disconnect agency',
+        flow: DASHBOARD_HOME,
+        template: 'users/service_provider_revoke/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'dashboard-revoke-sts-consent',
+        title: 'Disconnect America.gov services',
+        flow: DASHBOARD_HOME,
+        template: 'users/sts_consent_revoke/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'dashboard-account',
+        title: 'Account (dashboard Account tab)',
+        flow: DASHBOARD_ACCOUNT,
+        template: 'accounts/show',
+        layout: ACCOUNT_SHELL_LAYOUT,
+        permutations: [
+          Permutation.new(label: 'Unverified', params: {}),
+          Permutation.new(label: 'Verified identity', params: { identity: 'verified' }),
+          Permutation.new(
+            label: 'Verified with facial match',
+            params: { identity: 'facial_match' },
+          ),
+          Permutation.new(label: 'Verify by mail pending', params: { identity: 'gpo_pending' }),
+          Permutation.new(label: 'In-person pending', params: { identity: 'in_person_pending' }),
+          Permutation.new(
+            label: 'Password reset (reactivate profile)',
+            params: { identity: 'password_reset' },
+          ),
+          Permutation.new(label: 'Continue to service provider', params: { sp: '1' }),
+          Permutation.new(label: 'Email confirmed (flash)', params: { flash: 'email_confirmed' }),
+          Permutation.new(label: 'One email and phone', params: { minimal: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'dashboard-add-email',
+        title: 'Add email address',
+        flow: DASHBOARD_ACCOUNT,
+        template: 'users/emails/show',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Email error', params: { error: '1' }),
+          Permutation.new(label: 'Pending consent (back link)', params: { pending_consent: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'dashboard-verify-email',
+        title: 'Check your email (added email)',
+        flow: DASHBOARD_ACCOUNT,
+        template: 'users/emails/verify',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Select email flow', params: { select_email: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'dashboard-delete-email',
+        title: 'Delete email address',
+        flow: DASHBOARD_ACCOUNT,
+        template: 'users/emails/confirm_delete',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'dashboard-edit-password',
+        title: 'Edit password',
+        flow: DASHBOARD_ACCOUNT,
+        template: 'users/passwords/edit',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Password error', params: { error: '1' }),
+          Permutation.new(label: 'Compromised password (required)', params: { required: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'dashboard-manage-phone',
+        title: 'Manage phone number',
+        flow: DASHBOARD_ACCOUNT,
+        template: 'users/edit_phone/edit',
+        permutations: [
+          Permutation.new(label: 'Default number (two phones)', params: {}),
+          Permutation.new(label: 'Other number', params: { other: '1' }),
+          Permutation.new(label: 'Only MFA method (no remove)', params: { only: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'dashboard-reset-personal-key',
+        title: 'Reset personal key',
+        flow: DASHBOARD_ACCOUNT,
+        template: 'accounts/personal_keys/new',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'dashboard-security',
+        title: 'Authentication methods (dashboard Security tab)',
+        flow: DASHBOARD_SECURITY,
+        template: 'accounts/two_factor_authentication/show',
+        layout: ACCOUNT_SHELL_LAYOUT,
+        permutations: [
+          Permutation.new(label: 'Every method type', params: {}),
+          Permutation.new(label: 'Phone only', params: { minimal: '1' }),
+          Permutation.new(label: 'With personal key', params: { identity: 'verified' }),
+        ],
+      ),
+      Page.new(
+        key: 'dashboard-manage-webauthn',
+        title: 'Manage passkey or security key',
+        flow: DASHBOARD_SECURITY,
+        template: 'users/webauthn/edit',
+        permutations: [
+          Permutation.new(label: 'Face or touch unlock (passkey)', params: {}),
+          Permutation.new(label: 'Security key', params: { roaming: '1' }),
+          Permutation.new(label: 'Nickname error', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'dashboard-manage-auth-app',
+        title: 'Manage authentication app',
+        flow: DASHBOARD_SECURITY,
+        template: 'users/auth_app/edit',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Nickname error', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'dashboard-manage-piv-cac',
+        title: 'Manage government employee ID',
+        flow: DASHBOARD_SECURITY,
+        template: 'users/piv_cac/edit',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Nickname error', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'dashboard-history',
+        title: 'History (dashboard History tab)',
+        flow: DASHBOARD_HISTORY,
+        template: 'accounts/history/show',
+        layout: ACCOUNT_SHELL_LAYOUT,
+        permutations: [
+          Permutation.new(label: 'Devices and activity', params: {}),
+          Permutation.new(label: 'New account (one device)', params: { minimal: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'dashboard-device-events',
+        title: 'Device details',
+        flow: DASHBOARD_HISTORY,
+        template: 'events/show',
+        layout: ACCOUNT_SHELL_LAYOUT,
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'dashboard-forget-all-browsers',
+        title: 'Log out of all devices (forget all browsers)',
+        flow: DASHBOARD_HISTORY,
+        template: 'users/forget_all_browsers/show',
+        permutations: [Permutation.new(label: 'Default', params: {})],
       ),
     ].freeze
 

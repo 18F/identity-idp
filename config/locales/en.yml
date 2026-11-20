@@ -1646,6 +1646,10 @@ mfa.second_method_warning.link: Add a second authentication method.
 mfa.second_method_warning.text: You will have to delete your account and start over if you lose your only authentication method.
 mfa.skip: Skip for now
 mfa.webauthn_platform_message: Add another authentication method in case you lose access to your first one.
+nds.account_nav.account: Account
+nds.account_nav.account_menu: Account menu
+nds.account_nav.home: Home
+nds.account_nav.security: Security
 nds.backup_codes.acknowledgment: I’ve saved my backup codes in a safe place
 nds.backup_codes.info: Backup codes let you sign in if you ever lose access to your phone or other sign-in methods. Each code works only once. Do not share these codes.
 nds.backup_codes.title: Save your backup codes

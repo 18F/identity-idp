@@ -30,6 +30,22 @@ module Test
     DEV_OPT_OUT_PHONE = '+12025559999'
     DEV_SP_ISSUER = 'urn:gov:gsa:openidconnect:test:nds-explorer'
 
+    # The throwaway signed-in user the dashboard explorer pages render for (see
+    # build_dashboard_user). Four emails, one of them unconfirmed, as in the Figma
+    # Account tab.
+    DASHBOARD_EMAIL = 'john@example.com'
+    DASHBOARD_UNCONFIRMED_EMAIL = 'john@example.org'
+    DASHBOARD_OTHER_EMAILS = %w[john.work@example.com john.home@example.com].freeze
+    DASHBOARD_PHONES = %w[+16029065822 +16023771922].freeze
+    DASHBOARD_DEVICE_USER_AGENTS = [
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 ' \
+        '(KHTML, like Gecko) Version/18.0 Safari/605.1.15',
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 ' \
+        '(KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' \
+        '(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
+    ].freeze
+
     # Registry of legacy pages whose before_actions need seeded DB/session state
     # (beyond a signed-in dev session) before they render. Maps the live route
     # path to a { label:, seeder:, resetter: } — the seeder is a private method
@@ -104,6 +120,10 @@ module Test
     # Copy introduced by NDS page PRs that have not merged yet. The keys are
     # consolidated here ahead of those PRs; these markers let the i18n unused-key
     # check pass until the consuming views land, then can be deleted.
+    # i18n-tasks-use t('nds.account_nav.account')
+    # i18n-tasks-use t('nds.account_nav.account_menu')
+    # i18n-tasks-use t('nds.account_nav.home')
+    # i18n-tasks-use t('nds.account_nav.security')
     # i18n-tasks-use t('nds.capture_complete.info')
     # i18n-tasks-use t('nds.completions.heading_idv')
     # i18n-tasks-use t('nds.completions.intro_html')
@@ -183,8 +203,12 @@ module Test
       @page = NDSPageCatalog.find(params[:page])
       return render_not_found if @page.nil?
 
-      locals = send(:"setup_#{@page.key.tr('-', '_')}")
-      render template: @page.template, locals: locals || {}
+      if NDSPageCatalog::DASHBOARD_FLOWS.key?(@page.flow)
+        render_dashboard_page
+      else
+        locals = send(:"setup_#{@page.key.tr('-', '_')}")
+        render template: @page.template, locals: locals || {}
+      end
     end
 
     # Seeds a fully-registered, 2FA-authenticated dev session so the deep-linked
@@ -321,11 +345,16 @@ module Test
       true
     end
 
-    # Fills the layout's :pre_flash_content slot from @nds_pre_flash_content (a view lambda).
+    # Fills the layout's :pre_flash_content slot from @nds_pre_flash_content (a view lambda),
+    # and marks the dashboard pages' account navigation item (the real pages infer it from
+    # their controller).
     def view_context
       super.tap do |view|
         if @nds_pre_flash_content
           view.content_for(:pre_flash_content, @nds_pre_flash_content.call(view))
+        end
+        if @nds_account_nav_current
+          view.content_for(:nds_account_nav_current, @nds_account_nav_current)
         end
       end
     end
@@ -1447,6 +1476,325 @@ module Test
       end
       @nds_current_user = user
       flash.now[:error] = t('idv.errors.incorrect_password') if params[:error].present?
+      {}
+    end
+
+    # Signed-in dashboard pages read the user's records through DB scopes (MfaContext,
+    # recent events and devices, connected apps, STS consents), so their setups persist a
+    # throwaway user. Rendering inside a rolled-back transaction keeps the dev DB clean.
+    def render_dashboard_page
+      # Templates render partials relative to their real controller (accounts/show renders
+      # 'emails'), so resolve those from the template's directory first.
+      lookup_context.prefixes = [File.dirname(@page.template), *lookup_context.prefixes]
+      @nds_account_nav_current = NDSPageCatalog::DASHBOARD_FLOWS[@page.flow]
+      ActiveRecord::Base.transaction(requires_new: true) do
+        locals = send(:"setup_#{@page.key.tr('-', '_')}")
+        render template: @page.template, locals: locals || {}, **dashboard_layout_option
+        raise ActiveRecord::Rollback
+      end
+    end
+
+    # Pages the real app renders in the signed-in account shell use the NDS shell layout
+    # once it exists. Until it lands they render in the default NDS layout.
+    def dashboard_layout_option
+      layout = @page.layout
+      return {} if layout.blank? || !lookup_context.exists?(layout, ['layouts'])
+
+      { layout: }
+    end
+
+    # Persists a realistic signed-in user for the dashboard pages: four emails (one
+    # unconfirmed), two phones, one of every other MFA method, backup codes, devices with
+    # activity, and two connected agencies. `minimal: true` keeps one email, one phone,
+    # and one device. Only call this from a dashboard setup (see render_dashboard_page).
+    def build_dashboard_user(minimal: params[:minimal].present?)
+      now = Time.zone.now
+      user = User.new(password: DEV_USER_PASSWORD, confirmed_at: now, accepted_terms_at: now)
+      user.email = DASHBOARD_EMAIL
+      user.email_addresses.build(
+        email: DASHBOARD_EMAIL, confirmed_at: now, confirmation_sent_at: now,
+        last_sign_in_at: now
+      )
+      user.save!
+      user.create_registration_log(registered_at: now)
+      DASHBOARD_PHONES.first(minimal ? 1 : 2).each_with_index do |phone, index|
+        user.phone_configurations.create!(
+          phone:, confirmed_at: now, delivery_preference: :sms, mfa_enabled: true,
+          made_default_at: (now if index.zero?)
+        )
+      end
+      seed_dashboard_history(user, devices: minimal ? 1 : 3)
+      return user if minimal
+
+      user.email_addresses.create!(email: DASHBOARD_UNCONFIRMED_EMAIL, confirmation_sent_at: now)
+      DASHBOARD_OTHER_EMAILS.each do |email|
+        user.email_addresses.create!(email:, confirmed_at: now, confirmation_sent_at: now)
+      end
+      user.auth_app_configurations.create!(
+        name: 'Apple Passwords', otp_secret_key: ROTP::Base32.random_base32,
+      )
+      user.auth_app_configurations.create!(
+        name: '1Password', otp_secret_key: ROTP::Base32.random_base32,
+      )
+      user.webauthn_configurations.create!(
+        name: 'Safari on macOS', credential_id: SecureRandom.hex(16),
+        credential_public_key: SecureRandom.hex(16), platform_authenticator: true,
+        transports: %w[internal hybrid]
+      )
+      user.webauthn_configurations.create!(
+        name: 'YubiKey', credential_id: SecureRandom.hex(16),
+        credential_public_key: SecureRandom.hex(16), transports: ['usb']
+      )
+      user.piv_cac_configurations.create!(name: 'Work PIV card', x509_dn_uuid: SecureRandom.uuid)
+      BackupCodeGenerator.new(user).delete_and_regenerate
+      seed_dashboard_connected_agencies(user)
+      user
+    end
+
+    def seed_dashboard_history(user, devices:)
+      DASHBOARD_DEVICE_USER_AGENTS.first(devices).each_with_index do |user_agent, index|
+        used_at = (index * 3).days.ago
+        device = user.devices.create!(
+          cookie_uuid: SecureRandom.hex(32), user_agent:, last_used_at: used_at,
+          last_ip: '97.73.13.33'
+        )
+        %i[sign_in_before_2fa sign_in_after_2fa].each_with_index do |event_type, offset|
+          user.events.create!(
+            event_type:, device:, ip: '97.73.13.33', created_at: used_at + offset.minutes,
+          )
+        end
+      end
+      user.events.create!(event_type: :account_created, device: user.devices.last)
+    end
+
+    def seed_dashboard_connected_agencies(user)
+      email = user.email_addresses.first
+      CONNECTED_SP_ISSUERS.each do |sp|
+        user.identities.create!(
+          service_provider: connected_service_provider(sp).issuer, uuid: SecureRandom.uuid,
+          last_authenticated_at: Time.zone.now, last_consented_at: Time.zone.now,
+          email_address: email, verified_attributes: %w[email]
+        )
+      end
+    end
+
+    # Puts the dashboard user into one of the identity states the Account tab shows.
+    def apply_dashboard_identity(user)
+      case params[:identity]
+      when 'verified', 'password_reset'
+        profile = build_verified_profile(user, idv_level: :legacy_unsupervised)
+        PersonalKeyGenerator.new(user).generate!
+        profile.deactivate(:password_reset) if params[:identity] == 'password_reset'
+      when 'facial_match'
+        build_verified_profile(user, idv_level: :unsupervised_with_selfie)
+        PersonalKeyGenerator.new(user).generate!
+      when 'gpo_pending' then build_gpo_pending(user)
+      when 'in_person_pending' then build_in_person_pending(user)
+      end
+      user.reload
+    end
+
+    def dashboard_presenter(user, decrypted_pii: nil)
+      AccountShowPresenter.new(
+        decrypted_pii:,
+        sp_session_request_url: (root_url if params[:sp].present?),
+        authn_context: Component::Parser::Result.no_sp_result,
+        sp_name: ('Veterans Affairs' if params[:sp].present?),
+        user:,
+        locked_for_session: false,
+      )
+    end
+
+    def setup_dashboard_connected_services
+      user = build_dashboard_user
+      create_dashboard_delegation(user) if params[:delegation].present?
+      if params[:flash] == 'email_updated'
+        flash.now[:email_updated_identity_id] = user.connected_apps.first.id
+      end
+      @nds_current_user = user
+      @presenter = dashboard_presenter(user)
+      {}
+    end
+
+    def setup_dashboard_select_email
+      user = build_dashboard_user
+      @nds_current_user = user
+      @identity = user.connected_apps.first
+      @select_email_form = SelectEmailForm.new(user:, identity: @identity)
+      @can_add_email = params[:max].blank?
+      @email_id = @identity.email_address_id
+      {}
+    end
+
+    def setup_dashboard_revoke_service_provider
+      user = build_dashboard_user
+      @nds_current_user = user
+      @service_provider = user.connected_apps.first.service_provider_record
+      {}
+    end
+
+    def setup_dashboard_revoke_sts_consent
+      user = build_dashboard_user
+      @nds_current_user = user
+      @consent = create_dashboard_delegation(user)
+      {}
+    end
+
+    # An America.gov (STS token exchange) consent, listed on the Home tab.
+    def create_dashboard_delegation(user)
+      user.sts_consents.create!(
+        target_app: 'urn:gov:gsa:openidconnect:test:mytravelgov',
+        actor_app: 'urn:gov:gsa:openidconnect:test:america-gov',
+      )
+    end
+
+    def setup_dashboard_account
+      user = apply_dashboard_identity(build_dashboard_user)
+      @nds_current_user = user
+      decrypted_pii = if user.active_profile.present?
+                        Pii::Attributes.new_from_hash(
+                          Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE,
+                        )
+                      end
+      @presenter = dashboard_presenter(user, decrypted_pii:)
+      if params[:flash] == 'email_confirmed'
+        flash.now[:success] = t(
+          'account.emails.confirmed_html',
+          url: account_connected_services_url,
+        )
+      end
+      {}
+    end
+
+    def setup_dashboard_add_email
+      @nds_current_user = build_dashboard_user
+      @add_user_email_form = AddUserEmailForm.new
+      if params[:error].present?
+        @add_user_email_form.errors.add(:email, t('valid_email.validations.email.invalid'))
+      end
+      @pending_completions_consent = params[:pending_consent].present?
+      {}
+    end
+
+    def setup_dashboard_verify_email
+      @nds_current_user = build_dashboard_user
+      @email = 'john.new@example.com'
+      @in_select_email_flow = (true if params[:select_email].present?)
+      @pending_completions_consent = false
+      {}
+    end
+
+    def setup_dashboard_delete_email
+      user = build_dashboard_user
+      @nds_current_user = user
+      email_address = user.email_addresses.find_with_email(DASHBOARD_OTHER_EMAILS.first)
+      # The template builds its delete URL from the route's :id param.
+      params[:id] = email_address.id
+      @presenter = ConfirmDeleteEmailPresenter.new(user, email_address)
+      {}
+    end
+
+    def setup_dashboard_edit_password
+      user = build_dashboard_user
+      @nds_current_user = user
+      required = params[:required].present?
+      @update_password_presenter = UpdatePasswordPresenter.new(
+        user:, required_password_change: required,
+      )
+      @update_user_password_form = UpdateUserPasswordForm.new(user:)
+      if params[:error].present?
+        @update_user_password_form.errors.add(
+          :password, t('errors.messages.too_short.other', count: Devise.password_length.first)
+        )
+      end
+      {}
+    end
+
+    def setup_dashboard_manage_phone
+      # The minimal user's single phone is its only MFA method, so it cannot be removed.
+      user = build_dashboard_user(minimal: params[:only].present?)
+      @nds_current_user = user
+      phones = user.phone_configurations.order(:id)
+      @phone_configuration = params[:other].present? ? phones.last : phones.first
+      @edit_phone_form = EditPhoneForm.new(user, @phone_configuration)
+      {}
+    end
+
+    def setup_dashboard_reset_personal_key
+      @nds_current_user = build_dashboard_user
+      {}
+    end
+
+    def setup_dashboard_security
+      user = apply_dashboard_identity(build_dashboard_user)
+      @nds_current_user = user
+      @presenter = dashboard_presenter(user)
+      {}
+    end
+
+    def setup_dashboard_manage_webauthn
+      user = build_dashboard_user
+      @nds_current_user = user
+      platform = params[:roaming].blank?
+      configuration = user.webauthn_configurations.find do |webauthn|
+        webauthn.platform_authenticator? == platform
+      end
+      @form = TwoFactorAuthentication::WebauthnUpdateForm.new(
+        user:, configuration_id: configuration.id,
+      )
+      @presenter = TwoFactorAuthentication::WebauthnEditPresenter.new(configuration:)
+      flash_manage_authenticator_error
+      {}
+    end
+
+    def setup_dashboard_manage_auth_app
+      user = build_dashboard_user
+      @nds_current_user = user
+      @form = TwoFactorAuthentication::AuthAppUpdateForm.new(
+        user:, configuration_id: user.auth_app_configurations.first.id,
+      )
+      flash_manage_authenticator_error
+      {}
+    end
+
+    def setup_dashboard_manage_piv_cac
+      user = build_dashboard_user
+      @nds_current_user = user
+      @form = TwoFactorAuthentication::PivCacUpdateForm.new(
+        user:, configuration_id: user.piv_cac_configurations.first.id,
+      )
+      @presenter = TwoFactorAuthentication::PivCacEditPresenter.new
+      flash_manage_authenticator_error
+      {}
+    end
+
+    # The manage-authenticator update actions redirect back with a flash error.
+    def flash_manage_authenticator_error
+      return if params[:error].blank?
+
+      flash.now[:error] = t('errors.manage_authenticator.unique_name_error')
+    end
+
+    def setup_dashboard_history
+      user = build_dashboard_user
+      @nds_current_user = user
+      @presenter = dashboard_presenter(user)
+      {}
+    end
+
+    def setup_dashboard_device_events
+      user = build_dashboard_user
+      @nds_current_user = user
+      @presenter = dashboard_presenter(user)
+      device = user.devices.order(last_used_at: :desc).first
+      @device = device.decorate
+      @events = Event.where(user_id: user.id, device_id: device.id).order(created_at: :desc)
+        .map(&:decorate)
+      {}
+    end
+
+    def setup_dashboard_forget_all_browsers
+      @nds_current_user = build_dashboard_user
       {}
     end
 
