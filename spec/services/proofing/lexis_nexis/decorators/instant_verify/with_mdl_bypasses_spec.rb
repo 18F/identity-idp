@@ -285,6 +285,25 @@ RSpec.describe Proofing::LexisNexis::Decorators::InstantVerify::WithMdlBypasses 
           expect(subject.proof(applicant)).to be(original_result)
         end
       end
+
+      context 'when the original result contains an exception' do
+        let(:original_result) do
+          Proofing::Resolution::Result.new(
+            success:,
+            errors:,
+            exception: 'I_AM_ERROR',
+            vendor_name: 'lexisnexis:InstantVerify',
+            transaction_id: 'abc123',
+            failed_result_can_pass_with_additional_verification: true,
+            attributes_requiring_additional_verification: [:address],
+            bypassed_reason_codes: [{ name: 'PreviousBypasses', reason: 'Testing' }],
+          )
+        end
+
+        it 'returns the original result object' do
+          expect(subject.proof(applicant)).to be(original_result)
+        end
+      end
     end
   end
 end

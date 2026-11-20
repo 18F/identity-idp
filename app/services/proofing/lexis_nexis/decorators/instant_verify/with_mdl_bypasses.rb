@@ -15,7 +15,7 @@ class Proofing::LexisNexis::Decorators::InstantVerify::WithMdlBypasses
   def proof(applicant)
     result = @proofer.proof(applicant)
 
-    return result if result.success?
+    return result if result.success? || result.exception.present?
 
     apply_result_bypasses(result)
   end
