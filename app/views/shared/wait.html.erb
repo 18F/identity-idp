@@ -1,4 +1,25 @@
 <%= content_for(:meta_refresh) { '15' } %>
 <% self.title = t('titles.doc_auth.verify') %>
 
+<% if nds_layout? %>
+  <%# Rendered while verify info (7/12) or phone (8/12) proofing is still running. %>
+  <% content_for(:nds_header_progress) do %>
+    <%= nds_account_creation_progress(
+          step: :verification,
+          substep: controller_path == 'idv/phone' ? 8 : 7,
+        ) %>
+  <% end %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('doc_auth.headings.interstitial'),
+        subtitle: t('doc_auth.info.interstitial_eta'),
+      ) do |page| %>
+    <% page.with_body do %>
+      <div class="copy copy--muted text-center">
+        <p class="margin-0"><%= t('doc_auth.info.interstitial_thanks') %></p>
+      </div>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.info.interstitial_eta')) %>
+<% end %>

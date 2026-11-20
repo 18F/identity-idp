@@ -11,6 +11,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
   let(:idv_how_to_verify_form) { Idv::HowToVerifyForm.new(selection: selection) }
 
   before do
+    allow(view).to receive(:nds_layout?).and_return(false)
     allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
     allow(view).to receive(:user_signing_up?).and_return(false)
     assign(:presenter, presenter)
@@ -30,21 +31,6 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
         '.step-indicator__step--current',
         text: t('step_indicator.flows.idv.getting_started'),
       )
-    end
-
-    context 'in the nds bucket' do
-      before { allow(view).to receive(:nds_layout?).and_return(true) }
-
-      it 'renders the NDS progress pill in place of the step indicator dots' do
-        render
-        pre_flash = view.content_for(:pre_flash_content)
-        expect(pre_flash).to have_css('nds-progress.progress')
-        expect(pre_flash).to have_css(
-          '.progress__step[aria-current="step"]',
-          text: t('step_indicator.flows.idv.getting_started'),
-        )
-        expect(pre_flash).not_to have_css('.step-indicator__scroller')
-      end
     end
 
     it 'renders a title' do
@@ -199,6 +185,143 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
             )
           end
         end
+      end
+    end
+  end
+
+  it 'does not render the NDS form-page card in the default layout' do
+    render
+
+    expect(rendered).to_not have_selector('.auth--form-page')
+    expect(view.content_for(:nds_header_progress)).to be_nil
+  end
+
+  context 'in the NDS layout' do
+    let(:clear1_allowed) { false }
+    let(:presenter) do
+      Idv::HowToVerifyPresenter.new(selfie_check_required:, clear1_allowed:)
+    end
+
+    before do
+      allow(view).to receive(:nds_layout?).and_return(true)
+    end
+
+    it 'renders the form-page card with one heading and the online copy' do
+      render
+
+      expect(rendered).to have_selector('section.auth.auth--form-page')
+      expect(rendered).to have_selector('h1', count: 1)
+      expect(rendered).to have_selector(
+        '.auth--form-page h1',
+        text: t('doc_auth.headings.how_to_verify'),
+      )
+      expect(rendered).to have_selector(
+        '.auth__intro-description',
+        text: "#{t('doc_auth.info.verify_online_instruction')} " \
+              "#{t('doc_auth.info.verify_online_description')}",
+      )
+    end
+
+    it 'replaces the step indicator with the verification header progress' do
+      render
+
+      expect(view.content_for(:pre_flash_content)).to be_nil
+      expect(view.content_for(:nds_header_progress)).to have_css(
+        '.progress__step[aria-current="step"] .progress__step-counter',
+        text: '3 / 12',
+      )
+    end
+
+    it 'submits each option to how to verify from one form' do
+      render
+
+      form = "form[action='#{idv_how_to_verify_url}'][method='post']"
+      expect(rendered).to have_css(form, count: 1)
+      expect(rendered).to have_css("#{form} input[name=_method][value=put]", visible: :all)
+      expect(rendered).to have_css(
+        "#{form} .auth__actions button[type=submit][name='idv_how_to_verify_form[selection]']" \
+          "[value='#{Idv::HowToVerifyForm::REMOTE}']:not(.usa-button--secondary)",
+        text: t('forms.buttons.continue_online'),
+      )
+      expect(rendered).to have_css(
+        "#{form} .auth__actions button.usa-button--secondary[type=submit]" \
+          "[name='idv_how_to_verify_form[selection]'][value='#{Idv::HowToVerifyForm::IPP}']",
+        text: t('nds.choose_id_type.verify_in_person'),
+      )
+      expect(rendered).to have_css('.auth__actions .separator', text: t('nds.choose_id_type.or'))
+    end
+
+    it 'renders a tertiary cancel and the learn more links' do
+      render
+
+      expect(rendered).to have_css(
+        ".auth__actions a.usa-button--tertiary[href='#{idv_cancel_path(step: 'how_to_verify')}']",
+        text: t('links.cancel'),
+      )
+      expect(rendered).to have_css(
+        '.auth__actions a.usa-button--tertiary[target=_blank]',
+        text: t('doc_auth.info.verify_online_link_text'),
+      )
+      expect(rendered).to have_css(
+        '.auth__actions a.usa-button--tertiary[target=_blank]',
+        text: t('doc_auth.info.verify_at_post_office_link_text'),
+      )
+      expect(rendered).to_not have_content(t('doc_auth.info.verify_with_clear1_link_text'))
+    end
+
+    context 'when in person proofing is not offered' do
+      before { assign(:post_office_enabled, false) }
+
+      it 'renders only the online option' do
+        render
+
+        expect(rendered).to have_button(t('forms.buttons.continue_online'))
+        expect(rendered).to_not have_button(t('nds.choose_id_type.verify_in_person'))
+        expect(rendered).to_not have_css('.separator')
+        expect(rendered).to_not have_content(t('doc_auth.info.verify_at_post_office_link_text'))
+      end
+    end
+
+    context 'when CLEAR is offered' do
+      let(:clear1_allowed) { true }
+
+      it 'renders the CLEAR submit and learn more link' do
+        render
+
+        expect(rendered).to have_css(
+          ".auth__actions button.clear1-button[type=submit]" \
+            "[value='#{Idv::HowToVerifyForm::CLEAR1}']" \
+            "[aria-label='#{t('forms.buttons.verify_with_clear1')}']",
+        )
+        expect(rendered).to have_css(
+          '.auth__actions a[target=_blank]',
+          text: t('doc_auth.info.verify_with_clear1_link_text'),
+        )
+      end
+    end
+
+    context 'with a selection error' do
+      it 'renders the error in an error alert' do
+        render template: 'idv/how_to_verify/show',
+               locals: { error: t('doc_auth.errors.how_to_verify_form') }
+
+        expect(rendered).to have_css(
+          '.auth--form-page .usa-alert--error',
+          text: t('doc_auth.errors.how_to_verify_form'),
+        )
+      end
+    end
+
+    context 'when selfie is required' do
+      let(:selfie_check_required) { true }
+
+      it 'renders the selfie online instruction' do
+        render
+
+        expect(rendered).to have_selector(
+          '.auth__intro-description',
+          text: t('doc_auth.info.verify_online_instruction_selfie'),
+        )
       end
     end
   end
