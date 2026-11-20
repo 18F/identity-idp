@@ -92,5 +92,12 @@ RSpec.describe 'idv/welcome/show.html.erb' do
       )
       expect(rendered).not_to have_link(href: /help_center.*phone-number/)
     end
+
+    it 'marks the required consent checkbox valid until it is validated' do
+      expect(rendered).to have_css(
+        'input[type=checkbox][name="doc_auth[idv_consent_given]"][required][aria-invalid="false"]',
+        visible: :all,
+      )
+    end
   end
 end
