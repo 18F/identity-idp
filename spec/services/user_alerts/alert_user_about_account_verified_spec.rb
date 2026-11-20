@@ -128,7 +128,77 @@ RSpec.describe UserAlerts::AlertUserAboutAccountVerified do
         end
       end
 
-      context 'when the profile is not enhanced' do
+      context 'when the profile is basic with no GPO verification pending' do
+        let(:profile) do
+          create(
+            :profile,
+            :active,
+            idv_level: :legacy_unsupervised,
+            initiating_service_provider: service_provider,
+          )
+        end
+
+        it 'sends an SMS proofing completion confirmation to the given phone' do
+          described_class.call(profile: profile, phone: phone)
+
+          expect(Telephony).to have_received(:send_proofing_completion_confirmation).with(
+            to: phone,
+            country_code: Phonelib.parse(phone).country,
+            sp_or_app_name: service_provider.friendly_name,
+          )
+        end
+
+        context 'when no service provider initiated the proofing event' do
+          let(:service_provider) { nil }
+
+          it 'falls back to the app name' do
+            described_class.call(profile: profile, phone: phone)
+
+            expect(Telephony).to have_received(:send_proofing_completion_confirmation).with(
+              to: phone,
+              country_code: Phonelib.parse(phone).country,
+              sp_or_app_name: APP_NAME,
+            )
+          end
+        end
+
+        context 'when no phone is given' do
+          it 'does not send an SMS message' do
+            described_class.call(profile: profile)
+
+            expect(Telephony).to_not have_received(:send_proofing_completion_confirmation)
+          end
+        end
+      end
+
+      context 'when the profile is basic with GPO verification pending' do
+        let(:profile) do
+          create(
+            :profile,
+            :active,
+            :verify_by_mail_pending,
+            idv_level: :legacy_unsupervised,
+            initiating_service_provider: service_provider,
+          )
+        end
+
+        it 'does not send an SMS message' do
+          described_class.call(profile: profile, phone: phone)
+
+          expect(Telephony).to_not have_received(:send_proofing_completion_confirmation)
+        end
+      end
+
+      context 'when the profile has no idv level' do
+        let(:profile) do
+          create(
+            :profile,
+            :active,
+            idv_level: nil,
+            initiating_service_provider: service_provider,
+          )
+        end
+
         it 'does not send an SMS message' do
           described_class.call(profile: profile, phone: phone)
 
