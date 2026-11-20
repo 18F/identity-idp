@@ -379,6 +379,38 @@ RSpec.describe OpenidConnect::TokenController do
       end
     end
 
+    context 'when the person has no delegation consent for the agency application' do
+      before { UserConsentSts.where(user:, target_app: target_issuer).destroy_all }
+
+      it 'is a 400 with invalid_target saying consent is needed, naming the API asked for' do
+        action
+
+        expect(response).to be_bad_request
+
+        json = JSON.parse(response.body, symbolize_names: true)
+        expect(json).to eq(
+          error: 'invalid_target',
+          error_description: 'no_delegation_consent',
+          resource: resource,
+        )
+      end
+
+      it 'tracks an unsuccessful brokered exchange token event' do
+        stub_analytics
+
+        action
+
+        expect(@analytics).to have_logged_event(
+          :openid_connect_delegated_token_exchange,
+          hash_including(
+            success: false,
+            error_details: { audience: { no_delegation_consent: true } },
+            oauth_error_code: 'invalid_target',
+          ),
+        )
+      end
+    end
+
     context 'when the target audience is not allowlisted' do
       before do
         allow(IdentityConfig.store).to receive(:token_exchange_allowed_targets)
