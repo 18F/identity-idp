@@ -153,6 +153,15 @@ module Test
     # i18n-tasks-use t('nds.phone_setup.delivery.voice')
     # i18n-tasks-use t('nds.phone_setup.heading')
     # i18n-tasks-use t('nds.phone_setup.info')
+    # i18n-tasks-use t('nds.post_office.prepare.intro')
+    # i18n-tasks-use t('nds.post_office.prepare.step_details')
+    # i18n-tasks-use t('nds.post_office.prepare.step_phone')
+    # i18n-tasks-use t('nds.post_office.search.heading')
+    # i18n-tasks-use t('nds.post_office.search.hours')
+    # i18n-tasks-use t('nds.post_office.search.saturday')
+    # i18n-tasks-use t('nds.post_office.search.subtitle')
+    # i18n-tasks-use t('nds.post_office.search.sunday')
+    # i18n-tasks-use t('nds.post_office.search.zipcode_label')
     # i18n-tasks-use t('nds.request_letter.heading')
     # i18n-tasks-use t('nds.request_letter.info')
     # i18n-tasks-use t('nds.socure_errors.in_person_heading')
@@ -1311,6 +1320,44 @@ module Test
         previous_params: { phone: '2025551212' }, user: User.new, delivery_methods: [:sms],
       )
       { idv_phone_form: form }
+    end
+
+    # The document-capture React app opened straight into its in-person steps
+    # (prepare, then Post Office search), as after choosing in person on hybrid
+    # handoff. Later states (searching, results) are reached in the browser.
+    def setup_idv_in_person_post_office_search
+      @presenter = Idv::InPerson::UspsFormPresenter.new
+      @previous_step_url = idv_hybrid_handoff_path
+      in_person_document_capture_locals.merge(
+        opted_in_to_in_person_proofing: true,
+        skip_doc_auth_from_how_to_verify: false,
+        skip_doc_auth_from_handoff: true,
+        choose_id_type_path: idv_choose_id_type_path,
+      )
+    end
+
+    def setup_hybrid_in_person_post_office_search
+      @presenter = Idv::InPerson::UspsFormPresenter.new
+      in_person_document_capture_locals.merge(
+        skip_doc_auth_from_socure: true,
+        choose_id_type_path: idv_hybrid_mobile_choose_id_type_path,
+      )
+    end
+
+    def in_person_document_capture_locals
+      {
+        document_capture_session_uuid: SecureRandom.uuid,
+        id_type: Idp::Constants::DocumentTypes::STATE_ID_CARD,
+        failure_to_proof_url: root_url,
+        acuant_sdk_upgrade_a_b_testing_enabled: false,
+        use_alternate_sdk: false,
+        acuant_version: IdentityConfig.store.idv_acuant_sdk_version_default,
+        skip_doc_auth_from_socure: false,
+        socure_errors_timeout_url: idv_socure_document_capture_errors_url(error_code: :timeout),
+        doc_auth_selfie_capture: false,
+        doc_auth_upload_enabled: false,
+        mock_client: true,
+      }
     end
 
     def setup_idv_phone_required

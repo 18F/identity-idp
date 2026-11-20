@@ -1764,6 +1764,15 @@ nds.piv_cac_setup.step_1: Ingrese un alias
 nds.piv_cac_setup.step_2: Inserte su tarjeta PIV o CAC en su lector de tarjetas
 nds.piv_cac_setup.step_3: Agregue su tarjeta PIV o CAC
 nds.piv_cac_setup.step_3_info: Se le pedirá que elija un certificado e ingrese su PIN después de hacer clic en el botón de continuar.
+nds.post_office.prepare.intro: Siga los siguientes pasos para generar el código de barras que llevará a la oficina de correos.
+nds.post_office.prepare.step_details: 'Comparta algunos datos: su nombre, fecha de nacimiento, número de identificación emitida por el estado, dirección y número de Seguro Social.'
+nds.post_office.prepare.step_phone: Agregue su número de teléfono de EE. UU.
+nds.post_office.search.heading: Ingrese su domicilio actual
+nds.post_office.search.hours: Horario
+nds.post_office.search.saturday: 'Sábado:'
+nds.post_office.search.subtitle: Buscaremos oficinas de correos participantes de los Estados Unidos cercanas donde pueda verificar su identidad en persona.
+nds.post_office.search.sunday: 'Domingo:'
+nds.post_office.search.zipcode_label: Código postal
 nds.request_letter.heading: Verifique por correo postal
 nds.request_letter.info: Para verificar su identidad, le enviaremos por correo una carta con un código de verificación e instrucciones a su dirección. Debería llegar en 5 a 10 días. Siga las instrucciones de la carta para terminar de verificar su identidad.
 nds.second_mfa_reminder.skip: Omitir

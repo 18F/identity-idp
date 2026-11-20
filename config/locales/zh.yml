@@ -1766,6 +1766,15 @@ nds.piv_cac_setup.step_1: 输入昵称
 nds.piv_cac_setup.step_2: 把 PIV 或 CAC 插入读卡器
 nds.piv_cac_setup.step_3: 添加 PIV 或 CAC
 nds.piv_cac_setup.step_3_info: 点击继续按钮后，系统会要求你选择一个证书并输入你的 PIN。
+nds.post_office.prepare.intro: 完成以下步骤来生成你带去邮局的条形码。
+nds.post_office.prepare.step_details: 提供一些信息：你的姓名、生日、州政府颁发的身份证件号、地址以及社会保障号码。
+nds.post_office.prepare.step_phone: 添加你的美国电话号码。
+nds.post_office.search.heading: 输入你当前的地址
+nds.post_office.search.hours: 营业时间
+nds.post_office.search.saturday: 周六：
+nds.post_office.search.subtitle: 我们会找到你附近参与本项目的美国邮局，你可以在那里亲身验证身份。
+nds.post_office.search.sunday: 周日：
+nds.post_office.search.zipcode_label: 邮编
 nds.request_letter.heading: 改为通过邮寄验证
 nds.request_letter.info: 为验证您的身份，我们会向您的地址邮寄一封包含验证码和说明的信件，预计 5 到 10 天内送达。请按照信中的说明完成身份验证。
 nds.second_mfa_reminder.skip: 跳过

@@ -1753,6 +1753,15 @@ nds.piv_cac_setup.step_1: Enter a nickname
 nds.piv_cac_setup.step_2: Insert your PIV or CAC into your card reader
 nds.piv_cac_setup.step_3: Add your PIV or CAC
 nds.piv_cac_setup.step_3_info: You’ll be asked to choose a certificate and enter your PIN after clicking the continue button.
+nds.post_office.prepare.intro: Complete the steps below to generate the barcode you’ll take with you to the Post Office.
+nds.post_office.prepare.step_details: 'Share a few details: your name, date of birth, state-issued ID number, address and Social Security number.'
+nds.post_office.prepare.step_phone: Add your US phone number.
+nds.post_office.search.heading: Enter your current address
+nds.post_office.search.hours: Hours
+nds.post_office.search.saturday: 'Saturday:'
+nds.post_office.search.subtitle: We’ll find nearby participating United States Post Offices where you can verify your identity in person.
+nds.post_office.search.sunday: 'Sunday:'
+nds.post_office.search.zipcode_label: Zip code
 nds.request_letter.heading: Verify by mail instead
 nds.request_letter.info: To verify your identity, we’ll mail a letter with a verification code and instructions to your address. It should arrive in 5 to 10 days. Follow the instructions in the letter to finish verifying your identity.
 nds.second_mfa_reminder.skip: Skip
