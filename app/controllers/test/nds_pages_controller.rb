@@ -961,6 +961,15 @@ module Test
       {}
     end
 
+    def setup_piv_cac_setup_error
+      @presenter = PivCacErrorPresenter.new(
+        error: params[:error],
+        view: view_context,
+        try_again_url: setup_piv_cac_url,
+      )
+      {}
+    end
+
     def setup_phone_setup
       user = build_mfa_user(configured: params[:second].present?)
       @nds_current_user = user
@@ -1088,6 +1097,12 @@ module Test
       {}
     end
 
+    def setup_webauthn_setup_mismatch
+      configuration = WebauthnConfiguration.new(platform_authenticator: params[:key].blank?)
+      @presenter = WebauthnSetupMismatchPresenter.new(configuration:)
+      {}
+    end
+
     def setup_idv_welcome
       if params[:sp].present?
         @decorated_sp_session = SpSessionStub.new(
@@ -1205,6 +1220,44 @@ module Test
       @authorize_form = OpenidConnectAuthorizeForm.new({})
       @authorize_form.errors.add(:client_id, t('openid_connect.authorization.errors.bad_client_id'))
       @authorize_form.errors.add(:scope, t('openid_connect.authorization.errors.no_valid_scope'))
+      {}
+    end
+
+    def setup_oidc_logout_confirm
+      @params = {
+        client_id: DEV_SP_ISSUER,
+        post_logout_redirect_uri: 'https://example.com/logout',
+        state: SecureRandom.hex,
+      }
+      @service_provider_name = 'Example Service Provider' if params[:sp].present?
+      {}
+    end
+
+    def setup_oidc_logout_error
+      @logout_form = OpenidConnectLogoutForm.new(params: {}, current_user: nil)
+      @logout_form.valid?
+      {}
+    end
+
+    def setup_saml_auth_error
+      @saml_request_validator = SamlRequestValidator.new(blank_cert: params[:multiple].present?)
+      @saml_request_validator.call(
+        service_provider: nil,
+        authn_context: [],
+        nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+      )
+      {}
+    end
+
+    def setup_saml_logout_error
+      @saml_request_validator = SamlRequestValidator.new(
+        saml_errors: [:issuer_missing_or_invalid, :no_auth_or_logout_request],
+      )
+      @saml_request_validator.call(
+        service_provider: nil,
+        authn_context: [],
+        nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+      )
       {}
     end
 
@@ -1345,6 +1398,15 @@ module Test
       { step_indicator_steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
     end
 
+    def setup_phone_error_jobfail
+      @gpo_letter_available = params[:gpo].present?
+      { step_indicator_steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
+    end
+
+    def setup_phone_error_timeout
+      setup_phone_error_jobfail
+    end
+
     def setup_hybrid_handoff
       @upload_enabled = params[:upload].present?
       @post_office_enabled = params[:ipp].present?
@@ -1358,6 +1420,17 @@ module Test
         previous_params: { phone: '2025551212' }, user: User.new, delivery_methods: [:sms],
       )
       { idv_phone_form: form }
+    end
+
+    def setup_how_to_verify
+      @post_office_enabled = params[:ipp].present?
+      @idv_how_to_verify_form = Idv::HowToVerifyForm.new
+      @presenter = Idv::HowToVerifyPresenter.new(
+        selfie_check_required: false,
+        mdl_enabled: false,
+        clear1_enabled: params[:clear1].present?,
+      )
+      params[:error].present? ? { error: t('doc_auth.errors.how_to_verify_form') } : {}
     end
 
     def setup_idv_phone_required
@@ -1395,6 +1468,10 @@ module Test
 
     def setup_socure_wait
       @refresh_interval = IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
+      {}
+    end
+
+    def setup_idv_wait
       {}
     end
 

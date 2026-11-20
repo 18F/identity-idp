@@ -192,6 +192,21 @@ module Test
         ],
       ),
       Page.new(
+        key: 'piv-cac-setup-error',
+        title: 'Add government employee ID (PIV/CAC) error',
+        flow: MFA,
+        template: 'users/piv_cac_authentication_setup/error',
+        permutations: [
+          Permutation.new(label: 'Did not work (default)', params: {}),
+          Permutation.new(
+            label: 'Already associated',
+            params: { error: 'piv_cac.already_associated' },
+          ),
+          Permutation.new(label: 'No certificate', params: { error: 'certificate.none' }),
+          Permutation.new(label: 'Server timeout', params: { error: 'token.http_failure' }),
+        ],
+      ),
+      Page.new(
         key: 'totp-setup',
         title: 'Authentication app setup',
         flow: MFA,
@@ -307,6 +322,16 @@ module Test
         template: 'users/webauthn_platform_recommended/new',
         permutations: [
           Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'webauthn-setup-mismatch',
+        title: 'Passkey / security key mismatch',
+        flow: MFA,
+        template: 'users/webauthn_setup_mismatch/show',
+        permutations: [
+          Permutation.new(label: 'Passkey detected', params: {}),
+          Permutation.new(label: 'Security key detected', params: { key: '1' }),
         ],
       ),
       Page.new(
@@ -434,6 +459,44 @@ module Test
         title: 'OpenID Connect authorization error',
         flow: ERRORS,
         template: 'openid_connect/authorization/error',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'oidc-logout-confirm',
+        title: 'OpenID Connect sign out (confirm)',
+        flow: SIGN_IN,
+        template: 'openid_connect/logout/confirm_logout',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'With service provider', params: { sp: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'oidc-logout-error',
+        title: 'OpenID Connect logout error',
+        flow: ERRORS,
+        template: 'openid_connect/logout/error',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'saml-auth-error',
+        title: 'SAML authentication request error',
+        flow: ERRORS,
+        template: 'saml_idp/auth/error',
+        permutations: [
+          Permutation.new(label: 'Unauthorized service provider', params: {}),
+          Permutation.new(label: 'Multiple errors', params: { multiple: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'saml-logout-error',
+        title: 'SAML logout request error',
+        flow: ERRORS,
+        template: 'saml_idp/logout/error',
         permutations: [
           Permutation.new(label: 'Default', params: {}),
         ],
@@ -652,6 +715,26 @@ module Test
         ],
       ),
       Page.new(
+        key: 'phone-error-jobfail',
+        title: 'Phone verification job failed',
+        flow: ERRORS,
+        template: 'idv/phone_errors/jobfail',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Verify by mail available', params: { gpo: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'phone-error-timeout',
+        title: 'Phone verification timed out',
+        flow: ERRORS,
+        template: 'idv/phone_errors/timeout',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Verify by mail available', params: { gpo: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'hybrid-handoff',
         title: 'Send a link to your phone (hybrid handoff)',
         flow: IDV,
@@ -665,6 +748,18 @@ module Test
             label: 'All options',
             params: { clear1: '1', ipp: '1', upload: '1' },
           ),
+        ],
+      ),
+      Page.new(
+        key: 'how-to-verify',
+        title: 'Choose how to verify your ID (hybrid flow unavailable)',
+        flow: IDV,
+        template: 'idv/how_to_verify/show',
+        permutations: [
+          Permutation.new(label: 'In person available', params: { ipp: '1' }),
+          Permutation.new(label: 'CLEAR available', params: { clear1: '1' }),
+          Permutation.new(label: 'All options', params: { clear1: '1', ipp: '1' }),
+          Permutation.new(label: 'Selection error', params: { ipp: '1', error: '1' }),
         ],
       ),
       Page.new(
@@ -716,6 +811,13 @@ module Test
         title: 'Processing your ID images (Socure wait)',
         flow: IDV,
         template: 'idv/socure/document_capture/wait',
+        permutations: [Permutation.new(label: 'Default', params: {})],
+      ),
+      Page.new(
+        key: 'idv-wait',
+        title: 'Processing your information (verify info / phone wait)',
+        flow: IDV,
+        template: 'shared/wait',
         permutations: [Permutation.new(label: 'Default', params: {})],
       ),
       Page.new(
