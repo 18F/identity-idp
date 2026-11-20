@@ -1,3 +1,32 @@
+<% if nds_layout? %>
+  <li class="discovery-service discovery-service--connected">
+    <%= image_tag(
+          'sp-logos/DOS.svg',
+          alt: '',
+          class: 'agency-seal agency-seal--bordered discovery-service__logo',
+          width: 48,
+          height: 48,
+        ) %>
+
+    <div class="discovery-service__content">
+      <p class="discovery-service__title">MyTravelGov</p>
+      <p class="discovery-service__description">
+        <%= t(
+              'account.connected_apps.associated_html',
+              timestamp_html: render(TimeComponent.new(time: delegation.created_at)),
+            ) %>
+      </p>
+    </div>
+
+    <div class="discovery-service__actions">
+      <%= render ButtonComponent.new(
+            url: sts_consent_revoke_url(id: delegation.id),
+            variant: :secondary,
+            size: :md,
+          ).with_content(t('forms.buttons.edit')) %>
+    </div>
+  </li>
+<% else %>
 <div class="padding-1 border-top border-left border-right border-primary-light">
   <h3 class="margin-top-0 margin-bottom-1">
     <%= new_tab_link_to('MyTravelGov', 'https://mytravel.state.gov/') %>
@@ -18,3 +47,4 @@
         ).with_content(t('account.revoke_consent.link_title')) %>
   </div>
 </div>
+<% end %>

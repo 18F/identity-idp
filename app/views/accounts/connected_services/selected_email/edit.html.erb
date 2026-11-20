@@ -1,5 +1,76 @@
 <% self.title = t('titles.select_email') %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_account_header, 'true') %>
+
+  <%= simple_form_for(
+        @select_email_form,
+        url: connected_services_selected_email_path(identity_id: @identity.id),
+        method: :patch,
+      ) do |f| %>
+    <%= render NDS::FormPageComponent.new(title: @identity.display_name) do |page| %>
+      <% page.with_body do %>
+        <div class="connected-services">
+          <div class="connected-services__header">
+            <h2 id="select-email-heading" class="connected-services__heading">
+              <%= t('nds.dashboard_home.preferred_email') %>
+            </h2>
+            <p id="select-email-intro" class="connected-services__description">
+              <%= t('help_text.select_preferred_email_html', sp: @identity.display_name) %>
+            </p>
+          </div>
+
+          <fieldset
+            class="usa-fieldset margin-0"
+            aria-labelledby="select-email-heading"
+            aria-describedby="select-email-intro"
+          >
+            <div class="radio-group margin-top-0">
+              <% current_user.confirmed_email_addresses.each do |email| %>
+                <div class="radio">
+                  <%= f.radio_button(
+                        :selected_email_id,
+                        email.id,
+                        class: 'radio__input usa-sr-only',
+                        checked: email.id == @email_id,
+                        required: true,
+                        aria: { invalid: false },
+                      ) %>
+                  <%= f.label(
+                        :selected_email_id,
+                        email.email,
+                        value: email.id,
+                        class: 'radio__label',
+                      ) %>
+                </div>
+              <% end %>
+            </div>
+          </fieldset>
+
+          <% if @can_add_email %>
+            <%= render ButtonComponent.new(
+                  url: add_email_path(in_select_email_flow: true),
+                  variant: :tertiary,
+                  full_width: true,
+                ).with_content(t('account.index.email_add')) %>
+          <% end %>
+        </div>
+      <% end %>
+
+      <% page.with_actions do %>
+        <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+          <%= render ButtonComponent.new(type: :submit, full_width: true)
+                .with_content(t('components.manageable_authenticator.save')) %>
+          <%= render ButtonComponent.new(
+                url: account_connected_services_path,
+                variant: :secondary,
+                full_width: true,
+              ).with_content(t('links.cancel')) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render StatusPageComponent.new(status: :info, icon: :question) do |c| %>
   <% c.with_header(id: 'select-email-heading') { t('titles.select_email') } %>
 
@@ -45,4 +116,5 @@
   <% end %>
 
   <% c.with_footer { link_to t('forms.buttons.back'), account_connected_services_path } %>
+<% end %>
 <% end %>

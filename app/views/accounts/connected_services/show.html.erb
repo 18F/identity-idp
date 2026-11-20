@@ -1,5 +1,60 @@
 <% self.title = t('account.navigation.connected_services') %>
 
+<% if nds_layout? %>
+  <% connected_apps = @presenter.connected_apps.to_a %>
+  <% updated_identity = connected_apps.find { |identity| identity.id == flash[:email_updated_identity_id] } %>
+
+  <div class="dashboard-home">
+    <% if updated_identity %>
+      <%= render AlertComponent.new(
+            type: :success,
+            message: t('account.connected_apps.email_update_success_html', sp_name: updated_identity.display_name),
+          ) %>
+    <% end %>
+
+    <section class="connected-services" aria-labelledby="connected-services-heading">
+      <div class="connected-services__header">
+        <h1 id="connected-services-heading" class="connected-services__heading">
+          <%= t('headings.account.connected_services') %>
+        </h1>
+        <p class="connected-services__description">
+          <%= t('nds.dashboard_home.connected_services_description', app_name: APP_NAME) %>
+        </p>
+      </div>
+
+      <% if connected_apps.any? %>
+        <div class="connected-services__list">
+          <ul class="connected-services__rows">
+            <% connected_apps.each do |identity| %>
+              <%= render 'accounts/connected_app', identity: identity %>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </section>
+
+    <% if @presenter.show_connected_delegations? %>
+      <section class="connected-services" aria-labelledby="connected-delegations-heading">
+        <div class="connected-services__header">
+          <h2 id="connected-delegations-heading" class="connected-services__heading">
+            <%= t('account.navigation.america_gov_services', america_gov_name: AMERICA_GOV_NAME) %>
+          </h2>
+          <p class="connected-services__description">
+            <%= t('nds.dashboard_home.delegations_description', america_gov_name: AMERICA_GOV_NAME) %>
+          </p>
+        </div>
+
+        <div class="connected-services__list">
+          <ul class="connected-services__rows">
+            <% @presenter.connected_delegations.each do |delegation| %>
+              <%= render 'accounts/connected_delegation', delegation: delegation %>
+            <% end %>
+          </ul>
+        </div>
+      </section>
+    <% end %>
+  </div>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('headings.account.connected_services')) %>
 
 <p>
@@ -36,4 +91,5 @@
       <% end %>
     </ul>
   </div>
+<% end %>
 <% end %>
