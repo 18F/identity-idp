@@ -97,6 +97,14 @@ RSpec.describe 'users/phone_setup/index.html.erb' do
       expect(rendered).to have_css('.auth--form-page h1', text: t('nds.phone_setup.heading'))
     end
 
+    it 'renders an empty hidden phone error region with no icon' do
+      error = Nokogiri::HTML(rendered).at_css('.usa-error-message[data-nds-phone-error]')
+
+      expect(error['hidden']).not_to be_nil
+      expect(error[:class].split).to include('text-left')
+      expect(error.children).to be_empty
+    end
+
     it 'renders the phone input and delivery preference radios' do
       expect(rendered).to have_css('.usa-phone-input')
       expect(rendered).to have_css(

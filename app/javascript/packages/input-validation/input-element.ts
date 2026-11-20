@@ -19,6 +19,34 @@ const VALIDATION_CONTROL_SELECTOR = '.usa-input__control, .validated-field__inpu
 
 type ValidationControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
+const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
+
+// Mirrors `NDS::IconComponent.new(icon: :error)` (app/assets/images/nds/icons/error/24.svg).
+const ERROR_ICON_PATH =
+  'M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2M12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8';
+
+const createErrorIcon = (): SVGSVGElement => {
+  const icon = document.createElementNS(SVG_NAMESPACE, 'svg');
+  icon.setAttribute('class', 'usa-icon');
+  icon.setAttribute('width', '24');
+  icon.setAttribute('height', '24');
+  icon.setAttribute('viewBox', '0 0 24 24');
+  icon.setAttribute('fill', 'none');
+  icon.setAttribute('focusable', 'false');
+  icon.setAttribute('aria-hidden', 'true');
+  const path = document.createElementNS(SVG_NAMESPACE, 'path');
+  path.setAttribute('fill', 'currentColor');
+  path.setAttribute('d', ERROR_ICON_PATH);
+  icon.appendChild(path);
+  return icon;
+};
+
+const ensureErrorIcon = (error: HTMLElement) => {
+  if (!error.querySelector(':scope > .usa-icon')) {
+    error.prepend(createErrorIcon());
+  }
+};
+
 const editedControls = new WeakSet<ValidationControl>();
 
 /**
@@ -173,6 +201,9 @@ const bindNdsPhoneGroup = (group: HTMLElement) => {
       return;
     }
     errorRegion.textContent = message;
+    if (message) {
+      errorRegion.prepend(createErrorIcon());
+    }
     errorRegion.hidden = !message;
   };
 
@@ -443,17 +474,14 @@ const setInputDescribedBy = (input: ValidationControl, errorId: string, hasError
 
 const ensureErrorInner = (error: HTMLElement) => {
   let inner = error.querySelector<HTMLElement>(`.${ERROR_INNER_CLASS}`);
-  if (inner) {
-    return inner;
-  }
-
-  inner = document.createElement('span');
-  inner.className = ERROR_INNER_CLASS;
-  if (error.textContent) {
+  if (!inner) {
+    inner = document.createElement('span');
+    inner.className = ERROR_INNER_CLASS;
     inner.textContent = error.textContent;
-    error.textContent = '';
+    error.replaceChildren(inner);
   }
-  error.appendChild(inner);
+  error.classList.add('usa-error-message', 'text-left');
+  ensureErrorIcon(error);
   return inner;
 };
 
@@ -482,9 +510,7 @@ const getOrCreateErrorMessage = (input: ValidationControl) => {
   errorMessage.id = errorIdForInput(input);
   errorMessage.setAttribute('aria-live', 'polite');
   errorMessage.setAttribute('data-nds-error', '');
-  const inner = document.createElement('span');
-  inner.className = ERROR_INNER_CLASS;
-  errorMessage.appendChild(inner);
+  ensureErrorInner(errorMessage);
   insertErrorMessage(input, errorMessage);
 
   return errorMessage;

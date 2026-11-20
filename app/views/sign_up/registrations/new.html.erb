@@ -28,7 +28,7 @@
                     ) %>
                 <%= f.label :email, t('account.index.email_short'), class: 'usa-label' %>
                 <% if @register_user_email_form.errors[:email].present? %>
-                  <p class="usa-error-message"><%= @register_user_email_form.errors[:email].first %></p>
+                  <p class="usa-error-message text-left"><%= render NDS::IconComponent.new(icon: :error) %><%= @register_user_email_form.errors[:email].first %></p>
                 <% end %>
               </div>
 

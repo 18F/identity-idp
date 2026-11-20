@@ -55,7 +55,7 @@
                       ) %>
                   <%= f.label :email, t('account.index.email_short'), class: 'usa-label' %>
                   <% if resource.errors[:email].present? %>
-                    <p class="usa-error-message"><%= resource.errors[:email].first %></p>
+                    <p class="usa-error-message text-left"><%= render NDS::IconComponent.new(icon: :error) %><%= resource.errors[:email].first %></p>
                   <% end %>
                 </div>
                 <div class="usa-form-group usa-input-group--floating<%= ' usa-form-group--error' if resource.errors[:password].present? %>">
@@ -69,7 +69,7 @@
                       ) %>
                   <%= f.label :password, t('forms.password'), class: 'usa-label' %>
                   <% if resource.errors[:password].present? %>
-                    <p class="usa-error-message"><%= resource.errors[:password].first %></p>
+                    <p class="usa-error-message text-left"><%= render NDS::IconComponent.new(icon: :error) %><%= resource.errors[:password].first %></p>
                   <% end %>
                 </div>
                 <%= hidden_field_tag(

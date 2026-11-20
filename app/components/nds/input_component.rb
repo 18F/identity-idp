@@ -7,9 +7,11 @@ module NDS
   # usa-input__phone-shell with __country-shell/__country/__country-value/
   # __country-icon, usa-input__floating-label, a usa-input__toggle password
   # button, and usa-input__error/__error-inner (data-nds-error, id _nds_error).
-  # Icons are inlined SVGs (no IconComponent dependency) carrying the
-  # usa-input__country-icon and data-nds-password-icon-show/hide CSS hooks. The
-  # default experience keeps its existing inputs; this variant is NDS-only.
+  # The error region also carries the design system's usa-error-message class
+  # and a leading aria-hidden NDS::IconComponent error icon. The country and
+  # password toggle icons are inlined SVGs carrying the usa-input__country-icon
+  # and data-nds-password-icon-show/hide CSS hooks. The default experience
+  # keeps its existing inputs; this variant is NDS-only.
   class InputComponent < BaseComponent
     # Matches server valid_email rule: domain must have 2+ labels (not user@example).
     EMAIL_PATTERN = '[^@]+@[^@.]+\.[^@]+'

@@ -94,6 +94,22 @@ RSpec.describe NDS::InputComponent, type: :component do
       expect(rendered).to have_css("##{error_id}", text: 'Enter a valid email address.')
     end
 
+    it 'leads the error with an aria-hidden design system error icon' do
+      error = rendered.css('.usa-input__error').first
+      icon = error.css('> svg.usa-icon').first
+
+      expect(error[:class].split).to include(
+        'usa-error-message',
+        'text-left',
+        'usa-input__error--visible',
+      )
+      expect(error.element_children.first).to eq(icon)
+      expect(icon['aria-hidden']).to eq('true')
+      expect(icon['viewBox']).to eq('0 0 24 24')
+      expect(icon.text).to be_empty
+      expect(error.text.strip).to eq('Enter a valid email address.')
+    end
+
     it 'normalizes string aria keys without duplicating attributes' do
       rendered = render_inline NDS::InputComponent.new(
         form:,

@@ -58,10 +58,10 @@
     </div>
   <% end %>
   <p
-    class="usa-input__error<%= ' usa-input__error--visible' if error_message.present? %>"
+    class="usa-input__error usa-error-message text-left<%= ' usa-input__error--visible' if error_message.present? %>"
     data-nds-error
     id="<%= error_id %>"
     aria-live="polite"
-  ><span class="usa-input__error-inner"><%= error_message %></span></p>
+  ><%= render NDS::IconComponent.new(icon: :error) %><span class="usa-input__error-inner"><%= error_message %></span></p>
   <%= content %>
 <% end %>

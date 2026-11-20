@@ -1,9 +1,11 @@
+import { computeAccessibleDescription } from 'dom-accessibility-api';
 import {
   enhanceInputValidation,
   enhanceNdsPhoneGroups,
   enhanceOverflowScrollFade,
   enhancePasswordToggles,
   enhancePhoneInputs,
+  normalizeInputErrors,
   syncOverflowScrollFade,
 } from './input-element';
 
@@ -404,6 +406,71 @@ describe('InputComponent validation', () => {
     expect(errorMessage.id).to.equal('user_email_nds_error');
     expect(errorMessage.classList.contains('usa-input__error--visible')).to.equal(true);
     expect(errorInner.textContent).to.equal('Enter a valid email');
+  });
+
+  it('leads the client-side NDS error message with an aria-hidden error icon', () => {
+    const { input } = renderRequiredInput();
+
+    clearInput(input);
+    input.dispatchEvent(new FocusEvent('blur'));
+
+    const errorMessage = document.querySelector<HTMLElement>('.usa-input__error')!;
+    const icon = errorMessage.firstElementChild!;
+    expect(errorMessage.classList.contains('usa-error-message')).to.equal(true);
+    expect(errorMessage.classList.contains('text-left')).to.equal(true);
+    expect(icon.matches('svg.usa-icon')).to.equal(true);
+    expect(icon.getAttribute('aria-hidden')).to.equal('true');
+    expect(icon.getAttribute('viewBox')).to.equal('0 0 24 24');
+    expect(errorMessage.querySelectorAll('.usa-icon')).to.have.lengthOf(1);
+    expect(computeAccessibleDescription(input)).to.equal('Enter a valid email');
+  });
+
+  it('keeps the single server-rendered icon when showing an NDS error again', () => {
+    document.body.innerHTML = `
+      <form>
+        <div class="usa-input">
+          <div class="usa-input__shell">
+            <input id="nickname" name="name" required class="usa-input__control">
+          </div>
+          <p class="usa-input__error usa-error-message" id="nickname_nds_error" data-nds-error><svg
+            class="usa-icon" aria-hidden="true"></svg><span class="usa-input__error-inner"></span></p>
+        </div>
+      </form>
+    `;
+    const input = document.querySelector<HTMLInputElement>('.usa-input__control')!;
+    const errorMessage = document.querySelector<HTMLElement>('.usa-input__error')!;
+    const icon = errorMessage.querySelector('.usa-icon');
+    enhanceInputValidation();
+
+    input.dispatchEvent(new FocusEvent('blur'));
+    input.dispatchEvent(new InputEvent('input', { bubbles: true }));
+    input.dispatchEvent(new FocusEvent('blur'));
+
+    expect(errorMessage.classList.contains('usa-input__error--visible')).to.equal(true);
+    expect(errorMessage.firstElementChild).to.equal(icon);
+    expect(errorMessage.querySelectorAll('.usa-icon')).to.have.lengthOf(1);
+    expect(computeAccessibleDescription(input)).to.equal(input.validationMessage);
+  });
+
+  it('adds the error icon when normalizing an error without inner markup', () => {
+    document.body.innerHTML = `
+      <div class="usa-input">
+        <p class="usa-input__error" data-nds-error>Enter a value</p>
+      </div>
+    `;
+
+    normalizeInputErrors();
+
+    const errorMessage = document.querySelector<HTMLElement>('.usa-input__error')!;
+    expect(errorMessage.classList.contains('usa-error-message')).to.equal(true);
+    expect(errorMessage.classList.contains('text-left')).to.equal(true);
+    expect(errorMessage.firstElementChild?.matches('svg.usa-icon[aria-hidden="true"]')).to.equal(
+      true,
+    );
+    expect(errorMessage.querySelector('.usa-input__error-inner')?.textContent).to.equal(
+      'Enter a value',
+    );
+    expect(errorMessage.classList.contains('usa-input__error--visible')).to.equal(true);
   });
 
   it('shows a type-specific message for invalid email values', () => {
@@ -820,7 +887,8 @@ describe('NDS phone group', () => {
               </div>
             </details>
             <span class="usa-phone-input__field">
-              <input id="phone" type="tel" class="usa-phone-input__input" placeholder=" " required>
+              <input id="phone" type="tel" class="usa-phone-input__input" placeholder=" " required
+                     aria-describedby="phone-error">
               <label for="phone" class="usa-phone-input__label">Phone number</label>
             </span>
           </div>
@@ -893,6 +961,36 @@ describe('NDS phone group', () => {
     expect(input.getAttribute('aria-invalid')).to.equal('true');
     expect(errorRegion.hidden).to.equal(false);
     expect(errorRegion.textContent).to.equal(messages.valueMissing);
+  });
+
+  it('leads the phone error message with an aria-hidden error icon', () => {
+    const { input, errorRegion } = renderPhoneGroup();
+    type(input, '2');
+    input.value = '';
+    input.dispatchEvent(new InputEvent('input', { bubbles: true }));
+    input.dispatchEvent(new FocusEvent('blur'));
+
+    const icon = errorRegion.firstElementChild!;
+    expect(icon.matches('svg.usa-icon')).to.equal(true);
+    expect(icon.getAttribute('aria-hidden')).to.equal('true');
+    expect(errorRegion.querySelectorAll('.usa-icon')).to.have.lengthOf(1);
+    expect(errorRegion.textContent).to.equal(messages.valueMissing);
+    expect(computeAccessibleDescription(input)).to.equal(messages.valueMissing);
+  });
+
+  it('has no phone error icon while the error region is hidden', () => {
+    const { input, errorRegion } = renderPhoneGroup();
+    expect(errorRegion.hidden).to.equal(true);
+    expect(errorRegion.querySelector('.usa-icon')).to.not.exist();
+
+    type(input, '202');
+    input.dispatchEvent(new FocusEvent('blur'));
+    expect(errorRegion.querySelectorAll('.usa-icon')).to.have.lengthOf(1);
+
+    type(input, '5550199');
+
+    expect(errorRegion.hidden).to.equal(true);
+    expect(errorRegion.querySelector('.usa-icon')).to.not.exist();
   });
 
   it('does not show the required message when an untouched field loses focus', () => {
