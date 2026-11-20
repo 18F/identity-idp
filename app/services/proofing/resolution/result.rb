@@ -16,6 +16,7 @@ module Proofing
                   :reference,
                   :reason_codes,
                   :source_attribution,
+                  :bypassed_reason_codes,
                   :vendor_workflow
       def initialize(
         success: nil,
@@ -28,6 +29,7 @@ module Proofing
         reference: '',
         reason_codes: {},
         source_attribution: [],
+        bypassed_reason_codes: [],
         failed_result_can_pass_with_additional_verification: false,
         attributes_requiring_additional_verification: [],
         vendor_workflow: nil,
@@ -43,6 +45,7 @@ module Proofing
         @reference = reference
         @reason_codes = reason_codes
         @source_attribution = source_attribution
+        @bypassed_reason_codes = bypassed_reason_codes
         @failed_result_can_pass_with_additional_verification =
           failed_result_can_pass_with_additional_verification
         @attributes_requiring_additional_verification =
@@ -62,6 +65,8 @@ module Proofing
       def to_h
         customer_user_id_hash = customer_user_id.present? ?
                                   { customer_user_id: customer_user_id } : {}
+        socure_hash = vendor_name == Proofing::Socure::IdPlus::Proofers::KycProofer::VENDOR_NAME ?
+                        { bypassed_reason_codes: bypassed_reason_codes } : {}
         {
           success: success?,
           errors: errors,
@@ -79,7 +84,7 @@ module Proofing
           vendor_id:,
           vendor_workflow:,
           verified_attributes:,
-        }.merge(customer_user_id_hash)
+        }.merge(customer_user_id_hash).merge(socure_hash)
       end
 
       def failed_result_can_pass_with_additional_verification?

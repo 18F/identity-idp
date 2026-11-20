@@ -5,7 +5,7 @@ module Proofing
     module IdPlus
       module Proofers
         class KycProofer < Proofing::Socure::IdPlus::Proofer
-          attr_reader :config
+          attr_reader :config, :is_proofing_agent
 
           VENDOR_NAME = 'socure_kyc'
 
@@ -25,7 +25,7 @@ module Proofing
           # @return [Proofing::Resolution::Result]
           def build_result_from_response(response)
             Proofing::Resolution::Result.new(
-              success: response.successful?,
+              success: check_successful_response(response),
               exception: nil,
               vendor_name: VENDOR_NAME,
               verified_attributes: response.verified_attributes,
@@ -36,9 +36,28 @@ module Proofing
               transaction_id: response.reference_id,
               vendor_id: response.vendor_id,
               source_attribution: response.source_attribution,
+              bypassed_reason_codes: bypassed_reason_codes(response),
               customer_user_id: response.customer_user_id,
               reason_codes: SocureReasonCode.with_definitions(response.reason_codes),
             )
+          end
+
+          def check_successful_response(response)
+            if !response.successful? && is_proofing_agent
+              return false unless response.all_required_attributes_verified?
+
+              return (response.reason_codes &
+                (response.auto_failure_reason_codes -
+                  IdentityConfig.store.ssa_proofing_agent_socure_kyc_bypass_reason_codes)
+                     ).empty?
+            end
+
+            response.successful?
+          end
+
+          def bypassed_reason_codes(response)
+            response.reason_codes &
+              IdentityConfig.store.ssa_proofing_agent_socure_kyc_bypass_reason_codes
           end
 
           def request(input)

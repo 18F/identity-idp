@@ -5585,6 +5585,11 @@ module AnalyticsEvents
     )
   end
 
+  # The user reached the NDS dead end because identity verification requires a U.S. phone number
+  def idv_phone_required_visited(**extra)
+    track_event(:idv_phone_required_visited, **extra)
+  end
+
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
@@ -6442,6 +6447,8 @@ module AnalyticsEvents
   # be verified by another vendor
   # @param [Array<String>, nil] source_attribution List of sources that contributed to the
   # resolution proofing result
+  # @param [Array<String>, nil] bypassed_reason_codes List of error reason codes that were
+  # bypassed due to ssa
   # @param [String, nil] vendor_name Vendor used
   # @param [String] vendor_id ID of vendor
   # @param [String] vendor_workflow ID of workflow or configuration the vendor used for this
@@ -6458,6 +6465,7 @@ module AnalyticsEvents
     can_pass_with_additional_verification:,
     attributes_requiring_additional_verification:,
     source_attribution:,
+    bypassed_reason_codes:,
     vendor_name:,
     vendor_id:,
     vendor_workflow:,
@@ -6476,6 +6484,7 @@ module AnalyticsEvents
       can_pass_with_additional_verification:,
       attributes_requiring_additional_verification:,
       source_attribution:,
+      bypassed_reason_codes:,
       vendor_name:,
       vendor_id:,
       vendor_workflow:,
