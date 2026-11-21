@@ -83,7 +83,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
         [:residential_address, :errors, :ssn],
       )
 
-      vendors = Proofing::Resolution::ProgressiveProofer::PROOFING_VENDOR_SP_COST_TOKENS.keys
+      vendors = Proofing::Resolution::ProgressiveProofer::SUPPORTED_RESOLUTION_VENDORS
       expect(keypaths).to match_array(
         vendors.flat_map do |vendor|
           [

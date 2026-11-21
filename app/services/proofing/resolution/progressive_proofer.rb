@@ -12,6 +12,13 @@ module Proofing
                   :proofing_vendor,
                   :is_proofing_agent
 
+      SUPPORTED_RESOLUTION_VENDORS = %i[
+        mock
+        instant_verify
+        instant_verify_ddp
+        socure_kyc
+      ].freeze
+
       PROOFING_VENDOR_SP_COST_TOKENS = {
         mock: :mock_resolution,
         instant_verify: :lexis_nexis_resolution,

@@ -50,7 +50,7 @@ module Proofing
       # event's pii_like_keypaths. Each argument is a path within a stage, starting with the stage
       # name, e.g. [:resolution, :errors, :ssn].
       def self.attempt_pii_keypaths(*stage_keypaths)
-        stage_keypaths.product(ProgressiveProofer::PROOFING_VENDOR_SP_COST_TOKENS.keys)
+        stage_keypaths.product(ProgressiveProofer::SUPPORTED_RESOLUTION_VENDORS)
           .map do |(stage, *rest), vendor|
             [:proofing_results, :context, :stages, stage, :attempts, vendor, *rest]
           end

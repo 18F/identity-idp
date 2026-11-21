@@ -22,6 +22,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     )
   end
 
+  it 'has a cost token for every supported resolution vendor' do
+    expect(described_class::SUPPORTED_RESOLUTION_VENDORS)
+      .to match_array(described_class::PROOFING_VENDOR_SP_COST_TOKENS.keys)
+  end
+
   describe '#proof' do
     let(:applicant_pii) { { uuid: user.uuid }.merge(Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE) }
     let(:ipp_enrollment_in_progress) { false }
