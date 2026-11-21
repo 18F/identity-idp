@@ -9,6 +9,7 @@ RSpec.describe 'users/emails/verify.html.erb' do
   # current user is always a fully-registered (confirmed) user.
   let(:user) { create(:user, :fully_registered) }
   before do
+    allow(view).to receive(:nds_layout?).and_return(false)
     assign(:email, email)
     assign(:in_select_email_flow, in_select_email_flow)
     assign(:pending_completions_consent, pending_completions_consent)
@@ -160,6 +161,74 @@ RSpec.describe 'users/emails/verify.html.erb' do
           t('forms.buttons.back'),
           href: account_connected_services_path,
         )
+      end
+    end
+  end
+
+  it 'does not render the NDS form page in the default layout' do
+    expect(rendered).to_not have_css('.auth--form-page')
+  end
+
+  context 'in the NDS layout' do
+    before do
+      allow(view).to receive(:nds_layout?).and_return(true)
+    end
+
+    it 'renders the heading and the sent-to copy in the signed-in header layout' do
+      render
+
+      expect(view.content_for(:nds_account_header)).to eq('true')
+      expect(rendered).to have_css('.auth--form-page h1', text: t('headings.verify_email'))
+      expect(rendered).to have_css('.auth__intro-description strong', text: email)
+      expect(rendered).to have_css(
+        '.auth__intro-description',
+        text: t('notices.signed_up_and_confirmed.first_paragraph_end'),
+      )
+    end
+
+    it 'resends with a secondary button and links to use a different email' do
+      render
+
+      expect(rendered).to have_css(
+        ".auth__actions form[action='#{add_email_resend_path}'][method=post] " \
+          "button.usa-button--secondary",
+        text: t('notices.verify_email.resend'),
+      )
+      expect(rendered).to have_link(
+        t('notices.verify_email.use_different_email'),
+        href: add_email_path,
+        class: 'usa-button--tertiary',
+      )
+      expect(rendered).to_not have_link(t('idv.messages.return_to_profile', app_name: APP_NAME))
+    end
+
+    context 'when in email select flow' do
+      let(:in_select_email_flow) { true }
+
+      it 'keeps the select email flow parameter on both actions' do
+        render
+
+        expect(rendered).to have_css(
+          "form[action='#{add_email_resend_path(in_select_email_flow: true)}']",
+        )
+        expect(rendered).to have_link(
+          t('notices.verify_email.use_different_email'),
+          href: add_email_path(in_select_email_flow: true),
+        )
+      end
+    end
+
+    context 'when enable_load_testing_mode? is true and email address found' do
+      let(:email) { user.email_addresses.first.email }
+
+      before do
+        allow(FeatureManagement).to receive(:enable_load_testing_mode?).and_return(true)
+      end
+
+      it 'keeps the load-testing confirmation link' do
+        render
+
+        expect(rendered).to have_css('a#confirm-now', text: 'CONFIRM NOW')
       end
     end
   end

@@ -1,5 +1,52 @@
 <% self.title = t('titles.verify_email') %>
 
+<% if nds_layout? %>
+  <% content_for(:nds_account_header, 'true') %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('headings.verify_email'),
+        subtitle: safe_join(
+          [
+            t('notices.signed_up_and_confirmed.first_paragraph_start'),
+            tag.strong(@email),
+            t('notices.signed_up_and_confirmed.first_paragraph_end'),
+          ],
+          ' ',
+        ),
+      ) do |page| %>
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              url: add_email_resend_path(in_select_email_flow: @in_select_email_flow),
+              method: :post,
+              variant: :secondary,
+              full_width: true,
+            ).with_content(t('notices.verify_email.resend')) %>
+        <%= render ButtonComponent.new(
+              url: add_email_path(in_select_email_flow: @in_select_email_flow),
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('notices.verify_email.use_different_email')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% if FeatureManagement.enable_load_testing_mode? %>
+    <% email_address = EmailAddress.where(user_id: current_user.id).find_with_email(@email) %>
+    <% if email_address %>
+      <%= link_to(
+            'CONFIRM NOW',
+            add_email_confirmation_url(
+              confirmation_token: email_address.confirmation_token,
+              from_select_email_flow: @in_select_email_flow,
+              locale: locale_url_param,
+              request_id: sp_session[:request_id],
+            ),
+            id: 'confirm-now',
+          ) %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('headings.verify_email')) %>
 
 <p><%= t('notices.signed_up_and_confirmed.first_paragraph_start') %>
@@ -55,4 +102,5 @@
   <% end %>
 <% else %>
   <%= link_to t('idv.messages.return_to_profile', app_name: APP_NAME), account_path %>
+<% end %>
 <% end %>
