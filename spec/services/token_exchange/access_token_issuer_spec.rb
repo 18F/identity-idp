@@ -72,7 +72,32 @@ RSpec.describe TokenExchange::AccessTokenIssuer do
         'alg' => OpenidConnect::JweEncryptor::ALG,
         'enc' => OpenidConnect::JweEncryptor::ENC,
         'kid' => JWT::JWK.new(target_private_key.public_key).kid,
+        'cty' => 'JWT',
       )
+    end
+
+    it 'types the inner token as an access token and identifies the token and the actor' do
+      jwt = JWE.decrypt(subject.token, target_private_key)
+      payload, header = JWT.decode(
+        jwt, Rails.application.config.oidc_public_key, true,
+        algorithm: IdTokenBuilder::JWT_SIGNING_ALGORITHM
+      )
+
+      expect(header['typ']).to eq('at+jwt')
+      expect(payload['jti']).to be_present
+      expect(payload['client_id']).to eq(actor_issuer)
+    end
+
+    it 'gives every token its own jti' do
+      first = described_class.issue(subject_token:, target_issuer:, resource:, scope:)
+      jtis = [first, subject].map do |issued|
+        JWT.decode(
+          JWE.decrypt(issued.token, target_private_key), Rails.application.config.oidc_public_key,
+          true, algorithm: IdTokenBuilder::JWT_SIGNING_ALGORITHM
+        ).first['jti']
+      end
+
+      expect(jtis.uniq.length).to eq(2)
     end
 
     context 'when the target has no registered certificate' do
