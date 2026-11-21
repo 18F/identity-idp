@@ -22,6 +22,11 @@ RSpec.describe SocureDocvRepeatWebhookJob do
       },
     }
   end
+  let(:encrypted_arguments) do
+    Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
+      { body:, headers: }.to_json,
+    )
+  end
 
   before do
     stub_request(:post, endpoint)
@@ -30,14 +35,21 @@ RSpec.describe SocureDocvRepeatWebhookJob do
 
   describe '#perform' do
     subject(:perform) do
-      job.perform(body:, headers:, endpoint:)
+      job.perform(encrypted_arguments:, endpoint:)
     end
 
-    it 'repeats the webhook' do
+    it 'repeats the webhook with the decrypted body and headers' do
       expect(Faraday).to receive(:new).and_call_original
       expect(NewRelic::Agent).not_to receive(:notice_error)
 
       perform
+
+      expect(WebMock).to have_requested(:post, endpoint).with(body:, headers:)
+    end
+
+    it 'carries the webhook secret and body only in encrypted form' do
+      expect(encrypted_arguments).not_to include(headers[:Authorization])
+      expect(encrypted_arguments).not_to include(body[:event][:docvTransactionToken])
     end
 
     context 'failed endpoint repeat' do
