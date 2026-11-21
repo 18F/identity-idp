@@ -27,6 +27,13 @@ RSpec.describe Encryption::AesCipher do
 
       expect { subject.decrypt(ciphertext, cek) }.to raise_error Encryption::EncryptionError
     end
+
+    it 'raises a decipher error for the wrong key' do
+      ciphertext = subject.encrypt(plaintext, cek)
+
+      expect { subject.decrypt(ciphertext, SecureRandom.random_bytes(32)) }
+        .to raise_error Encryption::DecipherError
+    end
   end
 
   describe '.encryption_cipher' do

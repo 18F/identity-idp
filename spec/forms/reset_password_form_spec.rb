@@ -133,6 +133,19 @@ RSpec.describe ResetPasswordForm, type: :model do
       end
     end
 
+    context 'when the user has a site key' do
+      let(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
+
+      before do
+        create_site_key(user)
+      end
+
+      it 'deletes the key, which cannot be rewrapped without the old password' do
+        expect(result.success?).to eq(true)
+        expect(user.reload.site_key).to be_nil
+      end
+    end
+
     context 'when the user has a pending profile' do
       context 'when the profile is pending gpo verification' do
         let!(:user) { create(:user, reset_password_sent_at: Time.zone.now) }

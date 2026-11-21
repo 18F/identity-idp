@@ -62,6 +62,63 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
       end
     end
 
+    context 'when the user has an unlocked site key' do
+      let(:user) { create(:user, password: 'old strong password') }
+
+      before do
+        SiteKeys::Vault.new(user:, user_session:).unlock('old strong password', create: true)
+      end
+
+      it 'rewraps the same key under the new password' do
+        private_key = SiteKeys::Vault.new(user:, user_session:).private_key
+
+        expect(subject.submit(params).success?).to eq(true)
+
+        reopened = SiteKeys::Vault.new(user: user.reload, user_session: {})
+        expect(reopened.unlock(password)).to eq(private_key)
+      end
+
+      it 'does not change the password when the wrap cannot be stored' do
+        allow_any_instance_of(SiteKey).to receive(:update!)
+          .and_raise(ActiveRecord::ActiveRecordError)
+
+        expect { subject.submit(params) }.to raise_error(ActiveRecord::ActiveRecordError)
+        expect(user.reload.valid_password?('old strong password')).to eq(true)
+      end
+
+      it 'leaves the wrap alone when the session copy cannot be decrypted' do
+        allow_any_instance_of(SessionEncryptor).to receive(:kms_decrypt)
+          .and_raise(Encryption::EncryptionError)
+        wrap = user.site_key.encrypted_private_key
+
+        expect(subject.submit(params).success?).to eq(true)
+        expect(user.reload.site_key.encrypted_private_key).to eq(wrap)
+      end
+
+      it 'leaves a key another session replaced in the meantime alone' do
+        SiteKeys::Vault.new(user: User.find(user.id), user_session: {})
+          .replace!('old strong password', create: true)
+        user.reload
+        wrap = user.site_key.encrypted_private_key
+
+        expect(subject.submit(params).success?).to eq(true)
+        expect(user.reload.site_key.encrypted_private_key).to eq(wrap)
+      end
+    end
+
+    context 'when the user has a locked site key' do
+      let(:user) { create(:user, password: 'old strong password') }
+
+      before { create_site_key(user, password: 'old strong password') }
+
+      it 'changes the password and leaves the stale wrap for the next sign-in to replace' do
+        wrap = user.site_key.encrypted_private_key
+
+        expect(subject.submit(params).success?).to eq(true)
+        expect(user.reload.site_key.encrypted_private_key).to eq(wrap)
+      end
+    end
+
     context 'when the user has an active profile' do
       let(:profile) { create(:profile, :active, :verified, pii: { ssn: '1234' }) }
       let(:user) { profile.user }

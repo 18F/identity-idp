@@ -14,6 +14,14 @@ RSpec.describe ResetUserPassword do
       expect { call }.to(change { user.reload.encrypted_password_digest })
     end
 
+    it 'deletes the site key, which cannot be rewrapped without the old password' do
+      create_site_key(user)
+
+      call
+
+      expect(user.reload.site_key).to be_nil
+    end
+
     it 'creates a password_invalidated user event' do
       expect { call }
         .to(change { user.events.password_invalidated.size }.from(0).to(1))

@@ -108,6 +108,35 @@ RSpec.describe SignUp::PasswordsController do
         )
       end
 
+      context 'when signing up through a listed client' do
+        let(:service_provider) { create(:service_provider, pkce: true) }
+
+        before do
+          allow_site_keys_for(service_provider)
+          controller.session[:sp] = { issuer: service_provider.issuer }
+        end
+
+        it 'creates and unlocks a site key with the new password' do
+          response
+
+          expect(user.reload.site_key).to be_present
+          expect(controller.user_session[:encrypted_site_key]).to be_present
+        end
+
+        it 'completes sign-up even if the key cannot be created' do
+          allow_any_instance_of(SiteKeys::Vault).to receive(:unlock)
+            .and_raise(Encryption::EncryptionError, 'kms down')
+
+          response
+
+          expect(user.reload.confirmed?).to eq(true)
+          expect(controller.user_session[:in_account_creation_flow]).to eq(true)
+          expect(@analytics).to have_logged_event(
+            :site_key_unlock_failed, error: 'kms down', replaced: false
+          )
+        end
+      end
+
       context 'when platform authenticator is available' do
         let(:params) do
           super().merge(platform_authenticator_available: 'true')

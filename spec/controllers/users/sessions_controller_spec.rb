@@ -83,6 +83,52 @@ RSpec.describe Users::SessionsController, devise: true do
         post :create, params: { user: { email: user.email, password: user.password } }
       end
 
+      context 'with a service provider in the session' do
+        let(:service_provider) { create(:service_provider, pkce: true) }
+
+        before do
+          allow_site_keys_for(service_provider) if listed
+          session[:sp] = { issuer: service_provider.issuer }
+        end
+
+        context 'signing in to a listed client' do
+          let(:listed) { true }
+
+          it 'creates and unlocks a site key' do
+            response
+
+            expect(user.reload.site_key).to be_present
+            expect(controller.user_session[:encrypted_site_key]).to be_present
+          end
+        end
+
+        context 'with a password wrap that no longer opens the key' do
+          let(:listed) { true }
+
+          before { create_site_key(user, password: 'some other password') }
+
+          it 'leaves the key alone until the second factor' do
+            encrypted_private_key = user.site_key.encrypted_private_key
+
+            response
+
+            expect(user.reload.site_key.encrypted_private_key).to eq(encrypted_private_key)
+          end
+        end
+
+        context 'signing in to a client that is not listed' do
+          let(:listed) { false }
+
+          it 'does not touch site keys' do
+            create_site_key(user)
+
+            response
+
+            expect(controller.user_session[:encrypted_site_key]).to be_nil
+          end
+        end
+      end
+
       it 'tracks the successful authentication for existing user' do
         stub_analytics(user:)
         expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
