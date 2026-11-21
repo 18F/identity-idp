@@ -1,4 +1,4 @@
-<%= content_tag(:'lg-modal', **tag_options.except(:class, :data, :id)) do %>
+<%= content_tag(:'lg-modal', **tag_options.except(:data, :id)) do %>
   <% if trigger? %>
     <%= render ButtonComponent.new(
           type: :button,
