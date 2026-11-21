@@ -183,16 +183,33 @@ module Proofing
         (rand * 100) < IdentityConfig.store.idv_resolution_failover_enabled_percent
       end
 
-      # The default bucket also receives any unallocated primary traffic. Bucket order breaks ties.
+      # The assigned vendor first, then the fallbacks in traffic order.
       def resolution_vendors
-        test = is_proofing_agent ? AbTests::PROOFING_AGENT_PROOFING_VENDOR : AbTests::PROOFING_VENDOR
-        shares = test.buckets.dup
-        shares[test.default_bucket] = shares.fetch(test.default_bucket, 0) + 100 - shares.values.sum
-        fallbacks = shares.each_with_index
-          .select { |(vendor, share), _| share.positive? && vendor != :mock }
-          .sort_by { |(_, share), index| [-share, index] }
-          .map { |(vendor, _), _| vendor }
-        [proofing_vendor, *fallbacks].uniq
+        [proofing_vendor, *fallback_vendors_by_traffic].uniq
+      end
+
+      # Vendors with configured traffic share, highest share first.
+      # Equal shares keep bucket order.
+      # Mock is never a fallback.
+      def fallback_vendors_by_traffic
+        shares = vendor_traffic_shares
+        bucket_order = shares.keys
+        eligible_vendors = bucket_order.select do |vendor|
+          shares[vendor].positive? && vendor != :mock
+        end
+        eligible_vendors.sort_by { |vendor| [-shares[vendor], bucket_order.index(vendor)] }
+      end
+
+      # Traffic share for each vendor bucket, from config.
+      # Unassigned traffic goes to the default vendor.
+      def vendor_traffic_shares
+        vendor_ab_test =
+          is_proofing_agent ? AbTests::PROOFING_AGENT_PROOFING_VENDOR : AbTests::PROOFING_VENDOR
+        default_vendor = vendor_ab_test.default_bucket
+        shares = vendor_ab_test.buckets.dup
+        unassigned_share = 100 - shares.values.sum
+        shares[default_vendor] = shares.fetch(default_vendor, 0) + unassigned_share
+        shares
       end
 
       # Resolves the full identity (name, DOB, SSN, address) with one vendor. In-person enrollments
