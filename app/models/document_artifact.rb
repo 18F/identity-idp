@@ -19,9 +19,8 @@ class DocumentArtifact < ApplicationRecord
     IdentityConfig.store.document_images_ttl_seconds.seconds.ago
   end
 
-  # Stores the per-image AES key encrypted at rest. Uses the durable
-  # AttributeEncryptor (backed by attribute_encryption_key + its old-key queue)
-  # so stored keys survive key rotation, unlike the session-scoped encryptors.
+  # The per-image AES key is wrapped with KMS under this person's encryption context, so the key
+  # that opens the stored image is never readable from the database alone.
   def encryption_key=(raw_key)
     self.encrypted_encryption_key = raw_key.present? ? encryptor.encrypt(raw_key) : nil
   end
@@ -35,6 +34,8 @@ class DocumentArtifact < ApplicationRecord
   private
 
   def encryptor
-    Encryption::Encryptors::AttributeEncryptor.new
+    Encryption::Encryptors::DocumentArtifactEncryptor.new(
+      user_uuid: document_capture_session&.user&.uuid,
+    )
   end
 end

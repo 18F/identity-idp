@@ -24,6 +24,8 @@ class DocumentMetadata < ApplicationRecord
     created_at.present? && created_at >= self.class.retention_cutoff
   end
 
+  # The identifiers are wrapped with KMS under this person's encryption context, so they are
+  # never readable from the database alone.
   # @param [Hash] values a hash with any of FIELDS
   def document_data=(values)
     slice = values.to_h.symbolize_keys.slice(*FIELDS)
@@ -40,6 +42,8 @@ class DocumentMetadata < ApplicationRecord
   private
 
   def encryptor
-    Encryption::Encryptors::AttributeEncryptor.new
+    Encryption::Encryptors::DocumentArtifactEncryptor.new(
+      user_uuid: document_capture_session&.user&.uuid,
+    )
   end
 end
