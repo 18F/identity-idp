@@ -162,6 +162,48 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
           failover_used: false,
         )
       end
+
+      context 'when both attempts fail with SSN error messages' do
+        let(:ssn_errors) { { ssn: ['Unverified SSN.'] } }
+        let(:failed_result) do
+          Proofing::Resolution::Result.new(
+            success: false, errors: ssn_errors, vendor_name: 'socure_kyc',
+          )
+        end
+        let(:resolution_result) do
+          Proofing::Resolution::Result.new(
+            success: false, errors: ssn_errors, vendor_name: 'instant_verify_ddp',
+          )
+        end
+        let(:analytics) { FakeAnalytics.new }
+        let(:stage_keypaths) do
+          [[:resolution, :errors, :ssn], [:residential_address, :errors, :ssn]]
+        end
+        let(:stage_pii_like_keypaths) do
+          stage_keypaths.map { |keypath| [:proofing_results, :context, :stages, *keypath] }
+        end
+
+        def log_stages(pii_like_keypaths:)
+          stages = subject.adjudicated_result.extra[:context][:stages]
+          analytics.track_event(
+            'Test Event',
+            proofing_results: { context: { stages: } },
+            pii_like_keypaths:,
+          )
+        end
+
+        it 'passes the PII detector when the attempt keypaths are allowlisted' do
+          pii_like_keypaths =
+            stage_pii_like_keypaths + described_class.attempt_pii_keypaths(*stage_keypaths)
+
+          expect { log_stages(pii_like_keypaths:) }.not_to raise_error
+        end
+
+        it 'is flagged by the PII detector without the attempt keypaths' do
+          expect { log_stages(pii_like_keypaths: stage_pii_like_keypaths) }
+            .to raise_error(FakeAnalytics::PiiDetected, /pii key path: .*:attempts/)
+        end
+      end
     end
   end
 
