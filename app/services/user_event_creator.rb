@@ -121,7 +121,8 @@ class UserEventCreator
       disavowal_token_fingerprint: disavowal_token_fingerprint,
     )
 
-    cookies.permanent[:device] = device.cookie_uuid if device
+    # The device identifier is read only by the server, so page scripts get no access to it.
+    cookies.permanent[:device] = { value: device.cookie_uuid, httponly: true } if device
 
     [event, disavowal_token]
   end

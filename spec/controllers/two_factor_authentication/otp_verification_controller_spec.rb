@@ -606,6 +606,22 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         end
       end
 
+      context 'with remember_device in the params and a successful code' do
+        it 'keeps the remember-device cookie out of reach of page scripts' do
+          post(
+            :create,
+            params: {
+              code: subject.current_user.direct_otp,
+              otp_delivery_preference: 'sms',
+              remember_device: '1',
+            },
+          )
+
+          set_cookie = Array(response.headers['Set-Cookie']).join("\n")
+          expect(set_cookie).to match(/remember_device=[^\n]*;\s*httponly/i)
+        end
+      end
+
       context 'without remember_device in the params' do
         it 'does not save an encrypted cookie' do
           post(
