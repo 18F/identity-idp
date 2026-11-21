@@ -1,3 +1,45 @@
+<% if nds_layout? %>
+  <% self.title = t('headings.passwords.change') %>
+  <%= render NDS::FormPageComponent.new(
+        title: t('headings.passwords.change'),
+        subtitle: t('nds.passwords.new.info'),
+      ) do |page| %>
+    <% page.with_body do %>
+      <%= simple_form_for(
+            @password_reset_from_disavowal_form,
+            url: events_disavowal_url,
+            html: { data: { nds_submit_gate: true } },
+          ) do |f| %>
+        <%= f.input :disavowal_token, as: :hidden,
+                                      input_html: { value: @disavowal_token, name: :disavowal_token } %>
+        <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+          <%= render NDS::StackComponent.new(align: :stretch) do %>
+            <%= render NDS::InputComponent.new(
+                  form: f,
+                  attribute: :password,
+                  type: :password,
+                  label: t('forms.passwords.edit.labels.password'),
+                  error_message: @password_reset_from_disavowal_form.errors[:password].first,
+                  required: true,
+                  autocomplete: 'new-password',
+                ) %>
+            <%= render NDS::PasswordStrengthComponent.new(
+                  input_id: f.field_id(:password),
+                  minimum_length: Devise.password_length.first,
+                  forbidden_passwords: @forbidden_passwords,
+                ) %>
+          <% end %>
+          <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+            <%= render ButtonComponent.new(type: :submit, full_width: true)
+                  .with_content(t('forms.passwords.edit.buttons.submit')) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('nds_password_strength_component', 'nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <% self.title = t('titles.passwords.change') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.passwords.change')) %>
@@ -24,3 +66,4 @@
 <% end %>
 
 <%= render 'shared/password_accordion' %>
+<% end %>

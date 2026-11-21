@@ -1,0 +1,14 @@
+<%# NDS-only actions shared by the SMS opt-in prompt and its 30-day error page. %>
+<%= render NDS::TroubleshootingOptionsComponent.new(
+      heading: t('components.troubleshooting_options.default_heading'),
+      options: presenter.troubleshooting_options.map do |option|
+        { text: option.content, url: option.url, new_tab: option.new_tab? }
+      end,
+    ) %>
+<%= render NDS::StackComponent.new(kind: :actions, align: :stretch, class: 'margin-top-4') do %>
+  <%= render ButtonComponent.new(
+        url: cancel_url,
+        variant: :tertiary,
+        full_width: true,
+      ).with_content(cancel_link_text.delete_prefix('‹').strip) %>
+<% end %>

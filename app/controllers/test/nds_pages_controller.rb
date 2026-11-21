@@ -170,7 +170,7 @@ module Test
                   :in_multi_mfa_selection_flow?, :in_account_creation_flow?,
                   :resource, :resource_name, :session_path, :page_state_for,
                   :record_kind_for, :deletable_record_kind?,
-                  :identity_levels, :current_identity_level
+                  :identity_levels, :current_identity_level, :password_header
 
     def index
       @grouped_pages = NDSPageCatalog.grouped
@@ -374,6 +374,10 @@ module Test
 
     def session_path(_resource_name = nil)
       new_user_session_path
+    end
+
+    def password_header
+      @password_header
     end
 
     private
@@ -830,6 +834,36 @@ module Test
       {}
     end
 
+    def setup_capture_password
+      @nds_current_user = User.new
+      @password_header = if params[:personal_key].present?
+                           t('headings.passwords.confirm_for_personal_key')
+                         else
+                           t('headings.passwords.confirm')
+                         end
+      flash.now[:error] = t('errors.confirm_password_incorrect') if params[:error].present?
+      {}
+    end
+
+    def setup_piv_cac_setup_from_sign_in
+      {}
+    end
+
+    def setup_event_disavowal
+      disavowed_event = Struct.new(:user).new(User.new)
+      @password_reset_from_disavowal_form =
+        EventDisavowal::PasswordResetFromDisavowalForm.new(disavowed_event)
+      if params[:error].present?
+        @password_reset_from_disavowal_form.errors.add(
+          :password,
+          t('errors.attributes.password.too_short.other', count: 12),
+        )
+      end
+      @disavowal_token = 'nds-explorer-disavowal-token'
+      @forbidden_passwords = []
+      {}
+    end
+
     def setup_password_reset_email
       @password_reset_email_form = PasswordResetEmailForm.new('')
       if params[:error] == 'email'
@@ -1022,6 +1056,26 @@ module Test
       flash.now[:error] = t('two_factor_authentication.invalid_otp') if
         params[:error].present?
       {}
+    end
+
+    def setup_sms_opt_in
+      setup_sms_opt_in_page
+      if params[:error].present?
+        flash.now[:error] = t('two_factor_authentication.opt_in.error_retry')
+      end
+      {}
+    end
+
+    def setup_sms_opt_in_error
+      setup_sms_opt_in_page
+      {}
+    end
+
+    def setup_sms_opt_in_page
+      @phone_configuration = PhoneConfiguration.new(phone: DEV_OPT_OUT_PHONE)
+      @phone_number_opt_out = PhoneNumberOptOut.new(uuid: 'nds-explorer-opt-out')
+      @presenter = TwoFactorAuthCode::SmsOptInPresenter.new
+      @cancel_url = sign_out_path
     end
 
     def setup_totp_setup

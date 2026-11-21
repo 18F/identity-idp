@@ -81,6 +81,36 @@ module Test
         ],
       ),
       Page.new(
+        key: 'capture-password',
+        title: 'Re-enter password (sign in)',
+        flow: SIGN_IN,
+        template: 'password_capture/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'New personal key', params: { personal_key: '1' }),
+          Permutation.new(label: 'Incorrect password', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'piv-cac-setup-from-sign-in',
+        title: 'Add PIV/CAC after sign in',
+        flow: SIGN_IN,
+        template: 'users/piv_cac_setup_from_sign_in/prompt',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+        ],
+      ),
+      Page.new(
+        key: 'event-disavowal',
+        title: 'Change password (disavowed event)',
+        flow: SIGN_IN,
+        template: 'event_disavowal/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Password error', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'password-reset-email',
         title: 'Reset password (enter email)',
         flow: SIGN_IN,
@@ -334,6 +364,25 @@ module Test
           Permutation.new(label: 'Reauthentication', params: { reauthn: '1' }),
           Permutation.new(label: 'Prefilled code', params: { code: '1' }),
           Permutation.new(label: 'Incorrect code', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'sms-opt-in',
+        title: 'SMS opt in',
+        flow: OTP,
+        template: 'two_factor_authentication/sms_opt_in/new',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
+          Permutation.new(label: 'Opt-in failed, try again', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
+        key: 'sms-opt-in-error',
+        title: 'SMS opt in (opted in within 30 days)',
+        flow: OTP,
+        template: 'two_factor_authentication/sms_opt_in/error',
+        permutations: [
+          Permutation.new(label: 'Default', params: {}),
         ],
       ),
       Page.new(
