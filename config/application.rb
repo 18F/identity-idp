@@ -40,6 +40,7 @@ module Identity
       write_copy_to: nil,
       &IdentityConfig::BUILDER
     )
+    IdentityConfig.assert_safe_for_production!
 
     config.asset_sources = AssetSources.new(
       manifest_path: Rails.public_path.join('packs', 'manifest.json'),

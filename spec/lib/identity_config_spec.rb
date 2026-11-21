@@ -118,6 +118,92 @@ RSpec.describe IdentityConfig do
     end
   end
 
+  describe '.unsafe_for_production' do
+    let(:config) do
+      double(
+        'config',
+        doc_auth_desktop_test_mode: false,
+        doc_auth_mock_dos_api: false,
+        document_images_sharing_skip_doc_auth_post_validations: false,
+        enable_test_routes: false,
+        lexisnexis_threatmetrix_mock_enabled: false,
+        proofer_mock_fallback: false,
+        recaptcha_mock_validator: false,
+        usps_mock_fallback: false,
+        doc_auth_passport_selfie_vendor_default: 'lexis_nexis',
+        doc_auth_passport_vendor_default: 'lexis_nexis',
+        doc_auth_selfie_vendor_default: 'lexis_nexis',
+        doc_auth_vendor_default: 'socure',
+        idv_address_primary_vendor: :lexis_nexis,
+        idv_address_secondary_vendor: nil,
+        idv_proofing_agent_phone_vendor: :lexis_nexis,
+        idv_resolution_default_vendor: :instant_verify,
+      )
+    end
+
+    it 'is empty when every vendor is real and every test switch is off' do
+      expect(IdentityConfig.unsafe_for_production(config)).to eq([])
+    end
+
+    it 'names a test switch that is on' do
+      allow(config).to receive(:document_images_sharing_skip_doc_auth_post_validations)
+        .and_return(true)
+      allow(config).to receive(:enable_test_routes).and_return(true)
+
+      expect(IdentityConfig.unsafe_for_production(config)).to eq(
+        %i[document_images_sharing_skip_doc_auth_post_validations enable_test_routes],
+      )
+    end
+
+    it 'names a vendor selection that is a mock, whatever its spelling' do
+      allow(config).to receive(:doc_auth_vendor_default).and_return('mock_socure')
+      allow(config).to receive(:idv_resolution_default_vendor).and_return(:mock)
+
+      expect(IdentityConfig.unsafe_for_production(config)).to eq(
+        %i[doc_auth_vendor_default idv_resolution_default_vendor],
+      )
+    end
+
+    it 'checks every key it names against the real configuration' do
+      keys = IdentityConfig::PRODUCTION_UNSAFE_SWITCHES + IdentityConfig::PRODUCTION_VENDOR_SELECTIONS
+
+      aggregate_failures do
+        keys.each do |key|
+          expect(IdentityConfig.store).to respond_to(key), "expected a configuration key #{key}"
+        end
+      end
+    end
+  end
+
+  describe '.assert_safe_for_production!' do
+    let(:config) { double }
+
+    before do
+      allow(IdentityConfig).to receive(:unsafe_for_production).with(config)
+        .and_return(%i[proofer_mock_fallback])
+    end
+
+    it 'raises in the production datacenter, naming the keys' do
+      expect { IdentityConfig.assert_safe_for_production!(config, env: 'prod') }.to raise_error(
+        IdentityConfig::UnsafeProductionConfigurationError,
+        /proofer_mock_fallback/,
+      )
+    end
+
+    it 'does nothing in any other environment' do
+      expect { IdentityConfig.assert_safe_for_production!(config, env: 'staging') }
+        .not_to raise_error
+      expect { IdentityConfig.assert_safe_for_production!(config, env: nil) }.not_to raise_error
+    end
+
+    it 'does nothing in production when nothing is unsafe' do
+      allow(IdentityConfig).to receive(:unsafe_for_production).with(config).and_return([])
+
+      expect { IdentityConfig.assert_safe_for_production!(config, env: 'prod') }
+        .not_to raise_error
+    end
+  end
+
   def check_for_default(env_name)
     aggregate_failures do
       default_yaml_config[env_name].each do |key, value|

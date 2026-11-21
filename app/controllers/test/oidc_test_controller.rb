@@ -3,6 +3,7 @@
 require './spec/support/oidc_auth_helper'
 module Test
   class OidcTestController < ApplicationController
+    include LocalEnvironmentOnlyConcern
     include OidcAuthHelper
 
     FACIAL_MATCH_REQUIRED = 'facial-match-required'

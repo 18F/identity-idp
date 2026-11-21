@@ -6,6 +6,7 @@ require './spec/support/saml_auth_helper'
 
 module Test
   class SamlTestController < ApplicationController
+    include LocalEnvironmentOnlyConcern
     include SamlAuthHelper
 
     skip_before_action :verify_authenticity_token, only: %i[decode_response decode_slo_request]
