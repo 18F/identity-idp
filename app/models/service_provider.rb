@@ -101,8 +101,17 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
+  # Whether this client's tokens are bound to a key it proves possession of (RFC 9449).
   def dpop_required?
-    pkce == true && IdentityConfig.store.dpop_required_issuers.include?(issuer)
+    required_for_token_exchange? || required_dpop_issuer?
+  end
+
+  def required_for_token_exchange?
+    IdentityConfig.store.token_exchange_enabled && token_exchange_actor?
+  end
+
+  def required_dpop_issuer?
+    IdentityConfig.store.dpop_required_issuers.include?(issuer)
   end
 
   def userinfo_encrypted_response?

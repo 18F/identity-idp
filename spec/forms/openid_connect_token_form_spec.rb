@@ -151,6 +151,7 @@ RSpec.describe OpenidConnectTokenForm do
       let(:scope) { 'token_exchange' }
       let(:resource) { 'https://passport.gov' }
       let(:handoff_code) { identity&.session_uuid }
+      let(:dpop_proof) { build_dpop_proof(http_url: api_openid_connect_token_url) }
 
       before do
         allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
@@ -161,6 +162,7 @@ RSpec.describe OpenidConnectTokenForm do
         TokenExchange::ActorHandoff.store(
           code: handoff_code,
           actor_return_log_id: nil,
+          dpop_jkt: dpop_thumbprint,
           expires_in: 300,
           resource:,
         )
@@ -1018,6 +1020,7 @@ RSpec.describe OpenidConnectTokenForm do
       let(:target_app) { 'passport-issuer' }
       let(:resource) { 'https://passport.gov' }
       let(:scope) { 'openid token_exchange' }
+      let(:dpop_proof) { build_dpop_proof(http_url: api_openid_connect_token_url) }
 
       before do
         identity.update!(ial: 2)
@@ -1032,15 +1035,16 @@ RSpec.describe OpenidConnectTokenForm do
           code:,
           actor_return_log_id: 123,
           resource:,
+          dpop_jkt: dpop_thumbprint,
           expires_in: IdentityConfig.store.openid_connect_authorization_code_expiration_seconds,
         )
         create(:user_consent_sts, user:, target_app:, actor_app: client_id)
       end
 
-      it 'returns a subject token response' do
+      it 'returns a subject token response bound to the key' do
         expect(response).to include(
           access_token: be_present,
-          token_type: 'Bearer',
+          token_type: 'DPoP',
           expires_in: 600,
           scope:,
         )

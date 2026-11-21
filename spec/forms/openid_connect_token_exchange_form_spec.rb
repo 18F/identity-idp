@@ -46,11 +46,14 @@ RSpec.describe OpenidConnectTokenExchangeForm do
     )
   end
   let(:actor_return_log_id) { actor_return_log.id }
+  # An approved actor is a key-bound public client: its subject token carries the thumbprint of
+  # the key named at authorization, and every exchange request carries a proof from that key.
   let(:subject_token) do
     TokenExchange::SubjectTokenIssuer.issue(
       identity:,
       actor_return_log_id:,
       resource: subject_token_resource,
+      dpop_jkt: dpop_thumbprint,
     ).token
   end
   let(:params) do
@@ -67,7 +70,9 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       token_url: api_openid_connect_token_url,
     }
   end
-  let(:dpop_proof) { nil }
+  let(:dpop_proof) do
+    build_dpop_proof(http_url: api_openid_connect_token_url, access_token: subject_token)
+  end
 
   before do
     allow(IdentityConfig.store).to receive(:token_exchange_enabled).and_return(true)
@@ -361,18 +366,9 @@ RSpec.describe OpenidConnectTokenExchangeForm do
         expect(form.errors[:subject_token]).to include('is invalid')
       end
     end
-    context 'for an actor registered for key binding' do
+    context 'for the key binding every approved actor carries' do
       let(:target_private_key) do
         OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read)
-      end
-      let(:subject_token) do
-        TokenExchange::SubjectTokenIssuer.issue(
-          identity:, actor_return_log_id: actor_return_log.id, dpop_jkt: dpop_thumbprint,
-          resource: subject_token_resource
-        ).token
-      end
-      let(:dpop_proof) do
-        build_dpop_proof(http_url: api_openid_connect_token_url, access_token: subject_token)
       end
       let(:decoded_token) do
         jwt = JWE.decrypt(form.response[:access_token], target_private_key)
@@ -380,11 +376,6 @@ RSpec.describe OpenidConnectTokenExchangeForm do
           jwt, Rails.application.config.oidc_public_key, true,
           algorithm: IdTokenBuilder::JWT_SIGNING_ALGORITHM
         ).first
-      end
-
-      before do
-        actor.update!(pkce: true)
-        allow(IdentityConfig.store).to receive(:dpop_required_issuers).and_return([actor_issuer])
       end
 
       context 'with a proof from the key the subject token is bound to' do
@@ -476,24 +467,30 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'for an actor not registered for key binding' do
-      let(:dpop_proof) { 'not-read' }
+    context 'for an approved actor whose registration is not public and is not listed' do
+      before do
+        actor.update!(pkce: false)
+        allow(IdentityConfig.store).to receive(:dpop_required_issuers).and_return([])
+      end
 
-      it 'ignores a DPoP header and issues a bearer token without cnf' do
-        expect(DpopProofForm).not_to receive(:new)
-        expect(form.submit.success?).to eq(true)
-        expect(form.response[:token_type]).to eq('Bearer')
-        expect(form.submit.extra[:dpop_bound]).to eq(false)
+      context 'when the token is dpop bound' do
+        it 'is valid' do
+          expect(form.submit.success?).to eq(true)
+          expect(form.response[:token_type]).to eq('DPoP')
+          expect(form.submit.extra[:dpop_bound]).to eq(true)
+        end
+      end
 
-        jwt = JWE.decrypt(
-          form.response[:access_token],
-          OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read),
-        )
-        payload = JWT.decode(
-          jwt, Rails.application.config.oidc_public_key, true,
-          algorithm: IdTokenBuilder::JWT_SIGNING_ALGORITHM
-        ).first
-        expect(payload).not_to have_key('cnf')
+      context 'when the token is not dpop bound' do
+        let(:dpop_proof) { nil }
+
+        it 'is invalid' do
+          expect(form.submit.success?).to eq(false)
+          expect(form.response).to eq(
+            error: 'invalid_dpop_proof',
+            error_description: 'dpop_proof_missing',
+          )
+        end
       end
     end
   end
@@ -505,7 +502,7 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       expect(response).to include(
         access_token: be_present,
         issued_token_type: requested_token_type,
-        token_type: 'Bearer',
+        token_type: 'DPoP',
         expires_in: 600,
         scope:,
       )
@@ -550,7 +547,10 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
     it 'creates distinct historical issuances for repeated DAT mints to the same target' do
       response
-      described_class.new(params).response
+      second_proof = build_dpop_proof(
+        http_url: api_openid_connect_token_url, access_token: subject_token,
+      )
+      described_class.new(params.merge(dpop_proof: second_proof)).response
 
       expect(user.delegated_issuance_logs.count).to eq(2)
       expect(user.delegated_issuance_logs.pluck(:delegation_id).uniq.count).to eq(2)
@@ -558,7 +558,9 @@ RSpec.describe OpenidConnectTokenExchangeForm do
 
     context 'when the subject token has no originating actor return log' do
       let(:subject_token) do
-        TokenExchange::SubjectTokenIssuer.issue(identity:, resource: subject_token_resource).token
+        TokenExchange::SubjectTokenIssuer.issue(
+          identity:, resource: subject_token_resource, dpop_jkt: dpop_thumbprint,
+        ).token
       end
 
       it 'rejects the exchange and writes no issuance or target return log' do
@@ -706,17 +708,8 @@ RSpec.describe OpenidConnectTokenExchangeForm do
       end
     end
 
-    context 'when a dpop-required service provider sends no proof' do
-      before do
-        actor.update!(pkce: true)
-        allow(IdentityConfig.store).to receive(:dpop_required_issuers).and_return([actor_issuer])
-      end
-      let(:subject_token) do
-        TokenExchange::SubjectTokenIssuer.issue(
-          identity:, actor_return_log_id: actor_return_log.id, dpop_jkt: dpop_thumbprint,
-          resource: subject_token_resource
-        ).token
-      end
+    context 'when a key-bound actor sends no proof' do
+      let(:dpop_proof) { nil }
 
       it 'is invalid_dpop_proof' do
         expect(error).to eq('invalid_dpop_proof')

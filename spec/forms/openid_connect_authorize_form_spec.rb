@@ -83,6 +83,9 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
       context 'when token_exchange is enabled' do
         let(:token_exchange_enabled) { true }
+        # An approved actor is key-bound, so its request names the key.
+        let(:dpop_jkt) { SecureRandom.urlsafe_base64(32) }
+
         it 'is successful' do
           expect(result.to_h).to include(
             success: true,
@@ -144,6 +147,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
       context 'when token_exchange is enabled' do
         let(:token_exchange_enabled) { true }
         let(:scope) { 'openid token_exchange' }
+        let(:dpop_jkt) { SecureRandom.urlsafe_base64(32) }
+
         context 'with secure token exchange listed target' do
           context 'with an invalid resource' do
             let(:resource) { 'https://unknown-records.gov' }
@@ -210,7 +215,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    context 'for a public client registered for key binding' do
+    context 'for a service provider required to use DPoP' do
       let(:client_id) { service_provider.issuer }
       let(:redirect_uri) { 'https://sp.example.gov/result' }
       let(:code_challenge) { Digest::SHA256.urlsafe_base64digest(SecureRandom.urlsafe_base64(32)) }
@@ -259,12 +264,12 @@ RSpec.describe OpenidConnectAuthorizeForm do
         end
       end
 
-      context 'when the client is confidential' do
+      context "when the service provider's configuration indicates it is not PKCE" do
         let(:pkce) { false }
         let(:dpop_jkt) { thumbprint }
 
-        it 'does not require key binding' do
-          expect(form.dpop_binding_required?).to eq(false)
+        it 'still requires key binding' do
+          expect(form.dpop_binding_required?).to eq(true)
           expect(result.success?).to eq(true)
         end
       end
@@ -505,6 +510,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
       let(:resource) { 'https://passport.gov' }
       let(:token_exchange_enabled) { true }
       let(:token_exchange_allowed_broker_issuers) { [client_id] }
+      # An approved actor is key-bound, so its request names the key.
+      let(:dpop_jkt) { SecureRandom.urlsafe_base64(32) }
       let(:token_exchange_allowed_targets) do
         [{ issuer: 'passport-issuer', scope: 'passport', resource: 'https://passport.gov' }]
       end
@@ -565,6 +572,18 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(valid?).to eq(true)
         expect(form.errors[:resource]).to be_blank
         expect(form.scope).to eq(%w[email])
+      end
+
+      context 'when the service provider is an actor' do
+        let(:token_exchange_allowed_broker_issuers) { [client_id] }
+        # An approved actor is key-bound even when it asks for ordinary scopes.
+        let(:dpop_jkt) { SecureRandom.urlsafe_base64(32) }
+
+        it 'allows ordinary scopes and does not validate the resource' do
+          expect(valid?).to eq(true)
+          expect(form.errors[:resource]).to be_blank
+          expect(form.scope).to eq(%w[email])
+        end
       end
     end
 

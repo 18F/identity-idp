@@ -223,10 +223,14 @@ class DpopProofForm
     @jwk = import_public_key(header['jwk'])
   end
 
+  # JWT::JWK parses some params lazily, so malformed keys may not raise until `verify_key` is
+  # called.
   def import_public_key(jwk_params)
     return nil unless jwk_params.is_a?(Hash)
-    JWT::JWK.new(jwk_params.deep_symbolize_keys.except(:kid))
-  rescue JWT::JWKError, ArgumentError, OpenSSL::PKey::PKeyError, TypeError
+    jwk = JWT::JWK.new(jwk_params.deep_symbolize_keys.except(:kid))
+    jwk.verify_key
+    jwk
+  rescue JWT::DecodeError, OpenSSL::OpenSSLError, ArgumentError, TypeError, NoMethodError
     nil
   end
 
