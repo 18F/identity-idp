@@ -69,7 +69,8 @@ module Idv
     # and before document capture, so a user without a usable phone finds out
     # before investing in the rest of the flow. Only the ordering around
     # choose_id_type differs: handoff now requires a chosen ID type and is skipped
-    # on mobile, and it loses choose_id_type as a successor since it precedes it.
+    # on mobile, and it and how to verify (reached from handoff when hybrid is
+    # unavailable) lose choose_id_type as a successor since it precedes them.
     PHONE_FIRST_HANDOFF = lambda do |idv_session:, user:|
       !idv_session.skip_hybrid_handoff? &&
         Idv::DocumentCaptureController.ensure_choose_id_type_completed(idv_session:, user:)
@@ -80,6 +81,10 @@ module Idv
       choose_id_type: rewire(
         STEPS[:choose_id_type],
         next_steps: [:hybrid_handoff, :document_capture],
+      ),
+      how_to_verify: rewire(
+        STEPS[:how_to_verify],
+        next_steps: STEPS[:how_to_verify].next_steps - [:choose_id_type],
       ),
       hybrid_handoff: rewire(
         STEPS[:hybrid_handoff],

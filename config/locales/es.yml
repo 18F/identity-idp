@@ -1606,7 +1606,7 @@ instructions.password.strength.4: Muy buena
 instructions.password.strength.intro: 'Seguridad de la contraseña:'
 instructions.password.strength.strong: Fuerte
 instructions.password.strength.too_common: Demasiado común
-instructions.sp_handoff_bounced: Logró iniciar sesión, pero %{sp_name} lo envió de nuevo a %{app_name}. Contacte con %{sp_link} para obtener ayuda.
+instructions.sp_handoff_bounced_html: Logró iniciar sesión, pero %{sp_name} lo envió de nuevo a %{app_name}. Contacte con %{sp_link_html} para obtener ayuda.
 instructions.sp_handoff_bounced_with_no_sp: su proveedor de servicios
 links.accessibility_and_languages: Accesibilidad e idiomas
 links.account.reactivate.with_key: Tengo mi clave
@@ -1672,6 +1672,10 @@ nds.choose_id_type.verify_in_person: Verificar en persona
 nds.completions.heading_idv: Identidad verificada
 nds.completions.intro_html: Al seleccionar Continuar, acepta compartir la siguiente información con %{sp_html} e ir a su sitio.
 nds.completions.nist_alt: 'Sello del NIST: Cifrado. Protegido. Comprobado. Instituto Nacional de Estándares y Tecnología'
+nds.document_capture.mdl_alert_body: Se añadirán otras billeteras digitales a finales de este año.
+nds.document_capture.mdl_alert_title: Actualmente disponible con Google Wallet y Samsung Wallet.
+nds.document_capture.mdl_heading: Añada la información de su licencia de conducir móvil
+nds.document_capture.mdl_subtitle: 'Verificaremos su licencia de conducir móvil mediante un proveedor de servicios de confianza: Socure.'
 nds.duplicate_profiles_detected.cant_access: No puedo acceder a una cuenta
 nds.duplicate_profiles_detected.connected_agencies: 'Agencias conectadas: %{count}'
 nds.duplicate_profiles_detected.created_at_html: 'Creado: %{timestamp_html}'
@@ -1703,6 +1707,8 @@ nds.footer.experience_notice_html: You’re part of a group experiencing %{link_
 nds.footer.experience_notice_label: Interface preference
 nds.footer.experience_notice_link: our refreshed interface
 nds.footer.switch_to_legacy: Switch to legacy
+nds.forgot_password.body_html: Le enviamos un vínculo a <strong>%{email}</strong> con instrucciones para restablecer su contraseña. Si no recibe un correo electrónico en breve, revise su carpeta de correo no deseado.
+nds.forgot_password.resend: Volver a enviar el vínculo
 nds.hybrid_handoff.heading: Ingrese su número de teléfono
 nds.hybrid_handoff.subtitle: Le enviaremos un enlace para verificar su identificación con un proveedor de servicios de confianza.
 nds.idv_phone.info: Ingrese un número de teléfono de EE. UU. Le enviaremos un mensaje de texto o lo llamaremos con un código de 6 dígitos. Solo líneas telefónicas estándar; no se admiten números VoIP ni premium. Pueden aplicarse tarifas de mensajes y datos.
@@ -1716,6 +1722,9 @@ nds.idv_welcome.what_youll_need: Lo que necesitará
 nds.link_sent.heading: Continúe en su teléfono
 nds.link_sent.instructions: Siga las instrucciones para tomar las fotos de su identificación y su selfie, luego vuelva aquí para terminar.
 nds.link_sent.keep_open: Mantenga esta ventana abierta.
+nds.mfa_confirmation.add_method: Agregar método de autenticación
+nds.mfa_confirmation.heading: Agregue un método de autenticación de respaldo
+nds.mfa_confirmation.skip: Omitir
 nds.mfa_setup.badge_passkey: Rápido y seguro
 nds.mfa_setup.heading: Proteja su cuenta
 nds.mfa_setup.heading_second: Elija un segundo método de autenticación
@@ -1759,9 +1768,17 @@ nds.piv_cac_setup.step_3: Agregue su tarjeta PIV o CAC
 nds.piv_cac_setup.step_3_info: Se le pedirá que elija un certificado e ingrese su PIN después de hacer clic en el botón de continuar.
 nds.request_letter.heading: Verifique por correo postal
 nds.request_letter.info: Para verificar su identidad, le enviaremos por correo una carta con un código de verificación e instrucciones a su dirección. Debería llegar en 5 a 10 días. Siga las instrucciones de la carta para terminar de verificar su identidad.
+nds.reset_password.email_heading: Ingrese su correo electrónico
+nds.reset_password.heading: Ingrese una nueva contraseña
+nds.reset_password.invalid_token_heading: El token para restablecer la contraseña no es válido.
+nds.reset_password.personal_key_info: Si verificó su identidad, necesitará su clave personal de 16 caracteres para restablecer su contraseña. Sin ella, puede restablecer su contraseña de todos modos, pero después tendrá que volver a verificar su identidad.
+nds.reset_password.request_new_link: Ingrese su correo electrónico para recibir un nuevo vínculo.
+nds.reset_password.token_expired_heading: Su vínculo para restablecer la contraseña venció.
+nds.second_mfa_reminder.skip: Omitir
 nds.socure_errors.in_person_heading: O, intente verificar su identidad en persona
 nds.socure_errors.rate_limit_html.one: Puede intentarlo <strong>una vez más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
 nds.socure_errors.rate_limit_html.other: Puede intentarlo <strong>%{count} veces más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
+nds.sp_handoff_bounced.instructions_html: Logró iniciar sesión, pero %{sp_name} lo envió de nuevo a %{app_name}. Contacte con %{sp_link_html} para obtener ayuda.
 nds.ssn.info: Su número de Seguro Social verifica su identidad en los servicios de %{app_name} y permanece cifrado; nunca se comparte sin su consentimiento.
 nds.totp_setup.new.code_label: Código
 nds.totp_setup.new.heading: Configure una aplicación de autenticación
@@ -1771,7 +1788,13 @@ nds.totp_setup.new.setup_code_label: Código de configuración
 nds.totp_setup.new.step_1: Ingrese un sobrenombre
 nds.totp_setup.new.step_2: Abra su aplicación de autenticación preferida
 nds.totp_setup.new.step_3: Escanee el código QR o ingrese el código de configuración manualmente en su aplicación de autenticación
+nds.totp_verification.invalid_code_body: Ese código no es válido. Ingrese el código actual de su aplicación de autenticación.
 nds.verify_info.address: Dirección
+nds.webauthn_platform_recommended.cta: Agregar clave de acceso
+nds.webauthn_platform_recommended.description: Autentíquese de la misma forma que desbloquea su dispositivo, sea con su rostro o huella dactilar, contraseña u otro método.
+nds.webauthn_platform_recommended.heading: Configure una clave de acceso para un inicio de sesión más seguro
+nds.webauthn_platform_recommended.info_html: Las claves de acceso están %{phishing_resistant_html} y no almacenamos ninguna grabación de su rostro ni de su huella dactilar, así que su información se mantiene privada.
+nds.webauthn_platform_recommended.phishing_resistant: protegidas contra el phishing
 notices.account_reactivation: Qué bien. Tiene su clave personal.
 notices.authenticated_successfully: Logró autenticarse.
 notices.backup_codes_configured: Los códigos de recuperación se agregaron a su cuenta.

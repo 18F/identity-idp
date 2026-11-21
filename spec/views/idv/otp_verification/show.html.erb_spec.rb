@@ -49,6 +49,10 @@ RSpec.describe 'idv/otp_verification/show.html.erb' do
       )
     end
 
+    it 'marks the required code valid until it is validated' do
+      expect(rendered).to have_css('#code[required][aria-invalid="false"]')
+    end
+
     it 'submits resend through its own ungated form and offers another number' do
       expect(rendered).to have_css(
         '.auth__actions button[form="idv-resend-otp-form"][formnovalidate]',

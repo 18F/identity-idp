@@ -21,7 +21,7 @@ module Users
       if result.success?
         handle_success(personal_key: form.personal_key)
       else
-        flash[:error] = t('errors.messages.password_incorrect')
+        flash.now[:error] = t('errors.messages.password_incorrect')
         render :new
       end
     end

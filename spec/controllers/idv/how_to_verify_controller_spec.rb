@@ -310,6 +310,63 @@ RSpec.describe Idv::HowToVerifyController do
             .to('cancelled')
         end
       end
+
+      context 'in the phone-first (NDS) flow after choosing an ID type' do
+        before do
+          subject.idv_session.phone_first_flow = true
+          document_capture_session.update!(
+            document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
+          )
+        end
+
+        context 'when desktop document capture is available' do
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_desktop_test_mode).and_return(true)
+          end
+
+          it 'continues to document capture and keeps the chosen ID type' do
+            put :update, params: params
+
+            expect(response).to redirect_to(idv_document_capture_url)
+            expect(document_capture_session.reload.document_type_requested)
+              .to eq(Idp::Constants::DocumentTypes::STATE_ID_CARD)
+            expect(
+              Idv::FlowPolicy.new(idv_session: subject.idv_session, user:)
+                .controller_allowed?(controller: Idv::DocumentCaptureController),
+            ).to be(true)
+          end
+        end
+
+        context 'on mobile without desktop document capture' do
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_desktop_test_mode).and_return(false)
+            subject.idv_session.skip_hybrid_handoff = true
+          end
+
+          it 'continues to document capture' do
+            put :update, params: params
+
+            expect(response).to redirect_to(idv_document_capture_url)
+          end
+        end
+
+        context 'on desktop without desktop document capture' do
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_desktop_test_mode).and_return(false)
+            subject.idv_session.clear1_allowed = true
+          end
+
+          it 'stays on how to verify instead of starting another option' do
+            put :update, params: params
+
+            expect(response).to redirect_to(idv_how_to_verify_url)
+            expect(
+              Idv::FlowPolicy.new(idv_session: subject.idv_session, user:)
+                .controller_allowed?(controller: Idv::HowToVerifyController),
+            ).to be(true)
+          end
+        end
+      end
     end
 
     context 'ipp' do
@@ -382,6 +439,25 @@ RSpec.describe Idv::HowToVerifyController do
             }
               .from('establishing')
               .to('cancelled')
+          end
+        end
+
+        context 'in the phone-first (NDS) flow after choosing an ID type' do
+          before do
+            subject.idv_session.phone_first_flow = true
+            document_capture_session.update!(
+              document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
+            )
+          end
+
+          it 'redirects to the clear1 session step' do
+            put :update, params: params
+
+            expect(response).to redirect_to(idv_clear1_session_url)
+            expect(
+              Idv::FlowPolicy.new(idv_session: subject.idv_session, user:)
+                .controller_allowed?(controller: Idv::Clear1::SessionController),
+            ).to be(true)
           end
         end
       end

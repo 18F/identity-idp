@@ -1,3 +1,90 @@
+<% if nds_layout? %>
+  <% self.title = t('nds.reset_password.email_heading') %>
+  <% token_error_heading = {
+       t('devise.passwords.invalid_token') => t('nds.reset_password.invalid_token_heading'),
+       t('devise.passwords.token_expired') => t('nds.reset_password.token_expired_heading'),
+     }[flash[:error]] %>
+  <% flash.delete(:error) if token_error_heading %>
+
+  <%= render NDS::FormPageComponent.new(
+        title: t('nds.reset_password.email_heading'),
+        subtitle: t('instructions.password.forgot'),
+      ) do |page| %>
+    <% if token_error_heading %>
+      <% page.with_alert do %>
+        <%= render AlertComponent.new(
+              type: :error,
+              title: token_error_heading,
+              class: 'margin-bottom-4',
+            ).with_content(t('nds.reset_password.request_new_link')) %>
+      <% end %>
+    <% end %>
+
+    <% page.with_body do %>
+      <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+        <%= render 'shared/sp_alert', section: 'forgot_password' %>
+
+        <%= simple_form_for(
+              @password_reset_email_form,
+              url: user_password_path,
+              html: { data: { nds_submit_gate: true } },
+            ) do |f| %>
+          <%= render NDS::StackComponent.new(kind: :form, align: :stretch) do %>
+            <%= render NDS::InputComponent.new(
+                  form: f,
+                  attribute: :email,
+                  type: :email,
+                  label: t('account.index.email_short'),
+                  error_message: @password_reset_email_form.errors[:email].first,
+                  required: true,
+                  autocorrect: 'off',
+                  autocomplete: 'email',
+                ) %>
+            <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+              <% if FeatureManagement.password_reset_recaptcha_enabled? || IdentityConfig.store.recaptcha_mock_validator %>
+                <%= render CaptchaSubmitButtonComponent.new(
+                      form: f,
+                      action: PasswordResetRecaptchaForm::RECAPTCHA_ACTION,
+                      button_options: { full_width: true },
+                    ).with_content(t('forms.buttons.send_link')) %>
+              <% else %>
+                <%= render ButtonComponent.new(type: :submit, full_width: true)
+                      .with_content(t('forms.buttons.send_link')) %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::TroubleshootingOptionsComponent.new(
+            heading: t('components.troubleshooting_options.default_heading'),
+            options: [
+              {
+                text: t('forms.passwords.reset.how_to_reset'),
+                url: help_center_redirect_path(category: 'trouble-signing-in', article: 'forgot-your-password'),
+                new_tab: true,
+              },
+              {
+                text: t('forms.passwords.reset.how_to_reset_with_personal_key'),
+                url: help_center_redirect_path(category: 'trouble-signing-in', article: 'forgot-your-personal-key', article_anchor: 'if-you-have-a-personal-key'),
+                new_tab: true,
+              },
+            ],
+          ) %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch, class: 'margin-top-4') do %>
+        <%= render ButtonComponent.new(
+              url: decorated_sp_session.cancel_link_url,
+              variant: :tertiary,
+              full_width: true,
+            ).with_content(t('links.cancel')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('nds-auth-submit-gate', preload_links_header: false) %>
+<% else %>
 <% self.title = t('titles.passwords.forgot') %>
 
 <%= render 'shared/sp_alert', section: 'forgot_password' %>
@@ -42,4 +129,5 @@
 
 <%= render(PageFooterComponent.new) do %>
   <%= link_to t('links.cancel'), decorated_sp_session.cancel_link_url %>
+<% end %>
 <% end %>

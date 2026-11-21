@@ -149,6 +149,7 @@ RSpec.describe ProofingAgent::ProofingResult do
               can_pass_with_additional_verification: false,
               attributes_requiring_additional_verification: [],
               source_attribution: [],
+              bypassed_reason_codes: [],
               vendor_name: 'ResidentialAddressNotRequired',
               vendor_id: nil,
               vendor_workflow: nil,

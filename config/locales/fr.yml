@@ -1595,7 +1595,7 @@ instructions.password.strength.4: Excellente
 instructions.password.strength.intro: 'Force du mot de passe :'
 instructions.password.strength.strong: Forte
 instructions.password.strength.too_common: Trop courant
-instructions.sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à %{app_name}. Veuillez contacter %{sp_link} pour obtenir de l’aide.
+instructions.sp_handoff_bounced_html: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à %{app_name}. Veuillez contacter %{sp_link_html} pour obtenir de l’aide.
 instructions.sp_handoff_bounced_with_no_sp: votre fournisseur de service
 links.accessibility_and_languages: Accessibilité et langues
 links.account.reactivate.with_key: J’ai ma clé
@@ -1661,6 +1661,10 @@ nds.choose_id_type.verify_in_person: Vérifier en personne
 nds.completions.heading_idv: Identité vérifiée
 nds.completions.intro_html: En sélectionnant Continuer, vous acceptez de partager les informations ci-dessous avec %{sp_html} et d’accéder à son site.
 nds.completions.nist_alt: 'Sceau du NIST : Chiffré. Protégé. Éprouvé. National Institute of Standards and Technology'
+nds.document_capture.mdl_alert_body: D’autres portefeuilles numériques seront pris en charge plus tard cette année.
+nds.document_capture.mdl_alert_title: Actuellement compatible avec Google Wallet et Samsung Wallet.
+nds.document_capture.mdl_heading: Renseignez les informations de votre permis de conduire mobile
+nds.document_capture.mdl_subtitle: Nous vérifierons votre permis de conduire mobile par l’intermédiaire d’un prestataire de services de confiance (Socure).
 nds.duplicate_profiles_detected.cant_access: Je ne peux pas accéder à un compte
 nds.duplicate_profiles_detected.connected_agencies: 'Agences connectées : %{count}'
 nds.duplicate_profiles_detected.created_at_html: 'Créé : %{timestamp_html}'
@@ -1692,6 +1696,8 @@ nds.footer.experience_notice_html: You’re part of a group experiencing %{link_
 nds.footer.experience_notice_label: Interface preference
 nds.footer.experience_notice_link: our refreshed interface
 nds.footer.switch_to_legacy: Switch to legacy
+nds.forgot_password.body_html: Nous avons envoyé un lien à <strong>%{email}</strong> avec les instructions pour réinitialiser votre mot de passe. Si vous ne recevez pas d’e-mail rapidement, vérifiez votre dossier de courrier indésirable.
+nds.forgot_password.resend: Renvoyer le lien
 nds.hybrid_handoff.heading: Saisissez votre numéro de téléphone
 nds.hybrid_handoff.subtitle: Nous vous enverrons un lien pour vérifier votre pièce d’identité auprès d’un prestataire de confiance.
 nds.idv_phone.info: Saisissez un numéro de téléphone américain. Nous vous enverrons un SMS ou vous appellerons avec un code à 6 chiffres. Lignes téléphoniques standard uniquement ; pas de numéros VoIP ni surtaxés. Des frais de messagerie et de données peuvent s’appliquer.
@@ -1705,6 +1711,9 @@ nds.idv_welcome.what_youll_need: Ce dont vous aurez besoin
 nds.link_sent.heading: Continuez sur votre téléphone
 nds.link_sent.instructions: Suivez les instructions pour photographier votre pièce d’identité et prendre un selfie, puis revenez ici pour terminer.
 nds.link_sent.keep_open: Gardez cette fenêtre ouverte.
+nds.mfa_confirmation.add_method: Ajouter une méthode d’authentification
+nds.mfa_confirmation.heading: Ajoutez une méthode d’authentification de secours
+nds.mfa_confirmation.skip: Ignorer
 nds.mfa_setup.badge_passkey: Rapide et sécurisé
 nds.mfa_setup.heading: Sécurisez votre compte
 nds.mfa_setup.heading_second: Choisissez une deuxième méthode d’authentification
@@ -1748,9 +1757,17 @@ nds.piv_cac_setup.step_3: Ajoutez votre PIV ou CAC
 nds.piv_cac_setup.step_3_info: On vous demandera de choisir un certificat et de saisir votre PIN après avoir cliqué sur le bouton continuer.
 nds.request_letter.heading: Vérifiez plutôt par courrier
 nds.request_letter.info: Pour vérifier votre identité, nous enverrons à votre adresse une lettre contenant un code de vérification et des instructions. Elle devrait arriver sous 5 à 10 jours. Suivez les instructions de la lettre pour terminer la vérification de votre identité.
+nds.reset_password.email_heading: Saisissez votre adresse e-mail
+nds.reset_password.heading: Saisissez un nouveau mot de passe
+nds.reset_password.invalid_token_heading: Le jeton de réinitialisation de mot de passe n’est pas valide.
+nds.reset_password.personal_key_info: Si vous avez vérifié votre identité, vous aurez besoin de votre clé personnelle de 16 caractères pour réinitialiser votre mot de passe. Sans elle, vous pouvez quand même réinitialiser votre mot de passe, mais vous devrez ensuite vérifier à nouveau votre identité.
+nds.reset_password.request_new_link: Saisissez votre adresse e-mail pour recevoir un nouveau lien.
+nds.reset_password.token_expired_heading: Votre lien de réinitialisation de mot de passe a expiré.
+nds.second_mfa_reminder.skip: Ignorer
 nds.socure_errors.in_person_heading: Ou, essayez de confirmer votre identité en personne
 nds.socure_errors.rate_limit_html.one: Vous avez encore <strong>un essai.</strong> Ensuite, vous devrez attendre 6 heures avant de réessayer.
 nds.socure_errors.rate_limit_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite, vous devrez attendre 6 heures avant de réessayer.
+nds.sp_handoff_bounced.instructions_html: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à %{app_name}. Veuillez contacter %{sp_link_html} pour obtenir de l’aide.
 nds.ssn.info: Votre numéro de sécurité sociale permet de vérifier votre identité dans les services %{app_name} ; il reste chiffré et n’est jamais partagé sans votre consentement.
 nds.totp_setup.new.code_label: Code
 nds.totp_setup.new.heading: Configurer une appli d’authentification
@@ -1760,7 +1777,13 @@ nds.totp_setup.new.setup_code_label: Code de configuration
 nds.totp_setup.new.step_1: Saisir un surnom
 nds.totp_setup.new.step_2: Ouvrir votre appli d’authentification préférée
 nds.totp_setup.new.step_3: Scanner le code QR ou saisir le code de configuration manuellement dans votre appli d’authentification
+nds.totp_verification.invalid_code_body: Ce code n’est pas valide. Veuillez saisir le code actuel de votre appli d’authentification.
 nds.verify_info.address: Adresse
+nds.webauthn_platform_recommended.cta: Ajouter une clé d’accès
+nds.webauthn_platform_recommended.description: Authentifiez-vous de la même manière que vous déverrouillez votre appareil, que ce soit avec votre visage ou votre empreinte digitale, un mot de passe ou une autre méthode.
+nds.webauthn_platform_recommended.heading: Configurez une clé d’accès pour une connexion plus sécurisée
+nds.webauthn_platform_recommended.info_html: Les clés d’accès %{phishing_resistant_html} et nous ne conservons aucun enregistrement de votre visage ou de vos empreintes digitales, ce qui préserve la confidentialité de vos informations.
+nds.webauthn_platform_recommended.phishing_resistant: résistent à l’hameçonnage
 notices.account_reactivation: Parfait ! Vous avez votre clé personnelle.
 notices.authenticated_successfully: Authentifié avec succès.
 notices.backup_codes_configured: Les codes de sauvegarde ont été ajoutés à votre compte.

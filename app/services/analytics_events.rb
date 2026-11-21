@@ -6447,6 +6447,8 @@ module AnalyticsEvents
   # be verified by another vendor
   # @param [Array<String>, nil] source_attribution List of sources that contributed to the
   # resolution proofing result
+  # @param [Array<String>, nil] bypassed_reason_codes List of error reason codes that were
+  # bypassed due to ssa
   # @param [String, nil] vendor_name Vendor used
   # @param [String] vendor_id ID of vendor
   # @param [String] vendor_workflow ID of workflow or configuration the vendor used for this
@@ -6463,6 +6465,7 @@ module AnalyticsEvents
     can_pass_with_additional_verification:,
     attributes_requiring_additional_verification:,
     source_attribution:,
+    bypassed_reason_codes:,
     vendor_name:,
     vendor_id:,
     vendor_workflow:,
@@ -6481,6 +6484,7 @@ module AnalyticsEvents
       can_pass_with_additional_verification:,
       attributes_requiring_additional_verification:,
       source_attribution:,
+      bypassed_reason_codes:,
       vendor_name:,
       vendor_id:,
       vendor_workflow:,
@@ -6551,6 +6555,8 @@ module AnalyticsEvents
   # @param [Hash] customer_profile socure customer profile
   # @param [String] customer_user_id user uuid sent to Socure
   # @param [Hash] decision accept or reject of given ID
+  # @param [Hash, nil] digital_intelligence Socure device, network, and behavioral data
+  # @param [Array<Hash>, nil] digital_intelligence_errors Socure Digital Intelligence errors
   # @param [Boolean] doc_auth_success
   # @param [Boolean] doc_type_supported
   # @param [Hash] document_metadata Data about the document that was submitted
@@ -6594,6 +6600,8 @@ module AnalyticsEvents
     customer_profile: nil,
     customer_user_id: nil,
     decision: nil,
+    digital_intelligence: nil,
+    digital_intelligence_errors: nil,
     document_metadata: nil,
     docv_transaction_token: nil,
     expiration_date: nil,
@@ -6624,6 +6632,8 @@ module AnalyticsEvents
       customer_profile:,
       customer_user_id:,
       decision:,
+      digital_intelligence:,
+      digital_intelligence_errors:,
       doc_auth_success:,
       doc_type_supported:,
       document_metadata:,

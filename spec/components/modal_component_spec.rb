@@ -135,6 +135,15 @@ RSpec.describe ModalComponent, type: :component do
         end
       end
 
+      context 'with a class tag option' do
+        it 'keeps the class on lg-modal and the modal classes on the dialog' do
+          rendered = render_inline(ModalComponent.new(class: 'example')) { body_text }
+
+          expect(rendered).to have_css('lg-modal.example > dialog.modal', visible: false)
+          expect(rendered).not_to have_css('dialog.example', visible: false)
+        end
+      end
+
       context 'without slots' do
         it 'falls back to label_id/description_id for block-content sites' do
           # The 2 existing call sites use block content + c.label_id/c.description_id

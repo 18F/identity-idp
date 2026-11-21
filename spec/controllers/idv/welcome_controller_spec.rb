@@ -454,6 +454,24 @@ RSpec.describe Idv::WelcomeController do
           expect(subject.idv_session.skip_hybrid_handoff).to eq(true)
           expect(response).to redirect_to(idv_choose_id_type_url)
         end
+
+        context 'when user is bucketed into clear1 AB' do
+          before do
+            allow(IdentityConfig.store).to receive(:idv_clear1_enabled).and_return(true)
+            allow(IdentityConfig.store).to receive(:idv_clear1_enabled_percent).and_return(100)
+            reload_ab_tests
+          end
+
+          after do
+            reload_ab_tests
+          end
+
+          it 'allows clear1 proofing' do
+            put :update, params: { doc_auth: { idv_consent_given: '1' } }
+
+            expect(subject.idv_session.clear1_allowed).to eq(true)
+          end
+        end
       end
 
       context 'when consent is not given' do

@@ -1,13 +1,43 @@
 <% self.title = t('headings.sp_handoff_bounced', sp_name: @sp_name) %>
+<% if nds_layout? %>
+  <%= render NDS::FormPageComponent.new(title: t('headings.sp_handoff_bounced', sp_name: @sp_name)) do |page| %>
+    <% page.with_media do %>
+      <span class="nds-status-icon nds-status-icon--error">
+        <%= render NDS::IconComponent.new(icon: :error, size: 24) %>
+      </span>
+    <% end %>
+
+    <% page.with_body do %>
+      <hr class="divider" />
+
+      <p>
+        <%= t(
+              'nds.sp_handoff_bounced.instructions_html',
+              app_name: APP_NAME,
+              sp_name: @sp_name,
+              sp_link_html: @sp_link.blank? ? @sp_name : link_to(@sp_name, @sp_link),
+            ) %>
+      </p>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render NDS::StackComponent.new(kind: :actions, align: :stretch) do %>
+        <%= render ButtonComponent.new(url: root_url, full_width: true)
+              .with_content(t('instructions.mfa.piv_cac.back_to_sign_in')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
 <%= render PageHeadingComponent.new.with_content(t('headings.sp_handoff_bounced', sp_name: @sp_name)) %>
 <p class='margin-top-2 margin-bottom-2'>
   <%= t(
-        'instructions.sp_handoff_bounced',
+        'instructions.sp_handoff_bounced_html',
         app_name: APP_NAME,
         sp_name: @sp_name,
-        sp_link: @sp_link.blank? ? @sp_name : link_to(@sp_name, @sp_link),
+        sp_link_html: @sp_link.blank? ? @sp_name : link_to(@sp_name, @sp_link),
       ) %>
 </p>
 <div class='margin-top-4'>
   <%= link_to t('instructions.mfa.piv_cac.back_to_sign_in'), root_url, class: 'usa-button' %>
 </div>
+<% end %>

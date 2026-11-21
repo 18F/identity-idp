@@ -1608,7 +1608,7 @@ instructions.password.strength.4: 棒！
 instructions.password.strength.intro: '密码强度：'
 instructions.password.strength.strong: 强
 instructions.password.strength.too_common: 太常见
-instructions.sp_handoff_bounced: 你登录成功了，但 %{sp_name} 将你送回到 %{app_name}。请联系 %{sp_link} 寻求帮助。
+instructions.sp_handoff_bounced_html: 你登录成功了，但 %{sp_name} 将你送回到 %{app_name}。请联系 %{sp_link_html} 寻求帮助。
 instructions.sp_handoff_bounced_with_no_sp: 你的服务提供商
 links.accessibility_and_languages: 可访问性说明和语言
 links.account.reactivate.with_key: 我有密钥
@@ -1674,6 +1674,10 @@ nds.choose_id_type.verify_in_person: 亲自验证
 nds.completions.heading_idv: 身份已验证
 nds.completions.intro_html: 选择“继续”即表示您同意与 %{sp_html} 共享以下信息并前往其网站。
 nds.completions.nist_alt: 'NIST 徽章：加密。受保护。经验证。美国国家标准与技术研究院'
+nds.document_capture.mdl_alert_body: 其他数字钱包将在今年晚些时候获得支持。
+nds.document_capture.mdl_alert_title: 目前支持 Google Wallet 和 Samsung Wallet。
+nds.document_capture.mdl_heading: 添加您的移动驾驶证信息
+nds.document_capture.mdl_subtitle: 我们将通过可信服务提供商 Socure 验证您的移动驾驶证。
 nds.duplicate_profiles_detected.cant_access: 我无法访问某个帐户
 nds.duplicate_profiles_detected.connected_agencies: '关联机构：%{count}'
 nds.duplicate_profiles_detected.created_at_html: '创建时间：%{timestamp_html}'
@@ -1705,6 +1709,8 @@ nds.footer.experience_notice_html: You’re part of a group experiencing %{link_
 nds.footer.experience_notice_label: Interface preference
 nds.footer.experience_notice_link: our refreshed interface
 nds.footer.switch_to_legacy: Switch to legacy
+nds.forgot_password.body_html: 我们向 <strong>%{email}</strong> 发送了一个链接，其中包含重置密码的说明。如果您没有很快收到电子邮件，请检查您的垃圾邮件文件夹。
+nds.forgot_password.resend: 重新发送链接
 nds.hybrid_handoff.heading: 输入您的电话号码
 nds.hybrid_handoff.subtitle: 我们将向您发送一个链接，以便通过可信的服务提供商验证您的身份证件。
 nds.idv_phone.info: 请输入美国电话号码。我们将通过短信或电话向您发送 6 位数验证码。仅支持标准电话线路，不支持 VoIP 或增值号码。可能产生短信和数据费用。
@@ -1718,6 +1724,9 @@ nds.idv_welcome.what_youll_need: 您需要准备的内容
 nds.link_sent.heading: 在您的手机上继续
 nds.link_sent.instructions: 按照说明拍摄您的身份证件照片和自拍照，然后返回此处完成。
 nds.link_sent.keep_open: 请保持此窗口打开。
+nds.mfa_confirmation.add_method: 添加身份验证方法
+nds.mfa_confirmation.heading: 添加备用身份验证方法
+nds.mfa_confirmation.skip: 跳过
 nds.mfa_setup.badge_passkey: 快速又安全
 nds.mfa_setup.heading: 保护您的账户
 nds.mfa_setup.heading_second: 选择第二种身份验证方法
@@ -1761,9 +1770,17 @@ nds.piv_cac_setup.step_3: 添加 PIV 或 CAC
 nds.piv_cac_setup.step_3_info: 点击继续按钮后，系统会要求你选择一个证书并输入你的 PIN。
 nds.request_letter.heading: 改为通过邮寄验证
 nds.request_letter.info: 为验证您的身份，我们会向您的地址邮寄一封包含验证码和说明的信件，预计 5 到 10 天内送达。请按照信中的说明完成身份验证。
+nds.reset_password.email_heading: 输入您的电子邮件
+nds.reset_password.heading: 输入新密码
+nds.reset_password.invalid_token_heading: 重置密码的令牌无效。
+nds.reset_password.personal_key_info: 如果您验证过身份，则需要使用 16 个字符的个人密钥来重置密码。没有个人密钥，您仍然可以重置密码，但之后需要重新验证身份。
+nds.reset_password.request_new_link: 输入您的电子邮件以获取新链接。
+nds.reset_password.token_expired_heading: 您的重置密码链接已过期。
+nds.second_mfa_reminder.skip: 跳过
 nds.socure_errors.in_person_heading: 或者，尝试亲身去验证身份证件
 nds.socure_errors.rate_limit_html.one: 您可以再试<strong>1次。</strong>然后，您必须等6个小时才能再试。
 nds.socure_errors.rate_limit_html.other: 您可以再试<strong>%{count}次。</strong>然后，您必须等6个小时才能再试。
+nds.sp_handoff_bounced.instructions_html: 你登录成功了，但 %{sp_name} 将你送回到 %{app_name}。请联系 %{sp_link_html} 寻求帮助。
 nds.ssn.info: 您的社会安全号码用于在 %{app_name} 各项服务中验证您的身份，始终加密保存，未经您同意绝不共享。
 nds.totp_setup.new.code_label: 代码
 nds.totp_setup.new.heading: 设置一个身份验证应用程序
@@ -1773,7 +1790,13 @@ nds.totp_setup.new.setup_code_label: 设置代码
 nds.totp_setup.new.step_1: 输入一个昵称
 nds.totp_setup.new.step_2: 打开您首选的身份验证应用程序
 nds.totp_setup.new.step_3: 扫描二维码或在身份验证应用程序中手动输入设置代码
+nds.totp_verification.invalid_code_body: 该代码无效。请输入身份验证应用程序中的当前代码。
 nds.verify_info.address: 地址
+nds.webauthn_platform_recommended.cta: 添加通行密钥
+nds.webauthn_platform_recommended.description: 以解锁设备的相同方式进行身份验证，无论是使用您的面容或指纹、密码还是其他方法。
+nds.webauthn_platform_recommended.heading: 设置通行密钥以更安全地登录
+nds.webauthn_platform_recommended.info_html: 通行密钥%{phishing_resistant_html}，而且我们不会存储任何面容或指纹记录，因此您的信息会保持私密。
+nds.webauthn_platform_recommended.phishing_resistant: 可防范网络钓鱼
 notices.account_reactivation: 好！你有个人密钥。
 notices.authenticated_successfully: 成功验证。
 notices.backup_codes_configured: 备用代码加到了你账户。
