@@ -42,5 +42,7 @@ inputs and controls by data attribute hooks:
   errors into the `data-nds-error` region without the native validation UI. An
   empty required control isn't flagged on blur until the user has edited it.
 - **Submit gating:** submit buttons in the form are disabled until the form's
-  constraints are satisfied.
+  constraints are satisfied. Since a disabled button can't trigger the
+  submit-time errors of an `lg-memorable-date`, its errors are shown once focus
+  leaves the date instead, unless the date is still empty and untouched.
 - **Overflow fade:** long input values fade at the scrollable edges.
