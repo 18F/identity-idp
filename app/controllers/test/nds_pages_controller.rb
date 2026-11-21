@@ -860,6 +860,10 @@ module Test
         )
       end
       @disavowal_token = 'nds-explorer-disavowal-token'
+      @forbidden_passwords = []
+      {}
+    end
+
     def setup_password_reset_email
       @password_reset_email_form = PasswordResetEmailForm.new('')
       if params[:error] == 'email'

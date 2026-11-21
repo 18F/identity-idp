@@ -108,6 +108,9 @@ module Test
         permutations: [
           Permutation.new(label: 'Default', params: {}),
           Permutation.new(label: 'Password error', params: { error: '1' }),
+        ],
+      ),
+      Page.new(
         key: 'password-reset-email',
         title: 'Reset password (enter email)',
         flow: SIGN_IN,
